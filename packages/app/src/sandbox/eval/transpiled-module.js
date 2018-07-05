@@ -833,11 +833,16 @@ export default class TranspiledModule {
             id = undefined;
             loaded = false;
 
-            _resolveFilename() {
-              return manager.resolveModule(usedPath, localModule.path);
+            static _resolveFilename(toPath: string, module) {
+              if (module.filename == null) {
+                throw new Error('Module has no filename');
+              }
+
+              const m = manager.resolveModule(toPath, module.filename);
+              return m.path;
             }
 
-            _nodeModulePaths() {
+            static _nodeModulePaths() {
               return [];
             }
           };
