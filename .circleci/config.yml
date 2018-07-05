@@ -63,9 +63,6 @@ jobs:
           key: v11-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./www
-      - store_artifacts:
-          path: ./www
-          destination: www
 
   test-integrations:
     docker:
