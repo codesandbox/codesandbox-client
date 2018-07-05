@@ -159,7 +159,10 @@ export function withLoadApp(continueSequence) {
               continueSequence,
             ]),
           ],
-          false: continueSequence,
+          false: [
+            actions.removeJwtFromStorage, // To delete the signedIn cookie as well, to be sure
+            continueSequence,
+          ],
         },
         set(state`hasLoadedApp`, true),
         set(state`isAuthenticating`, false),
