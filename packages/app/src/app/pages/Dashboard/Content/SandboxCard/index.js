@@ -300,8 +300,8 @@ class SandboxItem extends React.PureComponent<Props> {
   };
 
   handleKeyDown = (e: KeyboardEvent) => {
-    track('Dashboard - Sandbox Opened With Enter');
     if (e.keyCode === 13) {
+      track('Dashboard - Sandbox Opened With Enter');
       // enter
       this.openSandbox();
     }
