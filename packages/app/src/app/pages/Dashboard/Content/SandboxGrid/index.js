@@ -299,7 +299,7 @@ class SandboxGrid extends React.Component<*, State> {
     });
 
     return (
-      <Content onMouseDown={this.onMouseDown}>
+      <Content style={{ overflowX: 'hidden' }} onMouseDown={this.onMouseDown}>
         <DragLayer />
         <AutoSizer>
           {({ width, height }) => {
