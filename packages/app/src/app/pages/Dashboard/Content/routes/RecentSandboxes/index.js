@@ -1,6 +1,9 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
+
 import { Query } from 'react-apollo';
+
+import getMostUsedTemplate from '../utils/getMostUsedTemplate';
 
 import Sandboxes from '../../Sandboxes';
 
@@ -22,11 +25,25 @@ const RecentSandboxes = ({ store }) => {
           return <div>Error!</div>;
         }
 
+        let mostUsedTemplate = null;
+        if (!loading) {
+          try {
+            mostUsedTemplate = getMostUsedTemplate(data.me.sandboxes);
+          } catch (e) {
+            // Not critical
+          }
+        }
+
         return (
           <Sandboxes
             isLoading={loading}
             Header="Recent Sandboxes"
-            ExtraElement={({ style }) => <CreateNewSandbox style={style} />}
+            ExtraElement={({ style }) => (
+              <CreateNewSandbox
+                mostUsedSandboxTemplate={mostUsedTemplate}
+                style={style}
+              />
+            )}
             hideFilters
             sandboxes={loading ? [] : data.me.sandboxes}
             page="recent"

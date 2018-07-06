@@ -2,10 +2,18 @@ import React from 'react';
 import { Spring } from 'react-spring';
 import { inject } from 'mobx-react';
 import { ThemeProvider } from 'styled-components';
+import history from 'app/utils/history';
 
 import theme from 'common/theme';
+import { sandboxUrl } from 'common/utils/url-generator';
 import Portal from 'app/components/Portal';
-import { Container, AnimatedModalContainer } from './elements';
+
+import {
+  ButtonsContainer,
+  Container,
+  AnimatedModalContainer,
+  ContainerLink,
+} from './elements';
 
 import Modal from './Modal';
 
@@ -27,6 +35,11 @@ class CreateNewSandbox extends React.PureComponent {
   }
 
   createSandbox = template => {
+    if (!this.props.collectionId) {
+      history.push(sandboxUrl({ id: template.shortid }));
+      return;
+    }
+
     this.setState({ forking: true }, () => {
       this.props.signals.dashboard.createSandboxClicked({
         sandboxId: template.shortid,
@@ -64,7 +77,7 @@ class CreateNewSandbox extends React.PureComponent {
   };
 
   render() {
-    const { style } = this.props;
+    const { style, collectionId, mostUsedSandboxTemplate } = this.props;
 
     const fromRects = this.ref ? this.ref.getBoundingClientRect() : {};
     const toRects = this.toRef ? this.toRef.getBoundingClientRect() : {};
@@ -82,14 +95,44 @@ class CreateNewSandbox extends React.PureComponent {
         position: 'fixed',
         left: fromRects.x,
         top: fromRects.y,
-        width: fromRects.width,
-        height: fromRects.height,
+        width: fromRects.width + 32,
+        height: fromRects.height + 32,
         overflow: 'hidden',
       },
     ];
 
     if (!this.state.closingCreating) {
       usedRects = usedRects.reverse();
+    }
+
+    let mostUsedSandboxComponent;
+
+    if (mostUsedSandboxTemplate) {
+      const buttonName = `Create ${mostUsedSandboxTemplate.niceName} Sandbox`;
+      if (collectionId) {
+        mostUsedSandboxComponent = (
+          <Container
+            innerRef={node => {
+              this.ref = node;
+            }}
+            onClick={() => this.createSandbox(mostUsedSandboxTemplate)}
+            color={mostUsedSandboxTemplate.color}
+            tabIndex="0"
+            role="button"
+          >
+            {buttonName}
+          </Container>
+        );
+      } else {
+        mostUsedSandboxComponent = (
+          <ContainerLink
+            to={sandboxUrl({ id: mostUsedSandboxTemplate.shortid })}
+            color={mostUsedSandboxTemplate.color}
+          >
+            {buttonName}
+          </ContainerLink>
+        );
+      }
     }
 
     return (
@@ -129,25 +172,26 @@ class CreateNewSandbox extends React.PureComponent {
           </Portal>
         )}
 
-        <div
-          ref={node => {
-            this.ref = node;
-          }}
-          style={style}
-        >
-          <Container
-            onClick={this.handleClick}
-            tabIndex="0"
-            role="button"
-            hide={this.state.creating}
-            onKeyDown={e => {
-              if (e.keyCode === 13) {
-                this.handleClick();
-              }
-            }}
-          >
-            Create Sandbox
-          </Container>
+        <div style={style}>
+          <ButtonsContainer>
+            <Container
+              innerRef={node => {
+                this.ref = node;
+              }}
+              onClick={this.handleClick}
+              tabIndex="0"
+              role="button"
+              hide={this.state.creating}
+              onKeyDown={e => {
+                if (e.keyCode === 13) {
+                  this.handleClick();
+                }
+              }}
+            >
+              Create Sandbox
+            </Container>
+            {mostUsedSandboxComponent}
+          </ButtonsContainer>
           <Portal>
             <div
               style={{

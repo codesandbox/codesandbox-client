@@ -8,6 +8,7 @@ import { basename } from 'path';
 import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
 import CreateNewSandbox from '../../CreateNewSandbox';
+import getMostUsedTemplate from '../utils/getMostUsedTemplate';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
@@ -40,6 +41,15 @@ const PathedSandboxes = props => {
               sandboxes
             );
 
+            let mostUsedTemplate = null;
+            if (!loading) {
+              try {
+                mostUsedTemplate = getMostUsedTemplate(sandboxes);
+              } catch (e) {
+                // Not critical
+              }
+            }
+
             return (
               <Sandboxes
                 ExtraElement={({ style }) => (
@@ -50,6 +60,7 @@ const PathedSandboxes = props => {
                       data.me.collection &&
                       data.me.collection.id
                     }
+                    mostUsedSandboxTemplate={mostUsedTemplate}
                     style={style}
                   />
                 )}
