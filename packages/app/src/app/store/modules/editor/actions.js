@@ -397,14 +397,6 @@ export function saveModuleCode({ props, state, api, recover }) {
       module: { code: codeToSave },
     })
     .then(x => {
-      recover.remove(sandbox.id, moduleToSave);
-
-      if (x.code !== codeToSave) {
-        throw new Error(
-          `Something went wrong while saving the code of '${title}', please try again.`
-        );
-      }
-
       const newSandbox = state.get('editor.currentSandbox');
       const newModuleToSave = sandbox.modules.find(
         module => module.shortid === props.moduleShortid
@@ -415,15 +407,19 @@ export function saveModuleCode({ props, state, api, recover }) {
       );
 
       if (index > -1) {
-        if (newModuleToSave.code === moduleToSave.code) {
+        if (newModuleToSave.code === codeToSave) {
           state.set(
             `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
             undefined
           );
+          recover.remove(sandbox.id, moduleToSave);
         } else {
           state.set(
             `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
-            moduleToSave.code
+            x.code
+          );
+          throw new Error(
+            `The code of '${title}' changed while saving, will ignore the save now. Please try again with saving.`
           );
         }
       }
