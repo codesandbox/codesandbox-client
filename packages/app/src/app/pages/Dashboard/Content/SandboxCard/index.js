@@ -136,8 +136,8 @@ class SandboxItem extends React.PureComponent<Props> {
         {
           title:
             selectedCount > 1
-              ? `Move ${selectedCount} Sandboxes To 'My Sandboxes'`
-              : "Move Sandbox To 'My Sandboxes'",
+              ? `Recover ${selectedCount} Sandboxes`
+              : 'Recover Sandbox',
           action: () => {
             this.props.undeleteSandboxes();
             return true;
