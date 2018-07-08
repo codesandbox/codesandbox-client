@@ -14,6 +14,6 @@ export function saveAllModules(store, signals) {
         });
       });
   } else {
-    signals.saveClicked();
+    signals.editor.saveClicked();
   }
 }
