@@ -233,8 +233,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       });
     });
 
-    monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
-    monaco.languages.typescript.javascriptDefaults.setMaximunWorkerIdleTime(-1);
+    monaco.languages.typescript.typescriptDefaults.setMaximumWorkerIdleTime(-1);
+    monaco.languages.typescript.javascriptDefaults.setMaximumWorkerIdleTime(-1);
 
     monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
@@ -247,7 +247,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     await this.initializeModules(sandbox.modules);
     await this.openNewModel(currentModule.id, currentModule.title);
 
-    this.addKeyCommands();
+    // this.addKeyCommands();
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
@@ -989,19 +989,17 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   setupSyntaxWorker = () => {
-    this.syntaxWorker = new SyntaxHighlightWorker();
-
-    this.syntaxWorker.addEventListener('message', event => {
-      const { classifications, version } = event.data;
-
-      requestAnimationFrame(() => {
-        if (this.editor.getModel()) {
-          if (version === this.editor.getModel().getVersionId()) {
-            this.updateDecorations(classifications);
-          }
-        }
-      });
-    });
+    // this.syntaxWorker = new SyntaxHighlightWorker();
+    // this.syntaxWorker.addEventListener('message', event => {
+    //   const { classifications, version } = event.data;
+    //   requestAnimationFrame(() => {
+    //     if (this.editor.getModel()) {
+    //       if (version === this.editor.getModel().getVersionId()) {
+    //         this.updateDecorations(classifications);
+    //       }
+    //     }
+    //   });
+    // });
   };
 
   setupWorkers = () => {

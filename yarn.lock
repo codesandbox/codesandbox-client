@@ -6823,6 +6823,10 @@ fast-memoize@^2.2.7:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/fast-memoize/-/fast-memoize-2.3.2.tgz#f6b9eb8e06a754029cca25b4cd3945f2f6242c90"
 
+fast-plist@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/fast-plist/-/fast-plist-0.1.2.tgz#a45aff345196006d406ca6cdcd05f69051ef35b8"
+
 fastparse@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.1.tgz#d1e2643b38a94d7583b479060e6c4affc94071f8"
@@ -12428,9 +12432,19 @@ moment@2.x.x, moment@^2.16.0, moment@^2.18.1, moment@^2.21.0, moment@^2.6.0:
   version "2.22.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
 
-monaco-editor@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.11.1.tgz#17066de2e1399dcedb095045f5737b0f99f43750"
+monaco-editor-textmate@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor-textmate/-/monaco-editor-textmate-2.0.0.tgz#f24ace7e37b6169d910b329e20d1ae2b244ba55e"
+
+monaco-editor@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.13.1.tgz#6b9ce20e4d1c945042d256825eb133cb23315a52"
+
+monaco-textmate@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/monaco-textmate/-/monaco-textmate-3.0.0.tgz#abfbce7d7ff000954ae3206e512f325db6e7b8a8"
+  dependencies:
+    fast-plist "^0.1.2"
 
 monaco-vue@^0.2.1:
   version "0.2.3"
@@ -13178,6 +13192,12 @@ onetime@^2.0.0:
   resolved "https://registry.yarnpkg.com/onetime/-/onetime-2.0.1.tgz#067428230fd67443b2794b22bba528b6867962d4"
   dependencies:
     mimic-fn "^1.0.0"
+
+onigasm@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/onigasm/-/onigasm-2.2.1.tgz#d56da809d63d3bb25510e8b8e447ffe98e56bebb"
+  dependencies:
+    lru-cache "^4.1.1"
 
 open@0.0.5:
   version "0.0.5"
