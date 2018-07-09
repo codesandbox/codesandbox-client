@@ -2,12 +2,10 @@ let isThemeDefined = false;
 
 const cleanHex = hex => hex.slice(1).slice(0, 6);
 
-const getTheme = async (url: String) => {
-  const theme = await fetch(
-    'https://cdn.rawgit.com/sdras/night-owl-vscode-theme/master/themes/Night%20Owl-color-theme.json'
-  );
+const getTheme = (url: String) => {
+  const theme = {};
 
-  const { tokenColors, colors } = await theme.json();
+  const { tokenColors = [], colors = {} } = theme;
   const rules = tokenColors
     .filter(t => t.settings && t.scope && t.settings.foreground)
     .reduce((acc, token) => {
@@ -35,16 +33,30 @@ const getTheme = async (url: String) => {
 
       return acc;
     }, []);
-  return { colors, rules };
+
+  const newColors = colors;
+  Object.keys(colors).forEach(c => {
+    if (newColors[c]) return c;
+
+    delete newColors[c];
+
+    return c;
+  });
+
+  return {
+    colors: newColors,
+    rules,
+    type: theme.type,
+  };
 };
 
-const defineTheme = async monaco => {
+const defineTheme = monaco => {
   if (!isThemeDefined) {
     monaco.editor.defineTheme('CodeSandbox', {
-      base: 'vs-dark', // can also be vs-dark or hc-black
+      base: getTheme().type ? `vs-${getTheme().type}` : 'vs',
       inherit: true,
-      colors: await getTheme().colors,
-      rules: await getTheme().rules,
+      colors: getTheme().colors,
+      rules: getTheme().rules,
     });
     isThemeDefined = true;
   }
