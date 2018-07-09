@@ -31,13 +31,12 @@ class TokenizerState {
 export function wireTmGrammars(monaco, registry, languages) {
   return Promise.all(
     Array.from(languages.keys()).map(async languageId => {
-      console.log(languageId);
       const grammar = await registry.loadGrammar(languages.get(languageId));
       monaco.languages.setTokensProvider(languageId, {
         getInitialState: () => new TokenizerState(monaco_textmate_1.INITIAL),
         tokenize: (line, state) => {
           const res = grammar.tokenizeLine(line, state.ruleStack);
-          console.log(res, state);
+
           return {
             endState: new TokenizerState(res.ruleStack),
             tokens: res.tokens.map(token => ({
