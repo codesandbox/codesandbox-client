@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import theme from 'common/theme';
 
-import './defaultStyles';
-
 export const Container = styled.div`
   width: 100%;
   height: 100%;
