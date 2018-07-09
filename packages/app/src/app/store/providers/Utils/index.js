@@ -1,6 +1,6 @@
 import { Provider } from 'cerebral';
 import { resolveModule } from 'common/sandbox/modules';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import prettify from 'app/utils/prettify';
 
 let nextOptimisticId = 0;

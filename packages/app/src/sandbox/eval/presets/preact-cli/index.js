@@ -27,27 +27,6 @@ export default function initialize() {
   preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
-      options: {
-        presets: [
-          // babel preset env starts with latest, then drops rules.
-          // We don't have env, so we just support latest
-          'latest',
-          'stage-1',
-        ],
-        plugins: [
-          'transform-object-assign',
-          'transform-decorators-legacy',
-          ['transform-react-jsx', { pragma: 'h' }],
-          [
-            'jsx-pragmatic',
-            {
-              module: 'preact',
-              export: 'h',
-              import: 'h',
-            },
-          ],
-        ],
-      },
     },
   ]);
 

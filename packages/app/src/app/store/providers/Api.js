@@ -1,4 +1,4 @@
-import { values } from 'lodash';
+import { values } from 'lodash-es';
 
 import { camelizeKeys, decamelizeKeys } from 'humps';
 import { Provider } from 'cerebral';
@@ -36,6 +36,8 @@ const getMessage = (error: Error & { response: ?Object }) => {
       }
     } else if (response.result.error) {
       error.message = response.result.error; // eslint-disable-line no-param-reassign
+    } else if (response.status === 413) {
+      return 'File too large, upload limit is 5MB.';
     }
   }
 

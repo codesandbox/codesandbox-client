@@ -34,7 +34,7 @@ function Navigator({
   alignBottom,
 }) {
   return (
-    <Container>
+    <Container className="flying-container-handler" style={{ cursor: 'move' }}>
       <Icons>
         <Icon disabled={!onBack} onClick={onBack}>
           <LeftIcon />

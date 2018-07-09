@@ -1,6 +1,4 @@
 // @flow
-import type { ComponentType } from 'react';
-
 import { absolute } from 'common/utils/path';
 import type { ConfigurationFile } from './configuration/types';
 import configurations from './configuration';
@@ -14,6 +12,7 @@ type Options = {
   isTypescript?: boolean,
   externalResourcesEnabled?: boolean,
   showCube?: boolean,
+  main?: boolean,
 };
 
 const defaultConfigurations = {
@@ -27,8 +26,8 @@ export default class Template {
   niceName: string;
   shortid: string;
   url: string;
+  main: boolean;
   color: () => string;
-  Icon: ComponentType<*>;
 
   showOnHomePage: boolean;
   distDir: string;
@@ -44,7 +43,6 @@ export default class Template {
     niceName: string,
     url: string,
     shortid: string,
-    Icon: ComponentType<*>,
     color: Function,
     options: Options = {}
   ) {
@@ -53,8 +51,8 @@ export default class Template {
     this.url = url;
     this.shortid = shortid;
     this.color = color;
-    this.Icon = Icon;
 
+    this.main = options.main || false;
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';
     this.configurationFiles = {
@@ -94,18 +92,31 @@ export default class Template {
   /**
    * Alter the apiData to ZEIT for making deployment work
    */
-  alterDeploymentData = (apiData: any) => ({
-    ...apiData,
-    package: {
-      ...apiData.package,
+  alterDeploymentData = (apiData: any) => {
+    const packageJSONFile = apiData.files.find(x => x.file === 'package.json');
+    const parsedFile = JSON.parse(packageJSONFile.data);
+
+    const newParsedFile = {
+      ...parsedFile,
       devDependencies: {
-        ...apiData.package.devDependencies,
+        ...parsedFile.devDependencies,
         serve: '^5.0.1',
       },
       scripts: {
-        ...apiData.package.scripts,
+        ...parsedFile.scripts,
         'now-start': `cd ${this.distDir} && serve -s ./`,
       },
-    },
-  });
+    };
+
+    return {
+      ...apiData,
+      files: [
+        ...apiData.files.filter(x => x.file !== 'package.json'),
+        {
+          file: 'package.json',
+          data: JSON.stringify(newParsedFile, null, 2),
+        },
+      ],
+    };
+  };
 }

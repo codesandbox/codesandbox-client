@@ -1,15 +1,20 @@
 import { sequence } from 'cerebral';
-import { when, push, set, equals } from 'cerebral/operators';
+import { when, push, unset, set, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
+import { connectToChannel as setupNotifications } from './modules/user-notifications/actions';
 
 import {
   saveNewModule,
   createOptimisticModule,
   updateOptimisticModule,
-  removeOptimisticModule,
+  removeModule,
+  recoverFiles,
 } from './modules/files/actions';
+
+import { disconnect } from './modules/live/actions';
+import { initializeLive } from './modules/live/common-sequences';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
 
@@ -45,7 +50,10 @@ export const ensurePackageJSON = [
           saveNewModule,
           {
             success: [updateOptimisticModule],
-            error: [removeOptimisticModule],
+            error: [
+              set(props`moduleShortid`, props`optimisticModule.shortid`),
+              removeModule,
+            ],
           },
           set(props`title`, props`backupTitle`),
           set(props`newCode`, props`backupCode`),
@@ -102,6 +110,7 @@ export const addNotification = factories.addNotification(
 );
 
 export const forkSandbox = sequence('forkSandbox', [
+  factories.track('Fork Sandbox', {}),
   set(state`editor.isForkingSandbox`, true),
   actions.forkSandbox,
   actions.moveModuleContent,
@@ -130,6 +139,7 @@ export const fetchGitChanges = [
 
 export const signIn = [
   set(state`isAuthenticating`, true),
+  factories.track('Sign In', {}),
   actions.signInGithub,
   {
     success: [
@@ -139,7 +149,10 @@ export const signIn = [
         success: [
           set(state`user`, props`user`),
           actions.setPatronPrice,
+          actions.setSignedInCookie,
           actions.setStoredSettings,
+          actions.connectWebsocket,
+          setupNotifications,
         ],
         error: [
           factories.addNotification('Github Authentication Error', 'error'),
@@ -153,6 +166,13 @@ export const signIn = [
 ];
 
 export const signOut = [
+  factories.track('Sign Out', {}),
+  set(state`workspace.openedWorkspaceItem`, 'files'),
+  when(state`live.isLive`),
+  {
+    true: disconnect,
+    false: [],
+  },
   actions.signOut,
   set(state`jwt`, null),
   actions.removeJwtFromStorage,
@@ -164,6 +184,7 @@ export const signOut = [
   set(state`user.jwt`, null),
   set(state`user.badges`, []),
   set(state`user.integrations`, {}),
+  unset(state`user`),
 ];
 
 export const getZeitUserDetails = [
@@ -252,18 +273,82 @@ export const loadSandboxPage = factories.withLoadApp([]);
 
 export const loadGitHubPage = factories.withLoadApp([]);
 
-export const loadSandbox = factories.withLoadApp([
-  set(state`editor.error`, null),
-  when(state`editor.sandboxes.${props`id`}`),
+export const resetLive = [
+  set(state`live.isLive`, false),
+  set(state`live.error`, null),
+  set(state`live.isLoading`, false),
+  set(state`live.deviceId`, null),
+  set(state`live.roomInfo`, undefined),
+];
+
+export const setSandbox = [
+  when(state`live.isLoading`),
+  {
+    true: [],
+    false: [
+      when(state`live.isLive`),
+      {
+        true: resetLive,
+        false: [],
+      },
+    ],
+  },
+  set(state`editor.currentId`, props`sandbox.id`),
+  actions.setCurrentModuleShortid,
+  actions.setMainModuleShortid,
+  actions.setInitialTab,
+  actions.setUrlOptions,
+  actions.setSandboxConfigOptions,
+  actions.setWorkspace,
+];
+
+export const joinLiveSessionIfTeam = [
+  when(
+    props`sandbox.team`,
+    props`sandbox.owned`,
+    (team, owned) => team && owned && team.roomId
+  ),
   {
     true: [
-      set(state`editor.currentId`, props`id`),
+      set(props`sandboxId`, props`sandbox.id`),
+      set(state`live.isTeam`, true),
+      set(props`roomId`, props`sandbox.team.roomId`),
+      initializeLive,
+
+      when(state`live.isSourceOfTruth`),
+      {
+        true: [
+          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+          set(state`live.isLoading`, true),
+          setSandbox,
+          set(state`live.isLoading`, false),
+          factories.track('Create Team Live Session', {}),
+        ],
+        false: [set(state`editor.currentId`, props`sandbox.id`)],
+      },
+    ],
+    false: [
+      set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+      setSandbox,
+      when(props`sandbox.owned`),
+      {
+        true: [recoverFiles],
+        false: [],
+      },
+    ],
+  },
+];
+
+export const loadSandbox = factories.withLoadApp([
+  set(state`editor.error`, null),
+  when(
+    state`editor.sandboxes.${props`id`}`,
+    sandbox => sandbox && !sandbox.team
+  ),
+  {
+    true: [
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
-      actions.setCurrentModuleShortid,
-      actions.setMainModuleShortid,
-      actions.setInitialTab,
-      actions.setUrlOptions,
-      actions.setWorkspace,
+      setSandbox,
     ],
     false: [
       set(state`editor.isLoading`, true),
@@ -274,16 +359,7 @@ export const loadSandbox = factories.withLoadApp([
 
       actions.getSandbox,
       {
-        success: [
-          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-          set(state`editor.currentId`, props`sandbox.id`),
-          actions.setCurrentModuleShortid,
-          actions.setMainModuleShortid,
-          actions.setInitialTab,
-          actions.setUrlOptions,
-          actions.setWorkspace,
-          ensurePackageJSON,
-        ],
+        success: [joinLiveSessionIfTeam, ensurePackageJSON],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },
@@ -291,3 +367,5 @@ export const loadSandbox = factories.withLoadApp([
   },
   set(state`editor.isLoading`, false),
 ]);
+
+export const setUpdateStatus = [set(state`updateStatus`, props`status`)];

@@ -5,7 +5,7 @@ import Margin from 'common/components/spacing/Margin';
 import GithubBadge from 'app/components/GithubBadge';
 import { githubRepoUrl } from 'common/utils/url-generator';
 import Button from 'app/components/Button';
-import Input from 'common/components/Input';
+import Input, { TextArea } from 'common/components/Input';
 
 import TotalChanges from './TotalChanges';
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
@@ -28,9 +28,15 @@ class Git extends React.Component {
     this.props.signals.git.createPrClicked();
   };
 
-  changeMessage = event => {
-    this.props.signals.git.messageChanged({
-      message: event.target.value,
+  changeSubject = event => {
+    this.props.signals.git.subjectChanged({
+      subject: event.target.value,
+    });
+  };
+
+  changeDescription = event => {
+    this.props.signals.git.descriptionChanged({
+      description: event.target.value,
     });
   };
 
@@ -73,18 +79,35 @@ class Git extends React.Component {
                       You need to save all modules before you can commit
                     </ErrorMessage>
                   )}
+                  <WorkspaceSubtitle
+                    style={{
+                      color:
+                        store.git.subject.length > 72 ? `#F27777` : `#556362`,
+                      textAlign: 'right',
+                    }}
+                  >
+                    {`${store.git.subject.length}/72`}
+                  </WorkspaceSubtitle>
                   <WorkspaceInputContainer>
                     <Input
-                      value={store.git.message}
-                      onChange={this.changeMessage}
-                      placeholder="Commit message"
+                      value={store.git.subject}
+                      onChange={this.changeSubject}
+                      placeholder="Subject"
+                      block
+                    />
+                  </WorkspaceInputContainer>
+                  <WorkspaceInputContainer>
+                    <TextArea
+                      value={store.git.description}
+                      onChange={this.changeDescription}
+                      placeholder="Description"
                       block
                     />
                   </WorkspaceInputContainer>
                   <Buttons>
                     {hasWriteAccess(gitChanges.rights) && (
                       <Button
-                        disabled={!store.git.message || modulesNotSaved}
+                        disabled={!store.git.subject || modulesNotSaved}
                         onClick={this.createCommit}
                         block
                         small
@@ -93,7 +116,7 @@ class Git extends React.Component {
                       </Button>
                     )}
                     <Button
-                      disabled={!store.git.message || modulesNotSaved}
+                      disabled={!store.git.subject || modulesNotSaved}
                       onClick={this.createPR}
                       block
                       small

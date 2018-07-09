@@ -1,32 +1,37 @@
 import styled from 'styled-components';
+import { animated } from 'react-spring';
 import theme from 'common/theme';
 
-export const Container = styled.div`
+export const Container = styled(animated.div)`
   position: fixed;
 
-  font-size: 0.875rem;
-  background-color: ${() => theme.background2.lighten(0.2)()};
-  color: ${() => theme.background2.lighten(3)()};
+  font-size: 0.75rem;
+  background-color: ${() => theme.background4()};
+  color: rgba(255, 255, 255, 0.6);
   box-shadow: -1px 3px 4px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
   z-index: 20;
   overflow: hidden;
+  padding: 4px 0;
 
   transform-origin: 0% 0%;
+  font-weight: 600;
 `;
 
 export const Item = styled.div`
-  transition: 0.3s ease all;
-  padding: 0.75rem 1rem;
+  transition: 0.2s ease all;
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
 
-  border-bottom: 1px solid ${() => theme.background2()};
   border-left: 2px solid transparent;
   cursor: pointer;
 
   min-width: 10rem;
 
   svg {
-    margin-right: 0.5rem;
+    margin-right: 0.75rem;
+    font-size: 0.75rem;
   }
 
   &:last-child {
@@ -38,5 +43,17 @@ export const Item = styled.div`
     background-color: ${() => theme.background2.lighten(0.3)()};
     border-left-color: ${props =>
       props.color ? props.color : theme.secondary()};
+  }
+`;
+
+export const ItemContainer = styled.div`
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+
+  &:last-child {
+    border-bottom: inherit;
+    padding-bottom: 0;
+    margin-bottom: 0;
   }
 `;

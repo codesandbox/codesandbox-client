@@ -7,6 +7,7 @@ export default {
   userMenuOpen: types.boolean,
   authToken: types.maybe(types.string),
   error: types.maybe(types.string),
+  contributors: types.array(types.string),
   user: types.maybe(
     types.model({
       avatarUrl: types.maybe(types.string),
@@ -62,4 +63,18 @@ export default {
     y: types.number,
   }),
   currentModal: types.maybe(types.string),
+  uploadedFiles: types.maybe(
+    types.array(
+      types.model({
+        id: types.identifier(),
+        url: types.string,
+        objectSize: types.number,
+        name: types.string,
+        path: types.string,
+      })
+    )
+  ),
+  maxStorage: types.number,
+  usedStorage: types.number,
+  updateStatus: types.maybe(types.string),
 };

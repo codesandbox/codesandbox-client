@@ -1,0 +1,20 @@
+.sandpack-TranspiledCodeView__container {
+  position: relative;
+
+  height: 100%;
+}
+
+.sandpack-TranspiledCodeView__error {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  font-family: Menlo, Source Code Pro, monospace;
+  background-color: rgba(186, 53, 55, 0.7);
+  color: white;
+
+  padding: 0.5rem;
+
+  z-index: 3;
+}

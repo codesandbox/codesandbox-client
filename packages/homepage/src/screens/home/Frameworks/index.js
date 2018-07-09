@@ -7,6 +7,7 @@ import Centered from 'common/components/flex/Centered';
 import Padding from 'common/components/spacing/Padding';
 
 import theme from 'common/theme';
+import getIcon from 'common/templates/icons';
 
 import LoadInView from '../../../components/LoadInView';
 import RollingText from '../../../components/RollingText';
@@ -51,7 +52,9 @@ const Container = styled.div`
     margin-top: 1rem;
     height: 340px;
   `};
-`;
+`.withComponent(({ color, children, ...rest }) => (
+  <div {...rest}>{children}</div>
+));
 
 const Pane = styled(MaxWidth)`
   color: rgba(255, 255, 255, 0.8);
@@ -206,6 +209,16 @@ const TEMPLATE_SUPPORT = {
     css: ['Global'],
     description: 'Used for React projects, based on: ',
   },
+  '@dojo/cli-create-app': {
+    loaders: [ts, html, cssGlobal, image],
+    css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for Dojo 2 projects, based on: ',
+  },
+  cxjs: {
+    loaders: [ts, html, cssGlobal, scss, sass, less, stylus, image],
+    css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for CxJS projects, based on: ',
+  },
   'vue-cli': {
     loaders: [
       js,
@@ -231,7 +244,7 @@ const TEMPLATE_SUPPORT = {
   svelte: {
     loaders: [js, html, image],
     css: ['Global', 'Scoped', 'Modules'],
-    description: 'Used for Preact projects, based on: ',
+    description: 'Used for Svelte projects, based on: ',
   },
   'angular-cli': {
     loaders: [ts, html, scss, sass, less, stylus, cssGlobal, image],
@@ -259,23 +272,28 @@ export default class Frameworks extends React.Component {
   render() {
     const { templates } = this.props;
     const template = templates[this.state.templateIndex];
+    const TemplateIcon = getIcon(template.name);
 
     return (
       <Pane width={1280}>
         <Flex>
           <Icons>
-            {templates.map(({ Icon }, i) => (
-              <IconContainer
-                key={i}
-                selected={templates[i] === template}
-                template={templates[i]}
-                onClick={() => {
-                  this.setTemplate(templates[i]);
-                }}
-              >
-                <Icon width={80} height={80} />
-              </IconContainer>
-            ))}
+            {templates.map(({ name }, i) => {
+              const TIcon = getIcon(name);
+
+              return (
+                <IconContainer
+                  key={i}
+                  selected={templates[i] === template}
+                  template={templates[i]}
+                  onClick={() => {
+                    this.setTemplate(templates[i]);
+                  }}
+                >
+                  <TIcon width={80} height={80} />
+                </IconContainer>
+              );
+            })}
           </Icons>
 
           <Intro style={{ marginRight: '2rem' }}>
@@ -297,8 +315,8 @@ export default class Frameworks extends React.Component {
               }}
               updateCheck={template}
             >
-              <TemplateName color={template.color}>
-                <template.Icon width={96} height={96} />
+              <TemplateName>
+                <TemplateIcon width={96} height={96} />
                 <h4>{template.niceName}</h4>
               </TemplateName>
             </RollingText>
@@ -323,7 +341,7 @@ export default class Frameworks extends React.Component {
               </div>
 
               <HeaderTitle>Supported Loaders</HeaderTitle>
-              <TemplateIcons color={template.color}>
+              <TemplateIcons>
                 {TEMPLATE_SUPPORT[template.name].loaders.map((data, i) => (
                   <FileType
                     key={template.name + data.title}

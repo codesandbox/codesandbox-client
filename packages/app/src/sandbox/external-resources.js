@@ -22,6 +22,8 @@ function addCSS(resource: string) {
   link.href = resource;
   link.media = 'all';
   head.appendChild(link);
+
+  return link;
 }
 
 function addJS(resource: string) {
@@ -30,25 +32,42 @@ function addJS(resource: string) {
   script.async = false;
   script.setAttribute('id', 'external-js');
   document.head.appendChild(script);
+
+  return script;
 }
 
 function addResource(resource: string) {
   const match = resource.match(/\.([^.]*)$/);
 
-  if (match && match[1] === 'css') {
-    addCSS(resource);
-  } else {
-    addJS(resource);
-  }
+  const el = match && match[1] === 'css' ? addCSS(resource) : addJS(resource);
+
+  return new Promise(r => {
+    el.onload = r;
+    el.onerror = r;
+  });
+}
+
+function waitForLoaded() {
+  return new Promise(resolve => {
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', resolve);
+    } else {
+      resolve();
+    }
+  });
 }
 
 let cachedExternalResources = '';
 
-export default function handleExternalResources(externalResources) {
+export default async function handleExternalResources(externalResources) {
   const extResString = getExternalResourcesConcatenation(externalResources);
   if (extResString !== cachedExternalResources) {
     clearExternalResources();
-    externalResources.forEach(addResource);
+    await Promise.all(externalResources.map(addResource));
     cachedExternalResources = extResString;
+
+    return waitForLoaded();
   }
+
+  return Promise.resolve();
 }

@@ -1,13 +1,13 @@
 export function openPr({ state, browser }) {
-  const pr = state.get('git.pr');
-  const user = state.get('user');
-  const git = state.get('editor.currentSandbox.originalGit');
-
-  const url = `https://github.com/${git.username}/${git.repo}/compare/${
-    git.branch
-  }...${user.username}:${pr.newBranch}?expand=1`;
+  const url = state.get('git.pr.prURL');
 
   browser.openWindow(url);
+}
+
+function createCommitMessage(state) {
+  const subject = state.get('git.subject');
+  const description = state.get('git.description');
+  return `${subject}${description.length ? `\n\n${description}` : ``}`;
 }
 
 export function createPr({ api, state }) {
@@ -16,7 +16,7 @@ export function createPr({ api, state }) {
   return api
     .post(`/sandboxes/${id}/git/pr`, {
       id,
-      message: state.get('git.message'),
+      message: createCommitMessage(state),
     })
     .then(pr => ({ pr }));
 }
@@ -27,11 +27,10 @@ export function redirectToPr({ router, props }) {
 
 export function createCommit({ api, state }) {
   const id = state.get('editor.currentId');
-
   return api
     .post(`/sandboxes/${id}/git/commit`, {
       id,
-      message: state.get('git.message'),
+      message: createCommitMessage(state),
     })
     .then(commit => ({ commit }));
 }
@@ -76,4 +75,16 @@ export function saveGithubData({ api, state, props }) {
 
 export function redirectToGithubSandbox({ props, router }) {
   router.updateSandboxUrl({ git: props.git });
+}
+
+export function setPRURL({ state }) {
+  const pr = state.get('git.pr');
+  const user = state.get('user');
+  const git = state.get('editor.currentSandbox.originalGit');
+
+  const url = `https://github.com/${git.username}/${git.repo}/compare/${
+    git.branch
+  }...${user.username}:${pr.newBranch}?expand=1`;
+
+  state.set('git.pr.prURL', url);
 }

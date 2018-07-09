@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { sortBy } from 'lodash';
 import DirectoryEntry from './DirectoryEntry/index';
 import WorkspaceItem from '../WorkspaceItem';
 
@@ -18,6 +17,11 @@ class Files extends React.Component {
     this.directory.onCreateDirectoryClick();
   };
 
+  uploadFile = () => {
+    // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
+    this.directory.onUploadFileClick();
+  };
+
   render() {
     const store = this.props.store;
     const sandbox = store.editor.currentSandbox;
@@ -30,8 +34,14 @@ class Files extends React.Component {
         actions={
           <EditIcons
             hovering
+            forceShow={window.__isTouch}
             onCreateFile={this.createModule}
             onCreateDirectory={this.createDirectory}
+            onUploadFile={
+              store.isLoggedIn && sandbox.privacy === 0
+                ? this.uploadFile
+                : undefined
+            }
           />
         }
       >
@@ -41,15 +51,6 @@ class Files extends React.Component {
             this.directory = el;
           }}
           title={sandbox.title || 'Project'}
-          sandboxId={sandbox.id}
-          sandboxTemplate={sandbox.template}
-          mainModuleId={store.editor.mainModule.id}
-          modules={sortBy(sandbox.modules.toJS(), 'title')}
-          directories={sortBy(sandbox.directories.toJS(), 'title')}
-          isInProjectView={store.preferences.isInProjectView}
-          currentModuleId={store.editor.currentModule.id}
-          errors={store.editor.errors}
-          corrections={store.editor.corrections}
           depth={-1}
           id={null}
           shortid={null}

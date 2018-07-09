@@ -49,7 +49,14 @@ export default {
   isLoadingProfile: types.boolean,
   sandboxes: types.map(types.map(types.array(Sandbox))),
   likedSandboxes: types.map(types.map(types.array(Sandbox))),
-  userSandboxes: types.array(Sandbox),
+  userSandboxes: types.array(
+    types.model({
+      id: types.string,
+      title: types.maybe(types.string),
+      insertedAt: types.string,
+      updatedAt: types.string,
+    })
+  ),
   currentSandboxesPage: types.number,
   currentLikedSandboxesPage: types.number,
   isLoadingSandboxes: types.boolean,

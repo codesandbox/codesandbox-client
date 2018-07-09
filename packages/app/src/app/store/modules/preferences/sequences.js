@@ -17,6 +17,11 @@ export const changeViewMode = [
 
 export const toggleZenMode = toggle(state`preferences.settings.zenMode`);
 
+export const forceCodeMirror = set(
+  state`preferences.settings.codeMirror`,
+  true
+);
+
 export const setDevtoolsOpen = set(
   state`preferences.showDevtools`,
   props`open`

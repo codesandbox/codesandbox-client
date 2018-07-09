@@ -5,15 +5,20 @@ import BasePreview from 'app/components/Preview';
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
+import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import getType from 'app/utils/get-type';
+
+import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
+import {
+  TabTitle,
+  TabDir,
+  StyledCloseIcon,
+} from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
 
 import DevTools from 'app/components/Preview/DevTools';
 
-import Fullscreen from 'common/components/flex/Fullscreen';
-import Centered from 'common/components/flex/Centered';
-import theme from 'common/theme';
-
 import { resolveModule, findMainModule } from 'common/sandbox/modules';
-import playSVG from './play.svg';
+import RunOnClick from 'common/components/RunOnClick';
 
 import { Container, Tabs, Split } from './elements';
 
@@ -80,6 +85,30 @@ export default class Content extends React.PureComponent<Props, State> {
 
     this.errors = [];
   }
+
+  renderTabStatus = (hovering, closeTab) => {
+    const { isNotSynced, tabCount } = this.props;
+
+    if (hovering && isNotSynced && tabCount === 1) {
+      return <StyledNotSyncedIcon show={'true'} />;
+    }
+    if (hovering && isNotSynced && tabCount > 1) {
+      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+    }
+    if (hovering && tabCount === 1) {
+      return <StyledCloseIcon onClick={closeTab} show={undefined} />;
+    }
+    if (hovering && tabCount > 1) {
+      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+    }
+    if (!hovering && isNotSynced) {
+      return <StyledNotSyncedIcon show={'true'} />;
+    }
+    if (!hovering && !isNotSynced) {
+      return <StyledNotSyncedIcon show={undefined} />;
+    }
+    return <StyledNotSyncedIcon show={undefined} />;
+  };
 
   errors: Array<ModuleError>;
   editor: ?Editor;
@@ -226,6 +255,7 @@ export default class Content extends React.PureComponent<Props, State> {
     autoCompleteEnabled: true,
     vimMode: false,
     tabWidth: 2,
+    enableLigatures: false,
   });
 
   setCurrentModule = (moduleId: string) => {
@@ -259,28 +289,6 @@ export default class Content extends React.PureComponent<Props, State> {
     return () => {};
   };
 
-  RunOnClick = () => (
-    <Fullscreen
-      style={{ backgroundColor: theme.primary(), cursor: 'pointer' }}
-      onClick={() => this.setState({ running: true })}
-    >
-      <Centered horizontal vertical>
-        <img width={170} height={170} src={playSVG} alt="Run Sandbox" />
-        <div
-          style={{
-            color: theme.red(),
-            fontSize: '2rem',
-            fontWeight: 700,
-            marginTop: 24,
-            textTransform: 'uppercase',
-          }}
-        >
-          Click to run
-        </div>
-      </Centered>
-    </Fullscreen>
-  );
-
   setDragging = (dragging: boolean) => {
     this.setState({ dragging });
   };
@@ -304,7 +312,17 @@ export default class Content extends React.PureComponent<Props, State> {
 
     if (!mainModule) throw new Error('Cannot find main module');
 
-    const { RunOnClick } = this;
+    const sandboxConfig = sandbox.modules.find(
+      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+    );
+    let view = 'browser';
+    if (sandboxConfig) {
+      try {
+        view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+      } catch (e) {
+        /* swallow */
+      }
+    }
 
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
@@ -341,7 +359,18 @@ export default class Content extends React.PureComponent<Props, State> {
                     position={i}
                     closeTab={this.closeTab}
                     dirName={dirName}
-                  />
+                  >
+                    {({ hovering, closeTab }) => (
+                      // TODO deduplicate this
+                      <React.Fragment>
+                        <EntryIcons type={getType(module.title)} />
+                        <TabTitle>{module.title}</TabTitle>
+                        {dirName && <TabDir>../{dirName}</TabDir>}
+
+                        {this.renderTabStatus(hovering, closeTab)}
+                      </React.Fragment>
+                    )}
+                  </Tab>
                 );
               })}
             </Tabs>
@@ -355,6 +384,7 @@ export default class Content extends React.PureComponent<Props, State> {
               <CodeEditor
                 onInitialized={this.onCodeEditorInitialized}
                 currentModule={currentModule || mainModule}
+                isModuleSynced
                 sandbox={sandbox}
                 settings={this.getPreferences()}
                 canSave={false}
@@ -375,7 +405,7 @@ export default class Content extends React.PureComponent<Props, State> {
             verticalMode={verticalMode}
           >
             {!this.state.running ? (
-              <RunOnClick />
+              <RunOnClick onClick={() => this.setState({ running: true })} />
             ) : (
               <div
                 style={{
@@ -403,6 +433,7 @@ export default class Content extends React.PureComponent<Props, State> {
                   setDragging={this.setDragging}
                   sandboxId={sandbox.id}
                   shouldExpandDevTools={this.props.expandDevTools}
+                  view={view}
                 />
               </div>
             )}

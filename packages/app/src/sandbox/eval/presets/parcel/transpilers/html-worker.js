@@ -72,7 +72,6 @@ self.addEventListener('message', async event => {
       self.postMessage({
         type: 'add-dependency',
         path: assetPath,
-        isEntry: true,
       });
 
       resources.push(assetPath);
@@ -123,12 +122,26 @@ self.addEventListener('message', async event => {
         if (node.tag === 'a' && node.attrs[attr].lastIndexOf('.') < 1) {
           continue;
         }
+
+        if (
+          node.tag === 'html' &&
+          node.attrs[attr].endsWith('.html') &&
+          attr === 'href'
+        ) {
+          // Another HTML file, we'll compile it when the user goes to it
+          continue;
+        }
+
         if (elements && elements.includes(node.tag)) {
           const result = addDependency(node.attrs[attr]);
 
           if (result) {
-            node.tag = false;
-            node.content = [];
+            if (node.tag === 'link' || node.tag === 'script') {
+              node.tag = false;
+              node.content = [];
+            } else {
+              node.attrs[attr] = result;
+            }
           }
         }
       }
@@ -154,7 +167,8 @@ setupHTML();
   resources.forEach(resource => {
     const resourcePath = JSON.stringify(resource);
     compiledCode += `\n`;
-    compiledCode += `\trequire(${resourcePath});`;
+    compiledCode += `\trequire(${resourcePath});\n`;
+    compiledCode += `\tmodule.hot.accept(${resourcePath});`;
   });
   compiledCode += '\n}';
 
@@ -168,7 +182,7 @@ if (document.readyState !== 'complete') {
 `;
 
   self.postMessage({
-    type: 'compiled',
+    type: 'result',
     transpiledCode: compiledCode,
   });
 });

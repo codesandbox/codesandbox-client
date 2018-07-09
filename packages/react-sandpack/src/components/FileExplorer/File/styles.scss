@@ -1,0 +1,23 @@
+.sandpack-File__container {
+  transition: 0.3s ease all;
+  font-family: sans-serif;
+
+  font-size: 0.875em;
+  padding: 0.3em 0.5em;
+  padding-left: 1rem;
+  color: rgb(220, 220, 220);
+
+  border-left: 2px solid transparent;
+
+  cursor: pointer;
+
+  &:hover {
+    color: rgb(255, 255, 255);
+  }
+}
+
+.sandpack-File__active {
+  background-color: rgba(0, 0, 0, 0.3);
+
+  border-left: 2px solid #6caedd;
+}

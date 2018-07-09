@@ -22,7 +22,7 @@ const Sides = styled.div`
     background-color: ${({ color }) => color.clearer(0.2)};
     border: ${({ size }) => size / 70}px solid rgba(255, 255, 255, 0.4);
   }
-`;
+`.withComponent(({ color, size, ...rest }) => <div {...rest} />);
 
 const Side = styled.div`
   transform-origin: 50% 50%;
@@ -32,7 +32,6 @@ const Side = styled.div`
 type Props = {
   size: number,
   className: string,
-  noAnimation: ?boolean,
   speed: number,
   color: string,
   offset: number,
@@ -45,20 +44,13 @@ export default class GlowCube extends React.Component<Props> {
       color = 'rgba(242,119,119,0.5)',
       speed = 1,
       offset = 0,
-      noAnimation,
       className,
       ref,
       id,
     } = this.props;
     return (
       <Cube id={id} innerRef={ref} className={className} size={size}>
-        <Sides
-          color={color}
-          offset={offset}
-          speed={speed}
-          noAnimation={noAnimation}
-          size={size}
-        >
+        <Sides color={color} offset={offset} speed={speed} size={size}>
           <Side
             style={{ boxShadow: `0px 0px 100px ${color.clearer(0.3)()}` }}
             rotate="rotateX(90deg)"

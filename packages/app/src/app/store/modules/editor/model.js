@@ -1,4 +1,5 @@
 import { types } from 'mobx-state-tree';
+import { UserSelection } from '../live/model';
 
 const Author = types.model({
   avatarUrl: types.string,
@@ -21,6 +22,12 @@ const Author = types.model({
   viewCount: types.number,
 });
 
+const Team = types.model({
+  id: types.string,
+  name: types.string,
+  roomId: types.maybe(types.string),
+});
+
 const Directory = types.model({
   directoryShortid: types.maybe(types.string),
   id: types.string,
@@ -31,6 +38,7 @@ const Directory = types.model({
 
 const Module = types.model({
   code: types.maybe(types.string),
+  savedCode: types.maybe(types.string),
   directoryShortid: types.maybe(types.string),
   id: types.string,
   isBinary: types.maybe(types.boolean),
@@ -84,6 +92,7 @@ const Sandbox = types.model({
   userLiked: types.boolean,
   version: types.number,
   viewCount: types.number,
+  team: types.maybe(Team),
 });
 
 export default {
@@ -97,12 +106,35 @@ export default {
   error: types.maybe(types.string),
   isResizing: types.boolean,
   changedModuleShortids: types.array(types.string),
-  tabs: types.array(
+  pendingOperation: types.maybe(
+    types.array(types.union(types.string, types.number))
+  ),
+  pendingUserSelections: types.array(
     types.model({
-      type: types.string,
-      moduleShortid: types.string,
-      dirty: types.boolean,
+      userId: types.string,
+      name: types.maybe(types.string),
+      selection: types.maybe(UserSelection),
+      color: types.maybe(types.array(types.number)),
     })
+  ),
+  currentTabId: types.maybe(types.string),
+  tabs: types.array(
+    types.union(
+      types.model({
+        type: types.literal('MODULE'),
+        moduleShortid: types.string,
+        dirty: types.boolean,
+      }),
+      types.model({
+        id: types.string,
+        type: types.literal('DIFF'),
+        titleA: types.string,
+        titleB: types.string,
+        codeA: types.string,
+        codeB: types.string,
+        fileTitle: types.maybe(types.string),
+      })
+    )
   ),
   errors: types.array(
     types.model({

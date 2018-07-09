@@ -77,6 +77,20 @@ class ConfigWizard extends React.Component<Props> {
             sandboxes with global state, like intervals.
           </ConfigDescription>
         </PaddedConfig>
+
+        <PaddedConfig>
+          <ConfigItem>
+            <PaddedPreference
+              title="Default View"
+              type="dropdown"
+              options={['browser', 'console', 'tests']}
+              {...this.bindValue(parsedFile, 'view')}
+            />
+          </ConfigItem>
+          <ConfigDescription>
+            Which view to show in the preview by default.
+          </ConfigDescription>
+        </PaddedConfig>
       </div>
     );
   }

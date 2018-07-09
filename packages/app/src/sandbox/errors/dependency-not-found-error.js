@@ -3,7 +3,7 @@ import { actions, dispatch } from 'codesandbox-api';
 import SandboxError from './sandbox-error';
 
 export default class DependencyNotFoundError extends SandboxError {
-  constructor(dependencyName: string) {
+  constructor(dependencyName: string, fromPath: ?string) {
     super();
     this.path = dependencyName;
 
@@ -23,6 +23,10 @@ export default class DependencyNotFoundError extends SandboxError {
 
     this.name = 'DependencyNotFoundError';
     this.message = `Could not find dependency: '${parsedName}'`;
+
+    if (fromPath) {
+      this.message += ` relative to '${fromPath}'`;
+    }
   }
   type = 'dependency-not-found';
   severity = 'error';

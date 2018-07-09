@@ -1,37 +1,43 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
+import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
+import Fullscreen from 'common/components/flex/Fullscreen';
+import Padding from 'common/components/spacing/Padding';
 import Skeleton from 'app/components/Skeleton';
 
 import Editor from './Editor';
 
 class SandboxPage extends React.Component {
   componentWillMount() {
-    if (
-      window.screen.availWidth < 800 &&
-      !document.location.search.includes('from-embed')
-    ) {
-      const addedSign = document.location.search ? '&' : '?';
-      document.location.href =
-        document.location.href.replace('/s/', '/embed/') +
-        addedSign +
-        'codemirror=1';
-    } else {
-      this.fetchSandbox();
+    if (window.screen.availWidth < 800) {
+      if (!document.location.search.includes('from-embed')) {
+        const addedSign = document.location.search ? '&' : '?';
+        document.location.href =
+          document.location.href.replace('/s/', '/embed/') +
+          addedSign +
+          'codemirror=1';
+      } else {
+        this.props.signals.preferences.codeMirrorForced();
+      }
+    }
+
+    this.fetchSandbox();
+  }
+
+  componentWillUnmount() {
+    if (this.props.store.live.isLive) {
+      this.props.signals.live.onNavigateAway({});
     }
   }
 
   fetchSandbox = () => {
-    this.props.signals.editor.sandboxChanged({
-      id: this.props.match.params.id,
-    });
+    const id = this.props.match.params.id;
+    this.props.signals.editor.sandboxChanged({ id });
   };
 
   componentDidUpdate(prevProps) {
@@ -40,17 +46,63 @@ class SandboxPage extends React.Component {
     }
   }
 
-  render() {
-    const { match, store } = this.props;
+  getContent() {
+    const { store } = this.props;
 
-    if (store.editor.isLoading) {
+    if (store.editor.notFound) {
       return (
-        <Centered horizontal vertical>
+        <React.Fragment>
+          <div
+            style={{
+              fontWeight: 300,
+              color: 'rgba(255, 255, 255, 0.5)',
+              marginBottom: '1rem',
+              fontSize: '1.5rem',
+            }}
+          >
+            404 Not Found
+          </div>
+          <Title style={{ fontSize: '1.25rem' }}>
+            We could not find the sandbox you{"'"}re looking for
+          </Title>
+          <br />
+          <Link to="/s">Create Sandbox</Link>
+        </React.Fragment>
+      );
+    }
+
+    if (store.editor.error) {
+      return (
+        <React.Fragment>
+          <div
+            style={{
+              fontWeight: 300,
+              color: 'rgba(255, 255, 255, 0.5)',
+              marginBottom: '1rem',
+              fontSize: '1.5rem',
+            }}
+          >
+            Something went wrong
+          </div>
+          <Title style={{ fontSize: '1.25rem' }}>{store.editor.error}</Title>
+          <br />
+          <Link to="/s">Create Sandbox</Link>
+        </React.Fragment>
+      );
+    }
+
+    if (
+      store.editor.isLoading ||
+      store.live.isLoading ||
+      store.editor.currentSandbox == null
+    ) {
+      return (
+        <React.Fragment>
           <Skeleton
             titles={[
               {
-                content: 'Loading sandbox...',
-                delay: 0,
+                content: 'Loading Sandbox',
+                delay: 0.6,
               },
               {
                 content: 'Fetching git repository...',
@@ -58,32 +110,40 @@ class SandboxPage extends React.Component {
               },
             ]}
           />
-        </Centered>
+        </React.Fragment>
       );
     }
 
-    if (store.editor.notFound) {
-      return (
-        <Centered style={{ height: '100vh' }} horizontal vertical>
-          <Title>
-            We could not find the Sandbox you{"'"}re looking for...
-            <br />
-            <br />
-            <Link to="/s">Create Sandbox</Link>
-          </Title>
-        </Centered>
-      );
-    }
+    return null;
+  }
 
-    if (store.editor.error) {
+  render() {
+    const { match, store } = this.props;
+
+    const content = this.getContent();
+
+    if (content) {
       return (
-        <Centered style={{ height: '100vh' }} horizontal vertical>
-          <Title>An error occured when fetching the sandbox:</Title>
-          <SubTitle>{store.editor.error}</SubTitle>
-          <br />
-          <br />
-          <Link to="/s">Create Sandbox</Link>
-        </Centered>
+        <Fullscreen>
+          <Padding
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100vw',
+              height: '100vh',
+            }}
+            margin={1}
+          >
+            <Navigation title="Sandbox Editor" />
+            <Centered
+              style={{ flex: 1, width: '100%', height: '100%' }}
+              horizontal
+              vertical
+            >
+              {content}
+            </Centered>
+          </Padding>
+        </Fullscreen>
       );
     }
 
@@ -102,6 +162,4 @@ class SandboxPage extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(
-  DragDropContext(HTML5Backend)(observer(SandboxPage))
-);
+export default inject('signals', 'store')(observer(SandboxPage));

@@ -1,9 +1,7 @@
 // @flow
-import { flattenDeep, uniq, values, isEqual } from 'lodash';
+import { flattenDeep, uniq, values, isEqual } from 'lodash-es';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
-
-import VERSION from 'common/version';
 
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
@@ -12,13 +10,21 @@ import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import type { SerializedTranspiledModule } from './transpiled-module';
 import Preset from './presets';
-import fetchModule, { getCombinedMetas } from './npm/fetch-npm-module';
+import { SCRIPT_VERSION } from '../';
+import fetchModule, {
+  getCombinedMetas,
+  setCombinedMetas,
+} from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
+import isESModule from './utils/is-es-module';
+import { packageFilter } from './utils/resolve-utils';
+
+import { ignoreNextCache, deleteAPICache } from './cache';
 
 type Externals = {
   [name: string]: string,
@@ -52,17 +58,23 @@ export type Manifest = {
 };
 
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
+// For these dependencies we don't want to follow along with the `browser` field
+const SKIPPED_BROWSER_FIELD_DEPENDENCIES = ['babel-core', '@babel/core'].reduce(
+  (result, next) => ({
+    ...result,
+    [`/node_modules/${next}/package.json`]: true,
+  }),
+  {}
+);
+const SHIMMED_MODULE: Module = {
+  path: pathUtils.join('/node_modules', 'empty', 'index.js'),
+  code: `// empty`,
+  requires: [],
+};
 const debug = _debug('cs:compiler:manager');
 
-localforage.config({
-  name: 'CodeSandboxApp',
-  storeName: 'sandboxes', // Should be alphanumeric, with underscores.
-  description:
-    'Cached transpilations of the sandboxes, for faster initialization time.',
-});
-
-// Prewarm store
-localforage.keys();
+type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
+type Stage = 'transpilation' | 'evaluation';
 
 export default class Manager {
   id: string;
@@ -82,9 +94,10 @@ export default class Manager {
   dependencies: Object;
   webpackHMR: boolean;
   hardReload: boolean;
-  hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
+  hmrStatus: HMRStatus = 'idle';
+  hmrStatusChangeListeners: Set<Function>;
   testRunner: TestRunner;
-  bfs: typeof BrowserFS;
+  isFirstLoad: boolean;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
@@ -92,9 +105,11 @@ export default class Manager {
 
   // All paths are resolved at least twice: during transpilation and evaluation.
   // We can improve performance by almost 2x in this scenario if we cache the lookups
-  cachedPaths: { [path: string]: string };
+  cachedPaths: { [path: string]: { [path: string]: string } };
 
   configurations: Configurations;
+
+  stage: Stage;
 
   constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
     this.id = id;
@@ -105,15 +120,18 @@ export default class Manager {
     this.webpackHMR = false;
     this.hardReload = false;
     this.hmrStatus = 'idle';
+    this.hmrStatusChangeListeners = new Set();
+    this.isFirstLoad = true;
     this.transpiledModulesByHash = {};
     this.configurations = {};
+    this.stage = 'transpilation';
 
     this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
     this.testRunner = new TestRunner(this);
 
+    window.manager = this;
     if (process.env.NODE_ENV === 'development') {
-      window.manager = this;
       console.log(this);
     }
 
@@ -126,8 +144,6 @@ export default class Manager {
       },
       () => {}
     );
-
-    this.bfs = BrowserFS;
   }
 
   bfsWrapper = {
@@ -154,8 +170,14 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string) =>
-    !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+  isFile = (p: string) => {
+    if (this.stage === 'transpilation') {
+      // In transpilation phase we can afford to download the file if not found,
+      // because we're async. That's why we also include the meta here.
+      return !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+    }
+    return !!this.transpiledModules[p];
+  };
 
   readFileSync = (p: string) => {
     if (this.transpiledModules[p]) {
@@ -167,6 +189,10 @@ export default class Manager {
     err.code = 'ENOENT';
 
     throw err;
+  };
+
+  setStage = (stage: Stage) => {
+    this.stage = stage;
   };
 
   setManifest(manifest: ?Manifest) {
@@ -183,9 +209,16 @@ export default class Manager {
         code: this.manifest.contents[path].content,
       };
 
+      if (SKIPPED_BROWSER_FIELD_DEPENDENCIES[path]) {
+        const pJsonCode = JSON.parse(this.manifest.contents[path].content);
+        // eslint-disable-next-line
+        delete pJsonCode.browser;
+        module.code = JSON.stringify(pJsonCode, null, 2);
+      }
+
       // Check if module syntax, only transpile when that's NOT the case
       // TODO move this check to the packager
-      if (!/^(import|export)\s/gm.test(module.code)) {
+      if (!isESModule(module.code)) {
         module.requires = this.manifest.contents[path].requires;
       }
 
@@ -195,13 +228,11 @@ export default class Manager {
   }
 
   evaluateModule(module: Module, force: boolean = false) {
-    if (this.hardReload) {
+    if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
       document.location.reload();
       return {};
     }
-
-    this.hmrStatus = 'apply';
 
     // Evaluate the *changed* HMR modules first
     this.getTranspiledModules()
@@ -217,7 +248,7 @@ export default class Manager {
     try {
       const exports = this.evaluateTranspiledModule(transpiledModule);
 
-      this.hmrStatus = 'idle';
+      this.setHmrStatus('idle');
 
       return exports;
     } catch (e) {
@@ -228,8 +259,11 @@ export default class Manager {
     }
   }
 
-  evaluateTranspiledModule(transpiledModule: TranspiledModule) {
-    return transpiledModule.evaluate(this);
+  evaluateTranspiledModule(
+    transpiledModule: TranspiledModule,
+    initiator?: TranspiledModule
+  ) {
+    return transpiledModule.evaluate(this, undefined, initiator);
   }
 
   addModule(module: Module) {
@@ -341,7 +375,7 @@ export default class Manager {
    * @param {*} entry
    */
   async transpileModules(entry: Module, isTestFile: boolean = false) {
-    this.hmrStatus = 'check';
+    this.setHmrStatus('check');
     this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(entry);
 
@@ -352,6 +386,14 @@ export default class Manager {
     this.getTranspiledModules().forEach(t => t.postTranspile(this));
 
     return result;
+  }
+
+  verifyTreeTranspiled() {
+    return Promise.all(
+      this.getTranspiledModules()
+        .filter(tModule => tModule.shouldTranspile())
+        .map(tModule => tModule.transpile(this))
+    );
   }
 
   clearCompiledCache() {
@@ -417,78 +459,101 @@ export default class Manager {
     this.webpackHMR = true;
   }
 
+  getPresetAliasedPath(path: string) {
+    return this.preset
+      .getAliasedPath(path)
+      .replace(/.*\{\{sandboxRoot\}\}/, '');
+  }
+
   resolveModule(
     path: string,
     currentPath: string,
     defaultExtensions: Array<string> = ['js', 'jsx', 'json']
   ): Module {
-    const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
-    const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+    const dirredPath = pathUtils.dirname(currentPath);
+    if (this.cachedPaths[dirredPath] === undefined) {
+      this.cachedPaths[dirredPath] = {};
+    }
 
-    const pathId = path + currentPath;
-    const cachedPath = this.cachedPaths[pathId];
-    try {
-      let resolvedPath;
+    const cachedPath = this.cachedPaths[dirredPath][path];
 
-      if (cachedPath) {
-        resolvedPath = cachedPath;
-      } else {
+    let resolvedPath;
+
+    if (cachedPath) {
+      resolvedPath = cachedPath;
+    } else {
+      const presetAliasedPath = this.getPresetAliasedPath(path);
+
+      const aliasedPath = this.getAliasedDependencyPath(
+        presetAliasedPath,
+        currentPath
+      );
+      const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+
+      if (NODE_LIBS.includes(shimmedPath)) {
+        this.cachedPaths[dirredPath][path] = shimmedPath;
+        return SHIMMED_MODULE;
+      }
+
+      try {
         resolvedPath = resolve.sync(shimmedPath, {
           filename: currentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
-          packageFilter: p => {
-            if (!p.main && p.module) {
-              // eslint-disable-next-line
-              p.main = p.module;
-            }
-
-            return p;
-          },
+          packageFilter,
           moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
-            x => x
+            Boolean
           ),
         });
 
-        this.cachedPaths[pathId] = resolvedPath;
-      }
+        this.cachedPaths[dirredPath][path] = resolvedPath;
 
-      if (NODE_LIBS.includes(shimmedPath) || resolvedPath === '//empty.js') {
-        return {
-          path: pathUtils.join('/node_modules', 'empty', 'index.js'),
-          code: `// empty`,
-          requires: [],
-        };
-      }
+        if (resolvedPath === '//empty.js') {
+          return SHIMMED_MODULE;
+        }
 
-      return this.transpiledModules[resolvedPath].module;
-    } catch (e) {
-      delete this.cachedPaths[pathId];
+        if (!this.transpiledModules[resolvedPath]) {
+          throw new Error(`Could not find '${resolvedPath}' in local files.`);
+        }
+      } catch (e) {
+        if (
+          this.cachedPaths[dirredPath] &&
+          this.cachedPaths[dirredPath][path]
+        ) {
+          delete this.cachedPaths[dirredPath][path];
+        }
 
-      let connectedPath = /^(\w|@\w)/.test(shimmedPath)
-        ? pathUtils.join('/node_modules', shimmedPath)
-        : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+        let connectedPath = /^(\w|@\w)/.test(shimmedPath)
+          ? pathUtils.join('/node_modules', shimmedPath)
+          : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
 
-      const isDependency = connectedPath.includes('/node_modules/');
+        const isDependency = connectedPath.includes('/node_modules/');
 
-      connectedPath = connectedPath.replace('/node_modules/', '');
+        connectedPath = connectedPath.replace('/node_modules/', '');
 
-      if (!isDependency) {
-        throw new ModuleNotFoundError(shimmedPath, false);
-      }
+        if (!isDependency) {
+          throw new ModuleNotFoundError(shimmedPath, false, currentPath);
+        }
 
-      const dependencyName = getDependencyName(connectedPath);
+        const dependencyName = getDependencyName(connectedPath);
 
-      if (
-        this.manifest.dependencies.find(d => d.name === dependencyName) ||
-        this.manifest.dependencyDependencies[dependencyName]
-      ) {
-        throw new ModuleNotFoundError(connectedPath, true);
-      } else {
-        throw new DependencyNotFoundError(connectedPath);
+        if (
+          this.manifest.dependencies.find(d => d.name === dependencyName) ||
+          this.manifest.dependencyDependencies[dependencyName]
+        ) {
+          throw new ModuleNotFoundError(connectedPath, true, currentPath);
+        } else {
+          throw new DependencyNotFoundError(connectedPath, currentPath);
+        }
       }
     }
+
+    if (resolvedPath === '//empty.js') {
+      return SHIMMED_MODULE;
+    }
+
+    return this.transpiledModules[resolvedPath].module;
   }
 
   downloadDependency(
@@ -528,6 +593,21 @@ export default class Manager {
     }
   };
 
+  setHmrStatus = (status: HMRStatus) => {
+    this.hmrStatusChangeListeners.forEach(v => {
+      v(status);
+    });
+    this.hmrStatus = status;
+  };
+
+  addStatusHandler = (cb: Function) => {
+    this.hmrStatusChangeListeners.add(cb);
+  };
+
+  removeStatusHandler = (cb: Function) => {
+    this.hmrStatusChangeListeners.delete(cb);
+  };
+
   /**
    * Resolve the transpiled module from the path, note that the path can actually
    * include loaders. That's why we're focussing on first extracting this query
@@ -547,12 +627,8 @@ export default class Manager {
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
-    const newPath = this.preset
-      .getAliasedPath(modulePath)
-      .replace(/.*\{\{sandboxRoot\}\}/, '');
-
     const module = this.resolveModule(
-      newPath,
+      modulePath,
       currentPath,
       ignoredExtensions || this.preset.ignoredExtensions
     );
@@ -602,6 +678,7 @@ export default class Manager {
   updateData(modules: { [path: string]: Module }) {
     this.transpileJobs = {};
     this.hardReload = false;
+    this.isFirstLoad = false;
 
     this.modules = modules;
 
@@ -626,6 +703,7 @@ export default class Manager {
     this.getModules().forEach(m => {
       if (
         !m.path.startsWith('/node_modules') &&
+        m.path !== '/var/task/node_modules/browser-resolve/empty.js' &&
         !modules[m.path] &&
         !m.parent // not an emitted module
       ) {
@@ -664,22 +742,30 @@ export default class Manager {
       ])
     );
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
-      m => !TestRunner.isTest(m.module.path)
+      m => !m.isTestFile
     );
+
     // Reset test files, but don't transpile. We want to do that in the test runner
     // so we can catch any errors
-    allModulesToUpdate
-      .filter(m => TestRunner.isTest(m.module.path))
-      .forEach(m => m.resetTranspilation());
+    allModulesToUpdate.filter(m => m.isTestFile).forEach(m => {
+      m.resetTranspilation();
+    });
 
     debug(
       `Generated update diff, updating ${
         transpiledModulesToUpdate.length
-      } modules.`
+      } modules.`,
+      transpiledModulesToUpdate
     );
 
     return Promise.all(
-      transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
+      transpiledModulesToUpdate.map(tModule => {
+        if (tModule.shouldTranspile()) {
+          return tModule.transpile(this);
+        }
+
+        return Promise.resolve(tModule);
+      })
     );
   }
 
@@ -688,8 +774,46 @@ export default class Manager {
    * continuing
    */
   markHardReload() {
-    this.hmrStatus = 'fail';
+    this.setHmrStatus('fail');
     this.hardReload = true;
+  }
+
+  serialize() {
+    const serializedTModules = {};
+
+    Object.keys(this.transpiledModules).forEach(path => {
+      Object.keys(this.transpiledModules[path].tModules).forEach(query => {
+        const tModule = this.transpiledModules[path].tModules[query];
+
+        if (
+          !this.manifest.contents[tModule.module.path] ||
+          (tModule.module.path.endsWith('.js') &&
+            tModule.module.requires == null)
+        ) {
+          // Only save modules that are not precomputed
+          serializedTModules[tModule.getId()] = tModule.serialize();
+        }
+      });
+    });
+
+    const dependenciesQuery = this.getDependencyQuery();
+
+    const meta = {};
+    Object.keys(getCombinedMetas() || {}).forEach(p => {
+      const dir = pathUtils.dirname(p.replace('/node_modules', ''));
+      meta[dir] = meta[dir] || [];
+      meta[dir].push(pathUtils.basename(p));
+    });
+
+    return {
+      transpiledModules: serializedTModules,
+      cachedPaths: this.cachedPaths,
+      version: SCRIPT_VERSION,
+      timestamp: new Date().getTime(),
+      configurations: this.configurations,
+      meta,
+      dependenciesQuery,
+    };
   }
 
   getDependencyQuery() {
@@ -706,41 +830,8 @@ export default class Manager {
     return dependenciesToQuery(normalizedDependencies);
   }
 
-  /**
-   * Generate a JSON structure out of this manager that can be used to load
-   * the manager later on. This is useful for faster initial loading.
-   */
-  async save() {
+  async load(data: Object) {
     try {
-      const serializedTModules = {};
-
-      Object.keys(this.transpiledModules).forEach(path => {
-        Object.keys(this.transpiledModules[path].tModules).forEach(query => {
-          const tModule = this.transpiledModules[path].tModules[query];
-          serializedTModules[tModule.getId()] = tModule.serialize();
-        });
-      });
-
-      const dependenciesQuery = this.getDependencyQuery();
-
-      await localforage.setItem(this.id, {
-        transpiledModules: serializedTModules,
-        cachedPaths: this.cachedPaths,
-        version: VERSION,
-        configurations: this.configurations,
-        dependenciesQuery,
-      });
-    } catch (e) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(e);
-      }
-      this.clearCache();
-    }
-  }
-
-  async load() {
-    try {
-      const data = await localforage.getItem(this.id);
       if (data) {
         this.clearCache();
         const {
@@ -749,20 +840,31 @@ export default class Manager {
           version,
           configurations,
           dependenciesQuery,
+          meta,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
-          cachedPaths: { [path: string]: string },
+          cachedPaths: { [path: string]: { [path: string]: string } },
           version: string,
+          timestamp: number,
           configurations: Object,
           dependenciesQuery: string,
+          meta: any,
         } = data;
 
         // Only use the cache if the cached version was cached with the same
         // version of the compiler and dependencies haven't changed
         if (
-          version === VERSION &&
+          version === SCRIPT_VERSION &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
+          const combinedMetas = {};
+          Object.keys(meta).forEach(dir => {
+            meta[dir].forEach(file => {
+              combinedMetas[`/node_modules` + dir + '/' + file] = true;
+            });
+          });
+          setCombinedMetas(combinedMetas);
+
           this.cachedPaths = cachedPaths;
           this.configurations = configurations;
 
@@ -781,17 +883,31 @@ export default class Manager {
           Object.keys(tModules).forEach(id => {
             const tModule = tModules[id];
 
-            tModule.load(serializedTModules[id], tModules);
+            tModule.load(serializedTModules[id], tModules, this);
           });
           debug(`Loaded cache.`);
         }
       }
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
-        console.error(e);
+        console.warn('Problems parsing cache');
+        console.warn(e);
       }
     }
     this.clearCache();
+  }
+
+  dispose() {
+    if (this.preset) {
+      this.preset.transpilers.forEach(t => {
+        t.dispose();
+      });
+    }
+  }
+
+  deleteAPICache() {
+    ignoreNextCache();
+    deleteAPICache(this.id);
   }
 
   clearCache() {
@@ -802,5 +918,26 @@ export default class Manager {
         console.error(ex);
       }
     }
+  }
+
+  /**
+   * Get information about all transpilers currently registered for this manager
+   */
+  async getTranspilerContext() {
+    const info = {};
+
+    const data = await Promise.all(
+      Array.from(this.preset.transpilers).map(t =>
+        t
+          .getTranspilerContext(this)
+          .then(context => ({ name: t.name, data: context }))
+      )
+    );
+
+    data.forEach(t => {
+      info[t.name] = t.data;
+    });
+
+    return info;
   }
 }

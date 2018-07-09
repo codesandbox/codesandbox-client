@@ -9,8 +9,9 @@ import {
   currentPackageJSON,
   currentPackageJSONCode,
   parsedConfigurations,
+  currentTab,
 } from './getters';
-import { isModuleSynced } from './computed';
+import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
 
 export default Module({
@@ -26,10 +27,13 @@ export default Module({
     error: null,
     isResizing: false,
     changedModuleShortids: [],
+    currentTabId: null,
     tabs: [],
     errors: [],
     glyphs: [],
     corrections: [],
+    pendingOperation: null,
+    pendingUserSelections: [],
     isInProjectView: false,
     forceRender: 0,
     initialPath: '/',
@@ -52,9 +56,11 @@ export default Module({
     currentPackageJSON,
     currentPackageJSONCode,
     parsedConfigurations,
+    currentTab,
   },
   computed: {
     isModuleSynced,
+    shouldDirectoryBeOpen,
   },
   signals: {
     addNpmDependency: sequences.addNpmDependency,
@@ -82,5 +88,7 @@ export default Module({
     quickActionsClosed: sequences.closeQuickActions,
     setPreviewBounds: sequences.setPreviewBounds,
     setPreviewContent: sequences.setPreviewContent,
+    currentTabChanged: sequences.changeCurrentTab,
+    discardModuleChanges: sequences.discardModuleChanges,
   },
 });

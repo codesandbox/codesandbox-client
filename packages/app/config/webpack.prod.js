@@ -2,6 +2,10 @@ const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
+const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
+  .normalizeName;
 const ManifestPlugin = require('webpack-manifest-plugin');
 const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
@@ -17,6 +21,8 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
+const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
+
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
   output: {
@@ -24,22 +30,57 @@ module.exports = merge(commonConfig, {
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     sourceMapFilename: '[file].map', // Default
   },
+  mode: 'production',
+
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: false,
+        uglifyOptions: {
+          compress: {
+            // inline is buggy as of uglify-es 3.3.7
+            // https://github.com/mishoo/UglifyJS2/issues/2842
+            inline: 1,
+          },
+          mangle: {
+            safari10: true,
+          },
+          output: {
+            comments: false,
+          },
+        },
+      }),
+    ],
+    concatenateModules: true, // ModuleConcatenationPlugin
+    namedModules: true, // NamedModulesPlugin()
+    noEmitOnErrors: true, // NoEmitOnErrorsPlugin
+
+    splitChunks: {
+      chunks: 'all',
+      name(module, chunks, cacheGroup) {
+        const name = normalize(module, chunks, cacheGroup);
+
+        if (name === 'vendors~app~embed~sandbox') {
+          return 'common-sandbox';
+        }
+
+        if (name === 'vendors~app~embed') {
+          return 'common';
+        }
+        // generate a chunk name using default strategy...
+        return name;
+      },
+    },
+  },
+
   plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    process.env.ANALYZE && new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
-    }),
-    new UglifyJSPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: true,
-      uglifyOptions: {
-        mangle: {
-          safari10: true,
-        },
-      },
     }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -70,6 +111,7 @@ module.exports = merge(commonConfig, {
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 5242880,
+
       runtimeCaching: [
         {
           urlPattern: /api\/v1\/sandboxes/,
@@ -135,7 +177,7 @@ module.exports = merge(commonConfig, {
       navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-      maximumFileSizeToCacheInBytes: 10485760,
+      maximumFileSizeToCacheInBytes: 5242880,
       runtimeCaching: [
         {
           urlPattern: /api\/v1\/sandboxes/,
@@ -160,10 +202,12 @@ module.exports = merge(commonConfig, {
         {
           // These should be dynamic, since it's not loaded from this domain
           // But from the root domain
-          urlPattern: /codesandbox\.io\/static\/js\/(vendor|common|sandbox)/,
-          handler: 'networkFirst',
+          urlPattern: /codesandbox\.io\/static\/js\//,
+          handler: 'fastest',
           options: {
             cache: {
+              // A day
+              maxAgeSeconds: 60 * 60 * 24,
               name: 'static-root-cache',
             },
           },
@@ -180,22 +224,11 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /webpack-dll-prod\.herokuapp\.com/,
-          handler: 'fastest',
-          options: {
-            cache: {
-              maxEntries: 100,
-              maxAgeSeconds: 60 * 60 * 24,
-              name: 'packager-cache',
-            },
-          },
-        },
-        {
           urlPattern: /https:\/\/d1jyvh0kxilfa7\.cloudfront\.net/,
           handler: 'fastest',
           options: {
             cache: {
-              maxEntries: 200,
+              maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-files-cache',
             },
           },
@@ -207,6 +240,18 @@ module.exports = merge(commonConfig, {
             cache: {
               maxEntries: 300,
               name: 'unpkg-dep-cache',
+              maxAgeSeconds: 60 * 60 * 24 * 7,
+            },
+          },
+        },
+        {
+          urlPattern: /jsdelivr\.(com|net)/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'jsdelivr-dep-cache',
+              maxAgeSeconds: 60 * 60 * 24 * 7,
             },
           },
         },
@@ -215,7 +260,9 @@ module.exports = merge(commonConfig, {
           handler: 'cacheFirst',
           options: {
             cache: {
+              maxEntries: 50,
               name: 'cloudflare-cache',
+              maxAgeSeconds: 60 * 60 * 24 * 7,
             },
           },
         },
@@ -229,6 +276,7 @@ module.exports = merge(commonConfig, {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ManifestPlugin({
       fileName: 'file-manifest.json',
+      publicPath: commonConfig.output.publicPath,
     }),
-  ],
+  ].filter(Boolean),
 });

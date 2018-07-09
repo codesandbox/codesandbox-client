@@ -1,0 +1,113 @@
+/* CODEMIRROR STYLES */
+@import 'codemirror/lib/codemirror.css';
+@import 'codemirror/theme/oceanic-next.css';
+
+/* SANDPACK STYLES */
+.sandpack-CodeMirror__container {
+  position: relative;
+  height: inherit;
+  width: inherit;
+  background: #1c2022;
+  .CodeMirror {
+    font-family: 'Menlo', 'Source Code Pro', 'monospace';
+    line-height: 1.6;
+    background: #1c2022;
+    color: #e0e0e0;
+    height: 100%;
+    font-weight: 500;
+  }
+  div.CodeMirror-selected {
+    background: #374140;
+  }
+  .CodeMirror-line::selection,
+  .CodeMirror-line > span::selection,
+  .CodeMirror-line > span > span::selection {
+    background: #65737e;
+  }
+  .CodeMirror-line::-moz-selection,
+  .CodeMirror-line > span::-moz-selection,
+  .CodeMirror-line > span > span::-moz-selection {
+    background: #65737e;
+  }
+  .CodeMirror-gutters {
+    background: #1c2022;
+    border-right: 0px;
+  }
+  .CodeMirror-guttermarker {
+    color: #ac4142;
+  }
+  .CodeMirror-guttermarker-subtle {
+    color: #505050;
+  }
+  .CodeMirror-linenumber {
+    color: #505050;
+  }
+  .CodeMirror-cursor {
+    border-left: 1px solid #b0b0b0;
+  }
+
+  span.cm-comment {
+    color: #626466;
+  }
+  span.cm-atom {
+    color: #aa759f;
+  }
+  span.cm-number {
+    color: #aa759f;
+  }
+
+  span.cm-property,
+  span.cm-attribute {
+    color: #aa759f;
+  }
+  span.cm-keyword {
+    color: #6caedd;
+  }
+  span.cm-string {
+    color: #99c794;
+  }
+
+  span.cm-variable {
+    color: #ffd399;
+  }
+  span.cm-variable-2 {
+    color: #6caedd;
+  }
+  span.cm-def {
+    color: #fac863;
+  }
+  span.cm-bracket {
+    color: #e0e0e0;
+  }
+  span.cm-tag {
+    color: #ec5f67;
+  }
+  span.cm-link {
+    color: #aa759f;
+  }
+  span.cm-error {
+    background: #ac4142;
+    color: #b0b0b0;
+  }
+
+  .CodeMirror-activeline-background {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .CodeMirror-matchingbracket {
+    text-decoration: underline;
+    color: white !important;
+  }
+  span.CodeMirror-matchingtag {
+    background-color: inherit;
+  }
+  span.cm-tag.CodeMirror-matchingtag {
+    text-decoration: underline;
+  }
+  span.cm-tag.cm-bracket.CodeMirror-matchingtag {
+    text-decoration: none;
+  }
+
+  div.cm-line-highlight.CodeMirror-linebackground {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}

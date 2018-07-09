@@ -4,13 +4,18 @@ import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
 import BasePreview from 'app/components/Preview';
+import RunOnClick from 'common/components/RunOnClick';
+
 import FlyingContainer from './FlyingContainer';
+import Tests from './DevTools/Tests';
+import Console from './DevTools/Console';
 
 type Props = {
   width: ?number,
   height: ?number,
   store: any,
   signals: any,
+  runOnClick?: boolean,
 };
 
 type State = {
@@ -20,10 +25,10 @@ type State = {
 class Preview extends React.Component<Props, State> {
   state = {
     aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
+    running: !this.props.runOnClick,
   };
 
   onPreviewInitialized = preview => {
-    let preventCodeExecution = false;
     const disposeHandleProjectViewChange = reaction(
       () => this.props.store.editor.isInProjectView,
       this.handleProjectView.bind(this, preview)
@@ -41,20 +46,17 @@ class Preview extends React.Component<Props, State> {
       this.handleModuleSyncedChange.bind(this, preview)
     );
     const disposeHandleCodeChange = reaction(
-      () => this.props.store.editor.currentModule.code,
+      () =>
+        String(this.props.store.editor.currentSandbox.modules.map(m => m.code)),
       () => {
-        if (preventCodeExecution) {
-          preventCodeExecution = false;
-          return;
-        }
         this.handleCodeChange(preview);
       }
     );
     const disposeHandleModuleChange = reaction(
       () => this.props.store.editor.currentModule,
       () => {
-        if (this.props.store.editor.isInProjectView) {
-          preventCodeExecution = true;
+        if (!this.props.store.editor.isInProjectView) {
+          this.handleCodeChange(preview);
         }
       }
     );
@@ -179,7 +181,8 @@ class Preview extends React.Component<Props, State> {
   };
 
   handleModuleSyncedChange = (preview, change) => {
-    if (change) {
+    const settings = this.props.store.preferences.settings;
+    if (!settings.livePreviewEnabled && change) {
       preview.executeCodeImmediately();
     }
   };
@@ -214,50 +217,86 @@ class Preview extends React.Component<Props, State> {
 
   render() {
     const { store, signals } = this.props;
+    const content = store.editor.previewWindow.content;
 
     const packageJSON = {
       path: '/package.json',
       code: store.editor.currentPackageJSONCode,
     };
 
-    if (!store.editor.previewWindow.content) {
-      return null;
-    }
+    const hide = content !== 'browser';
+    const completelyHidden = !content;
 
     return (
-      <FlyingContainer onPositionChange={this.resetAlignment}>
-        {({ resize }) => (
-          <BasePreview
-            onInitialized={this.onPreviewInitialized}
-            sandbox={store.editor.currentSandbox}
-            extraModules={{ '/package.json': packageJSON }}
-            currentModule={store.editor.currentModule}
-            settings={store.preferences.settings}
-            initialPath={store.editor.initialPath}
-            isInProjectView={store.editor.isInProjectView}
-            onClearErrors={() => signals.editor.errorsCleared()}
-            onAction={action =>
-              signals.editor.previewActionReceived({ action })
+      <FlyingContainer
+        hide={completelyHidden}
+        onPositionChange={this.resetAlignment}
+      >
+        {({ resize }) => {
+          const alignRight = e => {
+            if (e) {
+              e.preventDefault();
+              e.stopPropagation();
             }
-            onOpenNewWindow={() =>
-              this.props.signals.preferences.viewModeChanged({
-                showEditor: true,
-                showPreview: false,
-              })
+            resize(this.getRightCoordinates());
+            this.setState({ aligned: 'right' });
+          };
+          const alignBottom = e => {
+            if (e) {
+              e.preventDefault();
+              e.stopPropagation();
             }
-            onToggleProjectView={() => signals.editor.projectViewToggled()}
-            showDevtools={store.preferences.showDevtools}
-            isResizing={store.editor.isResizing}
-            alignRight={() => {
-              resize(this.getRightCoordinates());
-              this.setState({ aligned: 'right' });
-            }}
-            alignBottom={() => {
-              resize(this.getBottomCoordinates());
-              this.setState({ aligned: 'bottom' });
-            }}
-          />
-        )}
+            resize(this.getBottomCoordinates());
+            this.setState({ aligned: 'bottom' });
+          };
+
+          return (
+            <React.Fragment>
+              {content === 'tests' && (
+                <Tests alignRight={alignRight} alignBottom={alignBottom} />
+              )}
+              {content === 'console' && (
+                <Console alignRight={alignRight} alignBottom={alignBottom} />
+              )}
+              {this.state.running ? (
+                <BasePreview
+                  onInitialized={this.onPreviewInitialized}
+                  sandbox={store.editor.currentSandbox}
+                  extraModules={{ '/package.json': packageJSON }}
+                  currentModule={store.editor.currentModule}
+                  settings={store.preferences.settings}
+                  initialPath={store.editor.initialPath}
+                  isInProjectView={store.editor.isInProjectView}
+                  onClearErrors={() => signals.editor.errorsCleared()}
+                  onAction={action =>
+                    signals.editor.previewActionReceived({ action })
+                  }
+                  hide={hide}
+                  noPreview={completelyHidden}
+                  onOpenNewWindow={() =>
+                    this.props.signals.preferences.viewModeChanged({
+                      showEditor: true,
+                      showPreview: false,
+                    })
+                  }
+                  onToggleProjectView={() =>
+                    signals.editor.projectViewToggled()
+                  }
+                  showDevtools={store.preferences.showDevtools}
+                  isResizing={store.editor.isResizing}
+                  alignRight={alignRight}
+                  alignBottom={alignBottom}
+                />
+              ) : (
+                <RunOnClick
+                  onClick={() => {
+                    this.setState({ running: true });
+                  }}
+                />
+              )}
+            </React.Fragment>
+          );
+        }}
       </FlyingContainer>
     );
   }

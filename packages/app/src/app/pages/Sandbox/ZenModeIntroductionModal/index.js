@@ -21,7 +21,7 @@ function ZenModeIntroduction({ signals }) {
         <Button
           style={{ marginRight: '.5rem' }}
           onClick={() => {
-            signals.closeModal();
+            signals.modalClosed();
           }}
         >
           Close

@@ -1,17 +1,25 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
+import _debug from 'app/utils/debug';
+
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import { Encode } from 'console-feed/lib/Transform';
 
 import setupHistoryListeners from './url-listeners';
-import compile from './compile';
+import compile, { getCurrentManager } from './compile';
 import setupConsole from './console';
-import transformJSON from './console/transform-json';
 
 const host = process.env.CODESANDBOX_HOST;
+const debug = _debug('cs:sandbox');
+
+export const SCRIPT_VERSION =
+  document.currentScript && document.currentScript.src;
+
+debug('Booting sandbox');
 
 function getId() {
   if (process.env.LOCAL_SERVER) {
@@ -31,7 +39,7 @@ function getId() {
 }
 
 requirePolyfills().then(() => {
-  registerServiceWorker('/sandbox-service-worker.js');
+  registerServiceWorker('/sandbox-service-worker.js', {});
 
   function sendReady() {
     dispatch({ type: 'initialized' });
@@ -50,10 +58,26 @@ requirePolyfills().then(() => {
         history.back();
       } else if (data.type === 'urlforward') {
         history.forward();
+      } else if (data.type === 'refresh') {
+        document.location.reload();
       } else if (data.type === 'evaluate') {
         let result = null;
         let error = false;
         try {
+          // Attempt to wrap command in parentheses, fixing issues
+          // where directly returning objects results in unexpected
+          // behaviour.
+          if (data.command && data.command.charAt(0) === '{') {
+            try {
+              const wrapped = `(${data.command})`;
+              // `new Function` is used to validate Javascript syntax
+              const validate = new Function(wrapped);
+              data.command = wrapped;
+            } catch (e) {
+              // We shouldn't wrap the expression
+            }
+          }
+
           result = (0, eval)(data.command); // eslint-disable-line no-eval
         } catch (e) {
           result = e;
@@ -64,26 +88,46 @@ requirePolyfills().then(() => {
           dispatch({
             type: 'eval-result',
             error,
-            result: transformJSON(result),
+            result: Encode(result),
           });
         } catch (e) {
           console.error(e);
+        }
+      } else if (data.type === 'get-transpiler-context') {
+        const manager = getCurrentManager();
+
+        if (manager) {
+          const context = await manager.getTranspilerContext();
+          dispatch({
+            type: 'transpiler-context',
+            data: context,
+          });
+        } else {
+          dispatch({
+            type: 'transpiler-context',
+            data: {},
+          });
         }
       }
     }
   }
 
-  listen(handleMessage);
+  if (!isStandalone) {
+    listen(handleMessage);
 
-  sendReady();
-  setupHistoryListeners();
-  setupConsole();
+    sendReady();
+
+    setupHistoryListeners();
+    setupConsole();
+  }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
     const id = getId();
     window
-      .fetch(host + `/api/v1/sandboxes/${id}`)
+      .fetch(host + `/api/v1/sandboxes/${id}`, {
+        credentials: 'include',
+      })
       .then(res => res.json())
       .then(res => {
         const camelized = camelizeKeys(res);
