@@ -22,6 +22,17 @@ import logError from './utils/error';
 
 const debug = _debug('cs:app');
 
+window.addEventListener('error', e => {
+  console.log(e);
+});
+window.addEventListener('unhandledrejection', e => {
+  if (e && e.reason && e.reason.name === 'Canceled') {
+    // This is an error from vscode that vscode uses to cancel some actions
+    // We don't want to show this to the user
+    e.preventDefault();
+  }
+});
+
 if (process.env.NODE_ENV === 'production') {
   try {
     Raven.config('https://3943f94c73b44cf5bb2302a72d52e7b8@sentry.io/155188', {
