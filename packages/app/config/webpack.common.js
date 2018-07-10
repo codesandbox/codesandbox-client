@@ -408,11 +408,13 @@ module.exports = {
     // Make the monaco editor work
     new CopyWebpackPlugin(
       [
+        // Our own custom version of monaco
         {
           from: __DEV__
-            ? '../../node_modules/monaco-editor/dev/vs'
-            : '../../node_modules/monaco-editor/min/vs',
+            ? '../../standalone-packages/monaco-editor/release/dev/vs'
+            : '../../standalone-packages/monaco-editor/release/min/vs',
           to: 'public/vs',
+          force: true,
         },
         __PROD__ && {
           from: '../../node_modules/monaco-editor/min-maps',

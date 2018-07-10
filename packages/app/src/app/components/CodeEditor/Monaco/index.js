@@ -1004,8 +1004,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
                   ),
                   kind: this.monaco.languages.CompletionItemKind.File,
                 };
-
-                return null;
               })
               .filter(Boolean);
           } else {
@@ -1461,42 +1459,32 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  openReference = (data: {
-    resource: { path: string },
-    options: {
-      selection: {
-        startLineNumber: number,
-        endLineNumber: number,
-        startColumn: number,
-        endColumn: number,
-      },
-    },
-  }) => {
+  openReference = model => {
     const foundModuleId = Object.keys(modelCache).find(
-      mId => modelCache[mId].model.uri.path === data.resource.path
+      mId => modelCache[mId].model === model
     );
 
     if (foundModuleId) {
       this.setCurrentModule(foundModuleId);
     }
 
-    const selection = data.options.selection;
-    if (selection) {
-      if (
-        typeof selection.endLineNumber === 'number' &&
-        typeof selection.endColumn === 'number'
-      ) {
-        this.editor.setSelection(selection);
-        this.editor.revealRangeInCenter(selection);
-      } else {
-        const pos = {
-          lineNumber: selection.startLineNumber,
-          column: selection.startColumn,
-        };
-        this.editor.setPosition(pos);
-        this.editor.revealPositionInCenter(pos);
-      }
-    }
+    // const selection = data.options.selection;
+    // if (selection) {
+    //   if (
+    //     typeof selection.endLineNumber === 'number' &&
+    //     typeof selection.endColumn === 'number'
+    //   ) {
+    //     this.editor.setSelection(selection);
+    //     this.editor.revealRangeInCenter(selection);
+    //   } else {
+    //     const pos = {
+    //       lineNumber: selection.startLineNumber,
+    //       column: selection.startColumn,
+    //     };
+    //     this.editor.setPosition(pos);
+    //     this.editor.revealPositionInCenter(pos);
+    //   }
+    // }
 
     return Promise.resolve({
       getControl: () => this.editor,
