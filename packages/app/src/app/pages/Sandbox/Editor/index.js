@@ -6,10 +6,12 @@ import { ThemeProvider } from 'styled-components';
 import Fullscreen from 'common/components/flex/Fullscreen';
 import getTemplateDefinition from 'common/templates';
 
+import { Container } from './elements';
 import Workspace from './Workspace';
 import Content from './Content';
 import Header from './Header';
 import Navigation from './Navigation';
+import getVSCodeTheme from './utils/get-vscode-theme';
 
 function ContentSplit({ signals, store, match }) {
   const sandbox = store.editor.currentSandbox;
@@ -24,19 +26,10 @@ function ContentSplit({ signals, store, match }) {
     <ThemeProvider
       theme={{
         templateColor: sandbox && getTemplateDefinition(sandbox.template).color,
+        ...getVSCodeTheme().themeProvider,
       }}
     >
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          position: 'fixed',
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-        }}
-      >
+      <Container>
         {!store.preferences.settings.zenMode && <Header />}
 
         <Fullscreen>
@@ -79,7 +72,7 @@ function ContentSplit({ signals, store, match }) {
             </SplitPane>
           </div>
         </Fullscreen>
-      </div>
+      </Container>
     </ThemeProvider>
   );
 }

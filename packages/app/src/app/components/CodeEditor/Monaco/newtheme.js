@@ -7,21 +7,14 @@ export async function liftOff(monaco) {
 
   const registry = new Registry({
     getGrammarDefinition: async scopeName => {
-      if (scopeName === 'typescript' || scopeName === 'javascript') {
-        return {
-          format: 'plist',
-          content: await (await fetch(
-            `https://raw.githubusercontent.com/Microsoft/TypeScript-TmLanguage/master/TypeScriptReact.tmLanguage`
-          )).text(),
-        };
-      } else if (scopeName === 'css') {
+      if (scopeName === 'source.css') {
         return {
           format: 'json',
           content: await (await fetch(
             `https://raw.githubusercontent.com/Microsoft/vscode/master/extensions/css/syntaxes/css.tmLanguage.json`
           )).text(),
         };
-      } else if (scopeName === 'html') {
+      } else if (scopeName === 'text.html.basic') {
         return {
           format: 'json',
           content: await (await fetch(
@@ -29,6 +22,13 @@ export async function liftOff(monaco) {
           )).text(),
         };
       }
+
+      return {
+        format: 'plist',
+        content: await (await fetch(
+          `https://raw.githubusercontent.com/Microsoft/TypeScript-TmLanguage/master/TypeScriptReact.tmLanguage`
+        )).text(),
+      };
     },
   });
 
@@ -39,8 +39,6 @@ export async function liftOff(monaco) {
   grammars.set('vue', 'text.html.basic');
   grammars.set('typescript', 'source.tsx');
   grammars.set('javascript', 'source.tsx');
-
-  await registry.loadGrammar('source.tsx');
 
   await wireTmGrammars(monaco, registry, grammars);
 }

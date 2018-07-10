@@ -56,7 +56,8 @@ export const OptionName = styled.span`
 export const Option = styled.div`
   transition: 0.3s ease color;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 
   margin-bottom: 0.25rem;
 

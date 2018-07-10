@@ -1,5 +1,6 @@
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
+import { withTheme } from 'styled-components';
 import { debounce } from 'lodash-es';
 import update from 'immutability-helper';
 
@@ -201,8 +202,11 @@ class Console extends React.Component {
         >
           <ConsoleFeed
             logs={this.state.messages}
-            variant="dark"
-            styles={inspectorTheme}
+            variant={
+              console.log(this.props.theme.light) ||
+              (this.props.theme.light ? 'light' : 'dark')
+            }
+            styles={inspectorTheme(this.props.theme)}
           />
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />
@@ -213,7 +217,7 @@ class Console extends React.Component {
 
 export default {
   title: 'Console',
-  Content: Console,
+  Content: withTheme(Console),
   actions: [
     {
       title: 'Clear Console',

@@ -6,7 +6,8 @@ export const Container = styled.div`
   transition: 0.3s ease all;
   background-color: ${props => props.theme.background};
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   border-radius: 4px;
   padding: 2rem;
   width: 100%;

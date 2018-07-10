@@ -20,7 +20,9 @@ export const getContainerStyles = props => {
         : 'calc(1rem - 2px)'
     };
     padding-right: 3rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: ${theme['list.inactiveSelectionForeground'] ||
+      (theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)')};
+
     text-decoration: none;
     font-weight: 400;
     min-width: 100px;
@@ -33,8 +35,10 @@ export const getContainerStyles = props => {
         props.active || props.editing
           ? ''
           : `
-        background-color: ${color.clearer(0.9)()};
-        color: ${theme.background.lighten(5)()};
+        background-color: ${theme['list.hoverBackground'] ||
+          color.clearer(0.9)()};
+        color: ${theme['list.hoverForeground'] ||
+          (theme.light ? '#6c6c6c' : theme.background.lighten(5)())};
         border-color: ${color.darken(0.4)()};
       `
       }
@@ -54,16 +58,19 @@ export const getContainerStyles = props => {
     if (props.nameValidationError) {
       styles += `
         border-color: ${theme.red()} !important;
-        background-color: ${theme.redBackground.clearer(0.4)()} !important;
+        background-color: ${theme['list.invalidItemForeground'] ||
+          theme.redBackground.clearer(0.4)()} !important;
       `;
     }
   }
 
   if (props.active) {
     styles += `
-      color: ${theme.white()} !important;
+      color: ${theme['list.activeSelectionForeground'] ||
+        theme.white()} !important;
       border-color: ${color()} !important;
-      background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
+      background-color: ${theme['list.activeSelectionBackground'] ||
+        color.lighten(0.1).clearer(0.8)()} !important;
     `;
   }
 
@@ -85,7 +92,9 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: ${props => props.theme.background};
+  background-color: ${props =>
+    props.theme['sideBar.background'] || props.theme.background};
+  color: ${props => props.theme['sideBar.foreground'] || 'inherit'};
   height: 100%;
   width: 100%;
   overflow-y: overlay;
@@ -98,7 +107,8 @@ export const Container = styled.div`
 
 export const ContactContainer = styled.div`
   padding: 1rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${props =>
+    props.theme.white ? '#636363' : 'rgba(255, 255, 255, 0.6)'};
   font-size: 1.25rem;
 `;
 
@@ -106,7 +116,10 @@ export const WorkspaceSubtitle = styled.h4`
   font-size: 0.875rem;
   margin: 0.5rem 0;
   font-weight: 400;
-  color: ${props => props.theme.background3.lighten(0.5)};
+  color: ${props =>
+    props.theme.light
+      ? props.theme.background3.darken(0.5)
+      : props.theme.background3.lighten(0.5)};
   padding: 0 1rem;
 `;
 
@@ -114,10 +127,12 @@ export const Icon = styled.div`
   position: relative;
   display: inline-block;
   transition: 0.3s ease color;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${props =>
+    props.theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)'};
   padding-left: 0.5rem;
   &:hover {
-    color: white;
+    color: ${props =>
+      props.theme.light ? 'black' : 'rgba(255, 255, 255, 0.5)'};
   }
 `;
 
@@ -149,9 +164,11 @@ export const WorkspaceInputContainer = styled.div`
     background-color: ${props =>
       props.errorMessage
         ? props.theme.redBackground.clearer(0.5)
-        : 'rgba(0, 0, 0, 0.2)'};
+        : props.theme['input.background'] || 'rgba(0, 0, 0, 0.2)'};
     color: ${props =>
-      props.errorMessage ? props.theme.red : props.theme.white};
+      props.errorMessage
+        ? props.theme.red
+        : props.theme['input.foreground'] || props.theme.white};
     border: 1px solid transparent;
     &:focus {
       border-color: ${props => props.theme.secondary.clearer(0.5)};
@@ -176,5 +193,18 @@ export const Description = styled.div`
   margin: 0.5rem 1rem;
   line-height: 1.4;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
+`;
+
+export const VersionContainer = styled.div`
+  display: inline-flex;
+  align-items: center;
+  float: right;
+  font-size: 0.6rem;
+  height: 28px;
+  vertical-align: middle;
+  font-weight: 600;
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'};
 `;

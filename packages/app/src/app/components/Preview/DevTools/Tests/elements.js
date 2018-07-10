@@ -11,8 +11,10 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
 
-  background-color: ${props => props.theme.background4};
-  color: rgba(255, 255, 255, 0.8);
+  background-color: ${props =>
+    props.theme['statusBar.background'] || props.theme.background4};
+  color: ${props =>
+    props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 0.8)'};
 `;
 
 export const Navigation = styled.div`
@@ -24,13 +26,15 @@ export const Navigation = styled.div`
 `;
 
 export const TestContainer = Navigation.extend`
-  background-color: ${props => props.theme.background2};
+  background-color: ${props =>
+    props.theme['statusBar.background'] || props.theme.background2};
   height: 100%;
 `;
 
 export const TestDetails = styled.div`
   flex: 3;
-  background-color: ${props => props.theme.background};
+  background-color: ${props =>
+    props.theme['statusBar.debuggingBackground'] || props.theme.background};
   height: 100%;
 `;
 

@@ -2,11 +2,14 @@ import styled, { css } from 'styled-components';
 
 export const styles = css`
   transition: 0.3s ease border-color;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: ${props =>
+    props.theme['input.background'] || 'rgba(0, 0, 0, 0.3)'};
+  color: ${props =>
+    props.theme['input.foreground'] ||
+    (props.theme.light ? '#636363' : 'white')};
   border: none;
   outline: none;
   border-radius: 4px;
-  color: white;
   padding: 0.25em;
   width: ${({ block }) => (block ? '100%' : 'inherit')};
   box-sizing: border-box;

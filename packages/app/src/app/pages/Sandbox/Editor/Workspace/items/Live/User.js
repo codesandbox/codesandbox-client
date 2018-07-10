@@ -14,7 +14,8 @@ const UserContainer = styled.div`
   display: flex;
   align-items: center;
   margin: 0.5rem 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   ${props =>
     props.isCurrentUser &&
     `

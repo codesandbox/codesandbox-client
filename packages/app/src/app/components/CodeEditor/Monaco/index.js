@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
+import { withTheme } from 'styled-components';
 import { getModulePath } from 'common/sandbox/modules';
 import { css } from 'glamor';
 import { listen } from 'codesandbox-api';
@@ -1083,7 +1084,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     nextId: string,
     nextTitle: string,
   }) => {
-    const pos = this.editor.getPosition();
     if (modelCache[currentId]) {
       const sandbox = this.sandbox;
       const currentModule = this.currentModule;
@@ -1093,7 +1093,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         currentId
       );
 
-      modelCache[currentId].cursorPos = pos;
+      modelCache[currentId].viewState = this.editor.saveViewState();
       if (modelCache[currentId].lib) {
         // We let Monaco know what the latest code is of this file by removing
         // the old extraLib definition and defining a new one.
@@ -1278,7 +1278,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   resizeEditor = () => {
     this.forceUpdate(() => {
-      this.editor.layout();
+      if (this.editor) {
+        this.editor.layout();
+      }
     });
   };
 
@@ -1344,7 +1346,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       modelCache[module.id] = modelCache[module.id] || {
         model: null,
         decorations: [],
-        cursorPos: null,
+        viewState: null,
       };
       modelCache[module.id].model = model;
       modelCache[module.id].lib = lib;
@@ -1374,9 +1376,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.editor.setModel(modelInfo.model);
 
     requestAnimationFrame(() => {
-      if (modelInfo.cursorPos) {
-        this.editor.setPosition(modelInfo.cursorPos);
-        this.editor.revealPosition(modelInfo.cursorPos);
+      if (modelInfo.viewState) {
+        this.editor.restoreViewState(modelInfo.viewState);
       }
 
       this.syntaxHighlight(
@@ -1441,7 +1442,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       }
     }
 
-    return Promise.resolve(this.editor);
+    return Promise.resolve({
+      getControl: () => this.editor,
+    });
   };
 
   getCode = () => this.editor.getValue();
@@ -1489,7 +1492,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             theme="CodeSandbox"
             options={options}
             editorDidMount={this.configureEditor}
-            editorWillMount={defineTheme}
+            editorWillMount={monaco =>
+              console.log(this.props) ||
+              defineTheme(monaco, this.props.theme.vscodeTheme)
+            }
             openReference={this.openReference}
           />
         </CodeContainer>
@@ -1498,4 +1504,4 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   }
 }
 
-export default MonacoEditor;
+export default withTheme(MonacoEditor);

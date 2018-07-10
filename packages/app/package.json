@@ -159,6 +159,7 @@
     "moment": "^2.18.1",
     "monaco-editor": "^0.13.1",
     "monaco-editor-textmate": "^2.0.0",
+    "monaco-editor-webpack-plugin": "^1.4.0",
     "monaco-textmate": "^3.0.0",
     "monaco-vue": "^0.2.1",
     "normalize.css": "^5.0.0",

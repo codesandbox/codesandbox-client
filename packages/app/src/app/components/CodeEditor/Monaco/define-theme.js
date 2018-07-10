@@ -1,14 +1,22 @@
 let isThemeDefined = false;
 
-const cleanHex = hex => hex.slice(1).slice(0, 6);
+const cleanHex = hex => {
+  if (hex === 'white') {
+    return 'ffffff';
+  }
 
-const getTheme = (url: String) => {
-  const theme = {};
+  hex.slice(1).slice(0, 6);
+};
 
+const getTheme = theme => {
   const { tokenColors = [], colors = {} } = theme;
   const rules = tokenColors
     .filter(t => t.settings && t.scope && t.settings.foreground)
     .reduce((acc, token) => {
+      if (token.settings && token.settings.foreground === 'inherit') {
+        return acc;
+      }
+
       const settings = {
         foreground: cleanHex(token.settings.foreground),
         background: token.settings.background
@@ -50,13 +58,14 @@ const getTheme = (url: String) => {
   };
 };
 
-const defineTheme = monaco => {
-  if (!isThemeDefined) {
+const defineTheme = (monaco, theme) => {
+  if (!isThemeDefined && theme) {
+    const transformedTheme = getTheme(theme);
     monaco.editor.defineTheme('CodeSandbox', {
-      base: getTheme().type ? `vs-${getTheme().type}` : 'vs',
+      base: transformedTheme.type === 'dark' ? `vs-dark` : 'vs',
       inherit: true,
-      colors: getTheme().colors,
-      rules: getTheme().rules,
+      colors: transformedTheme.colors,
+      rules: transformedTheme.rules,
     });
     isThemeDefined = true;
   }
