@@ -44,8 +44,7 @@ export const TestName = styled.span`
 export const Blocks = styled.span`
   font-size: 1rem;
   font-weight: 300;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+  color: rgba(255, 255, 255, 0.7);
 `;
 
 export const Tests = styled.div`

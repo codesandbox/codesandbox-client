@@ -41,7 +41,7 @@ export const inspectorTheme = theme => ({
   PADDING: '0.4rem 1.5rem 0.4rem 0px',
 
   LOG_ICON: '',
-  LOG_BORDER: 'inherit',
+  LOG_BORDER: theme['panel.border'] || '#191C1D',
   LOG_ICON_HEIGHT: '26px',
   LOG_ICON_WIDTH: '1em',
 

@@ -88,7 +88,7 @@ export const IconWrapper = styled.div`
       props.active &&
       css`
         opacity: 1;
-        color: white;
+        color: ${props.theme['editor.foreground'] || 'white'};
       `};
 
     ${props =>

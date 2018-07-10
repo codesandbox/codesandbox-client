@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 
 export const PrivacySelect = styled.select`
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: ${props =>
+    props.theme['dropdown.background'] || 'rgba(0, 0, 0, 0.3)'};
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
+    props.theme['dropdown.foreground'] ||
+    (props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)')};
   border-radius: 4px;
   margin: 0.25rem;
   margin-bottom: 1rem;

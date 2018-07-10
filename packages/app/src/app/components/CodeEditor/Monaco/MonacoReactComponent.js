@@ -25,9 +25,7 @@ class MonacoEditor extends React.PureComponent {
   editorDidMount = (editor, monaco) => {
     this.props.editorDidMount(editor, monaco);
 
-    setTimeout(() => {
-      liftOff(monaco);
-    }, 2000);
+    liftOff(monaco);
   };
 
   afterViewInit = () => {

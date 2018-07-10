@@ -23,8 +23,7 @@ export const TestName = styled.div`
   transition: 0.3s ease background-color;
   padding: 0.25rem;
   padding-left: 20px;
-  background-color: ${props =>
-    props.theme['panel.background'] || props.theme.background2};
+  background-color: ${props => props.theme.background2};
   color: rgba(255, 255, 255, 0.8);
   flex: auto;
   white-space: nowrap;
@@ -36,7 +35,7 @@ export const Test = styled.div`
   padding-left: 1rem;
   cursor: pointer;
 
-  background-color: ${props => props.theme['panel.background'] || '#181b1d'};
+  background-color: #181b1d;
 
   ${props =>
     props.status === 'idle' &&
@@ -71,7 +70,7 @@ export const Block = styled.div`
     -ms-transform: rotate(45deg);
     border-right: 2px solid rgba(0, 0, 0, 0.2);
     border-top: 2px solid rgba(0, 0, 0, 0.2);
-    background-color: ${props => props.theme['panel.background'] || '#181b1d'};
+    background-color: #181b1d;
     z-index: 1;
   }
 `;
@@ -97,8 +96,7 @@ export const FileName = styled.span`
 
 export const Tests = styled.div`
   font-weight: 400;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+  color: rgba(255, 255, 255, 0.7);
   overflow-x: auto;
 
   &::-webkit-scrollbar {

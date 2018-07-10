@@ -17,7 +17,6 @@ import type {
 } from 'common/types';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-import SyntaxHighlightWorker from 'worker-loader?publicPath=/&name=monaco-syntax-highlighter.[hash:8].worker.js!./workers/syntax-highlighter';
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
@@ -712,11 +711,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   changeCode = (code: string) => {
     if (code !== this.getCode()) {
       this.updateCode(code);
-      this.syntaxHighlight(
-        code,
-        this.currentModule.title,
-        this.editor.getModel().getVersionId()
-      );
       this.lint(
         code,
         this.currentModule.title,
@@ -989,22 +983,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.lint = debounce(this.lint, 400);
   };
 
-  setupSyntaxWorker = () => {
-    // this.syntaxWorker = new SyntaxHighlightWorker();
-    // this.syntaxWorker.addEventListener('message', event => {
-    //   const { classifications, version } = event.data;
-    //   requestAnimationFrame(() => {
-    //     if (this.editor.getModel()) {
-    //       if (version === this.editor.getModel().getVersionId()) {
-    //         this.updateDecorations(classifications);
-    //       }
-    //     }
-    //   });
-    // });
-  };
-
   setupWorkers = () => {
-    this.setupSyntaxWorker();
     const settings = this.settings;
 
     if (settings.lintEnabled) {
@@ -1133,19 +1112,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.editor.setPosition(pos);
   }
 
-  syntaxHighlight = async (code: string, title: string, version: string) => {
-    const mode = await getMode(title, this.monaco);
-    if (mode === 'typescript' || mode === 'javascript') {
-      if (this.syntaxWorker) {
-        this.syntaxWorker.postMessage({
-          code,
-          title,
-          version,
-        });
-      }
-    }
-  };
-
   lint = async (code: string, title: string, version: number) => {
     const mode = await getMode(title, this.monaco);
     if (this.settings.lintEnabled) {
@@ -1177,11 +1143,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.props.onChange(newCode);
       }
 
-      this.syntaxHighlight(
-        newCode,
-        title,
-        this.editor.getModel().getVersionId()
-      );
       this.lint(newCode, title, this.editor.getModel().getVersionId());
     }
   };
@@ -1380,11 +1341,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.editor.restoreViewState(modelInfo.viewState);
       }
 
-      this.syntaxHighlight(
-        modelInfo.model.getValue(),
-        title,
-        modelInfo.model.getVersionId()
-      );
       this.lint(
         modelInfo.model.getValue(),
         title,
@@ -1493,7 +1449,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             options={options}
             editorDidMount={this.configureEditor}
             editorWillMount={monaco =>
-              console.log(this.props) ||
               defineTheme(monaco, this.props.theme.vscodeTheme)
             }
             openReference={this.openReference}

@@ -5,7 +5,7 @@ const cleanHex = hex => {
     return 'ffffff';
   }
 
-  hex.slice(1).slice(0, 6);
+  return hex.slice(1).slice(0, 6);
 };
 
 const getTheme = theme => {

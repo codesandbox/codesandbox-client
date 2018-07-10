@@ -202,10 +202,7 @@ class Console extends React.Component {
         >
           <ConsoleFeed
             logs={this.state.messages}
-            variant={
-              console.log(this.props.theme.light) ||
-              (this.props.theme.light ? 'light' : 'dark')
-            }
+            variant={this.props.theme.light ? 'light' : 'dark'}
             styles={inspectorTheme(this.props.theme)}
           />
         </Messages>
