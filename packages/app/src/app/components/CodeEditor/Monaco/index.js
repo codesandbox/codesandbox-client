@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
+import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
 import { getModulePath } from 'common/sandbox/modules';
 import { css } from 'glamor';
@@ -345,6 +346,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
       }
     );
+
+    this.registerAutoCompletions();
   };
 
   setCompilerOptions = () => {
@@ -925,6 +928,103 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     } else {
       this.editor.deltaDecorations([], []);
     }
+  };
+
+  registerAutoCompletions = () => {
+    this.monaco.languages.registerCompletionItemProvider('typescript', {
+      triggerCharacters: ['"', "'", '.'],
+      provideCompletionItems: (model, position) => {
+        // Get editor content before the pointer
+        const textUntilPosition = model.getValueInRange({
+          startLineNumber: 1,
+          startColumn: 1,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column,
+        });
+
+        if (
+          /(([\s|\n]from\s)|(\brequire\b\())["|']\.*$/.test(textUntilPosition)
+        ) {
+          // It's probably a `import` statement or `require` call
+          if (textUntilPosition.endsWith('.')) {
+            // User is trying to import a file
+            const prefix = textUntilPosition.match(/[./]+$/)[0];
+
+            const modulesByPath = new WeakMap();
+            this.sandbox.modules.forEach(module => {
+              const path = getModulePath(
+                this.sandbox.modules,
+                this.sandbox.directories,
+                module.id
+              );
+
+              modulesByPath.set(
+                module,
+                path.indexOf('/') === -1 ? '/' + path : path
+              );
+            });
+
+            const currentModulePath = modulesByPath.get(this.currentModule);
+            if (!currentModulePath) {
+              return null;
+            }
+
+            const relativePath = join(dirname(currentModulePath), prefix);
+            return this.sandbox.modules
+              .filter(m => {
+                const path = modulesByPath.get(m);
+
+                return (
+                  path &&
+                  m !== this.currentModule &&
+                  path.startsWith(relativePath)
+                );
+              })
+              .map(module => {
+                let path = modulesByPath.get(module);
+
+                if (!path) return null;
+
+                // Don't keep extension for JS files
+                if (path.endsWith('.js')) {
+                  path = path.replace(/\.js$/, '');
+                }
+
+                // Don't keep extension for TS files
+                if (path.endsWith('.ts')) {
+                  path = path.replace(/\.ts$/, '');
+                }
+
+                return {
+                  label:
+                    prefix +
+                    path.replace(relativePath, relativePath === '/' ? '/' : ''),
+                  insertText: path.slice(
+                    relativePath === '/' ? 0 : relativePath.length
+                  ),
+                  kind: this.monaco.languages.CompletionItemKind.File,
+                };
+
+                return null;
+              })
+              .filter(Boolean);
+          } else {
+            const deps = this.dependencies;
+            if (deps) {
+              // User is trying to import a dependency
+              return Object.keys(deps).map(name => ({
+                label: name,
+                detail: deps[name],
+                kind: this.monaco.languages.CompletionItemKind.Module,
+              }));
+            }
+
+            return [];
+          }
+        }
+        return [];
+      },
+    });
   };
 
   setupTypeWorker = () => {

@@ -423,6 +423,10 @@ module.exports = {
           to: 'public/vs/language/vue',
         },
         {
+          from: '../../node_modules/onigasm/lib/onigasm.wasm',
+          to: 'public/onigasm/2.2.1/onigasm.wasm',
+        },
+        {
           from: 'static',
           to: 'static',
         },

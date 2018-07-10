@@ -1,33 +1,33 @@
 import { loadWASM } from 'onigasm'; // peer dependency of 'monaco-textmate'
 import { Registry } from 'monaco-textmate'; // peer dependency
-import { wireTmGrammars } from './setGrammars';
+import { wireTmGrammars } from './set-grammars';
+
+/* eslint-disable */
+import cssGrammar from '!raw-loader!./tmGrammars/css.json.tmLanguage';
+import htmlGrammar from '!raw-loader!./tmGrammars/html.json.tmLanguage';
+import tsGrammar from '!raw-loader!./tmGrammars/TypeScriptReact.tmLanguage';
+/* eslint-enable */
 
 export async function liftOff(monaco) {
-  await loadWASM(`https://unpkg.com/onigasm@2.2.1/lib/onigasm.wasm`); // See https://www.npmjs.com/package/onigasm#light-it-up
+  await loadWASM(`/public/onigasm/2.2.1/onigasm.wasm`); // See https://www.npmjs.com/package/onigasm#light-it-up
 
   const registry = new Registry({
     getGrammarDefinition: async scopeName => {
       if (scopeName === 'source.css') {
         return {
           format: 'json',
-          content: await (await fetch(
-            `https://raw.githubusercontent.com/Microsoft/vscode/master/extensions/css/syntaxes/css.tmLanguage.json`
-          )).text(),
+          content: cssGrammar,
         };
       } else if (scopeName === 'text.html.basic') {
         return {
           format: 'json',
-          content: await (await fetch(
-            `https://raw.githubusercontent.com/Microsoft/vscode/master/extensions/html/syntaxes/html.tmLanguage.json`
-          )).text(),
+          content: htmlGrammar,
         };
       }
 
       return {
         format: 'plist',
-        content: await (await fetch(
-          `https://raw.githubusercontent.com/Microsoft/TypeScript-TmLanguage/master/TypeScriptReact.tmLanguage`
-        )).text(),
+        content: tsGrammar,
       };
     },
   });
