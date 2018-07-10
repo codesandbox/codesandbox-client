@@ -22,9 +22,6 @@ import logError from './utils/error';
 
 const debug = _debug('cs:app');
 
-window.addEventListener('error', e => {
-  console.log(e);
-});
 window.addEventListener('unhandledrejection', e => {
   if (e && e.reason && e.reason.name === 'Canceled') {
     // This is an error from vscode that vscode uses to cancel some actions
