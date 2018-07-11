@@ -1,4 +1,5 @@
 const monacoTextmate1 = require('monaco-textmate');
+
 class TokenizerState {
   constructor(_ruleStack) {
     this._ruleStack = _ruleStack;
