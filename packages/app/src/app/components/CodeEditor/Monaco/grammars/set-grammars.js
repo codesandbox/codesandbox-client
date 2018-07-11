@@ -1,4 +1,4 @@
-const monaco_textmate_1 = require('monaco-textmate');
+const monacoTextmate1 = require('monaco-textmate');
 class TokenizerState {
   constructor(_ruleStack) {
     this._ruleStack = _ruleStack;
@@ -34,7 +34,7 @@ export function wireTmGrammars(monaco, registry, languages) {
       try {
         const grammar = await registry.loadGrammar(languages.get(languageId));
         monaco.languages.setTokensProvider(languageId, {
-          getInitialState: () => new TokenizerState(monaco_textmate_1.INITIAL),
+          getInitialState: () => new TokenizerState(monacoTextmate1.INITIAL),
           tokenize: (line, state) => {
             const res = grammar.tokenizeLine(line, state.ruleStack);
 
@@ -50,7 +50,7 @@ export function wireTmGrammars(monaco, registry, languages) {
         });
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
-          console.warn(e);
+          console.warn(e); // eslint-disable-line
         }
       }
     })

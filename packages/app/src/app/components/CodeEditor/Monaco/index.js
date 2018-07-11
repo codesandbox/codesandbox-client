@@ -1006,19 +1006,18 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
                 };
               })
               .filter(Boolean);
-          } else {
-            const deps = this.dependencies;
-            if (deps) {
-              // User is trying to import a dependency
-              return Object.keys(deps).map(name => ({
-                label: name,
-                detail: deps[name],
-                kind: this.monaco.languages.CompletionItemKind.Module,
-              }));
-            }
-
-            return [];
           }
+          const deps = this.dependencies;
+          if (deps) {
+            // User is trying to import a dependency
+            return Object.keys(deps).map(name => ({
+              label: name,
+              detail: deps[name],
+              kind: this.monaco.languages.CompletionItemKind.Module,
+            }));
+          }
+
+          return [];
         }
         return [];
       },

@@ -1,7 +1,7 @@
-import atomLight from './themes/atom-light.json';
+// import atomLight from './themes/atom-light.json';
 import atomDark from './themes/atom-dark.json';
-import nightOwl from './themes/night-owl.json';
-import codesandbox from './themes/codesandbox.json';
+// import nightOwl from './themes/night-owl.json';
+// import codesandbox from './themes/codesandbox.json';
 
 const editorBackground = 'editor.background';
 const editorForeground = 'editor.foreground';
