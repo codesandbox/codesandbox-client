@@ -409,6 +409,8 @@ module.exports = {
         path.join(paths.config, 'stubs/load-rules.compiled.js')
       ),
 
+    // DON'T TOUCH THIS. There's a bug in Webpack 4 that causes bundle splitting
+    // to break when using lru-cache. So we literally gice them our own version
     new webpack.NormalModuleReplacementPlugin(
       /^lru-cache$/,
       path.join(paths.config, 'stubs/lru-cache.js')
