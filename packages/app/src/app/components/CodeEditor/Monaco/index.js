@@ -17,6 +17,8 @@ import type {
   Directory,
 } from 'common/types';
 
+import delay from 'common/utils/delay';
+
 /* eslint-disable import/no-webpack-loader-syntax */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
@@ -1137,10 +1139,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   disposeModel = (id: string) => {
     if (modelCache[id]) {
       try {
-        if (modelCache[id].model) {
+        if (modelCache[id].model && !modelCache[id].model.isDisposed()) {
           modelCache[id].model.dispose();
         }
-        if (modelCache[id].lib) {
+        if (modelCache[id].lib && !modelCache[id].lib.isDisposed()) {
           modelCache[id].lib.dispose();
         }
 
@@ -1378,41 +1380,78 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
-  createModel = async (
+  creatingModelMap = {};
+  createModel = (
     module: Module,
     modules: Array<Module> = this.sandbox.modules,
     directories: Array<Directory> = this.sandbox.directories
   ) => {
-    // Remove the first slash, as this will otherwise create errors in monaco
-    const path = getModulePath(modules, directories, module.id);
-    if (path) {
-      // We need to add this as a lib specifically to Monaco, because Monaco
-      // tends to lose type definitions if you don't touch a file for a while.
-      // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
-      const lib = this.addLib(module.code || '', path);
+    // Prevent race conditions
+    this.creatingModelMap[module.id] =
+      this.creatingModelMap[module.id] ||
+      (async () => {
+        // Remove the first slash, as this will otherwise create errors in monaco
+        const path = getModulePath(modules, directories, module.id);
+        if (path) {
+          // We need to add this as a lib specifically to Monaco, because Monaco
+          // tends to lose type definitions if you don't touch a file for a while.
+          // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
+          const lib = this.addLib(module.code || '', path);
 
-      const mode = await getMode(module.title, this.monaco);
+          const mode = await getMode(module.title, this.monaco);
 
-      const model = this.monaco.editor.createModel(
-        module.code || '',
-        mode === 'javascript' ? 'typescript' : mode,
-        new this.monaco.Uri().with({ path, scheme: 'file' })
-      );
+          const model = this.monaco.editor.createModel(
+            module.code || '',
+            mode === 'javascript' ? 'typescript' : mode,
+            new this.monaco.Uri().with({ path, scheme: 'file' })
+          );
 
-      model.updateOptions({ tabSize: this.props.settings.tabWidth });
+          if (
+            mode !== 'javascript' &&
+            mode !== 'typescript' &&
+            this.monaco.languages.getEncodedLanguageId(mode) === null
+          ) {
+            (async () => {
+              // In this case the language still needs to load, if we load the model immediately it will get
+              // the plaintext value. So when the language loads we set the new model
+              // eslint-disable-next-line no-constant-condition
+              while (true) {
+                if (this.monaco.languages.getEncodedLanguageId(mode) !== null) {
+                  if (!model.isDisposed()) {
+                    model.setMode(
+                      this.monaco.languages.getLanguages()[
+                        this.monaco.languages.getEncodedLanguageId(mode) - 1
+                      ]
+                    );
+                  }
 
-      modelCache[module.id] = modelCache[module.id] || {
-        model: null,
-        decorations: [],
-        viewState: null,
-      };
-      modelCache[module.id].model = model;
-      modelCache[module.id].lib = lib;
+                  return;
+                }
 
-      return model;
-    }
+                await delay(100); // eslint-disable-line
+              }
+            })();
+          }
 
-    return undefined;
+          model.updateOptions({ tabSize: this.props.settings.tabWidth });
+
+          modelCache[module.id] = modelCache[module.id] || {
+            model: null,
+            decorations: [],
+            viewState: null,
+          };
+          modelCache[module.id].model = model;
+          modelCache[module.id].lib = lib;
+
+          delete this.creatingModelMap[module.id];
+          return model;
+        }
+
+        delete this.creatingModelMap[module.id];
+        return undefined;
+      })();
+
+    return this.creatingModelMap[module.id];
   };
 
   getModelById = async (id: string) => {
