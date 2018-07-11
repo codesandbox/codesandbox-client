@@ -1,28 +1,30 @@
 let isThemeDefined = false;
 
-const cleanHex = hex => {
-  if (hex === 'white') {
-    return 'ffffff';
+const sanitizeColor = color => {
+  if (color === 'white') {
+    return '#ffffff';
   }
 
-  return hex.slice(1).slice(0, 6);
+  return color;
+};
+
+const colorsAllowed = ({ foreground, background }) => {
+  if (foreground === 'inherit' || background === 'inherit') {
+    return false;
+  }
+
+  return true;
 };
 
 const getTheme = theme => {
   const { tokenColors = [], colors = {} } = theme;
   const rules = tokenColors
-    .filter(t => t.settings && t.scope && t.settings.foreground)
+    .filter(t => t.settings && t.scope && colorsAllowed(t.settings))
     .reduce((acc, token) => {
-      if (token.settings && token.settings.foreground === 'inherit') {
-        return acc;
-      }
-
       const settings = {
-        foreground: cleanHex(token.settings.foreground),
-        background: token.settings.background
-          ? cleanHex(token.settings.background)
-          : null,
-        fontStyle: token.settings.fontStyle || null,
+        foreground: sanitizeColor(token.settings.foreground),
+        background: sanitizeColor(token.settings.background),
+        fontStyle: sanitizeColor(token.settings.fontStyle),
       };
 
       if (Array.isArray(token.scope)) {

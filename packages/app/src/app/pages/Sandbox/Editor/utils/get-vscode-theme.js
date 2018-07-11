@@ -1,4 +1,7 @@
-import atomLight from './atom-light.json';
+import atomLight from './themes/atom-light.json';
+import atomDark from './themes/atom-dark.json';
+import nightOwl from './themes/night-owl.json';
+import codesandbox from './themes/codesandbox.json';
 
 const editorBackground = 'editor.background';
 const editorForeground = 'editor.foreground';
@@ -26,11 +29,16 @@ const vsDark = {
   [editorSelectionHighlight]: '#ADD6FF26',
 };
 
+const currentTheme = atomDark;
+
+// Explicitly check for dark as that is the default
+const isLight = currentTheme.type !== 'dark';
+
 const theme = {
-  ...atomLight,
+  ...currentTheme,
   colors: {
-    ...vs,
-    ...atomLight.colors,
+    ...(isLight ? vs : vsDark),
+    ...currentTheme.colors,
   },
 };
 export default function getTheme() {
@@ -38,7 +46,7 @@ export default function getTheme() {
   return {
     themeProvider: {
       ...theme.colors,
-      light: true,
+      light: isLight,
       vscodeTheme: theme,
     },
   };
