@@ -93,6 +93,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.wasm$/,
+        loader: 'file-loader',
+        type: 'javascript/auto',
+      },
+      {
         test: /\.js$/,
         include: [paths.src, paths.common, /@emmetio/],
         exclude: [
@@ -109,6 +114,8 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*ansi-styles`),
           new RegExp(`${sepRe}node_modules${sepRe}.*chalk`),
           new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*monaco-textmate`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*onigasm`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),
@@ -124,6 +131,7 @@ module.exports = {
               {
                 targets: {
                   ie: 11,
+                  esmodules: true,
                 },
               },
             ],
@@ -401,6 +409,11 @@ module.exports = {
         path.join(paths.config, 'stubs/load-rules.compiled.js')
       ),
 
+    new webpack.NormalModuleReplacementPlugin(
+      /^lru-cache$/,
+      path.join(paths.config, 'stubs/lru-cache.js')
+    ),
+
     // If you require a missing module and then `npm install` it, you still have
     // to restart the development server for Webpack to discover it. This plugin
     // makes the discovery automatic so you don't have to restart.
@@ -422,12 +435,12 @@ module.exports = {
           to: 'public/min-maps',
         },
         {
-          from: '../../node_modules/monaco-vue/release/min',
-          to: 'public/vs/language/vue',
-        },
-        {
           from: '../../node_modules/onigasm/lib/onigasm.wasm',
           to: 'public/onigasm/2.2.1/onigasm.wasm',
+        },
+        {
+          from: '../../node_modules/monaco-vue/release/min',
+          to: 'public/vs/language/vue',
         },
         {
           from: 'static',

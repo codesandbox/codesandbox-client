@@ -31,6 +31,7 @@ module.exports = merge(commonConfig, {
     sourceMapFilename: '[file].map', // Default
   },
   mode: 'production',
+  stats: 'verbose',
 
   optimization: {
     minimizer: [

@@ -9,7 +9,8 @@ import tsGrammar from '!raw-loader!./tmGrammars/TypeScriptReact.tmLanguage';
 /* eslint-enable */
 
 export async function liftOff(monaco) {
-  await loadWASM(`/public/onigasm/2.2.1/onigasm.wasm`); // See https://www.npmjs.com/package/onigasm#light-it-up
+  // eslint-disable-next-line global-require
+  await loadWASM('/public/onigasm/2.2.1/onigasm.wasm'); // See https://www.npmjs.com/package/onigasm#light-it-up
 
   const registry = new Registry({
     getGrammarDefinition: async scopeName => {
