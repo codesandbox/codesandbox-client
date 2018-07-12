@@ -246,6 +246,17 @@ module.exports = merge(commonConfig, {
           },
         },
         {
+          urlPattern: /^https:\/\/cdn\.rawgit\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'rawgit-cache',
+              maxAgeSeconds: 60 * 60 * 24 * 7,
+            },
+          },
+        },
+        {
           urlPattern: /jsdelivr\.(com|net)/,
           handler: 'cacheFirst',
           options: {

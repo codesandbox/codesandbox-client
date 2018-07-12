@@ -39,10 +39,9 @@ function fetchTheme(themeName, customTheme) {
 
       if (window.showNotification) {
         window.showNotification(
-          'We had trouble parsing your custom vscode, error: ',
+          'We had trouble parsing your custom vscode, error: \n' + e.message,
           'error'
         );
-        window.showNotification(e.message, 'error');
       }
     }
   }
