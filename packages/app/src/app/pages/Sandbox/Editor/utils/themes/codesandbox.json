@@ -1,7 +1,11 @@
 {
   "$schema": "vscode://schemas/color-theme",
   "type": "dark",
-  "colors": {},
+  "colors": {
+    "editor.background": "#1C2022",
+    "editor.foreground": "#E0E0E0",
+    "editor.selectionBackground": "#ADD6FF26"
+  },
   "tokenColors": [
     {
       "name": "Comment",

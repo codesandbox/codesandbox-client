@@ -62,17 +62,17 @@ function fetchTheme(themeName, customTheme) {
 export default async function getTheme(themeName, customTheme) {
   const foundTheme = await fetchTheme(themeName, customTheme);
 
-  const currentTheme = foundTheme;
-
   // Explicitly check for dark as that is the default
-  const isLight = currentTheme.type !== 'dark';
+  const isLight = foundTheme.type !== 'dark';
+
+  const colors = {
+    ...(isLight ? vs : vsDark),
+    ...foundTheme.colors,
+  };
 
   const theme = {
-    ...currentTheme,
-    colors: {
-      ...(themeName === 'CodeSandbox' ? {} : isLight ? vs : vsDark),
-      ...currentTheme.colors,
-    },
+    ...foundTheme,
+    colors,
   };
 
   document.body.style.background = theme.colors['editor.background'];
