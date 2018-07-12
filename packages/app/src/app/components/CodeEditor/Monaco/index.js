@@ -726,7 +726,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       code !== this.getCode() &&
       (!moduleId || this.currentModule.id === moduleId)
     ) {
-      console.log(new Error().stack, code, moduleId, this.currentModule.id);
       this.updateCode(code);
       this.lint(
         code,
