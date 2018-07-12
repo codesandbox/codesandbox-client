@@ -70,7 +70,7 @@ export default async function getTheme(themeName, customTheme) {
   const theme = {
     ...currentTheme,
     colors: {
-      ...(isLight ? vs : vsDark),
+      ...(themeName === 'CodeSandbox' ? {} : isLight ? vs : vsDark),
       ...currentTheme.colors,
     },
   };
