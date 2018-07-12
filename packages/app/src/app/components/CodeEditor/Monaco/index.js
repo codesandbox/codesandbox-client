@@ -433,9 +433,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // Mark as receiving code so we don't send operations to others because
       // of a module switch
       this.receivingCode = true;
-      if (newModule === this.currentModule) {
-        this.changeCode(newModule.code || '');
-      }
+      // if (newModule === this.currentModule) {
+      //   this.changeCode(newModule.code || '');
+      // }
 
       if (errors) {
         this.setErrors(errors);
@@ -721,8 +721,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       });
     });
 
-  changeCode = (code: string) => {
-    if (code !== this.getCode()) {
+  changeCode = (code: string, moduleId?: string) => {
+    if (
+      code !== this.getCode() &&
+      (!moduleId || this.currentModule.id === moduleId)
+    ) {
       this.updateCode(code);
       this.lint(
         code,
@@ -1191,8 +1194,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       }
     }
 
-    await this.openNewModel(nextId, nextTitle);
-    this.editor.focus();
+    setTimeout(async () => {
+      // We load this in a later moment so the rest of the ui already updates before the editor
+      // this will give a perceived speed boost. Inspiration from vscode team
+      await this.openNewModel(nextId, nextTitle);
+      this.editor.focus();
+    }, 100);
   };
 
   updateCode(code: string = '') {

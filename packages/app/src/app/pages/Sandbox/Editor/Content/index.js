@@ -290,7 +290,7 @@ class EditorPreview extends React.Component<Props, State> {
           changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
           // Only code changed from outside the editor
-          editor.changeCode(newModule.code || '');
+          editor.changeCode(newModule.code || '', newModule.id);
         }
       }
     );

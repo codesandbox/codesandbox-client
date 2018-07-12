@@ -30,7 +30,23 @@ const vsDark = {
   [editorSelectionHighlight]: '#ADD6FF26',
 };
 
-function fetchTheme(themeName, customTheme) {
+function fetchTheme(foundTheme) {
+  if (!foundTheme) {
+    return codesandbox;
+  }
+
+  if (foundTheme.content) {
+    return foundTheme.content;
+  }
+
+  if (foundTheme.get) {
+    return foundTheme.get();
+  }
+
+  return window.fetch(foundTheme.url).then(x => x.json());
+}
+
+const findTheme = async (themeName, customTheme) => {
   if (customTheme) {
     try {
       return JSON.parse(customTheme.replace(/^\s*\/\//gm, ''));
@@ -49,23 +65,16 @@ function fetchTheme(themeName, customTheme) {
 
   const foundTheme = themes.find(t => t.name === themeName);
 
-  if (!foundTheme) {
-    return codesandbox;
-  }
+  const fetchedTheme = await fetchTheme(foundTheme);
 
-  if (foundTheme.content) {
-    return foundTheme.content;
-  }
-
-  if (foundTheme.get) {
-    return foundTheme.get();
-  }
-
-  return window.fetch(foundTheme.url).then(x => x.json());
-}
+  return {
+    ...fetchedTheme,
+    type: (foundTheme && foundTheme.type) || fetchedTheme.type,
+  };
+};
 
 export default async function getTheme(themeName, customTheme) {
-  const foundTheme = await fetchTheme(themeName, customTheme);
+  const foundTheme = await findTheme(themeName, customTheme);
 
   // Explicitly check for dark as that is the default
   const isLight = foundTheme.type !== 'dark';

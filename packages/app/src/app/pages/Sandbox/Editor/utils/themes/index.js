@@ -21,6 +21,7 @@ export default [
   {
     name: 'Atom Dark',
     id: 'atomDark',
+    type: 'dark',
     url:
       'https://cdn.rawgit.com/akamud/vscode-theme-onedark/11ef4839/themes/OneDark.json',
   },

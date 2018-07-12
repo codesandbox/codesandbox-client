@@ -53,7 +53,7 @@ export interface Editor {
     errors?: Array<ModuleError>,
     corrections?: Array<ModuleCorrection>
   ) => any;
-  changeCode?: (code: string) => any;
+  changeCode?: (code: string, moduleId?: string) => any;
   currentModule?: Module;
   setTSConfig?: (tsConfig: Object) => void;
   setReceivingCode?: (receivingCode: boolean) => void;
