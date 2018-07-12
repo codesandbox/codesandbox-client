@@ -7,7 +7,6 @@ import { withTheme } from 'styled-components';
 import { getModulePath } from 'common/sandbox/modules';
 import { css } from 'glamor';
 import { listen } from 'codesandbox-api';
-import { liftOff } from './grammars/configure-tokenizer';
 
 import getTemplate from 'common/templates';
 import type {
@@ -33,6 +32,7 @@ import getSettings from './settings';
 
 import type { Props, Editor } from '../types';
 import getMode from './mode';
+import { liftOff } from './grammars/configure-tokenizer';
 
 type State = {
   fuzzySearchEnabled: boolean,
