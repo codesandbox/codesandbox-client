@@ -1,6 +1,6 @@
 import JSON from 'json5';
 
-import codesandbox from './themes/codesandbox.json';
+import codesandbox from 'common/themes/codesandbox.json';
 
 import themes from './themes';
 

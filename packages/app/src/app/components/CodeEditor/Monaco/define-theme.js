@@ -15,6 +15,7 @@ const colorsAllowed = ({ foreground, background }) => {
 };
 
 const getTheme = theme => {
+  console.log(theme);
   const { tokenColors = [], colors = {} } = theme;
   const rules = tokenColors
     .filter(t => t.settings && t.scope && colorsAllowed(t.settings))

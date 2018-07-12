@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components';
 
 import Fullscreen from 'common/components/flex/Fullscreen';
 import getTemplateDefinition from 'common/templates';
+import codesandbox from 'common/themes/codesandbox.json';
 
 import { Container } from './elements';
 import Workspace from './Workspace';
@@ -12,7 +13,6 @@ import Content from './Content';
 import Header from './Header';
 import Navigation from './Navigation';
 import getVSCodeTheme from './utils/get-vscode-theme';
-import codesandbox from './utils/themes/codesandbox.json';
 
 class ContentSplit extends React.Component {
   state = {
