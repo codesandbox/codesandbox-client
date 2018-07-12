@@ -80,10 +80,6 @@ const modals = {
     Component: StorageManagementModal,
     width: 800,
   },
-  changelogDashboard: {
-    Component: DashboardChangelog,
-    width: 500,
-  },
 };
 
 function Modals({ store, signals }) {

@@ -25,6 +25,14 @@ function EditorSettings({ store, signals }) {
   });
 
   const fontOptions = ['Menlo', 'Dank Mono', 'Source Code Pro'];
+  const themeOptions = [
+    'CodeSandbox',
+    'Night Owl',
+    'Night Owl (No Italics)',
+    'Atom Dark',
+    'VSCode Light',
+    'Atom Light',
+  ];
 
   return (
     <div>
@@ -104,27 +112,15 @@ function EditorSettings({ store, signals }) {
 
           <div>
             <BigTitle>Editor Theme</BigTitle>
-            <SubDescription style={{ marginBottom: '1.5rem' }}>
-              You can select a custom theme to be used in the editor. We support
-              all VSCode themes.
-            </SubDescription>
 
             <PaddedPreference
-              title="Pre-installed Theme"
+              title="VSCode Theme"
               type="dropdown"
-              options={[
-                'CodeSandbox',
-                'Night Owl',
-                'Night Owl (No Italics)',
-                'Atom Dark',
-                'VSCode Light',
-                'Atom Light',
-              ]}
+              options={themeOptions}
               {...bindValue('editorTheme')}
             />
             <SubDescription>
-              Default themes on CodeSandbox, this will be overwritten if you
-              have a custom theme.
+              This will be overwritten if you enter a custom theme.
             </SubDescription>
             <Rule />
 
