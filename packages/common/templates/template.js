@@ -82,6 +82,15 @@ export default class Template {
     ].filter(x => x);
   }
 
+  /**
+   * Files to be opened by default by the editor when opening the editor
+   */
+  getDefaultOpenedFiles(configurationFiles: {
+    [type: string]: Object,
+  }): Array<string> {
+    return this.getEntries(configurationFiles);
+  }
+
   // eslint-disable-next-line no-unused-vars
   getHTMLEntries(configurationFiles: {
     [type: string]: Object,

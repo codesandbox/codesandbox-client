@@ -3,7 +3,7 @@ import axios from 'axios';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import { parseConfigurations } from './utils/parse-configurations';
-import { mainModule } from './utils/main-module';
+import { mainModule, defaultOpenedModule } from './utils/main-module';
 
 export function getSandbox({ props, api, path }) {
   return api
@@ -124,7 +124,7 @@ export function setCurrentModuleShortid({ props, state }) {
     sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
   ) {
     const parsedConfigs = parseConfigurations(sandbox);
-    const module = mainModule(sandbox, parsedConfigs);
+    const module = defaultOpenedModule(sandbox, parsedConfigs);
 
     state.set('editor.currentModuleShortid', module.shortid);
   }
