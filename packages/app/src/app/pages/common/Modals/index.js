@@ -17,7 +17,6 @@ import LiveSessionEndedModal from './LiveSessionEndedModal';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
-import DashboardChangelog from './Changelog/Dashboard';
 
 const modals = {
   preferences: {

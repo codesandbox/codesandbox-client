@@ -54,7 +54,7 @@ function EditorSettings({ store, signals }) {
             {...bindValue('fontFamily')}
           />
           <SubDescription>
-            We{"'"}re using{' '}
+            We use{' '}
             <a
               href="https://dank.sh/affiliate?n=cjgw9wi2q7sf20a86q0k176oj"
               rel="noreferrer noopener"
