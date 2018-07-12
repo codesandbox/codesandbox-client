@@ -726,6 +726,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       code !== this.getCode() &&
       (!moduleId || this.currentModule.id === moduleId)
     ) {
+      console.log(new Error().stack, code, moduleId, this.currentModule.id);
       this.updateCode(code);
       this.lint(
         code,
@@ -1199,7 +1200,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // this will give a perceived speed boost. Inspiration from vscode team
       await this.openNewModel(nextId, nextTitle);
       this.editor.focus();
-    }, 100);
+    }, 50);
   };
 
   updateCode(code: string = '') {
@@ -1492,7 +1493,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     const module = this.sandbox.modules.find(m => m.id === moduleId);
     if (module) {
-      this.changeModule(module);
       if (this.props.onModuleChange) {
         this.props.onModuleChange(moduleId);
       }
