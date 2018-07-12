@@ -424,18 +424,18 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   ) => {
     const oldModule = this.currentModule;
 
-    this.currentModule = newModule;
     this.swapDocuments({
       currentId: oldModule.id,
       nextId: newModule.id,
       nextTitle: newModule.title,
+      nextCode: newModule.code || '',
+      currentCode: oldModule.code || '',
     }).then(() => {
+      this.currentModule = newModule;
+
       // Mark as receiving code so we don't send operations to others because
       // of a module switch
       this.receivingCode = true;
-      // if (newModule === this.currentModule) {
-      //   this.changeCode(newModule.code || '');
-      // }
 
       if (errors) {
         this.setErrors(errors);
@@ -1168,10 +1168,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     currentId,
     nextId,
     nextTitle,
+    nextCode,
   }: {
     currentId: string,
     nextId: string,
     nextTitle: string,
+    nextCode: string,
+    currentCode: string,
   }) => {
     if (modelCache[currentId]) {
       const sandbox = this.sandbox;
@@ -1197,7 +1200,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     setTimeout(async () => {
       // We load this in a later moment so the rest of the ui already updates before the editor
       // this will give a perceived speed boost. Inspiration from vscode team
-      await this.openNewModel(nextId, nextTitle);
+      await this.openNewModel(nextId, nextTitle, nextCode);
       this.editor.focus();
     }, 50);
   };
@@ -1470,8 +1473,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     return modelCache[id];
   };
 
-  openNewModel = async (id: string, title: string) => {
+  openNewModel = async (id: string, title: string, newCode?: string) => {
     const modelInfo = await this.getModelById(id);
+    if (newCode) {
+      modelInfo.model.setValue(newCode);
+    }
+
     this.editor.setModel(modelInfo.model);
 
     requestAnimationFrame(() => {
