@@ -309,7 +309,7 @@ var QuickInfoAdapter = /** @class */ (function (_super) {
             return {
                 range: _this._textSpanToRange(resource, info.textSpan),
                 contents: [{
-                        value: contents
+                        value: '```js\n' + contents + '\n```\n'
                     }, {
                         value: documentation + (tags ? '\n\n' + tags : '')
                     }]

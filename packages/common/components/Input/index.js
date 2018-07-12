@@ -27,6 +27,8 @@ const Input = styled.input`
   ${styles};
 `;
 
-export const TextArea = Input.withComponent('textarea');
+export const TextArea = styled.textarea`
+  ${styles};
+`;
 
 export default Input;

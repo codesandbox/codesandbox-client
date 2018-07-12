@@ -7,6 +7,7 @@ import { withTheme } from 'styled-components';
 import { getModulePath } from 'common/sandbox/modules';
 import { css } from 'glamor';
 import { listen } from 'codesandbox-api';
+import { liftOff } from './grammars/configure-tokenizer';
 
 import getTemplate from 'common/templates';
 import type {
@@ -170,6 +171,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (this.props.readOnly !== nextProps.readOnly && this.editor) {
       this.editor.updateOptions({ readOnly: !!nextProps.readOnly });
     }
+
+    if (this.props.theme.vscodeTheme !== nextProps.theme.vscodeTheme) {
+      defineTheme(this.monaco, nextProps.theme.vscodeTheme);
+    }
+
     return false;
   }
 
@@ -247,7 +253,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const sandbox = this.sandbox;
     const currentModule = this.currentModule;
 
-    await this.initializeModules(sandbox.modules);
+    liftOff(monaco);
+
+    this.initializeModules(sandbox.modules);
     await this.openNewModel(currentModule.id, currentModule.title);
 
     // this.addKeyCommands();
@@ -1400,38 +1408,25 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
           const mode = await getMode(module.title, this.monaco);
 
-          const model = this.monaco.editor.createModel(
-            module.code || '',
-            mode === 'javascript' ? 'typescript' : mode,
-            new this.monaco.Uri().with({ path, scheme: 'file' })
-          );
-
           if (
             mode !== 'javascript' &&
             mode !== 'typescript' &&
             this.monaco.languages.getEncodedLanguageId(mode) === null
           ) {
-            (async () => {
-              // In this case the language still needs to load, if we load the model immediately it will get
-              // the plaintext value. So when the language loads we set the new model
-              // eslint-disable-next-line no-constant-condition
-              while (true) {
-                if (this.monaco.languages.getEncodedLanguageId(mode) !== null) {
-                  if (!model.isDisposed()) {
-                    model.setMode(
-                      this.monaco.languages.getLanguages()[
-                        this.monaco.languages.getEncodedLanguageId(mode) - 1
-                      ]
-                    );
-                  }
+            // In this case the language still needs to load, if we load the model immediately it will get
+            // the plaintext value. So when the language loads we set the new model
+            // eslint-disable-next-line no-constant-condition
 
-                  return;
-                }
-
-                await delay(100); // eslint-disable-line
-              }
-            })();
+            while (this.monaco.languages.getEncodedLanguageId(mode) === null) {
+              await delay(100); // eslint-disable-line
+            }
           }
+
+          const model = this.monaco.editor.createModel(
+            module.code || '',
+            mode === 'javascript' ? 'typescript' : mode,
+            new this.monaco.Uri().with({ path, scheme: 'file' })
+          );
 
           model.updateOptions({ tabSize: this.props.settings.tabWidth });
 

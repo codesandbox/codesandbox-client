@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { liftOff } from './grammars/configure-tokenizer';
-
 function noop() {}
 
 class MonacoEditor extends React.PureComponent {
@@ -25,13 +23,6 @@ class MonacoEditor extends React.PureComponent {
 
   editorDidMount = (editor, monaco) => {
     this.props.editorDidMount(editor, monaco);
-
-    setTimeout(() => {
-      monaco.languages.typescript.getTypeScriptWorker().then(() => {
-        // Install the our own tokenizer
-        liftOff(monaco);
-      });
-    });
   };
 
   afterViewInit = () => {

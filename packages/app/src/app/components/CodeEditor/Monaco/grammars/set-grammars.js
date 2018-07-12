@@ -22,6 +22,7 @@ class TokenizerState {
     return true;
   }
 }
+
 /**
  * Wires up monaco-editor with monaco-textmate
  *
@@ -34,6 +35,7 @@ export function wireTmGrammars(monaco, registry, languages) {
     Array.from(languages.keys()).map(async languageId => {
       try {
         const grammar = await registry.loadGrammar(languages.get(languageId));
+
         monaco.languages.setTokensProvider(languageId, {
           getInitialState: () => new TokenizerState(monacoTextmate1.INITIAL),
           tokenize: (line, state) => {

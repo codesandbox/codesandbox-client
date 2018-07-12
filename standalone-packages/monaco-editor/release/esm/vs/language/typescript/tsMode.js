@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { Language, createTokenizationSupport } from './tokenization.js';
+import { Language } from './tokenization.js';
 import { WorkerManager } from './workerManager.js';
 import * as languageFeatures from './languageFeatures.js';
 var javaScriptWorker;
@@ -50,7 +50,6 @@ function setupMode(defaults, modeId, language) {
     monaco.languages.registerOnTypeFormattingEditProvider(modeId, new languageFeatures.FormatOnTypeAdapter(worker));
     new languageFeatures.DiagnostcsAdapter(defaults, modeId, worker);
     monaco.languages.setLanguageConfiguration(modeId, richEditConfiguration);
-    monaco.languages.setTokensProvider(modeId, createTokenizationSupport(language));
     return worker;
 }
 var richEditConfiguration = {

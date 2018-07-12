@@ -1,5 +1,3 @@
-let isThemeDefined = false;
-
 const sanitizeColor = color => {
   if (color === 'white') {
     return '#ffffff';
@@ -27,19 +25,17 @@ const getTheme = theme => {
         fontStyle: sanitizeColor(token.settings.fontStyle),
       };
 
-      if (Array.isArray(token.scope)) {
-        token.scope.map(s =>
-          acc.push({
-            token: s,
-            ...settings,
-          })
-        );
-      } else {
+      const scope =
+        typeof token.scope === 'string'
+          ? token.scope.split(',').map(a => a.trim())
+          : token.scope;
+
+      scope.map(s =>
         acc.push({
-          token: token.scope,
+          token: s,
           ...settings,
-        });
-      }
+        })
+      );
 
       return acc;
     }, []);
@@ -61,15 +57,17 @@ const getTheme = theme => {
 };
 
 const defineTheme = (monaco, theme) => {
-  if (!isThemeDefined && theme) {
+  if (theme) {
     const transformedTheme = getTheme(theme);
+
     monaco.editor.defineTheme('CodeSandbox', {
       base: transformedTheme.type === 'dark' ? `vs-dark` : 'vs',
       inherit: true,
       colors: transformedTheme.colors,
       rules: transformedTheme.rules,
     });
-    isThemeDefined = true;
+
+    monaco.editor.setTheme('CodeSandbox');
   }
 };
 

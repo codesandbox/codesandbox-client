@@ -1,7 +1,8 @@
-// import atomLight from './themes/atom-light.json';
-import atomDark from './themes/atom-dark.json';
-// import nightOwl from './themes/night-owl.json';
-// import codesandbox from './themes/codesandbox.json';
+import JSON from 'json5';
+
+import codesandbox from './themes/codesandbox.json';
+
+import themes from './themes';
 
 const editorBackground = 'editor.background';
 const editorForeground = 'editor.foreground';
@@ -29,25 +30,56 @@ const vsDark = {
   [editorSelectionHighlight]: '#ADD6FF26',
 };
 
-const currentTheme = atomDark;
+function fetchTheme(themeName, customTheme) {
+  if (customTheme) {
+    try {
+      return JSON.parse(customTheme.replace(/^\s*\/\//gm, ''));
+    } catch (e) {
+      console.error(e);
 
-// Explicitly check for dark as that is the default
-const isLight = currentTheme.type !== 'dark';
+      if (window.showNotification) {
+        window.showNotification(
+          'We had trouble parsing your custom vscode, error: ',
+          'error'
+        );
+        window.showNotification(e.message, 'error');
+      }
+    }
+  }
 
-const theme = {
-  ...currentTheme,
-  colors: {
-    ...(isLight ? vs : vsDark),
-    ...currentTheme.colors,
-  },
-};
-export default function getTheme() {
+  const foundTheme = themes.find(t => t.name === themeName);
+
+  if (!foundTheme) {
+    return codesandbox;
+  }
+
+  if (foundTheme.content) {
+    return foundTheme.content;
+  }
+
+  return window.fetch(foundTheme.url).then(x => x.json());
+}
+
+export default async function getTheme(themeName, customTheme) {
+  const foundTheme = await fetchTheme(themeName, customTheme);
+
+  const currentTheme = foundTheme;
+
+  // Explicitly check for dark as that is the default
+  const isLight = currentTheme.type !== 'dark';
+
+  const theme = {
+    ...currentTheme,
+    colors: {
+      ...(isLight ? vs : vsDark),
+      ...currentTheme.colors,
+    },
+  };
+
   document.body.style.background = theme.colors['editor.background'];
   return {
-    themeProvider: {
-      ...theme.colors,
-      light: isLight,
-      vscodeTheme: theme,
-    },
+    ...theme.colors,
+    light: isLight,
+    vscodeTheme: theme,
   };
 }

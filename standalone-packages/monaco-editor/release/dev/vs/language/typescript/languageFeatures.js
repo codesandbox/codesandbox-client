@@ -310,7 +310,7 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                 return {
                     range: _this._textSpanToRange(resource, info.textSpan),
                     contents: [{
-                            value: contents
+                            value: '```js\n' + contents + '\n```\n'
                         }, {
                             value: documentation + (tags ? '\n\n' + tags : '')
                         }]

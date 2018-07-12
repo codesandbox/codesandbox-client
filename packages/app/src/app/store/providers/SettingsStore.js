@@ -18,6 +18,8 @@ const allowedKeys = {
   newPackagerExperiment: 'settings.newPackagerExperiment',
   zenMode: 'settings.zenMode',
   keybindings: 'settings.keybindings',
+  editorTheme: 'settings.editorTheme',
+  customVSCodeTheme: 'settings.customVSCodeTheme',
 };
 
 export default Provider({

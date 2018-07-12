@@ -53,7 +53,6 @@ define(["require", "exports", "./tokenization", "./workerManager", "./languageFe
         monaco.languages.registerOnTypeFormattingEditProvider(modeId, new languageFeatures.FormatOnTypeAdapter(worker));
         new languageFeatures.DiagnostcsAdapter(defaults, modeId, worker);
         monaco.languages.setLanguageConfiguration(modeId, richEditConfiguration);
-        monaco.languages.setTokensProvider(modeId, tokenization_1.createTokenizationSupport(language));
         return worker;
     }
     var richEditConfiguration = {
