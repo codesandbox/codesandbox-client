@@ -24,6 +24,8 @@ function EditorSettings({ store, signals }) {
       }),
   });
 
+  const fontOptions = ['Menlo', 'Dank Mono', 'Source Code Pro'];
+
   return (
     <div>
       <Title>Appearance</Title>
@@ -38,10 +40,31 @@ function EditorSettings({ store, signals }) {
           <Rule />
           <PaddedPreference
             title="Font Family"
-            type="string"
+            type="dropdown"
+            options={['Custom'].concat(fontOptions)}
             placeholder="Source Code Pro"
             {...bindValue('fontFamily')}
           />
+          <SubDescription>
+            We{"'"}re using{' '}
+            <a
+              href="https://dank.sh/affiliate?n=cjgw9wi2q7sf20a86q0k176oj"
+              rel="noreferrer noopener"
+              target="_blank"
+            >
+              Dank Mono
+            </a>{' '}
+            as default font, you can also use locally installed fonts
+          </SubDescription>
+          {fontOptions.indexOf(store.preferences.settings.fontFamily) ===
+            -1 && (
+            <PreferenceText
+              style={{ marginTop: '1rem' }}
+              placeholder="Enter your custom font"
+              block
+              {...bindValue('fontFamily')}
+            />
+          )}
           <Rule />
           <PaddedPreference
             title="Font Ligatures"
@@ -94,6 +117,7 @@ function EditorSettings({ store, signals }) {
                 'Night Owl',
                 'Night Owl (No Italics)',
                 'Atom Dark',
+                'VSCode Light',
                 'Atom Light',
               ]}
               {...bindValue('editorTheme')}

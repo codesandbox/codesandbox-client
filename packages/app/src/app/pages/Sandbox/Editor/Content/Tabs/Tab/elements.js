@@ -17,7 +17,8 @@ export const Container = styled.div`
   padding-left: 0.75rem;
   padding-right: 0.125rem;
   color: ${props =>
-    props.theme['tab.inactiveForeground'] || 'rgba(255, 255, 255, 0.5)'};
+    props.theme['tab.inactiveForeground'] ||
+    (props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)')};
 
   svg {
     font-size: 1rem;
@@ -38,7 +39,9 @@ export const Container = styled.div`
       background-color: ${props.theme['tab.activeBackground'] ||
         props.theme.background2};
       border-color: ${props.theme.secondary};
-      color: ${props.theme['tab.activeForeground'] || 'white'};
+      color: ${props.theme['tab.activeForeground'] ||
+        props.theme['editor.foreground'] ||
+        'white'};
     `};
   ${props =>
     props.dirty &&

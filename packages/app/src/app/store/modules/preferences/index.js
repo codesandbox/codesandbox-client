@@ -14,7 +14,7 @@ export default Module({
       lintEnabled: true,
       instantPreviewEnabled: false,
       fontSize: 14,
-      fontFamily: '',
+      fontFamily: 'Dank Mono',
       lineHeight: 1.5,
       clearConsoleEnabled: true,
       autoDownloadTypes: true,

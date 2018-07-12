@@ -39,7 +39,8 @@ function fetchTheme(themeName, customTheme) {
 
       if (window.showNotification) {
         window.showNotification(
-          'We had trouble parsing your custom vscode, error: \n' + e.message,
+          'We had trouble parsing your custom VSCode Theme, error: \n' +
+            e.message,
           'error'
         );
       }
@@ -54,6 +55,10 @@ function fetchTheme(themeName, customTheme) {
 
   if (foundTheme.content) {
     return foundTheme.content;
+  }
+
+  if (foundTheme.get) {
+    return foundTheme.get();
   }
 
   return window.fetch(foundTheme.url).then(x => x.json());

@@ -45,4 +45,9 @@ export const CodeContainer = styled.div`
       border-radius: 50%;
     }
   }
+
+  /* For retina screens we will not do subpixel anti-aliasing. That looks uglier. */
+  @media (-webkit-min-device-pixel-ratio: 1.5) {
+    -webkit-font-smoothing: auto;
+  }
 `;

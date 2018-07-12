@@ -50,10 +50,12 @@ export const Tab = styled.div`
   ${props =>
     props.active &&
     css`
-      background-color: ${props.theme['statusBarItem.activeBackground'] ||
-        props.theme.background};
-      border-bottom-color: ${props.theme['statusBar.border'] ||
-        props.theme.background};
+      background-color: ${props.theme['editor.background']
+        ? 'transparent'
+        : props.theme.background};
+      border-bottom-color: ${props.theme['editor.background']
+        ? 'transparent'
+        : props.theme.background};
     `};
 `;
 

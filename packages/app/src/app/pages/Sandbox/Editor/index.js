@@ -12,10 +12,14 @@ import Content from './Content';
 import Header from './Header';
 import Navigation from './Navigation';
 import getVSCodeTheme from './utils/get-vscode-theme';
+import codesandbox from './utils/themes/codesandbox.json';
 
 class ContentSplit extends React.Component {
   state = {
-    theme: {},
+    theme: {
+      colors: {},
+      vscodeTheme: codesandbox,
+    },
     editorTheme: this.props.store.preferences.settings.editorTheme,
     customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme,
   };
