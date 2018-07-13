@@ -13,6 +13,12 @@ class MonacoEditor extends React.PureComponent {
   }
 
   componentWillUnmount() {
+    if (this.containerElement) {
+      this.containerElement.removeEventListener(
+        'keydown',
+        this.iPadFixListener
+      );
+    }
     this.destroyMonaco();
   }
 
@@ -71,8 +77,46 @@ class MonacoEditor extends React.PureComponent {
     }
   };
 
+  /**
+   * iPad sends strange key codes instead of key events. We will catch these
+   * and send the correct ones to the editor
+   */
+  iPadFixListener = e => {
+    if (this.containerElement && e && e.keyCode === 0 && e.key) {
+      switch (e.key) {
+        case 'UIKeyInputUpArrow':
+          this.containerElement.dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'ArrowUp', keyCode: 38 })
+          );
+          break;
+        case 'UIKeyInputDownArrow':
+          this.containerElement.dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'ArrowDown', keyCode: 40 })
+          );
+          break;
+        case 'UIKeyInputLeftArrow':
+          this.containerElement.dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'ArrowLeft', keyCode: 37 })
+          );
+          break;
+        case 'UIKeyInputRightArrow':
+          this.containerElement.dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'ArrowRight', keyCode: 39 })
+          );
+          break;
+        default: {
+          break;
+        }
+      }
+    }
+  };
+
   assignRef = component => {
     this.containerElement = component;
+
+    if (this.containerElement) {
+      this.containerElement.addEventListener('keydown', this.iPadFixListener);
+    }
   };
 
   render() {
