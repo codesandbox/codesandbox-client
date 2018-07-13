@@ -416,7 +416,9 @@ export function acknowledgeOperation({ props, ot }) {
 }
 
 export function computePendingOperation({ props, state }) {
-  const existingPendingOperation = state.get('editor.pendingOperation');
+  const existingPendingOperation = state.get(
+    `editor.pendingOperations.${props.moduleShortid}`
+  );
 
   if (!existingPendingOperation) {
     return { pendingOperation: props.operation };

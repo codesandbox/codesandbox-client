@@ -57,7 +57,9 @@ export interface Editor {
   currentModule?: Module;
   setTSConfig?: (tsConfig: Object) => void;
   setReceivingCode?: (receivingCode: boolean) => void;
-  applyOperation?: (operation: any) => void;
+  applyOperations?: (operations: { [moduleShortid: string]: any }) => Promise<
+    Array<void>
+  >;
   updateUserSelections?: (selections: any) => void;
 }
 

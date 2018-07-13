@@ -220,37 +220,51 @@ class EditorPreview extends React.Component<Props, State> {
 
     const disposePendingOperationHandler = reaction(
       () =>
-        store.editor.pendingOperation &&
-        store.editor.pendingOperation.map(x => x),
-      () => {
-        if (store.editor.pendingOperation && store.live.isLive) {
-          if (editor.setReceivingCode) {
-            editor.setReceivingCode(true);
-          }
-          if (editor.applyOperation) {
-            editor.applyOperation(
-              TextOperation.fromJSON(store.editor.pendingOperation)
-            );
-          } else {
-            try {
-              if (editor.currentModule) {
-                const operation = TextOperation.fromJSON(
-                  store.editor.pendingOperation
-                );
-
-                this.props.signals.editor.codeChanged({
-                  code: operation.apply(editor.currentModule.code || ''),
-                  moduleShortid: editor.currentModule.shortid,
-                });
-              }
-            } catch (e) {
-              console.error(e);
+        store.editor.pendingOperations &&
+        Object.keys(store.editor.pendingOperations).map(
+          x => store.editor.pendingOperations[x]
+        ),
+      async () => {
+        if (store.live.isLive) {
+          if (store.editor.pendingOperations) {
+            if (editor.setReceivingCode) {
+              editor.setReceivingCode(true);
             }
+            if (editor.applyOperations) {
+              editor.applyOperations(store.editor.pendingOperations);
+            } else {
+              try {
+                Object.keys(store.editor.pendingOperations).forEach(
+                  moduleShortid => {
+                    const operation = TextOperation.fromJSON(
+                      store.editor.pendingOperations[moduleShortid]
+                    );
+
+                    const module = store.currentSandbox.modules.find(
+                      m => m.shortid === moduleShortid
+                    );
+
+                    if (!module) {
+                      throw new Error(
+                        'Cannot find module with shortid: ' + moduleShortid
+                      );
+                    }
+
+                    this.props.signals.editor.codeChanged({
+                      code: operation.apply(module.code || ''),
+                      moduleShortid: module.shortid,
+                    });
+                  }
+                );
+              } catch (e) {
+                console.error(e);
+              }
+            }
+            if (editor.setReceivingCode) {
+              editor.setReceivingCode(false);
+            }
+            this.props.signals.live.onOperationApplied();
           }
-          if (editor.setReceivingCode) {
-            editor.setReceivingCode(false);
-          }
-          this.props.signals.live.onOperationApplied();
         }
       }
     );

@@ -735,49 +735,55 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  applyOperation = (operation: any) => {
-    this.liveOperationCode = '';
-    let index = 0;
-    for (let i = 0; i < operation.ops.length; i++) {
-      const op = operation.ops[i];
-      if (TextOperation.isRetain(op)) {
-        index += op;
-      } else if (TextOperation.isInsert(op)) {
-        const { lineNumber, column } = indexToLineAndColumn(
-          this.editor.getModel().getLinesContent() || [],
-          index
-        );
-        this.editor.getModel().applyEdits([
-          {
-            range: new this.monaco.Range(
-              lineNumber,
-              column,
-              lineNumber,
-              column
-            ),
-            text: op,
-            forceMoveMarkers: true,
-          },
-        ]);
-        index += op.length;
-      } else if (TextOperation.isDelete(op)) {
-        const lines = this.editor.getModel().getLinesContent() || [];
-        const from = indexToLineAndColumn(lines, index);
-        const to = indexToLineAndColumn(lines, index - op);
-        this.editor.getModel().applyEdits([
-          {
-            range: new this.monaco.Range(
-              from.lineNumber,
-              from.column,
-              to.lineNumber,
-              to.column
-            ),
-            text: '',
-          },
-        ]);
-      }
-    }
-  };
+  applyOperations = async (operations: { [moduleShortid: string]: any }) =>
+    Promise.all(
+      Object.keys(operations).map(async moduleShortid => {
+        const model = await this.getModelByShortid(moduleShortid);
+        const operation = TextOperation.fromJSON(operations[moduleShortid]);
+
+        this.liveOperationCode = '';
+        let index = 0;
+        for (let i = 0; i < operation.ops.length; i++) {
+          const op = operation.ops[i];
+          if (TextOperation.isRetain(op)) {
+            index += op;
+          } else if (TextOperation.isInsert(op)) {
+            const { lineNumber, column } = indexToLineAndColumn(
+              model.getLinesContent() || [],
+              index
+            );
+            model.applyEdits([
+              {
+                range: new this.monaco.Range(
+                  lineNumber,
+                  column,
+                  lineNumber,
+                  column
+                ),
+                text: op,
+                forceMoveMarkers: true,
+              },
+            ]);
+            index += op.length;
+          } else if (TextOperation.isDelete(op)) {
+            const lines = model.getLinesContent() || [];
+            const from = indexToLineAndColumn(lines, index);
+            const to = indexToLineAndColumn(lines, index - op);
+            model.applyEdits([
+              {
+                range: new this.monaco.Range(
+                  from.lineNumber,
+                  from.column,
+                  to.lineNumber,
+                  to.column
+                ),
+                text: '',
+              },
+            ]);
+          }
+        }
+      })
+    );
 
   changeDependencies = (
     dependencies: ?$PropertyType<Props, 'dependencies'>
@@ -1476,6 +1482,15 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
 
     return modelCache[id];
+  };
+
+  getModelByShortid = async (shortid: string) => {
+    const module = this.sandbox.modules.find(m => m.shortid === shortid);
+
+    if (!module) {
+      throw new Error('Cannot find module with shortid: ' + shortid);
+    }
+    return this.getModelById(module.id);
   };
 
   openNewModel = async (id: string, title: string, newCode?: string) => {

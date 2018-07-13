@@ -378,25 +378,18 @@ export const sendTransform = [
 ];
 
 export const applyTransformation = [
-  when(
-    state`editor.currentModuleShortid`,
-    props`moduleShortid`,
-    (s1, s2) => s1 === s2
+  actions.computePendingOperation,
+  set(
+    state`editor.pendingOperations.${props`moduleShortid`}`,
+    props`pendingOperation`
   ),
-  {
-    true: [
-      actions.computePendingOperation,
-      set(state`editor.pendingOperation`, props`pendingOperation`),
-    ],
-    false: [actions.applyTransformation, changeCode],
-  },
   actions.unSetReceivingStatus,
 ];
 
 export const unSetReceivingStatus = [actions.unSetReceivingStatus];
 
 export const clearPendingOperation = [
-  set(state`editor.pendingOperation`, null),
+  set(state`editor.pendingOperations`, null),
 ];
 
 export const clearPendingUserSelections = [
