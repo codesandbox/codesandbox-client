@@ -78,6 +78,19 @@ export const getContainerStyles = props => {
 
 export const EntryContainer = styled.span`
   ${props => getContainerStyles(props)};
+  .actionIcons,
+  .mainIndicator {
+    opacity: 0;
+  }
+
+  .actionIcons {
+    transition: opacity 0.2s;
+  }
+
+  &:hover .mainIndicator,
+  &:hover .actionIcons {
+    opacity: 1;
+  }
 `;
 
 export const Container = styled.div`

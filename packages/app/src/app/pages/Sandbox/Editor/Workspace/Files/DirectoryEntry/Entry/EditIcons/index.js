@@ -19,7 +19,6 @@ const handleClick = func => e => {
 
 function EditIcons({
   className,
-  hovering,
   onDelete,
   onEdit,
   onCreateFile,
@@ -35,46 +34,44 @@ function EditIcons({
   }
 
   return (
-    <div className={className}>
-      {(hovering || (window.__isTouch && active) || forceShow) && (
-        <Container>
-          {onEdit && (
-            <Tooltip title="Rename">
-              <Icon onClick={handleClick(onEdit)}>
-                <EditIcon />
-              </Icon>
-            </Tooltip>
-          )}
-          {onUploadFile && (
-            <Tooltip title="Upload Files">
-              <Icon onClick={handleClick(onUploadFile)}>
-                <UploadFileIcon />
-              </Icon>
-            </Tooltip>
-          )}
-          {onCreateFile && (
-            <Tooltip title="New File">
-              <Icon onClick={handleClick(onCreateFile)}>
-                <AddFileIcon />
-              </Icon>
-            </Tooltip>
-          )}
-          {onCreateDirectory && (
-            <Tooltip title="New Directory">
-              <Icon onClick={handleClick(onCreateDirectory)}>
-                <AddDirectoryIcon />
-              </Icon>
-            </Tooltip>
-          )}
-          {onDelete && (
-            <Tooltip title="Delete">
-              <Icon onClick={handleClick(onDelete)}>
-                <CrossIcon />
-              </Icon>
-            </Tooltip>
-          )}
-        </Container>
-      )}
+    <div className={className} style={{ pointerEvents: 'none' }}>
+      <Container>
+        {onEdit && (
+          <Tooltip title="Rename">
+            <Icon onClick={handleClick(onEdit)}>
+              <EditIcon style={{ pointerEvents: 'auto' }} />
+            </Icon>
+          </Tooltip>
+        )}
+        {onUploadFile && (
+          <Tooltip title="Upload Files">
+            <Icon onClick={handleClick(onUploadFile)}>
+              <UploadFileIcon style={{ pointerEvents: 'auto' }} />
+            </Icon>
+          </Tooltip>
+        )}
+        {onCreateFile && (
+          <Tooltip title="New File">
+            <Icon onClick={handleClick(onCreateFile)}>
+              <AddFileIcon style={{ pointerEvents: 'auto' }} />
+            </Icon>
+          </Tooltip>
+        )}
+        {onCreateDirectory && (
+          <Tooltip title="New Directory">
+            <Icon onClick={handleClick(onCreateDirectory)}>
+              <AddDirectoryIcon style={{ pointerEvents: 'auto' }} />
+            </Icon>
+          </Tooltip>
+        )}
+        {onDelete && (
+          <Tooltip title="Delete">
+            <Icon onClick={handleClick(onDelete)}>
+              <CrossIcon style={{ pointerEvents: 'auto' }} />
+            </Icon>
+          </Tooltip>
+        )}
+      </Container>
     </div>
   );
 }
