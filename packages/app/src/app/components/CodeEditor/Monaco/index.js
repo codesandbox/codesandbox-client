@@ -1176,11 +1176,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     nextTitle,
     nextCode,
   }: {
+    /* eslint-disable */
     currentId: string,
     nextId: string,
     nextTitle: string,
     nextCode: string,
     currentCode: string,
+    /* eslint-enable */
   }) =>
     new Promise(resolve => {
       // We load this in a later moment so the rest of the ui already updates before the editor
