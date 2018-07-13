@@ -1164,7 +1164,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  swapDocuments = async ({
+  swapDocuments = ({
     currentId,
     nextId,
     nextTitle,
@@ -1175,35 +1175,40 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     nextTitle: string,
     nextCode: string,
     currentCode: string,
-  }) => {
-    if (modelCache[currentId]) {
-      const sandbox = this.sandbox;
-      const currentModule = this.currentModule;
-      const path = getModulePath(
-        sandbox.modules,
-        sandbox.directories,
-        currentId
-      );
-
-      modelCache[currentId].viewState = this.editor.saveViewState();
-      if (modelCache[currentId].lib) {
-        // We let Monaco know what the latest code is of this file by removing
-        // the old extraLib definition and defining a new one.
-        modelCache[currentId].lib.dispose();
-        modelCache[currentId].lib = this.addLib(currentModule.code || '', path);
-
-        // Reset changes
-        this.changes = { code: '', changes: [] };
-      }
-    }
-
-    setTimeout(async () => {
+  }) =>
+    new Promise(resolve => {
       // We load this in a later moment so the rest of the ui already updates before the editor
       // this will give a perceived speed boost. Inspiration from vscode team
-      await this.openNewModel(nextId, nextTitle, nextCode);
-      this.editor.focus();
-    }, 50);
-  };
+      setTimeout(async () => {
+        if (modelCache[currentId]) {
+          const sandbox = this.sandbox;
+          const currentModule = this.currentModule;
+          const path = getModulePath(
+            sandbox.modules,
+            sandbox.directories,
+            currentId
+          );
+
+          modelCache[currentId].viewState = this.editor.saveViewState();
+          if (modelCache[currentId].lib) {
+            // We let Monaco know what the latest code is of this file by removing
+            // the old extraLib definition and defining a new one.
+            modelCache[currentId].lib.dispose();
+            modelCache[currentId].lib = this.addLib(
+              currentModule.code || '',
+              path
+            );
+
+            // Reset changes
+            this.changes = { code: '', changes: [] };
+          }
+        }
+
+        await this.openNewModel(nextId, nextTitle, nextCode);
+        this.editor.focus();
+        resolve();
+      }, 50);
+    });
 
   updateCode(code: string = '') {
     const pos = this.editor.getPosition();
