@@ -39,6 +39,5 @@ module.exports = {
         webpack: true,
       },
     ],
-    require.resolve('react-hot-loader/babel'),
   ],
 };

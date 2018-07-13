@@ -151,10 +151,10 @@
 .ais-RefinementList__item
   input[type='checkbox']:checked
   ~ .ais-RefinementList__itemBox {
-  background: #6caedd
+  background: #40a9f3
     url("data:image/svg+xml;utf8,<svg viewBox='0 0 10 9' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.88l2.378 2.435L9.046 1.6' stroke-width='1.6' stroke='%23FFF' fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'/></svg>")
     no-repeat 50%/10px;
-  border-color: #6caedd;
+  border-color: #40a9f3;
   box-shadow: none;
 }
 .ais-RefinementList__item:hover .ais-RefinementList__itemBox {
@@ -214,7 +214,7 @@
   border: none;
   font-size: 12px;
   color: #fff;
-  background: #6caedd;
+  background: #40a9f3;
 }
 
 .ais-ClearAll__root:disabled[disabled],

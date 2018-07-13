@@ -191,7 +191,9 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     };
 
     if (settings.autoCompleteEnabled) {
-      const tern = await import(/* webpackChunkName: 'codemirror-tern' */ 'tern');
+      const tern = await import(/* webpackChunkName: 'codemirror-tern' */ 'tern').then(
+        x => x.default
+      );
       const defs = await import(/* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json');
       window.tern = tern;
       this.server =

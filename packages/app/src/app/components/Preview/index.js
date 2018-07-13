@@ -2,7 +2,7 @@
 import * as React from 'react';
 import type { Sandbox, Module, Preferences } from 'common/types';
 import { listen, dispatch, registerFrame } from 'codesandbox-api';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 
 import { frameUrl } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';

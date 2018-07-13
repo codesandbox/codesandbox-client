@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import validateTitle from '../validateTitle';
 import ModuleEntry from './ModuleEntry';
 import DirectoryEntry from '../';
@@ -21,6 +21,7 @@ class DirectoryChildren extends React.Component {
       isInProjectView,
       markTabsNotDirty,
       store,
+      discardModuleChanges,
     } = this.props;
 
     const {
@@ -73,6 +74,7 @@ class DirectoryChildren extends React.Component {
             markTabsNotDirty={markTabsNotDirty}
             renameModule={renameModule}
             deleteEntry={deleteEntry}
+            discardModuleChanges={discardModuleChanges}
           />
         ))}
       </div>

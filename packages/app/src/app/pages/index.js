@@ -7,13 +7,17 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import _debug from 'app/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
 import Loading from 'app/components/Loading';
+import { DragDropContext } from 'react-dnd';
 
 import send, { DNT } from 'common/utils/analytics';
 
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
+import Dashboard from './Dashboard';
 import { Container, Content } from './elements';
+
+import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -106,6 +110,7 @@ class Routes extends React.Component<Props> {
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
+            <Route path="/dashboard" component={Dashboard} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin/:jwt?" component={SignIn} />
@@ -124,4 +129,6 @@ class Routes extends React.Component<Props> {
   }
 }
 
-export default inject('signals', 'store')(observer(Routes));
+export default inject('signals', 'store')(
+  DragDropContext(HTML5Backend)(observer(Routes))
+);

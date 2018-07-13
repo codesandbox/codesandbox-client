@@ -27,8 +27,7 @@ class CliInstructions extends React.PureComponent {
                 1. Install the CLI <Code>npm i -g codesandbox</Code>
               </SubTitle>
               <SubTitle>
-                2. Go to your `create-react-app` project{' '}
-                <Code>cd path-of-your-project</Code>
+                2. Go to your project <Code>cd path-of-your-project</Code>
               </SubTitle>
               <SubTitle>
                 3. Deploy your project to CodeSandbox{' '}

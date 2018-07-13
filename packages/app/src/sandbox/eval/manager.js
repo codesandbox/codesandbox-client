@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep, uniq, values, isEqual } from 'lodash';
+import { flattenDeep, uniq, values, isEqual } from 'lodash-es';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
@@ -74,6 +74,7 @@ const SHIMMED_MODULE: Module = {
 const debug = _debug('cs:compiler:manager');
 
 type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
+type Stage = 'transpilation' | 'evaluation';
 
 export default class Manager {
   id: string;
@@ -108,6 +109,8 @@ export default class Manager {
 
   configurations: Configurations;
 
+  stage: Stage;
+
   constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
     this.id = id;
     this.preset = preset;
@@ -121,6 +124,7 @@ export default class Manager {
     this.isFirstLoad = true;
     this.transpiledModulesByHash = {};
     this.configurations = {};
+    this.stage = 'transpilation';
 
     this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
@@ -166,8 +170,14 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string) =>
-    !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+  isFile = (p: string) => {
+    if (this.stage === 'transpilation') {
+      // In transpilation phase we can afford to download the file if not found,
+      // because we're async. That's why we also include the meta here.
+      return !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+    }
+    return !!this.transpiledModules[p];
+  };
 
   readFileSync = (p: string) => {
     if (this.transpiledModules[p]) {
@@ -179,6 +189,10 @@ export default class Manager {
     err.code = 'ENOENT';
 
     throw err;
+  };
+
+  setStage = (stage: Stage) => {
+    this.stage = stage;
   };
 
   setManifest(manifest: ?Manifest) {
@@ -477,6 +491,7 @@ export default class Manager {
       const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
       if (NODE_LIBS.includes(shimmedPath)) {
+        this.cachedPaths[dirredPath][path] = shimmedPath;
         return SHIMMED_MODULE;
       }
 
@@ -688,6 +703,7 @@ export default class Manager {
     this.getModules().forEach(m => {
       if (
         !m.path.startsWith('/node_modules') &&
+        m.path !== '/var/task/node_modules/browser-resolve/empty.js' &&
         !modules[m.path] &&
         !m.parent // not an emitted module
       ) {
@@ -827,7 +843,7 @@ export default class Manager {
           meta,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
-          cachedPaths: { [path: string]: string },
+          cachedPaths: { [path: string]: { [path: string]: string } },
           version: string,
           timestamp: number,
           configurations: Object,

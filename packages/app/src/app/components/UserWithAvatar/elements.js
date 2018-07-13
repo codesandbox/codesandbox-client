@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const CenteredText = styled.div`
   display: inline-flex;
@@ -12,6 +12,28 @@ export const AuthorName = styled.span`
   align-items: center;
   margin: 0 0.5em;
   font-weight: 400;
+
+  ${props =>
+    props.useBigName &&
+    css`
+      margin: 0 0.75em;
+      font-size: 1rem;
+    `};
+`;
+
+export const Names = styled.div`
+  display: inline-flex;
+
+  flex-direction: column;
+`;
+
+export const Username = styled.div`
+  ${props =>
+    props.hasTwoNames &&
+    css`
+      opacity: 0.7;
+      font-size: 0.75em;
+    `};
 `;
 
 export const Image = styled.img`

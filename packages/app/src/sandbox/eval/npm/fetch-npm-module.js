@@ -79,9 +79,9 @@ function getUnpkgUrl(name: string, version: string) {
     : `https://unpkg.com/${nameWithoutAlias}@${version}`;
 }
 
-function getMeta(name: string, version: string) {
+function getMeta(name: string, packageJSONPath: string, version: string) {
   const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
-  const id = `${nameWithoutAlias}@${version}`;
+  const id = `${packageJSONPath}@${version}`;
   if (metas[id]) {
     return metas[id];
   }
@@ -269,7 +269,12 @@ export default async function fetchModule(
   manager: Manager,
   defaultExtensions: Array<string> = ['js', 'jsx', 'json']
 ): Promise<Module> {
-  const dependencyName = getDependencyName(path);
+  // Get the last part of the path as dependency name for paths like
+  // instantsearch.js/node_modules/lodash/sum.js
+  // In this case we want to get the lodash dependency info
+  const dependencyName = getDependencyName(
+    path.replace(/.*\/node_modules\//, '')
+  );
 
   const versionInfo = await findDependencyVersion(
     currentPath,
@@ -284,7 +289,7 @@ export default async function fetchModule(
 
   const { packageJSONPath, version } = versionInfo;
 
-  const meta = await getMeta(dependencyName, version);
+  const meta = await getMeta(dependencyName, packageJSONPath, version);
 
   const normalizeFunction = TEMP_USE_JSDELIVR ? normalizeJSDelivr : normalize;
   const normalizedMeta = normalizeFunction(

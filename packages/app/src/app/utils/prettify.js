@@ -80,23 +80,32 @@ export default function prettify(
     let timeout = setTimeout(() => {
       // If worker doesn't respond in time
       reject({ error: 'Prettify timeout' });
+      timeout = null;
     }, 5000);
 
-    worker.onmessage = e => {
+    const handler = e => {
       const { formatted, text, error } = e.data;
+
       if (timeout) {
-        clearTimeout(timeout);
-        timeout = null;
         if (text === getCode()) {
+          worker.removeEventListener('message', handler);
+          clearTimeout(timeout);
+          timeout = null;
+
           if (error) {
             console.error(error);
             reject({ error });
           }
+
           if (formatted) {
             resolve(formatted);
           }
         }
+      } else {
+        worker.removeEventListener('message', handler);
       }
     };
+
+    worker.addEventListener('message', handler);
   });
 }

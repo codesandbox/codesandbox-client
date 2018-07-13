@@ -10,6 +10,7 @@ import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
 import Live from './items/Live';
+import More from './items/More';
 import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
@@ -29,6 +30,7 @@ const idToItem = {
   deploy: Deployment,
   config: ConfigurationFiles,
   live: Live,
+  more: More,
 };
 
 function Workspace({ store }) {

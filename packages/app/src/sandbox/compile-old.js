@@ -193,10 +193,10 @@ async function compile({
       initializeResizeListener();
     }
 
+    // Testing
+    const ttt = Date.now();
+    const testRunner = manager.testRunner;
     try {
-      // Testing
-      const ttt = Date.now();
-      const testRunner = manager.testRunner;
       testRunner.initialize();
       testRunner.findTests(modules);
       await testRunner.runTests();
@@ -211,7 +211,7 @@ async function compile({
     } catch (error) {
       dispatch({
         type: 'test-result',
-        error: manager.testRunner.reportError(error),
+        error: testRunner.reportError(error),
       });
     }
 

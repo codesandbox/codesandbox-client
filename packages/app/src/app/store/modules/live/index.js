@@ -2,19 +2,25 @@ import { Module } from 'cerebral';
 import model from './model';
 
 import * as sequences from './sequences';
-import { isCurrentEditor, liveUsersByModule } from './getters';
+import {
+  isCurrentEditor,
+  liveUsersByModule,
+  isOwner,
+  isSourceOfTruth,
+} from './getters';
 import { isEditor } from './computed';
 
 export default Module({
   model,
   state: {
     isLive: false,
+    isTeam: false,
     isLoading: false,
-    isOwner: false,
     receivingCode: false,
     reconnecting: false,
     notificationsHidden: false,
     followingUserId: null,
+    deviceId: null,
   },
   computed: {
     isEditor,
@@ -22,6 +28,8 @@ export default Module({
   getters: {
     isCurrentEditor,
     liveUsersByModule,
+    isOwner,
+    isSourceOfTruth,
   },
   signals: {
     roomJoined: sequences.initializeLive,
@@ -37,6 +45,7 @@ export default Module({
     onAddEditorClicked: sequences.addEditor,
     onRemoveEditorClicked: sequences.removeEditor,
     onSessionCloseClicked: sequences.closeSession,
+    onNavigateAway: sequences.closeSession,
     onToggleNotificationsHidden: sequences.toggleNotificationsHidden,
     onSendChat: sequences.sendChat,
     onChatEnabledChange: sequences.setChatEnabled,

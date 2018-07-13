@@ -33,5 +33,6 @@ export default new VueTemplate(
       '/.babelrc': configurations.babelrc,
     },
     distDir: 'dist',
+    main: true,
   }
 );
