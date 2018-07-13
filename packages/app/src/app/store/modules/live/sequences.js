@@ -13,7 +13,7 @@ import VERSION from 'common/version';
 import * as factories from '../../factories';
 import { setSandbox, openModal, resetLive } from '../../sequences';
 
-import { changeCode, changeCurrentModule } from '../editor/sequences';
+import { changeCurrentModule } from '../editor/sequences';
 import { setModuleSaved, setModuleSavedCode } from '../editor/actions';
 import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
