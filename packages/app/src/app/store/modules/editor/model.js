@@ -106,8 +106,8 @@ export default {
   error: types.maybe(types.string),
   isResizing: types.boolean,
   changedModuleShortids: types.array(types.string),
-  pendingOperations: types.maybe(
-    types.map(types.array(types.union(types.string, types.number)))
+  pendingOperations: types.map(
+    types.array(types.union(types.string, types.number))
   ),
   pendingUserSelections: types.array(
     types.model({

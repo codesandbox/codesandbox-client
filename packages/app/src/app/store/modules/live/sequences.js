@@ -388,9 +388,7 @@ export const applyTransformation = [
 
 export const unSetReceivingStatus = [actions.unSetReceivingStatus];
 
-export const clearPendingOperation = [
-  set(state`editor.pendingOperations`, null),
-];
+export const clearPendingOperation = [set(state`editor.pendingOperations`, {})];
 
 export const clearPendingUserSelections = [
   set(state`editor.pendingUserSelections`, []),

@@ -145,7 +145,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.tsconfig = props.tsconfig;
 
-    this.syntaxWorker = null;
     this.lintWorker = null;
     this.typingsFetcherWorker = null;
     this.sizeProbeInterval = null;
@@ -182,25 +181,21 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
     // Make sure that everything has run before disposing, to prevent any inconsistensies
-    setTimeout(() => {
-      this.disposeModules(this.sandbox.modules);
-      if (this.editor) {
-        this.editor.dispose();
-      }
-      if (this.syntaxWorker) {
-        this.syntaxWorker.terminate();
-      }
-      if (this.lintWorker) {
-        this.lintWorker.terminate();
-      }
-      if (this.typingsFetcherWorker) {
-        this.typingsFetcherWorker.terminate();
-      }
-      if (this.transpilationListener) {
-        this.transpilationListener();
-      }
-      clearTimeout(this.sizeProbeInterval);
-    });
+
+    this.disposeModules(this.sandbox.modules);
+    if (this.editor) {
+      this.editor.dispose();
+    }
+    if (this.lintWorker) {
+      this.lintWorker.terminate();
+    }
+    if (this.typingsFetcherWorker) {
+      this.typingsFetcherWorker.terminate();
+    }
+    if (this.transpilationListener) {
+      this.transpilationListener();
+    }
+    clearTimeout(this.sizeProbeInterval);
 
     if (this.disposeInitializer) {
       this.disposeInitializer();

@@ -8,9 +8,14 @@ import htmlGrammar from '!raw-loader!./tmGrammars/html.json.tmLanguage';
 import tsGrammar from '!raw-loader!./tmGrammars/TypeScriptReact.tmLanguage';
 /* eslint-enable */
 
+let wasmLoaded = false;
+
 export async function liftOff(monaco) {
-  // eslint-disable-next-line global-require
-  await loadWASM('/public/onigasm/2.2.1/onigasm.wasm'); // See https://www.npmjs.com/package/onigasm#light-it-up
+  if (!wasmLoaded) {
+    // eslint-disable-next-line global-require
+    await loadWASM('/public/onigasm/2.2.1/onigasm.wasm'); // See https://www.npmjs.com/package/onigasm#light-it-up
+    wasmLoaded = true;
+  }
 
   const registry = new Registry({
     getGrammarDefinition: async scopeName => {
