@@ -143,7 +143,8 @@ export type Sandbox = {
     | '@dojo/cli-create-app'
     | 'vue-cli'
     | 'preact-cli'
-    | 'svelte',
+    | 'svelte'
+    | 'ember',
   entry: string,
   originalGit: ?GitInfo,
   originalGitCommitSha: ?string,

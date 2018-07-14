@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'common/components/logos/React';
+import Ember from 'common/components/logos/Ember';
 import Angular from 'common/components/logos/Angular';
 import Parcel from 'common/components/logos/Parcel';
 import Preact from 'common/components/logos/Preact';
@@ -16,6 +17,7 @@ import {
   reactTs,
   svelte,
   angular,
+  ember,
   parcel,
   dojo,
   cxjs,
@@ -28,6 +30,7 @@ export default function getIcon(
     | 'preact-cli'
     | 'svelte'
     | 'create-react-app-typescript'
+    | 'ember'
     | 'angular-cli'
     | 'parcel'
     | 'dojo'
@@ -44,6 +47,8 @@ export default function getIcon(
       return React;
     case svelte.name:
       return Svelte;
+    case ember.name:
+      return Ember;
     case angular.name:
       return Angular;
     case parcel.name:

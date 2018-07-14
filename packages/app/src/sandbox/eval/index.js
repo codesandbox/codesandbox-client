@@ -10,6 +10,7 @@ import {
   cxjs,
   babel,
   dojo,
+  ember,
 } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
@@ -22,6 +23,7 @@ import parcelPreset from './presets/parcel';
 import babelPreset from './presets/babel-repl';
 import cxjsPreset from './presets/cxjs';
 import dojoPreset from './presets/dojo';
+import emberPreset from './presets/ember';
 
 export default function getPreset(template: string) {
   switch (template) {
@@ -35,6 +37,8 @@ export default function getPreset(template: string) {
       return preactPreset();
     case svelte.name:
       return sveltePreset();
+    case ember.name:
+      return emberPreset();
     case angular.name:
       return angularPreset();
     case parcel.name:

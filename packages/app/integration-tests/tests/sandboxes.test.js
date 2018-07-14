@@ -23,6 +23,7 @@ const SANDBOXES = [
   'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
   'xp5qy8r93q', // babel example
   'angular', // angular template
+  'ember', // ember template
   // Sass importing
   '2ppkvzx570', // nested imports
   'rl2m3xklyo', // node_modules import
