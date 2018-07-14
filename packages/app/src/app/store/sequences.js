@@ -297,8 +297,8 @@ export const setSandbox = [
   actions.setCurrentModuleShortid,
   actions.setMainModuleShortid,
   actions.setInitialTab,
-  actions.setUrlOptions,
   actions.setSandboxConfigOptions,
+  actions.setUrlOptions,
   actions.setWorkspace,
 ];
 
