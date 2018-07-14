@@ -57,9 +57,7 @@ export interface Editor {
   currentModule?: Module;
   setTSConfig?: (tsConfig: Object) => void;
   setReceivingCode?: (receivingCode: boolean) => void;
-  applyOperations?: (operations: { [moduleShortid: string]: any }) => Promise<
-    Array<void>
-  >;
+  applyOperations?: (operations: { [moduleShortid: string]: any }) => void;
   updateUserSelections?: (selections: any) => void;
 }
 
@@ -67,7 +65,7 @@ export type Props = {
   currentModule: Module,
   currentTab: ?Tab,
   sandbox: Sandbox,
-  onChange: (code: string) => void,
+  onChange: (code: string, moduleShortid?: string) => void,
   onInitialized: (editor: Editor) => Function,
   onModuleChange: (moduleId: string) => void,
   onNpmDependencyAdded?: (name: string) => void,

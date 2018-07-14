@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
-import { reaction } from 'mobx';
+import { autorun, reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
@@ -219,12 +219,8 @@ class EditorPreview extends React.Component<Props, State> {
     );
 
     const disposePendingOperationHandler = reaction(
-      () =>
-        store.editor.pendingOperations &&
-        Object.keys(store.editor.pendingOperations).map(
-          x => store.editor.pendingOperations[x]
-        ),
-      async () => {
+      () => store.editor.pendingOperations.values().map(x => x.join(',')),
+      () => {
         if (store.live.isLive) {
           if (store.editor.pendingOperations) {
             if (editor.setReceivingCode) {
@@ -234,11 +230,9 @@ class EditorPreview extends React.Component<Props, State> {
               editor.applyOperations(store.editor.pendingOperations);
             } else {
               try {
-                Object.keys(store.editor.pendingOperations).forEach(
-                  moduleShortid => {
-                    const operation = TextOperation.fromJSON(
-                      store.editor.pendingOperations[moduleShortid]
-                    );
+                store.editor.pendingOperations.forEach(
+                  (operationJSON, moduleShortid) => {
+                    const operation = TextOperation.fromJSON(operationJSON);
 
                     const module = store.currentSandbox.modules.find(
                       m => m.shortid === moduleShortid
@@ -451,10 +445,10 @@ class EditorPreview extends React.Component<Props, State> {
                   signals.editor.addNpmDependency({ name, isDev: true });
                 }
               }}
-              onChange={code =>
+              onChange={(code, moduleShortid) =>
                 signals.editor.codeChanged({
                   code,
-                  moduleShortid: currentModule.shortid,
+                  moduleShortid: moduleShortid || currentModule.shortid,
                 })
               }
               onModuleChange={moduleId =>

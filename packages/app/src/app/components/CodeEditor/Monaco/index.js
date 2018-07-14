@@ -730,55 +730,75 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  applyOperations = async (operations: { [moduleShortid: string]: any }) =>
-    Promise.all(
-      Object.keys(operations).map(async moduleShortid => {
-        const model = await this.getModelByShortid(moduleShortid);
-        const operation = TextOperation.fromJSON(operations[moduleShortid]);
+  applyOperations = (operations: { [moduleShortid: string]: any }) => {
+    const operationsJSON = operations.toJSON();
 
-        this.liveOperationCode = '';
-        let index = 0;
-        for (let i = 0; i < operation.ops.length; i++) {
-          const op = operation.ops[i];
-          if (TextOperation.isRetain(op)) {
-            index += op;
-          } else if (TextOperation.isInsert(op)) {
-            const { lineNumber, column } = indexToLineAndColumn(
-              model.getLinesContent() || [],
-              index
-            );
-            model.applyEdits([
-              {
-                range: new this.monaco.Range(
-                  lineNumber,
-                  column,
-                  lineNumber,
-                  column
-                ),
-                text: op,
-                forceMoveMarkers: true,
-              },
-            ]);
-            index += op.length;
-          } else if (TextOperation.isDelete(op)) {
-            const lines = model.getLinesContent() || [];
-            const from = indexToLineAndColumn(lines, index);
-            const to = indexToLineAndColumn(lines, index - op);
-            model.applyEdits([
-              {
-                range: new this.monaco.Range(
-                  from.lineNumber,
-                  from.column,
-                  to.lineNumber,
-                  to.column
-                ),
-                text: '',
-              },
-            ]);
-          }
+    Object.keys(operationsJSON).forEach(moduleShortid => {
+      const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
+
+      if (moduleShortid !== this.currentModule.shortid) {
+        // Apply the code to the current module code itself
+
+        const module = this.sandbox.modules.find(
+          m => m.shortid === moduleShortid
+        );
+
+        if (!module) {
+          return;
         }
-      })
-    );
+
+        const code = operation.apply(module.code || '');
+        if (this.props.onChange) {
+          this.props.onChange(code, module.shortid);
+        }
+        return;
+      }
+
+      const model = this.editor.getModel();
+
+      this.liveOperationCode = '';
+      let index = 0;
+      for (let i = 0; i < operation.ops.length; i++) {
+        const op = operation.ops[i];
+        if (TextOperation.isRetain(op)) {
+          index += op;
+        } else if (TextOperation.isInsert(op)) {
+          const { lineNumber, column } = indexToLineAndColumn(
+            model.getLinesContent() || [],
+            index
+          );
+          model.applyEdits([
+            {
+              range: new this.monaco.Range(
+                lineNumber,
+                column,
+                lineNumber,
+                column
+              ),
+              text: op,
+              forceMoveMarkers: true,
+            },
+          ]);
+          index += op.length;
+        } else if (TextOperation.isDelete(op)) {
+          const lines = model.getLinesContent() || [];
+          const from = indexToLineAndColumn(lines, index);
+          const to = indexToLineAndColumn(lines, index - op);
+          model.applyEdits([
+            {
+              range: new this.monaco.Range(
+                from.lineNumber,
+                from.column,
+                to.lineNumber,
+                to.column
+              ),
+              text: '',
+            },
+          ]);
+        }
+      }
+    });
+  };
 
   changeDependencies = (
     dependencies: ?$PropertyType<Props, 'dependencies'>
