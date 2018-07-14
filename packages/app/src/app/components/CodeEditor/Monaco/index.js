@@ -251,7 +251,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     liftOff(monaco);
 
     this.initializeModules(sandbox.modules);
-    await this.openNewModel(currentModule.id, currentModule.title);
+    await this.openNewModel(currentModule);
 
     // this.addKeyCommands();
 
@@ -419,18 +419,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   ) => {
     const oldModule = this.currentModule;
 
-    this.swapDocuments({
-      currentId: oldModule.id,
-      nextId: newModule.id,
-      nextTitle: newModule.title,
-      nextCode: newModule.code || '',
-      currentCode: oldModule.code || '',
-    }).then(() => {
+    this.swapDocuments(oldModule, newModule).then(() => {
       this.currentModule = newModule;
-
-      // Mark as receiving code so we don't send operations to others because
-      // of a module switch
-      this.receivingCode = true;
 
       if (errors) {
         this.setErrors(errors);
@@ -440,7 +430,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.setCorrections(corrections);
       }
 
-      this.receivingCode = false;
       if (this.props.onCodeReceived) {
         // Whenever the user changes a module we set up a state that defines
         // that the changes of code are not sent to live users. We need to reset
@@ -709,9 +698,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.getConfigSchemas();
         // Initialize new models
         this.initializeModules(newSandbox.modules)
-          .then(() =>
-            this.openNewModel(newCurrentModule.id, newCurrentModule.title)
-          )
+          .then(() => this.openNewModel(newCurrentModule))
           .then(resolve);
       });
     });
@@ -1185,39 +1172,25 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  swapDocuments = ({
-    currentId,
-    nextId,
-    nextTitle,
-    nextCode,
-  }: {
-    /* eslint-disable */
-    currentId: string,
-    nextId: string,
-    nextTitle: string,
-    nextCode: string,
-    currentCode: string,
-    /* eslint-enable */
-  }) =>
+  swapDocuments = (currentModule: Module, nextModule: Module) =>
     new Promise(resolve => {
       // We load this in a later moment so the rest of the ui already updates before the editor
       // this will give a perceived speed boost. Inspiration from vscode team
       setTimeout(async () => {
-        if (modelCache[currentId]) {
+        if (modelCache[currentModule.id]) {
           const sandbox = this.sandbox;
-          const currentModule = this.currentModule;
           const path = getModulePath(
             sandbox.modules,
             sandbox.directories,
-            currentId
+            currentModule.id
           );
 
-          modelCache[currentId].viewState = this.editor.saveViewState();
-          if (modelCache[currentId].lib) {
+          modelCache[currentModule.id].viewState = this.editor.saveViewState();
+          if (modelCache[currentModule.id].lib) {
             // We let Monaco know what the latest code is of this file by removing
             // the old extraLib definition and defining a new one.
-            modelCache[currentId].lib.dispose();
-            modelCache[currentId].lib = this.addLib(
+            modelCache[currentModule.id].lib.dispose();
+            modelCache[currentModule.id].lib = this.addLib(
               currentModule.code || '',
               path
             );
@@ -1227,7 +1200,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           }
         }
 
-        await this.openNewModel(nextId, nextTitle, nextCode);
+        await this.openNewModel(nextModule);
         this.editor.focus();
         resolve();
       }, 50);
@@ -1510,12 +1483,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     return this.getModelById(module.id);
   };
 
-  openNewModel = async (id: string, title: string, newCode?: string) => {
+  openNewModel = async (module: Module) => {
+    const { id, code: newCode, title } = module;
     const modelInfo = await this.getModelById(id);
     if (newCode) {
       modelInfo.model.setValue(newCode);
     }
 
+    this.currentModule = module;
     this.editor.setModel(modelInfo.model);
 
     requestAnimationFrame(() => {
