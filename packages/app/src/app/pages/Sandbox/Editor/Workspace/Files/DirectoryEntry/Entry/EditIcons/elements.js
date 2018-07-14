@@ -7,4 +7,8 @@ export const Container = styled.div`
   vertical-align: middle;
   line-height: 1;
   align-items: center;
+
+  & svg {
+    pointer-events: auto;
+  }
 `;
