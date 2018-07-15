@@ -101,6 +101,7 @@
     "apollo-link-batch-http": "^1.2.2",
     "apollo-link-context": "^1.0.8",
     "axios": "^0.16.2",
+    "babel-code-frame": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
     "babel-plugin-detective": "^2.0.0",
     "babel-plugin-dynamic-import-node": "^1.0.2",
