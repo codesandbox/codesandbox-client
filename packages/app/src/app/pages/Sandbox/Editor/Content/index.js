@@ -289,8 +289,8 @@ class EditorPreview extends React.Component<Props, State> {
         if (isChangingSandbox) {
           return;
         }
-        const editorModule = editor.currentModule;
 
+        const editorModule = editor.currentModule;
         const changeModule = editor.changeModule;
         if (
           (!editorModule || newModule.id !== editorModule.id) &&
