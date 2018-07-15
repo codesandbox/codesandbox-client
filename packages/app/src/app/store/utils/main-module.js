@@ -16,3 +16,19 @@ export function mainModule(sandbox: Sandbox, parsedConfigurations: Object) {
 
   return module || sandbox.modules[0];
 }
+
+export function defaultOpenedModule(
+  sandbox: Sandbox,
+  parsedConfigurations: Object
+) {
+  const templateDefinition = getDefinition(sandbox.template);
+
+  const resolve = resolveModuleWrapped(sandbox);
+
+  const module = templateDefinition
+    .getDefaultOpenedFiles(parsedConfigurations)
+    .map(p => resolve(p))
+    .find(m => m);
+
+  return module || sandbox.modules[0];
+}
