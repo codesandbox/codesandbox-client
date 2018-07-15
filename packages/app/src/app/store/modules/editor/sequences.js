@@ -127,6 +127,7 @@ export const changeCode = [
     true: [
       setReceivingStatus,
       getCodeOperation,
+      sendTransform,
       actions.setCode,
       unSetReceivingStatus,
     ],
