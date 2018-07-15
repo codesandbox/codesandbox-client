@@ -5,7 +5,6 @@ import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
 import { getModulePath } from 'common/sandbox/modules';
-import { clone } from 'mobx-state-tree';
 import { css } from 'glamor';
 import { listen } from 'codesandbox-api';
 
@@ -140,7 +139,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       fuzzySearchEnabled: false,
     };
     this.sandbox = props.sandbox;
-    this.currentModule = clone(props.currentModule);
+    this.currentModule = props.currentModule;
     this.settings = props.settings;
     this.dependencies = props.dependencies;
 
@@ -421,7 +420,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const oldModule = this.currentModule;
 
     this.swapDocuments(oldModule, newModule).then(() => {
-      this.currentModule = clone(newModule);
+      this.currentModule = newModule;
 
       if (errors) {
         this.setErrors(errors);
@@ -688,7 +687,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const oldSandbox = this.sandbox;
 
       this.sandbox = newSandbox;
-      this.currentModule = clone(newCurrentModule);
+      this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
 
       // Reset models, dispose old ones
@@ -1173,28 +1172,26 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  swapDocuments = (currentModule: Module, nextModule: Module) =>
-    new Promise(resolve => {
+  swapDocuments = (currentModule: Module, nextModule: Module) => {
+    // We get the id here because we don't want currentModule to mutate in the meantime.
+    // If the module changes in the store, and we use it here it will otherwise
+    // throw an error 'Cannot use detached model'. So that's why we get the desired values first.
+    const { id } = currentModule;
+
+    return new Promise(resolve => {
       // We load this in a later moment so the rest of the ui already updates before the editor
       // this will give a perceived speed boost. Inspiration from vscode team
       setTimeout(async () => {
-        if (modelCache[currentModule.id]) {
+        if (modelCache[id]) {
           const sandbox = this.sandbox;
-          const path = getModulePath(
-            sandbox.modules,
-            sandbox.directories,
-            currentModule.id
-          );
+          const path = getModulePath(sandbox.modules, sandbox.directories, id);
 
-          modelCache[currentModule.id].viewState = this.editor.saveViewState();
-          if (modelCache[currentModule.id].lib) {
+          modelCache[id].viewState = this.editor.saveViewState();
+          if (modelCache[id].lib) {
             // We let Monaco know what the latest code is of this file by removing
             // the old extraLib definition and defining a new one.
-            modelCache[currentModule.id].lib.dispose();
-            modelCache[currentModule.id].lib = this.addLib(
-              currentModule.code || '',
-              path
-            );
+            modelCache[id].lib.dispose();
+            modelCache[id].lib = this.addLib(currentModule.code || '', path);
 
             // Reset changes
             this.changes = { code: '', changes: [] };
@@ -1206,6 +1203,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         resolve();
       }, 50);
     });
+  };
 
   updateCode(code: string = '') {
     const pos = this.editor.getPosition();
@@ -1496,10 +1494,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       modelInfo.model.setValue(newCode);
     }
 
-    // We clone because we don't want currentModule to mutate in the meantime.
-    // If the module changes in the store, and we use it here it will otherwise
-    // throw an error 'Cannot use detached model'. So that's why we clone.
-    this.currentModule = clone(module);
+    this.currentModule = module;
     this.editor.setModel(modelInfo.model);
     this.receivingCode = false;
 
