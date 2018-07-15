@@ -84,6 +84,10 @@ if (process.env.NODE_ENV === 'production') {
 window.__isTouch = !matchMedia('(pointer:fine)').matches;
 
 requirePolyfills().then(() => {
+  if (process.env.NODE_ENV === 'development') {
+    window.controller = controller;
+  }
+
   const rootEl = document.getElementById('root');
 
   const showNotification = (message, type) =>

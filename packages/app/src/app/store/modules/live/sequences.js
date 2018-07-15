@@ -29,7 +29,7 @@ export const applySelectionsForModule = [
 ];
 
 export const changeMode = [
-  equals(state`live.isOwner`),
+  when(state`live.isOwner`),
   {
     true: [set(state`live.roomInfo.mode`, props`mode`), actions.sendMode],
     false: [],
@@ -37,7 +37,7 @@ export const changeMode = [
 ];
 
 export const closeSession = [
-  equals(state`live.isOwner`),
+  when(state`live.isOwner`),
   {
     true: [actions.disconnect, resetLive],
     false: [],
@@ -356,7 +356,7 @@ export const handleMessage = [
 ];
 
 export const sendSelection = [
-  equals(state`live.isCurrentEditor`),
+  when(state`live.isCurrentEditor`),
   {
     true: [actions.sendSelection],
     false: [],
@@ -370,7 +370,7 @@ export const createLive = [
 ];
 
 export const sendTransform = [
-  equals(state`live.isCurrentEditor`),
+  when(state`live.isCurrentEditor`),
   {
     true: [actions.sendTransform],
     false: [],
@@ -408,7 +408,7 @@ export const sendChat = [actions.sendChat];
 
 export const setChatEnabled = [
   factories.track('Enable Live Chat', {}),
-  equals(state`live.isOwner`),
+  when(state`live.isOwner`),
   {
     true: [
       set(state`live.roomInfo.chatEnabled`, props`enabled`),

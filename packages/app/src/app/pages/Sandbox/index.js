@@ -93,7 +93,7 @@ class SandboxPage extends React.Component {
 
     if (
       store.editor.isLoading ||
-      store.live.isLoading ||
+      (store.live.isTeam && store.live.isLoading) ||
       store.editor.currentSandbox == null
     ) {
       return (

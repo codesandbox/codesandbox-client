@@ -5,6 +5,7 @@ import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
 import { getModulePath } from 'common/sandbox/modules';
+import { clone } from 'mobx-state-tree';
 import { css } from 'glamor';
 import { listen } from 'codesandbox-api';
 
@@ -139,7 +140,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       fuzzySearchEnabled: false,
     };
     this.sandbox = props.sandbox;
-    this.currentModule = props.currentModule;
+    this.currentModule = clone(props.currentModule);
     this.settings = props.settings;
     this.dependencies = props.dependencies;
 
@@ -420,7 +421,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const oldModule = this.currentModule;
 
     this.swapDocuments(oldModule, newModule).then(() => {
-      this.currentModule = newModule;
+      this.currentModule = clone(newModule);
 
       if (errors) {
         this.setErrors(errors);
@@ -687,7 +688,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const oldSandbox = this.sandbox;
 
       this.sandbox = newSandbox;
-      this.currentModule = newCurrentModule;
+      this.currentModule = clone(newCurrentModule);
       this.dependencies = dependencies;
 
       // Reset models, dispose old ones
@@ -1258,7 +1259,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     if (!codeEquals) {
       if (this.props.onChange) {
-        this.props.onChange(newCode);
+        this.props.onChange(newCode, this.currentModule.shortid);
       }
 
       this.lint(newCode, title, this.editor.getModel().getVersionId());
@@ -1486,12 +1487,21 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   openNewModel = async (module: Module) => {
     const { id, code: newCode, title } = module;
     const modelInfo = await this.getModelById(id);
+
+    // Mark receiving code so that the editor won't send all changed code to the
+    // other clients.
+    this.receivingCode = true;
+
     if (newCode) {
       modelInfo.model.setValue(newCode);
     }
 
-    this.currentModule = module;
+    // We clone because we don't want currentModule to mutate in the meantime.
+    // If the module changes in the store, and we use it here it will otherwise
+    // throw an error 'Cannot use detached model'. So that's why we clone.
+    this.currentModule = clone(module);
     this.editor.setModel(modelInfo.model);
+    this.receivingCode = false;
 
     requestAnimationFrame(() => {
       if (modelInfo.viewState) {
