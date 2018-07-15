@@ -122,7 +122,11 @@ export const forceForkSandbox = [
 export const changeCode = [
   track('Change Code', {}, { trackOnce: true }),
 
-  when(state`live.isLive`),
+  when(
+    state`live.isLive`,
+    props`noLive`,
+    (isLive, noLive) => isLive && !noLive
+  ),
   {
     true: [
       setReceivingStatus,

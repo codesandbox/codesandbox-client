@@ -452,6 +452,7 @@ class EditorPreview extends React.Component<Props, State> {
                 signals.editor.codeChanged({
                   code,
                   moduleShortid: moduleShortid || currentModule.shortid,
+                  noLive: true,
                 })
               }
               onModuleChange={moduleId =>
