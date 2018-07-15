@@ -998,7 +998,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
                 return (
                   path &&
-                  m !== this.currentModule &&
+                  m.id !== this.currentModule.id &&
                   path.startsWith(relativePath)
                 );
               })
