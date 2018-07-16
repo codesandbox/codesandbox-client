@@ -34,14 +34,14 @@ class MonacoEditor extends React.PureComponent {
     }
 
     context.require.config({
-      url: '/public/vs/loader.js',
+      url: '/public/vs13/loader.js',
       paths: {
-        vs: '/public/vs',
+        vs: '/public/vs13',
       },
     });
 
     // Load monaco
-    context.require(['vs/editor/editor.main'], () => {
+    context.require(['vs13/editor/editor.main'], () => {
       this.initMonaco();
     });
   };

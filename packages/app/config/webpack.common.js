@@ -429,7 +429,7 @@ module.exports = {
           from: __DEV__
             ? '../../standalone-packages/monaco-editor/release/dev/vs'
             : '../../standalone-packages/monaco-editor/release/min/vs',
-          to: 'public/vs',
+          to: 'public/vs13',
           force: true,
         },
         __PROD__ && {
@@ -442,7 +442,7 @@ module.exports = {
         },
         {
           from: '../../node_modules/monaco-vue/release/min',
-          to: 'public/vs/language/vue',
+          to: 'public/vs13/language/vue',
         },
         {
           from: 'static',

@@ -13,7 +13,7 @@ export default async (title: string, monaco) => {
     if (kind[1] === 'html') return 'html';
     if (kind[1] === 'vue') {
       if (!monaco.languages.getLanguages().find(l => l.id === 'vue')) {
-        await requireAMDModule(['vs/language/vue/monaco.contribution']);
+        await requireAMDModule(['vs13/language/vue/monaco.contribution']);
       }
       return 'vue';
     }
