@@ -49,7 +49,7 @@ function fetchTheme(foundTheme) {
 const findTheme = async (themeName, customTheme) => {
   if (customTheme) {
     try {
-      return JSON.parse(customTheme.replace(/^\s*\/\//gm, ''));
+      return JSON.parse(customTheme.replace(/^\s*\/\/"/gm, ''));
     } catch (e) {
       console.error(e);
 
