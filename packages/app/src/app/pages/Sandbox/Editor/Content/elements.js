@@ -8,4 +8,7 @@ export const FullSize = styled.div`
   ${fadeIn(0)};
   display: flex;
   flex-direction: column;
+
+  background-color: ${props =>
+    props.theme['editor.background'] || 'transparent'};
 `;

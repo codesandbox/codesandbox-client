@@ -3,7 +3,8 @@ import styled from 'styled-components';
 export const Label = styled.label`
   display: block;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   margin-bottom: 0.5rem;
   margin-top: 2rem;
 `;

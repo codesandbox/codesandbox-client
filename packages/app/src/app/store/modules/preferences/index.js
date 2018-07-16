@@ -14,7 +14,7 @@ export default Module({
       lintEnabled: true,
       instantPreviewEnabled: false,
       fontSize: 14,
-      fontFamily: '',
+      fontFamily: 'Dank Mono',
       lineHeight: 1.5,
       clearConsoleEnabled: true,
       autoDownloadTypes: true,
@@ -43,11 +43,14 @@ export default Module({
       // are disabled, however there is a weird character when you have 'fi' in
       // Menlo. So a temporary fix is to only enable this for Windows.
       enableLigatures: navigator.platform.indexOf('Win') > -1,
+
+      editorTheme: 'CodeSandbox',
+      customVSCodeTheme: undefined,
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,
     paymentDetails: null,
-    itemId: 'editor',
+    itemId: 'appearance',
     showEditor: true,
     showPreview: true,
     showDevtools: false,

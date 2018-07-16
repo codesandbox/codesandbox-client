@@ -32,7 +32,7 @@ export default Module({
     errors: [],
     glyphs: [],
     corrections: [],
-    pendingOperation: null,
+    pendingOperations: {},
     pendingUserSelections: [],
     isInProjectView: false,
     forceRender: 0,

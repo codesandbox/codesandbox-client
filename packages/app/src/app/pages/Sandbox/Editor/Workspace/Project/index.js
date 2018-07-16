@@ -162,7 +162,6 @@ class Project extends React.Component {
             <Description
               style={{
                 fontStyle: sandbox.description ? 'normal' : 'italic',
-                color: 'rgba(255, 255, 255, 0.7)',
               }}
             >
               {sandbox.description ||

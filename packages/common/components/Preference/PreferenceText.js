@@ -1,5 +1,5 @@
 import React from 'react';
-import Input from 'common/components/Input';
+import Input, { TextArea } from 'common/components/Input';
 
 export default class PreferenceText extends React.PureComponent {
   handleChange = e => {
@@ -9,15 +9,14 @@ export default class PreferenceText extends React.PureComponent {
   };
 
   render() {
-    const { value, placeholder } = this.props;
+    const { value, placeholder, isTextArea, ...props } = this.props;
 
-    return (
-      <Input
-        style={{ width: '9rem' }}
-        value={value}
-        placeholder={placeholder}
-        onChange={this.handleChange}
-      />
-    );
+    return React.createElement(isTextArea ? TextArea : Input, {
+      style: { width: '9rem' },
+      value,
+      placeholder,
+      onChange: this.handleChange,
+      ...props,
+    });
   }
 }

@@ -7,7 +7,8 @@ export const OptionContainer = styled.a`
   vertical-align: middle;
   align-items: center;
   margin-bottom: 0.5rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   text-decoration: none;
   cursor: pointer;
   font-weight: 600;

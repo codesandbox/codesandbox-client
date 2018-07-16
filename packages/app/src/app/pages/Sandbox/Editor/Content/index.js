@@ -219,38 +219,46 @@ class EditorPreview extends React.Component<Props, State> {
     );
 
     const disposePendingOperationHandler = reaction(
-      () =>
-        store.editor.pendingOperation &&
-        store.editor.pendingOperation.map(x => x),
+      () => store.editor.pendingOperations.values().map(x => x.join(',')),
       () => {
-        if (store.editor.pendingOperation && store.live.isLive) {
-          if (editor.setReceivingCode) {
-            editor.setReceivingCode(true);
-          }
-          if (editor.applyOperation) {
-            editor.applyOperation(
-              TextOperation.fromJSON(store.editor.pendingOperation)
-            );
-          } else {
-            try {
-              if (editor.currentModule) {
-                const operation = TextOperation.fromJSON(
-                  store.editor.pendingOperation
-                );
-
-                this.props.signals.editor.codeChanged({
-                  code: operation.apply(editor.currentModule.code || ''),
-                  moduleShortid: editor.currentModule.shortid,
-                });
-              }
-            } catch (e) {
-              console.error(e);
+        if (store.live.isLive) {
+          if (store.editor.pendingOperations) {
+            if (editor.setReceivingCode) {
+              editor.setReceivingCode(true);
             }
+            if (editor.applyOperations) {
+              editor.applyOperations(store.editor.pendingOperations);
+            } else {
+              try {
+                store.editor.pendingOperations.forEach(
+                  (operationJSON, moduleShortid) => {
+                    const operation = TextOperation.fromJSON(operationJSON);
+
+                    const module = store.currentSandbox.modules.find(
+                      m => m.shortid === moduleShortid
+                    );
+
+                    if (!module) {
+                      throw new Error(
+                        'Cannot find module with shortid: ' + moduleShortid
+                      );
+                    }
+
+                    this.props.signals.editor.codeChanged({
+                      code: operation.apply(module.code || ''),
+                      moduleShortid: module.shortid,
+                    });
+                  }
+                );
+              } catch (e) {
+                console.error(e);
+              }
+            }
+            if (editor.setReceivingCode) {
+              editor.setReceivingCode(false);
+            }
+            this.props.signals.live.onOperationApplied();
           }
-          if (editor.setReceivingCode) {
-            editor.setReceivingCode(false);
-          }
-          this.props.signals.live.onOperationApplied();
         }
       }
     );
@@ -281,16 +289,19 @@ class EditorPreview extends React.Component<Props, State> {
         if (isChangingSandbox) {
           return;
         }
-        const editorModule = editor.currentModule;
 
+        const editorModule = editor.currentModule;
         const changeModule = editor.changeModule;
-        if (newModule !== editorModule && changeModule) {
+        if (
+          (!editorModule || newModule.id !== editorModule.id) &&
+          changeModule
+        ) {
           const errors = store.editor.errors.map(e => e);
           const corrections = store.editor.corrections.map(e => e);
           changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
           // Only code changed from outside the editor
-          editor.changeCode(newModule.code || '');
+          editor.changeCode(newModule.code || '', newModule.id);
         }
       }
     );
@@ -437,10 +448,11 @@ class EditorPreview extends React.Component<Props, State> {
                   signals.editor.addNpmDependency({ name, isDev: true });
                 }
               }}
-              onChange={code =>
+              onChange={(code, moduleShortid) =>
                 signals.editor.codeChanged({
                   code,
-                  moduleShortid: currentModule.shortid,
+                  moduleShortid: moduleShortid || currentModule.shortid,
+                  noLive: true,
                 })
               }
               onModuleChange={moduleId =>

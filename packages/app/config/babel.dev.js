@@ -10,7 +10,7 @@ module.exports = {
       'env',
       {
         targets: {
-          ie: 11,
+          chrome: 67,
           // We currently minify with uglify
           // Remove after https://github.com/mishoo/UglifyJS2/issues/448
           uglify: true,
@@ -24,7 +24,6 @@ module.exports = {
     'react',
   ],
   plugins: [
-    require.resolve('babel-plugin-transform-async-to-generator'),
     require.resolve('babel-plugin-transform-object-rest-spread'),
     require.resolve('babel-plugin-transform-class-properties'),
     require.resolve('babel-plugin-transform-runtime'),

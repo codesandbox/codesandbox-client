@@ -16,12 +16,17 @@ export const Container = styled.div`
   padding: 0 1rem;
   padding-left: 0.75rem;
   padding-right: 0.125rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${props =>
+    props.theme['tab.inactiveForeground'] ||
+    (props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)')};
 
   svg {
     font-size: 1rem;
     margin-right: 0.5rem;
   }
+
+  background-color: ${props =>
+    props.theme['tab.inactiveBackground'] || 'transparent'};
 
   ${props =>
     props.isOver &&
@@ -31,9 +36,12 @@ export const Container = styled.div`
   ${props =>
     props.active &&
     css`
-      background-color: ${props.theme.background2};
+      background-color: ${props.theme['tab.activeBackground'] ||
+        props.theme.background2};
       border-color: ${props.theme.secondary};
-      color: white;
+      color: ${props.theme['tab.activeForeground'] ||
+        props.theme['editor.foreground'] ||
+        'white'};
     `};
   ${props =>
     props.dirty &&
@@ -59,7 +67,8 @@ export const StyledCloseIcon = styled(CloseIcon)`
 
   float: right;
   opacity: 1;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)'};
   margin-right: 0;
 
   ${props =>

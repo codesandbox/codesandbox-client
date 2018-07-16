@@ -93,6 +93,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.wasm$/,
+        loader: 'file-loader',
+        type: 'javascript/auto',
+      },
+      {
         test: /\.js$/,
         include: [paths.src, paths.common, /@emmetio/],
         exclude: [
@@ -109,6 +114,8 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*ansi-styles`),
           new RegExp(`${sepRe}node_modules${sepRe}.*chalk`),
           new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*monaco-textmate`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*onigasm`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),
@@ -124,6 +131,7 @@ module.exports = {
               {
                 targets: {
                   ie: 11,
+                  esmodules: true,
                 },
               },
             ],
@@ -252,6 +260,7 @@ module.exports = {
       /typescriptServices\.js$/,
       /browserfs\.js/,
       /browserfs\.min\.js/,
+      /standalone-packages/,
     ],
   },
 
@@ -400,6 +409,13 @@ module.exports = {
         path.join(paths.config, 'stubs/load-rules.compiled.js')
       ),
 
+    // DON'T TOUCH THIS. There's a bug in Webpack 4 that causes bundle splitting
+    // to break when using lru-cache. So we literally gice them our own version
+    new webpack.NormalModuleReplacementPlugin(
+      /^lru-cache$/,
+      path.join(paths.config, 'stubs/lru-cache.js')
+    ),
+
     // If you require a missing module and then `npm install` it, you still have
     // to restart the development server for Webpack to discover it. This plugin
     // makes the discovery automatic so you don't have to restart.
@@ -408,15 +424,21 @@ module.exports = {
     // Make the monaco editor work
     new CopyWebpackPlugin(
       [
+        // Our own custom version of monaco
         {
           from: __DEV__
-            ? '../../node_modules/monaco-editor/dev/vs'
-            : '../../node_modules/monaco-editor/min/vs',
+            ? '../../standalone-packages/monaco-editor/release/dev/vs'
+            : '../../standalone-packages/monaco-editor/release/min/vs',
           to: 'public/vs',
+          force: true,
         },
         __PROD__ && {
           from: '../../node_modules/monaco-editor/min-maps',
           to: 'public/min-maps',
+        },
+        {
+          from: '../../node_modules/onigasm/lib/onigasm.wasm',
+          to: 'public/onigasm/2.2.1/onigasm.wasm',
         },
         {
           from: '../../node_modules/monaco-vue/release/min',

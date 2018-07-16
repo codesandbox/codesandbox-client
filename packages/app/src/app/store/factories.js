@@ -101,15 +101,12 @@ export function updateSandboxUrl(sandbox) {
   };
 }
 
-const shouldShowChangelogModal = when(state`hasLogIn`, loggedIn => {
-  if (!loggedIn) {
-    return false;
-  }
-  if (document.cookie.includes('changelog-seen=1')) {
+const shouldShowThemingOption = when(state`isLoggedIn`, () => {
+  if (document.cookie.includes('theming-seen=1')) {
     return false;
   }
 
-  document.cookie = 'changelog-seen=1; Path=/;';
+  document.cookie = 'theming-seen=1; Path=/;';
 
   return true;
 });
@@ -127,9 +124,15 @@ export function withLoadApp(continueSequence) {
         actions.setKeybindings,
         actions.startKeybindings,
 
-        shouldShowChangelogModal,
+        shouldShowThemingOption,
         {
-          true: [set(props`modal`, 'changelogDashboard'), actions.setModal],
+          true: [
+            addNotification(
+              'You can now use your VSCode theme on CodeSandbox! Check it out in your preferences.',
+              'notice',
+              60 // a minute
+            ),
+          ],
           false: [],
         },
 

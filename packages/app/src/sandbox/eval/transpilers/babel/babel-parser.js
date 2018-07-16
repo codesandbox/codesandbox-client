@@ -40,10 +40,22 @@ export default function getBabelConfig(
     return resolvedConfig;
   }
 
-  return {
+  const finalConfig = {
     ...resolvedConfig,
     sourceMaps: 'inline',
     sourceFileName: path,
     filename: path,
   };
+
+  if (finalConfig.plugins) {
+    if (
+      finalConfig.plugins.indexOf('transform-es2015-modules-commonjs') === -1
+    ) {
+      finalConfig.plugins.push('transform-es2015-modules-commonjs');
+    }
+  } else {
+    finalConfig.plugins = 'transform-es2015-modules-commonjs';
+  }
+
+  return finalConfig;
 }

@@ -13,7 +13,7 @@ export default styled.select`
   padding: 0.2em 1em 0.2em 0.2em;
   width: inherit;
   box-sizing: border-box;
-  font-weight: 300;
+  font-weight: 400;
   height: 1.75em;
   appearance: none;
 

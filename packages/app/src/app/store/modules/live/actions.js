@@ -381,6 +381,9 @@ export function updateModule({ props, state }) {
 }
 
 export function sendTransform({ ot, props }) {
+  if (!props.operation) {
+    return;
+  }
   ot.applyClient(props.moduleShortid, props.operation);
 }
 
@@ -416,7 +419,9 @@ export function acknowledgeOperation({ props, ot }) {
 }
 
 export function computePendingOperation({ props, state }) {
-  const existingPendingOperation = state.get('editor.pendingOperation');
+  const existingPendingOperation = state.get(
+    `editor.pendingOperations.${props.moduleShortid}`
+  );
 
   if (!existingPendingOperation) {
     return { pendingOperation: props.operation };
@@ -541,8 +546,22 @@ export function getCurrentModuleIdOfUser({ props, state }) {
   return {};
 }
 
-export function getCodeOperation({ props }) {
-  const { oldCode, code } = props;
+export function getCodeOperation({ props, state }) {
+  if (!state.get('live.isLive')) {
+    return {};
+  }
+
+  const { moduleShortid, code } = props;
+
+  const module = state
+    .get('editor.currentSandbox.modules')
+    .find(m => m.shortid === moduleShortid);
+
+  if (!module || module.code === code) {
+    return {};
+  }
+
+  const oldCode = module.code;
 
   const op = new TextOperation();
 

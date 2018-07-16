@@ -6,7 +6,8 @@ export default styled.h2`
   text-align: center;
   width: 100%;
   font-size: 1.75rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   font-weight: 300;
   margin-top: 0;
   margin-bottom: 1.5rem;

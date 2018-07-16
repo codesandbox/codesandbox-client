@@ -17,7 +17,6 @@ import LiveSessionEndedModal from './LiveSessionEndedModal';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
-import DashboardChangelog from './Changelog/Dashboard';
 
 const modals = {
   preferences: {
@@ -79,10 +78,6 @@ const modals = {
   storageManagement: {
     Component: StorageManagementModal,
     width: 800,
-  },
-  changelogDashboard: {
-    Component: DashboardChangelog,
-    width: 500,
   },
 };
 

@@ -1,5 +1,6 @@
 import memoizeOne from 'memoize-one';
 import Color from 'color';
+import codesandbox from './themes/codesandbox.json';
 
 const colorMethods = [
   'negate', // rgb(0, 100, 255) -> rgb(255, 155, 0)
@@ -47,22 +48,25 @@ const createTheme = colors =>
     .map(({ key, value }) => ({ key, value: decorateSelector(() => value) }))
     .reduce((prev, { key, value }) => ({ ...prev, [key]: value }), {});
 
-const theme = createTheme({
-  background: '#24282A',
-  background2: '#1C2022',
-  background3: '#374140',
-  background4: '#141618',
-  primary: '#FFD399',
-  primaryText: '#7F694C',
-  secondary: '#40A9F3',
-  shySecondary: '#66b9f4',
-  white: '#E0E0E0',
-  gray: '#C0C0C0',
-  black: '#74757D',
-  green: '#5da700',
-  redBackground: '#400000',
-  red: '#F27777',
-  dangerBackground: '#DC3545',
-});
+const theme = {
+  ...createTheme({
+    background: '#24282A',
+    background2: '#1C2022',
+    background3: '#374140',
+    background4: '#141618',
+    primary: '#FFD399',
+    primaryText: '#7F694C',
+    secondary: '#40A9F3',
+    shySecondary: '#66b9f4',
+    white: '#E0E0E0',
+    gray: '#C0C0C0',
+    black: '#74757D',
+    green: '#5da700',
+    redBackground: '#400000',
+    red: '#F27777',
+    dangerBackground: '#DC3545',
+  }),
+  vscodeTheme: codesandbox,
+};
 
 export default theme;

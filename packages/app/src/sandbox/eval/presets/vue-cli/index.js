@@ -28,7 +28,9 @@ const getFileNameFromVm = vm => {
     const options =
       typeof vm === 'function' && vm.cid != null
         ? vm.options
-        : vm._isVue ? vm.$options || vm.constructor.options : vm || {};
+        : vm._isVue
+          ? vm.$options || vm.constructor.options
+          : vm || {};
 
     return options.__file;
   }

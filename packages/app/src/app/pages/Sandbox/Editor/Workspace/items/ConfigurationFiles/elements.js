@@ -27,7 +27,8 @@ export const CreateButton = styled.button`
 
 export const FileTitle = styled.div`
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   font-size: 1rem;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -38,6 +39,7 @@ export const FileDescription = styled.p`
   font-size: 0.875rem;
   margin-top: 0.25rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   margin-bottom: 0;
 `;

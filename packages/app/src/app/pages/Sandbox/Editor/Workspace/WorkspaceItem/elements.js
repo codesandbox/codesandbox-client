@@ -40,7 +40,7 @@ export const ItemHeader = styled.div`
   height: 2.5rem;
   margin: 0;
   font-size: 0.875rem;
-  color: ${props => props.theme.white};
+  color: ${props => (props.theme.light ? '#636363' : props.theme.white)};
   cursor: pointer;
 `;
 

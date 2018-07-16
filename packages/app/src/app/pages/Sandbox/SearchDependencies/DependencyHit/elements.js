@@ -56,7 +56,8 @@ export const License = styled.span`
 
 export const IconLink = styled.a`
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 `;
 
 export const StyledSelect = Select.extend`
