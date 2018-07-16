@@ -30,6 +30,7 @@ function EditorSettings({ store, signals }) {
     'Night Owl',
     'Night Owl (No Italics)',
     'Atom Dark',
+    'High Contrast',
     'VSCode Light',
     'Atom Light',
   ];

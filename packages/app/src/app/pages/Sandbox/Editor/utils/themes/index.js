@@ -26,6 +26,11 @@ export default [
       'https://cdn.rawgit.com/akamud/vscode-theme-onedark/11ef4839/themes/OneDark.json',
   },
   {
+    name: 'High Contrast',
+    id: 'highContrast',
+    get: () => import('./high-contrast'),
+  },
+  {
     name: 'VSCode Light',
     id: 'vscodeLight',
     get: () => import('./vscode-light'),
