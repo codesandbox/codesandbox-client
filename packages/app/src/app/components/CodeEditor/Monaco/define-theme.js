@@ -1,9 +1,19 @@
+import Color from 'color';
+
 const sanitizeColor = color => {
-  if (color === 'white') {
-    return '#ffffff';
+  if (!color) {
+    return color;
   }
 
-  return color;
+  if (/#......$/.test(color) || /#........$/.test(color)) {
+    return color;
+  }
+
+  try {
+    return new Color(color).hexString();
+  } catch (e) {
+    return '#FF0000';
+  }
 };
 
 const colorsAllowed = ({ foreground, background }) => {
@@ -22,7 +32,7 @@ const getTheme = theme => {
       const settings = {
         foreground: sanitizeColor(token.settings.foreground),
         background: sanitizeColor(token.settings.background),
-        fontStyle: sanitizeColor(token.settings.fontStyle),
+        fontStyle: token.settings.fontStyle,
       };
 
       const scope =
@@ -72,14 +82,24 @@ const defineTheme = (monaco, theme) => {
   if (theme) {
     const transformedTheme = getTheme(theme);
 
-    monaco.editor.defineTheme('CodeSandbox', {
-      base: getBase(transformedTheme.type),
-      inherit: true,
-      colors: transformedTheme.colors,
-      rules: transformedTheme.rules,
-    });
+    try {
+      monaco.editor.defineTheme('CodeSandbox', {
+        base: getBase(transformedTheme.type),
+        inherit: true,
+        colors: transformedTheme.colors,
+        rules: transformedTheme.rules,
+      });
 
-    monaco.editor.setTheme('CodeSandbox');
+      monaco.editor.setTheme('CodeSandbox');
+    } catch (e) {
+      console.error(e);
+      if (window.showNotification) {
+        window.showNotification(
+          `Problem initializing template in editor: ${e.message}`,
+          'error'
+        );
+      }
+    }
   }
 };
 
