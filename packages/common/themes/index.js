@@ -39,7 +39,7 @@ export default [
     name: 'Cobalt 2',
     id: 'cobalt2',
     url:
-      'https://raw.githubusercontent.com/wesbos/cobalt2-vscode/master/theme/cobalt2.json',
+      'https://cdn.rawgit.com/wesbos/cobalt2-vscode/master/theme/cobalt2.json',
   },
   {
     name: 'Atom Light',
