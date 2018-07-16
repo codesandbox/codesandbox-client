@@ -1,5 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import themes from 'common/themes';
 
 import PreferenceText from 'common/components/Preference/PreferenceText';
 import {
@@ -25,15 +26,7 @@ function EditorSettings({ store, signals }) {
   });
 
   const fontOptions = ['Menlo', 'Dank Mono', 'Source Code Pro'];
-  const themeOptions = [
-    'CodeSandbox',
-    'Night Owl',
-    'Night Owl (No Italics)',
-    'Atom Dark',
-    'High Contrast',
-    'VSCode Light',
-    'Atom Light',
-  ];
+  const themeOptions = themes.map(t => t.name);
 
   return (
     <div>

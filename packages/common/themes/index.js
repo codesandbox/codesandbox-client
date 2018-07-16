@@ -1,4 +1,4 @@
-import codesandbox from 'common/themes/codesandbox.json';
+import codesandbox from './codesandbox.json';
 
 export default [
   {

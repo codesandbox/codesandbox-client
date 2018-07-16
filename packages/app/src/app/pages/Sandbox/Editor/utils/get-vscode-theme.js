@@ -2,7 +2,7 @@ import JSON from 'json5';
 
 import codesandbox from 'common/themes/codesandbox.json';
 
-import themes from './themes';
+import themes from 'common/themes';
 
 const editorBackground = 'editor.background';
 const editorForeground = 'editor.foreground';
