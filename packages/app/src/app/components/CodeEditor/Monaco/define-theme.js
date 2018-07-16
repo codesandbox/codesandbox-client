@@ -56,12 +56,24 @@ const getTheme = theme => {
   };
 };
 
+const getBase = type => {
+  if (type === 'dark') {
+    return 'vs-dark';
+  }
+
+  if (type === 'hc') {
+    return 'hc-black';
+  }
+
+  return 'vs';
+};
+
 const defineTheme = (monaco, theme) => {
   if (theme) {
     const transformedTheme = getTheme(theme);
 
     monaco.editor.defineTheme('CodeSandbox', {
-      base: transformedTheme.type === 'dark' ? `vs-dark` : 'vs',
+      base: getBase(transformedTheme.type),
       inherit: true,
       colors: transformedTheme.colors,
       rules: transformedTheme.rules,

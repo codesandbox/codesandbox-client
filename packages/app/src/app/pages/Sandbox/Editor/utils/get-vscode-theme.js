@@ -77,7 +77,7 @@ export default async function getTheme(themeName, customTheme) {
   const foundTheme = await findTheme(themeName, customTheme);
 
   // Explicitly check for dark as that is the default
-  const isLight = foundTheme.type !== 'dark';
+  const isLight = foundTheme.type !== 'dark' && foundTheme.type !== 'hc';
 
   const colors = {
     ...(isLight ? vs : vsDark),
