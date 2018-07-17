@@ -41,4 +41,10 @@ export default [
     url:
       'https://cdn.rawgit.com/akamud/vscode-theme-onelight/master/themes/OneLight.json',
   },
+  {
+    name: 'Solarized Light',
+    id: 'solarizedLight',
+    url:
+      'https://raw.githubusercontent.com/Microsoft/vscode/d2b6bbb46fbdf535e2c96b3e00ac56ac1d427a69/extensions/theme-solarized-light/themes/solarized-light-color-theme.json',
+  },
 ];
