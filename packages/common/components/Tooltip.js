@@ -8,6 +8,12 @@ injectGlobal`
   .tippy-popper {
     position: absolute;
   }
+
+  .tippy-popper,
+  .tippy-popper * {
+    pointer-events: none;
+  }
+
   .tippy-tooltip [x-circle] {
     background-color: rgb(21, 24, 25) !important;
   }
