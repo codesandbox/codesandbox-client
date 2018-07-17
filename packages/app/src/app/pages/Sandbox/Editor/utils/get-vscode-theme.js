@@ -1,5 +1,4 @@
 import JSON from 'json5';
-import stripJsonComments from 'strip-json-comments';
 
 import codesandbox from 'common/themes/codesandbox.json';
 
@@ -31,6 +30,12 @@ const vsDark = {
   [editorSelectionHighlight]: '#ADD6FF26',
 };
 
+// parses theme, uncommenting commented colors
+// and using json5 to strip comments
+function parseTheme(theme) {
+  return JSON.parse(theme.replace('/^s*//"', '"'));
+}
+
 function fetchTheme(foundTheme) {
   if (!foundTheme) {
     return codesandbox;
@@ -50,7 +55,7 @@ function fetchTheme(foundTheme) {
     .then(text => {
       let theme;
       try {
-        theme = JSON.parse(stripJsonComments(text));
+        theme = parseTheme(text);
       } catch (e) {
         console.error(e);
 
@@ -68,7 +73,7 @@ function fetchTheme(foundTheme) {
 const findTheme = async (themeName, customTheme) => {
   if (customTheme) {
     try {
-      return JSON.parse(stripJsonComments(customTheme));
+      return parseTheme(customTheme);
     } catch (e) {
       console.error(e);
 
