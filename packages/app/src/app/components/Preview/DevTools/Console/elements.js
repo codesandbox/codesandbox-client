@@ -1,15 +1,20 @@
 import styled from 'styled-components';
-import theme from 'common/theme';
 
 export const Container = styled.div`
-  background-color: ${props => props.theme.background};
+  background-color: ${props =>
+    props.theme['panel.background'] || props.theme.background};
   font-family: Menlo, monospace;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme['editor.foreground'] ||
+    (props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.8)')};
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   max-height: calc(100% - 2rem);
+  LOG_BORDER: 'inherit',
+  LOG_BORDER: 'inherit',
+  border-color: ${props => props.theme['statusBar.border'] || '#191C1D'}
 `;
 
 export const Messages = styled.div`
@@ -32,11 +37,11 @@ export const IconContainer = styled.div`
   justify-content: center;
 `;
 
-export const inspectorTheme = {
+export const inspectorTheme = theme => ({
   PADDING: '0.4rem 1.5rem 0.4rem 0px',
 
   LOG_ICON: '',
-  LOG_BORDER: '#191C1D',
+  LOG_BORDER: theme['panel.border'] || '#191C1D',
   LOG_ICON_HEIGHT: '26px',
   LOG_ICON_WIDTH: '1em',
 
@@ -58,7 +63,7 @@ export const inspectorTheme = {
   BASE_LINE_HEIGHT: '18px',
 
   BASE_BACKGROUND_COLOR: 'rgba(0, 0, 0, 0)',
-  BASE_COLOR: 'rgb(213, 213, 213)',
+  LOG_COLOR: theme['terminal.foreground'] || 'rgb(213, 213, 213)',
 
   OBJECT_NAME_COLOR: theme.secondary(),
   OBJECT_VALUE_NULL_COLOR: 'rgb(127, 127, 127)',
@@ -94,4 +99,4 @@ export const inspectorTheme = {
   TABLE_DATA_BACKGROUND_IMAGE:
     'linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(51, 139, 255, 0.0980392) 50%, rgba(51, 139, 255, 0.0980392))',
   TABLE_DATA_BACKGROUND_SIZE: '128px 32px',
-};
+});

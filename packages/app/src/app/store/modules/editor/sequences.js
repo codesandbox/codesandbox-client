@@ -121,7 +121,23 @@ export const forceForkSandbox = [
 
 export const changeCode = [
   track('Change Code', {}, { trackOnce: true }),
-  actions.setCode,
+
+  when(
+    state`live.isLive`,
+    props`noLive`,
+    (isLive, noLive) => isLive && !noLive
+  ),
+  {
+    true: [
+      setReceivingStatus,
+      getCodeOperation,
+      sendTransform,
+      actions.setCode,
+      unSetReceivingStatus,
+    ],
+    false: actions.setCode,
+  },
+
   actions.addChangedModule,
   actions.unsetDirtyTab,
 ];
@@ -145,23 +161,28 @@ export const saveChangedModules = [
   },
 ];
 
+export const prettifyCode = [
+  track('Prettify Code', {}),
+  actions.prettifyCode,
+  {
+    success: [changeCode],
+    invalidPrettierSandboxConfig: addNotification(
+      'Invalid JSON in sandbox .prettierrc file',
+      'error'
+    ),
+    error: addNotification(
+      string`Something went wrong prettifying the code: "${props`error.message`}"`,
+      'error'
+    ),
+  },
+];
+
 export const saveCode = [
   track('Save Code', {}),
   ensureOwnedSandbox,
-  when(props`code`),
-  {
-    true: actions.setCode,
-    false: [],
-  },
   when(state`preferences.settings.prettifyOnSaveEnabled`),
   {
-    true: [
-      actions.prettifyCode,
-      {
-        success: actions.setCode,
-        error: [],
-      },
-    ],
+    true: [prettifyCode],
     false: [],
   },
   actions.saveModuleCode,
@@ -185,19 +206,7 @@ export const discardModuleChanges = [
   actions.getSavedCode,
   when(props`code`),
   {
-    true: [
-      equals(state`live.isLive`),
-      {
-        true: [
-          setReceivingStatus,
-          getCodeOperation,
-          sendTransform,
-          changeCode,
-          unSetReceivingStatus,
-        ],
-        false: [changeCode],
-      },
-    ],
+    true: [changeCode],
     false: [],
   },
 ];
@@ -212,37 +221,23 @@ export const addNpmDependency = [
     false: [actions.getLatestVersion],
   },
   actions.addNpmDependencyToPackage,
-  equals(state`live.isLive`),
-  {
-    true: [
-      setReceivingStatus,
-      getCodeOperation,
-      sendTransform,
-      saveCode,
-      unSetReceivingStatus,
-    ],
-    false: [saveCode],
-  },
+  changeCode,
+  saveCode,
 ];
 
 export const removeNpmDependency = [
   track('Remove NPM Dependency', {}),
   ensureOwnedSandbox,
   actions.removeNpmDependencyFromPackage,
-  equals(state`live.isLive`),
-  {
-    true: [
-      setReceivingStatus,
-      getCodeOperation,
-      sendTransform,
-      saveCode,
-      unSetReceivingStatus,
-    ],
-    false: [saveCode],
-  },
+  changeCode,
+  saveCode,
 ];
 
-export const updateSandboxPackage = [actions.updateSandboxPackage, saveCode];
+export const updateSandboxPackage = [
+  actions.updateSandboxPackage,
+  changeCode,
+  saveCode,
+];
 
 export const handlePreviewAction = [
   equals(props`action.action`),
@@ -280,20 +275,4 @@ export const setPreviewBounds = [actions.setPreviewBounds];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
-];
-
-export const prettifyCode = [
-  track('Prettify Code', {}),
-  actions.prettifyCode,
-  {
-    success: [changeCode],
-    invalidPrettierSandboxConfig: addNotification(
-      'Invalid JSON in sandbox .prettierrc file',
-      'error'
-    ),
-    error: addNotification(
-      string`Something went wrong prettifying the code: "${props`error.message`}"`,
-      'error'
-    ),
-  },
 ];

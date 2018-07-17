@@ -17,11 +17,7 @@ const GitHub = ({ store }) => {
     )
   ) : (
     <div>
-      <Description
-        margin={1}
-        top={0}
-        style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-      >
+      <Description margin={1} top={0}>
         You can create commits and open pull requests if you add GitHub to your
         integrations.
       </Description>

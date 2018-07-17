@@ -9,9 +9,11 @@ export const Container = styled.div`
   display: flex;
   height: 2.5rem;
   flex: 0 0 2.5rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 
-  background-color: ${({ theme }) => theme.background4};
+  background-color: ${({ theme }) =>
+    theme['editorGroupHeader.tabsBackground'] || theme.background4};
 `;
 
 export const TabsContainer = styled.div`
@@ -63,7 +65,8 @@ export const Line = styled.div`
   height: 12px;
   width: 1px;
 
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: ${props =>
+    props.theme['editorGroupHeader.tabsBorder'] || 'rgba(255, 255, 255, 0.3)'};
 `;
 
 export const IconWrapper = styled.div`
@@ -85,7 +88,7 @@ export const IconWrapper = styled.div`
       props.active &&
       css`
         opacity: 1;
-        color: white;
+        color: ${props.theme['editor.foreground'] || 'white'};
       `};
 
     ${props =>

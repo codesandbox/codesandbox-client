@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 
 export const PrivacySelect = styled.select`
-  background-color: rgba(0, 0, 0, 0.3);
-  color: rgba(255, 255, 255, 0.8);
+  background-color: ${props =>
+    props.theme['dropdown.background'] || 'rgba(0, 0, 0, 0.3)'};
+  color: ${props =>
+    props.theme['dropdown.foreground'] ||
+    (props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)')};
   border-radius: 4px;
   margin: 0.25rem;
   margin-bottom: 1rem;
@@ -14,7 +17,8 @@ export const PrivacySelect = styled.select`
 
 export const PatronMessage = styled.div`
   margin: 0.5rem 1rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.8)'};
   font-size: 0.875rem;
 `;
 

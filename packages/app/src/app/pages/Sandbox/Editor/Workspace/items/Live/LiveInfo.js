@@ -24,7 +24,8 @@ import { Description, WorkspaceInputContainer } from '../../elements';
 
 const Container = styled.div`
   ${delay()};
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   box-sizing: border-box;
 `;
 
@@ -61,7 +62,8 @@ const SubTitle = styled.div`
 const Users = styled.div`
   padding: 0.25rem 1rem;
   padding-top: 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 `;
 
 const ModeSelect = styled.div`
@@ -99,7 +101,8 @@ const Mode = styled.button`
 
 const ModeDetails = styled.div`
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   margin-top: 0.25rem;
 `;
 
@@ -127,7 +130,8 @@ const PreferencesContainer = styled.div`
 const Preference = styled.div`
   flex: 1;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
@@ -135,7 +139,8 @@ const Preference = styled.div`
 
 const IconContainer = styled.div`
   transition: 0.3s ease color;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   cursor: pointer;
 
   &:hover {

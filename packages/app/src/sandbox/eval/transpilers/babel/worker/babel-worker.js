@@ -1,5 +1,6 @@
 // @flow
 import { flatten } from 'lodash-es';
+import codeFrame from 'babel-code-frame';
 
 import delay from 'common/utils/delay';
 
@@ -385,7 +386,26 @@ self.addEventListener('message', async event => {
             plugins,
           };
 
-    const result = Babel.transform(code, customConfig);
+    let result;
+    try {
+      result = Babel.transform(code, customConfig);
+    } catch (e) {
+      // Match the line+col
+      const lineColRegex = /\((\d+):(\d+)\)/;
+
+      const match = e.message.match(lineColRegex);
+      if (match && match[1] && match[2]) {
+        const lineNumber = +match[1];
+        const colNumber = +match[2];
+
+        const niceMessage =
+          e.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
+
+        e.message = niceMessage;
+      }
+
+      throw e;
+    }
 
     const dependencies = getDependencies(detective.metadata(result));
 

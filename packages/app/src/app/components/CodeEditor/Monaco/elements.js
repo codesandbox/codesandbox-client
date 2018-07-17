@@ -46,48 +46,8 @@ export const CodeContainer = styled.div`
     }
   }
 
-  .margin-view-overlays {
-    background: ${theme.background2()};
-  }
-
-  .monaco-editor.vs-dark .monaco-editor-background {
-    background: ${theme.background2()};
-  }
-
-  .monaco-editor .view-overlays .current-line {
-    border: none !important;
-    background-color: rgba(23, 25, 27, 1);
-  }
-
-  .mtk5 {
-    color: #99c794 !important;
-  }
-
-  .JsxText,
-  .JsxSelfClosingElement,
-  .JsxClosingElement {
-    color: #e0e0e0;
-  }
-
-  .tagName-of-JsxOpeningElement,
-  .tagName-of-JsxClosingElement,
-  .tagName-of-JsxSelfClosingElement {
-    color: #ec5f67;
-  }
-
-  .name-of-JsxAttribute {
-    color: #aa759f;
-  }
-
-  .name-of-PropertyAssignment {
-    color: #99c794;
-  }
-
-  .typeName-of-TypeReference {
-    color: #5faeec;
-  }
-
-  .name-of-PropertyAccessExpression {
-    color: #83bdc9;
+  /* For retina screens we will not do subpixel anti-aliasing. That looks uglier. */
+  @media (-webkit-min-device-pixel-ratio: 1.5) {
+    -webkit-font-smoothing: auto;
   }
 `;

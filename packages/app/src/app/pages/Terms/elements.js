@@ -4,7 +4,8 @@ import { NavLink } from 'react-router-dom';
 export const Content = styled.div`
   margin-top: 5%;
   text-align: left;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 
   h1 {
     color: rgba(255, 255, 255, 0.9);

@@ -13,7 +13,7 @@ import VERSION from 'common/version';
 import * as factories from '../../factories';
 import { setSandbox, openModal, resetLive } from '../../sequences';
 
-import { changeCode, changeCurrentModule } from '../editor/sequences';
+import { changeCurrentModule } from '../editor/sequences';
 import { setModuleSaved, setModuleSavedCode } from '../editor/actions';
 import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
@@ -29,7 +29,7 @@ export const applySelectionsForModule = [
 ];
 
 export const changeMode = [
-  equals(state`live.isOwner`),
+  when(state`live.isOwner`),
   {
     true: [set(state`live.roomInfo.mode`, props`mode`), actions.sendMode],
     false: [],
@@ -37,7 +37,7 @@ export const changeMode = [
 ];
 
 export const closeSession = [
-  equals(state`live.isOwner`),
+  when(state`live.isOwner`),
   {
     true: [actions.disconnect, resetLive],
     false: [],
@@ -356,7 +356,7 @@ export const handleMessage = [
 ];
 
 export const sendSelection = [
-  equals(state`live.isCurrentEditor`),
+  when(state`live.isCurrentEditor`),
   {
     true: [actions.sendSelection],
     false: [],
@@ -370,7 +370,7 @@ export const createLive = [
 ];
 
 export const sendTransform = [
-  equals(state`live.isCurrentEditor`),
+  when(state`live.isCurrentEditor`),
   {
     true: [actions.sendTransform],
     false: [],
@@ -378,26 +378,17 @@ export const sendTransform = [
 ];
 
 export const applyTransformation = [
-  when(
-    state`editor.currentModuleShortid`,
-    props`moduleShortid`,
-    (s1, s2) => s1 === s2
+  actions.computePendingOperation,
+  set(
+    state`editor.pendingOperations.${props`moduleShortid`}`,
+    props`pendingOperation`
   ),
-  {
-    true: [
-      actions.computePendingOperation,
-      set(state`editor.pendingOperation`, props`pendingOperation`),
-    ],
-    false: [actions.applyTransformation, changeCode],
-  },
   actions.unSetReceivingStatus,
 ];
 
 export const unSetReceivingStatus = [actions.unSetReceivingStatus];
 
-export const clearPendingOperation = [
-  set(state`editor.pendingOperation`, null),
-];
+export const clearPendingOperation = [set(state`editor.pendingOperations`, {})];
 
 export const clearPendingUserSelections = [
   set(state`editor.pendingUserSelections`, []),
@@ -417,7 +408,7 @@ export const sendChat = [actions.sendChat];
 
 export const setChatEnabled = [
   factories.track('Enable Live Chat', {}),
-  equals(state`live.isOwner`),
+  when(state`live.isOwner`),
   {
     true: [
       set(state`live.roomInfo.chatEnabled`, props`enabled`),

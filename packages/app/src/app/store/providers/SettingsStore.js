@@ -18,6 +18,9 @@ const allowedKeys = {
   newPackagerExperiment: 'settings.newPackagerExperiment',
   zenMode: 'settings.zenMode',
   keybindings: 'settings.keybindings',
+  enableLigatures: 'settings.enableLigatures',
+  editorTheme: 'settings.editorTheme',
+  customVSCodeTheme: 'settings.customVSCodeTheme',
 };
 
 export default Provider({
@@ -44,6 +47,10 @@ export default Provider({
   },
   set(prop, value) {
     if (!(prop in allowedKeys)) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        "Not setting key in preferences because it's not in the whitelist"
+      );
       return;
     }
 

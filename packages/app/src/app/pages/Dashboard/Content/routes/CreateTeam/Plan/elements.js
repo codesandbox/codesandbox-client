@@ -36,7 +36,8 @@ export const Points = styled.div`
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 `;
 
 export const CheckBox = styled.span`

@@ -48,7 +48,8 @@ export const Entry = styled.div`
     isActive &&
     css`
       background-color: ${props => props.theme.secondary.clearer(0.7)};
-      color: rgba(255, 255, 255, 0.8);
+      color: ${props =>
+        props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
     `};
 `;
 

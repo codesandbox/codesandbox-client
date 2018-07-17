@@ -17,7 +17,8 @@ export const Description = styled.p`
   font-size: 1rem;
   width: 100%;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 
   line-height: 1.6;
 `;

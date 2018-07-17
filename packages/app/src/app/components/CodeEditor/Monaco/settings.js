@@ -11,7 +11,7 @@ export default function getEditorSettings(settings) {
     selectOnLineNumbers: true,
     fontSize: settings.fontSize,
     fontFamily: fontFamilies(
-      settings.fontFamily,
+      settings.fontFamily === 'Dank Mono' ? 'dm' : settings.fontFamily,
       'Menlo',
       'Source Code Pro',
       'monospace'

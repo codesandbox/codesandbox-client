@@ -2,18 +2,36 @@ import styled, { css } from 'styled-components';
 import Link from 'react-router-dom/Link';
 import theme from 'common/theme';
 
-const getBackgroundColor = ({ disabled, red, secondary, danger }) => {
-  if (danger) return `background-color: ${theme.dangerBackground()}`;
+const getBackgroundColor = ({
+  theme: internalTheme,
+  disabled,
+  red,
+  secondary,
+  danger,
+}) => {
   if (disabled) return `background-color: ${theme.background2.darken(0.1)()}`;
+  if (internalTheme && internalTheme['button.background']) {
+    return `background-color: ${internalTheme['button.background']}`;
+  }
+  if (danger) return `background-color: ${theme.dangerBackground()}`;
   if (secondary) return `background-color: transparent`;
   if (red) return `background-color: ${theme.red.darken(0.2)()}`;
 
   return `background-color: #40A9F3;`;
 };
 
-const getBackgroundHoverColor = ({ disabled, red, secondary, danger }) => {
-  if (danger) return `background-color: #E25D6A`;
+const getBackgroundHoverColor = ({
+  theme: internalTheme,
+  disabled,
+  red,
+  secondary,
+  danger,
+}) => {
   if (disabled) return `background-color: ${theme.background2.darken(0.1)()}`;
+  if (internalTheme && internalTheme['button.hoverBackground']) {
+    return `background-color: ${internalTheme['button.hoverBackground']}`;
+  }
+  if (danger) return `background-color: #E25D6A`;
   if (secondary) return `background-color: #66b9f4`;
   if (red) return `background-color: #F27777`;
 
@@ -33,11 +51,21 @@ const getHoverColor = ({ secondary }) => {
   return '';
 };
 
-const getBorder = ({ secondary, danger, red, disabled }) => {
+const getBorder = ({
+  theme: internalTheme,
+  secondary,
+  danger,
+  red,
+  disabled,
+}) => {
+  if (disabled) return '2px solid #161A1C';
+  if (internalTheme && internalTheme['button.hoverBackground']) {
+    return `2px solid ${internalTheme['button.hoverBackground']}`;
+  }
   if (secondary) return `2px solid #66B9F4`;
   if (red) return '2px solid #F27777';
   if (danger) return '2px solid #E25D6A';
-  if (disabled) return '2px solid #161A1C';
+
   return '2px solid #66B9F4';
 };
 

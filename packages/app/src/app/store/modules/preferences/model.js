@@ -40,6 +40,8 @@ export default {
     vimMode: types.boolean,
     zenMode: types.boolean,
     enableLigatures: types.boolean,
+    editorTheme: types.string,
+    customVSCodeTheme: types.maybe(types.string),
   }),
   isLoadingPaymentDetails: types.boolean,
   itemId: types.string,
