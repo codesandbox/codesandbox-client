@@ -4516,8 +4516,8 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
 console-feed@^2.8.0:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.1.tgz#2f20be4457bd63cd45309733ae1187c3331e9574"
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.3.tgz#81c07b14c236033fe26d76d2b5b305c3345cae99"
   dependencies:
     emotion "^9.1.1"
     emotion-theming "^9.0.0"
