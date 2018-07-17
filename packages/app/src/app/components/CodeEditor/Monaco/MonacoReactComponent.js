@@ -1,4 +1,5 @@
 import React from 'react';
+import FontFaceObserver from 'fontfaceobserver';
 
 function noop() {}
 
@@ -57,9 +58,35 @@ class MonacoEditor extends React.PureComponent {
         openModel: model => this.props.openReference(model),
       };
 
+      const appliedOptions = { ...options };
+
+      const fonts = appliedOptions.fontFamily.split(',').map(x => x.trim());
+      // We first just set the default fonts for the editor. When the custom font has loaded
+      // we set that one so that Monaco doesn't get confused.
+      // https://github.com/Microsoft/monaco-editor/issues/392
+      let firstFont = fonts[0];
+      if (firstFont.startsWith('"')) {
+        // Font is eg. '"aaaa"'
+        firstFont = JSON.parse(firstFont);
+      }
+      const font = new FontFaceObserver(firstFont);
+
+      font.load().then(
+        () => {
+          if (this.editor && this.props.getEditorOptions) {
+            this.editor.updateOptions(this.props.getEditorOptions());
+          }
+        },
+        () => {
+          // Font was not loaded in 3s, do nothing
+        }
+      );
+
+      appliedOptions.fontFamily = fonts.slice(1).join(', ');
+
       this.editor = context.monaco.editor[
         diffEditor ? 'createDiffEditor' : 'create'
-      ](this.containerElement, options);
+      ](this.containerElement, appliedOptions);
       if (theme) {
         context.monaco.editor.setTheme(theme);
       }
