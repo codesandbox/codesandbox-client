@@ -48,8 +48,9 @@ function fetchTheme(foundTheme) {
     .fetch(foundTheme.url)
     .then(x => x.text())
     .then(text => {
+      let theme;
       try {
-        return JSON.parse(stripJsonComments(text));
+        theme = JSON.parse(stripJsonComments(text));
       } catch (e) {
         console.error(e);
 
@@ -60,6 +61,7 @@ function fetchTheme(foundTheme) {
           );
         }
       }
+      return theme;
     });
 }
 
