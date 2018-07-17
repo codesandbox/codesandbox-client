@@ -43,9 +43,13 @@ class ContentSplit extends React.Component {
     const newThemeName = this.props.store.preferences.settings.editorTheme;
     const customVSCodeTheme = this.props.store.preferences.settings
       .customVSCodeTheme;
-    const theme = await getVSCodeTheme(newThemeName, customVSCodeTheme);
 
-    this.setState({ theme, editorTheme: newThemeName, customVSCodeTheme });
+    try {
+      const theme = await getVSCodeTheme(newThemeName, customVSCodeTheme);
+      this.setState({ theme, editorTheme: newThemeName, customVSCodeTheme });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   render() {

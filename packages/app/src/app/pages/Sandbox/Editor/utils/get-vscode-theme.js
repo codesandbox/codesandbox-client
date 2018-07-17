@@ -30,6 +30,12 @@ const vsDark = {
   [editorSelectionHighlight]: '#ADD6FF26',
 };
 
+// parses theme, uncommenting commented colors
+// and using json5 to strip comments
+function parseTheme(theme) {
+  return JSON.parse(theme.replace('/^s*//"', '"'));
+}
+
 function fetchTheme(foundTheme) {
   if (!foundTheme) {
     return codesandbox;
@@ -43,13 +49,31 @@ function fetchTheme(foundTheme) {
     return foundTheme.get();
   }
 
-  return window.fetch(foundTheme.url).then(x => x.json());
+  return window
+    .fetch(foundTheme.url)
+    .then(x => x.text())
+    .then(text => {
+      let theme;
+      try {
+        theme = parseTheme(text);
+      } catch (e) {
+        console.error(e);
+
+        if (window.showNotification) {
+          window.showNotification(
+            'We had trouble loading the theme, error: \n' + e.message,
+            'error'
+          );
+        }
+      }
+      return theme;
+    });
 }
 
 const findTheme = async (themeName, customTheme) => {
   if (customTheme) {
     try {
-      return JSON.parse(customTheme.replace(/^\s*\/\/"/gm, ''));
+      return parseTheme(customTheme);
     } catch (e) {
       console.error(e);
 
