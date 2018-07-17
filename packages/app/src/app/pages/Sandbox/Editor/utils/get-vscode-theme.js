@@ -1,4 +1,5 @@
 import JSON from 'json5';
+import stripJsonComments from 'strip-json-comments';
 
 import codesandbox from 'common/themes/codesandbox.json';
 
@@ -43,13 +44,29 @@ function fetchTheme(foundTheme) {
     return foundTheme.get();
   }
 
-  return window.fetch(foundTheme.url).then(x => x.json());
+  return window
+    .fetch(foundTheme.url)
+    .then(x => x.text())
+    .then(text => {
+      try {
+        return JSON.parse(stripJsonComments(text));
+      } catch (e) {
+        console.error(e);
+
+        if (window.showNotification) {
+          window.showNotification(
+            'We had trouble loading the theme, error: \n' + e.message,
+            'error'
+          );
+        }
+      }
+    });
 }
 
 const findTheme = async (themeName, customTheme) => {
   if (customTheme) {
     try {
-      return JSON.parse(customTheme.replace(/^\s*\/\/"/gm, ''));
+      return JSON.parse(stripJsonComments(customTheme));
     } catch (e) {
       console.error(e);
 

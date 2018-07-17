@@ -205,6 +205,7 @@
     "shortid": "^2.2.8",
     "store": "^2.0.12",
     "string-replace-loader": "^2.1.1",
+    "strip-json-comments": "^2.0.1",
     "styled-components": "^3.2.1",
     "svg-react-loader": "^0.4.4",
     "tern": "^0.21.0",
