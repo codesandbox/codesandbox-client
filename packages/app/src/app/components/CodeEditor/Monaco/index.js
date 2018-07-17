@@ -1602,6 +1602,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             editorWillMount={monaco =>
               defineTheme(monaco, this.props.theme.vscodeTheme)
             }
+            getEditorOptions={this.getEditorOptions}
             openReference={this.openReference}
           />
         </CodeContainer>
