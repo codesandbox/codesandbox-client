@@ -26,15 +26,21 @@ export default [
       'https://cdn.rawgit.com/akamud/vscode-theme-onedark/11ef4839/themes/OneDark.json',
   },
   {
-    name: 'High Contrast',
-    id: 'highContrast',
-    get: () => import('./high-contrast'),
-  },
-  {
     name: 'Cobalt 2',
     id: 'cobalt2',
     url:
       'https://cdn.rawgit.com/wesbos/cobalt2-vscode/master/theme/cobalt2.json',
+  },
+  {
+    name: 'Shades of Purple',
+    id: 'shadesOfPurple',
+    url:
+      'https://cdn.rawgit.com/ahmadawais/shades-of-purple-vscode/983101b2e9f57638fbc1bd5c551f5c84e561756e/themes/shades-of-purple-color-theme.json',
+  },
+  {
+    name: 'High Contrast',
+    id: 'highContrast',
+    get: () => import('./high-contrast'),
   },
   {
     name: 'VSCode Light',
