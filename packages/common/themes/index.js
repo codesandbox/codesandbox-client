@@ -42,6 +42,12 @@ export default [
     get: () => import('./vscode-light'),
   },
   {
+    name: 'Cobalt 2',
+    id: 'cobalt2',
+    url:
+      'https://cdn.rawgit.com/wesbos/cobalt2-vscode/master/theme/cobalt2.json',
+  },
+  {
     name: 'Atom Light',
     id: 'atomLight',
     url:
