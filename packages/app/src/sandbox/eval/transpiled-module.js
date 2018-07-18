@@ -670,10 +670,7 @@ export default class TranspiledModule {
         return {};
       }
 
-      if (
-        this.module.path.startsWith('/node_modules') &&
-        !isESModule(this.module.code)
-      ) {
+      if (this.module.path.endsWith('.json') || !isESModule(this.module.code)) {
         if (process.env.NODE_ENV === 'development') {
           console.warn('[WARN] Sandpack: loading an untranspiled module');
         }

@@ -176,12 +176,14 @@ export default class Manager {
       // because we're async. That's why we also include the meta here.
       return !!this.transpiledModules[p] || !!getCombinedMetas()[p];
     }
-    return !!this.transpiledModules[p];
+    return !!(this.transpiledModules[p] || this.transpiledModules['/' + p]);
   };
 
   readFileSync = (p: string) => {
-    if (this.transpiledModules[p]) {
-      return this.transpiledModules[p].module.code;
+    const tModule =
+      this.transpiledModules[p] || this.transpiledModules['/' + p];
+    if (tModule) {
+      return tModule.module.code;
     }
 
     const err = new Error('Could not find ' + p);
