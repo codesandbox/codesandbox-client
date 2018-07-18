@@ -171,13 +171,10 @@ export const getModulePath = memoize(
     }
     return `${path}${module.title}`;
   },
-  (modules, directories, id) => {
-    return (
-      id +
-      modules.map(m => m.id).join(',') +
-      directories.map(d => d.id).join(',')
-    );
-  }
+  (modules, directories, id) =>
+    id +
+    modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
+    directories.map(d => d.id + d.title + d.directoryShortid).join(',')
 );
 
 export const isMainModule = (
