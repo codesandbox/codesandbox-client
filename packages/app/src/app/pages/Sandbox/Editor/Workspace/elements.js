@@ -20,7 +20,7 @@ export const getContainerStyles = props => {
         : 'calc(1rem - 2px)'
     };
     padding-right: 3rem;
-    color: ${theme['list.inactiveSelectionForeground'] ||
+    color: ${theme['sideBar.foreground'] ||
       (theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)')};
 
     text-decoration: none;
