@@ -34,6 +34,7 @@ type EmbedError = {
 type Props = {
   showEditor: boolean,
   showPreview: boolean,
+  previewWindow: string,
   isInProjectView: boolean,
   setProjectView: (sandboxId?: ?string, isOpen: boolean, cb: Function) => void,
   sandbox: Sandbox,
@@ -298,6 +299,7 @@ export default class Content extends React.PureComponent<Props, State> {
       sandbox,
       showEditor,
       showPreview,
+      previewWindow,
       currentModule,
       hideNavigation,
       isInProjectView,
@@ -315,8 +317,11 @@ export default class Content extends React.PureComponent<Props, State> {
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'
     );
+
     let view = 'browser';
-    if (sandboxConfig) {
+    if (previewWindow) {
+      view = previewWindow;
+    } else if (sandboxConfig) {
       try {
         view = JSON.parse(sandboxConfig.code || '').view || 'browser';
       } catch (e) {
