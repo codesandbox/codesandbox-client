@@ -54,7 +54,7 @@ module.exports = merge(commonConfig, {
         },
       }),
     ],
-    concatenateModules: true, // ModuleConcatenationPlugin
+    // concatenateModules: true, // ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
 
