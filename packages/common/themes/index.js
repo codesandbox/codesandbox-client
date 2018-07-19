@@ -26,6 +26,18 @@ export default [
       'https://cdn.rawgit.com/akamud/vscode-theme-onedark/11ef4839/themes/OneDark.json',
   },
   {
+    name: 'Cobalt 2',
+    id: 'cobalt2',
+    url:
+      'https://cdn.rawgit.com/wesbos/cobalt2-vscode/master/theme/cobalt2.json',
+  },
+  {
+    name: 'Shades of Purple',
+    id: 'shadesOfPurple',
+    url:
+      'https://cdn.rawgit.com/ahmadawais/shades-of-purple-vscode/983101b2e9f57638fbc1bd5c551f5c84e561756e/themes/shades-of-purple-color-theme.json',
+  },
+  {
     name: 'High Contrast',
     id: 'highContrast',
     get: () => import('./high-contrast'),
@@ -40,5 +52,11 @@ export default [
     id: 'atomLight',
     url:
       'https://cdn.rawgit.com/akamud/vscode-theme-onelight/master/themes/OneLight.json',
+  },
+  {
+    name: 'Solarized Light',
+    id: 'solarizedLight',
+    url:
+      'https://raw.githubusercontent.com/Microsoft/vscode/d2b6bbb46fbdf535e2c96b3e00ac56ac1d427a69/extensions/theme-solarized-light/themes/solarized-light-color-theme.json',
   },
 ];
