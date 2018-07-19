@@ -20,7 +20,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "lerna run install-dependencies --scope codesandbox-browserfs --stream"
+    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --stream"
   },
   "lint-staged": {
     "*.{js,css,json}": [
