@@ -477,8 +477,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
 
         if (change.text) {
-          otOperation.insert(change.text);
-          delta += change.text.length;
+          const normalizedChangeText = change.text.split(/\r?\n/).join('\n');
+          otOperation.insert(normalizedChangeText);
+          delta += normalizedChangeText.length;
         }
       }
 
