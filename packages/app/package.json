@@ -86,7 +86,7 @@
     "sw-precache-webpack-plugin": "^0.11.5",
     "terser": "^3.8.0",
     "typescript": "^2.4.2",
-    "uglifyjs-webpack-plugin": "^1.2.5",
+    "uglifyjs-webpack-plugin": "^1.2.7",
     "url-loader": "1.0.1",
     "webpack": "^4.10.2",
     "webpack-bundle-analyzer": "^2.13.1",
