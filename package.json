@@ -36,9 +36,12 @@
       "packages/sandpack",
       "packages/react-sandpack",
       "packages/homepage"
-  ],
-  "nohoist": ["**/gatsby", "**/gatsby/**"]
+    ],
+    "nohoist": ["**/gatsby", "**/gatsby/**"]
 },
+  "resolutions": {
+    "uglify-es": "npm:terser"
+  },
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
     "babel-eslint": "^8.2.1",
