@@ -3,25 +3,25 @@ version: 2
 jobs:
   build-dependencies:
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
     working_directory: ~/codesandbox-client
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v11-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - v11-dependency-cache-{{ .Branch }}
-            - v11-dependency-cache
+            - v12-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v12-dependency-cache-{{ .Branch }}
+            - v12-dependency-cache
       - restore_cache:
           keys:
-            - v11-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-            - v11-standalone-dependency-cache-{{ .Branch }}
-            - v11-standalone-dependency-cache
+            - v12-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+            - v12-standalone-dependency-cache-{{ .Branch }}
+            - v12-standalone-dependency-cache
       - run:
           name: Install Dependencies
           command: yarn install
       - save_cache:
-          key: v11-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v12-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
             - packages/app/node_modules
@@ -31,36 +31,36 @@ jobs:
             - packages/react-sandpack/node_modules
             - packages/sandpack/node_modules
       - save_cache:
-          key: v11-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+          key: v12-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
           paths:
             - standalone-packages/codesandbox-browserfs/node_modules
       - run:
           name: Build
           command: yarn build:deps
       - save_cache:
-          key: v11-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/codesandbox-client
 
   build-prod:
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v11-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
       # We do this to compare sizes from these builds with master
       - restore_cache:
-          key: v11-prod-app-build-cache-master
+          key: v12-prod-app-build-cache-master
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache:
-          key: v11-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./packages/app/www
       - save_cache:
-          key: v11-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./www
 
@@ -70,7 +70,7 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v11-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -94,11 +94,11 @@ jobs:
 
   test-jest:
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v11-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
@@ -107,11 +107,11 @@ jobs:
 
   lint:
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v11-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Lint
           command: yarn lint
@@ -122,7 +122,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v11-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Docker Sign In
           command: "[ -n \"$DOCKER_USER\" ] && echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin || true"
