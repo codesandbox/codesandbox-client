@@ -30,46 +30,46 @@ module.exports = merge(commonConfig, {
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     sourceMapFilename: '[file].map', // Default
   },
-  mode: 'production',
+  mode: 'development',
   stats: 'verbose',
 
-  optimization: {
-    minimizer: [
-      new UglifyJSPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: false,
-        uglifyOptions: {
-          mangle: {
-            safari10: true,
-          },
-          output: {
-            comments: false,
-          },
-        },
-      }),
-    ],
-    concatenateModules: true, // ModuleConcatenationPlugin
-    namedModules: true, // NamedModulesPlugin()
-    noEmitOnErrors: true, // NoEmitOnErrorsPlugin
+  // optimization: {
+  //   minimizer: [
+  //     new UglifyJSPlugin({
+  //       cache: true,
+  //       parallel: true,
+  //       sourceMap: false,
+  //       uglifyOptions: {
+  //         mangle: {
+  //           safari10: true,
+  //         },
+  //         output: {
+  //           comments: false,
+  //         },
+  //       },
+  //     }),
+  //   ],
+  //   concatenateModules: true, // ModuleConcatenationPlugin
+  //   namedModules: true, // NamedModulesPlugin()
+  //   noEmitOnErrors: true, // NoEmitOnErrorsPlugin
 
-    splitChunks: {
-      chunks: 'all',
-      name(module, chunks, cacheGroup) {
-        const name = normalize(module, chunks, cacheGroup);
+  //   splitChunks: {
+  //     chunks: 'all',
+  //     name(module, chunks, cacheGroup) {
+  //       const name = normalize(module, chunks, cacheGroup);
 
-        if (name === 'vendors~app~embed~sandbox') {
-          return 'common-sandbox';
-        }
+  //       if (name === 'vendors~app~embed~sandbox') {
+  //         return 'common-sandbox';
+  //       }
 
-        if (name === 'vendors~app~embed') {
-          return 'common';
-        }
-        // generate a chunk name using default strategy...
-        return name;
-      },
-    },
-  },
+  //       if (name === 'vendors~app~embed') {
+  //         return 'common';
+  //       }
+  //       // generate a chunk name using default strategy...
+  //       return name;
+  //     },
+  //   },
+  // },
 
   plugins: [
     process.env.ANALYZE && new BundleAnalyzerPlugin(),
