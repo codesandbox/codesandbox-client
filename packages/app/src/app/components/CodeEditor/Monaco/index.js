@@ -1558,7 +1558,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
-  getCode = () => this.editor.getValue(1);
+  getCode = () =>
+    this.editor.getValue({
+      lineEnding: '\n',
+    });
 
   handleSaveCode = async () => {
     const onSave = this.props.onSave;
