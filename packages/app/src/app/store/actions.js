@@ -49,7 +49,7 @@ export function setUrlOptions({ state, router, utils }) {
 
       if (module) {
         state.push('editor.tabs', {
-          type: 'module',
+          type: 'MODULE',
           moduleShortid: module.shortid,
           dirty: false,
         });

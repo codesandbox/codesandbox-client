@@ -1,5 +1,6 @@
 {
   "$schema": "vscode://schemas/color-theme",
+  "isCodeSandbox": true,
   "type": "dark",
   "colors": {
     "editor.background": "#1C2022",

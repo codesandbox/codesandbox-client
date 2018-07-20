@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import theme from 'common/theme';
 
 const fadeInAnimation = keyframes`
@@ -21,6 +21,33 @@ export const Container = styled.div`
   overflow: auto;
 `;
 
+const getTokenColor = (scope, defaultStyles) => ({ theme: givenTheme }) => {
+  if (
+    !givenTheme ||
+    !givenTheme.vscodeTheme ||
+    givenTheme.vscodeTheme.isCodeSandbox
+  ) {
+    return defaultStyles;
+  }
+
+  const foundScope = givenTheme.vscodeTheme.tokenColors.find(
+    token => token && token.scope && token.scope.indexOf(scope) === 0
+  );
+
+  if (foundScope && foundScope.settings) {
+    return css`
+      ${foundScope.settings.foreground &&
+        `color: ${foundScope.settings.foreground};`}
+      ${foundScope.settings.background &&
+        `background: ${foundScope.settings.background};`}
+      ${foundScope.settings.fontStyle &&
+        `font-style: ${foundScope.settings.fontStyle};`}
+    `;
+  }
+
+  return '';
+};
+
 export const CodeContainer = styled.div`
   position: relative;
   overflow: auto;
@@ -31,60 +58,75 @@ export const CodeContainer = styled.div`
     font-family: ${props =>
       fontFamilies(props.fontFamily, 'Menlo', 'Source Code Pro', 'monospace')};
     line-height: ${props => props.lineHeight};
-    background: ${theme.background2()};
-    color: #e0e0e0;
+    background: ${props =>
+      props.theme['editor.background'] || theme.background2()};
+    color: ${props =>
+      props.theme['editor.foreground'] || props.theme.foreground || '#e0e0e0'};
     height: 100%;
     font-weight: 500;
+
+    /* For retina screens we will not do subpixel anti-aliasing. That looks uglier. */
+    @media (-webkit-min-device-pixel-ratio: 1.5) {
+      -webkit-font-smoothing: auto;
+    }
   }
   div.CodeMirror-selected {
-    background: #374140;
+    background: ${props => props.theme['selection.background'] || '#65737e'};
   }
   .CodeMirror-line::selection,
   .CodeMirror-line > span::selection,
   .CodeMirror-line > span > span::selection {
-    background: #65737e;
+    background: ${props => props.theme['selection.background'] || '#65737e'};
   }
   .CodeMirror-line::-moz-selection,
   .CodeMirror-line > span::-moz-selection,
   .CodeMirror-line > span > span::-moz-selection {
-    background: #65737e;
+    background: ${props => props.theme['selection.background'] || '#65737e'};
   }
   .CodeMirror-gutters {
-    background: ${theme.background2()};
+    background: ${props =>
+      props.theme['editorGutter.background'] || theme.background2()};
     border-right: 0px;
   }
   .CodeMirror-guttermarker {
     color: #ac4142;
   }
   .CodeMirror-guttermarker-subtle {
-    color: #505050;
+    color: ${props => props.theme['editorLineNumber.foreground'] || '#505050'};
   }
   .CodeMirror-linenumber {
-    color: #505050;
+    color: ${props => props.theme['editorLineNumber.foreground'] || '#505050'};
   }
   .CodeMirror-cursor {
-    border-left: 1px solid #b0b0b0;
+    border-left: 1px solid
+      ${props => props.theme['editorCursor.foreground'] || '#b0b0b0'};
   }
 
   span.cm-comment {
-    color: #626466;
-  }
-  span.cm-atom {
-    color: #aa759f;
-  }
-  span.cm-number {
-    color: #aa759f;
+    ${getTokenColor('comment', 'color: #626466')};
   }
 
-  span.cm-property,
-  span.cm-attribute {
-    color: #aa759f;
+  span.cm-atom {
+    ${getTokenColor('constant.numeric', 'color: #aa759f')};
   }
+
+  span.cm-number {
+    ${getTokenColor('constant.numeric', 'color: #aa759f')};
+  }
+
+  span.cm-property {
+    ${getTokenColor('variable.instance', 'color: #aa759f')};
+  }
+
+  span.cm-attribute {
+    ${getTokenColor('entity.other.attribute-name', 'color: #aa759f')};
+  }
+
   span.cm-keyword {
-    color: ${theme.secondary()};
+    ${getTokenColor('keyword', `color: ${theme.secondary()}`)};
   }
   span.cm-string {
-    color: #99c794;
+    ${getTokenColor('string', 'color: #99c794')};
   }
 
   span.cm-variable {
@@ -94,13 +136,13 @@ export const CodeContainer = styled.div`
     color: ${theme.secondary()};
   }
   span.cm-def {
-    color: #fac863;
+    ${getTokenColor('variable.other.object.property', 'color: #fac863;')};
   }
   span.cm-bracket {
-    color: #e0e0e0;
+    ${getTokenColor('meta.brace.round.js', 'color: #e0e0e0')};
   }
   span.cm-tag {
-    color: #ec5f67;
+    ${getTokenColor('entity.name.tag', 'color: #ec5f67')};
   }
   span.cm-link {
     color: #aa759f;
@@ -110,9 +152,6 @@ export const CodeContainer = styled.div`
     color: #b0b0b0;
   }
 
-  .CodeMirror-activeline-background {
-    background: rgba(0, 0, 0, 0.2);
-  }
   .CodeMirror-matchingbracket {
     text-decoration: underline;
     color: white !important;
@@ -132,7 +171,13 @@ export const CodeContainer = styled.div`
     background-color: #561011;
   }
 
+  .CodeMirror-activeline-background {
+    background: ${props =>
+      props.theme['editor.lineHighlightBackground'] || 'rgba(0, 0, 0, 0.3)'};
+  }
+
   div.cm-line-highlight.CodeMirror-linebackground {
-    background-color: rgba(0, 0, 0, 0.3);
+    background: ${props =>
+      props.theme['editor.lineHighlightBackground'] || 'rgba(0, 0, 0, 0.3)'};
   }
 `;
