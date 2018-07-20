@@ -477,8 +477,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
 
         if (change.text) {
-          otOperation.insert(change.text);
-          delta += change.text.length;
+          const normalizedChangeText = change.text.split(/\r?\n/).join('\n');
+          otOperation.insert(normalizedChangeText);
+          delta += normalizedChangeText.length;
         }
       }
 
@@ -956,12 +957,15 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       triggerCharacters: ['"', "'", '.'],
       provideCompletionItems: (model, position) => {
         // Get editor content before the pointer
-        const textUntilPosition = model.getValueInRange({
-          startLineNumber: 1,
-          startColumn: 1,
-          endLineNumber: position.lineNumber,
-          endColumn: position.column,
-        });
+        const textUntilPosition = model.getValueInRange(
+          {
+            startLineNumber: 1,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: position.column,
+          },
+          1
+        );
 
         if (
           /(([\s|\n]from\s)|(\brequire\b\())["|']\.*$/.test(textUntilPosition)
@@ -1246,7 +1250,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   handleChange = () => {
-    const newCode = this.editor.getModel().getValue() || '';
+    const newCode = this.editor.getModel().getValue(1) || '';
     const currentModule = this.currentModule;
     const title = currentModule.title;
 
@@ -1504,7 +1508,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       }
 
       this.lint(
-        modelInfo.model.getValue(),
+        modelInfo.model.getValue(1),
         title,
         modelInfo.model.getVersionId()
       );
@@ -1554,7 +1558,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
-  getCode = () => this.editor.getValue();
+  getCode = () =>
+    this.editor.getValue({
+      lineEnding: '\n',
+    });
 
   handleSaveCode = async () => {
     const onSave = this.props.onSave;
