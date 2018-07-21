@@ -33,6 +33,7 @@ type Props = {
   dragging?: boolean,
   hide: boolean,
   noPreview: boolean,
+  alignDirection?: 'right' | 'bottom',
 };
 
 type State = {
@@ -348,6 +349,7 @@ class BasePreview extends React.Component<Props, State> {
             zenMode={settings.zenMode}
             alignRight={this.props.alignRight}
             alignBottom={this.props.alignBottom}
+            alignDirection={this.props.alignDirection}
           />
         )}
 

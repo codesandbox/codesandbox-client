@@ -11,8 +11,15 @@ export default props => (
     {...props}
   >
     <path
-      d="M5.25 1.5V10.5H10.5V1.5H5.25ZM1 9.53674e-07H11C11.5523 9.53674e-07 12 0.447716 12 1V11C12 11.5523 11.5523 12 11 12H1C0.447715 12 0 11.5523 0 11V1C0 0.447716 0.447715 9.53674e-07 1 9.53674e-07Z"
-      transform="translate(12 12) rotate(-180)"
+      d="M1.50001 0H0L1.43051e-06 6.90909C1.43051e-06 7.50909 0.49091 8 1.09091 8L8.5 8V6.5H1.50001L1.50001 0Z"
+      transform="translate(0 4)"
+      fill="currentColor"
+    />
+    <rect
+      width="9.5"
+      height="9.5"
+      rx="1"
+      transform="translate(2.5)"
       fill="currentColor"
     />
   </IconBase>
