@@ -170,10 +170,7 @@ export const prettifyCode = [
       'Invalid JSON in sandbox .prettierrc file',
       'error'
     ),
-    error: addNotification(
-      string`Something went wrong prettifying the code: "${props`error.message`}"`,
-      'error'
-    ),
+    error: [],
   },
 ];
 
