@@ -2,11 +2,11 @@ import { types } from 'mobx-state-tree';
 
 const Sandbox = types.model({
   forkCount: types.number,
-  git: types.maybe(
+  git: types.maybeNull(
     types.model({
       username: types.string,
       repo: types.string,
-      path: types.maybe(types.string),
+      path: types.maybeNull(types.string),
       commitSha: types.string,
       branch: types.string,
     })
@@ -16,7 +16,7 @@ const Sandbox = types.model({
   likeCount: types.number,
   privacy: types.number,
   template: types.string,
-  title: types.maybe(types.string),
+  title: types.maybeNull(types.string),
   updatedAt: types.string,
   viewCount: types.number,
 });
@@ -26,11 +26,11 @@ export default {
     types.model({
       viewCount: types.number,
       username: types.string,
-      subscriptionSince: types.maybe(types.string),
-      showcasedSandboxShortid: types.maybe(types.string),
+      subscriptionSince: types.maybeNull(types.string),
+      showcasedSandboxShortid: types.maybeNull(types.string),
       sandboxCount: types.number,
       receivedLikeCount: types.number,
-      name: types.maybe(types.string),
+      name: types.maybeNull(types.string),
       id: types.string,
       givenLikeCount: types.number,
       forkedCount: types.number,
@@ -44,7 +44,7 @@ export default {
       avatarUrl: types.string,
     })
   ),
-  currentProfileId: types.maybe(types.string),
+  currentProfileId: types.maybeNull(types.string),
   notFound: types.boolean,
   isLoadingProfile: types.boolean,
   sandboxes: types.map(types.map(types.array(Sandbox))),
@@ -52,7 +52,7 @@ export default {
   userSandboxes: types.array(
     types.model({
       id: types.string,
-      title: types.maybe(types.string),
+      title: types.maybeNull(types.string),
       insertedAt: types.string,
       updatedAt: types.string,
     })
@@ -60,5 +60,5 @@ export default {
   currentSandboxesPage: types.number,
   currentLikedSandboxesPage: types.number,
   isLoadingSandboxes: types.boolean,
-  sandboxToDeleteId: types.maybe(types.string),
+  sandboxToDeleteId: types.maybeNull(types.string),
 };

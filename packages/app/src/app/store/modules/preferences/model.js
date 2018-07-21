@@ -16,7 +16,7 @@ export default {
     keybindings: types.array(
       types.model({
         key: types.string,
-        bindings: types.array(types.maybe(types.array(types.string))),
+        bindings: types.array(types.maybeNull(types.array(types.string))),
       })
     ),
     newPackagerExperiment: types.boolean,
@@ -41,15 +41,15 @@ export default {
     zenMode: types.boolean,
     enableLigatures: types.boolean,
     editorTheme: types.string,
-    customVSCodeTheme: types.maybe(types.string),
+    customVSCodeTheme: types.maybeNull(types.string),
   }),
   isLoadingPaymentDetails: types.boolean,
   itemId: types.string,
   showEditor: types.boolean,
   showPreview: types.boolean,
   showDevtools: types.boolean,
-  paymentDetailError: types.maybe(types.string),
-  paymentDetails: types.maybe(
+  paymentDetailError: types.maybeNull(types.string),
+  paymentDetails: types.maybeNull(
     types.model({
       brand: types.string,
       expMonth: types.number,
@@ -58,5 +58,5 @@ export default {
       name: types.string,
     })
   ),
-  runOnClick: types.maybe(types.boolean),
+  runOnClick: types.maybeNull(types.boolean),
 };
