@@ -120,7 +120,7 @@ class ContextMenu extends React.PureComponent {
           onMouseDown={e => {
             e.preventDefault();
           }}
-          onClick={e => {
+          onMouseUp={e => {
             if (item.action()) {
               e.preventDefault();
               this.close();
