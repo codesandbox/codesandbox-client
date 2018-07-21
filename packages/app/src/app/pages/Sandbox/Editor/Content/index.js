@@ -219,7 +219,7 @@ class EditorPreview extends React.Component<Props, State> {
     );
 
     const disposePendingOperationHandler = reaction(
-      () => store.editor.pendingOperations.values(),
+      () => store.editor.pendingOperations.toJSON(),
       () => {
         if (store.live.isLive) {
           if (store.editor.pendingOperations) {

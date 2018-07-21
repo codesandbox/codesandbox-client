@@ -1224,10 +1224,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       forceMoveMarkers: false,
     };
 
-    // For the live operation we need to send the operation based on the old code,
-    // that's why we set the 'liveOperationCode' to the last code so the operation
-    // will be applied on that code instead of `currentModule.code`
-    this.liveOperationCode = this.getCode();
+    if (!this.receivingCode) {
+      // For the live operation we need to send the operation based on the old code,
+      // that's why we set the 'liveOperationCode' to the last code so the operation
+      // will be applied on that code instead of `currentModule.code`
+      this.liveOperationCode = this.getCode();
+    }
 
     this.editor.getModel().pushEditOperations([], [editOperation], null);
     this.editor.setPosition(pos);
