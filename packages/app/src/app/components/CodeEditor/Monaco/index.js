@@ -131,6 +131,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   monaco: any;
   receivingCode: ?boolean = false;
   transpilationListener: ?Function;
+  sizeProbeInterval: ?number;
 
   constructor(props: Props) {
     super(props);
@@ -146,6 +147,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.lintWorker = null;
     this.typingsFetcherWorker = null;
+    this.sizeProbeInterval = null;
 
     this.resizeEditor = debounce(this.resizeEditor, 500);
     this.commitLibChanges = debounce(this.commitLibChanges, 300);
@@ -193,6 +195,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (this.transpilationListener) {
       this.transpilationListener();
     }
+    clearInterval(this.sizeProbeInterval);
 
     if (this.disposeInitializer) {
       this.disposeInitializer();
@@ -253,6 +256,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // this.addKeyCommands();
 
     window.addEventListener('resize', this.resizeEditor);
+    this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
 
     const { dependencies } = this;
     if (dependencies != null) {
