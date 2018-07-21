@@ -12,9 +12,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   max-height: calc(100% - 2rem);
-  LOG_BORDER: 'inherit',
-  LOG_BORDER: 'inherit',
-  border-color: ${props => props.theme['statusBar.border'] || '#191C1D'}
+  border-color: ${props => props.theme['statusBar.border'] || '#191C1D'};
 `;
 
 export const Messages = styled.div`
