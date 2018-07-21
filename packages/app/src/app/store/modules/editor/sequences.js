@@ -1,5 +1,5 @@
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
-import { state, props, string } from 'cerebral/tags';
+import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { closeTabByIndex } from '../../actions';
 import { renameModule } from '../files/sequences';
