@@ -559,8 +559,8 @@ export function recoverFiles({ recover, controller, state }) {
         const titleB = `recovered '${module.title}'`;
         state.push('editor.tabs', {
           type: 'DIFF',
-          codeA: module.code,
-          codeB: recoverData.code,
+          codeA: module.code || '',
+          codeB: recoverData.code || '',
           titleA,
           titleB,
           fileTitle: module.title,
