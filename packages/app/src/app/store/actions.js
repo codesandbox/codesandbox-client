@@ -101,6 +101,9 @@ export function setUrlOptions({ state, router, utils }) {
     state.set('preferences.showDevtools', options.expandDevTools);
   if (options.runOnClick)
     state.set(`preferences.runOnClick`, options.runOnClick);
+  if (options.previewWindow) {
+    state.set('editor.previewWindow.content', options.previewWindow);
+  }
 }
 
 export const setSandboxConfigOptions = ({ state }) => {
