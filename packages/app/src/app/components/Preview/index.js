@@ -253,8 +253,8 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleRefresh = () => {
-    const { history, historyPosition } = this.state;
-    const url = history[historyPosition];
+    const { history, historyPosition, urlInAddressBar } = this.state;
+    const url = history[historyPosition] || urlInAddressBar;
 
     // $FlowIssue
     document.getElementById('sandbox').src = url;
