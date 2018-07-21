@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep, uniq, values, isEqual } from 'lodash-es';
+import { flattenDeep, uniq, values } from 'lodash-es';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
@@ -661,7 +661,7 @@ export default class Manager {
 
   updateConfigurations(configurations: Configurations) {
     const configsUpdated = this.configurations
-      ? !isEqual(configurations, this.configurations)
+      ? JSON.stringify(configurations) !== JSON.stringify(this.configurations)
       : false;
 
     if (configsUpdated) {

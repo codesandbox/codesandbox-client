@@ -51,7 +51,10 @@ export default function getBabelConfig(
     if (
       finalConfig.plugins.indexOf('transform-es2015-modules-commonjs') === -1
     ) {
-      finalConfig.plugins.push('transform-es2015-modules-commonjs');
+      finalConfig.plugins = [
+        ...finalConfig.plugins,
+        'transform-es2015-modules-commonjs',
+      ];
     }
   } else {
     finalConfig.plugins = ['transform-es2015-modules-commonjs'];
