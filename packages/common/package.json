@@ -2,10 +2,14 @@
   "name": "common",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "image-extensions": "^1.1.0",
     "jsonlint": "^1.6.3",
     "memoize-one": "^3.1.1",
+    "ot": "^0.0.15",
     "react-input-autosize": "^2.2.1",
     "react-textarea-autosize": "^6.1.0",
     "react-tippy": "^0.14.0",

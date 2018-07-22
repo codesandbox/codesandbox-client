@@ -1,15 +1,8 @@
 import DEFAULT_PRETTIER_CONFIG from 'common/prettify-default-config';
-
-// function getParser(mode) {
-//   if (mode === 'jsx') return 'babylon';
-//   if (mode === 'json') return 'json';
-//   if (mode === 'css') return 'postcss';
-//   if (mode === 'html') return 'parse5';
-//   if (mode === 'typescript') return 'typescript';
-//   if (mode === 'graphql') return 'graphql';
-
-//   return 'babylon';
-// }
+import {
+  lineAndColumnToIndex,
+  indexToLineAndColumn,
+} from '../components/CodeEditor/Monaco/monaco-index-converter';
 
 function getMode(title: string) {
   if (/\.jsx?$/.test(title)) {
@@ -51,12 +44,85 @@ export function canPrettify(title) {
   return !!getMode(title);
 }
 
+function getEditorInfo(prettierConfig) {
+  const newConfig = { ...prettierConfig };
+  const fluid = newConfig.fluid;
+  delete newConfig.fluid;
+
+  if (fluid && window.CSEditor && window.CSEditor.editor) {
+    try {
+      const layoutInfo = window.CSEditor.editor.getLayoutInfo();
+      newConfig.printWidth = layoutInfo.viewportColumn;
+
+      return newConfig;
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  return newConfig;
+}
+
+function getEditorCursorPos(getCode: () => string) {
+  try {
+    if (window.CSEditor && window.CSEditor.editor) {
+      const editorCode = window.CSEditor.editor.getValue(1);
+      const givenCode = getCode();
+
+      if (editorCode === givenCode) {
+        // Same code is open
+        const pos = window.CSEditor.editor.cursor.getPosition();
+
+        const lines = window.CSEditor.editor.getModel().getLinesContent();
+        const index = lineAndColumnToIndex(lines, pos.lineNumber, pos.column);
+
+        return index;
+      }
+
+      return undefined;
+    }
+  } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Getting cursor pos for prettifying throwed:');
+      console.warn(e);
+    }
+  }
+
+  return undefined;
+}
+
+function applyNewCursorOffset(
+  newIndex: number,
+  newCode: string,
+  getCode: () => string
+) {
+  try {
+    if (window.CSEditor && window.CSEditor.editor) {
+      const editorCode = window.CSEditor.editor.getValue(1);
+      const givenCode = getCode();
+
+      if (editorCode === givenCode) {
+        const lines = newCode.split(/\r?\n/);
+        const newPos = indexToLineAndColumn(lines, newIndex);
+
+        window.CSEditor.editor.setPosition(newPos);
+      }
+    }
+  } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Applying cursor pos for prettifying throwed:');
+      console.warn(e);
+    }
+  }
+}
+
 let worker = null;
 
 export default function prettify(
   title,
   getCode,
-  prettierConfig = DEFAULT_PRETTIER_CONFIG
+  prettierConfig = DEFAULT_PRETTIER_CONFIG,
+  isCurrentModule = () => false
 ) {
   const mode = getMode(title);
 
@@ -68,11 +134,17 @@ export default function prettify(
       return;
     }
 
+    const alteredConfig = getEditorInfo(prettierConfig);
+    const cursorPos = isCurrentModule()
+      ? getEditorCursorPos(getCode)
+      : undefined;
+
     worker.postMessage({
       text: getCode(),
       options: {
+        cursorOffset: cursorPos,
         ...DEFAULT_PRETTIER_CONFIG,
-        ...prettierConfig,
+        ...alteredConfig,
         parser: mode,
       },
     });
@@ -84,7 +156,7 @@ export default function prettify(
     }, 5000);
 
     const handler = e => {
-      const { formatted, text, error } = e.data;
+      const { result, text, error } = e.data;
 
       if (timeout) {
         if (text === getCode()) {
@@ -97,8 +169,22 @@ export default function prettify(
             reject({ error });
           }
 
-          if (formatted) {
-            resolve(formatted);
+          if (result.formatted) {
+            resolve(result.formatted);
+          }
+
+          const newCursorOffset = result.cursorOffset;
+
+          // After code is applied
+          if (
+            newCursorOffset &&
+            isCurrentModule() &&
+            result.formatted != null
+          ) {
+            requestAnimationFrame(() => {
+              // After model code has changed
+              applyNewCursorOffset(newCursorOffset, result.formatted, getCode);
+            });
           }
         }
       } else {

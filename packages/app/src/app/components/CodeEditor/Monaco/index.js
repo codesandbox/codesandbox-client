@@ -16,6 +16,7 @@ import type {
   ModuleCorrection,
   Directory,
 } from 'common/types';
+import { getTextOperation } from 'common/utils/diff';
 
 import delay from 'common/utils/delay';
 
@@ -33,32 +34,14 @@ import getSettings from './settings';
 import type { Props, Editor } from '../types';
 import getMode from './mode';
 import { liftOff } from './grammars/configure-tokenizer';
+import {
+  lineAndColumnToIndex,
+  indexToLineAndColumn,
+} from './monaco-index-converter';
 
 type State = {
   fuzzySearchEnabled: boolean,
 };
-
-function indexToLineAndColumn(lines, index) {
-  let offset = 0;
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (offset + line.length + 1 > index) {
-      return {
-        lineNumber: i + 1,
-        column: index - offset + 1,
-      };
-    }
-
-    // + 1 is for the linebreak character which is not included
-    offset += line.length + 1;
-  }
-
-  // +2 for column (length is already a +1), because +1 for Monaco and +1 for linebreak
-  return {
-    lineNumber: lines.length,
-    column: (lines[lines.length - 1] || '').length + 1,
-  };
-}
 
 const fadeIn = css.keyframes('fadeIn', {
   // optional name
@@ -71,21 +54,6 @@ const fadeOut = css.keyframes('fadeOut', {
   '0%': { opacity: 1 },
   '100%': { opacity: 0 },
 });
-
-function lineAndColumnToIndex(lines, lineNumber, column) {
-  let currentLine = 0;
-  let index = 0;
-
-  while (currentLine + 1 < lineNumber) {
-    index += lines[currentLine].length;
-    index += 1; // Linebreak character
-    currentLine += 1;
-  }
-
-  index += column - 1;
-
-  return index;
-}
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
@@ -228,7 +196,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco = monaco;
 
     // eslint-disable-next-line no-underscore-dangle
-    window._cs = {
+    window.CSEditor = {
       editor: this.editor,
       monaco: this.monaco,
     };
@@ -731,6 +699,55 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
+  applyOperationToModel = (operation, pushStack) => {
+    const model = this.editor.getModel();
+
+    const results = [];
+    let index = 0;
+    for (let i = 0; i < operation.ops.length; i++) {
+      const op = operation.ops[i];
+      if (TextOperation.isRetain(op)) {
+        index += op;
+      } else if (TextOperation.isInsert(op)) {
+        const { lineNumber, column } = indexToLineAndColumn(
+          model.getLinesContent() || [],
+          index
+        );
+        const range = new this.monaco.Range(
+          lineNumber,
+          column,
+          lineNumber,
+          column
+        );
+        results.push({
+          range,
+          text: op,
+          forceMoveMarkers: true,
+        });
+      } else if (TextOperation.isDelete(op)) {
+        const lines = model.getLinesContent() || [];
+        const from = indexToLineAndColumn(lines, index);
+        const to = indexToLineAndColumn(lines, index - op);
+        results.push({
+          range: new this.monaco.Range(
+            from.lineNumber,
+            from.column,
+            to.lineNumber,
+            to.column
+          ),
+          text: '',
+        });
+        index -= op;
+      }
+    }
+
+    if (pushStack) {
+      model.pushEditOperations([], results);
+    } else {
+      model.applyOperations(results);
+    }
+  };
+
   applyOperations = (operations: { [moduleShortid: string]: any }) => {
     const operationsJSON = operations.toJSON();
 
@@ -739,7 +756,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
       if (moduleShortid !== this.currentModule.shortid) {
         // Apply the code to the current module code itself
-
         const module = this.sandbox.modules.find(
           m => m.shortid === moduleShortid
         );
@@ -755,49 +771,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         return;
       }
 
-      const model = this.editor.getModel();
-
       this.liveOperationCode = '';
-      let index = 0;
-      for (let i = 0; i < operation.ops.length; i++) {
-        const op = operation.ops[i];
-        if (TextOperation.isRetain(op)) {
-          index += op;
-        } else if (TextOperation.isInsert(op)) {
-          const { lineNumber, column } = indexToLineAndColumn(
-            model.getLinesContent() || [],
-            index
-          );
-          model.applyEdits([
-            {
-              range: new this.monaco.Range(
-                lineNumber,
-                column,
-                lineNumber,
-                column
-              ),
-              text: op,
-              forceMoveMarkers: true,
-            },
-          ]);
-          index += op.length;
-        } else if (TextOperation.isDelete(op)) {
-          const lines = model.getLinesContent() || [];
-          const from = indexToLineAndColumn(lines, index);
-          const to = indexToLineAndColumn(lines, index - op);
-          model.applyEdits([
-            {
-              range: new this.monaco.Range(
-                from.lineNumber,
-                from.column,
-                to.lineNumber,
-                to.column
-              ),
-              text: '',
-            },
-          ]);
-        }
-      }
+      this.applyOperationToModel(operation);
     });
   };
 
@@ -1223,19 +1198,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   updateCode(code: string = '') {
-    const pos = this.editor.getPosition();
-    const lines = this.editor.getModel().getLinesContent() || [];
-    const lastLine = lines.length;
-    const lastLineColumn = (lines[lines.length - 1] || '').length;
-    const editOperation = {
-      identifier: {
-        major: 1,
-        minor: 1,
-      },
-      text: code,
-      range: new this.monaco.Range(0, 0, lastLine + 1, lastLineColumn),
-      forceMoveMarkers: false,
-    };
+    const operation = getTextOperation(this.getCode(), code);
 
     if (!this.receivingCode) {
       // For the live operation we need to send the operation based on the old code,
@@ -1244,8 +1207,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.liveOperationCode = this.getCode();
     }
 
-    this.editor.getModel().pushEditOperations([], [editOperation], null);
-    this.editor.setPosition(pos);
+    this.applyOperationToModel(operation, true);
   }
 
   lint = async (code: string, title: string, version: number) => {

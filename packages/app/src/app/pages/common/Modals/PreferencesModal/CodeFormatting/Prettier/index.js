@@ -35,11 +35,27 @@ function Prettier({ store, signals }) {
         </SubDescription>
         <Rule />
         <PaddedPreference
+          title="Fluid print width"
+          type="boolean"
+          {...bindValue('fluid')}
+        />
+        <SubDescription>
+          Wrap the code based on the editor width.
+        </SubDescription>
+        <Rule />
+        <PaddedPreference
+          style={{
+            opacity: store.preferences.settings.prettierConfig.fluid ? 0.5 : 1,
+          }}
           title="Print width"
           type="number"
           {...bindValue('printWidth')}
         />
-        <SubDescription>
+        <SubDescription
+          style={{
+            opacity: store.preferences.settings.prettierConfig.fluid ? 0.5 : 1,
+          }}
+        >
           Specify the line length that the printer will wrap on.
         </SubDescription>
         <Rule />

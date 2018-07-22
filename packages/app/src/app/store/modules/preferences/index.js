@@ -22,6 +22,7 @@ export default Module({
       keybindings: [],
       newPackagerExperiment: false,
       prettierConfig: {
+        fluid: false,
         printWidth: 80,
         tabWidth: 2,
         useTabs: false,

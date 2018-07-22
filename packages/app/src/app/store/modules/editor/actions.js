@@ -384,7 +384,11 @@ export function prettifyCode({ utils, state, props, path }) {
     .prettify(
       moduleToPrettify.title,
       () => (moduleToPrettify ? moduleToPrettify.code : ''),
-      config
+      config,
+      () =>
+        moduleToPrettify
+          ? moduleToPrettify.id === state.get(`editor.currentModule.id`)
+          : false
     )
     .then(newCode => path.success({ code: newCode }))
     .catch(error => path.error({ error }));

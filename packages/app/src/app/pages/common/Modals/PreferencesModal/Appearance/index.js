@@ -89,7 +89,6 @@ function EditorSettings({ store, signals }) {
             type="number"
             placeholder="1.15"
             step="0.05"
-            style={{ width: '4rem' }}
             {...bindValue('lineHeight')}
           />
           <Rule />

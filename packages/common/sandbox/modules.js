@@ -33,10 +33,8 @@ export function getModulesInDirectory(
   }
 
   // Split path
-  const splitPath = path
-    .replace(/^.\//, '')
-    .split('/')
-    .filter(part => Boolean(part));
+  const splitPath = path.replace(/^.\//, '').split('/');
+
   const foundDirectoryShortid = splitPath.reduce(
     (dirId: ?string, pathPart: string, i: number) => {
       // Meaning this is the last argument, so the file
@@ -54,6 +52,7 @@ export function getModulesInDirectory(
         // eslint-disable-next-line eqeqeq
         m => m.directoryShortid == dirId
       );
+
       const nextDirectory = directoriesInDirectory.find(d =>
         compareTitle(d.title, pathPart, [])
       );

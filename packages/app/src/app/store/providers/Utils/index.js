@@ -9,8 +9,8 @@ export default Provider({
   createOptimisticId() {
     return 'OPTIMISTIC_' + nextOptimisticId++;
   },
-  prettify(fileName, code, config) {
-    return prettify(fileName, code, config);
+  prettify(fileName, code, config, isCurrentModule) {
+    return prettify(fileName, code, config, isCurrentModule);
   },
   resolveModule,
   isEqual,

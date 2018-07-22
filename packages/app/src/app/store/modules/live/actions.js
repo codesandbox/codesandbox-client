@@ -2,6 +2,7 @@ import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
 
 import VERSION from 'common/version';
+import { getTextOperation } from 'common/utils/diff';
 
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
@@ -563,10 +564,7 @@ export function getCodeOperation({ props, state }) {
 
   const oldCode = module.code;
 
-  const op = new TextOperation();
-
-  op.delete(oldCode.length);
-  op.insert(code);
+  const op = getTextOperation(oldCode, code);
 
   return {
     operation: op.toJSON(),

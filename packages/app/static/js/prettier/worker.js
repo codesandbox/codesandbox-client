@@ -3,20 +3,20 @@
 
 const parsersLoaded = {};
 
-const loadParser = (parser) => {
+const loadParser = parser => {
   if (!parsersLoaded[parser]) {
-    if (parser === 'vue') {
-      loadParser('typescript')
-      loadParser('babylon')
-      loadParser('postcss')
+    if (parser === "vue") {
+      loadParser("typescript");
+      loadParser("babylon");
+      loadParser("postcss");
     }
 
-  importScripts("/static/js/prettier/1.13.0/parser-" + parser + ".js");
-  parsersLoaded[parser] = true;
+    importScripts("/static/js/prettier/1.13.0/parser-" + parser + ".js");
+    parsersLoaded[parser] = true;
   }
-}
+};
 
-importScripts('/static/js/prettier/1.13.0/standalone.js');
+importScripts("/static/js/prettier/1.13.0/standalone.js");
 if (typeof prettier === "undefined") {
   prettier = module.exports; // eslint-disable-line
 }
@@ -26,7 +26,14 @@ if (typeof prettier === "undefined") {
 
 function formatCode(text, options) {
   try {
-    return self.prettier.format(text, options);
+    const useCursorOffset = options.cursorOffset !== undefined;
+
+    if (useCursorOffset) {
+      return self.prettier.formatWithCursor(text, options);
+    }
+
+    const formatted = self.prettier.format(text, options);
+    return { formatted };
   } catch (e) {
     if (e.constructor && e.constructor.name === "SyntaxError") {
       // Likely something wrong with the user's code
@@ -38,19 +45,18 @@ function formatCode(text, options) {
   }
 }
 
-
-self.onmessage = (message) => {
+self.onmessage = message => {
   var options = message.data.options || {};
-  options.parser = options.parser || 'babylon';
+  options.parser = options.parser || "babylon";
 
-  loadParser(options.parser)
+  loadParser(options.parser);
 
-  let formatted;
+  let result;
   options.plugins = self.prettierPlugins;
   try {
-     formatted = formatCode(message.data.text, options);
+    result = formatCode(message.data.text, options);
   } catch (e) {
-    console.error(e)
+    console.error(e);
     self.postMessage({ error: e.message, text: message.data.text });
     return;
   }
@@ -70,11 +76,11 @@ self.onmessage = (message) => {
   }
 
   if (message.data.doc) {
-    lazyLoadParser('babylon');
+    lazyLoadParser("babylon");
     try {
       doc = prettier.__debug.formatDoc(
         prettier.__debug.printToDoc(message.data.text, options),
-        { parser: 'babylon' }
+        { parser: "babylon" }
       );
     } catch (e) {
       doc = e.toString();
@@ -82,10 +88,9 @@ self.onmessage = (message) => {
   }
 
   self.postMessage({
-    formatted: formatted,
+    result,
     text: message.data.text,
     doc: doc,
-    ast: ast,
+    ast: ast
   });
 };
-

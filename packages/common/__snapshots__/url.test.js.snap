@@ -8,11 +8,15 @@ Object {
   "expandDevTools": false,
   "forceRefresh": false,
   "hideNavigation": false,
-  "isEditorScreen": false,
+  "isConsolePreviewWindow": false,
+  "isEditorScreen": true,
   "isInProjectView": true,
-  "isPreviewScreen": false,
+  "isPreviewScreen": true,
   "isSplitScreen": false,
+  "isTestPreviewWindow": false,
+  "runOnClick": undefined,
   "useCodeMirror": false,
+  "verticalMode": false,
 }
 `;
 
@@ -25,11 +29,15 @@ Object {
   "expandDevTools": false,
   "forceRefresh": false,
   "hideNavigation": true,
+  "isConsolePreviewWindow": false,
   "isEditorScreen": true,
   "isInProjectView": true,
   "isPreviewScreen": false,
   "isSplitScreen": false,
+  "isTestPreviewWindow": false,
+  "runOnClick": undefined,
   "useCodeMirror": false,
+  "verticalMode": false,
 }
 `;
 
@@ -41,11 +49,15 @@ Object {
   "expandDevTools": false,
   "forceRefresh": false,
   "hideNavigation": true,
-  "isEditorScreen": false,
+  "isConsolePreviewWindow": false,
+  "isEditorScreen": true,
   "isInProjectView": true,
-  "isPreviewScreen": false,
+  "isPreviewScreen": true,
   "isSplitScreen": false,
+  "isTestPreviewWindow": false,
+  "runOnClick": undefined,
   "useCodeMirror": false,
+  "verticalMode": false,
 }
 `;
 
@@ -57,11 +69,15 @@ Object {
   "expandDevTools": false,
   "forceRefresh": false,
   "hideNavigation": false,
-  "isEditorScreen": false,
+  "isConsolePreviewWindow": false,
+  "isEditorScreen": true,
   "isInProjectView": true,
-  "isPreviewScreen": false,
+  "isPreviewScreen": true,
   "isSplitScreen": false,
+  "isTestPreviewWindow": false,
+  "runOnClick": undefined,
   "useCodeMirror": false,
+  "verticalMode": false,
 }
 `;
 
@@ -73,11 +89,15 @@ Object {
   "expandDevTools": false,
   "forceRefresh": false,
   "hideNavigation": false,
-  "isEditorScreen": false,
+  "isConsolePreviewWindow": false,
+  "isEditorScreen": true,
   "isInProjectView": true,
-  "isPreviewScreen": false,
+  "isPreviewScreen": true,
   "isSplitScreen": false,
+  "isTestPreviewWindow": false,
+  "runOnClick": undefined,
   "useCodeMirror": false,
+  "verticalMode": false,
 }
 `;
 
@@ -90,11 +110,15 @@ Object {
   "expandDevTools": false,
   "forceRefresh": false,
   "hideNavigation": false,
-  "isEditorScreen": false,
+  "isConsolePreviewWindow": false,
+  "isEditorScreen": true,
   "isInProjectView": true,
-  "isPreviewScreen": false,
+  "isPreviewScreen": true,
   "isSplitScreen": false,
+  "isTestPreviewWindow": false,
+  "runOnClick": undefined,
   "useCodeMirror": false,
+  "verticalMode": false,
 }
 `;
 
@@ -106,11 +130,15 @@ Object {
   "expandDevTools": false,
   "forceRefresh": false,
   "hideNavigation": false,
+  "isConsolePreviewWindow": false,
   "isEditorScreen": true,
   "isInProjectView": true,
   "isPreviewScreen": false,
   "isSplitScreen": false,
+  "isTestPreviewWindow": false,
+  "runOnClick": undefined,
   "useCodeMirror": false,
+  "verticalMode": false,
 }
 `;
 
@@ -122,10 +150,14 @@ Object {
   "expandDevTools": false,
   "forceRefresh": false,
   "hideNavigation": false,
+  "isConsolePreviewWindow": false,
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": true,
   "isSplitScreen": false,
+  "isTestPreviewWindow": false,
+  "runOnClick": undefined,
   "useCodeMirror": false,
+  "verticalMode": false,
 }
 `;
