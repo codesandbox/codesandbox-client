@@ -262,8 +262,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.initializeModules(sandbox.modules);
     await this.openNewModel(currentModule);
 
-    // this.addKeyCommands();
-
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(() => {
       if (this.props.absoluteWidth && this.props.absoluteHeight) {
