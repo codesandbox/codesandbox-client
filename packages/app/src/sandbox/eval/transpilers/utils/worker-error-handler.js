@@ -9,7 +9,6 @@ type WorkerError = {
 };
 
 export function buildWorkerError(error: Error): WorkerError {
-  console.log(error.lineNumber, error.columnNumber);
   return {
     name: error.name,
     message: error.message,

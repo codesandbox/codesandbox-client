@@ -171,18 +171,18 @@ export default function prettify(
             reject({ error });
           }
 
-          if (result.formatted) {
+          if (result && result.formatted != null) {
             resolve(result.formatted);
           }
 
-          const newCursorOffset = result.cursorOffset;
-
           // After code is applied
           if (
-            newCursorOffset &&
+            result &&
+            result.newCursorOffset &&
             isCurrentModule() &&
             result.formatted != null
           ) {
+            const newCursorOffset = result.cursorOffset;
             requestAnimationFrame(() => {
               // After model code has changed
               applyNewCursorOffset(newCursorOffset, result.formatted, getCode);
