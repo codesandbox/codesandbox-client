@@ -77,7 +77,12 @@ class FlyingContainer extends React.Component<Props, State> {
 
     this.setState({ dragging: false });
 
-    this.setResizingStopped(horizontalPosChanged, verticalPosChanged);
+    this.setResizingStopped(
+      horizontalPosChanged,
+      verticalPosChanged,
+      false,
+      false
+    );
 
     // We only set the bounds in the global store on stop, otherwise there are
     // other components constantly recalculating while dragging -> lag
@@ -111,6 +116,7 @@ class FlyingContainer extends React.Component<Props, State> {
           { ...this.state }
         );
       }
+
       this.fixPreviewInteractivity();
     }
   };
