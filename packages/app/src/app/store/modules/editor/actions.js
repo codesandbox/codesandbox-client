@@ -64,9 +64,11 @@ export function updateSandboxPackage({ state }) {
 
 export function setModuleSaved({ props, state }) {
   const changedModuleShortids = state.get('editor.changedModuleShortids');
-  const indexToRemove = changedModuleShortids.indexOf(props.shortid);
+  const newChangedModuleShortids = changedModuleShortids.filter(
+    x => x !== props.shortid
+  );
 
-  state.splice('editor.changedModuleShortids', indexToRemove, 1);
+  state.set('editor.changedModuleShortids', newChangedModuleShortids);
 }
 
 export function setModuleSavedCode({ props, state }) {
@@ -304,7 +306,12 @@ export function addChangedModule({ state, props }) {
         state.push('editor.changedModuleShortids', moduleShortid);
       }
     } else if (module.savedCode === module.code) {
-      state.splice('editor.changedModuleShortids', moduleIndex, 1);
+      state.set(
+        'editor.changedModuleShortids',
+        state
+          .get('editor.changedModuleShortids')
+          .filter(x => x !== moduleShortid)
+      );
     }
   }
 }
