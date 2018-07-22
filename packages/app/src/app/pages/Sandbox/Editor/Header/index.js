@@ -142,7 +142,7 @@ const Header = ({ store, signals }) => {
               modal: 'newSandbox',
             })
           }
-          tooltip="Create New Sandbox"
+          tooltip="New Sandbox"
           Icon={PlusIcon}
         />
 
