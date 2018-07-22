@@ -437,6 +437,8 @@ class EditorPreview extends React.Component<Props, State> {
               )}
               width={editorWidth}
               height={editorHeight}
+              absoluteWidth={this.state.width}
+              absoluteHeight={this.state.height}
               settings={settings(store)}
               sendTransforms={this.sendTransforms}
               readOnly={store.live.isLive && !store.live.isCurrentEditor}

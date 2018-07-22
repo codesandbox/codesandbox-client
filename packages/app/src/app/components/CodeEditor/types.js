@@ -59,6 +59,8 @@ export interface Editor {
   setReceivingCode?: (receivingCode: boolean) => void;
   applyOperations?: (operations: { [moduleShortid: string]: any }) => void;
   updateUserSelections?: (selections: any) => void;
+  absoluteWidth?: number;
+  absoluteHeight?: number;
 }
 
 export type Props = {

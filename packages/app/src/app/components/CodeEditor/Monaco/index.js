@@ -149,7 +149,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.typingsFetcherWorker = null;
     this.sizeProbeInterval = null;
 
-    this.resizeEditor = debounce(this.resizeEditor, 500);
+    this.resizeEditor = debounce(this.resizeEditor, 150);
     this.commitLibChanges = debounce(this.commitLibChanges, 300);
     this.onSelectionChangedDebounced = debounce(
       this.onSelectionChangedDebounced,
@@ -165,6 +165,15 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.props.height !== nextProps.height
     ) {
       this.resizeEditorInstantly();
+    }
+
+    if (
+      this.props.absoluteWidth &&
+      this.props.absoluteHeight &&
+      (this.props.absoluteWidth !== nextProps.absoluteWidth ||
+        this.props.absoluteHeight !== nextProps.absoluteHeight)
+    ) {
+      this.resizeEditor();
     }
 
     if (this.props.readOnly !== nextProps.readOnly && this.editor) {
@@ -256,10 +265,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // this.addKeyCommands();
 
     window.addEventListener('resize', this.resizeEditor);
-    this.sizeProbeInterval = setInterval(
-      this.resizeEditorInstantly.bind(this),
-      3000
-    );
+    this.sizeProbeInterval = setInterval(() => {
+      if (this.props.absoluteWidth && this.props.absoluteHeight) {
+        return;
+      }
+
+      this.resizeEditorInstantly();
+    }, 3000);
 
     const { dependencies } = this;
     if (dependencies != null) {
