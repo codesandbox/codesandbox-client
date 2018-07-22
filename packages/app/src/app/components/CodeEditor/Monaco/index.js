@@ -744,7 +744,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (pushStack) {
       model.pushEditOperations([], results);
     } else {
-      model.applyOperations(results);
+      model.applyEdits(results);
     }
   };
 
