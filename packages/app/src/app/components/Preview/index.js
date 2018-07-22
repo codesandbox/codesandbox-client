@@ -242,28 +242,32 @@ class BasePreview extends React.Component<Props, State> {
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
-    // $FlowIssue
-    document.getElementById('sandbox').src = urlInAddressBar;
+    if (document.getElementById('sandbox')) {
+      // $FlowIssue
+      document.getElementById('sandbox').src = urlInAddressBar;
 
-    this.setState({
-      history: [urlInAddressBar],
-      historyPosition: 0,
-      urlInAddressBar,
-    });
+      this.setState({
+        history: [urlInAddressBar],
+        historyPosition: 0,
+        urlInAddressBar,
+      });
+    }
   };
 
   handleRefresh = () => {
     const { history, historyPosition, urlInAddressBar } = this.state;
     const url = history[historyPosition] || urlInAddressBar;
 
-    // $FlowIssue
-    document.getElementById('sandbox').src = url;
+    if (document.getElementById('sandbox')) {
+      // $FlowIssue
+      document.getElementById('sandbox').src = url;
 
-    this.setState({
-      history: [url],
-      historyPosition: 0,
-      urlInAddressBar: url,
-    });
+      this.setState({
+        history: [url],
+        historyPosition: 0,
+        urlInAddressBar: url,
+      });
+    }
   };
 
   handleBack = () => {
