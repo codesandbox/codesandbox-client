@@ -38,7 +38,7 @@ module.exports = merge(commonConfig, {
       new UglifyJSPlugin({
         cache: true,
         parallel: true,
-        sourceMap: false,
+        sourceMap: true,
         uglifyOptions: {
           mangle: {
             safari10: true,
