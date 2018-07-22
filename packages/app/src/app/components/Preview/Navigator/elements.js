@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -37,6 +37,12 @@ export const Icon = styled.button`
       background-color: #e2e2e2;
       cursor: pointer;
     }`};
+
+  ${props =>
+    props.selected &&
+    css`
+      color: ${props.theme.secondary()};
+    `};
 `;
 
 export const AddressBarContainer = styled.div`

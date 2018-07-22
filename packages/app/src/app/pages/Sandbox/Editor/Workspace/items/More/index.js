@@ -14,8 +14,8 @@ export default class More extends React.PureComponent {
     return (
       <div>
         <Description>
-          Sign in to be able to organize your sandboxes, make deployments,
-          collaborate live with others, make commits to GitHub and do so much
+          Sign in to be able to organize your sandboxes with a dashboard, make
+          deployments, collaborate live with others, make commits to GitHub and
           more!
         </Description>
 

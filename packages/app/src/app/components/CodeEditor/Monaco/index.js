@@ -127,11 +127,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   syntaxWorker: ?Worker;
   lintWorker: ?Worker;
   typingsFetcherWorker: ?Worker;
-  sizeProbeInterval: ?number;
   editor: any;
   monaco: any;
   receivingCode: ?boolean = false;
   transpilationListener: ?Function;
+  sizeProbeInterval: ?number;
 
   constructor(props: Props) {
     super(props);
@@ -164,7 +164,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
     ) {
-      this.resizeEditor();
+      this.resizeEditorInstantly();
     }
 
     if (this.props.readOnly !== nextProps.readOnly && this.editor) {
@@ -195,7 +195,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (this.transpilationListener) {
       this.transpilationListener();
     }
-    clearTimeout(this.sizeProbeInterval);
+    clearInterval(this.sizeProbeInterval);
 
     if (this.disposeInitializer) {
       this.disposeInitializer();
@@ -256,7 +256,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // this.addKeyCommands();
 
     window.addEventListener('resize', this.resizeEditor);
-    this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
+    this.sizeProbeInterval = setInterval(
+      this.resizeEditorInstantly.bind(this),
+      3000
+    );
 
     const { dependencies } = this;
     if (dependencies != null) {
@@ -1224,10 +1227,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       forceMoveMarkers: false,
     };
 
-    // For the live operation we need to send the operation based on the old code,
-    // that's why we set the 'liveOperationCode' to the last code so the operation
-    // will be applied on that code instead of `currentModule.code`
-    this.liveOperationCode = this.getCode();
+    if (!this.receivingCode) {
+      // For the live operation we need to send the operation based on the old code,
+      // that's why we set the 'liveOperationCode' to the last code so the operation
+      // will be applied on that code instead of `currentModule.code`
+      this.liveOperationCode = this.getCode();
+    }
 
     this.editor.getModel().pushEditOperations([], [editOperation], null);
     this.editor.setPosition(pos);
@@ -1359,6 +1364,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     Promise.all(modules.map(module => this.createModel(module, modules)));
 
   resizeEditor = () => {
+    this.resizeEditorInstantly();
+  };
+
+  resizeEditorInstantly = () => {
     this.forceUpdate(() => {
       if (this.editor) {
         this.editor.layout();

@@ -2,15 +2,15 @@ import { types } from 'mobx-state-tree';
 
 export default {
   hasLoadedApp: types.boolean,
-  jwt: types.maybe(types.string),
+  jwt: types.maybeNull(types.string),
   isAuthenticating: types.boolean,
   userMenuOpen: types.boolean,
-  authToken: types.maybe(types.string),
-  error: types.maybe(types.string),
+  authToken: types.maybeNull(types.string),
+  error: types.maybeNull(types.string),
   contributors: types.array(types.string),
-  user: types.maybe(
+  user: types.maybeNull(
     types.model({
-      avatarUrl: types.maybe(types.string),
+      avatarUrl: types.maybeNull(types.string),
       badges: types.array(
         types.model({
           id: types.string,
@@ -18,29 +18,29 @@ export default {
           visible: types.boolean,
         })
       ),
-      email: types.maybe(types.string),
-      id: types.maybe(types.string),
+      email: types.maybeNull(types.string),
+      id: types.maybeNull(types.string),
       integrations: types.model({
-        github: types.maybe(
+        github: types.maybeNull(
           types.model({
-            email: types.maybe(types.string),
+            email: types.maybeNull(types.string),
           })
         ),
-        zeit: types.maybe(
+        zeit: types.maybeNull(
           types.model({
-            email: types.maybe(types.string),
+            email: types.maybeNull(types.string),
             token: types.string,
           })
         ),
       }),
-      name: types.maybe(types.string),
-      subscription: types.maybe(
+      name: types.maybeNull(types.string),
+      subscription: types.maybeNull(
         types.model({
           amount: types.number,
           since: types.string,
         })
       ),
-      username: types.maybe(types.string),
+      username: types.maybeNull(types.string),
     })
   ),
   connected: types.boolean,
@@ -62,11 +62,11 @@ export default {
     x: types.number,
     y: types.number,
   }),
-  currentModal: types.maybe(types.string),
-  uploadedFiles: types.maybe(
+  currentModal: types.maybeNull(types.string),
+  uploadedFiles: types.maybeNull(
     types.array(
       types.model({
-        id: types.identifier(),
+        id: types.identifier,
         url: types.string,
         objectSize: types.number,
         name: types.string,
@@ -76,5 +76,5 @@ export default {
   ),
   maxStorage: types.number,
   usedStorage: types.number,
-  updateStatus: types.maybe(types.string),
+  updateStatus: types.maybeNull(types.string),
 };

@@ -72,11 +72,12 @@ class FlyingContainer extends React.Component<Props, State> {
 
   handleStopDrag = (e, data) => {
     const { x, y } = data;
-    const posChanged = x !== this.lastX || y !== this.lastY;
+    const horizontalPosChanged = x !== this.lastX;
+    const verticalPosChanged = y !== this.lastY;
 
     this.setState({ dragging: false });
 
-    this.setResizingStopped(posChanged);
+    this.setResizingStopped(horizontalPosChanged, verticalPosChanged);
 
     // We only set the bounds in the global store on stop, otherwise there are
     // other components constantly recalculating while dragging -> lag
@@ -87,12 +88,28 @@ class FlyingContainer extends React.Component<Props, State> {
     this.props.signals.editor.resizingStarted();
   };
 
-  setResizingStopped = (posChanged = true) => {
+  setResizingStopped = (
+    horizontalPosChanged = true,
+    verticalPosChanged = true,
+    widthChanged = true,
+    heightChanged = true
+  ) => {
     this.props.signals.editor.resizingStopped();
 
-    if (posChanged) {
+    if (
+      horizontalPosChanged ||
+      verticalPosChanged ||
+      widthChanged ||
+      heightChanged
+    ) {
       if (this.props.onPositionChange) {
-        this.props.onPositionChange();
+        this.props.onPositionChange(
+          horizontalPosChanged,
+          verticalPosChanged,
+          widthChanged,
+          heightChanged,
+          { ...this.state }
+        );
       }
       this.fixPreviewInteractivity();
     }
@@ -113,7 +130,22 @@ class FlyingContainer extends React.Component<Props, State> {
 
   applyStateToStore = () => {
     const { x, y, width, height } = this.state;
-    this.props.signals.editor.setPreviewBounds({ x, y, width, height });
+
+    const update = {};
+
+    if (x !== undefined) {
+      update.x = x;
+    }
+    if (y !== undefined) {
+      update.y = y;
+    }
+    if (width !== undefined) {
+      update.width = width;
+    }
+    if (height !== undefined) {
+      update.height = height;
+    }
+    this.props.signals.editor.setPreviewBounds(update);
 
     this.setState({
       dragging: false,
@@ -139,6 +171,8 @@ class FlyingContainer extends React.Component<Props, State> {
 
     let lastX = e.clientX;
     let lastY = e.clientY;
+    let lastWidth = 0;
+    let lastHeight = 0;
 
     const handleMouseMove = (dragEvent: MouseEvent) => {
       const { previewWindow } = this.props.store.editor;
@@ -161,10 +195,14 @@ class FlyingContainer extends React.Component<Props, State> {
       const update = {};
 
       if (vertical) {
-        update.height = Math.max(48, newSizeY);
+        lastHeight = Math.max(48, newSizeY);
+
+        update.height = lastHeight;
       }
       if (horizontal) {
-        update.width = Math.max(48, newSizeX);
+        lastWidth = Math.max(48, newSizeX);
+
+        update.width = lastWidth;
       }
 
       if (changePositionY) {
@@ -187,9 +225,22 @@ class FlyingContainer extends React.Component<Props, State> {
     };
 
     const handleMouseUp = () => {
+      const currentState = this.props.store.editor.previewWindow;
+      const { x, y, width, height } = this.state;
+
+      const horizontalPosChanged = x != null && x !== currentState.x;
+      const verticalPosChanged = y != null && y !== currentState.y;
+      const widthChanged = width != null && width !== currentState.width;
+      const heightChanged = height != null && height !== currentState.height;
+
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
-      this.setResizingStopped();
+      this.setResizingStopped(
+        horizontalPosChanged,
+        verticalPosChanged,
+        widthChanged,
+        heightChanged
+      );
 
       this.applyStateToStore();
     };
