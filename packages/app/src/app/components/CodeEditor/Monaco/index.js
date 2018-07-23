@@ -39,6 +39,8 @@ import {
   indexToLineAndColumn,
 } from './monaco-index-converter';
 
+import enableEmmet from './enable-emmet';
+
 type State = {
   fuzzySearchEnabled: boolean,
 };
@@ -229,6 +231,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.initializeModules(sandbox.modules);
     await this.openNewModel(currentModule);
+
+    enableEmmet(editor, monaco);
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(() => {
