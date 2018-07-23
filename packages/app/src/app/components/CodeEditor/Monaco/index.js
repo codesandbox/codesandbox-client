@@ -1475,7 +1475,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // other clients.
     this.receivingCode = true;
 
-    if (newCode) {
+    if (newCode !== modelInfo.model.getValue(1)) {
       modelInfo.model.setValue(newCode);
     }
 
