@@ -50,6 +50,8 @@ export function currentTab() {
 // }
 
 export function parsedConfigurations() {
+  console.log(this.currentSandbox.toJSON());
+  console.log(parseConfigurations(this.currentSandbox));
   return parseConfigurations(this.currentSandbox);
 }
 

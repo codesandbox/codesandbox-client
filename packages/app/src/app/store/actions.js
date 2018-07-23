@@ -108,6 +108,7 @@ export function setUrlOptions({ state, router, utils }) {
 
 export const setSandboxConfigOptions = ({ state }) => {
   const config = state.get('editor.parsedConfigurations.sandbox');
+  console.log(config);
 
   if (config && config.parsed) {
     const view = config.parsed.view;
