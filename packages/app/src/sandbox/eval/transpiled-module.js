@@ -907,6 +907,7 @@ export default class TranspiledModule {
         .getLoaders(this.module, this.query)
         .some(t => !t.transpiler.cacheable)
     ) {
+      debug(`Removing '${this.getId()}' cache as it's not cacheable.`);
       this.compilation = null;
     }
   }
