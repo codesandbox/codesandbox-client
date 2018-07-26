@@ -425,7 +425,7 @@ module.exports = {
     new CopyWebpackPlugin(
       [
         // Our own custom version of monaco
-        {
+        !process.env.VSCODE && {
           from: __DEV__
             ? '../../standalone-packages/monaco-editor/release/dev/vs'
             : '../../standalone-packages/monaco-editor/release/min/vs',

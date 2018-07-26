@@ -83,16 +83,137 @@ class MonacoEditor extends React.PureComponent {
       );
 
       appliedOptions.fontFamily = fonts.slice(1).join(', ');
+      const r = context.require;
+
+      const [
+        { CodeSandboxCommandService },
+        { CodeSandboxHashService },
+        { CodeSandboxKeybindingService },
+        { CodeSandboxWindowsService },
+        { QuickOpenController },
+        { EditorPart },
+        { CodeSandboxWorkbench },
+        { CodeSandboxEnvironmentService },
+        { EditorService },
+        { UntitledEditorService },
+        { CodeSandboxFileService },
+        { StorageService },
+        { HistoryService },
+        { NullLifecycleService },
+        { TextFileService },
+        { WindowService },
+        { CodeSandboxBackupService },
+        { CodeSandboxExtensionService },
+        { FileDecorationsService },
+        { PreferencesService },
+        { JSONEditingService },
+        { CodeSandboxWorkspacesService },
+        { CodeSandboxSearchService },
+        { ViewletService },
+        { TextModelResolverService },
+      ] = [
+        r('vs/codesandbox/commandService'),
+        r('vs/codesandbox/hashService'),
+        r('vs/codesandbox/keybindingService'),
+        r('vs/codesandbox/windowsService'),
+        r('vs/workbench/browser/parts/quickopen/quickOpenController'),
+        r('vs/codesandbox/editorGroupsService'),
+        r('vs/codesandbox/workbench'),
+        r('vs/codesandbox/environmentService'),
+        // r('vs/codesandbox/editorService'),
+        r('vs/workbench/services/editor/browser/editorService'),
+        r('vs/workbench/services/untitled/common/untitledEditorService'),
+        r('vs/codesandbox/fileService'),
+        r('vs/platform/storage/common/storageService'),
+        r('vs/workbench/services/history/electron-browser/history'),
+        r('vs/platform/lifecycle/common/lifecycle'),
+        r('vs/workbench/services/textfile/electron-browser/textFileService'),
+        r('vs/platform/windows/electron-browser/windowService'),
+        r('vs/codesandbox/backupFileService'),
+        r('vs/codesandbox/extensionService'),
+        r('vs/workbench/services/decorations/browser/decorationsService'),
+        r('vs/workbench/services/preferences/browser/preferencesService'),
+        r('vs/workbench/services/configuration/node/jsonEditingService'),
+        r('vs/codesandbox/workspacesService'),
+        r('vs/codesandbox/searchService'),
+        r('vs/workbench/services/viewlet/browser/viewletService'),
+        r(
+          'vs/workbench/services/textmodelResolver/common/textModelResolverService'
+        ),
+      ];
 
       this.editor = context.monaco.editor[
         diffEditor ? 'createDiffEditor' : 'create'
-      ](this.containerElement, appliedOptions);
+      ](this.containerElement, appliedOptions, {
+        backupFileService: i => i.createInstance(CodeSandboxBackupService),
+        hashService: i => i.createInstance(CodeSandboxHashService),
+        extensionService: i => i.createInstance(CodeSandboxExtensionService),
+        lifecycleService: NullLifecycleService,
+        windowsService: i => i.createInstance(CodeSandboxWindowsService),
+        quickOpenService: i => i.createInstance(QuickOpenController),
+        commandService: i => i.createInstance(CodeSandboxCommandService),
+        IFileDecorationsService: i => i.createInstance(FileDecorationsService),
+        textFileService: i => i.createInstance(TextFileService),
+        fileService: i => i.createInstance(CodeSandboxFileService),
+        keybindingService: i =>
+          i.createInstance(CodeSandboxKeybindingService, window),
+        editorGroupsService: i =>
+          i.createInstance(EditorPart, 'codesandbox', false),
+        untitledEditorService: i => i.createInstance(UntitledEditorService),
+        partService: i => i.createInstance(CodeSandboxWorkbench),
+        environmentService: i =>
+          i.createInstance(CodeSandboxEnvironmentService),
+        storageService: new StorageService(localStorage, localStorage),
+        historyService: i => i.createInstance(HistoryService),
+        editorService: i => i.createInstance(EditorService),
+        windowService: i => i.createInstance(WindowService),
+        preferencesService: i => i.createInstance(PreferencesService),
+        jsonEditingService: i => i.createInstance(JSONEditingService),
+        workspacesService: i => i.createInstance(CodeSandboxWorkspacesService),
+        searchService: i => i.createInstance(CodeSandboxSearchService),
+        viewletService: i =>
+          i.createInstance(ViewletService, {
+            onDidViewletOpen: () => true,
+            onDidViewletClose: () => true,
+          }),
+        textModelService: i => i.createInstance(TextModelResolverService),
+      });
+
       if (theme) {
         context.monaco.editor.setTheme(theme);
       }
 
       // After initializing monaco editor
       this.editorDidMount(this.editor, context.monaco);
+
+      setTimeout(() => {
+        const container = document.createElement('div');
+        const part = document.createElement('div');
+
+        container.className = 'vs-dark monaco-workbench';
+        container.id = 'workbench.main.container';
+        part.className = 'part editor';
+
+        container.appendChild(part);
+
+        const editor = document.getElementsByClassName(
+          'react-monaco-editor-container'
+        )[0];
+        editor.parentNode.removeChild(editor);
+
+        const rootEl = document.getElementsByClassName(
+          'elements__CodeContainer-ghvvch'
+        )[0];
+        rootEl.appendChild(container);
+        window.EditorPart.create(part);
+
+        setTimeout(() => {
+          window.EditorPart.layout({
+            width: this.props.width,
+            height: this.props.height,
+          });
+        }, 500);
+      }, 3000);
     }
   };
 
@@ -109,9 +230,9 @@ class MonacoEditor extends React.PureComponent {
   render() {
     const { width, height } = this.props;
     const fixedWidth =
-      width.toString().indexOf('%') !== -1 ? width : `${width}px`;
+      width && width.toString().indexOf('%') !== -1 ? width : `${width}px`;
     const fixedHeight =
-      height.toString().indexOf('%') !== -1 ? height : `${height}px`;
+      height && height.toString().indexOf('%') !== -1 ? height : `${height}px`;
     const style = {
       width: fixedWidth,
       height: fixedHeight,

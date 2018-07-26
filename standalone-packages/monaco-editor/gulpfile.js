@@ -360,6 +360,7 @@ function ESM_pluginStream(plugin, destinationPath) {
         }
 
         let contents = data.contents.toString();
+        console.log(relativePath);
         contents = `import '${relativePath}';\n` + contents;
 
         data.contents = new Buffer(contents);

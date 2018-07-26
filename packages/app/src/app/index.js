@@ -83,49 +83,62 @@ if (process.env.NODE_ENV === 'production') {
 
 window.__isTouch = !matchMedia('(pointer:fine)').matches;
 
-requirePolyfills().then(() => {
-  if (process.env.NODE_ENV === 'development') {
-    window.controller = controller;
-  }
+function boot() {
+  requirePolyfills().then(() => {
+    if (process.env.NODE_ENV === 'development') {
+      window.controller = controller;
+    }
 
-  const rootEl = document.getElementById('root');
+    const rootEl = document.getElementById('root');
 
-  const showNotification = (message, type) =>
-    controller.getSignal('notificationAdded')({
-      type,
-      message,
+    const showNotification = (message, type) =>
+      controller.getSignal('notificationAdded')({
+        type,
+        message,
+      });
+
+    window.showNotification = showNotification;
+
+    registerServiceWorker('/service-worker.js', {
+      onUpdated: () => {
+        debug('Updated SW');
+        controller.getSignal('setUpdateStatus')({ status: 'available' });
+      },
+      onInstalled: () => {
+        debug('Installed SW');
+        showNotification(
+          'CodeSandbox has been installed, it now works offline!',
+          'success'
+        );
+      },
     });
 
-  window.showNotification = showNotification;
-
-  registerServiceWorker('/service-worker.js', {
-    onUpdated: () => {
-      debug('Updated SW');
-      controller.getSignal('setUpdateStatus')({ status: 'available' });
-    },
-    onInstalled: () => {
-      debug('Installed SW');
-      showNotification(
-        'CodeSandbox has been installed, it now works offline!',
-        'success'
+    try {
+      render(
+        <Provider {...controller.provide()}>
+          <ApolloProvider client={client}>
+            <ThemeProvider theme={theme}>
+              <Router history={history}>
+                <App />
+              </Router>
+            </ThemeProvider>
+          </ApolloProvider>
+        </Provider>,
+        rootEl
       );
-    },
+    } catch (e) {
+      logError(e);
+    }
   });
+}
 
-  try {
-    render(
-      <Provider {...controller.provide()}>
-        <ApolloProvider client={client}>
-          <ThemeProvider theme={theme}>
-            <Router history={history}>
-              <App />
-            </Router>
-          </ThemeProvider>
-        </ApolloProvider>
-      </Provider>,
-      rootEl
-    );
-  } catch (e) {
-    logError(e);
-  }
-});
+if (process.env.NODE_ENV === 'development' && process.env.VSCODE) {
+  console.log('hall');
+  /* eslint-disable global-require */
+  const METADATA = require('./vscode/metadata');
+  require('./vscode/dev-bootstrap').default(METADATA.METADATA);
+  /* eslint-enable */
+  window.loadEditor(boot);
+} else {
+  boot();
+}
