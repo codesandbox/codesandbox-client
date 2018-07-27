@@ -47,6 +47,7 @@ class QuickActions extends React.Component {
 
   componentDidMount() {
     this.updateGenie();
+    this.loadGenie();
   }
 
   componentDidUpdate() {
@@ -67,8 +68,19 @@ class QuickActions extends React.Component {
 
   onChange = item => {
     genie.makeWish(item, this.inputValue);
+    this.persistGenie();
     this.closeQuickActions();
   };
+
+  persistGenie() {
+    const { enteredMagicWords } = genie.options();
+    window.localStorage.setItem('genie', JSON.stringify({ enteredMagicWords }))
+  }
+
+  loadGenie() {
+    const { enteredMagicWords } = JSON.parse(window.localStorage.getItem('genie'))
+    genie.options({ enteredMagicWords })
+  }
 
   itemToString = item => item && item.magicWords.join(', ');
 
