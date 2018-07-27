@@ -114,7 +114,9 @@ class QuickActions extends React.Component {
             highlightedIndex,
           }) => {
             const inputProps = getInputProps({
-              onChange: ev => this.inputValue = ev.target.value,
+              onChange: ev => {
+                this.inputValue = ev.target.value
+              },
               innerRef: el => el && el.focus(),
               onKeyUp: this.handleKeyUp,
               // Timeout so the fuzzy handler can still select the module
