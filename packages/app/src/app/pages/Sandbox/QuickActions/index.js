@@ -62,8 +62,8 @@ class QuickActions extends React.Component {
     this.props.signals.editor.quickActionsClosed();
   };
 
-  onChange = item => {
-    genie.makeWish(item);
+  onChange = (item, { inputValue }) => {
+    genie.makeWish(item, inputValue);
     this.closeQuickActions();
   };
 
