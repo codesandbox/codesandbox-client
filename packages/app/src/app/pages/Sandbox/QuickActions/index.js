@@ -16,6 +16,9 @@ import {
 } from './elements';
 
 class QuickActions extends React.Component {
+  // we'll just keep track of what the user changes the inputValue to be
+  // so when the user makes a wish we can provide that info to genie
+  inputValue = ''
   updateGenie = () => {
     const keybindings = this.props.store.preferences.keybindings;
     const signals = this.props.signals;
@@ -62,8 +65,8 @@ class QuickActions extends React.Component {
     this.props.signals.editor.quickActionsClosed();
   };
 
-  onChange = (item, { inputValue }) => {
-    genie.makeWish(item, inputValue);
+  onChange = item => {
+    genie.makeWish(item, this.inputValue);
     this.closeQuickActions();
   };
 
@@ -92,6 +95,7 @@ class QuickActions extends React.Component {
             highlightedIndex,
           }) => {
             const inputProps = getInputProps({
+              onChange: ev => this.inputValue = ev.target.value,
               innerRef: el => el && el.focus(),
               onKeyUp: this.handleKeyUp,
               // Timeout so the fuzzy handler can still select the module
