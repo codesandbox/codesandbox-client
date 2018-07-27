@@ -78,8 +78,15 @@ class QuickActions extends React.Component {
   }
 
   loadGenie() {
-    const { enteredMagicWords } = JSON.parse(window.localStorage.getItem('genie'))
-    genie.options({ enteredMagicWords })
+    try {    
+      const { enteredMagicWords } = JSON.parse(window.localStorage.getItem('genie'))
+      genie.options({ enteredMagicWords })
+    } catch (error) {
+      // it may not exist in localStorage yet, or the JSON was malformed somehow
+      // so we'll persist it to update localStorage so it doesn't throw an error
+      // next time the page is loaded.
+      this.persistGenie()
+    }
   }
 
   itemToString = item => item && item.magicWords.join(', ');
