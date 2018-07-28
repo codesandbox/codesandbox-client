@@ -19,9 +19,11 @@ import {
 } from './get-prefixed-name';
 
 let fsInitialized = false;
+let fsLoading = false;
 let lastConfig = null;
 
 async function initializeBrowserFS() {
+  fsLoading = true;
   return new Promise(resolve => {
     BrowserFS.configure(
       {
@@ -36,6 +38,7 @@ async function initializeBrowserFS() {
           console.error(e);
           return;
         }
+        fsLoading = false;
         fsInitialized = true;
         resolve();
         // BrowserFS is initialized and ready-to-use!
@@ -46,6 +49,12 @@ async function initializeBrowserFS() {
 
 async function waitForFs() {
   if (!fsInitialized) {
+    if (!fsLoading) {
+      // We only load the fs when it's needed. The FS is expensive, as we sync all
+      // files of the main thread to the worker. We only want to do this if it's really
+      // needed.
+      await initializeBrowserFS();
+    }
     while (!fsInitialized) {
       await delay(50); // eslint-disable-line
     }
@@ -189,11 +198,6 @@ registerCodeSandboxPlugins();
 
 self.addEventListener('message', async event => {
   if (!event.data.codesandbox) {
-    return;
-  }
-
-  if (event.data.type === 'initialize-fs') {
-    initializeBrowserFS();
     return;
   }
 
