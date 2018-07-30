@@ -109,7 +109,7 @@ function NewSandbox({ signals }) {
           Icon={DojoIcon}
           width={50}
           height={50}
-          text="Dojo 2"
+          text="Dojo"
           href={newDojoSandboxUrl()}
           onClick={() => signals.modalClosed()}
         />
