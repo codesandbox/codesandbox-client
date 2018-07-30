@@ -74,16 +74,16 @@ const styles = css`
 
   border: none;
   outline: none;
-  ${props => getBackgroundColor(props)};
+  ${getBackgroundColor};
   background-size: 720%;
 
-  border: ${props => getBorder(props)};
+  border: ${getBorder};
   border-radius: 4px;
 
   box-sizing: border-box;
   font-size: 1.125em;
   text-align: center;
-  color: ${props => getColor(props)};
+  color: ${getColor};
   font-weight: 400;
   width: ${props => (props.block ? '100%' : 'inherit')};
 
@@ -98,8 +98,8 @@ const styles = css`
   `};
 
   &:hover {
-    ${props => getBackgroundHoverColor(props)};
-    ${props => getHoverColor(props)};
+    ${getBackgroundHoverColor};
+    ${getHoverColor};
   }
 `;
 
