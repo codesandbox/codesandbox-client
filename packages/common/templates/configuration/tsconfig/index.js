@@ -12,6 +12,7 @@ const config: ConfigurationFile = {
       return JSON.stringify(
         {
           compilerOptions: {
+            baseUrl: '.',
             outDir: 'build/dist',
             module: 'esnext',
             target: 'es5',
