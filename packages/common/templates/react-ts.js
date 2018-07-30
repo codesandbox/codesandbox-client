@@ -15,6 +15,7 @@ export default new Template(
     isTypescript: true,
     extraConfigurations: {
       '/tsconfig.json': configurations.tsconfig,
+      '/tsconfig.prod.json': configurations.tsconfigProd,
     },
   }
 );
