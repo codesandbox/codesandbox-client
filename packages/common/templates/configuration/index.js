@@ -6,6 +6,7 @@ import babelrc from './babelrc';
 import angularCli from './angular-cli';
 import angularJSON from './angular-json';
 import tsconfig from './tsconfig';
+import tsconfigProd from './tsconfig/prod';
 import babelTranspiler from './babel-transpiler';
 
 const configs = {
@@ -17,6 +18,7 @@ const configs = {
   angularCli,
   angularJSON,
   tsconfig,
+  tsconfigProd
 };
 
 export default configs;
