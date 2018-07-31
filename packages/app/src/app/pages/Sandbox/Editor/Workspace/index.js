@@ -10,6 +10,7 @@ import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
 import Live from './items/Live';
+import More from './items/More';
 import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
@@ -20,7 +21,12 @@ import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';
 // import DowntimeNotice from './DowntimeNotice';
 
-import { Container, ContactContainer, ItemTitle } from './elements';
+import {
+  Container,
+  ContactContainer,
+  ItemTitle,
+  VersionContainer,
+} from './elements';
 
 const idToItem = {
   project: ProjectInfo,
@@ -29,6 +35,7 @@ const idToItem = {
   deploy: Deployment,
   config: ConfigurationFiles,
   live: Live,
+  more: More,
 };
 
 function Workspace({ store }) {
@@ -61,21 +68,9 @@ function Workspace({ store }) {
           {!store.isPatron && !sandbox.owned && <Advertisement />}
           <ContactContainer>
             <SocialInfo style={{ display: 'inline-block' }} />
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                float: 'right',
-                fontSize: '.6rem',
-                height: 28,
-                verticalAlign: 'middle',
-                fontWeight: 600,
-                color: 'rgba(255, 255, 255, 0.3)',
-              }}
-              className="codesandbox-version"
-            >
+            <VersionContainer className="codesandbox-version">
               {VERSION}
-            </div>
+            </VersionContainer>
           </ContactContainer>
           {/* <DowntimeNotice /> */}
           <ConnectionNotice />

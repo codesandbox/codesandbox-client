@@ -118,7 +118,7 @@ const resolveSass = (fs, p, path) => {
         extensions: ['.scss', '.css', '.sass'],
         moduleDirectory: ['node_modules'],
         isFile: async (pp, cb) => {
-          const exists = !!await getExistingPath(fs, pp);
+          const exists = !!(await getExistingPath(fs, pp));
 
           if (!exists) {
             const err = new Error('Could not find ' + pp);

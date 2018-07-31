@@ -22,17 +22,38 @@ export const MenuIcon = styled(MenuIconSVG)`
   z-index: 10;
 `;
 
-export const RightAligned = styled.div`
-  position: absolute;
-  right: 1rem;
-  top: 0;
-  bottom: 0;
-  height: 100%;
+export const LeftAligned = styled.div`
+  position: relative;
   display: flex;
+  width: calc(50% - 100px);
+  height: 100%;
+  align-items: center;
+  justify-content: flex-start;
+`;
+export const CenterAligned = styled.div`
+  position: relative;
+  display: flex;
+  width: 200px;
+  height: 100%;
+  align-items: center;
   justify-content: center;
 `;
 
+export const RightAligned = styled.div`
+  position: relative;
+  display: flex;
+  width: calc(50% - 100px);
+  height: 100%;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
 export const Title = styled.div`
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex: 1;
+
   @media (max-width: 450px) {
     display: none;
   }

@@ -59,7 +59,7 @@ export default class Cubes extends React.Component {
 
     this.state = {
       templates: props.templates.map((tem, i) => {
-        const angle = Math.PI * 2 / props.templates.length * i;
+        const angle = ((Math.PI * 2) / props.templates.length) * i;
         const x = RADIUS * Math.cos(angle);
         const y = RADIUS * Math.sin(angle);
 
@@ -90,7 +90,8 @@ export default class Cubes extends React.Component {
         return;
       }
 
-      const angle = Math.PI * 2 / this.state.templates.length * i + this.time;
+      const angle =
+        ((Math.PI * 2) / this.state.templates.length) * i + this.time;
       const x = RADIUS * Math.cos(angle);
       const y = RADIUS * Math.sin(angle);
 

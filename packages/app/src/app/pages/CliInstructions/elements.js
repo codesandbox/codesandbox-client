@@ -15,5 +15,6 @@ export const Content = styled(Centered)`
 
 export const Code = styled.pre`
   margin-bottom: 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 `;

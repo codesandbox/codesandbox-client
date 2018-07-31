@@ -44,6 +44,21 @@ const config: ConfigurationFile = {
       );
     }
 
+    if (template === 'parcel') {
+      return JSON.stringify({
+        compilerOptions: {
+          module: 'commonjs',
+          jsx: 'preserve',
+          esModuleInterop: true,
+          sourceMap: true,
+          allowJs: true,
+          lib: ['es6', 'dom'],
+          rootDir: 'src',
+          moduleResolution: 'node',
+        },
+      });
+    }
+
     return JSON.stringify(
       {
         compilerOptions: {

@@ -23,8 +23,8 @@
     "gatsby-transformer-remark": "^1.7.24",
     "gatsby-transformer-sharp": "^1.6.21",
     "gsap": "^1.20.3",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
     "react-media": "^1.6.1",
     "react-router-dom": "^4.2.2",
     "react-transition-group": "^2.2.1",
@@ -37,7 +37,8 @@
   "license": "MIT",
   "main": "n/a",
   "scripts": {
-    "build": "gatsby build && yarn remove-styles",
+    "patch": "sed -i -e 's/if(c\\.initial) return;/if(!c||c.initial) return;/g' ./node_modules/extract-text-webpack-plugin/index.js",
+    "build": "rm -rf node_modules/graphql && gatsby build && yarn remove-styles",
     "build:clean": "rimraf public",
     "remove-styles": "rimraf public/styles.css",
     "start": "gatsby develop",
@@ -46,9 +47,11 @@
     "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "devDependencies": {
+    "extract-text-webpack-plugin": "1.0.1",
     "gatsby-cli": "^1.1.20",
     "prettier": "^1.8.2",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "webpack": "^1.13.3"
   },
   "browserslist": [
     "> 1%",

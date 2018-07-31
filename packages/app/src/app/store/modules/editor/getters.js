@@ -16,6 +16,22 @@ export function currentModule() {
   );
 }
 
+export function currentTab() {
+  const currentTabId = this.currentTabId;
+  const tabs = this.tabs;
+  const currentModuleShortid = this.currentModuleShortid;
+
+  if (currentTabId) {
+    const foundTab = this.tabs.find(tab => tab.id === currentTabId);
+
+    if (foundTab) {
+      return foundTab;
+    }
+  }
+
+  return tabs.find(tab => tab.moduleShortid === currentModuleShortid);
+}
+
 // Will be used in the future
 // export function normalizedModules() {
 //   const sandbox = this.currentSandbox;

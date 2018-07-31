@@ -1,4 +1,5 @@
 import React from 'react';
+import FontFaceObserver from 'fontfaceobserver';
 
 function noop() {}
 
@@ -27,15 +28,16 @@ class MonacoEditor extends React.PureComponent {
 
   afterViewInit = () => {
     const context = this.props.context || window;
+
     if (context.monaco !== undefined) {
       this.initMonaco();
       return;
     }
 
     context.require.config({
-      url: '/public/vs/loader.js',
+      url: '/public/13/vs/loader.js',
       paths: {
-        vs: '/public/vs',
+        vs: '/public/13/vs',
       },
     });
 
@@ -46,22 +48,49 @@ class MonacoEditor extends React.PureComponent {
   };
 
   initMonaco = () => {
-    const { theme, options } = this.props;
+    const { theme, options, diffEditor = false } = this.props;
     const context = this.props.context || window;
     if (this.containerElement && typeof context.monaco !== 'undefined') {
       // Before initializing monaco editor
       this.editorWillMount(context.monaco);
-      const editorService = {
-        openEditor: model => this.props.openReference(model),
+
+      window.monacoCodeSandbox = {
+        openModel: model => this.props.openReference(model),
       };
-      this.editor = context.monaco.editor.create(
-        this.containerElement,
-        options,
-        { editorService }
+
+      const appliedOptions = { ...options };
+
+      const fonts = appliedOptions.fontFamily.split(',').map(x => x.trim());
+      // We first just set the default fonts for the editor. When the custom font has loaded
+      // we set that one so that Monaco doesn't get confused.
+      // https://github.com/Microsoft/monaco-editor/issues/392
+      let firstFont = fonts[0];
+      if (firstFont.startsWith('"')) {
+        // Font is eg. '"aaaa"'
+        firstFont = JSON.parse(firstFont);
+      }
+      const font = new FontFaceObserver(firstFont);
+
+      font.load().then(
+        () => {
+          if (this.editor && this.props.getEditorOptions) {
+            this.editor.updateOptions(this.props.getEditorOptions());
+          }
+        },
+        () => {
+          // Font was not loaded in 3s, do nothing
+        }
       );
+
+      appliedOptions.fontFamily = fonts.slice(1).join(', ');
+
+      this.editor = context.monaco.editor[
+        diffEditor ? 'createDiffEditor' : 'create'
+      ](this.containerElement, appliedOptions);
       if (theme) {
         context.monaco.editor.setTheme(theme);
       }
+
       // After initializing monaco editor
       this.editorDidMount(this.editor, context.monaco);
     }

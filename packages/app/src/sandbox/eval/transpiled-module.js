@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep } from 'lodash';
+import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
@@ -926,18 +926,18 @@ export default class TranspiledModule {
   }
 
   postEvaluate(manager: Manager) {
-    if (!manager.webpackHMR) {
-      // For non cacheable transpilers we remove the cached evaluation
-      if (
-        manager.preset
-          .getLoaders(this.module, this.query)
-          .some(
-            t =>
-              t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
-          )
-      ) {
-        this.compilation = null;
-      }
+    // Question: do we need to disable this for HMR projects?
+    // For non cacheable transpilers we remove the cached evaluation
+    if (
+      manager.preset
+        .getLoaders(this.module, this.query)
+        .some(
+          t =>
+            t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
+        )
+    ) {
+      debug(`Removing '${this.getId()}' cache as it's not cacheable.`);
+      this.compilation = null;
     }
   }
 

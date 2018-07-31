@@ -13,24 +13,13 @@ import VERSION from 'common/version';
 import * as factories from '../../factories';
 import { setSandbox, openModal, resetLive } from '../../sequences';
 
-import { changeCode, changeCurrentModule } from '../editor/sequences';
-import { setModuleSaved } from '../editor/actions';
+import { changeCurrentModule } from '../editor/sequences';
+import { setModuleSaved, setModuleSavedCode } from '../editor/actions';
 import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
+import { initializeLive as commonInitializeLive } from './common-sequences';
 
-export const initializeLive = factories.withLoadApp([
-  set(state`live.isLoading`, true),
-  actions.connect,
-  actions.joinChannel,
-  {
-    success: [
-      set(props`listenSignalPath`, 'live.liveMessageReceived'),
-      actions.initializeLiveState,
-      actions.listen,
-    ],
-    error: set(state`live.error`, props`reason`),
-  },
-]);
+export const initializeLive = commonInitializeLive;
 
 const isOwnMessage = when(props`_isOwnMessage`);
 
@@ -40,7 +29,7 @@ export const applySelectionsForModule = [
 ];
 
 export const changeMode = [
-  equals(state`live.isOwner`),
+  when(state`live.isOwner`),
   {
     true: [set(state`live.roomInfo.mode`, props`mode`), actions.sendMode],
     false: [],
@@ -48,7 +37,7 @@ export const changeMode = [
 ];
 
 export const closeSession = [
-  equals(state`live.isOwner`),
+  when(state`live.isOwner`),
   {
     true: [actions.disconnect, resetLive],
     false: [],
@@ -63,7 +52,11 @@ export const handleMessage = [
   equals(props`event`),
   {
     join: [
-      set(props`message`, 'Connected to Live!'),
+      when(state`live.isTeam`),
+      {
+        true: [set(props`message`, 'Connected to Live Team!')],
+        false: [set(props`message`, 'Connected to Live!')],
+      },
       factories.addNotification(props`message`, 'success'),
       when(state`live.reconnecting`),
       {
@@ -75,9 +68,15 @@ export const handleMessage = [
     'user:entered': [
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
+      set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
+      set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
+      set(
+        state`live.roomInfo.sourceOfTruthDeviceId`,
+        props`data.source_of_truth_device_id`
+      ),
       set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
       set(props`data.user_id`, props`data.joined_user_id`),
-      isOwnMessage,
+      when(props`data.user_id`, state`user.id`, (a, b) => a === b),
       {
         false: [
           equals(state`live.notificationsHidden`),
@@ -91,7 +90,7 @@ export const handleMessage = [
         ],
         true: [],
       },
-      equals(state`live.isOwner`),
+      when(state`live.isSourceOfTruth`),
       {
         true: [
           actions.addUserMetadata,
@@ -114,6 +113,12 @@ export const handleMessage = [
       actions.clearUserSelections,
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
+      set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
+      set(
+        state`live.roomInfo.sourceOfTruthDeviceId`,
+        props`data.source_of_truth_device_id`
+      ),
+      set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
       set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
       when(props`data.multiple_connections`),
       {
@@ -124,7 +129,7 @@ export const handleMessage = [
       },
     ],
     state: [
-      when(state`live.isOwner`),
+      when(state`live.isSourceOfTruth`),
       {
         true: [],
         false: [
@@ -167,6 +172,8 @@ export const handleMessage = [
           actions.consumeModule,
           set(props`shortid`, props`moduleShortid`),
           setModuleSaved,
+          set(props`savedCode`, props`module.savedCode`),
+          setModuleSavedCode,
         ],
       },
     ],
@@ -333,11 +340,7 @@ export const handleMessage = [
       actions.disconnect,
       set(props`modal`, 'liveSessionEnded'),
       openModal,
-      when(
-        state`live.roomInfo.ownerId`,
-        state`live.user.id`,
-        (i1, i2) => i1 === i2
-      ),
+      when(state`live.isSourceOfTruth`),
       {
         true: [],
         false: [set(state`editor.currentSandbox.owned`, false)],
@@ -353,7 +356,7 @@ export const handleMessage = [
 ];
 
 export const sendSelection = [
-  equals(state`live.isCurrentEditor`),
+  when(state`live.isCurrentEditor`),
   {
     true: [actions.sendSelection],
     false: [],
@@ -361,13 +364,13 @@ export const sendSelection = [
 ];
 
 export const createLive = [
-  set(state`live.isOwner`, true),
+  factories.track('Create Live Session', {}),
   actions.createRoom,
   initializeLive,
 ];
 
 export const sendTransform = [
-  equals(state`live.isCurrentEditor`),
+  when(state`live.isCurrentEditor`),
   {
     true: [actions.sendTransform],
     false: [],
@@ -375,26 +378,17 @@ export const sendTransform = [
 ];
 
 export const applyTransformation = [
-  when(
-    state`editor.currentModuleShortid`,
-    props`moduleShortid`,
-    (s1, s2) => s1 === s2
+  actions.computePendingOperation,
+  set(
+    state`editor.pendingOperations.${props`moduleShortid`}`,
+    props`pendingOperation`
   ),
-  {
-    true: [
-      actions.computePendingOperation,
-      set(state`editor.pendingOperation`, props`pendingOperation`),
-    ],
-    false: [actions.applyTransformation, changeCode],
-  },
   actions.unSetReceivingStatus,
 ];
 
 export const unSetReceivingStatus = [actions.unSetReceivingStatus];
 
-export const clearPendingOperation = [
-  set(state`editor.pendingOperation`, null),
-];
+export const clearPendingOperation = [set(state`editor.pendingOperations`, {})];
 
 export const clearPendingUserSelections = [
   set(state`editor.pendingUserSelections`, []),
@@ -413,7 +407,8 @@ export const removeEditor = [
 export const sendChat = [actions.sendChat];
 
 export const setChatEnabled = [
-  equals(state`live.isOwner`),
+  factories.track('Enable Live Chat', {}),
+  when(state`live.isOwner`),
   {
     true: [
       set(state`live.roomInfo.chatEnabled`, props`enabled`),
@@ -424,6 +419,7 @@ export const setChatEnabled = [
 ];
 
 export const setFollowing = [
+  factories.track('Follow Along in Live', {}),
   set(state`live.followingUserId`, props`userId`),
   actions.getCurrentModuleIdOfUser,
   when(props`moduleShortid`),

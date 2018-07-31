@@ -459,6 +459,10 @@ async function compile({
     await manager.preset.setup(manager, updatedModules);
 
     dispatch({ type: 'status', status: 'transpiling' });
+    manager.setStage('transpilation');
+
+
+    dispatch({ type: 'status', status: 'transpiling' });
 
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
@@ -466,6 +470,7 @@ async function compile({
     debug(`Transpilation time ${Date.now() - t}ms`);
 
     dispatch({ type: 'status', status: 'evaluating' });
+    manager.setStage('evaluation');
 
     if (!skipEval) {
       resetScreen();
@@ -609,7 +614,10 @@ async function compile({
     hadError = true;
   } finally {
     try {
-      localStorage.removeItem('running');
+      setTimeout(() => {
+        // Set a timeout so there's a chance that we also catch runtime errors
+        localStorage.removeItem('running');
+      }, 600);
     } catch (e) {
       /* no */
     }

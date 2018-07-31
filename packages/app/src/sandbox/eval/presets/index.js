@@ -1,5 +1,5 @@
 // @flow
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import querystring from 'querystring';
 import type { Module } from '../entities/module';
 
@@ -180,7 +180,9 @@ export default class Preset {
     // Starting !, drop all transpilers
     const transpilers = query.startsWith('!') // eslint-disable-line no-nested-ternary
       ? []
-      : loader ? loader.transpilers : [];
+      : loader
+        ? loader.transpilers
+        : [];
 
     // Remove "" values
     const transpilerNames = query.split('!').filter(x => x);

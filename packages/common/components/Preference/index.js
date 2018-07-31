@@ -63,7 +63,7 @@ export default class Preference extends React.Component {
   };
 
   render() {
-    const { title, className, value, tooltip } = this.props;
+    const { title, style, className, value, tooltip } = this.props;
 
     const Title = tooltip ? (
       <Tooltip position="right" title={tooltip}>
@@ -74,7 +74,7 @@ export default class Preference extends React.Component {
     );
 
     return (
-      <Container className={className}>
+      <Container style={style} className={className}>
         {Title}
         <div>{this.getOptionComponent(value)}</div>
       </Container>

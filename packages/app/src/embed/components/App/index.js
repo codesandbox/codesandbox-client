@@ -30,6 +30,7 @@ type State = {
   fontSize: number,
   showEditor: boolean,
   showPreview: boolean,
+  previewWindow: string,
   isInProjectView: boolean,
   currentModule: string,
   initialPath: string,
@@ -46,6 +47,15 @@ type State = {
   highlightedLines: Array<number>,
 };
 
+const isSafari = () => {
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.indexOf('safari') !== -1) {
+    return ua.indexOf('chrome') === -1;
+  }
+
+  return false;
+};
+
 export default class App extends React.PureComponent<{}, State> {
   constructor() {
     super();
@@ -56,6 +66,7 @@ export default class App extends React.PureComponent<{}, State> {
       isInProjectView,
       isPreviewScreen,
       isEditorScreen,
+      previewWindow,
       isSplitScreen,
       autoResize,
       hideNavigation,
@@ -76,6 +87,7 @@ export default class App extends React.PureComponent<{}, State> {
       fontSize: fontSize || 16,
       showEditor: isSplitScreen || isEditorScreen,
       showPreview: isSplitScreen || isPreviewScreen,
+      previewWindow,
       isInProjectView,
       currentModule,
       initialPath,
@@ -92,7 +104,8 @@ export default class App extends React.PureComponent<{}, State> {
           ? false
           : runOnClick ||
             navigator.appVersion.indexOf('X11') !== -1 ||
-            navigator.appVersion.indexOf('Linux') !== -1,
+            navigator.appVersion.indexOf('Linux') !== -1 ||
+            isSafari(),
       verticalMode,
       highlightedLines: highlightedLines || [],
     };
@@ -206,6 +219,7 @@ export default class App extends React.PureComponent<{}, State> {
       showEditor,
       verticalMode,
       showPreview,
+      previewWindow,
       isInProjectView,
       runOnClick,
     } = this.state;
@@ -229,6 +243,7 @@ export default class App extends React.PureComponent<{}, State> {
           <Content
             showEditor={showEditor}
             showPreview={showPreview}
+            previewWindow={previewWindow}
             isInProjectView={isInProjectView}
             setProjectView={this.setProjectView}
             sandbox={sandbox}

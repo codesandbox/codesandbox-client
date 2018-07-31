@@ -9,6 +9,7 @@ const debug = _debug('cs:compiler:cache');
 
 const host = process.env.CODESANDBOX_HOST;
 
+const MAX_CACHE_SIZE = 1024 * 1024 * 7;
 let APICacheUsed = false;
 
 try {
@@ -72,8 +73,12 @@ export async function saveCache(
     manager.clearCache();
   }
 
-  if (shouldSaveOnlineCache(firstRun, changes)) {
+  if (shouldSaveOnlineCache(firstRun, changes) && SCRIPT_VERSION) {
     const stringifiedManagerState = JSON.stringify(managerState);
+
+    if (stringifiedManagerState.length > MAX_CACHE_SIZE) {
+      return Promise.resolve(false);
+    }
 
     debug(
       'Saving cache of ' +
@@ -94,8 +99,10 @@ export async function saveCache(
       })
       .then(x => x.json())
       .catch(e => {
-        console.error('Something went wrong while saving cache.');
-        console.error(e);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Something went wrong while saving cache.');
+          console.error(e);
+        }
       });
   }
 

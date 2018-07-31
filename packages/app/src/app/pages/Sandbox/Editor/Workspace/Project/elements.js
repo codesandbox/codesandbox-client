@@ -14,7 +14,8 @@ export const Item = styled.div`
 export const UserLink = styled(Link)`
   display: block;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.8)'};
   font-size: 0.875rem;
 `;
 
@@ -22,7 +23,8 @@ export const StatsContainer = Item.extend`
   height: 1.5rem;
   font-size: 0.875rem;
   box-sizing: border-box;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   margin-left: 1rem;
 `;
 
@@ -35,19 +37,21 @@ export const PrivacyContainer = styled.span`
 export const Title = styled.div`
   font-size: 1rem;
   font-weight: 400;
-  color: white;
+  color: ${props => (props.theme.light ? '#636363' : 'white')};
   margin-bottom: 0.5rem;
 `;
 
 export const Description = styled.div`
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   margin-top: 0.5rem;
 `;
 
 export const PropertyName = styled.span`
   display: inline-block;
-  color: rgba(255, 255, 255, 0.4);
+  color: ${props =>
+    props.theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.4)'};
   font-weight: 600;
   margin-right: 0.5rem;
   width: 110px;
@@ -68,11 +72,12 @@ export const TemplateColor = styled.span`
 
 export const EditPen = styled(EditPenIcon)`
   transition: 0.3s ease color;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
   cursor: pointer;
   margin-left: 0.5rem;
 
   &:hover {
-    color: white;
+    color: ${props => (props.theme.light ? '#636363' : 'white')};
   }
 `;

@@ -1,5 +1,6 @@
 // @flow
 import type { Module, Directory } from 'common/types';
+import { memoize } from 'lodash';
 
 const compareTitle = (
   original: string,
@@ -35,7 +36,8 @@ export function getModulesInDirectory(
   const splitPath = path
     .replace(/^.\//, '')
     .split('/')
-    .filter(part => Boolean(part));
+    .filter(Boolean);
+
   const foundDirectoryShortid = splitPath.reduce(
     (dirId: ?string, pathPart: string, i: number) => {
       // Meaning this is the last argument, so the file
@@ -53,6 +55,7 @@ export function getModulesInDirectory(
         // eslint-disable-next-line eqeqeq
         m => m.directoryShortid == dirId
       );
+
       const nextDirectory = directoriesInDirectory.find(d =>
         compareTitle(d.title, pathPart, [])
       );
@@ -142,37 +145,39 @@ function findByShortid(entities: Array<Module | Directory>, shortid: ?string) {
   return entities.find(e => e.shortid === shortid);
 }
 
-export const getModulePath = (
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  id: string
-) => {
-  const module = findById(modules, id);
+export const getModulePath = memoize(
+  (modules: Array<Module>, directories: Array<Directory>, id: string) => {
+    const module = findById(modules, id);
 
-  if (!module) return '';
+    if (!module) return '';
 
-  let directory = findByShortid(directories, module.directoryShortid);
-  let path = '/';
+    let directory = findByShortid(directories, module.directoryShortid);
+    let path = '/';
 
-  if (directory == null && module.directoryShortid) {
-    // Parent got deleted, return '';
+    if (directory == null && module.directoryShortid) {
+      // Parent got deleted, return '';
 
-    return '';
-  }
-
-  while (directory != null) {
-    path = `/${directory.title}${path}`;
-    const lastDirectoryShortid = directory.directoryShortid;
-    directory = findByShortid(directories, directory.directoryShortid);
-
-    // In this case it couldn't find the parent directory of this dir, so probably
-    // deleted. we just return '' in that case
-    if (!directory && lastDirectoryShortid) {
       return '';
     }
-  }
-  return `${path}${module.title}`;
-};
+
+    while (directory != null) {
+      path = `/${directory.title}${path}`;
+      const lastDirectoryShortid = directory.directoryShortid;
+      directory = findByShortid(directories, directory.directoryShortid);
+
+      // In this case it couldn't find the parent directory of this dir, so probably
+      // deleted. we just return '' in that case
+      if (!directory && lastDirectoryShortid) {
+        return '';
+      }
+    }
+    return `${path}${module.title}`;
+  },
+  (modules, directories, id) =>
+    id +
+    modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
+    directories.map(d => d.id + d.title + d.directoryShortid).join(',')
+);
 
 export const isMainModule = (
   module: Module,

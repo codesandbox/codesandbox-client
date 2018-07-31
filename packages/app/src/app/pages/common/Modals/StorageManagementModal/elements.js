@@ -44,7 +44,8 @@ export const SubDescription = styled.div`
   margin: 0;
   padding-left: 2rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   font-size: 1rem;
 `;
 

@@ -28,7 +28,9 @@ const getFileNameFromVm = vm => {
     const options =
       typeof vm === 'function' && vm.cid != null
         ? vm.options
-        : vm._isVue ? vm.$options || vm.constructor.options : vm || {};
+        : vm._isVue
+          ? vm.$options || vm.constructor.options
+          : vm || {};
 
     return options.__file;
   }
@@ -37,7 +39,7 @@ const getFileNameFromVm = vm => {
 export default function initialize() {
   const vuePreset = new Preset(
     'vue-cli',
-    ['vue', 'json', 'js'],
+    ['vue', 'json', 'js', 'ts'],
     {
       '@': '{{sandboxRoot}}/src',
       vue$: 'vue/dist/vue.common.js',

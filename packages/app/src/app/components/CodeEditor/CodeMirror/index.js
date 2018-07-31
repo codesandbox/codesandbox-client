@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import CodeMirror from 'codemirror';
+import { withTheme } from 'styled-components';
 
 import type { ModuleError, Module } from 'common/types';
 import { getCodeMirror } from 'app/utils/codemirror';
@@ -54,10 +55,18 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    return (
+    if (
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
-    );
+    ) {
+      return true;
+    }
+
+    if (this.props.theme.vscodeTheme !== nextProps.theme.vscodeTheme) {
+      return true;
+    }
+
+    return false;
   }
 
   componentWillUnmount() {
@@ -191,7 +200,9 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     };
 
     if (settings.autoCompleteEnabled) {
-      const tern = await import(/* webpackChunkName: 'codemirror-tern' */ 'tern');
+      const tern = await import(/* webpackChunkName: 'codemirror-tern' */ 'tern').then(
+        x => x.default
+      );
       const defs = await import(/* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json');
       window.tern = tern;
       this.server =
@@ -448,4 +459,4 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   }
 }
 
-export default CodemirrorEditor;
+export default withTheme(CodemirrorEditor);

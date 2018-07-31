@@ -1,4 +1,4 @@
-import { pickBy } from 'lodash';
+import { pickBy } from 'lodash-es';
 
 import fetchDependencies from './fetch-dependencies';
 import dependenciesToQuery from './dependencies-to-query';
@@ -22,7 +22,7 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
     // We filter out all @types, as they are not of any worth to the bundler
     const dependenciesWithoutTypings = pickBy(
       dependencies,
-      (val, key) => !key.includes('@types')
+      (val, key) => !(key.includes && key.includes('@types'))
     );
 
     const depQuery = dependenciesToQuery(dependenciesWithoutTypings);

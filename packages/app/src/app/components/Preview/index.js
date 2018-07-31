@@ -2,7 +2,7 @@
 import * as React from 'react';
 import type { Sandbox, Module, Preferences } from 'common/types';
 import { listen, dispatch, registerFrame } from 'codesandbox-api';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 
 import { frameUrl } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
@@ -33,6 +33,7 @@ type Props = {
   dragging?: boolean,
   hide: boolean,
   noPreview: boolean,
+  alignDirection?: 'right' | 'bottom',
 };
 
 type State = {
@@ -241,28 +242,32 @@ class BasePreview extends React.Component<Props, State> {
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
-    // $FlowIssue
-    document.getElementById('sandbox').src = urlInAddressBar;
+    if (document.getElementById('sandbox')) {
+      // $FlowIssue
+      document.getElementById('sandbox').src = urlInAddressBar;
 
-    this.setState({
-      history: [urlInAddressBar],
-      historyPosition: 0,
-      urlInAddressBar,
-    });
+      this.setState({
+        history: [urlInAddressBar],
+        historyPosition: 0,
+        urlInAddressBar,
+      });
+    }
   };
 
   handleRefresh = () => {
-    const { history, historyPosition } = this.state;
-    const url = history[historyPosition];
+    const { history, historyPosition, urlInAddressBar } = this.state;
+    const url = history[historyPosition] || urlInAddressBar;
 
-    // $FlowIssue
-    document.getElementById('sandbox').src = url;
+    if (document.getElementById('sandbox')) {
+      // $FlowIssue
+      document.getElementById('sandbox').src = url;
 
-    this.setState({
-      history: [url],
-      historyPosition: 0,
-      urlInAddressBar: url,
-    });
+      this.setState({
+        history: [url],
+        historyPosition: 0,
+        urlInAddressBar: url,
+      });
+    }
   };
 
   handleBack = () => {
@@ -348,6 +353,7 @@ class BasePreview extends React.Component<Props, State> {
             zenMode={settings.zenMode}
             alignRight={this.props.alignRight}
             alignBottom={this.props.alignBottom}
+            alignDirection={this.props.alignDirection}
           />
         )}
 

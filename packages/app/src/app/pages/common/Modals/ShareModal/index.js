@@ -5,6 +5,7 @@ import ModeIcons from 'app/components/ModeIcons';
 import { getModulePath } from 'common/sandbox/modules';
 import QRCode from 'qrcode.react';
 import Button from 'app/components/Button';
+import track from 'common/utils/analytics';
 
 import {
   optionsToParameterizedUrl,
@@ -33,6 +34,7 @@ class ShareView extends React.Component {
   state = {
     showEditor: true,
     showPreview: true,
+    testsView: false,
     defaultModule: null,
     autoResize: false,
     hideNavigation: false,
@@ -44,6 +46,10 @@ class ShareView extends React.Component {
     expandDevTools: false,
     showQRCode: false,
   };
+
+  componentDidMount() {
+    track('Share Modal Opened', {});
+  }
 
   handleChange = e => this.setState({ message: e.target.value });
 
@@ -73,6 +79,7 @@ class ShareView extends React.Component {
       defaultModule,
       showEditor,
       showPreview,
+      testsView,
       autoResize,
       hideNavigation,
       isCurrentModuleView,
@@ -102,10 +109,13 @@ class ShareView extends React.Component {
       options.view = 'preview';
     }
 
+    if (testsView) {
+      options.previewwindow = 'tests';
+    }
+
     if (autoResize) {
       options.autoresize = 1;
     }
-
     if (hideNavigation) {
       options.hidenavigation = 1;
     }
@@ -203,6 +213,10 @@ class ShareView extends React.Component {
 
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
 
+  setTestsView = (testsView: boolean) => {
+    this.setState({ testsView });
+  };
+
   render() {
     const sandbox = this.props.store.editor.currentSandbox;
     const mainModule = this.props.store.editor.mainModule;
@@ -210,6 +224,7 @@ class ShareView extends React.Component {
     const {
       showEditor,
       showPreview,
+      testsView,
       autoResize,
       hideNavigation,
       isCurrentModuleView,
@@ -268,6 +283,12 @@ class ShareView extends React.Component {
                 tooltip="Only show the module that's currently open"
                 value={isCurrentModuleView}
                 setValue={this.setIsCurrentModuleView}
+              />
+              <PaddedPreference
+                title="Show Tests (instead of browser preview)"
+                type="boolean"
+                value={testsView}
+                setValue={this.setTestsView}
               />
               <PaddedPreference
                 title="Font size"
