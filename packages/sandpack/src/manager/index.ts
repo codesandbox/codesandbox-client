@@ -106,7 +106,9 @@ export default class PreviewManager {
       switch (message.type) {
         case 'initialized': {
           if (this.iframe) {
-            registerFrame(this.iframe.contentWindow);
+            if (this.iframe.contentWindow) {
+              registerFrame(this.iframe.contentWindow);
+            }
 
             this.updatePreview();
           }
