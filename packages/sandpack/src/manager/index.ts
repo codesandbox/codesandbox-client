@@ -26,6 +26,15 @@ export interface IManagerOptions {
    * If we should skip the third step: evaluation.
    */
   skipEval?: boolean;
+
+  /**
+   * You can pass a custom file resolver that is responsible for resolving files.
+   * We will use this to get all files from the file system.
+   */
+  fileResolver?: {
+    isFile?: (path: string) => Promise<boolean>;
+    readFile?: (path: string) => Promise<string>;
+  };
 }
 
 export interface IFile {

@@ -170,24 +170,40 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string) => {
+  isFile = (p: string, cb, c) => {
+    const callback = cb || c;
+    const hasCallback = typeof callback === 'function';
+
+    let returnValue;
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.
-      return !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+      returnValue = !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+
+      return hasCallback ? callback(null, returnValue) : returnValue;
     }
-    return !!this.transpiledModules[p];
+
+    returnValue = !!this.transpiledModules[p];
+    return hasCallback ? callback(null, returnValue) : returnValue;
   };
 
-  readFileSync = (p: string) => {
+  readFileSync = (p: string, cb, c) => {
+    const callback = cb || c;
+    const hasCallback = typeof callback === 'function';
+
     if (this.transpiledModules[p]) {
-      return this.transpiledModules[p].module.code;
+      const code = this.transpiledModules[p].module.code;
+
+      return hasCallback ? callback(null, code) : code;
     }
 
     const err = new Error('Could not find ' + p);
     // $FlowIssue
     err.code = 'ENOENT';
 
+    if (hasCallback) {
+      return callback(err);
+    }
     throw err;
   };
 
@@ -465,6 +481,98 @@ export default class Manager {
       .replace(/.*\{\{sandboxRoot\}\}/, '');
   }
 
+  // ALWAYS KEEP THIS METHOD IN SYNC
+  async resolveModuleAsync(
+    path: string,
+    currentPath: string,
+    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+  ): Promise<Module> {
+    const dirredPath = pathUtils.dirname(currentPath);
+    if (this.cachedPaths[dirredPath] === undefined) {
+      this.cachedPaths[dirredPath] = {};
+    }
+
+    const cachedPath = this.cachedPaths[dirredPath][path];
+
+    let resolvedPath;
+
+    if (cachedPath) {
+      resolvedPath = cachedPath;
+    } else {
+      const presetAliasedPath = this.getPresetAliasedPath(path);
+
+      const aliasedPath = this.getAliasedDependencyPath(
+        presetAliasedPath,
+        currentPath
+      );
+      const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+
+      if (NODE_LIBS.includes(shimmedPath)) {
+        this.cachedPaths[dirredPath][path] = shimmedPath;
+        return SHIMMED_MODULE;
+      }
+
+      try {
+        resolvedPath = await resolve(shimmedPath, {
+          filename: currentPath,
+          extensions: defaultExtensions.map(ext => '.' + ext),
+          isFile: this.isFile,
+          readFileSync: this.readFileSync,
+          packageFilter,
+          moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
+            Boolean
+          ),
+        });
+
+        this.cachedPaths[dirredPath][path] = resolvedPath;
+
+        if (resolvedPath === '//empty.js') {
+          return SHIMMED_MODULE;
+        }
+
+        if (!this.transpiledModules[resolvedPath]) {
+          throw new Error(`Could not find '${resolvedPath}' in local files.`);
+        }
+      } catch (e) {
+        if (
+          this.cachedPaths[dirredPath] &&
+          this.cachedPaths[dirredPath][path]
+        ) {
+          delete this.cachedPaths[dirredPath][path];
+        }
+
+        let connectedPath = /^(\w|@\w)/.test(shimmedPath)
+          ? pathUtils.join('/node_modules', shimmedPath)
+          : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+
+        const isDependency = connectedPath.includes('/node_modules/');
+
+        connectedPath = connectedPath.replace('/node_modules/', '');
+
+        if (!isDependency) {
+          throw new ModuleNotFoundError(shimmedPath, false, currentPath);
+        }
+
+        const dependencyName = getDependencyName(connectedPath);
+
+        if (
+          this.manifest.dependencies.find(d => d.name === dependencyName) ||
+          this.manifest.dependencyDependencies[dependencyName]
+        ) {
+          throw new ModuleNotFoundError(connectedPath, true, currentPath);
+        } else {
+          throw new DependencyNotFoundError(connectedPath, currentPath);
+        }
+      }
+    }
+
+    if (resolvedPath === '//empty.js') {
+      return SHIMMED_MODULE;
+    }
+
+    return this.transpiledModules[resolvedPath].module;
+  }
+
   resolveModule(
     path: string,
     currentPath: string,
@@ -575,14 +683,17 @@ export default class Manager {
     });
   }
 
-  resolveTranspiledModuleAsync = (
+  resolveTranspiledModuleAsync = async (
     path: string,
     currentPath: string,
     ignoredExtensions?: Array<string>
   ): Promise<TranspiledModule> => {
     try {
-      return Promise.resolve(
-        this.resolveTranspiledModule(path, currentPath, ignoredExtensions)
+      return await this.resolveTranspiledModule(
+        path,
+        currentPath,
+        ignoredExtensions,
+        true
       );
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
@@ -617,7 +728,8 @@ export default class Manager {
   resolveTranspiledModule(
     path: string,
     currentPath: string,
-    ignoredExtensions?: Array<string>
+    ignoredExtensions?: Array<string>,
+    async: boolean = false
   ): TranspiledModule {
     if (path.startsWith('webpack:')) {
       throw new Error('Cannot resolve webpack path');
@@ -627,10 +739,20 @@ export default class Manager {
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
+    if (async) {
+      return this.resolveModule(
+        modulePath,
+        currentPath,
+        ignoredExtensions || this.preset.ignoredExtensions,
+        async
+      ).then(module => this.getTranspiledModule(module, queryPath.join('!')));
+    }
+
     const module = this.resolveModule(
       modulePath,
       currentPath,
-      ignoredExtensions || this.preset.ignoredExtensions
+      ignoredExtensions || this.preset.ignoredExtensions,
+      async
     );
 
     return this.getTranspiledModule(module, queryPath.join('!'));
