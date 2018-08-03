@@ -191,13 +191,13 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
         throw new Error('No inline typings found.');
       }
 
-      dtsFiles.forEach(file => {
+      return Promise.all(dtsFiles.map(file =>
         doFetch(`https://cdn.jsdelivr.net/npm/${dependency}@${version}${file}`)
           .then(dtsFile =>
             addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
           )
-          .catch(() => {});
-      });
+          .catch(() => {})
+      ));
     });
 }
 

@@ -303,10 +303,13 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     this.configureEmmet();
   };
 
-  changeCode = (code: string = '') => {
+  changeCode = (code: string = '', moduleId: string) => {
     const pos = this.codemirror.getCursor();
     this.codemirror.setCursor(pos);
-    if (this.getCode() !== code) {
+    if (
+      code !== this.getCode() &&
+      (!moduleId || this.currentModule.id === moduleId)
+    ) {
       this.codemirror.setValue(code);
     }
   };
@@ -384,7 +387,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
   handleChange = (cm: typeof CodeMirror, change: { origin: string }) => {
     if (change.origin !== 'setValue' && this.props.onChange) {
-      this.props.onChange(cm.getValue());
+      this.props.onChange(cm.getValue(), this.currentModule.shortid);
     }
   };
 
