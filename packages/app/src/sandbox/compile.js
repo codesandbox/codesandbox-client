@@ -255,12 +255,15 @@ async function updateManager(
   managerModules,
   manifest,
   configurations,
-  isNewCombination
+  isNewCombination,
+  hasFileResolver
 ) {
   let newManager = false;
   if (!manager || manager.id !== sandboxId) {
     newManager = true;
-    manager = new Manager(sandboxId, getPreset(template), managerModules);
+    manager = new Manager(sandboxId, getPreset(template), managerModules, {
+      hasFileResolver,
+    });
   }
 
   if (isNewCombination || newManager) {
@@ -344,6 +347,7 @@ async function compile({
   entry,
   showOpenInCodeSandbox = false,
   skipEval = false,
+  hasFileResolver = false,
 }) {
   dispatch({
     type: 'start',
@@ -436,7 +440,8 @@ async function compile({
         modules,
         manifest,
         configurations,
-        isNewCombination
+        isNewCombination,
+        hasFileResolver
       )) || [];
 
     const possibleEntries = templateDefinition.getEntries(configurations);
@@ -460,7 +465,6 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
-
 
     dispatch({ type: 'status', status: 'transpiling' });
 

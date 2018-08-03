@@ -1,5 +1,6 @@
 // @flow
 import { flattenDeep, uniq, values } from 'lodash-es';
+import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
@@ -76,6 +77,13 @@ const debug = _debug('cs:compiler:manager');
 type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
 type Stage = 'transpilation' | 'evaluation';
 
+type TManagerOptions = {
+  /**
+   * Whether the parent window has its own file resolver that can be used by the manager to resolve files
+   */
+  hasFileResolver: boolean,
+};
+
 export default class Manager {
   id: string;
   transpiledModules: {
@@ -99,6 +107,12 @@ export default class Manager {
   testRunner: TestRunner;
   isFirstLoad: boolean;
 
+  fileResolver: ?{
+    protocol: Protocol,
+    isFile: (path: string) => Promise<boolean>,
+    readFile: (path: string) => Promise<string>,
+  };
+
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
   transpiledModulesByHash: { [hash: string]: TranspiledModule };
@@ -111,7 +125,12 @@ export default class Manager {
 
   stage: Stage;
 
-  constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
+  constructor(
+    id: string,
+    preset: Preset,
+    modules: { [path: string]: Module },
+    options: TManagerOptions
+  ) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
@@ -144,6 +163,27 @@ export default class Manager {
       },
       () => {}
     );
+
+    if (options.hasFileResolver) {
+      this.setupFileResolver();
+    }
+  }
+
+  setupFileResolver() {
+    const fileResolver = {};
+
+    fileResolver.protocol = new Protocol(
+      'file-resolver',
+      () => true,
+      window.parent
+    );
+
+    fileResolver.isFile = path =>
+      fileResolver.protocol.sendMessage({ m: 'isFile', p: path });
+    fileResolver.readFile = path =>
+      fileResolver.protocol.sendMessage({ m: 'readFile', p: path });
+
+    this.fileResolver = fileResolver;
   }
 
   bfsWrapper = {
@@ -170,7 +210,7 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string, cb, c) => {
+  isFile = (p: string, cb: ?Function, c: Function) => {
     const callback = cb || c;
     const hasCallback = typeof callback === 'function';
 
@@ -178,16 +218,21 @@ export default class Manager {
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.
-      returnValue = !!this.transpiledModules[p] || !!getCombinedMetas()[p];
-
-      return hasCallback ? callback(null, returnValue) : returnValue;
+      returnValue = this.transpiledModules[p] || getCombinedMetas()[p];
+    } else {
+      returnValue = this.transpiledModules[p];
     }
 
-    returnValue = !!this.transpiledModules[p];
-    return hasCallback ? callback(null, returnValue) : returnValue;
+    if (returnValue == null && hasCallback && this.fileResolver) {
+      return this.fileResolver.isFile(p).then(bool => {
+        callback(null, !!bool);
+      });
+    }
+
+    return hasCallback ? callback(null, !!returnValue) : !!returnValue;
   };
 
-  readFileSync = (p: string, cb, c) => {
+  readFileSync = (p: string, cb: ?Function, c: Function) => {
     const callback = cb || c;
     const hasCallback = typeof callback === 'function';
 
@@ -195,6 +240,10 @@ export default class Manager {
       const code = this.transpiledModules[p].module.code;
 
       return hasCallback ? callback(null, code) : code;
+    } else if (hasCallback && this.fileResolver) {
+      return this.fileResolver.readFile(p).then(code => {
+        callback(code);
+      });
     }
 
     const err = new Error('Could not find ' + p);
@@ -481,7 +530,7 @@ export default class Manager {
       .replace(/.*\{\{sandboxRoot\}\}/, '');
   }
 
-  // ALWAYS KEEP THIS METHOD IN SYNC
+  // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
   async resolveModuleAsync(
     path: string,
     currentPath: string,
@@ -573,6 +622,7 @@ export default class Manager {
     return this.transpiledModules[resolvedPath].module;
   }
 
+  // ALWAYS KEEP THIS METHOD IN SYNC WITH ASYNC VERSION
   resolveModule(
     path: string,
     currentPath: string,
@@ -1028,6 +1078,10 @@ export default class Manager {
           t.dispose();
         }
       });
+
+      if (this.fileResolver) {
+        this.fileResolver.protocol.dispose();
+      }
     }
   }
 

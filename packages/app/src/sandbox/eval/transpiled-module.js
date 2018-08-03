@@ -315,6 +315,96 @@ export default class TranspiledModule {
     );
   }
 
+  addDependency(
+    manager: Manager,
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+      isEntry: boolean,
+    },
+    isTranspilationDep = false
+  ) {
+    if (
+      depPath.startsWith('babel-runtime') ||
+      depPath.startsWith('codesandbox-api')
+    ) {
+      return;
+    }
+
+    try {
+      const tModule = manager.resolveTranspiledModule(
+        depPath,
+        options && options.isAbsolute ? '/' : this.module.path
+      );
+
+      if (isTranspilationDep) {
+        this.transpilationDependencies.add(tModule);
+        tModule.transpilationInitiators.add(this);
+      } else {
+        this.dependencies.add(tModule);
+        tModule.initiators.add(this);
+      }
+
+      if (options.isEntry) {
+        tModule.setIsEntry(true);
+      }
+    } catch (e) {
+      if (e.type === 'module-not-found' && e.isDependency) {
+        this.asyncDependencies.push(
+          manager.downloadDependency(e.path, this.module.path)
+        );
+      } else {
+        // When a custom file resolver is given to the manager we will try
+        // to resolve using this file resolver. If that fails we will still
+        // mark the dependency as having missing deps.
+        if (manager.fileResolver) {
+          this.asyncDependencies.push(
+            new Promise(async resolve => {
+              try {
+                const tModule = await manager.resolveTranspiledModuleAsync(
+                  depPath,
+                  options && options.isAbsolute ? '/' : this.module.path
+                );
+
+                if (isTranspilationDep) {
+                  this.transpilationDependencies.add(tModule);
+                  tModule.transpilationInitiators.add(this);
+                } else {
+                  this.dependencies.add(tModule);
+                  tModule.initiators.add(this);
+                }
+
+                if (options.isEntry) {
+                  tModule.setIsEntry(true);
+                }
+                resolve(tModule);
+              } catch (err) {
+                if (process.env.NODE_ENV === 'development') {
+                  console.error(
+                    'Problem while trying to fetch file from custom fileResolver'
+                  );
+                  console.error(err);
+                }
+
+                this.hasMissingDependencies = true;
+              }
+            })
+          );
+          return;
+        }
+
+        // Don't throw the error, we want to throw this error during evaluation
+        // so we get the correct line as error
+        // ... Thank you so much for this younger Ives, you saved me here.
+        if (process.env.NODE_ENV === 'development') {
+          console.error(e);
+        }
+
+        this.hasMissingDependencies = true;
+      }
+    }
+  }
+
   update(module: Module): TranspiledModule {
     if (this.module.path !== module.path || this.module.code !== module.code) {
       this.module = module;
@@ -389,54 +479,10 @@ export default class TranspiledModule {
       // that include the source of another file by themselves, we need to
       // force transpilation to rebuild the file
       addTranspilationDependency: (depPath: string, options) => {
-        const tModule = manager.resolveTranspiledModule(
-          depPath,
-          options && options.isAbsolute ? '/' : this.module.path
-        );
-
-        this.transpilationDependencies.add(tModule);
-        tModule.transpilationInitiators.add(this);
-
-        if (options.isEntry) {
-          tModule.setIsEntry(true);
-        }
+        this.addDependency(manager, depPath, options, true);
       },
-      addDependency: (depPath: string, options = {}) => {
-        if (
-          depPath.startsWith('babel-runtime') ||
-          depPath.startsWith('codesandbox-api')
-        ) {
-          return;
-        }
-
-        try {
-          const tModule = manager.resolveTranspiledModule(
-            depPath,
-            options && options.isAbsolute ? '/' : this.module.path
-          );
-
-          this.dependencies.add(tModule);
-          tModule.initiators.add(this);
-
-          if (options.isEntry) {
-            tModule.setIsEntry(true);
-          }
-        } catch (e) {
-          if (e.type === 'module-not-found' && e.isDependency) {
-            this.asyncDependencies.push(
-              manager.downloadDependency(e.path, this.module.path)
-            );
-          } else {
-            // Don't throw the error, we want to throw this error during evaluation
-            // so we get the correct line as error
-            // eslint-disable-next-line
-            if (process.env.NODE_ENV === 'development') {
-              console.error(e);
-            }
-
-            this.hasMissingDependencies = true;
-          }
-        }
+      addDependency: async (depPath: string, options = {}) => {
+        this.addDependency(manager, depPath, options);
       },
       addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(

@@ -1,5 +1,4 @@
-/// <reference types="node" />
-import { dispatch, listen, registerFrame } from 'codesandbox-api';
+import { dispatch, listen, registerFrame, Protocol } from 'codesandbox-api';
 import { getTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
 import isEqual from 'lodash.isequal';
@@ -32,8 +31,8 @@ export interface IManagerOptions {
    * We will use this to get all files from the file system.
    */
   fileResolver?: {
-    isFile?: (path: string) => Promise<boolean>;
-    readFile?: (path: string) => Promise<string>;
+    isFile: (path: string) => Promise<boolean>;
+    readFile: (path: string) => Promise<string>;
   };
 }
 
@@ -81,6 +80,7 @@ export default class PreviewManager {
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
   listener?: Function;
+  fileResolverProtocol?: Protocol;
   bundlerURL: string;
 
   sandboxInfo: ISandboxInfo;
@@ -117,6 +117,20 @@ export default class PreviewManager {
           if (this.iframe) {
             if (this.iframe.contentWindow) {
               registerFrame(this.iframe.contentWindow);
+
+              if (this.options.fileResolver) {
+                this.fileResolverProtocol = new Protocol(
+                  'file-resolver',
+                  async (data: { m: 'isFile' | 'readFile'; p: string }) => {
+                    if (data.m === 'isFile') {
+                      return this.options.fileResolver!.isFile(data.p);
+                    } else {
+                      return this.options.fileResolver!.readFile(data.p);
+                    }
+                  },
+                  this.iframe.contentWindow
+                );
+              }
             }
 
             this.updatePreview();
@@ -180,6 +194,7 @@ export default class PreviewManager {
       version: 3,
       modules,
       externalResources: [],
+      hasFileResolver: this.options.fileResolver,
       template:
         this.sandboxInfo.template ||
         getTemplate(packageJSON, normalizedModules),
