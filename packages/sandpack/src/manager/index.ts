@@ -103,6 +103,7 @@ export default class PreviewManager {
     this.iframe.src = this.bundlerURL;
 
     this.listener = listen((message: any) => {
+      console.log('wwwwooo');
       switch (message.type) {
         case 'initialized': {
           if (this.iframe) {
@@ -122,6 +123,7 @@ export default class PreviewManager {
   }
 
   updateOptions(options: IManagerOptions) {
+    console.log('heh');
     if (!isEqual(this.options, options)) {
       this.options = options;
       this.updatePreview();
@@ -129,6 +131,7 @@ export default class PreviewManager {
   }
 
   updatePreview(sandboxInfo = this.sandboxInfo) {
+    console.log('hello', sandboxInfo);
     this.sandboxInfo = sandboxInfo;
 
     const files = this.getFiles();
