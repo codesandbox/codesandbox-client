@@ -1,7 +1,7 @@
 import extractAbbreviation from '@emmetio/extract-abbreviation';
 import { expand } from '@emmetio/expand-abbreviation';
 
-const field = () => '';
+const field = () => '${0}';
 
 const expandAbbreviation = (source, language) =>
   expand(source.abbreviation, {
@@ -48,7 +48,13 @@ const enableEmmet = (editor, monaco) => {
       }
       if (word) {
         // Get expand text
-        const expandText = expandAbbreviation(word, 'html');
+        let expandText = expandAbbreviation(word, 'html');
+        const posOffsetArr = expandText.split('${0}')[0].split('\n');
+        const lineNumber = pos.lineNumber + posOffsetArr.length - 1;
+        const column =
+          word.location + posOffsetArr[posOffsetArr.length - 1].length + 1;
+
+        expandText = expandText.replace(/\$\{0\}/g, '');
         if (expandText) {
           // replace range content: pos.column , pos.column -word.length;
           const range = new monaco.Range(
@@ -65,6 +71,7 @@ const enableEmmet = (editor, monaco) => {
             forceMoveMarkers: true,
           };
           editor.executeEdits('', [op]);
+          editor.setPosition(new monaco.Position(lineNumber, column));
           return null;
         }
         return false;
