@@ -211,7 +211,7 @@ export default class Manager {
 
   // Hoist these 2 functions to the top, since they get executed A LOT
   isFile = (p: string, cb: ?Function, c: Function) => {
-    const callback = cb || c;
+    const callback = c || cb;
     const hasCallback = typeof callback === 'function';
 
     let returnValue;
@@ -233,7 +233,7 @@ export default class Manager {
   };
 
   readFileSync = (p: string, cb: ?Function, c: Function) => {
-    const callback = cb || c;
+    const callback = c || cb;
     const hasCallback = typeof callback === 'function';
 
     if (this.transpiledModules[p]) {
@@ -242,6 +242,8 @@ export default class Manager {
       return hasCallback ? callback(null, code) : code;
     } else if (hasCallback && this.fileResolver) {
       return this.fileResolver.readFile(p).then(code => {
+        this.addModule({ code, path: p });
+
         callback(code);
       });
     }
@@ -536,90 +538,100 @@ export default class Manager {
     currentPath: string,
     defaultExtensions: Array<string> = ['js', 'jsx', 'json']
   ): Promise<Module> {
-    const dirredPath = pathUtils.dirname(currentPath);
-    if (this.cachedPaths[dirredPath] === undefined) {
-      this.cachedPaths[dirredPath] = {};
-    }
-
-    const cachedPath = this.cachedPaths[dirredPath][path];
-
-    let resolvedPath;
-
-    if (cachedPath) {
-      resolvedPath = cachedPath;
-    } else {
-      const presetAliasedPath = this.getPresetAliasedPath(path);
-
-      const aliasedPath = this.getAliasedDependencyPath(
-        presetAliasedPath,
-        currentPath
-      );
-      const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
-
-      if (NODE_LIBS.includes(shimmedPath)) {
-        this.cachedPaths[dirredPath][path] = shimmedPath;
-        return SHIMMED_MODULE;
+    return new Promise(promiseResolve => {
+      const dirredPath = pathUtils.dirname(currentPath);
+      if (this.cachedPaths[dirredPath] === undefined) {
+        this.cachedPaths[dirredPath] = {};
       }
 
-      try {
-        resolvedPath = await resolve(shimmedPath, {
-          filename: currentPath,
-          extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFile,
-          readFileSync: this.readFileSync,
-          packageFilter,
-          moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
-            Boolean
-          ),
-        });
+      const cachedPath = this.cachedPaths[dirredPath][path];
 
-        this.cachedPaths[dirredPath][path] = resolvedPath;
+      let resolvedPath;
 
-        if (resolvedPath === '//empty.js') {
+      if (cachedPath) {
+        resolvedPath = cachedPath;
+      } else {
+        const presetAliasedPath = this.getPresetAliasedPath(path);
+
+        const aliasedPath = this.getAliasedDependencyPath(
+          presetAliasedPath,
+          currentPath
+        );
+        const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+
+        if (NODE_LIBS.includes(shimmedPath)) {
+          this.cachedPaths[dirredPath][path] = shimmedPath;
           return SHIMMED_MODULE;
         }
 
-        if (!this.transpiledModules[resolvedPath]) {
-          throw new Error(`Could not find '${resolvedPath}' in local files.`);
-        }
-      } catch (e) {
-        if (
-          this.cachedPaths[dirredPath] &&
-          this.cachedPaths[dirredPath][path]
-        ) {
-          delete this.cachedPaths[dirredPath][path];
-        }
+        try {
+          resolve(
+            shimmedPath,
+            {
+              filename: currentPath,
+              extensions: defaultExtensions.map(ext => '.' + ext),
+              isFile: this.isFile,
+              readFileSync: this.readFileSync,
+              packageFilter,
+              moduleDirectory: [
+                'node_modules',
+                this.envVariables.NODE_PATH,
+              ].filter(Boolean),
+            },
+            (err, foundPath) => {
+              if (err) {
+                throw err;
+              }
 
-        let connectedPath = /^(\w|@\w)/.test(shimmedPath)
-          ? pathUtils.join('/node_modules', shimmedPath)
-          : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+              this.cachedPaths[dirredPath][path] = foundPath;
 
-        const isDependency = connectedPath.includes('/node_modules/');
+              if (foundPath === '//empty.js') {
+                promiseResolve(SHIMMED_MODULE);
+              }
 
-        connectedPath = connectedPath.replace('/node_modules/', '');
+              if (!this.transpiledModules[foundPath]) {
+                this.readFileSync(foundPath, code => {
+                  this.addModule({ path: foundPath, code });
+                  promiseResolve(this.transpiledModules[foundPath].module);
+                });
+              } else {
+                promiseResolve(this.transpiledModules[foundPath].module);
+              }
+            }
+          );
+        } catch (e) {
+          if (
+            this.cachedPaths[dirredPath] &&
+            this.cachedPaths[dirredPath][path]
+          ) {
+            delete this.cachedPaths[dirredPath][path];
+          }
 
-        if (!isDependency) {
-          throw new ModuleNotFoundError(shimmedPath, false, currentPath);
-        }
+          let connectedPath = /^(\w|@\w)/.test(shimmedPath)
+            ? pathUtils.join('/node_modules', shimmedPath)
+            : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
 
-        const dependencyName = getDependencyName(connectedPath);
+          const isDependency = connectedPath.includes('/node_modules/');
 
-        if (
-          this.manifest.dependencies.find(d => d.name === dependencyName) ||
-          this.manifest.dependencyDependencies[dependencyName]
-        ) {
-          throw new ModuleNotFoundError(connectedPath, true, currentPath);
-        } else {
-          throw new DependencyNotFoundError(connectedPath, currentPath);
+          connectedPath = connectedPath.replace('/node_modules/', '');
+
+          if (!isDependency) {
+            throw new ModuleNotFoundError(shimmedPath, false, currentPath);
+          }
+
+          const dependencyName = getDependencyName(connectedPath);
+
+          if (
+            this.manifest.dependencies.find(d => d.name === dependencyName) ||
+            this.manifest.dependencyDependencies[dependencyName]
+          ) {
+            throw new ModuleNotFoundError(connectedPath, true, currentPath);
+          } else {
+            throw new DependencyNotFoundError(connectedPath, currentPath);
+          }
         }
       }
-    }
-
-    if (resolvedPath === '//empty.js') {
-      return SHIMMED_MODULE;
-    }
-
-    return this.transpiledModules[resolvedPath].module;
+    });
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH ASYNC VERSION
@@ -790,7 +802,7 @@ export default class Manager {
     const modulePath = queryPath.pop();
 
     if (async) {
-      return this.resolveModule(
+      return this.resolveModuleAsync(
         modulePath,
         currentPath,
         ignoredExtensions || this.preset.ignoredExtensions,

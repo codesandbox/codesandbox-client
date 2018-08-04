@@ -44,6 +44,10 @@ export interface Props {
     | 'preact-cli';
 
   onFileChange?: (files: IFiles, sandpack: ISandpackContext) => void;
+  fileResolver?: {
+    isFile: (path: string) => Promise<boolean>;
+    readFile: (path: string) => Promise<string>;
+  };
 }
 
 export default class SandpackProvider extends React.PureComponent<
@@ -133,6 +137,8 @@ export default class SandpackProvider extends React.PureComponent<
 
   getOptions = () => {
     return {
+      bundlerURL: this.props.bundlerURL,
+      fileResolver: this.props.fileResolver,
       skipEval: this.props.skipEval,
     };
   };

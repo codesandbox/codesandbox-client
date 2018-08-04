@@ -1,4 +1,4 @@
-import * as uuid from 'uuid';
+import uuid from 'uuid/v4';
 
 export default class Protocol {
   private outgoingMessages: Set<string> = new Set();
@@ -10,7 +10,7 @@ export default class Protocol {
     private target: Worker | Window
   ) {
     this.createConnection();
-    this.internalId = uuid.v4();
+    this.internalId = uuid();
   }
 
   getTypeId() {
@@ -27,7 +27,7 @@ export default class Protocol {
 
   sendMessage(data: any): Promise<any> {
     return new Promise(resolve => {
-      const messageId = uuid.v4();
+      const messageId = uuid();
 
       const message = {
         $originId: this.internalId,

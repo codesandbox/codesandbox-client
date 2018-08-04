@@ -194,7 +194,7 @@ export default class PreviewManager {
       version: 3,
       modules,
       externalResources: [],
-      hasFileResolver: this.options.fileResolver,
+      hasFileResolver: !!this.options.fileResolver,
       template:
         this.sandboxInfo.template ||
         getTemplate(packageJSON, normalizedModules),
