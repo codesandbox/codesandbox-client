@@ -5,16 +5,11 @@ import { DragSource, DropTarget } from 'react-dnd';
 import Tab from '../Tab';
 
 class TabContainer extends React.Component {
-  setCurrentModule = () => {
-    this.props.setCurrentModule(this.props.module.id);
-  };
-
   render() {
     const {
       connectDragSource,
       connectDropTarget,
       isOver,
-      module,
       active,
       tabCount,
       isDragging,
@@ -24,26 +19,34 @@ class TabContainer extends React.Component {
       closeTab,
       innerRef,
       hasError,
+      onClick,
+      onDoubleClick,
+      children,
       isNotSynced,
+      title,
+      items,
     } = this.props;
 
     return connectDropTarget(
       connectDragSource(
         <span ref={innerRef} style={{ opacity: isDragging ? 0.8 : 1 }}>
           <Tab
+            items={items}
             active={active}
             dirty={dirty}
             isOver={isOver}
-            module={module}
             isNotSynced={isNotSynced}
             dirName={dirName}
             hasError={hasError}
             tabCount={tabCount}
             position={position}
             closeTab={closeTab}
-            onClick={this.setCurrentModule}
-            onDoubleClick={this.props.markNotDirty}
-          />
+            onClick={onClick}
+            onDoubleClick={onDoubleClick}
+            title={title}
+          >
+            {children}
+          </Tab>
         </span>
       )
     );

@@ -79,7 +79,7 @@ const enableEmmet = (editor, monaco) => {
     // force line's state to be accurate
     model.getLineTokens(lineNumber, /* inaccurateTokensAcceptable */ false);
     // get the tokenization state at the beginning of this line
-    const state = model._lines[lineNumber - 1].getState();
+    const state = model.getLinesContent()[lineNumber - 1].getState();
     // deal with state got null when paste
     if (!state) return;
 

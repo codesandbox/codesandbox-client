@@ -16,7 +16,8 @@ const Key = styled.div`
   margin: 0 1px;
   font-size: 0.75rem;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.9);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)'};
 `;
 
 export default ({ bindings }: Props) =>

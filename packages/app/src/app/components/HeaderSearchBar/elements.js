@@ -10,7 +10,8 @@ export const Container = styled(Relative)`
 
 export const Input = styled.input`
   transition: 0.4s ease all;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: ${props =>
+    props.theme['input.background'] || 'rgba(255, 255, 255, 0.1)'};
   border: 1px solid transparent;
   outline: none;
   border-radius: 4px;
@@ -18,7 +19,8 @@ export const Input = styled.input`
   z-index: 20;
   padding: 0.35em 0.5em;
   padding-right: 1.75em;
-  color: white;
+
+  color: ${props => props.theme['input.foreground'] || 'white'};
   font-weight: 500;
 
   &::-webkit-input-placeholder {
@@ -32,7 +34,8 @@ export const Input = styled.input`
 
 export const StyledSearchIcon = styled(SearchIcon)`
   font-size: 0.875em;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 `;
 
 export const StyledSearchButton = styled.button`

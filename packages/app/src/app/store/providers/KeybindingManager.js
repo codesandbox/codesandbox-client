@@ -29,10 +29,10 @@ function hasAnyKeyModifier(event: KeyboardEvent) {
 
 function hasKeyModifier(event: KeyboardEvent, modifier: string) {
   return {
-    'Shift': event.shiftKey,
-    'Alt': event.altKey,
-    'Control': event.ctrlKey,
-    'Meta': event.metaKey,
+    Shift: event.shiftKey,
+    Alt: event.altKey,
+    Control: event.ctrlKey,
+    Meta: event.metaKey,
   }[modifier];
 }
 
@@ -51,56 +51,60 @@ function handleIosKeyDown(controller, event, _pressedKey) {
     pressedKey = '';
   }
 
-  const filterMatchingBindings = function filterMatchingBindings(pendingBindings) {
-    return pendingBindings.map((binding) => {
-      const bindingKeys = binding.bindings[0];
-      // Sanity check
-      if (!bindingKeys || bindingKeys.length === 0) {
-        return null;
-      }
-
-      // Try to match the currently pressed keys with the binding keys. Generate new
-      // keys for the bindings matched that correspond to the remaining keys needed to be
-      // pressed in order to have a hit.
-      let matchedKeyIndex = -1;
-      for (let i = 0; i < bindingKeys.length; i++) {
-        const keyToMatch = bindingKeys[i];
-        if (keyToMatch === pressedKey) {
-          matchedKeyIndex = i;
-          break;
+  const filterMatchingBindings = function filterMatchingBindings(
+    pendingBindings
+  ) {
+    return pendingBindings
+      .map(binding => {
+        const bindingKeys = binding.bindings[0];
+        // Sanity check
+        if (!bindingKeys || bindingKeys.length === 0) {
+          return null;
         }
-        // We try to consume as many modifiers as possible before we find the key to match.
-        if (!hasKeyModifier(event, keyToMatch)) {
-          break;
-        }
-      }
-      
-      if (matchedKeyIndex === -1) {
-        // No key was matched so we skip this binding.
-        return null;
-      }
 
-      return {
-        ...binding,
-        bindings: [
-          binding.bindings[0].slice(matchedKeyIndex + 1),
-          binding.bindings[1],
-        ]
-      };
-    }).filter(Boolean)
-    .sort((a, b) => a.bindings.length < b.bindings.length);
+        // Try to match the currently pressed keys with the binding keys. Generate new
+        // keys for the bindings matched that correspond to the remaining keys needed to be
+        // pressed in order to have a hit.
+        let matchedKeyIndex = -1;
+        for (let i = 0; i < bindingKeys.length; i++) {
+          const keyToMatch = bindingKeys[i];
+          if (keyToMatch === pressedKey) {
+            matchedKeyIndex = i;
+            break;
+          }
+          // We try to consume as many modifiers as possible before we find the key to match.
+          if (!hasKeyModifier(event, keyToMatch)) {
+            break;
+          }
+        }
+
+        if (matchedKeyIndex === -1) {
+          // No key was matched so we skip this binding.
+          return null;
+        }
+
+        return {
+          ...binding,
+          bindings: [
+            binding.bindings[0].slice(matchedKeyIndex + 1),
+            binding.bindings[1],
+          ],
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.bindings.length < b.bindings.length);
   };
 
   // We filter out any hits on full list of bindings on first key down, or just move
   // on filtering on existing pending bindings
-  state.pendingPrimaryBindings = filterMatchingBindings(state.keydownIndex === 0
-    ? state.keybindings
-    : state.pendingPrimaryBindings
+  state.pendingPrimaryBindings = filterMatchingBindings(
+    state.keydownIndex === 0 ? state.keybindings : state.pendingPrimaryBindings
   );
 
   state.keydownIndex++;
 
-  const longestBinding = state.pendingPrimaryBindings[state.pendingPrimaryBindings.length - 1];
+  const longestBinding =
+    state.pendingPrimaryBindings[state.pendingPrimaryBindings.length - 1];
   if (!longestBinding) {
     // Nothing matched so back to the beginning!
     reset();

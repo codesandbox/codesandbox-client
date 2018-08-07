@@ -57,6 +57,8 @@ export interface ISandboxInfo {
    * @type {string}
    */
   template?: string;
+
+  showOpenInCodeSandbox?: boolean;
 }
 
 const BUNDLER_URL =
@@ -170,7 +172,10 @@ export default class PreviewManager {
       template:
         this.sandboxInfo.template ||
         getTemplate(packageJSON, normalizedModules),
-      showOpenInCodeSandbox: true,
+      showOpenInCodeSandbox:
+        this.sandboxInfo.showOpenInCodeSandbox == null
+          ? true
+          : this.sandboxInfo.showOpenInCodeSandbox,
       skipEval: this.options.skipEval || false,
     });
   }

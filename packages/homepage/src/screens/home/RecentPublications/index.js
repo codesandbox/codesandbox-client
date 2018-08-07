@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import MaxWidth from 'common/components/flex/MaxWidth';
 
 import liveImage from './codesandbox-live.png';
-import codeSandbox25Image from './codesandbox-2.5.png';
+import dashboardImage from './dashboard.png';
 import parcelImage from './parcel.png';
 
 import media from '../../../utils/media';
@@ -101,6 +101,12 @@ export default () => (
       </SubTitle>
       <Items style={{ marginBottom: '2rem' }}>
         <PublicationItem
+          title="CodeSandbox Dashboard & Teams"
+          description="Announcing Dashboard & Teams, you now have a dashboard to manage your sandboxes. With that you can now also share your sandboxes with your team."
+          url="https://medium.com/@compuives/announcing-codesandbox-dashboard-teams-876f5933160b"
+          image={dashboardImage}
+        />
+        <PublicationItem
           title="CodeSandbox Live"
           description="Real time code collaboration in the browser. From now on you can open up your sandbox for live editing with others."
           url="https://medium.com/@compuives/introducing-codesandbox-live-real-time-code-collaboration-in-the-browser-6d508cfc70c9"
@@ -111,12 +117,6 @@ export default () => (
           description="Introducing the Vanilla template: a template based on Parcel for any kind of web project you like to create."
           url="https://hackernoon.com/introducing-the-vanilla-template-to-codesandbox-32244b58acec"
           image={parcelImage}
-        />
-        <PublicationItem
-          title="CodeSandbox 2.5"
-          description="Announcing CodeSandbox 2.5. An editor redesign, Jest support, Babel Plugin support, a Cerebral rewrite and muuuuch more!"
-          url="https://medium.com/@compuives/announcing-codesandbox-2-5-be767d15ffd"
-          image={codeSandbox25Image}
         />
       </Items>
     </MaxWidth>

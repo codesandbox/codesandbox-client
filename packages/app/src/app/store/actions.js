@@ -3,7 +3,7 @@ import axios from 'axios';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import { parseConfigurations } from './utils/parse-configurations';
-import { mainModule } from './utils/main-module';
+import { mainModule, defaultOpenedModule } from './utils/main-module';
 
 export function getSandbox({ props, api, path }) {
   return api
@@ -29,20 +29,34 @@ export function setUrlOptions({ state, router, utils }) {
 
   if (options.currentModule) {
     const sandbox = state.get('editor.currentSandbox');
-    const module = utils.resolveModule(
-      options.currentModule,
-      sandbox.modules,
-      sandbox.directories,
-      options.currentModule.directoryShortid
-    );
 
-    if (module) {
-      state.push('editor.tabs', {
-        type: 'module',
-        moduleShortid: module.shortid,
-        dirty: false,
+    try {
+      const module = utils.resolveModule(
+        options.currentModule,
+        sandbox.modules,
+        sandbox.directories,
+        options.currentModule.directoryShortid
+      );
+
+      if (module) {
+        state.push('editor.tabs', {
+          type: 'MODULE',
+          moduleShortid: module.shortid,
+          dirty: false,
+        });
+        state.set('editor.currentModuleShortid', module.shortid);
+      }
+    } catch (err) {
+      const now = Date.now();
+      const title = `Could not find the module ${options.currentModule}`;
+
+      state.push('notifications', {
+        title,
+        id: now,
+        notificationType: 'warning',
+        endTime: now + 2000,
+        buttons: [],
       });
-      state.set('editor.currentModuleShortid', module.shortid);
     }
   }
 
@@ -75,9 +89,12 @@ export function setUrlOptions({ state, router, utils }) {
   if (options.forceRefresh)
     state.set('preferences.settings.forceRefresh', options.forceRefresh);
   if (options.expandDevTools)
-    state.set('preferences.showConsole', options.expandDevTools);
+    state.set('preferences.showDevtools', options.expandDevTools);
   if (options.runOnClick)
     state.set(`preferences.runOnClick`, options.runOnClick);
+  if (options.previewWindow) {
+    state.set('editor.previewWindow.content', options.previewWindow);
+  }
 }
 
 export const setSandboxConfigOptions = ({ state }) => {
@@ -101,7 +118,7 @@ export function setCurrentModuleShortid({ props, state }) {
     sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
   ) {
     const parsedConfigs = parseConfigurations(sandbox);
-    const module = mainModule(sandbox, parsedConfigs);
+    const module = defaultOpenedModule(sandbox, parsedConfigs);
 
     state.set('editor.currentModuleShortid', module.shortid);
   }
@@ -134,27 +151,36 @@ export function getGitChanges({ api, state }) {
     .then(gitChanges => ({ gitChanges }));
 }
 
-export function forkSandbox({ state, api }) {
+export function forkSandbox({ state, props, api }) {
+  const sandboxId = props.sandboxId || state.get('editor.currentId');
+  const url = sandboxId.includes('/')
+    ? `/sandboxes/fork/${sandboxId}`
+    : `/sandboxes/${sandboxId}/fork`;
+
   return api
-    .post(`/sandboxes/${state.get('editor.currentId')}/fork`)
+    .post(url, props.body || {})
     .then(data => ({ forkedSandbox: data }));
 }
 
 export function moveModuleContent({ props, state }) {
   const currentSandbox = state.get('editor.currentSandbox');
 
-  return {
-    sandbox: Object.assign({}, props.forkedSandbox, {
-      modules: props.forkedSandbox.modules.map(module =>
-        Object.assign(module, {
-          code: currentSandbox.modules.find(
-            currentSandboxModule =>
-              currentSandboxModule.shortid === module.shortid
-          ).code,
-        })
-      ),
-    }),
-  };
+  if (currentSandbox) {
+    return {
+      sandbox: Object.assign({}, props.forkedSandbox, {
+        modules: props.forkedSandbox.modules.map(module =>
+          Object.assign(module, {
+            code: currentSandbox.modules.find(
+              currentSandboxModule =>
+                currentSandboxModule.shortid === module.shortid
+            ).code,
+          })
+        ),
+      }),
+    };
+  }
+
+  return { sandbox: props.forkedSandbox };
 }
 
 export function closeTabByIndex({ state, props }) {
@@ -256,6 +282,10 @@ export function getUser({ api, path }) {
     .catch(() => path.error());
 }
 
+export function connectWebsocket({ socket }) {
+  return socket.connect();
+}
+
 export function setJwtFromProps({ jwt, state, props }) {
   jwt.set(props.jwt);
   state.set('jwt', props.jwt);
@@ -267,6 +297,10 @@ export function setJwtFromStorage({ jwt, state }) {
 
 export function removeJwtFromStorage({ jwt }) {
   jwt.reset();
+}
+
+export function setSignedInCookie() {
+  document.cookie = 'signedIn=true; Path=/;';
 }
 
 export function listenToConnectionChange({ connection }) {
@@ -338,4 +372,15 @@ export function createPackageJSON({ props }) {
     title: 'package.json',
     newCode: code,
   };
+}
+
+export function getContributors({ state }) {
+  return window
+    .fetch(
+      'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
+    )
+    .then(x => x.json())
+    .then(x => x.contributors.map(u => u.login))
+    .then(names => state.set('contributors', names))
+    .catch(() => {});
 }

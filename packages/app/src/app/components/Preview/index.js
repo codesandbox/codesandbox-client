@@ -4,7 +4,7 @@
 import * as React from 'react';
 import type { Sandbox, Module, Preferences } from 'common/types';
 import { listen, dispatch, registerFrame } from 'codesandbox-api';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import io from 'socket.io-client';
 
 import { frameUrl } from 'common/utils/url-generator';
@@ -37,6 +37,7 @@ type Props = {
   dragging?: boolean,
   hide: boolean,
   noPreview: boolean,
+  alignDirection?: 'right' | 'bottom',
 };
 
 type State = {
@@ -431,19 +432,21 @@ class BasePreview extends React.Component<Props, State> {
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
-    // $FlowIssue
-    document.getElementById('sandbox').src = urlInAddressBar;
+    if (document.getElementById('sandbox')) {
+      // $FlowIssue
+      document.getElementById('sandbox').src = urlInAddressBar;
 
-    this.setState({
-      history: [urlInAddressBar],
-      historyPosition: 0,
-      urlInAddressBar,
-    });
+      this.setState({
+        history: [urlInAddressBar],
+        historyPosition: 0,
+        urlInAddressBar,
+      });
+    }
   };
 
   handleRefresh = () => {
-    const { history, historyPosition } = this.state;
-    const url = history[historyPosition];
+    const { history, historyPosition, urlInAddressBar } = this.state;
+    const url = history[historyPosition] || urlInAddressBar;
 
     if (document.getElementById('sandbox')) {
       // $FlowIssue
@@ -459,7 +462,7 @@ class BasePreview extends React.Component<Props, State> {
       historyPosition: 0,
       urlInAddressBar: url,
     });
-  };
+  }
 
   handleBack = () => {
     dispatch({
@@ -552,6 +555,7 @@ class BasePreview extends React.Component<Props, State> {
             zenMode={settings.zenMode}
             alignRight={this.props.alignRight}
             alignBottom={this.props.alignBottom}
+            alignDirection={this.props.alignDirection}
           />
         )}
 

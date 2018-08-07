@@ -48,8 +48,7 @@ export default class Background extends React.PureComponent {
     return (
       <Container
         style={{
-          backgroundColor:
-            this.colors[template.name] || template.color.clearer(0.97)(),
+          background: `linear-gradient(rgba(228, 3, 3, 0.05), rgba(255, 140, 0, 0.05), rgba(255, 237, 0, 0.05), rgba(0, 128, 38, 0.05), rgba(0, 77, 255, 0.05), rgba(117, 7, 135, 0.05))`,
         }}
       >
         <canvas

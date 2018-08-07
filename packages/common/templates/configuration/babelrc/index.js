@@ -97,7 +97,16 @@ const config: ConfigurationFile = {
 
     if (template === 'parcel') {
       const presets = ['env'];
-      const plugins = [];
+      const plugins = [
+        [
+          'transform-runtime',
+          {
+            polyfill: false,
+            regenerator: true,
+          },
+        ],
+        'transform-object-rest-spread',
+      ];
 
       const packageJSONModule = resolveModule('/package.json');
 
@@ -145,10 +154,14 @@ const config: ConfigurationFile = {
                 useBuiltIns: true,
               },
             ],
+            'stage-2',
           ],
           plugins: [
             ['transform-cx-jsx'],
             ['transform-react-jsx', { pragma: 'VDOM.createElement' }],
+            'transform-function-bind',
+            'transform-runtime',
+            'transform-regenerator',
           ],
         },
         null,

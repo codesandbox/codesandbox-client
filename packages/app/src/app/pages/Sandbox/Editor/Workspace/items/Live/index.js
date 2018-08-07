@@ -18,8 +18,9 @@ const Live = ({ signals, store }) => (
         addEditor={signals.live.onAddEditorClicked}
         removeEditor={signals.live.onRemoveEditorClicked}
         isOwner={store.live.isOwner}
+        isTeam={store.live.isTeam}
         roomInfo={store.live.roomInfo}
-        ownerId={store.live.roomInfo.ownerId}
+        ownerIds={store.live.roomInfo.ownerIds}
         currentUserId={store.user.id}
         reconnecting={store.live.reconnecting}
         onSessionCloseClicked={signals.live.onSessionCloseClicked}

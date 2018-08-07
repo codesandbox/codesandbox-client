@@ -450,6 +450,7 @@ async function compile({
     managerModuleToTranspile = modules[main];
 
     dispatch({ type: 'status', status: 'transpiling' });
+    manager.setStage('transpilation');
 
     await manager.preset.setup(manager);
 
@@ -459,6 +460,7 @@ async function compile({
     debug(`Transpilation time ${Date.now() - t}ms`);
 
     dispatch({ type: 'status', status: 'evaluating' });
+    manager.setStage('evaluation');
 
     if (!skipEval) {
       resetScreen();
@@ -602,7 +604,10 @@ async function compile({
     hadError = true;
   } finally {
     try {
-      localStorage.removeItem('running');
+      setTimeout(() => {
+        // Set a timeout so there's a chance that we also catch runtime errors
+        localStorage.removeItem('running');
+      }, 600);
     } catch (e) {
       /* no */
     }

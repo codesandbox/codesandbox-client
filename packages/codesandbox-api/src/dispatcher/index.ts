@@ -30,7 +30,7 @@ export function dispatch(message: Object) {
   }
 }
 
-export type Callback = (message: Object, source?: Window) => void;
+export type Callback = (message: Object, source?: Window | null | undefined) => void;
 
 const listeners: { [id: string]: Callback } = {};
 let listenerId = 0;

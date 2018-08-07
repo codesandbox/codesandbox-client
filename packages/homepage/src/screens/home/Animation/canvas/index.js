@@ -36,7 +36,8 @@ class Canvas {
         // Create a dot
         const x = j * gridSize + gridSize * Math.random();
         const y = i * gridSize + gridSize * Math.random();
-        const dot = new Dot(x, y, [108, 174, 221], 1);
+        // const dot = new Dot(x, y, [108, 174, 221], 1);
+        const dot = new Dot(x, y, [223, 176, 122], 1);
 
         // Push to into an array of dots
         this.dots.push(dot);
@@ -67,6 +68,8 @@ class Canvas {
 
       if (renderDelta > 4000) {
         this.lowPerf = true;
+      } else {
+        this.lowPerf = false;
       }
 
       let distX;
@@ -100,17 +103,31 @@ class Canvas {
           distY = Math.abs(this.dots[i].y - this.cubeY);
           const distance = Math.sqrt(distX * distX + distY * distY);
 
-          this.dots[i].setAlpha(Math.max(0.2, (1 - distance / 300) * 2));
-          this.dots[i].setSize(Math.max(1.5, (1 - distance / 300) * 4));
-          this.dots[i].update(delta);
+          this.dots[i].setAlpha(Math.max(0.9, (1 - distance / 300) * 2));
 
+          this.dots[i].setSize(
+            Math.min(2, Math.random() * (1 - distance / this.stage.width))
+          );
+          this.dots[i].update(delta);
           if (this.wave) {
             const dirX = this.dots[i].x - this.wave.x;
             const dirY = this.dots[i].y - this.wave.y;
             const waveDistance = Math.sqrt(dirX * dirX + dirY * dirY);
 
             if (waveDistance < middle) {
-              this.dots[i].setColor(this.wave.color);
+              const RED = [228, 3, 3];
+              const ORANGE = [255, 140, 0];
+              const YELLOW = [255, 237, 0];
+              const GREEN = [0, 128, 38];
+              const BLUE = [0, 77, 255];
+              const PURPLE = [117, 7, 135];
+              const ALL = [RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE];
+
+              const COLOR =
+                ALL[Math.round((distance / this.stage.width) * ALL.length)];
+
+              this.dots[i].setColor(COLOR);
+              // this.dots[i].setColor(this.wave.color);
             }
             if (waveDistance > startRadius && waveDistance < endRadius) {
               power = Math.max(
@@ -127,13 +144,11 @@ class Canvas {
             }
           }
         }
-      } else {
-        if (!this.lowPerf) {
-          this.ctx.clearRect(0, 0, this.stage.width, this.stage.height);
+      } else if (!this.lowPerf) {
+        this.ctx.clearRect(0, 0, this.stage.width, this.stage.height);
 
-          for (let i = 0; i < this.dots.length; i++) {
-            this.dots[i].draw(this.ctx);
-          }
+        for (let i = 0; i < this.dots.length; i++) {
+          this.dots[i].draw(this.ctx);
         }
       }
 
@@ -167,8 +182,8 @@ class Canvas {
         const distance = Math.sqrt(distX * distX + distY * distY);
 
         this.dots[i].setSpeed(
-          distX / distance / 20 * ((Math.random() + 0.1) * 0.2),
-          distY / distance / 20 * ((Math.random() + 0.1) * 0.2)
+          (distX / distance / 20) * ((Math.random() + 0.1) * 0.2),
+          (distY / distance / 20) * ((Math.random() + 0.1) * 0.2)
         );
       }
       this.calibrated = true;

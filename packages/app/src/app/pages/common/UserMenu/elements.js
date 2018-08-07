@@ -21,11 +21,16 @@ export const ProfileInfo = styled.div`
 
 export const Name = styled.div`
   padding-bottom: 0.2em;
-  color: white;
+  color: ${props => props.theme['editor.foreground'] || 'white'};
   font-size: 1em;
 `;
 
 export const Username = styled.div`
-  color: ${props => (props.main ? 'white' : 'rgba(255, 255, 255, 0.6)')};
+  color: ${props =>
+    props.main
+      ? props.theme['editor.foreground'] || 'white'
+      : props.theme.light
+        ? 'rgba(0, 0, 0, 0.6)'
+        : 'rgba(255, 255, 255, 0.6)'};
   font-size: ${props => (props.main ? 1 : 0.875)}em;
 `;

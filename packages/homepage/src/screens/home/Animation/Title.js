@@ -119,7 +119,9 @@ export default ({ template }) => (
         <span>
           The online code editor for{' '}
           <RollingText updateCheck={template.name} width="12rem">
-            <span style={{ color: template.color() }}>{template.niceName}</span>
+            <span style={{ color: template.color() }}>
+              {template.niceName === 'Vanilla' ? 'Web' : template.niceName}
+            </span>
           </RollingText>
         </span>
       )}

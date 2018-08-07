@@ -17,7 +17,7 @@ const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
 
 export const SCRIPT_VERSION =
-  document.currentScript && document.currentScript.src.replace(host + '/', '');
+  document.currentScript && document.currentScript.src;
 
 debug('Booting sandbox');
 

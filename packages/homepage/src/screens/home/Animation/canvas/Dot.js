@@ -17,13 +17,14 @@ export default class Dot extends PositionedElement {
     this.color = color;
     this.alpha = alpha;
     const r = Math.random();
-    this.minAlpha = 0.1 + r * 0.2;
+    this.minAlpha = 0.4 + r * 0.2;
     this.minSize = 0.5 + r * 2;
   }
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.fillStyle = `rgba(${this.color.join(',')}, ${this.alpha})`;
+
     ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI, false);
     ctx.closePath();
     ctx.fill();

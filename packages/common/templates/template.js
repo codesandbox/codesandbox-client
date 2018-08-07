@@ -13,6 +13,7 @@ type Options = {
   externalResourcesEnabled?: boolean,
   showCube?: boolean,
   isServer?: boolean,
+  main?: boolean,
 };
 
 const defaultConfigurations = {
@@ -26,6 +27,7 @@ export default class Template {
   niceName: string;
   shortid: string;
   url: string;
+  main: boolean;
   color: () => string;
 
   showOnHomePage: boolean;
@@ -53,6 +55,7 @@ export default class Template {
     this.color = color;
 
     this.isServer = options.isServer || false;
+    this.main = options.main || false;
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';
     this.configurationFiles = {
@@ -80,6 +83,15 @@ export default class Template {
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
     ].filter(x => x);
+  }
+
+  /**
+   * Files to be opened by default by the editor when opening the editor
+   */
+  getDefaultOpenedFiles(configurationFiles: {
+    [type: string]: Object,
+  }): Array<string> {
+    return this.getEntries(configurationFiles);
   }
 
   // eslint-disable-next-line no-unused-vars
