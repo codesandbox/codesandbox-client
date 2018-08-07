@@ -9,7 +9,7 @@ export const Container = styled.div`
   max-height: 100%;
   z-index: 100;
   background-color: ${props =>
-    props.theme['statusBar.background'] || props.theme.background2};
+    props.theme['statusBar.background'] || props.theme.background4};
 `;
 
 export const Header = styled.div`

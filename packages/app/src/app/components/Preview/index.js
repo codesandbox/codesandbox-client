@@ -134,7 +134,7 @@ class BasePreview extends React.Component<Props, State> {
       history: [],
       historyPosition: -1,
       urlInAddressBar: this.IS_SERVER
-        ? `https://${props.sandbox.id}.sse1.codesandbox.stream`
+        ? `https://${props.sandbox.id}.sse.codesandbox.stream`
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
       terminalMessages: [],
@@ -169,7 +169,7 @@ class BasePreview extends React.Component<Props, State> {
       this.$socket.close();
     }
 
-    this.$socket = io('https://sse1.codesandbox.stream', {
+    this.$socket = io('https://sse.codesandbox.stream', {
       autoConnect: false,
     });
 
@@ -266,7 +266,7 @@ class BasePreview extends React.Component<Props, State> {
     this.IS_SERVER = getTemplate(this.props.sandbox.template).isServer;
 
     const url = this.IS_SERVER
-      ? `https://${newId}.sse1.codesandbox.stream`
+      ? `https://${newId}.sse.codesandbox.stream`
       : frameUrl(newId, this.props.initialPath || '');
 
     this.setupSockets(newId);
@@ -453,7 +453,7 @@ class BasePreview extends React.Component<Props, State> {
       document.getElementById('sandbox').src =
         url ||
         (this.IS_SERVER
-          ? `https://${this.props.sandbox.id}.sse1.codesandbox.stream`
+          ? `https://${this.props.sandbox.id}.sse.codesandbox.stream`
           : frameUrl(this.props.sandbox.id));
     }
 
@@ -462,7 +462,7 @@ class BasePreview extends React.Component<Props, State> {
       historyPosition: 0,
       urlInAddressBar: url,
     });
-  }
+  };
 
   handleBack = () => {
     dispatch({
@@ -508,6 +508,10 @@ class BasePreview extends React.Component<Props, State> {
     }
   };
 
+  restartServer = () => {
+    this.$socket.emit('sandbox:restart');
+  };
+
   render() {
     const {
       showNavigation,
@@ -527,7 +531,7 @@ class BasePreview extends React.Component<Props, State> {
     const url =
       urlInAddressBar ||
       (this.IS_SERVER
-        ? `https://${sandbox.id}.sse1.codesandbox.stream`
+        ? `https://${sandbox.id}.sse.codesandbox.stream`
         : frameUrl(sandbox.id));
 
     if (noPreview) {
@@ -556,6 +560,7 @@ class BasePreview extends React.Component<Props, State> {
             alignRight={this.props.alignRight}
             alignBottom={this.props.alignBottom}
             alignDirection={this.props.alignDirection}
+            restartServer={this.restartServer}
           />
         )}
 
@@ -563,7 +568,7 @@ class BasePreview extends React.Component<Props, State> {
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
           src={
             this.IS_SERVER
-              ? `https://${sandbox.id}.sse1.codesandbox.stream`
+              ? `https://${sandbox.id}.sse.codesandbox.stream`
               : frameUrl(sandbox.id, this.initialPath)
           }
           id="sandbox"

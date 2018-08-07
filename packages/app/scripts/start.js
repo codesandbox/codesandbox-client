@@ -211,7 +211,7 @@ function addMiddleware(devServer, index) {
     devServer.use(
       '/socket.io',
       proxy({
-        target: 'https://sse.cs.lbogdan.tk',
+        target: 'https://sse.codesandbox.stream',
         changeOrigin: true,
         secure: false,
       })

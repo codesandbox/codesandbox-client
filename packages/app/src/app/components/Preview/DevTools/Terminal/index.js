@@ -13,7 +13,7 @@ class TerminalComponent extends React.PureComponent {
     this.term.fit();
 
     this.term.setOption('theme', {
-      background: '#1c2022',
+      background: '#141618',
     });
     this.term.setOption('fontFamily', 'Source Code Pro');
     this.term.setOption('fontWeight', 'normal');

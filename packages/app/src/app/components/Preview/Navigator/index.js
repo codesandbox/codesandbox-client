@@ -3,6 +3,7 @@ import React from 'react';
 import LeftIcon from 'react-icons/lib/fa/angle-left';
 import RightIcon from 'react-icons/lib/fa/angle-right';
 import RefreshIcon from 'react-icons/lib/md/refresh';
+import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
 import Switch from 'common/components/Switch';
 import Tooltip from 'common/components/Tooltip';
@@ -33,6 +34,7 @@ function Navigator({
   alignRight,
   alignBottom,
   alignDirection,
+  restartServer,
 }) {
   return (
     <Container className="flying-container-handler" style={{ cursor: 'move' }}>
@@ -86,7 +88,17 @@ function Navigator({
           </Tooltip>
         </Icon>
       )}
-      {!zenMode &&
+      {restartServer ? (
+        <Icon
+          style={{ fontSize: 18, padding: 4, marginRight: 4 }}
+          onClick={restartServer}
+        >
+          <Tooltip title="Restart Server">
+            <PowerIcon />
+          </Tooltip>
+        </Icon>
+      ) : (
+        !zenMode &&
         toggleProjectView && (
           <SwitchContainer>
             <Tooltip
@@ -96,7 +108,8 @@ function Navigator({
               <Switch right={isProjectView} onClick={toggleProjectView} />
             </Tooltip>
           </SwitchContainer>
-        )}
+        )
+      )}
     </Container>
   );
 }
