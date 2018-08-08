@@ -160,6 +160,12 @@ class BasePreview extends React.Component<Props, State> {
     }
   }
 
+  componentWillUpdate(nextProps: Props, nextState: State) {
+    if (nextState.frameInitialized !== this.state.frameInitialized) {
+      this.handleRefresh();
+    }
+  }
+
   setupSockets = async (id: string) => {
     if (this.$socket) {
       this.started = false;
@@ -198,6 +204,7 @@ class BasePreview extends React.Component<Props, State> {
       if (!this.state.frameInitialized && this.props.onInitialized) {
         this.disposeInitializer = this.props.onInitialized(this);
       }
+      this.handleRefresh();
       this.setState({
         frameInitialized: true,
       });
@@ -523,9 +530,6 @@ class BasePreview extends React.Component<Props, State> {
       hide,
       noPreview,
     } = this.props;
-    if (this.IS_SERVER && !this.state.frameInitialized) {
-      return null;
-    }
 
     const { historyPosition, history, urlInAddressBar } = this.state;
     const url =

@@ -1,0 +1,23 @@
+{
+  "name": "sandbox-starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io-client": "^2.1.1",
+    "xterm": "^3.5.1",
+    "xterm-webfont": "^1.1.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-runtime": "^6.26.0",
+    "cssnano": "^4.0.5",
+    "parcel-bundler": "^1.9.7"
+  },
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "install-dependencies": "yarn install"
+  }
+}
