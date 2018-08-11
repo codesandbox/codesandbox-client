@@ -48,7 +48,10 @@ type State = {
   url: ?string,
 };
 
-const getSSEUrl = (id?: string) => `https://${id ? id + '.' : ''}sse.${host()}`;
+const getSSEUrl = (id?: string) =>
+  `https://${id ? id + '.' : ''}sse.${
+    process.env.NODE_ENV === 'development' ? 'codesandbox.stream' : host()
+  }`;
 
 const getDiff = (a, b) => {
   const diff = {};
@@ -168,23 +171,58 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   setupSSESockets = async (id: string) => {
-    if (this.$socket) {
+    const hasInitialized = !!this.$socket;
+
+    if (hasInitialized) {
       this.started = false;
       this.setState({
         frameInitialized: false,
       });
+      this.$socket.removeListener('connect', this.connectHandler);
       this.$socket.close();
-    }
-
-    this.$socket =
-      this.$socket ||
-      io(getSSEUrl(), {
+    } else {
+      this.$socket = io(getSSEUrl(), {
         autoConnect: false,
       });
+      this.$socket.on('sandbox:start', () => {
+        dispatch({
+          type: 'terminal:message',
+          data: '> CodeSandbox: sandbox started\n\r',
+        });
+
+        this.started = true;
+        if (!this.state.frameInitialized && this.props.onInitialized) {
+          this.disposeInitializer = this.props.onInitialized(this);
+        }
+        this.handleRefresh();
+        this.setState({
+          frameInitialized: true,
+        });
+      });
+      this.$socket.on('sandbox:stop', () => {
+        this.started = false;
+        this.setState({
+          frameInitialized: false,
+          stopped: true,
+        });
+        this.stopped = true;
+      });
+      this.$socket.on('sandbox:log', ({ chan, data }) => {
+        const message = `[${chan}]: ${data}`;
+        dispatch({
+          type: 'terminal:message',
+          chan,
+          data,
+        });
+        this.setState(state => ({
+          terminalMessages: [...state.terminalMessages, message],
+        }));
+      });
+    }
 
     const token = await retrieveSSEToken();
 
-    this.$socket.on('connect', () => {
+    this.connectHandler = () => {
       this.$socket.emit('sandbox', { id, token });
 
       dispatch({
@@ -195,45 +233,9 @@ class BasePreview extends React.Component<Props, State> {
       if (!this.started) {
         this.start();
       }
-    });
+    };
 
-    this.$socket.on('sandbox:start', () => {
-      dispatch({
-        type: 'terminal:message',
-        data: '> CodeSandbox: sandbox started\n\r',
-      });
-
-      this.started = true;
-      if (!this.state.frameInitialized && this.props.onInitialized) {
-        this.disposeInitializer = this.props.onInitialized(this);
-      }
-      this.handleRefresh();
-      this.setState({
-        frameInitialized: true,
-      });
-    });
-
-    this.$socket.on('sandbox:stop', () => {
-      this.started = false;
-      this.setState({
-        frameInitialized: false,
-        stopped: true,
-      });
-      this.stopped = true;
-    });
-
-    this.$socket.on('sandbox:log', ({ chan, data }) => {
-      const message = `[${chan}]: ${data}`;
-      console.log(message);
-      dispatch({
-        type: 'terminal:message',
-        chan,
-        data,
-      });
-      this.setState(state => ({
-        terminalMessages: [...state.terminalMessages, message],
-      }));
-    });
+    this.$socket.on('connect', this.connectHandler);
 
     this.$socket.open();
   };
