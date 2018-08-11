@@ -7,7 +7,7 @@ import { listen, dispatch, registerFrame } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import io from 'socket.io-client';
 
-import { frameUrl } from 'common/utils/url-generator';
+import { frameUrl, host } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
 import getTemplate from 'common/templates';
 
@@ -48,6 +48,8 @@ type State = {
   url: ?string,
 };
 
+const getSSEUrl = (id?: string) => `https://${id ? id + '.' : ''}sse.${host()}`;
+
 const getDiff = (a, b) => {
   const diff = {};
 
@@ -78,7 +80,6 @@ const getDiff = (a, b) => {
       };
     }
   });
-  console.log(diff);
 
   return diff;
 };
@@ -134,7 +135,7 @@ class BasePreview extends React.Component<Props, State> {
       history: [],
       historyPosition: -1,
       urlInAddressBar: this.IS_SERVER
-        ? `https://${props.sandbox.id}.sse.codesandbox.stream`
+        ? getSSEUrl(props.sandbox.id)
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
       terminalMessages: [],
@@ -151,7 +152,7 @@ class BasePreview extends React.Component<Props, State> {
     };
 
     if (this.IS_SERVER) {
-      this.setupSockets(props.sandbox.id);
+      this.setupSSESockets(props.sandbox.id);
     }
     this.listener = listen(this.handleMessage);
 
@@ -166,7 +167,7 @@ class BasePreview extends React.Component<Props, State> {
     }
   }
 
-  setupSockets = async (id: string) => {
+  setupSSESockets = async (id: string) => {
     if (this.$socket) {
       this.started = false;
       this.setState({
@@ -175,9 +176,11 @@ class BasePreview extends React.Component<Props, State> {
       this.$socket.close();
     }
 
-    this.$socket = io('https://sse.codesandbox.stream', {
-      autoConnect: false,
-    });
+    this.$socket =
+      this.$socket ||
+      io(getSSEUrl(), {
+        autoConnect: false,
+      });
 
     const token = await retrieveSSEToken();
 
@@ -273,10 +276,10 @@ class BasePreview extends React.Component<Props, State> {
     this.IS_SERVER = getTemplate(this.props.sandbox.template).isServer;
 
     const url = this.IS_SERVER
-      ? `https://${newId}.sse.codesandbox.stream`
+      ? getSSEUrl(newId)
       : frameUrl(newId, this.props.initialPath || '');
 
-    this.setupSockets(newId);
+    this.setupSSESockets(newId);
     this.setState(
       {
         history: [url],
@@ -460,7 +463,7 @@ class BasePreview extends React.Component<Props, State> {
       document.getElementById('sandbox').src =
         url ||
         (this.IS_SERVER
-          ? `https://${this.props.sandbox.id}.sse.codesandbox.stream`
+          ? getSSEUrl(this.props.sandbox.id)
           : frameUrl(this.props.sandbox.id));
     }
 
@@ -534,9 +537,7 @@ class BasePreview extends React.Component<Props, State> {
     const { historyPosition, history, urlInAddressBar } = this.state;
     const url =
       urlInAddressBar ||
-      (this.IS_SERVER
-        ? `https://${sandbox.id}.sse.codesandbox.stream`
-        : frameUrl(sandbox.id));
+      (this.IS_SERVER ? getSSEUrl(sandbox.id) : frameUrl(sandbox.id));
 
     if (noPreview) {
       // Means that preview is open in another tab definitely
@@ -572,7 +573,7 @@ class BasePreview extends React.Component<Props, State> {
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
           src={
             this.IS_SERVER
-              ? `https://${sandbox.id}.sse.codesandbox.stream`
+              ? getSSEUrl(sandbox.id)
               : frameUrl(sandbox.id, this.initialPath)
           }
           id="sandbox"
