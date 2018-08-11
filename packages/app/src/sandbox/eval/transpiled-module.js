@@ -330,7 +330,7 @@ export default class TranspiledModule {
     ) {
       return;
     }
-    console.log('adding dep');
+
     try {
       const tModule = manager.resolveTranspiledModule(
         depPath,
@@ -349,7 +349,6 @@ export default class TranspiledModule {
         tModule.setIsEntry(true);
       }
     } catch (e) {
-      console.log('not found, going async');
       if (e.type === 'module-not-found' && e.isDependency) {
         this.asyncDependencies.push(
           manager.downloadDependency(e.path, this.module.path)
@@ -359,19 +358,15 @@ export default class TranspiledModule {
         // to resolve using this file resolver. If that fails we will still
         // mark the dependency as having missing deps.
         if (manager.fileResolver) {
-          console.log('file resolver');
           this.asyncDependencies.push(
             new Promise(async resolve => {
               try {
-                console.log('trying to resolve');
                 const tModule = await manager.resolveTranspiledModule(
                   depPath,
                   options && options.isAbsolute ? '/' : this.module.path,
                   undefined,
                   true
                 );
-
-                console.log('found it!', tModule);
 
                 if (isTranspilationDep) {
                   this.transpilationDependencies.add(tModule);
