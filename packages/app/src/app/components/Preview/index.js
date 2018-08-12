@@ -141,7 +141,6 @@ class BasePreview extends React.Component<Props, State> {
         ? getSSEUrl(props.sandbox.id)
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
-      terminalMessages: [],
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -184,6 +183,7 @@ class BasePreview extends React.Component<Props, State> {
       this.$socket = io(getSSEUrl(), {
         autoConnect: false,
       });
+
       this.$socket.on('sandbox:start', () => {
         dispatch({
           type: 'terminal:message',
@@ -199,6 +199,7 @@ class BasePreview extends React.Component<Props, State> {
           frameInitialized: true,
         });
       });
+
       this.$socket.on('sandbox:stop', () => {
         this.started = false;
         this.setState({
@@ -207,16 +208,13 @@ class BasePreview extends React.Component<Props, State> {
         });
         this.stopped = true;
       });
+
       this.$socket.on('sandbox:log', ({ chan, data }) => {
-        const message = `[${chan}]: ${data}`;
         dispatch({
           type: 'terminal:message',
           chan,
           data,
         });
-        this.setState(state => ({
-          terminalMessages: [...state.terminalMessages, message],
-        }));
       });
     }
 
