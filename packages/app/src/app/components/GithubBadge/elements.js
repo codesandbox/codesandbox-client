@@ -22,9 +22,14 @@ export const Text = styled.span`
   display: inline-block;
   font-weight: 0.875rem;
 
-  color: rgba(255, 255, 255, 0.6);
+  color: ${props =>
+    props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.6)'};
   border-radius: 4px;
   padding: 3px 5px;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.6);
+  }
 `;
 
 export const Icon = styled.span`

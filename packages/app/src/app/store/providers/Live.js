@@ -1,28 +1,12 @@
 import { Provider } from 'cerebral';
-import { Socket } from 'phoenix';
 import uuid from 'uuid';
 
 const identifier = uuid.v4();
 let messageIndex = 0;
 const sentMessages = new Map();
-let socket = null;
 let channel = null;
 
 export default Provider({
-  connect() {
-    const { state, jwt } = this.context;
-    const token = state.get('jwt') || jwt.get();
-
-    socket =
-      socket ||
-      new Socket(`wss://${location.host}/socket`, {
-        params: {
-          guardian_token: token,
-        },
-      });
-
-    socket.connect();
-  },
   disconnect() {
     return new Promise((resolve, reject) => {
       channel
@@ -39,7 +23,9 @@ export default Provider({
     });
   },
   joinChannel(roomId: string) {
-    channel = socket.channel(`live:${roomId}`, {});
+    const { socket } = this.context;
+
+    channel = socket.getSocket().channel(`live:${roomId}`, {});
 
     return new Promise((resolve, reject) => {
       channel

@@ -12,6 +12,7 @@ export default function track(eventName, secondArg: Object = {}) {
       const data = {
         ...secondArg,
         version: VERSION,
+        path: location.pathname + location.search,
       };
 
       window.ga('send', data);

@@ -7,7 +7,7 @@
   <title>Sandbox - CodeSandbox</title>
   <link rel="manifest" href="/manifest.json">
   <link rel="shortcut icon" href="/favicon.ico">
-  <script src="<%= htmlWebpackPlugin.options.publicPath %>static/browserfs/browserfs.min.js" type="text/javascript"></script>
+  <script src="<%= webpackConfig.output.publicPath %>static/browserfs/browserfs.min.js" type="text/javascript"></script>
 
   <script>
     window.process = BrowserFS.BFSRequire('process');

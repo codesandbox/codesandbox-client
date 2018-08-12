@@ -1,15 +1,8 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/utils/get-type';
 
-import {
-  StyledCloseIcon,
-  StyledNotSyncedIcon,
-  Container,
-  TabTitle,
-  TabDir,
-} from './elements';
+import ContextMenu from 'app/components/ContextMenu';
+import { Container, TabTitle, StyledCloseIcon } from './elements';
 
 class Tab extends React.Component {
   state = { hovering: false };
@@ -43,28 +36,14 @@ class Tab extends React.Component {
   };
 
   renderTabStatus = () => {
-    const { isNotSynced, tabCount } = this.props;
+    const { tabCount } = this.props;
     const { hovering } = this.state;
 
-    if (hovering && isNotSynced && tabCount === 1) {
-      return <StyledNotSyncedIcon show={'true'} />;
-    }
-    if (hovering && isNotSynced && tabCount > 1) {
-      return <StyledCloseIcon onClick={this.closeTab} show={'true'} />;
-    }
-    if (hovering && tabCount === 1) {
-      return <StyledCloseIcon onClick={this.closeTab} show={undefined} />;
-    }
     if (hovering && tabCount > 1) {
       return <StyledCloseIcon onClick={this.closeTab} show={'true'} />;
     }
-    if (!hovering && isNotSynced) {
-      return <StyledNotSyncedIcon show={'true'} />;
-    }
-    if (!hovering && !isNotSynced) {
-      return <StyledNotSyncedIcon show={undefined} />;
-    }
-    return <StyledNotSyncedIcon show={undefined} />;
+
+    return <StyledCloseIcon onClick={this.closeTab} show={undefined} />;
   };
 
   render() {
@@ -74,33 +53,34 @@ class Tab extends React.Component {
       isOver,
       onClick,
       onDoubleClick,
-      module,
-      dirName,
-      hasError,
-      isNotSynced,
+      children,
+      title,
+      items,
     } = this.props;
+    const { hovering } = this.state;
 
     return (
-      <Container
-        active={active}
-        dirty={dirty}
-        isOver={isOver}
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
-        onMouseDown={this.onMouseDown}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-      >
-        <EntryIcons
-          isNotSynced={isNotSynced}
-          type={getType(module.title)}
-          error={hasError}
-        />
-        <TabTitle>{module.title}</TabTitle>
-        {dirName && <TabDir>../{dirName}</TabDir>}
-
-        {this.renderTabStatus()}
-      </Container>
+      <ContextMenu style={{ height: 'calc(100% - 1px)' }} items={items || []}>
+        <Container
+          active={active}
+          dirty={dirty}
+          isOver={isOver}
+          onClick={onClick}
+          onDoubleClick={onDoubleClick}
+          onMouseDown={this.onMouseDown}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+        >
+          {title ? (
+            <React.Fragment>
+              <TabTitle>{title}</TabTitle>
+              {this.renderTabStatus()}
+            </React.Fragment>
+          ) : (
+            children({ hovering, closeTab: this.closeTab })
+          )}
+        </Container>
+      </ContextMenu>
     );
   }
 }

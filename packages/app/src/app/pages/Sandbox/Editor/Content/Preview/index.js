@@ -25,6 +25,7 @@ type State = {
 class Preview extends React.Component<Props, State> {
   state = {
     aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
+    previewSizeScalar: 0.5,
     running: !this.props.runOnClick,
   };
 
@@ -108,11 +109,11 @@ class Preview extends React.Component<Props, State> {
       if (width !== this.props.width || height !== this.props.height) {
         if (this.state.aligned === 'bottom') {
           this.props.signals.editor.setPreviewBounds(
-            this.getBottomCoordinates(props)
+            this.getBottomCoordinates(props, this.state.previewSizeScalar)
           );
         } else {
           this.props.signals.editor.setPreviewBounds(
-            this.getRightCoordinates(props)
+            this.getRightCoordinates(props, this.state.previewSizeScalar)
           );
         }
       }
@@ -197,21 +198,38 @@ class Preview extends React.Component<Props, State> {
     });
   };
 
-  resetAlignment = () => {
-    this.setState({ aligned: null });
+  resetAlignment = (
+    xChanged,
+    yChanged,
+    widthChanged,
+    heightChanged,
+    newSizes
+  ) => {
+    const { aligned } = this.state;
+
+    if (
+      ((widthChanged || !yChanged) && aligned === 'bottom') ||
+      ((heightChanged || xChanged) && aligned === 'right')
+    ) {
+      this.setState({ aligned: null });
+    } else if (aligned === 'right' && newSizes.width) {
+      this.setState({ previewSizeScalar: newSizes.width / this.props.width });
+    } else if (aligned === 'bottom' && newSizes.height) {
+      this.setState({ previewSizeScalar: newSizes.height / this.props.height });
+    }
   };
 
-  getBottomCoordinates = (props = this.props) => ({
+  getBottomCoordinates = (props = this.props, previewSizeScalar = 0.5) => ({
     x: 0,
-    y: (props.height || 0) / 2 - 16,
+    y: (props.height || 0) * (1 - previewSizeScalar) - 16,
     width: (props.width || 0) - 16,
-    height: (props.height || 0) / 2,
+    height: (props.height || 0) * previewSizeScalar,
   });
 
-  getRightCoordinates = (props = this.props) => ({
+  getRightCoordinates = (props = this.props, previewSizeScalar = 0.5) => ({
     x: 0,
     y: 0,
-    width: (props.width || 0) / 2,
+    width: (props.width || 0) * previewSizeScalar,
     height: (props.height || 0) - 16,
   });
 
@@ -239,7 +257,7 @@ class Preview extends React.Component<Props, State> {
               e.stopPropagation();
             }
             resize(this.getRightCoordinates());
-            this.setState({ aligned: 'right' });
+            this.setState({ aligned: 'right', previewSizeScalar: 0.5 });
           };
           const alignBottom = e => {
             if (e) {
@@ -247,7 +265,7 @@ class Preview extends React.Component<Props, State> {
               e.stopPropagation();
             }
             resize(this.getBottomCoordinates());
-            this.setState({ aligned: 'bottom' });
+            this.setState({ aligned: 'bottom', previewSizeScalar: 0.5 });
           };
 
           return (
@@ -271,6 +289,7 @@ class Preview extends React.Component<Props, State> {
                   onAction={action =>
                     signals.editor.previewActionReceived({ action })
                   }
+                  alignDirection={this.state.aligned}
                   hide={hide}
                   noPreview={completelyHidden}
                   onOpenNewWindow={() =>

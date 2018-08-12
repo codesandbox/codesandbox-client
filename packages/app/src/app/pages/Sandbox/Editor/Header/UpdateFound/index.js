@@ -12,7 +12,7 @@ export default class UpdateFound extends React.PureComponent {
   componentDidMount() {
     this.timeout = setTimeout(() => {
       this.setState({ showTooltipManually: false });
-    }, 10000);
+    }, 60000);
   }
 
   componentWillUnmount() {

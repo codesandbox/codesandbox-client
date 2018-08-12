@@ -11,25 +11,26 @@ export const UserSelection = types.model({
 });
 
 const UserMetadata = types.model({
-  selection: types.maybe(UserSelection),
-  currentModuleShortid: types.string,
+  selection: types.maybeNull(UserSelection),
+  currentModuleShortid: types.maybeNull(types.string),
   color: types.array(types.number),
 });
 
 export default {
   isLive: types.boolean,
+  isTeam: types.boolean,
   isLoading: types.boolean,
   receivingCode: types.boolean,
-  error: types.maybe(types.string),
-  isOwner: types.boolean,
+  error: types.maybeNull(types.string),
   reconnecting: types.boolean,
   notificationsHidden: types.boolean,
-  followingUserId: types.maybe(types.string),
-  roomInfo: types.maybe(
+  followingUserId: types.maybeNull(types.string),
+  deviceId: types.maybeNull(types.string),
+  roomInfo: types.maybeNull(
     types.model({
-      startTime: types.maybe(types.number),
+      startTime: types.maybeNull(types.number),
       connectionCount: types.number,
-      ownerId: types.string,
+      ownerIds: types.array(types.string),
       roomId: types.string,
       mode: types.string,
       chatEnabled: types.boolean,
@@ -37,6 +38,7 @@ export default {
       editorIds: types.array(types.string),
       usersMetadata: types.map(UserMetadata),
       version: types.string,
+      sourceOfTruthDeviceId: types.string,
       users: types.array(
         types.model({
           id: types.string,

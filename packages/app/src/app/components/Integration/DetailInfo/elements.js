@@ -6,11 +6,13 @@ export const Details = styled.div`
   align-items: center;
   flex: 3;
   padding: 0.75rem 1rem;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: ${props =>
+    props.theme.light ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
 `;
 
 export const Heading = styled.div`
-  color: rgba(255, 255, 255, 0.5);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
   font-size: 0.75rem;
   margin-bottom: 0.25rem;
 `;

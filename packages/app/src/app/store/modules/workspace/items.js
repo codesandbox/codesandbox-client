@@ -28,6 +28,11 @@ const LIVE = {
   name: 'Live',
 };
 
+const MORE = {
+  id: 'more',
+  name: 'More',
+};
+
 export default function getItems(store) {
   if (
     store.live.isLive &&
@@ -36,7 +41,7 @@ export default function getItems(store) {
       (store.user &&
         store.live &&
         store.live.roomInfo &&
-        store.live.roomInfo.ownerId === store.user.id)
+        store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
     )
   ) {
     return [FILES, LIVE];
@@ -60,6 +65,10 @@ export default function getItems(store) {
 
   if (store.isLoggedIn) {
     items.push(LIVE);
+  }
+
+  if (!store.isLoggedIn) {
+    items.push(MORE);
   }
 
   return items;

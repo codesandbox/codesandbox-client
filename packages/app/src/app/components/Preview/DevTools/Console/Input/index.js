@@ -24,12 +24,14 @@ const Container = styled.div`
   min-height: 2rem;
   max-height: 100%;
   width: 100%;
-  background-color: ${props => props.theme.background.darken(0.3)};
+  background-color: ${props =>
+    props.theme['input.background'] || props.theme.background.darken(0.3)};
   display: flex;
   align-items: flex-start;
 
   .monaco-editor-background {
-    background-color: ${props => props.theme.background.darken(0.3)};
+    background-color: ${props =>
+      props.theme['input.background'] || props.theme.background.darken(0.3)};
   }
 
   .react-monaco-editor-container {

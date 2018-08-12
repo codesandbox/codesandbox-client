@@ -1,10 +1,9 @@
 // @flow
+import { absolute } from 'common/utils/path';
 
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
-
-import { absolute } from 'common/utils/path';
 
 class ParcelTemplate extends Template {
   getEntries(configurationFiles: { [type: string]: Object }) {
@@ -28,6 +27,19 @@ class ParcelTemplate extends Template {
 
     return entries.filter(Boolean);
   }
+
+  /**
+   * The file to open by the editor
+   */
+  getDefaultOpenedFiles(configFiles) {
+    const entries = [];
+
+    entries.push('/index.js');
+    entries.push('/src/index.js');
+    entries.concat(this.getEntries(configFiles));
+
+    return entries;
+  }
 }
 
 export default new ParcelTemplate(
@@ -45,5 +57,6 @@ export default new ParcelTemplate(
     },
     externalResourcesEnabled: false,
     distDir: 'dist',
+    main: true,
   }
 );

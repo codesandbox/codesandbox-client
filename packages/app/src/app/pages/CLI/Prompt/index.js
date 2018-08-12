@@ -15,7 +15,7 @@ function Prompt({ error, token, loading, username, signIn }) {
         <Title>An error occured:</Title>
         <SubTitle>{error}</SubTitle>
         <Buttons>
-          <Button href="/">Go to homepage</Button>
+          <Button href="/?from-app=1">Go to homepage</Button>
         </Buttons>
       </Container>
     );

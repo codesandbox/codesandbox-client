@@ -1,6 +1,6 @@
 import { resolveModule, getModulesInDirectory } from './modules';
 
-describe('root', () => {
+describe.skip('root', () => {
   test('it resolves root path', () => {
     const path = './Test';
     const modules = [
@@ -173,7 +173,7 @@ describe('two directories deep', () => {
   });
 });
 
-describe('relative', () => {
+describe.skip('relative', () => {
   test('it finds something relative from directory', () => {
     const path = './Directory2';
     const directories = [
@@ -328,7 +328,7 @@ describe('relative', () => {
   });
 });
 
-describe('preference', () => {
+describe.skip('preference', () => {
   test('it prefers files over folders', () => {
     const path = './Test';
     const directories = [

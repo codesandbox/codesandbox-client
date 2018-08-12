@@ -9,5 +9,5 @@ export default {
     tagName: types.string,
   }),
 
-  openedWorkspaceItem: types.maybe(types.string),
+  openedWorkspaceItem: types.maybeNull(types.string),
 };

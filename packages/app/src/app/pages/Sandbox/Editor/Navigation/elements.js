@@ -6,11 +6,14 @@ export const Container = styled.div`
   width: 4rem;
   flex: 0 0 4rem;
   height: 100%;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${props =>
+    props.theme['activityBar.foreground'] || 'rgba(255, 255, 255, 0.6)'};
 
   font-size: 1.5rem;
   align-items: center;
-  border-right: 1px solid rgba(0, 0, 0, 0.3);
+
+  background-color: ${props =>
+    props.theme['activityBar.background'] || 'inherit'};
 `;
 
 export const IconContainer = styled.div`

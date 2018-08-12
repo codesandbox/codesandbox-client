@@ -3,7 +3,8 @@ import Centered from 'common/components/flex/Centered';
 
 export const Container = Centered.extend`
   height: 100%;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${props =>
+    props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.9)'};
   overflow: auto;
   padding: 1rem;
 `;
@@ -16,7 +17,8 @@ export const Title = styled.div`
 
 export const SubTitle = styled.div`
   font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 `;
 
 export const Image = styled.img`

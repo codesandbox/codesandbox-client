@@ -311,8 +311,15 @@ export default async function fetchModule(
   );
 
   if (foundPath === '//empty.js') {
+    // Mark the path of the module as the real module, because during evaluation
+    // we don't have meta to find which modules are browser modules and we still
+    // need to return an empty module for browser modules.
+    const isDependency = /^(\w|@\w)/.test(path);
+
     return {
-      path: '/node_modules/empty/index.js',
+      path: isDependency
+        ? pathUtils.join('/node_modules', path)
+        : pathUtils.join(currentPath, path),
       code: 'module.exports = {};',
       requires: [],
     };
