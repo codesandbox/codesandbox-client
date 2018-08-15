@@ -10,7 +10,7 @@ Jest is a zero configuration test runner that allows you easily write JavaScript
 
 ## How to use Jest in CodeSandbox
 
-You can run Jest tests by creating files that and with `.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We will automatically detect these test files and show the results in the bottom bar.
+You can run Jest tests by creating files that end with `.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We will automatically detect these test files and show the results in the bottom bar.
 
 ![Test Bottom](./images/jest-tests.png)
 
