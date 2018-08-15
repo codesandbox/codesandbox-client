@@ -379,6 +379,7 @@ self.addEventListener('message', async event => {
               version === 7
                 ? 'transform-modules-commonjs'
                 : 'transform-es2015-modules-commonjs',
+              'dynamic-import-node',
               [
                 'babel-plugin-detective',
                 { source: true, nodes: true, generated: true },
