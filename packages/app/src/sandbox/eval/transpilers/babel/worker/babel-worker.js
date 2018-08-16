@@ -375,6 +375,7 @@ self.addEventListener('message', async event => {
     const customConfig =
       /^\/node_modules/.test(path) && /\.js$/.test(path)
         ? {
+            parserOpts: { plugins: ['dynamicImport'] },
             plugins: [
               version === 7
                 ? 'transform-modules-commonjs'
