@@ -375,10 +375,12 @@ self.addEventListener('message', async event => {
     const customConfig =
       /^\/node_modules/.test(path) && /\.js$/.test(path)
         ? {
+            parserOpts: { plugins: ['dynamicImport'] },
             plugins: [
               version === 7
                 ? 'transform-modules-commonjs'
                 : 'transform-es2015-modules-commonjs',
+              'dynamic-import-node',
               [
                 'babel-plugin-detective',
                 { source: true, nodes: true, generated: true },
