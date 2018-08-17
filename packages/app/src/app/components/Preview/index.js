@@ -97,7 +97,7 @@ async function retrieveSSEToken() {
 
     if (existingKey) {
       const parsedKey = JSON.parse(existingKey);
-      if (currentTime - parsedKey.timestamp > 24 * 60 * 60 * 1000) {
+      if (currentTime - parsedKey.timestamp < 24 * 60 * 60 * 1000) {
         return parsedKey.key;
       }
     }
