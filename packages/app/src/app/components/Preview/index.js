@@ -154,7 +154,7 @@ class BasePreview extends React.Component<Props, State> {
     };
 
     if (this.IS_SERVER) {
-      this.setupSSESockets(props.sandbox.id);
+      this.setupSSESockets();
     }
     this.listener = listen(this.handleMessage);
 
@@ -169,28 +169,42 @@ class BasePreview extends React.Component<Props, State> {
     }
   }
 
-  setupSSESockets = async (id: string) => {
+  setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
 
     if (hasInitialized) {
-      this.started = false;
       this.setState({
         frameInitialized: false,
       });
-      this.$socket.removeListener('connect', this.connectHandler);
       this.$socket.close();
+      setTimeout(() => this.$socket.open(), 0);
     } else {
       this.$socket = io(getSSEUrl(), {
         autoConnect: false,
       });
 
-      this.$socket.on('sandbox:start', () => {
+      this.$socket.on('connect', async () => {
+        const { id } = this.props.sandbox;
+        const token = await retrieveSSEToken();
+
+        this.$socket.emit('sandbox', { id, token });
+
         dispatch({
           type: 'terminal:message',
-          data: '> CodeSandbox: sandbox started\n\r',
+          data: `> CodeSandbox SSE: connected! Starting sandbox ${id}...\n\r`,
         });
 
-        this.started = true;
+        this.$socket.emit('sandbox:start');
+      });
+
+      this.$socket.on('sandbox:start', () => {
+        const { id } = this.props.sandbox;
+
+        dispatch({
+          type: 'terminal:message',
+          data: `> CodeSandbox SSE: sandbox ${id} started\n\r`,
+        });
+
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
@@ -201,7 +215,6 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       this.$socket.on('sandbox:stop', () => {
-        this.started = false;
         this.setState({
           frameInitialized: false,
           stopped: true,
@@ -218,29 +231,8 @@ class BasePreview extends React.Component<Props, State> {
       });
     }
 
-    const token = await retrieveSSEToken();
-
-    this.connectHandler = () => {
-      this.$socket.emit('sandbox', { id, token });
-
-      dispatch({
-        type: 'terminal:message',
-        data: '> CodeSandbox: connected! Initializing container...\n\r',
-      });
-
-      if (!this.started) {
-        this.start();
-      }
-    };
-
-    this.$socket.on('connect', this.connectHandler);
-
     this.$socket.open();
   };
-
-  start() {
-    this.$socket.emit('sandbox:start');
-  }
 
   static defaultProps = {
     showNavigation: true,
@@ -279,7 +271,7 @@ class BasePreview extends React.Component<Props, State> {
       ? getSSEUrl(newId)
       : frameUrl(newId, this.props.initialPath || '');
 
-    this.setupSSESockets(newId);
+    this.setupSSESockets();
     this.setState(
       {
         history: [url],
