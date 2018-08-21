@@ -347,6 +347,10 @@ class SandboxItem extends React.PureComponent<Props> {
       );
     }
 
+    if (process.env.STAGING) {
+      return `Staging Sandbox`;
+    }
+
     return `Generating Screenshot...`;
   };
 
