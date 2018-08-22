@@ -252,7 +252,7 @@ const TEMPLATE_SUPPORT = {
     description: 'Used for Angular projects, based on: ',
   },
   parcel: {
-    loaders: [js, ts, html, scss, sass, less, cssGlobal, stylus, image],
+    loaders: [js, ts, html, pug, scss, sass, less, cssGlobal, stylus, image],
     css: ['Global', 'Modules'],
     description: 'Used for any kind of project, based on: ',
   },
