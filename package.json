@@ -37,7 +37,7 @@
       "packages/react-sandpack",
       "packages/homepage"
     ],
-    "nohoist": ["**/gatsby", "**/gatsby/**", "**/@types",  "**/@types/**"]
+    "nohoist": ["**/gatsby", "**/gatsby/**"]
 },
   "resolutions": {
     "uglify-es": "npm:terser"

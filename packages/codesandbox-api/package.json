@@ -76,7 +76,6 @@
   "devDependencies": {
     "@types/debug": "0.0.30",
     "@types/jest": "^20.0.8",
-    "@types/uuid": "^3.4.3",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
     "coveralls": "^2.13.1",
@@ -107,6 +106,5 @@
     "validate-commit-msg": "^2.12.2"
   },
   "dependencies": {
-    "uuid": "^3.3.2"
   }
 }

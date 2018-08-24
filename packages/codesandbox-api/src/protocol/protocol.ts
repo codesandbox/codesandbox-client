@@ -1,4 +1,7 @@
-import uuid from 'uuid/v4';
+const generateId = () => {
+  // Such a random ID
+  return Math.random() * 1000000 + Math.random() * 1000000 + '';
+};
 
 export default class Protocol {
   private outgoingMessages: Set<string> = new Set();
@@ -10,7 +13,7 @@ export default class Protocol {
     private target: Worker | Window
   ) {
     this.createConnection();
-    this.internalId = uuid();
+    this.internalId = generateId();
   }
 
   getTypeId() {
@@ -27,7 +30,7 @@ export default class Protocol {
 
   sendMessage(data: any): Promise<any> {
     return new Promise(resolve => {
-      const messageId = uuid();
+      const messageId = generateId();
 
       const message = {
         $originId: this.internalId,

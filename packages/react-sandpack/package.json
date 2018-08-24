@@ -80,6 +80,10 @@
     "mapCoverage": true
   },
   "dependencies": {
+    "@types/fs-extra": "^5.0.4",
+    "@types/glob": "^5.0.35",
+    "@types/react": "^16.4.11",
+    "@types/shelljs": "^0.8.0",
     "classnames": "^2.2.5",
     "codemirror": "^5.35.0",
     "codesandbox-api": "^0.0.19",
@@ -95,11 +99,11 @@
   "devDependencies": {
     "@storybook/addon-knobs": "^3.3.14",
     "@storybook/react": "^3.3.14",
-    "@types/classnames": "^2.2.3",
-    "@types/codemirror": "^0.0.55",
+    "@types/classnames": "^2.2.6",
+    "@types/codemirror": "0.0.55",
     "@types/jest": "^22.0.0",
     "@types/node": "^9.4.6",
-    "@types/react-broadcast": "^0.6.0",
+    "@types/react-broadcast": "^0.6.1",
     "awesome-typescript-loader": "^3.5.0",
     "babel-core": "^6.26.0",
     "colors": "^1.1.2",
