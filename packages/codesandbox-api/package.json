@@ -1,6 +1,6 @@
 {
   "name": "codesandbox-api",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "",
   "keywords": [],
   "main": "dist/codesandbox.umd.js",
@@ -74,8 +74,8 @@
     }
   },
   "devDependencies": {
-    "@types/debug": "^0.0.30",
-    "@types/jest": "^20.0.0",
+    "@types/debug": "0.0.30",
+    "@types/jest": "^20.0.8",
     "@types/uuid": "^3.4.3",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",

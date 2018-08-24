@@ -9,7 +9,7 @@ const libraryName = 'codesandbox';
 export default {
   entry: `compiled/${libraryName}.js`,
   targets: [
-    { dest: pkg.main, moduleName: camelCase(libraryName), format: 'umd' },
+    { dest: pkg.main, name: camelCase(libraryName), format: 'umd' },
     { dest: pkg.module, format: 'es' },
   ],
   sourceMap: true,
