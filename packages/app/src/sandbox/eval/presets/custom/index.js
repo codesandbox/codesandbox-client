@@ -83,8 +83,8 @@ async function registerTranspilers(
   initializers.forEach(x => x());
 }
 
-let initialized = false;
 export default function initialize() {
+  let initialized = false;
   const customPreset = new Preset('custom', undefined, undefined, {
     setup: async (manager: Manager, updatedModules) => {
       if (updatedModules.some(m => m.module.path.startsWith('/.codesandbox'))) {
