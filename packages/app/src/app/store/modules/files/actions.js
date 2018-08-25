@@ -70,6 +70,7 @@ export async function uploadFiles({ api, props, path }) {
             (/\.(j|t)sx?$/.test(filePath) ||
               /\.json?$/.test(filePath) ||
               /\.html?$/.test(filePath) ||
+              /\.vue?$/.test(filePath) ||
               file.type.startsWith('text/') ||
               file.type === 'application/json') &&
             dataURI.length < MAX_FILE_SIZE
