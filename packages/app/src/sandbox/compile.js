@@ -348,6 +348,7 @@ async function compile({
     // they execute at the same time and we don't want them to conflict, so we check
     // if the message was set a second ago
     if (
+      firstLoad &&
       localStorage.getItem('running') &&
       Date.now() - localStorage.getItem('running') > 1000
     ) {
