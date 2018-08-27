@@ -10,6 +10,7 @@ import {
   cxjs,
   babel,
   dojo,
+  reason,
 } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
@@ -25,13 +26,13 @@ import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
 
 export default function getPreset(template: string) {
-  return reasonPreset();
-
   switch (template) {
     case react.name:
       return reactPreset();
     case reactTs.name:
       return reactTsPreset();
+    case reason.name:
+      return reasonPreset();
     case vue.name:
       return vuePreset();
     case preact.name:

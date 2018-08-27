@@ -10,7 +10,7 @@ import reasonRemap from './reason-remap';
 
 export default function initialize() {
   const preset = new Preset(
-    'create-reason-react-app',
+    'reason',
     ['web.js', 'js', 're', 'json', 'web.jsx', 'jsx'],
     reasonRemap,
     { hasDotEnv: true }

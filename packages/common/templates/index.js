@@ -3,6 +3,7 @@ import angular from './angular';
 import babel from './babel';
 import parcel from './parcel';
 import preact from './preact';
+import reason from './reason';
 import react from './react';
 import reactTs from './react-ts';
 import svelte from './svelte';
@@ -13,19 +14,21 @@ import dojo from './dojo';
 export {
   angular,
   babel,
-  vue,
+  cxjs,
+  dojo,
+  parcel,
+  preact,
   react,
   reactTs,
-  preact,
+  reason,
   svelte,
-  parcel,
-  dojo,
-  cxjs,
+  vue,
 };
 
 export default function getDefinition(
   theme:
     | 'create-react-app'
+    | 'reason'
     | 'vue-cli'
     | 'preact-cli'
     | 'svelte'
@@ -56,6 +59,8 @@ export default function getDefinition(
       return cxjs;
     case dojo.name:
       return dojo;
+    case reason.name:
+      return reason;
     default:
       return react;
   }
