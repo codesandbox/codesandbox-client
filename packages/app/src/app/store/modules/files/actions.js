@@ -68,9 +68,14 @@ export async function uploadFiles({ api, props, path }) {
 
           if (
             (/\.(j|t)sx?$/.test(filePath) ||
+              /\.coffee$/.test(filePath) ||
               /\.json$/.test(filePath) ||
               /\.html$/.test(filePath) ||
               /\.vue$/.test(filePath) ||
+              /\.styl$/.test(filePath) ||
+              /\.(le|sc|sa)ss$/.test(filePath) ||
+              /\.haml$/.test(filePath) ||
+              /\.pug$/.test(filePath) ||
               file.type.startsWith('text/') ||
               file.type === 'application/json') &&
             dataURI.length < MAX_FILE_SIZE
