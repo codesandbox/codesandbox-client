@@ -1,13 +1,16 @@
 import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
+import { dirname } from 'path';
 import type FSType from 'fs';
 import evaluateCode from '../../../loaders/eval';
 
 let cache = {};
+let cachedPaths = {};
 let transpileBeforeExec = false;
 
 export const resetCache = () => {
   cache = {};
+  cachedPaths = {};
   transpileBeforeExec = false;
 };
 
@@ -63,17 +66,24 @@ export default function evaluate(
       return preset;
     }
 
-    const resolvedPath = resolve.sync(requirePath, {
-      filename: path,
-      extensions: ['.js', '.json'],
-      moduleDirectory: ['node_modules'],
-    });
+    const dirName = dirname(path);
+    cachedPaths[dirName] = cachedPaths[dirName] || {};
+
+    const resolvedPath =
+      cachedPaths[dirName][requirePath] ||
+      resolve.sync(requirePath, {
+        filename: path,
+        extensions: ['.js', '.json'],
+        moduleDirectory: ['node_modules'],
+      });
+
+    cachedPaths[dirName][requirePath] = resolvedPath;
 
     let resolvedCode = fs.readFileSync(resolvedPath).toString();
     const id = hashsum(resolvedCode + resolvedPath);
 
     if (cache[id]) {
-      return cache[id];
+      return cache[id].exports;
     }
 
     cache[id] = {};
@@ -84,7 +94,7 @@ export default function evaluate(
       resolvedCode = transpiledCode;
     }
 
-    cache[id] = evaluate(
+    return evaluate(
       fs,
       BFSRequire,
       resolvedCode,
@@ -92,8 +102,6 @@ export default function evaluate(
       availablePlugins,
       availablePresets
     );
-
-    return cache[id];
   };
 
   // require.resolve is often used in .babelrc configs to resolve the correct plugin path,
@@ -106,7 +114,8 @@ export default function evaluate(
   //   moduleDirectory: ['node_modules'],
   // });
 
-  const module = {
+  const id = hashsum(code + path);
+  cache[id] = {
     id: path,
     exports: {},
   };
@@ -117,11 +126,11 @@ export default function evaluate(
   }
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
 
-  evaluateCode(finalCode, require, module, {
+  const exports = evaluateCode(finalCode, require, cache[id], {
     VUE_CLI_BABEL_TRANSPILE_MODULES: true,
   });
 
-  return module.exports;
+  return exports;
 }
 
 export function evaluateFromPath(
