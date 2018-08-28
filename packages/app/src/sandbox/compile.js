@@ -343,25 +343,6 @@ async function compile({
     type: 'start',
   });
 
-  try {
-    // We set it as a time value for people that run two sandboxes on one computer
-    // they execute at the same time and we don't want them to conflict, so we check
-    // if the message was set a second ago
-    if (
-      firstLoad &&
-      localStorage.getItem('running') &&
-      Date.now() - localStorage.getItem('running') > 1000
-    ) {
-      localStorage.removeItem('running');
-      showRunOnClick();
-      return;
-    }
-
-    localStorage.setItem('running', Date.now());
-  } catch (e) {
-    /* no */
-  }
-
   const startTime = Date.now();
   try {
     inject();
@@ -468,6 +449,25 @@ async function compile({
 
     if (!skipEval) {
       resetScreen();
+
+      try {
+        // We set it as a time value for people that run two sandboxes on one computer
+        // they execute at the same time and we don't want them to conflict, so we check
+        // if the message was set a second ago
+        if (
+          firstLoad &&
+          localStorage.getItem('running') &&
+          Date.now() - localStorage.getItem('running') > 8000
+        ) {
+          localStorage.removeItem('running');
+          showRunOnClick();
+          return;
+        }
+
+        localStorage.setItem('running', Date.now());
+      } catch (e) {
+        /* no */
+      }
 
       manager.preset.preEvaluate(manager);
 
