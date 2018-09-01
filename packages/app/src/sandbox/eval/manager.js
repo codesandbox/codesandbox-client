@@ -495,6 +495,14 @@ export default class Manager {
         return SHIMMED_MODULE;
       }
 
+      // Quick try
+      const directPath = pathUtils.join(currentPath, shimmedPath);
+      const directModulePath = this.transpiledModules[directPath];
+      if (directModulePath) {
+        this.cachedPaths[dirredPath][path] = directPath;
+        return directModulePath.module;
+      }
+
       try {
         resolvedPath = resolve.sync(shimmedPath, {
           filename: currentPath,
@@ -558,10 +566,10 @@ export default class Manager {
 
   downloadDependency(
     path: string,
-    currentPath: string,
+    currentTModule: TranspiledModule,
     ignoredExtensions: Array<string> = this.preset.ignoredExtensions
   ): Promise<TranspiledModule> {
-    return fetchModule(path, currentPath, this, ignoredExtensions).then(
+    return fetchModule(path, currentTModule, this, ignoredExtensions).then(
       module => this.getTranspiledModule(module)
     );
   }
@@ -788,7 +796,8 @@ export default class Manager {
         if (
           !this.manifest.contents[tModule.module.path] ||
           (tModule.module.path.endsWith('.js') &&
-            tModule.module.requires == null)
+            tModule.module.requires == null) ||
+          tModule.module.downloaded
         ) {
           // Only save modules that are not precomputed
           serializedTModules[tModule.getId()] = tModule.serialize();
