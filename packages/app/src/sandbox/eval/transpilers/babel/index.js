@@ -67,13 +67,18 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const loaderOptions = loaderContext.options || {};
 
-      const babelConfig = getBabelConfig(foundConfig, loaderOptions, path);
-
       const isV7 = !!(
         configs.package &&
         configs.package.parsed &&
         configs.package.parsed.devDependencies &&
         configs.package.parsed.devDependencies['@vue/cli-plugin-babel']
+      );
+
+      const babelConfig = getBabelConfig(
+        foundConfig,
+        loaderOptions,
+        path,
+        isV7
       );
 
       this.queueTask(
