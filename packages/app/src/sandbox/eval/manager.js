@@ -479,7 +479,7 @@ export default class Manager {
 
     let resolvedPath;
 
-    if (cachedPath) {
+    if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
       const presetAliasedPath = this.getPresetAliasedPath(path);
