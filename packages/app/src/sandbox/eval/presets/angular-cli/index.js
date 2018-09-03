@@ -4,7 +4,6 @@ import Preset from '../';
 
 import angular2Transpiler from '../../transpilers/angular2-template';
 import typescriptTranspiler from '../../transpilers/typescript';
-import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import stylesTranspiler from '../../transpilers/style';
 import sassTranspiler from '../../transpilers/sass';
@@ -214,7 +213,7 @@ export default function initialize() {
   ]);
 
   preset.registerTranspiler(module => /\.js$/.test(module.path), [
-    { transpiler: babelTranspiler },
+    { transpiler: typescriptTranspiler },
   ]);
 
   preset.registerTranspiler(module => /\.json$/.test(module.path), [

@@ -17,7 +17,7 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', BabelWorker, 2, { hasFS: true });
+    super('babel-loader', BabelWorker, 3, { hasFS: true });
   }
 
   startupWorkersInitialized = false;
