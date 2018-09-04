@@ -670,10 +670,7 @@ export default class TranspiledModule {
         return {};
       }
 
-      if (
-        this.module.path.startsWith('/node_modules') &&
-        !isESModule(this.module.code)
-      ) {
+      if (this.module.path.startsWith('/node_modules')) {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
             `[WARN] Sandpack: loading an untranspiled module: ${
@@ -821,6 +818,12 @@ export default class TranspiledModule {
       function require(path: string) {
         const usedPath = manager.getPresetAliasedPath(path);
         const bfsModule = BrowserFS.BFSRequire(usedPath);
+
+        if (path === 'os') {
+          const os = require('os-browserify');
+          os.homedir = () => '/home/sandbox';
+          return os;
+        }
 
         if (bfsModule) {
           return bfsModule;
