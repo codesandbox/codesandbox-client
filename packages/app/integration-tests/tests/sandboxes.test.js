@@ -29,8 +29,8 @@ const SANDBOXES = [
   'vanilla',
   'n5wy74w8vl', // material-ui generated demo
   'github/algolia/doc-onboarding/tree/master/demos/angular/media', // algolia angular demo
-  'ymjwwrw2rj', // empty path
-  '98o3k45m8p', // direct path test
+  { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
+  { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
 ];
 
 function pageLoaded(page) {
