@@ -43,6 +43,7 @@ export default Module({
     previewWindow: {
       height: undefined,
       width: undefined,
+      editorSize: 50,
       x: 0,
       y: 0,
       content: 'browser',
@@ -90,5 +91,6 @@ export default Module({
     setPreviewContent: sequences.setPreviewContent,
     currentTabChanged: sequences.changeCurrentTab,
     discardModuleChanges: sequences.discardModuleChanges,
+    editorSizeUpdated: sequences.updateEditorSize,
   },
 });

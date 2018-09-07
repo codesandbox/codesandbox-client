@@ -25,7 +25,6 @@ type State = {
 class Preview extends React.Component<Props, State> {
   state = {
     aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
-    previewSizeScalar: 0.5,
     running: !this.props.runOnClick,
   };
 
@@ -109,11 +108,17 @@ class Preview extends React.Component<Props, State> {
       if (width !== this.props.width || height !== this.props.height) {
         if (this.state.aligned === 'bottom') {
           this.props.signals.editor.setPreviewBounds(
-            this.getBottomCoordinates(props, this.state.previewSizeScalar)
+            this.getBottomCoordinates(
+              props,
+              1 - this.props.store.editor.previewWindow.editorSize / 100
+            )
           );
         } else {
           this.props.signals.editor.setPreviewBounds(
-            this.getRightCoordinates(props, this.state.previewSizeScalar)
+            this.getRightCoordinates(
+              props,
+              1 - this.props.store.editor.previewWindow.editorSize / 100
+            )
           );
         }
       }
@@ -213,9 +218,13 @@ class Preview extends React.Component<Props, State> {
     ) {
       this.setState({ aligned: null });
     } else if (aligned === 'right' && newSizes.width) {
-      this.setState({ previewSizeScalar: newSizes.width / this.props.width });
+      this.props.signals.editor.editorSizeUpdated({
+        editorSize: (1 - newSizes.width / this.props.width) * 100,
+      });
     } else if (aligned === 'bottom' && newSizes.height) {
-      this.setState({ previewSizeScalar: newSizes.height / this.props.height });
+      this.props.signals.editor.editorSizeUpdated({
+        editorSize: (1 - newSizes.height / this.props.height) * 100,
+      });
     }
   };
 
@@ -257,7 +266,10 @@ class Preview extends React.Component<Props, State> {
               e.stopPropagation();
             }
             resize(this.getRightCoordinates());
-            this.setState({ aligned: 'right', previewSizeScalar: 0.5 });
+            this.setState({ aligned: 'right' });
+            this.props.signals.editor.editorSizeUpdated({
+              editorSize: 50,
+            });
           };
           const alignBottom = e => {
             if (e) {
@@ -265,7 +277,10 @@ class Preview extends React.Component<Props, State> {
               e.stopPropagation();
             }
             resize(this.getBottomCoordinates());
-            this.setState({ aligned: 'bottom', previewSizeScalar: 0.5 });
+            this.setState({ aligned: 'bottom' });
+            this.props.signals.editor.editorSizeUpdated({
+              editorSize: 50,
+            });
           };
 
           return (
