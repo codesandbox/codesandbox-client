@@ -554,23 +554,6 @@ async function compile({
       createCodeSandboxOverlay(modules);
     }
 
-    dispatch({ type: 'status', status: 'running-tests' });
-
-    try {
-      // Testing
-      const ttt = Date.now();
-      const testRunner = manager.testRunner;
-      testRunner.findTests(modules);
-      await testRunner.runTests();
-      debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
-
-      // End - Testing
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(error);
-      }
-    }
-
     debug(`Total time: ${Date.now() - startTime}ms`);
 
     dispatch({

@@ -107,6 +107,10 @@ class Tests extends React.Component<Props, State> {
         running: true,
       });
     }
+
+    if (this.props.hidden && !nextProps.hidden) {
+      this.runAllTests();
+    }
   }
 
   selectFile = (file: File) => {
@@ -117,7 +121,9 @@ class Tests extends React.Component<Props, State> {
   };
 
   handleMessage = (data: Object) => {
-    if (data.type === 'test') {
+    if (data.type === 'done' && (!this.props.hidden || this.props.standalone)) {
+      this.runAllTests();
+    } else if (data.type === 'test') {
       switch (data.event) {
         case 'initialize_tests': {
           this.currentDescribeBlocks = [];
