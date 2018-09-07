@@ -496,7 +496,7 @@ export default class Manager {
       }
 
       // Quick try
-      const directPath = pathUtils.join(currentPath, shimmedPath);
+      const directPath = pathUtils.join(dirredPath, shimmedPath);
       const directModulePath = this.transpiledModules[directPath];
       if (directModulePath) {
         this.cachedPaths[dirredPath][path] = directPath;
