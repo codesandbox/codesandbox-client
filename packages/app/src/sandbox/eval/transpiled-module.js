@@ -816,6 +816,10 @@ export default class TranspiledModule {
     try {
       // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
+        if (path === '') {
+          throw new Error('Cannot import an empty path');
+        }
+
         const usedPath = manager.getPresetAliasedPath(path);
         const bfsModule = BrowserFS.BFSRequire(usedPath);
 
