@@ -84,7 +84,7 @@ export function setUrlOptions({ state, router, utils }) {
   if (options.highlightedLines)
     state.set('editor.highlightedLines', options.highlightedLines);
   if (options.editorSize)
-    state.set('preferences.settings.editorSize', options.editorSize);
+    state.set('editor.previewWindow.editorSize', options.editorSize);
   if (options.hideNavigation)
     state.set('preferences.hideNavigation', options.hideNavigation);
   if (options.isInProjectView)

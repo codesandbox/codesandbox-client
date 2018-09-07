@@ -273,3 +273,7 @@ export const setPreviewBounds = [actions.setPreviewBounds];
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
 ];
+
+export const updateEditorSize = [
+  set(state`editor.previewWindow.editorSize`, props`editorSize`),
+];
