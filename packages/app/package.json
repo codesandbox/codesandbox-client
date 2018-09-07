@@ -165,7 +165,7 @@
     "memoize-one": "^4.0.0",
     "mobx": "^4.0.0",
     "mobx-react": "^5.2.3",
-    "mobx-state-tree": "^3.0.0",
+    "mobx-state-tree": "^3.3.0",
     "moment": "^2.18.1",
     "monaco-editor": "^0.13.1",
     "monaco-editor-textmate": "^2.0.0",
