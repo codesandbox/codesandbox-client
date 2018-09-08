@@ -115,11 +115,24 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   }
 
+  /**
+   * This stops the propagation of the mousewheel event so the editor itself cannot
+   * block it to prevent gesture scrolls. Without this scrolling won't work in the
+   * console.
+   */
+  mouseWheelHandler = (e: WheelEvent) => {
+    e.stopPropagation();
+  };
+
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp, false);
     document.addEventListener('mousemove', this.handleMouseMove, false);
     document.addEventListener('touchend', this.handleTouchEnd, false);
     document.addEventListener('touchmove', this.handleTouchMove, false);
+
+    if (this.node) {
+      this.node.addEventListener('mousewheel', this.mouseWheelHandler);
+    }
 
     if (this.props.shouldExpandDevTools) {
       this.openDevTools();
@@ -133,6 +146,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
     document.removeEventListener('mousemove', this.handleMouseMove, false);
     document.removeEventListener('touchend', this.handleTouchEnd, false);
     document.removeEventListener('touchmove', this.handleTouchMove, false);
+
+    if (this.node) {
+      this.node.removeEventListener('mousewheel', this.mouseWheelHandler);
+    }
   }
 
   setHidden = (hidden: boolean) => {

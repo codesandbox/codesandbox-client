@@ -170,6 +170,7 @@ export default {
   quickActionsOpen: types.boolean,
   previewWindow: types.model({
     content: types.maybeNull(types.string),
+    editorSize: types.maybe(types.number),
     width: types.maybeNull(types.number),
     height: types.maybeNull(types.number),
     x: types.maybeNull(types.number),
