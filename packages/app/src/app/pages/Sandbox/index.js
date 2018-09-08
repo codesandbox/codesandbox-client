@@ -11,9 +11,9 @@ import Centered from 'common/components/flex/Centered';
 import Fullscreen from 'common/components/flex/Fullscreen';
 import Padding from 'common/components/spacing/Padding';
 import Skeleton from 'app/components/Skeleton';
+import GithubIntegration from 'app/src/app/pages/common/GithubIntegration';
 
 import Editor from './Editor';
-import GithubIntegration from 'app/src/app/pages/common/GithubIntegration';
 
 class SandboxPage extends React.Component {
   componentWillMount() {
