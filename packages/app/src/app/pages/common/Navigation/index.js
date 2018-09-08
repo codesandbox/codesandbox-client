@@ -5,6 +5,7 @@ import { patronUrl, dashboardUrl } from 'common/utils/url-generator';
 
 import PlusIcon from 'react-icons/lib/go/plus';
 import BellIcon from 'react-icons/lib/md/notifications';
+import BookIcon from 'react-icons/lib/md/library-books';
 import Row from 'common/components/flex/Row';
 import Tooltip from 'common/components/Tooltip';
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
@@ -40,6 +41,13 @@ function Navigation({ signals, store, title }) {
         <Actions>
           <Action>
             <HeaderSearchBar />
+          </Action>
+          <Action>
+            <Tooltip position="bottom" title="Documentation">
+              <a style={{ color: 'white' }} href="/docs">
+                <BookIcon height={35} />
+              </a>
+            </Tooltip>
           </Action>
           {!isPatron && (
             <Action>
