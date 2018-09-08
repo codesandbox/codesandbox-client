@@ -57,6 +57,17 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
+function sendTestCount(manager: Manager, modules: Array<Module>) {
+  const testRunner = manager.testRunner;
+  const tests = testRunner.findTests(modules);
+
+  dispatch({
+    type: 'test',
+    event: 'test_count',
+    count: tests.length,
+  });
+}
+
 let firstLoad = true;
 let hadError = false;
 let lastHeadHTML = null;
@@ -554,23 +565,6 @@ async function compile({
       createCodeSandboxOverlay(modules);
     }
 
-    dispatch({ type: 'status', status: 'running-tests' });
-
-    try {
-      // Testing
-      const ttt = Date.now();
-      const testRunner = manager.testRunner;
-      testRunner.findTests(modules);
-      await testRunner.runTests();
-      debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
-
-      // End - Testing
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(error);
-      }
-    }
-
     debug(`Total time: ${Date.now() - startTime}ms`);
 
     dispatch({
@@ -584,6 +578,16 @@ async function compile({
       changedModuleCount,
       firstLoad
     );
+
+    setTimeout(() => {
+      try {
+        sendTestCount(manager, modules);
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Test error', e);
+        }
+      }
+    }, 600);
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
