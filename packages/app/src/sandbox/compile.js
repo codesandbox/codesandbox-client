@@ -26,7 +26,6 @@ import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
-import TestRunner from 'app/src/sandbox/eval/tests/jest-lite';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
