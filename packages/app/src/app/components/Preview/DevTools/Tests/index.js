@@ -133,6 +133,14 @@ class Tests extends React.Component<Props, State> {
           this.setState(INITIAL_STATE);
           break;
         }
+        case 'test_count': {
+          const { updateStatus } = this.props;
+          if (updateStatus) {
+            updateStatus('clear');
+            updateStatus('info', data.count);
+          }
+          break;
+        }
         case 'total_test_start': {
           this.currentDescribeBlocks = [];
           if (this.props.updateStatus) {

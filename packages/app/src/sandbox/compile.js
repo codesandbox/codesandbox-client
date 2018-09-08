@@ -26,6 +26,7 @@ import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
+import TestRunner from 'app/src/sandbox/eval/tests/jest-lite';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
@@ -55,6 +56,17 @@ export function getHTMLParts(html: string) {
   }
 
   return { head: '', body: html };
+}
+
+function sendTestCount(manager: Manager, modules: Array<Module>) {
+  const testRunner = manager.testRunner;
+  const tests = testRunner.findTests(modules);
+
+  dispatch({
+    type: 'test',
+    event: 'test_count',
+    count: tests.length,
+  });
 }
 
 let firstLoad = true;
@@ -567,6 +579,16 @@ async function compile({
       changedModuleCount,
       firstLoad
     );
+
+    setTimeout(() => {
+      try {
+        sendTestCount(manager, modules);
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Test error', e);
+        }
+      }
+    }, 600);
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
