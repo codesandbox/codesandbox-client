@@ -57,6 +57,8 @@ export type Manifest = {
   },
 };
 
+const relativeRegex = /^(\/|\.)/;
+
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
 // For these dependencies we don't want to follow along with the `browser` field
 const SKIPPED_BROWSER_FIELD_DEPENDENCIES = ['babel-core', '@babel/core'].reduce(
@@ -493,14 +495,6 @@ export default class Manager {
       if (NODE_LIBS.includes(shimmedPath)) {
         this.cachedPaths[dirredPath][path] = shimmedPath;
         return SHIMMED_MODULE;
-      }
-
-      // Quick try
-      const directPath = pathUtils.join(dirredPath, shimmedPath);
-      const directModulePath = this.transpiledModules[directPath];
-      if (directModulePath) {
-        this.cachedPaths[dirredPath][path] = directPath;
-        return directModulePath.module;
       }
 
       try {
