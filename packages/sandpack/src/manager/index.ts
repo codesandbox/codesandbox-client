@@ -227,7 +227,7 @@ export default class PreviewManager {
       {}
     );
 
-    return fetch('https://codesandbox.io/api/v1/sandboxes/define', {
+    return fetch('https://codesandbox.io/api/v1/sandboxes/define?json=1', {
       method: 'POST',
       body: JSON.stringify({ files: paramFiles }),
       headers: {
