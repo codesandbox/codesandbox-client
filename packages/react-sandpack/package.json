@@ -1,6 +1,6 @@
 {
   "name": "react-smooshpack",
-  "version": "0.0.49",
+  "version": "0.0.50",
   "description": "",
   "keywords": [],
   "license": "SEE LICENSE.MD IN ROOT",
@@ -91,7 +91,7 @@
     "react-broadcast": "^0.6.2",
     "react-codemirror2": "^4.0.1",
     "rollup-plugin-scss": "^0.4.0",
-    "smooshpack": "^0.0.49"
+    "smooshpack": "^0.0.50"
   },
   "peerDependencies": {
     "react": "^16.0.0"
