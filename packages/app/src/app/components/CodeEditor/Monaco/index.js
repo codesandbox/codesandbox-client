@@ -432,43 +432,49 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
     if (sendTransforms && changeEvent.changes) {
-      const otOperation = new TextOperation();
-      // TODO: add a comment explaining what "delta" is
-      let delta = 0;
+      console.log(changeEvent);
+      let otOperation;
 
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
-      // eslint-disable-next-line no-restricted-syntax
-      for (const change of [...changeEvent.changes].reverse()) {
-        const cursorStartOffset =
-          lineAndColumnToIndex(
-            this.liveOperationCode.split(/\r?\n/),
-            change.range.startLineNumber,
-            change.range.startColumn
-          ) + delta;
 
-        const retain = cursorStartOffset - otOperation.targetLength;
-        if (retain > 0) {
-          otOperation.retain(retain);
+      let composedCode = this.liveOperationCode;
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const change of [...changeEvent.changes]) {
+        const newOt = new TextOperation();
+        const cursorStartOffset = lineAndColumnToIndex(
+          composedCode.split(/\r?\n/),
+          change.range.startLineNumber,
+          change.range.startColumn
+        );
+
+        const retain = cursorStartOffset - newOt.targetLength;
+
+        if (retain !== 0) {
+          newOt.retain(retain);
         }
 
         if (change.rangeLength > 0) {
-          otOperation.delete(change.rangeLength);
-          delta -= change.rangeLength;
+          newOt.delete(change.rangeLength);
         }
 
         if (change.text) {
           const normalizedChangeText = change.text.split(/\r?\n/).join('\n');
-          otOperation.insert(normalizedChangeText);
-          delta += normalizedChangeText.length;
+          newOt.insert(normalizedChangeText);
         }
+
+        const remaining = composedCode.length - newOt.baseLength;
+        if (remaining > 0) {
+          newOt.retain(remaining);
+        }
+
+        otOperation = otOperation ? otOperation.compose(newOt) : newOt;
+
+        composedCode = otOperation.apply(this.liveOperationCode);
       }
 
-      const remaining = this.liveOperationCode.length - otOperation.baseLength;
-      if (remaining > 0) {
-        otOperation.retain(remaining);
-      }
-      this.liveOperationCode = otOperation.apply(this.liveOperationCode);
+      this.liveOperationCode = composedCode;
 
       sendTransforms(otOperation);
 
