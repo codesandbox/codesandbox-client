@@ -125,7 +125,7 @@ function NewSandbox({ signals }) {
           Icon={GithubIcon}
           width={50}
           height={50}
-          text="Import from Github"
+          text="Import from GitHub"
           href={importFromGitHubUrl()}
           onClick={() => signals.modalClosed()}
         />

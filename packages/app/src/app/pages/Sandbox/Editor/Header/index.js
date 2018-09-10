@@ -169,7 +169,7 @@ const Header = ({ store, signals }) => {
           ) : (
             <Action
               onClick={() => signals.signInClicked()}
-              title="Sign in with Github"
+              title="Sign in with GitHub"
               Icon={GithubIcon}
               highlight
               unresponsive
