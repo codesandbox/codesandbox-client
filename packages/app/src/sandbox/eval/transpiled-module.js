@@ -350,9 +350,7 @@ export default class TranspiledModule {
       }
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
-        this.asyncDependencies.push(
-          manager.downloadDependency(e.path, this.module.path)
-        );
+        this.asyncDependencies.push(manager.downloadDependency(e.path, this));
       } else {
         // When a custom file resolver is given to the manager we will try
         // to resolve using this file resolver. If that fails we will still
@@ -723,12 +721,13 @@ export default class TranspiledModule {
         return {};
       }
 
-      if (
-        this.module.path.startsWith('/node_modules') &&
-        !isESModule(this.module.code)
-      ) {
+      if (this.module.path.startsWith('/node_modules')) {
         if (process.env.NODE_ENV === 'development') {
-          console.warn('[WARN] Sandpack: loading an untranspiled module');
+          console.warn(
+            `[WARN] Sandpack: loading an untranspiled module: ${
+              this.module.path
+            }`
+          );
         }
         // This code is probably required as a dynamic require. Since we can
         // assume that node_modules dynamic requires are only done for node
@@ -868,8 +867,18 @@ export default class TranspiledModule {
     try {
       // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
+        if (path === '') {
+          throw new Error('Cannot import an empty path');
+        }
+
         const usedPath = manager.getPresetAliasedPath(path);
         const bfsModule = BrowserFS.BFSRequire(usedPath);
+
+        if (path === 'os') {
+          const os = require('os-browserify');
+          os.homedir = () => '/home/sandbox';
+          return os;
+        }
 
         if (bfsModule) {
           return bfsModule;
@@ -965,7 +974,8 @@ export default class TranspiledModule {
     if (
       this.initiators.size === 0 &&
       this.transpilationInitiators.size === 0 &&
-      !this.isEntry
+      !this.isEntry &&
+      !manager.isFirstLoad
     ) {
       // Remove the module from the transpiler if it's not used anymore
       debug(`Removing '${this.getId()}' from manager.`);
@@ -1054,11 +1064,7 @@ export default class TranspiledModule {
       this.source = data.source;
     }
 
-    const loadModule = (
-      depId: string,
-      initiator = false,
-      transpilation = false
-    ) => {
+    const getModule = (depId: string) => {
       if (state[depId]) {
         return state[depId];
       }
@@ -1067,7 +1073,15 @@ export default class TranspiledModule {
       const query = queryParts.join(':');
 
       const module = manager.transpiledModules[path].module;
-      const tModule = manager.getTranspiledModule(module, query);
+      return manager.getTranspiledModule(module, query);
+    };
+
+    const loadModule = (
+      depId: string,
+      initiator = false,
+      transpilation = false
+    ) => {
+      const tModule = getModule(depId);
 
       if (initiator) {
         if (transpilation) {

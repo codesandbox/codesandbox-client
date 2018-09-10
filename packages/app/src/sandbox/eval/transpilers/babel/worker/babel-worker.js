@@ -249,7 +249,7 @@ self.addEventListener('message', async event => {
   }
 
   const stringifiedConfig = JSON.stringify(babelTranspilerOptions);
-  if (lastConfig !== stringifiedConfig) {
+  if (stringifiedConfig && lastConfig !== stringifiedConfig) {
     resetCache();
     lastConfig = stringifiedConfig;
   }
@@ -273,6 +273,19 @@ self.addEventListener('message', async event => {
     ) {
       Babel.registerPreset('env', Babel.availablePresets.es2015);
     }
+
+    // Future vue preset
+    // if (
+    //   flattenedPresets.indexOf('@vue/app') > -1 &&
+    //   Object.keys(Babel.availablePresets).indexOf('@vue/app') === -1 &&
+    //   version === 7
+    // ) {
+    //   const vuePreset = await import(/* webpackChunkName: 'babel-preset-vue' */ '@vue/babel-preset-app');
+
+    //   Babel.registerPreset('@vue/app', vuePreset);
+    //   Babel.registerPreset('@vue/babel-preset-app', vuePreset);
+
+    // }
 
     if (
       flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
@@ -375,10 +388,12 @@ self.addEventListener('message', async event => {
     const customConfig =
       /^\/node_modules/.test(path) && /\.js$/.test(path)
         ? {
+            parserOpts: { plugins: ['dynamicImport'] },
             plugins: [
               version === 7
                 ? 'transform-modules-commonjs'
                 : 'transform-es2015-modules-commonjs',
+              'dynamic-import-node',
               [
                 'babel-plugin-detective',
                 { source: true, nodes: true, generated: true },

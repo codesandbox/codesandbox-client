@@ -9,6 +9,7 @@ import type { Manifest } from '../manager';
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 import getDependencyName from '../utils/get-dependency-name';
 import { packageFilter } from '../utils/resolve-utils';
+import type { default as TranspiledModule } from '../transpiled-module';
 
 type Meta = {
   [path: string]: any,
@@ -128,6 +129,7 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
     .then(x => ({
       path,
       code: x,
+      downloaded: true,
     }));
 
   return packages[path];
@@ -135,11 +137,13 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
 
 function resolvePath(
   path: string,
-  currentPath: string,
+  currentTModule: TranspiledModule,
   manager: Manager,
   defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
   meta = {}
 ): Promise<string> {
+  const currentPath = currentTModule.module.path;
+
   return new Promise((res, reject) => {
     resolve(
       path,
@@ -160,7 +164,10 @@ function resolvePath(
           const callback = cb || c;
 
           try {
-            return callback(null, manager.readFileSync(p));
+            const tModule = manager.resolveTranspiledModule(p, '/');
+            tModule.initiators.add(currentTModule);
+            currentTModule.dependencies.add(tModule);
+            return callback(null, tModule.module.code);
           } catch (e) {
             const depPath = p.replace('/node_modules/', '');
             const depName = getDependencyName(depPath);
@@ -192,6 +199,10 @@ function resolvePath(
 
                 if (module) {
                   manager.addModule(module);
+                  const tModule = manager.addTranspiledModule(module, '');
+
+                  tModule.initiators.add(currentTModule);
+                  currentTModule.dependencies.add(tModule);
 
                   callback(null, module.code);
                   return null;
@@ -217,7 +228,7 @@ function resolvePath(
 }
 
 async function findDependencyVersion(
-  currentPath: string,
+  currentTModule: TranspiledModule,
   manager: Manager,
   defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
   dependencyName: string
@@ -227,7 +238,7 @@ async function findDependencyVersion(
   try {
     const foundPackageJSONPath = await resolvePath(
       pathUtils.join(dependencyName, 'package.json'),
-      currentPath,
+      currentTModule,
       manager,
       defaultExtensions
     );
@@ -265,10 +276,11 @@ async function findDependencyVersion(
 
 export default async function fetchModule(
   path: string,
-  currentPath: string,
+  currentTModule: TranspiledModule,
   manager: Manager,
   defaultExtensions: Array<string> = ['js', 'jsx', 'json']
 ): Promise<Module> {
+  const currentPath = currentTModule.module.path;
   // Get the last part of the path as dependency name for paths like
   // instantsearch.js/node_modules/lodash/sum.js
   // In this case we want to get the lodash dependency info
@@ -277,7 +289,7 @@ export default async function fetchModule(
   );
 
   const versionInfo = await findDependencyVersion(
-    currentPath,
+    currentTModule,
     manager,
     defaultExtensions,
     dependencyName
@@ -304,7 +316,7 @@ export default async function fetchModule(
 
   const foundPath = await resolvePath(
     path,
-    currentPath,
+    currentTModule,
     manager,
     defaultExtensions,
     normalizedMeta

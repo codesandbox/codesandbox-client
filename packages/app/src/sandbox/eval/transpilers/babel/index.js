@@ -17,7 +17,7 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', BabelWorker, 2, { hasFS: true });
+    super('babel-loader', BabelWorker, 3, { hasFS: true });
   }
 
   startupWorkersInitialized = false;
@@ -67,13 +67,18 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const loaderOptions = loaderContext.options || {};
 
-      const babelConfig = getBabelConfig(foundConfig, loaderOptions, path);
-
       const isV7 = !!(
         configs.package &&
         configs.package.parsed &&
         configs.package.parsed.devDependencies &&
         configs.package.parsed.devDependencies['@vue/cli-plugin-babel']
+      );
+
+      const babelConfig = getBabelConfig(
+        foundConfig,
+        loaderOptions,
+        path,
+        isV7
       );
 
       this.queueTask(

@@ -57,6 +57,17 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
+function sendTestCount(manager: Manager, modules: Array<Module>) {
+  const testRunner = manager.testRunner;
+  const tests = testRunner.findTests(modules);
+
+  dispatch({
+    type: 'test',
+    event: 'test_count',
+    count: tests.length,
+  });
+}
+
 let firstLoad = true;
 let hadError = false;
 let lastHeadHTML = null;
@@ -353,21 +364,6 @@ async function compile({
     type: 'start',
   });
 
-  try {
-    // We set it as a time value for people that run two sandboxes on one computer
-    // they execute at the same time and we don't want them to conflict, so we check
-    // if the message was set a second ago
-    if (Date.now() < localStorage.getItem('running') > 1000) {
-      localStorage.removeItem('running');
-      showRunOnClick();
-      return;
-    }
-
-    localStorage.setItem('running', Date.now());
-  } catch (e) {
-    /* no */
-  }
-
   const startTime = Date.now();
   try {
     inject();
@@ -479,6 +475,25 @@ async function compile({
     if (!skipEval) {
       resetScreen();
 
+      try {
+        // We set it as a time value for people that run two sandboxes on one computer
+        // they execute at the same time and we don't want them to conflict, so we check
+        // if the message was set a second ago
+        if (
+          firstLoad &&
+          localStorage.getItem('running') &&
+          Date.now() - localStorage.getItem('running') > 8000
+        ) {
+          localStorage.removeItem('running');
+          showRunOnClick();
+          return;
+        }
+
+        localStorage.setItem('running', Date.now());
+      } catch (e) {
+        /* no */
+      }
+
       manager.preset.preEvaluate(manager);
 
       if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
@@ -564,23 +579,6 @@ async function compile({
       createCodeSandboxOverlay(modules);
     }
 
-    dispatch({ type: 'status', status: 'running-tests' });
-
-    try {
-      // Testing
-      const ttt = Date.now();
-      const testRunner = manager.testRunner;
-      testRunner.findTests(modules);
-      await testRunner.runTests();
-      debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
-
-      // End - Testing
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(error);
-      }
-    }
-
     debug(`Total time: ${Date.now() - startTime}ms`);
 
     dispatch({
@@ -594,6 +592,16 @@ async function compile({
       changedModuleCount,
       firstLoad
     );
+
+    setTimeout(() => {
+      try {
+        sendTestCount(manager, modules);
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Test error', e);
+        }
+      }
+    }, 600);
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);

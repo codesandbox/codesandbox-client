@@ -143,6 +143,8 @@ export default class TestRunner {
     this.tests = Object.keys(modules)
       .filter(TestRunner.isTest)
       .map(p => modules[p]);
+
+    return this.tests;
   }
 
   /* istanbul ignore next */
