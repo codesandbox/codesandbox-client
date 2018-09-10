@@ -25,6 +25,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
+import eventToTransform from './event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
@@ -432,51 +433,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
     if (sendTransforms && changeEvent.changes) {
-      console.log(changeEvent);
-      let otOperation;
-
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
+      const { operation, newCode } = eventToTransform(
+        changeEvent,
+        this.liveOperationCode
+      );
 
-      let composedCode = this.liveOperationCode;
+      this.liveOperationCode = newCode;
 
-      // eslint-disable-next-line no-restricted-syntax
-      for (const change of [...changeEvent.changes]) {
-        const newOt = new TextOperation();
-        const cursorStartOffset = lineAndColumnToIndex(
-          composedCode.split(/\r?\n/),
-          change.range.startLineNumber,
-          change.range.startColumn
-        );
-
-        const retain = cursorStartOffset - newOt.targetLength;
-
-        if (retain !== 0) {
-          newOt.retain(retain);
-        }
-
-        if (change.rangeLength > 0) {
-          newOt.delete(change.rangeLength);
-        }
-
-        if (change.text) {
-          const normalizedChangeText = change.text.split(/\r?\n/).join('\n');
-          newOt.insert(normalizedChangeText);
-        }
-
-        const remaining = composedCode.length - newOt.baseLength;
-        if (remaining > 0) {
-          newOt.retain(remaining);
-        }
-
-        otOperation = otOperation ? otOperation.compose(newOt) : newOt;
-
-        composedCode = otOperation.apply(this.liveOperationCode);
-      }
-
-      this.liveOperationCode = composedCode;
-
-      sendTransforms(otOperation);
+      sendTransforms(operation);
 
       requestAnimationFrame(() => {
         this.liveOperationCode = '';
