@@ -25,6 +25,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
+import eventToTransform from './event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
@@ -432,45 +433,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
     if (sendTransforms && changeEvent.changes) {
-      const otOperation = new TextOperation();
-      // TODO: add a comment explaining what "delta" is
-      let delta = 0;
-
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
-      // eslint-disable-next-line no-restricted-syntax
-      for (const change of [...changeEvent.changes].reverse()) {
-        const cursorStartOffset =
-          lineAndColumnToIndex(
-            this.liveOperationCode.split(/\r?\n/),
-            change.range.startLineNumber,
-            change.range.startColumn
-          ) + delta;
+      const { operation, newCode } = eventToTransform(
+        changeEvent,
+        this.liveOperationCode
+      );
 
-        const retain = cursorStartOffset - otOperation.targetLength;
-        if (retain > 0) {
-          otOperation.retain(retain);
-        }
+      this.liveOperationCode = newCode;
 
-        if (change.rangeLength > 0) {
-          otOperation.delete(change.rangeLength);
-          delta -= change.rangeLength;
-        }
-
-        if (change.text) {
-          const normalizedChangeText = change.text.split(/\r?\n/).join('\n');
-          otOperation.insert(normalizedChangeText);
-          delta += normalizedChangeText.length;
-        }
-      }
-
-      const remaining = this.liveOperationCode.length - otOperation.baseLength;
-      if (remaining > 0) {
-        otOperation.retain(remaining);
-      }
-      this.liveOperationCode = otOperation.apply(this.liveOperationCode);
-
-      sendTransforms(otOperation);
+      sendTransforms(operation);
 
       requestAnimationFrame(() => {
         this.liveOperationCode = '';
