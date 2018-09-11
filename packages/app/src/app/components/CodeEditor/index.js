@@ -18,6 +18,7 @@ import QuestionIcon from 'react-icons/lib/go/question';
 
 import type { Props } from './types';
 import Monaco from './Monaco';
+import VSCode from './VSCode';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
 import MonacoDiff from './MonacoDiff';
@@ -157,8 +158,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const Editor =
       (settings.vimMode || settings.codeMirror) && !props.isLive
         ? CodeMirror
-        : Monaco;
+        : settings.experimentVSCode
+          ? VSCode
+          : Monaco;
 
+    console.log(settings.experimentVSCode, Editor.toString());
     return (
       <div
         style={{

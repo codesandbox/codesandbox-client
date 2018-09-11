@@ -1563,7 +1563,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   render() {
-    const { hideNavigation } = this.props;
+    const { hideNavigation, absoluteWidth, absoluteHeight } = this.props;
 
     const sandbox = this.sandbox;
     const currentModule = this.currentModule;
@@ -1582,8 +1582,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             />
           )}
           <MonacoEditorComponent
-            width="100%"
-            height="100%"
+            width={absoluteWidth}
+            height={absoluteHeight}
             theme="CodeSandbox"
             options={options}
             editorDidMount={this.configureEditor}

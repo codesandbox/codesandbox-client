@@ -1,0 +1,14 @@
+{
+  "name": "node-services",
+  "version": "0.0.0",
+  "dependencies": {
+    "events": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/events": "^1.2.0",
+    "typescript": "^2.9.2"
+  },
+  "scripts": {
+    "start": "tsc --watch -p ./tsconfig.json"
+  }
+}

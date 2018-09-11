@@ -10,6 +10,7 @@
     "build:deps": "lerna run build:dev --scope codesandbox-api --scope codesandbox-browserfs",
     "start": "yarn build:deps && lerna run start --scope app --stream",
     "start:fast": "lerna run start --scope app --stream",
+    "start:vscode": "VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
     "start:home": "lerna run start --scope homepage --stream",
     "start:test": "lerna run start:test --scope app --stream",
     "start:dev_api": "lerna run start --parallel --scope codesandbox-api & lerna run start:dev_api --scope app --stream",
@@ -35,7 +36,8 @@
       "packages/codesandbox-api",
       "packages/sandpack",
       "packages/react-sandpack",
-      "packages/homepage"
+      "packages/homepage",
+      "packages/node-services"
     ],
     "nohoist": ["**/gatsby", "**/gatsby/**"]
 },

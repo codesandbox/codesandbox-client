@@ -47,6 +47,8 @@ export default Module({
 
       editorTheme: 'CodeSandbox',
       customVSCodeTheme: undefined,
+
+      experimentVSCode: false,
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,

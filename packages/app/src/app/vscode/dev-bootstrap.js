@@ -1,6 +1,16 @@
+/* eslint-disable */
+import * as child_process from 'node-services/lib/child_process';
+import * as net from 'node-services/lib/net';
+import electron from 'node-services/lib/electron';
+
+import { METADATA } from './metadata';
+
 const PREFIX = '/vs';
 
-export default function(METADATA) {
+const window = window || self;
+window.global = window;
+
+export default function() {
   var IS_FILE_PROTOCOL = window.location.protocol === 'file:';
   var DIRNAME = null;
   if (IS_FILE_PROTOCOL) {
@@ -151,15 +161,19 @@ export default function(METADATA) {
       plugin.contrib
     );
   });
-  METADATA = null;
 
   function loadScript(path, callback) {
-    var script = document.createElement('script');
-    script.onload = callback;
-    script.async = true;
-    script.type = 'text/javascript';
-    script.src = path;
-    document.head.appendChild(script);
+    if (typeof document !== 'undefined') {
+      var script = document.createElement('script');
+      script.onload = callback;
+      script.async = true;
+      script.type = 'text/javascript';
+      script.src = path;
+      document.head.appendChild(script);
+    } else {
+      self.importScripts(path);
+      callback();
+    }
   }
 
   (function() {
@@ -198,9 +212,24 @@ export default function(METADATA) {
     }
   })();
 
-  window.loadEditor = function(callback, PATH_PREFIX) {
+  return function(callback, PATH_PREFIX) {
     PATH_PREFIX = PATH_PREFIX || '';
 
+    window.nodeRequire = path => {
+      // Trick AMD in that this is the node require function
+      console.log('nodeRequire', path);
+
+      if (path.endsWith('package.json')) {
+        return require('vscode/package.json');
+      }
+      if (path.endsWith('product.json')) {
+        return require('vscode/product.json');
+      }
+
+      if (path === 'module') {
+        return { _load: window.nodeRequire };
+      }
+    };
     loadScript(
       PATH_PREFIX + RESOLVED_CORE.getResolvedPath() + '/loader.js',
       function() {
@@ -215,6 +244,10 @@ export default function(METADATA) {
         console.log('LOADER CONFIG: ');
         console.log(JSON.stringify(loaderPathsConfig, null, '\t'));
 
+        self.require.toUrl = p => {
+          return require('path').join('/vs', p);
+        };
+
         self.require.define('path', [], () => {
           const path = require('path');
           return {
@@ -223,6 +256,80 @@ export default function(METADATA) {
           };
         });
 
+        self.require.define('util', [], () => {
+          return require('util');
+        });
+
+        self.require.define('string_decoder', [], () => {
+          return require('string_decoder');
+        });
+
+        self.require.define('crypto', [], () => {
+          return {};
+        });
+
+        self.require.define('node-pty', [], () => {
+          return {};
+        });
+
+        self.require.define('os', [], () => {
+          const os = require('os-browserify');
+          return os;
+        });
+
+        self.require.define('vs/base/node/encoding', [], () => {
+          return {
+            UTF8: 'utf8',
+            UTF8_with_bom: 'utf8bom',
+            UTF16be: 'utf16be',
+            UTF16le: 'utf16le',
+          };
+        });
+
+        self.require.define('child_process', [], () => {
+          return child_process;
+        });
+
+        self.require.define('electron', [], () => {
+          return electron;
+        });
+
+        self.require.define('net', [], () => {
+          return net;
+        });
+
+        self.require.define('fs', [], () => {
+          return BrowserFS.BFSRequire('fs');
+        });
+
+        self.require.define('semver', [], () => {
+          return require('semver');
+        });
+
+        self.require.define('assert', [], () => {
+          return require('assert');
+        });
+
+        self.require.define('vs/platform/request/node/request', [], () => {
+          // TODO
+          return {};
+        });
+
+        self.require.define('vs/base/node/request', [], () => {
+          // TODO
+          return {};
+        });
+
+        self.require.define('vs/base/node/proxy', [], () => {
+          // TODO
+          return {};
+        });
+
+        self.require.define('yauzl', [], () => {
+          // TODO: install yauzl
+        });
+
+        console.log('setting config');
         self.require.config({
           paths: loaderPathsConfig,
         });
@@ -243,6 +350,8 @@ export default function(METADATA) {
             callback();
           }
         });
+
+        // callback();
       }
     );
   };

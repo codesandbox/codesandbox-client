@@ -260,7 +260,7 @@ module.exports = {
       /typescriptServices\.js$/,
       /browserfs\.js/,
       /browserfs\.min\.js/,
-      /standalone-packages/,
+      /standalone-packages\/codesandbox-browserfs/,
     ],
   },
 

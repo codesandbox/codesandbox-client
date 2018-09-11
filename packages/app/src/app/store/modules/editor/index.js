@@ -10,6 +10,7 @@ import {
   currentPackageJSONCode,
   parsedConfigurations,
   currentTab,
+  modulesByPath,
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -57,6 +58,7 @@ export default Module({
     currentPackageJSONCode,
     parsedConfigurations,
     currentTab,
+    modulesByPath,
   },
   computed: {
     isModuleSynced,

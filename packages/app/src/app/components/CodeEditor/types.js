@@ -17,6 +17,7 @@ export type Settings = {
   vimMode: boolean,
   tabWidth: number,
   enableLigatures: boolean,
+  experimentVSCode: boolean,
 };
 
 type ModuleTab = {

@@ -1,4 +1,5 @@
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import { getModulePath } from 'common/sandbox/modules';
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 
@@ -14,6 +15,23 @@ export function currentModule() {
   return this.currentSandbox.modules.find(
     module => module.shortid === this.currentModuleShortid
   );
+}
+
+export function modulesByPath() {
+  const modulesObject = {};
+
+  this.currentSandbox.modules.forEach(m => {
+    const path = getModulePath(
+      this.currentSandbox.modules,
+      this.currentSandbox.directories,
+      m.id
+    );
+    if (path) {
+      modulesObject[path] = m;
+    }
+  });
+
+  return modulesObject;
 }
 
 export function currentTab() {

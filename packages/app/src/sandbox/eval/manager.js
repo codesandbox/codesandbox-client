@@ -57,6 +57,8 @@ export type Manifest = {
   },
 };
 
+window.isFIleArgs = [];
+
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
 // For these dependencies we don't want to follow along with the `browser` field
 const SKIPPED_BROWSER_FIELD_DEPENDENCIES = ['babel-core', '@babel/core'].reduce(
@@ -111,7 +113,12 @@ export default class Manager {
 
   stage: Stage;
 
-  constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
+  constructor(
+    id: string,
+    preset: Preset,
+    modules: { [path: string]: Module },
+    cb?: Function
+  ) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
@@ -142,7 +149,11 @@ export default class Manager {
           manager: this.bfsWrapper,
         },
       },
-      () => {}
+      () => {
+        if (cb) {
+          cb();
+        }
+      }
     );
   }
 
@@ -171,6 +182,7 @@ export default class Manager {
 
   // Hoist these 2 functions to the top, since they get executed A LOT
   isFile = (p: string) => {
+    window.isFIleArgs.push(p);
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.

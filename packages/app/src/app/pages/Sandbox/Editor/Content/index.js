@@ -32,6 +32,7 @@ const settings = store =>
       ? store.preferences.settings.prettierConfig.tabWidth || 2
       : 2,
     enableLigatures: store.preferences.settings.enableLigatures,
+    experimentVSCode: store.preferences.settings.experimentVSCode,
   }: Settings);
 
 type Props = {
@@ -399,32 +400,37 @@ class EditorPreview extends React.Component<Props, State> {
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          {preferences.settings.zenMode ? (
-            <FilePath
-              modules={sandbox.modules}
-              directories={sandbox.directories}
-              currentModule={currentModule}
-              workspaceHidden={!store.workspace.openedWorkspaceItem}
-              toggleWorkspace={() => {
-                signals.workspace.toggleCurrentWorkspaceItem();
-              }}
-              exitZenMode={() =>
-                this.props.signals.preferences.settingChanged({
-                  name: 'zenMode',
-                  value: false,
-                })
-              }
-            />
-          ) : (
-            <Tabs />
-          )}
+          {!preferences.settings.experimentVSCode &&
+            (preferences.settings.zenMode ? (
+              <FilePath
+                modules={sandbox.modules}
+                directories={sandbox.directories}
+                currentModule={currentModule}
+                workspaceHidden={!store.workspace.openedWorkspaceItem}
+                toggleWorkspace={() => {
+                  signals.workspace.toggleCurrentWorkspaceItem();
+                }}
+                exitZenMode={() =>
+                  this.props.signals.preferences.settingChanged({
+                    name: 'zenMode',
+                    value: false,
+                  })
+                }
+              />
+            ) : (
+              <Tabs />
+            ))}
           <div
             ref={this.getBounds}
             style={{
               position: 'relative',
               display: 'flex',
               flex: 1,
-              marginTop: preferences.settings.zenMode ? 0 : '2.5rem',
+              marginTop:
+                preferences.settings.experimentVSCode ||
+                preferences.settings.zenMode
+                  ? 0
+                  : '2.5rem',
             }}
           >
             <CodeEditor
