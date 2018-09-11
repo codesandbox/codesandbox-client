@@ -8,6 +8,7 @@ import Preset from '../';
 const transpilerMap = {
   'codesandbox:raw': rawTranspiler,
   'codesandbox:json': jsonTranspiler,
+  'codesandbox:babel': babelTranspiler,
 };
 
 async function registerTranspilers(
