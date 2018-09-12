@@ -197,6 +197,13 @@ class BasePreview extends React.Component<Props, State> {
         this.$socket.emit('sandbox:start');
       });
 
+      this.$socket.on('shell:out', ({ data }) => {
+        dispatch({
+          type: 'shell:out',
+          data,
+        });
+      });
+
       this.$socket.on('sandbox:start', () => {
         const { id } = this.props.sandbox;
 
@@ -324,6 +331,28 @@ class BasePreview extends React.Component<Props, State> {
               });
             }
 
+            break;
+          }
+          case 'shell:start': {
+            if (this.$socket) {
+              this.$socket.emit('shell:start', {
+                cols: data.cols,
+                rows: data.rows,
+              });
+            }
+          }
+          case 'shell:resize': {
+            if (this.$socket) {
+              this.$socket.emit('shell:resize', {
+                cols: data.cols,
+                rows: data.rows,
+              });
+            }
+          }
+          case 'shell:in': {
+            if (this.$socket) {
+              this.$socket.emit('shell:in', { data: data.data });
+            }
             break;
           }
           default: {
