@@ -4,8 +4,14 @@ import { Terminal } from 'xterm';
 import { debounce } from 'lodash';
 import * as fit from 'xterm/lib/addons/fit/fit';
 
+type Props = {
+  id: string,
+  command: ?string,
+  closeShell: () => void,
+};
+
 Terminal.applyAddon(fit);
-export default class Shell extends React.PureComponent {
+export default class Shell extends React.PureComponent<Props> {
   componentDidMount() {
     // TODO: deduplicate all this by making this a general API that can be used
     // to show the results of npm commands as well as the results of shell
@@ -22,7 +28,7 @@ export default class Shell extends React.PureComponent {
     this.term.setOption('fontSize', 14);
 
     this.term.on('data', data => {
-      dispatch({ type: 'shell:in', data });
+      dispatch({ type: 'shell:in', id: this.props.id, data });
     });
 
     this.listener = listen(this.handleMessage);
@@ -35,6 +41,7 @@ export default class Shell extends React.PureComponent {
     this.term.fit();
     dispatch({
       type: 'shell:start',
+      id: this.props.id,
       cols: this.term.cols,
       rows: this.term.rows,
     });
@@ -55,7 +62,10 @@ export default class Shell extends React.PureComponent {
   }
 
   handleMessage = data => {
-    if (data.type === 'shell:out') {
+    if (data.type === 'shell:out' && data.id === this.props.id) {
+      if (data.data === 'exit\r\n') {
+        this.props.closeShell();
+      }
       this.term.write(data.data);
 
       if (this.props.updateStatus) {
@@ -77,13 +87,12 @@ export default class Shell extends React.PureComponent {
       <div
         style={{
           position: 'absolute',
-          top: '2rem',
+          top: 0,
           bottom: 0,
           left: 0,
           right: 0,
-          height: height - 64,
-          padding: '2rem',
-          // display: hidden ? 'none' : 'block',
+          height: height - 72,
+          padding: '.5rem',
           visibility: hidden ? 'hidden' : 'visible',
         }}
         ref={node => {

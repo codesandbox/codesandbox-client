@@ -1,19 +1,51 @@
+// @flow
 import React from 'react';
 import { listen } from 'codesandbox-api';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
-import getTemplate from 'common/templates';
+import getTemplate, { type Template } from 'common/templates';
+import uuid from 'uuid';
+import PlusIcon from 'react-icons/lib/md/add';
+
 import './styles.css';
+
 import Shell from './Shell';
+import ShellTabs from './ShellTabs';
+
+export type ShellT = {
+  id: string,
+  command: string,
+};
+
+type State = {
+  shells: Array<ShellT>,
+  selectedShell: ?string,
+};
+
+type Props = {
+  hidden: boolean,
+  height: number,
+  updateStatus?: (type: string, count?: number) => void,
+};
+
+// Incredibly hacky way of letting the StatusBar access the state of the component.
+// In the future we need to abstract this away to the global state and dispatch an event.
+let createShell;
 
 Terminal.applyAddon(fit);
-class TerminalComponent extends React.PureComponent {
+class TerminalComponent extends React.PureComponent<Props, State> {
   state = {
-    shellTabOpen: false,
-    shellTabStarted: false,
+    shells: [],
+    selectedShell: null,
   };
+  term: Terminal;
+  node: ?HTMLElement;
+  timeout: TimeoutID;
+  listener: () => void;
 
   componentDidMount() {
+    createShell = this.createShell;
+
     this.term = new Terminal();
     this.term.open(this.node);
     this.term.fit();
@@ -30,7 +62,7 @@ class TerminalComponent extends React.PureComponent {
     this.listener = listen(this.handleMessage);
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillUpdate(nextProps: Props) {
     if (nextProps.height !== this.props.height) {
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
@@ -39,7 +71,7 @@ class TerminalComponent extends React.PureComponent {
     }
   }
 
-  handleMessage = data => {
+  handleMessage = (data: any) => {
     if (data.type === 'terminal:message') {
       this.term.write(data.data);
 
@@ -50,45 +82,76 @@ class TerminalComponent extends React.PureComponent {
   };
 
   componentWillUnmount() {
+    createShell = null;
     this.listener();
   }
+
+  createShell = () => {
+    const newShell = {
+      id: uuid.v4(),
+      command: '/bin/bash',
+    };
+
+    this.setState(s => ({
+      shells: [...s.shells, newShell],
+      selectedShell: newShell.id,
+    }));
+  };
+
+  selectShell = (shellId: ?string) => {
+    this.setState({ selectedShell: shellId });
+  };
+
+  closeShell = (shellId: string) => {
+    this.setState(s => ({
+      selectedShell: shellId === s.selectedShell ? null : s.selectedShell,
+      shells: s.shells.filter(x => x.id !== shellId),
+    }));
+  };
 
   render() {
     const { height, hidden } = this.props;
 
     return (
       <div>
-        <button
-          style={{ zIndex: 200, position: 'absolute' }}
-          onClick={() => {
-            console.log('opening or closing');
-            this.setState(s => ({
-              shellTabOpen: !s.shellTabOpen,
-              shellTabStarted: true,
-            }));
-          }}
-        >
-          Toggle Tab
-        </button>
-        <div
-          style={{
-            position: 'absolute',
-            top: '2rem',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: height - 48,
-            padding: '1rem',
-            visibility:
-              hidden || this.state.shellTabOpen ? 'hidden' : 'visible',
-          }}
-          ref={node => {
-            this.node = node;
-          }}
-        />
-        {this.state.shellTabStarted && (
-          <Shell height={height} hidden={!this.state.shellTabOpen} />
-        )}
+        {!hidden &&
+          this.state.shells.length > 0 && (
+            <ShellTabs
+              selectedShell={this.state.selectedShell}
+              shells={this.state.shells}
+              selectShell={this.selectShell}
+            />
+          )}
+
+        <div style={{ position: 'relative' }}>
+          <div
+            style={{
+              position: 'absolute',
+              top: '2rem',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: height - 48,
+              padding: '1rem',
+              visibility:
+                hidden || this.state.selectedShell !== null
+                  ? 'hidden'
+                  : 'visible',
+            }}
+            ref={node => {
+              this.node = node;
+            }}
+          />
+          {this.state.shells.map(shell => (
+            <Shell
+              key={shell.id}
+              id={shell.id}
+              height={height}
+              hidden={hidden || shell.id !== this.state.selectedShell}
+              closeShell={() => this.closeShell(shell.id)}
+            />
+          ))}
+        </div>
       </div>
     );
   }
@@ -97,6 +160,16 @@ class TerminalComponent extends React.PureComponent {
 export default {
   title: 'Terminal',
   Content: TerminalComponent,
-  actions: [],
-  show: template => getTemplate(template).isServer,
+  actions: [
+    {
+      title: 'Add Terminal',
+      onClick: () => {
+        if (createShell) {
+          createShell();
+        }
+      },
+      Icon: PlusIcon,
+    },
+  ],
+  show: (template: Template) => getTemplate(template).isServer,
 };

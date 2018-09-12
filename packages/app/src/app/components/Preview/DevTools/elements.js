@@ -33,6 +33,7 @@ export const Header = styled.div`
 `;
 
 export const Tab = styled.div`
+  transition: 0.2s ease color;
   display: flex;
   align-items: center;
   height: calc(2rem - 1px);
@@ -45,19 +46,27 @@ export const Tab = styled.div`
   cursor: pointer;
 
   color: ${props =>
-    props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 0.8)'};
+    props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 0.6)'};
   font-weight: 600;
 
   ${props =>
-    props.active &&
-    css`
-      background-color: ${props.theme['editor.background']
-        ? 'transparent'
-        : props.theme.background};
-      border-bottom-color: ${props.theme['editor.background']
-        ? 'transparent'
-        : props.theme.background};
-    `};
+    props.active
+      ? css`
+          color: ${props =>
+            props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 1)'};
+          background-color: ${props.theme['editor.background']
+            ? 'transparent'
+            : props.theme.background};
+          border-bottom-color: ${props.theme['editor.background']
+            ? 'transparent'
+            : props.theme.background};
+        `
+      : css`
+          &:hover {
+            color: ${props =>
+              props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 1)'};
+          }
+        `};
 `;
 
 export const Actions = styled.div`

@@ -338,6 +338,7 @@ class BasePreview extends React.Component<Props, State> {
               this.$socket.emit('shell:start', {
                 cols: data.cols,
                 rows: data.rows,
+                id: data.id,
               });
             }
           }
@@ -351,7 +352,7 @@ class BasePreview extends React.Component<Props, State> {
           }
           case 'shell:in': {
             if (this.$socket) {
-              this.$socket.emit('shell:in', { data: data.data });
+              this.$socket.emit('shell:in', { data: data.data, id: data.id });
             }
             break;
           }
