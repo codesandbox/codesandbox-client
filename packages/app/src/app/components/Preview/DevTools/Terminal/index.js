@@ -102,9 +102,26 @@ class TerminalComponent extends React.PureComponent<Props, State> {
     this.setState({ selectedShell: shellId });
   };
 
+  getShellIdLeftOfCurrentShell = () => {
+    const { shells, selectedShell } = this.state;
+    const currentIndex = shells.findIndex(s => s.id === selectedShell);
+
+    const newShell = shells[currentIndex - 1];
+    if (newShell) {
+      return newShell.id;
+    }
+
+    return null;
+  };
+
   closeShell = (shellId: string) => {
+    const selectedShell =
+      shellId === this.state.selectedShell
+        ? this.getShellIdLeftOfCurrentShell()
+        : this.state.selectedShell;
+
     this.setState(s => ({
-      selectedShell: shellId === s.selectedShell ? null : s.selectedShell,
+      selectedShell,
       shells: s.shells.filter(x => x.id !== shellId),
     }));
   };

@@ -63,6 +63,8 @@ export default class Shell extends React.Component<Props, State> {
     });
 
     window.addEventListener('resize', this.listenForResize);
+
+    this.term.focus();
   }
 
   sendResize = (cols, rows) => {
@@ -88,8 +90,10 @@ export default class Shell extends React.Component<Props, State> {
   handleMessage = data => {
     if (data.id === this.props.id) {
       if (data.type === 'shell:out' && !this.state.closed) {
-        if (data.data === 'exit\r\n') {
-          this.props.closeShell();
+        if (data.data === 'logout\r\n' || data.data === 'exit\r\n') {
+          setTimeout(() => {
+            this.props.closeShell();
+          }, 300);
         }
         this.term.write(data.data);
 
