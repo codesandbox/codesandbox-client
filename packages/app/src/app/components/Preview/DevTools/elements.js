@@ -52,8 +52,8 @@ export const Tab = styled.div`
   ${props =>
     props.active
       ? css`
-          color: ${props =>
-            props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 1)'};
+          color: ${props.theme['statusBar.foreground'] ||
+            'rgba(255, 255, 255, 1)'};
           background-color: ${props.theme['editor.background']
             ? 'transparent'
             : props.theme.background};
@@ -63,8 +63,8 @@ export const Tab = styled.div`
         `
       : css`
           &:hover {
-            color: ${props =>
-              props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 1)'};
+            color: ${props.theme['statusBar.foreground'] ||
+              'rgba(255, 255, 255, 1)'};
           }
         `};
 `;

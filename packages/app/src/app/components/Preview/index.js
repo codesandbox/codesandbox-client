@@ -341,6 +341,8 @@ class BasePreview extends React.Component<Props, State> {
                 id: data.id,
               });
             }
+
+            break;
           }
           case 'shell:resize': {
             if (this.$socket) {
@@ -349,6 +351,8 @@ class BasePreview extends React.Component<Props, State> {
                 rows: data.rows,
               });
             }
+
+            break;
           }
           case 'shell:in': {
             if (this.$socket) {

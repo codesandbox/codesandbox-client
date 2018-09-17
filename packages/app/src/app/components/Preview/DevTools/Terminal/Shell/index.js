@@ -6,7 +6,7 @@ import * as fit from 'xterm/lib/addons/fit/fit';
 
 type Props = {
   id: string,
-  command: ?string,
+  // command: ?string,
   closeShell: () => void,
 };
 
