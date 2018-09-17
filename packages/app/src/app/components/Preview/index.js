@@ -2,7 +2,7 @@
 // TODO REMOVE
 /* eslint-disable no-console, react/no-array-index-key */
 import * as React from 'react';
-import type { Sandbox, Module, Preferences } from 'common/types';
+import type { Sandbox, Module } from 'common/types';
 import { listen, dispatch, registerFrame } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import io from 'socket.io-client';
@@ -15,13 +15,14 @@ import { generateFileFromSandbox } from 'common/templates/configuration/package-
 
 import Navigator from './Navigator';
 import { Container, StyledFrame } from './elements';
+import type { Settings } from '../CodeEditor/types';
 
 type Props = {
   onInitialized: (preview: BasePreview) => void, // eslint-disable-line no-use-before-define
   sandbox: Sandbox,
   extraModules: { [path: string]: { code: string, path: string } },
   currentModule: Module,
-  settings: Preferences,
+  settings: Settings,
   initialPath: string,
   isInProjectView: boolean,
   onClearErrors: () => void,
@@ -38,6 +39,7 @@ type Props = {
   hide: boolean,
   noPreview: boolean,
   alignDirection?: 'right' | 'bottom',
+  delay?: number,
 };
 
 type State = {
@@ -46,6 +48,7 @@ type State = {
   historyPosition: number,
   urlInAddressBar: string,
   url: ?string,
+  stopped: boolean,
 };
 
 const getSSEUrl = (id?: string) =>
@@ -87,6 +90,7 @@ const getDiff = (a, b) => {
   return diff;
 };
 
+const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
 async function retrieveSSEToken() {
   const jwt = localStorage.getItem('jwt');
 
@@ -97,7 +101,7 @@ async function retrieveSSEToken() {
 
     if (existingKey) {
       const parsedKey = JSON.parse(existingKey);
-      if (currentTime - parsedKey.timestamp < 24 * 60 * 60 * 1000) {
+      if (parsedKey.key && currentTime - parsedKey.timestamp < MAX_SSE_AGE) {
         return parsedKey.key;
       }
     }
@@ -129,18 +133,31 @@ async function retrieveSSEToken() {
 }
 
 class BasePreview extends React.Component<Props, State> {
+  serverPreview: boolean;
+  lastSent: {
+    sandboxId: string,
+    modules: {
+      [path: string]: any,
+    },
+  };
+  // TODO: Find typedefs for this
+  $socket: ?any;
+
   constructor(props: Props) {
     super(props);
-    this.IS_SERVER = getTemplate(props.sandbox.template).isServer;
+    // We have new behaviour in the preview for server templates, which are
+    // templates that are executed in a docker container.
+    this.serverPreview = getTemplate(props.sandbox.template).isServer;
 
     this.state = {
       frameInitialized: false,
       history: [],
       historyPosition: -1,
-      urlInAddressBar: this.IS_SERVER
+      urlInAddressBar: this.serverPreview
         ? getSSEUrl(props.sandbox.id)
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
+      stopped: false,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -153,7 +170,7 @@ class BasePreview extends React.Component<Props, State> {
       modules: this.getModulesToSend(),
     };
 
-    if (this.IS_SERVER) {
+    if (this.serverPreview) {
       this.setupSSESockets();
     }
     this.listener = listen(this.handleMessage);
@@ -176,35 +193,42 @@ class BasePreview extends React.Component<Props, State> {
       this.setState({
         frameInitialized: false,
       });
-      this.$socket.close();
-      setTimeout(() => this.$socket.open(), 0);
+      if (this.$socket) {
+        this.$socket.close();
+        setTimeout(() => {
+          if (this.$socket) {
+            this.$socket.open();
+          }
+        }, 0);
+      }
     } else {
-      this.$socket = io(getSSEUrl(), {
+      const socket = io(getSSEUrl(), {
         autoConnect: false,
       });
+      this.$socket = socket;
 
-      this.$socket.on('connect', async () => {
+      socket.on('connect', async () => {
         const { id } = this.props.sandbox;
         const token = await retrieveSSEToken();
 
-        this.$socket.emit('sandbox', { id, token });
+        socket.emit('sandbox', { id, token });
 
         dispatch({
           type: 'terminal:message',
           data: `> CodeSandbox SSE: connected! Starting sandbox ${id}...\n\r`,
         });
 
-        this.$socket.emit('sandbox:start');
+        socket.emit('sandbox:start');
       });
 
-      this.$socket.on('shell:out', ({ data }) => {
+      socket.on('shell:out', ({ data }) => {
         dispatch({
           type: 'shell:out',
           data,
         });
       });
 
-      this.$socket.on('sandbox:start', () => {
+      socket.on('sandbox:start', () => {
         const { id } = this.props.sandbox;
 
         dispatch({
@@ -221,24 +245,23 @@ class BasePreview extends React.Component<Props, State> {
         });
       });
 
-      this.$socket.on('sandbox:stop', () => {
+      socket.on('sandbox:stop', () => {
         this.setState({
           frameInitialized: false,
           stopped: true,
         });
-        this.stopped = true;
       });
 
-      this.$socket.on('sandbox:log', ({ chan, data }) => {
+      socket.on('sandbox:log', ({ chan, data }) => {
         dispatch({
           type: 'terminal:message',
           chan,
           data,
         });
       });
-    }
 
-    this.$socket.open();
+      socket.open();
+    }
   };
 
   static defaultProps = {
@@ -272,9 +295,9 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleSandboxChange = (newId: string) => {
-    this.IS_SERVER = getTemplate(this.props.sandbox.template).isServer;
+    this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
 
-    const url = this.IS_SERVER
+    const url = this.serverPreview
       ? getSSEUrl(newId)
       : frameUrl(newId, this.props.initialPath || '');
 
@@ -413,7 +436,8 @@ class BasePreview extends React.Component<Props, State> {
     const settings = this.props.settings;
     const sandbox = this.props.sandbox;
 
-    if (settings.clearConsoleEnabled && !this.IS_SERVER) {
+    if (settings.clearConsoleEnabled && !this.serverPreview) {
+      // $FlowIssue: Chrome behaviour
       console.clear('__internal__'); // eslint-disable-line no-console
       dispatch({ type: 'clear-console' });
     }
@@ -431,12 +455,12 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       const modulesToSend = this.getModulesToSend();
-      if (this.IS_SERVER) {
+      if (this.serverPreview) {
         const diff = getDiff(this.lastSent.modules, modulesToSend);
 
         this.lastSent.modules = modulesToSend;
 
-        if (Object.keys(diff).length > 0) {
+        if (Object.keys(diff).length > 0 && this.$socket) {
           this.$socket.emit('sandbox:update', diff);
         }
       } else {
@@ -488,7 +512,7 @@ class BasePreview extends React.Component<Props, State> {
       // $FlowIssue
       document.getElementById('sandbox').src =
         url ||
-        (this.IS_SERVER
+        (this.serverPreview
           ? getSSEUrl(this.props.sandbox.id)
           : frameUrl(this.props.sandbox.id));
     }
@@ -545,7 +569,9 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   restartServer = () => {
-    this.$socket.emit('sandbox:restart');
+    if (this.$socket) {
+      this.$socket.emit('sandbox:restart');
+    }
   };
 
   render() {
@@ -563,7 +589,7 @@ class BasePreview extends React.Component<Props, State> {
     const { historyPosition, history, urlInAddressBar } = this.state;
     const url =
       urlInAddressBar ||
-      (this.IS_SERVER ? getSSEUrl(sandbox.id) : frameUrl(sandbox.id));
+      (this.serverPreview ? getSSEUrl(sandbox.id) : frameUrl(sandbox.id));
 
     if (noPreview) {
       // Means that preview is open in another tab definitely
@@ -599,7 +625,7 @@ class BasePreview extends React.Component<Props, State> {
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
           src={
-            this.IS_SERVER
+            this.serverPreview
               ? getSSEUrl(sandbox.id)
               : frameUrl(sandbox.id, this.initialPath)
           }
