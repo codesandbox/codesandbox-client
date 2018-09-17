@@ -221,10 +221,11 @@ class BasePreview extends React.Component<Props, State> {
         socket.emit('sandbox:start');
       });
 
-      socket.on('shell:out', ({ data }) => {
+      socket.on('shell:out', ({ data, id }) => {
         dispatch({
           type: 'shell:out',
           data,
+          id,
         });
       });
 
