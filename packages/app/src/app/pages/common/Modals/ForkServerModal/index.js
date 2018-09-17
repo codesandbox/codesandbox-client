@@ -6,8 +6,9 @@ import SignInButton from 'app/pages/common/SignInButton';
 import { Container, Heading, Explanation } from '../elements';
 
 class ForkServerModal extends React.Component {
-  componentDidUpdate() {
-    // Which means that the user signed in in the meantime
+  componentWillUpdate() {
+    // Which means that the user signed in in the meantime with the intention to
+    // fork
     if (this.props.store.loggedIn) {
       this.props.signals.editor.forkSandboxClicked();
       this.props.signals.modalClosed();
