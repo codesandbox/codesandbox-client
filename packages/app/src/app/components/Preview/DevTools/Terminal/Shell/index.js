@@ -52,6 +52,7 @@ export default class Shell extends React.PureComponent<Props> {
       type: 'shell:resize',
       cols,
       rows,
+      id: this.props.id,
     });
   };
 

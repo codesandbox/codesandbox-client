@@ -373,6 +373,7 @@ class BasePreview extends React.Component<Props, State> {
               this.$socket.emit('shell:resize', {
                 cols: data.cols,
                 rows: data.rows,
+                id: data.id,
               });
             }
 
