@@ -102,6 +102,8 @@ export default class Shell extends React.Component<Props, State> {
         }
       } else if (data.type === 'shell:exit') {
         this.setState({ closed: true });
+
+        this.term.write('\n\r[Session Closed]');
       }
     }
   };
