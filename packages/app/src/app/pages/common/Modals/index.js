@@ -17,6 +17,7 @@ import LiveSessionEndedModal from './LiveSessionEndedModal';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
+import ForkServerModal from 'app/src/app/pages/common/Modals/ForkServerModal';
 
 const modals = {
   preferences: {
@@ -78,6 +79,10 @@ const modals = {
   storageManagement: {
     Component: StorageManagementModal,
     width: 800,
+  },
+  forkServerModal: {
+    Component: ForkServerModal,
+    width: 500,
   },
 };
 

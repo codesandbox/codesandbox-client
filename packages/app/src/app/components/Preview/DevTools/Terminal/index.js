@@ -127,7 +127,7 @@ class TerminalComponent extends React.PureComponent<Props, State> {
           <div
             style={{
               position: 'absolute',
-              top: '2rem',
+              top: 0,
               bottom: 0,
               left: 0,
               right: 0,

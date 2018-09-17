@@ -10,9 +10,12 @@ export const Container = styled.div`
 
 export const Heading = styled.h2`
   margin-top: 7px !important;
+  font-weight: 400;
+  color: white;
+  font-size: 1.125rem;
 `;
 
-export const Explanation = styled.p`
-  line-height: 1.3;
-  margin-bottom: 1rem;
+export const Explanation = styled.div`
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
 `;

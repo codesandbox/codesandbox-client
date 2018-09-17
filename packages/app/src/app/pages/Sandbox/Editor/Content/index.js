@@ -380,10 +380,24 @@ class EditorPreview extends React.Component<Props, State> {
       editorHeight = '100%';
     }
 
+    const template = getTemplateDefinition(sandbox.template);
+
+    const isReadOnly = () => {
+      if (store.live.isCurrentEditor) {
+        return false;
+      }
+
+      if (!store.isLoggedIn && template.isServer) {
+        return true;
+      }
+
+      return store.live.isLive;
+    };
+
     return (
       <ThemeProvider
         theme={{
-          templateColor: getTemplateDefinition(sandbox.template).color,
+          templateColor: template.color,
         }}
       >
         <FullSize
@@ -441,7 +455,7 @@ class EditorPreview extends React.Component<Props, State> {
               absoluteHeight={this.state.height}
               settings={settings(store)}
               sendTransforms={this.sendTransforms}
-              readOnly={store.live.isLive && !store.live.isCurrentEditor}
+              readOnly={isReadOnly()}
               isLive={store.live.isLive}
               onCodeReceived={signals.live.onCodeReceived}
               onSelectionChanged={signals.live.onSelectionChanged}

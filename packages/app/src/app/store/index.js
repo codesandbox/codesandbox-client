@@ -58,7 +58,7 @@ export default Module({
       x: 0,
       y: 0,
     },
-    currentModal: null,
+    currentModal: undefined,
     uploadedFiles: null,
     maxStorage: 0,
     usedStorage: 0,
