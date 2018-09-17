@@ -440,6 +440,7 @@ export default class Content extends React.PureComponent<Props, State> {
                   template={sandbox.template}
                   shouldExpandDevTools={this.props.expandDevTools}
                   view={view}
+                  owned={false}
                 />
               </div>
             )}

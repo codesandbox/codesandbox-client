@@ -588,6 +588,7 @@ class BasePreview extends React.Component<Props, State> {
             alignBottom={this.props.alignBottom}
             alignDirection={this.props.alignDirection}
             restartServer={this.restartServer}
+            owned={sandbox.owned}
           />
         )}
 

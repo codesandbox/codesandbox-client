@@ -6,6 +6,7 @@ import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
 import Tooltip from 'common/components/Tooltip';
+import type { Template } from 'common/templates';
 
 import Unread from './Unread';
 import console from './Console';
@@ -50,13 +51,14 @@ export type Status = {
 
 type Props = {
   sandboxId: string,
-  template: string,
+  template: Template,
   setDragging?: (dragging: boolean) => void,
   zenMode?: boolean,
   shouldExpandDevTools?: boolean,
   devToolsOpen?: boolean,
   setDevToolsOpen?: (open: boolean) => void,
   view?: 'browser' | 'console' | 'tests',
+  owned: boolean,
 };
 type State = {
   status: { [title: string]: ?Status },
@@ -320,10 +322,14 @@ export default class DevTools extends React.PureComponent<Props, State> {
   node: HTMLElement;
 
   render() {
-    const { sandboxId, template, zenMode } = this.props;
+    const { sandboxId, template, zenMode, owned } = this.props;
     const { hidden, height, status } = this.state;
 
-    const { actions } = PANES[this.state.currentPane];
+    const { actions: actionsOrFunction } = PANES[this.state.currentPane];
+    const actions =
+      typeof actionsOrFunction === 'function'
+        ? actionsOrFunction(owned)
+        : actionsOrFunction;
 
     const PANES_TO_SHOW = Object.keys(PANES).filter(
       paneName =>

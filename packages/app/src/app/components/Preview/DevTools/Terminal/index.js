@@ -131,7 +131,7 @@ class TerminalComponent extends React.PureComponent<Props, State> {
               bottom: 0,
               left: 0,
               right: 0,
-              height: height - 48,
+              height: height - 72,
               padding: '1rem',
               visibility:
                 hidden || this.state.selectedShell !== null
@@ -160,16 +160,17 @@ class TerminalComponent extends React.PureComponent<Props, State> {
 export default {
   title: 'Terminal',
   Content: TerminalComponent,
-  actions: [
-    {
-      title: 'Add Terminal',
-      onClick: () => {
-        if (createShell) {
-          createShell();
-        }
+  actions: (owner: boolean) =>
+    [
+      owner && {
+        title: 'Add Terminal',
+        onClick: () => {
+          if (createShell) {
+            createShell();
+          }
+        },
+        Icon: PlusIcon,
       },
-      Icon: PlusIcon,
-    },
-  ],
+    ].filter(Boolean),
   show: (template: Template) => getTemplate(template).isServer,
 };

@@ -513,6 +513,7 @@ class EditorPreview extends React.Component<Props, State> {
             setDevToolsOpen={open =>
               this.props.signals.preferences.setDevtoolsOpen({ open })
             }
+            owned={sandbox.owned}
           />
         </FullSize>
       </ThemeProvider>
