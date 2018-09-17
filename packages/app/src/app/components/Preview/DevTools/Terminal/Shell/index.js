@@ -10,8 +10,16 @@ type Props = {
   closeShell: () => void,
 };
 
+type State = {
+  closed: boolean,
+};
+
 Terminal.applyAddon(fit);
-export default class Shell extends React.PureComponent<Props> {
+export default class Shell extends React.Component<Props, State> {
+  state = {
+    closed: false,
+  };
+
   componentDidMount() {
     // TODO: deduplicate all this by making this a general API that can be used
     // to show the results of npm commands as well as the results of shell
@@ -28,7 +36,14 @@ export default class Shell extends React.PureComponent<Props> {
     this.term.setOption('fontSize', 14);
 
     this.term.on('data', data => {
-      dispatch({ type: 'shell:in', id: this.props.id, data });
+      if (!this.state.closed) {
+        dispatch({
+          type: 'socket:message',
+          channel: 'shell:in',
+          id: this.props.id,
+          data,
+        });
+      }
     });
 
     this.listener = listen(this.handleMessage);
@@ -40,16 +55,20 @@ export default class Shell extends React.PureComponent<Props> {
     });
     this.term.fit();
     dispatch({
-      type: 'shell:start',
+      type: 'socket:message',
+      channel: 'shell:start',
       id: this.props.id,
       cols: this.term.cols,
       rows: this.term.rows,
     });
+
+    window.addEventListener('resize', this.listenForResize);
   }
 
   sendResize = (cols, rows) => {
     dispatch({
-      type: 'shell:resize',
+      type: 'socket:message',
+      channel: 'shell:resize',
       cols,
       rows,
       id: this.props.id,
@@ -62,15 +81,23 @@ export default class Shell extends React.PureComponent<Props> {
     }
   }
 
-  handleMessage = data => {
-    if (data.type === 'shell:out' && data.id === this.props.id) {
-      if (data.data === 'exit\r\n') {
-        this.props.closeShell();
-      }
-      this.term.write(data.data);
+  listenForResize = () => {
+    this.term.fit();
+  };
 
-      if (this.props.updateStatus) {
-        this.props.updateStatus('info');
+  handleMessage = data => {
+    if (data.id === this.props.id) {
+      if (data.type === 'shell:out' && !this.state.closed) {
+        if (data.data === 'exit\r\n') {
+          this.props.closeShell();
+        }
+        this.term.write(data.data);
+
+        if (this.props.updateStatus) {
+          this.props.updateStatus('info');
+        }
+      } else if (data.type === 'shell:exit') {
+        this.setState({ closed: true });
       }
     }
   };
@@ -78,7 +105,13 @@ export default class Shell extends React.PureComponent<Props> {
   componentWillUnmount() {
     this.listener();
 
-    // Shell stop somewhere?
+    window.removeEventListener('resize', this.listenForResize);
+
+    dispatch({
+      type: 'socket:message',
+      channel: 'shell:close',
+      id: this.props.id,
+    });
   }
 
   render() {

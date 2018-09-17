@@ -357,32 +357,12 @@ class BasePreview extends React.Component<Props, State> {
 
             break;
           }
-          case 'shell:start': {
+          case 'socket:message': {
             if (this.$socket) {
-              this.$socket.emit('shell:start', {
-                cols: data.cols,
-                rows: data.rows,
-                id: data.id,
-              });
+              const { channel, ...message } = data;
+              this.$socket.emit(channel, message);
             }
 
-            break;
-          }
-          case 'shell:resize': {
-            if (this.$socket) {
-              this.$socket.emit('shell:resize', {
-                cols: data.cols,
-                rows: data.rows,
-                id: data.id,
-              });
-            }
-
-            break;
-          }
-          case 'shell:in': {
-            if (this.$socket) {
-              this.$socket.emit('shell:in', { data: data.data, id: data.id });
-            }
             break;
           }
           default: {
