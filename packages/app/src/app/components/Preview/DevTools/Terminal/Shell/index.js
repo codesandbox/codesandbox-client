@@ -1,12 +1,16 @@
 // @flow
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
+import { withTheme } from 'styled-components';
 import { Terminal } from 'xterm';
 import { debounce } from 'lodash';
 import * as fit from 'xterm/lib/addons/fit/fit';
 
+import getTerminalTheme from '../terminal-theme';
+
 type Props = {
   id: string,
+  theme: any,
   // command: ?string,
   closeShell: () => void,
   endShell: () => void,
@@ -17,7 +21,7 @@ type Props = {
 };
 
 Terminal.applyAddon(fit);
-export default class Shell extends React.PureComponent<Props> {
+class Shell extends React.PureComponent<Props> {
   listener: Function;
   term: Terminal;
   node: ?HTMLDivElement;
@@ -28,13 +32,11 @@ export default class Shell extends React.PureComponent<Props> {
     this.term = new Terminal();
     this.term.open(this.node);
 
-    this.term.setOption('theme', {
-      background: '#1C2022',
-    });
+    this.term.setOption('theme', getTerminalTheme(this.props.theme));
     this.term.setOption('fontFamily', 'Source Code Pro');
     this.term.setOption('fontWeight', 'normal');
     this.term.setOption('fontWeightBold', 'bold');
-    this.term.setOption('lineHeight', 1.4);
+    this.term.setOption('lineHeight', 1.3);
     this.term.setOption('fontSize', 14);
 
     this.term.on('data', data => {
@@ -86,6 +88,10 @@ export default class Shell extends React.PureComponent<Props> {
 
     if (prevProps.hidden !== this.props.hidden && !this.props.hidden) {
       this.term.focus();
+    }
+
+    if (prevProps.theme !== this.props.theme) {
+      this.term.setOption('theme', getTerminalTheme(this.props.theme));
     }
   }
 
@@ -148,3 +154,5 @@ export default class Shell extends React.PureComponent<Props> {
     );
   }
 }
+
+export default withTheme(Shell);

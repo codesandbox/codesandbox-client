@@ -1,11 +1,14 @@
 // @flow
 import React from 'react';
 import { listen } from 'codesandbox-api';
+import { withTheme } from 'styled-components';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import getTemplate, { type Template } from 'common/templates';
 import uuid from 'uuid';
 import PlusIcon from 'react-icons/lib/md/add';
+
+import getTerminalTheme from './terminal-theme';
 
 import './styles.css';
 
@@ -27,6 +30,7 @@ type Props = {
   hidden: boolean,
   height: number,
   updateStatus?: (type: string, count?: number) => void,
+  theme: any,
 };
 
 // Incredibly hacky way of letting the StatusBar access the state of the component.
@@ -51,13 +55,11 @@ class TerminalComponent extends React.Component<Props, State> {
     this.term.open(this.node);
     this.term.fit();
 
-    this.term.setOption('theme', {
-      background: '#1C2022',
-    });
+    this.term.setOption('theme', getTerminalTheme(this.props.theme));
     this.term.setOption('fontFamily', 'Source Code Pro');
     this.term.setOption('fontWeight', 'normal');
     this.term.setOption('fontWeightBold', 'bold');
-    this.term.setOption('lineHeight', 1.4);
+    this.term.setOption('lineHeight', 1.3);
     this.term.setOption('fontSize', 14);
 
     this.listener = listen(this.handleMessage);
@@ -69,6 +71,10 @@ class TerminalComponent extends React.Component<Props, State> {
       this.timeout = setTimeout(() => {
         this.term.fit();
       }, 300);
+    }
+
+    if (nextProps.theme !== this.props.theme) {
+      this.term.setOption('theme', getTerminalTheme(this.props.theme));
     }
   }
 
@@ -196,7 +202,7 @@ class TerminalComponent extends React.Component<Props, State> {
 
 export default {
   title: 'Terminal',
-  Content: TerminalComponent,
+  Content: withTheme(TerminalComponent),
   actions: (owner: boolean) =>
     [
       owner && {
