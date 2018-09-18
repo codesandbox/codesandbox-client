@@ -8,7 +8,7 @@ export default new Template(
   'Next.js',
   'https://nextjs.org/',
   'next',
-  decorateSelector(() => '#000000'),
+  decorateSelector(() => '#ffffff'),
   {
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
