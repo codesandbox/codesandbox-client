@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
 import { Terminal } from 'xterm';
@@ -8,17 +9,18 @@ type Props = {
   id: string,
   // command: ?string,
   closeShell: () => void,
-};
-
-type State = {
-  closed: boolean,
+  endShell: () => void,
+  ended: boolean,
+  hidden: boolean,
+  height: number,
+  updateStatus?: (type: string, count?: number) => void,
 };
 
 Terminal.applyAddon(fit);
-export default class Shell extends React.Component<Props, State> {
-  state = {
-    closed: false,
-  };
+export default class Shell extends React.PureComponent<Props> {
+  listener: Function;
+  term: Terminal;
+  node: ?HTMLDivElement;
 
   componentDidMount() {
     // TODO: deduplicate all this by making this a general API that can be used
@@ -36,7 +38,7 @@ export default class Shell extends React.Component<Props, State> {
     this.term.setOption('fontSize', 14);
 
     this.term.on('data', data => {
-      if (!this.state.closed) {
+      if (!this.props.ended) {
         dispatch({
           type: 'socket:message',
           channel: 'shell:in',
@@ -67,7 +69,7 @@ export default class Shell extends React.Component<Props, State> {
     this.term.focus();
   }
 
-  sendResize = (cols, rows) => {
+  sendResize = (cols: number, rows: number) => {
     dispatch({
       type: 'socket:message',
       channel: 'shell:resize',
@@ -77,9 +79,13 @@ export default class Shell extends React.Component<Props, State> {
     });
   };
 
-  componentDidUpdate(nextProps: Props) {
-    if (nextProps.height !== this.props.height) {
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.height !== this.props.height) {
       this.term.fit();
+    }
+
+    if (prevProps.hidden !== this.props.hidden && !this.props.hidden) {
+      this.term.focus();
     }
   }
 
@@ -87,9 +93,9 @@ export default class Shell extends React.Component<Props, State> {
     this.term.fit();
   };
 
-  handleMessage = data => {
+  handleMessage = (data: any) => {
     if (data.id === this.props.id) {
-      if (data.type === 'shell:out' && !this.state.closed) {
+      if (data.type === 'shell:out' && !this.props.ended) {
         if (data.data === 'logout\r\n' || data.data === 'exit\r\n') {
           setTimeout(() => {
             this.props.closeShell();
@@ -101,7 +107,7 @@ export default class Shell extends React.Component<Props, State> {
           this.props.updateStatus('info');
         }
       } else if (data.type === 'shell:exit') {
-        this.setState({ closed: true });
+        this.props.endShell();
 
         this.term.write('\n\r[Session Closed]');
       }

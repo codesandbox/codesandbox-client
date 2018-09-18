@@ -15,6 +15,7 @@ import ShellTabs from './ShellTabs';
 export type ShellT = {
   id: string,
   command: string,
+  ended: boolean,
 };
 
 type State = {
@@ -33,7 +34,7 @@ type Props = {
 let createShell;
 
 Terminal.applyAddon(fit);
-class TerminalComponent extends React.PureComponent<Props, State> {
+class TerminalComponent extends React.Component<Props, State> {
   state = {
     shells: [],
     selectedShell: null,
@@ -82,7 +83,7 @@ class TerminalComponent extends React.PureComponent<Props, State> {
   };
 
   componentWillUnmount() {
-    createShell = null;
+    createShell = undefined;
     this.listener();
   }
 
@@ -90,6 +91,7 @@ class TerminalComponent extends React.PureComponent<Props, State> {
     const newShell = {
       id: uuid.v4(),
       command: '/bin/bash',
+      ended: false,
     };
 
     this.setState(s => ({
@@ -115,14 +117,29 @@ class TerminalComponent extends React.PureComponent<Props, State> {
   };
 
   closeShell = (shellId: string) => {
-    const selectedShell =
-      shellId === this.state.selectedShell
-        ? this.getShellIdLeftOfCurrentShell()
-        : this.state.selectedShell;
+    this.setState(s => {
+      const selectedShell =
+        shellId === s.selectedShell
+          ? this.getShellIdLeftOfCurrentShell()
+          : s.selectedShell;
 
+      return {
+        selectedShell,
+        shells: s.shells.filter(x => x.id !== shellId),
+      };
+    });
+  };
+
+  /**
+   * End the shell itself, this means that we won't close the shell tab
+   * but mark it as closed. This is done when the server kills the shell and
+   * we still want to show output.
+   */
+  endShell = (shellId: string) => {
     this.setState(s => ({
-      selectedShell,
-      shells: s.shells.filter(x => x.id !== shellId),
+      shells: s.shells.map(
+        shell => (shell.id === shellId ? { ...shell, ended: true } : shell)
+      ),
     }));
   };
 
@@ -137,6 +154,7 @@ class TerminalComponent extends React.PureComponent<Props, State> {
               selectedShell={this.state.selectedShell}
               shells={this.state.shells}
               selectShell={this.selectShell}
+              closeShell={this.closeShell}
             />
           )}
 
@@ -163,9 +181,11 @@ class TerminalComponent extends React.PureComponent<Props, State> {
             <Shell
               key={shell.id}
               id={shell.id}
+              ended={shell.ended}
               height={height}
               hidden={hidden || shell.id !== this.state.selectedShell}
               closeShell={() => this.closeShell(shell.id)}
+              endShell={() => this.endShell(shell.id)}
             />
           ))}
         </div>

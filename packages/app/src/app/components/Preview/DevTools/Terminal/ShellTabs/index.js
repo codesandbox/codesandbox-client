@@ -2,12 +2,13 @@
 import React from 'react';
 import type { ShellT } from '../';
 
-import { Container, Tab } from './elements';
+import { Container, Tab, CrossIcon } from './elements';
 
 type Props = {
   shells: Array<ShellT>,
   selectedShell: ?string,
   selectShell: (id: ?string) => void,
+  closeShell: (id: string) => void,
 };
 
 export default class ShellTabs extends React.PureComponent<Props> {
@@ -28,6 +29,15 @@ export default class ShellTabs extends React.PureComponent<Props> {
             onClick={() => this.props.selectShell(shell.id)}
           >
             {shell.command}
+            {shell.ended && ' (closed)'}
+
+            <CrossIcon
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.props.closeShell(shell.id);
+              }}
+            />
           </Tab>
         ))}
       </Container>
