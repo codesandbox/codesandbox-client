@@ -14,7 +14,7 @@ import getTemplate from 'common/templates';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import Navigator from './Navigator';
-import { Container, StyledFrame } from './elements';
+import { Container, StyledFrame, Loading } from './elements';
 import type { Settings } from '../CodeEditor/types';
 
 type Props = {
@@ -181,7 +181,10 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   componentWillUpdate(nextProps: Props, nextState: State) {
-    if (nextState.frameInitialized !== this.state.frameInitialized) {
+    if (
+      nextState.frameInitialized !== this.state.frameInitialized &&
+      nextState.frameInitialized
+    ) {
       this.handleRefresh();
     }
   }
@@ -243,6 +246,7 @@ class BasePreview extends React.Component<Props, State> {
         this.handleRefresh();
         this.setState({
           frameInitialized: true,
+          stopped: false,
         });
       });
 
@@ -568,7 +572,13 @@ class BasePreview extends React.Component<Props, State> {
       noPreview,
     } = this.props;
 
-    const { historyPosition, history, urlInAddressBar } = this.state;
+    const {
+      historyPosition,
+      history,
+      urlInAddressBar,
+      frameInitialized,
+      stopped,
+    } = this.state;
     const url =
       urlInAddressBar ||
       (this.serverPreview ? getSSEUrl(sandbox.id) : frameUrl(sandbox.id));
@@ -579,7 +589,13 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     return (
-      <Container style={{ flex: 1, display: hide ? 'none' : undefined }}>
+      <Container
+        style={{
+          position: 'relative',
+          flex: 1,
+          display: hide ? 'none' : undefined,
+        }}
+      >
         {showNavigation && (
           <Navigator
             url={decodeURIComponent(url)}
@@ -603,7 +619,7 @@ class BasePreview extends React.Component<Props, State> {
             owned={sandbox.owned}
           />
         )}
-
+        {stopped && <Loading>Restarting the sandbox...</Loading>}
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
           src={
