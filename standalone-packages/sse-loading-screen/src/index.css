@@ -18,7 +18,8 @@ body {
   -ms-flex-direction: column;
   flex-direction: column;
   margin: 0 auto;
-  width: 50%;
+  width: 100%;
+  max-width: 800px;
 }
 
 .title {
