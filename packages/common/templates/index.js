@@ -11,10 +11,12 @@ import cxjs from './cxjs';
 import dojo from './dojo';
 import gatsby from './gatsby';
 import nuxt from './nuxt';
+import next from './next';
 
 export {
   angular,
   gatsby,
+  next,
   nuxt,
   babel,
   vue,
@@ -38,7 +40,8 @@ export type Template =
   | 'cxjs'
   | '@dojo/cli-create-app'
   | 'gatsby'
-  | 'nuxt';
+  | 'nuxt'
+  | 'next';
 
 export default function getDefinition(theme: Template) {
   switch (theme) {
@@ -66,6 +69,8 @@ export default function getDefinition(theme: Template) {
       return gatsby;
     case nuxt.name:
       return nuxt;
+    case next.name:
+      return next;
     default:
       return react;
   }
