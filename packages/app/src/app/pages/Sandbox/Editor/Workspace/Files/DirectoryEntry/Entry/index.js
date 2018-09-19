@@ -185,16 +185,20 @@ class Entry extends React.PureComponent {
             {isNotSynced && !state && <NotSyncedIconWithMargin />}
             {state === '' && (
               <Right>
-                <EditIcons
-                  hovering={hovering}
-                  onCreateFile={onCreateModuleClick}
-                  onCreateDirectory={onCreateDirectoryClick}
-                  onUploadFile={onUploadFileClick}
-                  onDelete={deleteEntry && this.delete}
-                  onEdit={rename && this.rename}
-                  active={active}
-                  forceShow={window.__isTouch && type === 'directory-open'}
-                />
+                {isMainModule ? (
+                  <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
+                ) : (
+                  <EditIcons
+                    hovering={hovering}
+                    onCreateFile={onCreateModuleClick}
+                    onCreateDirectory={onCreateDirectoryClick}
+                    onUploadFile={onUploadFileClick}
+                    onDelete={deleteEntry && this.delete}
+                    onEdit={rename && this.rename}
+                    active={active}
+                    forceShow={window.__isTouch && type === 'directory-open'}
+                  />
+                )}
               </Right>
             )}
           </EntryContainer>
