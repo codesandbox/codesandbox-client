@@ -40,6 +40,7 @@ type Props = {
   noPreview: boolean,
   alignDirection?: 'right' | 'bottom',
   delay?: number,
+  setServerStatus?: (status: string) => void,
 };
 
 type State = {
@@ -210,7 +211,17 @@ class BasePreview extends React.Component<Props, State> {
       });
       this.$socket = socket;
 
+      socket.on('disconnect', () => {
+        if (this.props.setServerStatus) {
+          this.props.setServerStatus('disconnected');
+        }
+      });
+
       socket.on('connect', async () => {
+        if (this.props.setServerStatus) {
+          this.props.setServerStatus('connected');
+        }
+
         const { id } = this.props.sandbox;
         const token = await retrieveSSEToken();
 

@@ -27,6 +27,7 @@ import { isPatron, isLoggedIn, hasLogIn } from './getters';
 import patron from './modules/patron';
 import editor from './modules/editor';
 import profile from './modules/profile';
+import server from './modules/server';
 import deployment from './modules/deployment';
 import git from './modules/git';
 import preferences from './modules/preferences';
@@ -111,6 +112,7 @@ export default Module({
     files,
     live,
     userNotifications,
+    server,
   },
   providers: {
     api: ApiProvider,

@@ -300,7 +300,7 @@ class Preview extends React.Component<Props, State> {
                   hide={hide}
                   noPreview={completelyHidden}
                   onOpenNewWindow={() =>
-                    this.props.signals.preferences.viewModeChanged({
+                    signals.preferences.viewModeChanged({
                       showEditor: true,
                       showPreview: false,
                     })
@@ -312,6 +312,9 @@ class Preview extends React.Component<Props, State> {
                   isResizing={store.editor.isResizing}
                   alignRight={alignRight}
                   alignBottom={alignBottom}
+                  setServerStatus={(status: string) => {
+                    signals.server.statusChanged({ status });
+                  }}
                 />
               ) : (
                 <RunOnClick
