@@ -48,7 +48,7 @@ type State = {
   historyPosition: number,
   urlInAddressBar: string,
   url: ?string,
-  stopped: boolean,
+  overlayMessage: ?string,
 };
 
 const getSSEUrl = (id?: string) =>
@@ -157,7 +157,7 @@ class BasePreview extends React.Component<Props, State> {
         ? getSSEUrl(props.sandbox.id)
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
-      stopped: false,
+      overlayMessage: null,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -246,14 +246,22 @@ class BasePreview extends React.Component<Props, State> {
         this.handleRefresh();
         this.setState({
           frameInitialized: true,
-          stopped: false,
+          overlayMessage: null,
+        });
+      });
+
+      socket.on('sandbox:hibernate', () => {
+        this.setState({
+          frameInitialized: false,
+          overlayMessage:
+            'The sandbox is hibernating, refresh to start the sandbox',
         });
       });
 
       socket.on('sandbox:stop', () => {
         this.setState({
           frameInitialized: false,
-          stopped: true,
+          overlayMessage: 'Restarting the sandbox...',
         });
       });
 
@@ -572,7 +580,12 @@ class BasePreview extends React.Component<Props, State> {
       noPreview,
     } = this.props;
 
-    const { historyPosition, history, urlInAddressBar, stopped } = this.state;
+    const {
+      historyPosition,
+      history,
+      urlInAddressBar,
+      overlayMessage,
+    } = this.state;
     const url =
       urlInAddressBar ||
       (this.serverPreview ? getSSEUrl(sandbox.id) : frameUrl(sandbox.id));
@@ -613,7 +626,7 @@ class BasePreview extends React.Component<Props, State> {
             owned={sandbox.owned}
           />
         )}
-        {stopped && <Loading>Restarting the sandbox...</Loading>}
+        {overlayMessage && <Loading>{overlayMessage}</Loading>}
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
           src={
