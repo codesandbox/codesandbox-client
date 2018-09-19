@@ -46,8 +46,6 @@ async function start() {
   });
 
   socket.on('connect', () => {
-    console.log('socket connected, id:', socket.id);
-
     socket.emit('sandbox', { id: sandbox });
     socket.emit('sandbox:start');
   });
@@ -62,7 +60,6 @@ async function start() {
   });
 
   socket.on('sandbox:start', () => {
-    console.log('sandbox started');
     window.location.replace(`https://${sandbox}.${domain}/`);
   });
 
