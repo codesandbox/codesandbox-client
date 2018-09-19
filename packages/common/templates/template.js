@@ -14,6 +14,7 @@ type Options = {
   showCube?: boolean,
   isServer?: boolean,
   main?: boolean,
+  mainFile?: string,
 };
 
 const defaultConfigurations = {
@@ -39,6 +40,7 @@ export default class Template {
   externalResourcesEnabled: boolean;
   showCube: boolean;
   isServer: boolean;
+  mainFile: ?string;
 
   constructor(
     name: string,
@@ -68,6 +70,8 @@ export default class Template {
         ? options.externalResourcesEnabled
         : true;
 
+    this.mainFile = options.mainFile;
+
     this.showCube = options.showCube != null ? options.showCube : true;
   }
 
@@ -82,6 +86,7 @@ export default class Template {
         absolute(configurationFiles.package.parsed.main),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
+      this.mainFile,
     ].filter(x => x);
   }
 

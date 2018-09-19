@@ -14,5 +14,6 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
+    mainFile: '/pages/index.js',
   }
 );
