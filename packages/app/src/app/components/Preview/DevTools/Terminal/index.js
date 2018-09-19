@@ -17,7 +17,8 @@ import ShellTabs from './ShellTabs';
 
 export type ShellT = {
   id: string,
-  command: string,
+  title: string,
+  script: ?string,
   ended: boolean,
 };
 
@@ -85,6 +86,8 @@ class TerminalComponent extends React.Component<Props, State> {
       if (this.props.updateStatus) {
         this.props.updateStatus('info');
       }
+    } else if (data.type === 'codesandbox:create-shell') {
+      this.createShell(data.script);
     }
   };
 
@@ -93,10 +96,11 @@ class TerminalComponent extends React.Component<Props, State> {
     this.listener();
   }
 
-  createShell = () => {
+  createShell = (script?: string) => {
     const newShell = {
       id: uuid.v4(),
-      command: '/bin/bash',
+      title: script ? `yarn ${script}` : '/bin/bash',
+      script,
       ended: false,
     };
 
@@ -187,6 +191,7 @@ class TerminalComponent extends React.Component<Props, State> {
             <Shell
               key={shell.id}
               id={shell.id}
+              script={shell.script}
               ended={shell.ended}
               height={height}
               hidden={hidden || shell.id !== this.state.selectedShell}

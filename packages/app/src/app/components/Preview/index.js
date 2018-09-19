@@ -241,6 +241,15 @@ class BasePreview extends React.Component<Props, State> {
         });
       });
 
+      socket.on('shell:exit', ({ id, code, signal }) => {
+        dispatch({
+          type: 'shell:exit',
+          code,
+          signal,
+          id,
+        });
+      });
+
       socket.on('sandbox:start', () => {
         const { id } = this.props.sandbox;
 
@@ -265,6 +274,8 @@ class BasePreview extends React.Component<Props, State> {
           overlayMessage:
             'The sandbox is hibernating, refresh to start the sandbox',
         });
+
+        this.$socket.close();
       });
 
       socket.on('sandbox:stop', () => {
@@ -571,12 +582,6 @@ class BasePreview extends React.Component<Props, State> {
     }
   };
 
-  restartServer = () => {
-    if (this.$socket) {
-      this.$socket.emit('sandbox:restart');
-    }
-  };
-
   render() {
     const {
       showNavigation,
@@ -631,7 +636,7 @@ class BasePreview extends React.Component<Props, State> {
             alignRight={this.props.alignRight}
             alignBottom={this.props.alignBottom}
             alignDirection={this.props.alignDirection}
-            restartServer={this.serverPreview && this.restartServer}
+            isServer={this.serverPreview}
             owned={sandbox.owned}
           />
         )}

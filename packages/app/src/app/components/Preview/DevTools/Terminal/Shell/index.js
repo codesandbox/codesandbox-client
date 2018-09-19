@@ -11,7 +11,7 @@ import getTerminalTheme from '../terminal-theme';
 type Props = {
   id: string,
   theme: any,
-  // command: ?string,
+  script: ?string,
   closeShell: () => void,
   endShell: () => void,
   ended: boolean,
@@ -64,6 +64,7 @@ class Shell extends React.PureComponent<Props> {
       id: this.props.id,
       cols: this.term.cols,
       rows: this.term.rows,
+      script: this.props.script,
     });
 
     window.addEventListener('resize', this.listenForResize);
@@ -115,7 +116,7 @@ class Shell extends React.PureComponent<Props> {
       } else if (data.type === 'shell:exit') {
         this.props.endShell();
 
-        this.term.write('\n\r[Session Closed]');
+        this.term.write(`\n\rSession finished with status code ${data.code}`);
       }
     }
   };

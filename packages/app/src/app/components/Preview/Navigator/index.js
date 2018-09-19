@@ -34,8 +34,8 @@ function Navigator({
   alignRight,
   alignBottom,
   alignDirection,
-  restartServer,
   owned,
+  isServer,
 }) {
   return (
     <Container className="flying-container-handler" style={{ cursor: 'move' }}>
@@ -89,28 +89,18 @@ function Navigator({
           </Tooltip>
         </Icon>
       )}
-      {restartServer
-        ? owned && (
-            <Icon
-              style={{ fontSize: 18, padding: 4, marginRight: 4 }}
-              onClick={restartServer}
+      {!zenMode &&
+        !isServer &&
+        toggleProjectView && (
+          <SwitchContainer>
+            <Tooltip
+              title={isProjectView ? 'Project View' : 'Current Module View'}
+              position="left"
             >
-              <Tooltip title="Restart Server">
-                <PowerIcon />
-              </Tooltip>
-            </Icon>
-          )
-        : !zenMode &&
-          toggleProjectView && (
-            <SwitchContainer>
-              <Tooltip
-                title={isProjectView ? 'Project View' : 'Current Module View'}
-                position="left"
-              >
-                <Switch right={isProjectView} onClick={toggleProjectView} />
-              </Tooltip>
-            </SwitchContainer>
-          )}
+              <Switch right={isProjectView} onClick={toggleProjectView} />
+            </Tooltip>
+          </SwitchContainer>
+        )}
     </Container>
   );
 }

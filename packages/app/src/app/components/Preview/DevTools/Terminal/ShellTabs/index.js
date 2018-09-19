@@ -28,7 +28,7 @@ export default class ShellTabs extends React.PureComponent<Props> {
             key={shell.id}
             onClick={() => this.props.selectShell(shell.id)}
           >
-            {shell.command}
+            {shell.title}
             {shell.ended && ' (closed)'}
 
             <CrossIcon
