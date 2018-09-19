@@ -4,11 +4,18 @@ import * as fit from 'xterm/lib/addons/fit/fit';
 import * as WebfontLoader from 'xterm-webfont';
 import 'xterm/dist/xterm.css';
 
-const domain = 'sse.codesandbox.stream';
+const rootDomain = 'codesandbox.stream';
+const domain = `sse.${rootDomain}`;
 const { host } = window.location;
 const sandbox = host !== 'localhost' ? host.split('.')[0] : 'gatsby';
 let loading = 0;
 let loadingTimer;
+
+fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/version`).then(res => {
+  if (res.status === 404) {
+    window.location.replace(`https://notfound.sse.${domain}/`);
+  }
+});
 
 function showLoading(term) {
   term.write(
