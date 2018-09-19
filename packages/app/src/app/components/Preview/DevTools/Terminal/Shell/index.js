@@ -103,20 +103,21 @@ class Shell extends React.PureComponent<Props> {
   handleMessage = (data: any) => {
     if (data.id === this.props.id) {
       if (data.type === 'shell:out' && !this.props.ended) {
-        if (data.data === 'logout\r\n' || data.data === 'exit\r\n') {
-          setTimeout(() => {
-            this.props.closeShell();
-          }, 300);
-        }
         this.term.write(data.data);
 
         if (this.props.updateStatus) {
           this.props.updateStatus('info');
         }
       } else if (data.type === 'shell:exit') {
-        this.props.endShell();
+        if (!this.props.script) {
+          setTimeout(() => {
+            this.props.closeShell();
+          }, 300);
+        } else {
+          this.props.endShell();
 
-        this.term.write(`\n\rSession finished with status code ${data.code}`);
+          this.term.write(`\n\rSession finished with status code ${data.code}`);
+        }
       }
     }
   };

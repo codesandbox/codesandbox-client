@@ -3,7 +3,6 @@ import React from 'react';
 import LeftIcon from 'react-icons/lib/fa/angle-left';
 import RightIcon from 'react-icons/lib/fa/angle-right';
 import RefreshIcon from 'react-icons/lib/md/refresh';
-import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
 import Switch from 'common/components/Switch';
 import Tooltip from 'common/components/Tooltip';
@@ -34,7 +33,6 @@ function Navigator({
   alignRight,
   alignBottom,
   alignDirection,
-  owned,
   isServer,
 }) {
   return (
