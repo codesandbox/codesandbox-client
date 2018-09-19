@@ -1,6 +1,4 @@
 // @flow
-// TODO REMOVE
-/* eslint-disable no-console, react/no-array-index-key */
 import * as React from 'react';
 import type { Sandbox, Module } from 'common/types';
 import { listen, dispatch, registerFrame } from 'codesandbox-api';
