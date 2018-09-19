@@ -4,7 +4,7 @@ import * as fit from 'xterm/lib/addons/fit/fit';
 import * as WebfontLoader from 'xterm-webfont';
 import 'xterm/dist/xterm.css';
 
-const rootDomain = 'codesandbox.stream';
+const rootDomain = document.location.host;
 const domain = `sse.${rootDomain}`;
 const { host } = window.location;
 const sandbox = host !== 'localhost' ? host.split('.')[0] : 'gatsby';
