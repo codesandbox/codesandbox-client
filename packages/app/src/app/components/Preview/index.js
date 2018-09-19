@@ -572,13 +572,7 @@ class BasePreview extends React.Component<Props, State> {
       noPreview,
     } = this.props;
 
-    const {
-      historyPosition,
-      history,
-      urlInAddressBar,
-      frameInitialized,
-      stopped,
-    } = this.state;
+    const { historyPosition, history, urlInAddressBar, stopped } = this.state;
     const url =
       urlInAddressBar ||
       (this.serverPreview ? getSSEUrl(sandbox.id) : frameUrl(sandbox.id));
