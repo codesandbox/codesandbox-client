@@ -398,6 +398,7 @@ class EditorPreview extends React.Component<Props, State> {
       <ThemeProvider
         theme={{
           templateColor: template.color,
+          templateBackgroundColor: template.backgroundColor,
         }}
       >
         <FullSize

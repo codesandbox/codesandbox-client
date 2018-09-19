@@ -14,6 +14,7 @@ type Options = {
   showCube?: boolean,
   isServer?: boolean,
   main?: boolean,
+  backgroundColor?: () => string,
   mainFile?: string,
 };
 
@@ -30,6 +31,7 @@ export default class Template {
   url: string;
   main: boolean;
   color: () => string;
+  backgroundColor: ?() => string;
 
   showOnHomePage: boolean;
   distDir: string;
@@ -71,6 +73,7 @@ export default class Template {
         : true;
 
     this.mainFile = options.mainFile;
+    this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;
   }
@@ -86,7 +89,7 @@ export default class Template {
         absolute(configurationFiles.package.parsed.main),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
-      this.mainFile,
+      this.mainFile || '',
     ].filter(x => x);
   }
 
