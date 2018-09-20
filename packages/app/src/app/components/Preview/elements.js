@@ -1,4 +1,9 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const fadeInAnimation = keyframes`
+  0%   { opacity: 0 }
+  100% { opacity: 1 }
+`;
 
 export const Container = styled.div`
   height: 100%;
@@ -18,6 +23,8 @@ export const StyledFrame = styled.iframe`
 `;
 
 export const Loading = styled.div`
+  animation: ${fadeInAnimation} 0.2s;
+  animation-fill-mode: forwards;
   position: absolute;
   top: 2.5rem;
   bottom: 0;
