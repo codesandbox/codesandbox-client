@@ -39,7 +39,7 @@ const Server = ({ store }) => {
       <Margin top={1}>
         <SubTitle>Status</SubTitle>
         <WorkspaceInputContainer>
-          <Status status={this.props.store.server.status} />
+          <Status status={store.server.status} />
         </WorkspaceInputContainer>
       </Margin>
 
