@@ -285,6 +285,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
   openDevTools = () => {
     this.setHidden(false);
     const heightObject = { height: this.state.height };
+    if (this.props.setDevToolsOpen) {
+      this.props.setDevToolsOpen(true);
+    }
     TweenMax.to(heightObject, 0.3, {
       height: store.get('devtools.height') || 300,
       onUpdate: () => {
@@ -297,6 +300,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
   hideDevTools = () => {
     this.setHidden(true);
     const heightObject = { height: this.state.height };
+    if (this.props.setDevToolsOpen) {
+      this.props.setDevToolsOpen(false);
+    }
     TweenMax.to(heightObject, 0.3, {
       height: 32,
       onUpdate: () => {
@@ -405,6 +411,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
               updateStatus={this.updateStatus(title)}
               sandboxId={sandboxId}
               height={this.state.height}
+              openDevTools={this.openDevTools}
+              hideDevTools={this.hideDevTools}
+              selectCurrentPane={() => {
+                this.setPane(title);
+              }}
             />
           );
         })}

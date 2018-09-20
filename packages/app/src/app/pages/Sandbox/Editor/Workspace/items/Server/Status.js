@@ -11,8 +11,8 @@ const StatusCircle = styled.div`
   background-color: ${props => props.color};
   width: 8px;
   height: 8px;
-  margin-left: 0.35rem; /* Very precise to keep aligned with script icons */
-  margin-right: 0.5rem;
+  margin-left: 0.75rem; /* Very precise to keep aligned with script icons */
+  margin-right: 0.75rem;
 `;
 
 const Container = styled.div`

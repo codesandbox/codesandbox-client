@@ -32,6 +32,9 @@ type Props = {
   height: number,
   updateStatus?: (type: string, count?: number) => void,
   theme: any,
+  openDevTools: () => void,
+  hideDevTools: () => void,
+  selectCurrentPane: () => void,
 };
 
 // Incredibly hacky way of letting the StatusBar access the state of the component.
@@ -87,6 +90,9 @@ class TerminalComponent extends React.Component<Props, State> {
         this.props.updateStatus('info');
       }
     } else if (data.type === 'codesandbox:create-shell') {
+      this.props.openDevTools();
+      this.props.selectCurrentPane();
+
       this.createShell(data.script);
     }
   };

@@ -20,7 +20,7 @@ export default class ShellTabs extends React.PureComponent<Props> {
           selected={selectedShell === null}
           onClick={() => this.props.selectShell(null)}
         >
-          npm start
+          yarn start
         </Tab>
         {shells.map(shell => (
           <Tab
