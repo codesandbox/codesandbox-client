@@ -54,7 +54,9 @@ class TerminalComponent extends React.Component<Props, State> {
   componentDidMount() {
     createShell = this.createShell;
 
-    this.term = new Terminal();
+    this.term = new Terminal({
+      rendererType: 'dom',
+    });
     this.term.open(this.node);
     this.term.fit();
 
@@ -99,6 +101,10 @@ class TerminalComponent extends React.Component<Props, State> {
   componentWillUnmount() {
     createShell = undefined;
     this.listener();
+
+    if (this.term) {
+      this.term.dispose();
+    }
   }
 
   createShell = (script?: string) => {

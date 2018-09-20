@@ -139,6 +139,10 @@ class Shell extends React.PureComponent<Props> {
 
     window.removeEventListener('resize', this.listenForResize);
 
+    if (this.term) {
+      this.term.dispose();
+    }
+
     dispatch({
       type: 'socket:message',
       channel: 'shell:close',

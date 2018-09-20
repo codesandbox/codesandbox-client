@@ -219,7 +219,7 @@
     "vue-hot-reload-api": "^2.2.4",
     "vue-template-compiler": "^2.5.2",
     "vue-template-es2015-compiler": "^1.6.0",
-    "xterm": "3.3.0"
+    "xterm": "3.7.0"
   },
   "jest": {
     "roots": [
