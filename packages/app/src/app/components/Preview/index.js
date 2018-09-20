@@ -212,6 +212,7 @@ class BasePreview extends React.Component<Props, State> {
       socket.on('disconnect', () => {
         if (this.props.setServerStatus) {
           this.props.setServerStatus('disconnected');
+          dispatch({ type: 'codesandbox:sse:disconnect' });
         }
       });
 
@@ -334,7 +335,9 @@ class BasePreview extends React.Component<Props, State> {
       ? getSSEUrl(newId)
       : frameUrl(newId, this.props.initialPath || '');
 
-    this.setupSSESockets();
+    if (this.serverPreview) {
+      this.setupSSESockets();
+    }
     this.setState(
       {
         history: [url],

@@ -25,6 +25,7 @@ class Shell extends React.PureComponent<Props> {
   listener: Function;
   term: Terminal;
   node: ?HTMLDivElement;
+  timeout: TimeoutID;
 
   componentDidMount() {
     // TODO: deduplicate all this by making this a general API that can be used
@@ -86,7 +87,10 @@ class Shell extends React.PureComponent<Props> {
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.height !== this.props.height) {
-      this.term.fit();
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        this.term.fit();
+      }, this.props.hidden ? 1500 : 300);
     }
 
     if (prevProps.hidden !== this.props.hidden && !this.props.hidden) {
@@ -118,8 +122,14 @@ class Shell extends React.PureComponent<Props> {
         } else {
           this.props.endShell();
 
-          this.term.write(`\n\rSession finished with status code ${data.code}`);
+          this.term.write(
+            `\n\rSession finished with status code ${data.code}\n\r`
+          );
         }
+      } else if (data.type === 'codesandbox:sse:disconnect') {
+        this.props.endShell();
+
+        this.term.write(`\n\rConnection with the server has been lost\n\r`);
       }
     }
   };

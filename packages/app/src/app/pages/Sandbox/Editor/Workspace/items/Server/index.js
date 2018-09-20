@@ -22,7 +22,7 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-class Server extends React.PureComponent {
+class Server extends React.Component {
   render() {
     const { parsed } = this.props.store.editor.parsedConfigurations.package;
 

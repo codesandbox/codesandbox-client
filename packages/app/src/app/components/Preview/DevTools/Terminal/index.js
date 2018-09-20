@@ -33,7 +33,6 @@ type Props = {
   updateStatus?: (type: string, count?: number) => void,
   theme: any,
   openDevTools: () => void,
-  hideDevTools: () => void,
   selectCurrentPane: () => void,
 };
 
