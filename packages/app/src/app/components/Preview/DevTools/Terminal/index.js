@@ -77,7 +77,7 @@ class TerminalComponent extends React.Component<Props, State> {
     }
 
     if (nextProps.theme !== this.props.theme) {
-      this.term.setOption('theme', getTerminalTheme(this.props.theme));
+      this.term.setOption('theme', getTerminalTheme(nextProps.theme));
     }
   }
 

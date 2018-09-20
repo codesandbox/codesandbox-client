@@ -22,60 +22,56 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-class Server extends React.Component {
-  render() {
-    const { parsed } = this.props.store.editor.parsedConfigurations.package;
+const Server = ({ store }) => {
+  const { parsed } = store.editor.parsedConfigurations.package;
 
-    return (
-      <div>
-        <Description>
-          This sandbox is executed on a server. You can control the server from
-          this panel.
-        </Description>
-        <Description>
-          This functionality is in <strong>beta</strong>. It can behave
-          differently than you expect, handle with care!
-        </Description>
+  return (
+    <div>
+      <Description>
+        This sandbox is executed on a server. You can control the server from
+        this panel.
+      </Description>
+      <Description>
+        This functionality is in <strong>beta</strong>. It can behave
+        differently than you expect, handle with care!
+      </Description>
 
-        <Margin top={1}>
-          <SubTitle>Status</SubTitle>
-          <WorkspaceInputContainer>
-            <Status status={this.props.store.server.status} />
+      <Margin top={1}>
+        <SubTitle>Status</SubTitle>
+        <WorkspaceInputContainer>
+          <Status status={this.props.store.server.status} />
+        </WorkspaceInputContainer>
+      </Margin>
+
+      <Margin top={1.5}>
+        <SubTitle>Run Scripts</SubTitle>
+        <Margin top={0.5}>
+          <WorkspaceInputContainer
+            style={{ display: 'flex', flexDirection: 'column' }}
+          >
+            <Tasks package={parsed} />
           </WorkspaceInputContainer>
         </Margin>
-
-        <Margin top={1.5}>
-          <SubTitle>Run Scripts</SubTitle>
-          <Margin top={0.5}>
-            <WorkspaceInputContainer
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <Tasks package={parsed} />
-            </WorkspaceInputContainer>
-          </Margin>
-        </Margin>
-        <WorkspaceInputContainer style={{ marginTop: '1rem' }}>
-          <Button
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            small
-            block
-            onClick={() =>
-              dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
-            }
-          >
-            <PowerIcon
-              style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
-            />{' '}
-            Restart Server
-          </Button>
-        </WorkspaceInputContainer>
-      </div>
-    );
-  }
-}
+      </Margin>
+      <WorkspaceInputContainer style={{ marginTop: '1rem' }}>
+        <Button
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          small
+          block
+          onClick={() =>
+            dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
+          }
+        >
+          <PowerIcon style={{ fontSize: '1.125em', marginRight: '.25rem ' }} />{' '}
+          Restart Server
+        </Button>
+      </WorkspaceInputContainer>
+    </div>
+  );
+};
 
 export default inject('store')(observer(Server));
