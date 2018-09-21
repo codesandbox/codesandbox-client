@@ -67,7 +67,7 @@ const Server = ({ store }) => {
           }
         >
           <PowerIcon style={{ fontSize: '1.125em', marginRight: '.25rem ' }} />{' '}
-          Restart Server
+          Restart Sandbox
         </Button>
       </WorkspaceInputContainer>
     </div>
