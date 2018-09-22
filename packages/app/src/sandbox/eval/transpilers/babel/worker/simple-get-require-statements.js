@@ -1,5 +1,5 @@
-const lineRegex = /require\(['|"|`]([^"|'|`]*)['|"|`]\)|require\((.*)\)/g;
-const partRegex = /require\(['|"|`]([^"|'|`]*)['|"|`]\)|require\((.*)\)/;
+const lineRegex = /require\s*\(['|"|`]([^"|'|`]*)['|"|`]\)|require\s*\((.*)\)/g;
+const partRegex = /require\s*\(['|"|`]([^"|'|`]*)['|"|`]\)|require\s*\((.*)\)/;
 
 /**
  * This is the regex version of getting all require statements, it makes the assumption
