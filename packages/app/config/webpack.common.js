@@ -55,6 +55,7 @@ module.exports = {
   entry: SANDBOX_ONLY
     ? {
         sandbox: [
+          '@babel/polyfill',
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
         ],
@@ -66,6 +67,7 @@ module.exports = {
           path.join(paths.appSrc, 'index.js'),
         ],
         sandbox: [
+          '@babel/polyfill',
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
         ],
