@@ -92,19 +92,21 @@ class Shell extends React.PureComponent<Props> {
   };
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.height !== this.props.height) {
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        this.term.fit();
-      }, this.props.hidden ? 1500 : 300);
-    }
+    if (this.term) {
+      if (prevProps.height !== this.props.height) {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.term.fit();
+        }, this.props.hidden ? 1500 : 300);
+      }
 
-    if (prevProps.hidden !== this.props.hidden && !this.props.hidden) {
-      this.term.focus();
-    }
+      if (prevProps.hidden !== this.props.hidden && !this.props.hidden) {
+        this.term.focus();
+      }
 
-    if (prevProps.theme !== this.props.theme) {
-      this.term.setOption('theme', getTerminalTheme(this.props.theme));
+      if (prevProps.theme !== this.props.theme) {
+        this.term.setOption('theme', getTerminalTheme(this.props.theme));
+      }
     }
   }
 

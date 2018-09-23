@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import BuildIcon from 'react-icons/lib/fa/wrench';
 import FlaskIcon from 'react-icons/lib/fa/flask';
+import NodeIcon from 'react-icons/lib/io/social-nodejs';
 
 const Task = styled.button`
   transition: 0.3s ease color;
@@ -50,6 +51,8 @@ const getIcon = (scriptName: string) => {
     case 'test':
     case 'lint':
       return <FlaskIcon />;
+    case 'node':
+      return <NodeIcon />;
     default: {
       return <BuildIcon />;
     }
@@ -85,6 +88,13 @@ export default class Tasks extends React.PureComponent<Props> {
             {getIcon(task)} yarn {task}
           </Task>
         ))}
+        <Task
+          onClick={() => {
+            this.runTask('node');
+          }}
+        >
+          {getIcon('node')} node
+        </Task>
       </div>
     );
   }
