@@ -32,12 +32,5 @@ module.exports = {
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     require.resolve('babel-plugin-styled-components'),
     require.resolve('babel-plugin-macros'),
-    [
-      require.resolve('react-loadable/babel'),
-      {
-        server: true,
-        webpack: true,
-      },
-    ],
   ],
 };

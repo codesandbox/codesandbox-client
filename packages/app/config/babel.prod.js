@@ -7,7 +7,7 @@ module.exports = {
     require.resolve('@babel/preset-flow'),
     // Latest stable ECMAScript features
     [
-      'env',
+      require.resolve('@babel/preset-env'),
       {
         targets: {
           ie: 11,
@@ -30,13 +30,6 @@ module.exports = {
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     require.resolve('babel-plugin-styled-components'),
     require.resolve('babel-plugin-macros'),
-    [
-      require.resolve('react-loadable/babel'),
-      {
-        server: true,
-        webpack: true,
-      },
-    ],
     // Optimization: hoist JSX that never changes out of render()
     // Disabled because of issues:
     // * https://github.com/facebookincubator/create-react-app/issues/525
