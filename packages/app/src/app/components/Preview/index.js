@@ -394,7 +394,7 @@ class BasePreview extends React.Component<Props, State> {
           }
           case 'socket:message': {
             if (this.$socket) {
-              const { channel, ...message } = data;
+              const { channel, type: _t, codesandbox: _c, ...message } = data;
               this.$socket.emit(channel, message);
             }
 
