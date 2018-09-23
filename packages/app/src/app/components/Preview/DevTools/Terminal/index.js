@@ -56,16 +56,15 @@ class TerminalComponent extends React.Component<Props, State> {
 
     this.term = new Terminal({
       rendererType: 'dom',
+      theme: getTerminalTheme(this.props.theme),
+      fontFamily: 'Source Code Pro',
+      fontWeight: 'normal',
+      fontWeightBold: 'bold',
+      lineHeight: 1.3,
+      fontSize: 14,
     });
     this.term.open(this.node);
     this.term.fit();
-
-    this.term.setOption('theme', getTerminalTheme(this.props.theme));
-    this.term.setOption('fontFamily', 'Source Code Pro');
-    this.term.setOption('fontWeight', 'normal');
-    this.term.setOption('fontWeightBold', 'bold');
-    this.term.setOption('lineHeight', 1.3);
-    this.term.setOption('fontSize', 14);
 
     this.listener = listen(this.handleMessage);
   }

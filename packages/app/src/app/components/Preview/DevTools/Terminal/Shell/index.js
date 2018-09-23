@@ -27,18 +27,18 @@ class Shell extends React.PureComponent<Props> {
   node: ?HTMLDivElement;
   timeout: TimeoutID;
 
-  componentDidMount() {
+  startTerminal = () => {
     // TODO: deduplicate all this by making this a general API that can be used
     // to show the results of npm commands as well as the results of shell
-    this.term = new Terminal();
+    this.term = new Terminal({
+      theme: getTerminalTheme(this.props.theme),
+      fontFamily: 'Source Code Pro',
+      fontWeight: 'normal',
+      fontWeightBold: 'bold',
+      lineHeight: 1.3,
+      fontSize: 14,
+    });
     this.term.open(this.node);
-
-    this.term.setOption('theme', getTerminalTheme(this.props.theme));
-    this.term.setOption('fontFamily', 'Source Code Pro');
-    this.term.setOption('fontWeight', 'normal');
-    this.term.setOption('fontWeightBold', 'bold');
-    this.term.setOption('lineHeight', 1.3);
-    this.term.setOption('fontSize', 14);
 
     this.term.on('data', data => {
       if (!this.props.ended) {
@@ -52,13 +52,13 @@ class Shell extends React.PureComponent<Props> {
     });
 
     this.listener = listen(this.handleMessage);
-
     this.sendResize = debounce(this.sendResize, 100);
 
     this.term.on('resize', ({ cols, rows }) => {
       this.sendResize(cols, rows);
     });
     this.term.fit();
+
     dispatch({
       type: 'socket:message',
       channel: 'shell:start',
@@ -71,6 +71,12 @@ class Shell extends React.PureComponent<Props> {
     window.addEventListener('resize', this.listenForResize);
 
     this.term.focus();
+  };
+
+  componentDidMount() {
+    // Do this in a timeout so we can spawn the new tab, the perceived speed will
+    // be faster because of this.
+    setTimeout(this.startTerminal, 100);
   }
 
   sendResize = (cols: number, rows: number) => {
