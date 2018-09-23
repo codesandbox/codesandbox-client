@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import BuildIcon from 'react-icons/lib/fa/wrench';
 import FlaskIcon from 'react-icons/lib/fa/flask';
+import DownloadIcon from 'react-icons/lib/fa/download';
 import NodeIcon from 'react-icons/lib/io/social-nodejs';
 
 const Task = styled.button`
@@ -53,6 +54,8 @@ const getIcon = (scriptName: string) => {
       return <FlaskIcon />;
     case 'node':
       return <NodeIcon />;
+    case 'install':
+      return <DownloadIcon />;
     default: {
       return <BuildIcon />;
     }
@@ -88,6 +91,13 @@ export default class Tasks extends React.PureComponent<Props> {
             {getIcon(task)} yarn {task}
           </Task>
         ))}
+        <Task
+          onClick={() => {
+            this.runTask('install');
+          }}
+        >
+          {getIcon('install')} yarn install
+        </Task>
         <Task
           onClick={() => {
             this.runTask('node');
