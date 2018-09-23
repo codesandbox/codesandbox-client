@@ -6,31 +6,32 @@ module.exports = {
   cacheDirectory: true,
   presets: [
     // Latest stable ECMAScript features
+    require.resolve('@babel/preset-flow'),
     [
-      'env',
+      require.resolve('@babel/preset-env'),
       {
         targets: {
           chrome: 67,
           // We currently minify with uglify
           // Remove after https://github.com/mishoo/UglifyJS2/issues/448
-          uglify: true,
         },
         // Disable polyfill transforms
         useBuiltIns: false,
         modules: false,
+        forceAllTransforms: true,
       },
     ],
     // JSX, Flow
-    'react',
+    require.resolve('@babel/preset-react'),
   ],
   plugins: [
-    require.resolve('babel-plugin-transform-object-rest-spread'),
-    require.resolve('babel-plugin-transform-class-properties'),
-    require.resolve('babel-plugin-transform-runtime'),
+    require.resolve('@babel/plugin-proposal-object-rest-spread'),
+    require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('@babel/plugin-transform-runtime'),
     require.resolve('babel-plugin-lodash'),
-    require.resolve('babel-plugin-syntax-dynamic-import'),
+    require.resolve('@babel/plugin-syntax-dynamic-import'),
     require.resolve('babel-plugin-styled-components'),
-    require.resolve('babel-macros'),
+    require.resolve('babel-plugin-macros'),
     [
       require.resolve('react-loadable/babel'),
       {

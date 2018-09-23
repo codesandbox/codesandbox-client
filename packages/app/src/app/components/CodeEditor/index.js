@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import Loadable from 'react-loadable';
+import Loadable from 'app/utils/Loadable';
 import Loading from 'app/components/Loading';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
@@ -23,11 +23,9 @@ import Configuration from './Configuration';
 import MonacoDiff from './MonacoDiff';
 import { Icons, Icon } from './elements';
 
-const CodeMirror = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror'),
-  LoadingComponent: Loading,
-});
+const CodeMirror = Loadable(() =>
+  import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
+);
 
 const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
   const packageJSON = sandbox.modules.find(

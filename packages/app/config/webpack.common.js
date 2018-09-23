@@ -114,9 +114,9 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*ansi-styles`),
           new RegExp(`${sepRe}node_modules${sepRe}.*chalk`),
           new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
-          new RegExp(`sandbox-hooks`),
           new RegExp(`${sepRe}node_modules${sepRe}.*monaco-textmate`),
           new RegExp(`${sepRe}node_modules${sepRe}.*onigasm`),
+          new RegExp(`sandbox-hooks`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),
@@ -128,21 +128,22 @@ module.exports = {
         query: {
           presets: [
             [
-              'env',
+              '@babel/preset-env',
               {
                 targets: {
-                  ie: 11,
+                  ie: '11',
                   esmodules: true,
                 },
+                modules: 'umd',
               },
             ],
-            'react',
+            '@babel/preset-react',
           ],
           plugins: [
-            'transform-async-to-generator',
-            'transform-object-rest-spread',
-            'transform-class-properties',
-            'transform-runtime',
+            '@babel/plugin-transform-async-to-generator',
+            '@babel/plugin-proposal-object-rest-spread',
+            '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-transform-runtime',
           ],
         },
       },

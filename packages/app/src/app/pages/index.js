@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import Loadable from 'react-loadable';
+import Loadable from 'app/utils/Loadable';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import _debug from 'app/utils/debug';
@@ -21,53 +21,37 @@ import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignIn = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'page-sign-in' */ './common/SignIn'),
-  LoadingComponent: Loading,
-});
-const Live = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-sign-in' */ './Live'),
-  LoadingComponent: Loading,
-});
-const ZeitSignIn = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-zeit' */ './common/ZeitAuth'),
-  LoadingComponent: Loading,
-});
-const NotFound = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'page-not-found' */ './common/NotFound'),
-  LoadingComponent: Loading,
-});
-const Profile = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-profile' */ './Profile'),
-  LoadingComponent: Loading,
-});
-const Search = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-search' */ './Search'),
-  LoadingComponent: Loading,
-});
-const CLI = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-cli' */ './CLI'),
-  LoadingComponent: Loading,
-});
-const GitHub = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-github' */ './GitHub'),
-  LoadingComponent: Loading,
-});
-const CliInstructions = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'),
-  LoadingComponent: Loading,
-});
-const Patron = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-patron' */ './Patron'),
-  LoadingComponent: Loading,
-});
-const Terms = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-terms' */ './Terms'),
-  LoadingComponent: Loading,
-});
+const SignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './common/SignIn')
+);
+const Live = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './Live')
+);
+const ZeitSignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-zeit' */ './common/ZeitAuth')
+);
+const NotFound = Loadable(() =>
+  import(/* webpackChunkName: 'page-not-found' */ './common/NotFound')
+);
+const Profile = Loadable(() =>
+  import(/* webpackChunkName: 'page-profile' */ './Profile')
+);
+const Search = Loadable(() =>
+  import(/* webpackChunkName: 'page-search' */ './Search')
+);
+const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+const GitHub = Loadable(() =>
+  import(/* webpackChunkName: 'page-github' */ './GitHub')
+);
+const CliInstructions = Loadable(() =>
+  import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions')
+);
+const Patron = Loadable(() =>
+  import(/* webpackChunkName: 'page-patron' */ './Patron')
+);
+const Terms = Loadable(() =>
+  import(/* webpackChunkName: 'page-terms' */ './Terms')
+);
 
 type Props = {
   signals: any,
