@@ -208,6 +208,9 @@ class BasePreview extends React.Component<Props, State> {
         autoConnect: false,
       });
       this.$socket = socket;
+      if (process.env.NODE_ENV === 'development') {
+        window.$socket = socket;
+      }
 
       socket.on('disconnect', () => {
         if (this.props.setServerStatus) {
