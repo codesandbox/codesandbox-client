@@ -106,7 +106,6 @@ const createMainCube = () => {
       '-=.1'
     );
 
-  console.log(cubeTl);
   //topfront 0 -16
   //topleft -52 -42
   //topright 53 -41
