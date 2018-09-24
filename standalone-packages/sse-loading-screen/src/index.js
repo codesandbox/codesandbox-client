@@ -184,7 +184,7 @@ async function start() {
   const maximizeTerminal = () => {
     const tl = new TimelineLite();
 
-    tl.to('#cube', 0.5, { height: 0, opacity: 0 })
+    tl.to('#cubescaler', 0.5, { height: 0, opacity: 0 })
       .to('#term', 0.8, { height: 500, background: '#0a0b0c' }, '-=.3')
       .to('#loading', 0.8, { maxWidth: 850 }, '-=.8')
       .call(() => {
@@ -193,6 +193,10 @@ async function start() {
   };
 
   socket.on('sandbox:status', data => {
+    if (!data.progress) {
+      return;
+    }
+
     const percentage = (data.progress.current / data.progress.total) * 100;
 
     const barTl = new TimelineLite();
