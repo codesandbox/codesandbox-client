@@ -120,8 +120,12 @@ const createMainCube = () => {
 
 setTimeout(createMainCube, 500);
 
-// const hostParts = window.location.hostname.split('.');
-const hostParts = ['gatsby', 'sse', 'codesandbox', 'stream']; // dev
+let hostParts;
+if (process.env.NODE_ENV === 'development') {
+  hostParts = ['gatsby', 'sse', 'codesandbox', 'stream']; // dev
+} else {
+  hostParts = window.location.hostname.split('.');
+}
 const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
 const domain = `sse.${rootDomain}`;
 const sandbox = hostParts[0];
