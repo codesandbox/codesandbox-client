@@ -135,6 +135,13 @@ const NICE_TITLES = {
   'starting-container': 'Initializing Sandbox Container',
   'installing-packages': 'Installing Packages',
   'starting-sandbox': 'Starting Sandbox',
+  started: 'Succesfully Initialized!',
+};
+
+const CRAWL_TIME = {
+  'starting-container': 13,
+  'installing-packages': 30,
+  'starting-sandbox': 20,
 };
 
 fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`).then(res => {
@@ -192,30 +199,39 @@ async function start() {
       });
   };
 
+  const updateStatus = (current, total, status) => {
+    const percentage = ((current - 1) / total) * 100;
+
+    const barTl = new TimelineLite();
+    barTl
+      .to('#loading-progress', 0.3, { width: percentage + '%' })
+      .to('#loading-progress', CRAWL_TIME[status] || 30, {
+        width: percentage + 100 / total + '%',
+      });
+
+    document.getElementById('loading-text').textContent = NICE_TITLES[status];
+
+    if (current === total) {
+      maximizeTerminal();
+    }
+  };
+
   socket.on('sandbox:status', data => {
     if (!data.progress) {
       return;
     }
 
-    const percentage = (data.progress.current / data.progress.total) * 100;
-
-    const barTl = new TimelineLite();
-    barTl
-      .to('#loading-progress', 0.3, { width: percentage + '%' })
-      .to('#loading-progress', 20, { width: percentage + 10 + '%' });
-
-    document.getElementById('loading-text').textContent =
-      NICE_TITLES[data.status];
-
-    if (data.progress.current === data.progress.total) {
-      maximizeTerminal();
-    }
+    updateStatus(data.progress.current, data.progress.total, data.status);
   });
 
   socket.on('sandbox:start', () => {
-    if (process.env.NODE_ENV === 'production') {
+    updateStatus(4, 3, 'started');
+
+    setTimeout(() => {
+      // if (process.env.NODE_ENV === 'production') {
       window.location.replace(`https://${sandbox}.${domain}/`);
-    }
+      // }
+    }, 100);
   });
 
   window.addEventListener('resize', () => term.fit());
