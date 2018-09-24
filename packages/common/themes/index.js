@@ -59,4 +59,10 @@ export default [
     url:
       'https://raw.githubusercontent.com/Microsoft/vscode/d2b6bbb46fbdf535e2c96b3e00ac56ac1d427a69/extensions/theme-solarized-light/themes/solarized-light-color-theme.json',
   },
+  {
+    name: 'Lucy',
+    id: 'lucy',
+    url:
+      'https://cdn.rawgit.com/juliettepretot/lucy-vscode/f27d8363/dist/color-theme.json',
+  },
 ];
