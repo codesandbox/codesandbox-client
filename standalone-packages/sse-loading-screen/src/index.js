@@ -27,6 +27,7 @@ function createCube(element, id, noAnimation = false, styles = {}) {
 
 const cubeEl = document.getElementById('cube');
 const createMainCube = () => {
+  TweenLite.set('#cubescaler', { scale: 0.75 });
   createCube(cubeEl, 'main', true);
   TweenLite.fromTo(cubeEl, 1, { opacity: 0 }, { opacity: 1 });
 
@@ -97,7 +98,7 @@ const createMainCube = () => {
       '-=.4'
     )
     .delay(0.5)
-    .to(cubeEl, 0.5, { scale: 0.5, y: -56 })
+    .to(cubeEl, 0.5, { scale: 0.5, y: -19 })
     .to('#main', 0.5, { scale: 2 }, '-=.5')
     .to(
       ['#a', '#b', '#c', '#d', '#e', '#f', '#g'],
@@ -149,7 +150,7 @@ async function start() {
   Terminal.applyAddon(WebfontLoader);
 
   const term = new Terminal({
-    fontFamily: 'Menlo',
+    fontFamily: 'Source Code Pro',
     rendererType: 'dom',
     allowTransparency: true,
     fontSize: 14,
@@ -208,14 +209,14 @@ async function start() {
   });
 
   socket.on('sandbox:start', () => {
-    window.location.replace(`https://${sandbox}.${domain}/`);
+    if (process.env.NODE_ENV === 'production') {
+      window.location.replace(`https://${sandbox}.${domain}/`);
+    }
   });
 
   window.addEventListener('resize', () => term.fit());
 
   socket.connect();
 }
-
-// start();
 
 start();
