@@ -90,7 +90,7 @@
     "smooshpack": "^0.0.35"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "^16.5.2"
   },
   "devDependencies": {
     "@storybook/addon-knobs": "^3.3.14",
@@ -119,8 +119,8 @@
     "npm-run-all": "^4.1.2",
     "prettier": "^1.4.4",
     "prompt": "^1.0.0",
-    "react": "^16.3.0",
-    "react-dom": "^16.3.0",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
     "replace-in-file": "^3.0.0-beta.2",
     "rimraf": "^2.6.1",
     "rollup": "^0.55.4",

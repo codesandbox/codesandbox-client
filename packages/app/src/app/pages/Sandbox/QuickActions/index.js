@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Downshift from 'downshift';
-import genie from 'geniejs/dist/geniejs.es';
+import genie from 'geniejs/dist/geniejs.esm';
 
 import Input from 'common/components/Input';
 import Keys from './Keys';
@@ -18,7 +18,7 @@ import {
 class QuickActions extends React.Component {
   // we'll just keep track of what the user changes the inputValue to be
   // so when the user makes a wish we can provide that info to genie
-  inputValue = ''
+  inputValue = '';
   updateGenie = () => {
     const keybindings = this.props.store.preferences.keybindings;
     const signals = this.props.signals;
@@ -74,18 +74,20 @@ class QuickActions extends React.Component {
 
   persistGenie() {
     const { enteredMagicWords } = genie.options();
-    window.localStorage.setItem('genie', JSON.stringify({ enteredMagicWords }))
+    window.localStorage.setItem('genie', JSON.stringify({ enteredMagicWords }));
   }
 
   loadGenie() {
-    try {    
-      const { enteredMagicWords } = JSON.parse(window.localStorage.getItem('genie'))
-      genie.options({ enteredMagicWords })
+    try {
+      const { enteredMagicWords } = JSON.parse(
+        window.localStorage.getItem('genie')
+      );
+      genie.options({ enteredMagicWords });
     } catch (error) {
       // it may not exist in localStorage yet, or the JSON was malformed somehow
       // so we'll persist it to update localStorage so it doesn't throw an error
       // next time the page is loaded.
-      this.persistGenie()
+      this.persistGenie();
     }
   }
 
@@ -115,7 +117,7 @@ class QuickActions extends React.Component {
           }) => {
             const inputProps = getInputProps({
               onChange: ev => {
-                this.inputValue = ev.target.value
+                this.inputValue = ev.target.value;
               },
               innerRef: el => el && el.focus(),
               onKeyUp: this.handleKeyUp,
