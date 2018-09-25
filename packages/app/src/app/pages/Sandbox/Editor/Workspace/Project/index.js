@@ -277,10 +277,7 @@ class Project extends React.Component {
             <PropertyValue>
               <FreezeConatainer>
                 <Switch
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                  }}
+                  small
                   right={sandbox.isFrozen}
                   onClick={this.updateFrozenState}
                 />
