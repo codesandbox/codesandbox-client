@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Loadable from 'app/utils/Loadable';
-import Loading from 'app/components/Loading';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
 import getUI from 'common/templates/configuration/ui';

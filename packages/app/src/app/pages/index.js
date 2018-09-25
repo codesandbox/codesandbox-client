@@ -6,7 +6,6 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 
 import _debug from 'app/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
-import Loading from 'app/components/Loading';
 import { DragDropContext } from 'react-dnd';
 
 import send, { DNT } from 'common/utils/analytics';
