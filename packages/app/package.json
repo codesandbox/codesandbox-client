@@ -38,7 +38,7 @@
     "@babel/preset-react": "^7.0.0",
     "autoprefixer": "8.5.0",
     "babel-core": "^6.26.0",
-    "babel-jest": "^21.2.0",
+    "babel-jest": "^23.6.0",
     "babel-loader": "8.0.2",
     "babel-macros": "^2.0.0",
     "babel-plugin-codegen": "^1.2.0",
@@ -119,6 +119,7 @@
     "apollo-link-context": "^1.0.8",
     "axios": "^0.16.2",
     "babel-code-frame": "^6.26.0",
+    "babel-core": "7.0.0-bridge.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
     "babel-plugin-detective": "^2.0.0",
     "babel-plugin-dynamic-import-node": "^1.0.2",
@@ -246,7 +247,7 @@
       "/create-zip\\/.*\\/files/"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(common|lodash-es|sandbox-hooks|react-icons))"
+      "node_modules/(?!(common|lodash-es|sandbox-hooks|react-icons)/.+\\.js$)"
     ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",
