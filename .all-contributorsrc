@@ -603,6 +603,16 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "SaraVieira",
+      "name": "Sara Vieira",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1051509?v=4",
+      "profile": "http://iamsaravieira.com",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "repoType": "github"
