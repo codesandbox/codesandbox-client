@@ -101,7 +101,7 @@
     "@types/node": "^9.4.6",
     "@types/react-broadcast": "^0.6.0",
     "awesome-typescript-loader": "^3.5.0",
-    "babel-core": "^6.26.0",
+    "babel-core": "7.0.0-bridge.0",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
     "coveralls": "^3.0.0",
