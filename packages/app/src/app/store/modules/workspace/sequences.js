@@ -18,7 +18,6 @@ export const changeSandboxPrivacy = [
     (template, privacy) => {
       const templateDefinition = getTemplate(template);
 
-      console.log(templateDefinition, privacy);
       return templateDefinition.isServer && privacy === 2;
     }
   ),
