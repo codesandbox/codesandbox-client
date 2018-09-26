@@ -8,7 +8,7 @@ import { mainModule, defaultOpenedModule } from './utils/main-module';
 export function getSandbox({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
-    .then(data => path.success({ sandbox: { ...data, template: 'reason' } }))
+    .then(data => path.success({ sandbox: data }))
     .catch(error => {
       if (error.response.status === 404) {
         return path.notFound();
@@ -84,7 +84,7 @@ export function setUrlOptions({ state, router, utils }) {
   if (options.highlightedLines)
     state.set('editor.highlightedLines', options.highlightedLines);
   if (options.editorSize)
-    state.set('preferences.settings.editorSize', options.editorSize);
+    state.set('editor.previewWindow.editorSize', options.editorSize);
   if (options.hideNavigation)
     state.set('preferences.hideNavigation', options.hideNavigation);
   if (options.isInProjectView)
