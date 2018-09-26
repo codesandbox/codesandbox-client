@@ -146,7 +146,7 @@ const CRAWL_TIME = {
 
 fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`).then(res => {
   if (res.status === 404) {
-    window.location.replace(`https://notfound.sse.${domain}/`);
+    window.location.replace(`https://${rootDomain}/s/sandbox`);
   }
 });
 

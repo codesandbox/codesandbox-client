@@ -4,13 +4,13 @@ import { decorateSelector } from '../theme';
 
 export default new Template(
   'node',
-  'Custom',
+  'Node',
   'https://codesandbox.io/docs/sse',
   'node',
-  decorateSelector(() => '#40A9F3'),
+  decorateSelector(() => '#66cc33'),
   {
     isServer: true,
-    main: true,
+    showOnHomePage: true,
     mainFile: ['/pages/index.vue', '/pages/index.js', '/src/pages/index.js'],
   }
 );

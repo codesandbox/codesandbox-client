@@ -14,9 +14,12 @@ import gatsby from './gatsby';
 import nuxt from './nuxt';
 import next from './next';
 import node from './node';
+import apollo from './apollo-server';
+import sapper from './sapper';
 
 export {
   angular,
+  apollo,
   gatsby,
   next,
   nuxt,
@@ -31,6 +34,7 @@ export {
   reason,
   svelte,
   vue,
+  sapper,
 };
 
 export type Template =
@@ -46,7 +50,9 @@ export type Template =
   | 'gatsby'
   | 'nuxt'
   | 'next'
-  | 'reason';
+  | 'reason'
+  | 'apollo'
+  | 'sapper';
 
 export default function getDefinition(theme: Template) {
   switch (theme) {
@@ -80,6 +86,10 @@ export default function getDefinition(theme: Template) {
       return reason;
     case node.name:
       return node;
+    case apollo.name:
+      return apollo;
+    case sapper.name:
+      return sapper;
     default:
       return react;
   }

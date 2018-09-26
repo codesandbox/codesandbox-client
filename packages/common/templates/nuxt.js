@@ -5,7 +5,7 @@ import configurations from './configuration';
 
 export default new Template(
   'nuxt',
-  'Nuxt',
+  'Nuxt.js',
   'https://nuxtjs.org/',
   'nuxt',
   decorateSelector(() => '#3B8070'),
@@ -14,7 +14,7 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
-    mainFile: '/pages/index.vue',
+    mainFile: ['/pages/index.vue'],
     showOnHomePage: true,
   }
 );

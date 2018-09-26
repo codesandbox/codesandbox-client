@@ -25,6 +25,7 @@ const usedTemplates = sortBy(
 
 const TEMPLATE_BASE_WIDTH = 150;
 const MAIN_TEMPLATE_BASE_WIDTH = 190;
+const SERVER_TEMPLATE_BASE_WIDTH = 280; // 150
 
 export default class Modal extends React.PureComponent {
   selectTemplate = template => {
@@ -44,10 +45,14 @@ export default class Modal extends React.PureComponent {
       paddedWidth / MAIN_TEMPLATE_BASE_WIDTH
     );
     const templatesPerRow = Math.max(1, paddedWidth / TEMPLATE_BASE_WIDTH);
+    const serverTemplatesPerRow = Math.max(
+      1,
+      paddedWidth / SERVER_TEMPLATE_BASE_WIDTH
+    );
 
     const mainRows = chunk(mainTemplates, mainTemplatesPerRow);
     const rows = chunk(otherTemplates, templatesPerRow);
-    const serverRows = chunk(serverTemplates, mainTemplatesPerRow);
+    const serverRows = chunk(serverTemplates, serverTemplatesPerRow);
 
     return (
       <Container
@@ -89,10 +94,10 @@ export default class Modal extends React.PureComponent {
           <Title>Server Templates</Title>
           {serverRows.map((ts, i) => (
             // eslint-disable-next-line
-            <Templates key={i}>
+            <Templates style={{ fontSize: '.9rem' }} key={i}>
               {ts.map(t => (
                 <Template
-                  width={Math.floor(paddedWidth / mainTemplatesPerRow - 16)}
+                  width={Math.floor(paddedWidth / serverTemplatesPerRow - 16)}
                   key={t.name}
                   template={t}
                   selectTemplate={this.selectTemplate}

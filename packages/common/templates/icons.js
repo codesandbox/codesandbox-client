@@ -12,6 +12,8 @@ import Reason from 'common/components/logos/Reason';
 import Gatsby from 'common/components/logos/Gatsby';
 import Next from 'common/components/logos/Next';
 import Nuxt from 'common/components/logos/Nuxt';
+import Node from 'common/components/logos/Node';
+import Apollo from 'common/components/logos/Apollo';
 
 import {
   react,
@@ -27,6 +29,8 @@ import {
   gatsby,
   next,
   nuxt,
+  node,
+  apollo,
 } from './';
 
 import type { Template } from './';
@@ -59,6 +63,10 @@ export default function getIcon(theme: Template) {
       return Next;
     case nuxt.name:
       return Nuxt;
+    case node.name:
+      return Node;
+    case apollo.name:
+      return Apollo;
     default:
       return React;
   }

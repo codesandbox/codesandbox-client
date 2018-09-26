@@ -14,7 +14,7 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
-    mainFile: '/pages/index.js',
+    mainFile: ['/pages/index.js'],
     backgroundColor: decorateSelector(() => '#000000'),
     showOnHomePage: true,
   }

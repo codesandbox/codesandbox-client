@@ -7,14 +7,14 @@ export default new Template(
   'gatsby',
   'Gatsby',
   'https://www.gatsbyjs.org/',
-  'gatsby',
+  'github/gatsbyjs/gatsby-starter-default',
   decorateSelector(() => '#9D7CBF'),
   {
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
-    mainFile: '/src/pages/index.js',
+    mainFile: ['/src/pages/index.js'],
     showOnHomePage: true,
   }
 );
