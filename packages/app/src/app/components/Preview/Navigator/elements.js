@@ -41,7 +41,7 @@ export const Icon = styled.button`
   ${props =>
     props.selected &&
     css`
-      color: ${props.theme.secondary()};
+      color: ${props.theme.templateColor || props.theme.secondary};
     `};
 `;
 

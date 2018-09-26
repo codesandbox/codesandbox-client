@@ -8,6 +8,10 @@ import Vue from 'common/components/logos/Vue';
 import Svelte from 'common/components/logos/Svelte';
 import Dojo from 'common/components/logos/Dojo';
 import CxJS from 'common/components/logos/CxJS';
+import Reason from 'common/components/logos/Reason';
+import Gatsby from 'common/components/logos/Gatsby';
+import Next from 'common/components/logos/Next';
+import Nuxt from 'common/components/logos/Nuxt';
 
 import {
   react,
@@ -19,20 +23,15 @@ import {
   parcel,
   dojo,
   cxjs,
+  reason,
+  gatsby,
+  next,
+  nuxt,
 } from './';
 
-export default function getIcon(
-  theme:
-    | 'create-react-app'
-    | 'vue-cli'
-    | 'preact-cli'
-    | 'svelte'
-    | 'create-react-app-typescript'
-    | 'angular-cli'
-    | 'parcel'
-    | 'dojo'
-    | 'cxjs'
-) {
+import type { Template } from './';
+
+export default function getIcon(theme: Template) {
   switch (theme) {
     case react.name:
       return React;
@@ -52,6 +51,14 @@ export default function getIcon(
       return Dojo;
     case cxjs.name:
       return CxJS;
+    case reason.name:
+      return Reason;
+    case gatsby.name:
+      return Gatsby;
+    case next.name:
+      return Next;
+    case nuxt.name:
+      return Nuxt;
     default:
       return React;
   }

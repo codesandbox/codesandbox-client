@@ -2,7 +2,17 @@ import React from 'react';
 import * as templates from 'common/templates';
 import { chunk, sortBy } from 'lodash-es';
 
-import { Container, InnerContainer, Templates, Title } from './elements';
+import GithubLogo from 'react-icons/lib/go/mark-github';
+import TerminalIcon from 'react-icons/lib/go/terminal';
+import UploadIcon from 'react-icons/lib/go/cloud-upload';
+
+import {
+  Container,
+  InnerContainer,
+  Templates,
+  Title,
+  ImportChoice,
+} from './elements';
 import Template from './Template';
 
 const usedTemplates = sortBy(
@@ -13,8 +23,8 @@ const usedTemplates = sortBy(
   'niceName'
 );
 
-const TEMPLATE_BASE_WIDTH = 215;
-const MAIN_TEMPLATE_BASE_WIDTH = 215;
+const TEMPLATE_BASE_WIDTH = 150;
+const MAIN_TEMPLATE_BASE_WIDTH = 190;
 
 export default class Modal extends React.PureComponent {
   selectTemplate = template => {
@@ -22,11 +32,12 @@ export default class Modal extends React.PureComponent {
   };
 
   render() {
-    const { width, forking, closing } = this.props;
+    const { width, forking = false, closing = false } = this.props;
 
     const paddedWidth = width;
-    const mainTemplates = usedTemplates.filter(t => t.main);
-    const otherTemplates = usedTemplates.filter(t => !t.main);
+    const mainTemplates = usedTemplates.filter(t => t.main && !t.isServer);
+    const otherTemplates = usedTemplates.filter(t => !t.main && !t.isServer);
+    const serverTemplates = usedTemplates.filter(t => t.isServer);
 
     const mainTemplatesPerRow = Math.max(
       1,
@@ -36,6 +47,7 @@ export default class Modal extends React.PureComponent {
 
     const mainRows = chunk(mainTemplates, mainTemplatesPerRow);
     const rows = chunk(otherTemplates, templatesPerRow);
+    const serverRows = chunk(serverTemplates, mainTemplatesPerRow);
 
     return (
       <Container
@@ -44,7 +56,7 @@ export default class Modal extends React.PureComponent {
         onMouseDown={e => e.preventDefault()}
       >
         <InnerContainer forking={forking} closing={closing}>
-          <Title>Choose your template</Title>
+          <Title>Client Templates</Title>
           {mainRows.map((ts, i) => (
             // eslint-disable-next-line
             <Templates key={i}>
@@ -61,9 +73,10 @@ export default class Modal extends React.PureComponent {
 
           {rows.map((ts, i) => (
             // eslint-disable-next-line
-            <Templates key={i}>
+            <Templates style={{ fontSize: '.8rem' }} key={i}>
               {ts.map(t => (
                 <Template
+                  small
                   width={Math.floor(paddedWidth / templatesPerRow - 16)}
                   key={t.name}
                   template={t}
@@ -72,6 +85,39 @@ export default class Modal extends React.PureComponent {
               ))}
             </Templates>
           ))}
+
+          <Title>Server Templates</Title>
+          {serverRows.map((ts, i) => (
+            // eslint-disable-next-line
+            <Templates key={i}>
+              {ts.map(t => (
+                <Template
+                  width={Math.floor(paddedWidth / mainTemplatesPerRow - 16)}
+                  key={t.name}
+                  template={t}
+                  selectTemplate={this.selectTemplate}
+                />
+              ))}
+            </Templates>
+          ))}
+
+          <Templates style={{ marginTop: '1.5rem' }}>
+            <ImportChoice
+              href="/docs/importing#import-from-github"
+              target="_blank"
+            >
+              <GithubLogo /> Import from GitHub
+            </ImportChoice>
+            <ImportChoice
+              href="/docs/importing#export-with-cli"
+              target="_blank"
+            >
+              <TerminalIcon /> Export with CLI
+            </ImportChoice>
+            <ImportChoice href="/docs/importing#define-api" target="_blank">
+              <UploadIcon /> Create with API
+            </ImportChoice>
+          </Templates>
         </InnerContainer>
       </Container>
     );

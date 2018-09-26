@@ -16,5 +16,6 @@ export default new Template(
     isServer: true,
     mainFile: '/pages/index.js',
     backgroundColor: decorateSelector(() => '#000000'),
+    showOnHomePage: true,
   }
 );

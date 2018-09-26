@@ -35,18 +35,19 @@ class CreateNewSandbox extends React.PureComponent {
   }
 
   createSandbox = template => {
-    if (!this.props.collectionId) {
-      history.push(sandboxUrl({ id: template.shortid }));
-      return;
-    }
-
     this.setState({ forking: true }, () => {
-      this.props.signals.dashboard.createSandboxClicked({
-        sandboxId: template.shortid,
-        body: {
-          collectionId: this.props.collectionId,
-        },
-      });
+      if (!this.props.collectionId) {
+        setTimeout(() => {
+          history.push(sandboxUrl({ id: template.shortid }));
+        }, 300);
+      } else {
+        this.props.signals.dashboard.createSandboxClicked({
+          sandboxId: template.shortid,
+          body: {
+            collectionId: this.props.collectionId,
+          },
+        });
+      }
     });
   };
 
@@ -146,7 +147,9 @@ class CreateNewSandbox extends React.PureComponent {
                     tabIndex="-1"
                     aria-modal="true"
                     aria-labelledby="new-sandbox"
-                    forking={this.state.forking}
+                    forking={
+                      this.state.forking ? this.state.forking : undefined
+                    }
                     style={
                       this.state.forking
                         ? {

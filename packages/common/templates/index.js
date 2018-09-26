@@ -13,12 +13,14 @@ import dojo from './dojo';
 import gatsby from './gatsby';
 import nuxt from './nuxt';
 import next from './next';
+import node from './node';
 
 export {
   angular,
   gatsby,
   next,
   nuxt,
+  node,
   babel,
   cxjs,
   dojo,
@@ -76,6 +78,8 @@ export default function getDefinition(theme: Template) {
       return next;
     case reason.name:
       return reason;
+    case node.name:
+      return node;
     default:
       return react;
   }

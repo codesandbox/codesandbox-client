@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Modal from 'app/components/Modal';
-import NewSandbox from 'app/components/NewSandbox';
 
+import NewSandbox from './NewSandbox';
 import PreferencesModal from './PreferencesModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import ShareModal from './ShareModal';
@@ -26,7 +26,7 @@ const modals = {
   },
   newSandbox: {
     Component: NewSandbox,
-    width: 900,
+    width: 925,
   },
   share: {
     Component: ShareModal,
