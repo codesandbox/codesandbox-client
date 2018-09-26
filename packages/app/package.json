@@ -10,7 +10,7 @@
     "start": "cross-env LOCAL_SERVER=1 node scripts/start.js",
     "start:sandbox": "cross-env SANDBOX_ONLY=true node scripts/start.js",
     "start:dev_api": "node scripts/start.js",
-    "start:test": "cross-env LOCAL_SERVER=1 NODE_ENV=test SANDBOX_ONLY=true node scripts/start.js",
+    "start:test": "cross-env LOCAL_SERVER=1 SANDBOX_ONLY=true node scripts/start.js",
     "build": "cross-env NODE_ENV=production node scripts/build.js",
     "build:sandbox": "cross-env NODE_ENV=production SANDBOX_ONLY=true node scripts/build.js",
     "build:clean": "rimraf www",
