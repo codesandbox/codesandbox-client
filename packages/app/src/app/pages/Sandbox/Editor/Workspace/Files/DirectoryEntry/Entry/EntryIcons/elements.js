@@ -7,6 +7,7 @@ import reactSvg from 'common/components/icons/react.svg';
 import folderSvg from 'common/components/icons/folder.svg';
 import folderOpenSvg from 'common/components/icons/folder-open.svg';
 import jsonSvg from 'common/components/icons/json.svg';
+import reasonSvg from 'common/components/icons/reason.svg';
 import yarnSvg from 'common/components/icons/yarn.svg';
 import markdownSvg from 'common/components/icons/markdown.svg';
 import faviconSvg from 'common/components/icons/favicon.svg';
@@ -41,6 +42,7 @@ const icons = {
   codesandbox: codesandboxSvg,
   babel: babelSvg,
   sass: sassSvg,
+  reason: reasonSvg,
 };
 
 function getIconSvg(type) {

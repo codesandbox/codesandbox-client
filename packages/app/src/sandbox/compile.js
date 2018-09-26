@@ -201,7 +201,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
     devDependencies = {},
   } = parsedPackage;
 
-  const returnedDependencies = { ...peerDependencies, ...d };
+  let returnedDependencies = { ...peerDependencies, ...d };
 
   const foundWhitelistedDevDependencies = [...WHITELISTED_DEV_DEPENDENCIES];
 
@@ -245,6 +245,13 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       ...preinstalledDependencies,
       ...BABEL_DEPENDENCIES,
     ];
+  }
+
+  if (templateDefinition.name === 'reason') {
+    returnedDependencies = {
+      ...returnedDependencies,
+      '@jaredly/bs-core': '3.0.0-alpha.2',
+    };
   }
 
   preinstalledDependencies.forEach(dep => {

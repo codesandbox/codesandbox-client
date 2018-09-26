@@ -46,7 +46,11 @@ class BabelTranspiler extends WorkerTranspiler {
       // dependencies from the file and return the same code. We get the dependencies
       // with a regex since commonjs modules just have `require` and regex is MUCH
       // faster than generating an AST from the code.
-      if (path.startsWith('/node_modules') && !isESModule(code)) {
+      if (
+        (loaderContext.options.simpleRequire ||
+          path.startsWith('/node_modules')) &&
+        !isESModule(code)
+      ) {
         regexGetRequireStatements(code).forEach(dependency => {
           if (dependency.isGlob) {
             loaderContext.addDependenciesInDirectory(dependency.path);
