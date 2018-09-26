@@ -3,6 +3,7 @@ import angular from './angular';
 import babel from './babel';
 import parcel from './parcel';
 import preact from './preact';
+import reason from './reason';
 import react from './react';
 import reactTs from './react-ts';
 import svelte from './svelte';
@@ -19,14 +20,15 @@ export {
   next,
   nuxt,
   babel,
-  vue,
+  cxjs,
+  dojo,
+  parcel,
+  preact,
   react,
   reactTs,
-  preact,
+  reason,
   svelte,
-  parcel,
-  dojo,
-  cxjs,
+  vue,
 };
 
 export type Template =
@@ -41,7 +43,8 @@ export type Template =
   | '@dojo/cli-create-app'
   | 'gatsby'
   | 'nuxt'
-  | 'next';
+  | 'next'
+  | 'reason';
 
 export default function getDefinition(theme: Template) {
   switch (theme) {
@@ -71,6 +74,8 @@ export default function getDefinition(theme: Template) {
       return nuxt;
     case next.name:
       return next;
+    case reason.name:
+      return reason;
     default:
       return react;
   }

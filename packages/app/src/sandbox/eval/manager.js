@@ -57,6 +57,8 @@ export type Manifest = {
   },
 };
 
+const relativeRegex = /^(\/|\.)/;
+
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
 // For these dependencies we don't want to follow along with the `browser` field
 const SKIPPED_BROWSER_FIELD_DEPENDENCIES = ['babel-core', '@babel/core'].reduce(
@@ -479,7 +481,7 @@ export default class Manager {
 
     let resolvedPath;
 
-    if (cachedPath) {
+    if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
       const presetAliasedPath = this.getPresetAliasedPath(path);
@@ -558,10 +560,10 @@ export default class Manager {
 
   downloadDependency(
     path: string,
-    currentPath: string,
+    currentTModule: TranspiledModule,
     ignoredExtensions: Array<string> = this.preset.ignoredExtensions
   ): Promise<TranspiledModule> {
-    return fetchModule(path, currentPath, this, ignoredExtensions).then(
+    return fetchModule(path, currentTModule, this, ignoredExtensions).then(
       module => this.getTranspiledModule(module)
     );
   }
@@ -788,7 +790,8 @@ export default class Manager {
         if (
           !this.manifest.contents[tModule.module.path] ||
           (tModule.module.path.endsWith('.js') &&
-            tModule.module.requires == null)
+            tModule.module.requires == null) ||
+          tModule.module.downloaded
         ) {
           // Only save modules that are not precomputed
           serializedTModules[tModule.getId()] = tModule.serialize();
