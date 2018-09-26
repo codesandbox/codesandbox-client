@@ -18,6 +18,7 @@ import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
 import ForkServerModal from './ForkServerModal';
+import PrivacyServerWarning from './PrivacyServerWarning';
 
 const modals = {
   preferences: {
@@ -83,6 +84,10 @@ const modals = {
   forkServerModal: {
     Component: ForkServerModal,
     width: 500,
+  },
+  privacyServerWarning: {
+    Component: PrivacyServerWarning,
+    width: 400,
   },
 };
 

@@ -78,18 +78,6 @@ export const changeCurrentTab = [set(state`editor.currentTabId`, props`tabId`)];
 
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
-export const updatePrivacy = [
-  actions.ensureValidPrivacy,
-  {
-    valid: [
-      set(state`editor.isUpdatingPrivacy`, true),
-      actions.updatePrivacy,
-      set(state`editor.isUpdatingPrivacy`, false),
-    ],
-    invalid: [],
-  },
-];
-
 export const toggleLikeSandbox = [
   when(state`editor.sandboxes.${props`id`}.userLiked`),
   {

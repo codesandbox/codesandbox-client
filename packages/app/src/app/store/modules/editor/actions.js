@@ -115,18 +115,6 @@ export function setCurrentModuleByTab({ state, props }) {
   }
 }
 
-export function updatePrivacy({ api, props, state }) {
-  const id = state.get('editor.currentId');
-
-  return api
-    .patch(`/sandboxes/${id}/privacy`, {
-      sandbox: {
-        privacy: props.privacy,
-      },
-    })
-    .then(() => undefined);
-}
-
 export function forceRender({ state }) {
   state.set('editor.forceRender', state.get('editor.forceRender') + 1);
 }
