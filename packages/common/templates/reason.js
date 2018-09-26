@@ -8,5 +8,5 @@ export default new Template(
   'https://reasonml.github.io/reason-react/en/',
   'reason',
   decorateSelector(() => '#CB5747'),
-  { showOnHomePage: true, main: false }
+  { showOnHomePage: true, main: false, mainFile: ['/src/Main.re'] }
 );
