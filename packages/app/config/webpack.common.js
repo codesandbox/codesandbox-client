@@ -127,6 +127,7 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: [
+            '@babel/preset-flow',
             [
               '@babel/preset-env',
               {
