@@ -138,9 +138,9 @@ workflows:
   build-and-test:
     jobs:
       - build-dependencies
-      # - test-integrations:
-      #     requires:
-      #       - build-dependencies
+      - test-integrations:
+          requires:
+            - build-dependencies
       - test-jest:
           requires:
             - build-dependencies
@@ -154,5 +154,5 @@ workflows:
           requires:
             - build-prod
             - lint
-            - test-integrations
+            # - test-integrations
             - test-jest
