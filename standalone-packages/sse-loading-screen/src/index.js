@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'production') {
   fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
     .then(res => {
       if (res.status === 404) {
-        // Do nothing
+        window.location.replace(`https://${rootDomain}/s/not-found`);
         return {};
       }
 
