@@ -3,6 +3,11 @@
 import { h, Component } from 'preact';
 import styled, { keyframes } from 'preact-emotion';
 
+const isSafari =
+  typeof navigator !== 'undefined' &&
+  /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const SHADOW_SIZE = isSafari ? 100 : 150;
+
 const getContainerAnimation = (offset: number) => {
   return keyframes`
   0% {
@@ -66,6 +71,7 @@ const Side = styled.div`
   transform-origin: 50% 50%;
   will-change: transform;
   transform: ${({ rotate }) => rotate} translateZ(${({ size }) => size / 2}px);
+  box-shadow: 0px 0px ${SHADOW_SIZE}px ${props => props.color};
 `;
 
 interface Props {
@@ -77,11 +83,6 @@ interface Props {
   offset: number;
   id: string;
 }
-
-const isSafari =
-  typeof navigator !== 'undefined' &&
-  /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const SHADOW_SIZE = isSafari ? 100 : 150;
 
 export default class Cube extends Component<Props> {
   // Set default properties
@@ -115,32 +116,38 @@ export default class Cube extends Component<Props> {
           size={width}
         >
           <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color}` }}
+            className="side"
+            color={color}
             rotate="rotateX(90deg)"
             size={width}
           />
           <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color}` }}
+            className="side"
+            color={color}
             rotate="rotateX(-90deg)"
             size={width}
           />
           <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color}` }}
+            className="side"
+            color={color}
             rotate="rotateY(0deg)"
             size={width}
           />
           <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color}` }}
+            className="side"
+            color={color}
             rotate="rotateY(-180deg)"
             size={width}
           />
           <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color}` }}
+            className="side"
+            color={color}
             rotate="rotateY(-90deg)"
             size={width}
           />
           <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color}` }}
+            className="side"
+            color={color}
             rotate="rotateY(90deg)"
             size={width}
           />

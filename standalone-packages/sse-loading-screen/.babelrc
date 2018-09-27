@@ -1,5 +1,5 @@
 {
-  "presets": ["env", "react"],
+  "presets": ["flow", "env", "react"],
   "plugins": [
     [
       "transform-runtime",
@@ -10,6 +10,7 @@
     ],
     "transform-object-rest-spread",
     "transform-class-properties",
-    "babel-plugin-emotion"
+    "babel-plugin-emotion",
+    "transform-flow-strip-types"
   ]
 }

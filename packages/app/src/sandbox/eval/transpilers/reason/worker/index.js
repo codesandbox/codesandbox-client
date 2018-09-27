@@ -1,7 +1,7 @@
 self.window = self;
 
 importScripts(
-  'https://cdn.rawgit.com/jaredly/docre/70303ec3/static/bs-3.0.0.js'
+  'https://cdn.rawgit.com/jaredly/reason-react/more-docs/docs/bucklescript.js'
 );
 importScripts('https://reason.surge.sh/bucklescript-deps.js');
 

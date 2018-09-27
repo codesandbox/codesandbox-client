@@ -12,11 +12,40 @@ import { Power3 } from 'gsap/EasePack';
 import TweenLite from 'gsap/TweenLite';
 import TimelineLite from 'gsap/TimelineLite';
 
+import getTemplate from '../../../packages/common/templates';
+
 import Cube from './Cube';
 
 // without this line, CSSPlugin and AttrPlugin may get dropped by your bundler...
 // eslint-disable-next-line
 const plugins = [CSSPlugin, AttrPlugin];
+
+let color;
+
+if (process.env.NODE_ENV === 'production') {
+  fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
+    .then(res => {
+      if (res.status === 404) {
+        // Do nothing
+        return {};
+      }
+
+      return res.json();
+    })
+    .then(json => {
+      if (json.data && json.data.template) {
+        const templateDef = getTemplate(json.data.template);
+
+        color = templateDef.color;
+      }
+    });
+} else {
+  setTimeout(() => {
+    const templateDef = getTemplate('gatsby');
+
+    color = templateDef.color;
+  }, 1200);
+}
 
 function createCube(element, id, noAnimation = false, styles = {}) {
   return render(
@@ -33,6 +62,26 @@ const createMainCube = () => {
 
   const cubeTl = new TimelineLite({
     onComplete() {
+      const clearerColor = color.clearer(0.4);
+      TweenLite.to(
+        '.side',
+        0.5,
+        color
+          ? {
+              boxShadow: `0 0 150px ${clearerColor()}`,
+              backgroundColor: clearerColor(),
+            }
+          : {}
+      );
+      TweenLite.to(
+        '#loading-progress',
+        0.5,
+        color
+          ? {
+              backgroundColor: color(),
+            }
+          : {}
+      );
       this.restart();
     },
   });
@@ -46,6 +95,7 @@ const createMainCube = () => {
   createCube(cubeEl, 'g', true, { opacity: 0 });
 
   const ease = Power3.easeInOut;
+
   cubeTl
     .delay(1.5)
     .fromTo(
@@ -143,12 +193,6 @@ const CRAWL_TIME = {
   'installing-packages': 30,
   'starting-sandbox': 20,
 };
-
-fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`).then(res => {
-  if (res.status === 404) {
-    // window.location.replace(`https://${rootDomain}/s/sandbox`);
-  }
-});
 
 async function start() {
   const el = document.getElementById('term');

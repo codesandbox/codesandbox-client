@@ -23,7 +23,7 @@ function addScript(src) {
   });
 }
 
-const IGNORED_DEPENDENCIES = [];
+const IGNORED_DEPENDENCIES = ['ReactDOMRe', 'ReasonReact'];
 
 function getModuleName(path: string) {
   const moduleParts = basename(path).split('.');
@@ -113,7 +113,6 @@ class ReasonTranspiler extends Transpiler {
     );
 
     const modulesToAdd: Set<ReasonModule> = new Set();
-
     getDependencyList(reasonModules, modulesToAdd, mainReasonModule);
 
     modulesToAdd.forEach(m => {
