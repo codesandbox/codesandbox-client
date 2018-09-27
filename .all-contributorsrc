@@ -603,6 +603,15 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "melanieseltzer",
+      "name": "Melanie Seltzer",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/17421347?v=4",
+      "profile": "https://www.melanieseltzer.io/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
