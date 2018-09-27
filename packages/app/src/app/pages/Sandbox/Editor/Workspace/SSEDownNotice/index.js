@@ -29,11 +29,12 @@ const ConnectionNotice = ({ store }) => {
       >
         Server Connection Trouble
       </p>
-      It seems like our Server Manager is experiencing some heavy load.
-      Reconnecting in a couple seconds...
+      It seems like our Server Manager is either updating or experiencing some
+      heavy load. Reconnecting in a couple seconds...
       <p style={{ marginBottom: 0 }}>
-        We{"'"}re working on fixing this as soon as possible. In the meantime it
-        would greatly help us if you could let us know on{' '}
+        We{"'"}re working on fixing this as soon as possible. If this isn{"'"}t
+        resolved with in a minute it would greatly help us if you could let us
+        know on{' '}
         <a
           style={{ color: 'white' }}
           href="https://discord.gg/FGeubVt"

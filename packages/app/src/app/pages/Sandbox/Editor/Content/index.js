@@ -388,7 +388,7 @@ class EditorPreview extends React.Component<Props, State> {
       }
 
       if (template.isServer) {
-        if (!store.isLoggedIn || store.server.status === 'disconnected') {
+        if (!store.isLoggedIn || store.server.status !== 'connected') {
           return true;
         }
       }

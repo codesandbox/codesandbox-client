@@ -24,9 +24,9 @@ const Container = styled.div`
 `;
 
 const STATUS_MESSAGES = {
-  disconnected: 'Disconnected from the server, reconnecting...',
-  connected: 'Connected to the server',
-  initializing: 'Initializing connection to the server',
+  disconnected: 'Reconnecting to the server...',
+  connected: 'Connected to the server!',
+  initializing: 'Initializing connection to the server...',
 };
 
 const STATUS_COLOR = {

@@ -25,6 +25,8 @@ const SubTitle = styled.div`
 const Server = ({ store }) => {
   const { parsed } = store.editor.parsedConfigurations.package;
 
+  const disconnected = store.server.status !== 'connected';
+
   return (
     <div>
       <Description>
@@ -47,7 +49,12 @@ const Server = ({ store }) => {
         <SubTitle>Run Scripts</SubTitle>
         <Margin top={0.5}>
           <WorkspaceInputContainer
-            style={{ display: 'flex', flexDirection: 'column' }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              pointerEvents: disconnected ? 'none' : 'initial',
+              opacity: disconnected ? 0.5 : 1,
+            }}
           >
             <Tasks package={parsed} />
           </WorkspaceInputContainer>
@@ -62,6 +69,7 @@ const Server = ({ store }) => {
           }}
           small
           block
+          disabled={disconnected}
           onClick={() =>
             dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
           }
