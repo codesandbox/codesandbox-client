@@ -36,18 +36,18 @@ if (process.env.NODE_ENV === 'production') {
   fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
     .then(res => {
       if (res.status === 404) {
-        window.location.replace(`https://${rootDomain}/s/not-found`);
+        window.location.replace(`https://${rootDomain}/s/${sandbox}`);
         return {};
       }
 
       return res.json();
     })
     .then(json => {
-      if (json.data && json.data.template) {
-        const templateDef = getTemplate(json.data.template);
+      if (json.template) {
+        const templateDef = getTemplate(json.template);
 
         color =
-          json.data.template === 'next'
+          json.template === 'next'
             ? templateDef.color.darken(0.3)
             : templateDef.color;
       }
