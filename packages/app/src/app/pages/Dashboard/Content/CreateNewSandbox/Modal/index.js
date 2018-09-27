@@ -25,7 +25,7 @@ const usedTemplates = sortBy(
 
 const TEMPLATE_BASE_WIDTH = 150;
 const MAIN_TEMPLATE_BASE_WIDTH = 190;
-const SERVER_TEMPLATE_BASE_WIDTH = 280; // 150
+const SERVER_TEMPLATE_BASE_WIDTH = 150; // 150
 
 export default class Modal extends React.PureComponent {
   selectTemplate = template => {

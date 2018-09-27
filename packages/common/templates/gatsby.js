@@ -8,7 +8,7 @@ export default new Template(
   'Gatsby',
   'https://www.gatsbyjs.org/',
   'github/gatsbyjs/gatsby-starter-default',
-  decorateSelector(() => '#9D7CBF'),
+  decorateSelector(() => '#8C65B3'),
   {
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
