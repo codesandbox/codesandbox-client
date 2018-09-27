@@ -1,23 +1,11 @@
 // import * as debug from 'debug';
 import host from './host';
 
-const bundlers: Map<Window, string> = new Map();
+const bundlers: Window[] = [];
 
 // Whether the tab has a connection with the editor
 export const isStandalone =
   typeof window === 'undefined' || (!window.opener && window.parent === window);
-
-let parentOrigin: string | null = null;
-
-const parentOriginListener = (e: MessageEvent) => {
-  if (e.data.type === 'register-frame') {
-    parentOrigin = e.data.origin;
-
-    self.removeEventListener('message', parentOriginListener);
-  }
-};
-
-self.addEventListener('message', parentOriginListener);
 
 /**
  * Send a message to the editor, this is most probably an action you generated
@@ -26,7 +14,7 @@ self.addEventListener('message', parentOriginListener);
  * @param {*} message
  * @returns
  */
-export function dispatch(message: any) {
+export function dispatch(message: Object) {
   if (!message) return;
 
   const newMessage = { ...message, codesandbox: true };
@@ -34,19 +22,15 @@ export function dispatch(message: any) {
   notifyFrames(newMessage);
 
   if (isStandalone) return;
-  if (parentOrigin === null && message.type !== 'initialized') return;
 
   if (window.opener) {
-    window.opener.postMessage(newMessage, parentOrigin === null ? '*' : parentOrigin);
+    window.opener.postMessage(newMessage, '*');
   } else {
-    window.parent.postMessage(newMessage, parentOrigin === null ? '*' : parentOrigin);
+    window.parent.postMessage(newMessage, '*');
   }
 }
 
-export type Callback = (
-  message: Object,
-  source?: MessageEvent['source'] | null | undefined
-) => void;
+export type Callback = (message: Object, source?: Window | null | undefined) => void;
 
 const listeners: { [id: string]: Callback } = {};
 let listenerId = 0;
@@ -74,9 +58,9 @@ export function notifyListeners(data: Object, source?: MessageEvent['source']) {
 
 function notifyFrames(message: Object) {
   const rawMessage = JSON.parse(JSON.stringify(message));
-  bundlers.forEach((origin, frame) => {
+  bundlers.forEach(frame => {
     if (frame && frame.postMessage) {
-      frame.postMessage({ ...rawMessage, codesandbox: true }, origin);
+      frame.postMessage({ ...rawMessage, codesandbox: true }, '*');
     }
   });
 }
@@ -84,7 +68,7 @@ function notifyFrames(message: Object) {
 function eventListener(e: MessageEvent) {
   const { data } = e;
 
-  if (data && data.codesandbox && (parentOrigin === null || e.origin === parentOrigin)) {
+  if (data && data.codesandbox) {
     notifyListeners(data, e.source);
   }
 }
@@ -94,17 +78,9 @@ function eventListener(e: MessageEvent) {
  *
  * @param frame
  */
-export function registerFrame(frame: Window, origin: string) {
-  if (!bundlers.has(frame)) {
-    bundlers.set(frame, origin);
-
-    frame.postMessage(
-      {
-        type: 'register-frame',
-        origin: document.location.origin,
-      },
-      origin
-    );
+export function registerFrame(frame: Window) {
+  if (bundlers.indexOf(frame) === -1) {
+    bundlers.push(frame);
   }
 }
 
