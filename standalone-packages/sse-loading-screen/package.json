@@ -19,11 +19,12 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-runtime": "^6.26.0",
     "cssnano": "^4.0.5",
-    "parcel-bundler": "^1.9.7"
+    "parcel-bundler": "^1.9.7",
+    "rimraf": "^2.6.2"
   },
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html",
+    "build": "rimraf dist && parcel build src/index.html",
     "install-dependencies": "yarn install"
   }
 }

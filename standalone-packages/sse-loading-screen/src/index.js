@@ -43,6 +43,9 @@ if (process.env.NODE_ENV === 'production') {
       return res.json();
     })
     .then(json => {
+      if (!json.is_sse) {
+        window.location.replace(`https://${sandbox}.${rootDomain}/`);
+      }
       if (json.template) {
         const templateDef = getTemplate(json.template);
 
