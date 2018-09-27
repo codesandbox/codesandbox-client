@@ -27,7 +27,7 @@ export default function(
       asUMD ? undefined : module,
       asUMD ? undefined : exports,
       process,
-      setImmediate,
+      requestAnimationFrame,
       asUMD ? undefined : global,
       ...globalsValues,
     ]);
