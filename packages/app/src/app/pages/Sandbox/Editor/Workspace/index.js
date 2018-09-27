@@ -20,7 +20,7 @@ import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
 import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';
-// import DowntimeNotice from './DowntimeNotice';
+import SSEDownNotice from './SSEDownNotice';
 
 import {
   Container,
@@ -74,7 +74,7 @@ function Workspace({ store }) {
               {VERSION}
             </VersionContainer>
           </ContactContainer>
-          {/* <DowntimeNotice /> */}
+          <SSEDownNotice />
           <ConnectionNotice />
         </div>
       )}

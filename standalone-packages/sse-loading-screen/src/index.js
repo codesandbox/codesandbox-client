@@ -22,6 +22,16 @@ const plugins = [CSSPlugin, AttrPlugin];
 
 let color;
 
+let hostParts;
+if (process.env.NODE_ENV === 'development') {
+  hostParts = ['gatsby', 'sse', 'codesandbox', 'stream']; // dev
+} else {
+  hostParts = window.location.hostname.split('.');
+}
+const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
+const domain = `sse.${rootDomain}`;
+const sandbox = hostParts[0];
+
 if (process.env.NODE_ENV === 'production') {
   fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
     .then(res => {
@@ -173,16 +183,6 @@ const createMainCube = () => {
 };
 
 setTimeout(createMainCube, 500);
-
-let hostParts;
-if (process.env.NODE_ENV === 'development') {
-  hostParts = ['gatsby', 'sse', 'codesandbox', 'stream']; // dev
-} else {
-  hostParts = window.location.hostname.split('.');
-}
-const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
-const domain = `sse.${rootDomain}`;
-const sandbox = hostParts[0];
 
 const NICE_TITLES = {
   'starting-container': 'Initializing Sandbox Container',
