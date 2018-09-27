@@ -68,6 +68,9 @@ export default class DependencyHit extends React.PureComponent {
       }
     });
 
+    const getTagName = (tags, version) =>
+      Object.keys(tags).find(key => tags[key] === version);
+
     return (
       <Container highlighted={highlighted} onClick={onClick}>
         <Left>
@@ -125,7 +128,14 @@ export default class DependencyHit extends React.PureComponent {
               onChange={this.handleVersionChange}
               value={this.state.selectedVersion}
             >
-              {versions.map(v => <option key={v}>{v}</option>)}
+              {versions.map(v => {
+                const tagName = getTagName(hit.tags, v);
+                return (
+                  <option key={v}>
+                    {v} {tagName ? `- ${tagName}` : ''}
+                  </option>
+                );
+              })}
             </StyledSelect>
           </Row>
         </Right>
