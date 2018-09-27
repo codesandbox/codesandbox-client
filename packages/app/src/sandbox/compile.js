@@ -77,7 +77,6 @@ let changedModuleCount = 0;
 
 const DEPENDENCY_ALIASES = {
   '@vue/cli-plugin-babel': '@vue/babel-preset-app',
-  'reason-react': '@jaredly/reason-react',
 };
 
 // TODO make devDependencies lazy loaded by the packager
@@ -236,6 +235,10 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
   Object.keys(d).forEach(dep => {
     const usedDep = DEPENDENCY_ALIASES[dep] || dep;
 
+    if (dep === 'reason-react') {
+      return; // is replaced
+    }
+
     returnedDependencies[usedDep] = d[dep];
   });
 
@@ -258,6 +261,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
     returnedDependencies = {
       ...returnedDependencies,
       '@jaredly/bs-core': '3.0.0-alpha.2',
+      '@jaredly/reason-react': '0.3.2',
     };
   }
 
