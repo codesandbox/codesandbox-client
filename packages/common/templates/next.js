@@ -7,7 +7,7 @@ export default new Template(
   'next',
   'Next.js',
   'https://nextjs.org/',
-  'next',
+  'github/zeit/next.js/tree/master/examples/hello-world',
   decorateSelector(() => '#ffffff'),
   {
     extraConfigurations: {

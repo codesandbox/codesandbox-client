@@ -7,7 +7,7 @@ export default new Template(
   'nuxt',
   'Nuxt.js',
   'https://nuxtjs.org/',
-  'nuxt',
+  'github/nuxt/codesandbox-nuxt',
   decorateSelector(() => '#3B8070'),
   {
     extraConfigurations: {
