@@ -52,7 +52,7 @@ type State = {
 
 const getSSEUrl = (id?: string) =>
   `https://${id ? id + '.' : ''}sse.${
-    process.env.NODE_ENV === 'development' ? 'codesandbox.stream' : host()
+    process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
   }`;
 
 const getDiff = (a, b) => {
