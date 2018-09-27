@@ -65,11 +65,11 @@ const createMainCube = () => {
 
   const cubeTl = new TimelineLite({
     onComplete() {
-      const clearerColor = color.clearer(0.4);
+      const clearerColor = color && color.clearer(0.4);
       TweenLite.to(
         '.side',
         0.5,
-        color
+        clearerColor
           ? {
               boxShadow: `0 0 150px ${clearerColor()}`,
               backgroundColor: clearerColor(),
