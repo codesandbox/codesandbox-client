@@ -36,7 +36,10 @@ if (process.env.NODE_ENV === 'production') {
       if (json.data && json.data.template) {
         const templateDef = getTemplate(json.data.template);
 
-        color = templateDef.color;
+        color =
+          json.data.template === 'next'
+            ? templateDef.color.darken(0.3)
+            : templateDef.color;
       }
     });
 } else {
