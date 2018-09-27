@@ -261,7 +261,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
     returnedDependencies = {
       ...returnedDependencies,
       '@jaredly/bs-core': '3.0.0-alpha.2',
-      '@jaredly/reason-react': '0.3.2',
+      '@jaredly/reason-react': '0.3.4',
     };
   }
 
