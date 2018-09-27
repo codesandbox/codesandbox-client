@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "image-extensions": "^1.1.0",
     "jsonlint": "^1.6.3",
     "memoize-one": "^3.1.1",
@@ -17,8 +18,8 @@
     "styled-components": "^3.2.1"
   },
   "devDependencies": {
-    "jest": "^21.2.1",    
-    "babel-jest": "^23.6.0"
+    "babel-jest": "^23.6.0",
+    "jest": "^21.2.1"
   },
   "jest": {
     "moduleDirectories": [
