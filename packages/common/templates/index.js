@@ -10,9 +10,20 @@ import svelte from './svelte';
 import vue from './vue';
 import cxjs from './cxjs';
 import dojo from './dojo';
+import gatsby from './gatsby';
+import nuxt from './nuxt';
+import next from './next';
+import node from './node';
+import apollo from './apollo-server';
+import sapper from './sapper';
 
 export {
   angular,
+  apollo,
+  gatsby,
+  next,
+  nuxt,
+  node,
   babel,
   cxjs,
   dojo,
@@ -23,21 +34,27 @@ export {
   reason,
   svelte,
   vue,
+  sapper,
 };
 
-export default function getDefinition(
-  theme:
-    | 'create-react-app'
-    | 'reason'
-    | 'vue-cli'
-    | 'preact-cli'
-    | 'svelte'
-    | 'create-react-app-typescript'
-    | 'angular-cli'
-    | 'parcel'
-    | 'cxjs'
-    | '@dojo/cli-create-app'
-) {
+export type Template =
+  | 'create-react-app'
+  | 'vue-cli'
+  | 'preact-cli'
+  | 'svelte'
+  | 'create-react-app-typescript'
+  | 'angular-cli'
+  | 'parcel'
+  | 'cxjs'
+  | '@dojo/cli-create-app'
+  | 'gatsby'
+  | 'nuxt'
+  | 'next'
+  | 'reason'
+  | 'apollo'
+  | 'sapper';
+
+export default function getDefinition(theme: Template) {
   switch (theme) {
     case react.name:
       return react;
@@ -59,8 +76,20 @@ export default function getDefinition(
       return cxjs;
     case dojo.name:
       return dojo;
+    case gatsby.name:
+      return gatsby;
+    case nuxt.name:
+      return nuxt;
+    case next.name:
+      return next;
     case reason.name:
       return reason;
+    case node.name:
+      return node;
+    case apollo.name:
+      return apollo;
+    case sapper.name:
+      return sapper;
     default:
       return react;
   }

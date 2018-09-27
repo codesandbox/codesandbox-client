@@ -64,3 +64,30 @@ export const Templates = styled.div`
   display: flex;
   align-items: center;
 `;
+
+export const ImportChoice = styled.a`
+  transition: 0.2s ease color;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  width: 100%;
+  font-size: 1.125rem;
+
+  display: flex;
+  align-items: center;
+
+  &:nth-child(2) {
+    justify-content: center;
+  }
+  &:nth-child(3) {
+    justify-content: flex-end;
+  }
+
+  svg {
+    margin-right: 0.5rem;
+  }
+
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+`;

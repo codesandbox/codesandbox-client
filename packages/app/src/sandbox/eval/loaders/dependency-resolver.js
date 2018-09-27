@@ -1,4 +1,4 @@
-import DependencyNotFoundError from '../../errors/dependency-not-found-error';
+import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
 /**
  * Converts a dependency string to an actual dependency

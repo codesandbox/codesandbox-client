@@ -1,12 +1,33 @@
 import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+import getTemplate from 'common/templates';
 import * as actions from './actions';
-import { ensureOwnedSandbox, loadSandbox, closeModal } from '../../sequences';
+import {
+  ensureOwnedSandbox,
+  loadSandbox,
+  closeModal,
+  openModal,
+} from '../../sequences';
 import { updateSandboxPackage } from './../editor/sequences';
 import { addNotification } from '../../factories';
 
 export const changeSandboxPrivacy = [
+  when(
+    state`editor.currentSandbox.template`,
+    props`privacy`,
+    (template, privacy) => {
+      const templateDefinition = getTemplate(template);
+
+      return templateDefinition.isServer && privacy === 2;
+    }
+  ),
+  {
+    true: [set(props`modal`, 'privacyServerWarning'), openModal],
+    false: [],
+  },
+
   actions.saveSandboxPrivacy,
+
   set(
     state`editor.sandboxes.${state`editor.currentId`}.privacy`,
     props`privacy`

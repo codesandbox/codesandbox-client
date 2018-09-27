@@ -77,7 +77,7 @@ jobs:
           background: true
       - run:
           name: Setup BrowserStack local environment
-          command: "[ -n \"$BROWSER_STACK_KEY\" ] && ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY || true"
+          command: '[ -n "$BROWSER_STACK_KEY" ] && ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY || true'
           background: true
       - run:
           name: Test Integrations
@@ -85,7 +85,7 @@ jobs:
             sleep 15
             yarn test:integrations --ci --testResultsProcessor="jest-junit"
           environment:
-            JEST_JUNIT_OUTPUT: "/tmp/test-results/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: '/tmp/test-results/js-test-results.xml'
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:
@@ -103,7 +103,7 @@ jobs:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
 
   lint:
     docker:
@@ -125,22 +125,22 @@ jobs:
           key: v12-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Docker Sign In
-          command: "[ -n \"$DOCKER_USER\" ] && echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin || true"
+          command: '[ -n "$DOCKER_USER" ] && echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin || true'
       - run:
           name: Create Image
-          command: "[ -n \"$DOCKER_USER\" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true"
+          command: '[ -n "$DOCKER_USER" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
       - deploy:
           name: Push Image
-          command: "[ -n \"$DOCKER_USER\" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true"
+          command: '[ -n "$DOCKER_USER" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true'
 
 workflows:
   version: 2
   build-and-test:
     jobs:
       - build-dependencies
-      - test-integrations:
-          requires:
-            - build-dependencies
+      # - test-integrations:
+      #     requires:
+      #       - build-dependencies
       - test-jest:
           requires:
             - build-dependencies
@@ -154,4 +154,5 @@ workflows:
           requires:
             - build-prod
             - lint
+            # - test-integrations
             - test-jest

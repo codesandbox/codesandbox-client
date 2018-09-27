@@ -1,6 +1,7 @@
 import React from 'react';
 import { listen, dispatch, actions } from 'codesandbox-api';
 import Tooltip from 'common/components/Tooltip';
+import getTemplate, { type Template } from 'common/templates';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
 import { Console } from 'console-feed';
@@ -124,4 +125,5 @@ export default {
   title: 'Problems',
   Content: Problems,
   actions: [],
+  show: (template: Template) => !getTemplate(template).isServer,
 };

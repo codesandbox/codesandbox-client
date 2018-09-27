@@ -23,7 +23,7 @@ function addScript(src) {
   });
 }
 
-const IGNORED_DEPENDENCIES = [];
+const IGNORED_DEPENDENCIES = ['ReactDOMRe', 'ReasonReact'];
 
 function getModuleName(path: string) {
   const moduleParts = basename(path).split('.');
@@ -35,20 +35,33 @@ function getModuleName(path: string) {
   );
 }
 
+const cachedDependencies = new Map();
+
 function getDependencyList(
   modules: Array<ReasonModule>,
   list: Set<ReasonModule>,
   module: ReasonModule
 ) {
+  const cache = cachedDependencies.get(module.path);
+
   const listFunction = module.path.endsWith('.re')
     ? window.ocaml.reason_list_dependencies
     : window.ocaml.list_dependencies;
 
-  const deps = listFunction(module.code)
-    .filter(x => IGNORED_DEPENDENCIES.indexOf(x) === -1)
-    .filter(x => !list.has(x));
+  const deps =
+    cache ||
+    listFunction(module.code)
+      .filter(x => IGNORED_DEPENDENCIES.indexOf(x) === -1)
+      .filter(x => !list.has(x));
 
-  deps.shift(); // Remove the first 0 value
+  if (!cache) {
+    // Didn't get it from the cache
+    deps.shift(); // Remove the first 0 value
+  }
+
+  if (module.path.startsWith('/node_modules')) {
+    cachedDependencies.set(module.path, deps);
+  }
 
   deps.forEach(dep => {
     const foundModule = modules.find(
@@ -79,7 +92,7 @@ class ReasonTranspiler extends Transpiler {
         'https://cdn.rawgit.com/jaredly/reason-react/more-docs/docs/bucklescript.js'
       );
       await addScript('https://reason.surge.sh/bucklescript-deps.js');
-      await addScript('https://unpkg.com/reason@3.1.0/refmt.js');
+      await addScript('https://unpkg.com/reason@3.3.4/refmt.js');
     }
 
     const reasonModules = loaderContext
@@ -100,7 +113,6 @@ class ReasonTranspiler extends Transpiler {
     );
 
     const modulesToAdd: Set<ReasonModule> = new Set();
-
     getDependencyList(reasonModules, modulesToAdd, mainReasonModule);
 
     modulesToAdd.forEach(m => {
@@ -122,7 +134,9 @@ class ReasonTranspiler extends Transpiler {
           basename(x.path, '.re') + '.rei'
         );
 
-        const typesModule = reasonModules.find(x => x.path === typesPath);
+        const typesModule = reasonModules.find(
+          module => module.path === typesPath
+        );
 
         let reasonCode = `module ${moduleName}`;
 
@@ -141,13 +155,13 @@ ${usedCode}
 
     const {
       js_code,
-      js_error_msg,
+      js_error_msg: errorMessage,
       row,
       column,
       text,
     } = window.ocaml.reason_compile_super_errors(newCode);
 
-    if (js_error_msg) {
+    if (errorMessage) {
       const error = new Error(stripANSI(text));
 
       error.name = 'Reason Compile Error';
@@ -155,11 +169,11 @@ ${usedCode}
       error.lineNumber = row + 1;
       error.columnNumber = column;
       return Promise.reject(error);
-    } else {
-      return Promise.resolve({
-        transpiledCode: js_code,
-      });
     }
+
+    return Promise.resolve({
+      transpiledCode: js_code,
+    });
   }
 }
 

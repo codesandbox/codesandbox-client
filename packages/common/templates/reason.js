@@ -3,10 +3,14 @@ import Template from './template';
 import { decorateSelector } from '../theme';
 
 export default new Template(
-  'reason',
+  'reason-react',
   'Reason',
   'https://reasonml.github.io/reason-react/en/',
-  'reason',
+  'reason-react',
   decorateSelector(() => '#CB5747'),
-  { showOnHomePage: true, main: false }
+  {
+    showOnHomePage: true,
+    main: false,
+    mainFile: ['/src/Main.re', 'App.re', 'Index.re'],
+  }
 );

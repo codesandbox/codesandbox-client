@@ -2,6 +2,7 @@
   "name": "common",
   "version": "1.0.0",
   "private": true,
+  "source": true,
   "scripts": {
     "test": "jest"
   },
