@@ -24,13 +24,15 @@ const Container = styled.div`
 `;
 
 const STATUS_MESSAGES = {
-  disconnected: 'Disconnected from the server',
+  disconnected: 'Disconnected from the server, reconnecting...',
   connected: 'Connected to the server',
+  initializing: 'Initializing connection to the server',
 };
 
 const STATUS_COLOR = {
   disconnected: '#fd2439fa',
   connected: '#4CFF00',
+  initializing: '#FFD399',
 };
 
 export default ({ status }: Props) => (

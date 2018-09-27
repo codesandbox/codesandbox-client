@@ -5,7 +5,7 @@ import * as sequences from './sequences';
 export default Module({
   model,
   state: {
-    status: 'disconnected',
+    status: 'initializing',
   },
   signals: {
     statusChanged: sequences.setStatus,

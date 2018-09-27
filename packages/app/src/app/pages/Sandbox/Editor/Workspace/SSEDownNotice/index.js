@@ -1,30 +1,50 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
+import getTemplate from 'common/templates';
 
 import { Container } from './elements';
 
-class ConnectionNotice extends React.PureComponent {
-  render() {
-    return (
-      <Container>
-        <p style={{ fontWeight: 700, marginTop: 0 }}>
-          Server Manager Disconnected
-        </p>
-        It seems like our manager for container sandboxes is experiencing some
-        heavy load. We will try to reconnect in a couple seconds...
-        <p style={{ marginBottom: 0 }}>
-          It would greatly help us if you could let us know on{' '}
-          <a
-            style={{ color: 'white' }}
-            href="https://discord.gg/FGeubVt"
-            target="_blank"
-          >
-            Discord
-          </a>.
-        </p>
-      </Container>
-    );
+const ConnectionNotice = ({ store }) => {
+  const templateDef = getTemplate(store.editor.currentSandbox.template);
+  if (!templateDef.isServer) {
+    return null;
   }
-}
 
-export default observer(ConnectionNotice);
+  if (
+    store.server.status === 'connected' ||
+    store.server.status === 'initializing'
+  ) {
+    return null;
+  }
+
+  return (
+    <Container>
+      <p
+        style={{
+          fontWeight: 700,
+          color: 'white',
+          fontSize: '.875rem',
+          marginTop: 0,
+        }}
+      >
+        Server Connection Trouble
+      </p>
+      It seems like our Server Manager is experiencing some heavy load.
+      Reconnecting in a couple seconds...
+      <p style={{ marginBottom: 0 }}>
+        We{"'"}re working on fixing this as soon as possible. In the meantime it
+        would greatly help us if you could let us know on{' '}
+        <a
+          style={{ color: 'white' }}
+          href="https://discord.gg/FGeubVt"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Discord
+        </a>.
+      </p>
+    </Container>
+  );
+};
+
+export default inject('store')(observer(ConnectionNotice));
