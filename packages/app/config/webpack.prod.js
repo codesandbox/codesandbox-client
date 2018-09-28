@@ -55,6 +55,8 @@ module.exports = merge(commonConfig, {
 
     splitChunks: {
       chunks: 'all',
+      maxInitialRequests: 20, // for HTTP2
+      maxAsyncRequests: 20, // for HTTP2
       name(module, chunks, cacheGroup) {
         const name = normalize(module, chunks, cacheGroup);
 
@@ -62,7 +64,7 @@ module.exports = merge(commonConfig, {
           return 'common-sandbox';
         }
 
-        if (name === 'vendors~app~embed') {
+        if (name === 'vendors~app~embed' || name === 'default~app~embed') {
           return 'common';
         }
         // generate a chunk name using default strategy...
