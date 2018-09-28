@@ -14,6 +14,7 @@ import Next from 'common/components/logos/Next';
 import Nuxt from 'common/components/logos/Nuxt';
 import Node from 'common/components/logos/Node';
 import Apollo from 'common/components/logos/Apollo';
+import Nest from 'common/components/logos/Nest';
 
 import {
   react,
@@ -31,6 +32,7 @@ import {
   nuxt,
   node,
   apollo,
+  nest,
 } from './';
 
 import type { Template } from './';
@@ -67,6 +69,8 @@ export default function getIcon(theme: Template) {
       return Node;
     case apollo.name:
       return Apollo;
+    case nest.name:
+      return Nest;
     default:
       return React;
   }
