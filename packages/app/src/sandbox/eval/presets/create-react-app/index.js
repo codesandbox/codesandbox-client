@@ -38,8 +38,33 @@ export default function initialize() {
           const babelOptions = {
             isV7: true,
             config: {
-              plugins: ['babel-plugin-macros'],
-              presets: ['env', 'react'],
+              plugins: [
+                'babel-plugin-macros',
+                'proposal-object-rest-spread',
+                'transform-runtime',
+                'syntax-dynamic-import',
+              ],
+              presets: [
+                [
+                  'env',
+                  {
+                    // We want Create React App to be IE 9 compatible until React itself
+                    // no longer works with IE 9
+                    targets: {
+                      ie: 9,
+                    },
+                    // Users cannot override this behavior because this Babel
+                    // configuration is highly tuned for ES5 support
+                    ignoreBrowserslistConfig: true,
+                    // If users import all core-js they're probably not concerned with
+                    // bundle size. We shouldn't rely on magic to try and shrink it.
+                    useBuiltIns: false,
+                    // Do not transform modules to CJS
+                    modules: false,
+                  },
+                ],
+                'react',
+              ],
             },
           };
           preset.registerTranspiler(

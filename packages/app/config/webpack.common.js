@@ -103,7 +103,7 @@ module.exports = {
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
-          new RegExp(`babel-runtime${sepRe}`),
+          /\.no-webpack\./,
         ],
         loader: 'happypack/loader',
       },
