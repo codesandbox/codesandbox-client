@@ -148,12 +148,18 @@ export default class Preset {
 
   registerTranspiler(
     test: (module: Module) => boolean,
-    transpilers: Array<TranspilerDefinition>
+    transpilers: Array<TranspilerDefinition>,
+    prepend: boolean = false
   ) {
-    this.loaders.push({
+    const transpilerObject = {
       test,
       transpilers,
-    });
+    };
+    if (prepend) {
+      this.loaders.unshift(transpilerObject);
+    } else {
+      this.loaders.push(transpilerObject);
+    }
 
     transpilers.forEach(t => this.transpilers.add(t.transpiler));
 

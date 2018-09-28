@@ -1,17 +1,89 @@
+import semver from 'semver';
+
 import Preset from '../';
 
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
+import svgrTranspiler from '../../transpilers/svgr';
+import sassTranspiler from '../../transpilers/sass';
+
+function isVersion2(configurations) {
+  if (
+    configurations &&
+    configurations.package &&
+    configurations.package.parsed &&
+    configurations.package.parsed.dependencies
+  ) {
+    const reactScriptsVersion =
+      configurations.package.parsed.dependencies['react-scripts'];
+
+    return semver.satisfies(reactScriptsVersion, '^2.0.0');
+  }
+
+  return false;
+}
 
 export default function initialize() {
+  let v2Initialized = false;
   const preset = new Preset(
     'create-react-app',
     ['web.js', 'js', 'json', 'web.jsx', 'jsx'],
     { 'react-native': 'react-native-web' },
     {
       hasDotEnv: true,
+      setup: manager => {
+        if (isVersion2(manager.configurations) && !v2Initialized) {
+          const babelOptions = {
+            isV7: true,
+            config: {
+              plugins: ['babel-plugin-macros'],
+              presets: ['env', 'react'],
+            },
+          };
+          preset.registerTranspiler(
+            module => /\.js$/.test(module.path),
+            [
+              {
+                transpiler: babelTranspiler,
+                options: babelOptions,
+              },
+            ],
+            true
+          );
+          preset.registerTranspiler(
+            module => /\.svg$/.test(module.path),
+            [
+              { transpiler: svgrTranspiler },
+              {
+                transpiler: babelTranspiler,
+                options: babelOptions,
+              },
+            ],
+            true
+          );
+          preset.registerTranspiler(
+            module => /\.s[c|a]ss$/.test(module.path),
+            [{ transpiler: sassTranspiler }, { transpiler: stylesTranspiler }],
+            true
+          );
+          preset.registerTranspiler(
+            module => /\.module\.s[c|a]ss$/.test(module.path),
+            [
+              { transpiler: sassTranspiler },
+              { transpiler: stylesTranspiler, options: { module: true } },
+            ],
+            true
+          );
+          preset.registerTranspiler(
+            module => /\.module\.css$/.test(module.path),
+            [{ transpiler: stylesTranspiler, options: { module: true } }],
+            true
+          );
+          v2Initialized = true;
+        }
+      },
       preEvaluate: manager => {
         if (!manager.webpackHMR) {
           try {

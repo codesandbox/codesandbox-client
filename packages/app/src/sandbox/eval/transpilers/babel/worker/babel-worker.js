@@ -1,6 +1,7 @@
 // @flow
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
+import macrosPlugin from 'babel-plugin-macros';
 
 import delay from 'common/utils/delay';
 
@@ -21,6 +22,19 @@ import {
 let fsInitialized = false;
 let fsLoading = false;
 let lastConfig = null;
+
+// This one is called from babel-plugin-macros
+self.require = path => {
+  const fs = BrowserFS.BFSRequire('fs');
+  return evaluateFromPath(
+    fs,
+    BrowserFS.BFSRequire,
+    path,
+    '/node_modules/babel-plugin-macros/index.js',
+    Babel.availablePlugins,
+    Babel.availablePresets
+  );
+};
 
 async function initializeBrowserFS() {
   fsLoading = true;
@@ -301,6 +315,15 @@ self.addEventListener('message', async event => {
     ) {
       const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') === -1
+    ) {
+      await waitForFs();
+
+      Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
     }
 
     if (
