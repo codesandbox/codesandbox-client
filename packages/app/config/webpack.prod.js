@@ -64,7 +64,7 @@ module.exports = merge(commonConfig, {
           return 'common-sandbox';
         }
 
-        if (name === 'vendors~app~embed' || name === 'default~app~embed') {
+        if (name === 'vendors~app~embed') {
           return 'common';
         }
         // generate a chunk name using default strategy...
