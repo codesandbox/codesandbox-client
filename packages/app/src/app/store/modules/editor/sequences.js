@@ -198,6 +198,8 @@ export const saveCode = [
     false: [],
   },
   sendModuleSaved,
+
+  actions.updateTemplateIfSSE,
 ];
 
 export const discardModuleChanges = [

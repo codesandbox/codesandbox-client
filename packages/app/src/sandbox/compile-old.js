@@ -1,15 +1,15 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
 import _debug from 'app/utils/debug';
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
+import { Encode } from 'console-feed/lib/Transform';
 
-import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import { Encode } from 'console-feed/lib/Transform';
 
 import { resetScreen } from './status-screen';
 
-import { inject, unmount } from './react-error-overlay/overlay';
 import handleExternalResources from './external-resources';
 
 import defaultBoilerplates from './boilerplates/default-boilerplates';

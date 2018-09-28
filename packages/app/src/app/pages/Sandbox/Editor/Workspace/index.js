@@ -9,6 +9,7 @@ import SocialInfo from 'app/components/SocialInfo';
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
+import Server from './items/Server';
 import Live from './items/Live';
 import More from './items/More';
 import Deployment from './items/Deployment';
@@ -19,7 +20,7 @@ import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
 import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';
-// import DowntimeNotice from './DowntimeNotice';
+import SSEDownNotice from './SSEDownNotice';
 
 import {
   Container,
@@ -35,6 +36,7 @@ const idToItem = {
   deploy: Deployment,
   config: ConfigurationFiles,
   live: Live,
+  server: Server,
   more: More,
 };
 
@@ -72,7 +74,7 @@ function Workspace({ store }) {
               {VERSION}
             </VersionContainer>
           </ContactContainer>
-          {/* <DowntimeNotice /> */}
+          <SSEDownNotice />
           <ConnectionNotice />
         </div>
       )}

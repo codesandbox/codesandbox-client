@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -8,7 +9,7 @@ export const Container = styled.div`
   max-height: 100%;
   z-index: 100;
   background-color: ${props =>
-    props.theme['statusBar.background'] || props.theme.background4};
+    props.theme['statusBar.background'] || props.theme.background2};
 `;
 
 export const Header = styled.div`
@@ -32,6 +33,7 @@ export const Header = styled.div`
 `;
 
 export const Tab = styled.div`
+  transition: 0.2s ease color;
   display: flex;
   align-items: center;
   height: calc(2rem - 1px);
@@ -44,19 +46,27 @@ export const Tab = styled.div`
   cursor: pointer;
 
   color: ${props =>
-    props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 0.8)'};
+    props.theme['statusBar.foreground'] || 'rgba(255, 255, 255, 0.6)'};
   font-weight: 600;
 
   ${props =>
-    props.active &&
-    css`
-      background-color: ${props.theme['editor.background']
-        ? 'transparent'
-        : props.theme.background};
-      border-bottom-color: ${props.theme['editor.background']
-        ? 'transparent'
-        : props.theme.background};
-    `};
+    props.active
+      ? css`
+          color: ${props.theme['statusBar.foreground'] ||
+            'rgba(255, 255, 255, 1)'};
+          background-color: ${props.theme['editor.background']
+            ? 'transparent'
+            : props.theme.background};
+          border-bottom-color: ${props.theme['editor.background']
+            ? 'transparent'
+            : props.theme.background};
+        `
+      : css`
+          &:hover {
+            color: ${props.theme['statusBar.foreground'] ||
+              'rgba(255, 255, 255, 1)'};
+          }
+        `};
 `;
 
 export const Actions = styled.div`

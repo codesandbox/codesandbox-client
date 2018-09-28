@@ -58,5 +58,6 @@ export default new ParcelTemplate(
     externalResourcesEnabled: false,
     distDir: 'dist',
     main: true,
+    isTypescript: true,
   }
 );

@@ -1,12 +1,12 @@
 // @flow
 import * as pathUtils from 'common/utils/path';
 import resolve from 'browser-resolve';
+import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
 import type { Module } from '../entities/module';
 import Manager from '../manager';
 import type { Manifest } from '../manager';
 
-import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 import getDependencyName from '../utils/get-dependency-name';
 import { packageFilter } from '../utils/resolve-utils';
 import type { default as TranspiledModule } from '../transpiled-module';

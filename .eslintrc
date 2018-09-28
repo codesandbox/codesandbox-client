@@ -10,7 +10,8 @@
   "globals": {
     "Raven": true,
     "VERSION": true,
-    "$PropertyType": true
+    "$PropertyType": true,
+    "TimeoutID": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,

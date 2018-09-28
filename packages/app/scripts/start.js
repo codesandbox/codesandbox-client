@@ -207,6 +207,15 @@ function addMiddleware(devServer, index) {
         changeOrigin: true,
       })
     );
+
+    devServer.use(
+      '/socket.io',
+      proxy({
+        target: 'https://sse.codesandbox.io',
+        changeOrigin: true,
+        secure: false,
+      })
+    );
   }
   // Finally, by now we have certainly resolved the URL.
   // It may be /index.html, so let the dev server try serving it again.

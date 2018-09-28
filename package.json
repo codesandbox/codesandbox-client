@@ -20,7 +20,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --stream"
+    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream"
   },
   "lint-staged": {
     "*.{js,css,json}": [
@@ -35,7 +35,9 @@
       "packages/codesandbox-api",
       "packages/sandpack",
       "packages/react-sandpack",
-      "packages/homepage"
+      "packages/homepage",
+      "packages/sandbox-hooks",
+      "packages/sse-hooks"
     ],
     "nohoist": ["**/gatsby", "**/gatsby/**"]
 },

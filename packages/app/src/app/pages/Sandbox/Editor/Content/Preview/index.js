@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 
 import BasePreview from 'app/components/Preview';
 import RunOnClick from 'common/components/RunOnClick';
+import getTemplate from 'common/templates';
 
 import FlyingContainer from './FlyingContainer';
 import Tests from './DevTools/Tests';
@@ -166,7 +167,10 @@ class Preview extends React.Component<Props, State> {
 
   handleCodeChange = preview => {
     const settings = this.props.store.preferences.settings;
-    if (settings.livePreviewEnabled) {
+    const isServer = getTemplate(
+      this.props.store.editor.currentSandbox.template
+    ).isServer;
+    if (!isServer && settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
       } else {
@@ -188,7 +192,10 @@ class Preview extends React.Component<Props, State> {
 
   handleModuleSyncedChange = (preview, change) => {
     const settings = this.props.store.preferences.settings;
-    if (!settings.livePreviewEnabled && change) {
+    const isServer = getTemplate(
+      this.props.store.editor.currentSandbox.template
+    ).isServer;
+    if ((isServer || !settings.livePreviewEnabled) && change) {
       preview.executeCodeImmediately();
     }
   };
@@ -308,7 +315,7 @@ class Preview extends React.Component<Props, State> {
                   hide={hide}
                   noPreview={completelyHidden}
                   onOpenNewWindow={() =>
-                    this.props.signals.preferences.viewModeChanged({
+                    signals.preferences.viewModeChanged({
                       showEditor: true,
                       showPreview: false,
                     })
@@ -320,6 +327,9 @@ class Preview extends React.Component<Props, State> {
                   isResizing={store.editor.isResizing}
                   alignRight={alignRight}
                   alignBottom={alignBottom}
+                  setServerStatus={(status: string) => {
+                    signals.server.statusChanged({ status });
+                  }}
                 />
               ) : (
                 <RunOnClick
