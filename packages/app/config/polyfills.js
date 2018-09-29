@@ -12,3 +12,17 @@ require('whatwg-fetch');
 // Object.assign() is commonly used with React.
 // It will use the native implementation if it's present and isn't buggy.
 Object.assign = require('object-assign');
+
+window.cosmiconfig = {};
+window.prettier = {};
+window.jsdom = {
+  JSDOM: {
+    fragment(htmlString) {
+      const div = document.createElement('div');
+      div.innerHTML = htmlString.trim();
+
+      // Change this to div.childNodes to support multiple top-level nodes
+      return div;
+    },
+  },
+};

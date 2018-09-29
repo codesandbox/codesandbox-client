@@ -103,7 +103,7 @@ module.exports = {
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
-          new RegExp(`babel-runtime${sepRe}`),
+          /\.no-webpack\./,
         ],
         loader: 'happypack/loader',
       },
@@ -210,6 +210,15 @@ module.exports = {
           replace: `throw new Error('module assert not found')`,
         },
       },
+      // Remove dynamic require in jest circus
+      {
+        test: /babel-plugin-macros/,
+        loader: 'string-replace-loader',
+        options: {
+          search: `_require(`,
+          replace: `self.require(`,
+        },
+      },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
       // "style" loader turns CSS into JS modules that inject <style> tags.
@@ -266,7 +275,7 @@ module.exports = {
   },
 
   // To make jsonlint work
-  externals: ['file', 'system'],
+  externals: ['file', 'system', 'jsdom', 'prettier', 'cosmiconfig'],
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],

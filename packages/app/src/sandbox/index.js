@@ -9,7 +9,6 @@ import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
-import { Encode } from 'console-feed/lib/Transform';
 
 import compile, { getCurrentManager } from './compile';
 
