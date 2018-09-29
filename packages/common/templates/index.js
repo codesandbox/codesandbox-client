@@ -8,6 +8,7 @@ import react from './react';
 import reactTs from './react-ts';
 import svelte from './svelte';
 import vue from './vue';
+import ember from './ember';
 import cxjs from './cxjs';
 import dojo from './dojo';
 import gatsby from './gatsby';
@@ -35,6 +36,7 @@ export {
   svelte,
   vue,
   sapper,
+  ember,
 };
 
 export type Template =
