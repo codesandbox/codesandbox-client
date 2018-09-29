@@ -37,4 +37,25 @@ module.exports = {
     // TODO: Enable again when these issues are resolved.
     // require.resolve('babel-plugin-transform-react-constant-elements')
   ],
+  overrides: [
+    {
+      test: ['../src/sandbox'],
+      presets: [
+        require.resolve('@babel/preset-flow'),
+        // Latest stable ECMAScript features
+        [
+          require.resolve('@babel/preset-env'),
+          {
+            targets: {
+              ie: 11,
+            },
+            // Disable polyfill transforms
+            useBuiltIns: false,
+            modules: false,
+            forceAllTransforms: true,
+          },
+        ],
+      ],
+    },
+  ],
 };
