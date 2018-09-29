@@ -55,6 +55,8 @@ module.exports = merge(commonConfig, {
 
     splitChunks: {
       chunks: 'all',
+      maxInitialRequests: 20, // for HTTP2
+      maxAsyncRequests: 20, // for HTTP2
       name(module, chunks, cacheGroup) {
         const name = normalize(module, chunks, cacheGroup);
 
