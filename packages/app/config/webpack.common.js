@@ -65,10 +65,7 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.appSrc, 'index.js'),
         ],
-        sandbox: [
-          require.resolve('./polyfills'),
-          path.join(paths.sandboxSrc, 'index.js'),
-        ],
+        sandbox: [path.join(paths.sandboxSrc, 'index.js')],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
         embed: [
           require.resolve('./polyfills'),
