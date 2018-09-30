@@ -13,7 +13,7 @@ module.exports = {
           ie: 11,
         },
         // Disable polyfill transforms
-        useBuiltIns: false,
+        useBuiltIns: 'entry',
         modules: false,
         forceAllTransforms: true,
       },
@@ -22,6 +22,7 @@ module.exports = {
     require.resolve('@babel/preset-react'),
   ],
   plugins: [
+    require.resolve('@babel/plugin-transform-destructuring'),
     require.resolve('@babel/plugin-transform-async-to-generator'),
     require.resolve('@babel/plugin-proposal-object-rest-spread'),
     require.resolve('@babel/plugin-proposal-class-properties'),

@@ -1,3 +1,5 @@
+require('@babel/polyfill');
+
 if (typeof Promise === 'undefined') {
   // Rejection tracking prevents a common issue where React gets into an
   // inconsistent state due to an error, but it gets swallowed by a Promise,
@@ -17,7 +19,7 @@ window.cosmiconfig = {};
 window.prettier = {};
 window.jsdom = {
   JSDOM: {
-    fragment(htmlString) {
+    fragment: function(htmlString) {
       const div = document.createElement('div');
       div.innerHTML = htmlString.trim();
 

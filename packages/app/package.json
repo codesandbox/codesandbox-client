@@ -109,6 +109,7 @@
     "worker-loader": "2.0.0"
   },
   "dependencies": {
+    "@babel/plugin-transform-destructuring": "^7.1.2",
     "@cerebral/http": "^4.0.0",
     "@cerebral/mobx-state-tree": "^3.0.0",
     "@emmetio/codemirror-plugin": "^0.3.5",
@@ -118,13 +119,13 @@
     "apollo-link-batch-http": "^1.2.2",
     "apollo-link-context": "^1.0.8",
     "axios": "^0.16.2",
-    "babel-macros": "^2.0.0",
-    "babel-plugin-macros": "^2.4.2",
     "babel-code-frame": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
+    "babel-macros": "^2.0.0",
     "babel-plugin-detective": "^2.0.0",
     "babel-plugin-dynamic-import-node": "^1.0.2",
     "babel-plugin-jsx-pragmatic": "^1.0.2",
+    "babel-plugin-macros": "^2.4.2",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-system-import": "^1.1.5",
     "babel-plugin-system-import-transformer": "3.1.0",
