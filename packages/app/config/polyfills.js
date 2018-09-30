@@ -9,10 +9,6 @@ if (typeof Promise === 'undefined') {
 // fetch() polyfill for making API calls.
 require('whatwg-fetch');
 
-// Object.assign() is commonly used with React.
-// It will use the native implementation if it's present and isn't buggy.
-Object.assign = require('object-assign');
-
 window.cosmiconfig = {};
 window.prettier = {};
 window.jsdom = {
@@ -28,4 +24,7 @@ window.jsdom = {
 };
 
 // IE11
-require('array.prototype.find').shim();
+require('core-js/fn/array/find');
+require('core-js/fn/array/from');
+require('core-js/fn/object/assign');
+require('core-js/fn/symbol');

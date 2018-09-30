@@ -104,6 +104,7 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*onigasm`),
           new RegExp(`react-icons`),
           new RegExp(`${sepRe}node_modules${sepRe}.*gsap`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*babel-plugin-macros`),
           new RegExp(`sandbox-hooks`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
@@ -124,12 +125,13 @@ module.exports = {
                   esmodules: true,
                 },
                 modules: 'umd',
-                useBuiltIns: 'entry',
+                useBuiltIns: false,
               },
             ],
             '@babel/preset-react',
           ],
           plugins: [
+            '@babel/plugin-transform-template-literals',
             '@babel/plugin-transform-destructuring',
             '@babel/plugin-transform-async-to-generator',
             '@babel/plugin-proposal-object-rest-spread',
