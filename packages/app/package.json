@@ -36,6 +36,7 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "array.prototype.find": "^2.0.4",
     "autoprefixer": "8.5.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.6.0",

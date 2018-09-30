@@ -13,7 +13,7 @@ module.exports = {
           ie: 11,
         },
         // Disable polyfill transforms
-        useBuiltIns: 'entry',
+        useBuiltIns: false,
         modules: false,
         forceAllTransforms: true,
       },
