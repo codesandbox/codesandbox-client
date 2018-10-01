@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import Question from 'react-icons/lib/go/question';
 import EditPenIcon from 'react-icons/lib/md/create';
 
 import { Link } from 'react-router-dom';
@@ -32,6 +33,11 @@ export const PrivacyContainer = styled.span`
   font-size: 0.875rem;
   color: ${props => props.theme.templateColor};
   margin-bottom: 1rem;
+`;
+
+export const FreezeConatainer = styled.span`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 export const Title = styled.div`
@@ -81,3 +87,10 @@ export const EditPen = styled(EditPenIcon)`
     color: ${props => (props.theme.light ? '#636363' : 'white')};
   }
 `;
+
+const iconStyles = css`
+  opacity: 0.5;
+  margin-left: 0.5em;
+`;
+
+export const Icon = styled(Question)(iconStyles);

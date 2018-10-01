@@ -84,6 +84,7 @@ const Sandbox = types.model({
   originalGit: types.maybeNull(Git),
   originalGitCommitSha: types.maybeNull(types.string),
   owned: types.boolean,
+  isFrozen: types.boolean,
   privacy: types.number,
   sourceId: types.string,
   tags: types.array(types.string),

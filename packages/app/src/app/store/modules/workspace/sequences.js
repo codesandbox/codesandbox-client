@@ -3,7 +3,7 @@ import { state, props } from 'cerebral/tags';
 import getTemplate from 'common/templates';
 import * as actions from './actions';
 import {
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   loadSandbox,
   closeModal,
   openModal,
@@ -54,7 +54,7 @@ export const changeValue = [
 ];
 
 export const updateSandboxInfo = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   set(
     state`editor.sandboxes.${state`editor.currentId`}.title`,
     state`workspace.project.title`
@@ -68,7 +68,7 @@ export const updateSandboxInfo = [
 ];
 
 export const addExternalResource = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   push(
     state`editor.sandboxes.${state`editor.currentId`}.externalResources`,
     props`resource`
@@ -84,7 +84,7 @@ export const addExternalResource = [
 ];
 
 export const removeExternalResource = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.removeOptimisticExternalResource,
   actions.removeExternalResource,
   {
@@ -102,7 +102,7 @@ export const removeExternalResource = [
 export const updateTag = [set(state`workspace.tags.tagName`, props`tagName`)];
 
 export const addTag = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   push(
     state`editor.sandboxes.${state`editor.currentId`}.tags`,
     state`workspace.tags.tagName`
@@ -119,7 +119,7 @@ export const addTag = [
 ];
 
 export const removeTag = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.removeTagFromState,
   actions.removeTag,
   set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`tags`),

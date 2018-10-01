@@ -118,6 +118,30 @@ export function setCurrentModuleByTab({ state, props }) {
   }
 }
 
+export function updatePrivacy({ api, props, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .patch(`/sandboxes/${id}/privacy`, {
+      sandbox: {
+        privacy: props.privacy,
+      },
+    })
+    .then(() => undefined);
+}
+
+export function updateFrozen({ api, props, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .put(`/sandboxes/${id}`, {
+      sandbox: {
+        is_frozen: props.frozen,
+      },
+    })
+    .then(() => state.set('editor.currentSandbox.isFrozen', props.frozen));
+}
+
 export function forceRender({ state }) {
   state.set('editor.forceRender', state.get('editor.forceRender') + 1);
 }

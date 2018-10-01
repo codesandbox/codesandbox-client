@@ -84,6 +84,8 @@ export default Module({
     errorsCleared: sequences.clearErrors,
     projectViewToggled: sequences.toggleProjectView,
     previewActionReceived: sequences.handlePreviewAction,
+    privacyUpdated: sequences.updatePrivacy,
+    frozenUpdated: sequences.updateFrozen,
     quickActionsOpened: sequences.openQuickActions,
     quickActionsClosed: sequences.closeQuickActions,
     setPreviewBounds: sequences.setPreviewBounds,
