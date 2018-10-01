@@ -1,5 +1,12 @@
 # Contributing to CodeSandbox Client
 
+## Table of Contents
+
+* [Code Organization](#code-organization)
+* [Setting Up the project locally](#setting-up-the-project-locally)
+* [Submitting a Pull Request](#submitting-a-pull-request)
+* [Add yourself as a contributor](#add-yourself-as-a-contributor)
+
 ## Code Organization
 
 The CodeSandbox client is currently divided in to 5 parts. We use `lerna` to share dependencies between these parts.
