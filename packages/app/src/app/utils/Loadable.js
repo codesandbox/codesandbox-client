@@ -29,7 +29,7 @@ export default loader =>
       const { LoadedComponent, hasTimedOut } = this.state;
 
       if (LoadedComponent) {
-        return <LoadedComponent />;
+        return <LoadedComponent {...this.props} />;
       }
 
       if (hasTimedOut) {
