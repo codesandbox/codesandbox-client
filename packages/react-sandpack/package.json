@@ -12,7 +12,7 @@
     "dist",
     "es"
   ],
-  "sideEffects": false,
+  "sideEffects": "*.css",
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
