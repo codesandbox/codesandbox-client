@@ -26,11 +26,13 @@ export const Name = styled.div`
 `;
 
 export const Username = styled.div`
-  color: ${props =>
-    props.main
-      ? props.theme['editor.foreground'] || 'white'
-      : props.theme.light
-        ? 'rgba(0, 0, 0, 0.6)'
-        : 'rgba(255, 255, 255, 0.6)'};
+  color: ${props => {
+    if (props.main) {
+      return props.theme['editor.foreground'] || 'white';
+    }
+    return props.theme.light
+      ? 'rgba(0, 0, 0, 0.6)'
+      : 'rgba(255, 255, 255, 0.6)';
+  }}
   font-size: ${props => (props.main ? 1 : 0.875)}em;
 `;

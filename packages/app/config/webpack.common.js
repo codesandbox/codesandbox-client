@@ -65,10 +65,7 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.appSrc, 'index.js'),
         ],
-        sandbox: [
-          require.resolve('./polyfills'),
-          path.join(paths.sandboxSrc, 'index.js'),
-        ],
+        sandbox: [path.join(paths.sandboxSrc, 'index.js')],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
         embed: [
           require.resolve('./polyfills'),
@@ -97,26 +94,18 @@ module.exports = {
         loader: 'file-loader',
         type: 'javascript/auto',
       },
-      {
-        test: /\.js$/,
-        include: [paths.src, paths.common, /@emmetio/],
-        exclude: [
-          /eslint\.4\.1\.0\.min\.js$/,
-          /typescriptServices\.js$/,
-          /\.no-webpack\./,
-        ],
-        loader: 'happypack/loader',
-      },
-
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
         test: [
           new RegExp(`${sepRe}node_modules${sepRe}.*ansi-styles`),
           new RegExp(`${sepRe}node_modules${sepRe}.*chalk`),
           new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
-          new RegExp(`sandbox-hooks`),
           new RegExp(`${sepRe}node_modules${sepRe}.*monaco-textmate`),
           new RegExp(`${sepRe}node_modules${sepRe}.*onigasm`),
+          new RegExp(`react-icons`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*gsap`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*babel-plugin-macros`),
+          new RegExp(`sandbox-hooks`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),
@@ -127,24 +116,39 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: [
+            '@babel/preset-flow',
             [
-              'env',
+              '@babel/preset-env',
               {
                 targets: {
                   ie: 11,
                   esmodules: true,
                 },
+                modules: 'umd',
+                useBuiltIns: false,
               },
             ],
-            'react',
+            '@babel/preset-react',
           ],
           plugins: [
-            'transform-async-to-generator',
-            'transform-object-rest-spread',
-            'transform-class-properties',
-            'transform-runtime',
+            '@babel/plugin-transform-template-literals',
+            '@babel/plugin-transform-destructuring',
+            '@babel/plugin-transform-async-to-generator',
+            '@babel/plugin-proposal-object-rest-spread',
+            '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-transform-runtime',
           ],
         },
+      },
+      {
+        test: /\.js$/,
+        include: [paths.src, paths.common, /@emmetio/],
+        exclude: [
+          /eslint\.4\.1\.0\.min\.js$/,
+          /typescriptServices\.js$/,
+          /\.no-webpack\./,
+        ],
+        loader: 'happypack/loader',
       },
 
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
