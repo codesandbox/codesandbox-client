@@ -50,7 +50,7 @@ export default function setScreen(screen: Screen) {
         }
 
         firstLoaded = null;
-      }, 600);
+      }, 1000);
     }
   } else if (currentScreen) {
     changeText(currentScreen.text);
