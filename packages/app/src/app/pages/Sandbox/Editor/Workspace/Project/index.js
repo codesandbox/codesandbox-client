@@ -267,7 +267,7 @@ class Project extends React.Component {
           </PropertyValue>
         </Item>
         {sandbox.owned ? (
-          <Item flex>
+          <Item style={{ marginTop: 5 }} flex>
             <PropertyName>
               Frozen
               <Tooltip title="When true this sandbox will fork on edit">
@@ -280,6 +280,8 @@ class Project extends React.Component {
                   small
                   right={sandbox.isFrozen}
                   onClick={this.updateFrozenState}
+                  offMode
+                  secondary
                 />
               </FreezeConatainer>
             </PropertyValue>
