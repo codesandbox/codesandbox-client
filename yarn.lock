@@ -2756,10 +2756,10 @@ align-text@^0.1.1, align-text@^0.1.3:
     longest "^1.0.1"
     repeat-string "^1.5.2"
 
-all-contributors-cli@^4.3.0:
-  version "4.11.2"
-  resolved "https://registry.yarnpkg.com/all-contributors-cli/-/all-contributors-cli-4.11.2.tgz#b8bf1e1d08181be76ca4ebeb7869d3fdfbcf5557"
-  integrity sha512-E1hfoxpCWes+YUvYP9IuaQMg6gs//5iRearVeDfgrxUNr6MFP0BGJwhZb33usiNCO7Sl3lasbpAfWNmfvXb1Bg==
+all-contributors-cli@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/all-contributors-cli/-/all-contributors-cli-5.4.0.tgz#a2870d83920d5f16bece0045649f9ebbf7315909"
+  integrity sha512-5PyNy5BvIl/xQW37dlRFnAzasg414/m7zhm+qtSYLeTJ/NJ4Nmwvt3T4qYLaUS84YxBNy7OpTWoay3OzhjmUbQ==
   dependencies:
     async "^2.0.0-rc.1"
     chalk "^2.3.0"
@@ -3268,22 +3268,6 @@ array-unique@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
   integrity sha1-qJS3XUvE9s1nnvMkSp/Y9Gri1Cg=
-
-array.from@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/array.from/-/array.from-1.0.3.tgz#cb586aad92067f341229f41e0ed643281dba56b7"
-  integrity sha1-y1hqrZIGfzQSKfQeDtZDKB26Vrc=
-  dependencies:
-    define-properties "^1.1.2"
-    es-abstract "^1.6.1"
-
-array.prototype.find@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/array.prototype.find/-/array.prototype.find-2.0.4.tgz#556a5c5362c08648323ddaeb9de9d14bc1864c90"
-  integrity sha1-VWpcU2LAhkgyPdrrnenRS8GGTJA=
-  dependencies:
-    define-properties "^1.1.2"
-    es-abstract "^1.7.0"
 
 array.prototype.flat@^1.2.1:
   version "1.2.1"
