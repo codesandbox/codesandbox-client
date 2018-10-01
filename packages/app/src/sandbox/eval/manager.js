@@ -5,6 +5,8 @@ import localforage from 'localforage';
 
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
+import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
+import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
@@ -17,8 +19,6 @@ import fetchModule, {
 } from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
-import DependencyNotFoundError from '../errors/dependency-not-found-error';
-import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import isESModule from './utils/is-es-module';

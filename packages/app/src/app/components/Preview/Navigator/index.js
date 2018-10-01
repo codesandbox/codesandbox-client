@@ -33,6 +33,7 @@ function Navigator({
   alignRight,
   alignBottom,
   alignDirection,
+  isServer,
 }) {
   return (
     <Container className="flying-container-handler" style={{ cursor: 'move' }}>
@@ -87,6 +88,7 @@ function Navigator({
         </Icon>
       )}
       {!zenMode &&
+        !isServer &&
         toggleProjectView && (
           <SwitchContainer>
             <Tooltip

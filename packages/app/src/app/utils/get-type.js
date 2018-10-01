@@ -13,6 +13,7 @@ const htmlRegex = /\.html$/;
 const mdRegex = /\.md$/;
 const vueRegex = /\.vue$/;
 const svgRegex = /\.svg$/;
+const reasonRegex = /\.re$/;
 
 export function getMode(title: string = '') {
   if (title === 'favicon.ico') {
@@ -46,6 +47,7 @@ export function getMode(title: string = '') {
   if (vueRegex.test(title)) return 'vue';
   if (svgRegex.test(title)) return 'svg';
   if (sassRegex.test(title)) return 'sass';
+  if (reasonRegex.test(title)) return 'reason';
   if (!title.includes('.')) return 'raw';
 
   if (isImage(title)) {

@@ -347,10 +347,28 @@ class SandboxItem extends React.PureComponent<Props> {
       );
     }
 
+    const templateDefinition = getTemplate(this.props.template);
+
+    if (templateDefinition.isServer) {
+      return `Container Sandbox`;
+    }
+
+    if (process.env.STAGING) {
+      return `Staging Sandbox`;
+    }
+
     return `Generating Screenshot...`;
   };
 
-  hasScreenshot = () => !this.props.removedAt && this.props.privacy !== 2;
+  hasScreenshot = () => {
+    const templateDefinition = getTemplate(this.props.template);
+
+    if (templateDefinition.isServer) {
+      return false;
+    }
+
+    return !this.props.removedAt && this.props.privacy !== 2;
+  };
 
   render() {
     const {

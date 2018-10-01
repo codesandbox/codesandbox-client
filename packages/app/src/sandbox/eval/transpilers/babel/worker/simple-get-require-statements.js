@@ -1,5 +1,6 @@
-const lineRegex = /require\(['|"|`]([^"|'|`]*)['|"|`]\)|require\((.*)\)/g;
-const partRegex = /require\(['|"|`]([^"|'|`]*)['|"|`]\)|require\((.*)\)/;
+const lineRegex = /require\s*\(['|"|`]([^"|'|`]*)['|"|`]\)|require\s*\((.*)\)/g;
+const partRegex = /require\s*\(['|"|`]([^"|'|`]*)['|"|`]\)|require\s*\((.*)\)/;
+const commentRegex = /^(\s*\*)|^(\/\/)/;
 
 /**
  * This is the regex version of getting all require statements, it makes the assumption
@@ -8,6 +9,10 @@ const partRegex = /require\(['|"|`]([^"|'|`]*)['|"|`]\)|require\((.*)\)/;
 export default function getRequireStatements(code: string) {
   const results = [];
   code.split('\n').forEach(line => {
+    if (commentRegex.test(line)) {
+      // It's most probably a comment
+      return;
+    }
     const matches = line.match(lineRegex);
     if (matches) {
       matches.forEach(codePart => {

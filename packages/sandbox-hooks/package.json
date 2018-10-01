@@ -1,0 +1,9 @@
+{
+  "name": "sandbox-hooks",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "codesandbox-api": "^0.0.18",
+    "console-feed": "^2.8.1"
+  }
+}

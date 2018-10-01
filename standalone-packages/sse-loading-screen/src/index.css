@@ -1,0 +1,129 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Monsterrat', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  background-color: #141618;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 800px;
+}
+
+.title {
+  margin-top: 2rem;
+  color: white;
+  font-size: 2rem;
+  width: 100%;
+  font-weight: 100;
+  text-align: center;
+  margin-bottom: 10%;
+}
+
+#cube {
+  position: relative;
+  align-items: center;
+  display: flex;
+  height: 250px;
+  justify-content: center;
+  width: 100%;
+}
+
+#loading {
+  color: white;
+  box-sizing: border-box;
+  max-width: 600px;
+  width: 100%;
+  font-size: 1.5rem;
+  font-weight: 200;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 1rem;
+}
+
+#loading-text {
+  margin-bottom: 24px;
+}
+
+#loading-bar {
+  width: 100%;
+  background-color: black;
+  height: 12px;
+
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#loading-progress {
+  width: 0%;
+  background-color: rgb(64, 169, 243);
+  height: 100%;
+}
+
+#term {
+  height: 4rem;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+#start-btn {
+  background-color: #40a9f3;
+  border: 2px solid #66b9f4;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: white;
+  font-size: 20px;
+  height: 40px;
+  transition: all 0.3s ease 0s;
+  text-align: center;
+  width: 240px;
+}
+#start-btn:hover {
+  background-color: #66b9f4;
+}
+.xterm {
+  padding: 5px;
+}
+.xterm .xterm-viewport {
+  overflow-y: auto !important;
+}
+
+.xterm-cursor {
+  outline: transparent !important;
+}

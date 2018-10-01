@@ -1,23 +1,28 @@
 // @flow
+
 import type {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
+  Preferences,
 } from 'common/types';
 
-export type Settings = {
-  autoCompleteEnabled: boolean,
-  autoDownloadTypes: boolean,
-  codeMirror: boolean,
-  fontFamily?: string,
-  fontSize: number,
-  lineHeight: number,
-  lintEnabled: boolean,
-  vimMode: boolean,
-  tabWidth: number,
-  enableLigatures: boolean,
-};
+export type Settings =
+  | Preferences
+  | {
+      autoCompleteEnabled: boolean,
+      autoDownloadTypes: boolean,
+      codeMirror: boolean,
+      fontFamily?: string,
+      fontSize: number,
+      lineHeight: number,
+      lintEnabled: boolean,
+      vimMode: boolean,
+      tabWidth: number,
+      enableLigatures: boolean,
+      forceRefresh: boolean,
+    };
 
 type ModuleTab = {
   type: 'MODULE',

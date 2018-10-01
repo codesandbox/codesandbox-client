@@ -2,14 +2,14 @@ import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
+import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 
-import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
 
 import { resetScreen } from './status-screen';
 
-import { inject, unmount } from './react-error-overlay/overlay';
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 
@@ -109,10 +109,10 @@ const BABEL_DEPENDENCIES = [
 // system in the future
 const PREINSTALLED_DEPENDENCIES = [
   'node-lib-browser',
-  'babel-runtime',
   'react-scripts',
   'react-scripts-ts',
   'parcel-bundler',
+  '@babel/runtime',
   'babel-plugin-check-es2015-constants',
   'babel-plugin-external-helpers',
   'babel-plugin-inline-replace-variables',
@@ -201,7 +201,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
     devDependencies = {},
   } = parsedPackage;
 
-  const returnedDependencies = { ...peerDependencies, ...d };
+  let returnedDependencies = { ...peerDependencies };
 
   const foundWhitelistedDevDependencies = [...WHITELISTED_DEV_DEPENDENCIES];
 
@@ -232,6 +232,16 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       });
   }
 
+  Object.keys(d).forEach(dep => {
+    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
+
+    if (dep === 'reason-react') {
+      return; // is replaced
+    }
+
+    returnedDependencies[usedDep] = d[dep];
+  });
+
   Object.keys(devDependencies).forEach(dep => {
     const usedDep = DEPENDENCY_ALIASES[dep] || dep;
     if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
@@ -246,6 +256,19 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       ...BABEL_DEPENDENCIES,
     ];
   }
+
+  if (templateDefinition.name === 'reason') {
+    returnedDependencies = {
+      ...returnedDependencies,
+      '@jaredly/bs-core': '3.0.0-alpha.2',
+      '@jaredly/reason-react': '0.3.4',
+    };
+  }
+
+  // Always include this, because most sandboxes need this with babel6 and the
+  // packager will only include the package.json for it.
+  returnedDependencies['babel-runtime'] =
+    returnedDependencies['babel-runtime'] || '6.26.0';
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
