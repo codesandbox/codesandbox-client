@@ -38,7 +38,7 @@
   "main": "n/a",
   "scripts": {
     "patch": "sed -i -e 's/if(c\\.initial) return;/if(!c||c.initial) return;/g' ./node_modules/extract-text-webpack-plugin/index.js",
-    "build": "rm -rf node_modules/graphql && gatsby build && yarn remove-styles",
+    "build": "rimraf node_modules/graphql && gatsby build && yarn remove-styles",
     "build:clean": "rimraf public",
     "remove-styles": "rimraf public/styles.css",
     "start": "gatsby develop",
