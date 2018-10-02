@@ -1,7 +1,7 @@
 import React from 'react';
 
-export default () => (
-  <svg width="32px" height="32px" viewBox="0 0 260 260" version="1.1" xmlns="http://www.w3.org/2000/svg">
+export default ({ width = 32, height = 32, className }) => (
+  <svg width={`${width}px`} height={`${height}px`} className={className} viewBox="0 0 260 260" version="1.1" xmlns="http://www.w3.org/2000/svg">
     <g id="ember-favicon" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <rect id="Rectangle-26" fill="#E05C43" fillRule="nonzero" x="0" y="0" width="260" height="260" rx="25" />
         <g id="EmberConf-E-Icon" transform="translate(24.086426, 47.469141)" fill="#FEFEFE">
