@@ -256,9 +256,9 @@ self.addEventListener('message', async event => {
   } else if (version === 7) {
     loadCustomTranspiler(
       process.env.NODE_ENV === 'development'
-        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-beta.js`
+        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
         : `${process.env.CODESANDBOX_HOST ||
-            ''}/static/js/babel.7.00-beta-1.min.js`
+            ''}/static/js/babel.7.00-1.min.js`
     );
   }
 
