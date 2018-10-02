@@ -401,7 +401,7 @@ export default class TranspiledModule {
       },
       addDependency: (depPath: string, options = {}) => {
         if (
-          depPath.startsWith('@babel/runtime') ||
+          depPath.startsWith('@babel/runtime/') ||
           depPath.startsWith('codesandbox-api')
         ) {
           return;
@@ -836,7 +836,7 @@ export default class TranspiledModule {
         // So it must be a dependency
         if (
           path.startsWith('codesandbox-api') ||
-          path.startsWith('@babel/runtime')
+          path.startsWith('@babel/runtime/')
         ) {
           return resolveDependency(path, manager.externals);
         }
