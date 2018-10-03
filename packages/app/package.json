@@ -86,7 +86,6 @@
     "prettier": "^1.8.2",
     "preval.macro": "^1.0.1",
     "promise": "7.1.1",
-    "puppeteer": "^1.8.0",
     "raw-loader": "^0.5.1",
     "react-hot-loader": "^4.0.0-beta.13",
     "react-test-renderer": "16",
