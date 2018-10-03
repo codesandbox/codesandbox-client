@@ -19,7 +19,7 @@ function isVersion2(configurations) {
     const reactScriptsVersion =
       configurations.package.parsed.dependencies['react-scripts'];
 
-    return semver.satisfies(reactScriptsVersion, '^2.0.0');
+    return semver.intersects(reactScriptsVersion, '^2.0.0');
   }
 
   return false;
@@ -40,6 +40,7 @@ export default function initialize() {
             config: {
               plugins: [
                 'babel-plugin-macros',
+                'proposal-class-properties',
                 'proposal-object-rest-spread',
                 'transform-runtime',
                 'syntax-dynamic-import',

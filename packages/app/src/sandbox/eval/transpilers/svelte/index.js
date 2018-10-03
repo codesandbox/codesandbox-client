@@ -20,7 +20,7 @@ class SvelteTranspiler extends WorkerTranspiler {
       packageJSON.parsed &&
       packageJSON.parsed.devDependencies &&
       packageJSON.parsed.devDependencies.svelte &&
-      semver.satisfies(packageJSON.parsed.devDependencies.svelte, '^2.0.0');
+      semver.intersects(packageJSON.parsed.devDependencies.svelte, '^2.0.0');
 
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
