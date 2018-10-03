@@ -23,7 +23,7 @@ function isVersion2(configurations) {
     return semver.intersects(reactScriptsVersion, '^2.0.0');
   }
 
-  return true;
+  return false;
 }
 
 export default function initialize() {
