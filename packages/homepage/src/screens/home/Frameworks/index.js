@@ -257,7 +257,7 @@ const TEMPLATE_SUPPORT = {
     description: 'Used for any kind of project, based on: ',
   },
   ember: {
-    loaders: [js, ts, image, ts, scss, sass, less],
+    loaders: [js, ts, image, scss, sass, less],
     css: ['Global', 'Modules'],
     description: 'Used for any kind of project, based on: ',
   },
