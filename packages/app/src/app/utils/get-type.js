@@ -49,7 +49,7 @@ export function getMode(title: string = '') {
 }
 
 const tsRegex = /\.tsx?$/;
-function isJS(title: string) {
+function isTS(title: string) {
   if (
     tsRegex.test(title) ||
     title === 'tsconfig.json' ||
@@ -60,9 +60,9 @@ function isJS(title: string) {
 }
 
 export default function getType(title: string) {
-  const isJSType = isJS(title);
-  if (isJSType) {
-    return isJSType;
+  const isTSType = isTS(title);
+  if (isTSType) {
+    return isTSType;
   }
 
   return getMode(title);
