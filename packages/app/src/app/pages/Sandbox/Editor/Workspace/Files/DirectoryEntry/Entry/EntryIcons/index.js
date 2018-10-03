@@ -28,6 +28,8 @@ class GetIcon extends Component {
 
   render() {
     const { type, error, width, height } = this.props;
+    const { icon } = this.state;
+
     if (error) {
       return (
         <RedIcon>
@@ -35,14 +37,7 @@ class GetIcon extends Component {
         </RedIcon>
       );
     }
-    return (
-      <SVGIcon
-        style={{ 'background-image': `url(${this.state.icon})` }}
-        type={type}
-        width={width}
-        height={height}
-      />
-    );
+    return <SVGIcon url={icon} type={type} width={width} height={height} />;
   }
 }
 

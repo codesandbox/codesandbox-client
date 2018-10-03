@@ -7,6 +7,7 @@ export const RedIcon = styled.span`
 `;
 
 export const SVGIcon = styled.span`
+  background-image: url(${props => props.url});
   background-size: ${props => props.width}px;
   background-position: 0;
   background-repeat: no-repeat;
