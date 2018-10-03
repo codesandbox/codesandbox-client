@@ -5,35 +5,46 @@ const mdRegex = /\.md$/;
 const yamlRegex = /\.yml$/;
 const svgRegex = /\.svg$/;
 const jsxRegex = /\.jsx$/;
+const tsRegex = /\.tsx?$/;
+const jsRegex = /\.js$/;
+const reasonRegex = /\.re$/;
+const sassRegex = /\.scss$/;
 
 export function getMode(title: string = '') {
-  const removeIgnoreTitle = title.split('ignore')[0];
+  const removeIgnoreTitle = title.split('ignore')[0].toLowerCase();
 
-  if (removeIgnoreTitle === 'favicon.ico') {
-    return 'favicon';
-  }
+  // EXCEPTIONS
 
-  if (removeIgnoreTitle === 'yarn.lock') {
-    return 'yarn';
-  }
+  if (removeIgnoreTitle === 'favicon.ico') return 'favicon';
+  if (removeIgnoreTitle === 'yarn.lock') return 'yarn';
+  if (removeIgnoreTitle === '.travis.yml') return 'travis';
+  if (removeIgnoreTitle === 'package.json') return 'npm';
+  if (removeIgnoreTitle === 'sandbox.config.json') return 'codesandbox';
+  if (removeIgnoreTitle === 'readme.md') return 'readme';
+  if (removeIgnoreTitle === 'contributing.md') return 'contributing';
 
-  if (removeIgnoreTitle === '.travis.yml') {
-    return 'travis';
-  }
-
-  if (removeIgnoreTitle === 'package.json') {
-    return 'npm';
-  }
-
-  if (removeIgnoreTitle === 'sandbox.config.json') {
-    return 'codesandbox';
-  }
-
+  // TEST BASED
   if (mdRegex.test(removeIgnoreTitle)) return 'markdown';
   if (yamlRegex.test(removeIgnoreTitle)) return 'yaml';
-  if (jsxRegex.test(removeIgnoreTitle)) return 'reactjs';
+  if (jsxRegex.test(removeIgnoreTitle)) return 'react';
+  if (reasonRegex.test(removeIgnoreTitle)) return 'reason';
+  if (sassRegex.test(removeIgnoreTitle)) return 'sass';
   if (!removeIgnoreTitle.includes('.')) return 'raw';
+  if (removeIgnoreTitle.startsWith('.flow')) return 'flow';
+  if (
+    removeIgnoreTitle.endsWith('.module.ts') ||
+    removeIgnoreTitle.endsWith('.component.ts')
+  )
+    return 'angular';
   if (removeIgnoreTitle.includes('webpack')) return 'webpack';
+  if (jsRegex.test(removeIgnoreTitle)) return 'javascript';
+  if (
+    tsRegex.test(title) ||
+    title === 'tsconfig.json' ||
+    title === 'tslint.json'
+  ) {
+    return 'typescript';
+  }
 
   if (isImage(removeIgnoreTitle) && !svgRegex.test(removeIgnoreTitle)) {
     return 'image';
@@ -48,22 +59,6 @@ export function getMode(title: string = '') {
   return titleArr[titleArr.length - 1];
 }
 
-const tsRegex = /\.tsx?$/;
-function isTS(title: string) {
-  if (
-    tsRegex.test(title) ||
-    title === 'tsconfig.json' ||
-    title === 'tslint.json'
-  )
-    return 'typescript';
-  return undefined;
-}
-
 export default function getType(title: string) {
-  const isTSType = isTS(title);
-  if (isTSType) {
-    return isTSType;
-  }
-
   return getMode(title);
 }

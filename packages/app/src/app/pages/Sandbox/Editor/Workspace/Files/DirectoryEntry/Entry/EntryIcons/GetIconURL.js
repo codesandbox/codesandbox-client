@@ -52,23 +52,16 @@ const icons = {
   reason: reasonSvg,
 };
 
-const directoryMapping = {
-  'directory-open': 'default_folder_opened',
-  directory: 'default_folder',
-};
-
 async function getIconURL(type) {
   const base =
-    'https://cdn.rawgit.com/vscode-icons/vscode-icons/806a23ec/icons';
+    'https://cdn.rawgit.com/PKief/vscode-material-icon-theme/e04ab459/icons/';
 
   let url;
 
-  if (type === 'directory-open' || type === 'directory') {
-    url = `${base}/${directoryMapping[type]}.svg`;
-  } else if (type === 'codesandbox') {
+  if (type === 'codesandbox') {
     url = codesandboxSvg;
   } else {
-    url = `${base}/file_type_${type}.svg`;
+    url = `${base}/${type}.svg`;
   }
 
   try {
