@@ -31,7 +31,6 @@ export function getMode(title: string = '') {
   if (sassRegex.test(removeIgnoreTitle)) return 'sass';
   if (!removeIgnoreTitle.includes('.')) return 'raw';
   if (removeIgnoreTitle.startsWith('.flow')) return 'flow';
-  if (removeIgnoreTitle.startsWith('.git')) return 'git';
   if (
     removeIgnoreTitle.endsWith('.module.ts') ||
     removeIgnoreTitle.endsWith('.component.ts')
