@@ -1267,7 +1267,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemas: [
-        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions,
+        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions.schemas,
         ...monacoSchemas,
       ],
     });
