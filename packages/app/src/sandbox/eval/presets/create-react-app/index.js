@@ -14,12 +14,13 @@ function isVersion2(configurations) {
     configurations &&
     configurations.package &&
     configurations.package.parsed &&
-    configurations.package.parsed.dependencies
+    configurations.package.parsed.dependencies &&
+    configurations.package.parsed.dependencies['react-scripts']
   ) {
     const reactScriptsVersion =
       configurations.package.parsed.dependencies['react-scripts'];
 
-    return semver.intersects(reactScriptsVersion || '2.0.0', '^2.0.0');
+    return semver.intersects(reactScriptsVersion, '^2.0.0');
   }
 
   return true;
