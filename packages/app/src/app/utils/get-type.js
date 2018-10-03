@@ -1,74 +1,67 @@
 /* @flow */
 import isImage from 'common/utils/is-image';
 
-const reactRegex = /import.*from\s['|"]react['|"]/;
-export function hasReact(code: string) {
-  return reactRegex.test(code);
-}
-
-const cssRegex = /\.css$/;
-const sassRegex = /\.s[a|c]ss$/;
-const jsonRegex = /\.json$/;
-const htmlRegex = /\.html$/;
 const mdRegex = /\.md$/;
-const vueRegex = /\.vue$/;
+const yamlRegex = /\.yml$/;
 const svgRegex = /\.svg$/;
-const reasonRegex = /\.re$/;
+const jsxRegex = /\.jsx$/;
 
 export function getMode(title: string = '') {
-  if (title === 'favicon.ico') {
+  const removeIgnoreTitle = title.split('ignore')[0];
+
+  if (removeIgnoreTitle === 'favicon.ico') {
     return 'favicon';
   }
 
-  if (title === 'yarn.lock') {
+  if (removeIgnoreTitle === 'yarn.lock') {
     return 'yarn';
   }
 
-  if (title === 'package.json') {
+  if (removeIgnoreTitle === '.travis.yml') {
+    return 'travis';
+  }
+
+  if (removeIgnoreTitle === 'package.json') {
     return 'npm';
   }
 
-  if (title === '.prettierrc') {
-    return 'prettier';
-  }
-
-  if (title === 'sandbox.config.json') {
+  if (removeIgnoreTitle === 'sandbox.config.json') {
     return 'codesandbox';
   }
 
-  if (title === '.babelrc') {
-    return 'babel';
-  }
+  if (mdRegex.test(removeIgnoreTitle)) return 'markdown';
+  if (yamlRegex.test(removeIgnoreTitle)) return 'yaml';
+  if (jsxRegex.test(removeIgnoreTitle)) return 'reactjs';
+  if (!removeIgnoreTitle.includes('.')) return 'raw';
+  if (removeIgnoreTitle.includes('webpack')) return 'webpack';
 
-  if (cssRegex.test(title)) return 'css';
-  if (jsonRegex.test(title)) return 'json';
-  if (htmlRegex.test(title)) return 'html';
-  if (mdRegex.test(title)) return 'md';
-  if (vueRegex.test(title)) return 'vue';
-  if (svgRegex.test(title)) return 'svg';
-  if (sassRegex.test(title)) return 'sass';
-  if (reasonRegex.test(title)) return 'reason';
-  if (!title.includes('.')) return 'raw';
-
-  if (isImage(title)) {
+  if (isImage(removeIgnoreTitle) && !svgRegex.test(removeIgnoreTitle)) {
     return 'image';
   }
 
-  return '';
+  const titleArr = removeIgnoreTitle.split('.');
+
+  if (removeIgnoreTitle.endsWith('rc')) {
+    return titleArr.join('').split('rc')[0];
+  }
+
+  return titleArr[titleArr.length - 1];
 }
 
-const jsRegex = /\.jsx?$/;
 const tsRegex = /\.tsx?$/;
 function isJS(title: string) {
-  if (jsRegex.test(title)) return 'js';
-  if (tsRegex.test(title)) return 'ts';
+  if (
+    tsRegex.test(title) ||
+    title === 'tsconfig.json' ||
+    title === 'tslint.json'
+  )
+    return 'typescript';
   return undefined;
 }
 
 export default function getType(title: string) {
   const isJSType = isJS(title);
   if (isJSType) {
-    // if (hasReact(code || '')) return 'react';
     return isJSType;
   }
 
