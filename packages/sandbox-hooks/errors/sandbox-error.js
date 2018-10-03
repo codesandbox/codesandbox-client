@@ -5,8 +5,9 @@ type Suggestion = {
   title: string,
   action: Function,
 };
+const ErrorClass = Error;
 
-export default class SandboxError extends Error {
+export default class SandboxError extends ErrorClass {
   severity: 'error' | 'warning';
   type: string;
   module: Module;

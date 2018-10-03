@@ -461,7 +461,7 @@ export default class TranspiledModule {
       resolveTranspiledModuleAsync: (depPath: string, options = {}) =>
         manager.resolveTranspiledModuleAsync(
           depPath,
-          options.isAbsolute ? '/' : this.module.path,
+          options.isAbsolute ? null : this,
           options.ignoredExtensions
         ),
       getModules: (): Array<Module> => manager.getModules(),
