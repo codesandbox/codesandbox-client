@@ -4,6 +4,7 @@ export function getUser({ api, props }) {
 
 export function deleteSandbox({ api, state }) {
   const sandboxId = state.get(`profile.sandboxToDeleteId`);
+  const sandboxCount = state.get('profile.current.sandboxCount');
 
   return api
     .request({
@@ -13,7 +14,9 @@ export function deleteSandbox({ api, state }) {
         id: sandboxId,
       },
     })
-    .then(() => state.set(`profile.current.sandboxCount - 1`));
+    .then(() => {
+      state.set(`profile.current.sandboxCount`, sandboxCount - 1);
+    });
 }
 
 export function getAllUserSandboxes({ api }) {
