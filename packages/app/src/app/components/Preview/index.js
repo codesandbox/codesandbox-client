@@ -572,16 +572,14 @@ class BasePreview extends React.Component<Props, State> {
         });
         break;
       case 'REPLACE':
-        this.setState(prevState => {
-          return {
-            history: [
-              ...prevState.history.slice(0, historyPosition),
-              url,
-              ...prevState.history.slice(historyPosition + 1),
-            ],
-            urlInAddressBar: url,
-          };
-        });
+        this.setState(prevState => ({
+          history: [
+            ...prevState.history.slice(0, historyPosition),
+            url,
+            ...prevState.history.slice(historyPosition + 1),
+          ],
+          urlInAddressBar: url,
+        }));
         break;
       default:
         this.setState({
