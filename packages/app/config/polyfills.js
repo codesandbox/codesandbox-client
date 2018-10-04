@@ -15,7 +15,9 @@ g.cosmiconfig = {};
 g.prettier = {};
 g.jsdom = {
   JSDOM: {
-    fragment: function(htmlString) {
+    // IE11 support
+    // eslint-disable-next-line object-shorthand
+    fragment: function fragment(htmlString) {
       const div = document.createElement('div');
       div.innerHTML = htmlString.trim();
 
