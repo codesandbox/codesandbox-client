@@ -60,10 +60,11 @@ To install the project you need to have `yarn` and `node`
 
 Please go through existing issues and pull requests to check if somebody else is already working on it, we use `someone working on it` label to mark such issues.
 
-Also, make sure to run the tests before you commit your changes.
+Also, make sure to run the tests and lint the code before you commit your changes.
 
 ```
 yarn test
+yarn lint
 ```
 
 ## Add yourself as a contributor
