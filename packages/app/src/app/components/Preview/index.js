@@ -378,7 +378,7 @@ class BasePreview extends React.Component<Props, State> {
             break;
           }
           case 'urlchange': {
-            this.commitUrl(data.url);
+            this.commitUrl(data.url, data.action, data.diff);
             break;
           }
           case 'resize': {
@@ -570,17 +570,40 @@ class BasePreview extends React.Component<Props, State> {
     });
   };
 
-  commitUrl = (url: string) => {
+  commitUrl = (url: string, action: string, diff: number) => {
     const { history, historyPosition } = this.state;
 
     const currentHistory = history[historyPosition] || '';
     if (currentHistory !== url) {
-      history.length = historyPosition + 1;
-      this.setState({
-        history: [...history, url],
-        historyPosition: historyPosition + 1,
-        urlInAddressBar: url,
-      });
+      switch (action) {
+        case 'POP':
+          this.setState(prevState => {
+            const newPosition = prevState.historyPosition + diff;
+            return {
+              historyPosition: newPosition,
+              urlInAddressBar: url,
+            };
+          });
+          break;
+        case 'REPLACE':
+          this.setState(prevState => {
+            return {
+              history: [
+                ...prevState.history.slice(0, historyPosition),
+                url,
+                ...prevState.history.slice(historyPosition + 1),
+              ],
+              urlInAddressBar: url,
+            };
+          });
+          break;
+        default:
+          this.setState({
+            history: [...history, url],
+            historyPosition: historyPosition + 1,
+            urlInAddressBar: url,
+          });
+      }
     }
   };
 
