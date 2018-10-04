@@ -78,7 +78,7 @@ requirePolyfills().then(() => {
     sendReady();
 
     setupHistoryListeners();
-    // setupConsole();
+    setupConsole();
   }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
