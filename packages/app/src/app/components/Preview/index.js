@@ -550,60 +550,45 @@ class BasePreview extends React.Component<Props, State> {
     dispatch({
       type: 'urlback',
     });
-
-    const { historyPosition, history } = this.state;
-    this.setState({
-      historyPosition: this.state.historyPosition - 1,
-      urlInAddressBar: history[historyPosition - 1],
-    });
   };
 
   handleForward = () => {
     dispatch({
       type: 'urlforward',
     });
-
-    const { historyPosition, history } = this.state;
-    this.setState({
-      historyPosition: this.state.historyPosition + 1,
-      urlInAddressBar: history[historyPosition + 1],
-    });
   };
 
   commitUrl = (url: string, action: string, diff: number) => {
     const { history, historyPosition } = this.state;
 
-    const currentHistory = history[historyPosition] || '';
-    if (currentHistory !== url) {
-      switch (action) {
-        case 'POP':
-          this.setState(prevState => {
-            const newPosition = prevState.historyPosition + diff;
-            return {
-              historyPosition: newPosition,
-              urlInAddressBar: url,
-            };
-          });
-          break;
-        case 'REPLACE':
-          this.setState(prevState => {
-            return {
-              history: [
-                ...prevState.history.slice(0, historyPosition),
-                url,
-                ...prevState.history.slice(historyPosition + 1),
-              ],
-              urlInAddressBar: url,
-            };
-          });
-          break;
-        default:
-          this.setState({
-            history: [...history, url],
-            historyPosition: historyPosition + 1,
+    switch (action) {
+      case 'POP':
+        this.setState(prevState => {
+          const newPosition = prevState.historyPosition + diff;
+          return {
+            historyPosition: newPosition,
             urlInAddressBar: url,
-          });
-      }
+          };
+        });
+        break;
+      case 'REPLACE':
+        this.setState(prevState => {
+          return {
+            history: [
+              ...prevState.history.slice(0, historyPosition),
+              url,
+              ...prevState.history.slice(historyPosition + 1),
+            ],
+            urlInAddressBar: url,
+          };
+        });
+        break;
+      default:
+        this.setState({
+          history: [...history, url],
+          historyPosition: historyPosition + 1,
+          urlInAddressBar: url,
+        });
     }
   };
 
