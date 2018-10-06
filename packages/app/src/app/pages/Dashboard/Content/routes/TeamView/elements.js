@@ -20,6 +20,10 @@ export const Section = styled.div`
 
 export const Members = styled.div`
   margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    margin-left: 1rem;
+  }
 `;
 
 export const MemberHeader = styled.div`

@@ -30,7 +30,7 @@ class NewSandboxComponent extends React.PureComponent {
           <Margin top={9}>
             <Centered horizontal vertical>
               <Title>New Sandbox</Title>
-              <Margin style={{ width: 950 }} top={2}>
+              <Margin style={{ maxWidth: '100%', width: 950 }} top={2}>
                 <NewSandboxModal
                   createSandbox={this.createSandbox}
                   width={950}
