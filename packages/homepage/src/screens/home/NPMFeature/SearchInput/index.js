@@ -28,20 +28,14 @@ export default class SearchInput extends React.PureComponent {
   }
 
   searchQuery = (query: string) => {
-    searchFacets({ facet: 'npm_dependencies.dependency', query }).then(res => {
-      const { facetHits } = res;
-
-      facetHits.sort((a, b) => {
-        if (a.value === query) {
-          return -1;
-        } else if (b.value === query) {
-          return 1;
-        }
-
-        return 0;
+    searchFacets({
+      facet: 'npm_dependencies.dependency',
+      query,
+      hitsPerPage: 3,
+    }).then(({ facetHits }) => {
+      this.setState({
+        hits: facetHits,
       });
-
-      this.setState({ hits: facetHits.slice(0, 3) });
     });
   };
 
@@ -53,7 +47,9 @@ export default class SearchInput extends React.PureComponent {
           <div>Dependency</div>
           <div>Sandbox Count</div>
         </Legend>
-        {this.state.hits.map((hit, i) => <Hit key={i} hit={hit} />)}
+        {this.state.hits.map((hit, i) => (
+          <Hit key={i} hit={hit} />
+        ))}
         <a
           href="https://www.algolia.com/?utm_source=algoliaclient&utm_medium=website&utm_content=codesandbox.io&utm_campaign=poweredby"
           target="_blank"
