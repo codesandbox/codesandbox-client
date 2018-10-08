@@ -1,50 +1,57 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-  <meta charset="utf-8">
-  <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-  <meta property="og:type" content="website">
-  <meta property="og:author" content='https://ivesvh.com'>
-  <meta property="og:title" content="CodeSandbox">
-  <meta property="og:site_name" content="CodeSandbox">
-  <meta property="og:description" content="CodeSandbox is an online editor tailored for web applications.">
-  <meta property="og:image" content="https://codesandbox.io/static/img/banner.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:site" content="@codesandboxapp">
-  <meta property="twitter:title" content="CodeSandbox">
-  <meta property="twitter:description" content="An online editor tailored for web application development.">
-  <meta property="twitter:image:src" content="https://codesandbox.io/static/img/banner.png">
-  <meta property="twitter:image:width" content="1200">
-  <meta property="twitter:image:height" content="630">
-  <meta name="theme-color" content="#40A9F3">
-  <meta name="description" content="CodeSandbox is an online editor tailored for web applications.">
-  <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="manifest" href="/manifest.json">
+  <head>
+    <meta charset="utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta property="og:type" content="website">
+    <meta property="og:author" content='https://ivesvh.com'>
+    <meta property="og:title" content="CodeSandbox">
+    <meta property="og:site_name" content="CodeSandbox">
+    <meta property="og:description" content="CodeSandbox is an online editor
+      tailored for web applications.">
+    <meta property="og:image"
+      content="https://codesandbox.io/static/img/banner.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:site" content="@codesandboxapp">
+    <meta property="twitter:title" content="CodeSandbox">
+    <meta property="twitter:description" content="An online editor tailored for
+      web application development.">
+    <meta property="twitter:image:src"
+      content="https://codesandbox.io/static/img/banner.png">
+    <meta property="twitter:image:width" content="1200">
+    <meta property="twitter:image:height" content="630">
+    <meta name="theme-color" content="#40A9F3">
+    <meta name="description" content="CodeSandbox is an online editor tailored
+      for web applications.">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="manifest" href="/manifest.json">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-  <script>
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script>
     WebFont.load({
       google: {
         families: ['Source Code Pro:500', 'Roboto:300,400,500,700']
       }
     });
   </script>
+    <!-- Injected by server: -->
+    <!-- {{OEMBED TAG}} -->
 
-  <!-- Injected by server: -->
-  <!-- {{OEMBED TAG}} -->
+    <title>CodeSandbox</title>
 
-  <title>CodeSandbox</title>
+    <script src="https://cdn.ravenjs.com/3.21.0/raven.min.js"
+      crossorigin="anonymous"></script>
+    <link href="/static/fonts/dmvendor.css" rel="stylesheet">
 
-  <script src="https://cdn.ravenjs.com/3.21.0/raven.min.js" crossorigin="anonymous"></script>
-  <link href="/static/fonts/dmvendor.css" rel="stylesheet">
+    <%= !process.env.VSCODE ? `
 
-  <%= !process.env.VSCODE ? `
-  
     <!-- AMD Loader for Monaco -->
-    <link data-name="13/vs/editor/editor.main" rel="stylesheet" href="/public/13/vs/editor/editor.main.css">
+    <link data-name="13/vs/editor/editor.main" rel="stylesheet"
+      href="/public/13/vs/editor/editor.main.css">
     <script src="/public/13/vs/loader.js"></script>
     <script>
       window.require.config({
@@ -56,10 +63,10 @@
     </script>
     <script src="/public/13/vs/editor/editor.main.nls.js"></script>
     <script src="/public/13/vs/editor/editor.main.js"></script>
-  
-  
-  
-  ` : ''%>
+
+
+
+    ` : ''%>
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
@@ -75,27 +82,26 @@
     <!-- <script async src="//cdn.headwayapp.co/widget.js"></script> -->
 
     <script async rel="prefetch" src="https://js.stripe.com/v3/"></script>
+    <script src="<%= webpackConfig.output.publicPath %>static/browserfs/browserfs<%=process.env.NODE_ENV
+        === 'development' ? '' : '.min'%>.js"
+        type="text/javascript"></script>
 
-    <script src="<%= webpackConfig.output.publicPath %>static/browserfs/browserfs<%=process.env.NODE_ENV === 'development' ? '' : '.min'%>.js"
-      type="text/javascript"></script>
-
-    <script>
-      window.process = BrowserFS.BFSRequire('process');
+      <script>
+      window.process = { nextTick: requestAnimationFrame };
       window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
-
-      process.browser = true;
     </script>
-</head>
+    </head>
 
-<body style="margin: 0; padding: 0;">
-  <!-- Google Tag Manager (noscript) -->
-  <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T3L6RFK" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-  </noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <div id="root">
+    <body style="margin: 0; padding: 0;">
+      <!-- Google Tag Manager (noscript) -->
+      <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T3L6RFK"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe>
+      </noscript>
+      <!-- End Google Tag Manager (noscript) -->
+      <div class="vs-dark" id="root">
 
-  </div>
-</body>
+      </div>
+    </body>
 
-</html>
+  </html>

@@ -8,7 +8,7 @@ import AsyncMirror from '../backend/AsyncMirror';
 // import HTML5FS from '../backend/HTML5FS';
 import InMemory from '../backend/InMemory';
 import IndexedDB from '../backend/IndexedDB';
-// import LocalStorage from '../backend/LocalStorage';
+import LocalStorage from '../backend/LocalStorage';
 import MountableFileSystem from '../backend/MountableFileSystem';
 // import OverlayFS from '../backend/OverlayFS';
 import WorkerFS from '../backend/WorkerFS';
@@ -27,7 +27,7 @@ import CodeSandboxFS from '../backend/CodeSandboxFS';
   InMemory,
   IndexedDB,
   // IsoFS,
-  // LocalStorage,
+  LocalStorage,
   MountableFileSystem,
   // OverlayFS,
   WorkerFS,
@@ -65,7 +65,7 @@ const Backends = {
   InMemory,
   IndexedDB,
   // IsoFS,
-  // LocalStorage,
+  LocalStorage,
   MountableFileSystem,
   // OverlayFS,
   WorkerFS,

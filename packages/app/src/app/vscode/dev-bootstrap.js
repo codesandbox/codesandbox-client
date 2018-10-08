@@ -100,7 +100,7 @@ export default function() {
     return resolvedPath;
   };
   Component.prototype.generateLoaderConfig = function(dest) {
-    dest[this.modulePrefix] = this.getResolvedPath();
+    dest[this.modulePrefix] = 'http://localhost:3000' + this.getResolvedPath();
   };
   Component.prototype.generateUrlForPath = function(pathName) {
     var NEW_LOADER_OPTS = {};
@@ -244,9 +244,57 @@ export default function() {
         console.log('LOADER CONFIG: ');
         console.log(JSON.stringify(loaderPathsConfig, null, '\t'));
 
-        self.require.toUrl = p => {
-          return require('path').join('/vs', p);
-        };
+        const requireToUrl = p => require('path').join('/vs', p);
+        self.require.toUrl = requireToUrl;
+
+        self.require.define('vs/platform/node/product', [], () => {
+          return {
+            nameShort: 'Code - OSS',
+            nameLong: 'Code - OSS',
+            applicationName: 'code-oss',
+            dataFolderName: '.vscode-oss',
+            win32MutexName: 'vscodeoss',
+            licenseName: 'MIT',
+            licenseUrl:
+              'https://github.com/Microsoft/vscode/blob/master/LICENSE.txt',
+            win32DirName: 'Microsoft Code OSS',
+            win32NameVersion: 'Microsoft Code OSS',
+            win32RegValueName: 'CodeOSS',
+            win32AppId: '{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}',
+            win32x64AppId: '{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}',
+            win32UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
+            win32x64UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
+            win32AppUserModelId: 'Microsoft.CodeOSS',
+            win32ShellNameShort: 'C&ode - OSS',
+            darwinBundleIdentifier: 'com.visualstudio.code.oss',
+            reportIssueUrl: 'https://github.com/Microsoft/vscode/issues/new',
+            urlProtocol: 'code-oss',
+          };
+        });
+        self.require.define('vs/platform/node/package', [], () => {
+          return {
+            name: 'code-oss-dev',
+            version: '1.29.0',
+            distro: 'd880cac56e2f97abfbd0a6b8388caebfa96bb40c',
+            author: {
+              name: 'Microsoft Corporation',
+            },
+            main: './out/main',
+            private: true,
+            repository: {
+              type: 'git',
+              url: 'https://github.com/Microsoft/vscode.git',
+            },
+            bugs: {
+              url: 'https://github.com/Microsoft/vscode/issues',
+            },
+            optionalDependencies: {
+              'windows-foreground-love': '0.1.0',
+              'windows-mutex': '^0.2.0',
+              'windows-process-tree': '0.2.2',
+            },
+          };
+        });
 
         self.require.define('path', [], () => {
           const path = require('path');
@@ -272,10 +320,10 @@ export default function() {
           return {};
         });
 
-        self.require.define('os', [], () => {
-          const os = require('os-browserify');
-          return os;
-        });
+        // self.require.define('os', [], () => {
+        //   const os = require('os-browserify');
+        //   return os;
+        // });
 
         self.require.define('vs/base/node/encoding', [], () => {
           return {
@@ -329,10 +377,13 @@ export default function() {
           // TODO: install yauzl
         });
 
-        console.log('setting config');
+        console.log('setting config', AMDLoader);
         self.require.config({
           paths: loaderPathsConfig,
+          requireToUrl,
         });
+
+        window.deps = new Set();
 
         self.require(['vs/editor/editor.main'], function() {
           if (!RESOLVED_CORE.isRelease()) {

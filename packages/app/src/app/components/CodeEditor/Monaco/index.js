@@ -1420,7 +1420,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           const model = this.monaco.editor.createModel(
             module.code || '',
             mode === 'javascript' ? 'typescript' : mode,
-            new this.monaco.Uri().with({ path, scheme: 'file' })
+            new this.monaco.Uri({ path, scheme: 'file' })
           );
 
           model.updateOptions({ tabSize: this.props.settings.tabWidth });

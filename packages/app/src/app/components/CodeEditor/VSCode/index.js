@@ -26,7 +26,7 @@ import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import MonacoEditorComponent from './MonacoReactComponent';
-import FuzzySearch from '../FuzzySearch';
+import type { EditorAPI } from './MonacoReactComponent';
 import { Container, CodeContainer } from './elements';
 import defineTheme from './define-theme';
 import getSettings from './settings';
@@ -136,10 +136,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
 
     if (
-      this.props.absoluteWidth &&
-      this.props.absoluteHeight &&
-      (this.props.absoluteWidth !== nextProps.absoluteWidth ||
-        this.props.absoluteHeight !== nextProps.absoluteHeight)
+      this.props.width &&
+      this.props.height &&
+      (this.props.width !== nextProps.width ||
+        this.props.height !== nextProps.height)
     ) {
       this.resizeEditor();
     }
@@ -159,7 +159,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     window.removeEventListener('resize', this.resizeEditor);
     // Make sure that everything has run before disposing, to prevent any inconsistensies
 
-    this.disposeModules(this.sandbox.modules);
     if (this.editor) {
       this.editor.dispose();
     }
@@ -191,7 +190,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   }
 
-  configureEditor = async (editor: any, monaco: any) => {
+  configureEditor = async (editor: EditorAPI, monaco: any) => {
     this.editor = editor;
     this.monaco = monaco;
 
@@ -201,17 +200,28 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       monaco: this.monaco,
     };
 
+    let modelContentChangedListener;
+    editor.editorService.onDidActiveEditorChange(() => {
+      if (modelContentChangedListener) {
+        modelContentChangedListener.dispose();
+      }
+
+      modelContentChangedListener = editor
+        .getActiveCodeEditor()
+        .onDidChangeModelContent(e => {
+          const { isLive, sendTransforms } = this.props;
+
+          if (isLive && sendTransforms && !this.receivingCode) {
+            this.sendChangeOperations(e);
+          }
+
+          this.handleChange();
+        });
+    });
+
     requestAnimationFrame(() => {
+      this.openModule(this.currentModule);
       this.setupWorkers();
-      editor.onDidChangeModelContent(e => {
-        const { isLive, sendTransforms } = this.props;
-
-        if (isLive && sendTransforms && !this.receivingCode) {
-          this.sendChangeOperations(e);
-        }
-
-        this.handleChange();
-      });
     });
 
     monaco.languages.typescript.typescriptDefaults.setMaximumWorkerIdleTime(-1);
@@ -222,17 +232,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.setCompilerOptions();
 
-    const sandbox = this.sandbox;
-    const currentModule = this.currentModule;
-
     liftOff(monaco);
-
-    this.initializeModules(sandbox.modules);
-    await this.openNewModel(currentModule);
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(() => {
-      if (this.props.absoluteWidth && this.props.absoluteHeight) {
+      if (this.props.width && this.props.height) {
         return;
       }
 
@@ -249,89 +253,45 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       }
     }
 
-    editor.addAction({
-      // An unique identifier of the contributed action.
-      id: 'fuzzy-search',
-
-      // A label of the action that will be presented to the user.
-      label: 'Open Module',
-
-      // An optional array of keybindings for the action.
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P], // eslint-disable-line no-bitwise
-
-      // A precondition for this action.
-      precondition: null,
-
-      // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
-      keybindingContext: null,
-
-      contextMenuGroupId: 'navigation',
-
-      contextMenuOrder: 1.5,
-
-      // Method that will be executed when the action is triggered.
-      // @param editor The editor instance is passed in as a convinience
-      run: () => {
-        this.setState(
-          {
-            fuzzySearchEnabled: true,
-          },
-          () => this.forceUpdate()
-        );
-      },
-    });
-
-    editor.onDidChangeCursorSelection(selectionChange => {
-      // TODO: add another debounced action to send the current data. So we can
-      // have the correct cursor pos no matter what
-      const { onSelectionChanged, isLive } = this.props;
-      // Reason 3 is update by mouse or arrow keys
-      if (isLive) {
-        const lines = editor.getModel().getLinesContent() || [];
-        const data = {
-          primary: getSelection(lines, selectionChange.selection),
-          secondary: selectionChange.secondarySelections.map(s =>
-            getSelection(lines, s)
-          ),
-        };
-        if (
-          (selectionChange.reason === 3 ||
-            /* alt + shift + arrow keys */ selectionChange.source ===
-              'moveWordCommand' ||
-            /* click inside a selection */ selectionChange.source === 'api') &&
-          onSelectionChanged
-        ) {
-          this.onSelectionChangedDebounced.cancel();
-          onSelectionChanged({
-            selection: data,
-            moduleShortid: this.currentModule.shortid,
-          });
-        } else {
-          // This is just on typing, we send a debounced selection update as a
-          // safeguard to make sure we are in sync
-          this.onSelectionChangedDebounced({
-            selection: data,
-            moduleShortid: this.currentModule.shortid,
-          });
-        }
-      }
-    });
+    // editor.onDidChangeCursorSelection(selectionChange => {
+    //   // TODO: add another debounced action to send the current data. So we can
+    //   // have the correct cursor pos no matter what
+    //   const { onSelectionChanged, isLive } = this.props;
+    //   // Reason 3 is update by mouse or arrow keys
+    //   if (isLive) {
+    //     const lines = editor.getModel().getLinesContent() || [];
+    //     const data = {
+    //       primary: getSelection(lines, selectionChange.selection),
+    //       secondary: selectionChange.secondarySelections.map(s =>
+    //         getSelection(lines, s)
+    //       ),
+    //     };
+    //     if (
+    //       (selectionChange.reason === 3 ||
+    //         /* alt + shift + arrow keys */ selectionChange.source ===
+    //           'moveWordCommand' ||
+    //         /* click inside a selection */ selectionChange.source === 'api') &&
+    //       onSelectionChanged
+    //     ) {
+    //       this.onSelectionChangedDebounced.cancel();
+    //       onSelectionChanged({
+    //         selection: data,
+    //         moduleShortid: this.currentModule.shortid,
+    //       });
+    //     } else {
+    //       // This is just on typing, we send a debounced selection update as a
+    //       // safeguard to make sure we are in sync
+    //       this.onSelectionChangedDebounced({
+    //         selection: data,
+    //         moduleShortid: this.currentModule.shortid,
+    //       });
+    //     }
+    //   }
+    // });
 
     if (this.props.onInitialized) {
       this.disposeInitializer = this.props.onInitialized(this);
     }
-
-    // TODO remove this as soon as we solve the keybinding issues
-    editor.addCommand(
-      // eslint-disable-next-line
-      this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
-      () => {
-        const { onSave } = this.props;
-        if (onSave) {
-          onSave(this.getCode());
-        }
-      }
-    );
 
     this.registerAutoCompletions();
   };
@@ -496,7 +456,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
     >
   ) => {
-    const lines = this.editor.getModel().getLinesContent() || [];
+    const lines =
+      this.editor
+        .getActiveCodeEditor()
+        .getModel()
+        .getLinesContent() || [];
 
     userSelections.forEach(data => {
       const { userId } = data;
@@ -505,11 +469,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       if (data.selection === null) {
         this.userSelectionDecorations[
           decorationId
-        ] = this.editor.deltaDecorations(
-          this.userSelectionDecorations[decorationId] || [],
-          [],
-          data.userId
-        );
+        ] = this.editor
+          .getActiveCodeEditor()
+          .deltaDecorations(
+            this.userSelectionDecorations[decorationId] || [],
+            [],
+            data.userId
+          );
 
         return;
       }
@@ -651,11 +617,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       requestAnimationFrame(() => {
         this.userSelectionDecorations[
           decorationId
-        ] = this.editor.deltaDecorations(
-          this.userSelectionDecorations[decorationId] || [],
-          decorations,
-          userId
-        );
+        ] = this.editor
+          .getActiveCodeEditor()
+          .deltaDecorations(
+            this.userSelectionDecorations[decorationId] || [],
+            decorations,
+            userId
+          );
       });
     });
   };
@@ -694,13 +662,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.lint(
         code,
         this.currentModule.title,
-        this.editor.getModel().getVersionId()
+        this.editor
+          .getActiveCodeEditor()
+          .getModel()
+          .getVersionId()
       );
     }
   };
 
   applyOperationToModel = (operation, pushStack) => {
-    const model = this.editor.getModel();
+    const model = this.editor.getActiveCodeEditor().getModel();
 
     const results = [];
     let index = 0;
@@ -791,59 +762,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.setupLintWorker();
     }
 
-    this.editor.updateOptions(this.getEditorOptions());
+    this.editor.getActiveCodeEditor().updateOptions(this.getEditorOptions());
     this.forceUpdate();
   };
 
   updateModules = () => {
-    const sandbox = this.sandbox;
-
-    sandbox.modules.forEach(module => {
-      if (modelCache[module.id] && modelCache[module.id].model) {
-        const path = getModulePath(
-          sandbox.modules,
-          sandbox.directories,
-          module.id
-        );
-
-        if (path === '') {
-          // Parent dir got deleted
-          this.disposeModel(module.id);
-          return;
-        }
-
-        // Check for changed path, if that's
-        // the case create a new model with corresponding tag, ditch the other model
-        if (path !== modelCache[module.id].model.uri.path) {
-          const isCurrentlyOpened =
-            this.editor.getModel() === modelCache[module.id].model;
-
-          if (isCurrentlyOpened) {
-            // Unload model, we're going to dispose it
-            this.editor.setModel(null);
-          }
-
-          this.disposeModel(module.id);
-
-          this.createModel(module, sandbox.modules, sandbox.directories).then(
-            newModel => {
-              if (isCurrentlyOpened) {
-                // Open it again if it was open
-                this.editor.setModel(newModel);
-              }
-            }
-          );
-        }
-      }
-    });
-
-    // Also check for deleted modules
-    Object.keys(modelCache).forEach(moduleId => {
-      // This module got deleted, dispose it
-      if (!sandbox.modules.find(m => m.id === moduleId)) {
-        this.disposeModel(moduleId);
-      }
-    });
+    console.log('updateModules called');
   };
 
   setErrors = (errors: Array<ModuleError>) => {
@@ -869,12 +793,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         .filter(x => x);
 
       this.monaco.editor.setModelMarkers(
-        this.editor.getModel(),
+        this.editor.getActiveCodeEditor().getModel(),
         'error',
         errorMarkers
       );
     } else {
-      this.monaco.editor.setModelMarkers(this.editor.getModel(), 'error', []);
+      this.monaco.editor.setModelMarkers(
+        this.editor.getActiveCodeEditor().getModel(),
+        'error',
+        []
+      );
     }
   };
 
@@ -903,13 +831,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         .filter(x => x);
 
       this.monaco.editor.setModelMarkers(
-        this.editor.getModel(),
+        this.editor.getActiveCodeEditor().getModel(),
         'correction',
         correctionMarkers
       );
     } else {
       this.monaco.editor.setModelMarkers(
-        this.editor.getModel(),
+        this.editor.getActiveCodeEditor().getModel(),
         'correction',
         []
       );
@@ -934,9 +862,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         })
         .filter(x => x);
 
-      this.editor.deltaDecorations([], glyphMarkers);
+      this.editor.getActiveCodeEditor().deltaDecorations([], glyphMarkers);
     } else {
-      this.editor.deltaDecorations([], []);
+      this.editor.getActiveCodeEditor().deltaDecorations([], []);
     }
   };
 
@@ -1080,8 +1008,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const { markers, version } = event.data;
 
       requestAnimationFrame(() => {
-        if (this.editor.getModel()) {
-          if (version === this.editor.getModel().getVersionId()) {
+        if (this.editor.getActiveCodeEditor().getModel()) {
+          if (
+            version ===
+            this.editor
+              .getActiveCodeEditor()
+              .getModel()
+              .getVersionId()
+          ) {
             this.updateLintWarnings(markers);
           } else {
             this.updateLintWarnings([]);
@@ -1128,10 +1062,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const currentModule = this.currentModule;
     const modelInfo = await this.getModelById(currentModule.id);
 
-    modelInfo.decorations = this.editor.deltaDecorations(
-      modelInfo.decorations || [],
-      decorations
-    );
+    modelInfo.decorations = this.editor
+      .getActiveCodeEditor()
+      .deltaDecorations(modelInfo.decorations || [], decorations);
   };
 
   updateLintWarnings = async (markers: Array<Object>) => {
@@ -1140,60 +1073,30 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const mode = await getMode(currentModule.title, this.monaco);
     if (mode === 'javascript' || mode === 'vue') {
       this.monaco.editor.setModelMarkers(
-        this.editor.getModel(),
+        this.editor.getActiveCodeEditor().getModel(),
         'eslint',
         markers
       );
     }
   };
 
-  disposeModel = (id: string) => {
-    if (modelCache[id]) {
-      try {
-        if (modelCache[id].model && !modelCache[id].model.isDisposed()) {
-          modelCache[id].model.dispose();
-        }
-        if (modelCache[id].lib && !modelCache[id].lib.isDisposed()) {
-          modelCache[id].lib.dispose();
-        }
+  openModule = (module: Module) => {
+    const path = getModulePath(
+      this.sandbox.modules,
+      this.sandbox.directories,
+      module.id
+    );
 
-        delete modelCache[id];
-      } catch (e) {
-        console.error(e);
-      }
-    }
+    this.editor.openFile(path);
   };
 
   swapDocuments = (currentModule: Module, nextModule: Module) => {
-    // We get the id here because we don't want currentModule to mutate in the meantime.
-    // If the module changes in the store, and we use it here it will otherwise
-    // throw an error 'Cannot use detached model'. So that's why we get the desired values first.
-    const { id } = currentModule;
-
     return new Promise(resolve => {
-      // We load this in a later moment so the rest of the ui already updates before the editor
-      // this will give a perceived speed boost. Inspiration from vscode team
-      setTimeout(async () => {
-        if (modelCache[id]) {
-          const sandbox = this.sandbox;
-          const path = getModulePath(sandbox.modules, sandbox.directories, id);
+      this.openModule(nextModule);
 
-          modelCache[id].viewState = this.editor.saveViewState();
-          if (modelCache[id].lib) {
-            // We let Monaco know what the latest code is of this file by removing
-            // the old extraLib definition and defining a new one.
-            modelCache[id].lib.dispose();
-            modelCache[id].lib = this.addLib(currentModule.code || '', path);
-
-            // Reset changes
-            this.changes = { code: '', changes: [] };
-          }
-        }
-
-        await this.openNewModel(nextModule);
-        this.editor.focus();
-        resolve();
-      }, 50);
+      // Reset changes
+      this.changes = { code: '', changes: [] };
+      resolve();
     });
   };
 
@@ -1227,7 +1130,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   handleChange = () => {
-    const newCode = this.editor.getModel().getValue(1) || '';
+    const newCode =
+      this.editor
+        .getActiveCodeEditor()
+        .getModel()
+        .getValue(1) || '';
     const currentModule = this.currentModule;
     const title = currentModule.title;
 
@@ -1241,7 +1148,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.props.onChange(newCode, this.currentModule.shortid);
       }
 
-      this.lint(newCode, title, this.editor.getModel().getVersionId());
+      this.lint(
+        newCode,
+        title,
+        this.editor
+          .getActiveCodeEditor()
+          .getModel()
+          .getVersionId()
+      );
     }
   };
 
@@ -1301,11 +1215,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
-  closeFuzzySearch = () => {
-    this.setState({ fuzzySearchEnabled: false }, () => this.forceUpdate());
-    this.editor.focus();
-  };
-
   fetchDependencyTypings = (dependencies: Object) => {
     if (this.typingsFetcherWorker) {
       this.monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions(
@@ -1318,20 +1227,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  disposeModules = (modules: Array<Module>) => {
-    if (this.editor) {
-      this.editor.setModel(null);
-    }
-
-    if (this.monaco) {
-      modules.forEach(m => {
-        this.disposeModel(m.id);
-      });
-    }
-
-    modelCache = {};
-  };
-
   initializeModules = (modules: Array<Module>) =>
     Promise.all(modules.map(module => this.createModel(module, modules)));
 
@@ -1342,7 +1237,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   resizeEditorInstantly = () => {
     this.forceUpdate(() => {
       if (this.editor) {
-        this.editor.layout();
+        this.editor.editorPart.layout({
+          width: this.props.width,
+          height: this.props.height,
+        });
       }
     });
   };
@@ -1420,7 +1318,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           const model = this.monaco.editor.createModel(
             module.code || '',
             mode === 'javascript' ? 'typescript' : mode,
-            new this.monaco.Uri().with({ path, scheme: 'file' })
+            new this.monaco.Uri({ path, scheme: 'file' })
           );
 
           model.updateOptions({ tabSize: this.props.settings.tabWidth });
@@ -1496,53 +1394,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
-  setCurrentModule = (moduleId: string) => {
-    this.closeFuzzySearch();
+  getCode = () => {
+    const activeEditor = this.editor.getActiveCodeEditor();
+    if (!activeEditor) return '';
 
-    const module = this.sandbox.modules.find(m => m.id === moduleId);
-    if (module) {
-      if (this.props.onModuleChange) {
-        this.props.onModuleChange(moduleId);
-      }
-    }
-  };
-
-  openReference = model => {
-    const foundModuleId = Object.keys(modelCache).find(
-      mId => modelCache[mId].model === model
-    );
-
-    if (foundModuleId) {
-      this.setCurrentModule(foundModuleId);
-    }
-
-    // const selection = data.options.selection;
-    // if (selection) {
-    //   if (
-    //     typeof selection.endLineNumber === 'number' &&
-    //     typeof selection.endColumn === 'number'
-    //   ) {
-    //     this.editor.setSelection(selection);
-    //     this.editor.revealRangeInCenter(selection);
-    //   } else {
-    //     const pos = {
-    //       lineNumber: selection.startLineNumber,
-    //       column: selection.startColumn,
-    //     };
-    //     this.editor.setPosition(pos);
-    //     this.editor.revealPositionInCenter(pos);
-    //   }
-    // }
-
-    return Promise.resolve({
-      getControl: () => this.editor,
-    });
-  };
-
-  getCode = () =>
-    this.editor.getValue({
+    return activeEditor.getValue({
       lineEnding: '\n',
     });
+  };
 
   handleSaveCode = async () => {
     const onSave = this.props.onSave;
@@ -1563,27 +1422,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   render() {
-    const { hideNavigation, absoluteWidth, absoluteHeight } = this.props;
+    const { hideNavigation, width, height } = this.props;
 
-    const sandbox = this.sandbox;
-    const currentModule = this.currentModule;
     const options = this.getEditorOptions();
 
     return (
       <Container>
         <CodeContainer hideNavigation={hideNavigation}>
-          {this.state.fuzzySearchEnabled && (
-            <FuzzySearch
-              closeFuzzySearch={this.closeFuzzySearch}
-              setCurrentModule={this.setCurrentModule}
-              modules={sandbox.modules}
-              directories={sandbox.directories}
-              currentModuleId={currentModule.id}
-            />
-          )}
           <MonacoEditorComponent
-            width={absoluteWidth}
-            height={absoluteHeight}
+            width={width}
+            height={height}
             theme="CodeSandbox"
             options={options}
             editorDidMount={this.configureEditor}
@@ -1591,7 +1439,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               defineTheme(monaco, this.props.theme.vscodeTheme)
             }
             getEditorOptions={this.getEditorOptions}
-            openReference={this.openReference}
           />
         </CodeContainer>
       </Container>

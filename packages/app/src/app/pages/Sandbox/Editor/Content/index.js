@@ -367,18 +367,19 @@ class EditorPreview extends React.Component<Props, State> {
 
     const windowRightSize = -x + width + 16;
 
-    const isVerticalMode = this.state.width
-      ? this.state.width / 4 > this.state.width - windowRightSize
+    const { width: absoluteWidth, height: absoluteHeight } = this.state;
+    const isVerticalMode = absoluteWidth
+      ? absoluteWidth / 4 > absoluteWidth - windowRightSize
       : false;
 
     let editorWidth = isVerticalMode
-      ? '100%'
-      : `calc(100% - ${windowRightSize}px)`;
-    let editorHeight = isVerticalMode ? `${y + 16}px` : '100%';
+      ? absoluteWidth
+      : absoluteWidth - windowRightSize;
+    let editorHeight = isVerticalMode ? y + 16 : absoluteHeight;
 
     if (!windowVisible) {
-      editorWidth = '100%';
-      editorHeight = '100%';
+      editorWidth = absoluteWidth;
+      editorHeight = absoluteHeight;
     }
 
     return (
@@ -443,8 +444,8 @@ class EditorPreview extends React.Component<Props, State> {
               )}
               width={editorWidth}
               height={editorHeight}
-              absoluteWidth={this.state.width}
-              absoluteHeight={this.state.height}
+              absoluteWidth={absoluteWidth}
+              absoluteHeight={absoluteHeight}
               settings={settings(store)}
               sendTransforms={this.sendTransforms}
               readOnly={store.live.isLive && !store.live.isCurrentEditor}
@@ -480,8 +481,8 @@ class EditorPreview extends React.Component<Props, State> {
 
             <Preview
               runOnClick={this.props.store.preferences.runOnClick}
-              width={this.state.width}
-              height={this.state.height}
+              width={absoluteWidth}
+              height={absoluteHeight}
             />
           </div>
 

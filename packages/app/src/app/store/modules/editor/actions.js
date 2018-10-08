@@ -15,6 +15,22 @@ export async function getLatestVersion({ props, api }) {
     .catch(() => {});
 }
 
+export function getIdFromModulePath({ props, state, utils }) {
+  if (!props.path) {
+    return {};
+  }
+
+  const sandbox = state.get('editor.currentSandbox');
+
+  const module = utils.resolveModule(
+    props.path.replace(/^\//, ''),
+    sandbox.modules,
+    sandbox.directories
+  );
+
+  return { id: module.id };
+}
+
 export function addNpmDependencyToPackage({ state, props }) {
   const { parsed, code: oldCode } = state.get(
     'editor.parsedConfigurations.package'

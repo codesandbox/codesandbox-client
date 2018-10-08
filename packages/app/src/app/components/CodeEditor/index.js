@@ -18,7 +18,6 @@ import QuestionIcon from 'react-icons/lib/go/question';
 
 import type { Props } from './types';
 import Monaco from './Monaco';
-import VSCode from './VSCode';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
 import MonacoDiff from './MonacoDiff';
@@ -27,6 +26,11 @@ import { Icons, Icon } from './elements';
 const CodeMirror = Loadable({
   loader: () =>
     import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror'),
+  LoadingComponent: Loading,
+});
+
+const VSCode = Loadable({
+  loader: () => import(/* webpackChunkName: 'vscode-editor' */ './VSCode'),
   LoadingComponent: Loading,
 });
 
@@ -162,7 +166,6 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           ? VSCode
           : Monaco;
 
-    console.log(settings.experimentVSCode, Editor.toString());
     return (
       <div
         style={{

@@ -56,6 +56,7 @@ export const createZip = actions.createZip;
 export const changeCurrentModule = [
   track('Open File', {}),
   setReceivingStatus,
+  actions.getIdFromModulePath,
   setCurrentModule(props`id`),
   equals(state`live.isLive`),
   {

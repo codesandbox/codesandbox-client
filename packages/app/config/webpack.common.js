@@ -261,6 +261,7 @@ module.exports = {
       /browserfs\.js/,
       /browserfs\.min\.js/,
       /standalone-packages\/codesandbox-browserfs/,
+      /vscode/
     ],
   },
 

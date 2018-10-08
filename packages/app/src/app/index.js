@@ -151,10 +151,7 @@ if (process.env.NODE_ENV === 'development' && process.env.VSCODE) {
         '/': { fs: 'InMemory', options: {} },
         '/sandbox': { fs: 'InMemory', options: {} },
         '/vscode': {
-          fs: 'IndexedDB',
-          options: {
-            storeName: 'VSCode',
-          },
+          fs: 'LocalStorage',
         },
         '/extensions': {
           fs: 'ZipFS',
@@ -180,21 +177,13 @@ if (process.env.NODE_ENV === 'development' && process.env.VSCODE) {
     },
     function(e) {
       if (e) {
-        console.log('hmm2', e);
+        console.error('Problems initializing FS', e);
         // An error happened!
         throw e;
       }
 
-      console.log('hmm3');
-
       const fs = BrowserFS.BFSRequire('fs');
       console.log(fs);
-      if (!fs.existsSync('/vscode/extensions')) {
-        console.log('ets do this');
-        fs.mkdir('/vscode/extensions');
-      }
-
-      console.log('hmm12');
       // Otherwise, BrowserFS is ready-to-use!
       /* eslint-disable global-require */
       require('./vscode/dev-bootstrap').default()(() => {
