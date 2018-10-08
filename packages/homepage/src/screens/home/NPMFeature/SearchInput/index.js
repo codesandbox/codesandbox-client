@@ -1,13 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import algoliasearch from 'algoliasearch';
-import {
-  ALGOLIA_API_KEY,
-  ALGOLIA_APPLICATION_ID,
-  ALGOLIA_DEFAULT_INDEX,
-} from 'common/utils/config';
-
 import Input from './Input';
 import Hit from './Hit';
 
@@ -31,14 +24,11 @@ export default class SearchInput extends React.PureComponent {
   };
 
   componentDidMount() {
-    this.client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
-    this.index = this.client.initIndex(ALGOLIA_DEFAULT_INDEX);
-
     this.searchQuery('');
   }
 
   searchQuery = (query: string) => {
-    searchFacets('npm_dependencies.dependency', query).then(res => {
+    searchFacets({ facet: 'npm_dependencies.dependency', query }).then(res => {
       const { facetHits } = res;
 
       facetHits.sort((a, b) => {
