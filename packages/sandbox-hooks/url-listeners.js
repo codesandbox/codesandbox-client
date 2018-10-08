@@ -139,7 +139,7 @@ export default function setupHistoryListeners() {
     pushHistory(pathWithHash(document.location), null);
 
     setTimeout(() => {
-      sendUrlChange(document.location.href);
+      sendUrlChange(document.location.href, 'REPLACE');
     });
   }
   return listen(handleMessage);
