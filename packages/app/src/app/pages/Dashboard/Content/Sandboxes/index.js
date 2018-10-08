@@ -4,7 +4,7 @@ import DelayedAnimation from 'app/components/DelayedAnimation';
 import SandboxGrid from '../SandboxGrid';
 import Filters from './Filters';
 
-import { Container, HeaderContainer } from '../elements';
+import { Container, HeaderContainer, HeaderTitle } from '../elements';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Content extends React.Component {
@@ -23,13 +23,7 @@ class Content extends React.Component {
     return (
       <Container>
         <HeaderContainer>
-          <div
-            style={{
-              display: 'flex',
-              verticalAlign: 'middle',
-              alignItems: 'center',
-            }}
-          >
+          <HeaderTitle>
             {Header}{' '}
             {sandboxes &&
               !isLoading && (
@@ -44,7 +38,7 @@ class Content extends React.Component {
                   {sandboxes.length}
                 </span>
               )}
-          </div>
+          </HeaderTitle>
           <Filters
             hideOrder={hideOrder}
             hideFilters={hideFilters}
