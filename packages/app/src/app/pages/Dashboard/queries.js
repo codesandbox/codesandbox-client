@@ -263,13 +263,19 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
           query: DELETED_SANDBOXES_CONTENT_QUERY,
         });
 
-        oldDeleteCache.me.sandboxes = oldDeleteCache.me.sandboxes.filter(
-          x => selectedSandboxes.indexOf(x.id) === -1
-        );
+        const newDeleteCache = {
+          ...oldDeleteCache,
+          me: {
+            ...oldDeleteCache.me,
+            sandboxes: oldDeleteCache.me.sandboxes.filter(
+              x => selectedSandboxes.indexOf(x.id) === -1
+            ),
+          },
+        };
 
         cache.writeQuery({
           query: DELETED_SANDBOXES_CONTENT_QUERY,
-          data: oldDeleteCache,
+          data: newDeleteCache,
         });
       } catch (e) {
         // cache doesn't exist, no biggie!
