@@ -366,8 +366,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
         }}
         style={{
           height,
-          position: 'relative',
-          display: 'flex',
         }}
       >
         <Header

@@ -1,10 +1,12 @@
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
-  position: relative;
+  position: absolute;
   display: flex;
   flex-direction: column;
   width: 100%;
+  left: 0;
+  bottom: 0;
 
   max-height: 100%;
   z-index: 100;
