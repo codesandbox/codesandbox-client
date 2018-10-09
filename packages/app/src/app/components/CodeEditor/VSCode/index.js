@@ -206,17 +206,21 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         modelContentChangedListener.dispose();
       }
 
-      modelContentChangedListener = editor
-        .getActiveCodeEditor()
-        .onDidChangeModelContent(e => {
-          const { isLive, sendTransforms } = this.props;
+      const activeEditor = editor.getActiveCodeEditor();
 
-          if (isLive && sendTransforms && !this.receivingCode) {
-            this.sendChangeOperations(e);
+      if (activeEditor) {
+        modelContentChangedListener = activeEditor.onDidChangeModelContent(
+          e => {
+            const { isLive, sendTransforms } = this.props;
+
+            if (isLive && sendTransforms && !this.receivingCode) {
+              this.sendChangeOperations(e);
+            }
+
+            this.handleChange();
           }
-
-          this.handleChange();
-        });
+        );
+      }
     });
 
     requestAnimationFrame(() => {
