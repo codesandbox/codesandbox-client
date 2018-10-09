@@ -84,6 +84,7 @@ const Sandbox = types.model({
   originalGit: types.maybeNull(Git),
   originalGitCommitSha: types.maybeNull(types.string),
   owned: types.boolean,
+  isFrozen: types.boolean,
   privacy: types.number,
   sourceId: types.string,
   tags: types.array(types.string),
@@ -170,6 +171,7 @@ export default {
   quickActionsOpen: types.boolean,
   previewWindow: types.model({
     content: types.maybeNull(types.string),
+    editorSize: types.maybe(types.number),
     width: types.maybeNull(types.number),
     height: types.maybeNull(types.number),
     x: types.maybeNull(types.number),

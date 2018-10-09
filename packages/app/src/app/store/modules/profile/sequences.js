@@ -22,7 +22,7 @@ const getShowcasedSandbox = sequence('getShowcasedSandbox', [
 ]);
 
 export const showDeleteSandboxModal = [
-  set(state`profile.sandboxToDeleteId`, props`index`),
+  set(state`profile.sandboxToDeleteId`, props`id`),
   set(state`currentModal`, 'deleteProfileSandbox'),
 ];
 

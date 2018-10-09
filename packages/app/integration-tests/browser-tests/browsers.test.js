@@ -10,6 +10,7 @@ function getCapabilities(browserInfo) {
     'browserstack.user': process.env.BROWSER_STACK_USER,
     'browserstack.key': process.env.BROWSER_STACK_KEY,
     'browserstack.local': 'true',
+    'browserstack.debug': 'true',
     'browserstack.console': 'errors',
     'browserstack.networkLogs': true,
     build: hash,

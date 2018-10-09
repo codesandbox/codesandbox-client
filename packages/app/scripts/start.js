@@ -207,6 +207,15 @@ function addMiddleware(devServer, index) {
         changeOrigin: true,
       })
     );
+
+    devServer.use(
+      '/socket.io',
+      proxy({
+        target: 'https://sse.codesandbox.io',
+        changeOrigin: true,
+        secure: false,
+      })
+    );
   }
   if (process.env.VSCODE) {
     devServer.use(

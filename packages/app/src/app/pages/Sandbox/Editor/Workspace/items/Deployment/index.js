@@ -9,7 +9,7 @@ const Deployment = ({ signals, store }) => (
   <div>
     <Description>
       You can deploy a production version of your sandbox using{' '}
-      <a href="https:zeit.co/now" target="_blank" rel="noreferrer noopener">
+      <a href="https://zeit.co/now" target="_blank" rel="noreferrer noopener">
         ZEIT Now
       </a>.
       {!store.user.integrations.zeit &&

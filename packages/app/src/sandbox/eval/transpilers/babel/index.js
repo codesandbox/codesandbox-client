@@ -17,7 +17,7 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', BabelWorker, 2, { hasFS: true });
+    super('babel-loader', BabelWorker, 3, { hasFS: true, preload: true });
   }
 
   startupWorkersInitialized = false;
@@ -46,7 +46,11 @@ class BabelTranspiler extends WorkerTranspiler {
       // dependencies from the file and return the same code. We get the dependencies
       // with a regex since commonjs modules just have `require` and regex is MUCH
       // faster than generating an AST from the code.
-      if (path.startsWith('/node_modules') && !isESModule(code)) {
+      if (
+        (loaderContext.options.simpleRequire ||
+          path.startsWith('/node_modules')) &&
+        !isESModule(code)
+      ) {
         regexGetRequireStatements(code).forEach(dependency => {
           if (dependency.isGlob) {
             loaderContext.addDependenciesInDirectory(dependency.path);
@@ -67,13 +71,20 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const loaderOptions = loaderContext.options || {};
 
-      const babelConfig = getBabelConfig(foundConfig, loaderOptions, path);
+      const isV7 =
+        loaderContext.options.isV7 ||
+        !!(
+          configs.package &&
+          configs.package.parsed &&
+          configs.package.parsed.devDependencies &&
+          configs.package.parsed.devDependencies['@vue/cli-plugin-babel']
+        );
 
-      const isV7 = !!(
-        configs.package &&
-        configs.package.parsed &&
-        configs.package.parsed.devDependencies &&
-        configs.package.parsed.devDependencies['@vue/cli-plugin-babel']
+      const babelConfig = getBabelConfig(
+        foundConfig || loaderOptions.config,
+        loaderOptions,
+        path,
+        isV7
       );
 
       this.queueTask(

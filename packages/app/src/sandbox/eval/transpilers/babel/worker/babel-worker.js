@@ -1,6 +1,7 @@
 // @flow
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
+import macrosPlugin from 'babel-plugin-macros';
 
 import delay from 'common/utils/delay';
 
@@ -19,9 +20,24 @@ import {
 } from './get-prefixed-name';
 
 let fsInitialized = false;
+let fsLoading = false;
 let lastConfig = null;
 
+// This one is called from babel-plugin-macros
+self.require = path => {
+  const fs = BrowserFS.BFSRequire('fs');
+  return evaluateFromPath(
+    fs,
+    BrowserFS.BFSRequire,
+    path,
+    '/node_modules/babel-plugin-macros/index.js',
+    Babel.availablePlugins,
+    Babel.availablePresets
+  );
+};
+
 async function initializeBrowserFS() {
+  fsLoading = true;
   return new Promise(resolve => {
     BrowserFS.configure(
       {
@@ -36,6 +52,7 @@ async function initializeBrowserFS() {
           console.error(e);
           return;
         }
+        fsLoading = false;
         fsInitialized = true;
         resolve();
         // BrowserFS is initialized and ready-to-use!
@@ -46,6 +63,12 @@ async function initializeBrowserFS() {
 
 async function waitForFs() {
   if (!fsInitialized) {
+    if (!fsLoading) {
+      // We only load the fs when it's needed. The FS is expensive, as we sync all
+      // files of the main thread to the worker. We only want to do this if it's really
+      // needed.
+      await initializeBrowserFS();
+    }
     while (!fsInitialized) {
       await delay(50); // eslint-disable-line
     }
@@ -192,11 +215,6 @@ self.addEventListener('message', async event => {
     return;
   }
 
-  if (event.data.type === 'initialize-fs') {
-    initializeBrowserFS();
-    return;
-  }
-
   if (event.data.type === 'get-babel-context') {
     const transpilerOptions = event.data.babelTranspilerOptions;
     loadCustomTranspiler(
@@ -238,14 +256,14 @@ self.addEventListener('message', async event => {
   } else if (version === 7) {
     loadCustomTranspiler(
       process.env.NODE_ENV === 'development'
-        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-beta.js`
+        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
         : `${process.env.CODESANDBOX_HOST ||
-            ''}/static/js/babel.7.00-beta-1.min.js`
+            ''}/static/js/babel.7.00-1.min.js`
     );
   }
 
   const stringifiedConfig = JSON.stringify(babelTranspilerOptions);
-  if (lastConfig !== stringifiedConfig) {
+  if (stringifiedConfig && lastConfig !== stringifiedConfig) {
     resetCache();
     lastConfig = stringifiedConfig;
   }
@@ -270,6 +288,19 @@ self.addEventListener('message', async event => {
       Babel.registerPreset('env', Babel.availablePresets.es2015);
     }
 
+    // Future vue preset
+    // if (
+    //   flattenedPresets.indexOf('@vue/app') > -1 &&
+    //   Object.keys(Babel.availablePresets).indexOf('@vue/app') === -1 &&
+    //   version === 7
+    // ) {
+    //   const vuePreset = await import(/* webpackChunkName: 'babel-preset-vue' */ '@vue/babel-preset-app');
+
+    //   Babel.registerPreset('@vue/app', vuePreset);
+    //   Babel.registerPreset('@vue/babel-preset-app', vuePreset);
+
+    // }
+
     if (
       flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
       Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
@@ -284,6 +315,15 @@ self.addEventListener('message', async event => {
     ) {
       const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') === -1
+    ) {
+      await waitForFs();
+
+      Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
     }
 
     if (
@@ -371,10 +411,12 @@ self.addEventListener('message', async event => {
     const customConfig =
       /^\/node_modules/.test(path) && /\.js$/.test(path)
         ? {
+            parserOpts: { plugins: ['dynamicImport'] },
             plugins: [
               version === 7
                 ? 'transform-modules-commonjs'
                 : 'transform-es2015-modules-commonjs',
+              'dynamic-import-node',
               [
                 'babel-plugin-detective',
                 { source: true, nodes: true, generated: true },

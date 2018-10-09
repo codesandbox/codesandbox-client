@@ -1,5 +1,12 @@
 # Contributing to CodeSandbox Client
 
+## Table of Contents
+
+* [Code Organization](#code-organization)
+* [Setting Up the project locally](#setting-up-the-project-locally)
+* [Submitting a Pull Request](#submitting-a-pull-request)
+* [Add yourself as a contributor](#add-yourself-as-a-contributor)
+
 ## Code Organization
 
 The CodeSandbox client is currently divided in to 5 parts. We use `lerna` to share dependencies between these parts.
@@ -53,10 +60,11 @@ To install the project you need to have `yarn` and `node`
 
 Please go through existing issues and pull requests to check if somebody else is already working on it, we use `someone working on it` label to mark such issues.
 
-Also, make sure to run the tests before you commit your changes.
+Also, make sure to run the tests and lint the code before you commit your changes.
 
 ```
 yarn test
+yarn lint
 ```
 
 ## Add yourself as a contributor

@@ -33,6 +33,14 @@ We infer sandbox settings based on several files in a repository.
 | Template - React-Typescript | If `package.json` dependencies contains `react-scripts-ts`. |
 | Template - Svelte           | If `package.json` dependencies contains `svelte`.           |
 
+Additionally, you may specify a `template` property in your `./sandbox.config.json` file.
+
+```json
+{
+  "template": "node"
+}
+```
+
 ### Source
 
 You can find the source of our git extractor [here](https://github.com/codesandbox-app/git-extractor).

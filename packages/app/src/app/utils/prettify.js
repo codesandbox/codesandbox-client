@@ -15,10 +15,6 @@ function getMode(title: string) {
     return 'typescript';
   }
 
-  if (/\.json$/.test(title)) {
-    return 'babylon';
-  }
-
   if (/\.css$/.test(title)) {
     return 'postcss';
   }
@@ -132,7 +128,7 @@ export default function prettify(
 
   return new Promise((resolve, reject) => {
     if (!mode) {
-      reject({ error: 'No mode found for prettify' });
+      resolve(getCode());
       return;
     }
 

@@ -1,22 +1,23 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sandbox - CodeSandbox</title>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="shortcut icon" href="/favicon.ico">
-  <script src="<%= webpackConfig.output.publicPath %>static/browserfs/browserfs.min.js" type="text/javascript"></script>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sandbox - CodeSandbox</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="<%= webpackConfig.output.publicPath %>static/browserfs/browserfs.min.js"
+      type="text/javascript"></script>
 
-  <script>
+    <script>
     window.process = BrowserFS.BFSRequire('process');
     window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
   </script>
-</head>
+  </head>
 
-<body>
-  <div id="csb-loading-screen"></div>
-</body>
+  <body>
+    <div id="csb-loading-screen"></div>
+  </body>
 
 </html>

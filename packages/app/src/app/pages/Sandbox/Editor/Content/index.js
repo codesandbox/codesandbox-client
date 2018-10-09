@@ -382,10 +382,27 @@ class EditorPreview extends React.Component<Props, State> {
       editorHeight = absoluteHeight;
     }
 
+    const template = getTemplateDefinition(sandbox.template);
+
+    const isReadOnly = () => {
+      if (store.live.isCurrentEditor) {
+        return false;
+      }
+
+      if (template.isServer) {
+        if (!store.isLoggedIn || store.server.status !== 'connected') {
+          return true;
+        }
+      }
+
+      return store.live.isLive;
+    };
+
     return (
       <ThemeProvider
         theme={{
-          templateColor: getTemplateDefinition(sandbox.template).color,
+          templateColor: template.color,
+          templateBackgroundColor: template.backgroundColor,
         }}
       >
         <FullSize
@@ -448,7 +465,7 @@ class EditorPreview extends React.Component<Props, State> {
               absoluteHeight={absoluteHeight}
               settings={settings(store)}
               sendTransforms={this.sendTransforms}
-              readOnly={store.live.isLive && !store.live.isCurrentEditor}
+              readOnly={isReadOnly()}
               isLive={store.live.isLive}
               onCodeReceived={signals.live.onCodeReceived}
               onSelectionChanged={signals.live.onSelectionChanged}
@@ -500,11 +517,13 @@ class EditorPreview extends React.Component<Props, State> {
               }
             }}
             sandboxId={sandbox.id}
+            template={sandbox.template}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}
             setDevToolsOpen={open =>
               this.props.signals.preferences.setDevtoolsOpen({ open })
             }
+            owned={sandbox.owned}
           />
         </FullSize>
       </ThemeProvider>

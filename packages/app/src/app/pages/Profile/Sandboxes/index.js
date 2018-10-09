@@ -58,8 +58,8 @@ class Sandboxes extends React.Component {
     return Math.ceil(givenLikeCount / PER_PAGE_COUNT);
   };
 
-  deleteSandbox = index => {
-    this.props.signals.profile.deleteSandboxClicked({ index });
+  deleteSandbox = id => {
+    this.props.signals.profile.deleteSandboxClicked({ id });
   };
 
   render() {
@@ -82,8 +82,12 @@ class Sandboxes extends React.Component {
       <div>
         {isProfileCurrentUser && (
           <Notice>
-            You{"'"}re viewing your own profile, so you can see your private and
-            unlisted sandboxes. Others can{"'"}t.
+            You
+            {"'"}
+            re viewing your own profile, so you can see your private and
+            unlisted sandboxes. Others can
+            {"'"}
+            t.
           </Notice>
         )}
         <SandboxList

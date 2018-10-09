@@ -97,7 +97,16 @@ const config: ConfigurationFile = {
 
     if (template === 'parcel') {
       const presets = ['env'];
-      const plugins = [];
+      const plugins = [
+        [
+          'transform-runtime',
+          {
+            polyfill: false,
+            regenerator: true,
+          },
+        ],
+        'transform-object-rest-spread',
+      ];
 
       const packageJSONModule = resolveModule('/package.json');
 

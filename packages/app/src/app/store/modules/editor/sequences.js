@@ -13,7 +13,7 @@ import {
   unSetReceivingStatus,
 } from '../live/actions';
 import {
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   forkSandbox,
   fetchGitChanges,
   closeModal,
@@ -91,6 +91,8 @@ export const updatePrivacy = [
   },
 ];
 
+export const updateFrozen = actions.updateFrozen;
+
 export const toggleLikeSandbox = [
   when(state`editor.sandboxes.${props`id`}.userLiked`),
   {
@@ -145,7 +147,7 @@ export const changeCode = [
 
 export const saveChangedModules = [
   track('Save Modified Modules', {}),
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.outputChangedModules,
   actions.saveChangedModules,
   actions.removeChangedModules,
@@ -177,7 +179,7 @@ export const prettifyCode = [
 
 export const saveCode = [
   track('Save Code', {}),
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   when(state`preferences.settings.prettifyOnSaveEnabled`),
   {
     true: [prettifyCode],
@@ -197,6 +199,8 @@ export const saveCode = [
     false: [],
   },
   sendModuleSaved,
+
+  actions.updateTemplateIfSSE,
 ];
 
 export const discardModuleChanges = [
@@ -212,7 +216,7 @@ export const discardModuleChanges = [
 export const addNpmDependency = [
   track('Add NPM Dependency', {}),
   closeModal,
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   when(props`version`),
   {
     true: [],
@@ -225,7 +229,7 @@ export const addNpmDependency = [
 
 export const removeNpmDependency = [
   track('Remove NPM Dependency', {}),
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.removeNpmDependencyFromPackage,
   changeCode,
   saveCode,
@@ -273,4 +277,8 @@ export const setPreviewBounds = [actions.setPreviewBounds];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
+];
+
+export const updateEditorSize = [
+  set(state`editor.previewWindow.editorSize`, props`editorSize`),
 ];

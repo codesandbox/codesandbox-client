@@ -20,6 +20,7 @@ export default class WorkerTranspiler extends Transpiler {
   Worker: Worker;
   workers: Array<Worker>;
   idleWorkers: Array<Worker>;
+  loadingWorkers: number;
   workerCount: number;
   tasks: {
     [id: string]: Task,
@@ -34,7 +35,7 @@ export default class WorkerTranspiler extends Transpiler {
     name: string,
     Worker: Worker,
     workerCount = navigator.hardwareConcurrency,
-    options: { hasFS: boolean } = {}
+    options: { hasFS: boolean, preload: boolean } = {}
   ) {
     super(name);
 
@@ -45,6 +46,15 @@ export default class WorkerTranspiler extends Transpiler {
     this.tasks = {};
     this.initialized = false;
     this.hasFS = options.hasFS || false;
+    this.loadingWorkers = 0;
+
+    if (options.preload) {
+      if (this.workers.length === 0) {
+        Promise.all(
+          Array.from({ length: this.workerCount }, () => this.loadWorker())
+        );
+      }
+    }
   }
 
   getWorker() {
@@ -53,8 +63,16 @@ export default class WorkerTranspiler extends Transpiler {
 
   loadWorker() {
     return new Promise(async resolve => {
+      this.loadingWorkers++;
       const t = Date.now();
       const worker = await this.getWorker();
+      const readyListener = e => {
+        if (e.data === 'ready') {
+          debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
+          worker.removeEventListener('message', readyListener);
+        }
+      };
+      worker.addEventListener('message', readyListener);
 
       if (this.hasFS) {
         // Register file system that syncs with filesystem in manager
@@ -62,7 +80,6 @@ export default class WorkerTranspiler extends Transpiler {
         worker.postMessage({ type: 'initialize-fs', codesandbox: true });
       }
 
-      debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
       this.idleWorkers.push(worker);
 
       this.executeRemainingTasks();
@@ -88,6 +105,7 @@ export default class WorkerTranspiler extends Transpiler {
     this.tasks = {};
     this.workers.length = 0;
     this.idleWorkers.length = 0;
+    this.loadingWorkers = 0;
   }
 
   executeRemainingTasks() {
@@ -178,7 +196,9 @@ export default class WorkerTranspiler extends Transpiler {
         }
 
         if (data.type === 'error' || data.type === 'result') {
-          this.idleWorkers.push(worker);
+          // Unshift instead of push, we want to prepend the worker because
+          // this worker is warm now.
+          this.idleWorkers.unshift(worker);
           this.executeRemainingTasks();
         }
       }
@@ -192,8 +212,13 @@ export default class WorkerTranspiler extends Transpiler {
     loaderContext: LoaderContext,
     callback: (err: Error, message: Object) => void
   ) {
-    if (!this.initialized) {
-      await this.initialize();
+    this.initialized = true;
+    if (
+      this.idleWorkers.length === 0 &&
+      this.loadingWorkers < this.workerCount
+    ) {
+      // Load new worker if needed
+      await this.loadWorker();
     }
 
     if (!this.tasks[id]) {

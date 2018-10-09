@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "yarn build:deps && yarn build:prod",
+    "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
     "build:prod": "lerna run build  --scope homepage --stream && lerna run build --scope app --stream && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
     "build:deps": "lerna run build:dev --scope codesandbox-api --scope codesandbox-browserfs",
@@ -21,7 +21,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --stream"
+    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream"
   },
   "lint-staged": {
     "*.{js,css,json}": [
@@ -37,15 +37,20 @@
       "packages/sandpack",
       "packages/react-sandpack",
       "packages/homepage",
-      "packages/node-services"
+      "packages/node-services",
+      "packages/sandbox-hooks",
+      "packages/sse-hooks"
     ],
-    "nohoist": ["**/gatsby", "**/gatsby/**"]
-},
+    "nohoist": [
+      "**/gatsby",
+      "**/gatsby/**"
+    ]
+  },
   "resolutions": {
     "uglify-es": "npm:terser"
   },
   "devDependencies": {
-    "all-contributors-cli": "^4.3.0",
+    "all-contributors-cli": "^5.4.0",
     "babel-eslint": "^8.2.1",
     "eslint": "CompuIves/eslint#add/define-parser",
     "eslint-config-airbnb": "^15.0.1",

@@ -1,6 +1,9 @@
 import { sequence } from 'cerebral';
 import { when, push, unset, set, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+
+import getTemplateDefinition from 'common/templates';
+
 import * as actions from './actions';
 import * as factories from './factories';
 import { connectToChannel as setupNotifications } from './modules/user-notifications/actions';
@@ -109,24 +112,49 @@ export const addNotification = factories.addNotification(
   props`type`
 );
 
+const canForkServerSandbox = when(
+  state`editor.currentSandbox.template`,
+  state`isLoggedIn`,
+  (template, isLoggedIn) => {
+    if (!isLoggedIn) {
+      const templateDefinition = getTemplateDefinition(template);
+
+      if (templateDefinition.isServer) {
+        return false;
+      }
+    }
+    return true;
+  }
+);
+
 export const forkSandbox = sequence('forkSandbox', [
-  factories.track('Fork Sandbox', {}),
-  set(state`editor.isForkingSandbox`, true),
-  actions.forkSandbox,
-  actions.moveModuleContent,
-  set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-  set(state`editor.currentId`, props`sandbox.id`),
-  factories.addNotification('Forked sandbox!', 'success'),
-  factories.updateSandboxUrl(props`sandbox`),
-  ensurePackageJSON,
-  set(state`editor.isForkingSandbox`, false),
+  canForkServerSandbox,
+  {
+    true: [
+      factories.track('Fork Sandbox', {}),
+      set(state`editor.isForkingSandbox`, true),
+      actions.forkSandbox,
+      actions.moveModuleContent,
+      set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+      set(state`editor.currentId`, props`sandbox.id`),
+      factories.addNotification('Forked sandbox!', 'success'),
+      factories.updateSandboxUrl(props`sandbox`),
+      ensurePackageJSON,
+      set(state`editor.isForkingSandbox`, false),
+    ],
+    false: [set(props`modal`, 'forkServerModal'), openModal],
+  },
 ]);
 
-export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
-  when(state`editor.currentSandbox.owned`),
+export const ensureOwnedEditable = sequence('ensureOwnedEditable', [
+  when(
+    state`editor.currentSandbox.owned`,
+    state`editor.currentSandbox.isFrozen`,
+    (owned, frozen) => !owned || frozen
+  ),
   {
-    true: [],
-    false: forkSandbox,
+    true: forkSandbox,
+    false: [],
   },
 ]);
 

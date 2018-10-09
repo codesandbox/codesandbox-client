@@ -5,6 +5,8 @@ import localforage from 'localforage';
 
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
+import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
+import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
@@ -17,8 +19,6 @@ import fetchModule, {
 } from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
-import DependencyNotFoundError from '../errors/dependency-not-found-error';
-import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import isESModule from './utils/is-es-module';
@@ -57,7 +57,7 @@ export type Manifest = {
   },
 };
 
-window.isFIleArgs = [];
+const relativeRegex = /^(\/|\.)/;
 
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
 // For these dependencies we don't want to follow along with the `browser` field
@@ -182,7 +182,6 @@ export default class Manager {
 
   // Hoist these 2 functions to the top, since they get executed A LOT
   isFile = (p: string) => {
-    window.isFIleArgs.push(p);
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.
@@ -491,7 +490,7 @@ export default class Manager {
 
     let resolvedPath;
 
-    if (cachedPath) {
+    if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
       const presetAliasedPath = this.getPresetAliasedPath(path);
@@ -550,6 +549,7 @@ export default class Manager {
 
         const dependencyName = getDependencyName(connectedPath);
 
+        // TODO: fix the stack hack
         if (
           this.manifest.dependencies.find(d => d.name === dependencyName) ||
           this.manifest.dependencyDependencies[dependencyName]
@@ -570,10 +570,10 @@ export default class Manager {
 
   downloadDependency(
     path: string,
-    currentPath: string,
+    currentTModule: TranspiledModule,
     ignoredExtensions: Array<string> = this.preset.ignoredExtensions
   ): Promise<TranspiledModule> {
-    return fetchModule(path, currentPath, this, ignoredExtensions).then(
+    return fetchModule(path, currentTModule, this, ignoredExtensions).then(
       module => this.getTranspiledModule(module)
     );
   }
@@ -589,16 +589,22 @@ export default class Manager {
 
   resolveTranspiledModuleAsync = (
     path: string,
-    currentPath: string,
+    currentTModule: ?TranspiledModule,
     ignoredExtensions?: Array<string>
   ): Promise<TranspiledModule> => {
+    const tModule =
+      currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
     try {
       return Promise.resolve(
-        this.resolveTranspiledModule(path, currentPath, ignoredExtensions)
+        this.resolveTranspiledModule(
+          path,
+          tModule.module.path,
+          ignoredExtensions
+        )
       );
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
-        return this.downloadDependency(e.path, currentPath, ignoredExtensions);
+        return this.downloadDependency(e.path, tModule, ignoredExtensions);
       }
 
       throw e;
@@ -800,7 +806,8 @@ export default class Manager {
         if (
           !this.manifest.contents[tModule.module.path] ||
           (tModule.module.path.endsWith('.js') &&
-            tModule.module.requires == null)
+            tModule.module.requires == null) ||
+          tModule.module.downloaded
         ) {
           // Only save modules that are not precomputed
           serializedTModules[tModule.getId()] = tModule.serialize();

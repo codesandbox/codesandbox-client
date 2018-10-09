@@ -2,14 +2,14 @@ import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
+import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 
-import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
 
 import { resetScreen } from './status-screen';
 
-import { inject, unmount } from './react-error-overlay/overlay';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 
@@ -57,6 +57,17 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
+function sendTestCount(manager: Manager, modules: Array<Module>) {
+  const testRunner = manager.testRunner;
+  const tests = testRunner.findTests(modules);
+
+  dispatch({
+    type: 'test',
+    event: 'test_count',
+    count: tests.length,
+  });
+}
+
 let firstLoad = true;
 let hadError = false;
 let lastHeadHTML = null;
@@ -98,10 +109,10 @@ const BABEL_DEPENDENCIES = [
 // system in the future
 const PREINSTALLED_DEPENDENCIES = [
   'node-lib-browser',
-  'babel-runtime',
   'react-scripts',
   'react-scripts-ts',
   'parcel-bundler',
+  '@babel/runtime',
   'babel-plugin-check-es2015-constants',
   'babel-plugin-external-helpers',
   'babel-plugin-inline-replace-variables',
@@ -190,7 +201,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
     devDependencies = {},
   } = parsedPackage;
 
-  const returnedDependencies = { ...peerDependencies, ...d };
+  let returnedDependencies = { ...peerDependencies };
 
   const foundWhitelistedDevDependencies = [...WHITELISTED_DEV_DEPENDENCIES];
 
@@ -221,6 +232,16 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       });
   }
 
+  Object.keys(d).forEach(dep => {
+    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
+
+    if (dep === 'reason-react') {
+      return; // is replaced
+    }
+
+    returnedDependencies[usedDep] = d[dep];
+  });
+
   Object.keys(devDependencies).forEach(dep => {
     const usedDep = DEPENDENCY_ALIASES[dep] || dep;
     if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
@@ -235,6 +256,19 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       ...BABEL_DEPENDENCIES,
     ];
   }
+
+  if (templateDefinition.name === 'reason') {
+    returnedDependencies = {
+      ...returnedDependencies,
+      '@jaredly/bs-core': '3.0.0-alpha.2',
+      '@jaredly/reason-react': '0.3.4',
+    };
+  }
+
+  // Always include this, because most sandboxes need this with babel6 and the
+  // packager will only include the package.json for it.
+  returnedDependencies['babel-runtime'] =
+    returnedDependencies['babel-runtime'] || '6.26.0';
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
@@ -343,21 +377,6 @@ async function compile({
     type: 'start',
   });
 
-  try {
-    // We set it as a time value for people that run two sandboxes on one computer
-    // they execute at the same time and we don't want them to conflict, so we check
-    // if the message was set a second ago
-    if (Date.now() < localStorage.getItem('running') > 1000) {
-      localStorage.removeItem('running');
-      showRunOnClick();
-      return;
-    }
-
-    localStorage.setItem('running', Date.now());
-  } catch (e) {
-    /* no */
-  }
-
   const startTime = Date.now();
   try {
     inject();
@@ -465,6 +484,25 @@ async function compile({
     if (!skipEval) {
       resetScreen();
 
+      try {
+        // We set it as a time value for people that run two sandboxes on one computer
+        // they execute at the same time and we don't want them to conflict, so we check
+        // if the message was set a second ago
+        if (
+          firstLoad &&
+          localStorage.getItem('running') &&
+          Date.now() - localStorage.getItem('running') > 8000
+        ) {
+          localStorage.removeItem('running');
+          showRunOnClick();
+          return;
+        }
+
+        localStorage.setItem('running', Date.now());
+      } catch (e) {
+        /* no */
+      }
+
       manager.preset.preEvaluate(manager);
 
       if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
@@ -550,23 +588,6 @@ async function compile({
       createCodeSandboxOverlay(modules);
     }
 
-    dispatch({ type: 'status', status: 'running-tests' });
-
-    try {
-      // Testing
-      const ttt = Date.now();
-      const testRunner = manager.testRunner;
-      testRunner.findTests(modules);
-      await testRunner.runTests();
-      debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
-
-      // End - Testing
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(error);
-      }
-    }
-
     debug(`Total time: ${Date.now() - startTime}ms`);
 
     dispatch({
@@ -580,6 +601,16 @@ async function compile({
       changedModuleCount,
       firstLoad
     );
+
+    setTimeout(() => {
+      try {
+        sendTestCount(manager, modules);
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Test error', e);
+        }
+      }
+    }, 600);
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);

@@ -97,17 +97,6 @@ module.exports = {
         loader: 'file-loader',
         type: 'javascript/auto',
       },
-      {
-        test: /\.js$/,
-        include: [paths.src, paths.common, /@emmetio/],
-        exclude: [
-          /eslint\.4\.1\.0\.min\.js$/,
-          /typescriptServices\.js$/,
-          new RegExp(`babel-runtime${sepRe}`),
-        ],
-        loader: 'happypack/loader',
-      },
-
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
         test: [
@@ -116,6 +105,10 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
           new RegExp(`${sepRe}node_modules${sepRe}.*monaco-textmate`),
           new RegExp(`${sepRe}node_modules${sepRe}.*onigasm`),
+          new RegExp(`react-icons`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*gsap`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*babel-plugin-macros`),
+          new RegExp(`sandbox-hooks`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),
@@ -126,24 +119,39 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: [
+            '@babel/preset-flow',
             [
-              'env',
+              '@babel/preset-env',
               {
                 targets: {
                   ie: 11,
                   esmodules: true,
                 },
+                modules: 'umd',
+                useBuiltIns: false,
               },
             ],
-            'react',
+            '@babel/preset-react',
           ],
           plugins: [
-            'transform-async-to-generator',
-            'transform-object-rest-spread',
-            'transform-class-properties',
-            'transform-runtime',
+            '@babel/plugin-transform-template-literals',
+            '@babel/plugin-transform-destructuring',
+            '@babel/plugin-transform-async-to-generator',
+            '@babel/plugin-proposal-object-rest-spread',
+            '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-transform-runtime',
           ],
         },
+      },
+      {
+        test: /\.js$/,
+        include: [paths.src, paths.common, /@emmetio/],
+        exclude: [
+          /eslint\.4\.1\.0\.min\.js$/,
+          /typescriptServices\.js$/,
+          /\.no-webpack\./,
+        ],
+        loader: 'happypack/loader',
       },
 
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
@@ -209,6 +217,15 @@ module.exports = {
           replace: `throw new Error('module assert not found')`,
         },
       },
+      // Remove dynamic require in jest circus
+      {
+        test: /babel-plugin-macros/,
+        loader: 'string-replace-loader',
+        options: {
+          search: `_require(`,
+          replace: `self.require(`,
+        },
+      },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
       // "style" loader turns CSS into JS modules that inject <style> tags.
@@ -266,7 +283,7 @@ module.exports = {
   },
 
   // To make jsonlint work
-  externals: ['file', 'system'],
+  externals: ['file', 'system', 'jsdom', 'prettier', 'cosmiconfig'],
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],

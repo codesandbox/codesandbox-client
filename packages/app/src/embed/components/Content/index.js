@@ -8,6 +8,8 @@ import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 
+import getTemplate from 'common/templates';
+
 import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
 import {
   TabTitle,
@@ -314,6 +316,8 @@ export default class Content extends React.PureComponent<Props, State> {
 
     if (!mainModule) throw new Error('Cannot find main module');
 
+    const templateDefinition = getTemplate(sandbox.template);
+
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'
     );
@@ -393,6 +397,7 @@ export default class Content extends React.PureComponent<Props, State> {
                 sandbox={sandbox}
                 settings={this.getPreferences()}
                 canSave={false}
+                readOnly={templateDefinition.isServer}
                 onChange={this.setCode}
                 onModuleChange={this.setCurrentModule}
                 onUnMount={this.onCodeEditorUnMount}
@@ -437,8 +442,10 @@ export default class Content extends React.PureComponent<Props, State> {
                 <DevTools
                   setDragging={this.setDragging}
                   sandboxId={sandbox.id}
+                  template={sandbox.template}
                   shouldExpandDevTools={this.props.expandDevTools}
                   view={view}
+                  owned={false}
                 />
               </div>
             )}

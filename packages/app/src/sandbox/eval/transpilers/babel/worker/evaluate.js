@@ -1,14 +1,18 @@
 import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
+import { dirname } from 'path';
 import type FSType from 'fs';
+import detectOldBrowser from 'common/detect-old-browser';
 import evaluateCode from '../../../loaders/eval';
 
 let cache = {};
-let transpileBeforeExec = false;
+let cachedPaths = {};
+let transpileBeforeExec = detectOldBrowser();
 
 export const resetCache = () => {
   cache = {};
-  transpileBeforeExec = false;
+  cachedPaths = {};
+  transpileBeforeExec = detectOldBrowser();
 };
 
 export default function evaluate(
@@ -63,28 +67,29 @@ export default function evaluate(
       return preset;
     }
 
-    const resolvedPath = resolve.sync(requirePath, {
-      filename: path,
-      extensions: ['.js', '.json'],
-      moduleDirectory: ['node_modules'],
-    });
+    const dirName = dirname(path);
+    cachedPaths[dirName] = cachedPaths[dirName] || {};
 
-    let resolvedCode = fs.readFileSync(resolvedPath).toString();
+    const resolvedPath =
+      cachedPaths[dirName][requirePath] ||
+      resolve.sync(requirePath, {
+        filename: path,
+        extensions: ['.js', '.json'],
+        moduleDirectory: ['node_modules'],
+      });
+
+    cachedPaths[dirName][requirePath] = resolvedPath;
+
+    const resolvedCode = fs.readFileSync(resolvedPath).toString();
     const id = hashsum(resolvedCode + resolvedPath);
 
     if (cache[id]) {
-      return cache[id];
+      return cache[id].exports;
     }
 
     cache[id] = {};
 
-    if (transpileBeforeExec) {
-      const { code: transpiledCode } = Babel.transform(resolvedCode);
-
-      resolvedCode = transpiledCode;
-    }
-
-    cache[id] = evaluate(
+    return evaluate(
       fs,
       BFSRequire,
       resolvedCode,
@@ -92,8 +97,6 @@ export default function evaluate(
       availablePlugins,
       availablePresets
     );
-
-    return cache[id];
   };
 
   // require.resolve is often used in .babelrc configs to resolve the correct plugin path,
@@ -106,7 +109,8 @@ export default function evaluate(
   //   moduleDirectory: ['node_modules'],
   // });
 
-  const module = {
+  const id = hashsum(code + path);
+  cache[id] = {
     id: path,
     exports: {},
   };
@@ -117,11 +121,41 @@ export default function evaluate(
   }
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
 
-  evaluateCode(finalCode, require, module, {
+  if (transpileBeforeExec) {
+    const { code: transpiledCode } = Babel.transform(finalCode, {
+      presets: ['es2015', 'react', 'stage-0'],
+      plugins: [
+        'transform-async-to-generator',
+        'transform-object-rest-spread',
+        'transform-decorators-legacy',
+        'transform-class-properties',
+        // Polyfills the runtime needed for async/await and generators
+        [
+          'transform-runtime',
+          {
+            helpers: false,
+            polyfill: false,
+            regenerator: true,
+          },
+        ],
+        [
+          'transform-regenerator',
+          {
+            // Async functions are converted to generators by babel-preset-env
+            async: false,
+          },
+        ],
+      ],
+    });
+
+    finalCode = transpiledCode;
+  }
+
+  const exports = evaluateCode(finalCode, require, cache[id], {
     VUE_CLI_BABEL_TRANSPILE_MODULES: true,
   });
 
-  return module.exports;
+  return exports;
 }
 
 export function evaluateFromPath(

@@ -3,21 +3,25 @@ import styled, { css } from 'styled-components';
 export const Container = styled.div`
   transition: 0.3s ease all;
   display: inline-block;
-  padding: 1rem;
+  padding: 1em;
   color: white;
 
-  width: ${props => props.width}px;
+  width: 100%;
   border: 2px solid rgba(0, 0, 0, 0.3);
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
-  margin-right: 1rem;
+  margin-bottom: 1em;
   cursor: pointer;
 
-  &:last-child {
-    margin-right: 0;
+  @media (min-width: 768px) {
+    width: ${props => props.width}px;
+    margin-right: 1em;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   outline: none;
@@ -40,20 +44,20 @@ export const Container = styled.div`
 
 export const Title = styled.div`
   transition: 0.3s ease color;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   color: ${props => (props.selected ? 'white' : props.color)};
-  margin-bottom: 0.25rem;
+  margin-bottom: ${props => (props.small ? '0' : '0.25em')};
   font-weight: 600;
 `;
 
 export const SubTitle = styled.div`
-  font-size: 0.875rem;
+  font-size: 0.73em;
 
   color: ${props =>
     props.selected ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.4)'};
 `;
 
 export const IconContainer = styled.div`
-  margin-left: 0.5rem;
+  margin-left: 0.5em;
   align-items: center;
 `;

@@ -58,7 +58,12 @@ class FlyingContainer extends React.Component<Props, State> {
       this.initialWidth = width;
       this.initialHeight = height;
 
-      this.props.signals.editor.setPreviewBounds({ width, height });
+      if (
+        this.props.store.editor.previewWindow.width == null &&
+        this.props.store.editor.previewWindow.height == null
+      ) {
+        this.props.signals.editor.setPreviewBounds({ width, height });
+      }
     }
   };
 
