@@ -19,6 +19,11 @@ const parentOriginListener = (e: MessageEvent) => {
 
 self.addEventListener('message', parentOriginListener);
 
+export function resetState() {
+  parentOrigin = null;
+  bundlers.clear();
+}
+
 /**
  * Send a message to the editor, this is most probably an action you generated
  *

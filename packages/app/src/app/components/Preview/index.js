@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { Sandbox, Module } from 'common/types';
-import { listen, dispatch, registerFrame } from 'codesandbox-api';
+import { listen, dispatch, registerFrame, resetState } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import io from 'socket.io-client';
 
@@ -333,6 +333,8 @@ class BasePreview extends React.Component<Props, State> {
 
   handleSandboxChange = (newId: string) => {
     this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
+
+    resetState();
 
     const url = this.serverPreview
       ? getSSEUrl(newId)
