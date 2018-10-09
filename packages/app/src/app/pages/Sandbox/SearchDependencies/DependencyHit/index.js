@@ -132,7 +132,7 @@ export default class DependencyHit extends React.PureComponent {
                 const tagName = getTagName(hit.tags, v);
                 return (
                   <option key={v}>
-                    {v} {tagName ? `- ${tagName}` : ''}
+                    {v} {tagName && `- ${tagName}`}
                   </option>
                 );
               })}
