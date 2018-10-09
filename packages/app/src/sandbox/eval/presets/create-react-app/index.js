@@ -73,7 +73,7 @@ export default function initialize() {
             },
           };
           preset.registerTranspiler(
-            module => /\.js$/.test(module.path),
+            module => /\.jsx?$/.test(module.path),
             [
               {
                 transpiler: babelTranspiler,
