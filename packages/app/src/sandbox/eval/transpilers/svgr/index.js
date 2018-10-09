@@ -25,8 +25,6 @@ class SVGRTranspiler extends Transpiler {
 
     const result = await svgrTransform(downloadedCode, state);
 
-    console.log(result);
-
     return {
       transpiledCode: result,
     };
