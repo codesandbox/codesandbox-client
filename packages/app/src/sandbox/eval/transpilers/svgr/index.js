@@ -12,7 +12,20 @@ class SVGRTranspiler extends Transpiler {
         previousExport: `"${loaderContext._module.module.path}"`,
       },
     };
-    const result = await svgrTransform(code, state);
+
+    let downloadedCode = code;
+
+    if (code.startsWith('http')) {
+      await fetch(code)
+        .then(res => res.text())
+        .then(r => {
+          downloadedCode = r;
+        });
+    }
+
+    const result = await svgrTransform(downloadedCode, state);
+
+    console.log(result);
 
     return {
       transpiledCode: result,
