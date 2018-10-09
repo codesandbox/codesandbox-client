@@ -207,9 +207,7 @@ class MonacoEditor extends React.PureComponent {
       )[0];
       editor.parentNode.removeChild(editor);
 
-      const rootEl = document.getElementsByClassName(
-        'elements__CodeContainer-ghvvch'
-      )[0];
+      const rootEl = document.getElementsByClassName('sc-dchYKM')[0];
       rootEl.appendChild(container);
 
       context.monaco.editor[diffEditor ? 'createDiffEditor' : 'create'](

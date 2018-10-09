@@ -12,8 +12,10 @@ export function isAllModulesSynced() {
 }
 
 export function currentModule() {
-  return this.currentSandbox.modules.find(
-    module => module.shortid === this.currentModuleShortid
+  return (
+    this.currentSandbox.modules.find(
+      module => module.shortid === this.currentModuleShortid
+    ) || {}
   );
 }
 

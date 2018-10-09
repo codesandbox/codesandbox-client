@@ -79,6 +79,7 @@ export default Module({
     forkSandboxClicked: sequences.forceForkSandbox,
     likeSandboxToggled: sequences.toggleLikeSandbox,
     moduleSelected: sequences.changeCurrentModule,
+    clearModuleSelected: sequences.clearCurrentModule,
     moduleDoubleClicked: sequences.unsetDirtyTab,
     tabClosed: sequences.closeTab,
     tabMoved: sequences.moveTab,

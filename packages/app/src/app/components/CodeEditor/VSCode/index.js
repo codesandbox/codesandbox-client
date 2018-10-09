@@ -159,9 +159,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     window.removeEventListener('resize', this.resizeEditor);
     // Make sure that everything has run before disposing, to prevent any inconsistensies
 
-    if (this.editor) {
-      this.editor.dispose();
-    }
+    // if (this.editor) {
+    //   this.editor.dispose();
+    // }
     if (this.lintWorker) {
       this.lintWorker.terminate();
     }
@@ -638,22 +638,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     dependencies: $PropertyType<Props, 'dependencies'>
   ): Promise<null> =>
     new Promise(resolve => {
-      const oldSandbox = this.sandbox;
-
       this.sandbox = newSandbox;
       this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
 
-      // Reset models, dispose old ones
-      this.disposeModules(oldSandbox.modules);
-
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
         this.getConfigSchemas();
-        // Initialize new models
-        this.initializeModules(newSandbox.modules)
-          .then(() => this.openNewModel(newCurrentModule))
-          .then(resolve);
+        resolve(null);
       });
     });
 
@@ -775,76 +767,83 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   setErrors = (errors: Array<ModuleError>) => {
-    if (errors.length > 0) {
-      const thisModuleErrors = errors.filter(
-        error => error.moduleId === this.currentModule.id
-      );
-      const errorMarkers = thisModuleErrors
-        .map(error => {
-          if (error) {
-            return {
-              severity: this.monaco.Severity.Error,
-              startColumn: 1,
-              startLineNumber: error.line,
-              endColumn: error.column,
-              endLineNumber: error.line + 1,
-              message: error.message,
-            };
-          }
+    const activeEditor = this.editor.getActiveCodeEditor();
 
-          return null;
-        })
-        .filter(x => x);
+    if (activeEditor) {
+      if (errors.length > 0) {
+        const thisModuleErrors = errors.filter(
+          error => error.moduleId === this.currentModule.id
+        );
+        const errorMarkers = thisModuleErrors
+          .map(error => {
+            if (error) {
+              return {
+                severity: this.monaco.Severity.Error,
+                startColumn: 1,
+                startLineNumber: error.line,
+                endColumn: error.column,
+                endLineNumber: error.line + 1,
+                message: error.message,
+              };
+            }
 
-      this.monaco.editor.setModelMarkers(
-        this.editor.getActiveCodeEditor().getModel(),
-        'error',
-        errorMarkers
-      );
-    } else {
-      this.monaco.editor.setModelMarkers(
-        this.editor.getActiveCodeEditor().getModel(),
-        'error',
-        []
-      );
+            return null;
+          })
+          .filter(x => x);
+
+        this.monaco.editor.setModelMarkers(
+          activeEditor.getModel(),
+          'error',
+          errorMarkers
+        );
+      } else {
+        this.monaco.editor.setModelMarkers(
+          activeEditor.getModel(),
+          'error',
+          []
+        );
+      }
     }
   };
 
   setCorrections = (corrections: Array<ModuleCorrection>) => {
-    if (corrections.length > 0) {
-      const correctionMarkers = corrections
-        .filter(correction => correction.moduleId === this.currentModule.id)
-        .map(correction => {
-          if (correction) {
-            return {
-              severity:
-                correction.severity === 'warning'
-                  ? this.monaco.Severity.Warning
-                  : this.monaco.Severity.Notice,
-              startColumn: correction.column,
-              startLineNumber: correction.line,
-              endColumn: 1,
-              endLineNumber: correction.line + 1,
-              message: correction.message,
-              source: correction.source,
-            };
-          }
+    const activeEditor = this.editor.getActiveCodeEditor();
+    if (activeEditor) {
+      if (corrections.length > 0) {
+        const correctionMarkers = corrections
+          .filter(correction => correction.moduleId === this.currentModule.id)
+          .map(correction => {
+            if (correction) {
+              return {
+                severity:
+                  correction.severity === 'warning'
+                    ? this.monaco.Severity.Warning
+                    : this.monaco.Severity.Notice,
+                startColumn: correction.column,
+                startLineNumber: correction.line,
+                endColumn: 1,
+                endLineNumber: correction.line + 1,
+                message: correction.message,
+                source: correction.source,
+              };
+            }
 
-          return null;
-        })
-        .filter(x => x);
+            return null;
+          })
+          .filter(x => x);
 
-      this.monaco.editor.setModelMarkers(
-        this.editor.getActiveCodeEditor().getModel(),
-        'correction',
-        correctionMarkers
-      );
-    } else {
-      this.monaco.editor.setModelMarkers(
-        this.editor.getActiveCodeEditor().getModel(),
-        'correction',
-        []
-      );
+        this.monaco.editor.setModelMarkers(
+          activeEditor.getModel(),
+          'correction',
+          correctionMarkers
+        );
+      } else {
+        this.monaco.editor.setModelMarkers(
+          activeEditor.getModel(),
+          'correction',
+          []
+        );
+      }
     }
   };
 
@@ -1085,13 +1084,15 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   openModule = (module: Module) => {
-    const path = getModulePath(
-      this.sandbox.modules,
-      this.sandbox.directories,
-      module.id
-    );
+    if (module.id) {
+      const path = getModulePath(
+        this.sandbox.modules,
+        this.sandbox.directories,
+        module.id
+      );
 
-    this.editor.openFile(path);
+      this.editor.openFile(path);
+    }
   };
 
   swapDocuments = (currentModule: Module, nextModule: Module) => {

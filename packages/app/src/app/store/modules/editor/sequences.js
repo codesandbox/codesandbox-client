@@ -53,6 +53,10 @@ export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
 
+export const clearCurrentModule = [
+  set(state`editor.currentModuleShortid`, null),
+];
+
 export const changeCurrentModule = [
   track('Open File', {}),
   setReceivingStatus,

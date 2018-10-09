@@ -26,10 +26,9 @@ const CodeMirror = Loadable(() =>
   import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
 );
 
-const VSCode = Loadable({
-  loader: () => import(/* webpackChunkName: 'vscode-editor' */ './VSCode'),
-  LoadingComponent: Loading,
-});
+const VSCode = Loadable(() =>
+  import(/* webpackChunkName: 'vscode-editor' */ './VSCode')
+);
 
 const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
   const packageJSON = sandbox.modules.find(
