@@ -100,17 +100,15 @@ function eventListener(e: MessageEvent) {
  * @param frame
  */
 export function registerFrame(frame: Window, origin: string) {
-  if (!bundlers.has(frame)) {
-    bundlers.set(frame, origin);
+  bundlers.set(frame, origin);
 
-    frame.postMessage(
-      {
-        type: 'register-frame',
-        origin: document.location.origin,
-      },
-      origin
-    );
-  }
+  frame.postMessage(
+    {
+      type: 'register-frame',
+      origin: document.location.origin,
+    },
+    origin
+  );
 }
 
 // We now start listening so we can let our listeners know
