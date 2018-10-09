@@ -21,7 +21,7 @@ function isVersion2(configurations) {
       configurations.package.parsed.dependencies['react-scripts'];
 
     return (
-      /^\w/.test(reactScriptsVersion) ||
+      /^[a-z]/.test(reactScriptsVersion) ||
       semver.intersects(reactScriptsVersion, '^2.0.0')
     );
   }
