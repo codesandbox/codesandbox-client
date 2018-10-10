@@ -25,13 +25,17 @@ export function getIdFromModulePath({ props, state, utils }) {
 
   const sandbox = state.get('editor.currentSandbox');
 
-  const module = utils.resolveModule(
-    props.path.replace(/^\//, ''),
-    sandbox.modules,
-    sandbox.directories
-  );
+  try {
+    const module = utils.resolveModule(
+      props.path.replace(/^\//, ''),
+      sandbox.modules,
+      sandbox.directories
+    );
 
-  return { id: module.id };
+    return { id: module.id };
+  } catch (e) {
+    return {};
+  }
 }
 
 export function addNpmDependencyToPackage({ state, props }) {

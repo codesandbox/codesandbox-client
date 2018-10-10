@@ -61,21 +61,27 @@ export const changeCurrentModule = [
   track('Open File', {}),
   setReceivingStatus,
   actions.getIdFromModulePath,
-  setCurrentModule(props`id`),
-  equals(state`live.isLive`),
+  when(props`id`),
   {
     true: [
-      equals(state`live.isCurrentEditor`),
+      setCurrentModule(props`id`),
+      equals(state`live.isLive`),
       {
         true: [
-          getSelectionsForCurrentModule,
-          set(state`editor.pendingUserSelections`, props`selections`),
-          sendChangeCurrentModule,
+          equals(state`live.isCurrentEditor`),
+          {
+            true: [
+              getSelectionsForCurrentModule,
+              set(state`editor.pendingUserSelections`, props`selections`),
+              sendChangeCurrentModule,
+            ],
+            false: [],
+          },
         ],
         false: [],
       },
     ],
-    false: [],
+    false: [clearCurrentModule],
   },
 ];
 

@@ -142,6 +142,7 @@ class MonacoEditor extends React.PureComponent {
         { ICodeEditorService },
         { ITextFileService },
         { CodeSandboxRequestService },
+        { ILifecycleService, LifecyclePhase },
       ] = [
         r('vs/codesandbox/commandService'),
         r('vs/codesandbox/hashService'),
@@ -191,7 +192,10 @@ class MonacoEditor extends React.PureComponent {
         r('vs/editor/browser/services/codeEditorService'),
         r('vs/workbench/services/textfile/common/textfiles'),
         r('vs/codesandbox/requestService'),
+        r('vs/platform/lifecycle/common/lifecycle'),
       ];
+
+      document.body.className += ' vs-dark';
 
       const container = document.createElement('div');
       const part = document.createElement('div');
@@ -285,6 +289,12 @@ class MonacoEditor extends React.PureComponent {
           const codeEditorService = services.get(ICodeEditorService);
           const textFileService = services.get(ITextFileService);
           const editorService = services.get(IEditorService);
+
+          const lifecycleService = services.get(ILifecycleService);
+
+          lifecycleService.phase = LifecyclePhase.Running;
+
+          console.log(LifecyclePhase.Running);
 
           const editorApi = {
             openFile(path: string) {
