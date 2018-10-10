@@ -19,7 +19,6 @@ import Switch from 'common/components/Switch';
 import Tooltip from 'common/components/Tooltip';
 
 import getTemplateDefinition from 'common/templates';
-import Switch from 'common/components/Switch';
 import { WorkspaceInputContainer } from '../elements';
 
 import {
