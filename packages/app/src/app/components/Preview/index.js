@@ -360,7 +360,12 @@ class BasePreview extends React.Component<Props, State> {
   handleMessage = (data: Object, source: any) => {
     if (data && data.codesandbox) {
       if (data.type === 'initialized' && source) {
-        registerFrame(source, frameUrl(this.props.sandbox.id));
+        registerFrame(
+          source,
+          this.serverPreview
+            ? getSSEUrl(this.props.sandbox.id)
+            : frameUrl(this.props.sandbox.id)
+        );
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
