@@ -8,7 +8,7 @@ function GithubIntegration({ store, signals, small }) {
     <Integration
       name="GitHub"
       color="#4078c0"
-      description={small ? 'Commits & PRs' : 'Commiting & Pull Requests'}
+      description={small ? 'Commits & PRs' : 'Committing & Pull Requests'}
       Icon={GithubLogo}
       small={small}
       userInfo={store.user.integrations.github}
