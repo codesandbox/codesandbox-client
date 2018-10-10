@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import Question from 'react-icons/lib/go/question';
-import Unlisted from 'react-icons/lib/go/link';
-import Private from 'react-icons/lib/go/lock';
+import Unlisted from 'react-icons/lib/md/insert-link';
+import Private from 'react-icons/lib/md/lock';
 
 const iconStyles = css`
   opacity: 0.5;

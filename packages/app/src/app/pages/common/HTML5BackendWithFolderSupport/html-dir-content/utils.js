@@ -24,10 +24,14 @@ const getFileFromFileEntry = entry =>
 
 const isItemFileEntry = item => item.kind === 'file';
 
-const getAsEntry = item =>
-  item.getAsEntry
-    ? item.getAsEntry()
-    : item.webkitGetAsEntry ? item.webkitGetAsEntry() : null;
+const getAsEntry = item => {
+  if (item.getAsEntry) {
+    return item.getAsEntry();
+  } else if (item.webkitGetAsEntry) {
+    return item.webkitGetAsEntry();
+  }
+  return null;
+};
 
 const getListAsArray = (
   list // returns a flat array

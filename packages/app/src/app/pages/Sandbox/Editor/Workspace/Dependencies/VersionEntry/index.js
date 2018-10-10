@@ -21,8 +21,10 @@ export default class VersionEntry extends React.PureComponent {
   }
 
   componentWillMount() {
-    if (this.props.dependencies[this.props.dependency] === 'latest') {
-      this.setVersionsForLatestPkg(`${this.props.dependency}@latest`);
+    const versionRegex = /^\d{1,3}\.\d{1,3}.\d{1,3}$/;
+    const version = this.props.dependencies[this.props.dependency];
+    if (!versionRegex.test(version)) {
+      this.setVersionsForLatestPkg(`${this.props.dependency}@${version}`);
     }
   }
 
@@ -45,10 +47,7 @@ export default class VersionEntry extends React.PureComponent {
 
   render() {
     const { dependencies, dependency } = this.props;
-    const version =
-      dependencies[dependency] === 'latest' && this.state.version
-        ? `latest (${this.state.version})`
-        : dependencies[dependency];
+
     const { hovering } = this.state;
     return (
       <EntryContainer
@@ -58,7 +57,11 @@ export default class VersionEntry extends React.PureComponent {
         <Link href={`https://www.npmjs.com/package/${dependency}`}>
           {dependency}
         </Link>
-        <Version hovering={hovering}>{version}</Version>
+        <Version hovering={hovering}>
+          {dependencies[dependency]}{' '}
+          {hovering &&
+            this.state.version && <span>({this.state.version})</span>}
+        </Version>
         {hovering && (
           <IconArea>
             <Icon onClick={this.handleRefresh}>

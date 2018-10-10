@@ -1,6 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
+import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import CodeIcon from 'react-icons/lib/fa/code';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import BrowserIcon from 'react-icons/lib/go/browser';
@@ -12,6 +13,7 @@ import KeyboardIcon from 'react-icons/lib/go/keyboard';
 
 import SideNavigation from './SideNavigation';
 
+import Appearance from './Appearance';
 import EditorSettings from './EditorPageSettings/EditorSettings';
 import PreviewSettings from './EditorPageSettings/PreviewSettings';
 import CodeFormatting from './CodeFormatting';
@@ -29,6 +31,12 @@ class PreferencesModal extends React.Component {
     const signedIn = this.props.store.isLoggedIn;
 
     return [
+      {
+        id: 'appearance',
+        title: 'Appearance',
+        icon: <AppearanceIcon />,
+        content: <Appearance />,
+      },
       {
         id: 'editor',
         title: 'Editor',

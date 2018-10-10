@@ -1,5 +1,5 @@
 // @flow
-import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash].worker.js!./worker/index.js';
+import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index.js';
 
 import isESModule from '../../utils/is-es-module';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
@@ -7,6 +7,7 @@ import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
 import type { default as Manager } from '../../manager';
+import { isBabel7 } from '../../utils/is-babel-7';
 
 import delay from '../../../utils/delay';
 
@@ -17,7 +18,7 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', BabelWorker, 2, { hasFS: true });
+    super('babel-loader', BabelWorker, 3, { hasFS: true, preload: true });
   }
 
   startupWorkersInitialized = false;
@@ -46,7 +47,11 @@ class BabelTranspiler extends WorkerTranspiler {
       // dependencies from the file and return the same code. We get the dependencies
       // with a regex since commonjs modules just have `require` and regex is MUCH
       // faster than generating an AST from the code.
-      if (path.startsWith('/node_modules') && !isESModule(code)) {
+      if (
+        (loaderContext.options.simpleRequire ||
+          path.startsWith('/node_modules')) &&
+        !isESModule(code)
+      ) {
         regexGetRequireStatements(code).forEach(dependency => {
           if (dependency.isGlob) {
             loaderContext.addDependenciesInDirectory(dependency.path);
@@ -67,13 +72,24 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const loaderOptions = loaderContext.options || {};
 
-      const babelConfig = getBabelConfig(foundConfig, loaderOptions, path);
-
-      const isV7 = !!(
+      const dependencies =
         configs.package &&
         configs.package.parsed &&
-        configs.package.parsed.devDependencies &&
-        configs.package.parsed.devDependencies['@vue/cli-plugin-babel']
+        configs.package.parsed.dependencies;
+
+      const devDependencies =
+        configs.package &&
+        configs.package.parsed &&
+        configs.package.parsed.devDependencies;
+
+      const isV7 =
+        loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
+
+      const babelConfig = getBabelConfig(
+        foundConfig || loaderOptions.config,
+        loaderOptions,
+        path,
+        isV7
       );
 
       this.queueTask(

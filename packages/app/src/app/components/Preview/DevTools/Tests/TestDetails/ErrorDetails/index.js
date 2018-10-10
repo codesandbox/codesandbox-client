@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import theme from 'common/theme';
+import ansiHTML from 'ansi-html';
 
 import type { TestError } from '../../';
 
@@ -58,8 +59,10 @@ const formatDiffMessage = (error: TestError, path: string) => {
         `<span style="color:${theme.green()}">$1</span>`
       )}</span>`;
   } else {
-    finalMessage = error.message + '\n\n' + error.stack;
+    finalMessage = escapeHtml(error.message + '\n\n' + error.stack);
   }
+
+  finalMessage = ansiHTML(finalMessage);
 
   if (
     error.mappedErrors &&

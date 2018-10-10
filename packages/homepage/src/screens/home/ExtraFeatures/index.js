@@ -61,7 +61,6 @@ export default () => (
         <Feature
           Icon={LiveIcon}
           title="Live Collaboration"
-          patron
           description="Edit sandboxes together in real time, Google Docs style. Use Classroom Mode to control who can make edits."
         />
         <Feature
@@ -193,7 +192,7 @@ export default () => (
             <span>
               You can export a local project to CodeSandbox easily using{' '}
               <a
-                href="https://github.com/codesandbox-common/cli"
+                href="https://github.com/codesandbox-app/codesandbox-importers/tree/master/packages/cli"
                 rel="noopener noreferrer"
                 target="_blank"
               >

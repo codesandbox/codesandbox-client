@@ -66,17 +66,7 @@ const Message = styled.div`
 `};
 `;
 
-const TEMPLATES = [
-  parcel,
-  react,
-  vue,
-  angular,
-  preact,
-  reactTs,
-  svelte,
-  cxjs,
-  dojo,
-];
+const TEMPLATES = [parcel, react, vue, angular, preact, svelte, cxjs, dojo];
 
 export default class Animation extends React.PureComponent {
   state = {

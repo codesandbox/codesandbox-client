@@ -11,23 +11,31 @@ import UtilsProvider from './providers/Utils';
 import JSZipProvider from './providers/JSZip';
 import SettingsStoreProvider from './providers/SettingsStore';
 import GitProvider from './providers/Git';
+import SocketProvider from './providers/Socket';
 import LiveProvider from './providers/Live';
+import NotificationsProvider from './providers/Notifications';
+import ModuleRecover from './providers/ModuleRecover';
 import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
+import SSEProvider from './providers/SSE';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
+import { isContributor } from './computed';
 import { isPatron, isLoggedIn, hasLogIn } from './getters';
 
 import patron from './modules/patron';
 import editor from './modules/editor';
 import profile from './modules/profile';
+import server from './modules/server';
 import deployment from './modules/deployment';
 import git from './modules/git';
 import preferences from './modules/preferences';
 import workspace from './modules/workspace';
 import files from './modules/files';
 import live from './modules/live';
+import dashboard from './modules/dashboard';
+import userNotifications from './modules/user-notifications';
 
 export default Module({
   model,
@@ -40,6 +48,7 @@ export default Module({
     user: null,
     connected: true,
     notifications: [],
+    contributors: [],
     userMenuOpen: false,
     isLoadingZeit: false,
     isLoadingCLI: false,
@@ -50,7 +59,7 @@ export default Module({
       x: 0,
       y: 0,
     },
-    currentModal: null,
+    currentModal: undefined,
     uploadedFiles: null,
     maxStorage: 0,
     usedStorage: 0,
@@ -60,6 +69,9 @@ export default Module({
     isPatron,
     isLoggedIn,
     hasLogIn,
+  },
+  computed: {
+    isContributor,
   },
   signals: {
     appUnmounted: sequences.unloadApp,
@@ -89,6 +101,7 @@ export default Module({
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {
+    dashboard,
     patron,
     editor,
     profile,
@@ -98,6 +111,8 @@ export default Module({
     workspace,
     files,
     live,
+    userNotifications,
+    server,
   },
   providers: {
     api: ApiProvider,
@@ -111,7 +126,11 @@ export default Module({
     settingsStore: SettingsStoreProvider,
     git: GitProvider,
     keybindingManager: KeybindingManagerProvider,
+    socket: SocketProvider,
+    notifications: NotificationsProvider,
     live: LiveProvider,
+    recover: ModuleRecover,
     ot: OTProvider,
+    sse: SSEProvider,
   },
 });

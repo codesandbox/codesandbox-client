@@ -32,7 +32,8 @@ const DEFAULT_BABEL_CONFIG = {
 export default function getBabelConfig(
   config: ?Object,
   loaderOptions: Object,
-  path: string
+  path: string,
+  isV7: boolean = false
 ) {
   const resolvedConfig = config || DEFAULT_BABEL_CONFIG;
 
@@ -40,10 +41,24 @@ export default function getBabelConfig(
     return resolvedConfig;
   }
 
-  return {
+  const finalConfig = {
     ...resolvedConfig,
     sourceMaps: 'inline',
     sourceFileName: path,
     filename: path,
   };
+
+  const commonjsPluginName = isV7
+    ? 'transform-modules-commonjs'
+    : 'transform-es2015-modules-commonjs';
+
+  if (finalConfig.plugins) {
+    if (finalConfig.plugins.indexOf(commonjsPluginName) === -1) {
+      finalConfig.plugins = [...finalConfig.plugins, commonjsPluginName];
+    }
+  } else {
+    finalConfig.plugins = [commonjsPluginName];
+  }
+
+  return finalConfig;
 }

@@ -40,7 +40,7 @@ export default class EntryTitleInput extends React.PureComponent {
       <InputContainer>
         <input
           onChange={this.handleChange}
-          onBlur={() => onCommit(this.state.currentValue, true)}
+          onBlur={() => onCommit(currentValue, true)}
           onKeyUp={this.handleKeyUp}
           ref={select}
           value={currentValue}

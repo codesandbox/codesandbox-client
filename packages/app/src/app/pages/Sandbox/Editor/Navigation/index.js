@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react';
 
 import GitHubIcon from 'react-icons/lib/go/mark-github';
 import LiveIcon from 'react-icons/lib/md/wifi-tethering';
+import PlusIcon from 'react-icons/lib/go/plus';
+import ServerIcon from 'react-icons/lib/go/server';
 
 import getWorkspaceItems from 'app/store/modules/workspace/items';
 import Tooltip from 'common/components/Tooltip';
@@ -21,6 +23,8 @@ const IDS_TO_ICONS = {
   deploy: RocketIcon,
   config: ConfigurationIcon,
   live: LiveIcon,
+  more: PlusIcon,
+  server: ServerIcon,
 };
 
 const Navigation = ({ store, signals }) => (

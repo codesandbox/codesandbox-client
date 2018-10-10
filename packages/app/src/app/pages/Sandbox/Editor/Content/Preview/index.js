@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 
 import BasePreview from 'app/components/Preview';
 import RunOnClick from 'common/components/RunOnClick';
+import getTemplate from 'common/templates';
 
 import FlyingContainer from './FlyingContainer';
 import Tests from './DevTools/Tests';
@@ -108,11 +109,17 @@ class Preview extends React.Component<Props, State> {
       if (width !== this.props.width || height !== this.props.height) {
         if (this.state.aligned === 'bottom') {
           this.props.signals.editor.setPreviewBounds(
-            this.getBottomCoordinates(props)
+            this.getBottomCoordinates(
+              props,
+              1 - this.props.store.editor.previewWindow.editorSize / 100
+            )
           );
         } else {
           this.props.signals.editor.setPreviewBounds(
-            this.getRightCoordinates(props)
+            this.getRightCoordinates(
+              props,
+              1 - this.props.store.editor.previewWindow.editorSize / 100
+            )
           );
         }
       }
@@ -160,7 +167,10 @@ class Preview extends React.Component<Props, State> {
 
   handleCodeChange = preview => {
     const settings = this.props.store.preferences.settings;
-    if (settings.livePreviewEnabled) {
+    const isServer = getTemplate(
+      this.props.store.editor.currentSandbox.template
+    ).isServer;
+    if (!isServer && settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
       } else {
@@ -181,7 +191,11 @@ class Preview extends React.Component<Props, State> {
   };
 
   handleModuleSyncedChange = (preview, change) => {
-    if (change) {
+    const settings = this.props.store.preferences.settings;
+    const isServer = getTemplate(
+      this.props.store.editor.currentSandbox.template
+    ).isServer;
+    if ((isServer || !settings.livePreviewEnabled) && change) {
       preview.executeCodeImmediately();
     }
   };
@@ -196,21 +210,42 @@ class Preview extends React.Component<Props, State> {
     });
   };
 
-  resetAlignment = () => {
-    this.setState({ aligned: null });
+  resetAlignment = (
+    xChanged,
+    yChanged,
+    widthChanged,
+    heightChanged,
+    newSizes
+  ) => {
+    const { aligned } = this.state;
+
+    if (
+      ((widthChanged || !yChanged) && aligned === 'bottom') ||
+      ((heightChanged || xChanged) && aligned === 'right')
+    ) {
+      this.setState({ aligned: null });
+    } else if (aligned === 'right' && newSizes.width) {
+      this.props.signals.editor.editorSizeUpdated({
+        editorSize: (1 - newSizes.width / this.props.width) * 100,
+      });
+    } else if (aligned === 'bottom' && newSizes.height) {
+      this.props.signals.editor.editorSizeUpdated({
+        editorSize: (1 - newSizes.height / this.props.height) * 100,
+      });
+    }
   };
 
-  getBottomCoordinates = (props = this.props) => ({
+  getBottomCoordinates = (props = this.props, previewSizeScalar = 0.5) => ({
     x: 0,
-    y: (props.height || 0) / 2 - 16,
+    y: (props.height || 0) * (1 - previewSizeScalar) - 16,
     width: (props.width || 0) - 16,
-    height: (props.height || 0) / 2,
+    height: (props.height || 0) * previewSizeScalar,
   });
 
-  getRightCoordinates = (props = this.props) => ({
+  getRightCoordinates = (props = this.props, previewSizeScalar = 0.5) => ({
     x: 0,
     y: 0,
-    width: (props.width || 0) / 2,
+    width: (props.width || 0) * previewSizeScalar,
     height: (props.height || 0) - 16,
   });
 
@@ -239,6 +274,9 @@ class Preview extends React.Component<Props, State> {
             }
             resize(this.getRightCoordinates());
             this.setState({ aligned: 'right' });
+            this.props.signals.editor.editorSizeUpdated({
+              editorSize: 50,
+            });
           };
           const alignBottom = e => {
             if (e) {
@@ -247,6 +285,9 @@ class Preview extends React.Component<Props, State> {
             }
             resize(this.getBottomCoordinates());
             this.setState({ aligned: 'bottom' });
+            this.props.signals.editor.editorSizeUpdated({
+              editorSize: 50,
+            });
           };
 
           return (
@@ -270,10 +311,11 @@ class Preview extends React.Component<Props, State> {
                   onAction={action =>
                     signals.editor.previewActionReceived({ action })
                   }
+                  alignDirection={this.state.aligned}
                   hide={hide}
                   noPreview={completelyHidden}
                   onOpenNewWindow={() =>
-                    this.props.signals.preferences.viewModeChanged({
+                    signals.preferences.viewModeChanged({
                       showEditor: true,
                       showPreview: false,
                     })
@@ -285,6 +327,9 @@ class Preview extends React.Component<Props, State> {
                   isResizing={store.editor.isResizing}
                   alignRight={alignRight}
                   alignBottom={alignBottom}
+                  setServerStatus={(status: string) => {
+                    signals.server.statusChanged({ status });
+                  }}
                 />
               ) : (
                 <RunOnClick

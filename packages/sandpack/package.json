@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.33",
+  "version": "0.0.35",
   "description": "",
   "keywords": [],
   "main": "dist/sandpack.umd.js",
@@ -15,7 +15,7 @@
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/CompuIves/codesandbox-client/tree/master/packages/sandpack"
   },
   "engines": {
     "node": ">=6.0.0"

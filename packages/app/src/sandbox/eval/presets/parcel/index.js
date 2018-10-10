@@ -13,6 +13,7 @@ import vueSelector from '../../transpilers/vue/selector';
 import vueStyleLoader from '../../transpilers/vue/style-loader';
 import cssLoader from '../../transpilers/vue/css-loader';
 import htmlTranspiler from './transpilers/html-transpiler';
+import pugTranspiler from '../../transpilers/pug';
 
 import Preset from '../';
 
@@ -21,7 +22,16 @@ export default function initialize() {
     'parcel',
     ['js', 'jsx', 'ts', 'tsx', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
     {},
-    { htmlDisabled: true }
+    {
+      htmlDisabled: true,
+      setup: manager => {
+        const packageJSON = manager.configurations.package;
+
+        if (packageJSON && packageJSON.parsed && packageJSON.parsed.alias) {
+          manager.preset.setAdditionalAliases(packageJSON.parsed.alias);
+        }
+      },
+    }
   );
 
   parcelPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
@@ -35,6 +45,11 @@ export default function initialize() {
 
   parcelPreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: tsTranspiler },
+  ]);
+
+  parcelPreset.registerTranspiler(module => /\.pug$/.test(module.path), [
+    { transpiler: pugTranspiler },
+    { transpiler: htmlTranspiler },
   ]);
 
   parcelPreset.registerTranspiler(module => /\.html$/.test(module.path), [

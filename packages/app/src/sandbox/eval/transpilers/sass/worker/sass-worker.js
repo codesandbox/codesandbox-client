@@ -24,7 +24,7 @@ const resolveAsyncModule = (
   { ignoredExtensions }?: { ignoredExtensions?: Array<string> }
 ) =>
   new Promise((r, reject) => {
-    const sendId = Math.random() * 10000;
+    const sendId = Math.floor(Math.random() * 10000);
     self.postMessage({
       type: 'resolve-async-transpiled-module',
       path,
@@ -118,7 +118,7 @@ const resolveSass = (fs, p, path) => {
         extensions: ['.scss', '.css', '.sass'],
         moduleDirectory: ['node_modules'],
         isFile: async (pp, cb) => {
-          const exists = !!await getExistingPath(fs, pp);
+          const exists = !!(await getExistingPath(fs, pp));
 
           if (!exists) {
             const err = new Error('Could not find ' + pp);

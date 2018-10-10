@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep } from 'lodash';
+import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
@@ -17,6 +17,7 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
+import isESModule from './utils/is-es-module';
 
 import type { default as Manager } from './manager';
 import HMR from './hmr';
@@ -31,11 +32,18 @@ class ModuleSource {
   fileName: string;
   compiledCode: string;
   sourceMap: ?SourceMap;
+  sourceEqualsCompiled: boolean;
 
-  constructor(fileName: string, compiledCode: string, sourceMap: ?SourceMap) {
+  constructor(
+    fileName: string,
+    compiledCode: string,
+    sourceMap: ?SourceMap,
+    sourceEqualsCompiled = false
+  ) {
     this.fileName = fileName;
     this.compiledCode = compiledCode;
     this.sourceMap = sourceMap;
+    this.sourceEqualsCompiled = sourceEqualsCompiled;
   }
 }
 
@@ -43,6 +51,7 @@ export type SerializedTranspiledModule = {
   module: Module,
   query: string,
   source: ?ModuleSource,
+  sourceEqualsCompiled: boolean,
   assets: {
     [name: string]: ModuleSource,
   },
@@ -292,6 +301,18 @@ export default class TranspiledModule {
     }
   }
 
+  /**
+   * Determines if this is a module that should be transpiled if updated. If this
+   * is a transpilationDependency that's updated then it should not get transpiled, but the parent should.
+   */
+  shouldTranspile() {
+    return (
+      !this.source &&
+      !this.isTestFile &&
+      !(this.initiators.size === 0 && this.transpilationInitiators.size > 0)
+    );
+  }
+
   update(module: Module): TranspiledModule {
     if (this.module.path !== module.path || this.module.code !== module.code) {
       this.module = module;
@@ -379,10 +400,7 @@ export default class TranspiledModule {
         }
       },
       addDependency: (depPath: string, options = {}) => {
-        if (
-          depPath.startsWith('babel-runtime') ||
-          depPath.startsWith('codesandbox-api')
-        ) {
+        if (depPath.startsWith('codesandbox-api')) {
           return;
         }
 
@@ -401,7 +419,7 @@ export default class TranspiledModule {
         } catch (e) {
           if (e.type === 'module-not-found' && e.isDependency) {
             this.asyncDependencies.push(
-              manager.downloadDependency(e.path, this.module.path)
+              manager.downloadDependency(e.path, this)
             );
           } else {
             // Don't throw the error, we want to throw this error during evaluation
@@ -439,7 +457,7 @@ export default class TranspiledModule {
       resolveTranspiledModuleAsync: (depPath: string, options = {}) =>
         manager.resolveTranspiledModuleAsync(
           depPath,
-          options.isAbsolute ? '/' : this.module.path,
+          options.isAbsolute ? null : this,
           options.ignoredExtensions
         ),
       getModules: (): Array<Module> => manager.getModules(),
@@ -484,6 +502,10 @@ export default class TranspiledModule {
    * @param {*} manager
    */
   async transpile(manager: Manager) {
+    if (this.source) {
+      return this;
+    }
+
     if (manager.transpileJobs[this.getId()]) {
       // Is already being transpiled
       return this;
@@ -491,10 +513,6 @@ export default class TranspiledModule {
 
     // eslint-disable-next-line
     manager.transpileJobs[this.getId()] = true;
-
-    if (this.source) {
-      return this;
-    }
 
     this.hasMissingDependencies = false;
 
@@ -581,13 +599,21 @@ export default class TranspiledModule {
       }
     }
 
-    // Add the source of the file by default, this is important for source mapping
-    // errors back to their origin
-    code = `${code}\n//# sourceURL=${location.origin}${this.module.path}${
+    const sourceEqualsCompiled = code === this.module.code;
+    const sourceURL = `//# sourceURL=${location.origin}${this.module.path}${
       this.query ? `?${this.hash}` : ''
     }`;
 
-    this.source = new ModuleSource(this.module.path, code, finalSourceMap);
+    // Add the source of the file by default, this is important for source mapping
+    // errors back to their origin
+    code = `${code}\n${sourceURL}`;
+
+    this.source = new ModuleSource(
+      this.module.path,
+      code,
+      finalSourceMap,
+      sourceEqualsCompiled
+    );
 
     if (
       this.previousSource &&
@@ -631,17 +657,50 @@ export default class TranspiledModule {
     return this;
   }
 
-  evaluate(manager: Manager, { asUMD = false }: { asUMD: boolean } = {}) {
+  evaluate(
+    manager: Manager,
+    { asUMD = false }: { asUMD: boolean } = {},
+    initiator?: TranspiledModule
+  ) {
     if (this.source == null) {
       if (this.module.path === '/node_modules/empty/index.js') {
         return {};
       }
 
-      // This scenario only happens when we are in an inconsistent state, the quickest way to solve
-      // this state is to just hard reload everything.
-      manager.clearCache();
+      if (this.module.path.startsWith('/node_modules')) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            `[WARN] Sandpack: loading an untranspiled module: ${
+              this.module.path
+            }`
+          );
+        }
+        // This code is probably required as a dynamic require. Since we can
+        // assume that node_modules dynamic requires are only done for node
+        // utilites we will just set the transpiled code according to how
+        // node handles that.
 
-      throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+        let code = this.module.path.endsWith('.json')
+          ? `module.exports = JSON.parse(${JSON.stringify(this.module.code)})`
+          : this.module.code;
+
+        code += `\n//# sourceURL=${location.origin}${this.module.path}${
+          this.query ? `?${this.hash}` : ''
+        }`;
+
+        this.source = new ModuleSource(this.module.path, code, null);
+
+        if (initiator) {
+          initiator.dependencies.add(this);
+          this.initiators.add(initiator);
+        }
+      } else {
+        // This scenario only happens when we are in an inconsistent state, the quickest way to solve
+        // this state is to just hard reload everything.
+        manager.clearCache();
+
+        throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+      }
     }
 
     const localModule = this.module;
@@ -653,6 +712,13 @@ export default class TranspiledModule {
           : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
+          if (manager.isFirstLoad) {
+            // We're in a reload loop! Ignore all caches!
+
+            manager.clearCache();
+            manager.deleteAPICache();
+          }
+
           location.reload();
           return {};
         }
@@ -662,17 +728,17 @@ export default class TranspiledModule {
       ) {
         return this.compilation.exports;
       }
-    } else if (this.compilation && this.compilation.exports) {
+    } else if (this.compilation && this.compilation.exports && !this.isEntry) {
       return this.compilation.exports;
     }
 
     if (this.hmrConfig) {
       /* eslint-disable no-param-reassign */
-      manager.hmrStatus = 'dispose';
+      manager.setHmrStatus('dispose');
       // Call module.hot.dispose handler
       // https://webpack.js.org/api/hot-module-replacement/#dispose-or-adddisposehandler-
       this.hmrConfig.callDisposeHandler();
-      manager.hmrStatus = 'idle';
+      manager.setHmrStatus('idle');
       /* eslint-enable */
     }
 
@@ -683,7 +749,10 @@ export default class TranspiledModule {
       exports: {},
       hot: {
         accept: (path: string | Array<string>, cb) => {
-          if (typeof path === 'undefined') {
+          if (
+            typeof path === 'undefined' ||
+            (typeof path !== 'string' || !Array.isArray(path))
+          ) {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();
             if (this.hmrConfig) {
@@ -733,6 +802,8 @@ export default class TranspiledModule {
         },
         data: hotData,
         status: () => manager.hmrStatus,
+        addStatusHandler: manager.addStatusHandler,
+        removeStatusHandler: manager.removeStatusHandler,
       },
     };
     this.compilation.hot.data = hotData;
@@ -742,28 +813,30 @@ export default class TranspiledModule {
     try {
       // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
-        const bfsModule = BrowserFS.BFSRequire(path);
+        if (path === '') {
+          throw new Error('Cannot import an empty path');
+        }
+
+        const usedPath = manager.getPresetAliasedPath(path);
+        const bfsModule = BrowserFS.BFSRequire(usedPath);
+
+        if (path === 'os') {
+          const os = require('os-browserify');
+          os.homedir = () => '/home/sandbox';
+          return os;
+        }
 
         if (bfsModule) {
           return bfsModule;
         }
 
-        // First check if there is an alias for the path, in that case
-        // we must alter the path to it
-        const aliasedPath = manager.preset.getAliasedPath(path);
-
-        // eslint-disable-line no-unused-vars
-        if (/^(\w|@\w)/.test(aliasedPath) && !aliasedPath.includes('!')) {
-          // So it must be a dependency
-          if (
-            aliasedPath.startsWith('codesandbox-api') ||
-            aliasedPath.startsWith('babel-runtime')
-          )
-            return resolveDependency(aliasedPath, manager.externals);
+        // So it must be a dependency
+        if (path.startsWith('codesandbox-api')) {
+          return resolveDependency(path, manager.externals);
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
-          aliasedPath,
+          path,
           localModule.path
         );
 
@@ -773,8 +846,17 @@ export default class TranspiledModule {
 
         return cache
           ? cache.exports
-          : manager.evaluateTranspiledModule(requiredTranspiledModule);
+          : manager.evaluateTranspiledModule(
+              requiredTranspiledModule,
+              transpiledModule
+            );
       }
+
+      require.resolve = function resolve(path: string) {
+        const foundModule = manager.resolveModule(path, localModule.path);
+
+        return foundModule.path;
+      };
 
       const globals = manager.testRunner.testGlobals(this.module);
 
@@ -791,13 +873,13 @@ export default class TranspiledModule {
       );
 
       /* eslint-disable no-param-reassign */
-      manager.hmrStatus = 'apply';
+      manager.setHmrStatus('apply');
       const hmrConfig = this.hmrConfig;
       if (hmrConfig && hmrConfig.isHot()) {
         hmrConfig.setDirty(false);
         hmrConfig.callAcceptCallback();
       }
-      manager.hmrStatus = 'idle';
+      manager.setHmrStatus('idle');
       /* eslint-enable */
 
       return exports;
@@ -814,7 +896,8 @@ export default class TranspiledModule {
     if (
       this.initiators.size === 0 &&
       this.transpilationInitiators.size === 0 &&
-      !this.isEntry
+      !this.isEntry &&
+      !manager.isFirstLoad
     ) {
       // Remove the module from the transpiler if it's not used anymore
       debug(`Removing '${this.getId()}' from manager.`);
@@ -823,20 +906,23 @@ export default class TranspiledModule {
   }
 
   postEvaluate(manager: Manager) {
-    if (!manager.webpackHMR) {
-      // For non cacheable transpilers we remove the cached evaluation
-      if (
-        manager.preset
-          .getLoaders(this.module, this.query)
-          .some(t => !t.transpiler.cacheable)
-      ) {
-        this.compilation = null;
-      }
+    // Question: do we need to disable this for HMR projects?
+    // For non cacheable transpilers we remove the cached evaluation
+    if (
+      manager.preset
+        .getLoaders(this.module, this.query)
+        .some(t => !t.transpiler.cacheable)
+    ) {
+      debug(`Removing '${this.getId()}' cache as it's not cacheable.`);
+      this.compilation = null;
     }
   }
 
   serialize(): SerializedTranspiledModule {
     const serializableObject = {};
+
+    const sourceEqualsCompiled =
+      this.source && this.source.sourceEqualsCompiled;
 
     serializableObject.query = this.query;
     serializableObject.assets = this.assets;
@@ -844,7 +930,10 @@ export default class TranspiledModule {
     serializableObject.emittedAssets = this.emittedAssets;
     serializableObject.isEntry = this.isEntry;
     serializableObject.isTestFile = this.isTestFile;
-    serializableObject.source = this.source;
+    if (!sourceEqualsCompiled) {
+      serializableObject.source = this.source;
+    }
+    serializableObject.sourceEqualsCompiled = sourceEqualsCompiled;
     serializableObject.childModules = this.childModules.map(m => m.getId());
     serializableObject.dependencies = Array.from(this.dependencies).map(m =>
       m.getId()
@@ -882,9 +971,19 @@ export default class TranspiledModule {
     this.emittedAssets = data.emittedAssets;
     this.isEntry = data.isEntry;
     this.isTestFile = data.isTestFile;
-    this.source = data.source;
 
-    const loadModule = (depId: string, initiator = false) => {
+    if (data.sourceEqualsCompiled) {
+      this.source = new ModuleSource(
+        this.module.path,
+        this.module.code,
+        null,
+        true
+      );
+    } else {
+      this.source = data.source;
+    }
+
+    const getModule = (depId: string) => {
       if (state[depId]) {
         return state[depId];
       }
@@ -893,12 +992,28 @@ export default class TranspiledModule {
       const query = queryParts.join(':');
 
       const module = manager.transpiledModules[path].module;
-      const tModule = manager.getTranspiledModule(module, query);
+      return manager.getTranspiledModule(module, query);
+    };
+
+    const loadModule = (
+      depId: string,
+      initiator = false,
+      transpilation = false
+    ) => {
+      const tModule = getModule(depId);
 
       if (initiator) {
-        tModule.dependencies.add(this);
+        if (transpilation) {
+          tModule.transpilationDependencies.add(this);
+        } else {
+          tModule.dependencies.add(this);
+        }
       } else {
-        tModule.initiators.add(this);
+        if (transpilation) {
+          tModule.transpilationInitiators.add(this);
+        } else {
+          tModule.initiators.add(this);
+        }
       }
 
       return tModule;
@@ -914,10 +1029,10 @@ export default class TranspiledModule {
       this.initiators.add(loadModule(depId, true));
     });
     data.transpilationDependencies.forEach((depId: string) => {
-      this.transpilationDependencies.add(loadModule(depId));
+      this.transpilationDependencies.add(loadModule(depId, false, true));
     });
     data.transpilationInitiators.forEach((depId: string) => {
-      this.transpilationInitiators.add(loadModule(depId, true));
+      this.transpilationInitiators.add(loadModule(depId, true, true));
     });
 
     data.asyncDependencies.forEach((depId: string) => {

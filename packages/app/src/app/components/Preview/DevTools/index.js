@@ -6,11 +6,13 @@ import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
 import Tooltip from 'common/components/Tooltip';
+import type { Template } from 'common/templates';
 
 import Unread from './Unread';
 import console from './Console';
 import tests from './Tests';
 import problems from './Problems';
+import terminal from './Terminal';
 
 import { Container, Header, Tab, Actions } from './elements';
 
@@ -39,6 +41,7 @@ const PANES = {
   [console.title]: console,
   [problems.title]: problems,
   [tests.title]: tests,
+  [terminal.title]: terminal,
 };
 
 export type Status = {
@@ -48,12 +51,14 @@ export type Status = {
 
 type Props = {
   sandboxId: string,
+  template: Template,
   setDragging?: (dragging: boolean) => void,
   zenMode?: boolean,
   shouldExpandDevTools?: boolean,
   devToolsOpen?: boolean,
   setDevToolsOpen?: (open: boolean) => void,
   view?: 'browser' | 'console' | 'tests',
+  owned: boolean,
 };
 type State = {
   status: { [title: string]: ?Status },
@@ -115,11 +120,24 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   }
 
+  /**
+   * This stops the propagation of the mousewheel event so the editor itself cannot
+   * block it to prevent gesture scrolls. Without this scrolling won't work in the
+   * console.
+   */
+  mouseWheelHandler = (e: WheelEvent) => {
+    e.stopPropagation();
+  };
+
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp, false);
     document.addEventListener('mousemove', this.handleMouseMove, false);
     document.addEventListener('touchend', this.handleTouchEnd, false);
     document.addEventListener('touchmove', this.handleTouchMove, false);
+
+    if (this.node) {
+      this.node.addEventListener('mousewheel', this.mouseWheelHandler);
+    }
 
     if (this.props.shouldExpandDevTools) {
       this.openDevTools();
@@ -133,6 +151,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
     document.removeEventListener('mousemove', this.handleMouseMove, false);
     document.removeEventListener('touchend', this.handleTouchEnd, false);
     document.removeEventListener('touchmove', this.handleTouchMove, false);
+
+    if (this.node) {
+      this.node.removeEventListener('mousewheel', this.mouseWheelHandler);
+    }
   }
 
   setHidden = (hidden: boolean) => {
@@ -280,6 +302,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
   openDevTools = () => {
     this.setHidden(false);
     const heightObject = { height: this.state.height };
+    if (this.props.setDevToolsOpen) {
+      this.props.setDevToolsOpen(true);
+    }
     TweenMax.to(heightObject, 0.3, {
       height: store.get('devtools.height') || 300,
       onUpdate: () => {
@@ -292,6 +317,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
   hideDevTools = () => {
     this.setHidden(true);
     const heightObject = { height: this.state.height };
+    if (this.props.setDevToolsOpen) {
+      this.props.setDevToolsOpen(false);
+    }
     TweenMax.to(heightObject, 0.3, {
       height: 32,
       onUpdate: () => {
@@ -317,10 +345,19 @@ export default class DevTools extends React.PureComponent<Props, State> {
   node: HTMLElement;
 
   render() {
-    const { sandboxId, zenMode } = this.props;
+    const { sandboxId, template, zenMode, owned } = this.props;
     const { hidden, height, status } = this.state;
 
-    const { actions } = PANES[this.state.currentPane];
+    const { actions: actionsOrFunction } = PANES[this.state.currentPane];
+    const actions =
+      typeof actionsOrFunction === 'function'
+        ? actionsOrFunction(owned)
+        : actionsOrFunction;
+
+    const PANES_TO_SHOW = Object.keys(PANES).filter(
+      paneName =>
+        PANES[paneName].show === undefined || PANES[paneName].show(template)
+    );
 
     return (
       <Container
@@ -337,7 +374,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
           onTouchStart={this.handleTouchStart}
           onMouseDown={this.handleMouseDown}
         >
-          {Object.keys(PANES).map(title => (
+          {PANES_TO_SHOW.map(title => (
             <Tab
               active={title === this.state.currentPane}
               onClick={e => {
@@ -382,7 +419,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
             />
           </Actions>
         </Header>
-        {Object.keys(PANES).map(title => {
+        {PANES_TO_SHOW.map(title => {
           const { Content } = PANES[title];
           return (
             <Content
@@ -390,6 +427,12 @@ export default class DevTools extends React.PureComponent<Props, State> {
               hidden={hidden || title !== this.state.currentPane}
               updateStatus={this.updateStatus(title)}
               sandboxId={sandboxId}
+              height={this.state.height}
+              openDevTools={this.openDevTools}
+              hideDevTools={this.hideDevTools}
+              selectCurrentPane={() => {
+                this.setPane(title);
+              }}
             />
           );
         })}

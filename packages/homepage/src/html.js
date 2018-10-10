@@ -46,7 +46,6 @@ export default class HTML extends Component {
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:site" content="@CompuIves" />
           <meta property="twitter:creator" content="@CompuIves" />
-          <meta property="twitter:title" content="CodeSandbox" />
           <meta
             property="twitter:image:src"
             content="https://codesandbox.io/static/img/banner.png"

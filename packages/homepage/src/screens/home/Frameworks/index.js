@@ -212,7 +212,7 @@ const TEMPLATE_SUPPORT = {
   '@dojo/cli-create-app': {
     loaders: [ts, html, cssGlobal, image],
     css: ['Global', 'Scoped', 'Modules'],
-    description: 'Used for Dojo 2 projects, based on: ',
+    description: 'Used for Dojo projects, based on: ',
   },
   cxjs: {
     loaders: [ts, html, cssGlobal, scss, sass, less, stylus, image],
@@ -244,7 +244,7 @@ const TEMPLATE_SUPPORT = {
   svelte: {
     loaders: [js, html, image],
     css: ['Global', 'Scoped', 'Modules'],
-    description: 'Used for Preact projects, based on: ',
+    description: 'Used for Svelte projects, based on: ',
   },
   'angular-cli': {
     loaders: [ts, html, scss, sass, less, stylus, cssGlobal, image],
@@ -252,7 +252,7 @@ const TEMPLATE_SUPPORT = {
     description: 'Used for Angular projects, based on: ',
   },
   parcel: {
-    loaders: [js, ts, html, scss, sass, less, cssGlobal, stylus, image],
+    loaders: [js, ts, html, pug, scss, sass, less, cssGlobal, stylus, image],
     css: ['Global', 'Modules'],
     description: 'Used for any kind of project, based on: ',
   },

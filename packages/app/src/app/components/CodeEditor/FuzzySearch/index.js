@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { sortBy, groupBy, flatten } from 'lodash';
+import { sortBy, groupBy, flatten } from 'lodash-es';
 import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 import { getModulePath } from 'common/sandbox/modules';

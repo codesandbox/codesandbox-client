@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 import { getModulePath } from 'common/sandbox/modules';
+import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import CrossIcon from 'react-icons/lib/md/clear';
 
@@ -35,7 +36,7 @@ const OpenedTabs = ({ store, signals }) => {
               e.preventDefault();
               e.stopPropagation();
             }
-            signals.editor.saveClicked();
+            saveAllModules(store, signals);
           }}
         />
       }

@@ -1,23 +1,45 @@
 // @flow
+
 import type {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
+  Preferences,
 } from 'common/types';
 
-export type Settings = {
-  autoCompleteEnabled: boolean,
-  autoDownloadTypes: boolean,
-  codeMirror: boolean,
-  fontFamily?: string,
-  fontSize: number,
-  lineHeight: number,
-  lintEnabled: boolean,
-  vimMode: boolean,
-  tabWidth: number,
-  enableLigatures: boolean,
+export type Settings =
+  | Preferences
+  | {
+      autoCompleteEnabled: boolean,
+      autoDownloadTypes: boolean,
+      codeMirror: boolean,
+      fontFamily?: string,
+      fontSize: number,
+      lineHeight: number,
+      lintEnabled: boolean,
+      vimMode: boolean,
+      tabWidth: number,
+      enableLigatures: boolean,
+      forceRefresh: boolean,
+    };
+
+type ModuleTab = {
+  type: 'MODULE',
+  moduleShortid: string,
+  dirty: boolean,
 };
+
+type DiffTab = {
+  type: 'DIFF',
+  codeA: string,
+  codeB: string,
+  titleA: string,
+  titleB: string,
+  fileTitle?: string,
+};
+
+export type Tab = ModuleTab | DiffTab;
 
 export interface Editor {
   changeSandbox?: (
@@ -36,18 +58,21 @@ export interface Editor {
     errors?: Array<ModuleError>,
     corrections?: Array<ModuleCorrection>
   ) => any;
-  changeCode?: (code: string) => any;
+  changeCode?: (code: string, moduleId?: string) => any;
   currentModule?: Module;
   setTSConfig?: (tsConfig: Object) => void;
   setReceivingCode?: (receivingCode: boolean) => void;
-  applyOperation?: (operation: any) => void;
+  applyOperations?: (operations: { [moduleShortid: string]: any }) => void;
   updateUserSelections?: (selections: any) => void;
+  absoluteWidth?: number;
+  absoluteHeight?: number;
 }
 
 export type Props = {
   currentModule: Module,
+  currentTab: ?Tab,
   sandbox: Sandbox,
-  onChange: (code: string) => void,
+  onChange: (code: string, moduleShortid?: string) => void,
   onInitialized: (editor: Editor) => Function,
   onModuleChange: (moduleId: string) => void,
   onNpmDependencyAdded?: (name: string) => void,

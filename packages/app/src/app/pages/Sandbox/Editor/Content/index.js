@@ -16,6 +16,7 @@ import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
 import Tabs from './Tabs';
 import { FullSize } from './elements';
+import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 
 const settings = store =>
   ({
@@ -45,10 +46,11 @@ type State = {
 
 class EditorPreview extends React.Component<Props, State> {
   state = { width: null, height: null };
-  interval: number;
+  interval: IntervalID; // eslint-disable-line
   disposeEditorChange: Function;
   el: ?HTMLElement;
   devtools: DevTools;
+  contentNode: ?HTMLElement;
 
   componentDidMount() {
     this.props.signals.editor.contentMounted();
@@ -62,12 +64,20 @@ class EditorPreview extends React.Component<Props, State> {
     this.interval = setInterval(() => {
       this.getBounds();
     }, 1000);
+
+    if (this.contentNode) {
+      preventGestureScroll(this.contentNode);
+    }
   }
 
   componentWillUnmount() {
     this.disposeEditorChange();
     window.removeEventListener('resize', this.getBounds);
     clearInterval(this.interval);
+
+    if (this.contenNode) {
+      removeListener(this.contentNode);
+    }
   }
 
   getBounds = el => {
@@ -209,38 +219,46 @@ class EditorPreview extends React.Component<Props, State> {
     );
 
     const disposePendingOperationHandler = reaction(
-      () =>
-        store.editor.pendingOperation &&
-        store.editor.pendingOperation.map(x => x),
+      () => store.editor.pendingOperations.toJSON(),
       () => {
-        if (store.editor.pendingOperation && store.live.isLive) {
-          if (editor.setReceivingCode) {
-            editor.setReceivingCode(true);
-          }
-          if (editor.applyOperation) {
-            editor.applyOperation(
-              TextOperation.fromJSON(store.editor.pendingOperation)
-            );
-          } else {
-            try {
-              if (editor.currentModule) {
-                const operation = TextOperation.fromJSON(
-                  store.editor.pendingOperation
-                );
-
-                this.props.signals.editor.codeChanged({
-                  code: operation.apply(editor.currentModule.code || ''),
-                  moduleShortid: editor.currentModule.shortid,
-                });
-              }
-            } catch (e) {
-              console.error(e);
+        if (store.live.isLive) {
+          if (store.editor.pendingOperations) {
+            if (editor.setReceivingCode) {
+              editor.setReceivingCode(true);
             }
+            if (editor.applyOperations) {
+              editor.applyOperations(store.editor.pendingOperations);
+            } else {
+              try {
+                store.editor.pendingOperations.forEach(
+                  (operationJSON, moduleShortid) => {
+                    const operation = TextOperation.fromJSON(operationJSON);
+
+                    const module = store.currentSandbox.modules.find(
+                      m => m.shortid === moduleShortid
+                    );
+
+                    if (!module) {
+                      throw new Error(
+                        'Cannot find module with shortid: ' + moduleShortid
+                      );
+                    }
+
+                    this.props.signals.editor.codeChanged({
+                      code: operation.apply(module.code || ''),
+                      moduleShortid: module.shortid,
+                    });
+                  }
+                );
+              } catch (e) {
+                console.error(e);
+              }
+            }
+            if (editor.setReceivingCode) {
+              editor.setReceivingCode(false);
+            }
+            this.props.signals.live.onOperationApplied();
           }
-          if (editor.setReceivingCode) {
-            editor.setReceivingCode(false);
-          }
-          this.props.signals.live.onOperationApplied();
         }
       }
     );
@@ -271,16 +289,19 @@ class EditorPreview extends React.Component<Props, State> {
         if (isChangingSandbox) {
           return;
         }
-        const editorModule = editor.currentModule;
 
+        const editorModule = editor.currentModule;
         const changeModule = editor.changeModule;
-        if (newModule !== editorModule && changeModule) {
+        if (
+          (!editorModule || newModule.id !== editorModule.id) &&
+          changeModule
+        ) {
           const errors = store.editor.errors.map(e => e);
           const corrections = store.editor.corrections.map(e => e);
           changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
           // Only code changed from outside the editor
-          editor.changeCode(newModule.code || '');
+          editor.changeCode(newModule.code || '', newModule.id);
         }
       }
     );
@@ -338,6 +359,7 @@ class EditorPreview extends React.Component<Props, State> {
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
+    const currentTab = store.editor.currentTab;
     const { x, y, width, content } = store.editor.previewWindow;
 
     const windowVisible = !!content;
@@ -358,13 +380,36 @@ class EditorPreview extends React.Component<Props, State> {
       editorHeight = '100%';
     }
 
+    const template = getTemplateDefinition(sandbox.template);
+
+    const isReadOnly = () => {
+      if (store.live.isCurrentEditor) {
+        return false;
+      }
+
+      if (template.isServer) {
+        if (!store.isLoggedIn || store.server.status !== 'connected') {
+          return true;
+        }
+      }
+
+      return store.live.isLive;
+    };
+
     return (
       <ThemeProvider
         theme={{
-          templateColor: getTemplateDefinition(sandbox.template).color,
+          templateColor: template.color,
+          templateBackgroundColor: template.backgroundColor,
         }}
       >
-        <FullSize>
+        <FullSize
+          innerRef={node => {
+            if (node) {
+              this.contentNode = node;
+            }
+          }}
+        >
           <Prompt
             when={notSynced && !store.editor.isForkingSandbox}
             message={() =>
@@ -402,12 +447,18 @@ class EditorPreview extends React.Component<Props, State> {
             <CodeEditor
               onInitialized={this.onInitialized}
               sandbox={sandbox}
+              currentTab={currentTab}
               currentModule={currentModule}
+              isModuleSynced={store.editor.isModuleSynced(
+                currentModule.shortid
+              )}
               width={editorWidth}
               height={editorHeight}
+              absoluteWidth={this.state.width}
+              absoluteHeight={this.state.height}
               settings={settings(store)}
               sendTransforms={this.sendTransforms}
-              readOnly={store.live.isLive && !store.live.isCurrentEditor}
+              readOnly={isReadOnly()}
               isLive={store.live.isLive}
               onCodeReceived={signals.live.onCodeReceived}
               onSelectionChanged={signals.live.onSelectionChanged}
@@ -416,10 +467,11 @@ class EditorPreview extends React.Component<Props, State> {
                   signals.editor.addNpmDependency({ name, isDev: true });
                 }
               }}
-              onChange={code =>
+              onChange={(code, moduleShortid) =>
                 signals.editor.codeChanged({
                   code,
-                  moduleShortid: currentModule.shortid,
+                  moduleShortid: moduleShortid || currentModule.shortid,
+                  noLive: true,
                 })
               }
               onModuleChange={moduleId =>
@@ -458,11 +510,13 @@ class EditorPreview extends React.Component<Props, State> {
               }
             }}
             sandboxId={sandbox.id}
+            template={sandbox.template}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}
             setDevToolsOpen={open =>
               this.props.signals.preferences.setDevtoolsOpen({ open })
             }
+            owned={sandbox.owned}
           />
         </FullSize>
       </ThemeProvider>

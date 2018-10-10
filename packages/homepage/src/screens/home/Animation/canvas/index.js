@@ -36,7 +36,8 @@ class Canvas {
         // Create a dot
         const x = j * gridSize + gridSize * Math.random();
         const y = i * gridSize + gridSize * Math.random();
-        const dot = new Dot(x, y, [108, 174, 221], 1);
+        // const dot = new Dot(x, y, [108, 174, 221], 1);
+        const dot = new Dot(x, y, [223, 176, 122], 1);
 
         // Push to into an array of dots
         this.dots.push(dot);
@@ -67,6 +68,8 @@ class Canvas {
 
       if (renderDelta > 4000) {
         this.lowPerf = true;
+      } else {
+        this.lowPerf = false;
       }
 
       let distX;
@@ -167,8 +170,8 @@ class Canvas {
         const distance = Math.sqrt(distX * distX + distY * distY);
 
         this.dots[i].setSpeed(
-          distX / distance / 20 * ((Math.random() + 0.1) * 0.2),
-          distY / distance / 20 * ((Math.random() + 0.1) * 0.2)
+          (distX / distance / 20) * ((Math.random() + 0.1) * 0.2),
+          (distY / distance / 20) * ((Math.random() + 0.1) * 0.2)
         );
       }
       this.calibrated = true;

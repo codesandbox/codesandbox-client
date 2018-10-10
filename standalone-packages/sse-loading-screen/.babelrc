@@ -1,0 +1,16 @@
+{
+  "presets": ["flow", "env", "react"],
+  "plugins": [
+    [
+      "transform-runtime",
+      {
+        "polyfill": false,
+        "regenerator": true
+      }
+    ],
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    "babel-plugin-emotion",
+    "transform-flow-strip-types"
+  ]
+}

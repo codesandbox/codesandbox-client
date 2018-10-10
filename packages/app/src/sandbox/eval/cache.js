@@ -9,6 +9,9 @@ const debug = _debug('cs:compiler:cache');
 
 const host = process.env.CODESANDBOX_HOST;
 
+const MAX_CACHE_SIZE = 1024 * 1024 * 7;
+let APICacheUsed = false;
+
 try {
   localforage.config({
     name: 'CodeSandboxApp',
@@ -24,8 +27,8 @@ try {
   console.warn(e);
 }
 
-function shouldSaveOnlineCache(firstRun: boolean) {
-  if (!firstRun) {
+function shouldSaveOnlineCache(firstRun: boolean, changes: number) {
+  if (!firstRun || changes > 0) {
     return false;
   }
 
@@ -40,6 +43,7 @@ export async function saveCache(
   sandboxId: string,
   managerModuleToTranspile: any,
   manager: Manager,
+  changes: number,
   firstRun: boolean
 ) {
   const managerState = {
@@ -65,8 +69,12 @@ export async function saveCache(
     manager.clearCache();
   }
 
-  if (shouldSaveOnlineCache(firstRun)) {
+  if (shouldSaveOnlineCache(firstRun, changes) && SCRIPT_VERSION) {
     const stringifiedManagerState = JSON.stringify(managerState);
+
+    if (stringifiedManagerState.length > MAX_CACHE_SIZE) {
+      return Promise.resolve(false);
+    }
 
     debug(
       'Saving cache of ' +
@@ -87,7 +95,32 @@ export async function saveCache(
       })
       .then(x => x.json())
       .catch(e => {
-        console.error('Something went wrong while saving cache.');
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Something went wrong while saving cache.');
+          console.error(e);
+        }
+      });
+  }
+
+  return Promise.resolve(false);
+}
+
+export function deleteAPICache(sandboxId: string) {
+  if (APICacheUsed) {
+    debug('Deleting cache of API');
+    return window
+      .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
+        method: 'DELETE',
+        body: JSON.stringify({
+          version: SCRIPT_VERSION,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(x => x.json())
+      .catch(e => {
+        console.error('Something went wrong while deleting cache.');
         console.error(e);
       });
   }
@@ -111,8 +144,23 @@ function findCacheToUse(cache1, cache2) {
   return cache2.timestamp > cache1.timestamp ? cache2 : cache1;
 }
 
+export function ignoreNextCache() {
+  try {
+    localStorage.setItem('ignoreCache', 'true');
+  } catch (e) {
+    console.warn(e);
+  }
+}
+
 export async function consumeCache(manager: Manager) {
   try {
+    const shouldIgnoreCache = localStorage.getItem('ignoreCache');
+    if (shouldIgnoreCache) {
+      localStorage.removeItem('ignoreCache');
+
+      return false;
+    }
+
     const cacheData = window.__SANDBOX_DATA__;
     const localData = await localforage.getItem(manager.id);
 
@@ -121,6 +169,12 @@ export async function consumeCache(manager: Manager) {
       const version = SCRIPT_VERSION;
 
       if (cache.version === version) {
+        if (cache === localData) {
+          APICacheUsed = false;
+        } else {
+          APICacheUsed = true;
+        }
+
         debug(
           `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
           cache

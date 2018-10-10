@@ -2,6 +2,10 @@ const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
+const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
+  .normalizeName;
 const ManifestPlugin = require('webpack-manifest-plugin');
 const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
@@ -17,6 +21,8 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
+const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
+
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
   output: {
@@ -24,22 +30,55 @@ module.exports = merge(commonConfig, {
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     sourceMapFilename: '[file].map', // Default
   },
+  mode: 'production',
+  stats: 'verbose',
+
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+        uglifyOptions: {
+          mangle: {
+            safari10: true,
+          },
+          output: {
+            comments: false,
+          },
+        },
+      }),
+    ],
+    concatenateModules: true, // ModuleConcatenationPlugin
+    namedModules: true, // NamedModulesPlugin()
+    noEmitOnErrors: true, // NoEmitOnErrorsPlugin
+
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: 20, // for HTTP2
+      maxAsyncRequests: 20, // for HTTP2
+      name(module, chunks, cacheGroup) {
+        const name = normalize(module, chunks, cacheGroup);
+
+        if (name === 'vendors~app~embed~sandbox') {
+          return 'common-sandbox';
+        }
+
+        if (name === 'vendors~app~embed') {
+          return 'common';
+        }
+        // generate a chunk name using default strategy...
+        return name;
+      },
+    },
+  },
+
   plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    process.env.ANALYZE && new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
-    }),
-    new UglifyJSPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: true,
-      uglifyOptions: {
-        mangle: {
-          safari10: true,
-        },
-      },
     }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -128,28 +167,16 @@ module.exports = merge(commonConfig, {
       },
       minify: true,
       // For unknown URLs, fallback to the index page
-      staticFileGlobs: [], // don't pre-cache anything
+      navigateFallback: 'https://new.codesandbox.io/frame.html',
+      staticFileGlobs: ['www/frame.html'],
+      stripPrefix: 'www/',
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
+      navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 5242880,
-      directoryIndex: false,
-      verbose: true,
       runtimeCaching: [
-        {
-          urlPattern: /^https:\/\/\w+\.codesandbox\.\w+\/$/, // request to /
-          handler: 'networkFirst',
-        },
-        {
-          urlPattern: /\.worker\.js$/,
-          handler: 'cacheFirst',
-          options: {
-            cache: {
-              maxEntries: 50,
-              name: 'workers-cache',
-            },
-          },
-        },
         {
           urlPattern: /api\/v1\/sandboxes/,
           handler: 'networkFirst',
@@ -173,7 +200,7 @@ module.exports = merge(commonConfig, {
         {
           // These should be dynamic, since it's not loaded from this domain
           // But from the root domain
-          urlPattern: /codesandbox\.\w+\/static\/(js|browserfs)\//,
+          urlPattern: /codesandbox\.io\/static\/js\//,
           handler: 'fastest',
           options: {
             cache: {
@@ -216,6 +243,17 @@ module.exports = merge(commonConfig, {
           },
         },
         {
+          urlPattern: /^https:\/\/cdn\.rawgit\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'rawgit-cache',
+              maxAgeSeconds: 60 * 60 * 24 * 7,
+            },
+          },
+        },
+        {
           urlPattern: /jsdelivr\.(com|net)/,
           handler: 'cacheFirst',
           options: {
@@ -247,6 +285,7 @@ module.exports = merge(commonConfig, {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ManifestPlugin({
       fileName: 'file-manifest.json',
+      publicPath: commonConfig.output.publicPath,
     }),
-  ],
+  ].filter(Boolean),
 });

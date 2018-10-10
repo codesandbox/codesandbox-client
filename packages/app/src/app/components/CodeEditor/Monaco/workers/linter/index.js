@@ -349,7 +349,7 @@ self.addEventListener('message', async event => {
   let config = defaultConfig;
   let options = { filename };
 
-  if (template === 'vue-cli') {
+  if (template === 'vue-cli' || template === 'nuxt') {
     const {
       getConfig: getVueConfig,
       getVerifyOptions: getVueVerifyOptions,

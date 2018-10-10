@@ -1,69 +1,56 @@
 // @flow
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import Loadable from 'react-loadable';
+import Loadable from 'app/utils/Loadable';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import _debug from 'app/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
-import Loading from 'app/components/Loading';
+import { DragDropContext } from 'react-dnd';
 
 import send, { DNT } from 'common/utils/analytics';
 
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
+import Dashboard from './Dashboard';
 import { Container, Content } from './elements';
+
+import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignIn = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'page-sign-in' */ './common/SignIn'),
-  LoadingComponent: Loading,
-});
-const Live = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-sign-in' */ './Live'),
-  LoadingComponent: Loading,
-});
-const ZeitSignIn = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-zeit' */ './common/ZeitAuth'),
-  LoadingComponent: Loading,
-});
-const NotFound = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'page-not-found' */ './common/NotFound'),
-  LoadingComponent: Loading,
-});
-const Profile = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-profile' */ './Profile'),
-  LoadingComponent: Loading,
-});
-const Search = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-search' */ './Search'),
-  LoadingComponent: Loading,
-});
-const CLI = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-cli' */ './CLI'),
-  LoadingComponent: Loading,
-});
-const GitHub = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-github' */ './GitHub'),
-  LoadingComponent: Loading,
-});
-const CliInstructions = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'),
-  LoadingComponent: Loading,
-});
-const Patron = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-patron' */ './Patron'),
-  LoadingComponent: Loading,
-});
-const Terms = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-terms' */ './Terms'),
-  LoadingComponent: Loading,
-});
+const SignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './common/SignIn')
+);
+const Live = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './Live')
+);
+const ZeitSignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-zeit' */ './common/ZeitAuth')
+);
+const NotFound = Loadable(() =>
+  import(/* webpackChunkName: 'page-not-found' */ './common/NotFound')
+);
+const Profile = Loadable(() =>
+  import(/* webpackChunkName: 'page-profile' */ './Profile')
+);
+const Search = Loadable(() =>
+  import(/* webpackChunkName: 'page-search' */ './Search')
+);
+const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+const GitHub = Loadable(() =>
+  import(/* webpackChunkName: 'page-github' */ './GitHub')
+);
+const CliInstructions = Loadable(() =>
+  import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions')
+);
+const Patron = Loadable(() =>
+  import(/* webpackChunkName: 'page-patron' */ './Patron')
+);
+const Terms = Loadable(() =>
+  import(/* webpackChunkName: 'page-terms' */ './Terms')
+);
 
 type Props = {
   signals: any,
@@ -93,7 +80,7 @@ class Routes extends React.Component<Props> {
               if (typeof window.ga === 'function' && !DNT) {
                 window.ga('set', 'page', location.pathname + location.search);
 
-                send('pageview');
+                send('pageview', { path: location.pathname + location.search });
               }
             }
             return null;
@@ -106,6 +93,7 @@ class Routes extends React.Component<Props> {
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
+            <Route path="/dashboard" component={Dashboard} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin/:jwt?" component={SignIn} />
@@ -124,4 +112,6 @@ class Routes extends React.Component<Props> {
   }
 }
 
-export default inject('signals', 'store')(observer(Routes));
+export default inject('signals', 'store')(
+  DragDropContext(HTML5Backend)(observer(Routes))
+);

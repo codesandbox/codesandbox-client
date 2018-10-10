@@ -42,6 +42,7 @@ find them here.
 | `expanddevtools` | Start with the devtools (console) open.                                       | `0`/`1`                              | `0`                                  |
 | `runonclick`     | Only load the preview when the user says so.                                  | `0`/`1`                              | `0`                                  |
 | `view`           | Which view to open by default                                                 | `editor`/`split`/`preview`           | `split`, `preview` for small screens |
+| `previewwindow`  | Which preview window to open by default                                       | `console`/`tests`/`browser`          | `browser`                            |
 | `module`         | Which module to open by default                                               | path to module (starting with `/`)   | entry path                           |
 | `initialpath`    | Which url to initially load in address bar                                    | string                               | `/`                                  |
 | `fontsize`       | Font size of editor                                                           | number (in px)                       | `14`                                 |

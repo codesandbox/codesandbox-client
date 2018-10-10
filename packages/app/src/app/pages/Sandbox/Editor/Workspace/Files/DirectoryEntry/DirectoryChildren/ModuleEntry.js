@@ -19,6 +19,7 @@ class ModuleEntry extends React.Component {
       depth,
       renameModule,
       deleteEntry,
+      discardModuleChanges,
     } = this.props;
     const currentModuleShortid = store.editor.currentModuleShortid;
     const mainModuleId = store.editor.mainModule.id;
@@ -33,6 +34,8 @@ class ModuleEntry extends React.Component {
 
     const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
 
+    const isNotSynced = !store.editor.isModuleSynced(module.shortid);
+
     return (
       <Entry
         id={module.id}
@@ -44,12 +47,13 @@ class ModuleEntry extends React.Component {
         type={type || 'function'}
         rename={isMainModule ? undefined : renameModule}
         deleteEntry={isMainModule ? undefined : deleteEntry}
-        isNotSynced={!store.editor.isModuleSynced(module.shortid)}
+        isNotSynced={isNotSynced}
         renameValidator={this.validateTitle}
         setCurrentModule={setCurrentModule}
         isMainModule={isMainModule}
         moduleHasError={hasError}
         markTabsNotDirty={markTabsNotDirty}
+        discardModuleChanges={discardModuleChanges}
       />
     );
   }

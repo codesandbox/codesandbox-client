@@ -16,10 +16,11 @@ export default function initialize() {
     {
       setup: async manager => {
         const stylesPath = absolute(join('src', 'main.css'));
+
         try {
           const tModule = await manager.resolveTranspiledModuleAsync(
             stylesPath,
-            '/'
+            null
           );
           await tModule.transpile(manager);
           tModule.setIsEntry(true);

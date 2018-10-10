@@ -19,6 +19,7 @@ function UserInfo({ user }) {
         viewCount={user.viewCount}
         forkCount={user.forkedCount}
         badges={user.badges}
+        username={user.username}
       />
     </Row>
   );

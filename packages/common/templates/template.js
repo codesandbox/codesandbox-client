@@ -12,6 +12,10 @@ type Options = {
   isTypescript?: boolean,
   externalResourcesEnabled?: boolean,
   showCube?: boolean,
+  isServer?: boolean,
+  main?: boolean,
+  backgroundColor?: () => string,
+  mainFile?: Array<string>,
 };
 
 const defaultConfigurations = {
@@ -25,7 +29,9 @@ export default class Template {
   niceName: string;
   shortid: string;
   url: string;
+  main: boolean;
   color: () => string;
+  backgroundColor: ?() => string;
 
   showOnHomePage: boolean;
   distDir: string;
@@ -35,6 +41,8 @@ export default class Template {
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
   showCube: boolean;
+  isServer: boolean;
+  mainFile: ?Array<string>;
 
   constructor(
     name: string,
@@ -50,6 +58,8 @@ export default class Template {
     this.shortid = shortid;
     this.color = color;
 
+    this.isServer = options.isServer || false;
+    this.main = options.main || false;
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';
     this.configurationFiles = {
@@ -61,6 +71,9 @@ export default class Template {
       options.externalResourcesEnabled != null
         ? options.externalResourcesEnabled
         : true;
+
+    this.mainFile = options.mainFile;
+    this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;
   }
@@ -76,7 +89,17 @@ export default class Template {
         absolute(configurationFiles.package.parsed.main),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
+      ...(this.mainFile || []),
     ].filter(x => x);
+  }
+
+  /**
+   * Files to be opened by default by the editor when opening the editor
+   */
+  getDefaultOpenedFiles(configurationFiles: {
+    [type: string]: Object,
+  }): Array<string> {
+    return this.getEntries(configurationFiles);
   }
 
   // eslint-disable-next-line no-unused-vars

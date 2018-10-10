@@ -1,8 +1,7 @@
 // @flow
 
 import React from 'react';
-import Loadable from 'react-loadable';
-import Loading from 'app/components/Loading';
+import Loadable from 'app/utils/Loadable';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
 import getUI from 'common/templates/configuration/ui';
@@ -20,13 +19,12 @@ import type { Props } from './types';
 import Monaco from './Monaco';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
+import MonacoDiff from './MonacoDiff';
 import { Icons, Icon } from './elements';
 
-const CodeMirror = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror'),
-  LoadingComponent: Loading,
-});
+const CodeMirror = Loadable(() =>
+  import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
+);
 
 const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
   const packageJSON = sandbox.modules.find(
@@ -74,9 +72,37 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   render() {
     const props = this.props;
 
-    const settings = props.settings;
-    const module = props.currentModule;
-    const sandbox = props.sandbox;
+    const {
+      isModuleSynced,
+      currentTab,
+      sandbox,
+      currentModule: module,
+      settings,
+    } = props;
+
+    if (currentTab && currentTab.type === 'DIFF') {
+      return (
+        <div
+          style={{
+            height: props.height || '100%',
+            width: props.width || '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        >
+          <MonacoDiff
+            originalCode={currentTab.codeA}
+            modifiedCode={currentTab.codeB}
+            title={currentTab.fileTitle}
+            {...props}
+          />
+        </div>
+      );
+    }
+
     const dependencies = getDependencies(sandbox);
 
     const template = getDefinition(sandbox.template);
@@ -142,6 +168,13 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           bottom: 0,
         }}
       >
+        {!isModuleSynced &&
+          module.title === 'index.html' && (
+            <Icons style={{ fontSize: '.875rem' }}>
+              You may have to save this file and refresh the preview to see
+              changes
+            </Icons>
+          )}
         {config &&
           (getUI(config.type) ? (
             <Icons>

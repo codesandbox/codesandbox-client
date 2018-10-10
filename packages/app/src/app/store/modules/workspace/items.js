@@ -1,3 +1,5 @@
+import getTemplate from 'common/templates';
+
 const PROJECT = {
   id: 'project',
   name: 'Project Info',
@@ -28,6 +30,16 @@ const LIVE = {
   name: 'Live',
 };
 
+const MORE = {
+  id: 'more',
+  name: 'More',
+};
+
+const SERVER = {
+  id: 'server',
+  name: 'Server Control Panel',
+};
+
 export default function getItems(store) {
   if (
     store.live.isLive &&
@@ -36,13 +48,20 @@ export default function getItems(store) {
       (store.user &&
         store.live &&
         store.live.roomInfo &&
-        store.live.roomInfo.ownerId === store.user.id)
+        store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
     )
   ) {
     return [FILES, LIVE];
   }
 
   const items = [PROJECT, FILES];
+
+  if (store.isLoggedIn && store.editor.currentSandbox) {
+    const templateDef = getTemplate(store.editor.currentSandbox.template);
+    if (templateDef.isServer) {
+      items.push(SERVER);
+    }
+  }
 
   if (
     store.isLoggedIn &&
@@ -60,6 +79,10 @@ export default function getItems(store) {
 
   if (store.isLoggedIn) {
     items.push(LIVE);
+  }
+
+  if (!store.isLoggedIn) {
+    items.push(MORE);
   }
 
   return items;

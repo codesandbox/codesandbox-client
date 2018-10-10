@@ -5,7 +5,6 @@ import UserIcon from 'react-icons/lib/ti/user';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
 import FolderIcon from 'react-icons/lib/md/folder';
 import SettingsIcon from 'react-icons/lib/md/settings';
-
 import { profileUrl, patronUrl } from 'common/utils/url-generator';
 import PatronBadge from 'common/utils/badges/PatronBadge';
 

@@ -1,9 +1,10 @@
 import { clone } from 'mobx-state-tree';
 import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
-import { chunk } from 'lodash';
+import { chunk } from 'lodash-es';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
+import track from 'common/utils/analytics';
 
 import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
 
@@ -67,8 +68,14 @@ export async function uploadFiles({ api, props, path }) {
 
           if (
             (/\.(j|t)sx?$/.test(filePath) ||
-              /\.json?$/.test(filePath) ||
-              /\.html?$/.test(filePath) ||
+              /\.coffee$/.test(filePath) ||
+              /\.json$/.test(filePath) ||
+              /\.html$/.test(filePath) ||
+              /\.vue$/.test(filePath) ||
+              /\.styl$/.test(filePath) ||
+              /\.(le|sc|sa)ss$/.test(filePath) ||
+              /\.haml$/.test(filePath) ||
+              /\.pug$/.test(filePath) ||
               file.type.startsWith('text/') ||
               file.type === 'application/json') &&
             dataURI.length < MAX_FILE_SIZE
@@ -540,6 +547,53 @@ export function setDefaultNewCode({ state, props }) {
       newCode: code,
       optimisticModule: { ...props.optimisticModule, code },
     };
+  }
+
+  return {};
+}
+
+export function recoverFiles({ recover, controller, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+
+  const recoverList = recover.getRecoverList(sandbox.id, sandbox.modules);
+  recover.clearSandbox(sandbox.id);
+
+  const recoveredList = recoverList
+    .map(({ recoverData, module }) => {
+      if (module.code === recoverData.savedCode) {
+        const titleA = `saved '${module.title}'`;
+        const titleB = `recovered '${module.title}'`;
+        state.push('editor.tabs', {
+          type: 'DIFF',
+          codeA: module.code || '',
+          codeB: recoverData.code || '',
+          titleA,
+          titleB,
+          fileTitle: module.title,
+          id: `${titleA} - ${titleB}`,
+        });
+
+        const signal = controller.getSignal('editor.codeChanged');
+        signal({
+          code: recoverData.code,
+          moduleShortid: module.shortid,
+        });
+
+        return true;
+      }
+
+      return false;
+    })
+    .filter(Boolean);
+
+  if (recoveredList.length > 0 && window.showNotification) {
+    track('Files Recovered', { fileCount: recoveredList.length });
+    window.showNotification(
+      `We recovered ${
+        recoveredList.length
+      } unsaved files from a previous session`,
+      'notice'
+    );
   }
 
   return {};

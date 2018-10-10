@@ -9,6 +9,7 @@ import {
   currentPackageJSON,
   currentPackageJSONCode,
   parsedConfigurations,
+  currentTab,
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -26,11 +27,12 @@ export default Module({
     error: null,
     isResizing: false,
     changedModuleShortids: [],
+    currentTabId: null,
     tabs: [],
     errors: [],
     glyphs: [],
     corrections: [],
-    pendingOperation: null,
+    pendingOperations: {},
     pendingUserSelections: [],
     isInProjectView: false,
     forceRender: 0,
@@ -41,6 +43,7 @@ export default Module({
     previewWindow: {
       height: undefined,
       width: undefined,
+      editorSize: 50,
       x: 0,
       y: 0,
       content: 'browser',
@@ -54,6 +57,7 @@ export default Module({
     currentPackageJSON,
     currentPackageJSONCode,
     parsedConfigurations,
+    currentTab,
   },
   computed: {
     isModuleSynced,
@@ -81,9 +85,13 @@ export default Module({
     projectViewToggled: sequences.toggleProjectView,
     previewActionReceived: sequences.handlePreviewAction,
     privacyUpdated: sequences.updatePrivacy,
+    frozenUpdated: sequences.updateFrozen,
     quickActionsOpened: sequences.openQuickActions,
     quickActionsClosed: sequences.closeQuickActions,
     setPreviewBounds: sequences.setPreviewBounds,
     setPreviewContent: sequences.setPreviewContent,
+    currentTabChanged: sequences.changeCurrentTab,
+    discardModuleChanges: sequences.discardModuleChanges,
+    editorSizeUpdated: sequences.updateEditorSize,
   },
 });

@@ -6,7 +6,8 @@ export const Container = styled.div`
   overflow: hidden;
   width: 100%;
 
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.8)'};
 
   ${props =>
     props.small &&

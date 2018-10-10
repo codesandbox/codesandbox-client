@@ -1,6 +1,9 @@
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
 
+import VERSION from 'common/version';
+import { getTextOperation } from 'common/utils/diff';
+
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
 
@@ -9,10 +12,6 @@ export function createRoom({ api, props }) {
       id,
     })
     .then(({ id: roomId }) => ({ roomId }));
-}
-
-export function connect({ live }) {
-  return live.connect();
 }
 
 export function disconnect({ live, ot }) {
@@ -35,9 +34,10 @@ export function initializeLiveState({ props, state }) {
   state.set('live.roomInfo', {
     connectionCount: 1,
     roomId: props.roomId,
-    ownerId: props.ownerId,
+    ownerIds: props.ownerIds,
     sandboxId: props.sandboxId,
     editorIds: props.editorIds,
+    sourceOfTruthDeviceId: props.sourceOfTruthDeviceId,
     mode: props.mode,
     chatEnabled: props.chatEnabled,
     usersMetadata: {},
@@ -47,7 +47,9 @@ export function initializeLiveState({ props, state }) {
       messages: [],
       users: {},
     },
+    version: VERSION,
   });
+  state.set('live.deviceId', props.deviceId);
   state.set('live.isLive', true);
   state.set('live.error', null);
 }
@@ -263,11 +265,13 @@ export function sendModuleCreated(context) {
   sendModuleInfo(context, 'module:created', 'module', moduleShortid);
 }
 
-export function sendMassModuleCreated({ live, props }) {
-  live.send('module:mass-created', {
-    directories: props.directories,
-    modules: props.modules,
-  });
+export function sendMassModuleCreated({ state, live, props }) {
+  if (state.get('live.isCurrentEditor')) {
+    live.send('module:mass-created', {
+      directories: props.directories,
+      modules: props.modules,
+    });
+  }
 }
 
 export function sendModuleDeleted(context) {
@@ -380,6 +384,9 @@ export function updateModule({ props, state }) {
 }
 
 export function sendTransform({ ot, props }) {
+  if (!props.operation) {
+    return;
+  }
   ot.applyClient(props.moduleShortid, props.operation);
 }
 
@@ -415,7 +422,9 @@ export function acknowledgeOperation({ props, ot }) {
 }
 
 export function computePendingOperation({ props, state }) {
-  const existingPendingOperation = state.get('editor.pendingOperation');
+  const existingPendingOperation = state.get(
+    `editor.pendingOperations.${props.moduleShortid}`
+  );
 
   if (!existingPendingOperation) {
     return { pendingOperation: props.operation };
@@ -538,4 +547,28 @@ export function getCurrentModuleIdOfUser({ props, state }) {
   }
 
   return {};
+}
+
+export function getCodeOperation({ props, state }) {
+  if (!state.get('live.isLive')) {
+    return {};
+  }
+
+  const { moduleShortid, code } = props;
+
+  const module = state
+    .get('editor.currentSandbox.modules')
+    .find(m => m.shortid === moduleShortid);
+
+  if (!module || module.code === code) {
+    return {};
+  }
+
+  const oldCode = module.code;
+
+  const op = getTextOperation(oldCode, code);
+
+  return {
+    operation: op.toJSON(),
+  };
 }

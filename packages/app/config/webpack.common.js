@@ -25,7 +25,18 @@ const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost() + '/';
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
   rules: {${fs
-    .readdirSync('../../node_modules/eslint-plugin-vue/lib/rules')
+    .readdirSync(
+      path.join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'node_modules',
+        'eslint-plugin-vue',
+        'lib',
+        'rules'
+      )
+    )
     .filter(filename => path.extname(filename) === '.js')
     .map(filename => {
       const ruleId = path.basename(filename, '.js');
@@ -37,6 +48,8 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
       ".vue": require("eslint-plugin-vue/lib/processor")
   }
 }`;
+
+const sepRe = `\\${path.sep}`; // path separator regex
 
 module.exports = {
   entry: SANDBOX_ONLY
@@ -63,6 +76,7 @@ module.exports = {
         ],
       },
   target: 'web',
+  mode: 'development',
 
   node: {
     setImmediate: false,
@@ -72,57 +86,77 @@ module.exports = {
 
   output: {
     path: paths.appBuild,
-    pathinfo: true,
     publicPath,
+    globalObject: 'this',
   },
 
   module: {
     rules: [
+      {
+        test: /\.wasm$/,
+        loader: 'file-loader',
+        type: 'javascript/auto',
+      },
+      // Transpile node dependencies, node deps are often not transpiled for IE11
+      {
+        test: [
+          new RegExp(`${sepRe}node_modules${sepRe}.*ansi-styles`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*chalk`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*monaco-textmate`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*onigasm`),
+          new RegExp(`react-icons`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*gsap`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*babel-plugin-macros`),
+          new RegExp(`sandbox-hooks`),
+          new RegExp(
+            `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
+          ),
+          new RegExp(
+            `${sepRe}node_modules${sepRe}babel-plugin-transform-vue-jsx`
+          ),
+        ],
+        loader: 'babel-loader',
+        query: {
+          presets: [
+            '@babel/preset-flow',
+            [
+              '@babel/preset-env',
+              {
+                targets: {
+                  ie: 11,
+                  esmodules: true,
+                },
+                modules: 'umd',
+                useBuiltIns: false,
+              },
+            ],
+            '@babel/preset-react',
+          ],
+          plugins: [
+            '@babel/plugin-transform-template-literals',
+            '@babel/plugin-transform-destructuring',
+            '@babel/plugin-transform-async-to-generator',
+            '@babel/plugin-proposal-object-rest-spread',
+            '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-transform-runtime',
+          ],
+        },
+      },
       {
         test: /\.js$/,
         include: [paths.src, paths.common, /@emmetio/],
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
-          new RegExp('babel-runtime\\' + path.sep),
+          /\.no-webpack\./,
         ],
         loader: 'happypack/loader',
       },
 
-      // Transpile node dependencies, node deps are often not transpiled for IE11
-      {
-        test: [
-          /\/node_modules\/.*ansi-styles/,
-          /\/node_modules\/.*chalk/,
-          /\/node_modules\/.*jest/,
-        ],
-        loader: 'babel-loader',
-        query: {
-          presets: [
-            [
-              'env',
-              {
-                targets: {
-                  ie: 11,
-                },
-              },
-            ],
-            'react',
-          ],
-          plugins: [
-            'transform-async-to-generator',
-            'transform-object-rest-spread',
-            'transform-class-properties',
-            'transform-runtime',
-          ],
-        },
-      },
-
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
       {
-        test: new RegExp(
-          `eslint-plugin-vue\\${path.sep}lib\\${path.sep}index\\.js$`
-        ),
+        test: new RegExp(`eslint-plugin-vue${sepRe}lib${sepRe}index\\.js$`),
         loader: 'string-replace-loader',
         options: {
           search: '[\\s\\S]+', // whole file.
@@ -133,9 +167,7 @@ module.exports = {
       // `eslint` has some dynamic `require(...)`.
       // Delete those.
       {
-        test: new RegExp(
-          `eslint\\${path.sep}lib\\${path.sep}(?:linter|rules)\\.js$`
-        ),
+        test: new RegExp(`eslint${sepRe}lib${sepRe}(?:linter|rules)\\.js$`),
         loader: 'string-replace-loader',
         options: {
           search: '(?:\\|\\||(\\())\\s*require\\(.+?\\)',
@@ -156,9 +188,7 @@ module.exports = {
       },
       // Patch for `babel-eslint`
       {
-        test: new RegExp(
-          `babel-eslint\\${path.sep}lib\\${path.sep}index\\.js$`
-        ),
+        test: new RegExp(`babel-eslint${sepRe}lib${sepRe}index\\.js$`),
         loader: 'string-replace-loader',
         options: {
           search: '[\\s\\S]+', // whole file.
@@ -169,7 +199,7 @@ module.exports = {
       },
       {
         test: new RegExp(
-          `babel-eslint\\${path.sep}lib\\${path.sep}patch-eslint-scope\\.js$`
+          `babel-eslint${sepRe}lib${sepRe}patch-eslint-scope\\.js$`
         ),
         loader: 'string-replace-loader',
         options: {
@@ -187,11 +217,14 @@ module.exports = {
           replace: `throw new Error('module assert not found')`,
         },
       },
-      // JSON is not enabled by default in Webpack but both Node and Browserify
-      // allow it implicitly so we also enable it.
+      // Remove dynamic require in jest circus
       {
-        test: /\.json$/,
-        loader: 'json-loader',
+        test: /babel-plugin-macros/,
+        loader: 'string-replace-loader',
+        options: {
+          search: `_require(`,
+          replace: `self.require(`,
+        },
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -244,11 +277,12 @@ module.exports = {
       /typescriptServices\.js$/,
       /browserfs\.js/,
       /browserfs\.min\.js/,
+      /standalone-packages/,
     ],
   },
 
   // To make jsonlint work
-  externals: ['file', 'system'],
+  externals: ['file', 'system', 'jsdom', 'prettier', 'cosmiconfig'],
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
@@ -293,7 +327,6 @@ module.exports = {
             chunks: ['sandbox-startup', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
-            publicPath,
             minify: __PROD__ && {
               removeComments: true,
               collapseWhitespace: true,
@@ -312,10 +345,10 @@ module.exports = {
           // Generates an `index.html` file with the <script> injected.
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['common-sandbox', 'common', 'app'],
+            chunks: __PROD__ ? ['common-sandbox', 'common', 'app'] : ['app'],
+            chunksSortMode: 'manual',
             filename: 'app.html',
             template: paths.appHtml,
-            publicPath,
             minify: __PROD__ && {
               removeComments: false,
               collapseWhitespace: true,
@@ -331,10 +364,17 @@ module.exports = {
           }),
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
+            chunks: __PROD__
+              ? [
+                  'sandbox-startup',
+                  'common-sandbox',
+                  'vendors~sandbox',
+                  'sandbox',
+                ]
+              : ['sandbox-startup', 'sandbox'],
+            chunksSortMode: 'manual',
             filename: 'frame.html',
             template: paths.sandboxHtml,
-            publicPath,
             minify: __PROD__ && {
               removeComments: true,
               collapseWhitespace: true,
@@ -350,7 +390,10 @@ module.exports = {
           }),
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['common-sandbox', 'common', 'embed'],
+            chunks: __PROD__
+              ? ['common-sandbox', 'common', 'embed']
+              : ['embed'],
+            chunksSortMode: 'manual',
             filename: 'embed.html',
             template: path.join(paths.embedSrc, 'index.html'),
             minify: __PROD__ && {
@@ -375,22 +418,20 @@ module.exports = {
     // See https://github.com/facebookincubator/create-react-app/issues/240
     new CaseSensitivePathsPlugin(),
 
-    // Expose BrowserFS, process, and Buffer globals.
-    // NOTE: If you intend to use BrowserFS in a script tag, you do not need
-    // to expose a BrowserFS global.
-    new webpack.ProvidePlugin({
-      // Only use our local dev version of browserfs when in dev mode
-      // process: 'processGlobal',
-      // Buffer: 'bufferGlobal',
-    }),
-
     // With this plugin we override the load-rules of eslint, this function prevents
     // us from using eslint in the browser, therefore we need to stop it!
     !SANDBOX_ONLY &&
       new webpack.NormalModuleReplacementPlugin(
-        new RegExp(['eslint', 'lib', 'load-rules'].join(`\\${path.sep}`)),
+        new RegExp(['eslint', 'lib', 'load-rules'].join(sepRe)),
         path.join(paths.config, 'stubs/load-rules.compiled.js')
       ),
+
+    // DON'T TOUCH THIS. There's a bug in Webpack 4 that causes bundle splitting
+    // to break when using lru-cache. So we literally gice them our own version
+    new webpack.NormalModuleReplacementPlugin(
+      /^lru-cache$/,
+      path.join(paths.config, 'stubs/lru-cache.js')
+    ),
 
     // If you require a missing module and then `npm install` it, you still have
     // to restart the development server for Webpack to discover it. This plugin
@@ -400,19 +441,25 @@ module.exports = {
     // Make the monaco editor work
     new CopyWebpackPlugin(
       [
+        // Our own custom version of monaco
         {
           from: __DEV__
-            ? '../../node_modules/monaco-editor/dev/vs'
-            : '../../node_modules/monaco-editor/min/vs',
-          to: 'public/vs',
+            ? '../../standalone-packages/monaco-editor/release/dev/vs'
+            : '../../standalone-packages/monaco-editor/release/min/vs',
+          to: 'public/13/vs',
+          force: true,
         },
         __PROD__ && {
           from: '../../node_modules/monaco-editor/min-maps',
           to: 'public/min-maps',
         },
         {
+          from: '../../node_modules/onigasm/lib/onigasm.wasm',
+          to: 'public/onigasm/2.2.1/onigasm.wasm',
+        },
+        {
           from: '../../node_modules/monaco-vue/release/min',
-          to: 'public/vs/language/vue',
+          to: 'public/13/vs/language/vue',
         },
         {
           from: 'static',
@@ -424,34 +471,5 @@ module.exports = {
         },
       ].filter(x => x)
     ),
-
-    ...(SANDBOX_ONLY
-      ? [
-          new webpack.optimize.CommonsChunkPlugin({
-            async: true,
-            children: true,
-            minChunks: 2,
-          }),
-        ]
-      : [
-          // We first create a common chunk between embed and app, to share components
-          // and dependencies.
-          new webpack.optimize.CommonsChunkPlugin({
-            name: 'common',
-            chunks: ['app', 'embed'],
-          }),
-          // Then we find all commonalities between sandbox and common, because sandbox
-          // is always loaded by embed and app.
-          new webpack.optimize.CommonsChunkPlugin({
-            name: 'common-sandbox',
-            chunks: ['common', 'sandbox'],
-          }),
-          new webpack.optimize.CommonsChunkPlugin({
-            async: true,
-            children: true,
-            minChunks: 2,
-          }),
-        ]),
-    new webpack.NamedModulesPlugin(),
   ].filter(Boolean),
 };

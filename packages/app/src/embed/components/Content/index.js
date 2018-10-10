@@ -5,6 +5,17 @@ import BasePreview from 'app/components/Preview';
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
+import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import getType from 'app/utils/get-type';
+
+import getTemplate from 'common/templates';
+
+import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
+import {
+  TabTitle,
+  TabDir,
+  StyledCloseIcon,
+} from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
 
 import DevTools from 'app/components/Preview/DevTools';
 
@@ -25,6 +36,7 @@ type EmbedError = {
 type Props = {
   showEditor: boolean,
   showPreview: boolean,
+  previewWindow: string,
   isInProjectView: boolean,
   setProjectView: (sandboxId?: ?string, isOpen: boolean, cb: Function) => void,
   sandbox: Sandbox,
@@ -76,6 +88,30 @@ export default class Content extends React.PureComponent<Props, State> {
 
     this.errors = [];
   }
+
+  renderTabStatus = (hovering, closeTab) => {
+    const { isNotSynced, tabCount } = this.props;
+
+    if (hovering && isNotSynced && tabCount === 1) {
+      return <StyledNotSyncedIcon show={'true'} />;
+    }
+    if (hovering && isNotSynced && tabCount > 1) {
+      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+    }
+    if (hovering && tabCount === 1) {
+      return <StyledCloseIcon onClick={closeTab} show={undefined} />;
+    }
+    if (hovering && tabCount > 1) {
+      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+    }
+    if (!hovering && isNotSynced) {
+      return <StyledNotSyncedIcon show={'true'} />;
+    }
+    if (!hovering && !isNotSynced) {
+      return <StyledNotSyncedIcon show={undefined} />;
+    }
+    return <StyledNotSyncedIcon show={undefined} />;
+  };
 
   errors: Array<ModuleError>;
   editor: ?Editor;
@@ -265,6 +301,7 @@ export default class Content extends React.PureComponent<Props, State> {
       sandbox,
       showEditor,
       showPreview,
+      previewWindow,
       currentModule,
       hideNavigation,
       isInProjectView,
@@ -279,11 +316,16 @@ export default class Content extends React.PureComponent<Props, State> {
 
     if (!mainModule) throw new Error('Cannot find main module');
 
+    const templateDefinition = getTemplate(sandbox.template);
+
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'
     );
+
     let view = 'browser';
-    if (sandboxConfig) {
+    if (previewWindow) {
+      view = previewWindow;
+    } else if (sandboxConfig) {
       try {
         view = JSON.parse(sandboxConfig.code || '').view || 'browser';
       } catch (e) {
@@ -326,7 +368,18 @@ export default class Content extends React.PureComponent<Props, State> {
                     position={i}
                     closeTab={this.closeTab}
                     dirName={dirName}
-                  />
+                  >
+                    {({ hovering, closeTab }) => (
+                      // TODO deduplicate this
+                      <React.Fragment>
+                        <EntryIcons type={getType(module.title)} />
+                        <TabTitle>{module.title}</TabTitle>
+                        {dirName && <TabDir>../{dirName}</TabDir>}
+
+                        {this.renderTabStatus(hovering, closeTab)}
+                      </React.Fragment>
+                    )}
+                  </Tab>
                 );
               })}
             </Tabs>
@@ -340,9 +393,11 @@ export default class Content extends React.PureComponent<Props, State> {
               <CodeEditor
                 onInitialized={this.onCodeEditorInitialized}
                 currentModule={currentModule || mainModule}
+                isModuleSynced
                 sandbox={sandbox}
                 settings={this.getPreferences()}
                 canSave={false}
+                readOnly={templateDefinition.isServer}
                 onChange={this.setCode}
                 onModuleChange={this.setCurrentModule}
                 onUnMount={this.onCodeEditorUnMount}
@@ -387,8 +442,10 @@ export default class Content extends React.PureComponent<Props, State> {
                 <DevTools
                   setDragging={this.setDragging}
                   sandboxId={sandbox.id}
+                  template={sandbox.template}
                   shouldExpandDevTools={this.props.expandDevTools}
                   view={view}
+                  owned={false}
                 />
               </div>
             )}
