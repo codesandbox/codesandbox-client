@@ -63,8 +63,8 @@ const METADATA = {
       thirdPartyNotices: 'node_modules/monaco-languages/ThirdPartyNotices.txt',
       paths: {
         src: '/monaco-languages/release/dev',
-        'npm/dev': 'node_modules/monaco-languages/release/dev',
-        'npm/min': 'node_modules/monaco-languages/release/min',
+        'npm/dev': '../monaco-languages/release/dev',
+        'npm/min': '../monaco-languages/release/min',
         esm: 'node_modules/monaco-languages/release/esm',
       },
     },

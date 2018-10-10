@@ -10,9 +10,11 @@ var WorkerManager = /** @class */ (function () {
         this._modeId = modeId;
         this._defaults = defaults;
         this._worker = null;
-        this._idleCheckInterval = setInterval(function () { return _this._checkIfIdle(); }, 30 * 1000);
+        this._idleCheckInterval = window.setInterval(function () { return _this._checkIfIdle(); }, 30 * 1000);
         this._lastUsedTime = 0;
-        this._configChangeListener = this._defaults.onDidChange(function () { return _this._stopWorker(); });
+        this._configChangeListener = this._defaults.onDidChange(function () {
+            return _this._stopWorker();
+        });
     }
     WorkerManager.prototype._stopWorker = function () {
         if (this._worker) {
@@ -47,13 +49,14 @@ var WorkerManager = /** @class */ (function () {
                 // passed in to the create() method
                 createData: {
                     compilerOptions: this._defaults.getCompilerOptions(),
-                    extraLibs: this._defaults.getExtraLibs()
-                }
+                    extraLibs: this._defaults.getExtraLibs(),
+                },
             });
             var p = this._worker.getProxy();
             if (this._defaults.getEagerModelSync()) {
                 p = p.then(function (worker) {
-                    return _this._worker.withSyncedResources(monaco.editor.getModels()
+                    return _this._worker.withSyncedResources(monaco.editor
+                        .getModels()
                         .filter(function (model) { return model.getModeId() === _this._modeId; })
                         .map(function (model) { return model.uri; }));
                 });
@@ -69,11 +72,14 @@ var WorkerManager = /** @class */ (function () {
             resources[_i] = arguments[_i];
         }
         var _client;
-        return toShallowCancelPromise(this._getClient().then(function (client) {
+        return toShallowCancelPromise(this._getClient()
+            .then(function (client) {
             _client = client;
-        }).then(function (_) {
+        })
+            .then(function (_) {
             return _this._worker.withSyncedResources(resources);
-        }).then(function (_) { return _client; }));
+        })
+            .then(function (_) { return _client; }));
     };
     return WorkerManager;
 }());

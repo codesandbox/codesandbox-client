@@ -1,4 +1,4 @@
-define(["require", "exports", "./lib/typescriptServices", "./lib/lib-ts", "./lib/lib-es6-ts"], function (require, exports, ts, lib_ts_1, lib_es6_ts_1) {
+define(["require", "exports", "./lib/typescriptServices", "./lib/lib"], function (require, exports, ts, lib_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8,11 +8,11 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib-ts", "./lib
     var Promise = monaco.Promise;
     var DEFAULT_LIB = {
         NAME: 'defaultLib:lib.d.ts',
-        CONTENTS: lib_ts_1.contents
+        CONTENTS: lib_1.lib_dts
     };
     var ES6_LIB = {
         NAME: 'defaultLib:lib.es6.d.ts',
-        CONTENTS: lib_es6_ts_1.contents
+        CONTENTS: lib_1.lib_es6_dts
     };
     var TypeScriptWorker = /** @class */ (function () {
         function TypeScriptWorker(ctx, createData) {
@@ -98,29 +98,40 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib-ts", "./lib
             return fileName === this.getDefaultLibFileName(this._compilerOptions);
         };
         // --- language features
+        TypeScriptWorker.clearFiles = function (diagnostics) {
+            // Clear the `file` field, which cannot be JSON'yfied because it
+            // contains cyclic data structures.
+            diagnostics.forEach(function (diag) {
+                diag.file = undefined;
+                var related = diag.relatedInformation;
+                if (related) {
+                    related.forEach(function (diag2) { return diag2.file = undefined; });
+                }
+            });
+        };
         TypeScriptWorker.prototype.getSyntacticDiagnostics = function (fileName) {
             var diagnostics = this._languageService.getSyntacticDiagnostics(fileName);
-            diagnostics.forEach(function (diag) { return diag.file = undefined; }); // diag.file cannot be JSON'yfied
+            TypeScriptWorker.clearFiles(diagnostics);
             return Promise.as(diagnostics);
         };
         TypeScriptWorker.prototype.getSemanticDiagnostics = function (fileName) {
             var diagnostics = this._languageService.getSemanticDiagnostics(fileName);
-            diagnostics.forEach(function (diag) { return diag.file = undefined; }); // diag.file cannot be JSON'yfied
+            TypeScriptWorker.clearFiles(diagnostics);
             return Promise.as(diagnostics);
         };
         TypeScriptWorker.prototype.getCompilerOptionsDiagnostics = function (fileName) {
             var diagnostics = this._languageService.getCompilerOptionsDiagnostics();
-            diagnostics.forEach(function (diag) { return diag.file = undefined; }); // diag.file cannot be JSON'yfied
+            TypeScriptWorker.clearFiles(diagnostics);
             return Promise.as(diagnostics);
         };
         TypeScriptWorker.prototype.getCompletionsAtPosition = function (fileName, position) {
             return Promise.as(this._languageService.getCompletionsAtPosition(fileName, position, undefined));
         };
         TypeScriptWorker.prototype.getCompletionEntryDetails = function (fileName, position, entry) {
-            return Promise.as(this._languageService.getCompletionEntryDetails(fileName, position, entry, undefined, undefined));
+            return Promise.as(this._languageService.getCompletionEntryDetails(fileName, position, entry, undefined, undefined, undefined));
         };
         TypeScriptWorker.prototype.getSignatureHelpItems = function (fileName, position) {
-            return Promise.as(this._languageService.getSignatureHelpItems(fileName, position));
+            return Promise.as(this._languageService.getSignatureHelpItems(fileName, position, undefined));
         };
         TypeScriptWorker.prototype.getQuickInfoAtPosition = function (fileName, position) {
             return Promise.as(this._languageService.getQuickInfoAtPosition(fileName, position));

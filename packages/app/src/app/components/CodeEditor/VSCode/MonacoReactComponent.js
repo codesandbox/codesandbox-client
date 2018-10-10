@@ -314,6 +314,19 @@ class MonacoEditor extends React.PureComponent {
 
           // After initializing monaco editor
           this.editorDidMount(editorApi, context.monaco);
+
+          // r(
+          //   [
+          //     'vs/workbench/parts/snippets/electron-browser/snippets.contribution',
+          //     'vs/workbench/parts/snippets/electron-browser/snippetsService',
+          //     'vs/workbench/parts/snippets/electron-browser/insertSnippet',
+          //     'vs/workbench/parts/snippets/electron-browser/configureSnippets',
+          //     'vs/workbench/parts/snippets/electron-browser/tabCompletion',
+          //   ],
+          //   () => {
+          //     console.log('Loaded snippets');
+          //   }
+          // );
         }
       );
 

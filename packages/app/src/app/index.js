@@ -142,7 +142,6 @@ function boot() {
 }
 
 if (process.env.NODE_ENV === 'development' && process.env.VSCODE) {
-  console.log('hmm');
   // Configures BrowserFS to use the LocalStorage file system.
   BrowserFS.configure(
     {
@@ -183,11 +182,9 @@ if (process.env.NODE_ENV === 'development' && process.env.VSCODE) {
       }
 
       const fs = BrowserFS.BFSRequire('fs');
-      console.log(fs);
       // Otherwise, BrowserFS is ready-to-use!
       /* eslint-disable global-require */
       require('./vscode/dev-bootstrap').default()(() => {
-        console.log('hmm4');
         self.require(['vs/editor/editor.main'], () => {
           boot();
         });

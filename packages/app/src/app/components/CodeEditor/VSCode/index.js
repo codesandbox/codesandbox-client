@@ -1119,6 +1119,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   }
 
   lint = async (code: string, title: string, version: number) => {
+    if (!title) {
+      return;
+    }
+
     const mode = await getMode(title, this.monaco);
     if (this.settings.lintEnabled) {
       if (mode === 'javascript' || mode === 'vue') {
@@ -1231,9 +1235,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.typingsFetcherWorker.postMessage({ dependencies });
     }
   };
-
-  initializeModules = (modules: Array<Module>) =>
-    Promise.all(modules.map(module => this.createModel(module, modules)));
 
   resizeEditor = () => {
     this.resizeEditorInstantly();

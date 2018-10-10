@@ -1,14 +1,17 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./lib/typescriptServices"], function (require, exports, ts) {
+define(["require", "exports"], function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17,6 +20,42 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
     Object.defineProperty(exports, "__esModule", { value: true });
     var Uri = monaco.Uri;
     var Promise = monaco.Promise;
+    //#region utils copied from typescript to prevent loading the entire typescriptServices ---
+    var IndentStyle;
+    (function (IndentStyle) {
+        IndentStyle[IndentStyle["None"] = 0] = "None";
+        IndentStyle[IndentStyle["Block"] = 1] = "Block";
+        IndentStyle[IndentStyle["Smart"] = 2] = "Smart";
+    })(IndentStyle || (IndentStyle = {}));
+    function flattenDiagnosticMessageText(messageText, newLine) {
+        if (typeof messageText === 'string') {
+            return messageText;
+        }
+        else {
+            var diagnosticChain = messageText;
+            var result = '';
+            var indent = 0;
+            while (diagnosticChain) {
+                if (indent) {
+                    result += newLine;
+                    for (var i = 0; i < indent; i++) {
+                        result += '  ';
+                    }
+                }
+                result += diagnosticChain.messageText;
+                indent++;
+                diagnosticChain = diagnosticChain.next;
+            }
+            return result;
+        }
+    }
+    function displayPartsToString(displayParts) {
+        if (displayParts) {
+            return displayParts.map(function (displayPart) { return displayPart.text; }).join('');
+        }
+        return '';
+    }
+    //#endregion
     var Adapter = /** @class */ (function () {
         function Adapter(_worker) {
             this._worker = _worker;
@@ -61,7 +100,7 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                     dispose: function () {
                         changeSubscription.dispose();
                         clearTimeout(handle);
-                    }
+                    },
                 };
                 _this._doValidate(model.uri);
             };
@@ -85,7 +124,7 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                         var model = _a[_i];
                         onModelRemoved(model);
                     }
-                }
+                },
             });
             _this._disposables.push(_this._defaults.onDidChange(function () {
                 // redo diagnostics when options change
@@ -104,7 +143,8 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         };
         DiagnostcsAdapter.prototype._doValidate = function (resource) {
             var _this = this;
-            this._worker(resource).then(function (worker) {
+            this._worker(resource)
+                .then(function (worker) {
                 if (!monaco.editor.getModel(resource)) {
                     // model was disposed in the meantime
                     return null;
@@ -118,7 +158,8 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                     promises.push(worker.getSemanticDiagnostics(resource.toString()));
                 }
                 return Promise.join(promises);
-            }).then(function (diagnostics) {
+            })
+                .then(function (diagnostics) {
                 if (!diagnostics || !monaco.editor.getModel(resource)) {
                     // model was disposed in the meantime
                     return null;
@@ -127,7 +168,8 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                     .reduce(function (p, c) { return c.concat(p); }, [])
                     .map(function (d) { return _this._convertDiagnostics(resource, d); });
                 monaco.editor.setModelMarkers(monaco.editor.getModel(resource), _this._selector, markers);
-            }).done(undefined, function (err) {
+            })
+                .done(undefined, function (err) {
                 console.error(err);
             });
         };
@@ -140,7 +182,7 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                 startColumn: startColumn,
                 endLineNumber: endLineNumber,
                 endColumn: endColumn,
-                message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
+                message: flattenDiagnosticMessageText(diag.messageText, '\n'),
             };
         };
         return DiagnostcsAdapter;
@@ -162,9 +204,11 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
             var wordInfo = model.getWordUntilPosition(position);
             var resource = model.uri;
             var offset = this._positionToOffset(resource, position);
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
                 return worker.getCompletionsAtPosition(resource.toString(), offset);
-            }).then(function (info) {
+            })
+                .then(function (info) {
                 if (!info) {
                     return;
                 }
@@ -174,7 +218,7 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                         position: position,
                         label: entry.name,
                         sortText: entry.sortText,
-                        kind: SuggestAdapter.convertKind(entry.kind)
+                        kind: SuggestAdapter.convertKind(entry.kind),
                     };
                 });
                 return suggestions;
@@ -185,9 +229,11 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
             var myItem = item;
             var resource = myItem.uri;
             var position = myItem.position;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
                 return worker.getCompletionEntryDetails(resource.toString(), _this._positionToOffset(resource, position), myItem.label);
-            }).then(function (details) {
+            })
+                .then(function (details) {
                 if (!details) {
                     return myItem;
                 }
@@ -196,8 +242,10 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                     position: position,
                     label: details.name,
                     kind: SuggestAdapter.convertKind(details.kind),
-                    detail: ts.displayPartsToString(details.displayParts),
-                    documentation: ts.displayPartsToString(details.documentation)
+                    detail: displayPartsToString(details.displayParts),
+                    documentation: {
+                        value: displayPartsToString(details.documentation),
+                    },
                 };
             }));
         };
@@ -245,35 +293,39 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         SignatureHelpAdapter.prototype.provideSignatureHelp = function (model, position, token) {
             var _this = this;
             var resource = model.uri;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.getSignatureHelpItems(resource.toString(), _this._positionToOffset(resource, position)); }).then(function (info) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
+                return worker.getSignatureHelpItems(resource.toString(), _this._positionToOffset(resource, position));
+            })
+                .then(function (info) {
                 if (!info) {
                     return;
                 }
                 var ret = {
                     activeSignature: info.selectedItemIndex,
                     activeParameter: info.argumentIndex,
-                    signatures: []
+                    signatures: [],
                 };
                 info.items.forEach(function (item) {
                     var signature = {
                         label: '',
                         documentation: null,
-                        parameters: []
+                        parameters: [],
                     };
-                    signature.label += ts.displayPartsToString(item.prefixDisplayParts);
+                    signature.label += displayPartsToString(item.prefixDisplayParts);
                     item.parameters.forEach(function (p, i, a) {
-                        var label = ts.displayPartsToString(p.displayParts);
+                        var label = displayPartsToString(p.displayParts);
                         var parameter = {
                             label: label,
-                            documentation: ts.displayPartsToString(p.documentation)
+                            documentation: displayPartsToString(p.documentation),
                         };
                         signature.label += label;
                         signature.parameters.push(parameter);
                         if (i < a.length - 1) {
-                            signature.label += ts.displayPartsToString(item.separatorDisplayParts);
+                            signature.label += displayPartsToString(item.separatorDisplayParts);
                         }
                     });
-                    signature.label += ts.displayPartsToString(item.suffixDisplayParts);
+                    signature.label += displayPartsToString(item.suffixDisplayParts);
                     ret.signatures.push(signature);
                 });
                 return ret;
@@ -291,29 +343,40 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         QuickInfoAdapter.prototype.provideHover = function (model, position, token) {
             var _this = this;
             var resource = model.uri;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
                 return worker.getQuickInfoAtPosition(resource.toString(), _this._positionToOffset(resource, position));
-            }).then(function (info) {
+            })
+                .then(function (info) {
                 if (!info) {
                     return;
                 }
-                var documentation = ts.displayPartsToString(info.documentation);
-                var tags = info.tags ? info.tags.map(function (tag) {
-                    var label = "*@" + tag.name + "*";
-                    if (!tag.text) {
-                        return label;
-                    }
-                    return label + (tag.text.match(/\r\n|\n/g) ? ' \n' + tag.text : " - " + tag.text);
-                })
-                    .join('  \n\n') : '';
-                var contents = ts.displayPartsToString(info.displayParts);
+                var documentation = displayPartsToString(info.documentation);
+                var tags = info.tags
+                    ? info.tags
+                        .map(function (tag) {
+                        var label = "*@" + tag.name + "*";
+                        if (!tag.text) {
+                            return label;
+                        }
+                        return (label +
+                            (tag.text.match(/\r\n|\n/g)
+                                ? ' \n' + tag.text
+                                : " - " + tag.text));
+                    })
+                        .join('  \n\n')
+                    : '';
+                var contents = displayPartsToString(info.displayParts);
                 return {
                     range: _this._textSpanToRange(resource, info.textSpan),
-                    contents: [{
-                            value: '```js\n' + contents + '\n```\n'
-                        }, {
-                            value: documentation + (tags ? '\n\n' + tags : '')
-                        }]
+                    contents: [
+                        {
+                            value: '```js\n' + contents + '\n```\n',
+                        },
+                        {
+                            value: documentation + (tags ? '\n\n' + tags : ''),
+                        },
+                    ],
                 };
             }));
         };
@@ -329,16 +392,20 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         OccurrencesAdapter.prototype.provideDocumentHighlights = function (model, position, token) {
             var _this = this;
             var resource = model.uri;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
                 return worker.getOccurrencesAtPosition(resource.toString(), _this._positionToOffset(resource, position));
-            }).then(function (entries) {
+            })
+                .then(function (entries) {
                 if (!entries) {
                     return;
                 }
                 return entries.map(function (entry) {
                     return {
                         range: _this._textSpanToRange(resource, entry.textSpan),
-                        kind: entry.isWriteAccess ? monaco.languages.DocumentHighlightKind.Write : monaco.languages.DocumentHighlightKind.Text
+                        kind: entry.isWriteAccess
+                            ? monaco.languages.DocumentHighlightKind.Write
+                            : monaco.languages.DocumentHighlightKind.Text,
                     };
                 });
             }));
@@ -355,9 +422,11 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         DefinitionAdapter.prototype.provideDefinition = function (model, position, token) {
             var _this = this;
             var resource = model.uri;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
                 return worker.getDefinitionAtPosition(resource.toString(), _this._positionToOffset(resource, position));
-            }).then(function (entries) {
+            })
+                .then(function (entries) {
                 if (!entries) {
                     return;
                 }
@@ -368,7 +437,7 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                     if (monaco.editor.getModel(uri)) {
                         result.push({
                             uri: uri,
-                            range: _this._textSpanToRange(uri, entry.textSpan)
+                            range: _this._textSpanToRange(uri, entry.textSpan),
                         });
                     }
                 }
@@ -387,9 +456,11 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         ReferenceAdapter.prototype.provideReferences = function (model, position, context, token) {
             var _this = this;
             var resource = model.uri;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
                 return worker.getReferencesAtPosition(resource.toString(), _this._positionToOffset(resource, position));
-            }).then(function (entries) {
+            })
+                .then(function (entries) {
                 if (!entries) {
                     return;
                 }
@@ -400,7 +471,7 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                     if (monaco.editor.getModel(uri)) {
                         result.push({
                             uri: uri,
-                            range: _this._textSpanToRange(uri, entry.textSpan)
+                            range: _this._textSpanToRange(uri, entry.textSpan),
                         });
                     }
                 }
@@ -419,19 +490,21 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         OutlineAdapter.prototype.provideDocumentSymbols = function (model, token) {
             var _this = this;
             var resource = model.uri;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.getNavigationBarItems(resource.toString()); }).then(function (items) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) { return worker.getNavigationBarItems(resource.toString()); })
+                .then(function (items) {
                 if (!items) {
                     return;
                 }
                 var convert = function (bucket, item, containerLabel) {
                     var result = {
                         name: item.text,
-                        kind: (outlineTypeTable[item.kind] || monaco.languages.SymbolKind.Variable),
-                        location: {
-                            uri: resource,
-                            range: _this._textSpanToRange(resource, item.spans[0])
-                        },
-                        containerName: containerLabel
+                        detail: '',
+                        kind: ((outlineTypeTable[item.kind] ||
+                            monaco.languages.SymbolKind.Variable)),
+                        range: _this._textSpanToRange(resource, item.spans[0]),
+                        selectionRange: _this._textSpanToRange(resource, item.spans[0]),
+                        containerName: containerLabel,
                     };
                     if (item.childItems && item.childItems.length > 0) {
                         for (var _i = 0, _a = item.childItems; _i < _a.length; _i++) {
@@ -509,7 +582,7 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                 ConvertTabsToSpaces: options.insertSpaces,
                 TabSize: options.tabSize,
                 IndentSize: options.tabSize,
-                IndentStyle: ts.IndentStyle.Smart,
+                IndentStyle: IndentStyle.Smart,
                 NewLineCharacter: '\n',
                 InsertSpaceAfterCommaDelimiter: true,
                 InsertSpaceAfterSemicolonInForStatements: true,
@@ -520,13 +593,13 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
                 InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: false,
                 InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: false,
                 PlaceOpenBraceOnNewLineForControlBlocks: false,
-                PlaceOpenBraceOnNewLineForFunctions: false
+                PlaceOpenBraceOnNewLineForFunctions: false,
             };
         };
         FormatHelper.prototype._convertTextChanges = function (uri, change) {
             return {
                 text: change.newText,
-                range: this._textSpanToRange(uri, change.span)
+                range: this._textSpanToRange(uri, change.span),
             };
         };
         return FormatHelper;
@@ -540,9 +613,17 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         FormatAdapter.prototype.provideDocumentRangeFormattingEdits = function (model, range, options, token) {
             var _this = this;
             var resource = model.uri;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
-                return worker.getFormattingEditsForRange(resource.toString(), _this._positionToOffset(resource, { lineNumber: range.startLineNumber, column: range.startColumn }), _this._positionToOffset(resource, { lineNumber: range.endLineNumber, column: range.endColumn }), FormatHelper._convertOptions(options));
-            }).then(function (edits) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
+                return worker.getFormattingEditsForRange(resource.toString(), _this._positionToOffset(resource, {
+                    lineNumber: range.startLineNumber,
+                    column: range.startColumn,
+                }), _this._positionToOffset(resource, {
+                    lineNumber: range.endLineNumber,
+                    column: range.endColumn,
+                }), FormatHelper._convertOptions(options));
+            })
+                .then(function (edits) {
                 if (edits) {
                     return edits.map(function (edit) { return _this._convertTextChanges(resource, edit); });
                 }
@@ -566,9 +647,11 @@ define(["require", "exports", "./lib/typescriptServices"], function (require, ex
         FormatOnTypeAdapter.prototype.provideOnTypeFormattingEdits = function (model, position, ch, options, token) {
             var _this = this;
             var resource = model.uri;
-            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource)
+                .then(function (worker) {
                 return worker.getFormattingEditsAfterKeystroke(resource.toString(), _this._positionToOffset(resource, position), ch, FormatHelper._convertOptions(options));
-            }).then(function (edits) {
+            })
+                .then(function (edits) {
                 if (edits) {
                     return edits.map(function (edit) { return _this._convertTextChanges(resource, edit); });
                 }
