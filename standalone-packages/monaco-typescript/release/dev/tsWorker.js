@@ -1,4 +1,4 @@
-define(["require", "exports", "./lib/typescriptServices", "./lib/lib"], function (require, exports, ts, lib_1) {
+define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchDependencyTypings"], function (require, exports, ts, lib_1, fetchTypings) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -14,21 +14,122 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib"], function
         NAME: 'defaultLib:lib.es6.d.ts',
         CONTENTS: lib_1.lib_es6_dts
     };
+    // Quickly remove amd so BrowserFS will register to global scope instead.
+    var oldamd = self.define.amd;
+    self.define.amd = null;
+    self.importScripts("/static/browserfs/browserfs.min.js");
+    self.define.amd = oldamd;
+    self.BrowserFS = BrowserFS;
+    self.process = BrowserFS.BFSRequire('process');
+    self.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+    var getAllFiles = function (fs, dir, filelist) {
+        if (!fs) {
+            return [];
+        }
+        var files = fs.readdirSync(dir);
+        filelist = filelist || [];
+        files.forEach(function (file) {
+            if (fs.statSync(dir + file).isDirectory()) {
+                filelist = getAllFiles(fs, dir + file + '/', filelist);
+            }
+            else {
+                filelist.push(dir + file);
+            }
+        });
+        return filelist;
+    };
     var TypeScriptWorker = /** @class */ (function () {
         function TypeScriptWorker(ctx, createData) {
+            var _this = this;
             this._extraLibs = Object.create(null);
             this._languageService = ts.createLanguageService(this);
+            this.files = {};
             this._ctx = ctx;
             this._compilerOptions = createData.compilerOptions;
             this._extraLibs = createData.extraLibs;
+            ctx.onModelRemoved(function (str) {
+                var p = str.indexOf('file://') === 0 ? monaco.Uri.parse(str).fsPath : str;
+                _this.syncFile(p);
+            });
+            self.BrowserFS.configure({
+                fs: 'WorkerFS', options: { worker: self },
+            }, function (e) {
+                if (e) {
+                    console.error(e);
+                    return;
+                }
+                _this.fs = BrowserFS.BFSRequire('fs');
+                _this.syncDirectory('/sandbox');
+                _this.getTypings();
+                setInterval(function () { return _this.getTypings(); }, 5000);
+                // BrowserFS is initialized and ready-to-use!
+            });
         }
+        TypeScriptWorker.prototype.getTypings = function () {
+            var _this = this;
+            this.fs.readFile('/sandbox/package.json', function (e, data) {
+                if (e) {
+                    return;
+                }
+                var code = data.toString();
+                try {
+                    var p = JSON.parse(code);
+                    fetchTypings.fetchAndAddDependencies(p.dependencies, function (paths) {
+                        Object.keys(paths).forEach(function (p) {
+                            _this.files['/' + p] = paths[p];
+                        });
+                    });
+                }
+                catch (e) {
+                    return;
+                }
+            });
+        };
+        TypeScriptWorker.prototype.syncFile = function (path) {
+            var _this = this;
+            this.fs.readFile(path, function (e, str) {
+                if (e) {
+                    delete _this.files[path];
+                    throw e;
+                }
+                _this.files[path] = str.toString();
+            });
+        };
+        TypeScriptWorker.prototype.syncDirectory = function (path) {
+            var _this = this;
+            this.fs.readdir(path, function (e, entries) {
+                if (e)
+                    throw e;
+                entries.forEach(function (entry) {
+                    var fullEntry = path + '/' + entry;
+                    _this.fs.stat(fullEntry, function (err, stat) {
+                        if (err) {
+                            throw err;
+                        }
+                        if (stat.isDirectory()) {
+                            _this.syncDirectory(fullEntry);
+                        }
+                        else {
+                            _this.syncFile(fullEntry);
+                        }
+                    });
+                });
+            });
+        };
         // --- language service host ---------------
         TypeScriptWorker.prototype.getCompilationSettings = function () {
             return this._compilerOptions;
         };
+        TypeScriptWorker.prototype.readFile = function (resource, encoding) {
+            var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+            if (this.fs) {
+                return this.files[path];
+            }
+            return undefined;
+        };
         TypeScriptWorker.prototype.getScriptFileNames = function () {
             var models = this._ctx.getMirrorModels().map(function (model) { return model.uri.toString(); });
-            return models.concat(Object.keys(this._extraLibs));
+            return models.concat(Object.keys(this._extraLibs)).concat(Object.keys(this.files).map(function (p) { return "file://" + p; }));
         };
         TypeScriptWorker.prototype._getModel = function (fileName) {
             var models = this._ctx.getMirrorModels();
@@ -66,7 +167,14 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib"], function
             else if (fileName === ES6_LIB.NAME) {
                 text = ES6_LIB.CONTENTS;
             }
+            else if (this.fs) {
+                var usedFilename = fileName.indexOf('file://') === 0 ? monaco.Uri.parse(fileName).fsPath : fileName;
+                text = this.files[usedFilename];
+            }
             else {
+                return;
+            }
+            if (text == null) {
                 return;
             }
             return {
@@ -88,7 +196,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib"], function
             }
         };
         TypeScriptWorker.prototype.getCurrentDirectory = function () {
-            return '';
+            return '/sandbox';
         };
         TypeScriptWorker.prototype.getDefaultLibFileName = function (options) {
             // TODO@joh support lib.es7.d.ts
@@ -96,6 +204,32 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib"], function
         };
         TypeScriptWorker.prototype.isDefaultLibFileName = function (fileName) {
             return fileName === this.getDefaultLibFileName(this._compilerOptions);
+        };
+        TypeScriptWorker.prototype.fileExists = function (resource) {
+            if (!this.fs) {
+                return false;
+            }
+            var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+            return this.files[path] !== undefined;
+        };
+        TypeScriptWorker.prototype.directoryExists = function (resource) {
+            if (!this.fs) {
+                return false;
+            }
+            var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+            return Object.keys(this.files).some(function (f) { return f.indexOf(path) === 0; });
+        };
+        TypeScriptWorker.prototype.getDirectories = function (resource) {
+            if (!this.fs) {
+                return [];
+            }
+            var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+            var resourceSplits = path.split('/').length;
+            return Object.keys(this.files).filter(function (f) { return f.indexOf(path) === 0; }).map(function (p) {
+                var newP = p.split('/');
+                newP.length = resourceSplits;
+                return newP[newP.length - 1];
+            });
         };
         // --- language features
         TypeScriptWorker.clearFiles = function (diagnostics) {

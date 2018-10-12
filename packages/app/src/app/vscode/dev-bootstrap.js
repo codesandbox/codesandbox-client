@@ -9,8 +9,139 @@ const PREFIX = '/vs';
 
 const window = window || self;
 window.global = window;
+let requiresDefined = false;
 
-export default function() {
+function initializeRequires() {
+  self.require.define('vs/platform/node/product', [], () => {
+    return {
+      nameShort: 'Code - OSS',
+      nameLong: 'Code - OSS',
+      applicationName: 'code-oss',
+      dataFolderName: '.vscode-oss',
+      win32MutexName: 'vscodeoss',
+      licenseName: 'MIT',
+      licenseUrl: 'https://github.com/Microsoft/vscode/blob/master/LICENSE.txt',
+      win32DirName: 'Microsoft Code OSS',
+      win32NameVersion: 'Microsoft Code OSS',
+      win32RegValueName: 'CodeOSS',
+      win32AppId: '{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}',
+      win32x64AppId: '{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}',
+      win32UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
+      win32x64UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
+      win32AppUserModelId: 'Microsoft.CodeOSS',
+      win32ShellNameShort: 'C&ode - OSS',
+      darwinBundleIdentifier: 'com.visualstudio.code.oss',
+      reportIssueUrl: 'https://github.com/Microsoft/vscode/issues/new',
+      urlProtocol: 'code-oss',
+    };
+  });
+  self.require.define('vs/platform/node/package', [], () => {
+    return {
+      name: 'code-oss-dev',
+      version: '1.29.0',
+      distro: 'd880cac56e2f97abfbd0a6b8388caebfa96bb40c',
+      author: {
+        name: 'Microsoft Corporation',
+      },
+      main: './out/main',
+      private: true,
+      repository: {
+        type: 'git',
+        url: 'https://github.com/Microsoft/vscode.git',
+      },
+      bugs: {
+        url: 'https://github.com/Microsoft/vscode/issues',
+      },
+      optionalDependencies: {
+        'windows-foreground-love': '0.1.0',
+        'windows-mutex': '^0.2.0',
+        'windows-process-tree': '0.2.2',
+      },
+    };
+  });
+
+  self.require.define('path', [], () => {
+    const path = require('path');
+    return {
+      ...path,
+      posix: path,
+    };
+  });
+
+  self.require.define('util', [], () => {
+    return require('util');
+  });
+
+  self.require.define('string_decoder', [], () => {
+    return require('string_decoder');
+  });
+
+  self.require.define('crypto', [], () => {
+    return {};
+  });
+
+  self.require.define('node-pty', [], () => {
+    return {};
+  });
+
+  self.require.define('os', [], () => {
+    return { tmpdir: () => '/tmp' };
+  });
+
+  self.require.define('vs/base/node/encoding', [], () => {
+    return {
+      UTF8: 'utf8',
+      UTF8_with_bom: 'utf8bom',
+      UTF16be: 'utf16be',
+      UTF16le: 'utf16le',
+    };
+  });
+
+  self.require.define('child_process', [], () => {
+    return child_process;
+  });
+
+  self.require.define('electron', [], () => {
+    return electron;
+  });
+
+  self.require.define('net', [], () => {
+    return net;
+  });
+
+  self.require.define('fs', [], () => {
+    return BrowserFS.BFSRequire('fs');
+  });
+
+  self.require.define('semver', [], () => {
+    return require('semver');
+  });
+
+  self.require.define('assert', [], () => {
+    return require('assert');
+  });
+
+  self.require.define('vs/platform/request/node/request', [], () => {
+    // TODO
+    return {};
+  });
+
+  self.require.define('vs/base/node/request', [], () => {
+    // TODO
+    return {};
+  });
+
+  self.require.define('vs/base/node/proxy', [], () => {
+    // TODO
+    return {};
+  });
+
+  self.require.define('yauzl', [], () => {
+    // TODO: install yauzl
+  });
+}
+
+export default function(requiredModule: string) {
   var IS_FILE_PROTOCOL = window.location.protocol === 'file:';
   var DIRNAME = null;
   if (IS_FILE_PROTOCOL) {
@@ -230,180 +361,62 @@ export default function() {
         return { _load: window.nodeRequire };
       }
     };
-    loadScript(
-      PATH_PREFIX + RESOLVED_CORE.getResolvedPath() + '/loader.js',
-      function() {
-        var loaderPathsConfig = {};
-        if (!RESOLVED_CORE.isRelease()) {
-          RESOLVED_PLUGINS.forEach(function(plugin) {
-            plugin.generateLoaderConfig(loaderPathsConfig);
-          });
-        }
-        RESOLVED_CORE.generateLoaderConfig(loaderPathsConfig);
 
-        console.log('LOADER CONFIG: ');
-        console.log(JSON.stringify(loaderPathsConfig, null, '\t'));
-
-        const requireToUrl = p => require('path').join('/vs', p);
-        self.require.toUrl = requireToUrl;
-
-        self.require.define('vs/platform/node/product', [], () => {
-          return {
-            nameShort: 'Code - OSS',
-            nameLong: 'Code - OSS',
-            applicationName: 'code-oss',
-            dataFolderName: '.vscode-oss',
-            win32MutexName: 'vscodeoss',
-            licenseName: 'MIT',
-            licenseUrl:
-              'https://github.com/Microsoft/vscode/blob/master/LICENSE.txt',
-            win32DirName: 'Microsoft Code OSS',
-            win32NameVersion: 'Microsoft Code OSS',
-            win32RegValueName: 'CodeOSS',
-            win32AppId: '{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}',
-            win32x64AppId: '{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}',
-            win32UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
-            win32x64UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
-            win32AppUserModelId: 'Microsoft.CodeOSS',
-            win32ShellNameShort: 'C&ode - OSS',
-            darwinBundleIdentifier: 'com.visualstudio.code.oss',
-            reportIssueUrl: 'https://github.com/Microsoft/vscode/issues/new',
-            urlProtocol: 'code-oss',
-          };
+    function loadFiles() {
+      var loaderPathsConfig = {};
+      if (!RESOLVED_CORE.isRelease()) {
+        RESOLVED_PLUGINS.forEach(function(plugin) {
+          plugin.generateLoaderConfig(loaderPathsConfig);
         });
-        self.require.define('vs/platform/node/package', [], () => {
-          return {
-            name: 'code-oss-dev',
-            version: '1.29.0',
-            distro: 'd880cac56e2f97abfbd0a6b8388caebfa96bb40c',
-            author: {
-              name: 'Microsoft Corporation',
-            },
-            main: './out/main',
-            private: true,
-            repository: {
-              type: 'git',
-              url: 'https://github.com/Microsoft/vscode.git',
-            },
-            bugs: {
-              url: 'https://github.com/Microsoft/vscode/issues',
-            },
-            optionalDependencies: {
-              'windows-foreground-love': '0.1.0',
-              'windows-mutex': '^0.2.0',
-              'windows-process-tree': '0.2.2',
-            },
-          };
-        });
+      }
+      RESOLVED_CORE.generateLoaderConfig(loaderPathsConfig);
 
-        self.require.define('path', [], () => {
-          const path = require('path');
-          return {
-            ...path,
-            posix: path,
-          };
-        });
+      console.log('LOADER CONFIG: ');
+      console.log(JSON.stringify(loaderPathsConfig, null, '\t'));
 
-        self.require.define('util', [], () => {
-          return require('util');
-        });
+      const requireToUrl = p => require('path').join('/vs', p);
+      self.require.toUrl = requireToUrl;
 
-        self.require.define('string_decoder', [], () => {
-          return require('string_decoder');
-        });
-
-        self.require.define('crypto', [], () => {
-          return {};
-        });
-
-        self.require.define('node-pty', [], () => {
-          return {};
-        });
-
-        // self.require.define('os', [], () => {
-        //   const os = require('os-browserify');
-        //   return os;
-        // });
-
-        self.require.define('vs/base/node/encoding', [], () => {
-          return {
-            UTF8: 'utf8',
-            UTF8_with_bom: 'utf8bom',
-            UTF16be: 'utf16be',
-            UTF16le: 'utf16le',
-          };
-        });
-
-        self.require.define('child_process', [], () => {
-          return child_process;
-        });
-
-        self.require.define('electron', [], () => {
-          return electron;
-        });
-
-        self.require.define('net', [], () => {
-          return net;
-        });
-
-        self.require.define('fs', [], () => {
-          return BrowserFS.BFSRequire('fs');
-        });
-
-        self.require.define('semver', [], () => {
-          return require('semver');
-        });
-
-        self.require.define('assert', [], () => {
-          return require('assert');
-        });
-
-        self.require.define('vs/platform/request/node/request', [], () => {
-          // TODO
-          return {};
-        });
-
-        self.require.define('vs/base/node/request', [], () => {
-          // TODO
-          return {};
-        });
-
-        self.require.define('vs/base/node/proxy', [], () => {
-          // TODO
-          return {};
-        });
-
-        self.require.define('yauzl', [], () => {
-          // TODO: install yauzl
-        });
+      if (!requiresDefined) {
+        requiresDefined = true;
+        initializeRequires();
 
         console.log('setting config', AMDLoader);
         self.require.config({
           paths: loaderPathsConfig,
           requireToUrl,
         });
-
-        window.deps = new Set();
-
-        self.require(['vs/editor/editor.main'], function() {
-          if (!RESOLVED_CORE.isRelease()) {
-            // At this point we've loaded the monaco-editor-core
-            self.require(
-              RESOLVED_PLUGINS.map(function(plugin) {
-                return plugin.contrib;
-              }),
-              function() {
-                // At this point we've loaded all the plugins
-                callback();
-              }
-            );
-          } else {
-            callback();
-          }
-        });
-
-        // callback();
       }
-    );
+
+      window.deps = new Set();
+
+      self.require([requiredModule], function() {
+        console.log('Loaded first files');
+        if (!RESOLVED_CORE.isRelease()) {
+          console.log('Loaded files');
+          // At this point we've loaded the monaco-editor-core
+          self.require(
+            RESOLVED_PLUGINS.map(function(plugin) {
+              return plugin.contrib;
+            }),
+            function() {
+              // At this point we've loaded all the plugins
+              callback();
+            }
+          );
+        } else {
+          callback();
+        }
+      });
+    }
+
+    if (requiresDefined) {
+      loadFiles();
+    } else {
+      loadScript(
+        PATH_PREFIX + RESOLVED_CORE.getResolvedPath() + '/loader.js',
+        loadFiles
+      );
+    }
   };
 }

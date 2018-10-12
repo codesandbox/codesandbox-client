@@ -47,26 +47,42 @@
       crossorigin="anonymous"></script>
     <link href="/static/fonts/dmvendor.css" rel="stylesheet">
 
-    <%= !process.env.VSCODE ? `
-
-    <!-- AMD Loader for Monaco -->
-    <link data-name="13/vs/editor/editor.main" rel="stylesheet"
-      href="/public/13/vs/editor/editor.main.css">
-    <script src="/public/13/vs/loader.js"></script>
     <script>
-      window.require.config({
-        url: '/public/13/vs/loader.js',
-        paths: {
-          vs: '/public/13/vs',
-        },
-      });
+      function loadStyle() {
+        if (typeof document !== 'undefined') {
+          var style = document.createElement('link');
+          style.dataset.name = '13/vs/editor/editor.main';
+          style.rel = 'stylesheet';
+          style.href = "https://codesandbox.io/public/13/vs/editor/editor.main.css";
+          document.head.appendChild(style);
+        }
+      }
+
+      function loadScript(path, callback) {
+        if (typeof document !== 'undefined') {
+          var script = document.createElement('script');
+          script.onload = callback;
+          script.type = 'text/javascript';
+          script.src = path;
+          document.head.appendChild(script);
+        }
+      }
+
+      // if (localStorage.getItem('settings.experimentVSCode') !== 'true') {
+      //   loadScript("https://codesandbox.io/public/13/vs/loader.js", () => {
+      //     window.require.config({
+      //       url: 'https://codesandbox.io/public/13/vs/loader.js',
+      //       paths: {
+      //         vs: 'https://codesandbox.io/public/13/vs',
+      //       },
+      //     });
+      //     loadStyle();
+      //     loadScript("https://codesandbox.io/public/13/vs/editor/editor.main.nls.js");
+      //     loadScript("https://codesandbox.io/public/13/vs/editor/editor.main.js");
+      //   });
+      // }
+
     </script>
-    <script src="/public/13/vs/editor/editor.main.nls.js"></script>
-    <script src="/public/13/vs/editor/editor.main.js"></script>
-
-
-
-    ` : ''%>
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
@@ -87,8 +103,10 @@
         type="text/javascript"></script>
 
       <script>
-      window.process = { nextTick: requestAnimationFrame };
-      window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+        if (BrowserFS) {
+          window.process = { nextTick: requestAnimationFrame };
+          window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+        }
     </script>
     </head>
 

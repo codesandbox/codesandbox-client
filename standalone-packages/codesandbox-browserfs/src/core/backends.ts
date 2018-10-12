@@ -16,6 +16,7 @@ import WorkerFS from '../backend/WorkerFS';
 import ZipFS from '../backend/ZipFS';
 // import IsoFS from '../backend/IsoFS';
 import CodeSandboxFS from '../backend/CodeSandboxFS';
+import CodeSandboxEditorFS from '../backend/CodeSandboxEditorFS';
 
 // Monkey-patch `Create` functions to check options before file system initialization.
 [
@@ -34,6 +35,7 @@ import CodeSandboxFS from '../backend/CodeSandboxFS';
   // HTTPRequest,
   ZipFS,
   CodeSandboxFS,
+  CodeSandboxEditorFS,
 ].forEach((fsType: FileSystemConstructor) => {
   const create = fsType.Create;
   fsType.Create = function(opts?: any, cb?: BFSCallback<FileSystem>): void {
@@ -73,6 +75,7 @@ const Backends = {
   // XmlHttpRequest: HTTPRequest,
   ZipFS,
   CodeSandboxFS,
+  CodeSandboxEditorFS,
 };
 // Make sure all backends cast to FileSystemConstructor (for type checking)
 const _: { [name: string]: FileSystemConstructor } = Backends;

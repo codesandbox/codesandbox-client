@@ -93,6 +93,7 @@ export default Module({
     quickActionsClosed: sequences.closeQuickActions,
     setPreviewBounds: sequences.setPreviewBounds,
     setPreviewContent: sequences.setPreviewContent,
+    togglePreviewContent: sequences.togglePreview,
     currentTabChanged: sequences.changeCurrentTab,
     discardModuleChanges: sequences.discardModuleChanges,
     editorSizeUpdated: sequences.updateEditorSize,

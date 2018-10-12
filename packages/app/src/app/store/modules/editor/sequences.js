@@ -190,7 +190,11 @@ export const prettifyCode = [
 export const saveCode = [
   track('Save Code', {}),
   ensureOwnedEditable,
-  when(state`preferences.settings.prettifyOnSaveEnabled`),
+  when(
+    state`preferences.settings.prettifyOnSaveEnabled`,
+    state`preferences.settings.experimentVSCode`,
+    (prettify, vscode) => prettify && !vscode
+  ),
   {
     true: [prettifyCode],
     false: [],
@@ -284,6 +288,13 @@ export const handlePreviewAction = [
 ];
 
 export const setPreviewBounds = [actions.setPreviewBounds];
+export const togglePreview = [
+  when(state`editor.previewWindow.content`),
+  {
+    true: [set(state`editor.previewWindow.content`, undefined)],
+    false: [set(state`editor.previewWindow.content`, 'browser')],
+  },
+];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),

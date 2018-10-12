@@ -6,6 +6,7 @@
 
 import * as ts from './lib/typescriptServices';
 import { lib_dts, lib_es6_dts } from './lib/lib';
+import * as fetchTypings from './fetchDependencyTypings';
 
 import Promise = monaco.Promise;
 import IWorkerContext = monaco.worker.IWorkerContext;
@@ -20,6 +21,36 @@ const ES6_LIB = {
 	CONTENTS: lib_es6_dts
 };
 
+// Quickly remove amd so BrowserFS will register to global scope instead.
+const oldamd = self.define.amd;
+self.define.amd = null;
+self.importScripts(
+  `/static/browserfs/browserfs.min.js`
+);
+self.define.amd = oldamd;
+
+self.BrowserFS = BrowserFS;
+self.process = BrowserFS.BFSRequire('process');
+self.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+
+
+const getAllFiles = (fs: any, dir: string, filelist?: string[]) => {
+  if (!fs) {
+    return [];
+  }
+
+  const files = fs.readdirSync(dir);
+  filelist = filelist || [];
+  files.forEach(function(file) {
+    if (fs.statSync(dir + file).isDirectory()) {
+      filelist = getAllFiles(fs, dir + file + '/', filelist);
+    } else {
+      filelist.push(dir + file);
+    }
+  });
+  return filelist;
+}
+
 export class TypeScriptWorker implements ts.LanguageServiceHost {
 
 	// --- model sync -----------------------
@@ -27,23 +58,116 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 	private _ctx: IWorkerContext;
 	private _extraLibs: { [fileName: string]: string } = Object.create(null);
 	private _languageService = ts.createLanguageService(this);
-	private _compilerOptions: ts.CompilerOptions;
+  private _compilerOptions: ts.CompilerOptions;
+
+  private fs: any;
+  private files: {[path: string]: string} = {};
 
 	constructor(ctx: IWorkerContext, createData: ICreateData) {
 		this._ctx = ctx;
 		this._compilerOptions = createData.compilerOptions;
-		this._extraLibs = createData.extraLibs;
-	}
+    this._extraLibs = createData.extraLibs;
+
+    ctx.onModelRemoved((str) => {
+      const p = str.indexOf('file://') === 0 ? monaco.Uri.parse(str).fsPath : str;
+
+      this.syncFile(p);
+    })
+
+    self.BrowserFS.configure(
+      {
+        fs: 'WorkerFS', options: { worker: self },
+      },
+      e => {
+        if (e) {
+          console.error(e);
+          return;
+        }
+
+        this.fs = BrowserFS.BFSRequire('fs');
+
+        this.syncDirectory('/sandbox');
+
+        this.getTypings();
+        setInterval(() => this.getTypings(), 5000);
+
+        // BrowserFS is initialized and ready-to-use!
+      }
+    );
+  }
+
+  getTypings() {
+    this.fs.readFile('/sandbox/package.json', (e, data) => {
+      if (e) {
+        return;
+      }
+
+      const code = data.toString();
+      try {
+        const p = JSON.parse(code);
+
+        fetchTypings.fetchAndAddDependencies(p.dependencies, (paths) => {
+          Object.keys(paths).forEach(p => {
+            this.files['/' + p] = paths[p];
+          })
+        })
+      } catch (e) {
+        return
+      }
+    })
+  }
+
+  syncFile(path: string) {
+    this.fs.readFile(path, (e, str) => {
+      if (e) {
+        delete this.files[path];
+        throw e;
+      }
+
+      this.files[path] = str.toString();
+    })
+  }
+
+  syncDirectory(path: string) {
+    this.fs.readdir(path, (e, entries) => {
+      if (e) throw e;
+
+      entries.forEach(entry => {
+        const fullEntry = path + '/' + entry;
+        this.fs.stat(fullEntry, (err, stat) => {
+          if (err) {
+            throw err;
+          }
+
+          if (stat.isDirectory()) {
+            this.syncDirectory(fullEntry);
+          } else {
+            this.syncFile(fullEntry);
+          }
+        })
+      })
+    })
+
+  }
 
 	// --- language service host ---------------
 
 	getCompilationSettings(): ts.CompilerOptions {
 		return this._compilerOptions;
-	}
+  }
+
+  readFile(resource: string, encoding?: string) {
+    const path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+    if (this.fs) {
+      return this.files[path];
+    }
+
+    return undefined;
+  }
 
 	getScriptFileNames(): string[] {
 		let models = this._ctx.getMirrorModels().map(model => model.uri.toString());
-		return models.concat(Object.keys(this._extraLibs));
+		return models.concat(Object.keys(this._extraLibs)).concat(Object.keys(this.files).map(p => `file://${p}`));
 	}
 
 	private _getModel(fileName: string): monaco.worker.IMirrorModel {
@@ -68,7 +192,8 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 
 	getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
 		let text: string;
-		let model = this._getModel(fileName);
+    let model = this._getModel(fileName);
+
 		if (model) {
 			// a true editor model
 			text = model.getValue();
@@ -81,9 +206,16 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 			text = DEFAULT_LIB.CONTENTS;
 		} else if (fileName === ES6_LIB.NAME) {
 			text = ES6_LIB.CONTENTS;
+		} else if (this.fs) {
+      const usedFilename = fileName.indexOf('file://') === 0 ? monaco.Uri.parse(fileName).fsPath : fileName;
+      text = this.files[usedFilename];
 		} else {
-			return;
-		}
+      return;
+    }
+
+    if (text == null) {
+      return;
+    }
 
 		return <ts.IScriptSnapshot>{
 			getText: (start, end) => text.substring(start, end),
@@ -106,7 +238,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 	}
 
 	getCurrentDirectory(): string {
-		return '';
+		return '/sandbox';
 	}
 
 	getDefaultLibFileName(options: ts.CompilerOptions): string {
@@ -116,7 +248,38 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 
 	isDefaultLibFileName(fileName: string): boolean {
 		return fileName === this.getDefaultLibFileName(this._compilerOptions);
-	}
+  }
+
+  fileExists(resource: string) {
+    if (!this.fs) {
+      return false;
+    }
+    const path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+    return this.files[path] !== undefined;
+  }
+
+  directoryExists(resource: string) {
+    if (!this.fs) {
+      return false;
+    }
+    const path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+    return Object.keys(this.files).some(f => f.indexOf(path) === 0);
+  }
+
+  getDirectories(resource: string) {
+    if (!this.fs) {
+      return [];
+    }
+    const path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+    const resourceSplits = path.split('/').length;
+    return Object.keys(this.files).filter(f => f.indexOf(path) === 0).map(p => {
+      const newP = p.split('/');
+      newP.length = resourceSplits;
+
+      return newP[newP.length - 1];
+    });
+  }
+
 
 	// --- language features
 

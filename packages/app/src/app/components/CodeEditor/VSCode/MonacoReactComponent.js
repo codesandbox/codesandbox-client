@@ -41,20 +41,9 @@ class MonacoEditor extends React.PureComponent {
   afterViewInit = () => {
     const context = this.props.context || window;
 
-    if (context.monaco !== undefined) {
-      this.initMonaco();
-      return;
-    }
-
-    context.require.config({
-      url: '/public/13/vs/loader.js',
-      paths: {
-        vs: '/public/13/vs',
-      },
-    });
-
-    // Load monaco
-    context.require(['vs/editor/editor.main'], () => {
+    require('app/vscode/dev-bootstrap').default(
+      'vs/editor/codesandbox.editor.main'
+    )(() => {
       this.initMonaco();
     });
   };
@@ -98,189 +87,50 @@ class MonacoEditor extends React.PureComponent {
       const r = context.require;
 
       const [
-        { CodeSandboxCommandService },
-        { CodeSandboxHashService },
-        { CodeSandboxKeybindingService },
-        { CodeSandboxWindowsService },
-        { QuickOpenController },
-        { EditorPart },
-        { CodeSandboxWorkbench },
-        { CodeSandboxEnvironmentService },
-        { UntitledEditorService },
-        { CodeSandboxFileService },
-        { StorageService },
-        { HistoryService },
-        { NullLifecycleService },
-        { TextFileService },
-        { WindowService },
-        { CodeSandboxBackupService },
-        { CodeSandboxExtensionService },
-        { ExtensionEnablementService },
-        { CodeSandboxExtensionManagementService },
-        { CodeSandboxExtensionGalleryService },
-        { FileDecorationsService },
-        { PreferencesService },
-        { JSONEditingService },
-        { CodeSandboxWorkspacesService },
-        { CodeSandboxSearchService },
-        { ViewletService },
-        { TextModelResolverService },
         { CodeSandboxService },
-        { CodeSandboxBroadcastService },
-        { CodeSandboxCrashReporterService },
-        { BreadcrumbsService },
-        { ProgressService2 },
-        { CodeSandboxActivityService },
-        { CodeSandboxOutputService },
-        { CodeSandboxPanelService },
-        { QuickInputService },
-        { HeapService },
-        { CodeSandboxFileDialogService },
-        { CodeEditorService },
-        { CodeSandboxEditorConnectorService },
         { IEditorService },
         { ICodeEditorService },
         { ITextFileService },
-        { CodeSandboxRequestService },
         { ILifecycleService, LifecyclePhase },
+        { IEditorGroupsService },
       ] = [
-        r('vs/codesandbox/commandService'),
-        r('vs/codesandbox/hashService'),
-        r('vs/codesandbox/keybindingService'),
-        r('vs/codesandbox/windowsService'),
-        r('vs/workbench/browser/parts/quickopen/quickOpenController'),
-        r('vs/codesandbox/editorGroupsService'),
-        r('vs/codesandbox/workbench'),
-        r('vs/codesandbox/environmentService'),
-        r('vs/workbench/services/untitled/common/untitledEditorService'),
-        r('vs/codesandbox/fileService'),
-        r('vs/platform/storage/common/storageService'),
-        r('vs/workbench/services/history/electron-browser/history'),
-        r('vs/platform/lifecycle/common/lifecycle'),
-        r('vs/workbench/services/textfile/electron-browser/textFileService'),
-        r('vs/platform/windows/electron-browser/windowService'),
-        r('vs/codesandbox/backupFileService'),
-        r('vs/codesandbox/extensionService'),
-        r('vs/platform/extensionManagement/common/extensionEnablementService'),
-        r('vs/codesandbox/extensionManagementService'),
-        r('vs/codesandbox/extensionGalleryService'),
-        r('vs/workbench/services/decorations/browser/decorationsService'),
-        r('vs/workbench/services/preferences/browser/preferencesService'),
-        r('vs/workbench/services/configuration/node/jsonEditingService'),
-        r('vs/codesandbox/workspacesService'),
-        r('vs/codesandbox/searchService'),
-        r('vs/workbench/services/viewlet/browser/viewletService'),
-        r(
-          'vs/workbench/services/textmodelResolver/common/textModelResolverService'
-        ),
         r('vs/codesandbox/services/codesandbox/browser/codesandboxService'),
-        r('vs/codesandbox/broadcastService'),
-        r('vs/codesandbox/crashReporterService'),
-        r('vs/workbench/browser/parts/editor/breadcrumbs'),
-        r('vs/workbench/services/progress/browser/progressService2'),
-        r('vs/codesandbox/activityService'),
-        r('vs/codesandbox/outputService'),
-        r('vs/codesandbox/panelService'),
-        r('vs/workbench/browser/parts/quickinput/quickInput'),
-        r('vs/workbench/api/electron-browser/mainThreadHeapService'),
-        r('vs/codesandbox/fileDialogService'),
-        r('vs/workbench/services/codeEditor/browser/codeEditorService'),
-        r(
-          'vs/codesandbox/services/codesandbox/browser/codesandboxEditorConnectorService'
-        ),
         r('vs/workbench/services/editor/common/editorService'),
         r('vs/editor/browser/services/codeEditorService'),
         r('vs/workbench/services/textfile/common/textfiles'),
-        r('vs/codesandbox/requestService'),
         r('vs/platform/lifecycle/common/lifecycle'),
+        r('vs/workbench/services/group/common/editorGroupsService'),
       ];
 
-      document.body.className += ' vs-dark';
+      document.getElementById('root').className += ' monaco-shell vs-dark';
 
       const container = document.createElement('div');
       const part = document.createElement('div');
 
-      container.className = 'vs-dark monaco-workbench mac';
-      container.id = 'workbench.main.container';
-      part.className = 'part editor';
+      const editorElement = document.getElementById('workbench.main.container');
+      container.className = 'monaco-workbench';
+      editorElement.className += ' monaco-workbench mac nopanel';
+      editorElement.id = 'workbench.main.container';
+
+      part.className = 'part editor has-watermark';
 
       container.appendChild(part);
 
-      const editor = document.getElementsByClassName(
-        'react-monaco-editor-container'
-      )[0];
-      editor.parentNode.removeChild(editor);
-
-      const rootEl = document.getElementsByClassName('sc-dchYKM')[0];
+      const rootEl = document.getElementById('vscode-container');
       rootEl.appendChild(container);
 
       context.monaco.editor[diffEditor ? 'createDiffEditor' : 'create'](
         container,
         appliedOptions,
         {
-          backupFileService: i => i.createInstance(CodeSandboxBackupService),
-          hashService: i => i.createInstance(CodeSandboxHashService),
-          extensionService: i => i.createInstance(CodeSandboxExtensionService),
-          extensionEnablementService: i =>
-            i.createInstance(ExtensionEnablementService),
-          lifecycleService: NullLifecycleService,
-          windowsService: i => i.createInstance(CodeSandboxWindowsService),
-          quickOpenService: i => i.createInstance(QuickOpenController),
-          commandService: i => i.createInstance(CodeSandboxCommandService),
-          IFileDecorationsService: i =>
-            i.createInstance(FileDecorationsService),
-          textFileService: i => i.createInstance(TextFileService),
-          fileService: i => i.createInstance(CodeSandboxFileService),
-          keybindingService: i =>
-            i.createInstance(CodeSandboxKeybindingService, window),
-          editorGroupsService: i =>
-            i.createInstance(EditorPart, 'codesandbox', false),
-          untitledEditorService: i => i.createInstance(UntitledEditorService),
-          partService: i => i.createInstance(CodeSandboxWorkbench),
-          environmentService: i =>
-            i.createInstance(CodeSandboxEnvironmentService),
-          storageService: new StorageService(localStorage, localStorage),
-          historyService: i => i.createInstance(HistoryService),
-          // editorService: i => i.createInstance(EditorService),
-          windowService: i => i.createInstance(WindowService),
-          preferencesService: i => i.createInstance(PreferencesService),
-          jsonEditingService: i => i.createInstance(JSONEditingService),
-          workspacesService: i =>
-            i.createInstance(CodeSandboxWorkspacesService),
-          searchService: i => i.createInstance(CodeSandboxSearchService),
-          viewletService: i =>
-            i.createInstance(ViewletService, {
-              onDidViewletOpen: () => true,
-              onDidViewletClose: () => true,
-            }),
-          textModelService: i => i.createInstance(TextModelResolverService),
           codesandboxService: i =>
             i.createInstance(CodeSandboxService, controller),
-          extensionGalleryService: i =>
-            i.createInstance(CodeSandboxExtensionGalleryService),
-          extensionManagementService: i =>
-            i.createInstance(CodeSandboxExtensionManagementService),
-          broadcastService: new CodeSandboxBroadcastService(1),
-          crashReporterService: i =>
-            i.createInstance(CodeSandboxCrashReporterService),
-          IEditorBreadcrumbsService: i => i.createInstance(BreadcrumbsService),
-          progressService2: i => i.createInstance(ProgressService2),
-          activityService: i => i.createInstance(CodeSandboxActivityService),
-          outputService: i => i.createInstance(CodeSandboxOutputService),
-          panelService: i => i.createInstance(CodeSandboxPanelService),
-          quickInputService: i => i.createInstance(QuickInputService),
-          heapService: i => i.createInstance(HeapService),
-          fileDialogService: i =>
-            i.createInstance(CodeSandboxFileDialogService),
-          codeEditorService: i => i.createInstance(CodeEditorService),
-          codesandboxEditorConnectorService: i =>
-            i.createInstance(CodeSandboxEditorConnectorService, controller),
-          requestService2: i => i.createInstance(CodeSandboxRequestService),
         },
         services => {
-          window.EditorPart.create(part);
+          const EditorPart = services.get(IEditorGroupsService);
+          EditorPart.create(part);
           setTimeout(() => {
-            window.EditorPart.layout({
+            EditorPart.layout({
               width: this.props.width,
               height: this.props.height,
             });
@@ -294,39 +144,23 @@ class MonacoEditor extends React.PureComponent {
 
           lifecycleService.phase = LifecyclePhase.Running;
 
-          console.log(LifecyclePhase.Running);
-
           const editorApi = {
             openFile(path: string) {
               return codeEditorService.openCodeEditor({
-                resource: context.monaco.Uri.file(path),
+                resource: context.monaco.Uri.file('/sandbox' + path),
               });
             },
             getActiveCodeEditor() {
               return codeEditorService.getActiveCodeEditor();
             },
             textFileService,
-            editorPart: window.EditorPart,
+            editorPart: EditorPart,
             editorService,
           };
           console.log(services);
-          console.log(codeEditorService);
 
           // After initializing monaco editor
           this.editorDidMount(editorApi, context.monaco);
-
-          // r(
-          //   [
-          //     'vs/workbench/parts/snippets/electron-browser/snippets.contribution',
-          //     'vs/workbench/parts/snippets/electron-browser/snippetsService',
-          //     'vs/workbench/parts/snippets/electron-browser/insertSnippet',
-          //     'vs/workbench/parts/snippets/electron-browser/configureSnippets',
-          //     'vs/workbench/parts/snippets/electron-browser/tabCompletion',
-          //   ],
-          //   () => {
-          //     console.log('Loaded snippets');
-          //   }
-          // );
         }
       );
 

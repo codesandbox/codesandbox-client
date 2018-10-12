@@ -5,7 +5,7 @@ const deps = require('./deps.json');
 let st = '';
 const depsizes = [];
 
-deps.forEach((path, i) => {
+deps.filter(p => p.indexOf('vscode/out/') > -1).forEach((path, i) => {
   const resolvedFile = require.resolve(
     '../' + path.replace('http://localhost:3000', '')
   );

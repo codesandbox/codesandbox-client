@@ -33,6 +33,8 @@ const settings = store =>
       : 2,
     enableLigatures: store.preferences.settings.enableLigatures,
     experimentVSCode: store.preferences.settings.experimentVSCode,
+    prettierConfig: store.preferences.settings.prettierConfig,
+    forceRefresh: store.preferences.settings.forceRefresh,
   }: Settings);
 
 type Props = {
@@ -406,6 +408,7 @@ class EditorPreview extends React.Component<Props, State> {
         }}
       >
         <FullSize
+          id="workbench.main.container"
           innerRef={node => {
             if (node) {
               this.contentNode = node;

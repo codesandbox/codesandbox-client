@@ -18,7 +18,7 @@ export default (manager: Object) => {
         if (type !== 'ResourceURLs') {
           return '';
         }
-        return JSON.stringify([`file://${item.path}`]);
+        return JSON.stringify([`file:///sandbox${item.path}`]);
       };
     }
     if (backend.currentNativeSource) {

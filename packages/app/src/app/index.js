@@ -14,11 +14,6 @@ import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
 import 'common/global.css';
 import theme from 'common/theme';
-import 'subworkers';
-import * as child_process from 'node-services/lib/child_process';
-
-import tsServerExtension from 'buffer-loader!vscode/extensions/typescript-language-features.zip';
-import ExtHostWorkerLoader from 'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker';
 
 import controller from './controller';
 import App from './pages/index';
@@ -29,7 +24,7 @@ const debug = _debug('cs:app');
 
 window.setImmediate = setTimeout;
 
-child_process.addForkHandler('bootstrap', ExtHostWorkerLoader);
+// child_process.addForkHandler('bootstrap', ExtHostWorkerLoader);
 
 window.addEventListener('unhandledrejection', e => {
   if (e && e.reason && e.reason.name === 'Canceled') {
@@ -141,57 +136,51 @@ function boot() {
   });
 }
 
-if (process.env.NODE_ENV === 'development' && process.env.VSCODE) {
-  // Configures BrowserFS to use the LocalStorage file system.
-  BrowserFS.configure(
-    {
-      fs: 'MountableFileSystem',
-      options: {
-        '/': { fs: 'InMemory', options: {} },
-        '/sandbox': { fs: 'InMemory', options: {} },
-        '/vscode': {
-          fs: 'LocalStorage',
+// Configures BrowserFS to use the LocalStorage file system.
+BrowserFS.configure(
+  {
+    fs: 'MountableFileSystem',
+    options: {
+      '/': { fs: 'InMemory', options: {} },
+      '/sandbox': {
+        fs: 'CodeSandboxEditorFS',
+        options: {
+          manager: controller,
         },
-        '/extensions': {
-          fs: 'ZipFS',
-          options: {
-            zipData: window.Buffer.from(tsServerExtension),
-          },
-        },
-        // '/vscode': {
-        //   fs: 'AsyncMirror',
-        //   options: {
-        //     sync: {
-        //       fs: 'InMemory',
-        //     },
-        //     async: {
-        //       fs: 'IndexedDB',
-        //       options: {
-        //         storeName: 'VSCode',
-        //       },
-        //     },
-        //   },
-        // },
       },
+      '/vscode': {
+        fs: 'LocalStorage',
+      },
+      // '/extensions': {
+      //   fs: 'ZipFS',
+      //   options: {
+      //     zipData: window.Buffer.from(tsServerExtension),
+      //   },
+      // },
+      // '/vscode': {
+      //   fs: 'AsyncMirror',
+      //   options: {
+      //     sync: {
+      //       fs: 'InMemory',
+      //     },
+      //     async: {
+      //       fs: 'IndexedDB',
+      //       options: {
+      //         storeName: 'VSCode',
+      //       },
+      //     },
+      //   },
+      // },
     },
-    function(e) {
-      if (e) {
-        console.error('Problems initializing FS', e);
-        // An error happened!
-        throw e;
-      }
-
-      const fs = BrowserFS.BFSRequire('fs');
-      // Otherwise, BrowserFS is ready-to-use!
-      /* eslint-disable global-require */
-      require('./vscode/dev-bootstrap').default()(() => {
-        self.require(['vs/editor/editor.main'], () => {
-          boot();
-        });
-      });
-      /* eslint-enable */
+  },
+  e => {
+    if (e) {
+      console.error('Problems initializing FS', e);
+      // An error happened!
+      throw e;
     }
-  );
-} else {
-  boot();
-}
+
+    // Otherwise, BrowserFS is ready-to-use!
+    boot();
+  }
+);

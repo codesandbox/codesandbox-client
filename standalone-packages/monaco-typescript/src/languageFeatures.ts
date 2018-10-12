@@ -519,18 +519,23 @@ export class DefinitionAdapter extends Adapter {
             this._positionToOffset(resource, position)
           );
         })
-        .then(entries => {
+        .then(async entries => {
           if (!entries) {
             return;
           }
           const result: monaco.languages.Location[] = [];
           for (let entry of entries) {
             const uri = Uri.parse(entry.fileName);
+
+            const model = await monaco.editor.resolveModel(uri);
             if (monaco.editor.getModel(uri)) {
               result.push({
                 uri: uri,
                 range: this._textSpanToRange(uri, entry.textSpan),
               });
+            }
+            if (model) {
+              model.dispose();
             }
           }
           return result;
@@ -560,18 +565,23 @@ export class ReferenceAdapter extends Adapter
             this._positionToOffset(resource, position)
           );
         })
-        .then(entries => {
+        .then(async entries => {
           if (!entries) {
             return;
           }
           const result: monaco.languages.Location[] = [];
           for (let entry of entries) {
             const uri = Uri.parse(entry.fileName);
+
+            const model = await monaco.editor.resolveModel(uri);
             if (monaco.editor.getModel(uri)) {
               result.push({
                 uri: uri,
                 range: this._textSpanToRange(uri, entry.textSpan),
               });
+            }
+            if (model) {
+              model.dispose();
             }
           }
           return result;
