@@ -42,6 +42,6 @@ export default {
       prURL: types.maybeNull(types.string),
     })
   ),
-  isCommiting: types.boolean,
+  isCommitting: types.boolean,
   isCreatingPr: types.boolean,
 };
