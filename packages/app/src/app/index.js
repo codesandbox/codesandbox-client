@@ -180,7 +180,16 @@ BrowserFS.configure(
       throw e;
     }
 
-    // Otherwise, BrowserFS is ready-to-use!
-    boot();
+    require('app/vscode/dev-bootstrap').default(['vs/editor/editor.main'])(
+      () => {
+        if (localStorage.getItem('settings.experimentVSCode') === 'true') {
+          window.require(['vs/editor/codesandbox.editor.main'], () => {
+            boot();
+          });
+        } else {
+          boot();
+        }
+      }
+    );
   }
 );

@@ -221,7 +221,11 @@ export default function(requiredModule: string) {
       if (IS_FILE_PROTOCOL) {
         resolvedPath = DIRNAME + '/../' + resolvedPath;
       } else {
-        resolvedPath = '/monaco-editor/' + resolvedPath;
+        if (resolvedPath.startsWith('../')) {
+          resolvedPath = '/' + resolvedPath.replace('../', '');
+        } else {
+          resolvedPath = '/monaco-editor/' + resolvedPath;
+        }
       }
     } else {
       if (IS_FILE_PROTOCOL) {
@@ -363,7 +367,10 @@ export default function(requiredModule: string) {
     };
 
     function loadFiles() {
-      var loaderPathsConfig = {};
+      var loaderPathsConfig = {
+        // 'vs/nls': '/vscode/out-build/vs/nls.build',
+        // 'vs/css': '/vscode/out-build/vs/css.build',
+      };
       if (!RESOLVED_CORE.isRelease()) {
         RESOLVED_PLUGINS.forEach(function(plugin) {
           plugin.generateLoaderConfig(loaderPathsConfig);
@@ -382,7 +389,10 @@ export default function(requiredModule: string) {
         initializeRequires();
 
         console.log('setting config', AMDLoader);
+
+        // self.require.config({ requireToUrl, paths: { vs: '/public/vscode' } });
         self.require.config({
+          // isBuild: true,
           paths: loaderPathsConfig,
           requireToUrl,
         });
@@ -390,7 +400,7 @@ export default function(requiredModule: string) {
 
       window.deps = new Set();
 
-      self.require([requiredModule], function() {
+      self.require(requiredModule, function() {
         console.log('Loaded first files');
         if (!RESOLVED_CORE.isRelease()) {
           console.log('Loaded files');
@@ -410,7 +420,7 @@ export default function(requiredModule: string) {
       });
     }
 
-    if (requiresDefined) {
+    if (window.require) {
       loadFiles();
     } else {
       loadScript(

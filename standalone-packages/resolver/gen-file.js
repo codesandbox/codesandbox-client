@@ -17,6 +17,6 @@ deps.filter(p => p.indexOf('vscode/out/') > -1).forEach((path, i) => {
 
   st += depst + '\n\n';
 });
-fs.writeFileSync('./genee.js', st);
+fs.writeFileSync(process.argv[2], st);
 
 console.log(_.sortBy(depsizes, o => -o.size));

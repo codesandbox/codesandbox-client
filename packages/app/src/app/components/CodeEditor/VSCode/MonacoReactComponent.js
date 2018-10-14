@@ -41,9 +41,9 @@ class MonacoEditor extends React.PureComponent {
   afterViewInit = () => {
     const context = this.props.context || window;
 
-    require('app/vscode/dev-bootstrap').default(
-      'vs/editor/codesandbox.editor.main'
-    )(() => {
+    require('app/vscode/dev-bootstrap').default([
+      'vs/editor/codesandbox.editor.main',
+    ])(() => {
       this.initMonaco();
     });
   };
@@ -129,12 +129,11 @@ class MonacoEditor extends React.PureComponent {
         services => {
           const EditorPart = services.get(IEditorGroupsService);
           EditorPart.create(part);
-          setTimeout(() => {
-            EditorPart.layout({
-              width: this.props.width,
-              height: this.props.height,
-            });
-          }, 500);
+
+          EditorPart.layout({
+            width: this.props.width,
+            height: this.props.height,
+          });
 
           const codeEditorService = services.get(ICodeEditorService);
           const textFileService = services.get(ITextFileService);
