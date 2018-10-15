@@ -85,6 +85,10 @@ class BabelTranspiler extends WorkerTranspiler {
       const isV7 =
         loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
 
+      const hasMacros = Object.keys(dependencies).some(
+        d => d.indexOf('macro') > -1
+      );
+
       const babelConfig = getBabelConfig(
         foundConfig || loaderOptions.config,
         loaderOptions,
@@ -104,6 +108,7 @@ class BabelTranspiler extends WorkerTranspiler {
             configs.babelTranspiler.parsed,
           sandboxOptions: configs && configs.sandbox && configs.sandbox.parsed,
           version: isV7 ? 7 : 6,
+          hasMacros,
         },
         loaderContext._module.getId(),
         loaderContext,
