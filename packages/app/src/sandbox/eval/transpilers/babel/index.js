@@ -75,12 +75,12 @@ class BabelTranspiler extends WorkerTranspiler {
       const dependencies =
         configs.package &&
         configs.package.parsed &&
-        configs.package.parsed.dependencies;
+        configs.package.parsed.dependencies || {};
 
       const devDependencies =
         configs.package &&
         configs.package.parsed &&
-        configs.package.parsed.devDependencies;
+        configs.package.parsed.devDependencies || {};
 
       const isV7 =
         loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
