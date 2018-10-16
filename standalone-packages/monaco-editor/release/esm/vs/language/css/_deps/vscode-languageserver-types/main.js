@@ -23,7 +23,7 @@ export var Position;
      */
     function is(value) {
         var candidate = value;
-        return Is.defined(candidate) && Is.number(candidate.line) && Is.number(candidate.character);
+        return Is.objectLiteral(candidate) && Is.number(candidate.line) && Is.number(candidate.character);
     }
     Position.is = is;
 })(Position || (Position = {}));
@@ -50,7 +50,7 @@ export var Range;
      */
     function is(value) {
         var candidate = value;
-        return Is.defined(candidate) && Position.is(candidate.start) && Position.is(candidate.end);
+        return Is.objectLiteral(candidate) && Position.is(candidate.start) && Position.is(candidate.end);
     }
     Range.is = is;
 })(Range || (Range = {}));
@@ -79,7 +79,171 @@ export var Location;
     Location.is = is;
 })(Location || (Location = {}));
 /**
- * The diagnostic's serverity.
+ * The Color namespace provides helper functions to work with
+ * [Color](#Color) literals.
+ */
+export var Color;
+(function (Color) {
+    /**
+     * Creates a new Color literal.
+     */
+    function create(red, green, blue, alpha) {
+        return {
+            red: red,
+            green: green,
+            blue: blue,
+            alpha: alpha,
+        };
+    }
+    Color.create = create;
+    /**
+     * Checks whether the given literal conforms to the [Color](#Color) interface.
+     */
+    function is(value) {
+        var candidate = value;
+        return Is.number(candidate.red)
+            && Is.number(candidate.green)
+            && Is.number(candidate.blue)
+            && Is.number(candidate.alpha);
+    }
+    Color.is = is;
+})(Color || (Color = {}));
+/**
+ * The ColorInformation namespace provides helper functions to work with
+ * [ColorInformation](#ColorInformation) literals.
+ */
+export var ColorInformation;
+(function (ColorInformation) {
+    /**
+     * Creates a new ColorInformation literal.
+     */
+    function create(range, color) {
+        return {
+            range: range,
+            color: color,
+        };
+    }
+    ColorInformation.create = create;
+    /**
+     * Checks whether the given literal conforms to the [ColorInformation](#ColorInformation) interface.
+     */
+    function is(value) {
+        var candidate = value;
+        return Range.is(candidate.range) && Color.is(candidate.color);
+    }
+    ColorInformation.is = is;
+})(ColorInformation || (ColorInformation = {}));
+/**
+ * The Color namespace provides helper functions to work with
+ * [ColorPresentation](#ColorPresentation) literals.
+ */
+export var ColorPresentation;
+(function (ColorPresentation) {
+    /**
+     * Creates a new ColorInformation literal.
+     */
+    function create(label, textEdit, additionalTextEdits) {
+        return {
+            label: label,
+            textEdit: textEdit,
+            additionalTextEdits: additionalTextEdits,
+        };
+    }
+    ColorPresentation.create = create;
+    /**
+     * Checks whether the given literal conforms to the [ColorInformation](#ColorInformation) interface.
+     */
+    function is(value) {
+        var candidate = value;
+        return Is.string(candidate.label)
+            && (Is.undefined(candidate.textEdit) || TextEdit.is(candidate))
+            && (Is.undefined(candidate.additionalTextEdits) || Is.typedArray(candidate.additionalTextEdits, TextEdit.is));
+    }
+    ColorPresentation.is = is;
+})(ColorPresentation || (ColorPresentation = {}));
+/**
+ * Enum of known range kinds
+ */
+export var FoldingRangeKind;
+(function (FoldingRangeKind) {
+    /**
+     * Folding range for a comment
+     */
+    FoldingRangeKind["Comment"] = "comment";
+    /**
+     * Folding range for a imports or includes
+     */
+    FoldingRangeKind["Imports"] = "imports";
+    /**
+     * Folding range for a region (e.g. `#region`)
+     */
+    FoldingRangeKind["Region"] = "region";
+})(FoldingRangeKind || (FoldingRangeKind = {}));
+/**
+ * The folding range namespace provides helper functions to work with
+ * [FoldingRange](#FoldingRange) literals.
+ */
+export var FoldingRange;
+(function (FoldingRange) {
+    /**
+     * Creates a new FoldingRange literal.
+     */
+    function create(startLine, endLine, startCharacter, endCharacter, kind) {
+        var result = {
+            startLine: startLine,
+            endLine: endLine
+        };
+        if (Is.defined(startCharacter)) {
+            result.startCharacter = startCharacter;
+        }
+        if (Is.defined(endCharacter)) {
+            result.endCharacter = endCharacter;
+        }
+        if (Is.defined(kind)) {
+            result.kind = kind;
+        }
+        return result;
+    }
+    FoldingRange.create = create;
+    /**
+     * Checks whether the given literal conforms to the [FoldingRange](#FoldingRange) interface.
+     */
+    function is(value) {
+        var candidate = value;
+        return Is.number(candidate.startLine) && Is.number(candidate.startLine)
+            && (Is.undefined(candidate.startCharacter) || Is.number(candidate.startCharacter))
+            && (Is.undefined(candidate.endCharacter) || Is.number(candidate.endCharacter))
+            && (Is.undefined(candidate.kind) || Is.string(candidate.kind));
+    }
+    FoldingRange.is = is;
+})(FoldingRange || (FoldingRange = {}));
+/**
+ * The DiagnosticRelatedInformation namespace provides helper functions to work with
+ * [DiagnosticRelatedInformation](#DiagnosticRelatedInformation) literals.
+ */
+export var DiagnosticRelatedInformation;
+(function (DiagnosticRelatedInformation) {
+    /**
+     * Creates a new DiagnosticRelatedInformation literal.
+     */
+    function create(location, message) {
+        return {
+            location: location,
+            message: message
+        };
+    }
+    DiagnosticRelatedInformation.create = create;
+    /**
+     * Checks whether the given literal conforms to the [DiagnosticRelatedInformation](#DiagnosticRelatedInformation) interface.
+     */
+    function is(value) {
+        var candidate = value;
+        return Is.defined(candidate) && Location.is(candidate.location) && Is.string(candidate.message);
+    }
+    DiagnosticRelatedInformation.is = is;
+})(DiagnosticRelatedInformation || (DiagnosticRelatedInformation = {}));
+/**
+ * The diagnostic's severity.
  */
 export var DiagnosticSeverity;
 (function (DiagnosticSeverity) {
@@ -109,7 +273,7 @@ export var Diagnostic;
     /**
      * Creates a new Diagnostic literal.
      */
-    function create(range, message, severity, code, source) {
+    function create(range, message, severity, code, source, relatedInformation) {
         var result = { range: range, message: message };
         if (Is.defined(severity)) {
             result.severity = severity;
@@ -119,6 +283,9 @@ export var Diagnostic;
         }
         if (Is.defined(source)) {
             result.source = source;
+        }
+        if (Is.defined(relatedInformation)) {
+            result.relatedInformation = relatedInformation;
         }
         return result;
     }
@@ -133,7 +300,8 @@ export var Diagnostic;
             && Is.string(candidate.message)
             && (Is.number(candidate.severity) || Is.undefined(candidate.severity))
             && (Is.number(candidate.code) || Is.string(candidate.code) || Is.undefined(candidate.code))
-            && (Is.string(candidate.source) || Is.undefined(candidate.source));
+            && (Is.string(candidate.source) || Is.undefined(candidate.source))
+            && (Is.undefined(candidate.relatedInformation) || Is.typedArray(candidate.relatedInformation, DiagnosticRelatedInformation.is));
     }
     Diagnostic.is = is;
 })(Diagnostic || (Diagnostic = {}));
@@ -163,7 +331,7 @@ export var Command;
      */
     function is(value) {
         var candidate = value;
-        return Is.defined(candidate) && Is.string(candidate.title) && Is.string(candidate.title);
+        return Is.defined(candidate) && Is.string(candidate.title) && Is.string(candidate.command);
     }
     Command.is = is;
 })(Command || (Command = {}));
@@ -199,6 +367,13 @@ export var TextEdit;
         return { range: range, newText: '' };
     }
     TextEdit.del = del;
+    function is(value) {
+        var candidate = value;
+        return Is.objectLiteral(candidate)
+            && Is.string(candidate.newText)
+            && Range.is(candidate.range);
+    }
+    TextEdit.is = is;
 })(TextEdit || (TextEdit = {}));
 /**
  * The TextDocumentEdit namespace provides helper function to create
@@ -221,6 +396,16 @@ export var TextDocumentEdit;
     }
     TextDocumentEdit.is = is;
 })(TextDocumentEdit || (TextDocumentEdit = {}));
+export var WorkspaceEdit;
+(function (WorkspaceEdit) {
+    function is(value) {
+        var candidate = value;
+        return candidate &&
+            (candidate.changes !== void 0 || candidate.documentChanges !== void 0) &&
+            (candidate.documentChanges === void 0 || Is.typedArray(candidate.documentChanges, TextDocumentEdit.is));
+    }
+    WorkspaceEdit.is = is;
+})(WorkspaceEdit || (WorkspaceEdit = {}));
 var TextEditChangeImpl = /** @class */ (function () {
     function TextEditChangeImpl(edits) {
         this.edits = edits;
@@ -416,6 +601,27 @@ export var MarkupKind;
      */
     MarkupKind.Markdown = 'markdown';
 })(MarkupKind || (MarkupKind = {}));
+(function (MarkupKind) {
+    /**
+     * Checks whether the given value is a value of the [MarkupKind](#MarkupKind) type.
+     */
+    function is(value) {
+        var candidate = value;
+        return candidate === MarkupKind.PlainText || candidate === MarkupKind.Markdown;
+    }
+    MarkupKind.is = is;
+})(MarkupKind || (MarkupKind = {}));
+export var MarkupContent;
+(function (MarkupContent) {
+    /**
+     * Checks whether the given value conforms to the [MarkupContent](#MarkupContent) interface.
+     */
+    function is(value) {
+        var candidate = value;
+        return Is.objectLiteral(value) && MarkupKind.is(candidate.kind) && Is.string(candidate.value);
+    }
+    MarkupContent.is = is;
+})(MarkupContent || (MarkupContent = {}));
 /**
  * The kind of a completion entry.
  */
@@ -512,7 +718,28 @@ export var MarkedString;
         return plainText.replace(/[\\`*_{}[\]()#+\-.!]/g, "\\$&"); // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
     }
     MarkedString.fromPlainText = fromPlainText;
+    /**
+     * Checks whether the given value conforms to the [MarkedString](#MarkedString) type.
+     */
+    function is(value) {
+        var candidate = value;
+        return Is.string(candidate) || (Is.objectLiteral(candidate) && Is.string(candidate.language) && Is.string(candidate.value));
+    }
+    MarkedString.is = is;
 })(MarkedString || (MarkedString = {}));
+export var Hover;
+(function (Hover) {
+    /**
+     * Checks whether the given value conforms to the [Hover](#Hover) interface.
+     */
+    function is(value) {
+        var candidate = value;
+        return Is.objectLiteral(candidate) && (MarkupContent.is(candidate.contents) ||
+            MarkedString.is(candidate.contents) ||
+            Is.typedArray(candidate.contents, MarkedString.is)) && (value.range === void 0 || Range.is(value.range));
+    }
+    Hover.is = is;
+})(Hover || (Hover = {}));
 /**
  * The ParameterInformation namespace provides helper functions to work with
  * [ParameterInformation](#ParameterInformation) literals.
@@ -562,7 +789,7 @@ export var SignatureInformation;
 export var DocumentHighlightKind;
 (function (DocumentHighlightKind) {
     /**
-     * A textual occurrance.
+     * A textual occurrence.
      */
     DocumentHighlightKind.Text = 1;
     /**
@@ -634,7 +861,7 @@ export var SymbolInformation;
      * @param kind The kind of the symbol.
      * @param range The range of the location of the symbol.
      * @param uri The resource of the location of symbol, defaults to the current document.
-     * @param containerName The name of the symbol containg the symbol.
+     * @param containerName The name of the symbol containing the symbol.
      */
     function create(name, kind, range, uri, containerName) {
         var result = {
@@ -650,6 +877,116 @@ export var SymbolInformation;
     SymbolInformation.create = create;
 })(SymbolInformation || (SymbolInformation = {}));
 /**
+ * Represents programming constructs like variables, classes, interfaces etc.
+ * that appear in a document. Document symbols can be hierarchical and they
+ * have two ranges: one that encloses its definition and one that points to
+ * its most interesting range, e.g. the range of an identifier.
+ */
+var DocumentSymbol = /** @class */ (function () {
+    function DocumentSymbol() {
+    }
+    return DocumentSymbol;
+}());
+export { DocumentSymbol };
+(function (DocumentSymbol) {
+    /**
+     * Creates a new symbol information literal.
+     *
+     * @param name The name of the symbol.
+     * @param detail The detail of the symbol.
+     * @param kind The kind of the symbol.
+     * @param range The range of the symbol.
+     * @param selectionRange The selectionRange of the symbol.
+     * @param children Children of the symbol.
+     */
+    function create(name, detail, kind, range, selectionRange, children) {
+        var result = {
+            name: name,
+            detail: detail,
+            kind: kind,
+            range: range,
+            selectionRange: selectionRange
+        };
+        if (children !== void 0) {
+            result.children = children;
+        }
+        return result;
+    }
+    DocumentSymbol.create = create;
+    /**
+     * Checks whether the given literal conforms to the [DocumentSymbol](#DocumentSymbol) interface.
+     */
+    function is(value) {
+        var candidate = value;
+        return candidate &&
+            Is.string(candidate.name) && Is.string(candidate.detail) && Is.number(candidate.kind) &&
+            Range.is(candidate.range) && Range.is(candidate.selectionRange) &&
+            (candidate.deprecated === void 0 || Is.boolean(candidate.deprecated)) &&
+            (candidate.children === void 0 || Array.isArray(candidate.children));
+    }
+    DocumentSymbol.is = is;
+})(DocumentSymbol || (DocumentSymbol = {}));
+/**
+ * A set of predefined code action kinds
+ */
+export var CodeActionKind;
+(function (CodeActionKind) {
+    /**
+     * Base kind for quickfix actions: 'quickfix'
+     */
+    CodeActionKind.QuickFix = 'quickfix';
+    /**
+     * Base kind for refactoring actions: 'refactor'
+     */
+    CodeActionKind.Refactor = 'refactor';
+    /**
+     * Base kind for refactoring extraction actions: 'refactor.extract'
+     *
+     * Example extract actions:
+     *
+     * - Extract method
+     * - Extract function
+     * - Extract variable
+     * - Extract interface from class
+     * - ...
+     */
+    CodeActionKind.RefactorExtract = 'refactor.extract';
+    /**
+     * Base kind for refactoring inline actions: 'refactor.inline'
+     *
+     * Example inline actions:
+     *
+     * - Inline function
+     * - Inline variable
+     * - Inline constant
+     * - ...
+     */
+    CodeActionKind.RefactorInline = 'refactor.inline';
+    /**
+     * Base kind for refactoring rewrite actions: 'refactor.rewrite'
+     *
+     * Example rewrite actions:
+     *
+     * - Convert JavaScript function to class
+     * - Add or remove parameter
+     * - Encapsulate field
+     * - Make method static
+     * - Move method to base class
+     * - ...
+     */
+    CodeActionKind.RefactorRewrite = 'refactor.rewrite';
+    /**
+     * Base kind for source actions: `source`
+     *
+     * Source code actions apply to the entire file.
+     */
+    CodeActionKind.Source = 'source';
+    /**
+     * Base kind for an organize imports source action: `source.organizeImports`
+     */
+    CodeActionKind.SourceOrganizeImports = 'source.organizeImports';
+})(CodeActionKind || (CodeActionKind = {}));
+/**
  * The CodeActionContext namespace provides helper functions to work with
  * [CodeActionContext](#CodeActionContext) literals.
  */
@@ -658,8 +995,12 @@ export var CodeActionContext;
     /**
      * Creates a new CodeActionContext literal.
      */
-    function create(diagnostics) {
-        return { diagnostics: diagnostics };
+    function create(diagnostics, only) {
+        var result = { diagnostics: diagnostics };
+        if (only !== void 0 && only !== null) {
+            result.only = only;
+        }
+        return result;
     }
     CodeActionContext.create = create;
     /**
@@ -667,10 +1008,37 @@ export var CodeActionContext;
      */
     function is(value) {
         var candidate = value;
-        return Is.defined(candidate) && Is.typedArray(candidate.diagnostics, Diagnostic.is);
+        return Is.defined(candidate) && Is.typedArray(candidate.diagnostics, Diagnostic.is) && (candidate.only === void 0 || Is.typedArray(candidate.only, Is.string));
     }
     CodeActionContext.is = is;
 })(CodeActionContext || (CodeActionContext = {}));
+export var CodeAction;
+(function (CodeAction) {
+    function create(title, commandOrEdit, kind) {
+        var result = { title: title };
+        if (Command.is(commandOrEdit)) {
+            result.command = commandOrEdit;
+        }
+        else {
+            result.edit = commandOrEdit;
+        }
+        if (kind !== void null) {
+            result.kind = kind;
+        }
+        return result;
+    }
+    CodeAction.create = create;
+    function is(value) {
+        var candidate = value;
+        return candidate && Is.string(candidate.title) &&
+            (candidate.diagnostics === void 0 || Is.typedArray(candidate.diagnostics, Diagnostic.is)) &&
+            (candidate.kind === void 0 || Is.string(candidate.kind)) &&
+            (candidate.edit !== void 0 || candidate.command !== void 0) &&
+            (candidate.command === void 0 || Command.is(candidate.command)) &&
+            (candidate.edit === void 0 || WorkspaceEdit.is(candidate.edit));
+    }
+    CodeAction.is = is;
+})(CodeAction || (CodeAction = {}));
 /**
  * The CodeLens namespace provides helper functions to work with
  * [CodeLens](#CodeLens) literals.
@@ -736,8 +1104,8 @@ export { DocumentLink };
     /**
      * Creates a new DocumentLink literal.
      */
-    function create(range, target) {
-        return { range: range, target: target };
+    function create(range, target, data) {
+        return { range: range, target: target, data: data };
     }
     DocumentLink.create = create;
     /**
@@ -778,7 +1146,7 @@ export var TextDocument;
             if (diff === 0) {
                 return a.range.start.character - b.range.start.character;
             }
-            return 0;
+            return diff;
         });
         var lastModifiedOffset = text.length;
         for (var i = sortedEdits.length - 1; i >= 0; i--) {
@@ -982,6 +1350,13 @@ var Is;
         return toString.call(value) === '[object Function]';
     }
     Is.func = func;
+    function objectLiteral(value) {
+        // Strictly speaking class instances pass this check as well. Since the LSP
+        // doesn't use classes we ignore this for now. If we do we need to add something
+        // like this: `Object.getPrototypeOf(Object.getPrototypeOf(x)) === null`
+        return value !== null && typeof value === 'object';
+    }
+    Is.objectLiteral = objectLiteral;
     function typedArray(value, check) {
         return Array.isArray(value) && value.every(check);
     }

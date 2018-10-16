@@ -54,10 +54,18 @@ define(["require", "exports"], function (require, exports) {
             "ZREMRANGEBYRANK", "ZREMRANGEBYSCORE", "ZREVRANGE", "ZREVRANGEBYSCORE", "ZREVRANK", "ZSCORE", "ZUNIONSTORE", "SCAN", "SSCAN",
             "HSCAN", "ZSCAN"
         ],
-        operators: [],
-        builtinFunctions: [],
-        builtinVariables: [],
-        pseudoColumns: [],
+        operators: [
+        // NOT SUPPORTED
+        ],
+        builtinFunctions: [
+        // NOT SUPPORTED
+        ],
+        builtinVariables: [
+        // NOT SUPPORTED
+        ],
+        pseudoColumns: [
+        // NOT SUPPORTED
+        ],
         tokenizer: {
             root: [
                 { include: '@whitespace' },
@@ -108,7 +116,9 @@ define(["require", "exports"], function (require, exports) {
                 [/""/, 'string.double'],
                 [/"/, { token: 'string.double', next: '@pop' }]
             ],
-            scopes: []
+            scopes: [
+            // NOT SUPPORTED
+            ]
         }
     };
 });

@@ -30,6 +30,14 @@ export var parseTree = parser.parseTree;
  */
 export var findNodeAtLocation = parser.findNodeAtLocation;
 /**
+ * Finds the most inner node at the given offset. If includeRightBound is set, also finds nodes that end at the given offset.
+ */
+export var findNodeAtOffset = parser.findNodeAtOffset;
+/**
+ * Gets the JSON path of the given JSON DOM node
+ */
+export var getNodePath = parser.getNodePath;
+/**
  * Evaluates the JavaScript object of the given JSON DOM node
  */
 export var getNodeValue = parser.getNodeValue;

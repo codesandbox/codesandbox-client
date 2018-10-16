@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -53,12 +56,11 @@ var Lock = /** @class */ (function () {
         var _this = this;
         var lock = this.getLock(item);
         if (lock) {
-            var unbindListener;
             return new WinJS.TPromise(function (c, e) {
-                unbindListener = once(lock.onDispose)(function () {
+                once(lock.onDispose)(function () {
                     return _this.run(item, fn).then(c, e);
                 });
-            }, function () { unbindListener.dispose(); });
+            });
         }
         var result;
         return new WinJS.TPromise(function (c, e) {
@@ -72,7 +74,7 @@ var Lock = /** @class */ (function () {
                 return r;
             }).then(c, e);
             return result;
-        }, function () { return result.cancel(); });
+        });
     };
     Lock.prototype.getLock = function (item) {
         var key;
@@ -242,6 +244,9 @@ var Item = /** @class */ (function () {
             return WinJS.TPromise.as(false);
         }
         var result = this.lock.run(this, function () {
+            if (_this.isExpanded() || !_this.doesHaveChildren) {
+                return WinJS.TPromise.as(false);
+            }
             var eventData = { item: _this };
             var result;
             _this._onExpand.fire(eventData);
@@ -324,7 +329,11 @@ var Item = /** @class */ (function () {
         if (safe === void 0) { safe = false; }
         if (force === void 0) { force = false; }
         if (!force && !this.isExpanded()) {
-            this.needsChildrenRefresh = true;
+            var setNeedsChildrenRefresh_1 = function (item) {
+                item.needsChildrenRefresh = true;
+                item.forEachChild(setNeedsChildrenRefresh_1);
+            };
+            setNeedsChildrenRefresh_1(this);
             return WinJS.TPromise.as(this);
         }
         this.needsChildrenRefresh = false;
@@ -374,8 +383,15 @@ var Item = /** @class */ (function () {
                     }));
                 }
                 else {
-                    _this.mapEachChild(function (child) { return child.updateVisibility(); });
-                    return WinJS.TPromise.as(null);
+                    return WinJS.Promise.join(_this.mapEachChild(function (child) {
+                        if (child.isExpanded() && child.needsChildrenRefresh) {
+                            return child.doRefresh(recursive, true);
+                        }
+                        else {
+                            child.updateVisibility();
+                            return WinJS.TPromise.as(null);
+                        }
+                    }));
                 }
             });
             return result
@@ -413,15 +429,6 @@ var Item = /** @class */ (function () {
         } while (node);
         result.reverse();
         return result;
-    };
-    Item.prototype.getChildren = function () {
-        var child = this.firstChild;
-        var results = [];
-        while (child) {
-            results.push(child);
-            child = child.next;
-        }
-        return results;
     };
     Item.prototype.isAncestorOf = function (item) {
         while (item) {
@@ -821,24 +828,6 @@ var TreeModel = /** @class */ (function () {
             promises.push(this.collapse(elements[i], recursive));
         }
         return WinJS.Promise.join(promises);
-    };
-    TreeModel.prototype.collapseDeepestExpandedLevel = function () {
-        var _this = this;
-        var levelToCollapse = this.findDeepestExpandedLevel(this.input, 0);
-        var items = [this.input];
-        for (var i = 0; i < levelToCollapse; i++) {
-            items = arrays.flatten(items.map(function (node) { return node.getChildren(); }));
-        }
-        var promises = items.map(function (child) { return _this.collapse(child, false); });
-        return WinJS.Promise.join(promises);
-    };
-    TreeModel.prototype.findDeepestExpandedLevel = function (item, currentLevel) {
-        var _this = this;
-        var expandedChildren = item.getChildren().filter(function (child) { return child.isExpanded(); });
-        if (!expandedChildren.length) {
-            return currentLevel;
-        }
-        return Math.max.apply(Math, expandedChildren.map(function (child) { return _this.findDeepestExpandedLevel(child, currentLevel + 1); }));
     };
     TreeModel.prototype.toggleExpansion = function (element, recursive) {
         if (recursive === void 0) { recursive = false; }

@@ -45,9 +45,6 @@ var QuickOpenEditorWidget = /** @class */ (function () {
         this.quickOpenWidget.dispose();
         this.styler.dispose();
     };
-    QuickOpenEditorWidget.prototype.isVisible = function () {
-        return this.visible;
-    };
     QuickOpenEditorWidget.prototype.show = function (value) {
         this.visible = true;
         var editorLayout = this.codeEditor.getLayoutInfo();
@@ -55,11 +52,6 @@ var QuickOpenEditorWidget = /** @class */ (function () {
             this.quickOpenWidget.layout(new Dimension(editorLayout.width, editorLayout.height));
         }
         this.quickOpenWidget.show(value);
-        this.codeEditor.layoutOverlayWidget(this);
-    };
-    QuickOpenEditorWidget.prototype.hide = function () {
-        this.visible = false;
-        this.quickOpenWidget.hide();
         this.codeEditor.layoutOverlayWidget(this);
     };
     QuickOpenEditorWidget.prototype.getPosition = function () {

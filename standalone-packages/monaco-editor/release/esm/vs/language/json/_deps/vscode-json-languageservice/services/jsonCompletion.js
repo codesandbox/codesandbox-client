@@ -36,7 +36,7 @@ var JSONCompletion = /** @class */ (function () {
             isIncomplete: false
         };
         var offset = document.offsetAt(position);
-        var node = doc.getNodeFromOffsetEndInclusive(offset);
+        var node = doc.getNodeFromOffset(offset, true);
         if (this.isInComment(document, node ? node.offset : 0, offset)) {
             return Promise.resolve(result);
         }
@@ -303,9 +303,8 @@ var JSONCompletion = /** @class */ (function () {
                 // suggest items of an array at the same key
                 var parentKey_3 = node.parent.keyNode.value;
                 doc.visit(function (n) {
-                    var p = n;
-                    if (n.type === 'property' && p.keyNode.value === parentKey_3 && p.valueNode && p.valueNode.type === 'array') {
-                        p.valueNode.items.forEach(collectSuggestionsForValues);
+                    if (n.type === 'property' && n.keyNode.value === parentKey_3 && n.valueNode && n.valueNode.type === 'array') {
+                        n.valueNode.items.forEach(collectSuggestionsForValues);
                     }
                     return true;
                 });
@@ -423,7 +422,7 @@ var JSONCompletion = /** @class */ (function () {
         var _this = this;
         if (arrayDepth === void 0) { arrayDepth = 0; }
         var hasProposals = false;
-        if (schema.default) {
+        if (isDefined(schema.default)) {
             var type = schema.type;
             var value = schema.default;
             for (var i = arrayDepth; i > 0; i--) {
@@ -446,7 +445,7 @@ var JSONCompletion = /** @class */ (function () {
                 var label = s.label;
                 var insertText;
                 var filterText;
-                if (typeof value !== 'undefined') {
+                if (isDefined(value)) {
                     var type_1 = schema.type;
                     for (var i = arrayDepth; i > 0; i--) {
                         value = [value];
@@ -484,6 +483,15 @@ var JSONCompletion = /** @class */ (function () {
         }
     };
     JSONCompletion.prototype.addEnumValueCompletions = function (schema, separatorAfter, collector) {
+        if (isDefined(schema.const)) {
+            collector.add({
+                kind: this.getSuggestionKind(schema.type),
+                label: this.getLabelForValue(schema.const),
+                insertText: this.getInsertTextForValue(schema.const, separatorAfter),
+                insertTextFormat: InsertTextFormat.Snippet,
+                documentation: schema.description
+            });
+        }
         if (Array.isArray(schema.enum)) {
             for (var i = 0, length = schema.enum.length; i < length; i++) {
                 var enm = schema.enum[i];
@@ -502,7 +510,7 @@ var JSONCompletion = /** @class */ (function () {
         }
     };
     JSONCompletion.prototype.collectTypes = function (schema, types) {
-        if (Array.isArray(schema.enum)) {
+        if (Array.isArray(schema.enum) || isDefined(schema.const)) {
             return;
         }
         var type = schema.type;
@@ -676,7 +684,7 @@ var JSONCompletion = /** @class */ (function () {
             if (Array.isArray(propertySchema.defaultSnippets)) {
                 if (propertySchema.defaultSnippets.length === 1) {
                     var body = propertySchema.defaultSnippets[0].body;
-                    if (typeof body !== 'undefined') {
+                    if (isDefined(body)) {
                         value = this.getInsertTextForSnippetValue(body, '');
                     }
                 }
@@ -688,7 +696,7 @@ var JSONCompletion = /** @class */ (function () {
                 }
                 nValueProposals += propertySchema.enum.length;
             }
-            if (typeof propertySchema.default !== 'undefined') {
+            if (isDefined(propertySchema.default)) {
                 if (!value) {
                     value = this.getInsertTextForGuessedValue(propertySchema.default, '');
                 }
@@ -787,4 +795,7 @@ var JSONCompletion = /** @class */ (function () {
     return JSONCompletion;
 }());
 export { JSONCompletion };
+function isDefined(val) {
+    return typeof val !== 'undefined';
+}
 //# sourceMappingURL=jsonCompletion.js.map

@@ -15,12 +15,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { renderMarkdown } from '../../../base/browser/htmlContentRenderer.js';
 import { IOpenerService, NullOpenerService } from '../../../platform/opener/common/opener.js';
 import { IModeService } from '../../common/services/modeService.js';
-import URI from '../../../base/common/uri.js';
+import { URI } from '../../../base/common/uri.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
 import { tokenizeToString } from '../../common/modes/textToHtmlTokenizer.js';
 import { optional } from '../../../platform/instantiation/common/instantiation.js';
 import { Emitter } from '../../../base/common/event.js';
 import { dispose } from '../../../base/common/lifecycle.js';
+import { TokenizationRegistry } from '../../common/modes.js';
 var MarkdownRenderer = /** @class */ (function () {
     function MarkdownRenderer(_editor, _modeService, _openerService) {
         if (_openerService === void 0) { _openerService = NullOpenerService; }
@@ -41,7 +42,11 @@ var MarkdownRenderer = /** @class */ (function () {
                     ? _this._modeService.getModeIdForLanguageName(languageAlias)
                     : _this._editor.getModel().getLanguageIdentifier().language;
                 return _this._modeService.getOrCreateMode(modeId).then(function (_) {
-                    return tokenizeToString(value, modeId);
+                    var promise = TokenizationRegistry.getPromise(modeId);
+                    if (promise) {
+                        return promise.then(function (support) { return tokenizeToString(value, support); });
+                    }
+                    return tokenizeToString(value, null);
                 }).then(function (code) {
                     return "<span style=\"font-family: " + _this._editor.getConfiguration().fontInfo.fontFamily + "\">" + code + "</span>";
                 });
@@ -49,7 +54,16 @@ var MarkdownRenderer = /** @class */ (function () {
             codeBlockRenderCallback: function () { return _this._onDidRenderCodeBlock.fire(); },
             actionHandler: {
                 callback: function (content) {
-                    _this._openerService.open(URI.parse(content)).then(void 0, onUnexpectedError);
+                    var uri;
+                    try {
+                        uri = URI.parse(content);
+                    }
+                    catch (err) {
+                        // ignore
+                    }
+                    if (uri) {
+                        _this._openerService.open(uri).catch(onUnexpectedError);
+                    }
                 },
                 disposeables: disposeables
             }

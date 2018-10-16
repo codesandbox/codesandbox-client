@@ -4,11 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { onUnexpectedExternalError } from '../../../base/common/errors.js';
-import URI from '../../../base/common/uri.js';
-import { TPromise } from '../../../base/common/winjs.base.js';
+import { URI } from '../../../base/common/uri.js';
 import { Range } from '../../common/core/range.js';
 import { LinkProviderRegistry } from '../../common/modes.js';
-import { asWinJsPromise } from '../../../base/common/async.js';
 import { CommandsRegistry } from '../../../platform/commands/common/commands.js';
 import { IModelService } from '../../common/services/modelService.js';
 import { CancellationToken } from '../../../base/common/cancellation.js';
@@ -37,27 +35,27 @@ var Link = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Link.prototype.resolve = function () {
+    Link.prototype.resolve = function (token) {
         var _this = this;
         if (this._link.url) {
             try {
-                return TPromise.as(URI.parse(this._link.url));
+                return Promise.resolve(URI.parse(this._link.url));
             }
             catch (e) {
-                return TPromise.wrapError(new Error('invalid'));
+                return Promise.reject(new Error('invalid'));
             }
         }
         if (typeof this._provider.resolveLink === 'function') {
-            return asWinJsPromise(function (token) { return _this._provider.resolveLink(_this._link, token); }).then(function (value) {
+            return Promise.resolve(this._provider.resolveLink(this._link, token)).then(function (value) {
                 _this._link = value || _this._link;
                 if (_this._link.url) {
                     // recurse
-                    return _this.resolve();
+                    return _this.resolve(token);
                 }
-                return TPromise.wrapError(new Error('missing'));
+                return Promise.reject(new Error('missing'));
             });
         }
-        return TPromise.wrapError(new Error('missing'));
+        return Promise.reject(new Error('missing'));
     };
     return Link;
 }());

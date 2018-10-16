@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { Emitter } from '../../../base/common/event.js';
+import { toDisposable } from '../../../base/common/lifecycle.js';
 import { score } from './languageSelector.js';
 import { shouldSynchronizeModel } from '../services/modelService.js';
 function isExclusive(selector) {
@@ -41,19 +42,17 @@ var LanguageFeatureRegistry = /** @class */ (function () {
         this._entries.push(entry);
         this._lastCandidate = undefined;
         this._onDidChange.fire(this._entries.length);
-        return {
-            dispose: function () {
-                if (entry) {
-                    var idx = _this._entries.indexOf(entry);
-                    if (idx >= 0) {
-                        _this._entries.splice(idx, 1);
-                        _this._lastCandidate = undefined;
-                        _this._onDidChange.fire(_this._entries.length);
-                        entry = undefined;
-                    }
+        return toDisposable(function () {
+            if (entry) {
+                var idx = _this._entries.indexOf(entry);
+                if (idx >= 0) {
+                    _this._entries.splice(idx, 1);
+                    _this._lastCandidate = undefined;
+                    _this._onDidChange.fire(_this._entries.length);
+                    entry = undefined;
                 }
             }
-        };
+        });
     };
     LanguageFeatureRegistry.prototype.has = function (model) {
         return this.all(model).length > 0;

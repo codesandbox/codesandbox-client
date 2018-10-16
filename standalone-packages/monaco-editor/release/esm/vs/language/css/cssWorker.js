@@ -90,6 +90,11 @@ var CSSWorker = /** @class */ (function () {
         var colorPresentations = this._languageService.getColorPresentations(document, stylesheet, color, range);
         return Promise.as(colorPresentations);
     };
+    CSSWorker.prototype.provideFoldingRanges = function (uri, context) {
+        var document = this._getTextDocument(uri);
+        var ranges = this._languageService.getFoldingRanges(document, context);
+        return Promise.as(ranges);
+    };
     CSSWorker.prototype.doRename = function (uri, position, newName) {
         var document = this._getTextDocument(uri);
         var stylesheet = this._languageService.parseStylesheet(document);

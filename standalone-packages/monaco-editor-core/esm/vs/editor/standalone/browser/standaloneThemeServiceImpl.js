@@ -2,19 +2,19 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-"use strict";
-import { TokenTheme, generateTokensCSSForColorMap } from "../../common/modes/supports/tokenization";
-import { vs, vs_dark, hc_black } from "../common/themes";
-import * as dom from "../../../base/browser/dom";
-import { TokenizationRegistry } from "../../common/modes";
-import { Color } from "../../../base/common/color";
-import { Extensions } from "../../../platform/theme/common/colorRegistry";
-import { Extensions as ThemingExtensions } from "../../../platform/theme/common/themeService";
-import { Registry } from "../../../platform/registry/common/platform";
-import { Emitter } from "../../../base/common/event";
-var VS_THEME_NAME = "vs";
-var VS_DARK_THEME_NAME = "vs-dark";
-var HC_BLACK_THEME_NAME = "hc-black";
+'use strict';
+import { TokenTheme, generateTokensCSSForColorMap } from '../../common/modes/supports/tokenization';
+import { vs, vs_dark, hc_black } from '../common/themes';
+import * as dom from '../../../base/browser/dom';
+import { TokenizationRegistry } from '../../common/modes';
+import { Color } from '../../../base/common/color';
+import { Extensions } from '../../../platform/theme/common/colorRegistry';
+import { Extensions as ThemingExtensions } from '../../../platform/theme/common/themeService';
+import { Registry } from '../../../platform/registry/common/platform';
+import { Emitter } from '../../../base/common/event';
+var VS_THEME_NAME = 'vs';
+var VS_DARK_THEME_NAME = 'vs-dark';
+var HC_BLACK_THEME_NAME = 'hc-black';
 var colorRegistry = Registry.as(Extensions.ColorContribution);
 var themingRegistry = Registry.as(ThemingExtensions.ThemingContribution);
 var StandaloneTheme = /** @class */ (function () {
@@ -22,7 +22,7 @@ var StandaloneTheme = /** @class */ (function () {
         this.themeData = standaloneThemeData;
         var base = standaloneThemeData.base;
         if (name.length > 0) {
-            this.id = base + " " + name;
+            this.id = base + ' ' + name;
             this.themeName = name;
         }
         else {
@@ -89,12 +89,9 @@ var StandaloneTheme = /** @class */ (function () {
     Object.defineProperty(StandaloneTheme.prototype, "type", {
         get: function () {
             switch (this.base) {
-                case VS_THEME_NAME:
-                    return "light";
-                case HC_BLACK_THEME_NAME:
-                    return "hc";
-                default:
-                    return "dark";
+                case VS_THEME_NAME: return 'light';
+                case HC_BLACK_THEME_NAME: return 'hc';
+                default: return 'dark';
             }
         },
         enumerable: true,
@@ -126,9 +123,9 @@ var StandaloneTheme = /** @class */ (function () {
     return StandaloneTheme;
 }());
 function isBuiltinTheme(themeName) {
-    return (themeName === VS_THEME_NAME ||
-        themeName === VS_DARK_THEME_NAME ||
-        themeName === HC_BLACK_THEME_NAME);
+    return (themeName === VS_THEME_NAME
+        || themeName === VS_DARK_THEME_NAME
+        || themeName === HC_BLACK_THEME_NAME);
 }
 function getBuiltinRules(builtinTheme) {
     switch (builtinTheme) {
@@ -147,13 +144,14 @@ function newBuiltInTheme(builtinTheme) {
 var StandaloneThemeServiceImpl = /** @class */ (function () {
     function StandaloneThemeServiceImpl() {
         this.environment = Object.create(null);
+        this.onFileIconThemeChange = new Emitter();
         this._onThemeChange = new Emitter();
         this._knownThemes = new Map();
         this._knownThemes.set(VS_THEME_NAME, newBuiltInTheme(VS_THEME_NAME));
         this._knownThemes.set(VS_DARK_THEME_NAME, newBuiltInTheme(VS_DARK_THEME_NAME));
         this._knownThemes.set(HC_BLACK_THEME_NAME, newBuiltInTheme(HC_BLACK_THEME_NAME));
         this._styleElement = dom.createStyleSheet();
-        this._styleElement.className = "monaco-colors";
+        this._styleElement.className = 'monaco-colors';
         this.setTheme(VS_THEME_NAME);
     }
     Object.defineProperty(StandaloneThemeServiceImpl.prototype, "onThemeChange", {
@@ -165,10 +163,10 @@ var StandaloneThemeServiceImpl = /** @class */ (function () {
     });
     StandaloneThemeServiceImpl.prototype.defineTheme = function (themeName, themeData) {
         if (!/^[a-z0-9\-]+$/i.test(themeName)) {
-            throw new Error("Illegal theme name!");
+            throw new Error('Illegal theme name!');
         }
         if (!isBuiltinTheme(themeData.base) && !isBuiltinTheme(themeName)) {
-            throw new Error("Illegal theme base!");
+            throw new Error('Illegal theme base!');
         }
         // set or replace theme
         this._knownThemes.set(themeName, new StandaloneTheme(themeName, themeData));
@@ -206,16 +204,33 @@ var StandaloneThemeServiceImpl = /** @class */ (function () {
                 }
             }
         };
-        themingRegistry
-            .getThemingParticipants()
-            .forEach(function (p) { return p(theme, ruleCollector, _this.environment); });
+        themingRegistry.getThemingParticipants().forEach(function (p) { return p(theme, ruleCollector, _this.environment); });
         var tokenTheme = theme.tokenTheme;
         var colorMap = tokenTheme.getColorMap();
         ruleCollector.addRule(generateTokensCSSForColorMap(colorMap));
-        this._styleElement.innerHTML = cssRules.join("\n");
+        this._styleElement.innerHTML = cssRules.join('\n');
         TokenizationRegistry.setColorMap(colorMap);
         this._onThemeChange.fire(theme);
         return theme.id;
+    };
+    Object.defineProperty(StandaloneThemeServiceImpl.prototype, "onDidFileIconThemeChange", {
+        get: function () {
+            return this.onFileIconThemeChange.event;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    StandaloneThemeServiceImpl.prototype.getFileIconTheme = function () {
+        return {
+            "id": "",
+            "label": "",
+            "settingsId": null,
+            "hasFileIcons": false,
+            "hasFolderIcons": false,
+            "hidesExplorerArrows": false,
+            "isLoaded": true,
+            "extensionData": null
+        };
     };
     return StandaloneThemeServiceImpl;
 }());

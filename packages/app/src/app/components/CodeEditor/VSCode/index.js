@@ -26,7 +26,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 
 import MonacoEditorComponent from './MonacoReactComponent';
 import type { EditorAPI } from './MonacoReactComponent';
-import { Container, CodeContainer } from './elements';
+import { Container } from './elements';
 import defineTheme from '../Monaco/define-theme';
 import getSettings from '../Monaco/settings';
 
@@ -220,7 +220,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco = monaco;
 
     // Load Vue eagerly
-    // getMode('stub.vue', monaco)
+    getMode('stub.vue', monaco)
 
     monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
     monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
@@ -340,9 +340,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.registerAutoCompletions();
 
-    setTimeout(() => {
-      liftOff(monaco);
-    }, 1000);
+
+    liftOff(monaco);
   };
 
   setCompilerOptions = () => {
@@ -699,7 +698,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       code !== this.getCode() &&
       (!moduleId || this.currentModule.id === moduleId)
     ) {
-      this.updateCode(code);
+      // this.updateCode(code);
       this.lint(
         code,
         this.currentModule.title,

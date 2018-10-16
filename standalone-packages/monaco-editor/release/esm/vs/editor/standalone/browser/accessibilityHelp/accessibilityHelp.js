@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -41,9 +44,8 @@ import { editorWidgetBackground, widgetShadow, contrastBorder } from '../../../.
 import * as platform from '../../../../base/common/platform.js';
 import { alert } from '../../../../base/browser/ui/aria/aria.js';
 import { IOpenerService } from '../../../../platform/opener/common/opener.js';
-import URI from '../../../../base/common/uri.js';
+import { URI } from '../../../../base/common/uri.js';
 import * as browser from '../../../../base/browser/browser.js';
-import { KeybindingsRegistry } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
 var CONTEXT_ACCESSIBILITY_WIDGET_VISIBLE = new RawContextKey('accessibilityHelpWidgetVisible', false);
 var AccessibilityHelpController = /** @class */ (function (_super) {
     __extends(AccessibilityHelpController, _super);
@@ -291,7 +293,8 @@ var ShowAccessibilityHelpAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
-                primary: (browser.isIE ? 2048 /* CtrlCmd */ | 59 /* F1 */ : 512 /* Alt */ | 59 /* F1 */)
+                primary: (browser.isIE ? 2048 /* CtrlCmd */ | 59 /* F1 */ : 512 /* Alt */ | 59 /* F1 */),
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -311,7 +314,7 @@ registerEditorCommand(new AccessibilityHelpCommand({
     precondition: CONTEXT_ACCESSIBILITY_WIDGET_VISIBLE,
     handler: function (x) { return x.hide(); },
     kbOpts: {
-        weight: KeybindingsRegistry.WEIGHT.editorContrib(100),
+        weight: 100 /* EditorContrib */ + 100,
         kbExpr: EditorContextKeys.focus,
         primary: 9 /* Escape */,
         secondary: [1024 /* Shift */ | 9 /* Escape */]

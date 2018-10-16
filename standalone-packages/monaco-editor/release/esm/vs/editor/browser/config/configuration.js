@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -21,7 +24,6 @@ import { CommonEditorConfiguration } from '../../common/config/commonEditorConfi
 import { FontInfo } from '../../common/config/fontInfo.js';
 import { ElementSizeObserver } from './elementSizeObserver.js';
 import { CharWidthRequest, readCharWidths } from './charWidthReader.js';
-import { StorageScope } from '../../../platform/storage/common/storage.js';
 var CSSBasedConfigurationCache = /** @class */ (function () {
     function CSSBasedConfigurationCache() {
         this._keys = Object.create(null);
@@ -55,7 +57,7 @@ export function readFontInfo(bareFontInfo) {
     return CSSBasedConfiguration.INSTANCE.readConfiguration(bareFontInfo);
 }
 export function restoreFontInfo(storageService) {
-    var strStoredFontInfo = storageService.get('editorFontInfo', StorageScope.GLOBAL);
+    var strStoredFontInfo = storageService.get('editorFontInfo', 0 /* GLOBAL */);
     if (typeof strStoredFontInfo !== 'string') {
         return;
     }
@@ -73,7 +75,7 @@ export function restoreFontInfo(storageService) {
 }
 export function saveFontInfo(storageService) {
     var knownFontInfo = CSSBasedConfiguration.INSTANCE.saveFontInfo();
-    storageService.store('editorFontInfo', JSON.stringify(knownFontInfo), StorageScope.GLOBAL);
+    storageService.store('editorFontInfo', JSON.stringify(knownFontInfo), 0 /* GLOBAL */);
 }
 var CSSBasedConfiguration = /** @class */ (function (_super) {
     __extends(CSSBasedConfiguration, _super);
@@ -144,6 +146,7 @@ var CSSBasedConfiguration = /** @class */ (function (_super) {
                     isMonospace: readConfig.isMonospace,
                     typicalHalfwidthCharacterWidth: Math.max(readConfig.typicalHalfwidthCharacterWidth, 5),
                     typicalFullwidthCharacterWidth: Math.max(readConfig.typicalFullwidthCharacterWidth, 5),
+                    canUseHalfwidthRightwardsArrow: readConfig.canUseHalfwidthRightwardsArrow,
                     spaceWidth: Math.max(readConfig.spaceWidth, 5),
                     maxDigitWidth: Math.max(readConfig.maxDigitWidth, 5),
                 }, false);
@@ -177,7 +180,8 @@ var CSSBasedConfiguration = /** @class */ (function (_super) {
         var digit8 = this.createRequest('8', 0 /* Regular */, all, monospace);
         var digit9 = this.createRequest('9', 0 /* Regular */, all, monospace);
         // monospace test: used for whitespace rendering
-        this.createRequest('→', 0 /* Regular */, all, monospace);
+        var rightwardsArrow = this.createRequest('→', 0 /* Regular */, all, monospace);
+        var halfwidthRightwardsArrow = this.createRequest('￫', 0 /* Regular */, all, null);
         this.createRequest('·', 0 /* Regular */, all, monospace);
         // monospace test: some characters
         this.createRequest('|', 0 /* Regular */, all, monospace);
@@ -212,6 +216,15 @@ var CSSBasedConfiguration = /** @class */ (function (_super) {
                 break;
             }
         }
+        var canUseHalfwidthRightwardsArrow = true;
+        if (isMonospace && halfwidthRightwardsArrow.width !== referenceWidth) {
+            // using a halfwidth rightwards arrow would break monospace...
+            canUseHalfwidthRightwardsArrow = false;
+        }
+        if (halfwidthRightwardsArrow.width > rightwardsArrow.width) {
+            // using a halfwidth rightwards arrow would paint a larger arrow than a regular rightwards arrow
+            canUseHalfwidthRightwardsArrow = false;
+        }
         // let's trust the zoom level only 2s after it was changed.
         var canTrustBrowserZoomLevel = (browser.getTimeSinceLastZoomLevelChanged() > 2000);
         return new FontInfo({
@@ -224,6 +237,7 @@ var CSSBasedConfiguration = /** @class */ (function (_super) {
             isMonospace: isMonospace,
             typicalHalfwidthCharacterWidth: typicalHalfwidthCharacter.width,
             typicalFullwidthCharacterWidth: typicalFullwidthCharacter.width,
+            canUseHalfwidthRightwardsArrow: canUseHalfwidthRightwardsArrow,
             spaceWidth: space.width,
             maxDigitWidth: maxDigitWidth
         }, canTrustBrowserZoomLevel);

@@ -15,6 +15,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         CONTENTS: lib_1.lib_es6_dts
     };
     // Quickly remove amd so BrowserFS will register to global scope instead.
+    // @ts-ignore
     var oldamd = self.define.amd;
     self.define.amd = null;
     self.importScripts("/static/browserfs/browserfs.min.js");

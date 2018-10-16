@@ -3,13 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { Event, Emitter } from './event.js';
+import { Emitter, Event } from './event.js';
 var shortcutEvent = Object.freeze(function (callback, context) {
     var handle = setTimeout(callback.bind(context), 0);
     return { dispose: function () { clearTimeout(handle); } };
 });
 export var CancellationToken;
 (function (CancellationToken) {
+    function isCancellationToken(thing) {
+        if (thing === CancellationToken.None || thing === CancellationToken.Cancelled) {
+            return true;
+        }
+        if (thing instanceof MutableToken) {
+            return true;
+        }
+        if (!thing || typeof thing !== 'object') {
+            return false;
+        }
+        return typeof thing.isCancellationRequested === 'boolean'
+            && typeof thing.onCancellationRequested === 'function';
+    }
+    CancellationToken.isCancellationToken = isCancellationToken;
     CancellationToken.None = Object.freeze({
         isCancellationRequested: false,
         onCancellationRequested: Event.None

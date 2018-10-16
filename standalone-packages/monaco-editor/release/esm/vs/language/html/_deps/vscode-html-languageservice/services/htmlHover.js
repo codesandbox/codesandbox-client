@@ -3,9 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { TokenType, createScanner } from '../parser/htmlScanner.js';
+import { createScanner } from '../parser/htmlScanner.js';
 import { MarkedString } from '../../vscode-languageserver-types/main.js';
 import { allTagProviders } from './tagProviders.js';
+import { TokenType } from '../htmlLanguageTypes.js';
 export function doHover(document, position, htmlDocument) {
     var offset = document.offsetAt(position);
     var node = htmlDocument.findNodeAt(offset);

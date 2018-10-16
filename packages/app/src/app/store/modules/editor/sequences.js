@@ -1,7 +1,7 @@
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
-import { closeTabByIndex } from '../../actions';
+import { closeTabByIndex, callVSCodeCallback } from '../../actions';
 import { renameModule } from '../files/sequences';
 import {
   sendModuleSaved,
@@ -190,17 +190,21 @@ export const prettifyCode = [
 export const saveCode = [
   track('Save Code', {}),
   ensureOwnedEditable,
-  when(
-    state`preferences.settings.prettifyOnSaveEnabled`,
-    state`preferences.settings.experimentVSCode`,
-    (prettify, vscode) => prettify && !vscode
-  ),
+  when(state`preferences.settings.experimentVSCode`),
   {
-    true: [prettifyCode],
-    false: [],
+    true: [changeCode],
+    false: [
+      when(state`preferences.settings.prettifyOnSaveEnabled`),
+      {
+        true: [prettifyCode],
+        false: [],
+      },
+    ],
   },
+
   actions.saveModuleCode,
   actions.setModuleSaved,
+  callVSCodeCallback,
   when(state`editor.currentSandbox.originalGit`),
   {
     true: [

@@ -38,6 +38,11 @@ var HTMLWorker = /** @class */ (function () {
         var links = this._languageService.findDocumentLinks(document, null);
         return Promise.as(links);
     };
+    HTMLWorker.prototype.provideFoldingRanges = function (uri, context) {
+        var document = this._getTextDocument(uri);
+        var ranges = this._languageService.getFoldingRanges(document, context);
+        return Promise.as(ranges);
+    };
     HTMLWorker.prototype._getTextDocument = function (uri) {
         var models = this._ctx.getMirrorModels();
         for (var _i = 0, models_1 = models; _i < models_1.length; _i++) {

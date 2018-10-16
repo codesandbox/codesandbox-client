@@ -128,11 +128,12 @@ var LightBulbWidget = /** @class */ (function () {
         configurable: true
     });
     LightBulbWidget.prototype._show = function () {
+        var _this = this;
         var config = this._editor.getConfiguration();
         if (!config.contribInfo.lightbulbEnabled) {
             return;
         }
-        var lineNumber = this._model.position.lineNumber;
+        var _a = this._model.position, lineNumber = _a.lineNumber, column = _a.column;
         var model = this._editor.getModel();
         if (!model) {
             return;
@@ -141,13 +142,22 @@ var LightBulbWidget = /** @class */ (function () {
         var lineContent = model.getLineContent(lineNumber);
         var indent = TextModel.computeIndentLevel(lineContent, tabSize);
         var lineHasSpace = config.fontInfo.spaceWidth * indent > 22;
+        var isFolded = function (lineNumber) {
+            return lineNumber > 2 && _this._editor.getTopForLineNumber(lineNumber) === _this._editor.getTopForLineNumber(lineNumber - 1);
+        };
         var effectiveLineNumber = lineNumber;
         if (!lineHasSpace) {
-            if (lineNumber > 1) {
+            if (lineNumber > 1 && !isFolded(lineNumber - 1)) {
                 effectiveLineNumber -= 1;
             }
-            else {
+            else if (!isFolded(lineNumber + 1)) {
                 effectiveLineNumber += 1;
+            }
+            else if (column * config.fontInfo.spaceWidth < 22) {
+                // cannot show lightbulb above/below and showing
+                // it inline would overlay the cursor...
+                this.hide();
+                return;
             }
         }
         this._position = {

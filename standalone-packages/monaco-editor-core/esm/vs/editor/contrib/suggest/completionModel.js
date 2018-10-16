@@ -13,8 +13,9 @@ var LineContext = /** @class */ (function () {
 }());
 export { LineContext };
 var CompletionModel = /** @class */ (function () {
-    function CompletionModel(items, column, lineContext, options) {
+    function CompletionModel(items, column, lineContext, _wordDistanceOracle, options) {
         if (options === void 0) { options = EDITOR_DEFAULTS.contribInfo.suggest; }
+        this._wordDistanceOracle = _wordDistanceOracle;
         this._snippetCompareFn = CompletionModel._compareCompletionItems;
         this._items = items;
         this._column = column;
@@ -123,7 +124,8 @@ var CompletionModel = /** @class */ (function () {
             // 'word' is that remainder of the current line that we
             // filter and score against. In theory each suggestion uses a
             // different word, but in practice not - that's why we cache
-            var wordLen = suggestion.overwriteBefore + characterCountDelta - (item.position.column - this._column);
+            var overwriteBefore = item.position.column - suggestion.range.startColumn;
+            var wordLen = overwriteBefore + characterCountDelta - (item.position.column - this._column);
             if (word.length !== wordLen) {
                 word = wordLen === 0 ? '' : leadingLineContent.slice(-wordLen);
             }
@@ -144,7 +146,7 @@ var CompletionModel = /** @class */ (function () {
                 // if it matches we check with the label to compute highlights
                 // and if that doesn't yield a result we have no highlights,
                 // despite having the match
-                var match = scoreFn(word, suggestion.filterText, suggestion.overwriteBefore);
+                var match = scoreFn(word, suggestion.filterText, overwriteBefore);
                 if (!match) {
                     continue;
                 }
@@ -153,7 +155,7 @@ var CompletionModel = /** @class */ (function () {
             }
             else {
                 // by default match `word` against the `label`
-                var match = scoreFn(word, suggestion.label, suggestion.overwriteBefore);
+                var match = scoreFn(word, suggestion.label, overwriteBefore);
                 if (match) {
                     item.score = match[0];
                     item.matches = match[1];
@@ -163,14 +165,15 @@ var CompletionModel = /** @class */ (function () {
                 }
             }
             item.idx = i;
+            item.distance = this._wordDistanceOracle.distance(item.position, suggestion);
             target.push(item);
             // update stats
             this._stats.suggestionCount++;
-            switch (suggestion.type) {
-                case 'snippet':
+            switch (suggestion.kind) {
+                case 18 /* Snippet */:
                     this._stats.snippetCount++;
                     break;
-                case 'text':
+                case 19 /* Text */:
                     this._stats.textCount++;
                     break;
             }
@@ -185,6 +188,12 @@ var CompletionModel = /** @class */ (function () {
         else if (a.score < b.score) {
             return 1;
         }
+        else if (a.distance < b.distance) {
+            return -1;
+        }
+        else if (a.distance > b.distance) {
+            return 1;
+        }
         else if (a.idx < b.idx) {
             return -1;
         }
@@ -196,22 +205,22 @@ var CompletionModel = /** @class */ (function () {
         }
     };
     CompletionModel._compareCompletionItemsSnippetsDown = function (a, b) {
-        if (a.suggestion.type !== b.suggestion.type) {
-            if (a.suggestion.type === 'snippet') {
+        if (a.suggestion.kind !== b.suggestion.kind) {
+            if (a.suggestion.kind === 18 /* Snippet */) {
                 return 1;
             }
-            else if (b.suggestion.type === 'snippet') {
+            else if (b.suggestion.kind === 18 /* Snippet */) {
                 return -1;
             }
         }
         return CompletionModel._compareCompletionItems(a, b);
     };
     CompletionModel._compareCompletionItemsSnippetsUp = function (a, b) {
-        if (a.suggestion.type !== b.suggestion.type) {
-            if (a.suggestion.type === 'snippet') {
+        if (a.suggestion.kind !== b.suggestion.kind) {
+            if (a.suggestion.kind === 18 /* Snippet */) {
                 return -1;
             }
-            else if (b.suggestion.type === 'snippet') {
+            else if (b.suggestion.kind === 18 /* Snippet */) {
                 return 1;
             }
         }

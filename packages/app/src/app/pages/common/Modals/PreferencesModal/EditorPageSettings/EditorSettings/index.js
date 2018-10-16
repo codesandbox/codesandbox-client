@@ -9,6 +9,7 @@ import {
   SubDescription,
   Rule,
 } from '../../elements';
+import VSCodePlaceholder from '../../VSCodePlaceholder';
 
 function EditorSettings({ store, signals }) {
   const bindValue = name => ({
@@ -54,16 +55,18 @@ function EditorSettings({ store, signals }) {
             Whether linting as you type should be enabled.
           </SubDescription>
           <Rule />
-          <PaddedPreference
-            title="Prettify On Save"
-            type="boolean"
-            tooltip="Made possible by Prettier"
-            {...bindValue('prettifyOnSaveEnabled')}
-          />
-          <SubDescription>
-            Format all code on save with prettier.
-          </SubDescription>
-          <Rule />
+          <VSCodePlaceholder hideTitle>
+            <PaddedPreference
+              title="Prettify On Save"
+              type="boolean"
+              tooltip="Made possible by Prettier"
+              {...bindValue('prettifyOnSaveEnabled')}
+            />
+            <SubDescription>
+              Format all code on save with prettier.
+            </SubDescription>
+            <Rule />
+          </VSCodePlaceholder>
           <PaddedPreference
             title="VIM Mode"
             type="boolean"

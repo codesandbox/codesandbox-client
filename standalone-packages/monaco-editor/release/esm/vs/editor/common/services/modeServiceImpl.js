@@ -43,8 +43,8 @@ var ModeServiceImpl = /** @class */ (function () {
     ModeServiceImpl.prototype.getModeIdForLanguageName = function (alias) {
         return this._registry.getModeIdForLanguageNameLowercase(alias);
     };
-    ModeServiceImpl.prototype.getModeIdByFilenameOrFirstLine = function (filename, firstLine) {
-        var modeIds = this._registry.getModeIdsFromFilenameOrFirstLine(filename, firstLine);
+    ModeServiceImpl.prototype.getModeIdByFilepathOrFirstLine = function (filepath, firstLine) {
+        var modeIds = this._registry.getModeIdsFromFilepathOrFirstLine(filepath, firstLine);
         if (modeIds.length > 0) {
             return modeIds[0];
         }
@@ -78,7 +78,7 @@ var ModeServiceImpl = /** @class */ (function () {
             var r_1 = null;
             this.getOrCreateMode(commaSeparatedMimetypesOrCommaSeparatedIds).then(function (mode) {
                 r_1 = mode;
-            }).done(null, onUnexpectedError);
+            }, onUnexpectedError);
             return r_1;
         }
         return null;
@@ -106,10 +106,10 @@ var ModeServiceImpl = /** @class */ (function () {
         }
         return null;
     };
-    ModeServiceImpl.prototype.getOrCreateModeByFilenameOrFirstLine = function (filename, firstLine) {
+    ModeServiceImpl.prototype.getOrCreateModeByFilepathOrFirstLine = function (filepath, firstLine) {
         var _this = this;
         return this._onReady().then(function () {
-            var modeId = _this.getModeIdByFilenameOrFirstLine(filename, firstLine);
+            var modeId = _this.getModeIdByFilepathOrFirstLine(filepath, firstLine);
             // Fall back to plain text if no mode was found
             return _this._getOrCreateMode(modeId || 'plaintext');
         });

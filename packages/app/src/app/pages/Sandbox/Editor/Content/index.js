@@ -15,7 +15,6 @@ import FilePath from 'app/components/CodeEditor/FilePath';
 
 import Preview from './Preview';
 import Tabs from './Tabs';
-import { FullSize } from './elements';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 
 const settings = store =>
@@ -407,8 +406,15 @@ class EditorPreview extends React.Component<Props, State> {
           templateBackgroundColor: template.backgroundColor,
         }}
       >
-        <FullSize
+        <div
           id="workbench.main.container"
+          style={{
+            height: '100%',
+            width: '100%',
+
+            display: 'flex',
+            flexDirection: 'column',
+          }}
           innerRef={node => {
             if (node) {
               this.contentNode = node;
@@ -528,7 +534,7 @@ class EditorPreview extends React.Component<Props, State> {
             }
             owned={sandbox.owned}
           />
-        </FullSize>
+        </div>
       </ThemeProvider>
     );
   }

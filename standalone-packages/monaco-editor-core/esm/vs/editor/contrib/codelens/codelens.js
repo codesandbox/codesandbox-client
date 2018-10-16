@@ -5,7 +5,7 @@
 'use strict';
 import { illegalArgument, onUnexpectedExternalError } from '../../../base/common/errors';
 import { mergeSort } from '../../../base/common/arrays';
-import URI from '../../../base/common/uri';
+import { URI } from '../../../base/common/uri';
 import { registerLanguageCommand } from '../../browser/editorExtensions';
 import { CodeLensProviderRegistry } from '../../common/modes';
 import { IModelService } from '../../common/services/modelService';

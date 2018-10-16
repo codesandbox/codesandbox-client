@@ -55,7 +55,7 @@ var CodeLensContentWidget = /** @class */ (function () {
                 var command = _this._commands[element.id];
                 if (command) {
                     editor.focus();
-                    commandService.executeCommand.apply(commandService, [command.id].concat(command.arguments)).done(undefined, function (err) {
+                    commandService.executeCommand.apply(commandService, [command.id].concat(command.arguments)).then(undefined, function (err) {
                         notificationService.error(err);
                     });
                 }

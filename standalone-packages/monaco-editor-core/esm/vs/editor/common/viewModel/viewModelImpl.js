@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -38,7 +41,7 @@ var ViewModel = /** @class */ (function (_super) {
         _this.hasFocus = false;
         _this.viewportStartLine = -1;
         _this.viewportStartLineTrackedRange = null;
-        _this.viewportStartLineTop = 0;
+        _this.viewportStartLineDelta = 0;
         if (USE_IDENTITY_LINES_COLLECTION && _this.model.isTooLargeForTokenization()) {
             _this.lines = new IdentityLinesCollection(_this.model);
         }
@@ -121,7 +124,7 @@ var ViewModel = /** @class */ (function (_super) {
         if (restorePreviousViewportStart && previousViewportStartModelPosition) {
             var viewPosition = this.coordinatesConverter.convertModelPositionToViewPosition(previousViewportStartModelPosition);
             var viewPositionTop = this.viewLayout.getVerticalOffsetForLineNumber(viewPosition.lineNumber);
-            this.viewLayout.deltaScrollNow(0, viewPositionTop - this.viewportStartLineTop);
+            this.viewLayout.setScrollPositionNow({ scrollTop: viewPositionTop + this.viewportStartLineDelta });
         }
     };
     ViewModel.prototype._registerModelEvents = function () {
@@ -204,7 +207,7 @@ var ViewModel = /** @class */ (function (_super) {
                 if (modelRange) {
                     var viewPosition = _this.coordinatesConverter.convertModelPositionToViewPosition(modelRange.getStartPosition());
                     var viewPositionTop = _this.viewLayout.getVerticalOffsetForLineNumber(viewPosition.lineNumber);
-                    _this.viewLayout.deltaScrollNow(0, viewPositionTop - _this.viewportStartLineTop);
+                    _this.viewLayout.setScrollPositionNow({ scrollTop: viewPositionTop + _this.viewportStartLineDelta });
                 }
             }
         }));
@@ -369,7 +372,9 @@ var ViewModel = /** @class */ (function (_super) {
         this.viewportStartLine = startLineNumber;
         var position = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(startLineNumber, this.getLineMinColumn(startLineNumber)));
         this.viewportStartLineTrackedRange = this.model._setTrackedRange(this.viewportStartLineTrackedRange, new Range(position.lineNumber, position.column, position.lineNumber, position.column), TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges);
-        this.viewportStartLineTop = this.viewLayout.getVerticalOffsetForLineNumber(startLineNumber);
+        var viewportStartLineTop = this.viewLayout.getVerticalOffsetForLineNumber(startLineNumber);
+        var scrollTop = this.viewLayout.getCurrentScrollTop();
+        this.viewportStartLineDelta = scrollTop - viewportStartLineTop;
     };
     ViewModel.prototype.getActiveIndentGuide = function (lineNumber, minLineNumber, maxLineNumber) {
         return this.lines.getActiveIndentGuide(lineNumber, minLineNumber, maxLineNumber);
@@ -430,7 +435,9 @@ var ViewModel = /** @class */ (function (_super) {
         for (var i = 0, len = decorations.length; i < len; i++) {
             var decoration = decorations[i];
             var opts = decoration.options.overviewRuler;
-            opts._resolvedColor = null;
+            if (opts) {
+                opts.invalidateCachedColor();
+            }
         }
     };
     ViewModel.prototype.getValueInRange = function (range, eol) {
@@ -442,6 +449,9 @@ var ViewModel = /** @class */ (function (_super) {
     };
     ViewModel.prototype.validateModelPosition = function (position) {
         return this.model.validatePosition(position);
+    };
+    ViewModel.prototype.validateModelRange = function (range) {
+        return this.model.validateRange(range);
     };
     ViewModel.prototype.deduceModelPositionRelativeToViewPosition = function (viewAnchorPosition, deltaOffset, lineFeedCnt) {
         var modelAnchor = this.coordinatesConverter.convertViewPositionToModelPosition(viewAnchorPosition);

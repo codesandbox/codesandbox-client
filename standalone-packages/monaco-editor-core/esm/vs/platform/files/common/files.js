@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -27,21 +30,6 @@ export var FileType;
     FileType[FileType["Directory"] = 2] = "Directory";
     FileType[FileType["SymbolicLink"] = 64] = "SymbolicLink";
 })(FileType || (FileType = {}));
-export var FileSystemProviderCapabilities;
-(function (FileSystemProviderCapabilities) {
-    FileSystemProviderCapabilities[FileSystemProviderCapabilities["FileReadWrite"] = 2] = "FileReadWrite";
-    FileSystemProviderCapabilities[FileSystemProviderCapabilities["FileOpenReadWriteClose"] = 4] = "FileOpenReadWriteClose";
-    FileSystemProviderCapabilities[FileSystemProviderCapabilities["FileFolderCopy"] = 8] = "FileFolderCopy";
-    FileSystemProviderCapabilities[FileSystemProviderCapabilities["PathCaseSensitive"] = 1024] = "PathCaseSensitive";
-    FileSystemProviderCapabilities[FileSystemProviderCapabilities["Readonly"] = 2048] = "Readonly";
-})(FileSystemProviderCapabilities || (FileSystemProviderCapabilities = {}));
-export var FileOperation;
-(function (FileOperation) {
-    FileOperation[FileOperation["CREATE"] = 0] = "CREATE";
-    FileOperation[FileOperation["DELETE"] = 1] = "DELETE";
-    FileOperation[FileOperation["MOVE"] = 2] = "MOVE";
-    FileOperation[FileOperation["COPY"] = 3] = "COPY";
-})(FileOperation || (FileOperation = {}));
 var FileOperationEvent = /** @class */ (function () {
     function FileOperationEvent(_resource, _operation, _target) {
         this._resource = _resource;
@@ -72,15 +60,6 @@ var FileOperationEvent = /** @class */ (function () {
     return FileOperationEvent;
 }());
 export { FileOperationEvent };
-/**
- * Possible changes that can occur to a file.
- */
-export var FileChangeType;
-(function (FileChangeType) {
-    FileChangeType[FileChangeType["UPDATED"] = 0] = "UPDATED";
-    FileChangeType[FileChangeType["ADDED"] = 1] = "ADDED";
-    FileChangeType[FileChangeType["DELETED"] = 2] = "DELETED";
-})(FileChangeType || (FileChangeType = {}));
 var FileChangesEvent = /** @class */ (function () {
     function FileChangesEvent(changes) {
         this._changes = changes;
@@ -93,7 +72,7 @@ var FileChangesEvent = /** @class */ (function () {
         configurable: true
     });
     /**
-     * Returns true if this change event contains the provided file with the given change type. In case of
+     * Returns true if this change event contains the provided file with the given change type (if provided). In case of
      * type DELETED, this method will also return true if a folder got deleted that is the parent of the
      * provided file path.
      */
@@ -101,12 +80,13 @@ var FileChangesEvent = /** @class */ (function () {
         if (!resource) {
             return false;
         }
+        var checkForChangeType = !isUndefinedOrNull(type);
         return this._changes.some(function (change) {
-            if (change.type !== type) {
+            if (checkForChangeType && change.type !== type) {
                 return false;
             }
             // For deleted also return true when deleted folder is parent of target path
-            if (type === FileChangeType.DELETED) {
+            if (change.type === 2 /* DELETED */) {
                 return isEqualOrParent(resource, change.resource, !isLinux /* ignorecase */);
             }
             return isEqual(resource, change.resource, !isLinux /* ignorecase */);
@@ -116,37 +96,37 @@ var FileChangesEvent = /** @class */ (function () {
      * Returns the changes that describe added files.
      */
     FileChangesEvent.prototype.getAdded = function () {
-        return this.getOfType(FileChangeType.ADDED);
+        return this.getOfType(1 /* ADDED */);
     };
     /**
      * Returns if this event contains added files.
      */
     FileChangesEvent.prototype.gotAdded = function () {
-        return this.hasType(FileChangeType.ADDED);
+        return this.hasType(1 /* ADDED */);
     };
     /**
      * Returns the changes that describe deleted files.
      */
     FileChangesEvent.prototype.getDeleted = function () {
-        return this.getOfType(FileChangeType.DELETED);
+        return this.getOfType(2 /* DELETED */);
     };
     /**
      * Returns if this event contains deleted files.
      */
     FileChangesEvent.prototype.gotDeleted = function () {
-        return this.hasType(FileChangeType.DELETED);
+        return this.hasType(2 /* DELETED */);
     };
     /**
      * Returns the changes that describe updated files.
      */
     FileChangesEvent.prototype.getUpdated = function () {
-        return this.getOfType(FileChangeType.UPDATED);
+        return this.getOfType(0 /* UPDATED */);
     };
     /**
      * Returns if this event contains updated files.
      */
     FileChangesEvent.prototype.gotUpdated = function () {
-        return this.hasType(FileChangeType.UPDATED);
+        return this.hasType(0 /* UPDATED */);
     };
     FileChangesEvent.prototype.getOfType = function (type) {
         return this._changes.filter(function (change) { return change.type === type; });
@@ -211,20 +191,6 @@ var FileOperationError = /** @class */ (function (_super) {
     return FileOperationError;
 }(Error));
 export { FileOperationError };
-export var FileOperationResult;
-(function (FileOperationResult) {
-    FileOperationResult[FileOperationResult["FILE_IS_BINARY"] = 0] = "FILE_IS_BINARY";
-    FileOperationResult[FileOperationResult["FILE_IS_DIRECTORY"] = 1] = "FILE_IS_DIRECTORY";
-    FileOperationResult[FileOperationResult["FILE_NOT_FOUND"] = 2] = "FILE_NOT_FOUND";
-    FileOperationResult[FileOperationResult["FILE_NOT_MODIFIED_SINCE"] = 3] = "FILE_NOT_MODIFIED_SINCE";
-    FileOperationResult[FileOperationResult["FILE_MODIFIED_SINCE"] = 4] = "FILE_MODIFIED_SINCE";
-    FileOperationResult[FileOperationResult["FILE_MOVE_CONFLICT"] = 5] = "FILE_MOVE_CONFLICT";
-    FileOperationResult[FileOperationResult["FILE_READ_ONLY"] = 6] = "FILE_READ_ONLY";
-    FileOperationResult[FileOperationResult["FILE_PERMISSION_DENIED"] = 7] = "FILE_PERMISSION_DENIED";
-    FileOperationResult[FileOperationResult["FILE_TOO_LARGE"] = 8] = "FILE_TOO_LARGE";
-    FileOperationResult[FileOperationResult["FILE_INVALID_PATH"] = 9] = "FILE_INVALID_PATH";
-    FileOperationResult[FileOperationResult["FILE_EXCEED_MEMORY_LIMIT"] = 10] = "FILE_EXCEED_MEMORY_LIMIT";
-})(FileOperationResult || (FileOperationResult = {}));
 export var AutoSaveConfiguration = {
     OFF: 'off',
     AFTER_DELAY: 'afterDelay',

@@ -177,4 +177,12 @@ export default {
     x: types.maybeNull(types.number),
     y: types.maybeNull(types.number),
   }),
+  themes: types.array(
+    types.model({
+      name: types.string,
+      id: types.string,
+      url: types.maybeNull(types.string),
+      type: types.maybeNull(types.string),
+    })
+  ),
 };

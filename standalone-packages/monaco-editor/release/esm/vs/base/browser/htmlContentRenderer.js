@@ -7,7 +7,8 @@ import * as DOM from './dom.js';
 import { defaultGenerator } from '../common/idGenerator.js';
 import { escape } from '../common/strings.js';
 import { removeMarkdownEscapes } from '../common/htmlContent.js';
-import { marked } from '../common/marked/marked.js';
+import * as marked from '../common/marked/marked.js';
+import { onUnexpectedError } from '../common/errors.js';
 function createElement(options) {
     var tagName = options.inline ? 'span' : 'div';
     var element = document.createElement(tagName);
@@ -84,7 +85,8 @@ export function renderMarkdown(markdown, options) {
         href = removeMarkdownEscapes(href);
         if (!href
             || href.match(/^data:|javascript:/i)
-            || (href.match(/^command:/i) && !markdown.isTrusted)) {
+            || (href.match(/^command:/i) && !markdown.isTrusted)
+            || href.match(/^command:(\/\/\/)?_workbench\.downloadResource/i)) {
             // drop the link
             return text;
         }
@@ -125,9 +127,17 @@ export function renderMarkdown(markdown, options) {
                     return;
                 }
             }
-            var href = target.dataset['href'];
-            if (href) {
-                options.actionHandler.callback(href, event);
+            try {
+                var href = target.dataset['href'];
+                if (href) {
+                    options.actionHandler.callback(href, event);
+                }
+            }
+            catch (err) {
+                onUnexpectedError(err);
+            }
+            finally {
+                event.preventDefault();
             }
         }));
     }

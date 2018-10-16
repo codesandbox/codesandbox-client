@@ -95,13 +95,15 @@ var ScopeBuilder = /** @class */ (function () {
     ScopeBuilder.prototype.addSymbol = function (node, name, value, type) {
         if (node.offset !== -1) {
             var current = this.scope.findScope(node.offset, node.length);
-            current.addSymbol(new Symbol(name, value, node, type));
+            if (current) {
+                current.addSymbol(new Symbol(name, value, node, type));
+            }
         }
     };
     ScopeBuilder.prototype.addScope = function (node) {
         if (node.offset !== -1) {
             var current = this.scope.findScope(node.offset, node.length);
-            if (current.offset !== node.offset || current.length !== node.length) {
+            if (current && (current.offset !== node.offset || current.length !== node.length)) { // scope already known?
                 var newScope = new Scope(node.offset, node.length);
                 current.addChild(newScope);
                 return newScope;
@@ -113,13 +115,15 @@ var ScopeBuilder = /** @class */ (function () {
     ScopeBuilder.prototype.addSymbolToChildScope = function (scopeNode, node, name, value, type) {
         if (scopeNode && scopeNode.offset !== -1) {
             var current = this.addScope(scopeNode); // create the scope or gets the existing one
-            current.addSymbol(new Symbol(name, value, node, type));
+            if (current) {
+                current.addSymbol(new Symbol(name, value, node, type));
+            }
         }
     };
     ScopeBuilder.prototype.visitNode = function (node) {
         switch (node.type) {
             case nodes.NodeType.Keyframe:
-                this.addSymbol(node, node.getName(), null, nodes.ReferenceType.Keyframe);
+                this.addSymbol(node, node.getName(), void 0, nodes.ReferenceType.Keyframe);
                 return true;
             case nodes.NodeType.CustomPropertyDeclaration:
                 return this.visitCustomPropertyDeclarationNode(node);
@@ -128,10 +132,10 @@ var ScopeBuilder = /** @class */ (function () {
             case nodes.NodeType.Ruleset:
                 return this.visitRuleSet(node);
             case nodes.NodeType.MixinDeclaration:
-                this.addSymbol(node, node.getName(), null, nodes.ReferenceType.Mixin);
+                this.addSymbol(node, node.getName(), void 0, nodes.ReferenceType.Mixin);
                 return true;
             case nodes.NodeType.FunctionDeclaration:
-                this.addSymbol(node, node.getName(), null, nodes.ReferenceType.Function);
+                this.addSymbol(node, node.getName(), void 0, nodes.ReferenceType.Function);
                 return true;
             case nodes.NodeType.FunctionParameter: {
                 return this.visitFunctionParameterNode(node);
@@ -143,7 +147,7 @@ var ScopeBuilder = /** @class */ (function () {
                 var forNode = node;
                 var scopeNode = forNode.getDeclarations();
                 if (scopeNode) {
-                    this.addSymbolToChildScope(scopeNode, forNode.variable, forNode.variable.getName(), null, nodes.ReferenceType.Variable);
+                    this.addSymbolToChildScope(scopeNode, forNode.variable, forNode.variable.getName(), void 0, nodes.ReferenceType.Variable);
                 }
                 return true;
             case nodes.NodeType.Each: {
@@ -153,7 +157,7 @@ var ScopeBuilder = /** @class */ (function () {
                     var variables = eachNode.getVariables().getChildren();
                     for (var _i = 0, variables_1 = variables; _i < variables_1.length; _i++) {
                         var variable = variables_1[_i];
-                        this.addSymbolToChildScope(scopeNode_1, variable, variable.getName(), null, nodes.ReferenceType.Variable);
+                        this.addSymbolToChildScope(scopeNode_1, variable, variable.getName(), void 0, nodes.ReferenceType.Variable);
                     }
                 }
                 return true;
@@ -163,18 +167,20 @@ var ScopeBuilder = /** @class */ (function () {
     };
     ScopeBuilder.prototype.visitRuleSet = function (node) {
         var current = this.scope.findScope(node.offset, node.length);
-        for (var _i = 0, _a = node.getSelectors().getChildren(); _i < _a.length; _i++) {
-            var child = _a[_i];
-            if (child instanceof nodes.Selector) {
-                if (child.getChildren().length === 1) {
-                    current.addSymbol(new Symbol(child.getChild(0).getText(), null, child, nodes.ReferenceType.Rule));
+        if (current) {
+            for (var _i = 0, _a = node.getSelectors().getChildren(); _i < _a.length; _i++) {
+                var child = _a[_i];
+                if (child instanceof nodes.Selector) {
+                    if (child.getChildren().length === 1) { // only selectors with a single element can be extended
+                        current.addSymbol(new Symbol(child.getChild(0).getText(), void 0, child, nodes.ReferenceType.Rule));
+                    }
                 }
             }
         }
         return true;
     };
     ScopeBuilder.prototype.visitVariableDeclarationNode = function (node) {
-        var value = node.getValue() ? node.getValue().getText() : null;
+        var value = node.getValue() ? node.getValue().getText() : void 0;
         this.addSymbol(node, node.getName(), value, nodes.ReferenceType.Variable);
         return true;
     };
@@ -183,7 +189,7 @@ var ScopeBuilder = /** @class */ (function () {
         var scopeNode = node.getParent().getDeclarations();
         if (scopeNode) {
             var valueNode = node.getDefaultValue();
-            var value = valueNode ? valueNode.getText() : null;
+            var value = valueNode ? valueNode.getText() : void 0;
             this.addSymbolToChildScope(scopeNode, node, node.getName(), value, nodes.ReferenceType.Variable);
         }
         return true;
@@ -195,16 +201,8 @@ var ScopeBuilder = /** @class */ (function () {
     };
     ScopeBuilder.prototype.addCSSVariable = function (node, name, value, type) {
         if (node.offset !== -1) {
-            var globalScope = this.getGlobalScope(node, name, type);
-            globalScope.addSymbol(new Symbol(name, value, node, type));
+            this.scope.addSymbol(new Symbol(name, value, node, type));
         }
-    };
-    ScopeBuilder.prototype.getGlobalScope = function (node, name, type) {
-        var current = this.scope.findScope(node.offset, node.length);
-        while (current.parent !== null) {
-            current = current.parent;
-        }
-        return current;
     };
     return ScopeBuilder;
 }());
@@ -311,7 +309,7 @@ var Symbols = /** @class */ (function () {
     };
     Symbols.prototype.matchesSymbol = function (node, symbol) {
         if (!node) {
-            return null;
+            return false;
         }
         while (node.type === nodes.NodeType.Interpolation) {
             node = node.getParent();

@@ -2,7 +2,7 @@ import { push, set, concat } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import { ensureOwnedEditable, closeModal } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
-import { closeTabByIndex, setModal } from '../../actions';
+import { closeTabByIndex, setModal, callVSCodeCallback } from '../../actions';
 import {
   sendModuleCreated,
   sendModuleDeleted,
@@ -53,9 +53,15 @@ export const massCreateModules = [
       concat(state`editor.currentSandbox.modules`, props`modules`),
       concat(state`editor.currentSandbox.directories`, props`directories`),
       sendMassModuleCreated,
+      callVSCodeCallback,
     ],
     error: [],
   },
+];
+
+export const createModulesByPath = [
+  actions.denormalizeModules,
+  massCreateModules,
 ];
 
 export const deleteUploadedFile = [

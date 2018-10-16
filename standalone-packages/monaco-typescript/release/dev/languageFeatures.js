@@ -54,6 +54,7 @@ define(["require", "exports"], function (require, exports) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var Uri = monaco.Uri;
+    // @ts-ignore
     var Promise = monaco.Promise;
     //#region utils copied from typescript to prevent loading the entire typescriptServices ---
     var IndentStyle;
@@ -129,6 +130,7 @@ define(["require", "exports"], function (require, exports) {
                 var handle;
                 var changeSubscription = model.onDidChangeContent(function () {
                     clearTimeout(handle);
+                    // @ts-ignore
                     handle = setTimeout(function () { return _this._doValidate(model.uri); }, 500);
                 });
                 _this._listener[model.uri.toString()] = {
@@ -473,12 +475,17 @@ define(["require", "exports"], function (require, exports) {
                             _i = 0, entries_1 = entries;
                             _a.label = 1;
                         case 1:
-                            if (!(_i < entries_1.length)) return [3 /*break*/, 4];
+                            if (!(_i < entries_1.length)) return [3 /*break*/, 5];
                             entry = entries_1[_i];
                             uri = Uri.parse(entry.fileName);
+                            model_1 = void 0;
+                            if (!monaco.editor.resolveModel) return [3 /*break*/, 3];
                             return [4 /*yield*/, monaco.editor.resolveModel(uri)];
                         case 2:
+                            // @ts-ignore
                             model_1 = _a.sent();
+                            _a.label = 3;
+                        case 3:
                             if (monaco.editor.getModel(uri)) {
                                 result.push({
                                     uri: uri,
@@ -488,11 +495,11 @@ define(["require", "exports"], function (require, exports) {
                             if (model_1) {
                                 model_1.dispose();
                             }
-                            _a.label = 3;
-                        case 3:
+                            _a.label = 4;
+                        case 4:
                             _i++;
                             return [3 /*break*/, 1];
-                        case 4: return [2 /*return*/, result];
+                        case 5: return [2 /*return*/, result];
                     }
                 });
             }); }));
@@ -525,12 +532,17 @@ define(["require", "exports"], function (require, exports) {
                             _i = 0, entries_2 = entries;
                             _a.label = 1;
                         case 1:
-                            if (!(_i < entries_2.length)) return [3 /*break*/, 4];
+                            if (!(_i < entries_2.length)) return [3 /*break*/, 5];
                             entry = entries_2[_i];
                             uri = Uri.parse(entry.fileName);
+                            model_2 = void 0;
+                            if (!monaco.editor.resolveModel) return [3 /*break*/, 3];
                             return [4 /*yield*/, monaco.editor.resolveModel(uri)];
                         case 2:
+                            // @ts-ignore
                             model_2 = _a.sent();
+                            _a.label = 3;
+                        case 3:
                             if (monaco.editor.getModel(uri)) {
                                 result.push({
                                     uri: uri,
@@ -540,11 +552,11 @@ define(["require", "exports"], function (require, exports) {
                             if (model_2) {
                                 model_2.dispose();
                             }
-                            _a.label = 3;
-                        case 3:
+                            _a.label = 4;
+                        case 4:
                             _i++;
                             return [3 /*break*/, 1];
-                        case 4: return [2 /*return*/, result];
+                        case 5: return [2 /*return*/, result];
                     }
                 });
             }); }));

@@ -16,12 +16,13 @@ import { mapEvent, filterEvent } from '../../../common/event';
 import { domEvent } from '../../event';
 import { ScrollableElement } from '../scrollbar/scrollableElement';
 import { ScrollbarVisibility } from '../../../common/scrollable';
-import { RangeMap, relativeComplement, intersect, shift } from './rangeMap';
+import { RangeMap, shift } from './rangeMap';
 import { RowCache } from './rowCache';
 import { isWindows } from '../../../common/platform';
 import * as browser from '../../browser';
 import { memoize } from '../../../common/decorators';
 import { DragMouseEvent } from '../../mouseEvent';
+import { Range } from '../../../common/range';
 function canUseTranslate3d() {
     if (browser.isFirefox) {
         return false;
@@ -36,10 +37,11 @@ var DefaultOptions = {
     verticalScrollMode: ScrollbarVisibility.Auto
 };
 var ListView = /** @class */ (function () {
-    function ListView(container, delegate, renderers, options) {
+    function ListView(container, virtualDelegate, renderers, options) {
         if (options === void 0) { options = DefaultOptions; }
-        this.delegate = delegate;
+        this.virtualDelegate = virtualDelegate;
         this.renderers = new Map();
+        this.didRequestScrollableElementUpdate = false;
         this.splicing = false;
         this.items = [];
         this.itemId = 0;
@@ -100,18 +102,18 @@ var ListView = /** @class */ (function () {
         var _a, _b;
         var previousRenderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
         var deleteRange = { start: start, end: start + deleteCount };
-        var removeRange = intersect(previousRenderRange, deleteRange);
+        var removeRange = Range.intersect(previousRenderRange, deleteRange);
         for (var i = removeRange.start; i < removeRange.end; i++) {
             this.removeItemFromDOM(i);
         }
         var previousRestRange = { start: start + deleteCount, end: this.items.length };
-        var previousRenderedRestRange = intersect(previousRestRange, previousRenderRange);
-        var previousUnrenderedRestRanges = relativeComplement(previousRestRange, previousRenderRange);
+        var previousRenderedRestRange = Range.intersect(previousRestRange, previousRenderRange);
+        var previousUnrenderedRestRanges = Range.relativeComplement(previousRestRange, previousRenderRange);
         var inserted = elements.map(function (element) { return ({
             id: String(_this.itemId++),
             element: element,
-            size: _this.delegate.getHeight(element),
-            templateId: _this.delegate.getTemplateId(element),
+            size: _this.virtualDelegate.getHeight(element),
+            templateId: _this.virtualDelegate.getTemplateId(element),
             row: null
         }); });
         (_a = this.rangeMap).splice.apply(_a, [start, deleteCount].concat(inserted));
@@ -119,11 +121,11 @@ var ListView = /** @class */ (function () {
         var delta = elements.length - deleteCount;
         var renderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
         var renderedRestRange = shift(previousRenderedRestRange, delta);
-        var updateRange = intersect(renderRange, renderedRestRange);
+        var updateRange = Range.intersect(renderRange, renderedRestRange);
         for (var i = updateRange.start; i < updateRange.end; i++) {
             this.updateItemInDOM(this.items[i], i);
         }
-        var removeRanges = relativeComplement(renderedRestRange, renderRange);
+        var removeRanges = Range.relativeComplement(renderedRestRange, renderRange);
         for (var r = 0; r < removeRanges.length; r++) {
             var removeRange_1 = removeRanges[r];
             for (var i = removeRange_1.start; i < removeRange_1.end; i++) {
@@ -132,7 +134,7 @@ var ListView = /** @class */ (function () {
         }
         var unrenderedRestRanges = previousUnrenderedRestRanges.map(function (r) { return shift(r, delta); });
         var elementsRange = { start: start, end: start + elements.length };
-        var insertRanges = [elementsRange].concat(unrenderedRestRanges).map(function (r) { return intersect(renderRange, r); });
+        var insertRanges = [elementsRange].concat(unrenderedRestRanges).map(function (r) { return Range.intersect(renderRange, r); });
         var beforeElement = this.getNextToLastElement(insertRanges);
         for (var r = 0; r < insertRanges.length; r++) {
             var insertRange = insertRanges[r];
@@ -140,9 +142,15 @@ var ListView = /** @class */ (function () {
                 this.insertItemInDOM(i, beforeElement);
             }
         }
-        var scrollHeight = this.getContentHeight();
-        this.rowsContainer.style.height = scrollHeight + "px";
-        this.scrollableElement.setScrollDimensions({ scrollHeight: scrollHeight });
+        this.scrollHeight = this.getContentHeight();
+        this.rowsContainer.style.height = this.scrollHeight + "px";
+        if (!this.didRequestScrollableElementUpdate) {
+            DOM.scheduleAtNextAnimationFrame(function () {
+                _this.scrollableElement.setScrollDimensions({ scrollHeight: _this.scrollHeight });
+                _this.didRequestScrollableElementUpdate = false;
+            });
+            this.didRequestScrollableElementUpdate = true;
+        }
         return deleted.map(function (i) { return i.element; });
     };
     Object.defineProperty(ListView.prototype, "length", {
@@ -188,8 +196,8 @@ var ListView = /** @class */ (function () {
     ListView.prototype.render = function (renderTop, renderHeight) {
         var previousRenderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
         var renderRange = this.getRenderRange(renderTop, renderHeight);
-        var rangesToInsert = relativeComplement(renderRange, previousRenderRange);
-        var rangesToRemove = relativeComplement(previousRenderRange, renderRange);
+        var rangesToInsert = Range.relativeComplement(renderRange, previousRenderRange);
+        var rangesToRemove = Range.relativeComplement(previousRenderRange, renderRange);
         var beforeElement = this.getNextToLastElement(rangesToInsert);
         for (var _i = 0, rangesToInsert_1 = rangesToInsert; _i < rangesToInsert_1.length; _i++) {
             var range = rangesToInsert_1[_i];
@@ -242,6 +250,10 @@ var ListView = /** @class */ (function () {
     };
     ListView.prototype.removeItemFromDOM = function (index) {
         var item = this.items[index];
+        var renderer = this.renderers.get(item.templateId);
+        if (renderer.disposeElement) {
+            renderer.disposeElement(item.element, index, item.row.templateData);
+        }
         this.cache.release(item.row);
         item.row = null;
     };
@@ -278,6 +290,14 @@ var ListView = /** @class */ (function () {
         get: function () {
             var _this = this;
             return filterEvent(mapEvent(domEvent(this.domNode, 'dblclick'), function (e) { return _this.toMouseEvent(e); }), function (e) { return e.index >= 0; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ListView.prototype, "onMouseMiddleClick", {
+        get: function () {
+            var _this = this;
+            return filterEvent(mapEvent(domEvent(this.domNode, 'auxclick'), function (e) { return _this.toMouseEvent(e); }), function (e) { return e.index >= 0 && e.browserEvent.button === 1; });
         },
         enumerable: true,
         configurable: true
@@ -365,7 +385,13 @@ var ListView = /** @class */ (function () {
         return { browserEvent: browserEvent, index: index, element: element };
     };
     ListView.prototype.onScroll = function (e) {
-        this.render(e.scrollTop, e.height);
+        try {
+            this.render(e.scrollTop, e.height);
+        }
+        catch (err) {
+            console.log('Got bad scroll event:', e);
+            throw err;
+        }
     };
     ListView.prototype.onTouchChange = function (event) {
         event.preventDefault();
@@ -475,6 +501,9 @@ var ListView = /** @class */ (function () {
     __decorate([
         memoize
     ], ListView.prototype, "onMouseDblClick", null);
+    __decorate([
+        memoize
+    ], ListView.prototype, "onMouseMiddleClick", null);
     __decorate([
         memoize
     ], ListView.prototype, "onMouseUp", null);

@@ -21,17 +21,22 @@ const ES6_LIB = {
 	CONTENTS: lib_es6_dts
 };
 
+declare global {
+  interface Window { BrowserFS: any; }
+}
+
 // Quickly remove amd so BrowserFS will register to global scope instead.
+// @ts-ignore
 const oldamd = self.define.amd;
-self.define.amd = null;
-self.importScripts(
+(self as any).define.amd = null;
+(self as any).importScripts(
   `/static/browserfs/browserfs.min.js`
 );
-self.define.amd = oldamd;
+(self as any).define.amd = oldamd;
 
-self.BrowserFS = BrowserFS;
-self.process = BrowserFS.BFSRequire('process');
-self.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+(self as any).BrowserFS = BrowserFS;
+(self as any).process = BrowserFS.BFSRequire('process');
+(self as any).Buffer = BrowserFS.BFSRequire('buffer').Buffer;
 
 
 const getAllFiles = (fs: any, dir: string, filelist?: string[]) => {

@@ -71,7 +71,7 @@ var JSONDocumentSymbols = /** @class */ (function () {
                 return SymbolKind.Array;
             case 'boolean':
                 return SymbolKind.Boolean;
-            default:// 'null'
+            default: // 'null'
                 return SymbolKind.Variable;
         }
     };

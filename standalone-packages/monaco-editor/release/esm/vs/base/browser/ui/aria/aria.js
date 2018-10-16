@@ -42,13 +42,28 @@ export function status(msg) {
         insertMessage(statusContainer, msg);
     }
 }
+var repeatedTimes = 0;
+var prevText = undefined;
 function insertMessage(target, msg) {
     if (!ariaContainer) {
         // console.warn('ARIA support needs a container. Call setARIAContainer() first.');
         return;
     }
-    if (target.textContent === msg) {
-        msg = nls.localize('repeated', "{0} (occurred again)", msg);
+    if (prevText === msg) {
+        repeatedTimes++;
+    }
+    else {
+        prevText = msg;
+        repeatedTimes = 0;
+    }
+    switch (repeatedTimes) {
+        case 0: break;
+        case 1:
+            msg = nls.localize('repeated', "{0} (occurred again)", msg);
+            break;
+        default:
+            msg = nls.localize('repeatedNtimes', "{0} (occurred {1} times)", msg, repeatedTimes);
+            break;
     }
     dom.clearNode(target);
     target.textContent = msg;

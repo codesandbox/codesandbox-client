@@ -181,7 +181,8 @@ export default function(requiredModule: string) {
     var result = {};
     result['editor'] = overwrites['editor'] || 'src';
     METADATA.PLUGINS.map(function(plugin) {
-      result[plugin.name] = overwrites[plugin.name] || 'npm/dev';
+      result[plugin.name] =
+        overwrites[plugin.name] || (process.env.VSCODE ? 'src' : 'npm/min');
     });
     return result;
   })();
@@ -223,8 +224,6 @@ export default function(requiredModule: string) {
       } else {
         if (resolvedPath.startsWith('../')) {
           resolvedPath = '/' + resolvedPath.replace('../', '');
-        } else {
-          resolvedPath = '/monaco-editor/' + resolvedPath;
         }
       }
     } else {
@@ -352,14 +351,14 @@ export default function(requiredModule: string) {
 
     window.nodeRequire = path => {
       // Trick AMD in that this is the node require function
-      console.log('nodeRequire', path);
+      // console.log('nodeRequire', path);
 
-      if (path.endsWith('package.json')) {
-        return require('vscode/package.json');
-      }
-      if (path.endsWith('product.json')) {
-        return require('vscode/product.json');
-      }
+      // if (path.endsWith('package.json')) {
+      //   return require('vscode/package.json');
+      // }
+      // if (path.endsWith('product.json')) {
+      //   return require('vscode/product.json');
+      // }
 
       if (path === 'module') {
         return { _load: window.nodeRequire };
@@ -368,8 +367,7 @@ export default function(requiredModule: string) {
 
     function loadFiles() {
       var loaderPathsConfig = {
-        // 'vs/nls': '/vscode/out-build/vs/nls.build',
-        // 'vs/css': '/vscode/out-build/vs/css.build',
+        'vs/language/vue': '/public/13/vs/language/vue',
       };
       if (!RESOLVED_CORE.isRelease()) {
         RESOLVED_PLUGINS.forEach(function(plugin) {
@@ -378,8 +376,10 @@ export default function(requiredModule: string) {
       }
       RESOLVED_CORE.generateLoaderConfig(loaderPathsConfig);
 
-      console.log('LOADER CONFIG: ');
-      console.log(JSON.stringify(loaderPathsConfig, null, '\t'));
+      if (process.env.NODE_ENV === 'development') {
+        console.log('LOADER CONFIG: ');
+        console.log(JSON.stringify(loaderPathsConfig, null, '\t'));
+      }
 
       const requireToUrl = p => require('path').join('/vs', p);
       self.require.toUrl = requireToUrl;
@@ -388,7 +388,9 @@ export default function(requiredModule: string) {
         requiresDefined = true;
         initializeRequires();
 
-        console.log('setting config', AMDLoader);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('setting config', AMDLoader);
+        }
 
         // self.require.config({ requireToUrl, paths: { vs: '/public/vscode' } });
         self.require.config({
@@ -401,9 +403,7 @@ export default function(requiredModule: string) {
       window.deps = new Set();
 
       self.require(requiredModule, function() {
-        console.log('Loaded first files');
         if (!RESOLVED_CORE.isRelease()) {
-          console.log('Loaded files');
           // At this point we've loaded the monaco-editor-core
           self.require(
             RESOLVED_PLUGINS.map(function(plugin) {

@@ -141,7 +141,9 @@ define(["require", "exports"], function (require, exports) {
             "VERSION", "WAIT_FOR_EXECUTED_GTID_SET", "WAIT_UNTIL_SQL_THREAD_AFTER_GTIDS", "WEEK", "WEEKDAY", "WEEKOFYEAR", "WEIGHT_STRING", "Within",
             "X", "Y", "YEAR", "YEARWEEK"
         ],
-        builtinVariables: [],
+        builtinVariables: [
+        // NOT SUPPORTED
+        ],
         tokenizer: {
             root: [
                 { include: '@comments' },
@@ -206,7 +208,9 @@ define(["require", "exports"], function (require, exports) {
                 [/``/, 'identifier'],
                 [/`/, { token: 'identifier.quote', next: '@pop' }]
             ],
-            scopes: []
+            scopes: [
+            // NOT SUPPORTED
+            ]
         }
     };
 });

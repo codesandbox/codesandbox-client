@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -23,8 +26,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { LRUCache, TernarySearchTree } from '../../../base/common/map.js';
-import { IStorageService, StorageScope } from '../../../platform/storage/common/storage.js';
+import { IStorageService } from '../../../platform/storage/common/storage.js';
 import { RunOnceScheduler } from '../../../base/common/async.js';
+import { completionKindFromLegacyString } from '../../common/modes.js';
 var Memory = /** @class */ (function () {
     function Memory() {
     }
@@ -79,7 +83,7 @@ var LRUMemory = /** @class */ (function (_super) {
         var key = model.getLanguageIdentifier().language + "/" + label;
         this._cache.set(key, {
             touch: this._seq++,
-            type: item.suggestion.type,
+            type: item.suggestion.kind,
             insertText: item.suggestion.insertText
         });
     };
@@ -100,7 +104,7 @@ var LRUMemory = /** @class */ (function (_super) {
             var suggestion = items[i].suggestion;
             var key = model.getLanguageIdentifier().language + "/" + suggestion.label;
             var item = this._cache.get(key);
-            if (item && item.touch > seq && item.type === suggestion.type && item.insertText === suggestion.insertText) {
+            if (item && item.touch > seq && item.type === suggestion.kind && item.insertText === suggestion.insertText) {
                 seq = item.touch;
                 res = i;
             }
@@ -125,6 +129,7 @@ var LRUMemory = /** @class */ (function (_super) {
         for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
             var _a = data_1[_i], key = _a[0], value = _a[1];
             value.touch = seq;
+            value.type = typeof value.type === 'number' ? value.type : completionKindFromLegacyString(value.type);
             this._cache.set(key, value);
         }
         this._seq = this._cache.size;
@@ -144,7 +149,7 @@ var PrefixMemory = /** @class */ (function (_super) {
         var word = model.getWordUntilPosition(pos).word;
         var key = model.getLanguageIdentifier().language + "/" + word;
         this._trie.set(key, {
-            type: item.suggestion.type,
+            type: item.suggestion.kind,
             insertText: item.suggestion.insertText,
             touch: this._seq++
         });
@@ -161,8 +166,8 @@ var PrefixMemory = /** @class */ (function (_super) {
         }
         if (item) {
             for (var i = 0; i < items.length; i++) {
-                var _a = items[i].suggestion, type = _a.type, insertText = _a.insertText;
-                if (type === item.type && insertText === item.insertText) {
+                var _a = items[i].suggestion, kind = _a.kind, insertText = _a.insertText;
+                if (kind === item.type && insertText === item.insertText) {
                     return i;
                 }
             }
@@ -186,6 +191,7 @@ var PrefixMemory = /** @class */ (function (_super) {
             this._seq = data[0][1].touch + 1;
             for (var _i = 0, data_2 = data; _i < data_2.length; _i++) {
                 var _a = data_2[_i], key = _a[0], value = _a[1];
+                value.type = typeof value.type === 'number' ? value.type : completionKindFromLegacyString(value.type);
                 this._trie.set(key, value);
             }
         }
@@ -208,7 +214,7 @@ var SuggestMemories = /** @class */ (function () {
         this._mode = mode;
         this._strategy = mode === 'recentlyUsedByPrefix' ? new PrefixMemory() : mode === 'recentlyUsed' ? new LRUMemory() : new NoMemory();
         try {
-            var raw = this._storageService.get(this._storagePrefix + "/" + this._mode, StorageScope.WORKSPACE);
+            var raw = this._storageService.get(this._storagePrefix + "/" + this._mode, 1 /* WORKSPACE */);
             if (raw) {
                 this._strategy.fromJSON(JSON.parse(raw));
             }
@@ -226,7 +232,7 @@ var SuggestMemories = /** @class */ (function () {
     };
     SuggestMemories.prototype._flush = function () {
         var raw = JSON.stringify(this._strategy);
-        this._storageService.store(this._storagePrefix + "/" + this._mode, raw, StorageScope.WORKSPACE);
+        this._storageService.store(this._storagePrefix + "/" + this._mode, raw, 1 /* WORKSPACE */);
     };
     SuggestMemories = __decorate([
         __param(1, IStorageService)

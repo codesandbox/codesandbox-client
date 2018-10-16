@@ -31,7 +31,8 @@ function Experiments({ store, signals }) {
             {...bindValue('experimentVSCode')}
           />
           <SubDescription>
-            Use the official VSCode editor directly in the browser.
+            Use the official VSCode editor directly in the browser. Note: we
+            will refresh the page.
           </SubDescription>
         </PreferenceContainer>
       </SubContainer>

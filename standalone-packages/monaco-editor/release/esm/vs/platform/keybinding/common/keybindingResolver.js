@@ -6,6 +6,7 @@
 import { isFalsyOrEmpty } from '../../../base/common/arrays.js';
 import { ContextKeyAndExpr } from '../../contextkey/common/contextkey.js';
 import { CommandsRegistry } from '../../commands/common/commands.js';
+import { MenuRegistry } from '../../actions/common/actions.js';
 var KeybindingResolver = /** @class */ (function () {
     function KeybindingResolver(defaultKeybindings, overrides) {
         this._defaultKeybindings = defaultKeybindings;
@@ -242,20 +243,31 @@ var KeybindingResolver = /** @class */ (function () {
         return rules.evaluate(context);
     };
     KeybindingResolver.getAllUnboundCommands = function (boundCommands) {
-        var commands = CommandsRegistry.getCommands();
         var unboundCommands = [];
-        for (var id in commands) {
-            if (id[0] === '_' || id.indexOf('vscode.') === 0) { // private command
-                continue;
+        var seenMap = new Map();
+        var addCommand = function (id) {
+            if (seenMap.has(id)) {
+                return;
             }
-            if (typeof commands[id].description === 'object'
-                && !isFalsyOrEmpty(commands[id].description.args)) { // command with args
-                continue;
+            seenMap.set(id);
+            if (id[0] === '_' || id.indexOf('vscode.') === 0) { // private command
+                return;
             }
             if (boundCommands.get(id) === true) {
-                continue;
+                return;
+            }
+            var command = CommandsRegistry.getCommand(id);
+            if (command && typeof command.description === 'object'
+                && !isFalsyOrEmpty(command.description.args)) { // command with args
+                return;
             }
             unboundCommands.push(id);
+        };
+        for (var id in MenuRegistry.getCommands()) {
+            addCommand(id);
+        }
+        for (var id in CommandsRegistry.getCommands()) {
+            addCommand(id);
         }
         return unboundCommands;
     };

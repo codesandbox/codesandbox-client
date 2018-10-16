@@ -4,29 +4,31 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import './media/peekViewWidget.css';
-import * as nls from '../../../nls';
-import { Action } from '../../../base/common/actions';
-import * as strings from '../../../base/common/strings';
-import * as objects from '../../../base/common/objects';
-import { $ } from '../../../base/browser/builder';
-import { Emitter } from '../../../base/common/event';
 import * as dom from '../../../base/browser/dom';
 import { ActionBar } from '../../../base/browser/ui/actionbar/actionbar';
-import { ICodeEditorService } from '../../browser/services/codeEditorService';
-import { ZoneWidget } from '../zoneWidget/zoneWidget';
-import { EmbeddedCodeEditorWidget } from '../../browser/widget/embeddedCodeEditorWidget';
-import { RawContextKey } from '../../../platform/contextkey/common/contextkey';
+import { Action } from '../../../base/common/actions';
 import { Color } from '../../../base/common/color';
+import { Emitter } from '../../../base/common/event';
+import * as objects from '../../../base/common/objects';
+import * as strings from '../../../base/common/strings';
+import './media/peekViewWidget.css';
+import { ICodeEditorService } from '../../browser/services/codeEditorService';
+import { EmbeddedCodeEditorWidget } from '../../browser/widget/embeddedCodeEditorWidget';
+import { ZoneWidget } from '../zoneWidget/zoneWidget';
+import * as nls from '../../../nls';
+import { RawContextKey } from '../../../platform/contextkey/common/contextkey';
 export var PeekContext;
 (function (PeekContext) {
     PeekContext.inPeekEditor = new RawContextKey('inReferenceSearchEditor', true);
@@ -95,8 +97,8 @@ var PeekViewWidget = /** @class */ (function (_super) {
     };
     PeekViewWidget.prototype._fillContainer = function (container) {
         this.setCssClass('peekview-widget');
-        this._headElement = $('.head').getHTMLElement();
-        this._bodyElement = $('.body').getHTMLElement();
+        this._headElement = dom.$('.head');
+        this._bodyElement = dom.$('.body');
         this._fillHead(this._headElement);
         this._fillBody(this._bodyElement);
         container.appendChild(this._headElement);
@@ -104,16 +106,17 @@ var PeekViewWidget = /** @class */ (function (_super) {
     };
     PeekViewWidget.prototype._fillHead = function (container) {
         var _this = this;
-        var titleElement = $('.peekview-title').
-            on(dom.EventType.CLICK, function (e) { return _this._onTitleClick(e); }).
-            appendTo(this._headElement).
-            getHTMLElement();
-        this._primaryHeading = $('span.filename').appendTo(titleElement).getHTMLElement();
-        this._secondaryHeading = $('span.dirname').appendTo(titleElement).getHTMLElement();
-        this._metaHeading = $('span.meta').appendTo(titleElement).getHTMLElement();
-        var actionsContainer = $('.peekview-actions').appendTo(this._headElement);
+        var titleElement = dom.$('.peekview-title');
+        dom.append(this._headElement, titleElement);
+        dom.addStandardDisposableListener(titleElement, 'click', function (event) { return _this._onTitleClick(event); });
+        this._primaryHeading = dom.$('span.filename');
+        this._secondaryHeading = dom.$('span.dirname');
+        this._metaHeading = dom.$('span.meta');
+        dom.append(titleElement, this._primaryHeading, this._secondaryHeading, this._metaHeading);
+        var actionsContainer = dom.$('.peekview-actions');
+        dom.append(this._headElement, actionsContainer);
         var actionBarOptions = this._getActionBarOptions();
-        this._actionbarWidget = new ActionBar(actionsContainer.getHTMLElement(), actionBarOptions);
+        this._actionbarWidget = new ActionBar(actionsContainer, actionBarOptions);
         this._disposables.push(this._actionbarWidget);
         this._actionbarWidget.push(new Action('peekview.close', nls.localize('label.close', "Close"), 'close-peekview-action', true, function () {
             _this.dispose();
@@ -127,10 +130,10 @@ var PeekViewWidget = /** @class */ (function (_super) {
         // implement me
     };
     PeekViewWidget.prototype.setTitle = function (primaryHeading, secondaryHeading) {
-        $(this._primaryHeading).safeInnerHtml(primaryHeading);
+        this._primaryHeading.innerHTML = strings.escape(primaryHeading);
         this._primaryHeading.setAttribute('aria-label', primaryHeading);
         if (secondaryHeading) {
-            $(this._secondaryHeading).safeInnerHtml(secondaryHeading);
+            this._secondaryHeading.innerHTML = strings.escape(secondaryHeading);
         }
         else {
             dom.clearNode(this._secondaryHeading);
@@ -138,7 +141,7 @@ var PeekViewWidget = /** @class */ (function (_super) {
     };
     PeekViewWidget.prototype.setMetaTitle = function (value) {
         if (value) {
-            $(this._metaHeading).safeInnerHtml(value);
+            this._metaHeading.innerHTML = strings.escape(value);
         }
         else {
             dom.clearNode(this._metaHeading);

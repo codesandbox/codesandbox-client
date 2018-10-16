@@ -52,10 +52,18 @@ export var language = {
         "ZREMRANGEBYRANK", "ZREMRANGEBYSCORE", "ZREVRANGE", "ZREVRANGEBYSCORE", "ZREVRANK", "ZSCORE", "ZUNIONSTORE", "SCAN", "SSCAN",
         "HSCAN", "ZSCAN"
     ],
-    operators: [],
-    builtinFunctions: [],
-    builtinVariables: [],
-    pseudoColumns: [],
+    operators: [
+    // NOT SUPPORTED
+    ],
+    builtinFunctions: [
+    // NOT SUPPORTED
+    ],
+    builtinVariables: [
+    // NOT SUPPORTED
+    ],
+    pseudoColumns: [
+    // NOT SUPPORTED
+    ],
     tokenizer: {
         root: [
             { include: '@whitespace' },
@@ -106,6 +114,8 @@ export var language = {
             [/""/, 'string.double'],
             [/"/, { token: 'string.double', next: '@pop' }]
         ],
-        scopes: []
+        scopes: [
+        // NOT SUPPORTED
+        ]
     }
 };

@@ -39,8 +39,6 @@ class MonacoEditor extends React.PureComponent {
   };
 
   afterViewInit = () => {
-    const context = this.props.context || window;
-
     require('app/vscode/dev-bootstrap').default([
       'vs/editor/codesandbox.editor.main',
     ])(() => {
@@ -91,7 +89,7 @@ class MonacoEditor extends React.PureComponent {
         { IEditorService },
         { ICodeEditorService },
         { ITextFileService },
-        { ILifecycleService, LifecyclePhase },
+        { ILifecycleService },
         { IEditorGroupsService },
       ] = [
         r('vs/codesandbox/services/codesandbox/browser/codesandboxService'),
@@ -106,14 +104,6 @@ class MonacoEditor extends React.PureComponent {
 
       const container = document.createElement('div');
       const part = document.createElement('div');
-
-      const editorElement = document.getElementById('workbench.main.container');
-      container.className = 'monaco-workbench';
-      editorElement.className += ' monaco-workbench mac nopanel';
-      editorElement.id = 'workbench.main.container';
-
-      part.className = 'part editor has-watermark';
-
       container.appendChild(part);
 
       const rootEl = document.getElementById('vscode-container');
@@ -127,6 +117,14 @@ class MonacoEditor extends React.PureComponent {
             i.createInstance(CodeSandboxService, controller),
         },
         services => {
+          const editorElement = document.getElementById(
+            'workbench.main.container'
+          );
+
+          container.className = 'monaco-workbench';
+          part.className = 'part editor has-watermark';
+          editorElement.className += ' monaco-workbench mac nopanel';
+
           const EditorPart = services.get(IEditorGroupsService);
           EditorPart.create(part);
 
@@ -141,7 +139,7 @@ class MonacoEditor extends React.PureComponent {
 
           const lifecycleService = services.get(ILifecycleService);
 
-          lifecycleService.phase = LifecyclePhase.Running;
+          lifecycleService.phase = 3; // Running
 
           const editorApi = {
             openFile(path: string) {
@@ -156,7 +154,9 @@ class MonacoEditor extends React.PureComponent {
             editorPart: EditorPart,
             editorService,
           };
-          console.log(services);
+          if (process.env.NODE_ENV === 'development') {
+            console.log(services);
+          }
 
           // After initializing monaco editor
           this.editorDidMount(editorApi, context.monaco);

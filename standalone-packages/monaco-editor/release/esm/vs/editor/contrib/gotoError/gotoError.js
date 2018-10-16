@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -31,7 +34,6 @@ import { Range } from '../../common/core/range.js';
 import { registerEditorAction, registerEditorContribution, EditorAction, EditorCommand, registerEditorCommand } from '../../browser/editorExtensions.js';
 import { IThemeService } from '../../../platform/theme/common/themeService.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
-import { KeybindingsRegistry } from '../../../platform/keybinding/common/keybindingsRegistry.js';
 import { MarkerNavigationWidget } from './gotoErrorWidget.js';
 import { compare } from '../../../base/common/strings.js';
 import { binarySearch } from '../../../base/common/arrays.js';
@@ -386,7 +388,8 @@ var NextMarkerInFilesAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
-                primary: 66 /* F8 */
+                primary: 66 /* F8 */,
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -402,7 +405,8 @@ var PrevMarkerInFilesAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
-                primary: 1024 /* Shift */ | 66 /* F8 */
+                primary: 1024 /* Shift */ | 66 /* F8 */,
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -420,7 +424,7 @@ registerEditorCommand(new MarkerCommand({
     precondition: CONTEXT_MARKERS_NAVIGATION_VISIBLE,
     handler: function (x) { return x.closeMarkersNavigation(); },
     kbOpts: {
-        weight: KeybindingsRegistry.WEIGHT.editorContrib(50),
+        weight: 100 /* EditorContrib */ + 50,
         kbExpr: EditorContextKeys.focus,
         primary: 9 /* Escape */,
         secondary: [1024 /* Shift */ | 9 /* Escape */]

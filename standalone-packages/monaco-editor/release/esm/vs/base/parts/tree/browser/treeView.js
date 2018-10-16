@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -15,7 +18,6 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import * as Platform from '../../../common/platform.js';
 import * as Browser from '../../../browser/browser.js';
-import * as WinJS from '../../../common/winjs.base.js';
 import * as Lifecycle from '../../../common/lifecycle.js';
 import * as DOM from '../../../browser/dom.js';
 import * as Diff from '../../../common/diff/diff.js';
@@ -32,7 +34,7 @@ import * as _ from './tree.js';
 import { Emitter } from '../../../common/event.js';
 import { DataTransfers } from '../../../browser/dnd.js';
 import { DefaultTreestyler } from './treeDefaults.js';
-import { Delayer } from '../../../common/async.js';
+import { Delayer, timeout } from '../../../common/async.js';
 function removeFromParent(element) {
     try {
         element.parentElement.removeChild(element);
@@ -53,10 +55,18 @@ var RowCache = /** @class */ (function () {
             content.className = 'content';
             var row = document.createElement('div');
             row.appendChild(content);
+            var templateData = null;
+            try {
+                templateData = this.context.renderer.renderTemplate(this.context.tree, templateId, content);
+            }
+            catch (err) {
+                console.error('Tree usage error: exception while rendering template');
+                console.error(err);
+            }
             result = {
                 element: row,
                 templateId: templateId,
-                templateData: this.context.renderer.renderTemplate(this.context.tree, templateId, content)
+                templateData: templateData
             };
         }
         return result;
@@ -194,7 +204,7 @@ var ViewItem = /** @class */ (function () {
             this.element.removeAttribute('id');
         }
         if (this.model.hasChildren()) {
-            this.element.setAttribute('aria-expanded', String(!!this.model.isExpanded()));
+            this.element.setAttribute('aria-expanded', String(!!this._styles['expanded']));
         }
         else {
             this.element.removeAttribute('aria-expanded');
@@ -230,7 +240,13 @@ var ViewItem = /** @class */ (function () {
             if (this.context.horizontalScrolling) {
                 this.element.style.width = 'fit-content';
             }
-            this.context.renderer.renderElement(this.context.tree, this.model.getElement(), this.templateId, this.row.templateData);
+            try {
+                this.context.renderer.renderElement(this.context.tree, this.model.getElement(), this.templateId, this.row.templateData);
+            }
+            catch (err) {
+                console.error('Tree usage error: exception while rendering element');
+                console.error(err);
+            }
             if (this.context.horizontalScrolling) {
                 this.width = DOM.getContentWidth(this.element) + paddingLeft;
                 this.element.style.width = '';
@@ -348,6 +364,7 @@ var TreeView = /** @class */ (function (_super) {
         _this.contentWidthUpdateDelayer = new Delayer(50);
         _this.isRefreshing = false;
         _this.refreshingPreviousChildrenIds = {};
+        _this.currentDropDisposable = Lifecycle.Disposable.None;
         _this._onDOMFocus = new Emitter();
         _this._onDOMBlur = new Emitter();
         _this._onDidScroll = new Emitter();
@@ -424,8 +441,12 @@ var TreeView = /** @class */ (function (_super) {
         _this.viewListeners.push(DOM.addDisposableListener(_this.domNode, 'keyup', function (e) { return _this.onKeyUp(e); }));
         _this.viewListeners.push(DOM.addDisposableListener(_this.domNode, 'mousedown', function (e) { return _this.onMouseDown(e); }));
         _this.viewListeners.push(DOM.addDisposableListener(_this.domNode, 'mouseup', function (e) { return _this.onMouseUp(e); }));
+        _this.viewListeners.push(DOM.addDisposableListener(_this.wrapper, 'auxclick', function (e) {
+            if (e && e.button === 1) {
+                _this.onMouseMiddleClick(e);
+            }
+        }));
         _this.viewListeners.push(DOM.addDisposableListener(_this.wrapper, 'click', function (e) { return _this.onClick(e); }));
-        _this.viewListeners.push(DOM.addDisposableListener(_this.wrapper, 'auxclick', function (e) { return _this.onClick(e); })); // >= Chrome 56
         _this.viewListeners.push(DOM.addDisposableListener(_this.domNode, 'contextmenu', function (e) { return _this.onContextMenu(e); }));
         _this.viewListeners.push(DOM.addDisposableListener(_this.wrapper, Touch.EventType.Tap, function (e) { return _this.onTap(e); }));
         _this.viewListeners.push(DOM.addDisposableListener(_this.wrapper, Touch.EventType.Change, function (e) { return _this.onTouchChange(e); }));
@@ -528,7 +549,20 @@ var TreeView = /** @class */ (function (_super) {
         }
     };
     TreeView.prototype.getFirstVisibleElement = function () {
-        var item = this.itemAtIndex(this.indexAt(this.lastRenderTop));
+        var firstIndex = this.indexAt(this.lastRenderTop);
+        var item = this.itemAtIndex(firstIndex);
+        if (!item) {
+            return item;
+        }
+        var itemMidpoint = item.top + item.height / 2;
+        if (itemMidpoint < this.scrollTop) {
+            var nextItem = this.itemAtIndex(firstIndex + 1);
+            item = nextItem || item;
+        }
+        return item.model.getElement();
+    };
+    TreeView.prototype.getLastVisibleElement = function () {
+        var item = this.itemAtIndex(this.indexAt(this.lastRenderTop + this.lastRenderHeight - 1));
         return item && item.model.getElement();
     };
     TreeView.prototype.render = function (scrollTop, viewHeight, scrollLeft, viewWidth, scrollWidth) {
@@ -991,6 +1025,17 @@ var TreeView = /** @class */ (function (_super) {
         this.lastClickTimeStamp = Date.now();
         this.context.controller.onClick(this.context.tree, item.model.getElement(), event);
     };
+    TreeView.prototype.onMouseMiddleClick = function (e) {
+        if (!this.context.controller.onMouseMiddleClick) {
+            return;
+        }
+        var event = new Mouse.StandardMouseEvent(e);
+        var item = this.getItemAround(event.target);
+        if (!item) {
+            return;
+        }
+        this.context.controller.onMouseMiddleClick(this.context.tree, item.model.getElement(), event);
+    };
     TreeView.prototype.onMouseDown = function (e) {
         this.didJustPressContextMenuKey = false;
         if (!this.context.controller.onMouseDown) {
@@ -1071,12 +1116,12 @@ var TreeView = /** @class */ (function (_super) {
     TreeView.prototype.onKeyDown = function (e) {
         var event = new Keyboard.StandardKeyboardEvent(e);
         this.didJustPressContextMenuKey = event.keyCode === 58 /* ContextMenu */ || (event.shiftKey && event.keyCode === 68 /* F10 */);
+        if (event.target && event.target.tagName && event.target.tagName.toLowerCase() === 'input') {
+            return; // Ignore event if target is a form input field (avoids browser specific issues)
+        }
         if (this.didJustPressContextMenuKey) {
             event.preventDefault();
             event.stopPropagation();
-        }
-        if (event.target && event.target.tagName && event.target.tagName.toLowerCase() === 'input') {
-            return; // Ignore event if target is a form input field (avoids browser specific issues)
         }
         this.context.controller.onKeyDown(this.context.tree, event);
     };
@@ -1170,10 +1215,7 @@ var TreeView = /** @class */ (function (_super) {
                 // clear previously hovered element feedback
                 this.currentDropTargets.forEach(function (i) { return i.dropTarget = false; });
                 this.currentDropTargets = [];
-                if (this.currentDropPromise) {
-                    this.currentDropPromise.cancel();
-                    this.currentDropPromise = null;
-                }
+                this.currentDropDisposable.dispose();
             }
             this.cancelDragAndDropScrollInterval();
             this.currentDropTarget = null;
@@ -1204,7 +1246,7 @@ var TreeView = /** @class */ (function (_super) {
         do {
             element = item ? item.getElement() : this.model.getInput();
             reaction = this.context.dnd.onDragOver(this.context.tree, this.currentDragAndDropData, element, event);
-            if (!reaction || reaction.bubble !== _.DragOverBubble.BUBBLE_UP) {
+            if (!reaction || reaction.bubble !== 1 /* BUBBLE_UP */) {
                 break;
             }
             item = item && item.parent;
@@ -1217,7 +1259,7 @@ var TreeView = /** @class */ (function (_super) {
         if (canDrop) {
             this.currentDropElement = item.getElement();
             event.preventDefault();
-            event.dataTransfer.dropEffect = reaction.effect === _.DragOverEffect.COPY ? 'copy' : 'move';
+            event.dataTransfer.dropEffect = reaction.effect === 0 /* COPY */ ? 'copy' : 'move';
         }
         else {
             this.currentDropElement = null;
@@ -1230,10 +1272,7 @@ var TreeView = /** @class */ (function (_super) {
             if (this.currentDropTarget) {
                 this.currentDropTargets.forEach(function (i) { return i.dropTarget = false; });
                 this.currentDropTargets = [];
-                if (this.currentDropPromise) {
-                    this.currentDropPromise.cancel();
-                    this.currentDropPromise = null;
-                }
+                this.currentDropDisposable.dispose();
             }
             this.currentDropTarget = currentDropTarget;
             this.currentDropElementReaction = reaction;
@@ -1243,7 +1282,7 @@ var TreeView = /** @class */ (function (_super) {
                     this.currentDropTarget.dropTarget = true;
                     this.currentDropTargets.push(this.currentDropTarget);
                 }
-                if (reaction.bubble === _.DragOverBubble.BUBBLE_DOWN) {
+                if (reaction.bubble === 0 /* BUBBLE_DOWN */) {
                     var nav = item.getNavigator();
                     var child;
                     while (child = nav.next()) {
@@ -1255,7 +1294,9 @@ var TreeView = /** @class */ (function (_super) {
                     }
                 }
                 if (reaction.autoExpand) {
-                    this.currentDropPromise = WinJS.TPromise.timeout(500)
+                    var timeoutPromise_1 = timeout(500);
+                    this.currentDropDisposable = Lifecycle.toDisposable(function () { return timeoutPromise_1.cancel(); });
+                    timeoutPromise_1
                         .then(function () { return _this.context.tree.expand(_this.currentDropElement); })
                         .then(function () { return _this.shouldInvalidateDropReaction = true; });
                 }
@@ -1278,10 +1319,7 @@ var TreeView = /** @class */ (function (_super) {
             this.currentDropTargets.forEach(function (i) { return i.dropTarget = false; });
             this.currentDropTargets = [];
         }
-        if (this.currentDropPromise) {
-            this.currentDropPromise.cancel();
-            this.currentDropPromise = null;
-        }
+        this.currentDropDisposable.dispose();
         this.cancelDragAndDropScrollInterval();
         this.currentDragAndDropData = null;
         TreeView.currentExternalDragAndDropData = null;
@@ -1358,7 +1396,7 @@ var TreeView = /** @class */ (function (_super) {
             if (element === this.wrapper || element === this.domNode) {
                 return candidate;
             }
-            if (element === document.body) {
+            if (element === this.scrollableElement.getDomNode() || element === document.body) {
                 return null;
             }
         } while (element = element.parentElement);

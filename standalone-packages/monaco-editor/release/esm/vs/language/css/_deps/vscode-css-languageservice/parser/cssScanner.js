@@ -183,10 +183,12 @@ staticUnitTable['s'] = TokenType.Time;
 staticUnitTable['hz'] = TokenType.Freq;
 staticUnitTable['khz'] = TokenType.Freq;
 staticUnitTable['%'] = TokenType.Percentage;
+staticUnitTable['fr'] = TokenType.Percentage;
 staticUnitTable['dpi'] = TokenType.Resolution;
 staticUnitTable['dpcm'] = TokenType.Resolution;
 var Scanner = /** @class */ (function () {
     function Scanner() {
+        this.stream = new MultiLineStream('');
         this.ignoreComment = true;
         this.ignoreWhitespace = true;
         this.inURL = false;
@@ -543,7 +545,7 @@ var Scanner = /** @class */ (function () {
         if (ch === _USC || // _
             ch >= _a && ch <= _z || // a-z
             ch >= _A && ch <= _Z || // A-Z
-            ch >= 0x80 && ch <= 0xFFFF) {
+            ch >= 0x80 && ch <= 0xFFFF) { // nonascii
             this.stream.advance(1);
             result.push(String.fromCharCode(ch));
             return true;
@@ -566,7 +568,7 @@ var Scanner = /** @class */ (function () {
             ch >= _a && ch <= _z || // a-z
             ch >= _A && ch <= _Z || // A-Z
             ch >= _0 && ch <= _9 || // 0/9
-            ch >= 0x80 && ch <= 0xFFFF) {
+            ch >= 0x80 && ch <= 0xFFFF) { // nonascii
             this.stream.advance(1);
             result.push(String.fromCharCode(ch));
             return true;

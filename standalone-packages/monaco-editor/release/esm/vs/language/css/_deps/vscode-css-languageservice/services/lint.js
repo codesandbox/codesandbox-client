@@ -112,6 +112,8 @@ var LintVisitor = /** @class */ (function () {
     };
     LintVisitor.prototype.visitNode = function (node) {
         switch (node.type) {
+            case nodes.NodeType.UnknownAtRule:
+                return this.visitUnknownAtRule(node);
             case nodes.NodeType.Keyframe:
                 return this.visitKeyframe(node);
             case nodes.NodeType.FontFace:
@@ -135,6 +137,14 @@ var LintVisitor = /** @class */ (function () {
     };
     LintVisitor.prototype.completeValidations = function () {
         this.validateKeyframes();
+    };
+    LintVisitor.prototype.visitUnknownAtRule = function (node) {
+        var atRuleName = node.getChild(0);
+        if (!atRuleName) {
+            return false;
+        }
+        this.addEntry(atRuleName, Rules.UnknownAtRules, "Unknown at rule " + atRuleName.getText());
+        return true;
     };
     LintVisitor.prototype.visitKeyframe = function (node) {
         var keyword = node.getKeyword();
@@ -226,9 +236,9 @@ var LintVisitor = /** @class */ (function () {
                 var problemDetected = false;
                 for (var _b = 0, _c = ['border', 'border-left', 'border-right', 'padding', 'padding-left', 'padding-right']; _b < _c.length; _b++) {
                     var p = _c[_b];
-                    var elements_1 = this.fetch(propertyTable, p);
-                    for (var _d = 0, elements_2 = elements_1; _d < elements_2.length; _d++) {
-                        var element = elements_2[_d];
+                    var elements_3 = this.fetch(propertyTable, p);
+                    for (var _d = 0, elements_1 = elements_3; _d < elements_1.length; _d++) {
+                        var element = elements_1[_d];
                         var value = element.node.getValue();
                         if (value && !value.matches('none')) {
                             this.addEntry(element.node, Rules.BewareOfBoxModelSize);
@@ -248,9 +258,9 @@ var LintVisitor = /** @class */ (function () {
                 var problemDetected = false;
                 for (var _f = 0, _g = ['border', 'border-top', 'border-bottom', 'padding', 'padding-top', 'padding-bottom']; _f < _g.length; _f++) {
                     var p = _g[_f];
-                    var elements_3 = this.fetch(propertyTable, p);
-                    for (var _h = 0, elements_4 = elements_3; _h < elements_4.length; _h++) {
-                        var element = elements_4[_h];
+                    var elements_4 = this.fetch(propertyTable, p);
+                    for (var _h = 0, elements_2 = elements_4; _h < elements_2.length; _h++) {
+                        var element = elements_2[_h];
                         var value = element.node.getValue();
                         if (value && !value.matches('none')) {
                             this.addEntry(element.node, Rules.BewareOfBoxModelSize);
@@ -344,7 +354,7 @@ var LintVisitor = /** @class */ (function () {
                 var name = decl.getFullPropertyName();
                 var firstChar = name.charAt(0);
                 if (firstChar === '-') {
-                    if (name.charAt(1) !== '-') {
+                    if (name.charAt(1) !== '-') { // avoid css variables
                         if (!languageFacts.isKnownProperty(name)) {
                             this.addEntry(decl.getProperty(), Rules.UnknownVendorSpecificProperty);
                         }
@@ -367,18 +377,18 @@ var LintVisitor = /** @class */ (function () {
                 containsUnknowns = true;
             }
         }
-        if (!containsUnknowns) {
+        if (!containsUnknowns) { // don't perform this test if there are
             for (var suffix in propertiesBySuffix.data) {
                 var entry = propertiesBySuffix.data[suffix];
                 var actual = entry.names;
-                var needsStandard = languageFacts.isKnownProperty(suffix) && (actual.indexOf(suffix) === -1);
+                var needsStandard = languageFacts.isStandardProperty(suffix) && (actual.indexOf(suffix) === -1);
                 if (!needsStandard && actual.length === 1) {
                     continue; // only the non-vendor specific rule is used, that's fine, no warning
                 }
                 var expected = [];
                 for (var i = 0, len = LintVisitor.prefixes.length; i < len; i++) {
                     var prefix = LintVisitor.prefixes[i];
-                    if (languageFacts.isKnownProperty(prefix + suffix)) {
+                    if (languageFacts.isStandardProperty(prefix + suffix)) {
                         expected.push(prefix + suffix);
                     }
                 }
@@ -411,12 +421,18 @@ var LintVisitor = /** @class */ (function () {
         /////////////////////////////////////////////////////////////
         //	0 has no following unit
         /////////////////////////////////////////////////////////////
-        var value = node.getValue();
-        if (!value.unit || languageFacts.units.length.indexOf(value.unit.toLowerCase()) === -1) {
-            return true;
-        }
-        if (parseFloat(value.value) === 0.0 && !!value.unit) {
-            this.addEntry(node, Rules.ZeroWithUnit);
+        var decl = node.findParent(nodes.NodeType.Declaration);
+        if (decl) {
+            var declValue = decl.getValue();
+            if (declValue && declValue.offset === node.offset && declValue.length === node.length) {
+                var value = node.getValue();
+                if (!value.unit || languageFacts.units.length.indexOf(value.unit.toLowerCase()) === -1) {
+                    return true;
+                }
+                if (parseFloat(value.value) === 0.0 && !!value.unit) {
+                    this.addEntry(node, Rules.ZeroWithUnit);
+                }
+            }
         }
         return true;
     };

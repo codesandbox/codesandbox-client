@@ -4,1010 +4,6 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define('vscode-languageserver-types/main',["require", "exports"], factory);
-    }
-})(function (require, exports) {
-    /* --------------------------------------------------------------------------------------------
-     * Copyright (c) Microsoft Corporation. All rights reserved.
-     * Licensed under the MIT License. See License.txt in the project root for license information.
-     * ------------------------------------------------------------------------------------------ */
-    'use strict';
-    Object.defineProperty(exports, "__esModule", { value: true });
-    /**
-     * The Position namespace provides helper functions to work with
-     * [Position](#Position) literals.
-     */
-    var Position;
-    (function (Position) {
-        /**
-         * Creates a new Position literal from the given line and character.
-         * @param line The position's line.
-         * @param character The position's character.
-         */
-        function create(line, character) {
-            return { line: line, character: character };
-        }
-        Position.create = create;
-        /**
-         * Checks whether the given liternal conforms to the [Position](#Position) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Is.number(candidate.line) && Is.number(candidate.character);
-        }
-        Position.is = is;
-    })(Position = exports.Position || (exports.Position = {}));
-    /**
-     * The Range namespace provides helper functions to work with
-     * [Range](#Range) literals.
-     */
-    var Range;
-    (function (Range) {
-        function create(one, two, three, four) {
-            if (Is.number(one) && Is.number(two) && Is.number(three) && Is.number(four)) {
-                return { start: Position.create(one, two), end: Position.create(three, four) };
-            }
-            else if (Position.is(one) && Position.is(two)) {
-                return { start: one, end: two };
-            }
-            else {
-                throw new Error("Range#create called with invalid arguments[" + one + ", " + two + ", " + three + ", " + four + "]");
-            }
-        }
-        Range.create = create;
-        /**
-         * Checks whether the given literal conforms to the [Range](#Range) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Position.is(candidate.start) && Position.is(candidate.end);
-        }
-        Range.is = is;
-    })(Range = exports.Range || (exports.Range = {}));
-    /**
-     * The Location namespace provides helper functions to work with
-     * [Location](#Location) literals.
-     */
-    var Location;
-    (function (Location) {
-        /**
-         * Creates a Location literal.
-         * @param uri The location's uri.
-         * @param range The location's range.
-         */
-        function create(uri, range) {
-            return { uri: uri, range: range };
-        }
-        Location.create = create;
-        /**
-         * Checks whether the given literal conforms to the [Location](#Location) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Range.is(candidate.range) && (Is.string(candidate.uri) || Is.undefined(candidate.uri));
-        }
-        Location.is = is;
-    })(Location = exports.Location || (exports.Location = {}));
-    /**
-     * The diagnostic's serverity.
-     */
-    var DiagnosticSeverity;
-    (function (DiagnosticSeverity) {
-        /**
-         * Reports an error.
-         */
-        DiagnosticSeverity.Error = 1;
-        /**
-         * Reports a warning.
-         */
-        DiagnosticSeverity.Warning = 2;
-        /**
-         * Reports an information.
-         */
-        DiagnosticSeverity.Information = 3;
-        /**
-         * Reports a hint.
-         */
-        DiagnosticSeverity.Hint = 4;
-    })(DiagnosticSeverity = exports.DiagnosticSeverity || (exports.DiagnosticSeverity = {}));
-    /**
-     * The Diagnostic namespace provides helper functions to work with
-     * [Diagnostic](#Diagnostic) literals.
-     */
-    var Diagnostic;
-    (function (Diagnostic) {
-        /**
-         * Creates a new Diagnostic literal.
-         */
-        function create(range, message, severity, code, source) {
-            var result = { range: range, message: message };
-            if (Is.defined(severity)) {
-                result.severity = severity;
-            }
-            if (Is.defined(code)) {
-                result.code = code;
-            }
-            if (Is.defined(source)) {
-                result.source = source;
-            }
-            return result;
-        }
-        Diagnostic.create = create;
-        /**
-         * Checks whether the given literal conforms to the [Diagnostic](#Diagnostic) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate)
-                && Range.is(candidate.range)
-                && Is.string(candidate.message)
-                && (Is.number(candidate.severity) || Is.undefined(candidate.severity))
-                && (Is.number(candidate.code) || Is.string(candidate.code) || Is.undefined(candidate.code))
-                && (Is.string(candidate.source) || Is.undefined(candidate.source));
-        }
-        Diagnostic.is = is;
-    })(Diagnostic = exports.Diagnostic || (exports.Diagnostic = {}));
-    /**
-     * The Command namespace provides helper functions to work with
-     * [Command](#Command) literals.
-     */
-    var Command;
-    (function (Command) {
-        /**
-         * Creates a new Command literal.
-         */
-        function create(title, command) {
-            var args = [];
-            for (var _i = 2; _i < arguments.length; _i++) {
-                args[_i - 2] = arguments[_i];
-            }
-            var result = { title: title, command: command };
-            if (Is.defined(args) && args.length > 0) {
-                result.arguments = args;
-            }
-            return result;
-        }
-        Command.create = create;
-        /**
-         * Checks whether the given literal conforms to the [Command](#Command) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Is.string(candidate.title) && Is.string(candidate.title);
-        }
-        Command.is = is;
-    })(Command = exports.Command || (exports.Command = {}));
-    /**
-     * The TextEdit namespace provides helper function to create replace,
-     * insert and delete edits more easily.
-     */
-    var TextEdit;
-    (function (TextEdit) {
-        /**
-         * Creates a replace text edit.
-         * @param range The range of text to be replaced.
-         * @param newText The new text.
-         */
-        function replace(range, newText) {
-            return { range: range, newText: newText };
-        }
-        TextEdit.replace = replace;
-        /**
-         * Creates a insert text edit.
-         * @param position The position to insert the text at.
-         * @param newText The text to be inserted.
-         */
-        function insert(position, newText) {
-            return { range: { start: position, end: position }, newText: newText };
-        }
-        TextEdit.insert = insert;
-        /**
-         * Creates a delete text edit.
-         * @param range The range of text to be deleted.
-         */
-        function del(range) {
-            return { range: range, newText: '' };
-        }
-        TextEdit.del = del;
-    })(TextEdit = exports.TextEdit || (exports.TextEdit = {}));
-    /**
-     * The TextDocumentEdit namespace provides helper function to create
-     * an edit that manipulates a text document.
-     */
-    var TextDocumentEdit;
-    (function (TextDocumentEdit) {
-        /**
-         * Creates a new `TextDocumentEdit`
-         */
-        function create(textDocument, edits) {
-            return { textDocument: textDocument, edits: edits };
-        }
-        TextDocumentEdit.create = create;
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate)
-                && VersionedTextDocumentIdentifier.is(candidate.textDocument)
-                && Array.isArray(candidate.edits);
-        }
-        TextDocumentEdit.is = is;
-    })(TextDocumentEdit = exports.TextDocumentEdit || (exports.TextDocumentEdit = {}));
-    var TextEditChangeImpl = /** @class */ (function () {
-        function TextEditChangeImpl(edits) {
-            this.edits = edits;
-        }
-        TextEditChangeImpl.prototype.insert = function (position, newText) {
-            this.edits.push(TextEdit.insert(position, newText));
-        };
-        TextEditChangeImpl.prototype.replace = function (range, newText) {
-            this.edits.push(TextEdit.replace(range, newText));
-        };
-        TextEditChangeImpl.prototype.delete = function (range) {
-            this.edits.push(TextEdit.del(range));
-        };
-        TextEditChangeImpl.prototype.add = function (edit) {
-            this.edits.push(edit);
-        };
-        TextEditChangeImpl.prototype.all = function () {
-            return this.edits;
-        };
-        TextEditChangeImpl.prototype.clear = function () {
-            this.edits.splice(0, this.edits.length);
-        };
-        return TextEditChangeImpl;
-    }());
-    /**
-     * A workspace change helps constructing changes to a workspace.
-     */
-    var WorkspaceChange = /** @class */ (function () {
-        function WorkspaceChange(workspaceEdit) {
-            var _this = this;
-            this._textEditChanges = Object.create(null);
-            if (workspaceEdit) {
-                this._workspaceEdit = workspaceEdit;
-                if (workspaceEdit.documentChanges) {
-                    workspaceEdit.documentChanges.forEach(function (textDocumentEdit) {
-                        var textEditChange = new TextEditChangeImpl(textDocumentEdit.edits);
-                        _this._textEditChanges[textDocumentEdit.textDocument.uri] = textEditChange;
-                    });
-                }
-                else if (workspaceEdit.changes) {
-                    Object.keys(workspaceEdit.changes).forEach(function (key) {
-                        var textEditChange = new TextEditChangeImpl(workspaceEdit.changes[key]);
-                        _this._textEditChanges[key] = textEditChange;
-                    });
-                }
-            }
-        }
-        Object.defineProperty(WorkspaceChange.prototype, "edit", {
-            /**
-             * Returns the underlying [WorkspaceEdit](#WorkspaceEdit) literal
-             * use to be returned from a workspace edit operation like rename.
-             */
-            get: function () {
-                return this._workspaceEdit;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        WorkspaceChange.prototype.getTextEditChange = function (key) {
-            if (VersionedTextDocumentIdentifier.is(key)) {
-                if (!this._workspaceEdit) {
-                    this._workspaceEdit = {
-                        documentChanges: []
-                    };
-                }
-                if (!this._workspaceEdit.documentChanges) {
-                    throw new Error('Workspace edit is not configured for versioned document changes.');
-                }
-                var textDocument = key;
-                var result = this._textEditChanges[textDocument.uri];
-                if (!result) {
-                    var edits = [];
-                    var textDocumentEdit = {
-                        textDocument: textDocument,
-                        edits: edits
-                    };
-                    this._workspaceEdit.documentChanges.push(textDocumentEdit);
-                    result = new TextEditChangeImpl(edits);
-                    this._textEditChanges[textDocument.uri] = result;
-                }
-                return result;
-            }
-            else {
-                if (!this._workspaceEdit) {
-                    this._workspaceEdit = {
-                        changes: Object.create(null)
-                    };
-                }
-                if (!this._workspaceEdit.changes) {
-                    throw new Error('Workspace edit is not configured for normal text edit changes.');
-                }
-                var result = this._textEditChanges[key];
-                if (!result) {
-                    var edits = [];
-                    this._workspaceEdit.changes[key] = edits;
-                    result = new TextEditChangeImpl(edits);
-                    this._textEditChanges[key] = result;
-                }
-                return result;
-            }
-        };
-        return WorkspaceChange;
-    }());
-    exports.WorkspaceChange = WorkspaceChange;
-    /**
-     * The TextDocumentIdentifier namespace provides helper functions to work with
-     * [TextDocumentIdentifier](#TextDocumentIdentifier) literals.
-     */
-    var TextDocumentIdentifier;
-    (function (TextDocumentIdentifier) {
-        /**
-         * Creates a new TextDocumentIdentifier literal.
-         * @param uri The document's uri.
-         */
-        function create(uri) {
-            return { uri: uri };
-        }
-        TextDocumentIdentifier.create = create;
-        /**
-         * Checks whether the given literal conforms to the [TextDocumentIdentifier](#TextDocumentIdentifier) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Is.string(candidate.uri);
-        }
-        TextDocumentIdentifier.is = is;
-    })(TextDocumentIdentifier = exports.TextDocumentIdentifier || (exports.TextDocumentIdentifier = {}));
-    /**
-     * The VersionedTextDocumentIdentifier namespace provides helper functions to work with
-     * [VersionedTextDocumentIdentifier](#VersionedTextDocumentIdentifier) literals.
-     */
-    var VersionedTextDocumentIdentifier;
-    (function (VersionedTextDocumentIdentifier) {
-        /**
-         * Creates a new VersionedTextDocumentIdentifier literal.
-         * @param uri The document's uri.
-         * @param uri The document's text.
-         */
-        function create(uri, version) {
-            return { uri: uri, version: version };
-        }
-        VersionedTextDocumentIdentifier.create = create;
-        /**
-         * Checks whether the given literal conforms to the [VersionedTextDocumentIdentifier](#VersionedTextDocumentIdentifier) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Is.string(candidate.uri) && Is.number(candidate.version);
-        }
-        VersionedTextDocumentIdentifier.is = is;
-    })(VersionedTextDocumentIdentifier = exports.VersionedTextDocumentIdentifier || (exports.VersionedTextDocumentIdentifier = {}));
-    /**
-     * The TextDocumentItem namespace provides helper functions to work with
-     * [TextDocumentItem](#TextDocumentItem) literals.
-     */
-    var TextDocumentItem;
-    (function (TextDocumentItem) {
-        /**
-         * Creates a new TextDocumentItem literal.
-         * @param uri The document's uri.
-         * @param languageId The document's language identifier.
-         * @param version The document's version number.
-         * @param text The document's text.
-         */
-        function create(uri, languageId, version, text) {
-            return { uri: uri, languageId: languageId, version: version, text: text };
-        }
-        TextDocumentItem.create = create;
-        /**
-         * Checks whether the given literal conforms to the [TextDocumentItem](#TextDocumentItem) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Is.string(candidate.uri) && Is.string(candidate.languageId) && Is.number(candidate.version) && Is.string(candidate.text);
-        }
-        TextDocumentItem.is = is;
-    })(TextDocumentItem = exports.TextDocumentItem || (exports.TextDocumentItem = {}));
-    /**
-     * Describes the content type that a client supports in various
-     * result literals like `Hover`, `ParameterInfo` or `CompletionItem`.
-     *
-     * Please note that `MarkupKinds` must not start with a `$`. This kinds
-     * are reserved for internal usage.
-     */
-    var MarkupKind;
-    (function (MarkupKind) {
-        /**
-         * Plain text is supported as a content format
-         */
-        MarkupKind.PlainText = 'plaintext';
-        /**
-         * Markdown is supported as a content format
-         */
-        MarkupKind.Markdown = 'markdown';
-    })(MarkupKind = exports.MarkupKind || (exports.MarkupKind = {}));
-    /**
-     * The kind of a completion entry.
-     */
-    var CompletionItemKind;
-    (function (CompletionItemKind) {
-        CompletionItemKind.Text = 1;
-        CompletionItemKind.Method = 2;
-        CompletionItemKind.Function = 3;
-        CompletionItemKind.Constructor = 4;
-        CompletionItemKind.Field = 5;
-        CompletionItemKind.Variable = 6;
-        CompletionItemKind.Class = 7;
-        CompletionItemKind.Interface = 8;
-        CompletionItemKind.Module = 9;
-        CompletionItemKind.Property = 10;
-        CompletionItemKind.Unit = 11;
-        CompletionItemKind.Value = 12;
-        CompletionItemKind.Enum = 13;
-        CompletionItemKind.Keyword = 14;
-        CompletionItemKind.Snippet = 15;
-        CompletionItemKind.Color = 16;
-        CompletionItemKind.File = 17;
-        CompletionItemKind.Reference = 18;
-        CompletionItemKind.Folder = 19;
-        CompletionItemKind.EnumMember = 20;
-        CompletionItemKind.Constant = 21;
-        CompletionItemKind.Struct = 22;
-        CompletionItemKind.Event = 23;
-        CompletionItemKind.Operator = 24;
-        CompletionItemKind.TypeParameter = 25;
-    })(CompletionItemKind = exports.CompletionItemKind || (exports.CompletionItemKind = {}));
-    /**
-     * Defines whether the insert text in a completion item should be interpreted as
-     * plain text or a snippet.
-     */
-    var InsertTextFormat;
-    (function (InsertTextFormat) {
-        /**
-         * The primary text to be inserted is treated as a plain string.
-         */
-        InsertTextFormat.PlainText = 1;
-        /**
-         * The primary text to be inserted is treated as a snippet.
-         *
-         * A snippet can define tab stops and placeholders with `$1`, `$2`
-         * and `${3:foo}`. `$0` defines the final tab stop, it defaults to
-         * the end of the snippet. Placeholders with equal identifiers are linked,
-         * that is typing in one will update others too.
-         *
-         * See also: https://github.com/Microsoft/vscode/blob/master/src/vs/editor/contrib/snippet/common/snippet.md
-         */
-        InsertTextFormat.Snippet = 2;
-    })(InsertTextFormat = exports.InsertTextFormat || (exports.InsertTextFormat = {}));
-    /**
-     * The CompletionItem namespace provides functions to deal with
-     * completion items.
-     */
-    var CompletionItem;
-    (function (CompletionItem) {
-        /**
-         * Create a completion item and seed it with a label.
-         * @param label The completion item's label
-         */
-        function create(label) {
-            return { label: label };
-        }
-        CompletionItem.create = create;
-    })(CompletionItem = exports.CompletionItem || (exports.CompletionItem = {}));
-    /**
-     * The CompletionList namespace provides functions to deal with
-     * completion lists.
-     */
-    var CompletionList;
-    (function (CompletionList) {
-        /**
-         * Creates a new completion list.
-         *
-         * @param items The completion items.
-         * @param isIncomplete The list is not complete.
-         */
-        function create(items, isIncomplete) {
-            return { items: items ? items : [], isIncomplete: !!isIncomplete };
-        }
-        CompletionList.create = create;
-    })(CompletionList = exports.CompletionList || (exports.CompletionList = {}));
-    var MarkedString;
-    (function (MarkedString) {
-        /**
-         * Creates a marked string from plain text.
-         *
-         * @param plainText The plain text.
-         */
-        function fromPlainText(plainText) {
-            return plainText.replace(/[\\`*_{}[\]()#+\-.!]/g, "\\$&"); // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
-        }
-        MarkedString.fromPlainText = fromPlainText;
-    })(MarkedString = exports.MarkedString || (exports.MarkedString = {}));
-    /**
-     * The ParameterInformation namespace provides helper functions to work with
-     * [ParameterInformation](#ParameterInformation) literals.
-     */
-    var ParameterInformation;
-    (function (ParameterInformation) {
-        /**
-         * Creates a new parameter information literal.
-         *
-         * @param label A label string.
-         * @param documentation A doc string.
-         */
-        function create(label, documentation) {
-            return documentation ? { label: label, documentation: documentation } : { label: label };
-        }
-        ParameterInformation.create = create;
-        ;
-    })(ParameterInformation = exports.ParameterInformation || (exports.ParameterInformation = {}));
-    /**
-     * The SignatureInformation namespace provides helper functions to work with
-     * [SignatureInformation](#SignatureInformation) literals.
-     */
-    var SignatureInformation;
-    (function (SignatureInformation) {
-        function create(label, documentation) {
-            var parameters = [];
-            for (var _i = 2; _i < arguments.length; _i++) {
-                parameters[_i - 2] = arguments[_i];
-            }
-            var result = { label: label };
-            if (Is.defined(documentation)) {
-                result.documentation = documentation;
-            }
-            if (Is.defined(parameters)) {
-                result.parameters = parameters;
-            }
-            else {
-                result.parameters = [];
-            }
-            return result;
-        }
-        SignatureInformation.create = create;
-    })(SignatureInformation = exports.SignatureInformation || (exports.SignatureInformation = {}));
-    /**
-     * A document highlight kind.
-     */
-    var DocumentHighlightKind;
-    (function (DocumentHighlightKind) {
-        /**
-         * A textual occurrance.
-         */
-        DocumentHighlightKind.Text = 1;
-        /**
-         * Read-access of a symbol, like reading a variable.
-         */
-        DocumentHighlightKind.Read = 2;
-        /**
-         * Write-access of a symbol, like writing to a variable.
-         */
-        DocumentHighlightKind.Write = 3;
-    })(DocumentHighlightKind = exports.DocumentHighlightKind || (exports.DocumentHighlightKind = {}));
-    /**
-     * DocumentHighlight namespace to provide helper functions to work with
-     * [DocumentHighlight](#DocumentHighlight) literals.
-     */
-    var DocumentHighlight;
-    (function (DocumentHighlight) {
-        /**
-         * Create a DocumentHighlight object.
-         * @param range The range the highlight applies to.
-         */
-        function create(range, kind) {
-            var result = { range: range };
-            if (Is.number(kind)) {
-                result.kind = kind;
-            }
-            return result;
-        }
-        DocumentHighlight.create = create;
-    })(DocumentHighlight = exports.DocumentHighlight || (exports.DocumentHighlight = {}));
-    /**
-     * A symbol kind.
-     */
-    var SymbolKind;
-    (function (SymbolKind) {
-        SymbolKind.File = 1;
-        SymbolKind.Module = 2;
-        SymbolKind.Namespace = 3;
-        SymbolKind.Package = 4;
-        SymbolKind.Class = 5;
-        SymbolKind.Method = 6;
-        SymbolKind.Property = 7;
-        SymbolKind.Field = 8;
-        SymbolKind.Constructor = 9;
-        SymbolKind.Enum = 10;
-        SymbolKind.Interface = 11;
-        SymbolKind.Function = 12;
-        SymbolKind.Variable = 13;
-        SymbolKind.Constant = 14;
-        SymbolKind.String = 15;
-        SymbolKind.Number = 16;
-        SymbolKind.Boolean = 17;
-        SymbolKind.Array = 18;
-        SymbolKind.Object = 19;
-        SymbolKind.Key = 20;
-        SymbolKind.Null = 21;
-        SymbolKind.EnumMember = 22;
-        SymbolKind.Struct = 23;
-        SymbolKind.Event = 24;
-        SymbolKind.Operator = 25;
-        SymbolKind.TypeParameter = 26;
-    })(SymbolKind = exports.SymbolKind || (exports.SymbolKind = {}));
-    var SymbolInformation;
-    (function (SymbolInformation) {
-        /**
-         * Creates a new symbol information literal.
-         *
-         * @param name The name of the symbol.
-         * @param kind The kind of the symbol.
-         * @param range The range of the location of the symbol.
-         * @param uri The resource of the location of symbol, defaults to the current document.
-         * @param containerName The name of the symbol containg the symbol.
-         */
-        function create(name, kind, range, uri, containerName) {
-            var result = {
-                name: name,
-                kind: kind,
-                location: { uri: uri, range: range }
-            };
-            if (containerName) {
-                result.containerName = containerName;
-            }
-            return result;
-        }
-        SymbolInformation.create = create;
-    })(SymbolInformation = exports.SymbolInformation || (exports.SymbolInformation = {}));
-    /**
-     * The CodeActionContext namespace provides helper functions to work with
-     * [CodeActionContext](#CodeActionContext) literals.
-     */
-    var CodeActionContext;
-    (function (CodeActionContext) {
-        /**
-         * Creates a new CodeActionContext literal.
-         */
-        function create(diagnostics) {
-            return { diagnostics: diagnostics };
-        }
-        CodeActionContext.create = create;
-        /**
-         * Checks whether the given literal conforms to the [CodeActionContext](#CodeActionContext) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Is.typedArray(candidate.diagnostics, Diagnostic.is);
-        }
-        CodeActionContext.is = is;
-    })(CodeActionContext = exports.CodeActionContext || (exports.CodeActionContext = {}));
-    /**
-     * The CodeLens namespace provides helper functions to work with
-     * [CodeLens](#CodeLens) literals.
-     */
-    var CodeLens;
-    (function (CodeLens) {
-        /**
-         * Creates a new CodeLens literal.
-         */
-        function create(range, data) {
-            var result = { range: range };
-            if (Is.defined(data))
-                result.data = data;
-            return result;
-        }
-        CodeLens.create = create;
-        /**
-         * Checks whether the given literal conforms to the [CodeLens](#CodeLens) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Range.is(candidate.range) && (Is.undefined(candidate.command) || Command.is(candidate.command));
-        }
-        CodeLens.is = is;
-    })(CodeLens = exports.CodeLens || (exports.CodeLens = {}));
-    /**
-     * The FormattingOptions namespace provides helper functions to work with
-     * [FormattingOptions](#FormattingOptions) literals.
-     */
-    var FormattingOptions;
-    (function (FormattingOptions) {
-        /**
-         * Creates a new FormattingOptions literal.
-         */
-        function create(tabSize, insertSpaces) {
-            return { tabSize: tabSize, insertSpaces: insertSpaces };
-        }
-        FormattingOptions.create = create;
-        /**
-         * Checks whether the given literal conforms to the [FormattingOptions](#FormattingOptions) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Is.number(candidate.tabSize) && Is.boolean(candidate.insertSpaces);
-        }
-        FormattingOptions.is = is;
-    })(FormattingOptions = exports.FormattingOptions || (exports.FormattingOptions = {}));
-    /**
-     * A document link is a range in a text document that links to an internal or external resource, like another
-     * text document or a web site.
-     */
-    var DocumentLink = /** @class */ (function () {
-        function DocumentLink() {
-        }
-        return DocumentLink;
-    }());
-    exports.DocumentLink = DocumentLink;
-    /**
-     * The DocumentLink namespace provides helper functions to work with
-     * [DocumentLink](#DocumentLink) literals.
-     */
-    (function (DocumentLink) {
-        /**
-         * Creates a new DocumentLink literal.
-         */
-        function create(range, target) {
-            return { range: range, target: target };
-        }
-        DocumentLink.create = create;
-        /**
-         * Checks whether the given literal conforms to the [DocumentLink](#DocumentLink) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Range.is(candidate.range) && (Is.undefined(candidate.target) || Is.string(candidate.target));
-        }
-        DocumentLink.is = is;
-    })(DocumentLink = exports.DocumentLink || (exports.DocumentLink = {}));
-    exports.DocumentLink = DocumentLink;
-    exports.EOL = ['\n', '\r\n', '\r'];
-    var TextDocument;
-    (function (TextDocument) {
-        /**
-         * Creates a new ITextDocument literal from the given uri and content.
-         * @param uri The document's uri.
-         * @param languageId  The document's language Id.
-         * @param content The document's content.
-         */
-        function create(uri, languageId, version, content) {
-            return new FullTextDocument(uri, languageId, version, content);
-        }
-        TextDocument.create = create;
-        /**
-         * Checks whether the given literal conforms to the [ITextDocument](#ITextDocument) interface.
-         */
-        function is(value) {
-            var candidate = value;
-            return Is.defined(candidate) && Is.string(candidate.uri) && (Is.undefined(candidate.languageId) || Is.string(candidate.languageId)) && Is.number(candidate.lineCount)
-                && Is.func(candidate.getText) && Is.func(candidate.positionAt) && Is.func(candidate.offsetAt) ? true : false;
-        }
-        TextDocument.is = is;
-        function applyEdits(document, edits) {
-            var text = document.getText();
-            var sortedEdits = mergeSort(edits, function (a, b) {
-                var diff = a.range.start.line - b.range.start.line;
-                if (diff === 0) {
-                    return a.range.start.character - b.range.start.character;
-                }
-                return 0;
-            });
-            var lastModifiedOffset = text.length;
-            for (var i = sortedEdits.length - 1; i >= 0; i--) {
-                var e = sortedEdits[i];
-                var startOffset = document.offsetAt(e.range.start);
-                var endOffset = document.offsetAt(e.range.end);
-                if (endOffset <= lastModifiedOffset) {
-                    text = text.substring(0, startOffset) + e.newText + text.substring(endOffset, text.length);
-                }
-                else {
-                    throw new Error('Ovelapping edit');
-                }
-                lastModifiedOffset = startOffset;
-            }
-            return text;
-        }
-        TextDocument.applyEdits = applyEdits;
-        function mergeSort(data, compare) {
-            if (data.length <= 1) {
-                // sorted
-                return data;
-            }
-            var p = (data.length / 2) | 0;
-            var left = data.slice(0, p);
-            var right = data.slice(p);
-            mergeSort(left, compare);
-            mergeSort(right, compare);
-            var leftIdx = 0;
-            var rightIdx = 0;
-            var i = 0;
-            while (leftIdx < left.length && rightIdx < right.length) {
-                var ret = compare(left[leftIdx], right[rightIdx]);
-                if (ret <= 0) {
-                    // smaller_equal -> take left to preserve order
-                    data[i++] = left[leftIdx++];
-                }
-                else {
-                    // greater -> take right
-                    data[i++] = right[rightIdx++];
-                }
-            }
-            while (leftIdx < left.length) {
-                data[i++] = left[leftIdx++];
-            }
-            while (rightIdx < right.length) {
-                data[i++] = right[rightIdx++];
-            }
-            return data;
-        }
-    })(TextDocument = exports.TextDocument || (exports.TextDocument = {}));
-    /**
-     * Represents reasons why a text document is saved.
-     */
-    var TextDocumentSaveReason;
-    (function (TextDocumentSaveReason) {
-        /**
-         * Manually triggered, e.g. by the user pressing save, by starting debugging,
-         * or by an API call.
-         */
-        TextDocumentSaveReason.Manual = 1;
-        /**
-         * Automatic after a delay.
-         */
-        TextDocumentSaveReason.AfterDelay = 2;
-        /**
-         * When the editor lost focus.
-         */
-        TextDocumentSaveReason.FocusOut = 3;
-    })(TextDocumentSaveReason = exports.TextDocumentSaveReason || (exports.TextDocumentSaveReason = {}));
-    var FullTextDocument = /** @class */ (function () {
-        function FullTextDocument(uri, languageId, version, content) {
-            this._uri = uri;
-            this._languageId = languageId;
-            this._version = version;
-            this._content = content;
-            this._lineOffsets = null;
-        }
-        Object.defineProperty(FullTextDocument.prototype, "uri", {
-            get: function () {
-                return this._uri;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FullTextDocument.prototype, "languageId", {
-            get: function () {
-                return this._languageId;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(FullTextDocument.prototype, "version", {
-            get: function () {
-                return this._version;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FullTextDocument.prototype.getText = function (range) {
-            if (range) {
-                var start = this.offsetAt(range.start);
-                var end = this.offsetAt(range.end);
-                return this._content.substring(start, end);
-            }
-            return this._content;
-        };
-        FullTextDocument.prototype.update = function (event, version) {
-            this._content = event.text;
-            this._version = version;
-            this._lineOffsets = null;
-        };
-        FullTextDocument.prototype.getLineOffsets = function () {
-            if (this._lineOffsets === null) {
-                var lineOffsets = [];
-                var text = this._content;
-                var isLineStart = true;
-                for (var i = 0; i < text.length; i++) {
-                    if (isLineStart) {
-                        lineOffsets.push(i);
-                        isLineStart = false;
-                    }
-                    var ch = text.charAt(i);
-                    isLineStart = (ch === '\r' || ch === '\n');
-                    if (ch === '\r' && i + 1 < text.length && text.charAt(i + 1) === '\n') {
-                        i++;
-                    }
-                }
-                if (isLineStart && text.length > 0) {
-                    lineOffsets.push(text.length);
-                }
-                this._lineOffsets = lineOffsets;
-            }
-            return this._lineOffsets;
-        };
-        FullTextDocument.prototype.positionAt = function (offset) {
-            offset = Math.max(Math.min(offset, this._content.length), 0);
-            var lineOffsets = this.getLineOffsets();
-            var low = 0, high = lineOffsets.length;
-            if (high === 0) {
-                return Position.create(0, offset);
-            }
-            while (low < high) {
-                var mid = Math.floor((low + high) / 2);
-                if (lineOffsets[mid] > offset) {
-                    high = mid;
-                }
-                else {
-                    low = mid + 1;
-                }
-            }
-            // low is the least x for which the line offset is larger than the current offset
-            // or array.length if no line offset is larger than the current offset
-            var line = low - 1;
-            return Position.create(line, offset - lineOffsets[line]);
-        };
-        FullTextDocument.prototype.offsetAt = function (position) {
-            var lineOffsets = this.getLineOffsets();
-            if (position.line >= lineOffsets.length) {
-                return this._content.length;
-            }
-            else if (position.line < 0) {
-                return 0;
-            }
-            var lineOffset = lineOffsets[position.line];
-            var nextLineOffset = (position.line + 1 < lineOffsets.length) ? lineOffsets[position.line + 1] : this._content.length;
-            return Math.max(Math.min(lineOffset + position.character, nextLineOffset), lineOffset);
-        };
-        Object.defineProperty(FullTextDocument.prototype, "lineCount", {
-            get: function () {
-                return this.getLineOffsets().length;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return FullTextDocument;
-    }());
-    var Is;
-    (function (Is) {
-        var toString = Object.prototype.toString;
-        function defined(value) {
-            return typeof value !== 'undefined';
-        }
-        Is.defined = defined;
-        function undefined(value) {
-            return typeof value === 'undefined';
-        }
-        Is.undefined = undefined;
-        function boolean(value) {
-            return value === true || value === false;
-        }
-        Is.boolean = boolean;
-        function string(value) {
-            return toString.call(value) === '[object String]';
-        }
-        Is.string = string;
-        function number(value) {
-            return toString.call(value) === '[object Number]';
-        }
-        Is.number = number;
-        function func(value) {
-            return toString.call(value) === '[object Function]';
-        }
-        Is.func = func;
-        function typedArray(value, check) {
-            return Array.isArray(value) && value.every(check);
-        }
-        Is.typedArray = typedArray;
-    })(Is || (Is = {}));
-});
-
-define('vscode-languageserver-types', ['vscode-languageserver-types/main'], function (main) { return main; });
-
-(function (factory) {
-    if (typeof module === "object" && typeof module.exports === "object") {
-        var v = factory(require, exports);
-        if (v !== undefined) module.exports = v;
-    }
-    else if (typeof define === "function" && define.amd) {
         define('vscode-css-languageservice/parser/cssScanner',["require", "exports"], factory);
     }
 })(function (require, exports) {
@@ -1197,10 +193,12 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
     staticUnitTable['hz'] = TokenType.Freq;
     staticUnitTable['khz'] = TokenType.Freq;
     staticUnitTable['%'] = TokenType.Percentage;
+    staticUnitTable['fr'] = TokenType.Percentage;
     staticUnitTable['dpi'] = TokenType.Resolution;
     staticUnitTable['dpcm'] = TokenType.Resolution;
     var Scanner = /** @class */ (function () {
         function Scanner() {
+            this.stream = new MultiLineStream('');
             this.ignoreComment = true;
             this.ignoreWhitespace = true;
             this.inURL = false;
@@ -1557,7 +555,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
             if (ch === _USC || // _
                 ch >= _a && ch <= _z || // a-z
                 ch >= _A && ch <= _Z || // A-Z
-                ch >= 0x80 && ch <= 0xFFFF) {
+                ch >= 0x80 && ch <= 0xFFFF) { // nonascii
                 this.stream.advance(1);
                 result.push(String.fromCharCode(ch));
                 return true;
@@ -1580,7 +578,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
                 ch >= _a && ch <= _z || // a-z
                 ch >= _A && ch <= _Z || // A-Z
                 ch >= _0 && ch <= _9 || // 0/9
-                ch >= 0x80 && ch <= 0xFFFF) {
+                ch >= 0x80 && ch <= 0xFFFF) { // nonascii
                 this.stream.advance(1);
                 result.push(String.fromCharCode(ch));
                 return true;
@@ -1695,6 +693,7 @@ var __extends = (this && this.__extends) || (function () {
         NodeType[NodeType["NamespacePrefix"] = 69] = "NamespacePrefix";
         NodeType[NodeType["GridLine"] = 70] = "GridLine";
         NodeType[NodeType["Plugin"] = 71] = "Plugin";
+        NodeType[NodeType["UnknownAtRule"] = 72] = "UnknownAtRule";
     })(NodeType = exports.NodeType || (exports.NodeType = {}));
     var ReferenceType;
     (function (ReferenceType) {
@@ -1730,7 +729,8 @@ var __extends = (this && this.__extends) || (function () {
     }
     exports.getNodeAtOffset = getNodeAtOffset;
     function getNodePath(node, offset) {
-        var candidate = getNodeAtOffset(node, offset), path = [];
+        var candidate = getNodeAtOffset(node, offset);
+        var path = [];
         while (candidate) {
             path.unshift(candidate);
             candidate = candidate.parent;
@@ -1845,14 +845,14 @@ var __extends = (this && this.__extends) || (function () {
             this.issues.push(issue);
         };
         Node.prototype.hasIssue = function (rule) {
-            return this.issues && this.issues.some(function (i) { return i.getRule() === rule; });
+            return Array.isArray(this.issues) && this.issues.some(function (i) { return i.getRule() === rule; });
         };
         Node.prototype.isErroneous = function (recursive) {
             if (recursive === void 0) { recursive = false; }
             if (this.issues && this.issues.length > 0) {
                 return true;
             }
-            return recursive && this.children && this.children.some(function (c) { return c.isErroneous(true); });
+            return recursive && Array.isArray(this.children) && this.children.some(function (c) { return c.isErroneous(true); });
         };
         Node.prototype.setNode = function (field, node, index) {
             if (index === void 0) { index = -1; }
@@ -2055,7 +1055,7 @@ var __extends = (this && this.__extends) || (function () {
             return this.selectors;
         };
         RuleSet.prototype.isNested = function () {
-            return this.parent && this.parent.findParent(NodeType.Declarations) !== null;
+            return !!this.parent && this.parent.findParent(NodeType.Declarations) !== null;
         };
         return RuleSet;
     }(BodyDeclaration));
@@ -2809,17 +1809,29 @@ var __extends = (this && this.__extends) || (function () {
             enumerable: true,
             configurable: true
         });
-        AttributeSelector.prototype.setExpression = function (value) {
-            return this.setNode('expression', value);
-        };
-        AttributeSelector.prototype.getExpression = function () {
-            return this.expression;
-        };
         AttributeSelector.prototype.setNamespacePrefix = function (value) {
             return this.setNode('namespacePrefix', value);
         };
         AttributeSelector.prototype.getNamespacePrefix = function () {
             return this.namespacePrefix;
+        };
+        AttributeSelector.prototype.setIdentifier = function (value) {
+            return this.setNode('identifier', value);
+        };
+        AttributeSelector.prototype.getIdentifier = function () {
+            return this.identifier;
+        };
+        AttributeSelector.prototype.setOperator = function (operator) {
+            return this.setNode('operator', operator);
+        };
+        AttributeSelector.prototype.getOperator = function () {
+            return this.operator;
+        };
+        AttributeSelector.prototype.setValue = function (value) {
+            return this.setNode('value', value);
+        };
+        AttributeSelector.prototype.getValue = function () {
+            return this.value;
         };
         return AttributeSelector;
     }(Node));
@@ -3057,6 +2069,48 @@ var __extends = (this && this.__extends) || (function () {
         return MixinDeclaration;
     }(BodyDeclaration));
     exports.MixinDeclaration = MixinDeclaration;
+    var UnknownAtRule = /** @class */ (function (_super) {
+        __extends(UnknownAtRule, _super);
+        function UnknownAtRule(offset, length) {
+            return _super.call(this, offset, length) || this;
+        }
+        Object.defineProperty(UnknownAtRule.prototype, "type", {
+            get: function () {
+                return NodeType.UnknownAtRule;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        UnknownAtRule.prototype.setAtRuleName = function (atRuleName) {
+            this.atRuleName = atRuleName;
+        };
+        UnknownAtRule.prototype.getAtRuleName = function (atRuleName) {
+            return this.atRuleName;
+        };
+        return UnknownAtRule;
+    }(BodyDeclaration));
+    exports.UnknownAtRule = UnknownAtRule;
+    var ListEntry = /** @class */ (function (_super) {
+        __extends(ListEntry, _super);
+        function ListEntry() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Object.defineProperty(ListEntry.prototype, "type", {
+            get: function () {
+                return NodeType.ListEntry;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ListEntry.prototype.setKey = function (node) {
+            return this.setNode('key', node, 0);
+        };
+        ListEntry.prototype.setValue = function (node) {
+            return this.setNode('value', node, 1);
+        };
+        return ListEntry;
+    }(Node));
+    exports.ListEntry = ListEntry;
     var LessGuard = /** @class */ (function (_super) {
         __extends(LessGuard, _super);
         function LessGuard() {
@@ -3402,7 +2456,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-// file generated from css-schema.xml using css-exclude_generate_browserjs.js
+// file generated from css-schema.xml and https://github.com/mdn/data using css-exclude_generate_browserjs.js
 (function (factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         var v = factory(require, exports);
@@ -3419,7 +2473,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             "atdirectives": [
                 {
                     name: "@charset",
-                    desc: "Defines character set of the document."
+                    desc: "Defines character set of the document.",
+                    browsers: "FF1.5,S4,C2,IE5.5,O9"
                 },
                 {
                     name: "@counter-style",
@@ -3428,25 +2483,28 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: "@font-face",
-                    desc: "Allows for linking to fonts that are automatically activated when needed. This permits authors to work around the limitation of 'web-safe' fonts, allowing for consistent rendering independent of the fonts available in a given user's environment."
+                    desc: "Allows for linking to fonts that are automatically activated when needed. This permits authors to work around the limitation of 'web-safe' fonts, allowing for consistent rendering independent of the fonts available in a given user's environment.",
+                    browsers: "all"
                 },
                 {
                     name: "@font-feature-values",
                     desc: "Defines named values for the indices used to select alternate glyphs for a given font family.",
-                    browsers: "FF34"
+                    browsers: "FF34,S9.1"
                 },
                 {
                     name: "@import",
-                    desc: "Includes content of another file."
+                    desc: "Includes content of another file.",
+                    browsers: "all"
                 },
                 {
                     name: "@keyframes",
                     desc: "Defines set of animation key frames.",
-                    browsers: "E,C43,FF16,IE10,O30,S9"
+                    browsers: "all"
                 },
                 {
                     name: "@media",
-                    desc: "Defines a stylesheet for a particular media type."
+                    desc: "Defines a stylesheet for a particular media type.",
+                    browsers: "all"
                 },
                 {
                     name: "@-moz-document",
@@ -3466,7 +2524,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "@namespace",
                     desc: "Declares a prefix and associates it with a namespace name.",
-                    browsers: "E,C,FF1,IE9,O8,S1"
+                    browsers: "all"
                 },
                 {
                     name: "@-o-keyframes",
@@ -3480,12 +2538,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: "@page",
-                    desc: "Directive defines various page parameters."
+                    desc: "Directive defines various page parameters.",
+                    browsers: "E,FF19,C2,IE8,O6"
                 },
                 {
                     name: "@supports",
                     desc: "A conditional group rule whose condition tests whether the user agent supports CSS property:value pairs.",
-                    browsers: "E,C28,FF22,O12.1,S9"
+                    browsers: "E12,FF22,S9,C28,O12.1"
                 },
                 {
                     name: "@-webkit-keyframes",
@@ -3496,17 +2555,18 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             "pseudoclasses": [
                 {
                     name: ":active",
-                    desc: "Applies while an element is being activated by the user. For example, between the times the user presses the mouse button and releases it."
+                    desc: "Applies while an element is being activated by the user. For example, between the times the user presses the mouse button and releases it.",
+                    browsers: "all"
                 },
                 {
                     name: ":any-link",
                     desc: "Represents an element that acts as the source anchor of a hyperlink. Applies to both visited and unvisited links.",
-                    browsers: "S9"
+                    browsers: "FF,S,C,O"
                 },
                 {
                     name: ":checked",
                     desc: "Radio and checkbox elements can be toggled by the user. Some menu items are 'checked' when the user selects them. When such elements are toggled 'on' the :checked pseudo-class applies.",
-                    browsers: "E,C,FF1,IE9,O9,S3.13"
+                    browsers: "all"
                 },
                 {
                     name: ":corner-present",
@@ -3521,12 +2581,12 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: ":default",
                     desc: "Applies to the one or more UI elements that are the default among a set of similar elements. Typically applies to context menu items, buttons, and select lists/menus.",
-                    browsers: "C,FF3,O10,S5"
+                    browsers: "FF4,S5,C10,O10"
                 },
                 {
                     name: ":disabled",
                     desc: "Represents user interface elements that are in a disabled state; such elements have a corresponding enabled state.",
-                    browsers: "E,C,FF1.5,IE9,O9,S3.1"
+                    browsers: "all"
                 },
                 {
                     name: ":double-button",
@@ -3536,12 +2596,12 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: ":empty",
                     desc: "Represents an element that has no children at all.",
-                    browsers: "E,C,FF1.5,IE9,O9,S3.1"
+                    browsers: "all"
                 },
                 {
                     name: ":enabled",
                     desc: "Represents user interface elements that are in an enabled state; such elements have a corresponding disabled state.",
-                    browsers: "E,C,FF1.5,IE9,O9,S3.1"
+                    browsers: "all"
                 },
                 {
                     name: ":end",
@@ -3550,26 +2610,28 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: ":first",
-                    desc: "When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context."
+                    desc: "When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.",
+                    browsers: "E,IE8,O9.2"
                 },
                 {
                     name: ":first-child",
                     desc: "Same as :nth-child(1). Represents an element that is the first child of some other element.",
-                    browsers: "E,C,FF3,IE7,O9.5,S3.1"
+                    browsers: "all"
                 },
                 {
                     name: ":first-of-type",
                     desc: "Same as :nth-of-type(1). Represents an element that is the first sibling of its type in the list of children of its parent element.",
-                    browsers: "E,C,FF3.5,IE9,O9.5,S3.2"
+                    browsers: "all"
                 },
                 {
                     name: ":focus",
-                    desc: "Applies while an element has the focus (accepts keyboard or mouse events, or other forms of input)."
+                    desc: "Applies while an element has the focus (accepts keyboard or mouse events, or other forms of input).",
+                    browsers: "all"
                 },
                 {
                     name: ":fullscreen",
                     desc: "Matches any element that has its fullscreen flag set.",
-                    browsers: "E"
+                    browsers: "E12,FF9,S6,C15,IE11"
                 },
                 {
                     name: ":future",
@@ -3584,7 +2646,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: ":host",
                     desc: "When evaluated in the context of a shadow tree, matches the shadow tree’s host element.",
-                    browsers: "C35,O22"
+                    browsers: "FF61,S,C,O"
                 },
                 {
                     name: ":host()",
@@ -3598,7 +2660,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: ":hover",
-                    desc: "Applies while the user designates an element with a pointing device, but does not necessarily activate it. For example, a visual user agent could apply this pseudo-class when the cursor (mouse pointer) hovers over a box generated by the element."
+                    desc: "Applies while the user designates an element with a pointing device, but does not necessarily activate it. For example, a visual user agent could apply this pseudo-class when the cursor (mouse pointer) hovers over a box generated by the element.",
+                    browsers: "all"
                 },
                 {
                     name: ":increment",
@@ -3608,17 +2671,17 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: ":indeterminate",
                     desc: "Applies to UI elements whose value is in an indeterminate state.",
-                    browsers: "E,C,FF3.6,IE9,O10.6,S3"
+                    browsers: "all"
                 },
                 {
                     name: ":in-range",
                     desc: "Used in conjunction with the min and max attributes, whether on a range input, a number field, or any other types that accept those attributes.",
-                    browsers: "E13,C,FF10,O9.6,S5.1"
+                    browsers: "E,FF29,S,C10,O11"
                 },
                 {
                     name: ":invalid",
                     desc: "An element is :valid or :invalid when it is, respectively, valid or invalid with respect to data validity semantics defined by a different specification.",
-                    browsers: "E,C,FF4,IE10,O10,S5"
+                    browsers: "all"
                 },
                 {
                     name: ":lang()",
@@ -3628,20 +2691,22 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: ":last-child",
                     desc: "Same as :nth-last-child(1). Represents an element that is the last child of some other element.",
-                    browsers: "E,C,FF1,IE9,O9.5,S3.1"
+                    browsers: "all"
                 },
                 {
                     name: ":last-of-type",
                     desc: "Same as :nth-last-of-type(1). Represents an element that is the last sibling of its type in the list of children of its parent element.",
-                    browsers: "E,C,FF3.5,IE9,O9.5,S3.1"
+                    browsers: "all"
                 },
                 {
                     name: ":left",
-                    desc: "When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context."
+                    desc: "When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.",
+                    browsers: "E,IE8,O9.2"
                 },
                 {
                     name: ":link",
-                    desc: "Applies to links that have not yet been visited."
+                    desc: "Applies to links that have not yet been visited.",
+                    browsers: "all"
                 },
                 {
                     name: ":matches()",
@@ -3786,22 +2851,22 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: ":only-child",
                     desc: "Represents an element that has a parent element and whose parent element has no other element children. Same as :first-child:last-child or :nth-child(1):nth-last-child(1), but with a lower specificity.",
-                    browsers: "E,C,FF1.5,IE9,O9.5,S3.1"
+                    browsers: "all"
                 },
                 {
                     name: ":only-of-type",
                     desc: "Matches every element that is the only child of its type, of its parent. Same as :first-of-type:last-of-type or :nth-of-type(1):nth-last-of-type(1), but with a lower specificity.",
-                    browsers: "E,C,FF3.5,IE9,O9.5,S3.2"
+                    browsers: "all"
                 },
                 {
                     name: ":optional",
                     desc: "A form element is :required or :optional if a value for it is, respectively, required or optional before the form it belongs to is submitted. Elements that are not form elements are neither required nor optional.",
-                    browsers: "E,C,FF4,IE10,O10,S5"
+                    browsers: "all"
                 },
                 {
                     name: ":out-of-range",
                     desc: "Used in conjunction with the min and max attributes, whether on a range input, a number field, or any other types that accept those attributes.",
-                    browsers: "E13,C,FF10,O9.6,S5.1"
+                    browsers: "E,FF29,S,C10,O11"
                 },
                 {
                     name: ":past",
@@ -3811,31 +2876,32 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: ":read-only",
                     desc: "An element whose contents are not user-alterable is :read-only. However, elements whose contents are user-alterable (such as text input fields) are considered to be in a :read-write state. In typical documents, most elements are :read-only.",
-                    browsers: "E13,C,FF10,O9,S4"
+                    browsers: "E,FF,S,C,O"
                 },
                 {
                     name: ":read-write",
                     desc: "An element whose contents are not user-alterable is :read-only. However, elements whose contents are user-alterable (such as text input fields) are considered to be in a :read-write state. In typical documents, most elements are :read-only.",
-                    browsers: "E13,C,FF10,O9,S4"
+                    browsers: "E,FF,S,C,O"
                 },
                 {
                     name: ":required",
                     desc: "A form element is :required or :optional if a value for it is, respectively, required or optional before the form it belongs to is submitted. Elements that are not form elements are neither required nor optional.",
-                    browsers: "E,C,FF4,IE10,O10,S5"
+                    browsers: "all"
                 },
                 {
                     name: ":right",
-                    desc: "When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context."
+                    desc: "When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.",
+                    browsers: "E,IE8,O9.2"
                 },
                 {
                     name: ":root",
                     desc: "Represents an element that is the root of the document. In HTML 4, this is always the HTML element.",
-                    browsers: "E,C,FF1,IE9,O9.5,S1"
+                    browsers: "FF1,S1,C1,IE9,O9.5"
                 },
                 {
                     name: ":scope",
                     desc: "Represents any element that is in the contextual reference element set.",
-                    browsers: "FF32,S6"
+                    browsers: "FF32,S7,O15"
                 },
                 {
                     name: ":single-button",
@@ -3850,12 +2916,12 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: ":target",
                     desc: "Some URIs refer to a location within a resource. This kind of URI ends with a 'number sign' (#) followed by an anchor identifier (called the fragment identifier).",
-                    browsers: "E,C,FF1,IE9,O9.5,S1"
+                    browsers: "all"
                 },
                 {
                     name: ":valid",
                     desc: "An element is :valid or :invalid when it is, respectively, valid or invalid with respect to data validity semantics defined by a different specification.",
-                    browsers: "E,C,FF4,IE10,O10,S5"
+                    browsers: "all"
                 },
                 {
                     name: ":vertical",
@@ -3864,7 +2930,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: ":visited",
-                    desc: "Applies once the link has been visited by the user."
+                    desc: "Applies once the link has been visited by the user.",
+                    browsers: "all"
                 },
                 {
                     name: ":-webkit-any()",
@@ -3880,23 +2947,47 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: ":window-inactive",
                     desc: "Non-standard. Applies to all scrollbar pieces. Indicates whether or not the window containing the scrollbar is currently active.",
                     browsers: "C,S3"
+                },
+                {
+                    name: ":defined",
+                    desc: "The :defined CSS pseudo-class represents any element that has been defined. This includes any standard element built in to the browser, and custom elements that have been successfully defined (i.e. with the CustomElementRegistry.define() method).",
+                    browsers: "S,C,O"
+                },
+                {
+                    name: ":dir",
+                    desc: "The :dir() CSS pseudo-class matches elements based on the directionality of the text contained in them.",
+                    browsers: "FF49"
+                },
+                {
+                    name: ":focus-visible",
+                    desc: "The :focus-visible pseudo-class applies while an element matches the :focus pseudo-class and the UA determines via heuristics that the focus should be made evident on the element."
+                },
+                {
+                    name: ":focus-within",
+                    desc: "The :focus-within pseudo-class applies to any element for which the :focus pseudo class applies as well as to an element whose descendant in the flat tree (including non-element nodes, such as text nodes) matches the conditions for matching :focus.",
+                    browsers: "FF52,S10.1,C60,O47"
+                },
+                {
+                    name: ":placeholder-shown",
+                    desc: "The :placeholder-shown CSS pseudo-class represents any <input> or <textarea> element that is currently displaying placeholder text.",
+                    browsers: "FF51,S9,C47,O34"
                 }
             ],
             "pseudoelements": [
                 {
                     name: "::after",
                     desc: "Represents a styleable child pseudo-element immediately after the originating element’s actual content.",
-                    browsers: "E,C,FF1.5,IE9,O9,S4"
+                    browsers: "all"
                 },
                 {
                     name: "::backdrop",
                     desc: "Used to create a backdrop that hides the underlying document for an element in a top layer (such as an element that is displayed fullscreen).",
-                    browsers: "E"
+                    browsers: "E,FF47,C37,IE11"
                 },
                 {
                     name: "::before",
                     desc: "Represents a styleable child pseudo-element immediately before the originating element’s actual content.",
-                    browsers: "E,C,FF1.5,IE9,O9,S4"
+                    browsers: "all"
                 },
                 {
                     name: "::content",
@@ -3905,7 +2996,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: "::cue",
-                    browsers: "C,O16,S6"
+                    browsers: "FF55,C"
                 },
                 {
                     name: "::cue()",
@@ -3922,12 +3013,12 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "::first-letter",
                     desc: "Represents the first letter of an element, if it is not preceded by any other content (such as images or inline tables) on its line.",
-                    browsers: "E,C,FF1.5,IE9,O7,S1"
+                    browsers: "all"
                 },
                 {
                     name: "::first-line",
                     desc: "Describes the contents of the first formatted line of its originating element.",
-                    browsers: "E,C,FF1.5,IE9,O7,S1"
+                    browsers: "all"
                 },
                 {
                     name: "::-moz-focus-inner",
@@ -4040,7 +3131,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "::selection",
                     desc: "Represents the portion of a document that has been highlighted by the user.",
-                    browsers: "E,C,IE9,O9.5,S1.1"
+                    browsers: "all"
                 },
                 {
                     name: "::shadow",
@@ -4065,15 +3156,15 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: "::-webkit-meter-bar",
-                    browsers: "E13,C,O15,S6"
+                    browsers: "S,C,O"
                 },
                 {
                     name: "::-webkit-meter-even-less-good-value",
-                    browsers: "E13,C,O15,S6"
+                    browsers: "S,C,O"
                 },
                 {
                     name: "::-webkit-meter-optimum-value",
-                    browsers: "E13,C,O15,S6"
+                    browsers: "S,C,O"
                 },
                 {
                     name: "::-webkit-meter-suboptimal-value",
@@ -4085,15 +3176,15 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: "::-webkit-progress-bar",
-                    browsers: "C,S3"
+                    browsers: "S,C,O"
                 },
                 {
                     name: "::-webkit-progress-inner-element",
-                    browsers: "C,S3"
+                    browsers: "S,C,O"
                 },
                 {
                     name: "::-webkit-progress-value",
-                    browsers: "C,S3"
+                    browsers: "S,C,O"
                 },
                 {
                     name: "::-webkit-resizer",
@@ -4125,7 +3216,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: "::-webkit-search-cancel-button",
-                    browsers: "C,S4"
+                    browsers: "S,C"
                 },
                 {
                     name: "::-webkit-search-decoration",
@@ -4133,7 +3224,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: "::-webkit-search-results-button",
-                    browsers: "C,S4"
+                    browsers: "S,C"
                 },
                 {
                     name: "::-webkit-search-results-decoration",
@@ -4174,6 +3265,35 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "::-webkit-validation-bubble-text-block",
                     browsers: "C,O,S6"
+                },
+                {
+                    name: "::-moz-range-progress",
+                    desc: "The ::-moz-range-progress CSS pseudo-element is a Mozilla extension that represents the lower portion of the track (i.e., groove) in which the indicator slides in an <input> of type=\"range\". This portion corresponds to values lower than the value currently selected by the thumb (i.e., virtual knob)."
+                },
+                {
+                    name: "::-moz-range-thumb",
+                    desc: "The ::-moz-range-thumb CSS pseudo-element is a Mozilla extension that represents the thumb (i.e., virtual knob) of an <input> of type=\"range\". The user can move the thumb along the input's track to alter its numerical value."
+                },
+                {
+                    name: "::-moz-range-track",
+                    desc: "The ::-moz-range-track CSS pseudo-element is a Mozilla extension that represents the track (i.e., groove) in which the indicator slides in an <input> of type=\"range\"."
+                },
+                {
+                    name: "::-webkit-progress-inner-value",
+                    desc: "The ::-webkit-progress-value CSS pseudo-element represents the filled-in portion of the bar of a <progress> element. It is a child of the ::-webkit-progress-bar pseudo-element.\n\nIn order to let ::-webkit-progress-value take effect, -webkit-appearance needs to be set to none on the <progress> element."
+                },
+                {
+                    name: "::grammar-error",
+                    desc: "The ::grammar-error CSS pseudo-element represents a text segment which the user agent has flagged as grammatically incorrect."
+                },
+                {
+                    name: "::placeholder",
+                    desc: "The ::placeholder CSS pseudo-element represents the placeholder text of a form element.",
+                    browsers: "all"
+                },
+                {
+                    name: "::spelling-error",
+                    desc: "The ::spelling-error CSS pseudo-element represents a text segment which the user agent has flagged as incorrectly spelled."
                 }
             ],
             "properties": [
@@ -4181,12 +3301,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: "additive-symbols",
                     desc: "@counter-style descriptor. Specifies the symbols used by the marker-construction algorithm specified by the system descriptor. Needs to be specified if the counter system is 'additive'.",
                     browsers: "FF33",
-                    restriction: "integer, string, image, identifier"
+                    restriction: "integer, string, image, identifier",
+                    "syntax": "[ <integer> && <symbol> ]#"
                 },
                 {
                     name: "align-content",
                     desc: "Aligns a flex container’s lines within the flex container when there is extra space in the cross-axis, similar to how 'justify-content' aligns individual items within the main-axis.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -4213,7 +3334,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "stretch",
                             desc: "Lines stretch to take up the remaining space."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | <baseline-position> | <content-distribution> | <overflow-position>? <content-position>"
                 },
                 {
                     name: "align-items",
@@ -4241,12 +3363,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "stretch",
                             desc: "If the cross size property of the flex item computes to auto, and neither of the cross-axis margins are auto, the flex item is stretched."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | stretch | <baseline-position> | [ <overflow-position>? <self-position> ]"
                 },
                 {
                     name: "justify-items",
                     desc: "Defines the default justify-self for all items of the box, given them the default way of justifying each box along the appropriate axi",
-                    browsers: "FF45",
+                    browsers: "E16,FF45",
                     restriction: "enum",
                     values: [
                         {
@@ -4307,12 +3430,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "legacy"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | legacy | legacy && [ left | right | center ]"
                 },
                 {
                     name: "justify-self",
                     desc: "Defines the way of justifying a box inside its container along the appropriate axis.",
-                    browsers: "FF45",
+                    browsers: "E16,FF45",
                     restriction: "enum",
                     values: [
                         {
@@ -4370,18 +3494,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "unsave"
                         }
-                    ]
-                },
-                {
-                    name: "justify-items",
-                    desc: "Defines the default justify-self for all items of the box, given them the default way of justifying each box along the appropriate axi",
-                    browsers: "FF45",
-                    restriction: "enum"
+                    ],
+                    "syntax": "auto | normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ]"
                 },
                 {
                     name: "align-self",
                     desc: "Allows the default alignment along the cross axis to be overridden for individual flex items.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
+                    browsers: "E12,FF20,C36,IE11,O12.1",
                     restriction: "enum",
                     values: [
                         {
@@ -4408,14 +3527,16 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "stretch",
                             desc: "If the cross size property of the flex item computes to auto, and neither of the cross-axis margins are auto, the flex item is stretched."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | normal | stretch | <baseline-position> | <overflow-position>? <self-position>"
                 },
                 {
                     name: "all",
                     desc: "Shorthand that resets all properties except 'direction' and 'unicode-bidi'.",
-                    browsers: "C37,FF27,O24",
+                    browsers: "FF27,C37,O24",
                     restriction: "enum",
-                    values: []
+                    values: [],
+                    "syntax": "initial | inherit | unset | revert"
                 },
                 {
                     name: "alt",
@@ -4427,7 +3548,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "animation",
                     desc: "Shorthand property combines six of the animation properties into a single property.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
+                    browsers: "all",
                     restriction: "time, timing-function, enum, identifier, number",
                     values: [
                         {
@@ -4462,18 +3583,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "reverse",
                             desc: "All iterations of the animation are played in the reverse direction from the way they were specified."
                         }
-                    ]
+                    ],
+                    "syntax": "<single-animation>#"
                 },
                 {
                     name: "animation-delay",
                     desc: "Defines when the animation will start.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
-                    restriction: "time"
+                    browsers: "all",
+                    restriction: "time",
+                    "syntax": "<time>#"
                 },
                 {
                     name: "animation-direction",
                     desc: "Defines whether or not the animation should play in reverse on alternate cycles.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -4490,18 +3613,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "reverse",
                             desc: "All iterations of the animation are played in the reverse direction from the way they were specified."
                         }
-                    ]
+                    ],
+                    "syntax": "<single-animation-direction>#"
                 },
                 {
                     name: "animation-duration",
                     desc: "Defines the length of time that an animation takes to complete one cycle.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
-                    restriction: "time"
+                    browsers: "all",
+                    restriction: "time",
+                    "syntax": "<time>#"
                 },
                 {
                     name: "animation-fill-mode",
                     desc: "Defines what values are applied by the animation outside the time it is executing.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -4518,36 +3643,39 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "There is no change to the property value between the time the animation is applied and the time the animation begins playing or after the animation completes."
                         }
-                    ]
+                    ],
+                    "syntax": "<single-animation-fill-mode>#"
                 },
                 {
                     name: "animation-iteration-count",
                     desc: "Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
+                    browsers: "all",
                     restriction: "number, enum",
                     values: [
                         {
                             name: "infinite",
                             desc: "Causes the animation to repeat forever."
                         }
-                    ]
+                    ],
+                    "syntax": "<single-animation-iteration-count>#"
                 },
                 {
                     name: "animation-name",
                     desc: "Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
+                    browsers: "all",
                     restriction: "identifier, enum",
                     values: [
                         {
                             name: "none",
                             desc: "No animation is performed"
                         }
-                    ]
+                    ],
+                    "syntax": "[ none | <keyframes-name> ]#"
                 },
                 {
                     name: "animation-play-state",
                     desc: "Defines whether the animation is running or paused.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -4556,18 +3684,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "running"
                         }
-                    ]
+                    ],
+                    "syntax": "<single-animation-play-state>#"
                 },
                 {
                     name: "animation-timing-function",
                     desc: "Describes how the animation will progress over one cycle of its duration.",
-                    browsers: "E,C43,FF16,IE10,O12.1,S9",
-                    restriction: "timing-function"
+                    browsers: "all",
+                    restriction: "timing-function",
+                    "syntax": "<single-timing-function>#"
                 },
                 {
                     name: "backface-visibility",
                     desc: "Determines whether or not the 'back' side of a transformed element is visible when facing the viewer. With an identity transform, the front side of an element faces the viewer.",
-                    browsers: "E,C36,FF16,IE10,O23",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -4578,11 +3708,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "visible",
                             desc: "Back side is visible."
                         }
-                    ]
+                    ],
+                    "syntax": "visible | hidden"
                 },
                 {
                     name: "background",
                     desc: "Shorthand property for setting most background properties at the same place in the style sheet.",
+                    browsers: "all",
                     restriction: "enum, image, color, position, length, repeat, percentage, box",
                     values: [
                         {
@@ -4597,11 +3729,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "scroll",
                             desc: "The background is fixed with regard to the element itself and does not scroll with its contents. (It is effectively attached to the element's border.)"
                         }
-                    ]
+                    ],
+                    "syntax": "[ <bg-layer> , ]* <final-bg-layer>"
                 },
                 {
                     name: "background-attachment",
                     desc: "Specifies whether the background images are fixed with regard to the viewport ('fixed') or scroll along with the element ('scroll') or its contents ('local').",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -4617,12 +3751,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "scroll",
                             desc: "The background is fixed with regard to the element itself and does not scroll with its contents. (It is effectively attached to the element’s border.)"
                         }
-                    ]
+                    ],
+                    "syntax": "<attachment>#"
                 },
                 {
                     name: "background-blend-mode",
                     desc: "Defines the blending mode of each background layer.",
-                    browsers: "C35,FF30,O22,S7.1",
+                    browsers: "FF30,S,C35,O22",
                     restriction: "enum",
                     values: [
                         {
@@ -4678,45 +3813,54 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "luminosity",
                             browsers: "C35,FF30,O22"
                         }
-                    ]
+                    ],
+                    "syntax": "<blend-mode>#"
                 },
                 {
                     name: "background-clip",
                     desc: "Determines the background painting area.",
-                    browsers: "E,C,FF4,IE9,O10.5,S3",
-                    restriction: "box"
+                    browsers: "all",
+                    restriction: "box",
+                    "syntax": "<box>#"
                 },
                 {
                     name: "background-color",
                     desc: "Sets the background color of an element.",
-                    restriction: "color"
+                    browsers: "all",
+                    restriction: "color",
+                    "syntax": "<color>"
                 },
                 {
                     name: "background-image",
                     desc: "Sets the background image(s) of an element.",
+                    browsers: "all",
                     restriction: "image, enum",
                     values: [
                         {
                             name: "none",
                             desc: "Counts as an image layer but draws nothing."
                         }
-                    ]
+                    ],
+                    "syntax": "<bg-image>#"
                 },
                 {
                     name: "background-origin",
                     desc: "For elements rendered as a single box, specifies the background positioning area. For elements rendered as multiple boxes (e.g., inline boxes on several lines, boxes on several pages) specifies which boxes 'box-decoration-break' operates on to determine the background positioning area(s).",
-                    browsers: "E,C,FF4,IE9,O10.5,S3",
-                    restriction: "box"
+                    browsers: "all",
+                    restriction: "box",
+                    "syntax": "<box>#"
                 },
                 {
                     name: "background-position",
                     desc: "Specifies the initial position of the background image(s) (after any resizing) within their corresponding background positioning area.",
-                    restriction: "position, length, percentage"
+                    browsers: "all",
+                    restriction: "position, length, percentage",
+                    "syntax": "<bg-position>#"
                 },
                 {
                     name: "background-position-x",
                     desc: "If background images have been specified, this property specifies their initial position (after any resizing) within their corresponding background positioning area.",
-                    browsers: "E,IE6",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -4731,12 +3875,14 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "Equivalent to '100%' for the horizontal position if one or two values are given, otherwise specifies the right edge as the origin for the next offset."
                         }
-                    ]
+                    ],
+                    "status": "e",
+                    "syntax": "[ center | [ left | right | x-start | x-end ]? <length-percentage>? ]#"
                 },
                 {
                     name: "background-position-y",
                     desc: "If background images have been specified, this property specifies their initial position (after any resizing) within their corresponding background positioning area.",
-                    browsers: "E,IE6",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -4751,18 +3897,22 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "top",
                             desc: "Equivalent to '0%' for the vertical position if one or two values are given, otherwise specifies the top edge as the origin for the next offset."
                         }
-                    ]
+                    ],
+                    "status": "e",
+                    "syntax": "[ center | [ top | bottom | y-start | y-end ]? <length-percentage>? ]#"
                 },
                 {
                     name: "background-repeat",
                     desc: "Specifies how background images are tiled after they have been sized and positioned.",
+                    browsers: "all",
                     restriction: "repeat",
-                    values: []
+                    values: [],
+                    "syntax": "<repeat-style>#"
                 },
                 {
                     name: "background-size",
                     desc: "Specifies the size of the background images.",
-                    browsers: "E,C,FF4,IE9,O10,S4.1",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -4777,7 +3927,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "cover",
                             desc: "Scale the image, while preserving its intrinsic aspect ratio (if any), to the smallest size such that both its width and its height can completely cover the background positioning area."
                         }
-                    ]
+                    ],
+                    "syntax": "<bg-size>#"
                 },
                 {
                     name: "behavior",
@@ -4795,96 +3946,118 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "auto",
                             desc: "Depends on the values of other properties."
                         }
-                    ]
+                    ],
+                    "syntax": "<'width'>"
                 },
                 {
                     name: "border",
                     desc: "Shorthand property for setting border width, style, and color.",
-                    restriction: "length, line-width, line-style, color"
+                    browsers: "all",
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<br-width> || <br-style> || <color>"
                 },
                 {
                     name: "border-block-end",
                     desc: "Logical 'border-bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, line-width, line-style, color"
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<'border-width'> || <'border-style'> || <'color'>"
                 },
                 {
                     name: "border-block-start",
                     desc: "Logical 'border-top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, line-width, line-style, color"
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<'border-width'> || <'border-style'> || <'color'>"
                 },
                 {
                     name: "border-block-end-color",
                     desc: "Logical 'border-bottom-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "color"
+                    restriction: "color",
+                    "syntax": "<'color'>"
                 },
                 {
                     name: "border-block-start-color",
                     desc: "Logical 'border-top-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "color"
+                    restriction: "color",
+                    "syntax": "<'color'>"
                 },
                 {
                     name: "border-block-end-style",
                     desc: "Logical 'border-bottom-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "line-style"
+                    restriction: "line-style",
+                    "syntax": "<'border-style'>"
                 },
                 {
                     name: "border-block-start-style",
                     desc: "Logical 'border-top-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "lline-style"
+                    restriction: "lline-style",
+                    "syntax": "<'border-style'>"
                 },
                 {
                     name: "border-block-end-width",
                     desc: "Logical 'border-bottom-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, line-width"
+                    restriction: "length, line-width",
+                    "syntax": "<'border-width'>"
                 },
                 {
                     name: "border-block-start-width",
                     desc: "Logical 'border-top-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, line-width"
+                    restriction: "length, line-width",
+                    "syntax": "<'border-width'>"
                 },
                 {
                     name: "border-bottom",
                     desc: "Shorthand property for setting border width, style and color.",
-                    restriction: "length, line-width, line-style, color"
+                    browsers: "all",
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<br-width> || <br-style> || <color>"
                 },
                 {
                     name: "border-bottom-color",
                     desc: "Sets the color of the bottom border.",
-                    restriction: "color"
+                    browsers: "all",
+                    restriction: "color",
+                    "syntax": "<color>"
                 },
                 {
                     name: "border-bottom-left-radius",
                     desc: "Defines the radii of the bottom left outer border edge.",
-                    browsers: "E,C,FF4,IE9,O10.5,S5",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length-percentage>{1,2}"
                 },
                 {
                     name: "border-bottom-right-radius",
                     desc: "Defines the radii of the bottom right outer border edge.",
-                    browsers: "E,C,FF4,IE9,O10.5,S5",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length-percentage>{1,2}"
                 },
                 {
                     name: "border-bottom-style",
                     desc: "Sets the style of the bottom border.",
-                    restriction: "line-style"
+                    browsers: "all",
+                    restriction: "line-style",
+                    "syntax": "<br-style>"
                 },
                 {
                     name: "border-bottom-width",
                     desc: "Sets the thickness of the bottom border.",
-                    restriction: "length, line-width"
+                    browsers: "all",
+                    restriction: "length, line-width",
+                    "syntax": "<br-width>"
                 },
                 {
                     name: "border-collapse",
                     desc: "Selects a table's border model.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -4895,18 +4068,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "separate",
                             desc: "Selects the separated borders border model."
                         }
-                    ]
+                    ],
+                    "syntax": "collapse | separate"
                 },
                 {
                     name: "border-color",
                     desc: "The color of the border around all four edges of an element.",
+                    browsers: "all",
                     restriction: "color",
-                    values: []
+                    values: [],
+                    "syntax": "<color>{1,4}"
                 },
                 {
                     name: "border-image",
                     desc: "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
-                    browsers: "E,C16,FF15,IE11,O15,S6",
+                    browsers: "all",
                     restriction: "length, percentage, number, url, enum",
                     values: [
                         {
@@ -4939,18 +4115,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "url()"
                         }
-                    ]
+                    ],
+                    "syntax": "<'border-image-source'> || <'border-image-slice'> [ / <'border-image-width'> | / <'border-image-width'>? / <'border-image-outset'> ]? || <'border-image-repeat'>"
                 },
                 {
                     name: "border-image-outset",
                     desc: "The values specify the amount by which the border image area extends beyond the border box on the top, right, bottom, and left sides respectively. If the fourth value is absent, it is the same as the second. If the third one is also absent, it is the same as the first. If the second one is also absent, it is the same as the first. Numbers represent multiples of the corresponding border-width.",
-                    browsers: "E,C16,FF15,IE11,O15,S6",
-                    restriction: "length, number"
+                    browsers: "all",
+                    restriction: "length, number",
+                    "syntax": "[ <length> | <number> ]{1,4}"
                 },
                 {
                     name: "border-image-repeat",
                     desc: "Specifies how the images for the sides and the middle part of the border image are scaled and tiled. If the second keyword is absent, it is assumed to be the same as the first.",
-                    browsers: "E,C16,FF15,IE11,O15,S6",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -4968,203 +4146,249 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "stretch",
                             desc: "The image is stretched to fill the area."
                         }
-                    ]
+                    ],
+                    "syntax": "[ stretch | repeat | round | space ]{1,2}"
                 },
                 {
                     name: "border-image-slice",
                     desc: "Specifies inward offsets from the top, right, bottom, and left edges of the image, dividing it into nine regions: four corners, four edges and a middle.",
-                    browsers: "E,C16,FF15,IE11,O15,S6",
+                    browsers: "all",
                     restriction: "number, percentage",
                     values: [
                         {
                             name: "fill",
                             desc: "Causes the middle part of the border-image to be preserved."
                         }
-                    ]
+                    ],
+                    "syntax": "<number-percentage>{1,4} && fill?"
                 },
                 {
                     name: "border-image-source",
                     desc: "Specifies an image to use instead of the border styles given by the 'border-style' properties and as an additional background layer for the element. If the value is 'none' or if the image cannot be displayed, the border styles will be used.",
-                    browsers: "E,C16,FF15,IE11,O15,S6",
+                    browsers: "all",
                     restriction: "image",
                     values: [
                         {
                             name: "none",
                             desc: "Use the border styles."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <image>"
                 },
                 {
                     name: "border-image-width",
                     desc: "The four values of 'border-image-width' specify offsets that are used to divide the border image area into nine parts. They represent inward distances from the top, right, bottom, and left sides of the area, respectively.",
-                    browsers: "E,C16,FF15,IE11,O15,S6",
+                    browsers: "all",
                     restriction: "length, percentage, number",
                     values: [
                         {
                             name: "auto",
                             desc: "The border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
                         }
-                    ]
+                    ],
+                    "syntax": "[ <length-percentage> | <number> | auto ]{1,4}"
                 },
                 {
                     name: "border-inline-end",
                     desc: "Logical 'border-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, line-width, line-style, color"
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<'border-width'> || <'border-style'> || <'color'>"
                 },
                 {
                     name: "border-inline-start",
                     desc: "Logical 'border-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, line-width, line-style, color"
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<'border-width'> || <'border-style'> || <'color'>"
                 },
                 {
                     name: "border-inline-end-color",
                     desc: "Logical 'border-right-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "color"
+                    restriction: "color",
+                    "syntax": "<'color'>"
                 },
                 {
                     name: "border-inline-start-color",
                     desc: "Logical 'border-left-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "color"
+                    restriction: "color",
+                    "syntax": "<'color'>"
                 },
                 {
                     name: "border-inline-end-style",
                     desc: "Logical 'border-right-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "line-style"
+                    restriction: "line-style",
+                    "syntax": "<'border-style'>"
                 },
                 {
                     name: "border-inline-start-style",
                     desc: "Logical 'border-left-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "lline-style"
+                    restriction: "lline-style",
+                    "syntax": "<'border-style'>"
                 },
                 {
                     name: "border-inline-end-width",
                     desc: "Logical 'border-right-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, line-width"
+                    restriction: "length, line-width",
+                    "syntax": "<'border-width'>"
                 },
                 {
                     name: "border-inline-start-width",
                     desc: "Logical 'border-left-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, line-width"
+                    restriction: "length, line-width",
+                    "syntax": "<'border-width'>"
                 },
                 {
                     name: "border-left",
                     desc: "Shorthand property for setting border width, style and color",
-                    restriction: "length, line-width, line-style, color"
+                    browsers: "all",
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<br-width> || <br-style> || <color>"
                 },
                 {
                     name: "border-left-color",
                     desc: "Sets the color of the left border.",
-                    restriction: "color"
+                    browsers: "all",
+                    restriction: "color",
+                    "syntax": "<color>"
                 },
                 {
                     name: "border-left-style",
                     desc: "Sets the style of the left border.",
-                    restriction: "line-style"
+                    browsers: "all",
+                    restriction: "line-style",
+                    "syntax": "<br-style>"
                 },
                 {
                     name: "border-left-width",
                     desc: "Sets the thickness of the left border.",
-                    restriction: "length, line-width"
+                    browsers: "all",
+                    restriction: "length, line-width",
+                    "syntax": "<br-width>"
                 },
                 {
                     name: "border-radius",
                     desc: "Defines the radii of the outer border edge.",
-                    browsers: "E,C,FF4,IE9,O10.5,S5",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length-percentage>{1,4} [ / <length-percentage>{1,4} ]?"
                 },
                 {
                     name: "border-right",
                     desc: "Shorthand property for setting border width, style and color",
-                    restriction: "length, line-width, line-style, color"
+                    browsers: "all",
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<br-width> || <br-style> || <color>"
                 },
                 {
                     name: "border-right-color",
                     desc: "Sets the color of the right border.",
-                    restriction: "color"
+                    browsers: "all",
+                    restriction: "color",
+                    "syntax": "<color>"
                 },
                 {
                     name: "border-right-style",
                     desc: "Sets the style of the right border.",
-                    restriction: "line-style"
+                    browsers: "all",
+                    restriction: "line-style",
+                    "syntax": "<br-style>"
                 },
                 {
                     name: "border-right-width",
                     desc: "Sets the thickness of the right border.",
-                    restriction: "length, line-width"
+                    browsers: "all",
+                    restriction: "length, line-width",
+                    "syntax": "<br-width>"
                 },
                 {
                     name: "border-spacing",
                     desc: "The lengths specify the distance that separates adjoining cell borders. If one length is specified, it gives both the horizontal and vertical spacing. If two are specified, the first gives the horizontal spacing and the second the vertical spacing. Lengths may not be negative.",
-                    browsers: "E,C,FF1,IE8,O7,S1.2",
-                    restriction: "length"
+                    browsers: "all",
+                    restriction: "length",
+                    "syntax": "<length> <length>?"
                 },
                 {
                     name: "border-style",
                     desc: "The style of the border around edges of an element.",
+                    browsers: "all",
                     restriction: "line-style",
-                    values: []
+                    values: [],
+                    "syntax": "<br-style>{1,4}"
                 },
                 {
                     name: "border-top",
                     desc: "Shorthand property for setting border width, style and color",
-                    restriction: "length, line-width, line-style, color"
+                    browsers: "all",
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<br-width> || <br-style> || <color>"
                 },
                 {
                     name: "border-top-color",
                     desc: "Sets the color of the top border.",
-                    restriction: "color"
+                    browsers: "all",
+                    restriction: "color",
+                    "syntax": "<color>"
                 },
                 {
                     name: "border-top-left-radius",
                     desc: "Defines the radii of the top left outer border edge.",
-                    browsers: "E,C,FF4,IE9,O10.5,S5",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length-percentage>{1,2}"
                 },
                 {
                     name: "border-top-right-radius",
                     desc: "Defines the radii of the top right outer border edge.",
-                    browsers: "E,C,FF4,IE9,O10.5,S5",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length-percentage>{1,2}"
                 },
                 {
                     name: "border-top-style",
                     desc: "Sets the style of the top border.",
-                    restriction: "line-style"
+                    browsers: "all",
+                    restriction: "line-style",
+                    "syntax": "<br-style>"
                 },
                 {
                     name: "border-top-width",
                     desc: "Sets the thickness of the top border.",
-                    restriction: "length, line-width"
+                    browsers: "all",
+                    restriction: "length, line-width",
+                    "syntax": "<br-width>"
                 },
                 {
                     name: "border-width",
                     desc: "Shorthand that sets the four 'border-*-width' properties. If it has four values, they set top, right, bottom and left in that order. If left is missing, it is the same as right; if bottom is missing, it is the same as top; if right is missing, it is the same as top.",
+                    browsers: "all",
                     restriction: "length, line-width",
-                    values: []
+                    values: [],
+                    "syntax": "<br-width>{1,4}"
                 },
                 {
                     name: "bottom",
                     desc: "Specifies how far an absolutely positioned box's bottom margin edge is offset above the bottom edge of the box's 'containing block'.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto",
                             desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | <percentage> | auto"
                 },
                 {
                     name: "box-decoration-break",
                     desc: "Specifies whether individual boxes are treated as broken pieces of one continuous box, or whether each box is individually wrapped with the border and padding.",
-                    browsers: "FF32,O11",
+                    browsers: "FF32,S6.1,C22,O15",
                     restriction: "enum",
                     values: [
                         {
@@ -5173,23 +4397,25 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "slice"
                         }
-                    ]
+                    ],
+                    "syntax": "slice | clone"
                 },
                 {
                     name: "box-shadow",
                     desc: "Attaches one or more drop-shadows to the box. The property is a comma-separated list of shadows, each specified by 2-4 length values, an optional color, and an optional 'inset' keyword. Omitted lengths are 0; omitted colors are a user agent chosen color.",
-                    browsers: "E,C,FF4,IE9,O11.5,S5.1",
+                    browsers: "all",
                     restriction: "length, color, enum",
                     values: [
                         {
                             name: "inset"
                         }
-                    ]
+                    ],
+                    "syntax": "none | <shadow>#"
                 },
                 {
                     name: "box-sizing",
                     desc: "Specifies the behavior of the 'width' and 'height' properties.",
-                    browsers: "E,C10,FF29,IE8,O8,S5.1",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -5198,12 +4424,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "content-box"
                         }
-                    ]
+                    ],
+                    "syntax": "content-box | border-box"
                 },
                 {
                     name: "break-after",
                     desc: "Describes the page/column/region break behavior after the generated box.",
-                    browsers: "E,IE10,O11.5",
+                    browsers: "E12,S10,C50,IE10,O37",
                     restriction: "enum",
                     values: [
                         {
@@ -5242,12 +4469,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "Force one or two page breaks before/after the generated box so that the next page is formatted as a right page."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | avoid | avoid-page | page | left | right | recto | verso | avoid-column | column | avoid-region | region"
                 },
                 {
                     name: "break-before",
                     desc: "Describes the page/column/region break behavior before the generated box.",
-                    browsers: "E,IE10,O11.5",
+                    browsers: "E12,S10,C50,IE10,O37",
                     restriction: "enum",
                     values: [
                         {
@@ -5286,12 +4514,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "Force one or two page breaks before/after the generated box so that the next page is formatted as a right page."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | avoid | avoid-page | page | left | right | recto | verso | avoid-column | column | avoid-region | region"
                 },
                 {
                     name: "break-inside",
                     desc: "Describes the page/column/region break behavior inside the principal box.",
-                    browsers: "E,IE10,O11.5",
+                    browsers: "E12,S10,C50,IE10,O37",
                     restriction: "enum",
                     values: [
                         {
@@ -5310,12 +4539,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "avoid-page",
                             desc: "Avoid a page break within the box."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | avoid | avoid-page | avoid-column | avoid-region"
                 },
                 {
                     name: "caption-side",
                     desc: "Specifies the position of the caption box with respect to the table box.",
-                    browsers: "E,C,FF,IE8,O,S",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -5326,23 +4556,26 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "top",
                             desc: "Positions the caption box above the table box."
                         }
-                    ]
+                    ],
+                    "syntax": "top | bottom | block-start | block-end | inline-start | inline-end"
                 },
                 {
                     name: "caret-color",
                     desc: "Controls the color of the text insertion indicator.",
-                    browsers: "C60,FF55,O46",
+                    browsers: "FF53,S11.1,C57,O44",
                     restriction: "color, enum",
                     values: [
                         {
                             name: "auto",
                             desc: "The user agent selects an appropriate color for the caret. This is generally currentcolor, but the user agent may choose a different color to ensure good visibility and contrast with the surrounding content, taking into account the value of currentcolor, the background, shadows, and other factors."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | <color>"
                 },
                 {
                     name: "clear",
                     desc: "Indicates which sides of an element's box(es) may not be adjacent to an earlier floating box. The 'clear' property does not consider floats inside the element itself or in other block formatting contexts.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -5361,11 +4594,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "The clearance of the generated box is set to the amount necessary to place the top border edge below the bottom outer edge of any right-floating boxes that resulted from elements earlier in the source document."
                         }
-                    ]
+                    ],
+                    "syntax": "none | left | right | both | inline-start | inline-end"
                 },
                 {
                     name: "clip",
                     desc: "Deprecated. Use the 'clip-path' property when support allows. Defines the visible portion of an element’s box.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -5375,12 +4610,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "rect()"
                         }
-                    ]
+                    ],
+                    "syntax": "<shape> | auto"
                 },
                 {
                     name: "clip-path",
                     desc: "Specifies a clipping path where everything inside the path is visable and everything outside is clipped out.",
-                    browsers: "FF3.5",
+                    browsers: "FF3.5,C55,O42",
                     restriction: "url, shape, geometry-box, enum",
                     values: [
                         {
@@ -5391,7 +4627,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "url()",
                             desc: "References a <clipPath> element to create a clipping path."
                         }
-                    ]
+                    ],
+                    "syntax": "<clip-source> | [ <basic-shape> || <geometry-box> ] | none"
                 },
                 {
                     name: "clip-rule",
@@ -5410,7 +4647,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "color",
                     desc: "Color of an element's text",
-                    restriction: "color"
+                    browsers: "all",
+                    restriction: "color",
+                    "syntax": "<color>"
                 },
                 {
                     name: "color-interpolation-filters",
@@ -5433,19 +4672,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "column-count",
                     desc: "Describes the optimal number of columns into which the content of the element will be flowed.",
-                    browsers: "E,IE10,O11.5,S9",
+                    browsers: "all",
                     restriction: "integer, enum",
                     values: [
                         {
                             name: "auto",
                             desc: "Determines the number of columns by the 'column-width' property and the element width."
                         }
-                    ]
+                    ],
+                    "syntax": "<integer> | auto"
                 },
                 {
                     name: "column-fill",
                     desc: "In continuous media, this property will only be consulted if the length of columns has been constrained. Otherwise, columns will automatically be balanced.",
-                    browsers: "E,IE10,O11.5,S9",
+                    browsers: "E12,FF52,C",
                     restriction: "enum",
                     values: [
                         {
@@ -5455,7 +4695,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "balance"
                         }
-                    ]
+                    ],
+                    "syntax": "auto | balance | balance-all"
                 },
                 {
                     name: "column-gap",
@@ -5467,48 +4708,54 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "User agent specific and typically equivalent to 1em."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | <length-percentage>"
                 },
                 {
                     name: "column-rule",
                     desc: "Shorthand for setting 'column-rule-width', 'column-rule-style', and 'column-rule-color' at the same place in the style sheet. Omitted values are set to their initial values.",
-                    browsers: "E,IE10,O11.5,S9",
-                    restriction: "length, line-width, line-style, color"
+                    browsers: "all",
+                    restriction: "length, line-width, line-style, color",
+                    "syntax": "<'column-rule-width'> || <'column-rule-style'> || <'column-rule-color'>"
                 },
                 {
                     name: "column-rule-color",
                     desc: "Sets the color of the column rule",
-                    browsers: "E,IE10,O11.6",
-                    restriction: "color"
+                    browsers: "all",
+                    restriction: "color",
+                    "syntax": "<color>"
                 },
                 {
                     name: "column-rule-style",
                     desc: "Sets the style of the rule between columns of an element.",
-                    browsers: "E,IE10,O11.5,S6",
-                    restriction: "line-style"
+                    browsers: "all",
+                    restriction: "line-style",
+                    "syntax": "<'border-style'>"
                 },
                 {
                     name: "column-rule-width",
                     desc: "Sets the width of the rule between columns. Negative values are not allowed.",
-                    browsers: "E,IE10,O11.5,S9",
-                    restriction: "length, line-width"
+                    browsers: "all",
+                    restriction: "length, line-width",
+                    "syntax": "<'border-width'>"
                 },
                 {
                     name: "columns",
                     desc: "A shorthand property which sets both 'column-width' and 'column-count'.",
-                    browsers: "E,IE10,O11.5,S9",
+                    browsers: "all",
                     restriction: "length, integer, enum",
                     values: [
                         {
                             name: "auto",
                             desc: "The width depends on the values of other properties."
                         }
-                    ]
+                    ],
+                    "syntax": "<'column-width'> || <'column-count'>"
                 },
                 {
                     name: "column-span",
                     desc: "Describes the page/column break behavior after the generated box.",
-                    browsers: "E,IE10,O11.5,S9",
+                    browsers: "E12,S,C50,IE10,O11.1",
                     restriction: "enum",
                     values: [
                         {
@@ -5519,19 +4766,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "The element does not span multiple columns."
                         }
-                    ]
+                    ],
+                    "syntax": "none | all"
                 },
                 {
                     name: "column-width",
                     desc: "Describes the width of columns in multicol elements.",
-                    browsers: "E,IE10,O11.5,S9",
+                    browsers: "all",
                     restriction: "length, enum",
                     values: [
                         {
                             name: "auto",
                             desc: "The width depends on the values of other properties."
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | auto"
                 },
                 {
                     name: "contain",
@@ -5564,12 +4813,14 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "paint"
                         }
-                    ]
+                    ],
+                    "status": "e",
+                    "syntax": "none | strict | content | [ size || layout || style || paint ]"
                 },
                 {
                     name: "content",
                     desc: "Determines which page-based occurrence of a given element is applied to a counter or string value.",
-                    browsers: "E,C,FF1,IE8,O4,S1",
+                    browsers: "all",
                     restriction: "string, url",
                     values: [
                         {
@@ -5593,35 +4844,39 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "url()"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | none | [ <content-replacement> | <content-list> ] [/ <string> ]?"
                 },
                 {
                     name: "counter-increment",
                     desc: "Manipulate the value of existing counters.",
-                    browsers: "E,C,FF1.5,IE8,O10.5,S3",
+                    browsers: "FF1,S3,C2,IE8,O9.2",
                     restriction: "identifier, integer",
                     values: [
                         {
                             name: "none",
                             desc: "This element does not alter the value of any counters."
                         }
-                    ]
+                    ],
+                    "syntax": "[ <custom-ident> <integer>? ]+ | none"
                 },
                 {
                     name: "counter-reset",
                     desc: "Property accepts one or more names of counters (identifiers), each one optionally followed by an integer. The integer gives the value that the counter is set to on each occurrence of the element.",
-                    browsers: "E,C,FF1.5,IE8,O10.5,S3",
+                    browsers: "all",
                     restriction: "identifier, integer",
                     values: [
                         {
                             name: "none",
                             desc: "The counter is not modified."
                         }
-                    ]
+                    ],
+                    "syntax": "[ <custom-ident> <integer>? ]+ | none"
                 },
                 {
                     name: "cursor",
                     desc: "Allows control over cursor appearance in an element",
+                    browsers: "all",
                     restriction: "url, number, enum",
                     values: [
                         {
@@ -5772,11 +5027,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "zoom-out",
                             browsers: "E,C37,FF24,O12.1,S9"
                         }
-                    ]
+                    ],
+                    "syntax": "[ [ <url> [ <x> <y> ]? , ]* [ auto | default | none | context-menu | help | pointer | progress | wait | cell | crosshair | text | vertical-text | alias | copy | move | no-drop | not-allowed | e-resize | n-resize | ne-resize | nw-resize | s-resize | se-resize | sw-resize | w-resize | ew-resize | ns-resize | nesw-resize | nwse-resize | col-resize | row-resize | all-scroll | zoom-in | zoom-out | grab | grabbing ] ]"
                 },
                 {
                     name: "direction",
                     desc: "Specifies the inline base direction or directionality of any bidi paragraph, embedding, isolate, or override established by the box. Note: for HTML content use the 'dir' attribute and 'bdo' element rather than this property.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -5785,11 +5042,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "rtl"
                         }
-                    ]
+                    ],
+                    "syntax": "ltr | rtl"
                 },
                 {
                     name: "display",
                     desc: "In combination with 'float' and 'position', determines the type of box or boxes that are generated for an element.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -5968,12 +5227,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "-webkit-inline-flex",
                             browsers: "C21,O15,S6.1"
                         }
-                    ]
+                    ],
+                    "syntax": "[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>"
                 },
                 {
                     name: "empty-cells",
                     desc: "In the separated borders model, this property controls the rendering of borders and backgrounds around cells that have no visible content.",
-                    browsers: "E,C,FF1,IE7,O4,S1.2",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -5986,7 +5246,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "show"
                         }
-                    ]
+                    ],
+                    "syntax": "show | hide"
                 },
                 {
                     name: "enable-background",
@@ -6005,7 +5266,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: "fallback",
                     desc: "@counter-style descriptor. Specifies a fallback counter style to be used when the current counter style can’t create a representation for a given counter value.",
                     browsers: "FF33",
-                    restriction: "identifier"
+                    restriction: "identifier",
+                    "syntax": "<counter-style-name>"
                 },
                 {
                     name: "fill",
@@ -6039,7 +5301,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "filter",
                     desc: "Processes an element’s rendering before it is displayed in the document, by applying one or more filter effects.",
-                    browsers: "E13,FF35",
+                    browsers: "E12,FF35,S6,C53,O40",
                     restriction: "enum, url",
                     values: [
                         {
@@ -6081,12 +5343,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "A filter reference to a <filter> element.",
                             browsers: "FF3.6"
                         }
-                    ]
+                    ],
+                    "syntax": "none | <filter-function-list>"
                 },
                 {
                     name: "flex",
                     desc: "Specifies the components of a flexible length: the flex grow factor and flex shrink factor, and the flex basis.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
+                    browsers: "all",
                     restriction: "length, number, percentage",
                     values: [
                         {
@@ -6102,12 +5365,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "Expands to '0 0 auto'."
                         }
-                    ]
+                    ],
+                    "syntax": "none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]"
                 },
                 {
                     name: "flex-basis",
                     desc: "Sets the flex basis.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
+                    browsers: "all",
                     restriction: "length, number, percentage",
                     values: [
                         {
@@ -6119,12 +5383,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "Indicates automatic sizing, based on the flex item’s content.",
                             browsers: "E,IE11"
                         }
-                    ]
+                    ],
+                    "syntax": "content | <'width'>"
                 },
                 {
                     name: "flex-direction",
                     desc: "Specifies how flex items are placed in the flex container, by setting the direction of the flex container’s main axis.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -6141,12 +5406,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "row-reverse"
                         }
-                    ]
+                    ],
+                    "syntax": "row | row-reverse | column | column-reverse"
                 },
                 {
                     name: "flex-flow",
                     desc: "Specifies how flexbox items are placed in the flexbox.",
-                    browsers: "E,C29,FF28,IE11,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -6174,24 +5440,27 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "wrap-reverse"
                         }
-                    ]
+                    ],
+                    "syntax": "<'flex-direction'> || <'flex-wrap'>"
                 },
                 {
                     name: "flex-grow",
                     desc: "Sets the flex grow factor. Negative numbers are invalid.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
-                    restriction: "number"
+                    browsers: "all",
+                    restriction: "number",
+                    "syntax": "<number>"
                 },
                 {
                     name: "flex-shrink",
                     desc: "Sets the flex shrink factor. Negative numbers are invalid.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
-                    restriction: "number"
+                    browsers: "all",
+                    restriction: "number",
+                    "syntax": "<number>"
                 },
                 {
                     name: "flex-wrap",
                     desc: "Controls whether the flex container is single-line or multi-line, and the direction of the cross-axis, which determines the direction new lines are stacked in.",
-                    browsers: "E,C29,FF28,IE11,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -6205,11 +5474,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "wrap-reverse"
                         }
-                    ]
+                    ],
+                    "syntax": "nowrap | wrap | wrap-reverse"
                 },
                 {
                     name: "float",
                     desc: "Specifies how a box should be floated. It may be set for any element, but only applies to elements that generate boxes that are not absolutely positioned.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -6232,7 +5503,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "Similar to 'left', except the box is floated to the right, and content flows on the left side of the box, starting at the top."
                         }
-                    ]
+                    ],
+                    "syntax": "left | right | none | inline-start | inline-end"
                 },
                 {
                     name: "flood-color",
@@ -6249,6 +5521,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "font",
                     desc: "Shorthand property for setting 'font-style', 'font-variant', 'font-weight', 'font-size', 'line-height', and 'font-family', at the same place in the style sheet. The syntax of this property is based on a traditional typographical shorthand notation to set multiple properties related to fonts.",
+                    browsers: "all",
                     restriction: "font",
                     values: [
                         {
@@ -6349,11 +5622,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "xx-small"
                         }
-                    ]
+                    ],
+                    "syntax": "[ [ <'font-style'> || <font-variant-css21> || <'font-weight'> || <'font-stretch'> ]? <'font-size'> [ / <'line-height'> ]? <'font-family'> ] | caption | icon | menu | message-box | small-caption | status-bar"
                 },
                 {
                     name: "font-family",
                     desc: "Specifies a prioritized list of font family names or generic family names. A user agent iterates through the list of family names until it matches an available font that contains a glyph for the character to be rendered.",
+                    browsers: "all",
                     restriction: "font",
                     values: [
                         {
@@ -6410,12 +5685,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "Verdana, Geneva, Tahoma, sans-serif"
                         }
-                    ]
+                    ],
+                    "syntax": "<family-name>"
                 },
                 {
                     name: "font-feature-settings",
                     desc: "Provides low-level control over OpenType font features. It is intended as a way of providing access to font features that are not widely used but are needed for a particular use case.",
-                    browsers: "E,FF34,IE10",
+                    browsers: "all",
                     restriction: "string, integer",
                     values: [
                         {
@@ -6790,12 +6066,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "on",
                             desc: "Enable feature."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | <feature-tag-value>#"
                 },
                 {
                     name: "font-kerning",
                     desc: "Kerning is the contextual adjustment of inter-glyph spacing. This property controls metric kerning, kerning that utilizes adjustment data contained in the font.",
-                    browsers: "C33,FF34,O20",
+                    browsers: "FF32,S7,C32",
                     restriction: "enum",
                     values: [
                         {
@@ -6810,7 +6087,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "Specifies that kerning is applied."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | normal | none"
                 },
                 {
                     name: "font-language-override",
@@ -6822,11 +6100,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "Implies that when rendering with OpenType fonts the language of the document is used to infer the OpenType language system, used to select language specific features when rendering."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | <string>"
                 },
                 {
                     name: "font-size",
                     desc: "Indicates the desired height of glyphs from the font. For scalable fonts, the font-size is a scale factor applied to the EM unit of the font. (Note that certain glyphs may bleed outside their EM box.) For non-scalable fonts, the font-size is converted into absolute units and matched against the declared font-size of the font, using the same absolute coordinate space for both of the matched values.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -6856,24 +6136,26 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "xx-small"
                         }
-                    ]
+                    ],
+                    "syntax": "<absolute-size> | <relative-size> | <length-percentage>"
                 },
                 {
                     name: "font-size-adjust",
                     desc: "Preserves the readability of text when font fallback occurs by adjusting the font-size so that the x-height is the same irregardless of the font used.",
-                    browsers: "E,FF3,IE10",
+                    browsers: "FF40,C43,O30",
                     restriction: "number",
                     values: [
                         {
                             name: "none",
                             desc: "Do not preserve the font’s x-height."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <number>"
                 },
                 {
                     name: "font-stretch",
                     desc: "Selects a normal, condensed, or expanded face from a font family.",
-                    browsers: "E,FF9,IE9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -6911,11 +6193,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "wider",
                             browsers: "E,IE10"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | ultra-condensed | extra-condensed | condensed | semi-condensed | semi-expanded | expanded | extra-expanded | ultra-expanded"
                 },
                 {
                     name: "font-style",
                     desc: "Allows italic or oblique faces to be selected. Italic forms are generally cursive in nature while oblique faces are typically sloped versions of the regular face.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -6930,7 +6214,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "oblique",
                             desc: "Selects a font that is labeled as an 'oblique' face, or an 'italic' face if one is not."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | italic | oblique"
                 },
                 {
                     name: "font-synthesis",
@@ -6949,11 +6234,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "weight"
                         }
-                    ]
+                    ],
+                    "syntax": "none | [ weight || style ]"
                 },
                 {
                     name: "font-variant",
                     desc: "Specifies variant representations of the font",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -6964,7 +6251,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "small-caps",
                             desc: "Specifies a font that is labeled as a small-caps font. If a genuine small-caps font is not available, user agents should simulate a small-caps font."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | none | [ <common-lig-values> || <discretionary-lig-values> || <historical-lig-values> || <contextual-alt-values> || stylistic(<feature-value-name>) || historical-forms || styleset(<feature-value-name>#) || character-variant(<feature-value-name>#) || swash(<feature-value-name>) || ornaments(<feature-value-name>) || annotation(<feature-value-name>) || [ small-caps | all-small-caps | petite-caps | all-petite-caps | unicase | titling-caps ] || <numeric-figure-values> || <numeric-spacing-values> || <numeric-fraction-values> || ordinal || slashed-zero || <east-asian-variant-values> || <east-asian-width-values> || ruby ]"
                 },
                 {
                     name: "font-variant-alternates",
@@ -6997,12 +6285,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "swash()"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | [ stylistic( <feature-value-name> ) || historical-forms || styleset( <feature-value-name># ) || character-variant( <feature-value-name># ) || swash( <feature-value-name> ) || ornaments( <feature-value-name> ) || annotation( <feature-value-name> ) ]"
                 },
                 {
                     name: "font-variant-caps",
                     desc: "Specifies control over capitalized forms.",
-                    browsers: "FF34",
+                    browsers: "FF34,C52,O39",
                     restriction: "enum",
                     values: [
                         {
@@ -7028,12 +6317,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "unicase"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | small-caps | all-small-caps | petite-caps | all-petite-caps | unicase | titling-caps"
                 },
                 {
                     name: "font-variant-east-asian",
                     desc: "Allows control of glyph substitute and positioning in East Asian text.",
-                    browsers: "FF34",
+                    browsers: "FF34,C63,O50",
                     restriction: "enum",
                     values: [
                         {
@@ -7068,12 +6358,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "traditional"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | [ <east-asian-variant-values> || <east-asian-width-values> || ruby ]"
                 },
                 {
                     name: "font-variant-ligatures",
                     desc: "Specifies control over which ligatures are enabled or disabled. A value of ‘normal’ implies that the defaults set by the font are used.",
-                    browsers: "C18,FF34,O15,S6",
+                    browsers: "FF34,S9.1,C34,O21",
                     restriction: "enum",
                     values: [
                         {
@@ -7117,12 +6408,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "Implies that the defaults set by the font are used."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | none | [ <common-lig-values> || <discretionary-lig-values> || <historical-lig-values> || <contextual-alt-values> ]"
                 },
                 {
                     name: "font-variant-numeric",
                     desc: "Specifies control over numerical forms.",
-                    browsers: "FF34",
+                    browsers: "FF34,S9.1,C52,O39",
                     restriction: "enum",
                     values: [
                         {
@@ -7153,7 +6445,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "tabular-nums"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | [ <numeric-figure-values> || <numeric-spacing-values> || <numeric-fraction-values> || ordinal || slashed-zero ]"
                 },
                 {
                     name: "font-variant-position",
@@ -7173,11 +6466,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "super",
                             desc: "Enables display of superscript variants (OpenType feature: sups)."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | sub | super"
                 },
                 {
                     name: "font-weight",
                     desc: "Specifies weight of glyphs in the font, their degree of blackness or stroke thickness.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -7220,7 +6515,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "Same as 400"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | bold | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900"
                 },
                 {
                     name: "glyph-orientation-horizontal",
@@ -7241,7 +6537,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "grid-area",
                     desc: "Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement. Shorthand for 'grid-row-start', 'grid-column-start', 'grid-row-end', and 'grid-column-end'.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, integer",
                     values: [
                         {
@@ -7251,18 +6547,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "span"
                         }
-                    ]
+                    ],
+                    "syntax": "<grid-line> [ / <grid-line> ]{0,3}"
                 },
                 {
                     name: "grid",
                     desc: "The grid CSS property is a shorthand property that sets all of the explicit grid properties ('grid-template-rows', 'grid-template-columns', and 'grid-template-areas'), and all the implicit grid properties ('grid-auto-rows', 'grid-auto-columns', and 'grid-auto-flow'), in a single declaration.",
-                    browsers: "FF52,C57,E16,S10.1,O44",
-                    restriction: "identifier, length, percentage, string, enum"
+                    browsers: "E16,FF52,S10.1,C57,O44",
+                    restriction: "identifier, length, percentage, string, enum",
+                    "syntax": "<'grid-template'> | <'grid-template-rows'> / [ auto-flow && dense? ] <'grid-auto-columns'>? | [ auto-flow && dense? ] <'grid-auto-rows'>? / <'grid-template-columns'>"
                 },
                 {
                     name: "grid-auto-columns",
                     desc: "Specifies the size of implicitly created columns.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -7280,12 +6578,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "minmax()"
                         }
-                    ]
+                    ],
+                    "syntax": "<track-size>+"
                 },
                 {
                     name: "grid-auto-flow",
                     desc: "Controls how the auto-placement algorithm works, specifying exactly how auto-placed items get flowed into the grid.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "enum",
                     values: [
                         {
@@ -7299,12 +6598,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "dense"
                         }
-                    ]
+                    ],
+                    "syntax": "[ row | column ] || dense"
                 },
                 {
                     name: "grid-auto-rows",
                     desc: "Specifies the size of implicitly created rows.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -7322,12 +6622,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "minmax()"
                         }
-                    ]
+                    ],
+                    "syntax": "<track-size>+"
                 },
                 {
                     name: "grid-column",
                     desc: "Shorthand for 'grid-column-start' and 'grid-column-end'.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, integer, enum",
                     values: [
                         {
@@ -7337,12 +6638,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "span"
                         }
-                    ]
+                    ],
+                    "syntax": "<grid-line> [ / <grid-line> ]?"
                 },
                 {
                     name: "grid-column-end",
                     desc: "Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, integer, enum",
                     values: [
                         {
@@ -7352,18 +6654,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "span"
                         }
-                    ]
+                    ],
+                    "syntax": "<grid-line>"
                 },
                 {
                     name: "grid-column-gap",
                     desc: "Specifies the gutters between grid columns.",
                     browsers: "FF52,C57,S10.1,O44",
-                    restriction: "length"
+                    restriction: "length",
+                    "status": "o",
+                    "syntax": "<length-percentage>"
                 },
                 {
                     name: "grid-column-start",
                     desc: "Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, integer, enum",
                     values: [
                         {
@@ -7373,18 +6678,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "span"
                         }
-                    ]
+                    ],
+                    "syntax": "<grid-line>"
                 },
                 {
                     name: "grid-gap",
                     desc: "Shorthand that specifies the gutters between grid columns and grid rows in one declaration.",
                     browsers: "FF52,C57,S10.1,O44",
-                    restriction: "length"
+                    restriction: "length",
+                    "status": "o",
+                    "syntax": "<'grid-row-gap'> <'grid-column-gap'>?"
                 },
                 {
                     name: "grid-row",
                     desc: "Shorthand for 'grid-row-start' and 'grid-row-end'.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, integer, enum",
                     values: [
                         {
@@ -7394,12 +6702,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "span"
                         }
-                    ]
+                    ],
+                    "syntax": "<grid-line> [ / <grid-line> ]?"
                 },
                 {
                     name: "grid-row-end",
                     desc: "Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, integer, enum",
                     values: [
                         {
@@ -7409,18 +6718,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "span"
                         }
-                    ]
+                    ],
+                    "syntax": "<grid-line>"
                 },
                 {
                     name: "grid-row-gap",
                     desc: "Specifies the gutters between grid rows.",
                     browsers: "FF52,C57,S10.1,O44",
-                    restriction: "length"
+                    restriction: "length",
+                    "status": "o",
+                    "syntax": "<length-percentage>"
                 },
                 {
                     name: "grid-row-start",
                     desc: "Determine a grid item’s size and location within the grid by contributing a line, a span, or nothing (automatic) to its grid placement.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, integer, enum",
                     values: [
                         {
@@ -7430,12 +6742,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "span"
                         }
-                    ]
+                    ],
+                    "syntax": "<grid-line>"
                 },
                 {
                     name: "grid-template",
                     desc: "Shorthand for setting grid-template-columns, grid-template-rows, and grid-template-areas in a single declaration.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, length, percentage, string, enum",
                     values: [
                         {
@@ -7465,24 +6778,26 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "repeat()",
                             desc: "Represents a repeated fragment of the track list, allowing a large number of columns or rows that exhibit a recurring pattern to be written in a more compact form."
                         }
-                    ]
+                    ],
+                    "syntax": "none | [ <'grid-template-rows'> / <'grid-template-columns'> ] | [ <line-names>? <string> <track-size>? <line-names>? ]+ [ / <explicit-track-list> ]?"
                 },
                 {
                     name: "grid-template-areas",
                     desc: "Specifies named grid areas, which are not associated with any particular grid item, but can be referenced from the grid-placement properties.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "string",
                     values: [
                         {
                             name: "none",
                             desc: "The grid container doesn’t define any named grid areas."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <string>+"
                 },
                 {
                     name: "grid-template-columns",
                     desc: "specifies, as a space-separated track list, the line names and track sizing functions of the grid.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, length, percentage, enum",
                     values: [
                         {
@@ -7512,12 +6827,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "repeat()",
                             desc: "Represents a repeated fragment of the track list, allowing a large number of columns or rows that exhibit a recurring pattern to be written in a more compact form."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <track-list> | <auto-track-list>"
                 },
                 {
                     name: "grid-template-rows",
                     desc: "specifies, as a space-separated track list, the line names and track sizing functions of the grid.",
-                    browsers: "FF52,C57,S10.1,O44",
+                    browsers: "E16,FF52,S10.1,C57,O44",
                     restriction: "identifier, length, percentage, string, enum",
                     values: [
                         {
@@ -7547,11 +6863,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "repeat()",
                             desc: "Represents a repeated fragment of the track list, allowing a large number of columns or rows that exhibit a recurring pattern to be written in a more compact form."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <track-list> | <auto-track-list>"
                 },
                 {
                     name: "height",
                     desc: "Specifies the height of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -7572,12 +6890,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "Use the min-content inline size or min-content block size, as appropriate to the writing mode.",
                             browsers: "C46,O33"
                         }
-                    ]
+                    ],
+                    "syntax": "<viewport-length>{1,2}"
                 },
                 {
                     name: "hyphens",
                     desc: "Controls whether hyphenation is allowed to create more break opportunities within a line of text.",
-                    browsers: "C55,FF43,O44",
+                    browsers: "FF43,S5.1,C55,IE10,O44",
                     restriction: "enum",
                     values: [
                         {
@@ -7591,7 +6910,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "Words are not broken at line breaks, even if characters inside the word suggest line break points."
                         }
-                    ]
+                    ],
+                    "syntax": "none | manual | auto"
                 },
                 {
                     name: "image-orientation",
@@ -7605,12 +6925,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "from-image"
                         }
-                    ]
+                    ],
+                    "syntax": "from-image | <angle> | [ <angle>? flip ]"
                 },
                 {
                     name: "image-rendering",
                     desc: "Provides a hint to the user-agent about what aspects of an image are most important to preserve when the image is scaled, to aid the user-agent in the choice of an appropriate scaling algorithm.",
-                    browsers: "C,FF3.6,O11.6,S",
+                    browsers: "FF3.6,S,C,O",
                     restriction: "enum",
                     values: [
                         {
@@ -7634,12 +6955,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "pixelated"
                         }
-                    ]
+                    ],
+                    "syntax": "auto | crisp-edges | pixelated"
                 },
                 {
                     name: "ime-mode",
                     desc: "Controls the state of the input method editor for text fields.",
-                    browsers: "E,FF3,IE5",
+                    browsers: "FF3,IE5",
                     restriction: "enum",
                     values: [
                         {
@@ -7659,7 +6981,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "The IME state should be normal; this value can be used in a user style sheet to override the page setting."
                         }
-                    ]
+                    ],
+                    "status": "o",
+                    "syntax": "auto | normal | active | inactive | disabled"
                 },
                 {
                     name: "inline-size",
@@ -7671,12 +6995,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "auto",
                             desc: "Depends on the values of other properties."
                         }
-                    ]
+                    ],
+                    "syntax": "<'width'>"
                 },
                 {
                     name: "isolation",
                     desc: "In CSS setting to 'isolate' will turn the element into a stacking context. In SVG, it defines whether an element is isolated or not.",
-                    browsers: "C,FF,O,S",
+                    browsers: "FF36,S,C41,O30",
                     restriction: "enum",
                     values: [
                         {
@@ -7687,14 +7012,19 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "isolate",
                             desc: "In CSS will turn the element into a stacking context."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | isolate"
                 },
                 {
                     name: "justify-content",
                     desc: "Aligns flex items along the main axis of the current line of the flex container.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
+                        {
+                            name: "center",
+                            desc: "Flex items are packed toward the center of the line."
+                        },
                         {
                             name: "start",
                             desc: "The items are packed flush to each other toward the start edge of the alignment container in the main axis."
@@ -7741,9 +7071,6 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "Flex items are evenly distributed in the line."
                         },
                         {
-                            name: "unsafe"
-                        },
-                        {
                             name: "baseline",
                             desc: "Specifies participation in first-baseline alignment."
                         },
@@ -7755,7 +7082,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "last baseline",
                             desc: "Specifies participation in last-baseline alignment."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ]"
                 },
                 {
                     name: "kerning",
@@ -7771,24 +7099,28 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "left",
                     desc: "Specifies how far an absolutely positioned box's left margin edge is offset to the right of the left edge of the box's 'containing block'.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto",
                             desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | <percentage> | auto"
                 },
                 {
                     name: "letter-spacing",
                     desc: "Specifies the minimum, maximum, and optimal spacing between grapheme clusters.",
+                    browsers: "all",
                     restriction: "length",
                     values: [
                         {
                             name: "normal",
                             desc: "The spacing is the normal spacing for the current font. It is typically zero-length."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | <length>"
                 },
                 {
                     name: "lighting-color",
@@ -7799,7 +7131,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "line-break",
                     desc: "Specifies what set of line breaking restrictions are in effect within the element.",
-                    browsers: "E,IE5.5,C58,O45,S",
+                    browsers: "E14,S,C58,IE5.5,O45",
                     restriction: "enum",
                     values: [
                         {
@@ -7818,22 +7150,26 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "strict",
                             desc: "Breaks CJK scripts using a more restrictive set of line-breaking rules than 'normal'."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | loose | normal | strict"
                 },
                 {
                     name: "line-height",
                     desc: "Determines the block-progression dimension of the text content area of an inline box.",
+                    browsers: "all",
                     restriction: "number, length, percentage",
                     values: [
                         {
                             name: "normal",
                             desc: "Tells user agents to set the computed value to a 'reasonable' value based on the font size of the element."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | <number> | <length> | <percentage>"
                 },
                 {
                     name: "list-style",
                     desc: "Shorthand for setting 'list-style-type', 'list-style-position' and 'list-style-image'",
+                    browsers: "all",
                     restriction: "image, enum, url",
                     values: [
                         {
@@ -7895,22 +7231,26 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "url()"
                         }
-                    ]
+                    ],
+                    "syntax": "<'list-style-type'> || <'list-style-position'> || <'list-style-image'>"
                 },
                 {
                     name: "list-style-image",
                     desc: "Sets the image that will be used as the list item marker. When the image is available, it will replace the marker set with the 'list-style-type' marker.",
+                    browsers: "all",
                     restriction: "image",
                     values: [
                         {
                             name: "none",
                             desc: "The default contents of the of the list item’s marker are given by 'list-style-type' instead."
                         }
-                    ]
+                    ],
+                    "syntax": "<url> | none"
                 },
                 {
                     name: "list-style-position",
                     desc: "Specifies the position of the '::marker' pseudo-element's box in the list item.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -7919,11 +7259,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "outside"
                         }
-                    ]
+                    ],
+                    "syntax": "inside | outside"
                 },
                 {
                     name: "list-style-type",
                     desc: "Used to construct the default contents of a list item’s marker",
+                    browsers: "all",
                     restriction: "enum, string",
                     values: [
                         {
@@ -7988,17 +7330,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "upper-roman",
                             desc: "Uppercase ASCII Roman numerals."
                         }
-                    ]
+                    ],
+                    "syntax": "<counter-style> | <string> | none"
                 },
                 {
                     name: "margin",
                     desc: "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "[ <length> | <percentage> | auto ]{1,4}"
                 },
                 {
                     name: "margin-block-end",
@@ -8009,7 +7354,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "<'margin-left'>"
                 },
                 {
                     name: "margin-block-start",
@@ -8020,69 +7366,80 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "<'margin-left'>"
                 },
                 {
                     name: "margin-bottom",
                     desc: "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | <percentage> | auto"
                 },
                 {
                     name: "margin-inline-end",
                     desc: "Logical 'margin-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
-                    browsers: "FF41",
+                    browsers: "FF41,S3,C2",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "<'margin-left'>"
                 },
                 {
                     name: "margin-inline-start",
                     desc: "Logical 'margin-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
-                    browsers: "FF41",
+                    browsers: "FF41,S3,C2",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "<'margin-left'>"
                 },
                 {
                     name: "margin-left",
                     desc: "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | <percentage> | auto"
                 },
                 {
                     name: "margin-right",
                     desc: "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | <percentage> | auto"
                 },
                 {
                     name: "margin-top",
                     desc: "Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. Negative values for margin properties are allowed, but there may be implementation-specific limits..",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | <percentage> | auto"
                 },
                 {
                     name: "marker",
@@ -8147,7 +7504,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "mask-image",
                     desc: "Sets the mask layer image of an element.",
-                    browsers: "E,FF53",
+                    browsers: "E16,FF53,S4,C1,O",
                     restriction: "url, image, enum",
                     values: [
                         {
@@ -8158,7 +7515,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "url()",
                             desc: "Reference to a <mask element or to a CSS image."
                         }
-                    ]
+                    ],
+                    "syntax": "<mask-reference>#"
                 },
                 {
                     name: "mask-mode",
@@ -8178,30 +7536,34 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "luminance",
                             desc: "Luminance values of the mask layer image should be used as the mask values."
                         }
-                    ]
+                    ],
+                    "syntax": "<masking-mode>#"
                 },
                 {
                     name: "mask-origin",
                     desc: "Specifies the mask positioning area.",
-                    browsers: "FF53",
-                    restriction: "geometry-box, enum"
+                    browsers: "FF53,S,C,O",
+                    restriction: "geometry-box, enum",
+                    "syntax": "<geometry-box>#"
                 },
                 {
                     name: "mask-position",
                     desc: "Specifies how mask layer images are positioned.",
-                    browsers: "FF53",
-                    restriction: "position, length, percentage"
+                    browsers: "FF53,S4,C1",
+                    restriction: "position, length, percentage",
+                    "syntax": "<position>#"
                 },
                 {
                     name: "mask-repeat",
                     desc: "Specifies how mask layer images are tiled after they have been sized and positioned.",
-                    browsers: "FF53",
-                    restriction: "repeat"
+                    browsers: "FF53,S4,C1",
+                    restriction: "repeat",
+                    "syntax": "<repeat-style>#"
                 },
                 {
                     name: "mask-size",
                     desc: "Specifies the size of the mask layer images.",
-                    browsers: "F53",
+                    browsers: "FF53",
                     restriction: "length, percentage, enum",
                     values: [
                         {
@@ -8216,12 +7578,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "cover",
                             desc: "Scale the image, while preserving its intrinsic aspect ratio (if any), to the smallest size such that both its width and its height can completely cover the background positioning area."
                         }
-                    ]
+                    ],
+                    "syntax": "<bg-size>#"
                 },
                 {
                     name: "mask-type",
                     desc: "Defines whether the content of the <mask> element is treated as as luminance mask or alpha mask.",
-                    browsers: "C24,FF35,O15,S7",
+                    browsers: "FF35,C24",
                     restriction: "enum",
                     values: [
                         {
@@ -8232,7 +7595,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "luminance",
                             desc: "Indicates that the luminance values of the mask should be used."
                         }
-                    ]
+                    ],
+                    "syntax": "luminance | alpha"
                 },
                 {
                     name: "max-block-size",
@@ -8244,12 +7608,14 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "No limit on the width of the box."
                         }
-                    ]
+                    ],
+                    "status": "e",
+                    "syntax": "<'max-width'>"
                 },
                 {
                     name: "max-height",
                     desc: "Allows authors to constrain content height to a certain range.",
-                    browsers: "E,C,FF1,IE7,O7,S1",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -8270,24 +7636,27 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "Use the min-content inline size or min-content block size, as appropriate to the writing mode.",
                             browsers: "C46,O33"
                         }
-                    ]
+                    ],
+                    "syntax": "<viewport-length>"
                 },
                 {
                     name: "max-inline-size",
                     desc: "Logical 'max-height'. Mapping depends on the element’s 'writing-mode'.",
-                    browsers: "FF41",
+                    browsers: "FF41,S10.1,C,O",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "none",
                             desc: "No limit on the height of the box."
                         }
-                    ]
+                    ],
+                    "status": "e",
+                    "syntax": "<'max-width'>"
                 },
                 {
                     name: "max-width",
                     desc: "Allows authors to constrain content width to a certain range.",
-                    browsers: "E,C,FF1,IE7,O7,S1",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -8308,18 +7677,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "Use the min-content inline size or min-content block size, as appropriate to the writing mode.",
                             browsers: "C46,O33"
                         }
-                    ]
+                    ],
+                    "syntax": "<viewport-length>"
                 },
                 {
                     name: "min-block-size",
                     desc: "Logical 'min-width'. Mapping depends on the element’s 'writing-mode'.",
                     browsers: "FF41",
-                    restriction: "length, percentage"
+                    restriction: "length, percentage",
+                    "syntax": "<'min-width'>"
                 },
                 {
                     name: "min-height",
                     desc: "Allows authors to constrain content height to a certain range.",
-                    browsers: "E,C,FF1,IE7,O7,S1",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -8340,18 +7711,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "Use the min-content inline size or min-content block size, as appropriate to the writing mode.",
                             browsers: "C46,O33"
                         }
-                    ]
+                    ],
+                    "syntax": "<viewport-length>"
                 },
                 {
                     name: "min-inline-size",
                     desc: "Logical 'min-height'. Mapping depends on the element’s 'writing-mode'.",
                     browsers: "FF41",
-                    restriction: "length, percentage"
+                    restriction: "length, percentage",
+                    "syntax": "<'min-width'>"
                 },
                 {
                     name: "min-width",
                     desc: "Allows authors to constrain content width to a certain range.",
-                    browsers: "E,C,FF1,IE7,O7,S1",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -8372,12 +7745,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "Use the min-content inline size or min-content block size, as appropriate to the writing mode.",
                             browsers: "C46,O33"
                         }
-                    ]
+                    ],
+                    "syntax": "<viewport-length>"
                 },
                 {
                     name: "mix-blend-mode",
                     desc: "Defines the formula that must be used to mix the colors with the backdrop.",
-                    browsers: "C41,FF32,O29,S7.1",
+                    browsers: "FF32,S8,C41,O",
                     restriction: "enum",
                     values: [
                         {
@@ -8433,7 +7807,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "luminosity",
                             browsers: "C41,FF32,O29"
                         }
-                    ]
+                    ],
+                    "syntax": "<blend-mode>"
                 },
                 {
                     name: "motion",
@@ -8616,7 +7991,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "-moz-appearance",
                     desc: "Used in Gecko (Firefox) to display an element using a platform-native styling based on the operating system's theme.",
-                    browsers: "FF1",
+                    browsers: "FF54",
                     restriction: "enum",
                     values: [
                         {
@@ -8823,7 +8198,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "window"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | button | button-arrow-down | button-arrow-next | button-arrow-previous | button-arrow-up | button-bevel | button-focus | caret | checkbox | checkbox-container | checkbox-label | checkmenuitem | dualbutton | groupbox | listbox | listitem | menuarrow | menubar | menucheckbox | menuimage | menuitem | menuitemtext | menulist | menulist-button | menulist-text | menulist-textfield | menupopup | menuradio | menuseparator | meterbar | meterchunk | progressbar | progressbar-vertical | progresschunk | progresschunk-vertical | radio | radio-container | radio-label | radiomenuitem | range | range-thumb | resizer | resizerpanel | scale-horizontal | scalethumbend | scalethumb-horizontal | scalethumbstart | scalethumbtick | scalethumb-vertical | scale-vertical | scrollbarbutton-down | scrollbarbutton-left | scrollbarbutton-right | scrollbarbutton-up | scrollbarthumb-horizontal | scrollbarthumb-vertical | scrollbartrack-horizontal | scrollbartrack-vertical | searchfield | separator | sheet | spinner | spinner-downbutton | spinner-textfield | spinner-upbutton | splitter | statusbar | statusbarpanel | tab | tabpanel | tabpanels | tab-scroll-arrow-back | tab-scroll-arrow-forward | textfield | textfield-multiline | toolbar | toolbarbutton | toolbarbutton-dropdown | toolbargripper | toolbox | tooltip | treeheader | treeheadercell | treeheadersortarrow | treeitem | treeline | treetwisty | treetwistyopen | treeview | -moz-mac-unified-toolbar | -moz-win-borderless-glass | -moz-win-browsertabbar-toolbox | -moz-win-communicationstext | -moz-win-communications-toolbox | -moz-win-exclude-glass | -moz-win-glass | -moz-win-mediatext | -moz-win-media-toolbox | -moz-window-button-box | -moz-window-button-box-maximized | -moz-window-button-close | -moz-window-button-maximize | -moz-window-button-minimize | -moz-window-button-restore | -moz-window-frame-bottom | -moz-window-frame-left | -moz-window-frame-right | -moz-window-titlebar | -moz-window-titlebar-maximized"
                 },
                 {
                     name: "-moz-backface-visibility",
@@ -8877,7 +8254,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: "-moz-border-bottom-colors",
                     desc: "Sets a list of colors for the bottom border.",
                     browsers: "FF1",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>+ | none"
                 },
                 {
                     name: "-moz-border-image",
@@ -8920,19 +8299,25 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: "-moz-border-left-colors",
                     desc: "Sets a list of colors for the bottom border.",
                     browsers: "FF1",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>+ | none"
                 },
                 {
                     name: "-moz-border-right-colors",
                     desc: "Sets a list of colors for the bottom border.",
                     browsers: "FF1",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>+ | none"
                 },
                 {
                     name: "-moz-border-top-colors",
                     desc: "Ske Firefox, -moz-border-bottom-colors sets a list of colors for the bottom border.",
                     browsers: "FF1",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>+ | none"
                 },
                 {
                     name: "-moz-box-align",
@@ -9453,7 +8838,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "normal"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "ignore | normal | select-after | select-before | select-menu | select-same | select-all | none"
                 },
                 {
                     name: "-moz-user-select",
@@ -9499,7 +8886,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "true"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "false | true"
                 },
                 {
                     name: "-ms-behavior",
@@ -9525,7 +8914,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "tb"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "tb | rl | bt | lr"
                 },
                 {
                     name: "-ms-content-zoom-chaining",
@@ -9540,7 +8931,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "A bounce effect is shown when the user hits a zoom limit during a manipulation."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | chained"
                 },
                 {
                     name: "-ms-content-zooming",
@@ -9555,25 +8948,33 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "zoom"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | zoom"
                 },
                 {
                     name: "-ms-content-zoom-limit",
                     desc: "Shorthand property for the -ms-content-zoom-limit-min and -ms-content-zoom-limit-max properties.",
                     browsers: "E,IE10",
-                    restriction: "percentage"
+                    restriction: "percentage",
+                    "status": "n",
+                    "syntax": "<'-ms-content-zoom-limit-min'> <'-ms-content-zoom-limit-max'>"
                 },
                 {
                     name: "-ms-content-zoom-limit-max",
                     desc: "Specifies the maximum zoom factor.",
                     browsers: "E,IE10",
-                    restriction: "percentage"
+                    restriction: "percentage",
+                    "status": "n",
+                    "syntax": "<percentage>"
                 },
                 {
                     name: "-ms-content-zoom-limit-min",
                     desc: "Specifies the minimum zoom factor.",
                     browsers: "E,IE10",
-                    restriction: "percentage"
+                    restriction: "percentage",
+                    "status": "n",
+                    "syntax": "<percentage>"
                 },
                 {
                     name: "-ms-content-zoom-snap",
@@ -9600,7 +9001,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "snapList()",
                             desc: "Specifies the position of individual snap-points as a comma-separated list of zoom factors."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "<'-ms-content-zoom-snap-type'> || <'-ms-content-zoom-snap-points'>"
                 },
                 {
                     name: "-ms-content-zoom-snap-points",
@@ -9615,7 +9018,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "snapList()",
                             desc: "Specifies the position of individual snap-points as a comma-separated list of zoom factors."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "snapInterval( <percentage>, <percentage> ) | snapList( <percentage># )"
                 },
                 {
                     name: "-ms-content-zoom-snap-type",
@@ -9635,13 +9040,17 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "proximity",
                             desc: "Indicates that the motion of the content after the contact is picked up may be adjusted if the content would normally stop \"close enough\" to a snap-point."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | proximity | mandatory"
                 },
                 {
                     name: "-ms-filter",
                     desc: "IE only. Used to produce visual effects.",
                     browsers: "IE8-9",
-                    restriction: "string"
+                    restriction: "string",
+                    "status": "n",
+                    "syntax": "<string>"
                 },
                 {
                     name: "-ms-flex",
@@ -9866,7 +9275,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "The block container is not a CSS Region."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "[ none | <custom-ident> ]#"
                 },
                 {
                     name: "-ms-flow-into",
@@ -9878,7 +9289,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "The element is not moved to a named flow and normal CSS processing takes place."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "[ none | <custom-ident> ]#"
                 },
                 {
                     name: "-ms-grid-column",
@@ -10004,7 +9417,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "No adjustments will be applied."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "auto | none"
                 },
                 {
                     name: "-ms-hyphenate-limit-chars",
@@ -10016,7 +9431,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "auto",
                             desc: "The user agent chooses a value that adapts to the current layout."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "auto | <integer>{1,3}"
                 },
                 {
                     name: "-ms-hyphenate-limit-lines",
@@ -10027,13 +9444,17 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "no-limit"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "no-limit | <integer>"
                 },
                 {
                     name: "-ms-hyphenate-limit-zone",
                     desc: "Specifies the maximum amount of unfilled space (before justification) that may be left in the line box before hyphenation is triggered to pull part of a word from the next line back up into the current line.",
                     browsers: "E,IE10",
-                    restriction: "percentage, length"
+                    restriction: "percentage, length",
+                    "status": "n",
+                    "syntax": "<percentage> | <length>"
                 },
                 {
                     name: "-ms-hyphens",
@@ -10238,7 +9659,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "scrollbar"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "auto | none | scrollbar | -ms-autohiding-scrollbar"
                 },
                 {
                     name: "-ms-perspective",
@@ -10288,49 +9711,65 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: "-ms-scrollbar-3dlight-color",
                     desc: "Determines the color of the top and left edges of the scroll box and scroll arrows of a scroll bar.",
                     browsers: "IE8",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-ms-scrollbar-arrow-color",
                     desc: "Determines the color of the arrow elements of a scroll arrow.",
                     browsers: "IE8",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-ms-scrollbar-base-color",
                     desc: "Determines the color of the main elements of a scroll bar, which include the scroll box, track, and scroll arrows.",
                     browsers: "IE8",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-ms-scrollbar-darkshadow-color",
                     desc: "Determines the color of the gutter of a scroll bar.",
                     browsers: "IE8",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-ms-scrollbar-face-color",
                     desc: "Determines the color of the scroll box and scroll arrows of a scroll bar.",
                     browsers: "IE8",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-ms-scrollbar-highlight-color",
                     desc: "Determines the color of the top and left edges of the scroll box and scroll arrows of a scroll bar.",
                     browsers: "IE8",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-ms-scrollbar-shadow-color",
                     desc: "Determines the color of the bottom and right edges of the scroll box and scroll arrows of a scroll bar.",
                     browsers: "IE8",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-ms-scrollbar-track-color",
                     desc: "Determines the color of the track element of a scroll bar.",
                     browsers: "IE8",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-ms-scroll-chaining",
@@ -10344,7 +9783,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "none"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "chained | none"
                 },
                 {
                     name: "-ms-scroll-limit",
@@ -10355,7 +9796,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "<'-ms-scroll-limit-x-min'> <'-ms-scroll-limit-y-min'> <'-ms-scroll-limit-x-max'> <'-ms-scroll-limit-y-max'>"
                 },
                 {
                     name: "-ms-scroll-limit-x-max",
@@ -10366,13 +9809,17 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "auto | <length>"
                 },
                 {
                     name: "-ms-scroll-limit-x-min",
                     desc: "Gets or sets a value that specifies the minimum value for the scrollLeft property.",
                     browsers: "E,IE10",
-                    restriction: "length"
+                    restriction: "length",
+                    "status": "n",
+                    "syntax": "<length>"
                 },
                 {
                     name: "-ms-scroll-limit-y-max",
@@ -10383,13 +9830,17 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "auto"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "auto | <length>"
                 },
                 {
                     name: "-ms-scroll-limit-y-min",
                     desc: "Gets or sets a value that specifies the minimum value for the scrollTop property.",
                     browsers: "E,IE10",
-                    restriction: "length"
+                    restriction: "length",
+                    "status": "n",
+                    "syntax": "<length>"
                 },
                 {
                     name: "-ms-scroll-rails",
@@ -10403,7 +9854,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "railed"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | railed"
                 },
                 {
                     name: "-ms-scroll-snap-points-x",
@@ -10417,7 +9870,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "snapList()"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "snapInterval( <length-percentage>, <length-percentage> ) | snapList( <length-percentage># )"
                 },
                 {
                     name: "-ms-scroll-snap-points-y",
@@ -10431,7 +9886,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "snapList()"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "snapInterval( <length-percentage>, <length-percentage> ) | snapList( <length-percentage># )"
                 },
                 {
                     name: "-ms-scroll-snap-type",
@@ -10451,7 +9908,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "proximity",
                             desc: "The visual viewport of this scroll container may come to rest on a snap point at the termination of a scroll at the discretion of the UA given the parameters of the scroll."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | proximity | mandatory"
                 },
                 {
                     name: "-ms-scroll-snap-x",
@@ -10474,7 +9933,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "snapList()"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "<'-ms-scroll-snap-type'> <'-ms-scroll-snap-points-x'>"
                 },
                 {
                     name: "-ms-scroll-snap-y",
@@ -10497,7 +9958,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "snapList()"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "<'-ms-scroll-snap-type'> <'-ms-scroll-snap-points-y'>"
                 },
                 {
                     name: "-ms-scroll-translation",
@@ -10511,7 +9974,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "vertical-to-horizontal"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | vertical-to-horizontal"
                 },
                 {
                     name: "-ms-text-align-last",
@@ -10565,7 +10030,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "punctuation"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | ideograph-alpha | ideograph-numeric | ideograph-parenthesis | ideograph-space"
                 },
                 {
                     name: "-ms-text-combine-horizontal",
@@ -10721,7 +10188,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "Grippers are always off."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "grippers | none"
                 },
                 {
                     name: "-ms-transform",
@@ -10833,7 +10302,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "text"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | element | text"
                 },
                 {
                     name: "-ms-word-break",
@@ -10901,13 +10372,17 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "start",
                             desc: "Inline flow content can wrap on the start edge of the exclusion area but must leave the area to end edge of the exclusion area empty."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "auto | both | start | end | maximum | clear"
                 },
                 {
                     name: "-ms-wrap-margin",
                     desc: "Gets or sets a value that is used to offset the inner wrap shape from other shapes.",
                     browsers: "E,IE10",
-                    restriction: "length, percentage"
+                    restriction: "length, percentage",
+                    "status": "n",
+                    "syntax": "<length>"
                 },
                 {
                     name: "-ms-wrap-through",
@@ -10923,7 +10398,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "wrap",
                             desc: "The exclusion element inherits its parent node's wrapping context. Its descendant inline content wraps around exclusions defined outside the element."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "wrap | none"
                 },
                 {
                     name: "-ms-writing-mode",
@@ -11070,7 +10547,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: "negative",
                     desc: "@counter-style descriptor. Defines how to alter the representation when the counter value is negative.",
                     browsers: "FF33",
-                    restriction: "image, identifier, string"
+                    restriction: "image, identifier, string",
+                    "syntax": "<symbol> <symbol>?"
                 },
                 {
                     name: "-o-animation",
@@ -11215,7 +10693,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "object-fit",
                     desc: "Specifies how the contents of a replaced element should be scaled relative to the box established by its used height and width.",
-                    browsers: "C32,FF36,O19,S7.1",
+                    browsers: "E16,FF36,S,C31,O19",
                     restriction: "enum",
                     values: [
                         {
@@ -11237,13 +10715,15 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "scale-down"
                         }
-                    ]
+                    ],
+                    "syntax": "fill | contain | cover | none | scale-down"
                 },
                 {
                     name: "object-position",
                     desc: "Determines the alignment of the replaced element inside its box.",
-                    browsers: "C32,FF36,O19",
-                    restriction: "position, length, percentage"
+                    browsers: "E16,FF36,S10,C31,O19",
+                    restriction: "position, length, percentage",
+                    "syntax": "<position>"
                 },
                 {
                     name: "-o-border-image",
@@ -11315,20 +10795,23 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "opacity",
                     desc: "Opacity of an element's text, where 1 is opaque and 0 is entirely transparent.",
-                    browsers: "C,FF3.6,IE9,O9,S1.2",
-                    restriction: "number(0-1)"
+                    browsers: "all",
+                    restriction: "number(0-1)",
+                    "syntax": "<number>"
                 },
                 {
                     name: "order",
                     desc: "Controls the order in which children of a flex container appear within the flex container, by assigning them to ordinal groups.",
-                    browsers: "E,C29,FF22,IE11,O12.1,S9",
-                    restriction: "integer"
+                    browsers: "all",
+                    restriction: "integer",
+                    "syntax": "<integer>"
                 },
                 {
                     name: "orphans",
                     desc: "Specifies the minimum number of line boxes in a block container that must be left in a fragment before a fragmentation break.",
-                    browsers: "C,IE8,O7,S1.3",
-                    restriction: "integer"
+                    browsers: "E12,C25,IE8,O9.2",
+                    restriction: "integer",
+                    "syntax": "<integer>"
                 },
                 {
                     name: "-o-table-baseline",
@@ -11493,7 +10976,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "auto",
                             desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
                         }
-                    ]
+                    ],
+                    "syntax": "<'left'>"
                 },
                 {
                     name: "offset-block-start",
@@ -11505,7 +10989,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "auto",
                             desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
                         }
-                    ]
+                    ],
+                    "syntax": "<'left'>"
                 },
                 {
                     name: "offset-inline-end",
@@ -11517,7 +11002,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "auto",
                             desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
                         }
-                    ]
+                    ],
+                    "syntax": "<'left'>"
                 },
                 {
                     name: "offset-inline-start",
@@ -11529,12 +11015,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "auto",
                             desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
                         }
-                    ]
+                    ],
+                    "syntax": "<'left'>"
                 },
                 {
                     name: "outline",
                     desc: "Shorthand property for 'outline-style', 'outline-width', and 'outline-color'.",
-                    browsers: "E,C,FF1.5,IE8,O8,S1.2",
+                    browsers: "all",
                     restriction: "length, line-width, line-style, color, enum",
                     values: [
                         {
@@ -11545,47 +11032,53 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "invert",
                             browsers: "E,IE8,O"
                         }
-                    ]
+                    ],
+                    "syntax": "[ <'outline-color'> || <'outline-style'> || <'outline-width'> ]"
                 },
                 {
                     name: "outline-color",
                     desc: "The color of the outline.",
-                    browsers: "E,C,FF1.5,IE8,O8,S1.2",
+                    browsers: "all",
                     restriction: "enum, color",
                     values: [
                         {
                             name: "invert",
                             browsers: "E,IE8,O"
                         }
-                    ]
+                    ],
+                    "syntax": "<color> | invert"
                 },
                 {
                     name: "outline-offset",
                     desc: "Offset the outline and draw it beyond the border edge.",
-                    browsers: "C,FF1.5,O9.5,S1.2",
-                    restriction: "length"
+                    browsers: "FF1.5,S1.2,C1,O9.5",
+                    restriction: "length",
+                    "syntax": "<length>"
                 },
                 {
                     name: "outline-style",
                     desc: "Style of the outline.",
-                    browsers: "E,C,FF1.5,IE8,O8,S1.2",
+                    browsers: "all",
                     restriction: "line-style, enum",
                     values: [
                         {
                             name: "auto",
                             desc: "Permits the user agent to render a custom outline style, typically the default platform style."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | <br-style>"
                 },
                 {
                     name: "outline-width",
                     desc: "Width of the outline.",
-                    browsers: "E,C,FF1.5,IE8,O8,S1.2",
-                    restriction: "length, line-width"
+                    browsers: "all",
+                    restriction: "length, line-width",
+                    "syntax": "<br-width>"
                 },
                 {
                     name: "overflow",
                     desc: "Shorthand for setting 'overflow-x' and 'overflow-y'.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -11608,12 +11101,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "visible",
                             desc: "Content is not clipped, i.e., it may be rendered outside the content box."
                         }
-                    ]
+                    ],
+                    "syntax": "[ visible | hidden | clip | scroll | auto ]{1,2}"
                 },
                 {
                     name: "overflow-wrap",
                     desc: "Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit within the line box.",
-                    browsers: "C23,O12.1,S6.1",
+                    browsers: "FF49,S,C,IE5.5,O",
                     restriction: "enum",
                     values: [
                         {
@@ -11624,12 +11118,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "Lines may break only at allowed break points."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | break-word"
                 },
                 {
                     name: "overflow-x",
                     desc: "Specifies the handling of overflow in the horizontal direction.",
-                    browsers: "E,C,FF1.5,IE5,O9.5,S3",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -11648,12 +11143,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "visible",
                             desc: "Content is not clipped, i.e., it may be rendered outside the content box."
                         }
-                    ]
+                    ],
+                    "syntax": "visible | hidden | clip | scroll | auto"
                 },
                 {
                     name: "overflow-y",
                     desc: "Specifies the handling of overflow in the vertical direction.",
-                    browsers: "E,C,FF1.5,IE5,O9.5,S3",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -11672,67 +11168,84 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "visible",
                             desc: "Content is not clipped, i.e., it may be rendered outside the content box."
                         }
-                    ]
+                    ],
+                    "syntax": "visible | hidden | clip | scroll | auto"
                 },
                 {
                     name: "pad",
                     desc: "@counter-style descriptor. Specifies a “fixed-width” counter style, where representations shorter than the pad value are padded with a particular <symbol>",
                     browsers: "FF33",
-                    restriction: "integer, image, string, identifier"
+                    restriction: "integer, image, string, identifier",
+                    "syntax": "<integer> && <symbol>"
                 },
                 {
                     name: "padding",
                     desc: "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
+                    browsers: "all",
                     restriction: "length, percentage",
-                    values: []
+                    values: [],
+                    "syntax": "[ <length> | <percentage> ]{1,4}"
                 },
                 {
                     name: "padding-bottom",
                     desc: "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length> | <percentage>"
                 },
                 {
                     name: "padding-block-end",
                     desc: "Logical 'padding-bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, percentage"
+                    restriction: "length, percentage",
+                    "syntax": "<'padding-left'>"
                 },
                 {
                     name: "padding-block-start",
                     desc: "Logical 'padding-top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
                     browsers: "FF41",
-                    restriction: "length, percentage"
+                    restriction: "length, percentage",
+                    "syntax": "<'padding-left'>"
                 },
                 {
                     name: "padding-inline-end",
                     desc: "Logical 'padding-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
-                    browsers: "FF41",
-                    restriction: "length, percentage"
+                    browsers: "FF41,S3,C2,O15",
+                    restriction: "length, percentage",
+                    "syntax": "<'padding-left'>"
                 },
                 {
                     name: "padding-inline-start",
                     desc: "Logical 'padding-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
-                    browsers: "FF41",
-                    restriction: "length, percentage"
+                    browsers: "FF41,S3,C2,O",
+                    restriction: "length, percentage",
+                    "syntax": "<'padding-left'>"
                 },
                 {
                     name: "padding-left",
                     desc: "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length> | <percentage>"
                 },
                 {
                     name: "padding-right",
                     desc: "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length> | <percentage>"
                 },
                 {
                     name: "padding-top",
                     desc: "Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.",
-                    restriction: "length, percentage"
+                    browsers: "all",
+                    restriction: "length, percentage",
+                    "syntax": "<length> | <percentage>"
                 },
                 {
                     name: "page-break-after",
                     desc: "Defines rules for page breaks after an element.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -11755,11 +11268,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "Force one or two page breaks after the generated box so that the next page is formatted as a right page."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | always | avoid | left | right | recto | verso"
                 },
                 {
                     name: "page-break-before",
                     desc: "Defines rules for page breaks before an element.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -11782,12 +11297,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "Force one or two page breaks before the generated box so that the next page is formatted as a right page."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | always | avoid | left | right | recto | verso"
                 },
                 {
                     name: "page-break-inside",
                     desc: "Defines rules for page breaks inside an element.",
-                    browsers: "C,IE8,O7,S1.3",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -11798,12 +11314,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "avoid",
                             desc: "Avoid a page break inside the generated box."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | avoid"
                 },
                 {
                     name: "paint-order",
                     desc: "Controls the order that the three paint operations that shapes and text are rendered with: their fill, their stroke and any markers they might have.",
-                    browsers: "C35,FF31,O22,S7.1",
+                    browsers: "FF60,S",
                     restriction: "enum",
                     values: [
                         {
@@ -11819,29 +11336,34 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "stroke"
                         }
-                    ]
+                    ],
+                    "status": "e",
+                    "syntax": "normal | [ fill || stroke || markers ]"
                 },
                 {
                     name: "perspective",
                     desc: "Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.",
-                    browsers: "E,C36,FF16,IE10,O23,S9",
+                    browsers: "all",
                     restriction: "length, enum",
                     values: [
                         {
                             name: "none",
                             desc: "No perspective transform is applied."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <length>"
                 },
                 {
                     name: "perspective-origin",
                     desc: "Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.",
-                    browsers: "E,C36,FF16,IE10,O23,S9",
-                    restriction: "position, percentage, length"
+                    browsers: "all",
+                    restriction: "position, percentage, length",
+                    "syntax": "<position>"
                 },
                 {
                     name: "pointer-events",
                     desc: "Specifies under what circumstances a given element can be the target element for a pointer event.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -11876,10 +11398,12 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "visibleStroke"
                         }
-                    ]
+                    ],
+                    "syntax": "auto | none | visiblePainted | visibleFill | visibleStroke | visible | painted | fill | stroke | all | inherit"
                 },
                 {
                     name: "position",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -11907,25 +11431,28 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "-webkit-sticky",
                             browsers: "S6.1"
                         }
-                    ]
+                    ],
+                    "syntax": "static | relative | absolute | sticky | fixed"
                 },
                 {
                     name: "prefix",
                     desc: "@counter-style descriptor. Specifies a <symbol> that is prepended to the marker representation.",
                     browsers: "FF33",
-                    restriction: "image, string, identifier"
+                    restriction: "image, string, identifier",
+                    "syntax": "<symbol>"
                 },
                 {
                     name: "quotes",
                     desc: "Specifies quotation marks for any number of embedded quotations.",
-                    browsers: "E,C,FF1.5,IE8,O8,S5.1",
+                    browsers: "all",
                     restriction: "string",
                     values: [
                         {
                             name: "none",
                             desc: "The 'open-quote' and 'close-quote' values of the 'content' property produce no quotations marks, as if they were 'no-open-quote' and 'no-close-quote' respectively."
                         }
-                    ]
+                    ],
+                    "syntax": "none | [ <string> <string> ]+"
                 },
                 {
                     name: "range",
@@ -11941,12 +11468,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "infinite",
                             desc: "If used as the first value in a range, it represents negative infinity; if used as the second value, it represents positive infinity."
                         }
-                    ]
+                    ],
+                    "syntax": "[ [ <integer> | infinite ]{2} ]# | auto"
                 },
                 {
                     name: "resize",
                     desc: "Specifies whether or not an element is resizable by the user, and if so, along which axis/axes.",
-                    browsers: "C,FF4,O15,S3",
+                    browsers: "FF,S3,C1,O12.1",
                     restriction: "enum",
                     values: [
                         {
@@ -11965,23 +11493,26 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "vertical",
                             desc: "The UA presents a unidirectional vertical resizing mechanism to allow the user to adjust only the height of the element."
                         }
-                    ]
+                    ],
+                    "syntax": "none | both | horizontal | vertical"
                 },
                 {
                     name: "right",
                     desc: "Specifies how far an absolutely positioned box's right margin edge is offset to the left of the right edge of the box's 'containing block'.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto",
                             desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | <percentage> | auto"
                 },
                 {
                     name: "ruby-align",
                     desc: "Specifies how text is distributed within the various ruby boxes when their contents do not exactly fill their respective boxes.",
-                    browsers: "FF10,IE5",
+                    browsers: "FF38",
                     restriction: "enum",
                     values: [
                         {
@@ -12029,7 +11560,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "As for 'space-between' except that there exists an extra justification opportunities whose space is distributed half before and half after the ruby content.",
                             browsers: "FF10"
                         }
-                    ]
+                    ],
+                    "status": "e",
+                    "syntax": "start | center | space-between | space-around"
                 },
                 {
                     name: "ruby-overhang",
@@ -12058,7 +11591,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "ruby-position",
                     desc: "Used by the parent of elements with display: ruby-text to control the position of the ruby text with respect to its base.",
-                    browsers: "FF10,IE5",
+                    browsers: "E12,FF38",
                     restriction: "enum",
                     values: [
                         {
@@ -12074,7 +11607,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "The ruby text appears on the right of the base. Unlike 'before' and 'after', this value is not relative to the text flow direction."
                         }
-                    ]
+                    ],
+                    "status": "e",
+                    "syntax": "over | under | inter-character"
                 },
                 {
                     name: "ruby-span",
@@ -12142,7 +11677,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "scroll-behavior",
                     desc: "Specifies the scrolling behavior for a scrolling box, when scrolling happens due to navigation or CSSOM scrolling APIs.",
-                    browsers: "FF36",
+                    browsers: "FF36,C61,O",
                     restriction: "enum",
                     values: [
                         {
@@ -12152,7 +11687,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "smooth"
                         }
-                    ]
+                    ],
+                    "syntax": "auto | smooth"
                 },
                 {
                     name: "scroll-snap-coordinate",
@@ -12164,18 +11700,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "Specifies that this element does not contribute a snap point."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <position>#"
                 },
                 {
                     name: "scroll-snap-destination",
                     desc: "Define the x and y coordinate within the scroll container’s visual viewport which element snap points will align with.",
                     browsers: "FF39",
-                    restriction: "position, length, percentage"
+                    restriction: "position, length, percentage",
+                    "syntax": "<position>"
                 },
                 {
                     name: "scroll-snap-points-x",
                     desc: "Defines the positioning of snap points along the x axis of the scroll container it is applied to.",
-                    browsers: "FF39",
+                    browsers: "FF39,S9",
                     restriction: "enum",
                     values: [
                         {
@@ -12186,12 +11724,14 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "repeat()",
                             desc: "Defines an interval at which snap points are defined, starting from the container’s relevant start edge."
                         }
-                    ]
+                    ],
+                    "status": "o",
+                    "syntax": "none | repeat( <length-percentage> )"
                 },
                 {
                     name: "scroll-snap-points-y",
                     desc: "Defines the positioning of snap points alobg the y axis of the scroll container it is applied to.",
-                    browsers: "FF39",
+                    browsers: "FF39,S9",
                     restriction: "enum",
                     values: [
                         {
@@ -12202,12 +11742,14 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "repeat()",
                             desc: "Defines an interval at which snap points are defined, starting from the container’s relevant start edge."
                         }
-                    ]
+                    ],
+                    "status": "o",
+                    "syntax": "none | repeat( <length-percentage> )"
                 },
                 {
                     name: "scroll-snap-type",
                     desc: "Defines how strictly snap points are enforced on the scroll container.",
-                    browsers: "FF39",
+                    browsers: "E12,FF39,S9,IE10",
                     restriction: "enum",
                     values: [
                         {
@@ -12222,24 +11764,27 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "proximity",
                             desc: "The visual viewport of this scroll container may come to rest on a snap point at the termination of a scroll at the discretion of the UA given the parameters of the scroll."
                         }
-                    ]
+                    ],
+                    "syntax": "none | mandatory | proximity"
                 },
                 {
                     name: "shape-image-threshold",
                     desc: "Defines the alpha channel threshold used to extract the shape using an image. A value of 0.5 means that the shape will enclose all the pixels that are more than 50% opaque.",
-                    browsers: "C37,O24",
-                    restriction: "number"
+                    browsers: "FF61,S10.1,C37,O24",
+                    restriction: "number",
+                    "syntax": "<number>"
                 },
                 {
                     name: "shape-margin",
                     desc: "Adds a margin to a 'shape-outside'. This defines a new shape that is the smallest contour that includes all the points that are the 'shape-margin' distance outward in the perpendicular direction from a point on the underlying shape.",
-                    browsers: "C37,O24",
-                    restriction: "url, length, percentage"
+                    browsers: "FF61,S10.1,C37,O24",
+                    restriction: "url, length, percentage",
+                    "syntax": "<length-percentage>"
                 },
                 {
                     name: "shape-outside",
                     desc: "Specifies an orthogonal rotation to be applied to an image before it is laid out.",
-                    browsers: "C37,O24",
+                    browsers: "FF61,S10.1,C37,O24",
                     restriction: "image, box, shape, enum",
                     values: [
                         {
@@ -12249,7 +11794,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "The float area is unaffected."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <shape-box> || <basic-shape> | <image>"
                 },
                 {
                     name: "shape-rendering",
@@ -12293,7 +11839,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "local()"
                         }
-                    ]
+                    ],
+                    "syntax": "[ <url> [ format( <string># ) ]? | local( <family-name> ) ]#"
                 },
                 {
                     name: "stop-color",
@@ -12386,7 +11933,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: "suffix",
                     desc: "@counter-style descriptor. Specifies a <symbol> that is appended to the marker representation.",
                     browsers: "FF33",
-                    restriction: "image, string, identifier"
+                    restriction: "image, string, identifier",
+                    "syntax": "<symbol>"
                 },
                 {
                     name: "system",
@@ -12417,17 +11965,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "symbolic"
                         }
-                    ]
+                    ],
+                    "syntax": "cyclic | numeric | alphabetic | symbolic | additive | [ fixed <integer>? ] | [ extends <counter-style-name> ]"
                 },
                 {
                     name: "symbols",
                     desc: "@counter-style descriptor. Specifies the symbols used by the marker-construction algorithm specified by the system descriptor.",
                     browsers: "FF33",
-                    restriction: "image, string, identifier"
+                    restriction: "image, string, identifier",
+                    "syntax": "<symbol>+"
                 },
                 {
                     name: "table-layout",
                     desc: "Controls the algorithm used to lay out the table cells, rows, and columns.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -12438,17 +11989,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "fixed",
                             desc: "Use the fixed table layout algorithm."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | fixed"
                 },
                 {
                     name: "tab-size",
                     desc: "Determines the width of the tab character (U+0009), in space characters (U+0020), when rendered.",
-                    browsers: "C21,O15,S6.1",
-                    restriction: "integer, length"
+                    browsers: "FF4,S6.1,C21,O15",
+                    restriction: "integer, length",
+                    "syntax": "<integer> | <length>"
                 },
                 {
                     name: "text-align",
                     desc: "Describes how inline contents of a block are horizontally aligned if the contents do not completely fill the line box.",
+                    browsers: "all",
                     restriction: "string",
                     values: [
                         {
@@ -12477,12 +12031,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "The inline contents are aligned to the start edge of the line box.",
                             browsers: "C,FF1,O15,S3.1"
                         }
-                    ]
+                    ],
+                    "syntax": "start | end | left | right | center | justify | match-parent"
                 },
                 {
                     name: "text-align-last",
                     desc: "Describes how the last line of a block or a line right before a forced line break is aligned when 'text-align' is set to 'justify'.",
-                    browsers: "E,FF12,IE5",
+                    browsers: "E12,FF49,C47,O",
                     restriction: "enum",
                     values: [
                         {
@@ -12505,7 +12060,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | start | end | left | right | center | justify"
                 },
                 {
                     name: "text-anchor",
@@ -12529,6 +12085,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "text-decoration",
                     desc: "Decorations applied to font used for an element's text.",
+                    browsers: "all",
                     restriction: "enum, color",
                     values: [
                         {
@@ -12555,18 +12112,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "wavy"
                         }
-                    ]
+                    ],
+                    "syntax": "<'text-decoration-line'> || <'text-decoration-style'> || <'text-decoration-color'>"
                 },
                 {
                     name: "text-decoration-color",
                     desc: "Specifies the color of text decoration (underlines overlines, and line-throughs) set on the element with text-decoration-line.",
-                    browsers: "FF36,C57,O44",
-                    restriction: "color"
+                    browsers: "FF36,S,C57,O44",
+                    restriction: "color",
+                    "syntax": "<color>"
                 },
                 {
                     name: "text-decoration-line",
                     desc: "Specifies what line decorations, if any, are added to the element.",
-                    browsers: "FF36",
+                    browsers: "FF36,S,C,O",
                     restriction: "enum",
                     values: [
                         {
@@ -12582,12 +12141,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "underline"
                         }
-                    ]
+                    ],
+                    "syntax": "none | [ underline || overline || line-through || blink ]"
                 },
                 {
                     name: "text-decoration-style",
                     desc: "Specifies the line style for underline, line-through and overline text decoration.",
-                    browsers: "FF36",
+                    browsers: "FF36,S,C57,O44",
                     restriction: "enum",
                     values: [
                         {
@@ -12609,18 +12169,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "wavy"
                         }
-                    ]
+                    ],
+                    "syntax": "solid | double | dotted | dashed | wavy"
                 },
                 {
                     name: "text-indent",
                     desc: "Specifies the indentation applied to lines of inline content in a block. The indentation only affects the first line of inline content in the block unless the 'hanging' keyword is specified, in which case it affects all lines except the first.",
+                    browsers: "all",
                     restriction: "percentage, length",
-                    values: []
+                    values: [],
+                    "syntax": "<length-percentage> && hanging? && each-line?"
                 },
                 {
                     name: "text-justify",
                     desc: "Selects the justification algorithm used when 'text-align' is set to 'justify'. The property applies to block containers, but the UA may (but is not required to) also support it on inline elements.",
-                    browsers: "E,IE5.5",
+                    browsers: "E14,FF55,C,IE11,O",
                     restriction: "enum",
                     values: [
                         {
@@ -12649,12 +12212,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "newspaper"
                         }
-                    ]
+                    ],
+                    "syntax": "auto | inter-character | inter-word | none"
                 },
                 {
                     name: "text-orientation",
                     desc: "Specifies the orientation of text within a line.",
-                    browsers: "C,O15,S5.1",
+                    browsers: "FF41,C48,O",
                     restriction: "enum",
                     values: [
                         {
@@ -12668,12 +12232,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "upright"
                         }
-                    ]
+                    ],
+                    "syntax": "mixed | upright | sideways"
                 },
                 {
                     name: "text-overflow",
                     desc: "Text can overflow for example when it is prevented from wrapping.",
-                    browsers: "E,C,FF9,IE5.5,O11.6,S2",
+                    browsers: "all",
                     restriction: "enum, string",
                     values: [
                         {
@@ -12682,12 +12247,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "ellipsis"
                         }
-                    ]
+                    ],
+                    "syntax": "[ clip | ellipsis | <string> ]{1,2}"
                 },
                 {
                     name: "text-rendering",
                     desc: "The creator of SVG content might want to provide a hint to the implementation about what tradeoffs to make as it renders text. The ‘text-rendering’ property provides these hints.",
-                    browsers: "C,FF3,O9,S5",
+                    browsers: "FF3,S5,C4,O15",
                     restriction: "enum",
                     values: [
                         {
@@ -12704,18 +12270,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "optimizeSpeed",
                             desc: "Indicates that the user agent shall emphasize rendering speed over legibility and geometric precision."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | optimizeSpeed | optimizeLegibility | geometricPrecision"
                 },
                 {
                     name: "text-shadow",
                     desc: "Enables shadow effects to be applied to the text of the element.",
-                    browsers: "E,C,FF3.6,IE10,O9.5,S1.1",
+                    browsers: "all",
                     restriction: "length, color",
-                    values: []
+                    values: [],
+                    "syntax": "none | <shadow-t>#"
                 },
                 {
                     name: "text-transform",
                     desc: "Controls capitalization effects of an element’s text.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -12731,12 +12300,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "uppercase"
                         }
-                    ]
+                    ],
+                    "syntax": "none | capitalize | uppercase | lowercase | full-width"
                 },
                 {
                     name: "text-underline-position",
                     desc: "Sets the position of an underline specified on the same element: it does not affect underlines specified by ancestor elements. This property is typically used in vertical writing contexts such as in Japanese documents where it often desired to have the underline appear 'over' (to the right of) the affected run of text",
-                    browsers: "E,IE10",
+                    browsers: "E12,C33,IE6",
                     restriction: "enum",
                     values: [
                         {
@@ -12750,23 +12320,26 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "below",
                             desc: "The underline is aligned with the under edge of the element’s content box."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | [ under || [ left | right ] ]"
                 },
                 {
                     name: "top",
                     desc: "Specifies how far an absolutely positioned box's top margin edge is offset below the top edge of the box's 'containing block'.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "auto",
                             desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
                         }
-                    ]
+                    ],
+                    "syntax": "<length> | <percentage> | auto"
                 },
                 {
                     name: "touch-action",
                     desc: "Determines whether touch input may trigger default behavior supplied by user agent.",
-                    browsers: "E,C36,IE11,O23",
+                    browsers: "E12,FF52,C36,IE11,O23",
                     restriction: "enum",
                     values: [
                         {
@@ -12805,12 +12378,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "pinch-zoom",
                             browsers: "E,IE11"
                         }
-                    ]
+                    ],
+                    "syntax": "auto | none | [ [ pan-x | pan-left | pan-right ] || [ pan-y | pan-up | pan-down ] || pinch-zoom ] | manipulation"
                 },
                 {
                     name: "transform",
                     desc: "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
-                    browsers: "E,C36,FF16,IE10,O12.1,S9",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -12879,18 +12453,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "translateZ()"
                         }
-                    ]
+                    ],
+                    "syntax": "none | <transform-list>"
                 },
                 {
                     name: "transform-origin",
                     desc: "Establishes the origin of transformation for an element.",
-                    browsers: "E,C36,FF16,IE10,O12.1,S9",
-                    restriction: "position, length, percentage"
+                    browsers: "all",
+                    restriction: "position, length, percentage",
+                    "syntax": "[ <length-percentage> | left | center | right | top | bottom ] | [ [ <length-percentage> | left | center | right ] && [ <length-percentage> | top | center | bottom ] ] <length>?"
                 },
                 {
                     name: "transform-style",
                     desc: "Defines how nested elements are rendered in 3D space.",
-                    browsers: "E,C36,FF16,IE10,O23,S9",
+                    browsers: "E12,FF16,S,C12,O15",
                     restriction: "enum",
                     values: [
                         {
@@ -12900,12 +12476,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "preserve-3d",
                             browsers: "E,C36,FF16,O23,S9"
                         }
-                    ]
+                    ],
+                    "syntax": "flat | preserve-3d"
                 },
                 {
                     name: "transition",
                     desc: "Shorthand property combines four of the transition properties into a single property.",
-                    browsers: "E,FF16,IE10,O12.5",
+                    browsers: "all",
                     restriction: "time, property, timing-function, enum",
                     values: [
                         {
@@ -12916,24 +12493,27 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "No property will transition."
                         }
-                    ]
+                    ],
+                    "syntax": "<single-transition>#"
                 },
                 {
                     name: "transition-delay",
                     desc: "Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.",
-                    browsers: "E,FF16,IE10,O12.5",
-                    restriction: "time"
+                    browsers: "all",
+                    restriction: "time",
+                    "syntax": "<time>#"
                 },
                 {
                     name: "transition-duration",
                     desc: "Specifies how long the transition from the old value to the new value should take.",
-                    browsers: "E,FF16,IE10,O12.5",
-                    restriction: "time"
+                    browsers: "all",
+                    restriction: "time",
+                    "syntax": "<time>#"
                 },
                 {
                     name: "transition-property",
                     desc: "Specifies the name of the CSS property to which the transition is applied.",
-                    browsers: "E,FF16,IE10,O12.5",
+                    browsers: "all",
                     restriction: "property",
                     values: [
                         {
@@ -12944,17 +12524,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "none",
                             desc: "No property will transition."
                         }
-                    ]
+                    ],
+                    "syntax": "none | <single-transition-property>#"
                 },
                 {
                     name: "transition-timing-function",
                     desc: "Describes how the intermediate values used during a transition will be calculated.",
-                    browsers: "E,FF16,IE10,O12.5",
-                    restriction: "timing-function"
+                    browsers: "all",
+                    restriction: "timing-function",
+                    "syntax": "<single-transition-timing-function>#"
                 },
                 {
                     name: "unicode-bidi",
                     desc: "The level of embedding with respect to the bidirectional algorithm.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -12980,7 +12563,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "plaintext",
                             browsers: "C,FF10,O15,S6"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | embed | isolate | bidi-override | isolate-override | plaintext"
                 },
                 {
                     name: "unicode-range",
@@ -13218,11 +12802,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "U+1F680–1F6FF"
                         }
-                    ]
+                    ],
+                    "syntax": "<unicode-range>#"
                 },
                 {
                     name: "user-select",
                     desc: "Controls the appearance of selection.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -13244,11 +12830,14 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "text",
                             desc: "The element imposes no constraint on the selection."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "auto | text | none | contain | all"
                 },
                 {
                     name: "vertical-align",
                     desc: "Affects the vertical positioning of the inline boxes generated by an inline-level element inside a line box.",
+                    browsers: "all",
                     restriction: "percentage, length",
                     values: [
                         {
@@ -13289,11 +12878,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "-webkit-baseline-middle",
                             browsers: "C,S1"
                         }
-                    ]
+                    ],
+                    "syntax": "baseline | sub | super | text-top | text-bottom | middle | top | bottom | <percentage> | <length>"
                 },
                 {
                     name: "visibility",
                     desc: "Specifies whether the boxes generated by an element are rendered. Invisible boxes still affect layout (set the ‘display’ property to ‘none’ to suppress box generation altogether).",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -13308,7 +12899,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "visible",
                             desc: "The generated box is visible."
                         }
-                    ]
+                    ],
+                    "syntax": "visible | hidden | collapse"
                 },
                 {
                     name: "-webkit-animation",
@@ -13453,7 +13045,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "-webkit-appearance",
                     desc: "Changes the appearance of buttons and other controls to resemble native controls.",
-                    browsers: "C,S3",
+                    browsers: "E12,S3,C1,O15",
                     restriction: "enum",
                     values: [
                         {
@@ -13588,7 +13180,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "textfield"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "none | button | button-bevel | caret | checkbox | default-button | inner-spin-button | listbox | listitem | media-controls-background | media-controls-fullscreen-background | media-current-time-display | media-enter-fullscreen-button | media-exit-fullscreen-button | media-fullscreen-button | media-mute-button | media-overlay-play-button | media-play-button | media-seek-back-button | media-seek-forward-button | media-slider | media-sliderthumb | media-time-remaining-display | media-toggle-closed-captions-button | media-volume-slider | media-volume-slider-container | media-volume-sliderthumb | menulist | menulist-button | menulist-text | menulist-textfield | meter | progress-bar | progress-bar-value | push-button | radio | searchfield | searchfield-cancel-button | searchfield-decoration | searchfield-results-button | searchfield-results-decoration | slider-horizontal | slider-vertical | sliderthumb-horizontal | sliderthumb-vertical | square-button | textarea | textfield"
                 },
                 {
                     name: "-webkit-backdrop-filter",
@@ -13841,7 +13435,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "right",
                             desc: "The reflection appears to the right of the border box."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "[ above | below | right | left ]? <length>? <image>?"
                 },
                 {
                     name: "-webkit-box-sizing",
@@ -14408,7 +14004,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                     name: "-webkit-mask-clip",
                     desc: "Determines the mask painting area, which determines the area that is affected by the mask.",
                     browsers: "C,O15,S4",
-                    restriction: "box"
+                    restriction: "box",
+                    "status": "n",
+                    "syntax": "[ <box> | border | padding | content | text ]#"
                 },
                 {
                     name: "-webkit-mask-image",
@@ -14424,19 +14022,25 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "url()",
                             desc: "Reference to a <mask element or to a CSS image."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "<mask-reference>#"
                 },
                 {
                     name: "-webkit-mask-origin",
                     desc: "Specifies the mask positioning area.",
                     browsers: "C,O15,S4",
-                    restriction: "box"
+                    restriction: "box",
+                    "status": "n",
+                    "syntax": "[ <box> | border | padding | content ]#"
                 },
                 {
                     name: "-webkit-mask-repeat",
                     desc: "Specifies how mask layer images are tiled after they have been sized and positioned.",
                     browsers: "C,O15,S4",
-                    restriction: "repeat"
+                    restriction: "repeat",
+                    "status": "n",
+                    "syntax": "<repeat-style>#"
                 },
                 {
                     name: "-webkit-mask-size",
@@ -14456,7 +14060,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "cover",
                             desc: "Scale the image, while preserving its intrinsic aspect ratio (if any), to the smallest size such that both its width and its height can completely cover the background positioning area."
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "<bg-size>#"
                 },
                 {
                     name: "-webkit-nbsp-mode",
@@ -14482,7 +14088,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "touch"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "auto | touch"
                 },
                 {
                     name: "-webkit-padding-start",
@@ -14525,12 +14133,16 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "-webkit-tap-highlight-color",
                     browsers: "E,C,S3.1",
-                    restriction: "color"
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-webkit-text-fill-color",
-                    browsers: "E,C,S3",
-                    restriction: "color"
+                    browsers: "E12,FF49,S,C,O",
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-webkit-text-size-adjust",
@@ -14550,28 +14162,36 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 },
                 {
                     name: "-webkit-text-stroke",
-                    browsers: "S3",
-                    restriction: "length, line-width, color, percentage"
+                    browsers: "E15,FF49,S3.1,C4,O15",
+                    restriction: "length, line-width, color, percentage",
+                    "status": "n",
+                    "syntax": "<length> || <color>"
                 },
                 {
                     name: "-webkit-text-stroke-color",
-                    browsers: "S3",
-                    restriction: "color"
+                    browsers: "E15,FF49,S,C,O",
+                    restriction: "color",
+                    "status": "n",
+                    "syntax": "<color>"
                 },
                 {
                     name: "-webkit-text-stroke-width",
-                    browsers: "S3",
-                    restriction: "length, line-width, percentage"
+                    browsers: "E15,FF49,S,C,O",
+                    restriction: "length, line-width, percentage",
+                    "status": "n",
+                    "syntax": "<length>"
                 },
                 {
                     name: "-webkit-touch-callout",
-                    browsers: "S3",
+                    browsers: "S4",
                     restriction: "enum",
                     values: [
                         {
                             name: "none"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "default | none"
                 },
                 {
                     name: "-webkit-transform",
@@ -14763,7 +14383,9 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "read-write-plaintext-only"
                         }
-                    ]
+                    ],
+                    "status": "n",
+                    "syntax": "read-only | read-write | read-write-plaintext-only"
                 },
                 {
                     name: "-webkit-user-select",
@@ -14785,6 +14407,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 {
                     name: "white-space",
                     desc: "Shorthand property for the 'white-space-collapsing' and 'text-wrap' properties.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -14804,17 +14427,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "pre-wrap"
                         }
-                    ]
+                    ],
+                    "syntax": "normal | pre | nowrap | pre-wrap | pre-line"
                 },
                 {
                     name: "widows",
                     desc: "Specifies the minimum number of line boxes of a block container that must be left in a fragment after a break.",
-                    browsers: "C,IE8,O9.5,S1",
-                    restriction: "integer"
+                    browsers: "E12,C25,IE8,O9.2",
+                    restriction: "integer",
+                    "syntax": "<integer>"
                 },
                 {
                     name: "width",
                     desc: "Specifies the width of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
@@ -14835,12 +14461,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             desc: "Use the min-content inline size or min-content block size, as appropriate to the writing mode.",
                             browsers: "C46,O33"
                         }
-                    ]
+                    ],
+                    "syntax": "<viewport-length>{1,2}"
                 },
                 {
                     name: "will-change",
                     desc: "Provides a rendering hint to the user agent, stating what kinds of changes the author expects to perform on the element.",
-                    browsers: "C36,FF36,O24",
+                    browsers: "FF36,S9.1,C36,O24",
                     restriction: "enum, identifier",
                     values: [
                         {
@@ -14854,12 +14481,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "scroll-position"
                         }
-                    ]
+                    ],
+                    "syntax": "auto | <animateable-feature>#"
                 },
                 {
                     name: "word-break",
                     desc: "Specifies line break opportunities for non-CJK scripts.",
-                    browsers: "E,C,FF15,IE5,S3",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -14873,22 +14501,26 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "Breaks non-CJK scripts according to their own rules."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | break-all | keep-all | break-word"
                 },
                 {
                     name: "word-spacing",
                     desc: "Specifies additional spacing between “words”.",
+                    browsers: "all",
                     restriction: "length, percentage",
                     values: [
                         {
                             name: "normal",
                             desc: "No additional spacing is applied. Computes to zero."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | <length-percentage>"
                 },
                 {
                     name: "word-wrap",
                     desc: "Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit.",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -14899,12 +14531,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             name: "normal",
                             desc: "Lines may break only at allowed break points."
                         }
-                    ]
+                    ],
+                    "syntax": "normal | break-word"
                 },
                 {
                     name: "writing-mode",
                     desc: "This is a shorthand property for both 'direction' and 'block-progression'.",
-                    browsers: "E,FF41",
+                    browsers: "all",
                     restriction: "enum",
                     values: [
                         {
@@ -14924,18 +14557,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "vertical-rl"
                         }
-                    ]
+                    ],
+                    "syntax": "horizontal-tb | vertical-rl | vertical-lr | sideways-rl | sideways-lr"
                 },
                 {
                     name: "z-index",
                     desc: "For a positioned box, the 'z-index' property specifies the stack level of the box in the current stacking context and whether the box establishes a local stacking context.",
+                    browsers: "all",
                     restriction: "integer",
                     values: [
                         {
                             name: "auto",
                             desc: "The stack level of the generated box in the current stacking context is 0. The box does not establish a new stacking context unless it is the root element."
                         }
-                    ]
+                    ],
+                    "syntax": "auto | <integer>"
                 },
                 {
                     name: "zoom",
@@ -14946,7 +14582,730 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                         {
                             name: "normal"
                         }
-                    ]
+                    ],
+                    "syntax": "auto | <number> | <percentage>"
+                },
+                {
+                    name: "-ms-ime-align",
+                    desc: "Aligns the Input Method Editor (IME) candidate window box relative to the element on which the IME composition is active.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "auto | after"
+                },
+                {
+                    name: "-moz-binding",
+                    desc: "The -moz-binding CSS property is used by Mozilla-based applications to attach an XBL binding to a DOM element.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<url> | none"
+                },
+                {
+                    name: "-moz-context-properties",
+                    desc: "If you reference an SVG image in a webpage (such as with the <img> element or as a background image), the SVG image can coordinate with the embedding element (its context) to have the image adopt property values set on the embedding element. To do this the embedding element needs to list the properties that are to be made available to the image by listing them as values of the -moz-context-properties property, and the image needs to opt in to using those properties by using values such as the context-fill value.\n\nThis feature is available since Firefox 55, but is only currently supported with SVG images loaded via chrome:// or resource:// URLs. To experiment with the feature in SVG on the Web it is necessary to set the svg.context-properties.content.enabled pref to true.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "none | [ fill | fill-opacity | stroke | stroke-opacity ]#",
+                    browsers: "FF55"
+                },
+                {
+                    name: "-moz-float-edge",
+                    desc: "The non-standard -moz-float-edge CSS property specifies whether the height and width properties of the element include the margin, border, or padding thickness.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "border-box | content-box | margin-box | padding-box"
+                },
+                {
+                    name: "-moz-force-broken-image-icon",
+                    desc: "The -moz-force-broken-image-icon extended CSS property can be used to force the broken image icon to be shown even when a broken image has an alt attribute.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<integer>"
+                },
+                {
+                    name: "-moz-image-region",
+                    desc: "For certain XUL elements and pseudo-elements that use an image from the list-style-image property, this property specifies a region of the image that is used in place of the whole image. This allows elements to use different pieces of the same image to improve performance.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<shape> | auto"
+                },
+                {
+                    name: "-moz-orient",
+                    desc: "The -moz-orient CSS property specifies the orientation of the element to which it's applied.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "inline | block | horizontal | vertical"
+                },
+                {
+                    name: "-moz-outline-radius",
+                    desc: "In Mozilla applications like Firefox, the -moz-outline-radius CSS property can be used to give an element's outline rounded corners.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<outline-radius>{1,4} [ / <outline-radius>{1,4} ]?"
+                },
+                {
+                    name: "-moz-outline-radius-bottomleft",
+                    desc: "In Mozilla applications, the -moz-outline-radius-bottomleft CSS property can be used to round the bottom-left corner of an element's outline.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<outline-radius>"
+                },
+                {
+                    name: "-moz-outline-radius-bottomright",
+                    desc: "In Mozilla applications, the -moz-outline-radius-bottomright CSS property can be used to round the bottom-right corner of an element's outline.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<outline-radius>"
+                },
+                {
+                    name: "-moz-outline-radius-topleft",
+                    desc: "In Mozilla applications, the -moz-outline-radius-topleft CSS property can be used to round the top-left corner of an element's outline.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<outline-radius>"
+                },
+                {
+                    name: "-moz-outline-radius-topright",
+                    desc: "In Mozilla applications, the -moz-outline-radius-topright CSS property can be used to round the top-right corner of an element's outline.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<outline-radius>"
+                },
+                {
+                    name: "-moz-stack-sizing",
+                    desc: "-moz-stack-sizing is an extended CSS property. Normally, a stack will change its size so that all of its child elements are completely visible. For example, moving a child of the stack far to the right will widen the stack so the child remains visible.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "ignore | stretch-to-fit"
+                },
+                {
+                    name: "-moz-text-blink",
+                    desc: "The -moz-text-blink non-standard Mozilla CSS extension specifies the blink mode.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "none | blink"
+                },
+                {
+                    name: "-moz-user-input",
+                    desc: "In Mozilla applications, -moz-user-input determines if an element will accept user input.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "auto | none | enabled | disabled"
+                },
+                {
+                    name: "-moz-user-modify",
+                    desc: "The -moz-user-modify property has no effect. It was originally planned to determine whether or not the content of an element can be edited by a user.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "read-only | read-write | write-only"
+                },
+                {
+                    name: "-moz-window-dragging",
+                    desc: "The -moz-window-dragging CSS property specifies whether a window is draggable or not. It only works in Chrome code, and only on Mac OS X.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "drag | no-drag"
+                },
+                {
+                    name: "-moz-window-shadow",
+                    desc: "The -moz-window-shadow CSS property specifies whether a window will have a shadow. It only works on Mac OS X.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "default | menu | tooltip | sheet | none"
+                },
+                {
+                    name: "-webkit-border-before",
+                    desc: "The -webkit-border-before CSS property is a shorthand property for setting the individual logical block start border property values in a single place in the style sheet.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<'border-width'> || <'border-style'> || <'color'>"
+                },
+                {
+                    name: "-webkit-border-before-color",
+                    desc: "The -webkit-border-before-color CSS property sets the color of the individual logical block start border in a single place in the style sheet.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<'color'>"
+                },
+                {
+                    name: "-webkit-border-before-style",
+                    desc: "The -webkit-border-before-style CSS property sets the style of the individual logical block start border in a single place in the style sheet.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<'border-style'>"
+                },
+                {
+                    name: "-webkit-border-before-width",
+                    desc: "The -webkit-border-before-width CSS property sets the width of the individual logical block start border in a single place in the style sheet.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<'border-width'>"
+                },
+                {
+                    name: "-webkit-mask",
+                    desc: "The mask CSS property alters the visibility of an element by either partially or fully hiding it. This is accomplished by either masking or clipping the image at specific points.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "[ <mask-reference> || <position> [ / <bg-size> ]? || <repeat-style> || [ <box> | border | padding | content | text ] || [ <box> | border | padding | content ] ]#"
+                },
+                {
+                    name: "-webkit-mask-attachment",
+                    desc: "If a -webkit-mask-image is specified, -webkit-mask-attachment determines whether the mask image's position is fixed within the viewport, or scrolls along with its containing block.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<attachment>#",
+                    browsers: "S4,C"
+                },
+                {
+                    name: "-webkit-mask-composite",
+                    desc: "The -webkit-mask-composite property specifies the manner in which multiple mask images applied to the same element are composited with one another. Mask images are composited in the opposite order that they are declared with the -webkit-mask-image property.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<composite-style>#"
+                },
+                {
+                    name: "-webkit-mask-position",
+                    desc: "The mask-position CSS property sets the initial position, relative to the mask position layer defined by mask-origin, for each defined mask image.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<position>#"
+                },
+                {
+                    name: "-webkit-mask-position-x",
+                    desc: "The -webkit-mask-position-x CSS property sets the initial horizontal position of a mask image.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "[ <length-percentage> | left | center | right ]#"
+                },
+                {
+                    name: "-webkit-mask-position-y",
+                    desc: "The -webkit-mask-position-y CSS property sets the initial vertical position of a mask image.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "[ <length-percentage> | top | center | bottom ]#",
+                    browsers: "S4,C1"
+                },
+                {
+                    name: "-webkit-mask-repeat-x",
+                    desc: "The -webkit-mask-repeat-x property specifies whether and how a mask image is repeated (tiled) horizontally.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "repeat | no-repeat | space | round"
+                },
+                {
+                    name: "-webkit-mask-repeat-y",
+                    desc: "The -webkit-mask-repeat-y property specifies whether and how a mask image is repeated (tiled) vertically.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "repeat | no-repeat | space | round"
+                },
+                {
+                    name: "appearance",
+                    desc: "Changes the appearance of buttons and other controls to resemble native controls.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "auto | none",
+                    browsers: "E12,FF1,S3,C1,O15"
+                },
+                {
+                    name: "azimuth",
+                    desc: "In combination with elevation, the azimuth CSS property enables different audio sources to be positioned spatially for aural presentation. This is important in that it provides a natural way to tell several voices apart, as each can be positioned to originate at a different location on the sound stage. Stereo output produce a lateral sound stage, while binaural headphones and multi-speaker setups allow for a fully three-dimensional stage.",
+                    restriction: "none",
+                    "status": "o",
+                    "syntax": "<angle> | [ [ left-side | far-left | left | center-left | center | center-right | right | far-right | right-side ] || behind ] | leftwards | rightwards"
+                },
+                {
+                    name: "backdrop-filter",
+                    desc: "The backdrop-filter CSS property lets you apply graphical effects such as blurring or color shifting to the area behind an element. Because it applies to everything behind the element, to see the effect you must make the element or its background at least partially transparent.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "none | <filter-function-list>",
+                    browsers: "E17,S9,C47"
+                },
+                {
+                    name: "block-overflow",
+                    desc: "",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "clip | ellipsis | <string>"
+                },
+                {
+                    name: "box-align",
+                    desc: "The box-align CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "start | center | end | baseline | stretch"
+                },
+                {
+                    name: "box-direction",
+                    desc: "The box-direction CSS property specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "normal | reverse | inherit",
+                    browsers: "E12,FF,S3,C,O"
+                },
+                {
+                    name: "box-flex",
+                    desc: "The -moz-box-flex and -webkit-box-flex CSS properties specify how a -moz-box or -webkit-box grows to fill the box that contains it, in the direction of the containing box's layout.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<number>",
+                    browsers: "E12,FF,S3,C,O"
+                },
+                {
+                    name: "box-flex-group",
+                    desc: "The box-flex-group CSS property assigns the flexbox's child elements to a flex group.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<integer>"
+                },
+                {
+                    name: "box-lines",
+                    desc: "The box-lines CSS property determines whether the box may have a single or multiple lines (rows for horizontally oriented boxes, columns for vertically oriented boxes).",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "single | multiple"
+                },
+                {
+                    name: "box-ordinal-group",
+                    desc: "The box-ordinal-group CSS property assigns the flexbox's child elements to an ordinal group.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "<integer>"
+                },
+                {
+                    name: "box-orient",
+                    desc: "The box-orient CSS property specifies whether an element lays out its contents horizontally or vertically.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "horizontal | vertical | inline-axis | block-axis | inherit",
+                    browsers: "E12,FF,S3,C,O"
+                },
+                {
+                    name: "box-pack",
+                    desc: "The -moz-box-pack and -webkit-box-pack CSS properties specify how a -moz-box or -webkit-box packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "start | center | end | justify",
+                    browsers: "E12,FF,S3,C,O"
+                },
+                {
+                    name: "color-adjust",
+                    desc: "The color-adjust property is a non-standard CSS extension that can be used to force printing of background colors and images in browsers based on the WebKit engine.",
+                    restriction: "none",
+                    "syntax": "economy | exact"
+                },
+                {
+                    name: "font-optical-sizing",
+                    desc: "",
+                    restriction: "none",
+                    "syntax": "auto | none",
+                    browsers: "FF61"
+                },
+                {
+                    name: "font-variation-settings",
+                    desc: "The font-variation-settings CSS property provides low-level control over OpenType or TrueType font variations, by specifying the four letter axis names of the features you want to vary, along with their variation values.",
+                    restriction: "none",
+                    "syntax": "normal | [ <string> <number> ]#",
+                    browsers: "FF61,S11,C62,O49"
+                },
+                {
+                    name: "gap",
+                    desc: "The gap CSS property is a shorthand property for row-gap and column-gap specifying the gutters between grid rows and columns.",
+                    restriction: "none",
+                    "syntax": "<'row-gap'> <'column-gap'>?",
+                    browsers: "E16,FF61,S10.1,C66,O53"
+                },
+                {
+                    name: "hanging-punctuation",
+                    desc: "The hanging-punctuation CSS property specifies whether a punctuation mark should hang at the start or end of a line of text. Hanging punctuation may be placed outside the line box.",
+                    restriction: "none",
+                    "syntax": "none | [ first || [ force-end | allow-end ] || last ]"
+                },
+                {
+                    name: "image-resolution",
+                    desc: "The image-resolution property specifies the intrinsic resolution of all raster images used in or on the element. It affects both content images (e.g. replaced elements and generated content) and decorative images (such as background-image). The intrinsic resolution of an image is used to determine the image’s intrinsic dimensions.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "[ from-image || <resolution> ] && snap?"
+                },
+                {
+                    name: "initial-letter",
+                    desc: "The initial-letter CSS property specifies styling for dropped, raised, and sunken initial letters.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "normal | [ <number> <integer>? ]",
+                    browsers: "S9"
+                },
+                {
+                    name: "initial-letter-align",
+                    desc: "The initial-letter-align CSS property specifies the alignment of initial letters within a paragraph.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "[ auto | alphabetic | hanging | ideographic ]"
+                },
+                {
+                    name: "line-clamp",
+                    desc: "",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "none | <integer>"
+                },
+                {
+                    name: "line-height-step",
+                    desc: "The line-height-step CSS property defines the step units for line box heights. When the step unit is positive, line box heights are rounded up to the closest multiple of the unit. Negative values are invalid.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "<length>"
+                },
+                {
+                    name: "mask",
+                    desc: "The mask CSS property alters the visibility of an element by either partially or fully hiding it. This is accomplished by either masking or clipping the image at specific points.",
+                    restriction: "none",
+                    "syntax": "<mask-layer>#",
+                    browsers: "E12,FF,S4,C1,O"
+                },
+                {
+                    name: "mask-border",
+                    desc: "The mask-border CSS property lets you create a mask along the edge of an element's border.\n\nThis property is a shorthand for mask-border-source, mask-border-slice, mask-border-width, mask-border-outset, mask-border-repeat, and mask-border-mode. As with all shorthand properties, any omitted sub-values will be set to their initial value.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "<'mask-border-source'> || <'mask-border-slice'> [ / <'mask-border-width'>? [ / <'mask-border-outset'> ]? ]? || <'mask-border-repeat'> || <'mask-border-mode'>"
+                },
+                {
+                    name: "mask-border-mode",
+                    desc: "The mask-border-mode CSS property specifies the blending mode used in a mask border.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "luminance | alpha"
+                },
+                {
+                    name: "mask-border-outset",
+                    desc: "The mask-border-outset CSS property specifies the distance by which an element's mask border is set out from its border box.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "[ <length> | <number> ]{1,4}"
+                },
+                {
+                    name: "mask-border-repeat",
+                    desc: "The mask-border-repeat CSS property defines how the edge regions of a source image are adjusted to fit the dimensions of an element's mask border.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "[ stretch | repeat | round | space ]{1,2}"
+                },
+                {
+                    name: "mask-border-slice",
+                    desc: "The mask-border-slice CSS property divides the image specified by mask-border-source into regions. These regions are used to form the components of an element's mask border.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "<number-percentage>{1,4} fill?"
+                },
+                {
+                    name: "mask-border-source",
+                    desc: "The mask-border-source CSS property specifies the source image used to create an element's mask border.\n\nThe mask-border-slice property is used to divide the source image into regions, which are then dynamically applied to the final mask border.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "none | <image>"
+                },
+                {
+                    name: "mask-border-width",
+                    desc: "The mask-border-width CSS property specifies the width of an element's mask border.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "[ <length-percentage> | <number> | auto ]{1,4}"
+                },
+                {
+                    name: "mask-clip",
+                    desc: "The mask-clip CSS property determines the area, which is affected by a mask. The painted content of an element must be restricted to this area.",
+                    restriction: "none",
+                    "syntax": "[ <geometry-box> | no-clip ]#",
+                    browsers: "FF53,S,C,O"
+                },
+                {
+                    name: "mask-composite",
+                    desc: "The mask-composite CSS property represents a compositing operation used on the current mask layer with the mask layers below it.",
+                    restriction: "none",
+                    "syntax": "<compositing-operator>#",
+                    browsers: "FF53"
+                },
+                {
+                    name: "max-lines",
+                    desc: "",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "none | <integer>"
+                },
+                {
+                    name: "offset",
+                    desc: "The offset CSS property is a shorthand property for animating an element along a defined path.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "[ <'offset-position'>? [ <'offset-path'> [ <'offset-distance'> || <'offset-rotate'> ]? ]? ]! [ / <'offset-anchor'> ]?",
+                    browsers: "C55"
+                },
+                {
+                    name: "offset-anchor",
+                    desc: "Defines an anchor point of the box positioned along the path. The anchor point specifies the point of the box which is to be considered as the point that is moved along the path.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "auto | <position>"
+                },
+                {
+                    name: "offset-distance",
+                    desc: "The offset-distance CSS property specifies a position along an offset-path.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "<length-percentage>",
+                    browsers: "C55"
+                },
+                {
+                    name: "offset-path",
+                    desc: "The offset-path CSS property specifies the offset path where the element gets positioned. The exact element’s position on the offset path is determined by the offset-distance property. An offset path is either a specified path with one or multiple sub-paths or the geometry of a not-styled basic shape. Each shape or path must define an initial position for the computed value of \"0\" for offset-distance and an initial direction which specifies the rotation of the object to the initial position.\n\nIn this specification, a direction (or rotation) of 0 degrees is equivalent to the direction of the positive x-axis in the object’s local coordinate system. In other words, a rotation of 0 degree points to the right side of the UA if the object and its ancestors have no transformation applied.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "none | ray( [ <angle> && <size>? && contain? ] ) | <path()> | <url> | [ <basic-shape> || <geometry-box> ]",
+                    browsers: "C55"
+                },
+                {
+                    name: "offset-position",
+                    desc: "Specifies the initial position of the offset path. If position is specified with static, offset-position would be ignored.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "auto | <position>"
+                },
+                {
+                    name: "offset-rotate",
+                    desc: "The offset-rotate CSS property defines the direction of the element while positioning along the offset path.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "[ auto | reverse ] || <angle>",
+                    browsers: "C56"
+                },
+                {
+                    name: "overflow-anchor",
+                    desc: "",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "auto | none"
+                },
+                {
+                    name: "overflow-block",
+                    desc: "",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "<'overflow'>"
+                },
+                {
+                    name: "overflow-clip-box",
+                    desc: "The overflow-clip-box CSS property specifies relative to which box the clipping happens when there is an overflow. It is short hand for the overflow-clip-box-inline and overflow-clip-box-block properties.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "padding-box | content-box"
+                },
+                {
+                    name: "overflow-inline",
+                    desc: "",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "<'overflow'>"
+                },
+                {
+                    name: "overscroll-behavior",
+                    desc: "The overscroll-behavior CSS property is shorthand for the overscroll-behavior-x and overscroll-behavior-y properties, which allow you to control the browser's scroll overflow behavior — what happens when the boundary of a scrolling area is reached.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "[ contain | none | auto ]{1,2}",
+                    browsers: "FF59,C63,O50"
+                },
+                {
+                    name: "overscroll-behavior-x",
+                    desc: "The overscroll-behavior-x CSS property is allows you to control the browser's scroll overflow behavior — what happens when the boundary of a scrolling area is reached — in the x axis direction.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "contain | none | auto",
+                    browsers: "FF59,C63,O50"
+                },
+                {
+                    name: "overscroll-behavior-y",
+                    desc: "The overscroll-behavior-y CSS property is allows you to control the browser's scroll overflow behavior — what happens when the boundary of a scrolling area is reached — in the y axis direction.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "contain | none | auto",
+                    browsers: "FF59,C63,O50"
+                },
+                {
+                    name: "place-content",
+                    desc: "The place-content CSS shorthand property sets both the align-content and justify-content properties.",
+                    restriction: "none",
+                    "syntax": "<'align-content'> <'justify-content'>?",
+                    browsers: "FF,C59,O"
+                },
+                {
+                    name: "rotate",
+                    desc: "The rotate CSS property allows you to specify rotation transforms individually and independantly of the transform property. This maps better to typical user interface usage, and saves having to remember the exact order of transform functions to specify in the transform value.",
+                    restriction: "none",
+                    "syntax": "none | [ x | y | z | <number>{3} ]? && <angle>",
+                    browsers: "FF60,C"
+                },
+                {
+                    name: "row-gap",
+                    desc: "The row-gap CSS property specifies the gutter between grid rows.",
+                    restriction: "none",
+                    "syntax": "normal | <length-percentage>",
+                    browsers: "E16,FF61,S10.1,C66,O53"
+                },
+                {
+                    name: "ruby-merge",
+                    desc: "This property controls how ruby annotation boxes should be rendered when there are more than one in a ruby container box: whether each pair should be kept separate, the annotations should be collapsed and rendered as a group, or the separation should be determined based on the space available.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "separate | collapse | auto"
+                },
+                {
+                    name: "scale",
+                    desc: "The scale CSS property allows you to specify scale transforms individually and independantly of the transform property. This maps better to typical user interface usage, and saves having to remember the exact order of transform functions to specify in the transform value.",
+                    restriction: "none",
+                    "syntax": "none | <number>{1,3}",
+                    browsers: "FF60,C"
+                },
+                {
+                    name: "scroll-snap-type-x",
+                    desc: "The scroll-snap-type-x CSS property defines how strictly snap points are enforced on the horizontal axis of the scroll container in case there is one.\n\nSpecifying any precise animations or physics used to enforce those snap points is not covered by this property but instead left up to the user agent.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "none | mandatory | proximity",
+                    browsers: "FF39,S9"
+                },
+                {
+                    name: "scroll-snap-type-y",
+                    desc: "The scroll-snap-type-y CSS property defines how strictly snap points are enforced on the vertical axis of the scroll container in case there is one.\n\nSpecifying any precise animations or physics used to enforce those snap points is not covered by this property but instead left up to the user agent.",
+                    restriction: "none",
+                    "status": "n",
+                    "syntax": "none | mandatory | proximity",
+                    browsers: "FF39"
+                },
+                {
+                    name: "text-combine-upright",
+                    desc: "The text-combine-upright CSS property specifies the combination of multiple characters into the space of a single character. If the combined text is wider than 1em, the user agent must fit the contents within 1em. The resulting composition is treated as a single upright glyph for layout and decoration. This property only has an effect in vertical writing modes.\n\nThis is used to produce an effect that is known as tate-chū-yoko (縦中横) in Japanese, or as 直書橫向 in Chinese.",
+                    restriction: "none",
+                    "syntax": "none | all | [ digits <integer>? ]",
+                    browsers: "all"
+                },
+                {
+                    name: "text-decoration-skip",
+                    desc: "The text-decoration-skip CSS property specifies what parts of the element’s content any text decoration affecting the element must skip over. It controls all text decoration lines drawn by the element and also any text decoration lines drawn by its ancestors.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]",
+                    browsers: "S8,C57,O44"
+                },
+                {
+                    name: "text-decoration-skip-ink",
+                    desc: "The text-decoration-skip-ink CSS property specifies how overlines and underlines are drawn when they pass over glyph ascenders and descenders.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "auto | none",
+                    browsers: "C64,O50"
+                },
+                {
+                    name: "text-emphasis",
+                    desc: "The text-emphasis CSS property is a shorthand property for setting text-emphasis-style and text-emphasis-color in one declaration. This property will apply the specified emphasis mark to each character of the element's text, except separator characters, like spaces,  and control characters.",
+                    restriction: "none",
+                    "syntax": "<'text-emphasis-style'> || <'text-emphasis-color'>",
+                    browsers: "FF46,S,C25,O15"
+                },
+                {
+                    name: "text-emphasis-color",
+                    desc: "The text-emphasis-color CSS property defines the color used to draw emphasis marks on text being rendered in the HTML document. This value can also be set and reset using the text-emphasis shorthand.",
+                    restriction: "none",
+                    "syntax": "<color>",
+                    browsers: "FF46,S,C25,O15"
+                },
+                {
+                    name: "text-emphasis-position",
+                    desc: "The text-emphasis-position CSS property describes where emphasis marks are drawn at. The effect of emphasis marks on the line height is the same as for ruby text: if there isn't enough place, the line height is increased.",
+                    restriction: "none",
+                    "syntax": "[ over | under ] && [ right | left ]",
+                    browsers: "FF46,S,C,O"
+                },
+                {
+                    name: "text-emphasis-style",
+                    desc: "The text-emphasis-style CSS property defines the type of emphasis used. It can also be set, and reset, using the text-emphasis shorthand.",
+                    restriction: "none",
+                    "syntax": "none | [ [ filled | open ] || [ dot | circle | double-circle | triangle | sesame ] ] | <string>",
+                    browsers: "FF46,S,C25,O15"
+                },
+                {
+                    name: "text-size-adjust",
+                    desc: "The text-size-adjust CSS property controls the text inflation algorithm used on some smartphones and tablets. Other browsers will ignore this property.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "none | auto | <percentage>",
+                    browsers: "E12,C54,O42"
+                },
+                {
+                    name: "transform-box",
+                    desc: "The transform-box CSS property defines the layout box to which the transform and transform-origin properties relate.",
+                    restriction: "none",
+                    "syntax": "border-box | fill-box | view-box",
+                    browsers: "FF55,C64,O51"
+                },
+                {
+                    name: "translate",
+                    desc: "The translate CSS property allows you to specify translation transforms individually and independantly of the transform property. This maps better to typical user interface usage, and saves having to remember the exact order of transform functions to specify in the transform value.",
+                    restriction: "none",
+                    "syntax": "none | <length-percentage> [ <length-percentage> <length>? ]?",
+                    browsers: "FF60,C"
+                },
+                {
+                    name: "speak-as",
+                    desc: "The speak-as descriptor specifies how a counter symbol constructed with a given @counter-style will be represented in the spoken form. For example, an author can specify a counter symbol to be either spoken as its numerical value or just represented with an audio cue.",
+                    restriction: "none",
+                    "syntax": "auto | bullets | numbers | words | spell-out | <counter-style-name>"
+                },
+                {
+                    name: "font-display",
+                    desc: "The font-display descriptor determines how a font face is displayed based on whether and when it is downloaded and ready to use.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "[ auto | block | swap | fallback | optional ]"
+                },
+                {
+                    name: "bleed",
+                    desc: "The bleed CSS at-rule descriptor, used with the @page at-rule, specifies the extent of the page bleed area outside the page box. This property only has effect if crop marks are enabled using the marks property.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "auto | <length>"
+                },
+                {
+                    name: "marks",
+                    desc: "The marks CSS at-rule descriptor, used with the @page at-rule, adds crop and/or cross marks to the presentation of the document. Crop marks indicate where the page should be cut. Cross marks are used to align sheets.",
+                    restriction: "none",
+                    "status": "e",
+                    "syntax": "none | [ crop || cross ]"
+                },
+                {
+                    name: "max-zoom",
+                    desc: "The max-zoom CSS descriptor sets the maximum zoom factor of a document defined by the @viewport at-rule. The browser will not zoom in any further than this, whether automatically or at the user's request.\n\nA zoom factor of 1.0 or 100% corresponds to no zooming. Larger values are zoomed in. Smaller values are zoomed out.",
+                    restriction: "none",
+                    "syntax": "auto | <number> | <percentage>"
+                },
+                {
+                    name: "min-zoom",
+                    desc: "The min-zoom CSS descriptor sets the minimum zoom factor of a document defined by the @viewport at-rule. The browser will not zoom out any further than this, whether automatically or at the user's request.\n\nA zoom factor of 1.0 or 100% corresponds to no zooming. Larger values are zoomed in. Smaller values are zoomed out.",
+                    restriction: "none",
+                    "syntax": "auto | <number> | <percentage>"
+                },
+                {
+                    name: "orientation",
+                    desc: "The orientation CSS @media media feature can be used to apply styles based on the orientation of the viewport (or the page box, for paged media).",
+                    restriction: "none",
+                    "syntax": "auto | portrait | landscape"
+                },
+                {
+                    name: "user-zoom",
+                    desc: "The user-zoom CSS descriptor controls whether or not the user can change the zoom factor of a document defined by @viewport.",
+                    restriction: "none",
+                    "syntax": "zoom | fixed"
                 }
             ]
         }
@@ -15760,7 +16119,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
         'time': ['ms', 's'],
         'frequency': ['Hz', 'kHz'],
         'resolution': ['dpi', 'dpcm', 'dppx'],
-        'percentage': ['%']
+        'percentage': ['%', 'fr']
     };
     exports.html5Tags = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption',
         'cite', 'code', 'col', 'colgroup', 'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer',
@@ -15791,7 +16150,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             return true;
         }
         else if (node.type === nodes.NodeType.Function) {
-            return this.isColorConstructor(node);
+            return isColorConstructor(node);
         }
         else if (node.type === nodes.NodeType.Identifier) {
             if (node.parent && node.parent.type !== nodes.NodeType.Term) {
@@ -15976,6 +16335,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             if (node.parent && node.parent.type !== nodes.NodeType.Term) {
                 return null;
             }
+            var term = node.parent;
+            if (term.parent && term.parent.type === nodes.NodeType.BinaryExpression) {
+                var expression = term.parent;
+                if (expression.parent && expression.parent.type === nodes.NodeType.ListEntry && expression.parent.key === expression) {
+                    return null;
+                }
+            }
             var candidateColor = node.getText().toLowerCase();
             if (candidateColor === 'none') {
                 return null;
@@ -16023,6 +16389,17 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
         }
     }
     exports.isKnownProperty = isKnownProperty;
+    function isStandardProperty(name) {
+        if (!name) {
+            return false;
+        }
+        else {
+            name = name.toLowerCase();
+            var property = getProperties()[name];
+            return property && property.status === 'standard';
+        }
+    }
+    exports.isStandardProperty = isStandardProperty;
     function isCommonValue(entry) {
         return entry.browsers.count > 1;
     }
@@ -16036,17 +16413,49 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
     }
     exports.getPageBoxDirectives = getPageBoxDirectives;
     function getEntryDescription(entry) {
-        var desc = entry.description || '';
-        var browserLabel = this.getBrowserLabel(entry.browsers);
+        if (!entry.description || entry.description === '') {
+            return null;
+        }
+        var desc = '';
+        if (entry.data && entry.data.status) {
+            desc += getEntryStatus(entry.data.status);
+        }
+        desc += entry.description;
+        var browserLabel = getBrowserLabel(entry.browsers);
         if (browserLabel) {
-            if (desc) {
-                desc = desc + '\n';
-            }
-            desc = desc + '(' + browserLabel + ')';
+            desc += '\n(' + browserLabel + ')';
+        }
+        if (entry.data && entry.data.syntax) {
+            desc += "\n\nSyntax: " + entry.data.syntax;
         }
         return desc;
     }
     exports.getEntryDescription = getEntryDescription;
+    function expandEntryStatus(status) {
+        switch (status) {
+            case 'e':
+                return 'experimental';
+            case 'n':
+                return 'nonstandard';
+            case 'o':
+                return 'obsolete';
+            default:
+                return 'standard';
+        }
+    }
+    exports.expandEntryStatus = expandEntryStatus;
+    function getEntryStatus(status) {
+        switch (status) {
+            case 'e':
+                return '⚠️ Property is experimental. Be cautious when using it.️\n\n';
+            case 'n':
+                return '🚨️ Property is nonstandard. Avoid using it.\n\n';
+            case 'o':
+                return '🚨️️️ Property is obsolete. Avoid using it.\n\n';
+            default:
+                return '';
+        }
+    }
     function getBrowserLabel(b) {
         var result = '';
         if (!b || b.all || b.count === 0) {
@@ -16166,6 +16575,13 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(EntryImpl.prototype, "status", {
+            get: function () {
+                return expandEntryStatus(this.data.status);
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(EntryImpl.prototype, "values", {
             get: function () {
                 if (!this.data.values) {
@@ -16188,7 +16604,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
     function getProperties() {
         if (!propertySet) {
             propertySet = {};
-            for (var i = 0, len = properties.length; i < len; i++) {
+            for (var i = 0; i < properties.length; i++) {
                 var rawEntry = properties[i];
                 propertySet[rawEntry.name] = new EntryImpl(rawEntry);
             }
@@ -16201,7 +16617,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
     function getAtDirectives() {
         if (!atDirectiveList) {
             atDirectiveList = [];
-            for (var i = 0, len = atDirectives.length; i < len; i++) {
+            for (var i = 0; i < atDirectives.length; i++) {
                 var rawEntry = atDirectives[i];
                 atDirectiveList.push(new EntryImpl(rawEntry));
             }
@@ -16214,7 +16630,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
     function getPseudoElements() {
         if (!pseudoElementList) {
             pseudoElementList = [];
-            for (var i = 0, len = pseudoElements.length; i < len; i++) {
+            for (var i = 0; i < pseudoElements.length; i++) {
                 var rawEntry = pseudoElements[i];
                 pseudoElementList.push(new EntryImpl(rawEntry));
             }
@@ -16227,7 +16643,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
     function getPseudoClasses() {
         if (!pseudoClassesList) {
             pseudoClassesList = [];
-            for (var i = 0, len = pseudoClasses.length; i < len; i++) {
+            for (var i = 0; i < pseudoClasses.length; i++) {
                 var rawEntry = pseudoClasses[i];
                 pseudoClassesList.push(new EntryImpl(rawEntry));
             }
@@ -16266,6 +16682,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
     var languageFacts = require("../services/languageFacts");
     /// <summary>
     /// A parser for the css core specification. See for reference:
+    /// https://www.w3.org/TR/CSS21/grammar.html
     /// http://www.w3.org/TR/CSS21/syndata.html#tokenization
     /// </summary>
     var Parser = /** @class */ (function () {
@@ -16416,7 +16833,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             return node;
         };
         Parser.prototype.markError = function (node, error, resyncTokens, resyncStopTokens) {
-            if (this.token !== this.lastErrorToken) {
+            if (this.token !== this.lastErrorToken) { // do not report twice on the same token
                 node.addIssue(new nodes.Marker(node, error, nodes.Level.Error, null, this.token.offset, this.token.len));
                 this.lastErrorToken = this.token;
             }
@@ -16489,17 +16906,21 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
         };
         Parser.prototype._parseStylesheetStatement = function () {
             if (this.peek(cssScanner_1.TokenType.AtKeyword)) {
-                return this._parseImport()
-                    || this._parseMedia()
-                    || this._parsePage()
-                    || this._parseFontFace()
-                    || this._parseKeyframe()
-                    || this._parseSupports()
-                    || this._parseViewPort()
-                    || this._parseNamespace()
-                    || this._parseDocument();
+                return this._parseStylesheetAtStatement();
             }
             return this._parseRuleset(false);
+        };
+        Parser.prototype._parseStylesheetAtStatement = function () {
+            return this._parseImport()
+                || this._parseMedia()
+                || this._parsePage()
+                || this._parseFontFace()
+                || this._parseKeyframe()
+                || this._parseSupports()
+                || this._parseViewPort()
+                || this._parseNamespace()
+                || this._parseDocument()
+                || this._parseUnknownAtRule();
         };
         Parser.prototype._tryParseRuleset = function (isNested) {
             var mark = this.mark();
@@ -16746,7 +17167,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                             return this.finish(node, cssErrors_1.ParseError.LeftSquareBracketExpected);
                         }
                         break;
-                    case cssScanner_1.TokenType.BadString:// fall through
+                    case cssScanner_1.TokenType.BadString: // fall through
                         break done;
                     case cssScanner_1.TokenType.EOF:
                         // We shouldn't have reached the end of input, something is
@@ -16828,7 +17249,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             }
             var node = this.create(nodes.Namespace);
             this.consumeToken(); // @namespace
-            if (!node.addChild(this._parseURILiteral())) {
+            if (!node.addChild(this._parseURILiteral())) { // url literal also starts with ident
                 node.addChild(this._parseIdent()); // optional prefix
                 if (!node.addChild(this._parseURILiteral()) && !node.addChild(this._parseStringLiteral())) {
                     return this.finish(node, cssErrors_1.ParseError.URIExpected, [cssScanner_1.TokenType.SemiColon]);
@@ -16865,7 +17286,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             var atNode = this.create(nodes.Node);
             this.consumeToken(); // atkeyword
             node.setKeyword(this.finish(atNode));
-            if (atNode.getText() === '@-ms-keyframes') {
+            if (atNode.getText() === '@-ms-keyframes') { // -ms-keyframes never existed
                 this.markError(atNode, cssErrors_1.ParseError.UnknownKeyword);
             }
             if (!node.setIdentifier(this._parseKeyframeIdent())) {
@@ -16942,7 +17363,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             else {
                 node.addChild(this._parseSupportsConditionInParens());
                 if (this.peekRegExp(cssScanner_1.TokenType.Ident, /^(and|or)$/i)) {
-                    var text = this.token.text;
+                    var text = this.token.text.toLowerCase();
                     while (this.acceptIdent(text)) {
                         node.addChild(this._parseSupportsConditionInParens());
                     }
@@ -17111,7 +17532,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             var node = this.create(nodes.Node);
             node.addChild(this._parseIdent()); // optional ident
             if (this.accept(cssScanner_1.TokenType.Colon)) {
-                if (!node.addChild(this._parseIdent())) {
+                if (!node.addChild(this._parseIdent())) { // optional ident
                     return this.finish(node, cssErrors_1.ParseError.IdentifierExpected);
                 }
             }
@@ -17127,6 +17548,91 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             this.resync([], [cssScanner_1.TokenType.CurlyL]); // ignore all the rules
             return this._parseBody(node, this._parseStylesheetStatement.bind(this));
         };
+        // https://www.w3.org/TR/css-syntax-3/#consume-an-at-rule
+        Parser.prototype._parseUnknownAtRule = function () {
+            var node = this.create(nodes.UnknownAtRule);
+            node.addChild(this._parseUnknownAtRuleName());
+            var isTopLevel = function () { return curlyDepth === 0 && parensDepth === 0 && bracketsDepth === 0; };
+            var curlyLCount = 0;
+            var curlyDepth = 0;
+            var parensDepth = 0;
+            var bracketsDepth = 0;
+            done: while (true) {
+                switch (this.token.type) {
+                    case cssScanner_1.TokenType.SemiColon:
+                        if (isTopLevel()) {
+                            break done;
+                        }
+                        break;
+                    case cssScanner_1.TokenType.EOF:
+                        if (curlyDepth > 0) {
+                            return this.finish(node, cssErrors_1.ParseError.RightCurlyExpected);
+                        }
+                        else if (bracketsDepth > 0) {
+                            return this.finish(node, cssErrors_1.ParseError.RightSquareBracketExpected);
+                        }
+                        else if (parensDepth > 0) {
+                            return this.finish(node, cssErrors_1.ParseError.RightParenthesisExpected);
+                        }
+                        else {
+                            return this.finish(node);
+                        }
+                    case cssScanner_1.TokenType.CurlyL:
+                        curlyLCount++;
+                        curlyDepth++;
+                        break;
+                    case cssScanner_1.TokenType.CurlyR:
+                        curlyDepth--;
+                        // End of at-rule, consume CurlyR and return node
+                        if (curlyLCount > 0 && curlyDepth === 0) {
+                            this.consumeToken();
+                            if (bracketsDepth > 0) {
+                                return this.finish(node, cssErrors_1.ParseError.RightSquareBracketExpected);
+                            }
+                            else if (parensDepth > 0) {
+                                return this.finish(node, cssErrors_1.ParseError.RightParenthesisExpected);
+                            }
+                            break done;
+                        }
+                        if (curlyDepth < 0) {
+                            // The property value has been terminated without a semicolon, and
+                            // this is the last declaration in the ruleset.
+                            if (parensDepth === 0 && bracketsDepth === 0) {
+                                break done;
+                            }
+                            return this.finish(node, cssErrors_1.ParseError.LeftCurlyExpected);
+                        }
+                        break;
+                    case cssScanner_1.TokenType.ParenthesisL:
+                        parensDepth++;
+                        break;
+                    case cssScanner_1.TokenType.ParenthesisR:
+                        parensDepth--;
+                        if (parensDepth < 0) {
+                            return this.finish(node, cssErrors_1.ParseError.LeftParenthesisExpected);
+                        }
+                        break;
+                    case cssScanner_1.TokenType.BracketL:
+                        bracketsDepth++;
+                        break;
+                    case cssScanner_1.TokenType.BracketR:
+                        bracketsDepth--;
+                        if (bracketsDepth < 0) {
+                            return this.finish(node, cssErrors_1.ParseError.LeftSquareBracketExpected);
+                        }
+                        break;
+                }
+                this.consumeToken();
+            }
+            return node;
+        };
+        Parser.prototype._parseUnknownAtRuleName = function () {
+            var node = this.create(nodes.Node);
+            if (this.accept(cssScanner_1.TokenType.AtKeyword)) {
+                return this.finish(node);
+            }
+            return node;
+        };
         Parser.prototype._parseOperator = function () {
             // these are operators for binary expressions
             if (this.peekDelim('/') ||
@@ -17138,7 +17644,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 this.peek(cssScanner_1.TokenType.SubstringOperator) ||
                 this.peek(cssScanner_1.TokenType.PrefixOperator) ||
                 this.peek(cssScanner_1.TokenType.SuffixOperator) ||
-                this.peekDelim('=')) {
+                this.peekDelim('=')) { // doesn't stick to the standard here
                 var node = this.createNode(nodes.NodeType.Operator);
                 this.consumeToken();
                 return this.finish(node);
@@ -17274,8 +17780,12 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             this.consumeToken(); // BracketL
             // Optional attrib namespace
             node.setNamespacePrefix(this._parseNamespacePrefix());
-            if (!node.setExpression(this._parseBinaryExpr())) {
-                // is this bad?
+            if (!node.setIdentifier(this._parseIdent())) {
+                return this.finish(node, cssErrors_1.ParseError.IdentifierExpected);
+            }
+            if (node.setOperator(this._parseOperator())) {
+                node.setValue(this._parseBinaryExpr());
+                this.acceptIdent('i'); // case insensitive matching
             }
             if (!this.accept(cssScanner_1.TokenType.BracketR)) {
                 return this.finish(node, cssErrors_1.ParseError.RightSquareBracketExpected);
@@ -17285,27 +17795,20 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
         Parser.prototype._parsePseudo = function () {
             var _this = this;
             // pseudo: ':' [ IDENT | FUNCTION S* [IDENT S*]? ')' ]
-            if (!this.peek(cssScanner_1.TokenType.Colon)) {
-                return null;
-            }
-            var pos = this.mark();
-            var node = this.createNode(nodes.NodeType.PseudoSelector);
-            this.consumeToken(); // Colon
-            if (!this.hasWhitespace()) {
-                // optional, support ::
-                if (this.accept(cssScanner_1.TokenType.Colon) && this.hasWhitespace()) {
-                    return this.finish(node, cssErrors_1.ParseError.IdentifierExpected);
-                }
-                if (!node.addChild(this._parseIdent())) {
-                    return this.finish(node, cssErrors_1.ParseError.IdentifierExpected);
-                }
+            var node = this._tryParsePseudoIdentifier();
+            if (node) {
                 if (!this.hasWhitespace() && this.accept(cssScanner_1.TokenType.ParenthesisL)) {
                     var tryAsSelector = function () {
-                        var selector = _this._parseSimpleSelector();
-                        if (selector && _this.peek(cssScanner_1.TokenType.ParenthesisR)) {
-                            return selector;
+                        var selectors = _this.create(nodes.Node);
+                        if (!selectors.addChild(_this._parseSelector(false))) {
+                            return null;
                         }
-                        return null;
+                        while (_this.accept(cssScanner_1.TokenType.Comma) && selectors.addChild(_this._parseSelector(false))) {
+                            // loop
+                        }
+                        if (_this.peek(cssScanner_1.TokenType.ParenthesisR)) {
+                            return _this.finish(selectors);
+                        }
                     };
                     node.addChild(this.try(tryAsSelector) || this._parseBinaryExpr());
                     if (!this.accept(cssScanner_1.TokenType.ParenthesisR)) {
@@ -17314,8 +17817,27 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 }
                 return this.finish(node);
             }
-            this.restoreAtMark(pos);
             return null;
+        };
+        Parser.prototype._tryParsePseudoIdentifier = function () {
+            if (!this.peek(cssScanner_1.TokenType.Colon)) {
+                return null;
+            }
+            var pos = this.mark();
+            var node = this.createNode(nodes.NodeType.PseudoSelector);
+            this.consumeToken(); // Colon
+            if (this.hasWhitespace()) {
+                this.restoreAtMark(pos);
+                return null;
+            }
+            // optional, support ::
+            if (this.accept(cssScanner_1.TokenType.Colon) && this.hasWhitespace()) {
+                this.markError(node, cssErrors_1.ParseError.IdentifierExpected);
+            }
+            if (!node.addChild(this._parseIdent())) {
+                this.markError(node, cssErrors_1.ParseError.IdentifierExpected);
+            }
+            return node;
         };
         Parser.prototype._tryParsePrio = function () {
             var mark = this.mark();
@@ -17339,17 +17861,17 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
         Parser.prototype._parseExpr = function (stopOnComma) {
             if (stopOnComma === void 0) { stopOnComma = false; }
             var node = this.create(nodes.Expression);
-            if (!node.addChild(this._parseNamedLine() || this._parseBinaryExpr())) {
+            if (!node.addChild(this._parseBinaryExpr())) {
                 return null;
             }
             while (true) {
-                if (this.peek(cssScanner_1.TokenType.Comma)) {
+                if (this.peek(cssScanner_1.TokenType.Comma)) { // optional
                     if (stopOnComma) {
                         return this.finish(node);
                     }
                     this.consumeToken();
                 }
-                if (!node.addChild(this._parseNamedLine() || this._parseBinaryExpr())) {
+                if (!node.addChild(this._parseBinaryExpr())) {
                     break;
                 }
             }
@@ -17398,7 +17920,8 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 node.setExpression(this._parseStringLiteral()) ||
                 node.setExpression(this._parseNumeric()) ||
                 node.setExpression(this._parseHexColor()) ||
-                node.setExpression(this._parseOperation())) {
+                node.setExpression(this._parseOperation()) ||
+                node.setExpression(this._parseNamedLine())) {
                 return this.finish(node);
             }
             return null;
@@ -17687,13 +18210,15 @@ var __extends = (this && this.__extends) || (function () {
         ScopeBuilder.prototype.addSymbol = function (node, name, value, type) {
             if (node.offset !== -1) {
                 var current = this.scope.findScope(node.offset, node.length);
-                current.addSymbol(new Symbol(name, value, node, type));
+                if (current) {
+                    current.addSymbol(new Symbol(name, value, node, type));
+                }
             }
         };
         ScopeBuilder.prototype.addScope = function (node) {
             if (node.offset !== -1) {
                 var current = this.scope.findScope(node.offset, node.length);
-                if (current.offset !== node.offset || current.length !== node.length) {
+                if (current && (current.offset !== node.offset || current.length !== node.length)) { // scope already known?
                     var newScope = new Scope(node.offset, node.length);
                     current.addChild(newScope);
                     return newScope;
@@ -17705,13 +18230,15 @@ var __extends = (this && this.__extends) || (function () {
         ScopeBuilder.prototype.addSymbolToChildScope = function (scopeNode, node, name, value, type) {
             if (scopeNode && scopeNode.offset !== -1) {
                 var current = this.addScope(scopeNode); // create the scope or gets the existing one
-                current.addSymbol(new Symbol(name, value, node, type));
+                if (current) {
+                    current.addSymbol(new Symbol(name, value, node, type));
+                }
             }
         };
         ScopeBuilder.prototype.visitNode = function (node) {
             switch (node.type) {
                 case nodes.NodeType.Keyframe:
-                    this.addSymbol(node, node.getName(), null, nodes.ReferenceType.Keyframe);
+                    this.addSymbol(node, node.getName(), void 0, nodes.ReferenceType.Keyframe);
                     return true;
                 case nodes.NodeType.CustomPropertyDeclaration:
                     return this.visitCustomPropertyDeclarationNode(node);
@@ -17720,10 +18247,10 @@ var __extends = (this && this.__extends) || (function () {
                 case nodes.NodeType.Ruleset:
                     return this.visitRuleSet(node);
                 case nodes.NodeType.MixinDeclaration:
-                    this.addSymbol(node, node.getName(), null, nodes.ReferenceType.Mixin);
+                    this.addSymbol(node, node.getName(), void 0, nodes.ReferenceType.Mixin);
                     return true;
                 case nodes.NodeType.FunctionDeclaration:
-                    this.addSymbol(node, node.getName(), null, nodes.ReferenceType.Function);
+                    this.addSymbol(node, node.getName(), void 0, nodes.ReferenceType.Function);
                     return true;
                 case nodes.NodeType.FunctionParameter: {
                     return this.visitFunctionParameterNode(node);
@@ -17735,7 +18262,7 @@ var __extends = (this && this.__extends) || (function () {
                     var forNode = node;
                     var scopeNode = forNode.getDeclarations();
                     if (scopeNode) {
-                        this.addSymbolToChildScope(scopeNode, forNode.variable, forNode.variable.getName(), null, nodes.ReferenceType.Variable);
+                        this.addSymbolToChildScope(scopeNode, forNode.variable, forNode.variable.getName(), void 0, nodes.ReferenceType.Variable);
                     }
                     return true;
                 case nodes.NodeType.Each: {
@@ -17745,7 +18272,7 @@ var __extends = (this && this.__extends) || (function () {
                         var variables = eachNode.getVariables().getChildren();
                         for (var _i = 0, variables_1 = variables; _i < variables_1.length; _i++) {
                             var variable = variables_1[_i];
-                            this.addSymbolToChildScope(scopeNode_1, variable, variable.getName(), null, nodes.ReferenceType.Variable);
+                            this.addSymbolToChildScope(scopeNode_1, variable, variable.getName(), void 0, nodes.ReferenceType.Variable);
                         }
                     }
                     return true;
@@ -17755,18 +18282,20 @@ var __extends = (this && this.__extends) || (function () {
         };
         ScopeBuilder.prototype.visitRuleSet = function (node) {
             var current = this.scope.findScope(node.offset, node.length);
-            for (var _i = 0, _a = node.getSelectors().getChildren(); _i < _a.length; _i++) {
-                var child = _a[_i];
-                if (child instanceof nodes.Selector) {
-                    if (child.getChildren().length === 1) {
-                        current.addSymbol(new Symbol(child.getChild(0).getText(), null, child, nodes.ReferenceType.Rule));
+            if (current) {
+                for (var _i = 0, _a = node.getSelectors().getChildren(); _i < _a.length; _i++) {
+                    var child = _a[_i];
+                    if (child instanceof nodes.Selector) {
+                        if (child.getChildren().length === 1) { // only selectors with a single element can be extended
+                            current.addSymbol(new Symbol(child.getChild(0).getText(), void 0, child, nodes.ReferenceType.Rule));
+                        }
                     }
                 }
             }
             return true;
         };
         ScopeBuilder.prototype.visitVariableDeclarationNode = function (node) {
-            var value = node.getValue() ? node.getValue().getText() : null;
+            var value = node.getValue() ? node.getValue().getText() : void 0;
             this.addSymbol(node, node.getName(), value, nodes.ReferenceType.Variable);
             return true;
         };
@@ -17775,7 +18304,7 @@ var __extends = (this && this.__extends) || (function () {
             var scopeNode = node.getParent().getDeclarations();
             if (scopeNode) {
                 var valueNode = node.getDefaultValue();
-                var value = valueNode ? valueNode.getText() : null;
+                var value = valueNode ? valueNode.getText() : void 0;
                 this.addSymbolToChildScope(scopeNode, node, node.getName(), value, nodes.ReferenceType.Variable);
             }
             return true;
@@ -17787,16 +18316,8 @@ var __extends = (this && this.__extends) || (function () {
         };
         ScopeBuilder.prototype.addCSSVariable = function (node, name, value, type) {
             if (node.offset !== -1) {
-                var globalScope = this.getGlobalScope(node, name, type);
-                globalScope.addSymbol(new Symbol(name, value, node, type));
+                this.scope.addSymbol(new Symbol(name, value, node, type));
             }
-        };
-        ScopeBuilder.prototype.getGlobalScope = function (node, name, type) {
-            var current = this.scope.findScope(node.offset, node.length);
-            while (current.parent !== null) {
-                current = current.parent;
-            }
-            return current;
         };
         return ScopeBuilder;
     }());
@@ -17903,7 +18424,7 @@ var __extends = (this && this.__extends) || (function () {
         };
         Symbols.prototype.matchesSymbol = function (node, symbol) {
             if (!node) {
-                return null;
+                return false;
             }
             while (node.type === nodes.NodeType.Interpolation) {
                 node = node.getParent();
@@ -18039,6 +18560,1386 @@ var __extends = (this && this.__extends) || (function () {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
+        define('vscode-languageserver-types/main',["require", "exports"], factory);
+    }
+})(function (require, exports) {
+    /* --------------------------------------------------------------------------------------------
+     * Copyright (c) Microsoft Corporation. All rights reserved.
+     * Licensed under the MIT License. See License.txt in the project root for license information.
+     * ------------------------------------------------------------------------------------------ */
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * The Position namespace provides helper functions to work with
+     * [Position](#Position) literals.
+     */
+    var Position;
+    (function (Position) {
+        /**
+         * Creates a new Position literal from the given line and character.
+         * @param line The position's line.
+         * @param character The position's character.
+         */
+        function create(line, character) {
+            return { line: line, character: character };
+        }
+        Position.create = create;
+        /**
+         * Checks whether the given liternal conforms to the [Position](#Position) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.objectLiteral(candidate) && Is.number(candidate.line) && Is.number(candidate.character);
+        }
+        Position.is = is;
+    })(Position = exports.Position || (exports.Position = {}));
+    /**
+     * The Range namespace provides helper functions to work with
+     * [Range](#Range) literals.
+     */
+    var Range;
+    (function (Range) {
+        function create(one, two, three, four) {
+            if (Is.number(one) && Is.number(two) && Is.number(three) && Is.number(four)) {
+                return { start: Position.create(one, two), end: Position.create(three, four) };
+            }
+            else if (Position.is(one) && Position.is(two)) {
+                return { start: one, end: two };
+            }
+            else {
+                throw new Error("Range#create called with invalid arguments[" + one + ", " + two + ", " + three + ", " + four + "]");
+            }
+        }
+        Range.create = create;
+        /**
+         * Checks whether the given literal conforms to the [Range](#Range) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.objectLiteral(candidate) && Position.is(candidate.start) && Position.is(candidate.end);
+        }
+        Range.is = is;
+    })(Range = exports.Range || (exports.Range = {}));
+    /**
+     * The Location namespace provides helper functions to work with
+     * [Location](#Location) literals.
+     */
+    var Location;
+    (function (Location) {
+        /**
+         * Creates a Location literal.
+         * @param uri The location's uri.
+         * @param range The location's range.
+         */
+        function create(uri, range) {
+            return { uri: uri, range: range };
+        }
+        Location.create = create;
+        /**
+         * Checks whether the given literal conforms to the [Location](#Location) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Range.is(candidate.range) && (Is.string(candidate.uri) || Is.undefined(candidate.uri));
+        }
+        Location.is = is;
+    })(Location = exports.Location || (exports.Location = {}));
+    /**
+     * The Color namespace provides helper functions to work with
+     * [Color](#Color) literals.
+     */
+    var Color;
+    (function (Color) {
+        /**
+         * Creates a new Color literal.
+         */
+        function create(red, green, blue, alpha) {
+            return {
+                red: red,
+                green: green,
+                blue: blue,
+                alpha: alpha,
+            };
+        }
+        Color.create = create;
+        /**
+         * Checks whether the given literal conforms to the [Color](#Color) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.number(candidate.red)
+                && Is.number(candidate.green)
+                && Is.number(candidate.blue)
+                && Is.number(candidate.alpha);
+        }
+        Color.is = is;
+    })(Color = exports.Color || (exports.Color = {}));
+    /**
+     * The ColorInformation namespace provides helper functions to work with
+     * [ColorInformation](#ColorInformation) literals.
+     */
+    var ColorInformation;
+    (function (ColorInformation) {
+        /**
+         * Creates a new ColorInformation literal.
+         */
+        function create(range, color) {
+            return {
+                range: range,
+                color: color,
+            };
+        }
+        ColorInformation.create = create;
+        /**
+         * Checks whether the given literal conforms to the [ColorInformation](#ColorInformation) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Range.is(candidate.range) && Color.is(candidate.color);
+        }
+        ColorInformation.is = is;
+    })(ColorInformation = exports.ColorInformation || (exports.ColorInformation = {}));
+    /**
+     * The Color namespace provides helper functions to work with
+     * [ColorPresentation](#ColorPresentation) literals.
+     */
+    var ColorPresentation;
+    (function (ColorPresentation) {
+        /**
+         * Creates a new ColorInformation literal.
+         */
+        function create(label, textEdit, additionalTextEdits) {
+            return {
+                label: label,
+                textEdit: textEdit,
+                additionalTextEdits: additionalTextEdits,
+            };
+        }
+        ColorPresentation.create = create;
+        /**
+         * Checks whether the given literal conforms to the [ColorInformation](#ColorInformation) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.string(candidate.label)
+                && (Is.undefined(candidate.textEdit) || TextEdit.is(candidate))
+                && (Is.undefined(candidate.additionalTextEdits) || Is.typedArray(candidate.additionalTextEdits, TextEdit.is));
+        }
+        ColorPresentation.is = is;
+    })(ColorPresentation = exports.ColorPresentation || (exports.ColorPresentation = {}));
+    /**
+     * Enum of known range kinds
+     */
+    var FoldingRangeKind;
+    (function (FoldingRangeKind) {
+        /**
+         * Folding range for a comment
+         */
+        FoldingRangeKind["Comment"] = "comment";
+        /**
+         * Folding range for a imports or includes
+         */
+        FoldingRangeKind["Imports"] = "imports";
+        /**
+         * Folding range for a region (e.g. `#region`)
+         */
+        FoldingRangeKind["Region"] = "region";
+    })(FoldingRangeKind = exports.FoldingRangeKind || (exports.FoldingRangeKind = {}));
+    /**
+     * The folding range namespace provides helper functions to work with
+     * [FoldingRange](#FoldingRange) literals.
+     */
+    var FoldingRange;
+    (function (FoldingRange) {
+        /**
+         * Creates a new FoldingRange literal.
+         */
+        function create(startLine, endLine, startCharacter, endCharacter, kind) {
+            var result = {
+                startLine: startLine,
+                endLine: endLine
+            };
+            if (Is.defined(startCharacter)) {
+                result.startCharacter = startCharacter;
+            }
+            if (Is.defined(endCharacter)) {
+                result.endCharacter = endCharacter;
+            }
+            if (Is.defined(kind)) {
+                result.kind = kind;
+            }
+            return result;
+        }
+        FoldingRange.create = create;
+        /**
+         * Checks whether the given literal conforms to the [FoldingRange](#FoldingRange) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.number(candidate.startLine) && Is.number(candidate.startLine)
+                && (Is.undefined(candidate.startCharacter) || Is.number(candidate.startCharacter))
+                && (Is.undefined(candidate.endCharacter) || Is.number(candidate.endCharacter))
+                && (Is.undefined(candidate.kind) || Is.string(candidate.kind));
+        }
+        FoldingRange.is = is;
+    })(FoldingRange = exports.FoldingRange || (exports.FoldingRange = {}));
+    /**
+     * The DiagnosticRelatedInformation namespace provides helper functions to work with
+     * [DiagnosticRelatedInformation](#DiagnosticRelatedInformation) literals.
+     */
+    var DiagnosticRelatedInformation;
+    (function (DiagnosticRelatedInformation) {
+        /**
+         * Creates a new DiagnosticRelatedInformation literal.
+         */
+        function create(location, message) {
+            return {
+                location: location,
+                message: message
+            };
+        }
+        DiagnosticRelatedInformation.create = create;
+        /**
+         * Checks whether the given literal conforms to the [DiagnosticRelatedInformation](#DiagnosticRelatedInformation) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Location.is(candidate.location) && Is.string(candidate.message);
+        }
+        DiagnosticRelatedInformation.is = is;
+    })(DiagnosticRelatedInformation = exports.DiagnosticRelatedInformation || (exports.DiagnosticRelatedInformation = {}));
+    /**
+     * The diagnostic's severity.
+     */
+    var DiagnosticSeverity;
+    (function (DiagnosticSeverity) {
+        /**
+         * Reports an error.
+         */
+        DiagnosticSeverity.Error = 1;
+        /**
+         * Reports a warning.
+         */
+        DiagnosticSeverity.Warning = 2;
+        /**
+         * Reports an information.
+         */
+        DiagnosticSeverity.Information = 3;
+        /**
+         * Reports a hint.
+         */
+        DiagnosticSeverity.Hint = 4;
+    })(DiagnosticSeverity = exports.DiagnosticSeverity || (exports.DiagnosticSeverity = {}));
+    /**
+     * The Diagnostic namespace provides helper functions to work with
+     * [Diagnostic](#Diagnostic) literals.
+     */
+    var Diagnostic;
+    (function (Diagnostic) {
+        /**
+         * Creates a new Diagnostic literal.
+         */
+        function create(range, message, severity, code, source, relatedInformation) {
+            var result = { range: range, message: message };
+            if (Is.defined(severity)) {
+                result.severity = severity;
+            }
+            if (Is.defined(code)) {
+                result.code = code;
+            }
+            if (Is.defined(source)) {
+                result.source = source;
+            }
+            if (Is.defined(relatedInformation)) {
+                result.relatedInformation = relatedInformation;
+            }
+            return result;
+        }
+        Diagnostic.create = create;
+        /**
+         * Checks whether the given literal conforms to the [Diagnostic](#Diagnostic) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate)
+                && Range.is(candidate.range)
+                && Is.string(candidate.message)
+                && (Is.number(candidate.severity) || Is.undefined(candidate.severity))
+                && (Is.number(candidate.code) || Is.string(candidate.code) || Is.undefined(candidate.code))
+                && (Is.string(candidate.source) || Is.undefined(candidate.source))
+                && (Is.undefined(candidate.relatedInformation) || Is.typedArray(candidate.relatedInformation, DiagnosticRelatedInformation.is));
+        }
+        Diagnostic.is = is;
+    })(Diagnostic = exports.Diagnostic || (exports.Diagnostic = {}));
+    /**
+     * The Command namespace provides helper functions to work with
+     * [Command](#Command) literals.
+     */
+    var Command;
+    (function (Command) {
+        /**
+         * Creates a new Command literal.
+         */
+        function create(title, command) {
+            var args = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                args[_i - 2] = arguments[_i];
+            }
+            var result = { title: title, command: command };
+            if (Is.defined(args) && args.length > 0) {
+                result.arguments = args;
+            }
+            return result;
+        }
+        Command.create = create;
+        /**
+         * Checks whether the given literal conforms to the [Command](#Command) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Is.string(candidate.title) && Is.string(candidate.command);
+        }
+        Command.is = is;
+    })(Command = exports.Command || (exports.Command = {}));
+    /**
+     * The TextEdit namespace provides helper function to create replace,
+     * insert and delete edits more easily.
+     */
+    var TextEdit;
+    (function (TextEdit) {
+        /**
+         * Creates a replace text edit.
+         * @param range The range of text to be replaced.
+         * @param newText The new text.
+         */
+        function replace(range, newText) {
+            return { range: range, newText: newText };
+        }
+        TextEdit.replace = replace;
+        /**
+         * Creates a insert text edit.
+         * @param position The position to insert the text at.
+         * @param newText The text to be inserted.
+         */
+        function insert(position, newText) {
+            return { range: { start: position, end: position }, newText: newText };
+        }
+        TextEdit.insert = insert;
+        /**
+         * Creates a delete text edit.
+         * @param range The range of text to be deleted.
+         */
+        function del(range) {
+            return { range: range, newText: '' };
+        }
+        TextEdit.del = del;
+        function is(value) {
+            var candidate = value;
+            return Is.objectLiteral(candidate)
+                && Is.string(candidate.newText)
+                && Range.is(candidate.range);
+        }
+        TextEdit.is = is;
+    })(TextEdit = exports.TextEdit || (exports.TextEdit = {}));
+    /**
+     * The TextDocumentEdit namespace provides helper function to create
+     * an edit that manipulates a text document.
+     */
+    var TextDocumentEdit;
+    (function (TextDocumentEdit) {
+        /**
+         * Creates a new `TextDocumentEdit`
+         */
+        function create(textDocument, edits) {
+            return { textDocument: textDocument, edits: edits };
+        }
+        TextDocumentEdit.create = create;
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate)
+                && VersionedTextDocumentIdentifier.is(candidate.textDocument)
+                && Array.isArray(candidate.edits);
+        }
+        TextDocumentEdit.is = is;
+    })(TextDocumentEdit = exports.TextDocumentEdit || (exports.TextDocumentEdit = {}));
+    var WorkspaceEdit;
+    (function (WorkspaceEdit) {
+        function is(value) {
+            var candidate = value;
+            return candidate &&
+                (candidate.changes !== void 0 || candidate.documentChanges !== void 0) &&
+                (candidate.documentChanges === void 0 || Is.typedArray(candidate.documentChanges, TextDocumentEdit.is));
+        }
+        WorkspaceEdit.is = is;
+    })(WorkspaceEdit = exports.WorkspaceEdit || (exports.WorkspaceEdit = {}));
+    var TextEditChangeImpl = /** @class */ (function () {
+        function TextEditChangeImpl(edits) {
+            this.edits = edits;
+        }
+        TextEditChangeImpl.prototype.insert = function (position, newText) {
+            this.edits.push(TextEdit.insert(position, newText));
+        };
+        TextEditChangeImpl.prototype.replace = function (range, newText) {
+            this.edits.push(TextEdit.replace(range, newText));
+        };
+        TextEditChangeImpl.prototype.delete = function (range) {
+            this.edits.push(TextEdit.del(range));
+        };
+        TextEditChangeImpl.prototype.add = function (edit) {
+            this.edits.push(edit);
+        };
+        TextEditChangeImpl.prototype.all = function () {
+            return this.edits;
+        };
+        TextEditChangeImpl.prototype.clear = function () {
+            this.edits.splice(0, this.edits.length);
+        };
+        return TextEditChangeImpl;
+    }());
+    /**
+     * A workspace change helps constructing changes to a workspace.
+     */
+    var WorkspaceChange = /** @class */ (function () {
+        function WorkspaceChange(workspaceEdit) {
+            var _this = this;
+            this._textEditChanges = Object.create(null);
+            if (workspaceEdit) {
+                this._workspaceEdit = workspaceEdit;
+                if (workspaceEdit.documentChanges) {
+                    workspaceEdit.documentChanges.forEach(function (textDocumentEdit) {
+                        var textEditChange = new TextEditChangeImpl(textDocumentEdit.edits);
+                        _this._textEditChanges[textDocumentEdit.textDocument.uri] = textEditChange;
+                    });
+                }
+                else if (workspaceEdit.changes) {
+                    Object.keys(workspaceEdit.changes).forEach(function (key) {
+                        var textEditChange = new TextEditChangeImpl(workspaceEdit.changes[key]);
+                        _this._textEditChanges[key] = textEditChange;
+                    });
+                }
+            }
+        }
+        Object.defineProperty(WorkspaceChange.prototype, "edit", {
+            /**
+             * Returns the underlying [WorkspaceEdit](#WorkspaceEdit) literal
+             * use to be returned from a workspace edit operation like rename.
+             */
+            get: function () {
+                return this._workspaceEdit;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        WorkspaceChange.prototype.getTextEditChange = function (key) {
+            if (VersionedTextDocumentIdentifier.is(key)) {
+                if (!this._workspaceEdit) {
+                    this._workspaceEdit = {
+                        documentChanges: []
+                    };
+                }
+                if (!this._workspaceEdit.documentChanges) {
+                    throw new Error('Workspace edit is not configured for versioned document changes.');
+                }
+                var textDocument = key;
+                var result = this._textEditChanges[textDocument.uri];
+                if (!result) {
+                    var edits = [];
+                    var textDocumentEdit = {
+                        textDocument: textDocument,
+                        edits: edits
+                    };
+                    this._workspaceEdit.documentChanges.push(textDocumentEdit);
+                    result = new TextEditChangeImpl(edits);
+                    this._textEditChanges[textDocument.uri] = result;
+                }
+                return result;
+            }
+            else {
+                if (!this._workspaceEdit) {
+                    this._workspaceEdit = {
+                        changes: Object.create(null)
+                    };
+                }
+                if (!this._workspaceEdit.changes) {
+                    throw new Error('Workspace edit is not configured for normal text edit changes.');
+                }
+                var result = this._textEditChanges[key];
+                if (!result) {
+                    var edits = [];
+                    this._workspaceEdit.changes[key] = edits;
+                    result = new TextEditChangeImpl(edits);
+                    this._textEditChanges[key] = result;
+                }
+                return result;
+            }
+        };
+        return WorkspaceChange;
+    }());
+    exports.WorkspaceChange = WorkspaceChange;
+    /**
+     * The TextDocumentIdentifier namespace provides helper functions to work with
+     * [TextDocumentIdentifier](#TextDocumentIdentifier) literals.
+     */
+    var TextDocumentIdentifier;
+    (function (TextDocumentIdentifier) {
+        /**
+         * Creates a new TextDocumentIdentifier literal.
+         * @param uri The document's uri.
+         */
+        function create(uri) {
+            return { uri: uri };
+        }
+        TextDocumentIdentifier.create = create;
+        /**
+         * Checks whether the given literal conforms to the [TextDocumentIdentifier](#TextDocumentIdentifier) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Is.string(candidate.uri);
+        }
+        TextDocumentIdentifier.is = is;
+    })(TextDocumentIdentifier = exports.TextDocumentIdentifier || (exports.TextDocumentIdentifier = {}));
+    /**
+     * The VersionedTextDocumentIdentifier namespace provides helper functions to work with
+     * [VersionedTextDocumentIdentifier](#VersionedTextDocumentIdentifier) literals.
+     */
+    var VersionedTextDocumentIdentifier;
+    (function (VersionedTextDocumentIdentifier) {
+        /**
+         * Creates a new VersionedTextDocumentIdentifier literal.
+         * @param uri The document's uri.
+         * @param uri The document's text.
+         */
+        function create(uri, version) {
+            return { uri: uri, version: version };
+        }
+        VersionedTextDocumentIdentifier.create = create;
+        /**
+         * Checks whether the given literal conforms to the [VersionedTextDocumentIdentifier](#VersionedTextDocumentIdentifier) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Is.string(candidate.uri) && Is.number(candidate.version);
+        }
+        VersionedTextDocumentIdentifier.is = is;
+    })(VersionedTextDocumentIdentifier = exports.VersionedTextDocumentIdentifier || (exports.VersionedTextDocumentIdentifier = {}));
+    /**
+     * The TextDocumentItem namespace provides helper functions to work with
+     * [TextDocumentItem](#TextDocumentItem) literals.
+     */
+    var TextDocumentItem;
+    (function (TextDocumentItem) {
+        /**
+         * Creates a new TextDocumentItem literal.
+         * @param uri The document's uri.
+         * @param languageId The document's language identifier.
+         * @param version The document's version number.
+         * @param text The document's text.
+         */
+        function create(uri, languageId, version, text) {
+            return { uri: uri, languageId: languageId, version: version, text: text };
+        }
+        TextDocumentItem.create = create;
+        /**
+         * Checks whether the given literal conforms to the [TextDocumentItem](#TextDocumentItem) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Is.string(candidate.uri) && Is.string(candidate.languageId) && Is.number(candidate.version) && Is.string(candidate.text);
+        }
+        TextDocumentItem.is = is;
+    })(TextDocumentItem = exports.TextDocumentItem || (exports.TextDocumentItem = {}));
+    /**
+     * Describes the content type that a client supports in various
+     * result literals like `Hover`, `ParameterInfo` or `CompletionItem`.
+     *
+     * Please note that `MarkupKinds` must not start with a `$`. This kinds
+     * are reserved for internal usage.
+     */
+    var MarkupKind;
+    (function (MarkupKind) {
+        /**
+         * Plain text is supported as a content format
+         */
+        MarkupKind.PlainText = 'plaintext';
+        /**
+         * Markdown is supported as a content format
+         */
+        MarkupKind.Markdown = 'markdown';
+    })(MarkupKind = exports.MarkupKind || (exports.MarkupKind = {}));
+    (function (MarkupKind) {
+        /**
+         * Checks whether the given value is a value of the [MarkupKind](#MarkupKind) type.
+         */
+        function is(value) {
+            var candidate = value;
+            return candidate === MarkupKind.PlainText || candidate === MarkupKind.Markdown;
+        }
+        MarkupKind.is = is;
+    })(MarkupKind = exports.MarkupKind || (exports.MarkupKind = {}));
+    var MarkupContent;
+    (function (MarkupContent) {
+        /**
+         * Checks whether the given value conforms to the [MarkupContent](#MarkupContent) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.objectLiteral(value) && MarkupKind.is(candidate.kind) && Is.string(candidate.value);
+        }
+        MarkupContent.is = is;
+    })(MarkupContent = exports.MarkupContent || (exports.MarkupContent = {}));
+    /**
+     * The kind of a completion entry.
+     */
+    var CompletionItemKind;
+    (function (CompletionItemKind) {
+        CompletionItemKind.Text = 1;
+        CompletionItemKind.Method = 2;
+        CompletionItemKind.Function = 3;
+        CompletionItemKind.Constructor = 4;
+        CompletionItemKind.Field = 5;
+        CompletionItemKind.Variable = 6;
+        CompletionItemKind.Class = 7;
+        CompletionItemKind.Interface = 8;
+        CompletionItemKind.Module = 9;
+        CompletionItemKind.Property = 10;
+        CompletionItemKind.Unit = 11;
+        CompletionItemKind.Value = 12;
+        CompletionItemKind.Enum = 13;
+        CompletionItemKind.Keyword = 14;
+        CompletionItemKind.Snippet = 15;
+        CompletionItemKind.Color = 16;
+        CompletionItemKind.File = 17;
+        CompletionItemKind.Reference = 18;
+        CompletionItemKind.Folder = 19;
+        CompletionItemKind.EnumMember = 20;
+        CompletionItemKind.Constant = 21;
+        CompletionItemKind.Struct = 22;
+        CompletionItemKind.Event = 23;
+        CompletionItemKind.Operator = 24;
+        CompletionItemKind.TypeParameter = 25;
+    })(CompletionItemKind = exports.CompletionItemKind || (exports.CompletionItemKind = {}));
+    /**
+     * Defines whether the insert text in a completion item should be interpreted as
+     * plain text or a snippet.
+     */
+    var InsertTextFormat;
+    (function (InsertTextFormat) {
+        /**
+         * The primary text to be inserted is treated as a plain string.
+         */
+        InsertTextFormat.PlainText = 1;
+        /**
+         * The primary text to be inserted is treated as a snippet.
+         *
+         * A snippet can define tab stops and placeholders with `$1`, `$2`
+         * and `${3:foo}`. `$0` defines the final tab stop, it defaults to
+         * the end of the snippet. Placeholders with equal identifiers are linked,
+         * that is typing in one will update others too.
+         *
+         * See also: https://github.com/Microsoft/vscode/blob/master/src/vs/editor/contrib/snippet/common/snippet.md
+         */
+        InsertTextFormat.Snippet = 2;
+    })(InsertTextFormat = exports.InsertTextFormat || (exports.InsertTextFormat = {}));
+    /**
+     * The CompletionItem namespace provides functions to deal with
+     * completion items.
+     */
+    var CompletionItem;
+    (function (CompletionItem) {
+        /**
+         * Create a completion item and seed it with a label.
+         * @param label The completion item's label
+         */
+        function create(label) {
+            return { label: label };
+        }
+        CompletionItem.create = create;
+    })(CompletionItem = exports.CompletionItem || (exports.CompletionItem = {}));
+    /**
+     * The CompletionList namespace provides functions to deal with
+     * completion lists.
+     */
+    var CompletionList;
+    (function (CompletionList) {
+        /**
+         * Creates a new completion list.
+         *
+         * @param items The completion items.
+         * @param isIncomplete The list is not complete.
+         */
+        function create(items, isIncomplete) {
+            return { items: items ? items : [], isIncomplete: !!isIncomplete };
+        }
+        CompletionList.create = create;
+    })(CompletionList = exports.CompletionList || (exports.CompletionList = {}));
+    var MarkedString;
+    (function (MarkedString) {
+        /**
+         * Creates a marked string from plain text.
+         *
+         * @param plainText The plain text.
+         */
+        function fromPlainText(plainText) {
+            return plainText.replace(/[\\`*_{}[\]()#+\-.!]/g, "\\$&"); // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
+        }
+        MarkedString.fromPlainText = fromPlainText;
+        /**
+         * Checks whether the given value conforms to the [MarkedString](#MarkedString) type.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.string(candidate) || (Is.objectLiteral(candidate) && Is.string(candidate.language) && Is.string(candidate.value));
+        }
+        MarkedString.is = is;
+    })(MarkedString = exports.MarkedString || (exports.MarkedString = {}));
+    var Hover;
+    (function (Hover) {
+        /**
+         * Checks whether the given value conforms to the [Hover](#Hover) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.objectLiteral(candidate) && (MarkupContent.is(candidate.contents) ||
+                MarkedString.is(candidate.contents) ||
+                Is.typedArray(candidate.contents, MarkedString.is)) && (value.range === void 0 || Range.is(value.range));
+        }
+        Hover.is = is;
+    })(Hover = exports.Hover || (exports.Hover = {}));
+    /**
+     * The ParameterInformation namespace provides helper functions to work with
+     * [ParameterInformation](#ParameterInformation) literals.
+     */
+    var ParameterInformation;
+    (function (ParameterInformation) {
+        /**
+         * Creates a new parameter information literal.
+         *
+         * @param label A label string.
+         * @param documentation A doc string.
+         */
+        function create(label, documentation) {
+            return documentation ? { label: label, documentation: documentation } : { label: label };
+        }
+        ParameterInformation.create = create;
+        ;
+    })(ParameterInformation = exports.ParameterInformation || (exports.ParameterInformation = {}));
+    /**
+     * The SignatureInformation namespace provides helper functions to work with
+     * [SignatureInformation](#SignatureInformation) literals.
+     */
+    var SignatureInformation;
+    (function (SignatureInformation) {
+        function create(label, documentation) {
+            var parameters = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                parameters[_i - 2] = arguments[_i];
+            }
+            var result = { label: label };
+            if (Is.defined(documentation)) {
+                result.documentation = documentation;
+            }
+            if (Is.defined(parameters)) {
+                result.parameters = parameters;
+            }
+            else {
+                result.parameters = [];
+            }
+            return result;
+        }
+        SignatureInformation.create = create;
+    })(SignatureInformation = exports.SignatureInformation || (exports.SignatureInformation = {}));
+    /**
+     * A document highlight kind.
+     */
+    var DocumentHighlightKind;
+    (function (DocumentHighlightKind) {
+        /**
+         * A textual occurrence.
+         */
+        DocumentHighlightKind.Text = 1;
+        /**
+         * Read-access of a symbol, like reading a variable.
+         */
+        DocumentHighlightKind.Read = 2;
+        /**
+         * Write-access of a symbol, like writing to a variable.
+         */
+        DocumentHighlightKind.Write = 3;
+    })(DocumentHighlightKind = exports.DocumentHighlightKind || (exports.DocumentHighlightKind = {}));
+    /**
+     * DocumentHighlight namespace to provide helper functions to work with
+     * [DocumentHighlight](#DocumentHighlight) literals.
+     */
+    var DocumentHighlight;
+    (function (DocumentHighlight) {
+        /**
+         * Create a DocumentHighlight object.
+         * @param range The range the highlight applies to.
+         */
+        function create(range, kind) {
+            var result = { range: range };
+            if (Is.number(kind)) {
+                result.kind = kind;
+            }
+            return result;
+        }
+        DocumentHighlight.create = create;
+    })(DocumentHighlight = exports.DocumentHighlight || (exports.DocumentHighlight = {}));
+    /**
+     * A symbol kind.
+     */
+    var SymbolKind;
+    (function (SymbolKind) {
+        SymbolKind.File = 1;
+        SymbolKind.Module = 2;
+        SymbolKind.Namespace = 3;
+        SymbolKind.Package = 4;
+        SymbolKind.Class = 5;
+        SymbolKind.Method = 6;
+        SymbolKind.Property = 7;
+        SymbolKind.Field = 8;
+        SymbolKind.Constructor = 9;
+        SymbolKind.Enum = 10;
+        SymbolKind.Interface = 11;
+        SymbolKind.Function = 12;
+        SymbolKind.Variable = 13;
+        SymbolKind.Constant = 14;
+        SymbolKind.String = 15;
+        SymbolKind.Number = 16;
+        SymbolKind.Boolean = 17;
+        SymbolKind.Array = 18;
+        SymbolKind.Object = 19;
+        SymbolKind.Key = 20;
+        SymbolKind.Null = 21;
+        SymbolKind.EnumMember = 22;
+        SymbolKind.Struct = 23;
+        SymbolKind.Event = 24;
+        SymbolKind.Operator = 25;
+        SymbolKind.TypeParameter = 26;
+    })(SymbolKind = exports.SymbolKind || (exports.SymbolKind = {}));
+    var SymbolInformation;
+    (function (SymbolInformation) {
+        /**
+         * Creates a new symbol information literal.
+         *
+         * @param name The name of the symbol.
+         * @param kind The kind of the symbol.
+         * @param range The range of the location of the symbol.
+         * @param uri The resource of the location of symbol, defaults to the current document.
+         * @param containerName The name of the symbol containing the symbol.
+         */
+        function create(name, kind, range, uri, containerName) {
+            var result = {
+                name: name,
+                kind: kind,
+                location: { uri: uri, range: range }
+            };
+            if (containerName) {
+                result.containerName = containerName;
+            }
+            return result;
+        }
+        SymbolInformation.create = create;
+    })(SymbolInformation = exports.SymbolInformation || (exports.SymbolInformation = {}));
+    /**
+     * Represents programming constructs like variables, classes, interfaces etc.
+     * that appear in a document. Document symbols can be hierarchical and they
+     * have two ranges: one that encloses its definition and one that points to
+     * its most interesting range, e.g. the range of an identifier.
+     */
+    var DocumentSymbol = /** @class */ (function () {
+        function DocumentSymbol() {
+        }
+        return DocumentSymbol;
+    }());
+    exports.DocumentSymbol = DocumentSymbol;
+    (function (DocumentSymbol) {
+        /**
+         * Creates a new symbol information literal.
+         *
+         * @param name The name of the symbol.
+         * @param detail The detail of the symbol.
+         * @param kind The kind of the symbol.
+         * @param range The range of the symbol.
+         * @param selectionRange The selectionRange of the symbol.
+         * @param children Children of the symbol.
+         */
+        function create(name, detail, kind, range, selectionRange, children) {
+            var result = {
+                name: name,
+                detail: detail,
+                kind: kind,
+                range: range,
+                selectionRange: selectionRange
+            };
+            if (children !== void 0) {
+                result.children = children;
+            }
+            return result;
+        }
+        DocumentSymbol.create = create;
+        /**
+         * Checks whether the given literal conforms to the [DocumentSymbol](#DocumentSymbol) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return candidate &&
+                Is.string(candidate.name) && Is.string(candidate.detail) && Is.number(candidate.kind) &&
+                Range.is(candidate.range) && Range.is(candidate.selectionRange) &&
+                (candidate.deprecated === void 0 || Is.boolean(candidate.deprecated)) &&
+                (candidate.children === void 0 || Array.isArray(candidate.children));
+        }
+        DocumentSymbol.is = is;
+    })(DocumentSymbol = exports.DocumentSymbol || (exports.DocumentSymbol = {}));
+    exports.DocumentSymbol = DocumentSymbol;
+    /**
+     * A set of predefined code action kinds
+     */
+    var CodeActionKind;
+    (function (CodeActionKind) {
+        /**
+         * Base kind for quickfix actions: 'quickfix'
+         */
+        CodeActionKind.QuickFix = 'quickfix';
+        /**
+         * Base kind for refactoring actions: 'refactor'
+         */
+        CodeActionKind.Refactor = 'refactor';
+        /**
+         * Base kind for refactoring extraction actions: 'refactor.extract'
+         *
+         * Example extract actions:
+         *
+         * - Extract method
+         * - Extract function
+         * - Extract variable
+         * - Extract interface from class
+         * - ...
+         */
+        CodeActionKind.RefactorExtract = 'refactor.extract';
+        /**
+         * Base kind for refactoring inline actions: 'refactor.inline'
+         *
+         * Example inline actions:
+         *
+         * - Inline function
+         * - Inline variable
+         * - Inline constant
+         * - ...
+         */
+        CodeActionKind.RefactorInline = 'refactor.inline';
+        /**
+         * Base kind for refactoring rewrite actions: 'refactor.rewrite'
+         *
+         * Example rewrite actions:
+         *
+         * - Convert JavaScript function to class
+         * - Add or remove parameter
+         * - Encapsulate field
+         * - Make method static
+         * - Move method to base class
+         * - ...
+         */
+        CodeActionKind.RefactorRewrite = 'refactor.rewrite';
+        /**
+         * Base kind for source actions: `source`
+         *
+         * Source code actions apply to the entire file.
+         */
+        CodeActionKind.Source = 'source';
+        /**
+         * Base kind for an organize imports source action: `source.organizeImports`
+         */
+        CodeActionKind.SourceOrganizeImports = 'source.organizeImports';
+    })(CodeActionKind = exports.CodeActionKind || (exports.CodeActionKind = {}));
+    /**
+     * The CodeActionContext namespace provides helper functions to work with
+     * [CodeActionContext](#CodeActionContext) literals.
+     */
+    var CodeActionContext;
+    (function (CodeActionContext) {
+        /**
+         * Creates a new CodeActionContext literal.
+         */
+        function create(diagnostics, only) {
+            var result = { diagnostics: diagnostics };
+            if (only !== void 0 && only !== null) {
+                result.only = only;
+            }
+            return result;
+        }
+        CodeActionContext.create = create;
+        /**
+         * Checks whether the given literal conforms to the [CodeActionContext](#CodeActionContext) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Is.typedArray(candidate.diagnostics, Diagnostic.is) && (candidate.only === void 0 || Is.typedArray(candidate.only, Is.string));
+        }
+        CodeActionContext.is = is;
+    })(CodeActionContext = exports.CodeActionContext || (exports.CodeActionContext = {}));
+    var CodeAction;
+    (function (CodeAction) {
+        function create(title, commandOrEdit, kind) {
+            var result = { title: title };
+            if (Command.is(commandOrEdit)) {
+                result.command = commandOrEdit;
+            }
+            else {
+                result.edit = commandOrEdit;
+            }
+            if (kind !== void null) {
+                result.kind = kind;
+            }
+            return result;
+        }
+        CodeAction.create = create;
+        function is(value) {
+            var candidate = value;
+            return candidate && Is.string(candidate.title) &&
+                (candidate.diagnostics === void 0 || Is.typedArray(candidate.diagnostics, Diagnostic.is)) &&
+                (candidate.kind === void 0 || Is.string(candidate.kind)) &&
+                (candidate.edit !== void 0 || candidate.command !== void 0) &&
+                (candidate.command === void 0 || Command.is(candidate.command)) &&
+                (candidate.edit === void 0 || WorkspaceEdit.is(candidate.edit));
+        }
+        CodeAction.is = is;
+    })(CodeAction = exports.CodeAction || (exports.CodeAction = {}));
+    /**
+     * The CodeLens namespace provides helper functions to work with
+     * [CodeLens](#CodeLens) literals.
+     */
+    var CodeLens;
+    (function (CodeLens) {
+        /**
+         * Creates a new CodeLens literal.
+         */
+        function create(range, data) {
+            var result = { range: range };
+            if (Is.defined(data))
+                result.data = data;
+            return result;
+        }
+        CodeLens.create = create;
+        /**
+         * Checks whether the given literal conforms to the [CodeLens](#CodeLens) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Range.is(candidate.range) && (Is.undefined(candidate.command) || Command.is(candidate.command));
+        }
+        CodeLens.is = is;
+    })(CodeLens = exports.CodeLens || (exports.CodeLens = {}));
+    /**
+     * The FormattingOptions namespace provides helper functions to work with
+     * [FormattingOptions](#FormattingOptions) literals.
+     */
+    var FormattingOptions;
+    (function (FormattingOptions) {
+        /**
+         * Creates a new FormattingOptions literal.
+         */
+        function create(tabSize, insertSpaces) {
+            return { tabSize: tabSize, insertSpaces: insertSpaces };
+        }
+        FormattingOptions.create = create;
+        /**
+         * Checks whether the given literal conforms to the [FormattingOptions](#FormattingOptions) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Is.number(candidate.tabSize) && Is.boolean(candidate.insertSpaces);
+        }
+        FormattingOptions.is = is;
+    })(FormattingOptions = exports.FormattingOptions || (exports.FormattingOptions = {}));
+    /**
+     * A document link is a range in a text document that links to an internal or external resource, like another
+     * text document or a web site.
+     */
+    var DocumentLink = /** @class */ (function () {
+        function DocumentLink() {
+        }
+        return DocumentLink;
+    }());
+    exports.DocumentLink = DocumentLink;
+    /**
+     * The DocumentLink namespace provides helper functions to work with
+     * [DocumentLink](#DocumentLink) literals.
+     */
+    (function (DocumentLink) {
+        /**
+         * Creates a new DocumentLink literal.
+         */
+        function create(range, target, data) {
+            return { range: range, target: target, data: data };
+        }
+        DocumentLink.create = create;
+        /**
+         * Checks whether the given literal conforms to the [DocumentLink](#DocumentLink) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Range.is(candidate.range) && (Is.undefined(candidate.target) || Is.string(candidate.target));
+        }
+        DocumentLink.is = is;
+    })(DocumentLink = exports.DocumentLink || (exports.DocumentLink = {}));
+    exports.DocumentLink = DocumentLink;
+    exports.EOL = ['\n', '\r\n', '\r'];
+    var TextDocument;
+    (function (TextDocument) {
+        /**
+         * Creates a new ITextDocument literal from the given uri and content.
+         * @param uri The document's uri.
+         * @param languageId  The document's language Id.
+         * @param content The document's content.
+         */
+        function create(uri, languageId, version, content) {
+            return new FullTextDocument(uri, languageId, version, content);
+        }
+        TextDocument.create = create;
+        /**
+         * Checks whether the given literal conforms to the [ITextDocument](#ITextDocument) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Is.string(candidate.uri) && (Is.undefined(candidate.languageId) || Is.string(candidate.languageId)) && Is.number(candidate.lineCount)
+                && Is.func(candidate.getText) && Is.func(candidate.positionAt) && Is.func(candidate.offsetAt) ? true : false;
+        }
+        TextDocument.is = is;
+        function applyEdits(document, edits) {
+            var text = document.getText();
+            var sortedEdits = mergeSort(edits, function (a, b) {
+                var diff = a.range.start.line - b.range.start.line;
+                if (diff === 0) {
+                    return a.range.start.character - b.range.start.character;
+                }
+                return diff;
+            });
+            var lastModifiedOffset = text.length;
+            for (var i = sortedEdits.length - 1; i >= 0; i--) {
+                var e = sortedEdits[i];
+                var startOffset = document.offsetAt(e.range.start);
+                var endOffset = document.offsetAt(e.range.end);
+                if (endOffset <= lastModifiedOffset) {
+                    text = text.substring(0, startOffset) + e.newText + text.substring(endOffset, text.length);
+                }
+                else {
+                    throw new Error('Ovelapping edit');
+                }
+                lastModifiedOffset = startOffset;
+            }
+            return text;
+        }
+        TextDocument.applyEdits = applyEdits;
+        function mergeSort(data, compare) {
+            if (data.length <= 1) {
+                // sorted
+                return data;
+            }
+            var p = (data.length / 2) | 0;
+            var left = data.slice(0, p);
+            var right = data.slice(p);
+            mergeSort(left, compare);
+            mergeSort(right, compare);
+            var leftIdx = 0;
+            var rightIdx = 0;
+            var i = 0;
+            while (leftIdx < left.length && rightIdx < right.length) {
+                var ret = compare(left[leftIdx], right[rightIdx]);
+                if (ret <= 0) {
+                    // smaller_equal -> take left to preserve order
+                    data[i++] = left[leftIdx++];
+                }
+                else {
+                    // greater -> take right
+                    data[i++] = right[rightIdx++];
+                }
+            }
+            while (leftIdx < left.length) {
+                data[i++] = left[leftIdx++];
+            }
+            while (rightIdx < right.length) {
+                data[i++] = right[rightIdx++];
+            }
+            return data;
+        }
+    })(TextDocument = exports.TextDocument || (exports.TextDocument = {}));
+    /**
+     * Represents reasons why a text document is saved.
+     */
+    var TextDocumentSaveReason;
+    (function (TextDocumentSaveReason) {
+        /**
+         * Manually triggered, e.g. by the user pressing save, by starting debugging,
+         * or by an API call.
+         */
+        TextDocumentSaveReason.Manual = 1;
+        /**
+         * Automatic after a delay.
+         */
+        TextDocumentSaveReason.AfterDelay = 2;
+        /**
+         * When the editor lost focus.
+         */
+        TextDocumentSaveReason.FocusOut = 3;
+    })(TextDocumentSaveReason = exports.TextDocumentSaveReason || (exports.TextDocumentSaveReason = {}));
+    var FullTextDocument = /** @class */ (function () {
+        function FullTextDocument(uri, languageId, version, content) {
+            this._uri = uri;
+            this._languageId = languageId;
+            this._version = version;
+            this._content = content;
+            this._lineOffsets = null;
+        }
+        Object.defineProperty(FullTextDocument.prototype, "uri", {
+            get: function () {
+                return this._uri;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(FullTextDocument.prototype, "languageId", {
+            get: function () {
+                return this._languageId;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(FullTextDocument.prototype, "version", {
+            get: function () {
+                return this._version;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FullTextDocument.prototype.getText = function (range) {
+            if (range) {
+                var start = this.offsetAt(range.start);
+                var end = this.offsetAt(range.end);
+                return this._content.substring(start, end);
+            }
+            return this._content;
+        };
+        FullTextDocument.prototype.update = function (event, version) {
+            this._content = event.text;
+            this._version = version;
+            this._lineOffsets = null;
+        };
+        FullTextDocument.prototype.getLineOffsets = function () {
+            if (this._lineOffsets === null) {
+                var lineOffsets = [];
+                var text = this._content;
+                var isLineStart = true;
+                for (var i = 0; i < text.length; i++) {
+                    if (isLineStart) {
+                        lineOffsets.push(i);
+                        isLineStart = false;
+                    }
+                    var ch = text.charAt(i);
+                    isLineStart = (ch === '\r' || ch === '\n');
+                    if (ch === '\r' && i + 1 < text.length && text.charAt(i + 1) === '\n') {
+                        i++;
+                    }
+                }
+                if (isLineStart && text.length > 0) {
+                    lineOffsets.push(text.length);
+                }
+                this._lineOffsets = lineOffsets;
+            }
+            return this._lineOffsets;
+        };
+        FullTextDocument.prototype.positionAt = function (offset) {
+            offset = Math.max(Math.min(offset, this._content.length), 0);
+            var lineOffsets = this.getLineOffsets();
+            var low = 0, high = lineOffsets.length;
+            if (high === 0) {
+                return Position.create(0, offset);
+            }
+            while (low < high) {
+                var mid = Math.floor((low + high) / 2);
+                if (lineOffsets[mid] > offset) {
+                    high = mid;
+                }
+                else {
+                    low = mid + 1;
+                }
+            }
+            // low is the least x for which the line offset is larger than the current offset
+            // or array.length if no line offset is larger than the current offset
+            var line = low - 1;
+            return Position.create(line, offset - lineOffsets[line]);
+        };
+        FullTextDocument.prototype.offsetAt = function (position) {
+            var lineOffsets = this.getLineOffsets();
+            if (position.line >= lineOffsets.length) {
+                return this._content.length;
+            }
+            else if (position.line < 0) {
+                return 0;
+            }
+            var lineOffset = lineOffsets[position.line];
+            var nextLineOffset = (position.line + 1 < lineOffsets.length) ? lineOffsets[position.line + 1] : this._content.length;
+            return Math.max(Math.min(lineOffset + position.character, nextLineOffset), lineOffset);
+        };
+        Object.defineProperty(FullTextDocument.prototype, "lineCount", {
+            get: function () {
+                return this.getLineOffsets().length;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return FullTextDocument;
+    }());
+    var Is;
+    (function (Is) {
+        var toString = Object.prototype.toString;
+        function defined(value) {
+            return typeof value !== 'undefined';
+        }
+        Is.defined = defined;
+        function undefined(value) {
+            return typeof value === 'undefined';
+        }
+        Is.undefined = undefined;
+        function boolean(value) {
+            return value === true || value === false;
+        }
+        Is.boolean = boolean;
+        function string(value) {
+            return toString.call(value) === '[object String]';
+        }
+        Is.string = string;
+        function number(value) {
+            return toString.call(value) === '[object Number]';
+        }
+        Is.number = number;
+        function func(value) {
+            return toString.call(value) === '[object Function]';
+        }
+        Is.func = func;
+        function objectLiteral(value) {
+            // Strictly speaking class instances pass this check as well. Since the LSP
+            // doesn't use classes we ignore this for now. If we do we need to add something
+            // like this: `Object.getPrototypeOf(Object.getPrototypeOf(x)) === null`
+            return value !== null && typeof value === 'object';
+        }
+        Is.objectLiteral = objectLiteral;
+        function typedArray(value, check) {
+            return Array.isArray(value) && value.every(check);
+        }
+        Is.typedArray = typedArray;
+    })(Is || (Is = {}));
+});
+
+define('vscode-languageserver-types', ['vscode-languageserver-types/main'], function (main) { return main; });
+
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
         define('vscode-css-languageservice/services/cssCompletion',["require", "exports", "../parser/cssNodes", "../parser/cssSymbolScope", "./languageFacts", "../utils/strings", "vscode-languageserver-types", "vscode-nls"], factory);
     }
 })(function (require, exports) {
@@ -18091,7 +19992,12 @@ var __extends = (this && this.__extends) || (function () {
                         this.getCompletionsForDeclarationProperty(node.getParent(), result);
                     }
                     else if (node instanceof nodes.Expression) {
-                        this.getCompletionsForExpression(node, result);
+                        if (node.parent instanceof nodes.Interpolation) {
+                            this.getVariableProposals(null, result);
+                        }
+                        else {
+                            this.getCompletionsForExpression(node, result);
+                        }
                     }
                     else if (node instanceof nodes.SimpleSelector) {
                         var parentExtRef = node.findParent(nodes.NodeType.ExtendsReference);
@@ -18136,7 +20042,18 @@ var __extends = (this && this.__extends) || (function () {
                     else if (node instanceof nodes.ExtendsReference) {
                         this.getCompletionsForExtendsReference(node, null, result);
                     }
-                    if (result.items.length > 0) {
+                    else if (node.type === nodes.NodeType.URILiteral) {
+                        this.getCompletionForUriLiteralValue(node, result);
+                    }
+                    else if (node.parent === null) {
+                        this.getCompletionForTopLevel(result);
+                        // } else if (node instanceof nodes.Variable) {
+                        // this.getCompletionsForVariableDeclaration()
+                    }
+                    else {
+                        continue;
+                    }
+                    if (result.items.length > 0 || this.offset > node.offset) {
                         return this.finalize(result);
                     }
                 }
@@ -18196,24 +20113,35 @@ var __extends = (this && this.__extends) || (function () {
                     if (entry.browsers.onCodeComplete) {
                         var range = void 0;
                         var insertText = void 0;
+                        var retrigger = false;
                         if (declaration) {
                             range = this.getCompletionRange(declaration.getProperty());
-                            insertText = entry.name + (!isDefined(declaration.colonPosition) ? ': ' : '');
+                            insertText = entry.name;
+                            if (!isDefined(declaration.colonPosition)) {
+                                insertText += ': ';
+                                retrigger = true;
+                            }
                         }
                         else {
                             range = this.getCompletionRange(null);
                             insertText = entry.name + ': ';
+                            retrigger = true;
                         }
                         var item = {
                             label: entry.name,
                             documentation: languageFacts.getEntryDescription(entry),
                             textEdit: vscode_languageserver_types_1.TextEdit.replace(range, insertText),
-                            kind: vscode_languageserver_types_1.CompletionItemKind.Property,
-                            command: {
+                            kind: vscode_languageserver_types_1.CompletionItemKind.Property
+                        };
+                        if (entry.restrictions.length === 1 && entry.restrictions[0] === 'none') {
+                            retrigger = false;
+                        }
+                        if (retrigger) {
+                            item.command = {
                                 title: 'Suggest',
                                 command: 'editor.action.triggerSuggest'
-                            }
-                        };
+                            };
+                        }
                         if (strings.startsWith(entry.name, '-')) {
                             item.sortText = 'x';
                         }
@@ -18222,10 +20150,12 @@ var __extends = (this && this.__extends) || (function () {
                 }
             }
             this.completionParticipants.forEach(function (participant) {
-                participant.onCssProperty({
-                    propertyName: _this.currentWord,
-                    range: _this.defaultReplaceRange
-                });
+                if (participant.onCssProperty) {
+                    participant.onCssProperty({
+                        propertyName: _this.currentWord,
+                        range: _this.defaultReplaceRange
+                    });
+                }
             });
             return result;
         };
@@ -18238,11 +20168,13 @@ var __extends = (this && this.__extends) || (function () {
                 existingNode = existingNode.findChildAtOffset(this.offset, false);
             }
             this.completionParticipants.forEach(function (participant) {
-                participant.onCssPropertyValue({
-                    propertyName: propertyName,
-                    propertyValue: _this.currentWord,
-                    range: _this.getCompletionRange(existingNode)
-                });
+                if (participant.onCssPropertyValue) {
+                    participant.onCssPropertyValue({
+                        propertyName: propertyName,
+                        propertyValue: _this.currentWord,
+                        range: _this.getCompletionRange(existingNode)
+                    });
+                }
             });
             if (entry) {
                 for (var _i = 0, _a = entry.restrictions; _i < _a.length; _i++) {
@@ -18303,7 +20235,7 @@ var __extends = (this && this.__extends) || (function () {
             if (entry.values) {
                 for (var _i = 0, _a = entry.values; _i < _a.length; _i++) {
                     var value = _a[_i];
-                    if (languageFacts.isCommonValue(value)) {
+                    if (languageFacts.isCommonValue(value)) { // only show if supported by more than one browser
                         var insertString = value.name;
                         var insertTextFormat = void 0;
                         if (strings.endsWith(insertString, ')')) {
@@ -18438,7 +20370,7 @@ var __extends = (this && this.__extends) || (function () {
                 });
             }
             var colorValues = new Set();
-            this.styleSheet.acceptVisitor(new ColorValueCollector(colorValues));
+            this.styleSheet.acceptVisitor(new ColorValueCollector(colorValues, this.offset));
             for (var _i = 0, _a = colorValues.getEntries(); _i < _a.length; _i++) {
                 var color = _a[_i];
                 result.items.push({
@@ -18655,7 +20587,7 @@ var __extends = (this && this.__extends) || (function () {
                     result.items.push(item);
                 }
             }
-            if (!isNested) {
+            if (!isNested) { // show html tags only for top level
                 for (var _d = 0, _e = languageFacts.html5Tags; _d < _e.length; _d++) {
                     var entry = _e[_d];
                     result.items.push({
@@ -18700,7 +20632,7 @@ var __extends = (this && this.__extends) || (function () {
             return result;
         };
         CSSCompletion.prototype.getCompletionsForDeclarations = function (declarations, result) {
-            if (!declarations || this.offset === declarations.offset) {
+            if (!declarations || this.offset === declarations.offset) { // incomplete nodes
                 return result;
             }
             var node = declarations.findFirstChildBeforeOffset(this.offset);
@@ -18727,6 +20659,9 @@ var __extends = (this && this.__extends) || (function () {
             }
             else if (node instanceof nodes.ExtendsReference) {
                 this.getCompletionsForExtendsReference(node, null, result);
+            }
+            else if (this.currentWord && this.currentWord[0] === '@') {
+                this.getCompletionsForDeclarationProperty(null, result);
             }
             return result;
         };
@@ -18840,6 +20775,34 @@ var __extends = (this && this.__extends) || (function () {
         CSSCompletion.prototype.getCompletionsForExtendsReference = function (extendsRef, existingNode, result) {
             return result;
         };
+        CSSCompletion.prototype.getCompletionForUriLiteralValue = function (uriLiteralNode, result) {
+            var uriValue;
+            var position;
+            var range;
+            // No children, empty value
+            if (uriLiteralNode.getChildren().length === 0) {
+                uriValue = '';
+                position = this.position;
+                var emptyURIValuePosition = this.textDocument.positionAt(uriLiteralNode.offset + 'url('.length);
+                range = vscode_languageserver_types_1.Range.create(emptyURIValuePosition, emptyURIValuePosition);
+            }
+            else {
+                var uriValueNode = uriLiteralNode.getChild(0);
+                uriValue = uriValueNode.getText();
+                position = this.position;
+                range = this.getCompletionRange(uriValueNode);
+            }
+            this.completionParticipants.forEach(function (participant) {
+                if (participant.onCssURILiteralValue) {
+                    participant.onCssURILiteralValue({
+                        uriValue: uriValue,
+                        position: position,
+                        range: range
+                    });
+                }
+            });
+            return result;
+        };
         return CSSCompletion;
     }());
     exports.CSSCompletion = CSSCompletion;
@@ -18886,13 +20849,16 @@ var __extends = (this && this.__extends) || (function () {
         return entries;
     }
     var ColorValueCollector = /** @class */ (function () {
-        function ColorValueCollector(entries) {
+        function ColorValueCollector(entries, currentOffset) {
             this.entries = entries;
+            this.currentOffset = currentOffset;
             // nothing to do
         }
         ColorValueCollector.prototype.visitNode = function (node) {
             if (node instanceof nodes.HexColorValue || (node instanceof nodes.Function && languageFacts.isColorConstructor(node))) {
-                this.entries.add(node.getText());
+                if (this.currentOffset < node.offset || node.end < this.currentOffset) {
+                    this.entries.add(node.getText());
+                }
             }
             return true;
         };
@@ -19180,37 +21146,40 @@ var __extends = (this && this.__extends) || (function () {
                     result.addAttr(unescape(child.getText()), '');
                     break;
                 case nodes.NodeType.AttributeSelector:
-                    var expr = child.getExpression();
-                    if (expr) {
+                    var selector = child;
+                    var identifuer = selector.getIdentifier();
+                    if (identifuer) {
+                        var expression = selector.getValue();
+                        var operator = selector.getOperator();
                         var value = void 0;
-                        if (expr.getRight()) {
-                            switch (unescape(expr.getOperator().getText())) {
+                        if (expression) {
+                            switch (unescape(operator.getText())) {
                                 case '|=':
                                     // excatly or followed by -words
-                                    value = quotes.remove(unescape(expr.getRight().getText())) + "-\u2026";
+                                    value = quotes.remove(unescape(expression.getText())) + "-\u2026";
                                     break;
                                 case '^=':
                                     // prefix
-                                    value = quotes.remove(unescape(expr.getRight().getText())) + "\u2026";
+                                    value = quotes.remove(unescape(expression.getText())) + "\u2026";
                                     break;
                                 case '$=':
                                     // suffix
-                                    value = "\u2026" + quotes.remove(unescape(expr.getRight().getText()));
+                                    value = "\u2026" + quotes.remove(unescape(expression.getText()));
                                     break;
                                 case '~=':
                                     // one of a list of words
-                                    value = " \u2026 " + quotes.remove(unescape(expr.getRight().getText())) + " \u2026 ";
+                                    value = " \u2026 " + quotes.remove(unescape(expression.getText())) + " \u2026 ";
                                     break;
                                 case '*=':
                                     // substring
-                                    value = "\u2026" + quotes.remove(unescape(expr.getRight().getText())) + "\u2026";
+                                    value = "\u2026" + quotes.remove(unescape(expression.getText())) + "\u2026";
                                     break;
                                 default:
-                                    value = quotes.remove(unescape(expr.getRight().getText()));
+                                    value = quotes.remove(unescape(expression.getText()));
                                     break;
                             }
                         }
-                        result.addAttr(unescape(expr.getLeft().getText()), value);
+                        result.addAttr(unescape(identifuer.getText()), value);
                     }
                     break;
             }
@@ -19554,12 +21523,12 @@ var __extends = (this && this.__extends) || (function () {
             return result;
         };
         CSSNavigation.prototype.doRename = function (document, position, newName, stylesheet) {
+            var _a;
             var highlights = this.findDocumentHighlights(document, position, stylesheet);
             var edits = highlights.map(function (h) { return vscode_languageserver_types_1.TextEdit.replace(h.range, newName); });
             return {
                 changes: (_a = {}, _a[document.uri] = edits, _a)
             };
-            var _a;
         };
         return CSSNavigation;
     }());
@@ -19648,6 +21617,7 @@ var __extends = (this && this.__extends) || (function () {
         HexColorLength: new Rule('hexColorLength', localize('rule.hexColor', "Hex colors must consist of three, four, six or eight hex numbers"), Error),
         ArgsInColorFunction: new Rule('argumentsInColorFunction', localize('rule.colorFunction', "Invalid number of parameters"), Error),
         UnknownProperty: new Rule('unknownProperties', localize('rule.unknownProperty', "Unknown property."), Warning),
+        UnknownAtRules: new Rule('unknownAtRules', localize('rule.unknownAtRules', "Unknown at-rule."), Warning),
         IEStarHack: new Rule('ieHack', localize('rule.ieHack', "IE hacks are only necessary when supporting IE7 and older"), Ignore),
         UnknownVendorSpecificProperty: new Rule('unknownVendorSpecificProperties', localize('rule.unknownVendorSpecificProperty', "Unknown vendor specific property."), Ignore),
         PropertyIgnoredDueToDisplay: new Rule('propertyIgnoredDueToDisplay', localize('rule.propertyIgnoredDueToDisplay', "Property is ignored due to the display."), Warning),
@@ -19889,6 +21859,8 @@ var __extends = (this && this.__extends) || (function () {
         };
         LintVisitor.prototype.visitNode = function (node) {
             switch (node.type) {
+                case nodes.NodeType.UnknownAtRule:
+                    return this.visitUnknownAtRule(node);
                 case nodes.NodeType.Keyframe:
                     return this.visitKeyframe(node);
                 case nodes.NodeType.FontFace:
@@ -19912,6 +21884,14 @@ var __extends = (this && this.__extends) || (function () {
         };
         LintVisitor.prototype.completeValidations = function () {
             this.validateKeyframes();
+        };
+        LintVisitor.prototype.visitUnknownAtRule = function (node) {
+            var atRuleName = node.getChild(0);
+            if (!atRuleName) {
+                return false;
+            }
+            this.addEntry(atRuleName, lintRules_1.Rules.UnknownAtRules, "Unknown at rule " + atRuleName.getText());
+            return true;
         };
         LintVisitor.prototype.visitKeyframe = function (node) {
             var keyword = node.getKeyword();
@@ -20003,9 +21983,9 @@ var __extends = (this && this.__extends) || (function () {
                     var problemDetected = false;
                     for (var _b = 0, _c = ['border', 'border-left', 'border-right', 'padding', 'padding-left', 'padding-right']; _b < _c.length; _b++) {
                         var p = _c[_b];
-                        var elements_1 = this.fetch(propertyTable, p);
-                        for (var _d = 0, elements_2 = elements_1; _d < elements_2.length; _d++) {
-                            var element = elements_2[_d];
+                        var elements_3 = this.fetch(propertyTable, p);
+                        for (var _d = 0, elements_1 = elements_3; _d < elements_1.length; _d++) {
+                            var element = elements_1[_d];
                             var value = element.node.getValue();
                             if (value && !value.matches('none')) {
                                 this.addEntry(element.node, lintRules_1.Rules.BewareOfBoxModelSize);
@@ -20025,9 +22005,9 @@ var __extends = (this && this.__extends) || (function () {
                     var problemDetected = false;
                     for (var _f = 0, _g = ['border', 'border-top', 'border-bottom', 'padding', 'padding-top', 'padding-bottom']; _f < _g.length; _f++) {
                         var p = _g[_f];
-                        var elements_3 = this.fetch(propertyTable, p);
-                        for (var _h = 0, elements_4 = elements_3; _h < elements_4.length; _h++) {
-                            var element = elements_4[_h];
+                        var elements_4 = this.fetch(propertyTable, p);
+                        for (var _h = 0, elements_2 = elements_4; _h < elements_2.length; _h++) {
+                            var element = elements_2[_h];
                             var value = element.node.getValue();
                             if (value && !value.matches('none')) {
                                 this.addEntry(element.node, lintRules_1.Rules.BewareOfBoxModelSize);
@@ -20121,7 +22101,7 @@ var __extends = (this && this.__extends) || (function () {
                     var name = decl.getFullPropertyName();
                     var firstChar = name.charAt(0);
                     if (firstChar === '-') {
-                        if (name.charAt(1) !== '-') {
+                        if (name.charAt(1) !== '-') { // avoid css variables
                             if (!languageFacts.isKnownProperty(name)) {
                                 this.addEntry(decl.getProperty(), lintRules_1.Rules.UnknownVendorSpecificProperty);
                             }
@@ -20144,18 +22124,18 @@ var __extends = (this && this.__extends) || (function () {
                     containsUnknowns = true;
                 }
             }
-            if (!containsUnknowns) {
+            if (!containsUnknowns) { // don't perform this test if there are
                 for (var suffix in propertiesBySuffix.data) {
                     var entry = propertiesBySuffix.data[suffix];
                     var actual = entry.names;
-                    var needsStandard = languageFacts.isKnownProperty(suffix) && (actual.indexOf(suffix) === -1);
+                    var needsStandard = languageFacts.isStandardProperty(suffix) && (actual.indexOf(suffix) === -1);
                     if (!needsStandard && actual.length === 1) {
                         continue; // only the non-vendor specific rule is used, that's fine, no warning
                     }
                     var expected = [];
                     for (var i = 0, len = LintVisitor.prefixes.length; i < len; i++) {
                         var prefix = LintVisitor.prefixes[i];
-                        if (languageFacts.isKnownProperty(prefix + suffix)) {
+                        if (languageFacts.isStandardProperty(prefix + suffix)) {
                             expected.push(prefix + suffix);
                         }
                     }
@@ -20188,12 +22168,18 @@ var __extends = (this && this.__extends) || (function () {
             /////////////////////////////////////////////////////////////
             //	0 has no following unit
             /////////////////////////////////////////////////////////////
-            var value = node.getValue();
-            if (!value.unit || languageFacts.units.length.indexOf(value.unit.toLowerCase()) === -1) {
-                return true;
-            }
-            if (parseFloat(value.value) === 0.0 && !!value.unit) {
-                this.addEntry(node, lintRules_1.Rules.ZeroWithUnit);
+            var decl = node.findParent(nodes.NodeType.Declaration);
+            if (decl) {
+                var declValue = decl.getValue();
+                if (declValue && declValue.offset === node.offset && declValue.length === node.length) {
+                    var value = node.getValue();
+                    if (!value.unit || languageFacts.units.length.indexOf(value.unit.toLowerCase()) === -1) {
+                        return true;
+                    }
+                    if (parseFloat(value.value) === 0.0 && !!value.unit) {
+                        this.addEntry(node, lintRules_1.Rules.ZeroWithUnit);
+                    }
+                }
             }
             return true;
         };
@@ -20526,19 +22512,16 @@ var __extends = (this && this.__extends) || (function () {
             return _super.call(this, new scssScanner.SCSSScanner()) || this;
         }
         SCSSParser.prototype._parseStylesheetStatement = function () {
-            var node = _super.prototype._parseStylesheetStatement.call(this);
-            if (node) {
-                return node;
-            }
             if (this.peek(cssScanner_1.TokenType.AtKeyword)) {
                 return this._parseWarnAndDebug()
                     || this._parseControlStatement()
                     || this._parseMixinDeclaration()
                     || this._parseMixinContent()
                     || this._parseMixinReference() // @include
-                    || this._parseFunctionDeclaration();
+                    || this._parseFunctionDeclaration()
+                    || _super.prototype._parseStylesheetAtStatement.call(this);
             }
-            return this._parseVariableDeclaration();
+            return this._parseRuleset(true) || this._parseVariableDeclaration();
         };
         SCSSParser.prototype._parseImport = function () {
             if (!this.peekKeyword('@import')) {
@@ -20591,7 +22574,10 @@ var __extends = (this && this.__extends) || (function () {
             return this._parseFunction() || this._parseIdent() || this._parseVariable(); // first function, the indent
         };
         SCSSParser.prototype._parseKeyframeSelector = function () {
-            return this._tryParseKeyframeSelector() || this._parseControlStatement(this._parseKeyframeSelector.bind(this)) || this._parseMixinContent();
+            return this._tryParseKeyframeSelector()
+                || this._parseControlStatement(this._parseKeyframeSelector.bind(this))
+                || this._parseVariableDeclaration()
+                || this._parseMixinContent();
         };
         SCSSParser.prototype._parseVariable = function () {
             if (!this.peek(scssScanner.VariableName)) {
@@ -20649,7 +22635,10 @@ var __extends = (this && this.__extends) || (function () {
             if (this.peek(scssScanner.InterpolationFunction)) {
                 var node = this.create(nodes.Interpolation);
                 this.consumeToken();
-                if (!node.addChild(this._parseBinaryExpr()) && !this._parseSelectorCombinator()) {
+                if (!node.addChild(this._parseExpr()) && !this._parseSelectorCombinator()) {
+                    if (this.accept(cssScanner_1.TokenType.CurlyR)) {
+                        return this.finish(node);
+                    }
                     return this.finish(node, cssErrors_1.ParseError.ExpressionExpected);
                 }
                 if (!this.accept(cssScanner_1.TokenType.CurlyR)) {
@@ -20776,6 +22765,18 @@ var __extends = (this && this.__extends) || (function () {
                 return this.finish(node);
             }
             return null;
+        };
+        SCSSParser.prototype._parseElementName = function () {
+            var pos = this.mark();
+            var node = _super.prototype._parseElementName.call(this);
+            if (node && !this.hasWhitespace() && this.peek(cssScanner_1.TokenType.ParenthesisL)) { // for #49589
+                this.restoreAtMark(pos);
+                return null;
+            }
+            return node;
+        };
+        SCSSParser.prototype._tryParsePseudoIdentifier = function () {
+            return this._parseInterpolation() || _super.prototype._tryParsePseudoIdentifier.call(this); // for #49589
         };
         SCSSParser.prototype._parseWarnAndDebug = function () {
             if (!this.peekKeyword('@debug')
@@ -21002,7 +23003,7 @@ var __extends = (this && this.__extends) || (function () {
             var argument = this._parseVariable();
             if (argument) {
                 if (!this.accept(cssScanner_1.TokenType.Colon)) {
-                    if (this.accept(scssScanner.Ellipsis)) {
+                    if (this.accept(scssScanner.Ellipsis)) { // optional
                         node.setValue(argument);
                         return this.finish(node);
                     }
@@ -21047,14 +23048,19 @@ var __extends = (this && this.__extends) || (function () {
             return this.finish(node);
         };
         SCSSParser.prototype._parseListElement = function () {
-            var node = this.createNode(nodes.NodeType.ListEntry);
-            if (!node.addChild(this._parseBinaryExpr())) {
+            var node = this.create(nodes.ListEntry);
+            var child = this._parseBinaryExpr();
+            if (!child) {
                 return null;
             }
             if (this.accept(cssScanner_1.TokenType.Colon)) {
-                if (!node.addChild(this._parseBinaryExpr())) {
+                node.setKey(child);
+                if (!node.setValue(this._parseBinaryExpr())) {
                     return this.finish(node, cssErrors_1.ParseError.ExpressionExpected);
                 }
+            }
+            else {
+                node.setValue(child);
             }
             return this.finish(node);
         };
@@ -21141,6 +23147,7 @@ var __extends = (this && this.__extends) || (function () {
             return _super.prototype.getColorProposals.call(this, entry, existingNode, result);
         };
         SCSSCompletion.prototype.getCompletionsForDeclarationProperty = function (declaration, result) {
+            this.getCompletionForAtDirectives(result);
             this.getCompletionsForSelector(null, true, result);
             return _super.prototype.getCompletionsForDeclarationProperty.call(this, declaration, result);
         };
@@ -21155,6 +23162,16 @@ var __extends = (this && this.__extends) || (function () {
                 };
                 result.items.push(suggest);
             }
+            return result;
+        };
+        SCSSCompletion.prototype.getCompletionForAtDirectives = function (result) {
+            var _a;
+            (_a = result.items).push.apply(_a, SCSSCompletion.scssAtDirectives);
+            return result;
+        };
+        SCSSCompletion.prototype.getCompletionForTopLevel = function (result) {
+            this.getCompletionForAtDirectives(result);
+            _super.prototype.getCompletionForTopLevel.call(this, result);
             return result;
         };
         SCSSCompletion.variableDefaults = {
@@ -21255,6 +23272,73 @@ var __extends = (this && this.__extends) || (function () {
             { func: 'unitless($number)', desc: localize('scss.builtin.unitless', 'Returns whether a number has units.') },
             { func: 'comparable($number1, $number2)', desc: localize('scss.builtin.comparable', 'Returns whether two numbers can be added, subtracted, or compared.') },
             { func: 'call($name, $args…)', desc: localize('scss.builtin.call', 'Dynamically calls a Sass function.') }
+        ];
+        SCSSCompletion.scssAtDirectives = [
+            {
+                label: "@extend",
+                documentation: localize("scss.builtin.@extend", "Inherits the styles of another selector."),
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@at-root",
+                documentation: localize("scss.builtin.@at-root", "Causes one or more rules to be emitted at the root of the document."),
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@debug",
+                documentation: localize("scss.builtin.@debug", "Prints the value of an expression to the standard error output stream. Useful for debugging complicated Sass files."),
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@warn",
+                documentation: localize("scss.builtin.@warn", "Prints the value of an expression to the standard error output stream. Useful for libraries that need to warn users of deprecations or recovering from minor mixin usage mistakes. Warnings can be turned off with the `--quiet` command-line option or the `:quiet` Sass option."),
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@error",
+                documentation: localize("scss.builtin.@error", "Throws the value of an expression as a fatal error with stack trace. Useful for validating arguments to mixins and functions."),
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@if",
+                documentation: localize("scss.builtin.@if", "Includes the body if the expression does not evaluate to `false` or `null`."),
+                insertText: "@if ${1:expr} {\n\t$0\n}",
+                insertTextFormat: vscode_languageserver_types_1.InsertTextFormat.Snippet,
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@for",
+                documentation: localize("scss.builtin.@for", "For loop that repeatedly outputs a set of styles for each `$var` in the `from/through` or `from/to` clause."),
+                insertText: "@for \\$${1:var} from ${2:start} ${3|to,through|} ${4:end} {\n\t$0\n}",
+                insertTextFormat: vscode_languageserver_types_1.InsertTextFormat.Snippet,
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@each",
+                documentation: localize("scss.builtin.@each", "Each loop that sets `$var` to each item in the list or map, then outputs the styles it contains using that value of `$var`."),
+                insertText: "@each \\$${1:var} in ${2:list} {\n\t$0\n}",
+                insertTextFormat: vscode_languageserver_types_1.InsertTextFormat.Snippet,
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@while",
+                documentation: localize("scss.builtin.@while", "While loop that takes an expression and repeatedly outputs the nested styles until the statement evaluates to `false`."),
+                insertText: "@while ${1:condition} {\n\t$0\n}",
+                insertTextFormat: vscode_languageserver_types_1.InsertTextFormat.Snippet,
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@mixin",
+                documentation: localize("scss.builtin.@mixin", "Defines styles that can be re-used throughout the stylesheet with `@include`."),
+                insertText: "@mixin ${1:name} {\n\t$0\n}",
+                insertTextFormat: vscode_languageserver_types_1.InsertTextFormat.Snippet,
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
+            {
+                label: "@include",
+                documentation: localize("scss.builtin.@include", "Includes the styles defined by another mixin into the current rule."),
+                kind: vscode_languageserver_types_1.CompletionItemKind.Keyword
+            },
         ];
         return SCSSCompletion;
     }(cssCompletion_1.CSSCompletion));
@@ -21386,11 +23470,14 @@ var __extends = (this && this.__extends) || (function () {
             return _super.call(this, new lessScanner.LESSScanner()) || this;
         }
         LESSParser.prototype._parseStylesheetStatement = function () {
+            if (this.peek(cssScanner_1.TokenType.AtKeyword)) {
+                return this._parseVariableDeclaration()
+                    || this._parsePlugin()
+                    || _super.prototype._parseStylesheetAtStatement.call(this);
+            }
             return this._tryParseMixinDeclaration()
                 || this._tryParseMixinReference(true)
-                || _super.prototype._parseStylesheetStatement.call(this)
-                || this._parseVariableDeclaration()
-                || this._parsePlugin();
+                || this._parseRuleset(true);
         };
         LESSParser.prototype._parseImport = function () {
             if (!this.peekKeyword('@import') && !this.peekKeyword('@import-once') /* deprecated in less 1.4.1 */) {
@@ -21489,7 +23576,7 @@ var __extends = (this && this.__extends) || (function () {
             return this.finish(content);
         };
         LESSParser.prototype._parseDetachedRuleSetBody = function () {
-            return this._tryParseKeyframeSelector() || _super.prototype._parseRuleSetDeclaration.call(this);
+            return this._tryParseKeyframeSelector() || this._tryParseRuleset(true) || _super.prototype._parseRuleSetDeclaration.call(this);
         };
         LESSParser.prototype._parseVariable = function () {
             if (!this.peekDelim('@') && !this.peek(cssScanner_1.TokenType.AtKeyword)) {
@@ -22340,7 +24427,213 @@ var __extends = (this && this.__extends) || (function () {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define('vscode-css-languageservice/cssLanguageService',["require", "exports", "vscode-languageserver-types", "./parser/cssParser", "./services/cssCompletion", "./services/cssHover", "./services/cssNavigation", "./services/cssCodeActions", "./services/cssValidation", "./parser/scssParser", "./services/scssCompletion", "./parser/lessParser", "./services/lessCompletion"], factory);
+        define('vscode-css-languageservice/services/cssFolding',["require", "exports", "../parser/cssScanner", "../parser/scssScanner", "../parser/lessScanner"], factory);
+    }
+})(function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var cssScanner_1 = require("../parser/cssScanner");
+    var scssScanner_1 = require("../parser/scssScanner");
+    var lessScanner_1 = require("../parser/lessScanner");
+    function getFoldingRanges(document, context) {
+        var ranges = computeFoldingRanges(document);
+        return limitFoldingRanges(ranges, context);
+    }
+    exports.getFoldingRanges = getFoldingRanges;
+    function computeFoldingRanges(document) {
+        function getStartLine(t) {
+            return document.positionAt(t.offset).line;
+        }
+        function getEndLine(t) {
+            return document.positionAt(t.offset + t.len).line;
+        }
+        function getScanner() {
+            switch (document.languageId) {
+                case 'scss':
+                    return new scssScanner_1.SCSSScanner();
+                case 'less':
+                    return new lessScanner_1.LESSScanner();
+                default:
+                    return new cssScanner_1.Scanner();
+            }
+        }
+        function tokenToRange(t, kind) {
+            var startLine = getStartLine(t);
+            var endLine = getEndLine(t);
+            if (startLine !== endLine) {
+                return {
+                    startLine: startLine,
+                    endLine: endLine,
+                    kind: kind
+                };
+            }
+            else {
+                return null;
+            }
+        }
+        var ranges = [];
+        var delimiterStack = [];
+        var scanner = getScanner();
+        scanner.ignoreComment = false;
+        scanner.setSource(document.getText());
+        var token = scanner.scan();
+        var prevToken;
+        var _loop_1 = function () {
+            switch (token.type) {
+                case cssScanner_1.TokenType.CurlyL:
+                case scssScanner_1.InterpolationFunction:
+                    {
+                        delimiterStack.push({ line: getStartLine(token), type: 'brace', isStart: true });
+                        break;
+                    }
+                case cssScanner_1.TokenType.CurlyR: {
+                    if (delimiterStack.length !== 0) {
+                        var prevDelimiter = popPrevStartDelimiterOfType(delimiterStack, 'brace');
+                        if (!prevDelimiter) {
+                            break;
+                        }
+                        var endLine = getEndLine(token);
+                        if (prevDelimiter.type === 'brace') {
+                            /**
+                             * Other than the case when curly brace is not on a new line by itself, for example
+                             * .foo {
+                             *   color: red; }
+                             * Use endLine minus one to show ending curly brace
+                             */
+                            if (getEndLine(prevToken) !== endLine) {
+                                endLine--;
+                            }
+                            if (prevDelimiter.line !== endLine) {
+                                ranges.push({
+                                    startLine: prevDelimiter.line,
+                                    endLine: endLine,
+                                    kind: undefined
+                                });
+                            }
+                        }
+                    }
+                    break;
+                }
+                /**
+                 * In CSS, there is no single line comment prefixed with //
+                 * All comments are marked as `Comment`
+                 */
+                case cssScanner_1.TokenType.Comment: {
+                    var commentRegionMarkerToDelimiter_1 = function (marker) {
+                        if (marker === '#region') {
+                            return { line: getStartLine(token), type: 'comment', isStart: true };
+                        }
+                        else {
+                            return { line: getEndLine(token), type: 'comment', isStart: false };
+                        }
+                    };
+                    var getCurrDelimiter = function (token) {
+                        var matches = token.text.match(/^\s*\/\*\s*(#region|#endregion)\b\s*(.*?)\s*\*\//);
+                        if (matches) {
+                            return commentRegionMarkerToDelimiter_1(matches[1]);
+                        }
+                        else if (document.languageId === 'scss' || document.languageId === 'less') {
+                            var matches_1 = token.text.match(/^\s*\/\/\s*(#region|#endregion)\b\s*(.*?)\s*/);
+                            if (matches_1) {
+                                return commentRegionMarkerToDelimiter_1(matches_1[1]);
+                            }
+                        }
+                        return null;
+                    };
+                    var currDelimiter = getCurrDelimiter(token);
+                    // /* */ comment region folding
+                    // All #region and #endregion cases
+                    if (currDelimiter) {
+                        if (currDelimiter.isStart) {
+                            delimiterStack.push(currDelimiter);
+                        }
+                        else {
+                            var prevDelimiter = popPrevStartDelimiterOfType(delimiterStack, 'comment');
+                            if (!prevDelimiter) {
+                                break;
+                            }
+                            if (prevDelimiter.type === 'comment') {
+                                if (prevDelimiter.line !== currDelimiter.line) {
+                                    ranges.push({
+                                        startLine: prevDelimiter.line,
+                                        endLine: currDelimiter.line,
+                                        kind: 'region'
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    // Multiline comment case
+                    else {
+                        var range = tokenToRange(token, 'comment');
+                        if (range) {
+                            ranges.push(range);
+                        }
+                    }
+                    break;
+                }
+            }
+            prevToken = token;
+            token = scanner.scan();
+        };
+        while (token.type !== cssScanner_1.TokenType.EOF) {
+            _loop_1();
+        }
+        return ranges;
+    }
+    function popPrevStartDelimiterOfType(stack, type) {
+        if (stack.length === 0) {
+            return null;
+        }
+        for (var i = stack.length - 1; i >= 0; i--) {
+            if (stack[i].type === type && stack[i].isStart) {
+                return stack.splice(i, 1)[0];
+            }
+        }
+        return null;
+    }
+    /**
+     * - Sort regions
+     * - Remove invalid regions (intersections)
+     * - If limit exceeds, only return `rangeLimit` amount of ranges
+     */
+    function limitFoldingRanges(ranges, context) {
+        var maxRanges = context && context.rangeLimit || Number.MAX_VALUE;
+        var sortedRanges = ranges.sort(function (r1, r2) {
+            var diff = r1.startLine - r2.startLine;
+            if (diff === 0) {
+                diff = r1.endLine - r2.endLine;
+            }
+            return diff;
+        });
+        var validRanges = [];
+        var prevEndLine = -1;
+        sortedRanges.forEach(function (r) {
+            if (!(r.startLine < prevEndLine && prevEndLine < r.endLine)) {
+                validRanges.push(r);
+                prevEndLine = r.endLine;
+            }
+        });
+        if (validRanges.length < maxRanges) {
+            return validRanges;
+        }
+        else {
+            return validRanges.slice(0, maxRanges);
+        }
+    }
+});
+//# sourceMappingURL=cssFolding.js.map;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('vscode-css-languageservice/cssLanguageTypes',["require", "exports", "vscode-languageserver-types"], factory);
     }
 })(function (require, exports) {
     /*---------------------------------------------------------------------------------------------
@@ -22352,6 +24645,27 @@ var __extends = (this && this.__extends) || (function () {
     var vscode_languageserver_types_1 = require("vscode-languageserver-types");
     exports.Range = vscode_languageserver_types_1.Range;
     exports.TextEdit = vscode_languageserver_types_1.TextEdit;
+    exports.Position = vscode_languageserver_types_1.Position;
+});
+//# sourceMappingURL=cssLanguageTypes.js.map;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('vscode-css-languageservice/cssLanguageService',["require", "exports", "./parser/cssParser", "./services/cssCompletion", "./services/cssHover", "./services/cssNavigation", "./services/cssCodeActions", "./services/cssValidation", "./parser/scssParser", "./services/scssCompletion", "./parser/lessParser", "./services/lessCompletion", "./services/cssFolding", "./cssLanguageTypes", "vscode-languageserver-types"], factory);
+    }
+})(function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
     var cssParser_1 = require("./parser/cssParser");
     var cssCompletion_1 = require("./services/cssCompletion");
     var cssHover_1 = require("./services/cssHover");
@@ -22362,6 +24676,9 @@ var __extends = (this && this.__extends) || (function () {
     var scssCompletion_1 = require("./services/scssCompletion");
     var lessParser_1 = require("./parser/lessParser");
     var lessCompletion_1 = require("./services/lessCompletion");
+    var cssFolding_1 = require("./services/cssFolding");
+    __export(require("./cssLanguageTypes"));
+    __export(require("vscode-languageserver-types"));
     function createFacade(parser, completion, hover, navigation, codeActions, validation) {
         return {
             configure: validation.configure.bind(validation),
@@ -22379,6 +24696,7 @@ var __extends = (this && this.__extends) || (function () {
             findDocumentColors: navigation.findDocumentColors.bind(navigation),
             getColorPresentations: navigation.getColorPresentations.bind(navigation),
             doRename: navigation.doRename.bind(navigation),
+            getFoldingRanges: cssFolding_1.getFoldingRanges
         };
     }
     function getCSSLanguageService() {
@@ -22488,6 +24806,11 @@ define('vs/language/css/cssWorker',["require", "exports", "vscode-css-languagese
             var stylesheet = this._languageService.parseStylesheet(document);
             var colorPresentations = this._languageService.getColorPresentations(document, stylesheet, color, range);
             return Promise.as(colorPresentations);
+        };
+        CSSWorker.prototype.provideFoldingRanges = function (uri, context) {
+            var document = this._getTextDocument(uri);
+            var ranges = this._languageService.getFoldingRanges(document, context);
+            return Promise.as(ranges);
         };
         CSSWorker.prototype.doRename = function (uri, position, newName) {
             var document = this._getTextDocument(uri);

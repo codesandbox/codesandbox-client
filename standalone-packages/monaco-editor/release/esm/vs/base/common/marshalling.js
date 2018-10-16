@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import URI from './uri.js';
+import { URI } from './uri.js';
 export function stringify(obj) {
     return JSON.stringify(obj, replacer);
 }

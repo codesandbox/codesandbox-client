@@ -147,12 +147,12 @@ var CSSNavigation = /** @class */ (function () {
         return result;
     };
     CSSNavigation.prototype.doRename = function (document, position, newName, stylesheet) {
+        var _a;
         var highlights = this.findDocumentHighlights(document, position, stylesheet);
         var edits = highlights.map(function (h) { return TextEdit.replace(h.range, newName); });
         return {
             changes: (_a = {}, _a[document.uri] = edits, _a)
         };
-        var _a;
     };
     return CSSNavigation;
 }());

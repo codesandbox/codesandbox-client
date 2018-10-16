@@ -4,5 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { RawContextKey } from '../../contextkey/common/contextkey.js';
+import { isMacintosh, isLinux, isWindows } from '../../../base/common/platform.js';
 export var InputFocusedContextKey = 'inputFocus';
 export var InputFocusedContext = new RawContextKey(InputFocusedContextKey, false);
+export var IsMacContext = new RawContextKey('isMac', isMacintosh);
+export var IsLinuxContext = new RawContextKey('isLinux', isLinux);
+export var IsWindowsContext = new RawContextKey('isWindows', isWindows);

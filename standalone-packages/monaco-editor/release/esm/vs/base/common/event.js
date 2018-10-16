@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -310,20 +313,31 @@ export function fromPromise(promise) {
     return emitter.event;
 }
 export function toPromise(event) {
-    return new TPromise(function (complete) {
-        var sub = event(function (e) {
-            sub.dispose();
-            complete(e);
-        });
-    });
+    return new TPromise(function (c) { return once(event)(c); });
+}
+export function toNativePromise(event) {
+    return new Promise(function (c) { return once(event)(c); });
 }
 export function once(event) {
     return function (listener, thisArgs, disposables) {
         if (thisArgs === void 0) { thisArgs = null; }
+        // we need this, in case the event fires during the listener call
+        var didFire = false;
         var result = event(function (e) {
-            result.dispose();
+            if (didFire) {
+                return;
+            }
+            else if (result) {
+                result.dispose();
+            }
+            else {
+                didFire = true;
+            }
             return listener.call(thisArgs, e);
         }, null, disposables);
+        if (didFire) {
+            result.dispose();
+        }
         return result;
     };
 }
@@ -436,6 +450,9 @@ export function filterEvent(event, filter) {
         return event(function (e) { return filter(e) && listener.call(thisArgs, e); }, null, disposables);
     };
 }
+export function signalEvent(event) {
+    return event;
+}
 var ChainableEvent = /** @class */ (function () {
     function ChainableEvent(_event) {
         this._event = _event;
@@ -459,6 +476,9 @@ var ChainableEvent = /** @class */ (function () {
     };
     ChainableEvent.prototype.on = function (listener, thisArgs, disposables) {
         return this._event(listener, thisArgs, disposables);
+    };
+    ChainableEvent.prototype.once = function (listener, thisArgs, disposables) {
+        return once(this._event)(listener, thisArgs, disposables);
     };
     return ChainableEvent;
 }());
@@ -557,20 +577,35 @@ export function echo(event, nextTick, buffer) {
 }
 var Relay = /** @class */ (function () {
     function Relay() {
-        this.emitter = new Emitter();
+        var _this = this;
+        this.listening = false;
+        this.inputEvent = Event.None;
+        this.inputEventListener = Disposable.None;
+        this.emitter = new Emitter({
+            onFirstListenerDidAdd: function () {
+                _this.listening = true;
+                _this.inputEventListener = _this.inputEvent(_this.emitter.fire, _this.emitter);
+            },
+            onLastListenerRemove: function () {
+                _this.listening = false;
+                _this.inputEventListener.dispose();
+            }
+        });
         this.event = this.emitter.event;
-        this.disposable = Disposable.None;
     }
     Object.defineProperty(Relay.prototype, "input", {
         set: function (event) {
-            this.disposable.dispose();
-            this.disposable = event(this.emitter.fire, this.emitter);
+            this.inputEvent = event;
+            if (this.listening) {
+                this.inputEventListener.dispose();
+                this.inputEventListener = event(this.emitter.fire, this.emitter);
+            }
         },
         enumerable: true,
         configurable: true
     });
     Relay.prototype.dispose = function () {
-        this.disposable.dispose();
+        this.inputEventListener.dispose();
         this.emitter.dispose();
     };
     return Relay;

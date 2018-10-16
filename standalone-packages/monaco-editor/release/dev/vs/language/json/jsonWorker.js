@@ -33,7 +33,7 @@
          */
         function is(value) {
             var candidate = value;
-            return Is.defined(candidate) && Is.number(candidate.line) && Is.number(candidate.character);
+            return Is.objectLiteral(candidate) && Is.number(candidate.line) && Is.number(candidate.character);
         }
         Position.is = is;
     })(Position = exports.Position || (exports.Position = {}));
@@ -60,7 +60,7 @@
          */
         function is(value) {
             var candidate = value;
-            return Is.defined(candidate) && Position.is(candidate.start) && Position.is(candidate.end);
+            return Is.objectLiteral(candidate) && Position.is(candidate.start) && Position.is(candidate.end);
         }
         Range.is = is;
     })(Range = exports.Range || (exports.Range = {}));
@@ -89,7 +89,171 @@
         Location.is = is;
     })(Location = exports.Location || (exports.Location = {}));
     /**
-     * The diagnostic's serverity.
+     * The Color namespace provides helper functions to work with
+     * [Color](#Color) literals.
+     */
+    var Color;
+    (function (Color) {
+        /**
+         * Creates a new Color literal.
+         */
+        function create(red, green, blue, alpha) {
+            return {
+                red: red,
+                green: green,
+                blue: blue,
+                alpha: alpha,
+            };
+        }
+        Color.create = create;
+        /**
+         * Checks whether the given literal conforms to the [Color](#Color) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.number(candidate.red)
+                && Is.number(candidate.green)
+                && Is.number(candidate.blue)
+                && Is.number(candidate.alpha);
+        }
+        Color.is = is;
+    })(Color = exports.Color || (exports.Color = {}));
+    /**
+     * The ColorInformation namespace provides helper functions to work with
+     * [ColorInformation](#ColorInformation) literals.
+     */
+    var ColorInformation;
+    (function (ColorInformation) {
+        /**
+         * Creates a new ColorInformation literal.
+         */
+        function create(range, color) {
+            return {
+                range: range,
+                color: color,
+            };
+        }
+        ColorInformation.create = create;
+        /**
+         * Checks whether the given literal conforms to the [ColorInformation](#ColorInformation) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Range.is(candidate.range) && Color.is(candidate.color);
+        }
+        ColorInformation.is = is;
+    })(ColorInformation = exports.ColorInformation || (exports.ColorInformation = {}));
+    /**
+     * The Color namespace provides helper functions to work with
+     * [ColorPresentation](#ColorPresentation) literals.
+     */
+    var ColorPresentation;
+    (function (ColorPresentation) {
+        /**
+         * Creates a new ColorInformation literal.
+         */
+        function create(label, textEdit, additionalTextEdits) {
+            return {
+                label: label,
+                textEdit: textEdit,
+                additionalTextEdits: additionalTextEdits,
+            };
+        }
+        ColorPresentation.create = create;
+        /**
+         * Checks whether the given literal conforms to the [ColorInformation](#ColorInformation) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.string(candidate.label)
+                && (Is.undefined(candidate.textEdit) || TextEdit.is(candidate))
+                && (Is.undefined(candidate.additionalTextEdits) || Is.typedArray(candidate.additionalTextEdits, TextEdit.is));
+        }
+        ColorPresentation.is = is;
+    })(ColorPresentation = exports.ColorPresentation || (exports.ColorPresentation = {}));
+    /**
+     * Enum of known range kinds
+     */
+    var FoldingRangeKind;
+    (function (FoldingRangeKind) {
+        /**
+         * Folding range for a comment
+         */
+        FoldingRangeKind["Comment"] = "comment";
+        /**
+         * Folding range for a imports or includes
+         */
+        FoldingRangeKind["Imports"] = "imports";
+        /**
+         * Folding range for a region (e.g. `#region`)
+         */
+        FoldingRangeKind["Region"] = "region";
+    })(FoldingRangeKind = exports.FoldingRangeKind || (exports.FoldingRangeKind = {}));
+    /**
+     * The folding range namespace provides helper functions to work with
+     * [FoldingRange](#FoldingRange) literals.
+     */
+    var FoldingRange;
+    (function (FoldingRange) {
+        /**
+         * Creates a new FoldingRange literal.
+         */
+        function create(startLine, endLine, startCharacter, endCharacter, kind) {
+            var result = {
+                startLine: startLine,
+                endLine: endLine
+            };
+            if (Is.defined(startCharacter)) {
+                result.startCharacter = startCharacter;
+            }
+            if (Is.defined(endCharacter)) {
+                result.endCharacter = endCharacter;
+            }
+            if (Is.defined(kind)) {
+                result.kind = kind;
+            }
+            return result;
+        }
+        FoldingRange.create = create;
+        /**
+         * Checks whether the given literal conforms to the [FoldingRange](#FoldingRange) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.number(candidate.startLine) && Is.number(candidate.startLine)
+                && (Is.undefined(candidate.startCharacter) || Is.number(candidate.startCharacter))
+                && (Is.undefined(candidate.endCharacter) || Is.number(candidate.endCharacter))
+                && (Is.undefined(candidate.kind) || Is.string(candidate.kind));
+        }
+        FoldingRange.is = is;
+    })(FoldingRange = exports.FoldingRange || (exports.FoldingRange = {}));
+    /**
+     * The DiagnosticRelatedInformation namespace provides helper functions to work with
+     * [DiagnosticRelatedInformation](#DiagnosticRelatedInformation) literals.
+     */
+    var DiagnosticRelatedInformation;
+    (function (DiagnosticRelatedInformation) {
+        /**
+         * Creates a new DiagnosticRelatedInformation literal.
+         */
+        function create(location, message) {
+            return {
+                location: location,
+                message: message
+            };
+        }
+        DiagnosticRelatedInformation.create = create;
+        /**
+         * Checks whether the given literal conforms to the [DiagnosticRelatedInformation](#DiagnosticRelatedInformation) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.defined(candidate) && Location.is(candidate.location) && Is.string(candidate.message);
+        }
+        DiagnosticRelatedInformation.is = is;
+    })(DiagnosticRelatedInformation = exports.DiagnosticRelatedInformation || (exports.DiagnosticRelatedInformation = {}));
+    /**
+     * The diagnostic's severity.
      */
     var DiagnosticSeverity;
     (function (DiagnosticSeverity) {
@@ -119,7 +283,7 @@
         /**
          * Creates a new Diagnostic literal.
          */
-        function create(range, message, severity, code, source) {
+        function create(range, message, severity, code, source, relatedInformation) {
             var result = { range: range, message: message };
             if (Is.defined(severity)) {
                 result.severity = severity;
@@ -129,6 +293,9 @@
             }
             if (Is.defined(source)) {
                 result.source = source;
+            }
+            if (Is.defined(relatedInformation)) {
+                result.relatedInformation = relatedInformation;
             }
             return result;
         }
@@ -143,7 +310,8 @@
                 && Is.string(candidate.message)
                 && (Is.number(candidate.severity) || Is.undefined(candidate.severity))
                 && (Is.number(candidate.code) || Is.string(candidate.code) || Is.undefined(candidate.code))
-                && (Is.string(candidate.source) || Is.undefined(candidate.source));
+                && (Is.string(candidate.source) || Is.undefined(candidate.source))
+                && (Is.undefined(candidate.relatedInformation) || Is.typedArray(candidate.relatedInformation, DiagnosticRelatedInformation.is));
         }
         Diagnostic.is = is;
     })(Diagnostic = exports.Diagnostic || (exports.Diagnostic = {}));
@@ -173,7 +341,7 @@
          */
         function is(value) {
             var candidate = value;
-            return Is.defined(candidate) && Is.string(candidate.title) && Is.string(candidate.title);
+            return Is.defined(candidate) && Is.string(candidate.title) && Is.string(candidate.command);
         }
         Command.is = is;
     })(Command = exports.Command || (exports.Command = {}));
@@ -209,6 +377,13 @@
             return { range: range, newText: '' };
         }
         TextEdit.del = del;
+        function is(value) {
+            var candidate = value;
+            return Is.objectLiteral(candidate)
+                && Is.string(candidate.newText)
+                && Range.is(candidate.range);
+        }
+        TextEdit.is = is;
     })(TextEdit = exports.TextEdit || (exports.TextEdit = {}));
     /**
      * The TextDocumentEdit namespace provides helper function to create
@@ -231,6 +406,16 @@
         }
         TextDocumentEdit.is = is;
     })(TextDocumentEdit = exports.TextDocumentEdit || (exports.TextDocumentEdit = {}));
+    var WorkspaceEdit;
+    (function (WorkspaceEdit) {
+        function is(value) {
+            var candidate = value;
+            return candidate &&
+                (candidate.changes !== void 0 || candidate.documentChanges !== void 0) &&
+                (candidate.documentChanges === void 0 || Is.typedArray(candidate.documentChanges, TextDocumentEdit.is));
+        }
+        WorkspaceEdit.is = is;
+    })(WorkspaceEdit = exports.WorkspaceEdit || (exports.WorkspaceEdit = {}));
     var TextEditChangeImpl = /** @class */ (function () {
         function TextEditChangeImpl(edits) {
             this.edits = edits;
@@ -426,6 +611,27 @@
          */
         MarkupKind.Markdown = 'markdown';
     })(MarkupKind = exports.MarkupKind || (exports.MarkupKind = {}));
+    (function (MarkupKind) {
+        /**
+         * Checks whether the given value is a value of the [MarkupKind](#MarkupKind) type.
+         */
+        function is(value) {
+            var candidate = value;
+            return candidate === MarkupKind.PlainText || candidate === MarkupKind.Markdown;
+        }
+        MarkupKind.is = is;
+    })(MarkupKind = exports.MarkupKind || (exports.MarkupKind = {}));
+    var MarkupContent;
+    (function (MarkupContent) {
+        /**
+         * Checks whether the given value conforms to the [MarkupContent](#MarkupContent) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.objectLiteral(value) && MarkupKind.is(candidate.kind) && Is.string(candidate.value);
+        }
+        MarkupContent.is = is;
+    })(MarkupContent = exports.MarkupContent || (exports.MarkupContent = {}));
     /**
      * The kind of a completion entry.
      */
@@ -522,7 +728,28 @@
             return plainText.replace(/[\\`*_{}[\]()#+\-.!]/g, "\\$&"); // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
         }
         MarkedString.fromPlainText = fromPlainText;
+        /**
+         * Checks whether the given value conforms to the [MarkedString](#MarkedString) type.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.string(candidate) || (Is.objectLiteral(candidate) && Is.string(candidate.language) && Is.string(candidate.value));
+        }
+        MarkedString.is = is;
     })(MarkedString = exports.MarkedString || (exports.MarkedString = {}));
+    var Hover;
+    (function (Hover) {
+        /**
+         * Checks whether the given value conforms to the [Hover](#Hover) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return Is.objectLiteral(candidate) && (MarkupContent.is(candidate.contents) ||
+                MarkedString.is(candidate.contents) ||
+                Is.typedArray(candidate.contents, MarkedString.is)) && (value.range === void 0 || Range.is(value.range));
+        }
+        Hover.is = is;
+    })(Hover = exports.Hover || (exports.Hover = {}));
     /**
      * The ParameterInformation namespace provides helper functions to work with
      * [ParameterInformation](#ParameterInformation) literals.
@@ -572,7 +799,7 @@
     var DocumentHighlightKind;
     (function (DocumentHighlightKind) {
         /**
-         * A textual occurrance.
+         * A textual occurrence.
          */
         DocumentHighlightKind.Text = 1;
         /**
@@ -644,7 +871,7 @@
          * @param kind The kind of the symbol.
          * @param range The range of the location of the symbol.
          * @param uri The resource of the location of symbol, defaults to the current document.
-         * @param containerName The name of the symbol containg the symbol.
+         * @param containerName The name of the symbol containing the symbol.
          */
         function create(name, kind, range, uri, containerName) {
             var result = {
@@ -660,6 +887,117 @@
         SymbolInformation.create = create;
     })(SymbolInformation = exports.SymbolInformation || (exports.SymbolInformation = {}));
     /**
+     * Represents programming constructs like variables, classes, interfaces etc.
+     * that appear in a document. Document symbols can be hierarchical and they
+     * have two ranges: one that encloses its definition and one that points to
+     * its most interesting range, e.g. the range of an identifier.
+     */
+    var DocumentSymbol = /** @class */ (function () {
+        function DocumentSymbol() {
+        }
+        return DocumentSymbol;
+    }());
+    exports.DocumentSymbol = DocumentSymbol;
+    (function (DocumentSymbol) {
+        /**
+         * Creates a new symbol information literal.
+         *
+         * @param name The name of the symbol.
+         * @param detail The detail of the symbol.
+         * @param kind The kind of the symbol.
+         * @param range The range of the symbol.
+         * @param selectionRange The selectionRange of the symbol.
+         * @param children Children of the symbol.
+         */
+        function create(name, detail, kind, range, selectionRange, children) {
+            var result = {
+                name: name,
+                detail: detail,
+                kind: kind,
+                range: range,
+                selectionRange: selectionRange
+            };
+            if (children !== void 0) {
+                result.children = children;
+            }
+            return result;
+        }
+        DocumentSymbol.create = create;
+        /**
+         * Checks whether the given literal conforms to the [DocumentSymbol](#DocumentSymbol) interface.
+         */
+        function is(value) {
+            var candidate = value;
+            return candidate &&
+                Is.string(candidate.name) && Is.string(candidate.detail) && Is.number(candidate.kind) &&
+                Range.is(candidate.range) && Range.is(candidate.selectionRange) &&
+                (candidate.deprecated === void 0 || Is.boolean(candidate.deprecated)) &&
+                (candidate.children === void 0 || Array.isArray(candidate.children));
+        }
+        DocumentSymbol.is = is;
+    })(DocumentSymbol = exports.DocumentSymbol || (exports.DocumentSymbol = {}));
+    exports.DocumentSymbol = DocumentSymbol;
+    /**
+     * A set of predefined code action kinds
+     */
+    var CodeActionKind;
+    (function (CodeActionKind) {
+        /**
+         * Base kind for quickfix actions: 'quickfix'
+         */
+        CodeActionKind.QuickFix = 'quickfix';
+        /**
+         * Base kind for refactoring actions: 'refactor'
+         */
+        CodeActionKind.Refactor = 'refactor';
+        /**
+         * Base kind for refactoring extraction actions: 'refactor.extract'
+         *
+         * Example extract actions:
+         *
+         * - Extract method
+         * - Extract function
+         * - Extract variable
+         * - Extract interface from class
+         * - ...
+         */
+        CodeActionKind.RefactorExtract = 'refactor.extract';
+        /**
+         * Base kind for refactoring inline actions: 'refactor.inline'
+         *
+         * Example inline actions:
+         *
+         * - Inline function
+         * - Inline variable
+         * - Inline constant
+         * - ...
+         */
+        CodeActionKind.RefactorInline = 'refactor.inline';
+        /**
+         * Base kind for refactoring rewrite actions: 'refactor.rewrite'
+         *
+         * Example rewrite actions:
+         *
+         * - Convert JavaScript function to class
+         * - Add or remove parameter
+         * - Encapsulate field
+         * - Make method static
+         * - Move method to base class
+         * - ...
+         */
+        CodeActionKind.RefactorRewrite = 'refactor.rewrite';
+        /**
+         * Base kind for source actions: `source`
+         *
+         * Source code actions apply to the entire file.
+         */
+        CodeActionKind.Source = 'source';
+        /**
+         * Base kind for an organize imports source action: `source.organizeImports`
+         */
+        CodeActionKind.SourceOrganizeImports = 'source.organizeImports';
+    })(CodeActionKind = exports.CodeActionKind || (exports.CodeActionKind = {}));
+    /**
      * The CodeActionContext namespace provides helper functions to work with
      * [CodeActionContext](#CodeActionContext) literals.
      */
@@ -668,8 +1006,12 @@
         /**
          * Creates a new CodeActionContext literal.
          */
-        function create(diagnostics) {
-            return { diagnostics: diagnostics };
+        function create(diagnostics, only) {
+            var result = { diagnostics: diagnostics };
+            if (only !== void 0 && only !== null) {
+                result.only = only;
+            }
+            return result;
         }
         CodeActionContext.create = create;
         /**
@@ -677,10 +1019,37 @@
          */
         function is(value) {
             var candidate = value;
-            return Is.defined(candidate) && Is.typedArray(candidate.diagnostics, Diagnostic.is);
+            return Is.defined(candidate) && Is.typedArray(candidate.diagnostics, Diagnostic.is) && (candidate.only === void 0 || Is.typedArray(candidate.only, Is.string));
         }
         CodeActionContext.is = is;
     })(CodeActionContext = exports.CodeActionContext || (exports.CodeActionContext = {}));
+    var CodeAction;
+    (function (CodeAction) {
+        function create(title, commandOrEdit, kind) {
+            var result = { title: title };
+            if (Command.is(commandOrEdit)) {
+                result.command = commandOrEdit;
+            }
+            else {
+                result.edit = commandOrEdit;
+            }
+            if (kind !== void null) {
+                result.kind = kind;
+            }
+            return result;
+        }
+        CodeAction.create = create;
+        function is(value) {
+            var candidate = value;
+            return candidate && Is.string(candidate.title) &&
+                (candidate.diagnostics === void 0 || Is.typedArray(candidate.diagnostics, Diagnostic.is)) &&
+                (candidate.kind === void 0 || Is.string(candidate.kind)) &&
+                (candidate.edit !== void 0 || candidate.command !== void 0) &&
+                (candidate.command === void 0 || Command.is(candidate.command)) &&
+                (candidate.edit === void 0 || WorkspaceEdit.is(candidate.edit));
+        }
+        CodeAction.is = is;
+    })(CodeAction = exports.CodeAction || (exports.CodeAction = {}));
     /**
      * The CodeLens namespace provides helper functions to work with
      * [CodeLens](#CodeLens) literals.
@@ -746,8 +1115,8 @@
         /**
          * Creates a new DocumentLink literal.
          */
-        function create(range, target) {
-            return { range: range, target: target };
+        function create(range, target, data) {
+            return { range: range, target: target, data: data };
         }
         DocumentLink.create = create;
         /**
@@ -789,7 +1158,7 @@
                 if (diff === 0) {
                     return a.range.start.character - b.range.start.character;
                 }
-                return 0;
+                return diff;
             });
             var lastModifiedOffset = text.length;
             for (var i = sortedEdits.length - 1; i >= 0; i--) {
@@ -993,6 +1362,13 @@
             return toString.call(value) === '[object Function]';
         }
         Is.func = func;
+        function objectLiteral(value) {
+            // Strictly speaking class instances pass this check as well. Since the LSP
+            // doesn't use classes we ignore this for now. If we do we need to add something
+            // like this: `Object.getPrototypeOf(Object.getPrototypeOf(x)) === null`
+            return value !== null && typeof value === 'object';
+        }
+        Is.objectLiteral = objectLiteral;
         function typedArray(value, check) {
             return Array.isArray(value) && value.every(check);
         }
@@ -1326,6 +1702,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
                 case 34 /* doubleQuote */:
                 case 58 /* colon */:
                 case 44 /* comma */:
+                case 47 /* slash */:
                     return false;
             }
             return true;
@@ -1396,7 +1773,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
                 endOffset++;
             }
             formatText = documentText.substring(formatTextStart, endOffset);
-            initialIndentLevel = computeIndentLevel(formatText, 0, options);
+            initialIndentLevel = computeIndentLevel(formatText, options);
         }
         else {
             formatText = documentText;
@@ -1530,7 +1907,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
         }
         return result;
     }
-    function computeIndentLevel(content, offset, options) {
+    function computeIndentLevel(content, options) {
         var i = 0;
         var nChars = 0;
         var tabSize = options.tabSize || 4;
@@ -1597,7 +1974,8 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
             value: {},
             offset: 0,
             length: 0,
-            type: 'object'
+            type: 'object',
+            parent: void 0
         };
         var isAtPropertyKey = false;
         function setPreviousNode(value, offset, length, type) {
@@ -1605,7 +1983,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
             previousNodeInst.offset = offset;
             previousNodeInst.length = length;
             previousNodeInst.type = type;
-            previousNodeInst.columnOffset = void 0;
+            previousNodeInst.colonOffset = void 0;
             previousNode = previousNodeInst;
         }
         try {
@@ -1663,7 +2041,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
                         throw earlyReturnException;
                     }
                     if (sep === ':' && previousNode && previousNode.type === 'property') {
-                        previousNode.columnOffset = offset;
+                        previousNode.colonOffset = offset;
                         isAtPropertyKey = false;
                         previousNode = void 0;
                     }
@@ -1760,7 +2138,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
      */
     function parseTree(text, errors, options) {
         if (errors === void 0) { errors = []; }
-        var currentParent = { type: 'array', offset: -1, length: -1, children: [] }; // artificial root
+        var currentParent = { type: 'array', offset: -1, length: -1, children: [], parent: void 0 }; // artificial root
         function ensurePropertyComplete(endOffset) {
             if (currentParent.type === 'property') {
                 currentParent.length = endOffset - currentParent.offset;
@@ -1799,7 +2177,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
             onSeparator: function (sep, offset, length) {
                 if (currentParent.type === 'property') {
                     if (sep === ':') {
-                        currentParent.columnOffset = offset;
+                        currentParent.colonOffset = offset;
                     }
                     else if (sep === ',') {
                         ensurePropertyComplete(offset);
@@ -1857,23 +2235,78 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
     }
     exports.findNodeAtLocation = findNodeAtLocation;
     /**
+     * Gets the JSON path of the given JSON DOM node
+     */
+    function getNodePath(node) {
+        if (!node.parent || !node.parent.children) {
+            return [];
+        }
+        var path = getNodePath(node.parent);
+        if (node.parent.type === 'property') {
+            var key = node.parent.children[0].value;
+            path.push(key);
+        }
+        else if (node.parent.type === 'array') {
+            var index = node.parent.children.indexOf(node);
+            if (index !== -1) {
+                path.push(index);
+            }
+        }
+        return path;
+    }
+    exports.getNodePath = getNodePath;
+    /**
      * Evaluates the JavaScript object of the given JSON DOM node
      */
     function getNodeValue(node) {
-        if (node.type === 'array') {
-            return node.children.map(getNodeValue);
+        switch (node.type) {
+            case 'array':
+                return node.children.map(getNodeValue);
+            case 'object':
+                var obj = Object.create(null);
+                for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
+                    var prop = _a[_i];
+                    var valueNode = prop.children[1];
+                    if (valueNode) {
+                        obj[prop.children[0].value] = getNodeValue(valueNode);
+                    }
+                }
+                return obj;
+            case 'null':
+            case 'string':
+            case 'number':
+            case 'boolean':
+                return node.value;
+            default:
+                return void 0;
         }
-        else if (node.type === 'object') {
-            var obj = Object.create(null);
-            for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
-                var prop = _a[_i];
-                obj[prop.children[0].value] = getNodeValue(prop.children[1]);
-            }
-            return obj;
-        }
-        return node.value;
     }
     exports.getNodeValue = getNodeValue;
+    function contains(node, offset, includeRightBound) {
+        if (includeRightBound === void 0) { includeRightBound = false; }
+        return (offset >= node.offset && offset < (node.offset + node.length)) || includeRightBound && (offset === (node.offset + node.length));
+    }
+    exports.contains = contains;
+    /**
+     * Finds the most inner node at the given offset. If includeRightBound is set, also finds nodes that end at the given offset.
+     */
+    function findNodeAtOffset(node, offset, includeRightBound) {
+        if (includeRightBound === void 0) { includeRightBound = false; }
+        if (contains(node, offset, includeRightBound)) {
+            var children = node.children;
+            if (Array.isArray(children)) {
+                for (var i = 0; i < children.length && children[i].offset <= offset; i++) {
+                    var item = findNodeAtOffset(children[i], offset, includeRightBound);
+                    if (item) {
+                        return item;
+                    }
+                }
+            }
+            return node;
+        }
+        return void 0;
+    }
+    exports.findNodeAtOffset = findNodeAtOffset;
     /**
      * Parses the given text and invokes the visitor functions for each object, array and literal reached.
      */
@@ -2182,7 +2615,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
         }
         if (!parent) {
             // empty document
-            if (value === void 0) {
+            if (value === void 0) { // delete
                 throw new Error('Can not delete in empty document');
             }
             return withFormatting(text, { offset: root ? root.offset : 0, length: root ? root.length : 0, content: JSON.stringify(value) }, formattingOptions);
@@ -2190,7 +2623,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
         else if (parent.type === 'object' && typeof lastSegment === 'string' && Array.isArray(parent.children)) {
             var existing = parser_1.findNodeAtLocation(parent, [lastSegment]);
             if (existing !== void 0) {
-                if (value === void 0) {
+                if (value === void 0) { // delete
                     if (!existing.parent) {
                         throw new Error('Malformed AST');
                     }
@@ -2218,7 +2651,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
                 }
             }
             else {
-                if (value === void 0) {
+                if (value === void 0) { // delete
                     return []; // property does not exist, nothing to do
                 }
                 var newProperty = JSON.stringify(lastSegment) + ": " + JSON.stringify(value);
@@ -2291,7 +2724,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
         // format the new text
         var begin = edit.offset;
         var end = edit.offset + edit.content.length;
-        if (edit.length === 0 || edit.content.length === 0) {
+        if (edit.length === 0 || edit.content.length === 0) { // insert or remove
             while (begin > 0 && !format_1.isEOL(newText, begin - 1)) {
                 begin--;
             }
@@ -2363,6 +2796,14 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
      * Finds the node at the given path in a JSON DOM.
      */
     exports.findNodeAtLocation = parser.findNodeAtLocation;
+    /**
+     * Finds the most inner node at the given offset. If includeRightBound is set, also finds nodes that end at the given offset.
+     */
+    exports.findNodeAtOffset = parser.findNodeAtOffset;
+    /**
+     * Gets the JSON path of the given JSON DOM node
+     */
+    exports.getNodePath = parser.getNodePath;
     /**
      * Evaluates the JavaScript object of the given JSON DOM node
      */
@@ -2493,6 +2934,55 @@ define('jsonc-parser', ['jsonc-parser/main'], function (main) { return main; });
     exports.equals = equals;
 });
 //# sourceMappingURL=objects.js.map;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('vscode-json-languageservice/jsonLanguageTypes',["require", "exports", "vscode-languageserver-types"], factory);
+    }
+})(function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var vscode_languageserver_types_1 = require("vscode-languageserver-types");
+    exports.Range = vscode_languageserver_types_1.Range;
+    exports.TextEdit = vscode_languageserver_types_1.TextEdit;
+    exports.Color = vscode_languageserver_types_1.Color;
+    exports.ColorInformation = vscode_languageserver_types_1.ColorInformation;
+    exports.ColorPresentation = vscode_languageserver_types_1.ColorPresentation;
+    exports.FoldingRange = vscode_languageserver_types_1.FoldingRange;
+    exports.FoldingRangeKind = vscode_languageserver_types_1.FoldingRangeKind;
+    /**
+     * Error codes used by diagnostics
+     */
+    var ErrorCode;
+    (function (ErrorCode) {
+        ErrorCode[ErrorCode["Undefined"] = 0] = "Undefined";
+        ErrorCode[ErrorCode["EnumValueMismatch"] = 1] = "EnumValueMismatch";
+        ErrorCode[ErrorCode["UnexpectedEndOfComment"] = 257] = "UnexpectedEndOfComment";
+        ErrorCode[ErrorCode["UnexpectedEndOfString"] = 258] = "UnexpectedEndOfString";
+        ErrorCode[ErrorCode["UnexpectedEndOfNumber"] = 259] = "UnexpectedEndOfNumber";
+        ErrorCode[ErrorCode["InvalidUnicode"] = 260] = "InvalidUnicode";
+        ErrorCode[ErrorCode["InvalidEscapeCharacter"] = 261] = "InvalidEscapeCharacter";
+        ErrorCode[ErrorCode["InvalidCharacter"] = 262] = "InvalidCharacter";
+        ErrorCode[ErrorCode["PropertyExpected"] = 513] = "PropertyExpected";
+        ErrorCode[ErrorCode["CommaExpected"] = 514] = "CommaExpected";
+        ErrorCode[ErrorCode["ColonExpected"] = 515] = "ColonExpected";
+        ErrorCode[ErrorCode["ValueExpected"] = 516] = "ValueExpected";
+        ErrorCode[ErrorCode["CommaOrCloseBacketExpected"] = 517] = "CommaOrCloseBacketExpected";
+        ErrorCode[ErrorCode["CommaOrCloseBraceExpected"] = 518] = "CommaOrCloseBraceExpected";
+        ErrorCode[ErrorCode["TrailingComma"] = 519] = "TrailingComma";
+        ErrorCode[ErrorCode["DuplicateKey"] = 520] = "DuplicateKey";
+        ErrorCode[ErrorCode["CommentNotPermitted"] = 521] = "CommentNotPermitted";
+        ErrorCode[ErrorCode["SchemaResolveError"] = 768] = "SchemaResolveError";
+    })(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));
+});
+//# sourceMappingURL=jsonLanguageTypes.js.map;
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2532,6 +3022,16 @@ define('vscode-nls/vscode-nls',["require", "exports"], function (require, export
 
 define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; });
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 (function (factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         var v = factory(require, exports);
@@ -2547,16 +3047,65 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
      *--------------------------------------------------------------------------------------------*/
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
-    function _encode(ch) {
-        return '%' + ch.charCodeAt(0).toString(16).toUpperCase();
+    var isWindows;
+    if (typeof process === 'object') {
+        isWindows = process.platform === 'win32';
     }
-    // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-    function encodeURIComponent2(str) {
-        return encodeURIComponent(str).replace(/[!'()*]/g, _encode);
+    else if (typeof navigator === 'object') {
+        var userAgent = navigator.userAgent;
+        isWindows = userAgent.indexOf('Windows') >= 0;
     }
-    function encodeNoop(str) {
-        return str.replace(/[#?]/, _encode);
+    //#endregion
+    var _schemePattern = /^\w[\w\d+.-]*$/;
+    var _singleSlashStart = /^\//;
+    var _doubleSlashStart = /^\/\//;
+    function _validateUri(ret) {
+        // scheme, https://tools.ietf.org/html/rfc3986#section-3.1
+        // ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+        if (ret.scheme && !_schemePattern.test(ret.scheme)) {
+            throw new Error('[UriError]: Scheme contains illegal characters.');
+        }
+        // path, http://tools.ietf.org/html/rfc3986#section-3.3
+        // If a URI contains an authority component, then the path component
+        // must either be empty or begin with a slash ("/") character.  If a URI
+        // does not contain an authority component, then the path cannot begin
+        // with two slash characters ("//").
+        if (ret.path) {
+            if (ret.authority) {
+                if (!_singleSlashStart.test(ret.path)) {
+                    throw new Error('[UriError]: If a URI contains an authority component, then the path component must either be empty or begin with a slash ("/") character');
+                }
+            }
+            else {
+                if (_doubleSlashStart.test(ret.path)) {
+                    throw new Error('[UriError]: If a URI does not contain an authority component, then the path cannot begin with two slash characters ("//")');
+                }
+            }
+        }
     }
+    // implements a bit of https://tools.ietf.org/html/rfc3986#section-5
+    function _referenceResolution(scheme, path) {
+        // the slash-character is our 'default base' as we don't
+        // support constructing URIs relative to other URIs. This
+        // also means that we alter and potentially break paths.
+        // see https://tools.ietf.org/html/rfc3986#section-5.1.4
+        switch (scheme) {
+            case 'https':
+            case 'http':
+            case 'file':
+                if (!path) {
+                    path = _slash;
+                }
+                else if (path[0] !== _slash) {
+                    path = _slash + path;
+                }
+                break;
+        }
+        return path;
+    }
+    var _empty = '';
+    var _slash = '/';
+    var _regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
     /**
      * Uniform Resource Identifier (URI) http://tools.ietf.org/html/rfc3986.
      * This class is a simple parser which creates the basic component paths
@@ -2574,14 +3123,28 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
      *
      */
     var URI = (function () {
-        function URI() {
-            this._scheme = URI._empty;
-            this._authority = URI._empty;
-            this._path = URI._empty;
-            this._query = URI._empty;
-            this._fragment = URI._empty;
-            this._formatted = null;
-            this._fsPath = null;
+        /**
+         * @internal
+         */
+        function URI(schemeOrData, authority, path, query, fragment) {
+            if (typeof schemeOrData === 'object') {
+                this.scheme = schemeOrData.scheme || _empty;
+                this.authority = schemeOrData.authority || _empty;
+                this.path = schemeOrData.path || _empty;
+                this.query = schemeOrData.query || _empty;
+                this.fragment = schemeOrData.fragment || _empty;
+                // no validation because it's this URI
+                // that creates uri components.
+                // _validateUri(this);
+            }
+            else {
+                this.scheme = schemeOrData || _empty;
+                this.authority = authority || _empty;
+                this.path = _referenceResolution(this.scheme, path || _empty);
+                this.query = query || _empty;
+                this.fragment = fragment || _empty;
+                _validateUri(this);
+            }
         }
         URI.isUri = function (thing) {
             if (thing instanceof URI) {
@@ -2596,58 +3159,6 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 && typeof thing.query === 'string'
                 && typeof thing.scheme === 'string';
         };
-        Object.defineProperty(URI.prototype, "scheme", {
-            /**
-             * scheme is the 'http' part of 'http://www.msft.com/some/path?query#fragment'.
-             * The part before the first colon.
-             */
-            get: function () {
-                return this._scheme;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(URI.prototype, "authority", {
-            /**
-             * authority is the 'www.msft.com' part of 'http://www.msft.com/some/path?query#fragment'.
-             * The part between the first double slashes and the next slash.
-             */
-            get: function () {
-                return this._authority;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(URI.prototype, "path", {
-            /**
-             * path is the '/some/path' part of 'http://www.msft.com/some/path?query#fragment'.
-             */
-            get: function () {
-                return this._path;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(URI.prototype, "query", {
-            /**
-             * query is the 'query' part of 'http://www.msft.com/some/path?query#fragment'.
-             */
-            get: function () {
-                return this._query;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(URI.prototype, "fragment", {
-            /**
-             * fragment is the 'fragment' part of 'http://www.msft.com/some/path?query#fragment'.
-             */
-            get: function () {
-                return this._fragment;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(URI.prototype, "fsPath", {
             // ---- filesystem path -----------------------
             /**
@@ -2657,26 +3168,7 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
              * invalid characters and semantics. Will *not* look at the scheme of this URI.
              */
             get: function () {
-                if (!this._fsPath) {
-                    var value;
-                    if (this._authority && this._path && this.scheme === 'file') {
-                        // unc path: file://shares/c$/far/boo
-                        value = "//" + this._authority + this._path;
-                    }
-                    else if (URI._driveLetterPath.test(this._path)) {
-                        // windows drive letter: file:///c:/far/boo
-                        value = this._path[1].toLowerCase() + this._path.substr(2);
-                    }
-                    else {
-                        // other path
-                        value = this._path;
-                    }
-                    if (isWindows) {
-                        value = value.replace(/\//g, '\\');
-                    }
-                    this._fsPath = value;
-                }
-                return this._fsPath;
+                return _makeFsPath(this);
             },
             enumerable: true,
             configurable: true
@@ -2691,31 +3183,31 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 scheme = this.scheme;
             }
             else if (scheme === null) {
-                scheme = '';
+                scheme = _empty;
             }
             if (authority === void 0) {
                 authority = this.authority;
             }
             else if (authority === null) {
-                authority = '';
+                authority = _empty;
             }
             if (path === void 0) {
                 path = this.path;
             }
             else if (path === null) {
-                path = '';
+                path = _empty;
             }
             if (query === void 0) {
                 query = this.query;
             }
             else if (query === null) {
-                query = '';
+                query = _empty;
             }
             if (fragment === void 0) {
                 fragment = this.fragment;
             }
             else if (fragment === null) {
-                fragment = '';
+                fragment = _empty;
             }
             if (scheme === this.scheme
                 && authority === this.authority
@@ -2724,103 +3216,41 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
                 && fragment === this.fragment) {
                 return this;
             }
-            var ret = new URI();
-            ret._scheme = scheme;
-            ret._authority = authority;
-            ret._path = path;
-            ret._query = query;
-            ret._fragment = fragment;
-            URI._validate(ret);
-            return ret;
+            return new _URI(scheme, authority, path, query, fragment);
         };
         // ---- parse & validate ------------------------
         URI.parse = function (value) {
-            var ret = new URI();
-            var data = URI._parseComponents(value);
-            ret._scheme = data.scheme;
-            ret._authority = decodeURIComponent(data.authority);
-            ret._path = decodeURIComponent(data.path);
-            ret._query = decodeURIComponent(data.query);
-            ret._fragment = decodeURIComponent(data.fragment);
-            URI._validate(ret);
-            return ret;
+            var match = _regexp.exec(value);
+            if (!match) {
+                return new _URI(_empty, _empty, _empty, _empty, _empty);
+            }
+            return new _URI(match[2] || _empty, decodeURIComponent(match[4] || _empty), decodeURIComponent(match[5] || _empty), decodeURIComponent(match[7] || _empty), decodeURIComponent(match[9] || _empty));
         };
         URI.file = function (path) {
-            var ret = new URI();
-            ret._scheme = 'file';
+            var authority = _empty;
             // normalize to fwd-slashes on windows,
-            // on other systems bwd-slaches are valid
+            // on other systems bwd-slashes are valid
             // filename character, eg /f\oo/ba\r.txt
             if (isWindows) {
-                path = path.replace(/\\/g, URI._slash);
+                path = path.replace(/\\/g, _slash);
             }
             // check for authority as used in UNC shares
             // or use the path as given
-            if (path[0] === URI._slash && path[0] === path[1]) {
-                var idx = path.indexOf(URI._slash, 2);
+            if (path[0] === _slash && path[1] === _slash) {
+                var idx = path.indexOf(_slash, 2);
                 if (idx === -1) {
-                    ret._authority = path.substring(2);
+                    authority = path.substring(2);
+                    path = _slash;
                 }
                 else {
-                    ret._authority = path.substring(2, idx);
-                    ret._path = path.substring(idx);
+                    authority = path.substring(2, idx);
+                    path = path.substring(idx) || _slash;
                 }
             }
-            else {
-                ret._path = path;
-            }
-            // Ensure that path starts with a slash
-            // or that it is at least a slash
-            if (ret._path[0] !== URI._slash) {
-                ret._path = URI._slash + ret._path;
-            }
-            URI._validate(ret);
-            return ret;
-        };
-        URI._parseComponents = function (value) {
-            var ret = {
-                scheme: URI._empty,
-                authority: URI._empty,
-                path: URI._empty,
-                query: URI._empty,
-                fragment: URI._empty,
-            };
-            var match = URI._regexp.exec(value);
-            if (match) {
-                ret.scheme = match[2] || ret.scheme;
-                ret.authority = match[4] || ret.authority;
-                ret.path = match[5] || ret.path;
-                ret.query = match[7] || ret.query;
-                ret.fragment = match[9] || ret.fragment;
-            }
-            return ret;
+            return new _URI('file', authority, path, _empty, _empty);
         };
         URI.from = function (components) {
-            return new URI().with(components);
-        };
-        URI._validate = function (ret) {
-            // scheme, https://tools.ietf.org/html/rfc3986#section-3.1
-            // ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
-            if (ret.scheme && !URI._schemePattern.test(ret.scheme)) {
-                throw new Error('[UriError]: Scheme contains illegal characters.');
-            }
-            // path, http://tools.ietf.org/html/rfc3986#section-3.3
-            // If a URI contains an authority component, then the path component
-            // must either be empty or begin with a slash ("/") character.  If a URI
-            // does not contain an authority component, then the path cannot begin
-            // with two slash characters ("//").
-            if (ret.path) {
-                if (ret.authority) {
-                    if (!URI._singleSlashStart.test(ret.path)) {
-                        throw new Error('[UriError]: If a URI contains an authority component, then the path component must either be empty or begin with a slash ("/") character');
-                    }
-                }
-                else {
-                    if (URI._doubleSlashStart.test(ret.path)) {
-                        throw new Error('[UriError]: If a URI does not contain an authority component, then the path cannot begin with two slash characters ("//")');
-                    }
-                }
-            }
+            return new _URI(components.scheme, components.authority, components.path, components.query, components.fragment);
         };
         // ---- printing/externalize ---------------------------
         /**
@@ -2829,80 +3259,72 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
          */
         URI.prototype.toString = function (skipEncoding) {
             if (skipEncoding === void 0) { skipEncoding = false; }
+            return _asFormatted(this, skipEncoding);
+        };
+        URI.prototype.toJSON = function () {
+            return this;
+        };
+        URI.revive = function (data) {
+            if (!data) {
+                return data;
+            }
+            else if (data instanceof URI) {
+                return data;
+            }
+            else {
+                var result = new _URI(data);
+                result._fsPath = data.fsPath;
+                result._formatted = data.external;
+                return result;
+            }
+        };
+        return URI;
+    }());
+    exports.default = URI;
+    // tslint:disable-next-line:class-name
+    var _URI = (function (_super) {
+        __extends(_URI, _super);
+        function _URI() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._formatted = null;
+            _this._fsPath = null;
+            return _this;
+        }
+        Object.defineProperty(_URI.prototype, "fsPath", {
+            get: function () {
+                if (!this._fsPath) {
+                    this._fsPath = _makeFsPath(this);
+                }
+                return this._fsPath;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        _URI.prototype.toString = function (skipEncoding) {
+            if (skipEncoding === void 0) { skipEncoding = false; }
             if (!skipEncoding) {
                 if (!this._formatted) {
-                    this._formatted = URI._asFormatted(this, false);
+                    this._formatted = _asFormatted(this, false);
                 }
                 return this._formatted;
             }
             else {
                 // we don't cache that
-                return URI._asFormatted(this, true);
+                return _asFormatted(this, true);
             }
         };
-        URI._asFormatted = function (uri, skipEncoding) {
-            var encoder = !skipEncoding
-                ? encodeURIComponent2
-                : encodeNoop;
-            var parts = [];
-            var scheme = uri.scheme, authority = uri.authority, path = uri.path, query = uri.query, fragment = uri.fragment;
-            if (scheme) {
-                parts.push(scheme, ':');
-            }
-            if (authority || scheme === 'file') {
-                parts.push('//');
-            }
-            if (authority) {
-                authority = authority.toLowerCase();
-                var idx = authority.indexOf(':');
-                if (idx === -1) {
-                    parts.push(encoder(authority));
-                }
-                else {
-                    parts.push(encoder(authority.substr(0, idx)), authority.substr(idx));
-                }
-            }
-            if (path) {
-                // lower-case windows drive letters in /C:/fff or C:/fff
-                var m = URI._upperCaseDrive.exec(path);
-                if (m) {
-                    if (m[1]) {
-                        path = '/' + m[2].toLowerCase() + path.substr(3); // "/c:".length === 3
-                    }
-                    else {
-                        path = m[2].toLowerCase() + path.substr(2); // // "c:".length === 2
-                    }
-                }
-                // encode every segement but not slashes
-                // make sure that # and ? are always encoded
-                // when occurring in paths - otherwise the result
-                // cannot be parsed back again
-                var lastIdx = 0;
-                while (true) {
-                    var idx = path.indexOf(URI._slash, lastIdx);
-                    if (idx === -1) {
-                        parts.push(encoder(path.substring(lastIdx)));
-                        break;
-                    }
-                    parts.push(encoder(path.substring(lastIdx, idx)), URI._slash);
-                    lastIdx = idx + 1;
-                }
-                ;
-            }
-            if (query) {
-                parts.push('?', encoder(query));
-            }
-            if (fragment) {
-                parts.push('#', encoder(fragment));
-            }
-            return parts.join(URI._empty);
-        };
-        URI.prototype.toJSON = function () {
+        _URI.prototype.toJSON = function () {
             var res = {
-                fsPath: this.fsPath,
-                external: this.toString(),
                 $mid: 1
             };
+            // cached state
+            if (this._fsPath) {
+                res.fsPath = this._fsPath;
+            }
+            if (this._formatted) {
+                res.external = this._formatted;
+            }
+            // uri components
             if (this.path) {
                 res.path = this.path;
             }
@@ -2920,37 +3342,198 @@ define('vscode-nls', ['vscode-nls/vscode-nls'], function (main) { return main; }
             }
             return res;
         };
-        URI.revive = function (data) {
-            var result = new URI();
-            result._scheme = data.scheme || URI._empty;
-            result._authority = data.authority || URI._empty;
-            result._path = data.path || URI._empty;
-            result._query = data.query || URI._empty;
-            result._fragment = data.fragment || URI._empty;
-            result._fsPath = data.fsPath;
-            result._formatted = data.external;
-            URI._validate(result);
-            return result;
-        };
-        return URI;
-    }());
-    URI._empty = '';
-    URI._slash = '/';
-    URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
-    URI._driveLetterPath = /^\/[a-zA-z]:/;
-    URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
-    URI._schemePattern = /^\w[\w\d+.-]*$/;
-    URI._singleSlashStart = /^\//;
-    URI._doubleSlashStart = /^\/\//;
-    exports.default = URI;
-    var isWindows;
-    if (typeof process === 'object') {
-        isWindows = process.platform === 'win32';
+        return _URI;
+    }(URI));
+    // reserved characters: https://tools.ietf.org/html/rfc3986#section-2.2
+    var encodeTable = (_a = {},
+        _a[58 /* Colon */] = '%3A',
+        _a[47 /* Slash */] = '%2F',
+        _a[63 /* QuestionMark */] = '%3F',
+        _a[35 /* Hash */] = '%23',
+        _a[91 /* OpenSquareBracket */] = '%5B',
+        _a[93 /* CloseSquareBracket */] = '%5D',
+        _a[64 /* AtSign */] = '%40',
+        _a[33 /* ExclamationMark */] = '%21',
+        _a[36 /* DollarSign */] = '%24',
+        _a[38 /* Ampersand */] = '%26',
+        _a[39 /* SingleQuote */] = '%27',
+        _a[40 /* OpenParen */] = '%28',
+        _a[41 /* CloseParen */] = '%29',
+        _a[42 /* Asterisk */] = '%2A',
+        _a[43 /* Plus */] = '%2B',
+        _a[44 /* Comma */] = '%2C',
+        _a[59 /* Semicolon */] = '%3B',
+        _a[61 /* Equals */] = '%3D',
+        _a[32 /* Space */] = '%20',
+        _a);
+    function encodeURIComponentFast(uriComponent, allowSlash) {
+        var res = undefined;
+        var nativeEncodePos = -1;
+        for (var pos = 0; pos < uriComponent.length; pos++) {
+            var code = uriComponent.charCodeAt(pos);
+            // unreserved characters: https://tools.ietf.org/html/rfc3986#section-2.3
+            if ((code >= 97 /* a */ && code <= 122 /* z */)
+                || (code >= 65 /* A */ && code <= 90 /* Z */)
+                || (code >= 48 /* Digit0 */ && code <= 57 /* Digit9 */)
+                || code === 45 /* Dash */
+                || code === 46 /* Period */
+                || code === 95 /* Underline */
+                || code === 126 /* Tilde */
+                || (allowSlash && code === 47 /* Slash */)) {
+                // check if we are delaying native encode
+                if (nativeEncodePos !== -1) {
+                    res += encodeURIComponent(uriComponent.substring(nativeEncodePos, pos));
+                    nativeEncodePos = -1;
+                }
+                // check if we write into a new string (by default we try to return the param)
+                if (res !== undefined) {
+                    res += uriComponent.charAt(pos);
+                }
+            }
+            else {
+                // encoding needed, we need to allocate a new string
+                if (res === undefined) {
+                    res = uriComponent.substr(0, pos);
+                }
+                // check with default table first
+                var escaped = encodeTable[code];
+                if (escaped !== undefined) {
+                    // check if we are delaying native encode
+                    if (nativeEncodePos !== -1) {
+                        res += encodeURIComponent(uriComponent.substring(nativeEncodePos, pos));
+                        nativeEncodePos = -1;
+                    }
+                    // append escaped variant to result
+                    res += escaped;
+                }
+                else if (nativeEncodePos === -1) {
+                    // use native encode only when needed
+                    nativeEncodePos = pos;
+                }
+            }
+        }
+        if (nativeEncodePos !== -1) {
+            res += encodeURIComponent(uriComponent.substring(nativeEncodePos));
+        }
+        return res !== undefined ? res : uriComponent;
     }
-    else if (typeof navigator === 'object') {
-        var userAgent = navigator.userAgent;
-        isWindows = userAgent.indexOf('Windows') >= 0;
+    function encodeURIComponentMinimal(path) {
+        var res = undefined;
+        for (var pos = 0; pos < path.length; pos++) {
+            var code = path.charCodeAt(pos);
+            if (code === 35 /* Hash */ || code === 63 /* QuestionMark */) {
+                if (res === undefined) {
+                    res = path.substr(0, pos);
+                }
+                res += encodeTable[code];
+            }
+            else {
+                if (res !== undefined) {
+                    res += path[pos];
+                }
+            }
+        }
+        return res !== undefined ? res : path;
     }
+    /**
+     * Compute `fsPath` for the given uri
+     * @param uri
+     */
+    function _makeFsPath(uri) {
+        var value;
+        if (uri.authority && uri.path.length > 1 && uri.scheme === 'file') {
+            // unc path: file://shares/c$/far/boo
+            value = "//" + uri.authority + uri.path;
+        }
+        else if (uri.path.charCodeAt(0) === 47 /* Slash */
+            && (uri.path.charCodeAt(1) >= 65 /* A */ && uri.path.charCodeAt(1) <= 90 /* Z */ || uri.path.charCodeAt(1) >= 97 /* a */ && uri.path.charCodeAt(1) <= 122 /* z */)
+            && uri.path.charCodeAt(2) === 58 /* Colon */) {
+            // windows drive letter: file:///c:/far/boo
+            value = uri.path[1].toLowerCase() + uri.path.substr(2);
+        }
+        else {
+            // other path
+            value = uri.path;
+        }
+        if (isWindows) {
+            value = value.replace(/\//g, '\\');
+        }
+        return value;
+    }
+    /**
+     * Create the external version of a uri
+     */
+    function _asFormatted(uri, skipEncoding) {
+        var encoder = !skipEncoding
+            ? encodeURIComponentFast
+            : encodeURIComponentMinimal;
+        var res = '';
+        var scheme = uri.scheme, authority = uri.authority, path = uri.path, query = uri.query, fragment = uri.fragment;
+        if (scheme) {
+            res += scheme;
+            res += ':';
+        }
+        if (authority || scheme === 'file') {
+            res += _slash;
+            res += _slash;
+        }
+        if (authority) {
+            var idx = authority.indexOf('@');
+            if (idx !== -1) {
+                // <user>@<auth>
+                var userinfo = authority.substr(0, idx);
+                authority = authority.substr(idx + 1);
+                idx = userinfo.indexOf(':');
+                if (idx === -1) {
+                    res += encoder(userinfo, false);
+                }
+                else {
+                    // <user>:<pass>@<auth>
+                    res += encoder(userinfo.substr(0, idx), false);
+                    res += ':';
+                    res += encoder(userinfo.substr(idx + 1), false);
+                }
+                res += '@';
+            }
+            authority = authority.toLowerCase();
+            idx = authority.indexOf(':');
+            if (idx === -1) {
+                res += encoder(authority, false);
+            }
+            else {
+                // <auth>:<port>
+                res += encoder(authority.substr(0, idx), false);
+                res += authority.substr(idx);
+            }
+        }
+        if (path) {
+            // lower-case windows drive letters in /C:/fff or C:/fff
+            if (path.length >= 3 && path.charCodeAt(0) === 47 /* Slash */ && path.charCodeAt(2) === 58 /* Colon */) {
+                var code = path.charCodeAt(1);
+                if (code >= 65 /* A */ && code <= 90 /* Z */) {
+                    path = "/" + String.fromCharCode(code + 32) + ":" + path.substr(3); // "/c:".length === 3
+                }
+            }
+            else if (path.length >= 2 && path.charCodeAt(1) === 58 /* Colon */) {
+                var code = path.charCodeAt(0);
+                if (code >= 65 /* A */ && code <= 90 /* Z */) {
+                    path = String.fromCharCode(code + 32) + ":" + path.substr(2); // "/c:".length === 3
+                }
+            }
+            // encode the rest of the path
+            res += encoder(path, true);
+        }
+        if (query) {
+            res += '?';
+            res += encoder(query, false);
+        }
+        if (fragment) {
+            res += '#';
+            res += encoder(fragment, false);
+        }
+        return res;
+    }
+    var _a;
 });
 
 define('vscode-uri', ['vscode-uri/index'], function (main) { return main; });
@@ -2971,7 +3554,7 @@ var __extends = (this && this.__extends) || (function () {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define('vscode-json-languageservice/parser/jsonParser',["require", "exports", "jsonc-parser", "../utils/objects", "vscode-nls", "vscode-uri", "vscode-languageserver-types"], factory);
+        define('vscode-json-languageservice/parser/jsonParser',["require", "exports", "jsonc-parser", "../utils/objects", "../jsonLanguageTypes", "vscode-nls", "vscode-uri", "vscode-languageserver-types"], factory);
     }
 })(function (require, exports) {
     /*---------------------------------------------------------------------------------------------
@@ -2982,36 +3565,13 @@ var __extends = (this && this.__extends) || (function () {
     Object.defineProperty(exports, "__esModule", { value: true });
     var Json = require("jsonc-parser");
     var objects = require("../utils/objects");
+    var jsonLanguageTypes_1 = require("../jsonLanguageTypes");
     var nls = require("vscode-nls");
     var vscode_uri_1 = require("vscode-uri");
     var vscode_languageserver_types_1 = require("vscode-languageserver-types");
     var localize = nls.loadMessageBundle();
-    var ErrorCode;
-    (function (ErrorCode) {
-        ErrorCode[ErrorCode["Undefined"] = 0] = "Undefined";
-        ErrorCode[ErrorCode["EnumValueMismatch"] = 1] = "EnumValueMismatch";
-        ErrorCode[ErrorCode["UnexpectedEndOfComment"] = 257] = "UnexpectedEndOfComment";
-        ErrorCode[ErrorCode["UnexpectedEndOfString"] = 258] = "UnexpectedEndOfString";
-        ErrorCode[ErrorCode["UnexpectedEndOfNumber"] = 259] = "UnexpectedEndOfNumber";
-        ErrorCode[ErrorCode["InvalidUnicode"] = 260] = "InvalidUnicode";
-        ErrorCode[ErrorCode["InvalidEscapeCharacter"] = 261] = "InvalidEscapeCharacter";
-        ErrorCode[ErrorCode["InvalidCharacter"] = 262] = "InvalidCharacter";
-        ErrorCode[ErrorCode["PropertyExpected"] = 513] = "PropertyExpected";
-        ErrorCode[ErrorCode["CommaExpected"] = 514] = "CommaExpected";
-        ErrorCode[ErrorCode["ColonExpected"] = 515] = "ColonExpected";
-        ErrorCode[ErrorCode["ValueExpected"] = 516] = "ValueExpected";
-        ErrorCode[ErrorCode["CommaOrCloseBacketExpected"] = 517] = "CommaOrCloseBacketExpected";
-        ErrorCode[ErrorCode["CommaOrCloseBraceExpected"] = 518] = "CommaOrCloseBraceExpected";
-        ErrorCode[ErrorCode["TrailingComma"] = 519] = "TrailingComma";
-    })(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));
     var colorHexPattern = /^#([0-9A-Fa-f]{3,4}|([0-9A-Fa-f]{2}){3,4})$/;
     var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var ProblemSeverity;
-    (function (ProblemSeverity) {
-        ProblemSeverity["Ignore"] = "ignore";
-        ProblemSeverity["Error"] = "error";
-        ProblemSeverity["Warning"] = "warning";
-    })(ProblemSeverity = exports.ProblemSeverity || (exports.ProblemSeverity = {}));
     var ASTNodeImpl = /** @class */ (function () {
         function ASTNodeImpl(parent, offset, length) {
             this.offset = offset;
@@ -3036,6 +3596,7 @@ var __extends = (this && this.__extends) || (function () {
         function NullASTNodeImpl(parent, offset) {
             var _this = _super.call(this, parent, offset) || this;
             _this.type = 'null';
+            _this.value = null;
             return _this;
         }
         return NullASTNodeImpl;
@@ -3153,8 +3714,8 @@ var __extends = (this && this.__extends) || (function () {
             this.schemas.push(schema);
         };
         SchemaCollector.prototype.merge = function (other) {
-            (_a = this.schemas).push.apply(_a, other.schemas);
             var _a;
+            (_a = this.schemas).push.apply(_a, other.schemas);
         };
         SchemaCollector.prototype.include = function (node) {
             return (this.focusOffset === -1 || contains(node, this.focusOffset)) && (node !== this.exclude);
@@ -3205,7 +3766,7 @@ var __extends = (this && this.__extends) || (function () {
                 this.enumValues = this.enumValues.concat(validationResult.enumValues);
                 for (var _i = 0, _a = this.problems; _i < _a.length; _i++) {
                     var error = _a[_i];
-                    if (error.code === ErrorCode.EnumValueMismatch) {
+                    if (error.code === jsonLanguageTypes_1.ErrorCode.EnumValueMismatch) {
                         error.message = localize('enumWarning', 'Value is not accepted. Valid values: {0}.', this.enumValues.map(function (v) { return JSON.stringify(v); }).join(', '));
                     }
                 }
@@ -3240,54 +3801,17 @@ var __extends = (this && this.__extends) || (function () {
         return ValidationResult;
     }());
     exports.ValidationResult = ValidationResult;
-    function toProblemSeverity(diagnosticsSeverity) {
-        switch (diagnosticsSeverity) {
-            case vscode_languageserver_types_1.DiagnosticSeverity.Error: return ProblemSeverity.Error;
-            case vscode_languageserver_types_1.DiagnosticSeverity.Warning: return ProblemSeverity.Warning;
-            case vscode_languageserver_types_1.DiagnosticSeverity.Information: return ProblemSeverity.Warning;
-        }
-        return ProblemSeverity.Ignore;
-    }
     function newJSONDocument(root, diagnostics) {
         if (diagnostics === void 0) { diagnostics = []; }
-        return new JSONDocument(root, [], [], diagnostics);
+        return new JSONDocument(root, diagnostics, []);
     }
     exports.newJSONDocument = newJSONDocument;
     function getNodeValue(node) {
-        switch (node.type) {
-            case 'array':
-                return node.items.map(getNodeValue);
-            case 'object':
-                var obj = Object.create(null);
-                for (var _i = 0, _a = node.properties; _i < _a.length; _i++) {
-                    var prop = _a[_i];
-                    obj[prop.keyNode.value] = getNodeValue(prop.valueNode);
-                }
-                return obj;
-            case 'string':
-            case 'number':
-            case 'boolean':
-                return node.value;
-        }
-        return null;
+        return Json.getNodeValue(node);
     }
     exports.getNodeValue = getNodeValue;
     function getNodePath(node) {
-        if (!node.parent) {
-            return [];
-        }
-        var path = getNodePath(node.parent);
-        if (node.parent.type === 'property') {
-            var key = node.parent.keyNode.value;
-            path.push(key);
-        }
-        else if (node.parent.type === 'array') {
-            var index = node.parent.items.indexOf(node);
-            if (index !== -1) {
-                path.push(index);
-            }
-        }
-        return path;
+        return Json.getNodePath(node);
     }
     exports.getNodePath = getNodePath;
     function contains(node, offset, includeRightBound) {
@@ -3296,65 +3820,43 @@ var __extends = (this && this.__extends) || (function () {
     }
     exports.contains = contains;
     var JSONDocument = /** @class */ (function () {
-        function JSONDocument(root, syntaxErrors, comments, externalDiagnostic) {
+        function JSONDocument(root, syntaxErrors, comments) {
             if (syntaxErrors === void 0) { syntaxErrors = []; }
             if (comments === void 0) { comments = []; }
-            if (externalDiagnostic === void 0) { externalDiagnostic = []; }
             this.root = root;
             this.syntaxErrors = syntaxErrors;
             this.comments = comments;
-            this.externalDiagnostic = externalDiagnostic;
         }
-        JSONDocument.prototype.getNodeFromOffset = function (offset) {
-            var findNode = function (node) {
-                if (offset >= node.offset && offset < (node.offset + node.length)) {
-                    var children = node.children;
-                    for (var i = 0; i < children.length && children[i].offset <= offset; i++) {
-                        var item = findNode(children[i]);
-                        if (item) {
-                            return item;
-                        }
-                    }
-                    return node;
-                }
-                return null;
-            };
-            return this.root && findNode(this.root);
-        };
-        JSONDocument.prototype.getNodeFromOffsetEndInclusive = function (offset) {
-            var findNode = function (node) {
-                if (offset >= node.offset && offset <= (node.offset + node.length)) {
-                    var children = node.children;
-                    for (var i = 0; i < children.length && children[i].offset <= offset; i++) {
-                        var item = findNode(children[i]);
-                        if (item) {
-                            return item;
-                        }
-                    }
-                    return node;
-                }
-                return null;
-            };
-            return this.root && findNode(this.root);
+        JSONDocument.prototype.getNodeFromOffset = function (offset, includeRightBound) {
+            if (includeRightBound === void 0) { includeRightBound = false; }
+            if (this.root) {
+                return Json.findNodeAtOffset(this.root, offset, includeRightBound);
+            }
+            return void 0;
         };
         JSONDocument.prototype.visit = function (visitor) {
             if (this.root) {
                 var doVisit_1 = function (node) {
                     var ctn = visitor(node);
                     var children = node.children;
-                    for (var i = 0; i < children.length && ctn; i++) {
-                        ctn = doVisit_1(children[i]);
+                    if (Array.isArray(children)) {
+                        for (var i = 0; i < children.length && ctn; i++) {
+                            ctn = doVisit_1(children[i]);
+                        }
                     }
                     return ctn;
                 };
                 doVisit_1(this.root);
             }
         };
-        JSONDocument.prototype.validate = function (schema) {
+        JSONDocument.prototype.validate = function (textDocument, schema) {
             if (this.root && schema) {
                 var validationResult = new ValidationResult();
                 validate(this.root, schema, validationResult, NoOpSchemaCollector.instance);
-                return validationResult.problems;
+                return validationResult.problems.map(function (p) {
+                    var range = vscode_languageserver_types_1.Range.create(textDocument.positionAt(p.location.offset), textDocument.positionAt(p.location.offset + p.location.length));
+                    return vscode_languageserver_types_1.Diagnostic.create(range, p.message, p.severity, p.code);
+                });
             }
             return null;
         };
@@ -3400,7 +3902,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (!schema.type.some(matchesType)) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: schema.errorMessage || localize('typeArrayMismatchWarning', 'Incorrect type. Expected one of {0}.', schema.type.join(', '))
                     });
                 }
@@ -3409,7 +3911,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (!matchesType(schema.type)) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: schema.errorMessage || localize('typeMismatchWarning', 'Incorrect type. Expected "{0}".', schema.type)
                     });
                 }
@@ -3427,7 +3929,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (!subValidationResult.hasProblems()) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: localize('notSchemaWarning', "Matches a schema that is not allowed.")
                     });
                 }
@@ -3475,7 +3977,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (matches.length > 1 && maxOneMatch) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: 1 },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: localize('oneOfWarning', "Matches multiple schemas when only one must validate.")
                     });
                 }
@@ -3508,8 +4010,8 @@ var __extends = (this && this.__extends) || (function () {
                 if (!enumValueMatch) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
-                        code: ErrorCode.EnumValueMismatch,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
+                        code: jsonLanguageTypes_1.ErrorCode.EnumValueMismatch,
                         message: schema.errorMessage || localize('enumWarning', 'Value is not accepted. Valid values: {0}.', schema.enum.map(function (v) { return JSON.stringify(v); }).join(', '))
                     });
                 }
@@ -3519,8 +4021,8 @@ var __extends = (this && this.__extends) || (function () {
                 if (!objects.equals(val, schema.const)) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
-                        code: ErrorCode.EnumValueMismatch,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
+                        code: jsonLanguageTypes_1.ErrorCode.EnumValueMismatch,
                         message: schema.errorMessage || localize('constWarning', 'Value must be {0}.', JSON.stringify(schema.const))
                     });
                     validationResult.enumValueMatch = false;
@@ -3533,7 +4035,7 @@ var __extends = (this && this.__extends) || (function () {
             if (schema.deprecationMessage && node.parent) {
                 validationResult.problems.push({
                     location: { offset: node.parent.offset, length: node.parent.length },
-                    severity: ProblemSeverity.Warning,
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                     message: schema.deprecationMessage
                 });
             }
@@ -3544,7 +4046,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (val % schema.multipleOf !== 0) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: localize('multipleOfWarning', 'Value is not divisible by {0}.', schema.multipleOf)
                     });
                 }
@@ -3568,7 +4070,7 @@ var __extends = (this && this.__extends) || (function () {
             if (typeof exclusiveMinimum === 'number' && val <= exclusiveMinimum) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: ProblemSeverity.Warning,
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                     message: localize('exclusiveMinimumWarning', 'Value is below the exclusive minimum of {0}.', exclusiveMinimum)
                 });
             }
@@ -3576,7 +4078,7 @@ var __extends = (this && this.__extends) || (function () {
             if (typeof exclusiveMaximum === 'number' && val >= exclusiveMaximum) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: ProblemSeverity.Warning,
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                     message: localize('exclusiveMaximumWarning', 'Value is above the exclusive maximum of {0}.', exclusiveMaximum)
                 });
             }
@@ -3584,7 +4086,7 @@ var __extends = (this && this.__extends) || (function () {
             if (typeof minimum === 'number' && val < minimum) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: ProblemSeverity.Warning,
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                     message: localize('minimumWarning', 'Value is below the minimum of {0}.', minimum)
                 });
             }
@@ -3592,7 +4094,7 @@ var __extends = (this && this.__extends) || (function () {
             if (typeof maximum === 'number' && val > maximum) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: ProblemSeverity.Warning,
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                     message: localize('maximumWarning', 'Value is above the maximum of {0}.', maximum)
                 });
             }
@@ -3601,14 +4103,14 @@ var __extends = (this && this.__extends) || (function () {
             if (schema.minLength && node.value.length < schema.minLength) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: ProblemSeverity.Warning,
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                     message: localize('minLengthWarning', 'String is shorter than the minimum length of {0}.', schema.minLength)
                 });
             }
             if (schema.maxLength && node.value.length > schema.maxLength) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: ProblemSeverity.Warning,
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                     message: localize('maxLengthWarning', 'String is longer than the maximum length of {0}.', schema.maxLength)
                 });
             }
@@ -3617,7 +4119,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (!regex.test(node.value)) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: schema.patternErrorMessage || schema.errorMessage || localize('patternWarning', 'String does not match the pattern of "{0}".', schema.pattern)
                     });
                 }
@@ -3645,7 +4147,7 @@ var __extends = (this && this.__extends) || (function () {
                             if (errorMessage) {
                                 validationResult.problems.push({
                                     location: { offset: node.offset, length: node.length },
-                                    severity: ProblemSeverity.Warning,
+                                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                                     message: schema.patternErrorMessage || schema.errorMessage || localize('uriFormatWarning', 'String is not a URI: {0}', errorMessage)
                                 });
                             }
@@ -3656,7 +4158,7 @@ var __extends = (this && this.__extends) || (function () {
                             if (!node.value.match(emailPattern)) {
                                 validationResult.problems.push({
                                     location: { offset: node.offset, length: node.length },
-                                    severity: ProblemSeverity.Warning,
+                                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                                     message: schema.patternErrorMessage || schema.errorMessage || localize('emailFormatWarning', 'String is not an e-mail address.')
                                 });
                             }
@@ -3667,7 +4169,7 @@ var __extends = (this && this.__extends) || (function () {
                             if (!node.value.match(colorHexPattern)) {
                                 validationResult.problems.push({
                                     location: { offset: node.offset, length: node.length },
-                                    severity: ProblemSeverity.Warning,
+                                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                                     message: schema.patternErrorMessage || schema.errorMessage || localize('colorHexFormatWarning', 'Invalid color format. Use #RGB, #RGBA, #RRGGBB or #RRGGBBAA.')
                                 });
                             }
@@ -3703,7 +4205,7 @@ var __extends = (this && this.__extends) || (function () {
                     else if (schema.additionalItems === false) {
                         validationResult.problems.push({
                             location: { offset: node.offset, length: node.length },
-                            severity: ProblemSeverity.Warning,
+                            severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                             message: localize('additionalItemsWarning', 'Array has too many items according to schema. Expected {0} or fewer.', subSchemas_1.length)
                         });
                     }
@@ -3729,23 +4231,23 @@ var __extends = (this && this.__extends) || (function () {
                 if (!doesContain) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
-                        message: schema.errorMessage || localize('requiredItemMissingWarning', 'Array does not contain required item.', schema.minItems)
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
+                        message: schema.errorMessage || localize('requiredItemMissingWarning', 'Array does not contain required item.')
                     });
                 }
             }
             if (schema.minItems && node.items.length < schema.minItems) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: ProblemSeverity.Warning,
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                     message: localize('minItemsWarning', 'Array has too few items. Expected {0} or more.', schema.minItems)
                 });
             }
             if (schema.maxItems && node.items.length > schema.maxItems) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: ProblemSeverity.Warning,
-                    message: localize('maxItemsWarning', 'Array has too many items. Expected {0} or fewer.', schema.minItems)
+                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
+                    message: localize('maxItemsWarning', 'Array has too many items. Expected {0} or fewer.', schema.maxItems)
                 });
             }
             if (schema.uniqueItems === true) {
@@ -3756,7 +4258,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (duplicates) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: localize('uniqueItemsWarning', 'Array has duplicate items.')
                     });
                 }
@@ -3777,7 +4279,7 @@ var __extends = (this && this.__extends) || (function () {
                         var location = keyNode ? { offset: keyNode.offset, length: keyNode.length } : { offset: node.offset, length: 1 };
                         validationResult.problems.push({
                             location: location,
-                            severity: ProblemSeverity.Warning,
+                            severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                             message: localize('MissingRequiredPropWarning', 'Missing property "{0}".', propertyName)
                         });
                     }
@@ -3801,7 +4303,7 @@ var __extends = (this && this.__extends) || (function () {
                                 var propertyNode = child.parent;
                                 validationResult.problems.push({
                                     location: { offset: propertyNode.keyNode.offset, length: propertyNode.keyNode.length },
-                                    severity: ProblemSeverity.Warning,
+                                    severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                                     message: schema.errorMessage || localize('DisallowedExtraPropWarning', 'Property {0} is not allowed.', propertyName)
                                 });
                             }
@@ -3832,7 +4334,7 @@ var __extends = (this && this.__extends) || (function () {
                                         var propertyNode = child.parent;
                                         validationResult.problems.push({
                                             location: { offset: propertyNode.keyNode.offset, length: propertyNode.keyNode.length },
-                                            severity: ProblemSeverity.Warning,
+                                            severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                                             message: schema.errorMessage || localize('DisallowedExtraPropWarning', 'Property {0} is not allowed.', propertyName)
                                         });
                                     }
@@ -3869,7 +4371,7 @@ var __extends = (this && this.__extends) || (function () {
                             var propertyNode = child.parent;
                             validationResult.problems.push({
                                 location: { offset: propertyNode.keyNode.offset, length: propertyNode.keyNode.length },
-                                severity: ProblemSeverity.Warning,
+                                severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                                 message: schema.errorMessage || localize('DisallowedExtraPropWarning', 'Property {0} is not allowed.', propertyName)
                             });
                         }
@@ -3880,7 +4382,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (node.properties.length > schema.maxProperties) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: localize('MaxPropWarning', 'Object has more properties than limit of {0}.', schema.maxProperties)
                     });
                 }
@@ -3889,7 +4391,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (node.properties.length < schema.minProperties) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: ProblemSeverity.Warning,
+                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                         message: localize('MinPropWarning', 'Object has fewer properties than the required number of {0}', schema.minProperties)
                     });
                 }
@@ -3904,7 +4406,7 @@ var __extends = (this && this.__extends) || (function () {
                                 if (!seenKeys[requiredProp]) {
                                     validationResult.problems.push({
                                         location: { offset: node.offset, length: node.length },
-                                        severity: ProblemSeverity.Warning,
+                                        severity: vscode_languageserver_types_1.DiagnosticSeverity.Warning,
                                         message: localize('RequiredDependentPropWarning', 'Object is missing property {0} required by property {1}.', requiredProp, key)
                                     });
                                 }
@@ -3937,9 +4439,10 @@ var __extends = (this && this.__extends) || (function () {
     }
     function parse(textDocument, config) {
         var problems = [];
+        var lastProblemOffset = -1;
         var text = textDocument.getText();
         var scanner = Json.createScanner(text, false);
-        var comments = config && config.collectComments ? [] : void 0;
+        var commentRanges = config && config.collectComments ? [] : void 0;
         function _scanNext() {
             while (true) {
                 var token_1 = scanner.scan();
@@ -3947,8 +4450,8 @@ var __extends = (this && this.__extends) || (function () {
                 switch (token_1) {
                     case 12 /* LineCommentTrivia */:
                     case 13 /* BlockCommentTrivia */:
-                        if (Array.isArray(comments)) {
-                            comments.push({ offset: scanner.getTokenOffset(), length: scanner.getTokenLength() });
+                        if (Array.isArray(commentRanges)) {
+                            commentRanges.push(vscode_languageserver_types_1.Range.create(textDocument.positionAt(scanner.getTokenOffset()), textDocument.positionAt(scanner.getTokenOffset() + scanner.getTokenLength())));
                         }
                         break;
                     case 15 /* Trivia */:
@@ -3966,9 +4469,12 @@ var __extends = (this && this.__extends) || (function () {
             }
             return false;
         }
-        function _errorAtRange(message, code, location) {
-            if (problems.length === 0 || problems[problems.length - 1].location.offset !== location.offset) {
-                problems.push({ message: message, location: location, code: code, severity: ProblemSeverity.Error });
+        function _errorAtRange(message, code, startOffset, endOffset, severity) {
+            if (severity === void 0) { severity = vscode_languageserver_types_1.DiagnosticSeverity.Error; }
+            if (problems.length === 0 || startOffset !== lastProblemOffset) {
+                var range = vscode_languageserver_types_1.Range.create(textDocument.positionAt(startOffset), textDocument.positionAt(endOffset));
+                problems.push(vscode_languageserver_types_1.Diagnostic.create(range, message, severity, code, textDocument.languageId));
+                lastProblemOffset = startOffset;
             }
         }
         function _error(message, code, node, skipUntilAfter, skipUntil) {
@@ -3984,7 +4490,7 @@ var __extends = (this && this.__extends) || (function () {
                 }
                 end = start + 1;
             }
-            _errorAtRange(message, code, { offset: start, length: end - start });
+            _errorAtRange(message, code, start, end);
             if (node) {
                 _finalize(node, false);
             }
@@ -4006,22 +4512,22 @@ var __extends = (this && this.__extends) || (function () {
         function _checkScanError() {
             switch (scanner.getTokenError()) {
                 case 4 /* InvalidUnicode */:
-                    _error(localize('InvalidUnicode', 'Invalid unicode sequence in string.'), ErrorCode.InvalidUnicode);
+                    _error(localize('InvalidUnicode', 'Invalid unicode sequence in string.'), jsonLanguageTypes_1.ErrorCode.InvalidUnicode);
                     return true;
                 case 5 /* InvalidEscapeCharacter */:
-                    _error(localize('InvalidEscapeCharacter', 'Invalid escape character in string.'), ErrorCode.InvalidEscapeCharacter);
+                    _error(localize('InvalidEscapeCharacter', 'Invalid escape character in string.'), jsonLanguageTypes_1.ErrorCode.InvalidEscapeCharacter);
                     return true;
                 case 3 /* UnexpectedEndOfNumber */:
-                    _error(localize('UnexpectedEndOfNumber', 'Unexpected end of number.'), ErrorCode.UnexpectedEndOfNumber);
+                    _error(localize('UnexpectedEndOfNumber', 'Unexpected end of number.'), jsonLanguageTypes_1.ErrorCode.UnexpectedEndOfNumber);
                     return true;
                 case 1 /* UnexpectedEndOfComment */:
-                    _error(localize('UnexpectedEndOfComment', 'Unexpected end of comment.'), ErrorCode.UnexpectedEndOfComment);
+                    _error(localize('UnexpectedEndOfComment', 'Unexpected end of comment.'), jsonLanguageTypes_1.ErrorCode.UnexpectedEndOfComment);
                     return true;
                 case 2 /* UnexpectedEndOfString */:
-                    _error(localize('UnexpectedEndOfString', 'Unexpected end of string.'), ErrorCode.UnexpectedEndOfString);
+                    _error(localize('UnexpectedEndOfString', 'Unexpected end of string.'), jsonLanguageTypes_1.ErrorCode.UnexpectedEndOfString);
                     return true;
                 case 6 /* InvalidCharacter */:
-                    _error(localize('InvalidCharacter', 'Invalid characters in string. Control characters must be escaped.'), ErrorCode.InvalidCharacter);
+                    _error(localize('InvalidCharacter', 'Invalid characters in string. Control characters must be escaped.'), jsonLanguageTypes_1.ErrorCode.InvalidCharacter);
                     return true;
             }
             return false;
@@ -4044,23 +4550,23 @@ var __extends = (this && this.__extends) || (function () {
             while (scanner.getToken() !== 4 /* CloseBracketToken */ && scanner.getToken() !== 17 /* EOF */) {
                 if (scanner.getToken() === 5 /* CommaToken */) {
                     if (!needsComma) {
-                        _error(localize('ValueExpected', 'Value expected'), ErrorCode.ValueExpected);
+                        _error(localize('ValueExpected', 'Value expected'), jsonLanguageTypes_1.ErrorCode.ValueExpected);
                     }
                     var commaOffset = scanner.getTokenOffset();
                     _scanNext(); // consume comma
                     if (scanner.getToken() === 4 /* CloseBracketToken */) {
                         if (needsComma) {
-                            _errorAtRange(localize('TrailingComma', 'Trailing comma'), ErrorCode.TrailingComma, { offset: commaOffset, length: 1 });
+                            _errorAtRange(localize('TrailingComma', 'Trailing comma'), jsonLanguageTypes_1.ErrorCode.TrailingComma, commaOffset, commaOffset + 1);
                         }
                         continue;
                     }
                 }
                 else if (needsComma) {
-                    _error(localize('ExpectedComma', 'Expected comma'), ErrorCode.CommaExpected);
+                    _error(localize('ExpectedComma', 'Expected comma'), jsonLanguageTypes_1.ErrorCode.CommaExpected);
                 }
                 var item = _parseValue(node, count++);
                 if (!item) {
-                    _error(localize('PropertyExpected', 'Value expected'), ErrorCode.ValueExpected, null, [], [4 /* CloseBracketToken */, 5 /* CommaToken */]);
+                    _error(localize('PropertyExpected', 'Value expected'), jsonLanguageTypes_1.ErrorCode.ValueExpected, null, [], [4 /* CloseBracketToken */, 5 /* CommaToken */]);
                 }
                 else {
                     node.items.push(item);
@@ -4068,7 +4574,7 @@ var __extends = (this && this.__extends) || (function () {
                 needsComma = true;
             }
             if (scanner.getToken() !== 4 /* CloseBracketToken */) {
-                return _error(localize('ExpectedCloseBracket', 'Expected comma or closing bracket'), ErrorCode.CommaOrCloseBacketExpected, node);
+                return _error(localize('ExpectedCloseBracket', 'Expected comma or closing bracket'), jsonLanguageTypes_1.ErrorCode.CommaOrCloseBacketExpected, node);
             }
             return _finalize(node, true);
         }
@@ -4078,7 +4584,7 @@ var __extends = (this && this.__extends) || (function () {
             if (!key) {
                 if (scanner.getToken() === 16 /* Unknown */) {
                     // give a more helpful error message
-                    _error(localize('DoubleQuotesExpected', 'Property keys must be doublequoted'), ErrorCode.Undefined);
+                    _error(localize('DoubleQuotesExpected', 'Property keys must be doublequoted'), jsonLanguageTypes_1.ErrorCode.Undefined);
                     var keyNode = new StringASTNodeImpl(node, scanner.getTokenOffset(), scanner.getTokenLength());
                     keyNode.value = scanner.getTokenValue();
                     key = keyNode;
@@ -4091,9 +4597,9 @@ var __extends = (this && this.__extends) || (function () {
             node.keyNode = key;
             var seen = keysSeen[key.value];
             if (seen) {
-                problems.push({ location: { offset: node.keyNode.offset, length: node.keyNode.length }, message: localize('DuplicateKeyWarning', "Duplicate object key"), code: ErrorCode.Undefined, severity: ProblemSeverity.Warning });
+                _errorAtRange(localize('DuplicateKeyWarning', "Duplicate object key"), jsonLanguageTypes_1.ErrorCode.DuplicateKey, node.keyNode.offset, node.keyNode.offset + node.keyNode.length, vscode_languageserver_types_1.DiagnosticSeverity.Warning);
                 if (typeof seen === 'object') {
-                    problems.push({ location: { offset: seen.keyNode.offset, length: seen.keyNode.length }, message: localize('DuplicateKeyWarning', "Duplicate object key"), code: ErrorCode.Undefined, severity: ProblemSeverity.Warning });
+                    _errorAtRange(localize('DuplicateKeyWarning', "Duplicate object key"), jsonLanguageTypes_1.ErrorCode.DuplicateKey, seen.keyNode.offset, seen.keyNode.offset + seen.keyNode.length, vscode_languageserver_types_1.DiagnosticSeverity.Warning);
                 }
                 keysSeen[key.value] = true; // if the same key is duplicate again, avoid duplicate error reporting
             }
@@ -4105,7 +4611,7 @@ var __extends = (this && this.__extends) || (function () {
                 _scanNext(); // consume ColonToken
             }
             else {
-                _error(localize('ColonExpected', 'Colon expected'), ErrorCode.ColonExpected);
+                _error(localize('ColonExpected', 'Colon expected'), jsonLanguageTypes_1.ErrorCode.ColonExpected);
                 if (scanner.getToken() === 10 /* StringLiteral */ && textDocument.positionAt(key.offset + key.length).line < textDocument.positionAt(scanner.getTokenOffset()).line) {
                     node.length = key.length;
                     return node;
@@ -4113,7 +4619,7 @@ var __extends = (this && this.__extends) || (function () {
             }
             var value = _parseValue(node, key.value);
             if (!value) {
-                return _error(localize('ValueExpected', 'Value expected'), ErrorCode.ValueExpected, node, [], [2 /* CloseBraceToken */, 5 /* CommaToken */]);
+                return _error(localize('ValueExpected', 'Value expected'), jsonLanguageTypes_1.ErrorCode.ValueExpected, node, [], [2 /* CloseBraceToken */, 5 /* CommaToken */]);
             }
             node.valueNode = value;
             node.length = value.offset + value.length - node.offset;
@@ -4130,23 +4636,23 @@ var __extends = (this && this.__extends) || (function () {
             while (scanner.getToken() !== 2 /* CloseBraceToken */ && scanner.getToken() !== 17 /* EOF */) {
                 if (scanner.getToken() === 5 /* CommaToken */) {
                     if (!needsComma) {
-                        _error(localize('PropertyExpected', 'Property expected'), ErrorCode.PropertyExpected);
+                        _error(localize('PropertyExpected', 'Property expected'), jsonLanguageTypes_1.ErrorCode.PropertyExpected);
                     }
                     var commaOffset = scanner.getTokenOffset();
                     _scanNext(); // consume comma
                     if (scanner.getToken() === 2 /* CloseBraceToken */) {
                         if (needsComma) {
-                            _errorAtRange(localize('TrailingComma', 'Trailing comma'), ErrorCode.TrailingComma, { offset: commaOffset, length: 1 });
+                            _errorAtRange(localize('TrailingComma', 'Trailing comma'), jsonLanguageTypes_1.ErrorCode.TrailingComma, commaOffset, commaOffset + 1);
                         }
                         continue;
                     }
                 }
                 else if (needsComma) {
-                    _error(localize('ExpectedComma', 'Expected comma'), ErrorCode.CommaExpected);
+                    _error(localize('ExpectedComma', 'Expected comma'), jsonLanguageTypes_1.ErrorCode.CommaExpected);
                 }
                 var property = _parseProperty(node, keysSeen);
                 if (!property) {
-                    _error(localize('PropertyExpected', 'Property expected'), ErrorCode.PropertyExpected, null, [], [2 /* CloseBraceToken */, 5 /* CommaToken */]);
+                    _error(localize('PropertyExpected', 'Property expected'), jsonLanguageTypes_1.ErrorCode.PropertyExpected, null, [], [2 /* CloseBraceToken */, 5 /* CommaToken */]);
                 }
                 else {
                     node.properties.push(property);
@@ -4154,7 +4660,7 @@ var __extends = (this && this.__extends) || (function () {
                 needsComma = true;
             }
             if (scanner.getToken() !== 2 /* CloseBraceToken */) {
-                return _error(localize('ExpectedCloseBrace', 'Expected comma or closing brace'), ErrorCode.CommaOrCloseBraceExpected, node);
+                return _error(localize('ExpectedCloseBrace', 'Expected comma or closing brace'), jsonLanguageTypes_1.ErrorCode.CommaOrCloseBraceExpected, node);
             }
             return _finalize(node, true);
         }
@@ -4176,12 +4682,12 @@ var __extends = (this && this.__extends) || (function () {
                 try {
                     var numberValue = JSON.parse(tokenValue);
                     if (typeof numberValue !== 'number') {
-                        return _error(localize('InvalidNumberFormat', 'Invalid number format.'), ErrorCode.Undefined, node);
+                        return _error(localize('InvalidNumberFormat', 'Invalid number format.'), jsonLanguageTypes_1.ErrorCode.Undefined, node);
                     }
                     node.value = numberValue;
                 }
                 catch (e) {
-                    return _error(localize('InvalidNumberFormat', 'Invalid number format.'), ErrorCode.Undefined, node);
+                    return _error(localize('InvalidNumberFormat', 'Invalid number format.'), jsonLanguageTypes_1.ErrorCode.Undefined, node);
                 }
                 node.isInteger = tokenValue.indexOf('.') === -1;
             }
@@ -4208,13 +4714,13 @@ var __extends = (this && this.__extends) || (function () {
         if (token !== 17 /* EOF */) {
             _root = _parseValue(null, null);
             if (!_root) {
-                _error(localize('Invalid symbol', 'Expected a JSON object, array or literal.'), ErrorCode.Undefined);
+                _error(localize('Invalid symbol', 'Expected a JSON object, array or literal.'), jsonLanguageTypes_1.ErrorCode.Undefined);
             }
             else if (scanner.getToken() !== 17 /* EOF */) {
-                _error(localize('End of file expected', 'End of file expected.'), ErrorCode.Undefined);
+                _error(localize('End of file expected', 'End of file expected.'), jsonLanguageTypes_1.ErrorCode.Undefined);
             }
         }
-        return new JSONDocument(_root, problems, comments);
+        return new JSONDocument(_root, problems, commentRanges);
     }
     exports.parse = parse;
 });
@@ -4384,7 +4890,7 @@ var __extends = (this && this.__extends) || (function () {
                 isIncomplete: false
             };
             var offset = document.offsetAt(position);
-            var node = doc.getNodeFromOffsetEndInclusive(offset);
+            var node = doc.getNodeFromOffset(offset, true);
             if (this.isInComment(document, node ? node.offset : 0, offset)) {
                 return Promise.resolve(result);
             }
@@ -4651,9 +5157,8 @@ var __extends = (this && this.__extends) || (function () {
                     // suggest items of an array at the same key
                     var parentKey_3 = node.parent.keyNode.value;
                     doc.visit(function (n) {
-                        var p = n;
-                        if (n.type === 'property' && p.keyNode.value === parentKey_3 && p.valueNode && p.valueNode.type === 'array') {
-                            p.valueNode.items.forEach(collectSuggestionsForValues);
+                        if (n.type === 'property' && n.keyNode.value === parentKey_3 && n.valueNode && n.valueNode.type === 'array') {
+                            n.valueNode.items.forEach(collectSuggestionsForValues);
                         }
                         return true;
                     });
@@ -4771,7 +5276,7 @@ var __extends = (this && this.__extends) || (function () {
             var _this = this;
             if (arrayDepth === void 0) { arrayDepth = 0; }
             var hasProposals = false;
-            if (schema.default) {
+            if (isDefined(schema.default)) {
                 var type = schema.type;
                 var value = schema.default;
                 for (var i = arrayDepth; i > 0; i--) {
@@ -4794,7 +5299,7 @@ var __extends = (this && this.__extends) || (function () {
                     var label = s.label;
                     var insertText;
                     var filterText;
-                    if (typeof value !== 'undefined') {
+                    if (isDefined(value)) {
                         var type_1 = schema.type;
                         for (var i = arrayDepth; i > 0; i--) {
                             value = [value];
@@ -4832,6 +5337,15 @@ var __extends = (this && this.__extends) || (function () {
             }
         };
         JSONCompletion.prototype.addEnumValueCompletions = function (schema, separatorAfter, collector) {
+            if (isDefined(schema.const)) {
+                collector.add({
+                    kind: this.getSuggestionKind(schema.type),
+                    label: this.getLabelForValue(schema.const),
+                    insertText: this.getInsertTextForValue(schema.const, separatorAfter),
+                    insertTextFormat: vscode_languageserver_types_1.InsertTextFormat.Snippet,
+                    documentation: schema.description
+                });
+            }
             if (Array.isArray(schema.enum)) {
                 for (var i = 0, length = schema.enum.length; i < length; i++) {
                     var enm = schema.enum[i];
@@ -4850,7 +5364,7 @@ var __extends = (this && this.__extends) || (function () {
             }
         };
         JSONCompletion.prototype.collectTypes = function (schema, types) {
-            if (Array.isArray(schema.enum)) {
+            if (Array.isArray(schema.enum) || isDefined(schema.const)) {
                 return;
             }
             var type = schema.type;
@@ -5024,7 +5538,7 @@ var __extends = (this && this.__extends) || (function () {
                 if (Array.isArray(propertySchema.defaultSnippets)) {
                     if (propertySchema.defaultSnippets.length === 1) {
                         var body = propertySchema.defaultSnippets[0].body;
-                        if (typeof body !== 'undefined') {
+                        if (isDefined(body)) {
                             value = this.getInsertTextForSnippetValue(body, '');
                         }
                     }
@@ -5036,7 +5550,7 @@ var __extends = (this && this.__extends) || (function () {
                     }
                     nValueProposals += propertySchema.enum.length;
                 }
-                if (typeof propertySchema.default !== 'undefined') {
+                if (isDefined(propertySchema.default)) {
                     if (!value) {
                         value = this.getInsertTextForGuessedValue(propertySchema.default, '');
                     }
@@ -5135,6 +5649,9 @@ var __extends = (this && this.__extends) || (function () {
         return JSONCompletion;
     }());
     exports.JSONCompletion = JSONCompletion;
+    function isDefined(val) {
+        return typeof val !== 'undefined';
+    }
 });
 //# sourceMappingURL=jsonCompletion.js.map;
 (function (factory) {
@@ -5261,7 +5778,7 @@ var __extends = (this && this.__extends) || (function () {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define('vscode-json-languageservice/services/jsonValidation',["require", "exports", "../parser/jsonParser", "vscode-languageserver-types", "vscode-nls"], factory);
+        define('vscode-json-languageservice/services/jsonValidation',["require", "exports", "vscode-languageserver-types", "../jsonLanguageTypes", "vscode-nls"], factory);
     }
 })(function (require, exports) {
     /*---------------------------------------------------------------------------------------------
@@ -5270,8 +5787,8 @@ var __extends = (this && this.__extends) || (function () {
      *--------------------------------------------------------------------------------------------*/
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
-    var jsonParser_1 = require("../parser/jsonParser");
     var vscode_languageserver_types_1 = require("vscode-languageserver-types");
+    var jsonLanguageTypes_1 = require("../jsonLanguageTypes");
     var nls = require("vscode-nls");
     var localize = nls.loadMessageBundle();
     var JSONValidation = /** @class */ (function () {
@@ -5283,10 +5800,10 @@ var __extends = (this && this.__extends) || (function () {
         JSONValidation.prototype.configure = function (raw) {
             if (raw) {
                 this.validationEnabled = raw.validate;
-                this.commentSeverity = raw.allowComments ? jsonParser_1.ProblemSeverity.Ignore : jsonParser_1.ProblemSeverity.Error;
+                this.commentSeverity = raw.allowComments ? void 0 : vscode_languageserver_types_1.DiagnosticSeverity.Error;
             }
         };
-        JSONValidation.prototype.doValidation = function (textDocument, jsonDocument, documentSettings) {
+        JSONValidation.prototype.doValidation = function (textDocument, jsonDocument, documentSettings, schema) {
             var _this = this;
             if (!this.validationEnabled) {
                 return this.promise.resolve([]);
@@ -5294,60 +5811,62 @@ var __extends = (this && this.__extends) || (function () {
             var diagnostics = [];
             var added = {};
             var addProblem = function (problem) {
-                if (problem.severity === jsonParser_1.ProblemSeverity.Ignore) {
-                    return;
-                }
                 // remove duplicated messages
-                var signature = problem.location.offset + ' ' + problem.location.length + ' ' + problem.message;
+                var signature = problem.range.start.line + ' ' + problem.range.start.character + ' ' + problem.message;
                 if (!added[signature]) {
                     added[signature] = true;
-                    var range = {
-                        start: textDocument.positionAt(problem.location.offset),
-                        end: textDocument.positionAt(problem.location.offset + problem.location.length)
-                    };
-                    var severity = problem.severity === jsonParser_1.ProblemSeverity.Error ? vscode_languageserver_types_1.DiagnosticSeverity.Error : vscode_languageserver_types_1.DiagnosticSeverity.Warning;
-                    diagnostics.push({ severity: severity, range: range, message: problem.message });
+                    diagnostics.push(problem);
                 }
             };
-            return this.jsonSchemaService.getSchemaForResource(textDocument.uri, jsonDocument).then(function (schema) {
-                var trailingCommaSeverity = documentSettings ? documentSettings.trailingCommas : jsonParser_1.ProblemSeverity.Error;
-                var commentSeverity = documentSettings ? documentSettings.comments : _this.commentSeverity;
+            var getDiagnostics = function (schema) {
+                var trailingCommaSeverity = documentSettings ? toDiagnosticSeverity(documentSettings.trailingCommas) : vscode_languageserver_types_1.DiagnosticSeverity.Error;
+                var commentSeverity = documentSettings ? toDiagnosticSeverity(documentSettings.comments) : _this.commentSeverity;
                 if (schema) {
                     if (schema.errors.length && jsonDocument.root) {
                         var astRoot = jsonDocument.root;
                         var property = astRoot.type === 'object' ? astRoot.properties[0] : null;
                         if (property && property.keyNode.value === '$schema') {
                             var node = property.valueNode || property;
-                            addProblem({ location: { offset: node.offset, length: node.length }, message: schema.errors[0], severity: jsonParser_1.ProblemSeverity.Warning });
+                            var range = vscode_languageserver_types_1.Range.create(textDocument.positionAt(node.offset), textDocument.positionAt(node.offset + node.length));
+                            addProblem(vscode_languageserver_types_1.Diagnostic.create(range, schema.errors[0], vscode_languageserver_types_1.DiagnosticSeverity.Warning, jsonLanguageTypes_1.ErrorCode.SchemaResolveError));
                         }
                         else {
-                            addProblem({ location: { offset: astRoot.offset, length: 1 }, message: schema.errors[0], severity: jsonParser_1.ProblemSeverity.Warning });
+                            var range = vscode_languageserver_types_1.Range.create(textDocument.positionAt(astRoot.offset), textDocument.positionAt(astRoot.offset + 1));
+                            addProblem(vscode_languageserver_types_1.Diagnostic.create(range, schema.errors[0], vscode_languageserver_types_1.DiagnosticSeverity.Warning, jsonLanguageTypes_1.ErrorCode.SchemaResolveError));
                         }
                     }
                     else {
-                        var semanticErrors = jsonDocument.validate(schema.schema);
+                        var semanticErrors = jsonDocument.validate(textDocument, schema.schema);
                         if (semanticErrors) {
                             semanticErrors.forEach(addProblem);
                         }
                     }
                     if (schemaAllowsComments(schema.schema)) {
-                        trailingCommaSeverity = commentSeverity = jsonParser_1.ProblemSeverity.Ignore;
+                        trailingCommaSeverity = commentSeverity = void 0;
                     }
                 }
                 jsonDocument.syntaxErrors.forEach(function (p) {
-                    if (p.code === jsonParser_1.ErrorCode.TrailingComma) {
+                    if (p.code === jsonLanguageTypes_1.ErrorCode.TrailingComma) {
+                        if (typeof commentSeverity !== 'number') {
+                            return;
+                        }
                         p.severity = trailingCommaSeverity;
                     }
                     addProblem(p);
                 });
-                diagnostics.push.apply(diagnostics, jsonDocument.externalDiagnostic);
-                if (commentSeverity !== jsonParser_1.ProblemSeverity.Ignore) {
+                if (typeof commentSeverity === 'number') {
                     var message_1 = localize('InvalidCommentToken', 'Comments are not permitted in JSON.');
                     jsonDocument.comments.forEach(function (c) {
-                        addProblem({ location: c, severity: commentSeverity, message: message_1 });
+                        addProblem(vscode_languageserver_types_1.Diagnostic.create(c, message_1, commentSeverity, jsonLanguageTypes_1.ErrorCode.CommentNotPermitted));
                     });
                 }
                 return diagnostics;
+            };
+            if (schema) {
+                return this.promise.resolve(getDiagnostics(schema));
+            }
+            return this.jsonSchemaService.getSchemaForResource(textDocument.uri, jsonDocument).then(function (schema) {
+                return getDiagnostics(schema);
             });
         };
         return JSONValidation;
@@ -5363,6 +5882,14 @@ var __extends = (this && this.__extends) || (function () {
             }
         }
         return false;
+    }
+    function toDiagnosticSeverity(severityLevel) {
+        switch (severityLevel) {
+            case 'error': return vscode_languageserver_types_1.DiagnosticSeverity.Error;
+            case 'warning': return vscode_languageserver_types_1.DiagnosticSeverity.Warning;
+            case 'ignore': return void 0;
+        }
+        return void 0;
     }
 });
 //# sourceMappingURL=jsonValidation.js.map;
@@ -5535,7 +6062,7 @@ var __extends = (this && this.__extends) || (function () {
                     return vscode_languageserver_types_1.SymbolKind.Array;
                 case 'boolean':
                     return vscode_languageserver_types_1.SymbolKind.Boolean;
-                default:// 'null'
+                default: // 'null'
                     return vscode_languageserver_types_1.SymbolKind.Variable;
             }
         };
@@ -6311,7 +6838,7 @@ var __extends = (this && this.__extends) || (function () {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define('vscode-json-languageservice/jsonLanguageService',["require", "exports", "vscode-languageserver-types", "./services/jsonCompletion", "./services/jsonHover", "./services/jsonValidation", "./services/jsonDocumentSymbols", "./parser/jsonParser", "./services/configuration", "./services/jsonSchemaService", "jsonc-parser"], factory);
+        define('vscode-json-languageservice/services/jsonFolding',["require", "exports", "vscode-languageserver-types", "jsonc-parser", "../jsonLanguageTypes"], factory);
     }
 })(function (require, exports) {
     /*---------------------------------------------------------------------------------------------
@@ -6321,10 +6848,147 @@ var __extends = (this && this.__extends) || (function () {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var vscode_languageserver_types_1 = require("vscode-languageserver-types");
+    var jsonc_parser_1 = require("jsonc-parser");
+    var jsonLanguageTypes_1 = require("../jsonLanguageTypes");
+    function getFoldingRanges(document, context) {
+        var ranges = [];
+        var nestingLevels = [];
+        var stack = [];
+        var prevStart = -1;
+        var scanner = jsonc_parser_1.createScanner(document.getText(), false);
+        var token = scanner.scan();
+        function addRange(range) {
+            ranges.push(range);
+            nestingLevels.push(stack.length);
+        }
+        while (token !== 17 /* EOF */) {
+            switch (token) {
+                case 1 /* OpenBraceToken */:
+                case 3 /* OpenBracketToken */: {
+                    var startLine = document.positionAt(scanner.getTokenOffset()).line;
+                    var range = { startLine: startLine, endLine: startLine, kind: token === 1 /* OpenBraceToken */ ? 'object' : 'array' };
+                    stack.push(range);
+                    break;
+                }
+                case 2 /* CloseBraceToken */:
+                case 4 /* CloseBracketToken */: {
+                    var kind = token === 2 /* CloseBraceToken */ ? 'object' : 'array';
+                    if (stack.length > 0 && stack[stack.length - 1].kind === kind) {
+                        var range = stack.pop();
+                        var line = document.positionAt(scanner.getTokenOffset()).line;
+                        if (range && line > range.startLine + 1 && prevStart !== range.startLine) {
+                            range.endLine = line - 1;
+                            addRange(range);
+                            prevStart = range.startLine;
+                        }
+                    }
+                    break;
+                }
+                case 13 /* BlockCommentTrivia */: {
+                    var startLine = document.positionAt(scanner.getTokenOffset()).line;
+                    var endLine = document.positionAt(scanner.getTokenOffset() + scanner.getTokenLength()).line;
+                    if (scanner.getTokenError() === 1 /* UnexpectedEndOfComment */ && startLine + 1 < document.lineCount) {
+                        scanner.setPosition(document.offsetAt(vscode_languageserver_types_1.Position.create(startLine + 1, 0)));
+                    }
+                    else {
+                        if (startLine < endLine) {
+                            addRange({ startLine: startLine, endLine: endLine, kind: jsonLanguageTypes_1.FoldingRangeKind.Comment });
+                            prevStart = startLine;
+                        }
+                    }
+                    break;
+                }
+                case 12 /* LineCommentTrivia */: {
+                    var text = document.getText().substr(scanner.getTokenOffset(), scanner.getTokenLength());
+                    var m = text.match(/^\/\/\s*#(region\b)|(endregion\b)/);
+                    if (m) {
+                        var line = document.positionAt(scanner.getTokenOffset()).line;
+                        if (m[1]) { // start pattern match
+                            var range = { startLine: line, endLine: line, kind: jsonLanguageTypes_1.FoldingRangeKind.Region };
+                            stack.push(range);
+                        }
+                        else {
+                            var i = stack.length - 1;
+                            while (i >= 0 && stack[i].kind !== jsonLanguageTypes_1.FoldingRangeKind.Region) {
+                                i--;
+                            }
+                            if (i >= 0) {
+                                var range = stack[i];
+                                stack.length = i;
+                                if (line > range.startLine && prevStart !== range.startLine) {
+                                    range.endLine = line;
+                                    addRange(range);
+                                    prevStart = range.startLine;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            token = scanner.scan();
+        }
+        var rangeLimit = context && context.rangeLimit;
+        if (typeof rangeLimit !== 'number' || ranges.length <= rangeLimit) {
+            return ranges;
+        }
+        var counts = [];
+        for (var _i = 0, nestingLevels_1 = nestingLevels; _i < nestingLevels_1.length; _i++) {
+            var level = nestingLevels_1[_i];
+            if (level < 30) {
+                counts[level] = (counts[level] || 0) + 1;
+            }
+        }
+        var entries = 0;
+        var maxLevel = 0;
+        for (var i = 0; i < counts.length; i++) {
+            var n = counts[i];
+            if (n) {
+                if (n + entries > rangeLimit) {
+                    maxLevel = i;
+                    break;
+                }
+                entries += n;
+            }
+        }
+        var result = [];
+        for (var i = 0; i < ranges.length; i++) {
+            var level = nestingLevels[i];
+            if (typeof level === 'number') {
+                if (level < maxLevel || (level === maxLevel && entries++ < rangeLimit)) {
+                    result.push(ranges[i]);
+                }
+            }
+        }
+        return result;
+    }
+    exports.getFoldingRanges = getFoldingRanges;
+});
+//# sourceMappingURL=jsonFolding.js.map;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define('vscode-json-languageservice/jsonLanguageService',["require", "exports", "vscode-languageserver-types", "./services/jsonCompletion", "./services/jsonHover", "./services/jsonValidation", "./services/jsonDocumentSymbols", "./parser/jsonParser", "./services/configuration", "./services/jsonSchemaService", "./services/jsonFolding", "jsonc-parser", "./jsonLanguageTypes"], factory);
+    }
+})(function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var vscode_languageserver_types_1 = require("vscode-languageserver-types");
     exports.TextDocument = vscode_languageserver_types_1.TextDocument;
     exports.Position = vscode_languageserver_types_1.Position;
     exports.CompletionItem = vscode_languageserver_types_1.CompletionItem;
     exports.CompletionList = vscode_languageserver_types_1.CompletionList;
+    exports.Hover = vscode_languageserver_types_1.Hover;
     exports.Range = vscode_languageserver_types_1.Range;
     exports.SymbolInformation = vscode_languageserver_types_1.SymbolInformation;
     exports.Diagnostic = vscode_languageserver_types_1.Diagnostic;
@@ -6338,7 +7002,9 @@ var __extends = (this && this.__extends) || (function () {
     var jsonParser_1 = require("./parser/jsonParser");
     var configuration_1 = require("./services/configuration");
     var jsonSchemaService_1 = require("./services/jsonSchemaService");
+    var jsonFolding_1 = require("./services/jsonFolding");
     var jsonc_parser_1 = require("jsonc-parser");
+    __export(require("./jsonLanguageTypes"));
     function getLanguageService(params) {
         var promise = params.promiseConstructor || Promise;
         var jsonSchemaService = new jsonSchemaService_1.JSONSchemaService(params.schemaRequestService, params.workspaceContext, promise);
@@ -6368,6 +7034,7 @@ var __extends = (this && this.__extends) || (function () {
             findDocumentColors: jsonDocumentSymbols.findDocumentColors.bind(jsonDocumentSymbols),
             getColorPresentations: jsonDocumentSymbols.getColorPresentations.bind(jsonDocumentSymbols),
             doHover: jsonHover.doHover.bind(jsonHover),
+            getFoldingRanges: jsonFolding_1.getFoldingRanges,
             format: function (d, r, o) {
                 var range = void 0;
                 if (r) {
@@ -6474,6 +7141,11 @@ define('vs/language/json/jsonWorker',["require", "exports", "vscode-json-languag
             var stylesheet = this._languageService.parseJSONDocument(document);
             var colorPresentations = this._languageService.getColorPresentations(document, stylesheet, color, range);
             return Promise.as(colorPresentations);
+        };
+        JSONWorker.prototype.provideFoldingRanges = function (uri, context) {
+            var document = this._getTextDocument(uri);
+            var ranges = this._languageService.getFoldingRanges(document, context);
+            return Promise.as(ranges);
         };
         JSONWorker.prototype._getTextDocument = function (uri) {
             var models = this._ctx.getMirrorModels();

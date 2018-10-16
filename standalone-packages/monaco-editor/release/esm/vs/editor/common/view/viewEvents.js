@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -14,7 +17,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as errors from '../../../base/common/errors.js';
-import { Disposable } from '../../../base/common/lifecycle.js';
+import { Disposable, toDisposable } from '../../../base/common/lifecycle.js';
 var ViewConfigurationChangedEvent = /** @class */ (function () {
     function ViewConfigurationChangedEvent(source) {
         this.type = 1 /* ViewConfigurationChanged */;
@@ -25,6 +28,7 @@ var ViewConfigurationChangedEvent = /** @class */ (function () {
         this.readOnly = source.readOnly;
         this.accessibilitySupport = source.accessibilitySupport;
         this.emptySelectionClipboard = source.emptySelectionClipboard;
+        this.copyWithSyntaxHighlighting = source.copyWithSyntaxHighlighting;
         this.layoutInfo = source.layoutInfo;
         this.fontInfo = source.fontInfo;
         this.viewInfo = source.viewInfo;
@@ -203,17 +207,15 @@ var ViewEventEmitter = /** @class */ (function (_super) {
     ViewEventEmitter.prototype.addEventListener = function (listener) {
         var _this = this;
         this._listeners.push(listener);
-        return {
-            dispose: function () {
-                var listeners = _this._listeners;
-                for (var i = 0, len = listeners.length; i < len; i++) {
-                    if (listeners[i] === listener) {
-                        listeners.splice(i, 1);
-                        break;
-                    }
+        return toDisposable(function () {
+            var listeners = _this._listeners;
+            for (var i = 0, len = listeners.length; i < len; i++) {
+                if (listeners[i] === listener) {
+                    listeners.splice(i, 1);
+                    break;
                 }
             }
-        };
+        });
     };
     return ViewEventEmitter;
 }(Disposable));

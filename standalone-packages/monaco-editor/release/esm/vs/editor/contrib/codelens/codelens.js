@@ -5,7 +5,7 @@
 'use strict';
 import { illegalArgument, onUnexpectedExternalError } from '../../../base/common/errors.js';
 import { mergeSort } from '../../../base/common/arrays.js';
-import URI from '../../../base/common/uri.js';
+import { URI } from '../../../base/common/uri.js';
 import { registerLanguageCommand } from '../../browser/editorExtensions.js';
 import { CodeLensProviderRegistry } from '../../common/modes.js';
 import { IModelService } from '../../common/services/modelService.js';

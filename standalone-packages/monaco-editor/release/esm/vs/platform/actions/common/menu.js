@@ -41,6 +41,10 @@ var Menu = /** @class */ (function () {
                 group[1].push(item);
                 // keep keys for eventing
                 Menu._fillInKbExprKeys(item.when, keysFilter);
+                // keep precondition keys for event if applicable
+                if (isIMenuItem(item) && item.command.precondition) {
+                    Menu._fillInKbExprKeys(item.command.precondition, keysFilter);
+                }
             }
             // subscribe to context changes
             _this._disposables.push(_this._contextKeyService.onDidChangeContext(function (event) {
@@ -72,7 +76,6 @@ var Menu = /** @class */ (function () {
                 var item = items_1[_b];
                 if (this._contextKeyService.contextMatchesRules(item.when)) {
                     var action = isIMenuItem(item) ? new MenuItemAction(item.command, item.alt, options, this._contextKeyService, this._commandService) : new SubmenuItemAction(item);
-                    action.order = item.order; //TODO@Ben order is menu item property, not an action property
                     activeActions.push(action);
                 }
             }

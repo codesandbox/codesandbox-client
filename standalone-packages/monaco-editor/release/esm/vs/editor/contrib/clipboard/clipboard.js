@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -21,6 +24,7 @@ import { ICodeEditorService } from '../../browser/services/codeEditorService.js'
 import { registerEditorAction, EditorAction } from '../../browser/editorExtensions.js';
 import { CopyOptions } from '../../browser/controller/textAreaInput.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { MenuId } from '../../../platform/actions/common/actions.js';
 var CLIPBOARD_CONTEXT_MENU_GROUP = '9_cutcopypaste';
 var supportsCut = (platform.isNative || document.queryCommandSupported('cut'));
 var supportsCopy = (platform.isNative || document.queryCommandSupported('copy'));
@@ -59,7 +63,8 @@ var ExecCommandCutAction = /** @class */ (function (_super) {
         var kbOpts = {
             kbExpr: EditorContextKeys.textInputFocus,
             primary: 2048 /* CtrlCmd */ | 54 /* KEY_X */,
-            win: { primary: 2048 /* CtrlCmd */ | 54 /* KEY_X */, secondary: [1024 /* Shift */ | 20 /* Delete */] }
+            win: { primary: 2048 /* CtrlCmd */ | 54 /* KEY_X */, secondary: [1024 /* Shift */ | 20 /* Delete */] },
+            weight: 100 /* EditorContrib */
         };
         // Do not bind cut keybindings in the browser,
         // since browsers do that for us and it avoids security prompts
@@ -74,6 +79,12 @@ var ExecCommandCutAction = /** @class */ (function (_super) {
             kbOpts: kbOpts,
             menuOpts: {
                 group: CLIPBOARD_CONTEXT_MENU_GROUP,
+                order: 1
+            },
+            menubarOpts: {
+                menuId: MenuId.MenubarEditMenu,
+                group: '2_ccp',
+                title: nls.localize({ key: 'miCut', comment: ['&& denotes a mnemonic'] }, "Cu&&t"),
                 order: 1
             }
         }) || this;
@@ -95,7 +106,8 @@ var ExecCommandCopyAction = /** @class */ (function (_super) {
         var kbOpts = {
             kbExpr: EditorContextKeys.textInputFocus,
             primary: 2048 /* CtrlCmd */ | 33 /* KEY_C */,
-            win: { primary: 2048 /* CtrlCmd */ | 33 /* KEY_C */, secondary: [2048 /* CtrlCmd */ | 19 /* Insert */] }
+            win: { primary: 2048 /* CtrlCmd */ | 33 /* KEY_C */, secondary: [2048 /* CtrlCmd */ | 19 /* Insert */] },
+            weight: 100 /* EditorContrib */
         };
         // Do not bind copy keybindings in the browser,
         // since browsers do that for us and it avoids security prompts
@@ -110,6 +122,12 @@ var ExecCommandCopyAction = /** @class */ (function (_super) {
             kbOpts: kbOpts,
             menuOpts: {
                 group: CLIPBOARD_CONTEXT_MENU_GROUP,
+                order: 2
+            },
+            menubarOpts: {
+                menuId: MenuId.MenubarEditMenu,
+                group: '2_ccp',
+                title: nls.localize({ key: 'miCopy', comment: ['&& denotes a mnemonic'] }, "&&Copy"),
                 order: 2
             }
         }) || this;
@@ -131,7 +149,8 @@ var ExecCommandPasteAction = /** @class */ (function (_super) {
         var kbOpts = {
             kbExpr: EditorContextKeys.textInputFocus,
             primary: 2048 /* CtrlCmd */ | 52 /* KEY_V */,
-            win: { primary: 2048 /* CtrlCmd */ | 52 /* KEY_V */, secondary: [1024 /* Shift */ | 19 /* Insert */] }
+            win: { primary: 2048 /* CtrlCmd */ | 52 /* KEY_V */, secondary: [1024 /* Shift */ | 19 /* Insert */] },
+            weight: 100 /* EditorContrib */
         };
         // Do not bind paste keybindings in the browser,
         // since browsers do that for us and it avoids security prompts
@@ -146,6 +165,12 @@ var ExecCommandPasteAction = /** @class */ (function (_super) {
             kbOpts: kbOpts,
             menuOpts: {
                 group: CLIPBOARD_CONTEXT_MENU_GROUP,
+                order: 3
+            },
+            menubarOpts: {
+                menuId: MenuId.MenubarEditMenu,
+                group: '2_ccp',
+                title: nls.localize({ key: 'miPaste', comment: ['&& denotes a mnemonic'] }, "&&Paste"),
                 order: 3
             }
         }) || this;
@@ -163,7 +188,8 @@ var ExecCommandCopyWithSyntaxHighlightingAction = /** @class */ (function (_supe
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
-                primary: null
+                primary: null,
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }

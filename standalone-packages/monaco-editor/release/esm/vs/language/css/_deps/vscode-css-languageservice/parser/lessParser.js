@@ -28,11 +28,14 @@ var LESSParser = /** @class */ (function (_super) {
         return _super.call(this, new lessScanner.LESSScanner()) || this;
     }
     LESSParser.prototype._parseStylesheetStatement = function () {
+        if (this.peek(TokenType.AtKeyword)) {
+            return this._parseVariableDeclaration()
+                || this._parsePlugin()
+                || _super.prototype._parseStylesheetAtStatement.call(this);
+        }
         return this._tryParseMixinDeclaration()
             || this._tryParseMixinReference(true)
-            || _super.prototype._parseStylesheetStatement.call(this)
-            || this._parseVariableDeclaration()
-            || this._parsePlugin();
+            || this._parseRuleset(true);
     };
     LESSParser.prototype._parseImport = function () {
         if (!this.peekKeyword('@import') && !this.peekKeyword('@import-once') /* deprecated in less 1.4.1 */) {
@@ -131,7 +134,7 @@ var LESSParser = /** @class */ (function (_super) {
         return this.finish(content);
     };
     LESSParser.prototype._parseDetachedRuleSetBody = function () {
-        return this._tryParseKeyframeSelector() || _super.prototype._parseRuleSetDeclaration.call(this);
+        return this._tryParseKeyframeSelector() || this._tryParseRuleset(true) || _super.prototype._parseRuleSetDeclaration.call(this);
     };
     LESSParser.prototype._parseVariable = function () {
         if (!this.peekDelim('@') && !this.peek(TokenType.AtKeyword)) {

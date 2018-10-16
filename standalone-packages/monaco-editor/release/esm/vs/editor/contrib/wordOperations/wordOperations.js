@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -94,7 +97,8 @@ var CursorWordStartLeft = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
                 primary: 2048 /* CtrlCmd */ | 15 /* LeftArrow */,
-                mac: { primary: 512 /* Alt */ | 15 /* LeftArrow */ }
+                mac: { primary: 512 /* Alt */ | 15 /* LeftArrow */ },
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -106,7 +110,7 @@ var CursorWordEndLeft = /** @class */ (function (_super) {
     function CursorWordEndLeft() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'cursorWordEndLeft',
             precondition: null
         }) || this;
@@ -119,7 +123,7 @@ var CursorWordLeft = /** @class */ (function (_super) {
     function CursorWordLeft() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 0 /* WordStart */,
+            wordNavigationType: 1 /* WordStartFast */,
             id: 'cursorWordLeft',
             precondition: null
         }) || this;
@@ -138,7 +142,8 @@ var CursorWordStartLeftSelect = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
                 primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 15 /* LeftArrow */,
-                mac: { primary: 512 /* Alt */ | 1024 /* Shift */ | 15 /* LeftArrow */ }
+                mac: { primary: 512 /* Alt */ | 1024 /* Shift */ | 15 /* LeftArrow */ },
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -150,7 +155,7 @@ var CursorWordEndLeftSelect = /** @class */ (function (_super) {
     function CursorWordEndLeftSelect() {
         return _super.call(this, {
             inSelectionMode: true,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'cursorWordEndLeftSelect',
             precondition: null
         }) || this;
@@ -189,13 +194,14 @@ var CursorWordEndRight = /** @class */ (function (_super) {
     function CursorWordEndRight() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'cursorWordEndRight',
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
                 primary: 2048 /* CtrlCmd */ | 17 /* RightArrow */,
-                mac: { primary: 512 /* Alt */ | 17 /* RightArrow */ }
+                mac: { primary: 512 /* Alt */ | 17 /* RightArrow */ },
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -207,7 +213,7 @@ var CursorWordRight = /** @class */ (function (_super) {
     function CursorWordRight() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'cursorWordRight',
             precondition: null
         }) || this;
@@ -233,13 +239,14 @@ var CursorWordEndRightSelect = /** @class */ (function (_super) {
     function CursorWordEndRightSelect() {
         return _super.call(this, {
             inSelectionMode: true,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'cursorWordEndRightSelect',
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
                 primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 17 /* RightArrow */,
-                mac: { primary: 512 /* Alt */ | 1024 /* Shift */ | 17 /* RightArrow */ }
+                mac: { primary: 512 /* Alt */ | 1024 /* Shift */ | 17 /* RightArrow */ },
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -251,7 +258,7 @@ var CursorWordRightSelect = /** @class */ (function (_super) {
     function CursorWordRightSelect() {
         return _super.call(this, {
             inSelectionMode: true,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'cursorWordRightSelect',
             precondition: null
         }) || this;
@@ -334,7 +341,7 @@ var DeleteWordEndLeft = /** @class */ (function (_super) {
     function DeleteWordEndLeft() {
         return _super.call(this, {
             whitespaceHeuristics: false,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'deleteWordEndLeft',
             precondition: EditorContextKeys.writable
         }) || this;
@@ -353,7 +360,8 @@ var DeleteWordLeft = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
                 primary: 2048 /* CtrlCmd */ | 1 /* Backspace */,
-                mac: { primary: 512 /* Alt */ | 1 /* Backspace */ }
+                mac: { primary: 512 /* Alt */ | 1 /* Backspace */ },
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -378,7 +386,7 @@ var DeleteWordEndRight = /** @class */ (function (_super) {
     function DeleteWordEndRight() {
         return _super.call(this, {
             whitespaceHeuristics: false,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'deleteWordEndRight',
             precondition: EditorContextKeys.writable
         }) || this;
@@ -391,13 +399,14 @@ var DeleteWordRight = /** @class */ (function (_super) {
     function DeleteWordRight() {
         return _super.call(this, {
             whitespaceHeuristics: true,
-            wordNavigationType: 1 /* WordEnd */,
+            wordNavigationType: 2 /* WordEnd */,
             id: 'deleteWordRight',
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
                 primary: 2048 /* CtrlCmd */ | 20 /* Delete */,
-                mac: { primary: 512 /* Alt */ | 20 /* Delete */ }
+                mac: { primary: 512 /* Alt */ | 20 /* Delete */ },
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }

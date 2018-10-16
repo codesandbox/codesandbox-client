@@ -3,6 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+// Allow for running under nodejs/requirejs in tests
+var _monaco = (typeof monaco === 'undefined' ? self.monaco : monaco);
 export var conf = {
     comments: {
         lineComment: '#',
@@ -26,6 +28,12 @@ export var conf = {
         { open: '(', close: ')' },
         { open: '"', close: '"' },
         { open: '\'', close: '\'' },
+    ],
+    onEnterRules: [
+        {
+            beforeText: new RegExp("^\\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\\s*$"),
+            action: { indentAction: _monaco.languages.IndentAction.Indent }
+        }
     ],
     folding: {
         offSide: true,

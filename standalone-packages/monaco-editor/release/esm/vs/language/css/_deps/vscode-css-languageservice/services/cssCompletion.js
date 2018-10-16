@@ -46,7 +46,12 @@ var CSSCompletion = /** @class */ (function () {
                     this.getCompletionsForDeclarationProperty(node.getParent(), result);
                 }
                 else if (node instanceof nodes.Expression) {
-                    this.getCompletionsForExpression(node, result);
+                    if (node.parent instanceof nodes.Interpolation) {
+                        this.getVariableProposals(null, result);
+                    }
+                    else {
+                        this.getCompletionsForExpression(node, result);
+                    }
                 }
                 else if (node instanceof nodes.SimpleSelector) {
                     var parentExtRef = node.findParent(nodes.NodeType.ExtendsReference);
@@ -91,7 +96,18 @@ var CSSCompletion = /** @class */ (function () {
                 else if (node instanceof nodes.ExtendsReference) {
                     this.getCompletionsForExtendsReference(node, null, result);
                 }
-                if (result.items.length > 0) {
+                else if (node.type === nodes.NodeType.URILiteral) {
+                    this.getCompletionForUriLiteralValue(node, result);
+                }
+                else if (node.parent === null) {
+                    this.getCompletionForTopLevel(result);
+                    // } else if (node instanceof nodes.Variable) {
+                    // this.getCompletionsForVariableDeclaration()
+                }
+                else {
+                    continue;
+                }
+                if (result.items.length > 0 || this.offset > node.offset) {
                     return this.finalize(result);
                 }
             }
@@ -151,24 +167,35 @@ var CSSCompletion = /** @class */ (function () {
                 if (entry.browsers.onCodeComplete) {
                     var range = void 0;
                     var insertText = void 0;
+                    var retrigger = false;
                     if (declaration) {
                         range = this.getCompletionRange(declaration.getProperty());
-                        insertText = entry.name + (!isDefined(declaration.colonPosition) ? ': ' : '');
+                        insertText = entry.name;
+                        if (!isDefined(declaration.colonPosition)) {
+                            insertText += ': ';
+                            retrigger = true;
+                        }
                     }
                     else {
                         range = this.getCompletionRange(null);
                         insertText = entry.name + ': ';
+                        retrigger = true;
                     }
                     var item = {
                         label: entry.name,
                         documentation: languageFacts.getEntryDescription(entry),
                         textEdit: TextEdit.replace(range, insertText),
-                        kind: CompletionItemKind.Property,
-                        command: {
+                        kind: CompletionItemKind.Property
+                    };
+                    if (entry.restrictions.length === 1 && entry.restrictions[0] === 'none') {
+                        retrigger = false;
+                    }
+                    if (retrigger) {
+                        item.command = {
                             title: 'Suggest',
                             command: 'editor.action.triggerSuggest'
-                        }
-                    };
+                        };
+                    }
                     if (strings.startsWith(entry.name, '-')) {
                         item.sortText = 'x';
                     }
@@ -177,10 +204,12 @@ var CSSCompletion = /** @class */ (function () {
             }
         }
         this.completionParticipants.forEach(function (participant) {
-            participant.onCssProperty({
-                propertyName: _this.currentWord,
-                range: _this.defaultReplaceRange
-            });
+            if (participant.onCssProperty) {
+                participant.onCssProperty({
+                    propertyName: _this.currentWord,
+                    range: _this.defaultReplaceRange
+                });
+            }
         });
         return result;
     };
@@ -193,11 +222,13 @@ var CSSCompletion = /** @class */ (function () {
             existingNode = existingNode.findChildAtOffset(this.offset, false);
         }
         this.completionParticipants.forEach(function (participant) {
-            participant.onCssPropertyValue({
-                propertyName: propertyName,
-                propertyValue: _this.currentWord,
-                range: _this.getCompletionRange(existingNode)
-            });
+            if (participant.onCssPropertyValue) {
+                participant.onCssPropertyValue({
+                    propertyName: propertyName,
+                    propertyValue: _this.currentWord,
+                    range: _this.getCompletionRange(existingNode)
+                });
+            }
         });
         if (entry) {
             for (var _i = 0, _a = entry.restrictions; _i < _a.length; _i++) {
@@ -258,7 +289,7 @@ var CSSCompletion = /** @class */ (function () {
         if (entry.values) {
             for (var _i = 0, _a = entry.values; _i < _a.length; _i++) {
                 var value = _a[_i];
-                if (languageFacts.isCommonValue(value)) {
+                if (languageFacts.isCommonValue(value)) { // only show if supported by more than one browser
                     var insertString = value.name;
                     var insertTextFormat = void 0;
                     if (strings.endsWith(insertString, ')')) {
@@ -393,7 +424,7 @@ var CSSCompletion = /** @class */ (function () {
             });
         }
         var colorValues = new Set();
-        this.styleSheet.acceptVisitor(new ColorValueCollector(colorValues));
+        this.styleSheet.acceptVisitor(new ColorValueCollector(colorValues, this.offset));
         for (var _i = 0, _a = colorValues.getEntries(); _i < _a.length; _i++) {
             var color = _a[_i];
             result.items.push({
@@ -610,7 +641,7 @@ var CSSCompletion = /** @class */ (function () {
                 result.items.push(item);
             }
         }
-        if (!isNested) {
+        if (!isNested) { // show html tags only for top level
             for (var _d = 0, _e = languageFacts.html5Tags; _d < _e.length; _d++) {
                 var entry = _e[_d];
                 result.items.push({
@@ -655,7 +686,7 @@ var CSSCompletion = /** @class */ (function () {
         return result;
     };
     CSSCompletion.prototype.getCompletionsForDeclarations = function (declarations, result) {
-        if (!declarations || this.offset === declarations.offset) {
+        if (!declarations || this.offset === declarations.offset) { // incomplete nodes
             return result;
         }
         var node = declarations.findFirstChildBeforeOffset(this.offset);
@@ -682,6 +713,9 @@ var CSSCompletion = /** @class */ (function () {
         }
         else if (node instanceof nodes.ExtendsReference) {
             this.getCompletionsForExtendsReference(node, null, result);
+        }
+        else if (this.currentWord && this.currentWord[0] === '@') {
+            this.getCompletionsForDeclarationProperty(null, result);
         }
         return result;
     };
@@ -795,6 +829,34 @@ var CSSCompletion = /** @class */ (function () {
     CSSCompletion.prototype.getCompletionsForExtendsReference = function (extendsRef, existingNode, result) {
         return result;
     };
+    CSSCompletion.prototype.getCompletionForUriLiteralValue = function (uriLiteralNode, result) {
+        var uriValue;
+        var position;
+        var range;
+        // No children, empty value
+        if (uriLiteralNode.getChildren().length === 0) {
+            uriValue = '';
+            position = this.position;
+            var emptyURIValuePosition = this.textDocument.positionAt(uriLiteralNode.offset + 'url('.length);
+            range = Range.create(emptyURIValuePosition, emptyURIValuePosition);
+        }
+        else {
+            var uriValueNode = uriLiteralNode.getChild(0);
+            uriValue = uriValueNode.getText();
+            position = this.position;
+            range = this.getCompletionRange(uriValueNode);
+        }
+        this.completionParticipants.forEach(function (participant) {
+            if (participant.onCssURILiteralValue) {
+                participant.onCssURILiteralValue({
+                    uriValue: uriValue,
+                    position: position,
+                    range: range
+                });
+            }
+        });
+        return result;
+    };
     return CSSCompletion;
 }());
 export { CSSCompletion };
@@ -841,13 +903,16 @@ function collectValues(styleSheet, declaration) {
     return entries;
 }
 var ColorValueCollector = /** @class */ (function () {
-    function ColorValueCollector(entries) {
+    function ColorValueCollector(entries, currentOffset) {
         this.entries = entries;
+        this.currentOffset = currentOffset;
         // nothing to do
     }
     ColorValueCollector.prototype.visitNode = function (node) {
         if (node instanceof nodes.HexColorValue || (node instanceof nodes.Function && languageFacts.isColorConstructor(node))) {
-            this.entries.add(node.getText());
+            if (this.currentOffset < node.offset || node.end < this.currentOffset) {
+                this.entries.add(node.getText());
+            }
         }
         return true;
     };

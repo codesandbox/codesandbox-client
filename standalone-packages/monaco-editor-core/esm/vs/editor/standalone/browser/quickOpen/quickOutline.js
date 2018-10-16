@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -17,14 +20,15 @@ import './quickOutline.css';
 import * as nls from '../../../../nls';
 import { matchesFuzzy } from '../../../../base/common/filters';
 import * as strings from '../../../../base/common/strings';
+import { TPromise } from '../../../../base/common/winjs.base';
 import { QuickOpenEntryGroup, QuickOpenModel } from '../../../../base/parts/quickopen/browser/quickOpenModel';
-import { Mode } from '../../../../base/parts/quickopen/common/quickOpen';
 import { EditorContextKeys } from '../../../common/editorContextKeys';
 import { DocumentSymbolProviderRegistry, symbolKindToCssClass } from '../../../common/modes';
 import { BaseEditorQuickOpenAction } from './editorQuickOpen';
 import { getDocumentSymbols } from '../../../contrib/quickOpen/quickOpen';
 import { registerEditorAction } from '../../../browser/editorExtensions';
 import { Range } from '../../../common/core/range';
+import { CancellationToken } from '../../../../base/common/cancellation';
 var SCOPE_PREFIX = ':';
 var SymbolEntry = /** @class */ (function (_super) {
     __extends(SymbolEntry, _super);
@@ -58,7 +62,7 @@ var SymbolEntry = /** @class */ (function (_super) {
         return this.range;
     };
     SymbolEntry.prototype.run = function (mode, context) {
-        if (mode === Mode.OPEN) {
+        if (mode === 1 /* OPEN */) {
             return this.runOpen(context);
         }
         return this.runPreview();
@@ -95,7 +99,8 @@ var QuickOutlineAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.hasDocumentSymbolProvider,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
-                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 45 /* KEY_O */
+                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 45 /* KEY_O */,
+                weight: 100 /* EditorContrib */
             },
             menuOpts: {
                 group: 'navigation',
@@ -110,12 +115,12 @@ var QuickOutlineAction = /** @class */ (function (_super) {
             return null;
         }
         // Resolve outline
-        return getDocumentSymbols(model).then(function (result) {
+        return TPromise.wrap(getDocumentSymbols(model, true, CancellationToken.None).then(function (result) {
             if (result.length === 0) {
                 return;
             }
             _this._run(editor, result);
-        });
+        }));
     };
     QuickOutlineAction.prototype._run = function (editor, result) {
         var _this = this;

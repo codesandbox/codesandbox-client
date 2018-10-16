@@ -4,6 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 import { Promise as WinJSPromise } from './winjs.base.js';
 import * as platform from './platform.js';
+import { isThenable } from './async.js';
+function isWinJSPromise(candidate) {
+    return isThenable(candidate) && typeof candidate.done === 'function';
+}
 /**
  * A polyfill for the native promises. The implementation is based on
  * WinJS promises but tries to gap differences between winjs promises
@@ -11,7 +15,7 @@ import * as platform from './platform.js';
  */
 var PolyfillPromise = /** @class */ (function () {
     function PolyfillPromise(initOrPromise) {
-        if (WinJSPromise.is(initOrPromise)) {
+        if (isWinJSPromise(initOrPromise)) {
             this._winjsPromise = initOrPromise;
         }
         else {
@@ -60,19 +64,47 @@ var PolyfillPromise = /** @class */ (function () {
     };
     PolyfillPromise.prototype.then = function (onFulfilled, onRejected) {
         var sync = true;
+        // To support chaining, we need to return the value of the
+        // onFulfilled and onRejected callback.
+        // WinJSPromise supports a flat-map style #then, ie. the callbacks
+        // passed to WinJSPromise#then can return a Promise.
         var promise = new PolyfillPromise(this._winjsPromise.then(onFulfilled && function (value) {
             if (!sync) {
-                onFulfilled(value);
+                return onFulfilled(value);
             }
             else {
-                platform.setImmediate(function () { return onFulfilled(value); });
+                return new WinJSPromise(function (resolve, reject) {
+                    platform.setImmediate(function () {
+                        var result;
+                        try {
+                            result = onFulfilled(value);
+                        }
+                        catch (err2) {
+                            reject(err2);
+                            return;
+                        }
+                        resolve(result);
+                    });
+                });
             }
         }, onRejected && function (err) {
             if (!sync) {
-                onRejected(err);
+                return onRejected(err);
             }
             else {
-                platform.setImmediate(function () { return onRejected(err); });
+                return new WinJSPromise(function (resolve, reject) {
+                    platform.setImmediate(function () {
+                        var result;
+                        try {
+                            result = onRejected(err);
+                        }
+                        catch (err2) {
+                            reject(err2);
+                            return;
+                        }
+                        resolve(result);
+                    });
+                });
             }
         }));
         sync = false;

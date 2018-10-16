@@ -39,11 +39,38 @@ var AccessibilityProvider = /** @class */ (function () {
     };
     AccessibilityProvider.prototype.getPosInSet = function (tree, element) {
         var model = this.modelProvider.getModel();
-        return String(model.entries.indexOf(element) + 1);
+        var i = 0;
+        if (model.filter) {
+            for (var _i = 0, _a = model.entries; _i < _a.length; _i++) {
+                var entry = _a[_i];
+                if (model.filter.isVisible(entry)) {
+                    i++;
+                }
+                if (entry === element) {
+                    break;
+                }
+            }
+        }
+        else {
+            i = model.entries.indexOf(element) + 1;
+        }
+        return String(i);
     };
     AccessibilityProvider.prototype.getSetSize = function () {
         var model = this.modelProvider.getModel();
-        return String(model.entries.length);
+        var n = 0;
+        if (model.filter) {
+            for (var _i = 0, _a = model.entries; _i < _a.length; _i++) {
+                var entry = _a[_i];
+                if (model.filter.isVisible(entry)) {
+                    n++;
+                }
+            }
+        }
+        else {
+            n = model.entries.length;
+        }
+        return String(n);
     };
     return AccessibilityProvider;
 }());

@@ -2,14 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import URI from '../../../base/common/uri';
+import { URI } from '../../../base/common/uri';
 import { TPromise } from '../../../base/common/winjs.base';
 import { ColorProviderRegistry } from '../../common/modes';
-import { asWinJsPromise } from '../../../base/common/async';
 import { registerLanguageCommand } from '../../browser/editorExtensions';
 import { Range } from '../../common/core/range';
 import { illegalArgument } from '../../../base/common/errors';
 import { IModelService } from '../../common/services/modelService';
+import { CancellationToken } from '../../../base/common/cancellation';
 export function getColors(model, token) {
     var colors = [];
     var providers = ColorProviderRegistry.ordered(model).reverse();
@@ -37,7 +37,7 @@ registerLanguageCommand('_executeDocumentColorProvider', function (accessor, arg
     }
     var rawCIs = [];
     var providers = ColorProviderRegistry.ordered(model).reverse();
-    var promises = providers.map(function (provider) { return asWinJsPromise(function (token) { return provider.provideDocumentColors(model, token); }).then(function (result) {
+    var promises = providers.map(function (provider) { return Promise.resolve(provider.provideDocumentColors(model, CancellationToken.None)).then(function (result) {
         if (Array.isArray(result)) {
             for (var _i = 0, result_2 = result; _i < result_2.length; _i++) {
                 var ci = result_2[_i];
@@ -63,7 +63,7 @@ registerLanguageCommand('_executeColorPresentationProvider', function (accessor,
     };
     var presentations = [];
     var providers = ColorProviderRegistry.ordered(model).reverse();
-    var promises = providers.map(function (provider) { return asWinJsPromise(function (token) { return provider.provideColorPresentations(model, colorInfo, token); }).then(function (result) {
+    var promises = providers.map(function (provider) { return Promise.resolve(provider.provideColorPresentations(model, colorInfo, CancellationToken.None)).then(function (result) {
         if (Array.isArray(result)) {
             presentations.push.apply(presentations, result);
         }

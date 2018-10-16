@@ -10,7 +10,6 @@ import * as modes from '../../common/modes.js';
 import { IndentAction } from '../../common/modes/languageConfiguration.js';
 import { Position } from '../../common/core/position.js';
 import { Range } from '../../common/core/range.js';
-import { toPromiseLike } from '../../../base/common/async.js';
 import { compile } from '../common/monarch/monarchCompile.js';
 import { createTokenizationSupport } from '../common/monarch/monarchLexer.js';
 import { LanguageConfigurationRegistry } from '../../common/modes/languageConfigurationRegistry.js';
@@ -224,7 +223,7 @@ export function registerHoverProvider(languageId, provider) {
     return modes.HoverProviderRegistry.register(languageId, {
         provideHover: function (model, position, token) {
             var word = model.getWordAtPosition(position);
-            return toPromiseLike(provider.provideHover(model, position, token)).then(function (value) {
+            return Promise.resolve(provider.provideHover(model, position, token)).then(function (value) {
                 if (!value) {
                     return undefined;
                 }
@@ -317,7 +316,7 @@ export function registerLinkProvider(languageId, provider) {
  */
 export function registerCompletionItemProvider(languageId, provider) {
     var adapter = new SuggestAdapter(provider);
-    return modes.SuggestRegistry.register(languageId, {
+    return modes.CompletionProviderRegistry.register(languageId, {
         triggerCharacters: provider.triggerCharacters,
         provideCompletionItems: function (model, position, context, token) {
             return adapter.provideCompletionItems(model, position, context, token);
@@ -366,27 +365,27 @@ export var CompletionItemKind;
 })(CompletionItemKind || (CompletionItemKind = {}));
 function convertKind(kind) {
     switch (kind) {
-        case CompletionItemKind.Method: return 'method';
-        case CompletionItemKind.Function: return 'function';
-        case CompletionItemKind.Constructor: return 'constructor';
-        case CompletionItemKind.Field: return 'field';
-        case CompletionItemKind.Variable: return 'variable';
-        case CompletionItemKind.Class: return 'class';
-        case CompletionItemKind.Interface: return 'interface';
-        case CompletionItemKind.Module: return 'module';
-        case CompletionItemKind.Property: return 'property';
-        case CompletionItemKind.Unit: return 'unit';
-        case CompletionItemKind.Value: return 'value';
-        case CompletionItemKind.Enum: return 'enum';
-        case CompletionItemKind.Keyword: return 'keyword';
-        case CompletionItemKind.Snippet: return 'snippet';
-        case CompletionItemKind.Text: return 'text';
-        case CompletionItemKind.Color: return 'color';
-        case CompletionItemKind.File: return 'file';
-        case CompletionItemKind.Reference: return 'reference';
-        case CompletionItemKind.Folder: return 'folder';
+        case CompletionItemKind.Method: return 0 /* Method */;
+        case CompletionItemKind.Function: return 1 /* Function */;
+        case CompletionItemKind.Constructor: return 2 /* Constructor */;
+        case CompletionItemKind.Field: return 3 /* Field */;
+        case CompletionItemKind.Variable: return 4 /* Variable */;
+        case CompletionItemKind.Class: return 5 /* Class */;
+        case CompletionItemKind.Interface: return 7 /* Interface */;
+        case CompletionItemKind.Module: return 8 /* Module */;
+        case CompletionItemKind.Property: return 9 /* Property */;
+        case CompletionItemKind.Unit: return 12 /* Unit */;
+        case CompletionItemKind.Value: return 13 /* Value */;
+        case CompletionItemKind.Enum: return 15 /* Enum */;
+        case CompletionItemKind.Keyword: return 17 /* Keyword */;
+        case CompletionItemKind.Snippet: return 18 /* Snippet */;
+        case CompletionItemKind.Text: return 19 /* Text */;
+        case CompletionItemKind.Color: return 20 /* Color */;
+        case CompletionItemKind.File: return 21 /* File */;
+        case CompletionItemKind.Reference: return 22 /* Reference */;
+        case CompletionItemKind.Folder: return 24 /* Folder */;
     }
-    return 'property';
+    return 9 /* Property */;
 }
 var SuggestAdapter = /** @class */ (function () {
     function SuggestAdapter(provider) {
@@ -397,13 +396,13 @@ var SuggestAdapter = /** @class */ (function () {
             _actual: item,
             label: item.label,
             insertText: item.label,
-            type: convertKind(item.kind),
+            kind: convertKind(item.kind),
             detail: item.detail,
             documentation: item.documentation,
             command: item.command,
             sortText: item.sortText,
             filterText: item.filterText,
-            snippetType: 'internal',
+            insertTextIsSnippet: false,
             additionalTextEdits: item.additionalTextEdits,
             commitCharacters: item.commitCharacters
         };
@@ -417,19 +416,17 @@ var SuggestAdapter = /** @class */ (function () {
             }
             // insert the text of the edit and create a dedicated
             // suggestion-container with overwrite[Before|After]
-            suggestion.overwriteBefore = position.column - editRange.startColumn;
-            suggestion.overwriteAfter = editRange.endColumn - position.column;
+            suggestion.range = editRange;
         }
         else {
-            suggestion.overwriteBefore = position.column - wordStartPos.column;
-            suggestion.overwriteAfter = 0;
+            suggestion.range = { startLineNumber: position.lineNumber, startColumn: wordStartPos.column, endLineNumber: position.lineNumber, endColumn: position.column };
         }
         if (item.textEdit) {
             suggestion.insertText = item.textEdit.text;
         }
         else if (typeof item.insertText === 'object' && typeof item.insertText.value === 'string') {
             suggestion.insertText = item.insertText.value;
-            suggestion.snippetType = 'textmate';
+            suggestion.insertTextIsSnippet = true;
         }
         else if (typeof item.insertText === 'string') {
             suggestion.insertText = item.insertText;
@@ -438,7 +435,7 @@ var SuggestAdapter = /** @class */ (function () {
     };
     SuggestAdapter.prototype.provideCompletionItems = function (model, position, context, token) {
         var result = this._provider.provideCompletionItems(model, position, token, context);
-        return toPromiseLike(result).then(function (value) {
+        return Promise.resolve(result).then(function (value) {
             var result = {
                 suggestions: []
             };
@@ -485,7 +482,7 @@ var SuggestAdapter = /** @class */ (function () {
         if (!item) {
             return TPromise.as(suggestion);
         }
-        return toPromiseLike(this._provider.resolveCompletionItem(item, token)).then(function (resolvedItem) {
+        return Promise.resolve(this._provider.resolveCompletionItem(item, token)).then(function (resolvedItem) {
             var wordStartPos = position;
             var word = model.getWordUntilPosition(position);
             if (word) {
@@ -532,8 +529,8 @@ export function createMonacoLanguagesAPI() {
         CompletionItemKind: CompletionItemKind,
         SymbolKind: modes.SymbolKind,
         IndentAction: IndentAction,
-        SuggestTriggerKind: modes.SuggestTriggerKind,
-        CommentThreadCollapsibleState: modes.CommentThreadCollapsibleState,
-        FoldingRangeKind: modes.FoldingRangeKind
+        CompletionTriggerKind: modes.CompletionTriggerKind,
+        FoldingRangeKind: modes.FoldingRangeKind,
+        SignatureHelpTriggerReason: modes.SignatureHelpTriggerReason,
     };
 }

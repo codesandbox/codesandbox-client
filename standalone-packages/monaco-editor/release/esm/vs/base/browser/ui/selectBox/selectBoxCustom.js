@@ -14,6 +14,7 @@ import { List } from '../list/listWidget.js';
 import { domEvent } from '../../event.js';
 import { ScrollbarVisibility } from '../../../common/scrollable.js';
 import { isMacintosh } from '../../../common/platform.js';
+import { renderMarkdown } from '../../htmlContentRenderer.js';
 var $ = dom.$;
 var SELECT_OPTION_ENTRY_TEMPLATE_ID = 'selectOption.entry.template';
 var SelectListRenderer = /** @class */ (function () {
@@ -29,6 +30,7 @@ var SelectListRenderer = /** @class */ (function () {
         data.disposables = [];
         data.root = container;
         data.optionText = dom.append(container, $('.option-text'));
+        data.optionDescriptionText = dom.append(container, $('.option-text-description'));
         return data;
     };
     SelectListRenderer.prototype.renderElement = function (element, index, templateData) {
@@ -36,7 +38,15 @@ var SelectListRenderer = /** @class */ (function () {
         var optionText = element.optionText;
         var optionDisabled = element.optionDisabled;
         data.optionText.textContent = optionText;
-        data.root.setAttribute('aria-label', nls.localize('selectAriaOption', "{0}", optionText));
+        data.root.setAttribute('aria-label', nls.localize('selectAriaOption', "{0}", optionText) + ',.');
+        if (typeof element.optionDescriptionText === 'string') {
+            var optionDescriptionId = (optionText.replace(/ /g, '_').toLowerCase() + '_description_' + data.root.id);
+            data.root.setAttribute('aria-describedby', optionDescriptionId);
+            data.optionDescriptionText.id = optionDescriptionId;
+            data.optionDescriptionText.setAttribute('aria-label', element.optionDescriptionText);
+        }
+        // Workaround for list labels
+        data.root.setAttribute('aria-selected', 'true');
         // pseudo-select disabled option
         if (optionDisabled) {
             dom.addClass(data.root, 'option-disabled');
@@ -46,6 +56,9 @@ var SelectListRenderer = /** @class */ (function () {
             dom.removeClass(data.root, 'option-disabled');
         }
     };
+    SelectListRenderer.prototype.disposeElement = function () {
+        // noop
+    };
     SelectListRenderer.prototype.disposeTemplate = function (templateData) {
         templateData.disposables = dispose(templateData.disposables);
     };
@@ -53,6 +66,8 @@ var SelectListRenderer = /** @class */ (function () {
 }());
 var SelectBoxList = /** @class */ (function () {
     function SelectBoxList(options, selected, contextViewProvider, styles, selectBoxOptions) {
+        this._skipLayout = false;
+        this._sticky = false; // for dev purposes only
         this.toDispose = [];
         this._isVisible = false;
         this.selectBoxOptions = selectBoxOptions || Object.create(null);
@@ -63,12 +78,20 @@ var SelectBoxList = /** @class */ (function () {
             this.selectBoxOptions.minBottomMargin = 0;
         }
         this.selectElement = document.createElement('select');
-        this.selectElement.className = 'monaco-select-box';
+        // Use custom CSS vars for padding calculation
+        this.selectElement.className = 'monaco-select-box monaco-select-box-dropdown-padding';
+        if (typeof this.selectBoxOptions.ariaLabel === 'string') {
+            this.selectElement.setAttribute('aria-label', this.selectBoxOptions.ariaLabel);
+        }
         this._onDidSelect = new Emitter();
+        this.toDispose.push(this._onDidSelect);
         this.styles = styles;
         this.registerListeners();
         this.constructSelectDropDown(contextViewProvider);
-        this.setOptions(options, selected);
+        this.selected = selected || 0;
+        if (options) {
+            this.setOptions(options, selected);
+        }
     }
     // IDelegate - List renderer
     SelectBoxList.prototype.getHeight = function () {
@@ -81,14 +104,18 @@ var SelectBoxList = /** @class */ (function () {
         // SetUp ContextView container to hold select Dropdown
         this.contextViewProvider = contextViewProvider;
         this.selectDropDownContainer = dom.$('.monaco-select-box-dropdown-container');
-        // Setup list for drop-down select
-        this.createSelectList(this.selectDropDownContainer);
+        // Use custom CSS vars for padding calculation (shared with parent select)
+        dom.addClass(this.selectDropDownContainer, 'monaco-select-box-dropdown-padding');
+        // Setup container for select option details
+        this.selectionDetailsPane = dom.append(this.selectDropDownContainer, $('.select-box-details-pane'));
         // Create span flex box item/div we can measure and control
         var widthControlOuterDiv = dom.append(this.selectDropDownContainer, $('.select-box-dropdown-container-width-control'));
         var widthControlInnerDiv = dom.append(widthControlOuterDiv, $('.width-control-div'));
         this.widthControlElement = document.createElement('span');
         this.widthControlElement.className = 'option-text-width-control';
         dom.append(widthControlInnerDiv, this.widthControlElement);
+        // Always default to below position
+        this._dropDownPosition = 0 /* BELOW */;
         // Inline stylesheet for themes
         this.styleElement = dom.createStyleSheet(this.selectDropDownContainer);
     };
@@ -97,6 +124,7 @@ var SelectBoxList = /** @class */ (function () {
         var _this = this;
         this.toDispose.push(dom.addStandardDisposableListener(this.selectElement, 'change', function (e) {
             _this.selectElement.title = e.target.value;
+            _this.selected = e.target.selectedIndex;
             _this._onDidSelect.fire({
                 index: e.target.selectedIndex,
                 selected: e.target.value
@@ -153,25 +181,30 @@ var SelectBoxList = /** @class */ (function () {
             this.options.forEach(function (option) {
                 _this.selectElement.add(_this.createOption(option, i_1, disabled === i_1++));
             });
-            // Mirror options in drop-down
-            // Populate select list for non-native select mode
-            if (this.selectList && !!this.options) {
-                var listEntries = void 0;
-                listEntries = [];
-                if (disabled !== undefined) {
-                    this.disabledOptionIndex = disabled;
-                }
-                for (var index = 0; index < this.options.length; index++) {
-                    var element = this.options[index];
-                    var optionDisabled = void 0;
-                    index === this.disabledOptionIndex ? optionDisabled = true : optionDisabled = false;
-                    listEntries.push({ optionText: element, optionDisabled: optionDisabled });
-                }
-                this.selectList.splice(0, this.selectList.length, listEntries);
+            if (selected !== undefined) {
+                this.select(selected);
+                // Set current = selected since this is not necessarily a user exit
+                this._currentSelection = this.selected;
+            }
+            if (disabled !== undefined) {
+                this.disabledOptionIndex = disabled;
             }
         }
-        if (selected !== undefined) {
-            this.select(selected);
+    };
+    SelectBoxList.prototype.setOptionsList = function () {
+        // Mirror options in drop-down
+        // Populate select list for non-native select mode
+        if (this.selectList && !!this.options) {
+            var listEntries = void 0;
+            listEntries = [];
+            for (var index = 0; index < this.options.length; index++) {
+                var element = this.options[index];
+                var optionDisabled = void 0;
+                index === this.disabledOptionIndex ? optionDisabled = true : optionDisabled = false;
+                var optionDescription = this.detailsProvider ? this.detailsProvider(index) : { details: null, isMarkdown: false };
+                listEntries.push({ optionText: element, optionDisabled: optionDisabled, optionDescriptionText: optionDescription.details });
+            }
+            this.selectList.splice(0, this.selectList.length, listEntries);
         }
     };
     SelectBoxList.prototype.select = function (index) {
@@ -189,6 +222,13 @@ var SelectBoxList = /** @class */ (function () {
         this.selectElement.selectedIndex = this.selected;
         this.selectElement.title = this.options[this.selected];
     };
+    SelectBoxList.prototype.setAriaLabel = function (label) {
+        this.selectBoxOptions.ariaLabel = label;
+        this.selectElement.setAttribute('aria-label', this.selectBoxOptions.ariaLabel);
+    };
+    SelectBoxList.prototype.setDetailsProvider = function (provider) {
+        this.detailsProvider = provider;
+    };
     SelectBoxList.prototype.focus = function () {
         if (this.selectElement) {
             this.selectElement.focus();
@@ -202,7 +242,6 @@ var SelectBoxList = /** @class */ (function () {
     SelectBoxList.prototype.render = function (container) {
         dom.addClass(container, 'select-container');
         container.appendChild(this.selectElement);
-        this.setOptions(this.options, this.selected);
         this.applyStyles();
     };
     SelectBoxList.prototype.style = function (styles) {
@@ -214,6 +253,15 @@ var SelectBoxList = /** @class */ (function () {
         }
         if (this.styles.listFocusForeground) {
             content.push(".monaco-select-box-dropdown-container > .select-box-dropdown-list-container .monaco-list .monaco-list-row.focused:not(:hover) { color: " + this.styles.listFocusForeground + " !important; }");
+        }
+        if (!this.styles.selectBorder.equals(this.styles.selectBackground)) {
+            content.push(".monaco-select-box-dropdown-container { border: 1px solid " + this.styles.selectBorder + " } ");
+            content.push(".monaco-select-box-dropdown-container > .select-box-details-pane.border-top { border-top: 1px solid " + this.styles.selectBorder + " } ");
+            content.push(".monaco-select-box-dropdown-container > .select-box-details-pane.border-bottom { border-bottom: 1px solid " + this.styles.selectBorder + " } ");
+        }
+        else if (this.styles.selectListBorder) {
+            content.push(".monaco-select-box-dropdown-container > .select-box-details-pane.border-top { border-top: 1px solid " + this.styles.selectListBorder + " } ");
+            content.push(".monaco-select-box-dropdown-container > .select-box-details-pane.border-bottom { border-bottom: 1px solid " + this.styles.selectListBorder + " } ");
         }
         // Hover foreground - ignore for disabled options
         if (this.styles.listHoverForeground) {
@@ -249,9 +297,17 @@ var SelectBoxList = /** @class */ (function () {
         }
         // Style drop down select list (non-native mode only)
         if (this.selectList) {
+            this.styleList();
+        }
+    };
+    SelectBoxList.prototype.styleList = function () {
+        if (this.selectList) {
+            var background = null;
+            background = this.styles.selectBackground ? this.styles.selectBackground.toString() : null;
             this.selectList.style({});
             var listBackground = this.styles.selectListBackground ? this.styles.selectListBackground.toString() : background;
             this.selectDropDownListContainer.style.backgroundColor = listBackground;
+            this.selectionDetailsPane.style.backgroundColor = listBackground;
             var optionsBorder = this.styles.focusBorder ? this.styles.focusBorder.toString() : null;
             this.selectDropDownContainer.style.outlineColor = optionsBorder;
             this.selectDropDownContainer.style.outlineOffset = '-1px';
@@ -264,15 +320,34 @@ var SelectBoxList = /** @class */ (function () {
         option.disabled = disabled;
         return option;
     };
-    // Non-native select list handling
     // ContextView dropdown methods
     SelectBoxList.prototype.showSelectDropDown = function () {
         var _this = this;
         if (!this.contextViewProvider || this._isVisible) {
             return;
         }
-        this._isVisible = true;
+        // Lazily create and populate list only at open, moved from constructor
+        this.createSelectList(this.selectDropDownContainer);
+        this.setOptionsList();
         this.cloneElementFont(this.selectElement, this.selectDropDownContainer);
+        // This allows us to flip the position based on measurement
+        // Set drop-down position above/below from required height and margins
+        // If pre-layout cannot fit at least one option do not show drop-down
+        this.contextViewProvider.showContextView({
+            getAnchor: function () { return _this.selectElement; },
+            render: function (container) { return _this.renderSelectDropDown(container, true); },
+            layout: function () {
+                _this.layoutSelectDropDown();
+            },
+            onHide: function () {
+                dom.toggleClass(_this.selectDropDownContainer, 'visible', false);
+                dom.toggleClass(_this.selectElement, 'synthetic-focus', false);
+            },
+            anchorPosition: this._dropDownPosition
+        });
+        // Hide so we can relay out
+        this._isVisible = true;
+        this.hideSelectDropDown(false);
         this.contextViewProvider.showContextView({
             getAnchor: function () { return _this.selectElement; },
             render: function (container) { return _this.renderSelectDropDown(container); },
@@ -280,9 +355,12 @@ var SelectBoxList = /** @class */ (function () {
             onHide: function () {
                 dom.toggleClass(_this.selectDropDownContainer, 'visible', false);
                 dom.toggleClass(_this.selectElement, 'synthetic-focus', false);
-            }
+            },
+            anchorPosition: this._dropDownPosition
         });
+        // Track initial selection the case user escape, blur
         this._currentSelection = this.selected;
+        this._isVisible = true;
     };
     SelectBoxList.prototype.hideSelectDropDown = function (focusSelect) {
         if (!this.contextViewProvider || !this._isVisible) {
@@ -294,36 +372,159 @@ var SelectBoxList = /** @class */ (function () {
         }
         this.contextViewProvider.hideContextView();
     };
-    SelectBoxList.prototype.renderSelectDropDown = function (container) {
+    SelectBoxList.prototype.renderSelectDropDown = function (container, preLayoutPosition) {
         var _this = this;
         container.appendChild(this.selectDropDownContainer);
-        this.layoutSelectDropDown();
+        // Pre-Layout allows us to change position
+        this.layoutSelectDropDown(preLayoutPosition);
         return {
-            dispose: function () { return container.removeChild(_this.selectDropDownContainer); } // remove to take out the CSS rules we add
+            dispose: function () {
+                // contextView will dispose itself if moving from one View to another
+                try {
+                    container.removeChild(_this.selectDropDownContainer); // remove to take out the CSS rules we add
+                }
+                catch (error) {
+                    // Ignore, removed already by change of focus
+                }
+            }
         };
     };
-    SelectBoxList.prototype.layoutSelectDropDown = function () {
-        // Layout ContextView drop down select list and container
-        // Have to manage our vertical overflow, sizing
-        // Need to be visible to measure
-        dom.toggleClass(this.selectDropDownContainer, 'visible', true);
-        var selectWidth = dom.getTotalWidth(this.selectElement);
-        var selectPosition = dom.getDomNodePagePosition(this.selectElement);
-        // Set container height to max from select bottom to margin (default/minBottomMargin)
-        var maxSelectDropDownHeight = (window.innerHeight - selectPosition.top - selectPosition.height - this.selectBoxOptions.minBottomMargin);
-        if (maxSelectDropDownHeight < 0) {
-            maxSelectDropDownHeight = 0;
+    // Iterate over detailed descriptions, find max height
+    SelectBoxList.prototype.measureMaxDetailsHeight = function () {
+        var _this = this;
+        if (!this.detailsProvider) {
+            return 0;
         }
-        // SetUp list dimensions and layout - account for container padding
+        var maxDetailsPaneHeight = 0;
+        var description = { details: '', isMarkdown: false };
+        this.options.forEach(function (option, index) {
+            _this.selectionDetailsPane.innerText = '';
+            description = _this.detailsProvider ? _this.detailsProvider(index) : { details: '', isMarkdown: false };
+            if (description.details) {
+                if (description.isMarkdown) {
+                    _this.selectionDetailsPane.appendChild(_this.renderDescriptionMarkdown(description.details));
+                }
+                else {
+                    _this.selectionDetailsPane.innerText = description.details;
+                }
+                _this.selectionDetailsPane.style.display = 'block';
+            }
+            else {
+                _this.selectionDetailsPane.style.display = 'none';
+            }
+            if (_this.selectionDetailsPane.offsetHeight > maxDetailsPaneHeight) {
+                maxDetailsPaneHeight = _this.selectionDetailsPane.offsetHeight;
+            }
+        });
+        // Reset description to selected
+        description = this.detailsProvider ? this.detailsProvider(this.selected) : { details: '', isMarkdown: false };
+        this.selectionDetailsPane.innerText = '';
+        if (description.details) {
+            if (description.isMarkdown) {
+                this.selectionDetailsPane.appendChild(this.renderDescriptionMarkdown(description.details));
+            }
+            else {
+                this.selectionDetailsPane.innerText = description.details;
+            }
+            this.selectionDetailsPane.style.display = 'block';
+        }
+        return maxDetailsPaneHeight;
+    };
+    SelectBoxList.prototype.layoutSelectDropDown = function (preLayoutPosition) {
+        // Avoid recursion from layout called in onListFocus
+        if (this._skipLayout) {
+            return false;
+        }
+        // Layout ContextView drop down select list and container
+        // Have to manage our vertical overflow, sizing, position below or above
+        // Position has to be determined and set prior to contextView instantiation
         if (this.selectList) {
+            // Make visible to enable measurements
+            dom.toggleClass(this.selectDropDownContainer, 'visible', true);
+            var selectPosition = dom.getDomNodePagePosition(this.selectElement);
+            var styles = getComputedStyle(this.selectElement);
+            var verticalPadding = parseFloat(styles.getPropertyValue('--dropdown-padding-top')) + parseFloat(styles.getPropertyValue('--dropdown-padding-bottom'));
+            var maxSelectDropDownHeightBelow = (window.innerHeight - selectPosition.top - selectPosition.height - this.selectBoxOptions.minBottomMargin);
+            var maxSelectDropDownHeightAbove = (selectPosition.top - SelectBoxList.DEFAULT_DROPDOWN_MINIMUM_TOP_MARGIN);
+            // Determine optimal width - min(longest option), opt(parent select, excluding margins), max(ContextView controlled)
+            var selectWidth = this.selectElement.offsetWidth;
+            var selectMinWidth = this.setWidthControlElement(this.widthControlElement);
+            var selectOptimalWidth = Math.max(selectMinWidth, Math.round(selectWidth)).toString() + 'px';
+            this.selectDropDownContainer.style.width = selectOptimalWidth;
+            // Get initial list height and determine space ab1you knowove and below
             this.selectList.layout();
             var listHeight = this.selectList.contentHeight;
-            var listContainerHeight = dom.getTotalHeight(this.selectDropDownListContainer);
-            var totalVerticalListPadding = listContainerHeight - listHeight;
-            // Always show complete list items - never more than Max available vertical height
-            if (listContainerHeight > maxSelectDropDownHeight) {
-                listHeight = ((Math.floor((maxSelectDropDownHeight - totalVerticalListPadding) / this.getHeight())) * this.getHeight());
+            var maxDetailsPaneHeight = this.measureMaxDetailsHeight();
+            var minRequiredDropDownHeight = listHeight + verticalPadding + maxDetailsPaneHeight;
+            var maxVisibleOptionsBelow = ((Math.floor((maxSelectDropDownHeightBelow - verticalPadding - maxDetailsPaneHeight) / this.getHeight())));
+            var maxVisibleOptionsAbove = ((Math.floor((maxSelectDropDownHeightAbove - verticalPadding - maxDetailsPaneHeight) / this.getHeight())));
+            // If we are only doing pre-layout check/adjust position only
+            // Calculate vertical space available, flip up if insufficient
+            // Use reflected padding on parent select, ContextView style
+            // properties not available before DOM attachment
+            if (preLayoutPosition) {
+                // Check if select moved out of viewport , do not open
+                // If at least one option cannot be shown, don't open the drop-down or hide/remove if open
+                if ((selectPosition.top + selectPosition.height) > (window.innerHeight - 22)
+                    || selectPosition.top < SelectBoxList.DEFAULT_DROPDOWN_MINIMUM_TOP_MARGIN
+                    || ((maxVisibleOptionsBelow < 1) && (maxVisibleOptionsAbove < 1))) {
+                    // Indicate we cannot open
+                    return false;
+                }
+                // Determine if we have to flip up
+                // Always show complete list items - never more than Max available vertical height
+                if (maxVisibleOptionsBelow < SelectBoxList.DEFAULT_MINIMUM_VISIBLE_OPTIONS
+                    && maxVisibleOptionsAbove > maxVisibleOptionsBelow
+                    && this.options.length > maxVisibleOptionsBelow) {
+                    this._dropDownPosition = 1 /* ABOVE */;
+                    this.selectDropDownContainer.removeChild(this.selectDropDownListContainer);
+                    this.selectDropDownContainer.removeChild(this.selectionDetailsPane);
+                    this.selectDropDownContainer.appendChild(this.selectionDetailsPane);
+                    this.selectDropDownContainer.appendChild(this.selectDropDownListContainer);
+                    dom.removeClass(this.selectionDetailsPane, 'border-top');
+                    dom.addClass(this.selectionDetailsPane, 'border-bottom');
+                }
+                else {
+                    this._dropDownPosition = 0 /* BELOW */;
+                    this.selectDropDownContainer.removeChild(this.selectDropDownListContainer);
+                    this.selectDropDownContainer.removeChild(this.selectionDetailsPane);
+                    this.selectDropDownContainer.appendChild(this.selectDropDownListContainer);
+                    this.selectDropDownContainer.appendChild(this.selectionDetailsPane);
+                    dom.removeClass(this.selectionDetailsPane, 'border-bottom');
+                    dom.addClass(this.selectionDetailsPane, 'border-top');
+                }
+                // Do full layout on showSelectDropDown only
+                return true;
             }
+            // Check if select out of viewport or cutting into status bar
+            if ((selectPosition.top + selectPosition.height) > (window.innerHeight - 22)
+                || selectPosition.top < SelectBoxList.DEFAULT_DROPDOWN_MINIMUM_TOP_MARGIN
+                || (this._dropDownPosition === 0 /* BELOW */ && maxVisibleOptionsBelow < 1)
+                || (this._dropDownPosition === 1 /* ABOVE */ && maxVisibleOptionsAbove < 1)) {
+                // Cannot properly layout, close and hide
+                this.hideSelectDropDown(true);
+                return false;
+            }
+            // SetUp list dimensions and layout - account for container padding
+            // Use position to check above or below available space
+            if (this._dropDownPosition === 0 /* BELOW */) {
+                if (this._isVisible && maxVisibleOptionsBelow + maxVisibleOptionsAbove < 1) {
+                    // If drop-down is visible, must be doing a DOM re-layout, hide since we don't fit
+                    // Hide drop-down, hide contextview, focus on parent select
+                    this.hideSelectDropDown(true);
+                    return false;
+                }
+                // Adjust list height to max from select bottom to margin (default/minBottomMargin)
+                if (minRequiredDropDownHeight > maxSelectDropDownHeightBelow) {
+                    listHeight = (maxVisibleOptionsBelow * this.getHeight());
+                }
+            }
+            else {
+                if (minRequiredDropDownHeight > maxSelectDropDownHeightAbove) {
+                    listHeight = (maxVisibleOptionsAbove * this.getHeight());
+                }
+            }
+            // Set adjusted list height and relayout
             this.selectList.layout(listHeight);
             this.selectList.domFocus();
             // Finally set focus on selected item
@@ -331,16 +532,22 @@ var SelectBoxList = /** @class */ (function () {
                 this.selectList.setFocus([this.selected || 0]);
                 this.selectList.reveal(this.selectList.getFocus()[0] || 0);
             }
-            // Set final container height after adjustments
-            this.selectDropDownContainer.style.height = (listHeight + totalVerticalListPadding) + 'px';
-            // Determine optimal width - min(longest option), opt(parent select), max(ContextView controlled)
-            var selectMinWidth = this.setWidthControlElement(this.widthControlElement);
-            var selectOptimalWidth = Math.max(selectMinWidth, Math.round(selectWidth)).toString() + 'px';
-            this.selectDropDownContainer.style.minWidth = selectOptimalWidth;
+            if (this.detailsProvider) {
+                // Leave the selectDropDownContainer to size itself according to children (list + details) - #57447
+                this.selectList.getHTMLElement().style.height = (listHeight + verticalPadding) + 'px';
+            }
+            else {
+                this.selectDropDownContainer.style.height = (listHeight + verticalPadding) + 'px';
+            }
+            this.selectDropDownContainer.style.width = selectOptimalWidth;
             // Maintain focus outline on parent select as well as list container - tabindex for focus
             this.selectDropDownListContainer.setAttribute('tabindex', '0');
             dom.toggleClass(this.selectElement, 'synthetic-focus', true);
             dom.toggleClass(this.selectDropDownContainer, 'synthetic-focus', true);
+            return true;
+        }
+        else {
+            return false;
         }
     };
     SelectBoxList.prototype.setWidthControlElement = function (container) {
@@ -365,10 +572,15 @@ var SelectBoxList = /** @class */ (function () {
     };
     SelectBoxList.prototype.createSelectList = function (parent) {
         var _this = this;
+        // If we have already constructive list on open, skip
+        if (this.selectList) {
+            return;
+        }
         // SetUp container for list
         this.selectDropDownListContainer = dom.append(parent, $('.select-box-dropdown-list-container'));
         this.listRenderer = new SelectListRenderer();
         this.selectList = new List(this.selectDropDownListContainer, this, [this.listRenderer], {
+            ariaLabel: this.selectBoxOptions.ariaLabel,
             useShadows: false,
             selectOnMouseDown: false,
             verticalScrollMode: ScrollbarVisibility.Visible,
@@ -392,11 +604,15 @@ var SelectBoxList = /** @class */ (function () {
         chain(domEvent(this.selectList.getHTMLElement(), 'mouseup'))
             .filter(function () { return _this.selectList.length > 0; })
             .on(function (e) { return _this.onMouseUp(e); }, this, this.toDispose);
-        this.toDispose.push(this.selectList.onDidBlur(function (e) { return _this.onListBlur(); }));
+        this.toDispose.push(this.selectList.onDidBlur(function (e) { return _this.onListBlur(); }), this.selectList.onMouseOver(function (e) { return _this.selectList.setFocus([e.index]); }), this.selectList.onFocusChange(function (e) { return _this.onListFocus(e); }));
+        this.selectList.getHTMLElement().setAttribute('aria-label', this.selectBoxOptions.ariaLabel);
+        this.selectList.getHTMLElement().setAttribute('aria-expanded', 'true');
+        this.styleList();
     };
     // List methods
-    // List mouse controller - active exit, select option, fire onDidSelect, return focus to parent select
+    // List mouse controller - active exit, select option, fire onDidSelect if change, return focus to parent select
     SelectBoxList.prototype.onMouseUp = function (e) {
+        dom.EventHelper.stop(e);
         // Check our mouse event is on an option (not scrollbar)
         if (!e.toElement.classList.contains('option-text')) {
             return;
@@ -410,48 +626,95 @@ var SelectBoxList = /** @class */ (function () {
             this.select(this.selected);
             this.selectList.setFocus([this.selected]);
             this.selectList.reveal(this.selectList.getFocus()[0]);
+            // Only fire if selection change
+            if (this.selected !== this._currentSelection) {
+                // Set current = selected
+                this._currentSelection = this.selected;
+                this._onDidSelect.fire({
+                    index: this.selectElement.selectedIndex,
+                    selected: this.selectElement.title
+                });
+            }
+            this.hideSelectDropDown(true);
+        }
+    };
+    // List Exit - passive - implicit no selection change, hide drop-down
+    SelectBoxList.prototype.onListBlur = function () {
+        if (this._sticky) {
+            return;
+        }
+        if (this.selected !== this._currentSelection) {
+            // Reset selected to current if no change
+            this.select(this._currentSelection);
+        }
+        this.hideSelectDropDown(false);
+    };
+    SelectBoxList.prototype.renderDescriptionMarkdown = function (text) {
+        var cleanRenderedMarkdown = function (element) {
+            for (var i = 0; i < element.childNodes.length; i++) {
+                var child = element.childNodes.item(i);
+                var tagName = child.tagName && child.tagName.toLowerCase();
+                if (tagName === 'img') {
+                    element.removeChild(child);
+                }
+                else {
+                    cleanRenderedMarkdown(child);
+                }
+            }
+        };
+        var renderedMarkdown = renderMarkdown({ value: text }, {
+            actionHandler: this.selectBoxOptions.markdownActionHandler
+        });
+        renderedMarkdown.classList.add('select-box-description-markdown');
+        cleanRenderedMarkdown(renderedMarkdown);
+        return renderedMarkdown;
+    };
+    // List Focus Change - passive - update details pane with newly focused element's data
+    SelectBoxList.prototype.onListFocus = function (e) {
+        // Skip during initial layout
+        if (!this._isVisible) {
+            return;
+        }
+        this.selectionDetailsPane.innerText = '';
+        var selectedIndex = e.indexes[0];
+        var description = this.detailsProvider ? this.detailsProvider(selectedIndex) : { details: '', isMarkdown: false };
+        if (description.details) {
+            if (description.isMarkdown) {
+                this.selectionDetailsPane.appendChild(this.renderDescriptionMarkdown(description.details));
+            }
+            else {
+                this.selectionDetailsPane.innerText = description.details;
+            }
+            this.selectionDetailsPane.style.display = 'block';
+        }
+        else {
+            this.selectionDetailsPane.style.display = 'none';
+        }
+        // Avoid recursion
+        this._skipLayout = true;
+        this.contextViewProvider.layout();
+        this._skipLayout = false;
+    };
+    // List keyboard controller
+    // List exit - active - hide ContextView dropdown, reset selection, return focus to parent select
+    SelectBoxList.prototype.onEscape = function (e) {
+        dom.EventHelper.stop(e);
+        // Reset selection to value when opened
+        this.select(this._currentSelection);
+        this.hideSelectDropDown(true);
+    };
+    // List exit - active - hide ContextView dropdown, return focus to parent select, fire onDidSelect if change
+    SelectBoxList.prototype.onEnter = function (e) {
+        dom.EventHelper.stop(e);
+        // Only fire if selection change
+        if (this.selected !== this._currentSelection) {
+            this._currentSelection = this.selected;
             this._onDidSelect.fire({
                 index: this.selectElement.selectedIndex,
                 selected: this.selectElement.title
             });
-            // Reset Selection Handler
-            this._currentSelection = -1;
-            this.hideSelectDropDown(true);
         }
-        dom.EventHelper.stop(e);
-    };
-    // List Exit - passive - hide drop-down, fire onDidSelect
-    SelectBoxList.prototype.onListBlur = function () {
-        if (this._currentSelection >= 0) {
-            this.select(this._currentSelection);
-        }
-        this._onDidSelect.fire({
-            index: this.selectElement.selectedIndex,
-            selected: this.selectElement.title
-        });
-        this.hideSelectDropDown(false);
-    };
-    // List keyboard controller
-    // List exit - active - hide ContextView dropdown, return focus to parent select, fire onDidSelect
-    SelectBoxList.prototype.onEscape = function (e) {
-        dom.EventHelper.stop(e);
-        this.select(this._currentSelection);
         this.hideSelectDropDown(true);
-        this._onDidSelect.fire({
-            index: this.selectElement.selectedIndex,
-            selected: this.selectElement.title
-        });
-    };
-    // List exit - active - hide ContextView dropdown, return focus to parent select, fire onDidSelect
-    SelectBoxList.prototype.onEnter = function (e) {
-        dom.EventHelper.stop(e);
-        // Reset current selection
-        this._currentSelection = -1;
-        this.hideSelectDropDown(true);
-        this._onDidSelect.fire({
-            index: this.selectElement.selectedIndex,
-            selected: this.selectElement.title
-        });
     };
     // List navigation - have to handle a disabled option (jump over)
     SelectBoxList.prototype.onDownArrow = function () {
@@ -459,6 +722,9 @@ var SelectBoxList = /** @class */ (function () {
             // Skip disabled options
             if ((this.selected + 1) === this.disabledOptionIndex && this.options.length > this.selected + 2) {
                 this.selected += 2;
+            }
+            else if ((this.selected + 1) === this.disabledOptionIndex) {
+                return;
             }
             else {
                 this.selected++;
@@ -562,6 +828,8 @@ var SelectBoxList = /** @class */ (function () {
         this.toDispose = dispose(this.toDispose);
     };
     SelectBoxList.DEFAULT_DROPDOWN_MINIMUM_BOTTOM_MARGIN = 32;
+    SelectBoxList.DEFAULT_DROPDOWN_MINIMUM_TOP_MARGIN = 2;
+    SelectBoxList.DEFAULT_MINIMUM_VISIBLE_OPTIONS = 3;
     return SelectBoxList;
 }());
 export { SelectBoxList };

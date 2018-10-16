@@ -12,7 +12,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { TPromise } from '../../../base/common/winjs.base';
 import { Range } from '../../common/core/range';
 import { IModelService } from '../../common/services/modelService';
 import { build, find } from './tokenTree';
@@ -20,9 +19,6 @@ var TokenSelectionSupport = /** @class */ (function () {
     function TokenSelectionSupport(modelService) {
         this._modelService = modelService;
     }
-    TokenSelectionSupport.prototype.getRangesToPosition = function (resource, position) {
-        return TPromise.as(this.getRangesToPositionSync(resource, position));
-    };
     TokenSelectionSupport.prototype.getRangesToPositionSync = function (resource, position) {
         var model = this._modelService.getModel(resource);
         var entries = [];

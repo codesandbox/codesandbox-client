@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -21,13 +24,14 @@ import * as strings from '../../../base/common/strings.js';
 import { Delayer } from '../../../base/common/async.js';
 import * as dom from '../../../base/browser/dom.js';
 import { Widget } from '../../../base/browser/ui/widget.js';
-import { Sash, Orientation } from '../../../base/browser/ui/sash/sash.js';
+import { Sash } from '../../../base/browser/ui/sash/sash.js';
 import { OverlayWidgetPositionPreference } from '../../browser/editorBrowser.js';
 import { FIND_IDS, MATCHES_LIMIT, CONTEXT_FIND_INPUT_FOCUSED, CONTEXT_REPLACE_INPUT_FOCUSED } from './findModel.js';
 import { Range } from '../../common/core/range.js';
 import { registerThemingParticipant } from '../../../platform/theme/common/themeService.js';
-import { editorFindRangeHighlight, editorFindMatch, editorFindMatchHighlight, contrastBorder, inputBackground, editorWidgetBackground, inputActiveOptionBorder, widgetShadow, inputForeground, inputBorder, inputValidationInfoBackground, inputValidationInfoBorder, inputValidationWarningBackground, inputValidationWarningBorder, inputValidationErrorBackground, inputValidationErrorBorder, errorForeground, editorWidgetBorder, editorFindMatchBorder, editorFindMatchHighlightBorder, editorFindRangeHighlightBorder, editorWidgetResizeBorder } from '../../../platform/theme/common/colorRegistry.js';
+import { editorFindRangeHighlight, editorFindMatch, editorFindMatchHighlight, contrastBorder, inputBackground, editorWidgetBackground, inputActiveOptionBorder, widgetShadow, inputForeground, inputBorder, inputValidationInfoBackground, inputValidationInfoForeground, inputValidationInfoBorder, inputValidationWarningBackground, inputValidationWarningForeground, inputValidationWarningBorder, inputValidationErrorBackground, inputValidationErrorForeground, inputValidationErrorBorder, errorForeground, editorWidgetBorder, editorFindMatchBorder, editorFindMatchHighlightBorder, editorFindRangeHighlightBorder, editorWidgetResizeBorder } from '../../../platform/theme/common/colorRegistry.js';
 import { ContextScopedFindInput, ContextScopedHistoryInputBox } from '../../../platform/widget/browser/contextScopedHistoryWidget.js';
+import { toDisposable } from '../../../base/common/lifecycle.js';
 var NLS_FIND_INPUT_LABEL = nls.localize('label.find', "Find");
 var NLS_FIND_INPUT_PLACEHOLDER = nls.localize('placeholder.find', "Find");
 var NLS_PREVIOUS_MATCH_BTN_LABEL = nls.localize('label.previousMatchButton', "Previous match");
@@ -73,7 +77,9 @@ var FindWidget = /** @class */ (function (_super) {
         _this._contextKeyService = contextKeyService;
         _this._isVisible = false;
         _this._isReplaceVisible = false;
+        _this._ignoreChangeEvent = false;
         _this._updateHistoryDelayer = new Delayer(500);
+        _this._register(toDisposable(function () { return _this._updateHistoryDelayer.cancel(); }));
         _this._register(_this._state.onFindReplaceStateChange(function (e) { return _this._onStateChanged(e); }));
         _this._buildDomNode();
         _this._updateButtons();
@@ -89,7 +95,11 @@ var FindWidget = /** @class */ (function (_super) {
             if (e.layoutInfo) {
                 _this._tryUpdateWidgetWidth();
             }
+            if (e.accessibilitySupport) {
+                _this.updateAccessibilitySupport();
+            }
         }));
+        _this.updateAccessibilitySupport();
         _this._register(_this._codeEditor.onDidChangeCursorSelection(function () {
             if (_this._isVisible) {
                 _this._updateToggleSelectionFindButton();
@@ -168,7 +178,13 @@ var FindWidget = /** @class */ (function (_super) {
     // ----- React to state changes
     FindWidget.prototype._onStateChanged = function (e) {
         if (e.searchString) {
-            this._findInput.setValue(this._state.searchString);
+            try {
+                this._ignoreChangeEvent = true;
+                this._findInput.setValue(this._state.searchString);
+            }
+            finally {
+                this._ignoreChangeEvent = false;
+            }
             this._updateButtons();
         }
         if (e.replaceString) {
@@ -314,6 +330,10 @@ var FindWidget = /** @class */ (function (_super) {
                 dom.addClass(_this._domNode, 'visible');
                 _this._domNode.setAttribute('aria-hidden', 'false');
             }, 0);
+            // validate query again as it's being dismissed when we hide the find widget.
+            setTimeout(function () {
+                _this._findInput.validate();
+            }, 200);
             this._codeEditor.layoutOverlayWidget(this);
             var adjustEditorScrollTop = true;
             if (this._codeEditor.getConfiguration().contribInfo.find.seedSearchStringFromSelection && selection) {
@@ -346,6 +366,7 @@ var FindWidget = /** @class */ (function (_super) {
             this._updateButtons();
             dom.removeClass(this._domNode, 'visible');
             this._domNode.setAttribute('aria-hidden', 'true');
+            this._findInput.clearMessage();
             if (focusTheEditor) {
                 this._codeEditor.focus();
             }
@@ -414,10 +435,13 @@ var FindWidget = /** @class */ (function (_super) {
             inputForeground: theme.getColor(inputForeground),
             inputBorder: theme.getColor(inputBorder),
             inputValidationInfoBackground: theme.getColor(inputValidationInfoBackground),
+            inputValidationInfoForeground: theme.getColor(inputValidationInfoForeground),
             inputValidationInfoBorder: theme.getColor(inputValidationInfoBorder),
             inputValidationWarningBackground: theme.getColor(inputValidationWarningBackground),
+            inputValidationWarningForeground: theme.getColor(inputValidationWarningForeground),
             inputValidationWarningBorder: theme.getColor(inputValidationWarningBorder),
             inputValidationErrorBackground: theme.getColor(inputValidationErrorBackground),
+            inputValidationErrorForeground: theme.getColor(inputValidationErrorForeground),
             inputValidationErrorBorder: theme.getColor(inputValidationErrorBorder)
         };
         this._findInput.style(inputStyles);
@@ -482,7 +506,7 @@ var FindWidget = /** @class */ (function (_super) {
         if (this._toggleSelectionFind.checked) {
             var selection = this._codeEditor.getSelection();
             if (selection.endColumn === 1 && selection.endLineNumber > selection.startLineNumber) {
-                selection = selection.setEndPosition(selection.endLineNumber - 1, 1);
+                selection = selection.setEndPosition(selection.endLineNumber - 1, this._codeEditor.getModel().getLineMaxColumn(selection.endLineNumber - 1));
             }
             var currentMatch = this._state.currentMatch;
             if (selection.startLineNumber !== selection.endLineNumber) {
@@ -501,12 +525,12 @@ var FindWidget = /** @class */ (function (_super) {
     };
     FindWidget.prototype._onFindInputKeyDown = function (e) {
         if (e.equals(3 /* Enter */)) {
-            this._codeEditor.getAction(FIND_IDS.NextMatchFindAction).run().done(null, onUnexpectedError);
+            this._codeEditor.getAction(FIND_IDS.NextMatchFindAction).run().then(null, onUnexpectedError);
             e.preventDefault();
             return;
         }
         if (e.equals(1024 /* Shift */ | 3 /* Enter */)) {
-            this._codeEditor.getAction(FIND_IDS.PreviousMatchFindAction).run().done(null, onUnexpectedError);
+            this._codeEditor.getAction(FIND_IDS.PreviousMatchFindAction).run().then(null, onUnexpectedError);
             e.preventDefault();
             return;
         }
@@ -598,12 +622,15 @@ var FindWidget = /** @class */ (function (_super) {
                     return { content: e.message };
                 }
             }
-        }, this._contextKeyService));
+        }, this._contextKeyService, true));
         this._findInput.setRegex(!!this._state.isRegex);
         this._findInput.setCaseSensitive(!!this._state.matchCase);
         this._findInput.setWholeWords(!!this._state.wholeWord);
         this._register(this._findInput.onKeyDown(function (e) { return _this._onFindInputKeyDown(e); }));
         this._register(this._findInput.inputBox.onDidChange(function () {
+            if (_this._ignoreChangeEvent) {
+                return;
+            }
             _this._state.change({ searchString: _this._findInput.getValue() }, true);
         }));
         this._register(this._findInput.onDidOptionChange(function () {
@@ -632,7 +659,7 @@ var FindWidget = /** @class */ (function (_super) {
             label: NLS_PREVIOUS_MATCH_BTN_LABEL + this._keybindingLabelFor(FIND_IDS.PreviousMatchFindAction),
             className: 'previous',
             onTrigger: function () {
-                _this._codeEditor.getAction(FIND_IDS.PreviousMatchFindAction).run().done(null, onUnexpectedError);
+                _this._codeEditor.getAction(FIND_IDS.PreviousMatchFindAction).run().then(null, onUnexpectedError);
             }
         }));
         // Next button
@@ -640,7 +667,7 @@ var FindWidget = /** @class */ (function (_super) {
             label: NLS_NEXT_MATCH_BTN_LABEL + this._keybindingLabelFor(FIND_IDS.NextMatchFindAction),
             className: 'next',
             onTrigger: function () {
-                _this._codeEditor.getAction(FIND_IDS.NextMatchFindAction).run().done(null, onUnexpectedError);
+                _this._codeEditor.getAction(FIND_IDS.NextMatchFindAction).run().then(null, onUnexpectedError);
             }
         }));
         var findPart = document.createElement('div');
@@ -657,7 +684,7 @@ var FindWidget = /** @class */ (function (_super) {
                 if (_this._toggleSelectionFind.checked) {
                     var selection = _this._codeEditor.getSelection();
                     if (selection.endColumn === 1 && selection.endLineNumber > selection.startLineNumber) {
-                        selection = selection.setEndPosition(selection.endLineNumber - 1, 1);
+                        selection = selection.setEndPosition(selection.endLineNumber - 1, _this._codeEditor.getModel().getLineMaxColumn(selection.endLineNumber - 1));
                     }
                     if (!selection.isEmpty()) {
                         _this._state.change({ searchScope: selection }, true);
@@ -704,7 +731,7 @@ var FindWidget = /** @class */ (function (_super) {
             history: []
         }, this._contextKeyService));
         this._register(dom.addStandardDisposableListener(this._replaceInputBox.inputElement, 'keydown', function (e) { return _this._onReplaceInputKeyDown(e); }));
-        this._register(dom.addStandardDisposableListener(this._replaceInputBox.inputElement, 'input', function (e) {
+        this._register(this._replaceInputBox.onDidChange(function (e) {
             _this._state.change({ replaceString: _this._replaceInputBox.value }, false);
         }));
         // Replace one button
@@ -770,7 +797,7 @@ var FindWidget = /** @class */ (function (_super) {
     };
     FindWidget.prototype._buildSash = function () {
         var _this = this;
-        this._resizeSash = new Sash(this._domNode, this, { orientation: Orientation.VERTICAL });
+        this._resizeSash = new Sash(this._domNode, this, { orientation: 0 /* VERTICAL */ });
         this._resized = false;
         var originalWidth = FIND_WIDGET_INITIAL_WIDTH;
         this._register(this._resizeSash.onDidStart(function (e) {
@@ -793,6 +820,10 @@ var FindWidget = /** @class */ (function (_super) {
                 _this._replaceInputBox.width = inputBoxWidth;
             }
         }));
+    };
+    FindWidget.prototype.updateAccessibilitySupport = function () {
+        var value = this._codeEditor.getConfiguration().accessibilitySupport;
+        this._findInput.setFocusInputOnOptionClick(value !== 2 /* Enabled */);
     };
     FindWidget.ID = 'editor.contrib.findWidget';
     return FindWidget;
@@ -963,5 +994,9 @@ registerThemingParticipant(function (theme, collector) {
         if (border) {
             collector.addRule(".monaco-editor .find-widget .monaco-sash { background-color: " + border + "; width: 3px !important; margin-left: -4px;}");
         }
+    }
+    var inputActiveBorder = theme.getColor(inputActiveOptionBorder);
+    if (inputActiveBorder) {
+        collector.addRule(".monaco-editor .find-widget .monaco-checkbox .checkbox:checked + .label { border: 1px solid " + inputActiveBorder.toString() + "; }");
     }
 });

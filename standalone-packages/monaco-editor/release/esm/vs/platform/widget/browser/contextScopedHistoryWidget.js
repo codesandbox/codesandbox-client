@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -50,8 +53,9 @@ var ContextScopedHistoryInputBox = /** @class */ (function (_super) {
 export { ContextScopedHistoryInputBox };
 var ContextScopedFindInput = /** @class */ (function (_super) {
     __extends(ContextScopedFindInput, _super);
-    function ContextScopedFindInput(container, contextViewProvider, options, contextKeyService) {
-        var _this = _super.call(this, container, contextViewProvider, options) || this;
+    function ContextScopedFindInput(container, contextViewProvider, options, contextKeyService, showFindOptions) {
+        if (showFindOptions === void 0) { showFindOptions = false; }
+        var _this = _super.call(this, container, contextViewProvider, showFindOptions, options) || this;
         _this._register(createAndBindHistoryNavigationWidgetScopedContextKeyService(contextKeyService, { target: _this.inputBox.element, historyNavigator: _this.inputBox }).scopedContextKeyService);
         return _this;
     }
@@ -63,7 +67,7 @@ var ContextScopedFindInput = /** @class */ (function (_super) {
 export { ContextScopedFindInput };
 KeybindingsRegistry.registerCommandAndKeybindingRule({
     id: 'history.showPrevious',
-    weight: KeybindingsRegistry.WEIGHT.workbenchContrib(),
+    weight: 200 /* WorkbenchContrib */,
     when: ContextKeyExpr.and(new ContextKeyDefinedExpr(HistoryNavigationWidgetContext), new ContextKeyEqualsExpr(HistoryNavigationEnablementContext, true)),
     primary: 16 /* UpArrow */,
     secondary: [512 /* Alt */ | 16 /* UpArrow */],
@@ -74,7 +78,7 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 });
 KeybindingsRegistry.registerCommandAndKeybindingRule({
     id: 'history.showNext',
-    weight: KeybindingsRegistry.WEIGHT.workbenchContrib(),
+    weight: 200 /* WorkbenchContrib */,
     when: new ContextKeyAndExpr([new ContextKeyDefinedExpr(HistoryNavigationWidgetContext), new ContextKeyEqualsExpr(HistoryNavigationEnablementContext, true)]),
     primary: 18 /* DownArrow */,
     secondary: [512 /* Alt */ | 18 /* DownArrow */],

@@ -18,6 +18,16 @@ export function getSandbox({ props, api, path }) {
     });
 }
 
+export function callVSCodeCallback({ state, props }) {
+  const { cbID } = props;
+  if (cbID) {
+    if (window.cbs && window.cbs[cbID]) {
+      window.cbs[cbID](undefined, undefined);
+      delete window.cbs[cbID];
+    }
+  }
+}
+
 export function setWorkspace({ state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');

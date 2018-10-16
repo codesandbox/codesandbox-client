@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -143,10 +146,10 @@ var AbstractKeybindingService = /** @class */ (function (_super) {
                 shouldPreventDefault = true;
             }
             if (typeof resolveResult.commandArgs === 'undefined') {
-                this._commandService.executeCommand(resolveResult.commandId).done(undefined, function (err) { return _this._notificationService.warn(err); });
+                this._commandService.executeCommand(resolveResult.commandId).then(undefined, function (err) { return _this._notificationService.warn(err); });
             }
             else {
-                this._commandService.executeCommand(resolveResult.commandId, resolveResult.commandArgs).done(undefined, function (err) { return _this._notificationService.warn(err); });
+                this._commandService.executeCommand(resolveResult.commandId, resolveResult.commandArgs).then(undefined, function (err) { return _this._notificationService.warn(err); });
             }
             /* __GDPR__
                 "workbenchActionExecuted" : {
@@ -157,6 +160,19 @@ var AbstractKeybindingService = /** @class */ (function (_super) {
             this._telemetryService.publicLog('workbenchActionExecuted', { id: resolveResult.commandId, from: 'keybinding' });
         }
         return shouldPreventDefault;
+    };
+    AbstractKeybindingService.prototype.mightProducePrintableCharacter = function (event) {
+        if (event.ctrlKey || event.metaKey) {
+            // ignore ctrl/cmd-combination but not shift/alt-combinatios
+            return false;
+        }
+        // weak check for certain ranges. this is properly implemented in a subclass
+        // with access to the KeyboardMapperFactory.
+        if ((event.keyCode >= 31 /* KEY_A */ && event.keyCode <= 56 /* KEY_Z */)
+            || (event.keyCode >= 21 /* KEY_0 */ && event.keyCode <= 30 /* KEY_9 */)) {
+            return true;
+        }
+        return false;
     };
     return AbstractKeybindingService;
 }(Disposable));

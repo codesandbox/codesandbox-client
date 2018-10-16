@@ -9,7 +9,6 @@ import { PrefixSumComputerWithCache } from './prefixSumComputer.js';
 import { ViewLineData } from './viewModel.js';
 import * as viewEvents from '../view/viewEvents.js';
 import { ModelDecorationOptions } from '../model/textModel.js';
-import { Color } from '../../../base/common/color.js';
 var OutputPosition = /** @class */ (function () {
     function OutputPosition(outputLineIndex, outputOffset) {
         this.outputLineIndex = outputLineIndex;
@@ -76,6 +75,10 @@ var SplitLinesCollection = /** @class */ (function () {
         if (modelVersion !== this._validModelVersionId) {
             // This is pretty bad, it means we lost track of the model...
             throw new Error("ViewModel is out of sync with Model!");
+        }
+        if (this.lines.length !== this.model.getLineCount()) {
+            // This is pretty bad, it means we lost track of the model...
+            this._constructLines(false);
         }
     };
     SplitLinesCollection.prototype._constructLines = function (resetHiddenAreas) {
@@ -353,7 +356,7 @@ var SplitLinesCollection = /** @class */ (function () {
         var modelMaxPosition = this.convertViewPositionToModelPosition(maxLineNumber, this.getViewLineMinColumn(maxLineNumber));
         var result = this.model.getActiveIndentGuide(modelPosition.lineNumber, modelMinPosition.lineNumber, modelMaxPosition.lineNumber);
         var viewStartPosition = this.convertModelPositionToViewPosition(result.startLineNumber, 1);
-        var viewEndPosition = this.convertModelPositionToViewPosition(result.endLineNumber, 1);
+        var viewEndPosition = this.convertModelPositionToViewPosition(result.endLineNumber, this.model.getLineMaxColumn(result.endLineNumber));
         return {
             startLineNumber: viewStartPosition.lineNumber,
             endLineNumber: viewEndPosition.lineNumber,
@@ -580,11 +583,11 @@ var SplitLinesCollection = /** @class */ (function () {
         for (var i = 0, len = decorations.length; i < len; i++) {
             var decoration = decorations[i];
             var opts = decoration.options.overviewRuler;
-            var lane = opts.position;
+            var lane = opts ? opts.position : 0;
             if (lane === 0) {
                 continue;
             }
-            var color = resolveColor(opts, theme);
+            var color = opts.getColor(theme);
             var viewStartLineNumber = this._getViewLineNumberForModelPosition(decoration.range.startLineNumber, decoration.range.startColumn);
             var viewEndLineNumber = this._getViewLineNumberForModelPosition(decoration.range.endLineNumber, decoration.range.endColumn);
             result.accept(color, viewStartLineNumber, viewEndLineNumber, lane);
@@ -596,7 +599,8 @@ var SplitLinesCollection = /** @class */ (function () {
         var modelEnd = this.convertViewPositionToModelPosition(range.endLineNumber, range.endColumn);
         if (modelEnd.lineNumber - modelStart.lineNumber <= range.endLineNumber - range.startLineNumber) {
             // most likely there are no hidden lines => fast path
-            return this.model.getDecorationsInRange(new Range(modelStart.lineNumber, modelStart.column, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation);
+            // fetch decorations from column 1 to cover the case of wrapped lines that have whole line decorations at column 1
+            return this.model.getDecorationsInRange(new Range(modelStart.lineNumber, 1, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation);
         }
         var result = [];
         var modelStartLineIndex = modelStart.lineNumber - 1;
@@ -623,7 +627,33 @@ var SplitLinesCollection = /** @class */ (function () {
             result = result.concat(this.model.getDecorationsInRange(new Range(reqStart.lineNumber, reqStart.column, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation));
             reqStart = null;
         }
-        return result;
+        result.sort(function (a, b) {
+            var res = Range.compareRangesUsingStarts(a.range, b.range);
+            if (res === 0) {
+                if (a.id < b.id) {
+                    return -1;
+                }
+                if (a.id > b.id) {
+                    return 1;
+                }
+                return 0;
+            }
+            return res;
+        });
+        // Eliminate duplicate decorations that might have intersected our visible ranges multiple times
+        var finalResult = [], finalResultLen = 0;
+        var prevDecId = null;
+        for (var i = 0, len = result.length; i < len; i++) {
+            var dec = result[i];
+            var decId = dec.id;
+            if (prevDecId === decId) {
+                // skip
+                continue;
+            }
+            prevDecId = decId;
+            finalResult[finalResultLen++] = dec;
+        }
+        return finalResult;
     };
     return SplitLinesCollection;
 }());
@@ -1019,11 +1049,11 @@ var IdentityLinesCollection = /** @class */ (function () {
         for (var i = 0, len = decorations.length; i < len; i++) {
             var decoration = decorations[i];
             var opts = decoration.options.overviewRuler;
-            var lane = opts.position;
+            var lane = opts ? opts.position : 0;
             if (lane === 0) {
                 continue;
             }
-            var color = resolveColor(opts, theme);
+            var color = opts.getColor(theme);
             var viewStartLineNumber = decoration.range.startLineNumber;
             var viewEndLineNumber = decoration.range.endLineNumber;
             result.accept(color, viewStartLineNumber, viewEndLineNumber, lane);
@@ -1061,21 +1091,3 @@ var OverviewRulerDecorations = /** @class */ (function () {
     };
     return OverviewRulerDecorations;
 }());
-function resolveColor(opts, theme) {
-    if (!opts._resolvedColor) {
-        var themeType = theme.type;
-        var color = (themeType === 'dark' ? opts.darkColor : themeType === 'light' ? opts.color : opts.hcColor);
-        opts._resolvedColor = resolveRulerColor(color, theme);
-    }
-    return opts._resolvedColor;
-}
-function resolveRulerColor(color, theme) {
-    if (typeof color === 'string') {
-        return color;
-    }
-    var c = color ? theme.getColor(color.id) : null;
-    if (!c) {
-        c = Color.transparent;
-    }
-    return c.toString();
-}

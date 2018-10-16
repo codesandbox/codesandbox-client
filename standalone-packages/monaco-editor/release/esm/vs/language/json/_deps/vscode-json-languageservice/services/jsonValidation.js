@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { ProblemSeverity, ErrorCode } from '../parser/jsonParser.js';
-import { DiagnosticSeverity } from '../../vscode-languageserver-types/main.js';
+import { Diagnostic, DiagnosticSeverity, Range } from '../../vscode-languageserver-types/main.js';
+import { ErrorCode } from '../jsonLanguageTypes.js';
 import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 var JSONValidation = /** @class */ (function () {
@@ -16,10 +16,10 @@ var JSONValidation = /** @class */ (function () {
     JSONValidation.prototype.configure = function (raw) {
         if (raw) {
             this.validationEnabled = raw.validate;
-            this.commentSeverity = raw.allowComments ? ProblemSeverity.Ignore : ProblemSeverity.Error;
+            this.commentSeverity = raw.allowComments ? void 0 : DiagnosticSeverity.Error;
         }
     };
-    JSONValidation.prototype.doValidation = function (textDocument, jsonDocument, documentSettings) {
+    JSONValidation.prototype.doValidation = function (textDocument, jsonDocument, documentSettings, schema) {
         var _this = this;
         if (!this.validationEnabled) {
             return this.promise.resolve([]);
@@ -27,60 +27,62 @@ var JSONValidation = /** @class */ (function () {
         var diagnostics = [];
         var added = {};
         var addProblem = function (problem) {
-            if (problem.severity === ProblemSeverity.Ignore) {
-                return;
-            }
             // remove duplicated messages
-            var signature = problem.location.offset + ' ' + problem.location.length + ' ' + problem.message;
+            var signature = problem.range.start.line + ' ' + problem.range.start.character + ' ' + problem.message;
             if (!added[signature]) {
                 added[signature] = true;
-                var range = {
-                    start: textDocument.positionAt(problem.location.offset),
-                    end: textDocument.positionAt(problem.location.offset + problem.location.length)
-                };
-                var severity = problem.severity === ProblemSeverity.Error ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning;
-                diagnostics.push({ severity: severity, range: range, message: problem.message });
+                diagnostics.push(problem);
             }
         };
-        return this.jsonSchemaService.getSchemaForResource(textDocument.uri, jsonDocument).then(function (schema) {
-            var trailingCommaSeverity = documentSettings ? documentSettings.trailingCommas : ProblemSeverity.Error;
-            var commentSeverity = documentSettings ? documentSettings.comments : _this.commentSeverity;
+        var getDiagnostics = function (schema) {
+            var trailingCommaSeverity = documentSettings ? toDiagnosticSeverity(documentSettings.trailingCommas) : DiagnosticSeverity.Error;
+            var commentSeverity = documentSettings ? toDiagnosticSeverity(documentSettings.comments) : _this.commentSeverity;
             if (schema) {
                 if (schema.errors.length && jsonDocument.root) {
                     var astRoot = jsonDocument.root;
                     var property = astRoot.type === 'object' ? astRoot.properties[0] : null;
                     if (property && property.keyNode.value === '$schema') {
                         var node = property.valueNode || property;
-                        addProblem({ location: { offset: node.offset, length: node.length }, message: schema.errors[0], severity: ProblemSeverity.Warning });
+                        var range = Range.create(textDocument.positionAt(node.offset), textDocument.positionAt(node.offset + node.length));
+                        addProblem(Diagnostic.create(range, schema.errors[0], DiagnosticSeverity.Warning, ErrorCode.SchemaResolveError));
                     }
                     else {
-                        addProblem({ location: { offset: astRoot.offset, length: 1 }, message: schema.errors[0], severity: ProblemSeverity.Warning });
+                        var range = Range.create(textDocument.positionAt(astRoot.offset), textDocument.positionAt(astRoot.offset + 1));
+                        addProblem(Diagnostic.create(range, schema.errors[0], DiagnosticSeverity.Warning, ErrorCode.SchemaResolveError));
                     }
                 }
                 else {
-                    var semanticErrors = jsonDocument.validate(schema.schema);
+                    var semanticErrors = jsonDocument.validate(textDocument, schema.schema);
                     if (semanticErrors) {
                         semanticErrors.forEach(addProblem);
                     }
                 }
                 if (schemaAllowsComments(schema.schema)) {
-                    trailingCommaSeverity = commentSeverity = ProblemSeverity.Ignore;
+                    trailingCommaSeverity = commentSeverity = void 0;
                 }
             }
             jsonDocument.syntaxErrors.forEach(function (p) {
                 if (p.code === ErrorCode.TrailingComma) {
+                    if (typeof commentSeverity !== 'number') {
+                        return;
+                    }
                     p.severity = trailingCommaSeverity;
                 }
                 addProblem(p);
             });
-            diagnostics.push.apply(diagnostics, jsonDocument.externalDiagnostic);
-            if (commentSeverity !== ProblemSeverity.Ignore) {
+            if (typeof commentSeverity === 'number') {
                 var message_1 = localize('InvalidCommentToken', 'Comments are not permitted in JSON.');
                 jsonDocument.comments.forEach(function (c) {
-                    addProblem({ location: c, severity: commentSeverity, message: message_1 });
+                    addProblem(Diagnostic.create(c, message_1, commentSeverity, ErrorCode.CommentNotPermitted));
                 });
             }
             return diagnostics;
+        };
+        if (schema) {
+            return this.promise.resolve(getDiagnostics(schema));
+        }
+        return this.jsonSchemaService.getSchemaForResource(textDocument.uri, jsonDocument).then(function (schema) {
+            return getDiagnostics(schema);
         });
     };
     return JSONValidation;
@@ -96,5 +98,13 @@ function schemaAllowsComments(schemaRef) {
         }
     }
     return false;
+}
+function toDiagnosticSeverity(severityLevel) {
+    switch (severityLevel) {
+        case 'error': return DiagnosticSeverity.Error;
+        case 'warning': return DiagnosticSeverity.Warning;
+        case 'ignore': return void 0;
+    }
+    return void 0;
 }
 //# sourceMappingURL=jsonValidation.js.map

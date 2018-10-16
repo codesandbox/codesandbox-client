@@ -4,9 +4,4 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { createDecorator } from '../../instantiation/common/instantiation';
-export var KeybindingSource;
-(function (KeybindingSource) {
-    KeybindingSource[KeybindingSource["Default"] = 1] = "Default";
-    KeybindingSource[KeybindingSource["User"] = 2] = "User";
-})(KeybindingSource || (KeybindingSource = {}));
 export var IKeybindingService = createDecorator('keybindingService');

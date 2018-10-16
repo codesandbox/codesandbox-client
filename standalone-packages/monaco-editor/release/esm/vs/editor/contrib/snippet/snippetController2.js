@@ -12,16 +12,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { RawContextKey, IContextKeyService, ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.js';
-import { registerEditorContribution, EditorCommand, registerEditorCommand } from '../../browser/editorExtensions.js';
 import { dispose } from '../../../base/common/lifecycle.js';
-import { SnippetSession } from './snippetSession.js';
+import { repeat } from '../../../base/common/strings.js';
+import { EditorCommand, registerEditorCommand, registerEditorContribution } from '../../browser/editorExtensions.js';
+import { Selection } from '../../common/core/selection.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import { showSimpleSuggestions } from '../suggest/suggest.js';
-import { Selection } from '../../common/core/selection.js';
-import { repeat } from '../../../base/common/strings.js';
-import { KeybindingsRegistry } from '../../../platform/keybinding/common/keybindingsRegistry.js';
+import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../../platform/contextkey/common/contextkey.js';
 import { ILogService } from '../../../platform/log/common/log.js';
+import { SnippetSession } from './snippetSession.js';
 var SnippetController2 = /** @class */ (function () {
     function SnippetController2(_editor, _logService, contextKeyService) {
         this._editor = _editor;
@@ -43,16 +42,17 @@ var SnippetController2 = /** @class */ (function () {
     SnippetController2.prototype.getId = function () {
         return 'snippetController2';
     };
-    SnippetController2.prototype.insert = function (template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter) {
+    SnippetController2.prototype.insert = function (template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter, adjustWhitespace) {
         if (overwriteBefore === void 0) { overwriteBefore = 0; }
         if (overwriteAfter === void 0) { overwriteAfter = 0; }
         if (undoStopBefore === void 0) { undoStopBefore = true; }
         if (undoStopAfter === void 0) { undoStopAfter = true; }
+        if (adjustWhitespace === void 0) { adjustWhitespace = true; }
         // this is here to find out more about the yet-not-understood
         // error that sometimes happens when we fail to inserted a nested
         // snippet
         try {
-            this._doInsert(template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter);
+            this._doInsert(template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter, adjustWhitespace);
         }
         catch (e) {
             this.cancel();
@@ -62,12 +62,13 @@ var SnippetController2 = /** @class */ (function () {
             this._logService.error('existing_template=', this._session ? this._session._logInfo() : '<no_session>');
         }
     };
-    SnippetController2.prototype._doInsert = function (template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter) {
+    SnippetController2.prototype._doInsert = function (template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter, adjustWhitespace) {
         var _this = this;
         if (overwriteBefore === void 0) { overwriteBefore = 0; }
         if (overwriteAfter === void 0) { overwriteAfter = 0; }
         if (undoStopBefore === void 0) { undoStopBefore = true; }
         if (undoStopAfter === void 0) { undoStopAfter = true; }
+        if (adjustWhitespace === void 0) { adjustWhitespace = true; }
         // don't listen while inserting the snippet
         // as that is the inflight state causing cancelation
         this._snippetListener = dispose(this._snippetListener);
@@ -76,11 +77,11 @@ var SnippetController2 = /** @class */ (function () {
         }
         if (!this._session) {
             this._modelVersionId = this._editor.getModel().getAlternativeVersionId();
-            this._session = new SnippetSession(this._editor, template, overwriteBefore, overwriteAfter);
+            this._session = new SnippetSession(this._editor, template, overwriteBefore, overwriteAfter, adjustWhitespace);
             this._session.insert();
         }
         else {
-            this._session.merge(template, overwriteBefore, overwriteAfter);
+            this._session.merge(template, overwriteBefore, overwriteAfter, adjustWhitespace);
         }
         if (undoStopAfter) {
             this._editor.getModel().pushStackElement();
@@ -130,7 +131,7 @@ var SnippetController2 = /** @class */ (function () {
                 // let before = choice.options.slice(0, i);
                 // let after = choice.options.slice(i);
                 return {
-                    type: 'value',
+                    kind: 13 /* Value */,
                     label: option.value,
                     insertText: option.value,
                     // insertText: `\${1|${after.concat(before).join(',')}|}$0`,
@@ -189,7 +190,7 @@ registerEditorCommand(new CommandCtor({
     precondition: ContextKeyExpr.and(SnippetController2.InSnippetMode, SnippetController2.HasNextTabstop),
     handler: function (ctrl) { return ctrl.next(); },
     kbOpts: {
-        weight: KeybindingsRegistry.WEIGHT.editorContrib(30),
+        weight: 100 /* EditorContrib */ + 30,
         kbExpr: EditorContextKeys.editorTextFocus,
         primary: 2 /* Tab */
     }
@@ -199,7 +200,7 @@ registerEditorCommand(new CommandCtor({
     precondition: ContextKeyExpr.and(SnippetController2.InSnippetMode, SnippetController2.HasPrevTabstop),
     handler: function (ctrl) { return ctrl.prev(); },
     kbOpts: {
-        weight: KeybindingsRegistry.WEIGHT.editorContrib(30),
+        weight: 100 /* EditorContrib */ + 30,
         kbExpr: EditorContextKeys.editorTextFocus,
         primary: 1024 /* Shift */ | 2 /* Tab */
     }
@@ -209,7 +210,7 @@ registerEditorCommand(new CommandCtor({
     precondition: SnippetController2.InSnippetMode,
     handler: function (ctrl) { return ctrl.cancel(); },
     kbOpts: {
-        weight: KeybindingsRegistry.WEIGHT.editorContrib(30),
+        weight: 100 /* EditorContrib */ + 30,
         kbExpr: EditorContextKeys.editorTextFocus,
         primary: 9 /* Escape */,
         secondary: [1024 /* Shift */ | 9 /* Escape */]

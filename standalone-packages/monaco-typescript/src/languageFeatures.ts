@@ -12,6 +12,7 @@ import Uri = monaco.Uri;
 import Position = monaco.Position;
 import Range = monaco.Range;
 import Thenable = monaco.Thenable;
+// @ts-ignore
 import Promise = monaco.Promise;
 import CancellationToken = monaco.CancellationToken;
 import IDisposable = monaco.IDisposable;
@@ -103,6 +104,7 @@ export class DiagnostcsAdapter extends Adapter {
       let handle: number;
       const changeSubscription = model.onDidChangeContent(() => {
         clearTimeout(handle);
+        // @ts-ignore
         handle = setTimeout(() => this._doValidate(model.uri), 500);
       });
 
@@ -527,7 +529,12 @@ export class DefinitionAdapter extends Adapter {
           for (let entry of entries) {
             const uri = Uri.parse(entry.fileName);
 
-            const model = await monaco.editor.resolveModel(uri);
+            let model;
+            // @ts-ignore
+            if (monaco.editor.resolveModel) {
+              // @ts-ignore
+              model = await monaco.editor.resolveModel(uri);
+            }
             if (monaco.editor.getModel(uri)) {
               result.push({
                 uri: uri,
@@ -573,7 +580,12 @@ export class ReferenceAdapter extends Adapter
           for (let entry of entries) {
             const uri = Uri.parse(entry.fileName);
 
-            const model = await monaco.editor.resolveModel(uri);
+            let model;
+            // @ts-ignore
+            if (monaco.editor.resolveModel) {
+              // @ts-ignore
+              model = await monaco.editor.resolveModel(uri);
+            }
             if (monaco.editor.getModel(uri)) {
               result.push({
                 uri: uri,

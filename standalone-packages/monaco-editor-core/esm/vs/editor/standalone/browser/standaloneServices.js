@@ -2,11 +2,13 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -39,7 +41,7 @@ import { ModeServiceImpl } from '../../common/services/modeServiceImpl';
 import { IModelService } from '../../common/services/modelService';
 import { ModelServiceImpl } from '../../common/services/modelServiceImpl';
 import { StandaloneCodeEditorServiceImpl } from './standaloneCodeServiceImpl';
-import { SimpleConfigurationService, SimpleResourceConfigurationService, SimpleMenuService, SimpleProgressService, StandaloneCommandService, StandaloneKeybindingService, SimpleNotificationService, StandaloneTelemetryService, SimpleWorkspaceContextService, SimpleDialogService, SimpleBulkEditService } from './simpleServices';
+import { SimpleConfigurationService, SimpleResourceConfigurationService, SimpleMenuService, SimpleProgressService, StandaloneCommandService, StandaloneKeybindingService, SimpleNotificationService, StandaloneTelemetryService, SimpleWorkspaceContextService, SimpleDialogService, SimpleBulkEditService, SimpleUriLabelService } from './simpleServices';
 import { ContextKeyService } from '../../../platform/contextkey/browser/contextKeyService';
 import { IMenuService } from '../../../platform/actions/common/actions';
 import { IStandaloneThemeService } from '../common/standaloneThemeService';
@@ -49,6 +51,8 @@ import { INotificationService } from '../../../platform/notification/common/noti
 import { IDialogService } from '../../../platform/dialogs/common/dialogs';
 import { IListService, ListService } from '../../../platform/list/browser/listService';
 import { IBulkEditService } from '../../browser/services/bulkEditService';
+import { ILabelService } from '../../../platform/label/common/label';
+import { IThemeService } from '../../../platform/theme/common/themeService';
 export var StaticServices;
 (function (StaticServices) {
     var _serviceCollection = new ServiceCollection();
@@ -109,6 +113,7 @@ export var StaticServices;
     StaticServices.configurationService = define(IConfigurationService, function () { return configurationServiceImpl; });
     StaticServices.resourceConfigurationService = define(ITextResourceConfigurationService, function () { return new SimpleResourceConfigurationService(configurationServiceImpl); });
     StaticServices.contextService = define(IWorkspaceContextService, function () { return new SimpleWorkspaceContextService(); });
+    StaticServices.labelService = define(ILabelService, function () { return new SimpleUriLabelService(); });
     StaticServices.telemetryService = define(ITelemetryService, function () { return new StandaloneTelemetryService(); });
     StaticServices.dialogService = define(IDialogService, function () { return new SimpleDialogService(); });
     StaticServices.notificationService = define(INotificationService, function () { return new SimpleNotificationService(); });
@@ -132,6 +137,7 @@ var DynamicStandaloneServices = /** @class */ (function (_super) {
         var configurationService = _this.get(IConfigurationService);
         var notificationService = _this.get(INotificationService);
         var telemetryService = _this.get(ITelemetryService);
+        var themeService = _this.get(IThemeService);
         var ensure = function (serviceId, factory) {
             var value = null;
             if (overrides) {
@@ -146,9 +152,9 @@ var DynamicStandaloneServices = /** @class */ (function (_super) {
         var contextKeyService = ensure(IContextKeyService, function () { return _this._register(new ContextKeyService(configurationService)); });
         ensure(IListService, function () { return new ListService(contextKeyService); });
         var commandService = ensure(ICommandService, function () { return new StandaloneCommandService(_this._instantiationService); });
-        ensure(IKeybindingService, function () { return _this._register(new StandaloneKeybindingService(contextKeyService, commandService, telemetryService, notificationService, domElement)); });
+        var keybindingService = ensure(IKeybindingService, function () { return _this._register(new StandaloneKeybindingService(contextKeyService, commandService, telemetryService, notificationService, domElement)); });
         var contextViewService = ensure(IContextViewService, function () { return _this._register(new ContextViewService(domElement, telemetryService, new NullLogService())); });
-        ensure(IContextMenuService, function () { return _this._register(new ContextMenuService(domElement, telemetryService, notificationService, contextViewService)); });
+        ensure(IContextMenuService, function () { return _this._register(new ContextMenuService(domElement, telemetryService, notificationService, contextViewService, keybindingService, themeService)); });
         ensure(IMenuService, function () { return new SimpleMenuService(commandService); });
         ensure(IBulkEditService, function () { return new SimpleBulkEditService(StaticServices.modelService.get(IModelService)); });
         return _this;

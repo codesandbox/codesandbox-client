@@ -443,7 +443,7 @@ module.exports = {
     new CopyWebpackPlugin(
       [
         // Our own custom version of monaco
-        !process.env.VSCODE && {
+        {
           from: __DEV__
             ? '../../standalone-packages/monaco-editor/release/dev/vs'
             : '../../standalone-packages/monaco-editor/release/min/vs',
@@ -451,8 +451,8 @@ module.exports = {
           force: true,
         },
         {
-          from: '../../standalone-packages/resolver/out',
-          to: 'public/vscode',
+          from: '../../standalone-packages/monaco-editor/release/min/vs',
+          to: 'public/vscode/vs',
           force: true,
         },
         __PROD__ && {

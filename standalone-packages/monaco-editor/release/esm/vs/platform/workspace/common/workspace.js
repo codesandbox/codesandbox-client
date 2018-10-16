@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import URI from '../../../base/common/uri.js';
+import { URI } from '../../../base/common/uri.js';
 import * as paths from '../../../base/common/paths.js';
 import * as resources from '../../../base/common/resources.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
@@ -12,19 +12,30 @@ import { isRawFileWorkspaceFolder, isRawUriWorkspaceFolder } from '../../workspa
 import { coalesce, distinct } from '../../../base/common/arrays.js';
 import { isLinux } from '../../../base/common/platform.js';
 export var IWorkspaceContextService = createDecorator('contextService');
-export var WorkbenchState;
-(function (WorkbenchState) {
-    WorkbenchState[WorkbenchState["EMPTY"] = 1] = "EMPTY";
-    WorkbenchState[WorkbenchState["FOLDER"] = 2] = "FOLDER";
-    WorkbenchState[WorkbenchState["WORKSPACE"] = 3] = "WORKSPACE";
-})(WorkbenchState || (WorkbenchState = {}));
+export var IWorkspace;
+(function (IWorkspace) {
+    function isIWorkspace(thing) {
+        return thing && typeof thing === 'object'
+            && typeof thing.id === 'string'
+            && Array.isArray(thing.folders);
+    }
+    IWorkspace.isIWorkspace = isIWorkspace;
+})(IWorkspace || (IWorkspace = {}));
+export var IWorkspaceFolder;
+(function (IWorkspaceFolder) {
+    function isIWorkspaceFolder(thing) {
+        return thing && typeof thing === 'object'
+            && URI.isUri(thing.uri)
+            && typeof thing.name === 'string'
+            && typeof thing.toResource === 'function';
+    }
+    IWorkspaceFolder.isIWorkspaceFolder = isIWorkspaceFolder;
+})(IWorkspaceFolder || (IWorkspaceFolder = {}));
 var Workspace = /** @class */ (function () {
-    function Workspace(_id, _name, folders, _configuration, _ctime) {
-        if (_name === void 0) { _name = ''; }
+    function Workspace(_id, folders, _configuration, _ctime) {
         if (folders === void 0) { folders = []; }
         if (_configuration === void 0) { _configuration = null; }
         this._id = _id;
-        this._name = _name;
         this._configuration = _configuration;
         this._ctime = _ctime;
         this._foldersMap = TernarySearchTree.forPaths();
@@ -32,7 +43,6 @@ var Workspace = /** @class */ (function () {
     }
     Workspace.prototype.update = function (workspace) {
         this._id = workspace.id;
-        this._name = workspace.name;
         this._configuration = workspace.configuration;
         this._ctime = workspace.ctime;
         this.folders = workspace.folders;
@@ -62,16 +72,6 @@ var Workspace = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Workspace.prototype, "name", {
-        get: function () {
-            return this._name;
-        },
-        set: function (name) {
-            this._name = name;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(Workspace.prototype, "configuration", {
         get: function () {
             return this._configuration;
@@ -96,7 +96,7 @@ var Workspace = /** @class */ (function () {
         }
     };
     Workspace.prototype.toJSON = function () {
-        return { id: this.id, folders: this.folders, name: this.name, configuration: this.configuration };
+        return { id: this.id, folders: this.folders, configuration: this.configuration };
     };
     return Workspace;
 }());
@@ -109,7 +109,7 @@ var WorkspaceFolder = /** @class */ (function () {
         this.name = data.name;
     }
     WorkspaceFolder.prototype.toResource = function (relativePath) {
-        return this.uri.with({ path: paths.join(this.uri.path, relativePath) });
+        return resources.joinPath(this.uri, relativePath);
     };
     WorkspaceFolder.prototype.toJSON = function () {
         return { uri: this.uri, name: this.name, index: this.index };
@@ -156,7 +156,7 @@ function toUri(path, relativeTo) {
             return URI.file(path);
         }
         if (relativeTo) {
-            return relativeTo.with({ path: paths.join(relativeTo.path, path) });
+            return resources.joinPath(relativeTo, path);
         }
     }
     return null;

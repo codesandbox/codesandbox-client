@@ -282,7 +282,7 @@ export var units = {
     'time': ['ms', 's'],
     'frequency': ['Hz', 'kHz'],
     'resolution': ['dpi', 'dpcm', 'dppx'],
-    'percentage': ['%']
+    'percentage': ['%', 'fr']
 };
 export var html5Tags = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption',
     'cite', 'code', 'col', 'colgroup', 'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer',
@@ -312,7 +312,7 @@ export function isColorValue(node) {
         return true;
     }
     else if (node.type === nodes.NodeType.Function) {
-        return this.isColorConstructor(node);
+        return isColorConstructor(node);
     }
     else if (node.type === nodes.NodeType.Identifier) {
         if (node.parent && node.parent.type !== nodes.NodeType.Term) {
@@ -491,6 +491,13 @@ export function getColorValue(node) {
         if (node.parent && node.parent.type !== nodes.NodeType.Term) {
             return null;
         }
+        var term = node.parent;
+        if (term.parent && term.parent.type === nodes.NodeType.BinaryExpression) {
+            var expression = term.parent;
+            if (expression.parent && expression.parent.type === nodes.NodeType.ListEntry && expression.parent.key === expression) {
+                return null;
+            }
+        }
         var candidateColor = node.getText().toLowerCase();
         if (candidateColor === 'none') {
             return null;
@@ -536,6 +543,16 @@ export function isKnownProperty(name) {
         return getProperties().hasOwnProperty(name);
     }
 }
+export function isStandardProperty(name) {
+    if (!name) {
+        return false;
+    }
+    else {
+        name = name.toLowerCase();
+        var property = getProperties()[name];
+        return property && property.status === 'standard';
+    }
+}
 export function isCommonValue(entry) {
     return entry.browsers.count > 1;
 }
@@ -547,15 +564,46 @@ export function getPageBoxDirectives() {
     ];
 }
 export function getEntryDescription(entry) {
-    var desc = entry.description || '';
-    var browserLabel = this.getBrowserLabel(entry.browsers);
+    if (!entry.description || entry.description === '') {
+        return null;
+    }
+    var desc = '';
+    if (entry.data && entry.data.status) {
+        desc += getEntryStatus(entry.data.status);
+    }
+    desc += entry.description;
+    var browserLabel = getBrowserLabel(entry.browsers);
     if (browserLabel) {
-        if (desc) {
-            desc = desc + '\n';
-        }
-        desc = desc + '(' + browserLabel + ')';
+        desc += '\n(' + browserLabel + ')';
+    }
+    if (entry.data && entry.data.syntax) {
+        desc += "\n\nSyntax: " + entry.data.syntax;
     }
     return desc;
+}
+export function expandEntryStatus(status) {
+    switch (status) {
+        case 'e':
+            return 'experimental';
+        case 'n':
+            return 'nonstandard';
+        case 'o':
+            return 'obsolete';
+        default:
+            return 'standard';
+    }
+}
+function getEntryStatus(status) {
+    switch (status) {
+        case 'e':
+            return '⚠️ Property is experimental. Be cautious when using it.️\n\n';
+        case 'n':
+            return '🚨️ Property is nonstandard. Avoid using it.\n\n';
+        case 'o':
+            return '🚨️️️ Property is obsolete. Avoid using it.\n\n';
+        default:
+            return '';
+    }
 }
 export function getBrowserLabel(b) {
     var result = '';
@@ -675,6 +723,13 @@ var EntryImpl = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(EntryImpl.prototype, "status", {
+        get: function () {
+            return expandEntryStatus(this.data.status);
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(EntryImpl.prototype, "values", {
         get: function () {
             if (!this.data.values) {
@@ -697,7 +752,7 @@ var properties = browsers.data.css.properties;
 export function getProperties() {
     if (!propertySet) {
         propertySet = {};
-        for (var i = 0, len = properties.length; i < len; i++) {
+        for (var i = 0; i < properties.length; i++) {
             var rawEntry = properties[i];
             propertySet[rawEntry.name] = new EntryImpl(rawEntry);
         }
@@ -709,7 +764,7 @@ var atDirectiveList;
 export function getAtDirectives() {
     if (!atDirectiveList) {
         atDirectiveList = [];
-        for (var i = 0, len = atDirectives.length; i < len; i++) {
+        for (var i = 0; i < atDirectives.length; i++) {
             var rawEntry = atDirectives[i];
             atDirectiveList.push(new EntryImpl(rawEntry));
         }
@@ -721,7 +776,7 @@ var pseudoElementList;
 export function getPseudoElements() {
     if (!pseudoElementList) {
         pseudoElementList = [];
-        for (var i = 0, len = pseudoElements.length; i < len; i++) {
+        for (var i = 0; i < pseudoElements.length; i++) {
             var rawEntry = pseudoElements[i];
             pseudoElementList.push(new EntryImpl(rawEntry));
         }
@@ -733,7 +788,7 @@ var pseudoClassesList;
 export function getPseudoClasses() {
     if (!pseudoClassesList) {
         pseudoClassesList = [];
-        for (var i = 0, len = pseudoClasses.length; i < len; i++) {
+        for (var i = 0; i < pseudoClasses.length; i++) {
             var rawEntry = pseudoClasses[i];
             pseudoClassesList.push(new EntryImpl(rawEntry));
         }

@@ -1,6 +1,6 @@
 /*!-----------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.12.0(dd68c6520b67d097453dc2766f976dc009a5af44)
+ * Version: 0.14.3(1e203a3446fe4397d33e4ee9997d1654bb8c7a32)
  * Released under the MIT license
  * https://github.com/Microsoft/vscode/blob/master/LICENSE.txt
  *-----------------------------------------------------------*/
@@ -149,7 +149,7 @@ var AMDLoader;
          * This method does not take care of / vs \
          */
         Utilities.fileUriToFilePath = function (isWindows, uri) {
-            uri = decodeURI(uri);
+            uri = decodeURI(uri).replace(/%23/g, '#');
             if (isWindows) {
                 if (/^file:\/\/\//.test(uri)) {
                     // This is a URI without a hostname => return only the path segment
@@ -219,7 +219,7 @@ var AMDLoader;
             return '===anonymous' + (Utilities.NEXT_ANONYMOUS_ID++) + '===';
         };
         Utilities.isAnonymousModule = function (id) {
-            return /^===anonymous/.test(id);
+            return Utilities.startsWith(id, '===anonymous');
         };
         Utilities.getHighPerformanceTimestamp = function () {
             if (!this.PERFORMANCE_NOW_PROBED) {
@@ -297,6 +297,9 @@ var AMDLoader;
                 if (!AMDLoader.Utilities.endsWith(options.baseUrl, '/')) {
                     options.baseUrl += '/';
                 }
+            }
+            if (typeof options.cspNonce !== 'string') {
+                options.cspNonce = '';
             }
             if (!Array.isArray(options.nodeModules)) {
                 options.nodeModules = [];
@@ -629,6 +632,11 @@ var AMDLoader;
             script.setAttribute('type', 'text/javascript');
             this.attachListeners(script, callback, errorback);
             script.setAttribute('src', scriptSrc);
+            // Propagate CSP nonce to dynamically created script tag.
+            var cspNonce = moduleManager.getConfig().getOptionsLiteral().cspNonce;
+            if (cspNonce) {
+                script.setAttribute('nonce', cspNonce);
+            }
             document.getElementsByTagName('head')[0].appendChild(script);
         };
         return BrowserScriptLoader;
@@ -775,8 +783,7 @@ var AMDLoader;
                     }
                     contents = nodeInstrumenter(contents, normalizedScriptSrc);
                     if (!opts.nodeCachedDataDir) {
-                        _this._loadAndEvalScript(moduleManager, scriptSrc, vmScriptSrc, contents, { filename: vmScriptSrc }, recorder);
-                        callback();
+                        _this._loadAndEvalScript(moduleManager, scriptSrc, vmScriptSrc, contents, { filename: vmScriptSrc }, recorder, callback, errorback);
                     }
                     else {
                         var cachedDataPath_1 = _this._getCachedDataPath(opts.nodeCachedDataDir, scriptSrc);
@@ -787,22 +794,34 @@ var AMDLoader;
                                 produceCachedData: typeof cachedData === 'undefined',
                                 cachedData: cachedData
                             };
-                            var script = _this._loadAndEvalScript(moduleManager, scriptSrc, vmScriptSrc, contents, options, recorder);
-                            callback();
+                            var script = _this._loadAndEvalScript(moduleManager, scriptSrc, vmScriptSrc, contents, options, recorder, callback, errorback);
                             _this._processCachedData(moduleManager, script, cachedDataPath_1);
                         });
                     }
                 });
             }
         };
-        NodeScriptLoader.prototype._loadAndEvalScript = function (moduleManager, scriptSrc, vmScriptSrc, contents, options, recorder) {
+        NodeScriptLoader.prototype._loadAndEvalScript = function (moduleManager, scriptSrc, vmScriptSrc, contents, options, recorder, callback, errorback) {
             // create script, run script
             recorder.record(31 /* NodeBeginEvaluatingScript */, scriptSrc);
             var script = new this._vm.Script(contents, options);
             var r = script.runInThisContext(options);
-            r.call(AMDLoader.global, moduleManager.getGlobalAMDRequireFunc(), moduleManager.getGlobalAMDDefineFunc(), vmScriptSrc, this._path.dirname(scriptSrc));
+            var globalDefineFunc = moduleManager.getGlobalAMDDefineFunc();
+            var receivedDefineCall = false;
+            var localDefineFunc = function () {
+                receivedDefineCall = true;
+                return globalDefineFunc.apply(null, arguments);
+            };
+            localDefineFunc.amd = globalDefineFunc.amd;
+            r.call(AMDLoader.global, moduleManager.getGlobalAMDRequireFunc(), localDefineFunc, vmScriptSrc, this._path.dirname(scriptSrc));
             // signal done
             recorder.record(32 /* NodeEndEvaluatingScript */, scriptSrc);
+            if (receivedDefineCall) {
+                callback();
+            }
+            else {
+                errorback(new Error("Didn't receive define call in " + scriptSrc + "!"));
+            }
             return script;
         };
         NodeScriptLoader.prototype._getCachedDataPath = function (basedir, filename) {
@@ -1410,7 +1429,8 @@ var AMDLoader;
             this._knownModules2[moduleId] = true;
             var strModuleId = this._moduleIdProvider.getStrModuleId(moduleId);
             var paths = this._config.moduleIdToPaths(strModuleId);
-            if (this._env.isNode && strModuleId.indexOf('/') === -1) {
+            var scopedPackageRegex = /^@[^\/]+\/[^\/]+$/; // matches @scope/package-name
+            if (this._env.isNode && (strModuleId.indexOf('/') === -1 || scopedPackageRegex.test(strModuleId))) {
                 paths.push('node|' + strModuleId);
             }
             var lastPathIndex = -1;
@@ -1655,6 +1675,9 @@ var AMDLoader;
     };
     RequireFunc.getStats = function () {
         return moduleManager.getLoaderEvents();
+    };
+    RequireFunc.define = function () {
+        return DefineFunc.apply(null, arguments);
     };
     function init() {
         if (typeof AMDLoader.global.require !== 'undefined' || typeof require !== 'undefined') {

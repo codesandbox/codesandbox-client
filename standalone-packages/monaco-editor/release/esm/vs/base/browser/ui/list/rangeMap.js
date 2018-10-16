@@ -2,36 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-/**
- * Returns the intersection between two ranges as a range itself.
- * Returns `{ start: 0, end: 0 }` if the intersection is empty.
- */
-export function intersect(one, other) {
-    if (one.start >= other.end || other.start >= one.end) {
-        return { start: 0, end: 0 };
-    }
-    var start = Math.max(one.start, other.start);
-    var end = Math.min(one.end, other.end);
-    if (end - start <= 0) {
-        return { start: 0, end: 0 };
-    }
-    return { start: start, end: end };
-}
-export function isEmpty(range) {
-    return range.end - range.start <= 0;
-}
-export function relativeComplement(one, other) {
-    var result = [];
-    var first = { start: one.start, end: Math.min(other.start, one.end) };
-    var second = { start: Math.max(other.end, one.start), end: one.end };
-    if (!isEmpty(first)) {
-        result.push(first);
-    }
-    if (!isEmpty(second)) {
-        result.push(second);
-    }
-    return result;
-}
+import { Range } from '../../../common/range.js';
 /**
  * Returns the intersection between a ranged group and a range.
  * Returns `[]` if the intersection is empty.
@@ -46,8 +17,8 @@ export function groupIntersect(range, groups) {
         if (range.end < r.range.start) {
             break;
         }
-        var intersection = intersect(range, r.range);
-        if (isEmpty(intersection)) {
+        var intersection = Range.intersect(range, r.range);
+        if (Range.isEmpty(intersection)) {
             continue;
         }
         result.push({

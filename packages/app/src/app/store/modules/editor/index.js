@@ -1,4 +1,5 @@
 import { Module } from 'cerebral';
+import themes from 'common/themes';
 import model from './model';
 import * as sequences from './sequences';
 import {
@@ -49,6 +50,7 @@ export default Module({
       y: 0,
       content: 'browser',
     },
+    themes,
   },
   getters: {
     isAllModulesSynced,

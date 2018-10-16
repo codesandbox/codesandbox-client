@@ -3,12 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+import { toDisposable } from '../../../base/common/lifecycle.js';
 import { Emitter } from '../../../base/common/event.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 var TokenizationRegistryImpl = /** @class */ (function () {
     function TokenizationRegistryImpl() {
         this._onDidChange = new Emitter();
         this.onDidChange = this._onDidChange.event;
         this._map = Object.create(null);
+        this._promises = Object.create(null);
         this._colorMap = null;
     }
     TokenizationRegistryImpl.prototype.fire = function (languages) {
@@ -21,15 +24,33 @@ var TokenizationRegistryImpl = /** @class */ (function () {
         var _this = this;
         this._map[language] = support;
         this.fire([language]);
-        return {
-            dispose: function () {
-                if (_this._map[language] !== support) {
-                    return;
-                }
-                delete _this._map[language];
-                _this.fire([language]);
+        return toDisposable(function () {
+            if (_this._map[language] !== support) {
+                return;
             }
-        };
+            delete _this._map[language];
+            _this.fire([language]);
+        });
+    };
+    TokenizationRegistryImpl.prototype.registerPromise = function (language, supportPromise) {
+        var _this = this;
+        var promise = this._promises[language] = supportPromise.then(function (support) {
+            delete _this._promises[language];
+            return _this.register(language, support);
+        });
+        return promise;
+    };
+    TokenizationRegistryImpl.prototype.getPromise = function (language) {
+        var _this = this;
+        var support = this.get(language);
+        if (support) {
+            return TPromise.as(support);
+        }
+        var promise = this._promises[language];
+        if (promise) {
+            return promise.then(function (_) { return _this.get(language); });
+        }
+        return null;
     };
     TokenizationRegistryImpl.prototype.get = function (language) {
         return (this._map[language] || null);

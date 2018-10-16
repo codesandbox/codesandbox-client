@@ -1,4 +1,8 @@
+!/standalone-packages/vscode/src/vs/codesandbox/
+!/standalone-packages/vscode/src/vs/codesandbox/*
+!/standalone-packages/vscode/src/vs/codesandbox/**/*.ts
+!/standalone-packages/vscode/src/vs/codesandbox/**/*.*
+
 static/
-package.json
-standalone-packages/vscode
-standalone-packages/
+/package.json
+/standalone-packages/*

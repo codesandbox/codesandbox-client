@@ -312,6 +312,7 @@ export function createScanner(text, ignoreTrivia) {
             case 34 /* doubleQuote */:
             case 58 /* colon */:
             case 44 /* comma */:
+            case 47 /* slash */:
                 return false;
         }
         return true;

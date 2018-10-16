@@ -14,9 +14,13 @@ export var sep = '/';
  */
 export var nativeSep = isWindows ? '\\' : '/';
 /**
+ * @param path the path to get the dirname from
+ * @param separator the separator to use
  * @returns the directory name of a path.
+ *
  */
-export function dirname(path) {
+export function dirname(path, separator) {
+    if (separator === void 0) { separator = nativeSep; }
     var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
     if (idx === 0) {
         return '.';
@@ -30,7 +34,7 @@ export function dirname(path) {
     else {
         var res = path.substring(0, ~idx);
         if (isWindows && res[res.length - 1] === ':') {
-            res += nativeSep; // make sure drive letters end with backslash
+            res += separator; // make sure drive letters end with backslash
         }
         return res;
     }
@@ -288,7 +292,8 @@ export function isEqual(pathA, pathB, ignoreCase) {
     }
     return equalsIgnoreCase(pathA, pathB);
 }
-export function isEqualOrParent(path, candidate, ignoreCase) {
+export function isEqualOrParent(path, candidate, ignoreCase, separator) {
+    if (separator === void 0) { separator = nativeSep; }
     if (path === candidate) {
         return true;
     }
@@ -307,13 +312,13 @@ export function isEqualOrParent(path, candidate, ignoreCase) {
             return true; // same path, different casing
         }
         var sepOffset = candidate.length;
-        if (candidate.charAt(candidate.length - 1) === nativeSep) {
+        if (candidate.charAt(candidate.length - 1) === separator) {
             sepOffset--; // adjust the expected sep offset in case our candidate already ends in separator character
         }
-        return path.charAt(sepOffset) === nativeSep;
+        return path.charAt(sepOffset) === separator;
     }
-    if (candidate.charAt(candidate.length - 1) !== nativeSep) {
-        candidate += nativeSep;
+    if (candidate.charAt(candidate.length - 1) !== separator) {
+        candidate += separator;
     }
     return path.indexOf(candidate) === 0;
 }

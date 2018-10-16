@@ -97,8 +97,13 @@ var ViewCursor = /** @class */ (function () {
             else {
                 width_1 = dom.computeScreenAwareSize(1);
             }
+            var left = visibleRange.left;
+            if (width_1 >= 2) {
+                // try to center cursor
+                left -= 1;
+            }
             var top_1 = ctx.getVerticalOffsetForLineNumber(this._position.lineNumber) - ctx.bigNumbersDelta;
-            return new ViewCursorRenderData(top_1, visibleRange.left, width_1, this._lineHeight, textContent, textContentClassName);
+            return new ViewCursorRenderData(top_1, left, width_1, this._lineHeight, textContent, textContentClassName);
         }
         var visibleRangeForCharacter = ctx.linesVisibleRangesForRange(new Range(this._position.lineNumber, this._position.column, this._position.lineNumber, this._position.column + 1), false);
         if (!visibleRangeForCharacter || visibleRangeForCharacter.length === 0 || visibleRangeForCharacter[0].ranges.length === 0) {

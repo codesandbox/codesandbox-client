@@ -105,9 +105,7 @@ export function setFullscreen(fullscreen) {
 export function isFullscreen() {
     return WindowManager.INSTANCE.isFullscreen();
 }
-export function onDidChangeFullscreen(callback) {
-    return WindowManager.INSTANCE.onDidChangeFullscreen(callback);
-}
+export var onDidChangeFullscreen = WindowManager.INSTANCE.onDidChangeFullscreen;
 export function setAccessibilitySupport(accessibilitySupport) {
     WindowManager.INSTANCE.setAccessibilitySupport(accessibilitySupport);
 }

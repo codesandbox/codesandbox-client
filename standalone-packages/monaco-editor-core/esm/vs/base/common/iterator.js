@@ -4,67 +4,87 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var _empty = {
-    next: function () {
-        return { done: true, value: undefined };
+export var Iterator;
+(function (Iterator) {
+    var _empty = {
+        next: function () {
+            return { done: true, value: undefined };
+        }
+    };
+    function empty() {
+        return _empty;
     }
-};
-export function empty() {
-    return _empty;
-}
-export function iter(array, index, length) {
-    if (index === void 0) { index = 0; }
-    if (length === void 0) { length = array.length; }
-    return {
-        next: function () {
-            if (index >= length) {
-                return { done: true, value: undefined };
+    Iterator.empty = empty;
+    function fromArray(array, index, length) {
+        if (index === void 0) { index = 0; }
+        if (length === void 0) { length = array.length; }
+        return {
+            next: function () {
+                if (index >= length) {
+                    return { done: true, value: undefined };
+                }
+                return { done: false, value: array[index++] };
             }
-            return { done: false, value: array[index++] };
-        }
-    };
-}
-export function map(iterator, fn) {
-    return {
-        next: function () {
-            var _a = iterator.next(), done = _a.done, value = _a.value;
-            return { done: done, value: done ? undefined : fn(value) };
-        }
-    };
-}
-export function filter(iterator, fn) {
-    return {
-        next: function () {
-            while (true) {
+        };
+    }
+    Iterator.fromArray = fromArray;
+    function map(iterator, fn) {
+        return {
+            next: function () {
                 var _a = iterator.next(), done = _a.done, value = _a.value;
-                if (done) {
-                    return { done: done, value: undefined };
-                }
-                if (fn(value)) {
-                    return { done: done, value: value };
+                return { done: done, value: done ? undefined : fn(value) };
+            }
+        };
+    }
+    Iterator.map = map;
+    function filter(iterator, fn) {
+        return {
+            next: function () {
+                while (true) {
+                    var _a = iterator.next(), done = _a.done, value = _a.value;
+                    if (done) {
+                        return { done: done, value: undefined };
+                    }
+                    if (fn(value)) {
+                        return { done: done, value: value };
+                    }
                 }
             }
-        }
-    };
-}
-export function forEach(iterator, fn) {
-    for (var next = iterator.next(); !next.done; next = iterator.next()) {
-        fn(next.value);
+        };
     }
-}
-export function collect(iterator) {
-    var result = [];
-    forEach(iterator, function (value) { return result.push(value); });
-    return result;
+    Iterator.filter = filter;
+    function forEach(iterator, fn) {
+        for (var next = iterator.next(); !next.done; next = iterator.next()) {
+            fn(next.value);
+        }
+    }
+    Iterator.forEach = forEach;
+    function collect(iterator) {
+        var result = [];
+        forEach(iterator, function (value) { return result.push(value); });
+        return result;
+    }
+    Iterator.collect = collect;
+})(Iterator || (Iterator = {}));
+export function getSequenceIterator(arg) {
+    if (Array.isArray(arg)) {
+        return Iterator.fromArray(arg);
+    }
+    else {
+        return arg;
+    }
 }
 var ArrayIterator = /** @class */ (function () {
     function ArrayIterator(items, start, end, index) {

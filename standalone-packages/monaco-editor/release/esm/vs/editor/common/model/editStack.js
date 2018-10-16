@@ -144,6 +144,9 @@ var EditStack = /** @class */ (function () {
         }
         return null;
     };
+    EditStack.prototype.canUndo = function () {
+        return (this.past.length > 0);
+    };
     EditStack.prototype.redo = function () {
         if (this.future.length > 0) {
             var futureStackElement = this.future.pop();
@@ -162,6 +165,9 @@ var EditStack = /** @class */ (function () {
             };
         }
         return null;
+    };
+    EditStack.prototype.canRedo = function () {
+        return (this.future.length > 0);
     };
     return EditStack;
 }());
