@@ -6,10 +6,28 @@ import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
 import { Version } from './elements';
 
+const formatSize = value => {
+  let unit;
+  let size;
+  if (Math.log10(value) < 3) {
+    unit = 'B';
+    size = value;
+  } else if (Math.log10(value) < 6) {
+    unit = 'kB';
+    size = value / 1024;
+  } else {
+    unit = 'mB';
+    size = value / 1024 / 1024;
+  }
+
+  return { unit, size };
+};
+
 export default class VersionEntry extends React.PureComponent {
   state = {
     hovering: false,
     version: null,
+    size: {},
   };
 
   setVersionsForLatestPkg(pkg) {
@@ -20,9 +38,25 @@ export default class VersionEntry extends React.PureComponent {
       .catch(err => console.err(err)); // eslint-disable-line no-console
   }
 
+  getSizeForPKG(pkg) {
+    fetch(`https://bundlephobia.com/api/size?package=${pkg}`)
+      .then(response => response.json())
+      .then(data => {
+        const { unit, size } = formatSize(data.size);
+        this.setState({
+          size: {
+            number: parseFloat(size).toFixed(1),
+            unit,
+          },
+        });
+      })
+      .catch(err => console.err(err)); // eslint-disable-line no-console
+  }
+
   componentWillMount() {
     const versionRegex = /^\d{1,3}\.\d{1,3}.\d{1,3}$/;
     const version = this.props.dependencies[this.props.dependency];
+    this.getSizeForPKG(`${this.props.dependency}@${version}`);
     if (!versionRegex.test(version)) {
       this.setVersionsForLatestPkg(`${this.props.dependency}@${version}`);
     }
@@ -48,7 +82,7 @@ export default class VersionEntry extends React.PureComponent {
   render() {
     const { dependencies, dependency } = this.props;
 
-    const { hovering } = this.state;
+    const { hovering, version, size } = this.state;
     return (
       <EntryContainer
         onMouseEnter={this.onMouseEnter}
@@ -59,9 +93,10 @@ export default class VersionEntry extends React.PureComponent {
         </Link>
         <Version hovering={hovering}>
           {dependencies[dependency]}{' '}
-          {hovering &&
-            this.state.version && <span>({this.state.version})</span>}
+          {hovering && version && <span>({version})</span>}
+          {size.number && <span>({size.number + size.unit})</span>}
         </Version>
+
         {hovering && (
           <IconArea>
             <Icon onClick={this.handleRefresh}>
