@@ -63,7 +63,7 @@ export default class Modal extends React.PureComponent {
         <InnerContainer forking={forking} closing={closing}>
           <Title>Client Templates</Title>
           {mainRows.map((ts, i) => (
-            // eslint-disable-next-line
+            // eslint-disable-next-line react/no-array-index-key
             <Templates key={i}>
               {ts.map(t => (
                 <Template
@@ -77,6 +77,7 @@ export default class Modal extends React.PureComponent {
           ))}
 
           {rows.map((ts, i) => (
+            // eslint-disable-next-line react/no-array-index-key
             <Templates style={{ fontSize: '.8rem' }} key={i}>
               {ts.map(t => (
                 <Template
@@ -92,7 +93,7 @@ export default class Modal extends React.PureComponent {
 
           <Title>Server Templates</Title>
           {mainServerRows.map((ts, i) => (
-            // eslint-disable-next-line
+            // eslint-disable-next-line react/no-array-index-key
             <Templates key={i}>
               {ts.map(t => (
                 <Template
@@ -106,6 +107,7 @@ export default class Modal extends React.PureComponent {
           ))}
 
           {serverRows.map((ts, i) => (
+            // eslint-disable-next-line react/no-array-index-key
             <Templates style={{ fontSize: '.8rem' }} key={i}>
               {ts.map(t => (
                 <Template
