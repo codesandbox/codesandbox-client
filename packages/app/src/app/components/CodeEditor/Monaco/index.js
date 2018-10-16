@@ -1,7 +1,12 @@
 // @flow
 import * as React from 'react';
-import { debounce } from 'lodash';
+import { TextOperation } from 'ot';
+import { debounce } from 'lodash-es';
+import { join, dirname } from 'path';
+import { withTheme } from 'styled-components';
 import { getModulePath } from 'common/sandbox/modules';
+import { css } from 'glamor';
+import { listen } from 'codesandbox-api';
 
 import getTemplate from 'common/templates';
 import type {
@@ -11,35 +16,70 @@ import type {
   ModuleCorrection,
   Directory,
 } from 'common/types';
+import { getTextOperation } from 'common/utils/diff';
+
+import delay from 'common/utils/delay';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-import SyntaxHighlightWorker from 'worker-loader?name=monaco-syntax-highlighter.[hash].worker.js!./workers/syntax-highlighter';
-import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!./workers/linter';
-import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].worker.js!./workers/fetch-dependency-typings';
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
+import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
+import eventToTransform from './event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 import defineTheme from './define-theme';
+import getSettings from './settings';
+
 import type { Props, Editor } from '../types';
+import getMode from './mode';
+import { liftOff } from './grammars/configure-tokenizer';
+import {
+  lineAndColumnToIndex,
+  indexToLineAndColumn,
+} from './monaco-index-converter';
 
 type State = {
   fuzzySearchEnabled: boolean,
 };
 
+const fadeIn = css.keyframes('fadeIn', {
+  // optional name
+  '0%': { opacity: 0 },
+  '100%': { opacity: 1 },
+});
+
+const fadeOut = css.keyframes('fadeOut', {
+  // optional name
+  '0%': { opacity: 1 },
+  '100%': { opacity: 0 },
+});
+
+function getSelection(lines, selection) {
+  const startSelection = lineAndColumnToIndex(
+    lines,
+    selection.startLineNumber,
+    selection.startColumn
+  );
+  const endSelection = lineAndColumnToIndex(
+    lines,
+    selection.endLineNumber,
+    selection.endColumn
+  );
+
+  return {
+    selection:
+      startSelection === endSelection ? [] : [startSelection, endSelection],
+    cursorPosition: lineAndColumnToIndex(
+      lines,
+      selection.positionLineNumber,
+      selection.positionColumn
+    ),
+  };
+}
+
 let modelCache = {};
-
-const fontFamilies = (...families) =>
-  families
-    .filter(Boolean)
-    .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
-    )
-    .join(', ');
-
-const requireAMDModule = paths =>
-  new Promise(resolve => window.require(paths, () => resolve()));
 
 class MonacoEditor extends React.Component<Props, State> implements Editor {
   static defaultProps = {
@@ -56,9 +96,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   syntaxWorker: ?Worker;
   lintWorker: ?Worker;
   typingsFetcherWorker: ?Worker;
-  sizeProbeInterval: ?number;
   editor: any;
   monaco: any;
+  receivingCode: ?boolean = false;
+  transpilationListener: ?Function;
+  sizeProbeInterval: ?number;
 
   constructor(props: Props) {
     super(props);
@@ -72,13 +114,18 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.tsconfig = props.tsconfig;
 
-    this.syntaxWorker = null;
     this.lintWorker = null;
     this.typingsFetcherWorker = null;
     this.sizeProbeInterval = null;
 
-    this.resizeEditor = debounce(this.resizeEditor, 500);
+    this.resizeEditor = debounce(this.resizeEditor, 150);
     this.commitLibChanges = debounce(this.commitLibChanges, 300);
+    this.onSelectionChangedDebounced = debounce(
+      this.onSelectionChangedDebounced,
+      500
+    );
+
+    this.transpilationListener = this.setupTranspilationListener();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -86,34 +133,63 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
     ) {
+      this.resizeEditorInstantly();
+    }
+
+    if (
+      this.props.absoluteWidth &&
+      this.props.absoluteHeight &&
+      (this.props.absoluteWidth !== nextProps.absoluteWidth ||
+        this.props.absoluteHeight !== nextProps.absoluteHeight)
+    ) {
       this.resizeEditor();
     }
+
+    if (this.props.readOnly !== nextProps.readOnly && this.editor) {
+      this.editor.updateOptions({ readOnly: !!nextProps.readOnly });
+    }
+
+    if (this.props.theme.vscodeTheme !== nextProps.theme.vscodeTheme) {
+      defineTheme(this.monaco, nextProps.theme.vscodeTheme);
+    }
+
     return false;
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
     // Make sure that everything has run before disposing, to prevent any inconsistensies
-    setTimeout(() => {
-      this.disposeModules(this.sandbox.modules);
-      if (this.editor) {
-        this.editor.dispose();
-      }
-      if (this.syntaxWorker) {
-        this.syntaxWorker.terminate();
-      }
-      if (this.lintWorker) {
-        this.lintWorker.terminate();
-      }
-      if (this.typingsFetcherWorker) {
-        this.typingsFetcherWorker.terminate();
-      }
-      clearTimeout(this.sizeProbeInterval);
-    });
+
+    this.disposeModules(this.sandbox.modules);
+    if (this.editor) {
+      this.editor.dispose();
+    }
+    if (this.lintWorker) {
+      this.lintWorker.terminate();
+    }
+    if (this.typingsFetcherWorker) {
+      this.typingsFetcherWorker.terminate();
+    }
+    if (this.transpilationListener) {
+      this.transpilationListener();
+    }
+    clearInterval(this.sizeProbeInterval);
 
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
+  }
+
+  setupTranspilationListener() {
+    return listen(({ type, code, path }) => {
+      if (type === 'add-extra-lib') {
+        const dtsPath = `${path}.d.ts`;
+        this.monaco.languages.typescript.typescriptDefaults._extraLibs[
+          `file:///${dtsPath}`
+        ] = code;
+        this.commitLibChanges();
+      }
+    });
   }
 
   configureEditor = async (editor: any, monaco: any) => {
@@ -121,20 +197,26 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco = monaco;
 
     // eslint-disable-next-line no-underscore-dangle
-    window._cs = {
+    window.CSEditor = {
       editor: this.editor,
       monaco: this.monaco,
     };
 
     requestAnimationFrame(() => {
       this.setupWorkers();
-      editor.onDidChangeModelContent(() => {
+      editor.onDidChangeModelContent(e => {
+        const { isLive, sendTransforms } = this.props;
+
+        if (isLive && sendTransforms && !this.receivingCode) {
+          this.sendChangeOperations(e);
+        }
+
         this.handleChange();
       });
     });
 
-    monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
-    monaco.languages.typescript.javascriptDefaults.setMaximunWorkerIdleTime(-1);
+    monaco.languages.typescript.typescriptDefaults.setMaximumWorkerIdleTime(-1);
+    monaco.languages.typescript.javascriptDefaults.setMaximumWorkerIdleTime(-1);
 
     monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
@@ -144,18 +226,19 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const sandbox = this.sandbox;
     const currentModule = this.currentModule;
 
-    await this.initializeModules(sandbox.modules);
-    await this.openNewModel(currentModule.id, currentModule.title);
+    liftOff(monaco);
 
-    this.addKeyCommands();
-    import(/* webpackChunkName: 'monaco-emmet' */ './enable-emmet').then(
-      enableEmmet => {
-        enableEmmet.default(editor, monaco, {});
-      }
-    );
+    this.initializeModules(sandbox.modules);
+    await this.openNewModel(currentModule);
 
     window.addEventListener('resize', this.resizeEditor);
-    this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
+    this.sizeProbeInterval = setInterval(() => {
+      if (this.props.absoluteWidth && this.props.absoluteHeight) {
+        return;
+      }
+
+      this.resizeEditorInstantly();
+    }, 3000);
 
     const { dependencies } = this;
     if (dependencies != null) {
@@ -199,9 +282,59 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       },
     });
 
+    editor.onDidChangeCursorSelection(selectionChange => {
+      // TODO: add another debounced action to send the current data. So we can
+      // have the correct cursor pos no matter what
+      const { onSelectionChanged, isLive } = this.props;
+      // Reason 3 is update by mouse or arrow keys
+      if (isLive) {
+        const lines = editor.getModel().getLinesContent() || [];
+        const data = {
+          primary: getSelection(lines, selectionChange.selection),
+          secondary: selectionChange.secondarySelections.map(s =>
+            getSelection(lines, s)
+          ),
+        };
+        if (
+          (selectionChange.reason === 3 ||
+            /* alt + shift + arrow keys */ selectionChange.source ===
+              'moveWordCommand' ||
+            /* click inside a selection */ selectionChange.source === 'api') &&
+          onSelectionChanged
+        ) {
+          this.onSelectionChangedDebounced.cancel();
+          onSelectionChanged({
+            selection: data,
+            moduleShortid: this.currentModule.shortid,
+          });
+        } else {
+          // This is just on typing, we send a debounced selection update as a
+          // safeguard to make sure we are in sync
+          this.onSelectionChangedDebounced({
+            selection: data,
+            moduleShortid: this.currentModule.shortid,
+          });
+        }
+      }
+    });
+
     if (this.props.onInitialized) {
       this.disposeInitializer = this.props.onInitialized(this);
     }
+
+    // TODO remove this as soon as we solve the keybinding issues
+    editor.addCommand(
+      // eslint-disable-next-line
+      this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
+      () => {
+        const { onSave } = this.props;
+        if (onSave) {
+          onSave(this.getCode());
+        }
+      }
+    );
+
+    this.registerAutoCompletions();
   };
 
   setCompilerOptions = () => {
@@ -234,6 +367,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       suppressImplicitAnyIndexErrors:
         hasNativeTypescript && existingConfig.suppressImplicitAnyIndexErrors,
       noUnusedLocals: hasNativeTypescript && existingConfig.noUnusedLocals,
+
+      newLine: this.monaco.languages.typescript.NewLineKind.LineFeed,
     };
 
     this.monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
@@ -249,6 +384,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
+  setReceivingCode = (receiving: boolean) => {
+    this.receivingCode = receiving;
+  };
+
   setTSConfig = (config: Object) => {
     this.tsconfig = config;
 
@@ -262,15 +401,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   ) => {
     const oldModule = this.currentModule;
 
-    this.currentModule = newModule;
-    this.swapDocuments({
-      currentId: oldModule.id,
-      nextId: newModule.id,
-      nextTitle: newModule.title,
-    }).then(() => {
-      if (newModule === this.currentModule) {
-        this.changeCode(newModule.code || '');
-      }
+    this.swapDocuments(oldModule, newModule).then(() => {
+      this.currentModule = newModule;
 
       if (errors) {
         this.setErrors(errors);
@@ -279,6 +411,224 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       if (corrections) {
         this.setCorrections(corrections);
       }
+
+      if (this.props.onCodeReceived) {
+        // Whenever the user changes a module we set up a state that defines
+        // that the changes of code are not sent to live users. We need to reset
+        // this state when we're doing changing modules
+        this.props.onCodeReceived();
+        this.liveOperationCode = '';
+      }
+    });
+  };
+
+  onSelectionChangedDebounced = data => {
+    if (this.props.onSelectionChanged) {
+      this.props.onSelectionChanged(data);
+    }
+  };
+
+  liveOperationCode = '';
+  sendChangeOperations = changeEvent => {
+    const { sendTransforms, isLive, onCodeReceived } = this.props;
+
+    if (sendTransforms && changeEvent.changes) {
+      this.liveOperationCode =
+        this.liveOperationCode || this.currentModule.code || '';
+      const { operation, newCode } = eventToTransform(
+        changeEvent,
+        this.liveOperationCode
+      );
+
+      this.liveOperationCode = newCode;
+
+      sendTransforms(operation);
+
+      requestAnimationFrame(() => {
+        this.liveOperationCode = '';
+      });
+    } else if (!isLive && onCodeReceived) {
+      onCodeReceived();
+    }
+  };
+
+  userClassesGenerated = {};
+  userSelectionDecorations = {};
+  updateUserSelections = (
+    userSelections: Array<
+      | {
+          userId: string,
+          selection: null,
+        }
+      | {
+          userId: string,
+          name: string,
+          selection: any,
+          color: Array<number>,
+        }
+    >
+  ) => {
+    const lines = this.editor.getModel().getLinesContent() || [];
+
+    userSelections.forEach(data => {
+      const { userId } = data;
+
+      const decorationId = this.currentModule.shortid + userId;
+      if (data.selection === null) {
+        this.userSelectionDecorations[
+          decorationId
+        ] = this.editor.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          [],
+          data.userId
+        );
+
+        return;
+      }
+
+      const decorations = [];
+      const { selection, color, name } = data;
+
+      if (selection) {
+        const addCursor = (position, className) => {
+          const cursorPos = indexToLineAndColumn(lines, position);
+
+          decorations.push({
+            range: new this.monaco.Range(
+              cursorPos.lineNumber,
+              cursorPos.column,
+              cursorPos.lineNumber,
+              cursorPos.column
+            ),
+            options: {
+              className: this.userClassesGenerated[className],
+            },
+          });
+        };
+
+        const addSelection = (start, end, className) => {
+          const from = indexToLineAndColumn(lines, start);
+          const to = indexToLineAndColumn(lines, end);
+
+          decorations.push({
+            range: new this.monaco.Range(
+              from.lineNumber,
+              from.column,
+              to.lineNumber,
+              to.column
+            ),
+            options: {
+              className: this.userClassesGenerated[className],
+            },
+          });
+        };
+
+        const prefix = color.join('-') + userId;
+        const cursorClassName = prefix + '-cursor';
+        const secondaryCursorClassName = prefix + '-secondary-cursor';
+        const selectionClassName = prefix + '-selection';
+        const secondarySelectionClassName = prefix + '-secondary-selection';
+
+        if (!this.userClassesGenerated[cursorClassName]) {
+          const nameStyles = {
+            content: name,
+            position: 'absolute',
+            top: -17,
+            backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+            zIndex: 20,
+            color:
+              color[0] + color[1] + color[2] > 500
+                ? 'rgba(0, 0, 0, 0.8)'
+                : 'white',
+            padding: '2px 4px',
+            borderRadius: 2,
+            borderBottomLeftRadius: 0,
+            fontSize: '.75rem',
+            fontWeight: 600,
+            userSelect: 'none',
+            pointerEvents: 'none',
+            width: 'max-content',
+          };
+          this.userClassesGenerated[cursorClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
+            width: '2px !important',
+            cursor: 'text',
+            zIndex: 30,
+            ':before': {
+              animation: `${fadeOut} 0.3s`,
+              animationDelay: '1s',
+              animationFillMode: 'forwards',
+              opacity: 1,
+              ...nameStyles,
+            },
+            ':hover': {
+              ':before': {
+                animation: `${fadeIn} 0.3s`,
+                animationFillMode: 'forwards',
+                opacity: 0,
+                ...nameStyles,
+              },
+            },
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[secondaryCursorClassName]) {
+          this.userClassesGenerated[secondaryCursorClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`,
+            width: '2px !important',
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[selectionClassName]) {
+          this.userClassesGenerated[selectionClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`,
+            borderRadius: '3px',
+            minWidth: 7.6,
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[secondarySelectionClassName]) {
+          this.userClassesGenerated[secondarySelectionClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.2)`,
+            borderRadius: '3px',
+            minWidth: 7.6,
+          })}`;
+        }
+
+        addCursor(selection.primary.cursorPosition, cursorClassName);
+        if (selection.primary.selection.length) {
+          addSelection(
+            selection.primary.selection[0],
+            selection.primary.selection[1],
+            selectionClassName
+          );
+        }
+
+        if (selection.secondary.length) {
+          selection.secondary.forEach(s => {
+            addCursor(s.cursorPosition, secondaryCursorClassName);
+
+            if (s.selection.length) {
+              addSelection(
+                s.selection[0],
+                s.selection[1],
+                secondarySelectionClassName
+              );
+            }
+          });
+        }
+      }
+
+      // Allow new model to attach in case it's attaching
+      requestAnimationFrame(() => {
+        this.userSelectionDecorations[
+          decorationId
+        ] = this.editor.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          decorations,
+          userId
+        );
+      });
     });
   };
 
@@ -302,22 +652,100 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.getConfigSchemas();
         // Initialize new models
         this.initializeModules(newSandbox.modules)
-          .then(() =>
-            this.openNewModel(newCurrentModule.id, newCurrentModule.title)
-          )
+          .then(() => this.openNewModel(newCurrentModule))
           .then(resolve);
       });
     });
 
-  changeCode = (code: string) => {
-    if (code !== this.getCode()) {
+  changeCode = (code: string, moduleId?: string) => {
+    if (
+      code !== this.getCode() &&
+      (!moduleId || this.currentModule.id === moduleId)
+    ) {
       this.updateCode(code);
-      this.syntaxHighlight(
+      this.lint(
         code,
         this.currentModule.title,
         this.editor.getModel().getVersionId()
       );
     }
+  };
+
+  applyOperationToModel = (operation, pushStack) => {
+    const model = this.editor.getModel();
+
+    const results = [];
+    let index = 0;
+    for (let i = 0; i < operation.ops.length; i++) {
+      const op = operation.ops[i];
+      if (TextOperation.isRetain(op)) {
+        index += op;
+      } else if (TextOperation.isInsert(op)) {
+        const { lineNumber, column } = indexToLineAndColumn(
+          model.getLinesContent() || [],
+          index
+        );
+        const range = new this.monaco.Range(
+          lineNumber,
+          column,
+          lineNumber,
+          column
+        );
+        results.push({
+          range,
+          text: op,
+          forceMoveMarkers: true,
+        });
+      } else if (TextOperation.isDelete(op)) {
+        const lines = model.getLinesContent() || [];
+        const from = indexToLineAndColumn(lines, index);
+        const to = indexToLineAndColumn(lines, index - op);
+        results.push({
+          range: new this.monaco.Range(
+            from.lineNumber,
+            from.column,
+            to.lineNumber,
+            to.column
+          ),
+          text: '',
+        });
+        index -= op;
+      }
+    }
+
+    if (pushStack) {
+      model.pushEditOperations([], results);
+    } else {
+      model.applyEdits(results);
+    }
+  };
+
+  applyOperations = (operations: { [moduleShortid: string]: any }) => {
+    const operationsJSON = operations.toJSON();
+
+    Object.keys(operationsJSON).forEach(moduleShortid => {
+      const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
+
+      if (moduleShortid !== this.currentModule.shortid) {
+        // Apply the code to the current module code itself
+        const module = this.sandbox.modules.find(
+          m => m.shortid === moduleShortid
+        );
+
+        if (!module) {
+          return;
+        }
+
+        const code = operation.apply(module.code || '');
+        if (this.props.onChange) {
+          this.props.onChange(code, module.shortid);
+        }
+        return;
+      }
+
+      this.liveOperationCode = '';
+      this.applyOperationToModel(operation);
+    });
   };
 
   changeDependencies = (
@@ -349,6 +777,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           sandbox.directories,
           module.id
         );
+
+        if (path === '') {
+          // Parent dir got deleted
+          this.disposeModel(module.id);
+          return;
+        }
 
         // Check for changed path, if that's
         // the case create a new model with corresponding tag, ditch the other model
@@ -478,6 +912,103 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
+  registerAutoCompletions = () => {
+    this.monaco.languages.registerCompletionItemProvider('typescript', {
+      triggerCharacters: ['"', "'", '.'],
+      provideCompletionItems: (model, position) => {
+        // Get editor content before the pointer
+        const textUntilPosition = model.getValueInRange(
+          {
+            startLineNumber: 1,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: position.column,
+          },
+          1
+        );
+
+        if (
+          /(([\s|\n]from\s)|(\brequire\b\())["|']\.*$/.test(textUntilPosition)
+        ) {
+          // It's probably a `import` statement or `require` call
+          if (textUntilPosition.endsWith('.')) {
+            // User is trying to import a file
+            const prefix = textUntilPosition.match(/[./]+$/)[0];
+
+            const modulesByPath = new WeakMap();
+            this.sandbox.modules.forEach(module => {
+              const path = getModulePath(
+                this.sandbox.modules,
+                this.sandbox.directories,
+                module.id
+              );
+
+              modulesByPath.set(
+                module,
+                path.indexOf('/') === -1 ? '/' + path : path
+              );
+            });
+
+            const currentModulePath = modulesByPath.get(this.currentModule);
+            if (!currentModulePath) {
+              return null;
+            }
+
+            const relativePath = join(dirname(currentModulePath), prefix);
+            return this.sandbox.modules
+              .filter(m => {
+                const path = modulesByPath.get(m);
+
+                return (
+                  path &&
+                  m.id !== this.currentModule.id &&
+                  path.startsWith(relativePath)
+                );
+              })
+              .map(module => {
+                let path = modulesByPath.get(module);
+
+                if (!path) return null;
+
+                // Don't keep extension for JS files
+                if (path.endsWith('.js')) {
+                  path = path.replace(/\.js$/, '');
+                }
+
+                // Don't keep extension for TS files
+                if (path.endsWith('.ts')) {
+                  path = path.replace(/\.ts$/, '');
+                }
+
+                return {
+                  label:
+                    prefix +
+                    path.replace(relativePath, relativePath === '/' ? '/' : ''),
+                  insertText: path.slice(
+                    relativePath === '/' ? 0 : relativePath.length
+                  ),
+                  kind: this.monaco.languages.CompletionItemKind.File,
+                };
+              })
+              .filter(Boolean);
+          }
+          const deps = this.dependencies;
+          if (deps) {
+            // User is trying to import a dependency
+            return Object.keys(deps).map(name => ({
+              label: name,
+              detail: deps[name],
+              kind: this.monaco.languages.CompletionItemKind.Module,
+            }));
+          }
+
+          return [];
+        }
+        return [];
+      },
+    });
+  };
+
   setupTypeWorker = () => {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
     const regex = /node_modules\/(@types\/.*?)\//;
@@ -524,6 +1055,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         if (this.editor.getModel()) {
           if (version === this.editor.getModel().getVersionId()) {
             this.updateLintWarnings(markers);
+          } else {
+            this.updateLintWarnings([]);
           }
         }
       });
@@ -532,24 +1065,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.lint = debounce(this.lint, 400);
   };
 
-  setupSyntaxWorker = () => {
-    this.syntaxWorker = new SyntaxHighlightWorker();
-
-    this.syntaxWorker.addEventListener('message', event => {
-      const { classifications, version } = event.data;
-
-      requestAnimationFrame(() => {
-        if (this.editor.getModel()) {
-          if (version === this.editor.getModel().getVersionId()) {
-            this.updateDecorations(classifications);
-          }
-        }
-      });
-    });
-  };
-
   setupWorkers = () => {
-    this.setupSyntaxWorker();
     const settings = this.settings;
 
     if (settings.lintEnabled) {
@@ -573,7 +1089,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         classification.end
       ),
       options: {
-        inlineClassName: classification.kind,
+        inlineClassName: classification.type
+          ? `${classification.kind} ${classification.type}-of-${
+              classification.parentKind
+            }`
+          : classification.kind,
       },
     }));
 
@@ -589,7 +1109,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   updateLintWarnings = async (markers: Array<Object>) => {
     const currentModule = this.currentModule;
 
-    const mode = await this.getMode(currentModule.title);
+    const mode = await getMode(currentModule.title, this.monaco);
     if (mode === 'javascript' || mode === 'vue') {
       this.monaco.editor.setModelMarkers(
         this.editor.getModel(),
@@ -602,10 +1122,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   disposeModel = (id: string) => {
     if (modelCache[id]) {
       try {
-        if (modelCache[id].model) {
+        if (modelCache[id].model && !modelCache[id].model.isDisposed()) {
           modelCache[id].model.dispose();
         }
-        if (modelCache[id].lib) {
+        if (modelCache[id].lib && !modelCache[id].lib.isDisposed()) {
           modelCache[id].lib.dispose();
         }
 
@@ -616,97 +1136,54 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  swapDocuments = async ({
-    currentId,
-    nextId,
-    nextTitle,
-  }: {
-    currentId: string,
-    nextId: string,
-    nextTitle: string,
-  }) => {
-    const pos = this.editor.getPosition();
-    if (modelCache[currentId]) {
-      const sandbox = this.sandbox;
-      const currentModule = this.currentModule;
-      const path = getModulePath(
-        sandbox.modules,
-        sandbox.directories,
-        currentId
-      );
+  swapDocuments = (currentModule: Module, nextModule: Module) => {
+    // We get the id here because we don't want currentModule to mutate in the meantime.
+    // If the module changes in the store, and we use it here it will otherwise
+    // throw an error 'Cannot use detached model'. So that's why we get the desired values first.
+    const { id } = currentModule;
 
-      modelCache[currentId].cursorPos = pos;
-      if (modelCache[currentId].lib) {
-        // We let Monaco know what the latest code is of this file by removing
-        // the old extraLib definition and defining a new one.
-        modelCache[currentId].lib.dispose();
-        modelCache[currentId].lib = this.addLib(currentModule.code || '', path);
-      }
-    }
+    return new Promise(resolve => {
+      // We load this in a later moment so the rest of the ui already updates before the editor
+      // this will give a perceived speed boost. Inspiration from vscode team
+      setTimeout(async () => {
+        if (modelCache[id]) {
+          const sandbox = this.sandbox;
+          const path = getModulePath(sandbox.modules, sandbox.directories, id);
 
-    await this.openNewModel(nextId, nextTitle);
-    this.editor.focus();
+          modelCache[id].viewState = this.editor.saveViewState();
+          if (modelCache[id].lib) {
+            // We let Monaco know what the latest code is of this file by removing
+            // the old extraLib definition and defining a new one.
+            modelCache[id].lib.dispose();
+            modelCache[id].lib = this.addLib(currentModule.code || '', path);
+
+            // Reset changes
+            this.changes = { code: '', changes: [] };
+          }
+        }
+
+        await this.openNewModel(nextModule);
+        this.editor.focus();
+        resolve();
+      }, 50);
+    });
   };
 
   updateCode(code: string = '') {
-    const pos = this.editor.getPosition();
-    const lines = this.editor.getModel().getLinesContent();
-    const lastLine = lines.length;
-    const lastLineColumn = lines[lines.length - 1].length;
-    const editOperation = {
-      identifier: {
-        major: 1,
-        minor: 1,
-      },
-      text: code,
-      range: new this.monaco.Range(0, 0, lastLine + 1, lastLineColumn),
-      forceMoveMarkers: false,
-    };
+    const operation = getTextOperation(this.getCode(), code);
 
-    this.editor.getModel().pushEditOperations([], [editOperation], null);
-    this.editor.setPosition(pos);
+    if (!this.receivingCode) {
+      // For the live operation we need to send the operation based on the old code,
+      // that's why we set the 'liveOperationCode' to the last code so the operation
+      // will be applied on that code instead of `currentModule.code`
+      this.liveOperationCode = this.getCode();
+    }
+
+    this.applyOperationToModel(operation, true);
   }
 
-  getMode = async (title: string) => {
-    if (title == null) return 'javascript';
-
-    const kind = title.match(/\.([^.]*)$/);
-
-    if (kind) {
-      if (kind[1] === 'css') return 'css';
-      if (kind[1] === 'scss') return 'scss';
-      if (kind[1] === 'json') return 'json';
-      if (kind[1] === 'html') return 'html';
-      if (kind[1] === 'vue') {
-        if (!this.monaco.languages.getLanguages().find(l => l.id === 'vue')) {
-          await requireAMDModule(['vs/language/vue/monaco.contribution']);
-        }
-        return 'vue';
-      }
-      if (kind[1] === 'less') return 'less';
-      if (kind[1] === 'md') return 'markdown';
-      if (/jsx?$/.test(kind[1])) return 'javascript';
-      if (/tsx?$/.test(kind[1])) return 'typescript';
-    }
-
-    return 'typescript';
-  };
-
-  syntaxHighlight = async (code: string, title: string, version: string) => {
-    const mode = await this.getMode(title);
-    if (mode === 'typescript' || mode === 'javascript') {
-      if (this.syntaxWorker) {
-        this.syntaxWorker.postMessage({
-          code,
-          title,
-          version,
-        });
-      }
-    }
-  };
-
   lint = async (code: string, title: string, version: number) => {
-    const mode = await this.getMode(title);
+    const mode = await getMode(title, this.monaco);
     if (this.settings.lintEnabled) {
       if (mode === 'javascript' || mode === 'vue') {
         if (this.lintWorker) {
@@ -722,23 +1199,20 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   handleChange = () => {
-    const newCode = this.editor.getModel().getValue();
+    const newCode = this.editor.getModel().getValue(1) || '';
     const currentModule = this.currentModule;
     const title = currentModule.title;
 
-    if (
-      currentModule.code !== newCode &&
-      !(currentModule.code === null && newCode === '')
-    ) {
+    const oldCode = this.currentModule.code || '';
+
+    const codeEquals =
+      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n');
+
+    if (!codeEquals) {
       if (this.props.onChange) {
-        this.props.onChange(newCode);
+        this.props.onChange(newCode, this.currentModule.shortid);
       }
 
-      this.syntaxHighlight(
-        newCode,
-        title,
-        this.editor.getModel().getVersionId()
-      );
       this.lint(newCode, title, this.editor.getModel().getVersionId());
     }
   };
@@ -793,7 +1267,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemas: [
-        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions,
+        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions.schemas,
         ...monacoSchemas,
       ],
     });
@@ -816,16 +1290,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  addKeyCommands = () => {
-    // Disabled, we now let keybinding manager handle this
-    // this.editor.addCommand(
-    //   this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S, // eslint-disable-line no-bitwise
-    //   () => {
-    //     this.handleSaveCode();
-    //   }
-    // );
-  };
-
   disposeModules = (modules: Array<Module>) => {
     if (this.editor) {
       this.editor.setModel(null);
@@ -844,8 +1308,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     Promise.all(modules.map(module => this.createModel(module, modules)));
 
   resizeEditor = () => {
+    this.resizeEditorInstantly();
+  };
+
+  resizeEditorInstantly = () => {
     this.forceUpdate(() => {
-      this.editor.layout();
+      if (this.editor) {
+        this.editor.layout();
+      }
     });
   };
 
@@ -885,38 +1355,65 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
-  createModel = async (
+  creatingModelMap = {};
+  createModel = (
     module: Module,
     modules: Array<Module> = this.sandbox.modules,
     directories: Array<Directory> = this.sandbox.directories
   ) => {
-    // Remove the first slash, as this will otherwise create errors in monaco
-    const path = getModulePath(modules, directories, module.id);
+    // Prevent race conditions
+    this.creatingModelMap[module.id] =
+      this.creatingModelMap[module.id] ||
+      (async () => {
+        // Remove the first slash, as this will otherwise create errors in monaco
+        const path = getModulePath(modules, directories, module.id);
+        if (path) {
+          // We need to add this as a lib specifically to Monaco, because Monaco
+          // tends to lose type definitions if you don't touch a file for a while.
+          // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
+          const lib = this.addLib(module.code || '', path);
 
-    // We need to add this as a lib specifically to Monaco, because Monaco
-    // tends to lose type definitions if you don't touch a file for a while.
-    // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
-    const lib = this.addLib(module.code || '', path);
+          const mode = await getMode(module.title, this.monaco);
 
-    const mode = await this.getMode(module.title);
+          if (
+            mode !== 'javascript' &&
+            mode !== 'typescript' &&
+            this.monaco.languages.getEncodedLanguageId(mode) === null
+          ) {
+            // In this case the language still needs to load, if we load the model immediately it will get
+            // the plaintext value. So when the language loads we set the new model
+            // eslint-disable-next-line no-constant-condition
 
-    const model = this.monaco.editor.createModel(
-      module.code || '',
-      mode === 'javascript' ? 'typescript' : mode,
-      new this.monaco.Uri().with({ path, scheme: 'file' })
-    );
+            while (this.monaco.languages.getEncodedLanguageId(mode) === null) {
+              await delay(100); // eslint-disable-line
+            }
+          }
 
-    model.updateOptions({ tabSize: this.props.settings.tabWidth });
+          const model = this.monaco.editor.createModel(
+            module.code || '',
+            mode === 'javascript' ? 'typescript' : mode,
+            new this.monaco.Uri().with({ path, scheme: 'file' })
+          );
 
-    modelCache[module.id] = modelCache[module.id] || {
-      model: null,
-      decorations: [],
-      cursorPos: null,
-    };
-    modelCache[module.id].model = model;
-    modelCache[module.id].lib = lib;
+          model.updateOptions({ tabSize: this.props.settings.tabWidth });
 
-    return model;
+          modelCache[module.id] = modelCache[module.id] || {
+            model: null,
+            decorations: [],
+            viewState: null,
+          };
+          modelCache[module.id].model = model;
+          modelCache[module.id].lib = lib;
+
+          delete this.creatingModelMap[module.id];
+          return model;
+        }
+
+        delete this.creatingModelMap[module.id];
+        return undefined;
+      })();
+
+    return this.creatingModelMap[module.id];
   };
 
   getModelById = async (id: string) => {
@@ -933,23 +1430,38 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     return modelCache[id];
   };
 
-  openNewModel = async (id: string, title: string) => {
+  getModelByShortid = async (shortid: string) => {
+    const module = this.sandbox.modules.find(m => m.shortid === shortid);
+
+    if (!module) {
+      throw new Error('Cannot find module with shortid: ' + shortid);
+    }
+    return this.getModelById(module.id);
+  };
+
+  openNewModel = async (module: Module) => {
+    const { id, code: newCode, title } = module;
     const modelInfo = await this.getModelById(id);
+
+    // Mark receiving code so that the editor won't send all changed code to the
+    // other clients.
+    this.receivingCode = true;
+
+    if (newCode !== modelInfo.model.getValue(1)) {
+      modelInfo.model.setValue(newCode);
+    }
+
+    this.currentModule = module;
     this.editor.setModel(modelInfo.model);
+    this.receivingCode = false;
 
     requestAnimationFrame(() => {
-      if (modelInfo.cursorPos) {
-        this.editor.setPosition(modelInfo.cursorPos);
-        this.editor.revealPositionInCenter(modelInfo.cursorPos);
+      if (modelInfo.viewState) {
+        this.editor.restoreViewState(modelInfo.viewState);
       }
 
-      this.syntaxHighlight(
-        modelInfo.model.getValue(),
-        title,
-        modelInfo.model.getVersionId()
-      );
       this.lint(
-        modelInfo.model.getValue(),
+        modelInfo.model.getValue(1),
         title,
         modelInfo.model.getVersionId()
       );
@@ -961,54 +1473,48 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     const module = this.sandbox.modules.find(m => m.id === moduleId);
     if (module) {
-      this.changeModule(module);
       if (this.props.onModuleChange) {
         this.props.onModuleChange(moduleId);
       }
     }
   };
 
-  openReference = (data: {
-    resource: { path: string },
-    options: {
-      selection: {
-        startLineNumber: number,
-        endLineNumber: number,
-        startColumn: number,
-        endColumn: number,
-      },
-    },
-  }) => {
+  openReference = model => {
     const foundModuleId = Object.keys(modelCache).find(
-      mId => modelCache[mId].model.uri.path === data.resource.path
+      mId => modelCache[mId].model === model
     );
 
     if (foundModuleId) {
       this.setCurrentModule(foundModuleId);
     }
 
-    const selection = data.options.selection;
-    if (selection) {
-      if (
-        typeof selection.endLineNumber === 'number' &&
-        typeof selection.endColumn === 'number'
-      ) {
-        this.editor.setSelection(selection);
-        this.editor.revealRangeInCenter(selection);
-      } else {
-        const pos = {
-          lineNumber: selection.startLineNumber,
-          column: selection.startColumn,
-        };
-        this.editor.setPosition(pos);
-        this.editor.revealPositionInCenter(pos);
-      }
-    }
+    // const selection = data.options.selection;
+    // if (selection) {
+    //   if (
+    //     typeof selection.endLineNumber === 'number' &&
+    //     typeof selection.endColumn === 'number'
+    //   ) {
+    //     this.editor.setSelection(selection);
+    //     this.editor.revealRangeInCenter(selection);
+    //   } else {
+    //     const pos = {
+    //       lineNumber: selection.startLineNumber,
+    //       column: selection.startColumn,
+    //     };
+    //     this.editor.setPosition(pos);
+    //     this.editor.revealPositionInCenter(pos);
+    //   }
+    // }
 
-    return Promise.resolve(this.editor);
+    return Promise.resolve({
+      getControl: () => this.editor,
+    });
   };
 
-  getCode = () => this.editor.getValue();
+  getCode = () =>
+    this.editor.getValue({
+      lineEnding: '\n',
+    });
 
   handleSaveCode = async () => {
     const onSave = this.props.onSave;
@@ -1022,24 +1528,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const currentModule = this.currentModule;
 
     return {
-      selectOnLineNumbers: true,
-      fontSize: settings.fontSize,
-      fontFamily: fontFamilies(
-        settings.fontFamily,
-        'Menlo',
-        'Source Code Pro',
-        'monospace'
-      ),
-      fontLigatures: true,
-      minimap: {
-        enabled: false,
-      },
+      ...getSettings(settings),
       ariaLabel: currentModule.title,
-      formatOnPaste: true,
-      lineHeight: (settings.lineHeight || 1.5) * settings.fontSize,
-      folding: true,
-      glyphMargin: false,
-      fixedOverflowWidgets: true,
+      readOnly: !!this.props.readOnly,
     };
   };
 
@@ -1068,7 +1559,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             theme="CodeSandbox"
             options={options}
             editorDidMount={this.configureEditor}
-            editorWillMount={defineTheme}
+            editorWillMount={monaco =>
+              defineTheme(monaco, this.props.theme.vscodeTheme)
+            }
+            getEditorOptions={this.getEditorOptions}
             openReference={this.openReference}
           />
         </CodeContainer>
@@ -1077,4 +1571,4 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   }
 }
 
-export default MonacoEditor;
+export default withTheme(MonacoEditor);

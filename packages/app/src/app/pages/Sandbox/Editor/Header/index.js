@@ -10,46 +10,32 @@ import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
+import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 
-import { patronUrl } from 'common/utils/url-generator';
+import { patronUrl, dashboardUrl } from 'common/utils/url-generator';
 
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/pages/common/UserMenu';
+import theme from 'common/theme';
+import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import Logo from './Logo';
 import Action from './Action';
 
 import { Container, Right, Left } from './elements';
 
-function Header({ store, signals }) {
+import UpdateFound from './UpdateFound';
+
+const Header = ({ store, signals }) => {
   const sandbox = store.editor.currentSandbox;
 
   return (
     <Container>
       <Left>
-        <Logo title={sandbox.title} />
+        <Logo />
 
-        {store.isLoggedIn &&
-          (sandbox.userLiked ? (
-            <Action
-              tooltip="Undo like"
-              title="Like"
-              Icon={FullHeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ) : (
-            <Action
-              title="Like"
-              Icon={HeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ))}
         <Action
           onClick={() => signals.editor.forkSandboxClicked()}
           title="Fork"
@@ -71,12 +57,14 @@ function Header({ store, signals }) {
             onClick={
               store.editor.isAllModulesSynced
                 ? null
-                : () => signals.editor.saveClicked()
+                : () => saveAllModules(store, signals)
             }
             placeholder={
               store.editor.isAllModulesSynced ? 'All modules are saved' : false
             }
-            tooltip="Save"
+            blink={store.editor.changedModuleShortids.length > 2}
+            title="Save"
+            tooltip="Save Modified Files"
             Icon={Save}
           />
         )}
@@ -86,12 +74,43 @@ function Header({ store, signals }) {
           Icon={Download}
           onClick={() => signals.editor.createZipClicked()}
         />
+
+        {store.isLoggedIn &&
+          (sandbox.userLiked ? (
+            <Action
+              tooltip="Undo like"
+              Icon={FullHeartIcon}
+              onClick={() =>
+                signals.editor.likeSandboxToggled({ id: sandbox.id })
+              }
+            />
+          ) : (
+            <Action
+              tooltip="Like"
+              Icon={HeartIcon}
+              onClick={() =>
+                signals.editor.likeSandboxToggled({ id: sandbox.id })
+              }
+            />
+          ))}
       </Left>
 
       <Right>
         <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
           <HeaderSearchBar />
         </div>
+
+        {store.updateStatus === 'available' && (
+          <Action
+            onClick={() => document.location.reload()}
+            Icon={UpdateFound}
+            style={{
+              color: theme.green(),
+              fontSize: '1rem',
+            }}
+            tooltip="Update Available! Click to Refresh."
+          />
+        )}
 
         {!store.isLoggedIn ||
           (!store.isPatron && (
@@ -110,23 +129,32 @@ function Header({ store, signals }) {
         <Action
           onClick={() =>
             signals.modalOpened({
+              modal: 'preferences',
+            })
+          }
+          tooltip="Preferences"
+          Icon={SettingsIcon}
+        />
+
+        <Action
+          onClick={() =>
+            signals.modalOpened({
               modal: 'newSandbox',
             })
           }
-          tooltip="Create New Sandbox"
+          tooltip="New Sandbox"
           Icon={PlusIcon}
         />
-        {!store.isLoggedIn && (
+
+        {store.isLoggedIn && (
           <Action
-            onClick={() =>
-              signals.modalOpened({
-                modal: 'preferences',
-              })
-            }
-            tooltip="Preferences"
-            Icon={SettingsIcon}
+            style={{ marginTop: 2 }}
+            href={dashboardUrl()}
+            tooltip="Dashboard"
+            Icon={InfoIcon}
           />
         )}
+
         <Margin
           style={{
             zIndex: 20,
@@ -141,7 +169,7 @@ function Header({ store, signals }) {
           ) : (
             <Action
               onClick={() => signals.signInClicked()}
-              title="Sign in with Github"
+              title="Sign in with GitHub"
               Icon={GithubIcon}
               highlight
               unresponsive
@@ -151,6 +179,6 @@ function Header({ store, signals }) {
       </Right>
     </Container>
   );
-}
+};
 
 export default inject('signals', 'store')(observer(Header));

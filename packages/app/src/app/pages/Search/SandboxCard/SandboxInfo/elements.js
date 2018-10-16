@@ -10,6 +10,10 @@ export const CenteredText = styled.div`
 
 export const UpdatedAt = styled.em`
   font-size: 0.75rem;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const Stats = styled.div`

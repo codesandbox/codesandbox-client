@@ -3,63 +3,66 @@ version: 2
 jobs:
   build-dependencies:
     docker:
-      - image: circleci/node:9.2.1
+      - image: circleci/node:10
     working_directory: ~/codesandbox-client
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v4-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - v4-dependency-cache-{{ .Branch }}
-            - v4-dependency-cache
+            - v12-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v12-dependency-cache-{{ .Branch }}
+            - v12-dependency-cache
       - restore_cache:
           keys:
-            - v4-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-            - v4-standalone-dependency-cache-{{ .Branch }}
-            - v4-standalone-dependency-cache
+            - v12-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+            - v12-standalone-dependency-cache-{{ .Branch }}
+            - v12-standalone-dependency-cache
       - run:
           name: Install Dependencies
           command: yarn install
       - save_cache:
-          key: v4-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v12-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+            - packages/app/node_modules
+            - packages/codesandbox-api/node_modules
+            - packages/common/node_modules
+            - packages/homepage/node_modules
+            - packages/react-sandpack/node_modules
+            - packages/sandpack/node_modules
       - save_cache:
-          key: v4-standalone-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v12-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
           paths:
             - standalone-packages/codesandbox-browserfs/node_modules
       - run:
           name: Build
-          command: yarn build:dependents
+          command: yarn build:deps
       - save_cache:
-          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/codesandbox-client
 
   build-prod:
     docker:
-      - image: circleci/node:9.2.1
+      - image: circleci/node:10
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
       # We do this to compare sizes from these builds with master
       - restore_cache:
-          key: v4-prod-app-build-cache-master
+          key: v12-prod-app-build-cache-master
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache:
-          key: v4-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./packages/app/www
       - save_cache:
-          key: v4-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./www
-      - store_artifacts:
-          path: ./www
-          destination: www
 
   test-integrations:
     docker:
@@ -67,18 +70,22 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Start Test Server
           command: yarn start:test
           background: true
       - run:
+          name: Setup BrowserStack local environment
+          command: '[ -n "$BROWSER_STACK_KEY" ] && ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY || true'
+          background: true
+      - run:
           name: Test Integrations
           command: |
-            sleep 6
+            sleep 15
             yarn test:integrations --ci --testResultsProcessor="jest-junit"
           environment:
-            JEST_JUNIT_OUTPUT: "/tmp/test-results/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: '/tmp/test-results/js-test-results.xml'
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:
@@ -87,45 +94,44 @@ jobs:
 
   test-jest:
     docker:
-      - image: circleci/node:9.2.1
+      - image: circleci/node:10
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
 
   lint:
     docker:
-      - image: circleci/node:9.2.1
+      - image: circleci/node:10
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v12-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Lint
           command: yarn lint
 
-  deploy:
-    docker:
-      - image: circleci/node:9.2.1
+  create-docker-image:
+    machine: true
     working_directory: ~/codesandbox-client
     steps:
+      - checkout
       - restore_cache:
-          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
-      - restore_cache:
-          key: v4-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-      - add_ssh_keys:
-          fingerprints:
-            - "f7:f1:e6:60:96:24:d9:cd:1b:8b:c0:34:e7:ee:fa:82"
+          key: v12-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
-          name: Add key to known_hosts
-          command: echo "ssh.codesandbox.io ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBKyKbuMPJSETTyPRRJVOeC5I8j7wyUMW8HYheg7cN71eKTuw55tkoygxI59BvNi/CAyCnRT5LnxZhvrq9nSlPYc=" >> ~/.ssh/known_hosts
+          name: Docker Sign In
+          command: '[ -n "$DOCKER_USER" ] && echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin || true'
+      - run:
+          name: Create Image
+          command: '[ -n "$DOCKER_USER" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
       - deploy:
-          command: sh ./deploy.sh
+          name: Push Image
+          command: '[ -n "$DOCKER_USER" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true'
 
 workflows:
   version: 2
@@ -144,19 +150,9 @@ workflows:
       - build-prod:
           requires:
             - build-dependencies
-      - hold:
-          type: approval
-          filters:
-            branches:
-              only: master
+      - create-docker-image:
           requires:
             - build-prod
             - lint
-            - test-integrations
+            # - test-integrations
             - test-jest
-      - deploy:
-          filters:
-            branches:
-              only: master
-          requires:
-            - hold

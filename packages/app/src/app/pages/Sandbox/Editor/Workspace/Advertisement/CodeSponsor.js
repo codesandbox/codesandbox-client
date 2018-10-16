@@ -1,28 +1,37 @@
 import React from 'react';
-import './CodeSponsor.css';
+import styled from 'styled-components';
 
-type Props = {
-  token: string,
-  theme: 'dark' | 'light',
-};
+const Container = styled.div`
+  .cf-text {
+    color: ${props =>
+      props.theme.light
+        ? `rgba(0, 0, 0, 0.8)`
+        : `rgba(255, 255, 255, 0.8)`} !important;
+  }
+`;
 
-export default ({ token, theme }: Props) => {
-  const pixelHref = `https://codesponsor.io/t/l/${token}/pixel.png`;
-  const linkHref = `https://codesponsor.io/t/c/${token}/`;
+const CODEFUND_LINK =
+  'https://codefund.io/scripts/1fc4e04d-9622-4844-81f9-7522c7d19ac7/embed.js?theme=codesandbox';
+let loaded = false;
 
-  return (
-    <div className={theme === 'dark' ? 'cs__wrapper dark' : 'cs__wrapper'}>
-      <div className="cs__header">Proudly sponsored by</div>
-      <a href={linkHref} className="cs__blurb" target="_blank" rel="noopener">
-        <strong>Rollbar</strong>{' '}
-        <span>
-          Real-time error monitoring, alerting, and analytics for software developers{' '}
-          <span aria-label="rocket" role="img">
-            🚀
-          </span>
-        </span>
-      </a>
-      <img alt="CodeSponsor" className="cs__pixel" src={pixelHref} />
-    </div>
-  );
-};
+export default class CodeFund extends React.PureComponent {
+  componentDidMount() {
+    if (!loaded) {
+      loaded = true;
+
+      const script = document.createElement('script');
+      script.setAttribute('src', CODEFUND_LINK);
+      script.async = 'true';
+      script.setAttribute('id', 'external-js');
+      document.head.appendChild(script);
+    }
+  }
+
+  render() {
+    return (
+      <Container>
+        <div id="codefund_ad" />
+      </Container>
+    );
+  }
+}

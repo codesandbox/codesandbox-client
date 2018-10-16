@@ -2,18 +2,19 @@ import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
+import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 
-import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
 
 import { resetScreen } from './status-screen';
 
-import { inject, unmount } from './react-error-overlay/overlay';
+import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 
 import defaultBoilerplates from './boilerplates/default-boilerplates';
-import resizeEventListener from './resize-event-listener';
+
 import {
   getBoilerplates,
   evalBoilerplates,
@@ -21,7 +22,12 @@ import {
 } from './boilerplates';
 
 import loadDependencies from './npm';
+import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
+
+import { showRunOnClick } from './status-screen/run-on-click';
+
+import { isBabel7 } from './eval/utils/is-babel-7';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
@@ -37,8 +43,43 @@ export function getCurrentManager(): ?Manager {
   return manager;
 }
 
+export function getHTMLParts(html: string) {
+  if (html.includes('<body>')) {
+    const bodyMatcher = /<body>([\s\S]*)<\/body>/m;
+    const headMatcher = /<head>([\s\S]*)<\/head>/m;
+
+    const headMatch = html.match(headMatcher);
+    const bodyMatch = html.match(bodyMatcher);
+    const head = headMatch && headMatch[1] ? headMatch[1] : '';
+    const body = bodyMatch && bodyMatch[1] ? bodyMatch[1] : html;
+
+    return { body, head };
+  }
+
+  return { head: '', body: html };
+}
+
+function sendTestCount(manager: Manager, modules: Array<Module>) {
+  const testRunner = manager.testRunner;
+  const tests = testRunner.findTests(modules);
+
+  dispatch({
+    type: 'test',
+    event: 'test_count',
+    count: tests.length,
+  });
+}
+
 let firstLoad = true;
 let hadError = false;
+let lastHeadHTML = null;
+let lastBodyHTML = null;
+let lastHeight = 0;
+let changedModuleCount = 0;
+
+const DEPENDENCY_ALIASES = {
+  '@vue/cli-plugin-babel': '@vue/babel-preset-app',
+};
 
 // TODO make devDependencies lazy loaded by the packager
 const WHITELISTED_DEV_DEPENDENCIES = [
@@ -52,14 +93,7 @@ const WHITELISTED_DEV_DEPENDENCIES = [
   'identity-obj-proxy',
 ];
 
-// Dependencies that we actually don't need, we will replace this by a dynamic
-// system in the future
-const PREINSTALLED_DEPENDENCIES = [
-  'node-lib-browser',
-  'babel-runtime',
-  'react-scripts',
-  'react-scripts-ts',
-  'parcel-bundler',
+const BABEL_DEPENDENCIES = [
   'babel-preset-env',
   'babel-preset-latest',
   'babel-preset-es2015',
@@ -71,6 +105,15 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-preset-stage-1',
   'babel-preset-stage-2',
   'babel-preset-stage-3',
+];
+
+// Dependencies that we actually don't need, we will replace this by a dynamic
+// system in the future
+const PREINSTALLED_DEPENDENCIES = [
+  'node-lib-browser',
+  'react-scripts',
+  'react-scripts-ts',
+  'parcel-bundler',
   'babel-plugin-check-es2015-constants',
   'babel-plugin-external-helpers',
   'babel-plugin-inline-replace-variables',
@@ -149,18 +192,17 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-plugin-transform-prevent-infinite-loops',
   'babel-plugin-transform-vue-jsx',
   'babel-plugin-jsx-pragmatic',
-
   'flow-bin',
 ];
 
-function getDependencies(parsedPackage, configurations) {
+function getDependencies(parsedPackage, templateDefinition, configurations) {
   const {
     dependencies: d = {},
     peerDependencies = {},
     devDependencies = {},
   } = parsedPackage;
 
-  const returnedDependencies = { ...peerDependencies, ...d };
+  let returnedDependencies = { ...peerDependencies };
 
   const foundWhitelistedDevDependencies = [...WHITELISTED_DEV_DEPENDENCIES];
 
@@ -169,25 +211,72 @@ function getDependencies(parsedPackage, configurations) {
     (configurations.babel.parsed.presets || [])
       .filter(p => typeof p === 'string')
       .forEach(p => {
+        const [first, ...parts] = p.split('/');
+        const prefixedName = p.startsWith('@')
+          ? first + '/babel-preset-' + parts.join('/')
+          : `babel-preset-${p}`;
+
         foundWhitelistedDevDependencies.push(p);
-        foundWhitelistedDevDependencies.push(`babel-preset-${p}`);
+        foundWhitelistedDevDependencies.push(prefixedName);
       });
 
     (configurations.babel.parsed.plugins || [])
       .filter(p => typeof p === 'string')
       .forEach(p => {
+        const [first, ...parts] = p.split('/');
+        const prefixedName = p.startsWith('@')
+          ? first + '/babel-plugin-' + parts.join('/')
+          : `babel-plugin-${p}`;
+
         foundWhitelistedDevDependencies.push(p);
-        foundWhitelistedDevDependencies.push(`babel-plugin-${p}`);
+        foundWhitelistedDevDependencies.push(prefixedName);
       });
   }
 
+  Object.keys(d).forEach(dep => {
+    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
+
+    if (dep === 'reason-react') {
+      return; // is replaced
+    }
+
+    returnedDependencies[usedDep] = d[dep];
+  });
+
   Object.keys(devDependencies).forEach(dep => {
-    if (foundWhitelistedDevDependencies.indexOf(dep) > -1) {
-      returnedDependencies[dep] = devDependencies[dep];
+    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
+    if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
+      returnedDependencies[usedDep] = devDependencies[dep];
     }
   });
 
-  PREINSTALLED_DEPENDENCIES.forEach(dep => {
+  let preinstalledDependencies = PREINSTALLED_DEPENDENCIES;
+  if (templateDefinition.name !== 'babel-repl') {
+    preinstalledDependencies = [
+      ...preinstalledDependencies,
+      ...BABEL_DEPENDENCIES,
+    ];
+  }
+
+  if (templateDefinition.name === 'reason') {
+    returnedDependencies = {
+      ...returnedDependencies,
+      '@jaredly/bs-core': '3.0.0-alpha.2',
+      '@jaredly/reason-react': '0.3.4',
+    };
+  }
+
+  // Always include this, because most sandboxes need this with babel6 and the
+  // packager will only include the package.json for it.
+  if (isBabel7(d, devDependencies)) {
+    returnedDependencies['@babel/runtime'] =
+      returnedDependencies['@babel/runtime'] || '7.1.2';
+  } else {
+    returnedDependencies['babel-runtime'] =
+      returnedDependencies['babel-runtime'] || '6.26.0';
+  }
+
+  preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
       delete returnedDependencies[dep];
     }
@@ -217,24 +306,46 @@ async function updateManager(
   if (firstLoad && newManager) {
     // We save the state of transpiled modules, and load it here again. Gives
     // faster initial loads.
-
-    await manager.load();
+    await consumeCache(manager);
   }
 
   manager.updateConfigurations(configurations);
-  return manager.updateData(managerModules);
+  return manager.updateData(managerModules).then(x => {
+    changedModuleCount = x.length;
+  });
 }
 
-function initializeResizeListener() {
-  const listener = resizeEventListener();
-  listener.addResizeListener(document.body, () => {
+function getDocumentHeight() {
+  const body = document.body;
+  const html = document.documentElement;
+
+  return Math.max(
+    body.scrollHeight,
+    body.offsetHeight,
+    html.clientHeight,
+    html.scrollHeight,
+    html.offsetHeight
+  );
+}
+
+function sendResize() {
+  const height = getDocumentHeight();
+
+  if (lastHeight !== height) {
     if (document.body) {
       dispatch({
         type: 'resize',
-        height: document.body.getBoundingClientRect().height,
+        height,
       });
     }
-  });
+  }
+
+  lastHeight = height;
+}
+
+function initializeResizeListener() {
+  setInterval(sendResize, 5000);
+
   initializedResizeListener = true;
 }
 
@@ -265,6 +376,8 @@ async function compile({
   isModuleView = false,
   template,
   entry,
+  showOpenInCodeSandbox = false,
+  skipEval = false,
 }) {
   dispatch({
     type: 'start',
@@ -283,8 +396,8 @@ async function compile({
   hadError = false;
 
   actionsEnabled = hasActions;
-  handleExternalResources(externalResources);
 
+  let managerModuleToTranspile = null;
   try {
     const templateDefinition = getDefinition(template);
     const configurations = parseConfigurations(
@@ -298,11 +411,15 @@ async function compile({
       .filter(x => x.error);
 
     if (errors.length) {
-      throw new Error(
+      const e = new Error(
         `We weren't able to parse: '${errors[0].path}': ${
           errors[0].error.message
         }`
       );
+
+      e.fileName = errors[0].path;
+
+      throw e;
     }
 
     const packageJSON = modules['/package.json'];
@@ -313,11 +430,20 @@ async function compile({
 
     const parsedPackageJSON = configurations.package.parsed;
 
-    const dependencies = getDependencies(parsedPackageJSON, configurations);
+    dispatch({ type: 'status', status: 'installing-dependencies' });
+
+    const dependencies = getDependencies(
+      parsedPackageJSON,
+      templateDefinition,
+      configurations
+    );
     const { manifest, isNewCombination } = await loadDependencies(dependencies);
 
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
+      if (manager) {
+        manager.dispose();
+      }
       manager = null;
     }
     const t = Date.now();
@@ -346,93 +472,113 @@ async function compile({
     }
 
     const main = absolute(foundMain);
-    const managerModuleToTranspile = modules[main];
+    managerModuleToTranspile = modules[main];
+
+    dispatch({ type: 'status', status: 'transpiling' });
+    manager.setStage('transpilation');
 
     await manager.preset.setup(manager);
+
+    await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
     debug(`Transpilation time ${Date.now() - t}ms`);
 
-    resetScreen();
+    dispatch({ type: 'status', status: 'evaluating' });
+    manager.setStage('evaluation');
 
-    const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
-      managerModuleToTranspile
-    );
+    if (!skipEval) {
+      resetScreen();
 
-    if (
-      !manager.webpackHMR &&
-      !managerTranspiledModuleToTranspile.compilation
-    ) {
       try {
-        const children = document.body.children;
-        // Do unmounting for react
-        if (manifest.dependencies.find(n => n.name === 'react-dom')) {
-          const reactDOMModule = manager.resolveModule('react-dom', '');
-          const reactDOM = manager.evaluateModule(reactDOMModule);
+        // We set it as a time value for people that run two sandboxes on one computer
+        // they execute at the same time and we don't want them to conflict, so we check
+        // if the message was set a second ago
+        if (
+          firstLoad &&
+          localStorage.getItem('running') &&
+          Date.now() - localStorage.getItem('running') > 8000
+        ) {
+          localStorage.removeItem('running');
+          showRunOnClick();
+          return;
+        }
 
-          reactDOM.unmountComponentAtNode(document.body);
+        localStorage.setItem('running', Date.now());
+      } catch (e) {
+        /* no */
+      }
 
-          for (let i = 0; i < children.length; i += 1) {
-            if (children[i].tagName === 'DIV') {
-              reactDOM.unmountComponentAtNode(children[i]);
+      manager.preset.preEvaluate(manager);
+
+      if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
+        const htmlModulePath = templateDefinition
+          .getHTMLEntries(configurations)
+          .find(p => modules[p]);
+        const htmlModule = modules[htmlModulePath];
+
+        const { head, body } = getHTMLParts(
+          htmlModule && htmlModule.code
+            ? htmlModule.code
+            : template === 'vue-cli'
+              ? '<div id="app"></div>'
+              : '<div id="root"></div>'
+        );
+
+        document.body.innerHTML = body;
+
+        if (lastHeadHTML && lastHeadHTML !== head) {
+          document.location.reload();
+        }
+        if (manager && lastBodyHTML && lastBodyHTML !== body) {
+          manager.clearCompiledCache();
+        }
+
+        lastBodyHTML = body;
+        lastHeadHTML = head;
+      }
+
+      const extDate = Date.now();
+      await handleExternalResources(externalResources);
+      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
+
+      const tt = Date.now();
+      const oldHTML = document.body.innerHTML;
+      const evalled = manager.evaluateModule(
+        managerModuleToTranspile,
+        isModuleView
+      );
+      debug(`Evaluation time: ${Date.now() - tt}ms`);
+      const domChanged =
+        !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
+
+      if (
+        isModuleView &&
+        !domChanged &&
+        !managerModuleToTranspile.path.endsWith('.html')
+      ) {
+        const isReact =
+          managerModuleToTranspile.code &&
+          managerModuleToTranspile.code.includes('React');
+
+        if (isReact && evalled) {
+          // initiate boilerplates
+          if (getBoilerplates().length === 0) {
+            try {
+              await evalBoilerplates(defaultBoilerplates);
+            } catch (e) {
+              console.log("Couldn't load all boilerplates: " + e.message);
             }
           }
-        }
-      } catch (e) {
-        /* don't do anything with this error */
-      }
-    }
 
-    if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
-      if (!managerTranspiledModuleToTranspile.compilation) {
-        const htmlModule =
-          modules[
-            templateDefinition
-              .getHTMLEntries(configurations)
-              .find(p => modules[p])
-          ];
+          const boilerplate = findBoilerplate(managerModuleToTranspile);
 
-        const html = htmlModule
-          ? htmlModule.code
-          : template === 'vue-cli'
-            ? '<div id="app"></div>'
-            : '<div id="root"></div>';
-        document.body.innerHTML = html;
-      }
-    }
-
-    const tt = Date.now();
-    const oldHTML = document.body.innerHTML;
-    const evalled = manager.evaluateModule(managerModuleToTranspile);
-    debug(`Evaluation time: ${Date.now() - tt}ms`);
-    const domChanged =
-      !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
-
-    if (
-      isModuleView &&
-      !domChanged &&
-      !managerModuleToTranspile.path.endsWith('.html')
-    ) {
-      const isReact =
-        managerModuleToTranspile.code &&
-        managerModuleToTranspile.code.includes('React');
-
-      if (isReact) {
-        // initiate boilerplates
-        if (getBoilerplates().length === 0) {
-          try {
-            await evalBoilerplates(defaultBoilerplates);
-          } catch (e) {
-            console.log("Couldn't load all boilerplates: " + e.message);
-          }
-        }
-
-        const boilerplate = findBoilerplate(managerModuleToTranspile);
-        if (boilerplate) {
-          try {
-            boilerplate.module.default(evalled);
-          } catch (e) {
-            console.error(e);
+          if (boilerplate) {
+            try {
+              boilerplate.module.default(evalled);
+            } catch (e) {
+              console.error(e);
+            }
           }
         }
       }
@@ -444,30 +590,43 @@ async function compile({
       initializeResizeListener();
     }
 
-    try {
-      // Testing
-      const ttt = Date.now();
-      const testRunner = manager.testRunner;
-      testRunner.findTests(modules);
-      await testRunner.runTests();
-      debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
-
-      // End - Testing
-    } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(error);
-      }
+    if (showOpenInCodeSandbox) {
+      createCodeSandboxOverlay(modules);
     }
 
     debug(`Total time: ${Date.now() - startTime}ms`);
 
-    manager.save();
+    dispatch({
+      type: 'success',
+    });
+
+    saveCache(
+      sandboxId,
+      managerModuleToTranspile,
+      manager,
+      changedModuleCount,
+      firstLoad
+    );
+
+    setTimeout(() => {
+      try {
+        sendTestCount(manager, modules);
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Test error', e);
+        }
+      }
+    }, 600);
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
 
     if (manager) {
       manager.clearCache();
+
+      if (firstLoad && changedModuleCount === 0) {
+        deleteAPICache(manager.id);
+      }
     }
 
     if (firstLoad) {
@@ -480,8 +639,35 @@ async function compile({
     window.dispatchEvent(event);
 
     hadError = true;
+  } finally {
+    try {
+      setTimeout(() => {
+        // Set a timeout so there's a chance that we also catch runtime errors
+        localStorage.removeItem('running');
+      }, 600);
+    } catch (e) {
+      /* no */
+    }
+
+    if (manager) {
+      const managerState = {
+        ...manager.serialize(),
+      };
+      delete managerState.cachedPaths;
+      managerState.entry = managerModuleToTranspile
+        ? managerModuleToTranspile.path
+        : null;
+
+      dispatch({
+        type: 'state',
+        state: managerState,
+      });
+    }
   }
   firstLoad = false;
+
+  dispatch({ type: 'status', status: 'idle' });
+  dispatch({ type: 'done' });
 
   if (typeof window.__puppeteer__ === 'function') {
     window.__puppeteer__('done');
@@ -498,6 +684,8 @@ type Arguments = {
   externalResources: Array<string>,
   hasActions: boolean,
   template: string,
+  showOpenInCodeSandbox?: boolean,
+  skipEval?: boolean,
 };
 
 const tasks: Array<Arguments> = [];

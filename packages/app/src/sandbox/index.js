@@ -1,17 +1,24 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
+import _debug from 'app/utils/debug';
+
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import setupConsole from 'sandbox-hooks/console';
+import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
-import setupHistoryListeners from './url-listeners';
-import compile from './compile';
-import setupConsole from './console';
-import transformJSON from './console/transform-json';
+import compile, { getCurrentManager } from './compile';
 
 const host = process.env.CODESANDBOX_HOST;
+const debug = _debug('cs:sandbox');
+
+export const SCRIPT_VERSION =
+  document.currentScript && document.currentScript.src;
+
+debug('Booting sandbox');
 
 function getId() {
   if (process.env.LOCAL_SERVER) {
@@ -31,7 +38,7 @@ function getId() {
 }
 
 requirePolyfills().then(() => {
-  registerServiceWorker('/sandbox-service-worker.js');
+  registerServiceWorker('/sandbox-service-worker.js', {});
 
   function sendReady() {
     dispatch({ type: 'initialized' });
@@ -46,44 +53,41 @@ requirePolyfills().then(() => {
           const compileOld = await import('./compile-old').then(x => x.default);
           compileOld(data);
         }
-      } else if (data.type === 'urlback') {
-        history.back();
-      } else if (data.type === 'urlforward') {
-        history.forward();
-      } else if (data.type === 'evaluate') {
-        let result = null;
-        let error = false;
-        try {
-          result = (0, eval)(data.command); // eslint-disable-line no-eval
-        } catch (e) {
-          result = e;
-          error = true;
-        }
+      } else if (data.type === 'get-transpiler-context') {
+        const manager = getCurrentManager();
 
-        try {
+        if (manager) {
+          const context = await manager.getTranspilerContext();
           dispatch({
-            type: 'eval-result',
-            error,
-            result: transformJSON(result),
+            type: 'transpiler-context',
+            data: context,
           });
-        } catch (e) {
-          console.error(e);
+        } else {
+          dispatch({
+            type: 'transpiler-context',
+            data: {},
+          });
         }
       }
     }
   }
 
-  listen(handleMessage);
+  if (!isStandalone) {
+    listen(handleMessage);
 
-  sendReady();
-  setupHistoryListeners();
-  setupConsole();
+    sendReady();
+
+    setupHistoryListeners();
+    setupConsole();
+  }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
     const id = getId();
     window
-      .fetch(host + `/api/v1/sandboxes/${id}`)
+      .fetch(host + `/api/v1/sandboxes/${id}`, {
+        credentials: 'include',
+      })
       .then(res => res.json())
       .then(res => {
         const camelized = camelizeKeys(res);

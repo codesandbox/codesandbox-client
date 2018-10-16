@@ -252,7 +252,8 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/13774309?v=4",
       "profile": "https://github.com/arthurdenner",
       "contributions": [
-        "code"
+        "code",
+        "doc"
       ]
     },
     {
@@ -496,6 +497,153 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "FDiskas",
+      "name": "Vytenis",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/468006?v=4",
+      "profile": "https://github.com/FDiskas",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mdugue",
+      "name": "Manuel Dugué",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/894149?v=4",
+      "profile": "http://manueldugue.de",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "DemianD",
+      "name": "Demian Dekoninck",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5346497?v=4",
+      "profile": "https://dem.be",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Saeris",
+      "name": "Drake Costa",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3144549?v=4",
+      "profile": "http://www.saeris.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mstijak",
+      "name": "Marko Stijak",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/433394?v=4",
+      "profile": "https://cxjs.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Komar0ff",
+      "name": "Ilya",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/10588170?v=4",
+      "profile": "https://twitter.com/ilya_komar0ff",
+      "contributions": [
+        "question",
+        "ideas"
+      ]
+    },
+    {
+      "login": "emersonlaurentino",
+      "name": "Emerson Laurentino",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/10627086?v=4",
+      "profile": "https://twitter.com/elaurent_",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "lifeiscontent",
+      "name": "Aaron Reisman",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/180963?v=4",
+      "profile": "https://github.com/lifeiscontent",
+      "contributions": [
+        "bug",
+        "code",
+        "platform"
+      ]
+    },
+    {
+      "login": "colshacol",
+      "name": "Colton Colcleasure",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/19484365?v=4",
+      "profile": "https://github.com/colshacol",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "PJWalker",
+      "name": "PJ Walker",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/497242?v=4",
+      "profile": "https://github.com/PJWalker",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "satyarohith",
+      "name": "Satya Rohith",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/29819102?v=4",
+      "profile": "https://satya.tech",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "melanieseltzer",
+      "name": "Melanie Seltzer",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/17421347?v=4",
+      "profile": "https://www.melanieseltzer.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ZYSzys",
+      "name": "ZYSzys",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/23313266?v=4",
+      "profile": "http://zyszys.top",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "SaraVieira",
+      "name": "Sara Vieira",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1051509?v=4",
+      "profile": "http://iamsaravieira.com",
+      "contributions": [
+        "code",
+        "design",
+        "ideas"
+      ]
+    },
+    {
+      "login": "francoischalifour",
+      "name": "François Chalifour",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6137112?v=4",
+      "profile": "https://francoischalifour.com",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
-  ]
+  ],
+  "repoType": "github"
 }

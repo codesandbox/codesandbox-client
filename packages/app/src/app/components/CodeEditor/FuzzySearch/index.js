@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { sortBy, groupBy, flatten } from 'lodash';
+import { sortBy, groupBy, flatten } from 'lodash-es';
 import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 import { getModulePath } from 'common/sandbox/modules';
@@ -109,7 +109,7 @@ export default class FuzzySearch extends React.PureComponent {
                     {item.m.isNotSynced && <NotSyncedIconWithMargin />}
                     <EntryIcons
                       isNotSynced={item.m.isNotSynced}
-                      type={getType(item.m.title, item.m.code)}
+                      type={getType(item.m.title)}
                       error={item.m.errors && item.m.errors.length > 0}
                     />
                     <Name>{item.m.title}</Name>

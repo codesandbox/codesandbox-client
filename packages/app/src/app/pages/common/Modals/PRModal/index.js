@@ -6,11 +6,7 @@ function PRModal({ store }) {
   let result = null;
 
   if (!store.git.isCreatingPr) {
-    const pr = store.git.pr;
-    const git = store.editor.currentSandbox.originalGit;
-    const newUrl = `https://github.com/${git.username}/${git.repo}/compare/${
-      git.branch
-    }...${store.user.username}:${pr.newBranch}?expand=1`;
+    const newUrl = store.git.pr.prURL;
 
     result = (
       <div>

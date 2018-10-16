@@ -16,19 +16,20 @@ export default {
     keybindings: types.array(
       types.model({
         key: types.string,
-        bindings: types.array(types.maybe(types.array(types.string))),
+        bindings: types.array(types.maybeNull(types.array(types.string))),
       })
     ),
     newPackagerExperiment: types.boolean,
     prettierConfig: types.model({
-      printWidth: types.number,
-      tabWidth: types.number,
-      useTabs: types.boolean,
-      semi: types.boolean,
-      singleQuote: types.boolean,
-      trailingComma: types.string,
-      bracketSpacing: types.boolean,
-      jsxBracketSameLine: types.boolean,
+      fluid: types.maybe(types.boolean),
+      printWidth: types.maybe(types.number),
+      tabWidth: types.maybe(types.number),
+      useTabs: types.maybe(types.boolean),
+      semi: types.maybe(types.boolean),
+      singleQuote: types.maybe(types.boolean),
+      trailingComma: types.maybe(types.string),
+      bracketSpacing: types.maybe(types.boolean),
+      jsxBracketSameLine: types.maybe(types.boolean),
     }),
     jsxBracketSameLine: types.boolean,
     printWidth: types.number,
@@ -39,14 +40,17 @@ export default {
     useTabs: types.boolean,
     vimMode: types.boolean,
     zenMode: types.boolean,
+    enableLigatures: types.boolean,
+    editorTheme: types.string,
+    customVSCodeTheme: types.maybeNull(types.string),
   }),
   isLoadingPaymentDetails: types.boolean,
   itemId: types.string,
   showEditor: types.boolean,
   showPreview: types.boolean,
   showDevtools: types.boolean,
-  paymentDetailError: types.maybe(types.string),
-  paymentDetails: types.maybe(
+  paymentDetailError: types.maybeNull(types.string),
+  paymentDetails: types.maybeNull(
     types.model({
       brand: types.string,
       expMonth: types.number,
@@ -55,4 +59,5 @@ export default {
       name: types.string,
     })
   ),
+  runOnClick: types.maybeNull(types.boolean),
 };

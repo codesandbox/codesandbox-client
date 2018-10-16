@@ -14,14 +14,15 @@ export default Module({
       lintEnabled: true,
       instantPreviewEnabled: false,
       fontSize: 14,
-      fontFamily: '',
+      fontFamily: 'Dank Mono',
       lineHeight: 1.5,
-      clearConsoleEnabled: false, // TODO: should be true
+      clearConsoleEnabled: true,
       autoDownloadTypes: true,
       codeMirror: false,
       keybindings: [],
       newPackagerExperiment: false,
       prettierConfig: {
+        fluid: false,
         printWidth: 80,
         tabWidth: 2,
         useTabs: false,
@@ -39,14 +40,22 @@ export default Module({
       trailingComma: 'none',
       useTabs: false,
       vimMode: false,
+      // Windows has problems with calculating characters widths when ligatures
+      // are disabled, however there is a weird character when you have 'fi' in
+      // Menlo. So a temporary fix is to only enable this for Windows.
+      enableLigatures: navigator.platform.indexOf('Win') > -1,
+
+      editorTheme: 'CodeSandbox',
+      customVSCodeTheme: undefined,
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,
     paymentDetails: null,
-    itemId: 'editor',
+    itemId: 'appearance',
     showEditor: true,
     showPreview: true,
     showDevtools: false,
+    runOnClick: false,
   },
   getters: {
     keybindings,
@@ -62,5 +71,6 @@ export default Module({
     paymentDetailsUpdated: sequences.updatePaymentDetails,
     keybindingChanged: sequences.changeKeybinding,
     zenModeToggled: sequences.toggleZenMode,
+    codeMirrorForced: sequences.forceCodeMirror,
   },
 });

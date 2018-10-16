@@ -8,4 +8,8 @@ gulp.task('homepage', function() {
   return gulp.src('packages/homepage/public/**/*').pipe(gulp.dest('www'));
 });
 
-gulp.task('default', ['app', 'homepage']);
+gulp.task('statics', function() {
+  return gulp.src('packages/app/public/**/*').pipe(gulp.dest('www'));
+});
+
+gulp.task('default', ['app', 'homepage', 'statics']);

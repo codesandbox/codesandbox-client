@@ -62,6 +62,11 @@ const Content = styled.div`
   *:last-child {
     margin-bottom: 0;
   }
+
+  iframe {
+    border: 0;
+    outline: 0;
+  }
 `;
 
 const GitHubUserContainer = styled.a`
@@ -131,7 +136,10 @@ export default class ChangelogPage extends React.Component {
             of our notable updates here, for smaller updates you can check our{' '}
             <a href="https://github.com/CompuIves/codesandbox-client">
               GitHub repository
-            </a>.
+            </a>{' '}
+            and the Twitter of{' '}
+            <a href="https://twitter.com/@codesandboxapp">@codesandboxapp</a>{' '}
+            and <a href="https://twitter.com/@CompuIves">@CompuIves</a>.
           </Description>
           <Changelogs>
             {posts.map(({ node: post }) => {

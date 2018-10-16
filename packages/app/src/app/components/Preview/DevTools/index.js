@@ -6,11 +6,13 @@ import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
 import Tooltip from 'common/components/Tooltip';
+import type { Template } from 'common/templates';
 
 import Unread from './Unread';
 import console from './Console';
 import tests from './Tests';
 import problems from './Problems';
+import terminal from './Terminal';
 
 import { Container, Header, Tab, Actions } from './elements';
 
@@ -39,6 +41,7 @@ const PANES = {
   [console.title]: console,
   [problems.title]: problems,
   [tests.title]: tests,
+  [terminal.title]: terminal,
 };
 
 export type Status = {
@@ -48,11 +51,14 @@ export type Status = {
 
 type Props = {
   sandboxId: string,
+  template: Template,
   setDragging?: (dragging: boolean) => void,
   zenMode?: boolean,
   shouldExpandDevTools?: boolean,
   devToolsOpen?: boolean,
   setDevToolsOpen?: (open: boolean) => void,
+  view?: 'browser' | 'console' | 'tests',
+  owned: boolean,
 };
 type State = {
   status: { [title: string]: ?Status },
@@ -65,18 +71,33 @@ type State = {
 };
 
 export default class DevTools extends React.PureComponent<Props, State> {
-  state = {
-    status: {},
-    currentPane: PANES[Object.keys(PANES)[0]].title,
+  constructor(props: Props) {
+    super(props);
 
-    mouseDown: false,
-    startY: 0,
-    startHeight: 0,
+    const hasView = props.view && props.view !== 'browser';
 
-    hidden: true,
+    let currentPane = PANES[Object.keys(PANES)[0]].title;
+    if (hasView) {
+      if (props.view === 'tests') {
+        currentPane = tests.title;
+      } else if (props.view === 'console') {
+        currentPane = console.title;
+      }
+    }
 
-    height: 2 * 16,
-  };
+    this.state = {
+      status: {},
+      currentPane,
+
+      mouseDown: false,
+      startY: 0,
+      startHeight: 0,
+
+      hidden: !hasView,
+
+      height: hasView ? 5000 : 2 * 16,
+    };
+  }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
@@ -99,11 +120,24 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   }
 
+  /**
+   * This stops the propagation of the mousewheel event so the editor itself cannot
+   * block it to prevent gesture scrolls. Without this scrolling won't work in the
+   * console.
+   */
+  mouseWheelHandler = (e: WheelEvent) => {
+    e.stopPropagation();
+  };
+
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp, false);
     document.addEventListener('mousemove', this.handleMouseMove, false);
     document.addEventListener('touchend', this.handleTouchEnd, false);
     document.addEventListener('touchmove', this.handleTouchMove, false);
+
+    if (this.node) {
+      this.node.addEventListener('mousewheel', this.mouseWheelHandler);
+    }
 
     if (this.props.shouldExpandDevTools) {
       this.openDevTools();
@@ -117,6 +151,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
     document.removeEventListener('mousemove', this.handleMouseMove, false);
     document.removeEventListener('touchend', this.handleTouchEnd, false);
     document.removeEventListener('touchmove', this.handleTouchMove, false);
+
+    if (this.node) {
+      this.node.removeEventListener('mousewheel', this.mouseWheelHandler);
+    }
   }
 
   setHidden = (hidden: boolean) => {
@@ -219,9 +257,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
         e.stopPropagation();
         this.handleClick();
       } else {
-        // We do this to force a recalculation of the iframe height, this doesn't
-        // happen when pointer events are disabled and in turn disables scroll.
-        // It's hacky, but it's to fix a bug in the browser.
         setTimeout(() => {
           const height = this.state.height;
           if (height > 64) {
@@ -267,6 +302,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
   openDevTools = () => {
     this.setHidden(false);
     const heightObject = { height: this.state.height };
+    if (this.props.setDevToolsOpen) {
+      this.props.setDevToolsOpen(true);
+    }
     TweenMax.to(heightObject, 0.3, {
       height: store.get('devtools.height') || 300,
       onUpdate: () => {
@@ -279,6 +317,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
   hideDevTools = () => {
     this.setHidden(true);
     const heightObject = { height: this.state.height };
+    if (this.props.setDevToolsOpen) {
+      this.props.setDevToolsOpen(false);
+    }
     TweenMax.to(heightObject, 0.3, {
       height: 32,
       onUpdate: () => {
@@ -304,10 +345,19 @@ export default class DevTools extends React.PureComponent<Props, State> {
   node: HTMLElement;
 
   render() {
-    const { sandboxId, zenMode } = this.props;
+    const { sandboxId, template, zenMode, owned } = this.props;
     const { hidden, height, status } = this.state;
 
-    const { actions } = PANES[this.state.currentPane];
+    const { actions: actionsOrFunction } = PANES[this.state.currentPane];
+    const actions =
+      typeof actionsOrFunction === 'function'
+        ? actionsOrFunction(owned)
+        : actionsOrFunction;
+
+    const PANES_TO_SHOW = Object.keys(PANES).filter(
+      paneName =>
+        PANES[paneName].show === undefined || PANES[paneName].show(template)
+    );
 
     return (
       <Container
@@ -316,7 +366,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
         }}
         style={{
           height,
-          minHeight: height,
           position: 'relative',
           display: 'flex',
         }}
@@ -325,7 +374,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
           onTouchStart={this.handleTouchStart}
           onMouseDown={this.handleMouseDown}
         >
-          {Object.keys(PANES).map(title => (
+          {PANES_TO_SHOW.map(title => (
             <Tab
               active={title === this.state.currentPane}
               onClick={e => {
@@ -370,7 +419,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
             />
           </Actions>
         </Header>
-        {Object.keys(PANES).map(title => {
+        {PANES_TO_SHOW.map(title => {
           const { Content } = PANES[title];
           return (
             <Content
@@ -378,6 +427,12 @@ export default class DevTools extends React.PureComponent<Props, State> {
               hidden={hidden || title !== this.state.currentPane}
               updateStatus={this.updateStatus(title)}
               sandboxId={sandboxId}
+              height={this.state.height}
+              openDevTools={this.openDevTools}
+              hideDevTools={this.hideDevTools}
+              selectCurrentPane={() => {
+                this.setPane(title);
+              }}
             />
           );
         })}

@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'lodash-es';
 
 import type { Module, Directory } from 'common/types';
 
@@ -71,7 +71,7 @@ function Files({
           shortid={m.shortid}
           title={m.title}
           key={m.shortid}
-          type={getType(m.title, m.code || '')}
+          type={getType(m.title)}
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}

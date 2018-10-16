@@ -16,6 +16,9 @@ import {
 } from './elements';
 
 class QuickActions extends React.Component {
+  // we'll just keep track of what the user changes the inputValue to be
+  // so when the user makes a wish we can provide that info to genie
+  inputValue = '';
   updateGenie = () => {
     const keybindings = this.props.store.preferences.keybindings;
     const signals = this.props.signals;
@@ -44,6 +47,7 @@ class QuickActions extends React.Component {
 
   componentDidMount() {
     this.updateGenie();
+    this.loadGenie();
   }
 
   componentDidUpdate() {
@@ -63,9 +67,29 @@ class QuickActions extends React.Component {
   };
 
   onChange = item => {
-    genie.makeWish(item);
+    genie.makeWish(item, this.inputValue);
+    this.persistGenie();
     this.closeQuickActions();
   };
+
+  persistGenie() {
+    const { enteredMagicWords } = genie.options();
+    window.localStorage.setItem('genie', JSON.stringify({ enteredMagicWords }));
+  }
+
+  loadGenie() {
+    try {
+      const { enteredMagicWords } = JSON.parse(
+        window.localStorage.getItem('genie')
+      );
+      genie.options({ enteredMagicWords });
+    } catch (error) {
+      // it may not exist in localStorage yet, or the JSON was malformed somehow
+      // so we'll persist it to update localStorage so it doesn't throw an error
+      // next time the page is loaded.
+      this.persistGenie();
+    }
+  }
 
   itemToString = item => item && item.magicWords.join(', ');
 
@@ -92,6 +116,9 @@ class QuickActions extends React.Component {
             highlightedIndex,
           }) => {
             const inputProps = getInputProps({
+              onChange: ev => {
+                this.inputValue = ev.target.value;
+              },
               innerRef: el => el && el.focus(),
               onKeyUp: this.handleKeyUp,
               // Timeout so the fuzzy handler can still select the module

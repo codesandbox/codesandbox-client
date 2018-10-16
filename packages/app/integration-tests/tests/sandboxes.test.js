@@ -7,11 +7,9 @@ const SANDBOXES = [
   'svelte',
   'react-ts',
   { id: 'github/reactjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
-  { id: 'jvlrl98xw3', threshold: 0.05, waitFor: 6000 },
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
-
   'o29j95wx9',
   'k3q1zjjml5',
   'github/reactjs/redux/tree/master/examples/real-world',
@@ -29,6 +27,10 @@ const SANDBOXES = [
   '2ppkvzx570', // nested imports
   'rl2m3xklyo', // node_modules import
   'vanilla',
+  'n5wy74w8vl', // material-ui generated demo
+  'github/algolia/doc-onboarding/tree/master/demos/angular/media', // algolia angular demo
+  { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
+  { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
 ];
 
 function pageLoaded(page) {
@@ -59,7 +61,7 @@ describe('sandboxes', () => {
         browser = await browser;
         const page = await browser.newPage();
         const waitFunction = pageLoaded(page);
-        page.goto('http://localhost:3001/#' + id, {
+        page.goto('http://localhost:3002/#' + id, {
           timeout: 60000,
         });
         await waitFunction;

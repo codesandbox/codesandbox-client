@@ -114,6 +114,7 @@ describe.skip('TestRunner class', () => {
         { path: '__tests__/Sum.js' },
         { path: 'Sum.js' },
         { path: 'src/Sum.js' },
+        { path: 'src/Sum.js' },
       ]);
       expect(testRunner.tests).toHaveLength(3);
 
@@ -126,8 +127,21 @@ describe.skip('TestRunner class', () => {
       ]);
       expect(testRunner.tests).toHaveLength(3);
 
-      testRunner.findTests([{ path: 'Sum.test.js' }, { path: 'Sum.test.ts' }]);
-      expect(testRunner.tests).toHaveLength(2);
+      testRunner.findTests([
+        { path: 'Sum.test.tsx' },
+        { path: 'Sum.spec.tsx' },
+        { path: '__tests__/Sum.tsx' },
+        { path: 'Sum.tsx' },
+        { path: 'src/Sum.tsx' },
+      ]);
+      expect(testRunner.tests).toHaveLength(3);
+
+      testRunner.findTests([
+        { path: 'Sum.test.js' },
+        { path: 'Sum.test.ts' },
+        { path: 'Sum.test.tsx' },
+      ]);
+      expect(testRunner.tests).toHaveLength(3);
     });
   });
 

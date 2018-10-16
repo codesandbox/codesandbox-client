@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Container = styled.div`
   box-sizing: border-box;
@@ -9,6 +9,14 @@ const Container = styled.div`
 
   width: 100%;
   justify-content: center;
+
+  ${props =>
+    props.responsive &&
+    css`
+      @media (max-width: 768px) {
+        padding: 0;
+      }
+    `};
 `;
 
 const InnerContainer = styled.div`
@@ -20,12 +28,14 @@ export default ({
   children,
   width = 1280,
   className,
+  responsive = false,
 }: {
   children: React.CElement,
   width: number,
   className: string,
+  responsive: Boolean,
 }) => (
-  <Container>
+  <Container responsive={responsive}>
     <InnerContainer className={className} width={width}>
       {children}
     </InnerContainer>

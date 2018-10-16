@@ -2,19 +2,33 @@ import React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
+import { ApolloProvider } from 'react-apollo';
+import { Provider } from 'mobx-react';
+
 import history from 'app/utils/history';
+import _debug from 'app/utils/debug';
+import { client } from 'app/graphql/client';
 import VERSION from 'common/version';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
 import 'common/global.css';
 import theme from 'common/theme';
-import { Provider } from 'mobx-react';
 import controller from './controller';
 
 import App from './pages/index';
 import './split-pane.css';
 import logError from './utils/error';
+
+const debug = _debug('cs:app');
+
+window.addEventListener('unhandledrejection', e => {
+  if (e && e.reason && e.reason.name === 'Canceled') {
+    // This is an error from vscode that vscode uses to cancel some actions
+    // We don't want to show this to the user
+    e.preventDefault();
+  }
+});
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -59,7 +73,7 @@ if (process.env.NODE_ENV === 'production') {
         /webappstoolbarba\.texthelp\.com\//i,
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
         // Monaco debuggers
-        'https://codesandbox.io/public/vs/language/typescript/lib/typescriptServices.js',
+        'https://codesandbox.io/public/13/vs/language/typescript/lib/typescriptServices.js',
       ],
     }).install();
   } catch (error) {
@@ -67,7 +81,13 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
+window.__isTouch = !matchMedia('(pointer:fine)').matches;
+
 requirePolyfills().then(() => {
+  if (process.env.NODE_ENV === 'development') {
+    window.controller = controller;
+  }
+
   const rootEl = document.getElementById('root');
 
   const showNotification = (message, type) =>
@@ -76,16 +96,32 @@ requirePolyfills().then(() => {
       message,
     });
 
-  registerServiceWorker('/service-worker.js', showNotification);
+  window.showNotification = showNotification;
+
+  registerServiceWorker('/service-worker.js', {
+    onUpdated: () => {
+      debug('Updated SW');
+      controller.getSignal('setUpdateStatus')({ status: 'available' });
+    },
+    onInstalled: () => {
+      debug('Installed SW');
+      showNotification(
+        'CodeSandbox has been installed, it now works offline!',
+        'success'
+      );
+    },
+  });
 
   try {
     render(
       <Provider {...controller.provide()}>
-        <ThemeProvider theme={theme}>
-          <Router history={history}>
-            <App />
-          </Router>
-        </ThemeProvider>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme}>
+            <Router history={history}>
+              <App />
+            </Router>
+          </ThemeProvider>
+        </ApolloProvider>
       </Provider>,
       rootEl
     );

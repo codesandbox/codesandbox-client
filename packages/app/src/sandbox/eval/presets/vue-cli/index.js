@@ -28,7 +28,9 @@ const getFileNameFromVm = vm => {
     const options =
       typeof vm === 'function' && vm.cid != null
         ? vm.options
-        : vm._isVue ? vm.$options || vm.constructor.options : vm || {};
+        : vm._isVue
+          ? vm.$options || vm.constructor.options
+          : vm || {};
 
     return options.__file;
   }
@@ -37,9 +39,9 @@ const getFileNameFromVm = vm => {
 export default function initialize() {
   const vuePreset = new Preset(
     'vue-cli',
-    ['vue', 'json', 'js'],
+    ['vue', 'json', 'js', 'ts'],
     {
-      '@': '{{sandboxRoot}}',
+      '@': '{{sandboxRoot}}/src',
       vue$: 'vue/dist/vue.common.js',
     },
     {
@@ -113,27 +115,8 @@ export default function initialize() {
     });
   }
 
-  const babelConfig = {
-    presets: [
-      // babel preset env starts with latest, then drops rules.
-      // We don't have env, so we just support latest
-      'latest',
-      'stage-2',
-    ],
-    plugins: [
-      'transform-runtime',
-      'transform-vue-jsx',
-      'transform-decorators-legacy',
-    ],
-  };
-
-  const babelWithConfig = {
-    transpiler: babelTranspiler,
-    options: babelConfig,
-  };
-
   vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
-    babelWithConfig,
+    { transpiler: babelTranspiler },
   ]);
   vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },

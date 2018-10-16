@@ -10,7 +10,8 @@
   "globals": {
     "Raven": true,
     "VERSION": true,
-    "$PropertyType": true
+    "$PropertyType": true,
+    "TimeoutID": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,
@@ -25,6 +26,7 @@
     "no-plusplus": 0,
     "no-underscore-dangle": "off",
     "no-nested-ternary": "warn",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "import/no-named-default": 0
   }
 }

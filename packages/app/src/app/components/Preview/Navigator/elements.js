@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -16,8 +16,10 @@ export const Icons = styled.div`
   display: flex;
 `;
 
-export const Icon = styled.div`
+export const Icon = styled.button`
   display: inline-block;
+  border: none;
+  background-color: transparent;
   color: ${props =>
     props.disabled ? props.theme.gray : props.theme.gray.darken(0.3)};
   font-size: 1.5rem;
@@ -25,6 +27,8 @@ export const Icon = styled.div`
   margin: 0 0.1rem;
   vertical-align: middle;
   text-align: center;
+  padding: 0;
+  outline: none;
 
   ${props =>
     !props.disabled &&
@@ -33,6 +37,12 @@ export const Icon = styled.div`
       background-color: #e2e2e2;
       cursor: pointer;
     }`};
+
+  ${props =>
+    props.selected &&
+    css`
+      color: ${props.theme.templateColor || props.theme.secondary};
+    `};
 `;
 
 export const AddressBarContainer = styled.div`

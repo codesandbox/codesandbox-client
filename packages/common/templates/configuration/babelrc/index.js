@@ -40,6 +40,30 @@ const config: ConfigurationFile = {
     }
 
     if (template === 'vue-cli') {
+      // TODO remove this
+      /**
+       * This hacky fix got added for vue cli templates that are v3, but don't have a config.
+       *
+       * We correctly detect v3 templates, so start using babel 7, but they don't work with the old version of babel config. We need to create a new one.
+       *
+       * Need to fix this ASAP and make vue-cli 3 a separate template.
+       */
+      try {
+        const packageJSON = resolveModule('/package.json');
+        const parsed = JSON.parse(packageJSON.code);
+
+        if (
+          parsed.devDependencies &&
+          parsed.devDependencies['@vue/cli-plugin-babel']
+        ) {
+          return JSON.stringify({
+            presets: ['@vue/app'],
+          });
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
       return JSON.stringify(
         {
           presets: [
@@ -73,7 +97,16 @@ const config: ConfigurationFile = {
 
     if (template === 'parcel') {
       const presets = ['env'];
-      const plugins = [];
+      const plugins = [
+        [
+          'transform-runtime',
+          {
+            polyfill: false,
+            regenerator: true,
+          },
+        ],
+        'transform-object-rest-spread',
+      ];
 
       const packageJSONModule = resolveModule('/package.json');
 
@@ -100,6 +133,40 @@ const config: ConfigurationFile = {
       }
 
       return JSON.stringify({ presets, plugins }, null, 2);
+    }
+
+    if (template === 'cxjs') {
+      return JSON.stringify(
+        {
+          presets: [
+            [
+              'env',
+              {
+                targets: {
+                  chrome: 50,
+                  ie: 11,
+                  ff: 30,
+                  edge: 12,
+                  safari: 9,
+                },
+                modules: false,
+                loose: true,
+                useBuiltIns: true,
+              },
+            ],
+            'stage-2',
+          ],
+          plugins: [
+            ['transform-cx-jsx'],
+            ['transform-react-jsx', { pragma: 'VDOM.createElement' }],
+            'transform-function-bind',
+            'transform-runtime',
+            'transform-regenerator',
+          ],
+        },
+        null,
+        2
+      );
     }
 
     return JSON.stringify({ presets: [], plugins: [] }, null, 2);

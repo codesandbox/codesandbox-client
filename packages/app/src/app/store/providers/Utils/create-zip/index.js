@@ -76,6 +76,40 @@ export function createPackageJSON(
 ) {
   const name = slugify(sandbox.title || sandbox.id);
   const version = `0.0.${sandbox.version}`;
+
+  const packageJSONModule = sandbox.modules.find(
+    m => m.directoryShortid == null && m.title === 'package.json'
+  );
+
+  try {
+    if (packageJSONModule) {
+      const packageJSON = JSON.parse(packageJSONModule.code || '');
+
+      return JSON.stringify(
+        {
+          ...packageJSON,
+          name,
+          description: packageJSON.description || sandbox.description,
+          version,
+          dependencies: { ...dependencies, ...packageJSON.dependencies },
+          devDependencies: {
+            ...devDependencies,
+            ...packageJSON.devDependencies,
+          },
+          scripts: {
+            ...scripts,
+            ...packageJSON.scripts,
+          },
+          ...(extra || {}),
+        },
+        null,
+        '  '
+      );
+    }
+  } catch (e) {
+    /* fallback */
+  }
+
   const npmDependencies =
     typeof sandbox.npmDependencies.toJS === 'function'
       ? sandbox.npmDependencies.toJS()
@@ -172,6 +206,11 @@ export async function createZip(
     );
   } else if (sandbox.template === svelte.name) {
     promise = import(/* webpackChunkName: 'svelte-zip' */ './svelte').then(
+      generator => generator.default(zip, sandbox, modules, directories)
+    );
+  } else {
+    // If no specific zip generator is found we will default to the full generator
+    promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
       generator => generator.default(zip, sandbox, modules, directories)
     );
   }

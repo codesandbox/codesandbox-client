@@ -1,10 +1,17 @@
 import React from 'react';
 import Modal from 'react-modal';
 
-import { CLOSE_TIMEOUT_MS, BaseModal, ModalTitle, ModalBody } from './elements';
+import {
+  CLOSE_TIMEOUT_MS,
+  applyGlobalStyles,
+  BaseModal,
+  ModalTitle,
+  ModalBody,
+} from './elements';
 
-const appElement = document.getElementById('modal');
-Modal.setAppElement(appElement);
+Modal.setAppElement('#root');
+
+applyGlobalStyles();
 
 class ModalComponent extends React.Component {
   getStyles = (width = 400, top = 20) => ({

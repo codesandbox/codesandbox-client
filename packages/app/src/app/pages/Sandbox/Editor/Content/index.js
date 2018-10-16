@@ -3,6 +3,7 @@ import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
+import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import type { ModuleError } from 'common/types';
@@ -11,11 +12,11 @@ import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
+
 import Preview from './Preview';
-
 import Tabs from './Tabs';
-
 import { FullSize } from './elements';
+import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 
 const settings = store =>
   ({
@@ -30,6 +31,7 @@ const settings = store =>
     tabWidth: store.preferences.settings.prettierConfig
       ? store.preferences.settings.prettierConfig.tabWidth || 2
       : 2,
+    enableLigatures: store.preferences.settings.enableLigatures,
   }: Settings);
 
 type Props = {
@@ -44,10 +46,11 @@ type State = {
 
 class EditorPreview extends React.Component<Props, State> {
   state = { width: null, height: null };
-  interval: number;
+  interval: IntervalID; // eslint-disable-line
   disposeEditorChange: Function;
   el: ?HTMLElement;
   devtools: DevTools;
+  contentNode: ?HTMLElement;
 
   componentDidMount() {
     this.props.signals.editor.contentMounted();
@@ -61,12 +64,20 @@ class EditorPreview extends React.Component<Props, State> {
     this.interval = setInterval(() => {
       this.getBounds();
     }, 1000);
+
+    if (this.contentNode) {
+      preventGestureScroll(this.contentNode);
+    }
   }
 
   componentWillUnmount() {
     this.disposeEditorChange();
     window.removeEventListener('resize', this.getBounds);
     clearInterval(this.interval);
+
+    if (this.contenNode) {
+      removeListener(this.contentNode);
+    }
   }
 
   getBounds = el => {
@@ -198,21 +209,99 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
     );
+    const disposeLiveHandler = reaction(
+      () => store.live.receivingCode,
+      () => {
+        if (editor.setReceivingCode) {
+          editor.setReceivingCode(store.live.receivingCode);
+        }
+      }
+    );
+
+    const disposePendingOperationHandler = reaction(
+      () => store.editor.pendingOperations.toJSON(),
+      () => {
+        if (store.live.isLive) {
+          if (store.editor.pendingOperations) {
+            if (editor.setReceivingCode) {
+              editor.setReceivingCode(true);
+            }
+            if (editor.applyOperations) {
+              editor.applyOperations(store.editor.pendingOperations);
+            } else {
+              try {
+                store.editor.pendingOperations.forEach(
+                  (operationJSON, moduleShortid) => {
+                    const operation = TextOperation.fromJSON(operationJSON);
+
+                    const module = store.currentSandbox.modules.find(
+                      m => m.shortid === moduleShortid
+                    );
+
+                    if (!module) {
+                      throw new Error(
+                        'Cannot find module with shortid: ' + moduleShortid
+                      );
+                    }
+
+                    this.props.signals.editor.codeChanged({
+                      code: operation.apply(module.code || ''),
+                      moduleShortid: module.shortid,
+                    });
+                  }
+                );
+              } catch (e) {
+                console.error(e);
+              }
+            }
+            if (editor.setReceivingCode) {
+              editor.setReceivingCode(false);
+            }
+            this.props.signals.live.onOperationApplied();
+          }
+        }
+      }
+    );
+
+    const updateUserSelections = () => {
+      if (store.editor.pendingUserSelections) {
+        if (editor.updateUserSelections) {
+          if (store.live.isLive) {
+            requestAnimationFrame(() => {
+              editor.updateUserSelections(store.editor.pendingUserSelections);
+              this.props.signals.live.onSelectionDecorationsApplied();
+            });
+          } else {
+            this.props.signals.live.onSelectionDecorationsApplied();
+          }
+        }
+      }
+    };
+    const disposeLiveSelectionHandler = reaction(
+      () => store.editor.pendingUserSelections.map(x => x),
+      updateUserSelections
+    );
+    updateUserSelections();
+
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
       ([newModule]) => {
         if (isChangingSandbox) {
           return;
         }
-        const editorModule = editor.currentModule;
 
+        const editorModule = editor.currentModule;
         const changeModule = editor.changeModule;
-        if (newModule !== editorModule && changeModule) {
+        if (
+          (!editorModule || newModule.id !== editorModule.id) &&
+          changeModule
+        ) {
           const errors = store.editor.errors.map(e => e);
           const corrections = store.editor.corrections.map(e => e);
           changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
-          editor.changeCode(newModule.code || '');
+          // Only code changed from outside the editor
+          editor.changeCode(newModule.code || '', newModule.id);
         }
       }
     );
@@ -235,6 +324,9 @@ class EditorPreview extends React.Component<Props, State> {
       disposeToggleDevtools();
       disposeResizeHandler();
       disposeGlyphsHandler();
+      disposeLiveHandler();
+      disposePendingOperationHandler();
+      disposeLiveSelectionHandler();
     };
   };
 
@@ -252,12 +344,22 @@ class EditorPreview extends React.Component<Props, State> {
     );
   };
 
+  sendTransforms = operation => {
+    const currentModuleShortid = this.props.store.editor.currentModuleShortid;
+
+    this.props.signals.live.onTransformMade({
+      moduleShortid: currentModuleShortid,
+      operation: operation.toJSON(),
+    });
+  };
+
   render() {
     const { signals, store } = this.props;
     const currentModule = store.editor.currentModule;
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
+    const currentTab = store.editor.currentTab;
     const { x, y, width, content } = store.editor.previewWindow;
 
     const windowVisible = !!content;
@@ -278,13 +380,36 @@ class EditorPreview extends React.Component<Props, State> {
       editorHeight = '100%';
     }
 
+    const template = getTemplateDefinition(sandbox.template);
+
+    const isReadOnly = () => {
+      if (store.live.isCurrentEditor) {
+        return false;
+      }
+
+      if (template.isServer) {
+        if (!store.isLoggedIn || store.server.status !== 'connected') {
+          return true;
+        }
+      }
+
+      return store.live.isLive;
+    };
+
     return (
       <ThemeProvider
         theme={{
-          templateColor: getTemplateDefinition(sandbox.template).color,
+          templateColor: template.color,
+          templateBackgroundColor: template.backgroundColor,
         }}
       >
-        <FullSize>
+        <FullSize
+          innerRef={node => {
+            if (node) {
+              this.contentNode = node;
+            }
+          }}
+        >
           <Prompt
             when={notSynced && !store.editor.isForkingSandbox}
             message={() =>
@@ -322,19 +447,31 @@ class EditorPreview extends React.Component<Props, State> {
             <CodeEditor
               onInitialized={this.onInitialized}
               sandbox={sandbox}
+              currentTab={currentTab}
               currentModule={currentModule}
+              isModuleSynced={store.editor.isModuleSynced(
+                currentModule.shortid
+              )}
               width={editorWidth}
               height={editorHeight}
+              absoluteWidth={this.state.width}
+              absoluteHeight={this.state.height}
               settings={settings(store)}
+              sendTransforms={this.sendTransforms}
+              readOnly={isReadOnly()}
+              isLive={store.live.isLive}
+              onCodeReceived={signals.live.onCodeReceived}
+              onSelectionChanged={signals.live.onSelectionChanged}
               onNpmDependencyAdded={name => {
                 if (sandbox.owned) {
                   signals.editor.addNpmDependency({ name, isDev: true });
                 }
               }}
-              onChange={code =>
+              onChange={(code, moduleShortid) =>
                 signals.editor.codeChanged({
                   code,
-                  moduleShortid: currentModule.shortid,
+                  moduleShortid: moduleShortid || currentModule.shortid,
+                  noLive: true,
                 })
               }
               onModuleChange={moduleId =>
@@ -351,7 +488,12 @@ class EditorPreview extends React.Component<Props, State> {
                 store.editor.parsedConfigurations.typescript.parsed
               }
             />
-            <Preview width={this.state.width} height={this.state.height} />
+
+            <Preview
+              runOnClick={this.props.store.preferences.runOnClick}
+              width={this.state.width}
+              height={this.state.height}
+            />
           </div>
 
           <DevTools
@@ -360,13 +502,21 @@ class EditorPreview extends React.Component<Props, State> {
                 this.devtools = component;
               }
             }}
-            setDragging={() => this.props.signals.editor.resizingStarted()}
+            setDragging={dragging => {
+              if (dragging) {
+                this.props.signals.editor.resizingStarted();
+              } else {
+                this.props.signals.editor.resizingStopped();
+              }
+            }}
             sandboxId={sandbox.id}
+            template={sandbox.template}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}
             setDevToolsOpen={open =>
               this.props.signals.preferences.setDevtoolsOpen({ open })
             }
+            owned={sandbox.owned}
           />
         </FullSize>
       </ThemeProvider>

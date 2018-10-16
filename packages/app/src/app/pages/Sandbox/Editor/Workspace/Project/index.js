@@ -1,20 +1,22 @@
 import * as React from 'react';
-
 import { inject, observer } from 'mobx-react';
-
+import { Link } from 'react-router-dom';
 import {
   sandboxUrl,
   githubRepoUrl,
   profileUrl,
 } from 'common/utils/url-generator';
 
+import TeamIcon from 'react-icons/lib/md/people';
+
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
-import ConfirmLink from 'app/components/ConfirmLink';
 import GithubBadge from 'app/components/GithubBadge';
 import createEditableTags from 'app/components/EditableTags';
 import Tags from 'app/components/Tags';
+import Switch from 'common/components/Switch';
+import Tooltip from 'common/components/Tooltip';
 
 import getTemplateDefinition from 'common/templates';
 import { WorkspaceInputContainer } from '../elements';
@@ -29,6 +31,8 @@ import {
   EditPen,
   PropertyValue,
   PropertyName,
+  Icon,
+  FreezeConatainer,
 } from './elements';
 
 class Project extends React.Component {
@@ -66,6 +70,13 @@ class Project extends React.Component {
     }
   };
 
+  updateFrozenState = () => {
+    const frozen = !this.props.store.editor.currentSandbox.isFrozen;
+    this.props.signals.editor.frozenUpdated({
+      frozen,
+    });
+  };
+
   updateSandboxInfo = () => {
     this.props.signals.workspace.sandboxInfoUpdated();
     this.setState({
@@ -92,7 +103,6 @@ class Project extends React.Component {
     const template = getTemplateDefinition(sandbox.template);
 
     const EditableTags = createEditableTags(template.color);
-
     return (
       <div style={{ marginBottom: '1rem' }}>
         <Item style={{ marginTop: '.5rem' }}>
@@ -161,7 +171,6 @@ class Project extends React.Component {
             <Description
               style={{
                 fontStyle: sandbox.description ? 'normal' : 'italic',
-                color: 'rgba(255, 255, 255, 0.7)',
               }}
             >
               {sandbox.description ||
@@ -171,16 +180,26 @@ class Project extends React.Component {
           )}
         </Item>
 
-        {!!sandbox.author && (
-          <Item>
-            <UserLink to={profileUrl(sandbox.author.username)}>
-              <UserWithAvatar
-                username={sandbox.author.username}
-                avatarUrl={sandbox.author.avatarUrl}
-                subscriptionSince={sandbox.author.subscriptionSince}
-              />
-            </UserLink>
-          </Item>
+        {!sandbox.team &&
+          !!sandbox.author && (
+            <Item>
+              <UserLink to={profileUrl(sandbox.author.username)}>
+                <UserWithAvatar
+                  username={sandbox.author.username}
+                  avatarUrl={sandbox.author.avatarUrl}
+                  subscriptionSince={sandbox.author.subscriptionSince}
+                />
+              </UserLink>
+            </Item>
+          )}
+
+        {!!sandbox.team && (
+          <Tooltip title="This sandbox is owned by this team">
+            <Item style={{ color: 'white', display: 'flex' }}>
+              <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
+              <div>{sandbox.team.name}</div>
+            </Item>
+          </Tooltip>
         )}
         {!!sandbox.git && (
           <Item>
@@ -219,14 +238,10 @@ class Project extends React.Component {
           <Item flex>
             <PropertyName>Forked From</PropertyName>
             <PropertyValue>
-              <ConfirmLink
-                enabled={!store.editor.isAllModulesSynced}
-                message="You have unsaved changes. Are you sure you want to navigate away?"
-                to={sandboxUrl(sandbox.forkedFromSandbox)}
-              >
+              <Link to={sandboxUrl(sandbox.forkedFromSandbox)}>
                 {sandbox.forkedFromSandbox.title ||
                   sandbox.forkedFromSandbox.id}
-              </ConfirmLink>
+              </Link>
             </PropertyValue>
           </Item>
         )}
@@ -251,6 +266,27 @@ class Project extends React.Component {
             </a>
           </PropertyValue>
         </Item>
+        {sandbox.owned ? (
+          <Item style={{ marginTop: 5 }} flex>
+            <PropertyName>
+              Frozen
+              <Tooltip title="When true this sandbox will fork on edit">
+                <Icon />
+              </Tooltip>
+            </PropertyName>
+            <PropertyValue>
+              <FreezeConatainer>
+                <Switch
+                  small
+                  right={sandbox.isFrozen}
+                  onClick={this.updateFrozenState}
+                  offMode
+                  secondary
+                />
+              </FreezeConatainer>
+            </PropertyValue>
+          </Item>
+        ) : null}
       </div>
     );
   }

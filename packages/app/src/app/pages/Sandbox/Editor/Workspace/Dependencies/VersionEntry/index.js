@@ -21,22 +21,33 @@ export default class VersionEntry extends React.PureComponent {
   }
 
   componentWillMount() {
-    if (this.props.dependencies[this.props.dependency] === 'latest') {
-      this.setVersionsForLatestPkg(`${this.props.dependency}@latest`);
+    const versionRegex = /^\d{1,3}\.\d{1,3}.\d{1,3}$/;
+    const version = this.props.dependencies[this.props.dependency];
+    if (!versionRegex.test(version)) {
+      this.setVersionsForLatestPkg(`${this.props.dependency}@${version}`);
     }
   }
 
-  handleRemove = () => this.props.onRemove(this.props.dependency);
-  handleRefresh = () => this.props.onRefresh(this.props.dependency);
+  handleRemove = e => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.props.onRemove(this.props.dependency);
+  };
+  handleRefresh = e => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.props.onRefresh(this.props.dependency);
+  };
   onMouseEnter = () => this.setState({ hovering: true });
   onMouseLeave = () => this.setState({ hovering: false });
 
   render() {
     const { dependencies, dependency } = this.props;
-    const version =
-      dependencies[dependency] === 'latest' && this.state.version
-        ? `latest (${this.state.version})`
-        : dependencies[dependency];
+
     const { hovering } = this.state;
     return (
       <EntryContainer
@@ -46,7 +57,11 @@ export default class VersionEntry extends React.PureComponent {
         <Link href={`https://www.npmjs.com/package/${dependency}`}>
           {dependency}
         </Link>
-        <Version hovering={hovering}>{version}</Version>
+        <Version hovering={hovering}>
+          {dependencies[dependency]}{' '}
+          {hovering &&
+            this.state.version && <span>({this.state.version})</span>}
+        </Version>
         {hovering && (
           <IconArea>
             <Icon onClick={this.handleRefresh}>

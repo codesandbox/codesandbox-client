@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Modal from 'app/components/Modal';
-import NewSandbox from 'app/components/NewSandbox';
 
+import NewSandbox from './NewSandbox';
 import PreferencesModal from './PreferencesModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import ShareModal from './ShareModal';
@@ -13,6 +13,12 @@ import PRModal from './PRModal';
 import SelectSandboxModal from './SelectSandboxModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
+import LiveSessionEndedModal from './LiveSessionEndedModal';
+import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
+import UploadModal from './UploadModal';
+import StorageManagementModal from './StorageManagementModal';
+import ForkServerModal from './ForkServerModal';
+import PrivacyServerWarning from './PrivacyServerWarning';
 
 const modals = {
   preferences: {
@@ -21,7 +27,7 @@ const modals = {
   },
   newSandbox: {
     Component: NewSandbox,
-    width: 900,
+    width: 925,
   },
   share: {
     Component: ShareModal,
@@ -58,6 +64,30 @@ const modals = {
   searchDependencies: {
     Component: SearchDependenciesModal,
     width: 600,
+  },
+  liveSessionEnded: {
+    Component: LiveSessionEndedModal,
+    width: 600,
+  },
+  liveVersionMismatch: {
+    Component: LiveSessionVersionMismatch,
+    width: 600,
+  },
+  uploading: {
+    Component: UploadModal,
+    width: 600,
+  },
+  storageManagement: {
+    Component: StorageManagementModal,
+    width: 800,
+  },
+  forkServerModal: {
+    Component: ForkServerModal,
+    width: 500,
+  },
+  privacyServerWarning: {
+    Component: PrivacyServerWarning,
+    width: 400,
   },
 };
 

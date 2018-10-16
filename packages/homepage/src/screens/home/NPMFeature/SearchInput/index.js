@@ -1,13 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import algoliasearch from 'algoliasearch';
-import {
-  ALGOLIA_API_KEY,
-  ALGOLIA_APPLICATION_ID,
-  ALGOLIA_DEFAULT_INDEX,
-} from 'common/utils/config';
-
 import Input from './Input';
 import Hit from './Hit';
 
@@ -31,27 +24,18 @@ export default class SearchInput extends React.PureComponent {
   };
 
   componentDidMount() {
-    this.client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
-    this.index = this.client.initIndex(ALGOLIA_DEFAULT_INDEX);
-
     this.searchQuery('');
   }
 
   searchQuery = (query: string) => {
-    searchFacets('npm_dependencies.dependency', query).then(res => {
-      const { facetHits } = res;
-
-      facetHits.sort((a, b) => {
-        if (a.value === query) {
-          return -1;
-        } else if (b.value === query) {
-          return 1;
-        }
-
-        return 0;
+    searchFacets({
+      facet: 'npm_dependencies.dependency',
+      query,
+      hitsPerPage: 3,
+    }).then(({ facetHits }) => {
+      this.setState({
+        hits: facetHits,
       });
-
-      this.setState({ hits: facetHits.slice(0, 3) });
     });
   };
 
@@ -63,7 +47,9 @@ export default class SearchInput extends React.PureComponent {
           <div>Dependency</div>
           <div>Sandbox Count</div>
         </Legend>
-        {this.state.hits.map((hit, i) => <Hit key={i} hit={hit} />)}
+        {this.state.hits.map((hit, i) => (
+          <Hit key={i} hit={hit} />
+        ))}
         <a
           href="https://www.algolia.com/?utm_source=algoliaclient&utm_medium=website&utm_content=codesandbox.io&utm_campaign=poweredby"
           target="_blank"

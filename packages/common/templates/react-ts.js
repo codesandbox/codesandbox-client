@@ -1,6 +1,5 @@
 // @flow
 
-import ReactIcon from 'common/components/logos/React';
 import configurations from './configuration';
 
 import Template from './template';
@@ -11,10 +10,10 @@ export default new Template(
   'React + TS',
   'https://github.com/wmonk/create-react-app-typescript',
   'react-ts',
-  ReactIcon,
   decorateSelector(() => '#009fff'),
   {
     isTypescript: true,
+    showOnHomePage: true,
     extraConfigurations: {
       '/tsconfig.json': configurations.tsconfig,
     },

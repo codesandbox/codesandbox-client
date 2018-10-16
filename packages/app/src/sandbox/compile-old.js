@@ -1,15 +1,15 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
 import _debug from 'app/utils/debug';
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
+import { Encode } from 'console-feed/lib/Transform';
 
-import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import transformJSON from './console/transform-json';
 
 import { resetScreen } from './status-screen';
 
-import { inject, unmount } from './react-error-overlay/overlay';
 import handleExternalResources from './external-resources';
 
 import defaultBoilerplates from './boilerplates/default-boilerplates';
@@ -193,10 +193,10 @@ async function compile({
       initializeResizeListener();
     }
 
+    // Testing
+    const ttt = Date.now();
+    const testRunner = manager.testRunner;
     try {
-      // Testing
-      const ttt = Date.now();
-      const testRunner = manager.testRunner;
       testRunner.initialize();
       testRunner.findTests(modules);
       await testRunner.runTests();
@@ -205,13 +205,13 @@ async function compile({
 
       dispatch({
         type: 'test-result',
-        result: transformJSON(aggregatedResults),
+        result: Encode(aggregatedResults),
       });
       // End - Testing
     } catch (error) {
       dispatch({
         type: 'test-result',
-        error: manager.testRunner.reportError(error),
+        error: testRunner.reportError(error),
       });
     }
 

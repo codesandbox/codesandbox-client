@@ -1,9 +1,23 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import Tooltip from 'common/components/Tooltip';
 
+const blink = keyframes`
+	0% {color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};}
+	50%{color: rgba(255, 255, 255, 1);}
+	100% {color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};}
+`;
+
 const styles = props =>
   `
+  ${props.blink &&
+    `
+        animation: ${blink} 1s infinite;
+        font-weight: 600;
+      `}
+
   display: flex !important;
   transition: 0.3s ease all;
   flex-direction: row;
@@ -12,7 +26,7 @@ const styles = props =>
   font-size: .875rem;
   line-height: 1;
   height: 100%;
-  color: rgba(255,255,255,0.7);
+  color: ${props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.7)'};
   cursor: pointer;
   box-sizing: inherit;
   border-bottom: 2px solid transparent;
@@ -21,7 +35,7 @@ const styles = props =>
     props.highlight
       ? `
       background-color: ${props.theme.secondary.darken(0.1)()};
-      color: white;
+      color: rgba(255, 255, 255, 0.7);
       border-bottom: 1px solid ${props.theme.secondary.darken(0.1)()};
 
       &:hover {
@@ -31,7 +45,8 @@ const styles = props =>
       : `
 
     &:hover {
-      color: rgba(255,255,255, 1);
+      color: ${props.theme['editor.foreground'] ||
+        (props.theme.light ? 'black' : 'white')};
       border-color: ${
         props.hideBottomHighlight ? 'transparent' : props.theme.secondary()
       }
@@ -49,22 +64,25 @@ export const Action = styled.div`
 `;
 
 export const ActionLink = styled(Link)`
-  ${styles} text-decoration: none;
+  ${styles};
+  text-decoration: none;
 `;
 
 export const ActionA = styled.a`
-  ${styles} text-decoration: none;
+  ${styles};
+  text-decoration: none;
 `;
 
 export const ActionTooltip = styled(Tooltip)`
-  ${styles} ${props =>
-      props.disabledAction &&
-      `
-    color: rgba(255,255,255,0.3);
+  ${styles};
+  ${props =>
+    props.disabledAction &&
+    `
+    color: ${props.theme.light ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'};
     cursor: default;
 
     &:hover {
-      color: rgba(255,255,255, 0.4);
+      color: ${props.theme.light ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.4)'};
     }
   `};
 `;

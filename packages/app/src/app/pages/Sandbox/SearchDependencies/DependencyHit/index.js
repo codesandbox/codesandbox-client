@@ -36,9 +36,7 @@ export default class DependencyHit extends React.PureComponent {
   makeSearchUrl(hitName: string) {
     return `${
       process.env.CODESANDBOX_HOST
-    }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${
-      hitName
-    }&page=1`;
+    }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${hitName}&page=1`;
   }
 
   stopPropagation(e) {
@@ -69,6 +67,9 @@ export default class DependencyHit extends React.PureComponent {
         return 0;
       }
     });
+
+    const getTagName = (tags, version) =>
+      Object.keys(tags).find(key => tags[key] === version);
 
     return (
       <Container highlighted={highlighted} onClick={onClick}>
@@ -127,7 +128,14 @@ export default class DependencyHit extends React.PureComponent {
               onChange={this.handleVersionChange}
               value={this.state.selectedVersion}
             >
-              {versions.map(v => <option key={v}>{v}</option>)}
+              {versions.map(v => {
+                const tagName = getTagName(hit.tags, v);
+                return (
+                  <option key={v}>
+                    {v} {tagName && `- ${tagName}`}
+                  </option>
+                );
+              })}
             </StyledSelect>
           </Row>
         </Right>

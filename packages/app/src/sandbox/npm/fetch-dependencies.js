@@ -105,7 +105,11 @@ async function getAbsoluteDependencies(dependencies: Object) {
     nonAbsoluteDependencies.map(async dep => {
       try {
         const data = await window
-          .fetch(`${host}/api/v1/dependencies/${dep}@${dependencies[dep]}`)
+          .fetch(
+            `${host}/api/v1/dependencies/${dep}@${encodeURIComponent(
+              dependencies[dep]
+            )}`
+          )
           .then(x => x.json())
           .then(x => x.data);
 
@@ -153,7 +157,9 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
 
       return result;
     } catch (e) {
-      e.message = `Could not fetch dependencies: ${e.message}`;
+      e.message = `Could not fetch dependencies, please try again in a couple seconds: ${
+        e.message
+      }`;
       dispatch(actions.notifications.show(e.message, 'error'));
 
       throw e;

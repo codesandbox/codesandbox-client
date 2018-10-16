@@ -23,13 +23,11 @@ export default class PublishFields extends React.PureComponent {
   minor;
   patch;
 
-  getVersion = (
-    {
-      major = this.state.major,
-      minor = this.state.minor,
-      patch = this.state.patch,
-    } = {}
-  ) => `${major}.${minor}.${patch}`;
+  getVersion = ({
+    major = this.state.major,
+    minor = this.state.minor,
+    patch = this.state.patch,
+  } = {}) => `${major}.${minor}.${patch}`;
 
   isDuplicateVersion = (version = this.getVersion()) =>
     !!this.props.versions.find(v => v.version === version);

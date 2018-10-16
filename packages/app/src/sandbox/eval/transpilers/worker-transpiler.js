@@ -20,6 +20,7 @@ export default class WorkerTranspiler extends Transpiler {
   Worker: Worker;
   workers: Array<Worker>;
   idleWorkers: Array<Worker>;
+  loadingWorkers: number;
   workerCount: number;
   tasks: {
     [id: string]: Task,
@@ -34,7 +35,7 @@ export default class WorkerTranspiler extends Transpiler {
     name: string,
     Worker: Worker,
     workerCount = navigator.hardwareConcurrency,
-    options: { hasFS: boolean } = {}
+    options: { hasFS: boolean, preload: boolean } = {}
   ) {
     super(name);
 
@@ -45,24 +46,40 @@ export default class WorkerTranspiler extends Transpiler {
     this.tasks = {};
     this.initialized = false;
     this.hasFS = options.hasFS || false;
+    this.loadingWorkers = 0;
+
+    if (options.preload) {
+      if (this.workers.length === 0) {
+        Promise.all(
+          Array.from({ length: this.workerCount }, () => this.loadWorker())
+        );
+      }
+    }
   }
 
   getWorker() {
     return Promise.resolve(new this.Worker());
   }
 
-  loadWorker(bfs: BrowserFS) {
+  loadWorker() {
     return new Promise(async resolve => {
+      this.loadingWorkers++;
       const t = Date.now();
       const worker = await this.getWorker();
+      const readyListener = e => {
+        if (e.data === 'ready') {
+          debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
+          worker.removeEventListener('message', readyListener);
+        }
+      };
+      worker.addEventListener('message', readyListener);
 
       if (this.hasFS) {
         // Register file system that syncs with filesystem in manager
-        bfs.FileSystem.WorkerFS.attachRemoteListener(worker);
+        BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
         worker.postMessage({ type: 'initialize-fs', codesandbox: true });
       }
 
-      debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
       this.idleWorkers.push(worker);
 
       this.executeRemainingTasks();
@@ -73,18 +90,22 @@ export default class WorkerTranspiler extends Transpiler {
     });
   }
 
-  async initialize(bfs: BrowserFS) {
+  async initialize() {
     this.initialized = true;
     if (this.workers.length === 0) {
       await Promise.all(
-        Array.from({ length: this.workerCount }, () => this.loadWorker(bfs))
+        Array.from({ length: this.workerCount }, () => this.loadWorker())
       );
     }
   }
 
   dispose() {
     this.workers.forEach(w => w.terminate());
+    this.initialized = false;
+    this.tasks = {};
+    this.workers.length = 0;
     this.idleWorkers.length = 0;
+    this.loadingWorkers = 0;
   }
 
   executeRemainingTasks() {
@@ -170,29 +191,36 @@ export default class WorkerTranspiler extends Transpiler {
         }
 
         // Means the transpile task has been completed
-        if (data.type === 'compiled') {
+        if (data.type === 'result') {
           this.runCallbacks(callbacks, null, data);
         }
 
-        if (data.type === 'error' || data.type === 'compiled') {
-          this.idleWorkers.push(worker);
+        if (data.type === 'error' || data.type === 'result') {
+          // Unshift instead of push, we want to prepend the worker because
+          // this worker is warm now.
+          this.idleWorkers.unshift(worker);
           this.executeRemainingTasks();
         }
       }
     };
-    worker.postMessage({ ...message, type: 'compile', codesandbox: true });
+    worker.postMessage({ type: 'compile', codesandbox: true, ...message });
   }
 
   async queueTask(
     message: any,
+    id: string,
     loaderContext: LoaderContext,
     callback: (err: Error, message: Object) => void
   ) {
-    if (!this.initialized) {
-      await this.initialize(loaderContext.bfs);
+    this.initialized = true;
+    if (
+      this.idleWorkers.length === 0 &&
+      this.loadingWorkers < this.workerCount
+    ) {
+      // Load new worker if needed
+      await this.loadWorker();
     }
 
-    const id = loaderContext._module.getId();
     if (!this.tasks[id]) {
       this.tasks[id] = {
         message,
@@ -204,5 +232,15 @@ export default class WorkerTranspiler extends Transpiler {
     this.tasks[id].callbacks.push(callback);
 
     this.executeRemainingTasks();
+  }
+
+  async getTranspilerContext() {
+    return super.getTranspilerContext().then(x => ({
+      ...x,
+      worker: true,
+      hasFS: this.hasFS,
+      workerCount: this.workerCount,
+      initialized: !!this.initialized,
+    }));
   }
 }

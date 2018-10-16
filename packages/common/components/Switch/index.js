@@ -8,6 +8,7 @@ function Switch({
   secondary = false,
   offMode = false,
   small = false,
+  className,
 }) {
   return (
     <Container
@@ -16,6 +17,7 @@ function Switch({
       offMode={offMode}
       onClick={onClick}
       right={right}
+      className={className}
     >
       <Dot small={small} right={right} />
     </Container>

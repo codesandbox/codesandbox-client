@@ -15,7 +15,7 @@ function Prompt({ error, token, loading, username, signIn }) {
         <Title>An error occured:</Title>
         <SubTitle>{error}</SubTitle>
         <Buttons>
-          <Button href="/">Go to homepage</Button>
+          <Button href="/?from-app=1">Go to homepage</Button>
         </Buttons>
       </Container>
     );
@@ -29,7 +29,7 @@ function Prompt({ error, token, loading, username, signIn }) {
           You need to sign in with your GitHub account to use the CLI.
         </SubTitle>
         <Buttons>
-          <Button onClick={signIn}>Sign in with Github</Button>
+          <Button onClick={signIn}>Sign in with GitHub</Button>
         </Buttons>
       </Container>
     );

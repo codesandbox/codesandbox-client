@@ -1,6 +1,9 @@
-import { fromPairs, toPairs, sortBy } from 'lodash';
+import { fromPairs, toPairs, sortBy } from 'lodash-es';
 import slugify from 'common/utils/slugify';
 import { clone } from 'mobx-state-tree';
+
+import getTemplate from 'common/templates';
+import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -16,7 +19,10 @@ export async function getLatestVersion({ props, api }) {
 }
 
 export function addNpmDependencyToPackage({ state, props }) {
-  const { parsed } = state.get('editor.parsedConfigurations.package');
+  const { parsed, code: oldCode } = state.get(
+    'editor.parsedConfigurations.package'
+  );
+
   const type = props.isDev ? 'devDependencies' : 'dependencies';
 
   parsed[type] = parsed[type] || {};
@@ -24,18 +30,22 @@ export function addNpmDependencyToPackage({ state, props }) {
   parsed[type] = sortObjectByKeys(parsed[type]);
 
   return {
+    oldCode,
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
   };
 }
 
 export function removeNpmDependencyFromPackage({ state, props }) {
-  const { parsed } = state.get('editor.parsedConfigurations.package');
+  const { parsed, code: oldCode } = state.get(
+    'editor.parsedConfigurations.package'
+  );
 
   delete parsed.dependencies[props.name];
   parsed.dependencies = sortObjectByKeys(parsed.dependencies);
 
   return {
+    oldCode,
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
   };
@@ -57,9 +67,26 @@ export function updateSandboxPackage({ state }) {
 
 export function setModuleSaved({ props, state }) {
   const changedModuleShortids = state.get('editor.changedModuleShortids');
-  const indexToRemove = changedModuleShortids.indexOf(props.shortid);
+  const newChangedModuleShortids = changedModuleShortids.filter(
+    x => x !== props.shortid
+  );
 
-  state.splice('editor.changedModuleShortids', indexToRemove, 1);
+  state.set('editor.changedModuleShortids', newChangedModuleShortids);
+}
+
+export function setModuleSavedCode({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === props.moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    state.set(
+      `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.savedCode`,
+      props.savedCode
+    );
+  }
 }
 
 export function ensureValidPrivacy({ props, path }) {
@@ -80,9 +107,14 @@ export function setCurrentModuleByTab({ state, props }) {
       state.get('editor.tabs').length - 1 >= props.tabIndex
         ? props.tabIndex
         : props.tabIndex - 1;
-    const moduleShortid = state.get(`editor.tabs.${index}.moduleShortid`);
 
-    state.set('editor.currentModuleShortid', moduleShortid);
+    const currentTab = state.get(`editor.tabs.${index}`);
+
+    if (currentTab.moduleShortid) {
+      const moduleShortid = currentTab.moduleShortid;
+
+      state.set('editor.currentModuleShortid', moduleShortid);
+    }
   }
 }
 
@@ -96,6 +128,18 @@ export function updatePrivacy({ api, props, state }) {
       },
     })
     .then(() => undefined);
+}
+
+export function updateFrozen({ api, props, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .put(`/sandboxes/${id}`, {
+      sandbox: {
+        is_frozen: props.frozen,
+      },
+    })
+    .then(() => state.set('editor.currentSandbox.isFrozen', props.frozen));
 }
 
 export function forceRender({ state }) {
@@ -113,7 +157,7 @@ export function outputModuleIdFromActionPath({ state, props, utils }) {
   return { id: module ? module.id : null };
 }
 
-export function renameModuleFromPreview({ state, props, utils }) {
+export function consumeRenameModuleFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
   const module = utils.resolveModule(
     props.action.path.replace(/^\//, ''),
@@ -122,15 +166,12 @@ export function renameModuleFromPreview({ state, props, utils }) {
   );
 
   if (module) {
-    const moduleIndex = sandbox.modules.findIndex(
-      moduleEntry => moduleEntry.id === module.id
-    );
-
-    state.set(
-      `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.title`,
-      props.title
-    );
+    return {
+      moduleShortid: module.shortid,
+      title: props.action.title,
+    };
   }
+  return {};
 }
 
 export function addErrorFromPreview({ state, props, utils }) {
@@ -218,7 +259,9 @@ export function unsetDirtyTab({ state }) {
     tab => tab.moduleShortid === currentModule.shortid
   );
 
-  state.set(`editor.tabs.${tabIndex}.dirty`, false);
+  if (tabIndex !== -1) {
+    state.set(`editor.tabs.${tabIndex}.dirty`, false);
+  }
 }
 
 export function outputChangedModules({ state }) {
@@ -264,19 +307,74 @@ export function addChangedModule({ state, props }) {
   const moduleShortid =
     props.moduleShortid || state.get('editor.currentModuleShortid');
 
-  if (state.get('editor.changedModuleShortids').indexOf(moduleShortid) === -1) {
-    state.push('editor.changedModuleShortids', moduleShortid);
+  const module = state
+    .get('editor.currentSandbox.modules')
+    .find(m => m.shortid === moduleShortid);
+
+  if (module) {
+    const moduleIndex = state
+      .get('editor.changedModuleShortids')
+      .indexOf(moduleShortid);
+
+    if (moduleIndex === -1) {
+      if (module.savedCode !== module.code) {
+        state.push('editor.changedModuleShortids', moduleShortid);
+      }
+    } else if (module.savedCode === module.code) {
+      state.set(
+        'editor.changedModuleShortids',
+        state
+          .get('editor.changedModuleShortids')
+          .filter(x => x !== moduleShortid)
+      );
+    }
   }
 }
 
-export function saveChangedModules({ props, api, state }) {
+export function saveChangedModules({ props, api, state, recover }) {
   const sandboxId = state.get('editor.currentId');
 
   return api
     .put(`/sandboxes/${sandboxId}/modules/mupdate`, {
       modules: props.changedModules,
     })
-    .then(() => undefined);
+    .then(() => {
+      recover.clearSandbox(sandboxId);
+      return undefined;
+    });
+}
+
+export function removeChangedModules({ props, state }) {
+  props.changedModules.forEach(module => {
+    const sandbox = state.get('editor.currentSandbox');
+    const index = sandbox.modules.findIndex(m => m.id === module.id);
+
+    if (index !== -1) {
+      const currentCode = state.get(
+        `editor.sandboxes.${sandbox.id}.modules.${index}.code`
+      );
+      // If the code hasn't change between the save call and this action we can just reset
+      // the saved code. Otherwise we must set the savedCode to the value of the last save.
+      if (currentCode === module.code) {
+        state.set(
+          `editor.sandboxes.${sandbox.id}.modules.${index}.savedCode`,
+          undefined
+        );
+      } else {
+        state.set(
+          `editor.sandboxes.${sandbox.id}.modules.${index}.savedCode`,
+          module.code
+        );
+      }
+    }
+  });
+
+  state.set(
+    'editor.changedModuleShortids',
+    state
+      .get('editor.changedModuleShortids')
+      .filter(shortid => !props.changedModules.find(m => m.shortid === shortid))
+  );
 }
 
 export function prettifyCode({ utils, state, props, path }) {
@@ -298,20 +396,90 @@ export function prettifyCode({ utils, state, props, path }) {
   }
 
   return utils
-    .prettify(moduleToPrettify.title, moduleToPrettify.code, config)
+    .prettify(
+      moduleToPrettify.title,
+      () => (moduleToPrettify ? moduleToPrettify.code : ''),
+      config,
+      () =>
+        moduleToPrettify
+          ? moduleToPrettify.id === state.get(`editor.currentModule.id`)
+          : false
+    )
     .then(newCode => path.success({ code: newCode }))
     .catch(error => path.error({ error }));
 }
 
-export function saveModuleCode({ props, state, api }) {
+export function updateTemplateIfSSE({ state, api }) {
+  try {
+    const currentTemplate = state.get('editor.currentSandbox.template');
+    const templateDefinition = getTemplate(currentTemplate);
+
+    if (templateDefinition.isServer) {
+      const { parsed } = state.get('editor.parsedConfigurations.package');
+
+      const newTemplate = computeTemplate(parsed, {}) || 'node';
+
+      if (
+        newTemplate !== currentTemplate &&
+        getTemplate(newTemplate).isServer
+      ) {
+        state.set('editor.currentSandbox.template', newTemplate);
+        api.put(`/sandboxes/${state.get('editor.currentSandbox.id')}/`, {
+          sandbox: { template: newTemplate },
+        });
+      }
+    }
+  } catch (e) {
+    // We don't want this to be blocking at all, it's low prio
+    if (process.env.NODE_ENV === 'development') {
+      console.error(e);
+    }
+  }
+}
+
+export function saveModuleCode({ props, state, api, recover }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleToSave = sandbox.modules.find(
     module => module.shortid === props.moduleShortid
   );
 
-  return api.put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
-    module: { code: moduleToSave.code },
-  });
+  const codeToSave = moduleToSave.code;
+  const title = moduleToSave.title;
+
+  return api
+    .put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
+      module: { code: codeToSave },
+    })
+    .then(x => {
+      const newSandbox = state.get('editor.currentSandbox');
+      const newModuleToSave = sandbox.modules.find(
+        module => module.shortid === props.moduleShortid
+      );
+
+      const index = newSandbox.modules.findIndex(
+        m => m.id === newModuleToSave.id
+      );
+
+      if (index > -1) {
+        if (newModuleToSave.code === codeToSave) {
+          state.set(
+            `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
+            undefined
+          );
+          recover.remove(sandbox.id, moduleToSave);
+        } else {
+          state.set(
+            `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
+            x.code
+          );
+          throw new Error(
+            `The code of '${title}' changed while saving, will ignore the save now. Please try again with saving.`
+          );
+        }
+      }
+
+      return x;
+    });
 }
 
 export function getCurrentModuleId({ state }) {
@@ -340,17 +508,44 @@ export function warnUnloadingContent({ browser, state }) {
   });
 }
 
-export function setCode({ props, state }) {
+export function setCode({ props, state, recover }) {
   const currentId = state.get('editor.currentId');
+  const currentSandbox = state.get('editor.currentSandbox');
   const moduleShortid = props.moduleShortid;
   const moduleIndex = state
     .get('editor.currentSandbox')
     .modules.findIndex(module => module.shortid === moduleShortid);
+  const module = currentSandbox.modules[moduleIndex];
 
-  state.set(
-    `editor.sandboxes.${currentId}.modules.${moduleIndex}.code`,
-    props.code
-  );
+  if (module) {
+    if (!module.savedCode) {
+      state.set(
+        `editor.sandboxes.${currentId}.modules.${moduleIndex}.savedCode`,
+        module.code
+      );
+    }
+
+    if (currentSandbox.owned) {
+      const savedCode = state.get(
+        `editor.sandboxes.${currentId}.modules.${moduleIndex}.savedCode`,
+        module.code
+      );
+
+      // Save the code to localStorage so we can recover in case of a crash
+      recover.save(
+        currentId,
+        currentSandbox.version,
+        module,
+        props.code,
+        savedCode
+      );
+    }
+
+    state.set(
+      `editor.sandboxes.${currentId}.modules.${moduleIndex}.code`,
+      props.code
+    );
+  }
 }
 
 export function setPreviewBounds({ props, state }) {
@@ -366,4 +561,23 @@ export function setPreviewBounds({ props, state }) {
   if (props.height != null) {
     state.set(`editor.previewWindow.height`, props.height);
   }
+}
+
+export function getSavedCode({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === props.moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    const module = state.get(`editor.currentSandbox.modules.${moduleIndex}`);
+
+    if (module.savedCode) {
+      return { oldCode: module.code, code: module.savedCode };
+    }
+
+    return { oldCode: module.code, code: module.code };
+  }
+
+  return {};
 }

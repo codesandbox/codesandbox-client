@@ -7,6 +7,10 @@ import {
   preact,
   reactTs,
   angular,
+  cxjs,
+  babel,
+  dojo,
+  reason,
 } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
@@ -16,6 +20,10 @@ import preactPreset from './presets/preact-cli';
 import sveltePreset from './presets/svelte';
 import angularPreset from './presets/angular-cli';
 import parcelPreset from './presets/parcel';
+import babelPreset from './presets/babel-repl';
+import cxjsPreset from './presets/cxjs';
+import reasonPreset from './presets/reason';
+import dojoPreset from './presets/dojo';
 
 export default function getPreset(template: string) {
   switch (template) {
@@ -23,6 +31,8 @@ export default function getPreset(template: string) {
       return reactPreset();
     case reactTs.name:
       return reactTsPreset();
+    case reason.name:
+      return reasonPreset();
     case vue.name:
       return vuePreset();
     case preact.name:
@@ -33,6 +43,12 @@ export default function getPreset(template: string) {
       return angularPreset();
     case parcel.name:
       return parcelPreset();
+    case babel.name:
+      return babelPreset();
+    case cxjs.name:
+      return cxjsPreset();
+    case dojo.name:
+      return dojoPreset();
     default:
       return reactPreset();
   }

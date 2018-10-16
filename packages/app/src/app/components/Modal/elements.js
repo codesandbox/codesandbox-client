@@ -2,8 +2,9 @@ import styled, { injectGlobal } from 'styled-components';
 
 export const CLOSE_TIMEOUT_MS = 300;
 
-// eslint-disable-next-line
-injectGlobal`
+export const applyGlobalStyles = () => {
+  // eslint-disable-next-line
+  injectGlobal`
   .ReactModal__Content {
     transition: all ${CLOSE_TIMEOUT_MS}ms ease;
     transition-property: opacity, transform;
@@ -46,6 +47,7 @@ injectGlobal`
     transform: scale(0.9) translateY(0);
   }
 `;
+};
 
 export const BaseModal = styled.div`
   background-color: ${props => props.theme.background3};

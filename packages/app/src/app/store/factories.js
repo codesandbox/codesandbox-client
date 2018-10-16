@@ -1,7 +1,9 @@
 import { sequence, parallel } from 'cerebral';
 import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+import trackAnalytics from 'common/utils/analytics';
 import * as actions from './actions';
+import { initializeNotifications } from './modules/user-notifications/sequences';
 
 export function addTabById(id) {
   // eslint-disable-next-line
@@ -34,6 +36,22 @@ export function addTabById(id) {
   };
 }
 
+const trackedEvents = {};
+
+export function track(e, args, { trackOnce } = { trackOnce: false }) {
+  return () => {
+    if (!trackOnce || !trackedEvents[e]) {
+      trackAnalytics(e, args);
+
+      if (trackOnce) {
+        trackedEvents[e] = true;
+      }
+    }
+
+    return {};
+  };
+}
+
 export function setCurrentModuleById(id) {
   // eslint-disable-next-line
   return function setCurrentModuleById({ state, resolve }) {
@@ -42,7 +60,7 @@ export function setCurrentModuleById(id) {
       moduleEntry => moduleEntry.id === resolve.value(id)
     );
 
-    if (module) {
+    if (module && state.get('editor.currentModuleShortid') !== module.shortid) {
       state.set('editor.currentModuleShortid', module.shortid);
     }
   };
@@ -50,6 +68,7 @@ export function setCurrentModuleById(id) {
 
 export function setCurrentModule(id) {
   return sequence('setCurrentModule', [
+    set(state`editor.currentTabId`, null),
     addTabById(id),
     setCurrentModuleById(id),
   ]);
@@ -82,6 +101,16 @@ export function updateSandboxUrl(sandbox) {
   };
 }
 
+const shouldShowThemingOption = when(state`isLoggedIn`, () => {
+  if (document.cookie.includes('theming-seen=1')) {
+    return false;
+  }
+
+  document.cookie = 'theming-seen=1; Path=/;';
+
+  return true;
+});
+
 export function withLoadApp(continueSequence) {
   return sequence('loadApp', [
     when(state`hasLoadedApp`),
@@ -94,6 +123,19 @@ export function withLoadApp(continueSequence) {
         actions.setStoredSettings,
         actions.setKeybindings,
         actions.startKeybindings,
+
+        shouldShowThemingOption,
+        {
+          true: [
+            addNotification(
+              'You can now use your VSCode theme on CodeSandbox! Check it out in your preferences.',
+              'notice',
+              60 // a minute
+            ),
+          ],
+          false: [],
+        },
+
         when(state`jwt`),
         {
           true: [
@@ -104,6 +146,9 @@ export function withLoadApp(continueSequence) {
                   success: [
                     set(state`user`, props`user`),
                     actions.setPatronPrice,
+                    actions.setSignedInCookie,
+                    actions.connectWebsocket,
+                    initializeNotifications,
                   ],
                   error: [
                     addNotification(
@@ -117,10 +162,14 @@ export function withLoadApp(continueSequence) {
               continueSequence,
             ]),
           ],
-          false: continueSequence,
+          false: [
+            actions.removeJwtFromStorage, // To delete the signedIn cookie as well, to be sure
+            continueSequence,
+          ],
         },
         set(state`hasLoadedApp`, true),
         set(state`isAuthenticating`, false),
+        actions.getContributors,
       ],
     },
   ]);

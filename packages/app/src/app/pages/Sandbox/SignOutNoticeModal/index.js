@@ -23,7 +23,7 @@ function SignOutNotice({ signals }) {
           style={{ marginRight: '.5rem' }}
           red
           onClick={() => {
-            signals.closeModal();
+            signals.modalClosed();
           }}
         >
           Close

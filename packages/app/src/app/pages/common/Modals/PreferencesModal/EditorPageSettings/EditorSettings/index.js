@@ -27,16 +27,6 @@ function EditorSettings({ store, signals }) {
       <SubContainer>
         <PreferenceContainer>
           <PaddedPreference
-            title="Zen Mode"
-            type="boolean"
-            {...bindValue('zenMode')}
-          />
-          <SubDescription>
-            Hide all distracting elements, perfect for lessons and
-            presentations.
-          </SubDescription>
-          <Rule />
-          <PaddedPreference
             title="Use CodeMirror"
             type="boolean"
             {...bindValue('codeMirror')}
@@ -65,7 +55,7 @@ function EditorSettings({ store, signals }) {
           </SubDescription>
           <Rule />
           <PaddedPreference
-            title="Prettify on save"
+            title="Prettify On Save"
             type="boolean"
             tooltip="Made possible by Prettier"
             {...bindValue('prettifyOnSaveEnabled')}
@@ -75,32 +65,14 @@ function EditorSettings({ store, signals }) {
           </SubDescription>
           <Rule />
           <PaddedPreference
-            title="VIM mode"
+            title="VIM Mode"
             type="boolean"
             {...bindValue('vimMode')}
           />
-          <Rule />
-          <PaddedPreference
-            title="Font size"
-            type="number"
-            {...bindValue('fontSize')}
-          />
-          <Rule />
-          <PaddedPreference
-            title="Font family"
-            type="string"
-            placeholder="Source Code Pro"
-            {...bindValue('fontFamily')}
-          />
-          <Rule />
-          <PaddedPreference
-            title="Line height"
-            type="number"
-            placeholder="1.15"
-            step="0.05"
-            style={{ width: '4rem' }}
-            {...bindValue('lineHeight')}
-          />
+          <SubDescription>
+            This will override Use CodeMirror setting as Monaco doesn{"'"}t have
+            a VIM mode yet.
+          </SubDescription>
         </PreferenceContainer>
       </SubContainer>
     </div>

@@ -23,6 +23,7 @@ type Props = {
   store: any,
   children: (funcs: { resize: Function }) => React.Node,
   onPositionChange?: () => void,
+  hide?: boolean,
 };
 
 type State = {
@@ -47,6 +48,8 @@ class FlyingContainer extends React.Component<Props, State> {
   el: ?HTMLElement;
   initialWidth: ?number;
   initialHeight: ?number;
+  lastX: ?number;
+  lastY: ?number;
 
   updateBounds = el => {
     if (el) {
@@ -55,7 +58,12 @@ class FlyingContainer extends React.Component<Props, State> {
       this.initialWidth = width;
       this.initialHeight = height;
 
-      this.props.signals.editor.setPreviewBounds({ width, height });
+      if (
+        this.props.store.editor.previewWindow.width == null &&
+        this.props.store.editor.previewWindow.height == null
+      ) {
+        this.props.signals.editor.setPreviewBounds({ width, height });
+      }
     }
   };
 
@@ -63,32 +71,62 @@ class FlyingContainer extends React.Component<Props, State> {
     this.setState({ dragging: true });
     this.setResizingStarted();
 
-    if (this.props.onPositionChange) {
-      this.props.onPositionChange();
-    }
+    this.lastX = this.props.store.editor.previewWindow.x;
+    this.lastY = this.props.store.editor.previewWindow.y;
   };
 
   handleStopDrag = (e, data) => {
     const { x, y } = data;
+    const horizontalPosChanged = x !== this.lastX;
+    const verticalPosChanged = y !== this.lastY;
+
     this.setState({ dragging: false });
+
+    this.setResizingStopped(
+      horizontalPosChanged,
+      verticalPosChanged,
+      false,
+      false
+    );
 
     // We only set the bounds in the global store on stop, otherwise there are
     // other components constantly recalculating while dragging -> lag
     this.props.signals.editor.setPreviewBounds({ x, y });
-    this.setResizingStopped();
   };
 
   setResizingStarted = () => {
     this.props.signals.editor.resizingStarted();
+  };
 
-    if (this.props.onPositionChange) {
-      this.props.onPositionChange();
+  setResizingStopped = (
+    horizontalPosChanged = true,
+    verticalPosChanged = true,
+    widthChanged = true,
+    heightChanged = true
+  ) => {
+    this.props.signals.editor.resizingStopped();
+
+    if (
+      horizontalPosChanged ||
+      verticalPosChanged ||
+      widthChanged ||
+      heightChanged
+    ) {
+      if (this.props.onPositionChange) {
+        this.props.onPositionChange(
+          horizontalPosChanged,
+          verticalPosChanged,
+          widthChanged,
+          heightChanged,
+          { ...this.state }
+        );
+      }
+
+      this.fixPreviewInteractivity();
     }
   };
 
-  setResizingStopped = () => {
-    this.props.signals.editor.resizingStopped();
-
+  fixPreviewInteractivity = () => {
     // We do this to force a recalculation of the iframe height, this doesn't
     // happen when pointer events are disabled and in turn disables scroll.
     // It's hacky, but it's to fix a bug in the browser.
@@ -103,7 +141,22 @@ class FlyingContainer extends React.Component<Props, State> {
 
   applyStateToStore = () => {
     const { x, y, width, height } = this.state;
-    this.props.signals.editor.setPreviewBounds({ x, y, width, height });
+
+    const update = {};
+
+    if (x !== undefined) {
+      update.x = x;
+    }
+    if (y !== undefined) {
+      update.y = y;
+    }
+    if (width !== undefined) {
+      update.width = width;
+    }
+    if (height !== undefined) {
+      update.height = height;
+    }
+    this.props.signals.editor.setPreviewBounds(update);
 
     this.setState({
       dragging: false,
@@ -129,6 +182,8 @@ class FlyingContainer extends React.Component<Props, State> {
 
     let lastX = e.clientX;
     let lastY = e.clientY;
+    let lastWidth = 0;
+    let lastHeight = 0;
 
     const handleMouseMove = (dragEvent: MouseEvent) => {
       const { previewWindow } = this.props.store.editor;
@@ -151,10 +206,14 @@ class FlyingContainer extends React.Component<Props, State> {
       const update = {};
 
       if (vertical) {
-        update.height = Math.max(48, newSizeY);
+        lastHeight = Math.max(48, newSizeY);
+
+        update.height = lastHeight;
       }
       if (horizontal) {
-        update.width = Math.max(48, newSizeX);
+        lastWidth = Math.max(48, newSizeX);
+
+        update.width = lastWidth;
       }
 
       if (changePositionY) {
@@ -177,9 +236,22 @@ class FlyingContainer extends React.Component<Props, State> {
     };
 
     const handleMouseUp = () => {
+      const currentState = this.props.store.editor.previewWindow;
+      const { x, y, width, height } = this.state;
+
+      const horizontalPosChanged = x != null && x !== currentState.x;
+      const verticalPosChanged = y != null && y !== currentState.y;
+      const widthChanged = width != null && width !== currentState.width;
+      const heightChanged = height != null && height !== currentState.height;
+
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
-      this.setResizingStopped();
+      this.setResizingStopped(
+        horizontalPosChanged,
+        verticalPosChanged,
+        widthChanged,
+        heightChanged
+      );
 
       this.applyStateToStore();
     };
@@ -208,6 +280,7 @@ class FlyingContainer extends React.Component<Props, State> {
   };
 
   render() {
+    const { hide } = this.props;
     const { previewWindow } = this.props.store.editor;
 
     const width = this.state.width || previewWindow.width;
@@ -217,6 +290,7 @@ class FlyingContainer extends React.Component<Props, State> {
       <Draggable
         onStart={this.handleStartDrag}
         onStop={this.handleStopDrag}
+        handle=".flying-container-handler"
         defaultPosition={{
           x: previewWindow.x,
           y: previewWindow.y,
@@ -243,9 +317,11 @@ class FlyingContainer extends React.Component<Props, State> {
             width: width || '50%',
             flex: width ? `0 0 ${width}px` : undefined,
             height,
-            boxShadow: '0 3px 8px rgba(0, 0, 0, 0.5)',
+            boxShadow: hide ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.5)',
             zIndex: 60,
-            cursor: 'move',
+
+            visiblity: hide ? 'hidden' : undefined,
+            pointerEvents: hide ? 'none' : undefined,
           }}
           ref={this.updateBounds}
         >

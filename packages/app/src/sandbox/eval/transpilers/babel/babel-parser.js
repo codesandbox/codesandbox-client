@@ -29,18 +29,36 @@ const DEFAULT_BABEL_CONFIG = {
 /**
  * Parses the .babelrc if it exists, if it doesn't it will return a default config
  */
-export default function getBabelConfig(config: Object = {}, path: string) {
-  let resolvedConfig = DEFAULT_BABEL_CONFIG;
+export default function getBabelConfig(
+  config: ?Object,
+  loaderOptions: Object,
+  path: string,
+  isV7: boolean = false
+) {
+  const resolvedConfig = config || DEFAULT_BABEL_CONFIG;
 
-  resolvedConfig = {
+  if (loaderOptions.disableCodeSandboxPlugins) {
+    return resolvedConfig;
+  }
+
+  const finalConfig = {
     ...resolvedConfig,
-    plugins: config.plugins != null ? config.plugins : resolvedConfig.plugins,
-    presets: config.presets != null ? config.presets : resolvedConfig.presets,
     sourceMaps: 'inline',
     sourceFileName: path,
-    sourceMapTarget: `${path}:transpiled`,
     filename: path,
   };
 
-  return resolvedConfig;
+  const commonjsPluginName = isV7
+    ? 'transform-modules-commonjs'
+    : 'transform-es2015-modules-commonjs';
+
+  if (finalConfig.plugins) {
+    if (finalConfig.plugins.indexOf(commonjsPluginName) === -1) {
+      finalConfig.plugins = [...finalConfig.plugins, commonjsPluginName];
+    }
+  } else {
+    finalConfig.plugins = [commonjsPluginName];
+  }
+
+  return finalConfig;
 }

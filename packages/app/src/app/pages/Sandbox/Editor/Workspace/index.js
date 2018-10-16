@@ -3,20 +3,31 @@ import { inject, observer } from 'mobx-react';
 
 import VERSION from 'common/version';
 
-import workspaceItems from 'app/store/modules/workspace/items';
+import getWorkspaceItems from 'app/store/modules/workspace/items';
 import SocialInfo from 'app/components/SocialInfo';
 
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
+import Server from './items/Server';
+import Live from './items/Live';
+import More from './items/More';
 import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
+import WorkspaceItem from './WorkspaceItem';
+import Chat from './Chat';
+import SSEDownNotice from './SSEDownNotice';
 
-import { Container, ContactContainer, ItemTitle } from './elements';
+import {
+  Container,
+  ContactContainer,
+  ItemTitle,
+  VersionContainer,
+} from './elements';
 
 const idToItem = {
   project: ProjectInfo,
@@ -24,6 +35,9 @@ const idToItem = {
   github: GitHub,
   deploy: Deployment,
   config: ConfigurationFiles,
+  live: Live,
+  server: Server,
+  more: More,
 };
 
 function Workspace({ store }) {
@@ -38,33 +52,29 @@ function Workspace({ store }) {
 
   const Component = sandbox.owned ? idToItem[currentItem] : NotOwnedSandboxInfo;
 
-  const item = workspaceItems.find(i => i.id === currentItem);
+  const item = getWorkspaceItems(store).find(i => i.id === currentItem);
   return (
     <Container>
       {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
         <Component />
       </div>
+      {store.live.isLive &&
+        store.live.roomInfo.chatEnabled && (
+          <WorkspaceItem defaultOpen title="Chat">
+            <Chat />
+          </WorkspaceItem>
+        )}
       {!preferences.settings.zenMode && (
         <div>
           {!store.isPatron && !sandbox.owned && <Advertisement />}
           <ContactContainer>
             <SocialInfo style={{ display: 'inline-block' }} />
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                float: 'right',
-                fontSize: '.6rem',
-                height: 28,
-                verticalAlign: 'middle',
-                fontWeight: 600,
-                color: 'rgba(255, 255, 255, 0.3)',
-              }}
-            >
+            <VersionContainer className="codesandbox-version">
               {VERSION}
-            </div>
+            </VersionContainer>
           </ContactContainer>
+          <SSEDownNotice />
           <ConnectionNotice />
         </div>
       )}

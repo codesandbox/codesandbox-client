@@ -49,7 +49,7 @@ export default class FilePath extends React.Component {
         <FileName hovering={!workspaceHidden || this.state.hovering}>
           <EntryIcons
             isNotSynced={currentModule.isNotSynced}
-            type={getType(currentModule.title, currentModule.code)}
+            type={getType(currentModule.title)}
             error={currentModule.errors && currentModule.errors.length > 0}
           />
           <span style={{ marginLeft: '0.25rem' }}>{fileName}</span>

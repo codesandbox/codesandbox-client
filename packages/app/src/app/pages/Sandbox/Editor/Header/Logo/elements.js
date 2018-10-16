@@ -23,8 +23,9 @@ export const Title = styled.span`
   margin: 0;
   margin-left: calc(1rem + 1px);
   padding-left: 1rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  border-left: 1px solid
+    ${props => props.theme['panel.border'] || 'rgba(255, 255, 255, 0.3)'};
+  color: ${props => props.theme['editor.foreground'] || 'white'};
 `;
 
 export const GithubContainer = styled.a`
@@ -34,6 +35,7 @@ export const GithubContainer = styled.a`
   line-height: 3rem;
   vertical-align: middle;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   text-decoration: none;
 `;

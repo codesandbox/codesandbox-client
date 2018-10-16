@@ -22,7 +22,12 @@ function RawAutoComplete({
             {...getInputProps({
               innerRef(ref) {
                 if (ref) {
-                  ref.focus();
+                  if (
+                    document.activeElement &&
+                    document.activeElement.tagName !== 'SELECT'
+                  ) {
+                    ref.focus();
+                  }
                 }
               },
               value: currentRefinement,

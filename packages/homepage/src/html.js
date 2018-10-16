@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 let stylesStr;
 if (process.env.NODE_ENV === `production`) {
   try {
-    stylesStr = require(`!raw-loader!../public/styles.css`);
+    stylesStr = require(`!raw-loader!../public/codesandbox-homepage-styles.css`);
   } catch (e) {
     console.log(e);
   }
@@ -36,6 +36,7 @@ export default class HTML extends Component {
           />
           <meta property="og:type" content="website" />
           <meta property="og:author" content="https://ivesvh.com" />
+          <meta name="theme-color" content="#6CAEDD" />
           <meta
             property="og:image"
             content="https://codesandbox.io/static/img/banner.png"
@@ -45,7 +46,6 @@ export default class HTML extends Component {
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:site" content="@CompuIves" />
           <meta property="twitter:creator" content="@CompuIves" />
-          <meta property="twitter:title" content="CodeSandbox" />
           <meta
             property="twitter:image:src"
             content="https://codesandbox.io/static/img/banner.png"

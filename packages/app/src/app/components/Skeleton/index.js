@@ -5,12 +5,9 @@ import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
 
-import { Header } from './elements';
-
 function Skeleton({ titles }) {
   return (
     <Fullscreen style={{ height: '100vh' }}>
-      <Header />
       <Centered horizontal vertical>
         <Title delay={titles[0].delay}>{titles[0].content}</Title>
         {titles.slice(1).map((title, index) => (
