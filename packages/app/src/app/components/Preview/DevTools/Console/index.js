@@ -9,7 +9,12 @@ import { Decode, Console as ConsoleFeed } from 'console-feed';
 
 import Input from './Input';
 
-import { Container, Messages, inspectorTheme } from './elements';
+import {
+  Container,
+  Messages,
+  inspectorTheme,
+  Input as Input2,
+} from './elements';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return',
@@ -22,6 +27,7 @@ class Console extends React.Component {
     messages: [],
     scrollToBottom: true,
     initialClear: true,
+    filter: [],
   };
 
   listener;
@@ -102,6 +108,10 @@ class Console extends React.Component {
         } else {
           this.addMessage('error', [error]);
         }
+        break;
+      }
+      case 'filter-log': {
+        this.setState({ filter: data.filters });
         break;
       }
       default: {
@@ -204,6 +214,7 @@ class Console extends React.Component {
             logs={this.state.messages}
             variant={this.props.theme.light ? 'light' : 'dark'}
             styles={inspectorTheme(this.props.theme)}
+            filter={this.state.filter}
           />
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />
@@ -211,6 +222,31 @@ class Console extends React.Component {
     );
   }
 }
+
+const ConsoleFilterInput = ({ style, onClick }) => (
+  <Input2 placeholder="Filter" style={style} onChange={onClick} />
+);
+
+const ConsoleFilterSelect = props => {
+  const handleOnChange = ({ target: { value } }) => {
+    if (value === 'all') {
+      dispatch({ type: 'filter-log', filters: [] });
+    } else {
+      const filters = value === 'info' ? ['info', 'log'] : [value];
+      dispatch({ type: 'filter-log', filters });
+    }
+  };
+
+  return (
+    <select style={props.style} onChange={handleOnChange}>
+      <option value="all">All</option>
+      <option value="info">Info</option>
+      <option value="warn">Warning</option>
+      <option value="error">Error</option>
+      <option value="debug">Debug</option>
+    </select>
+  );
+};
 
 export default {
   title: 'Console',
@@ -222,6 +258,18 @@ export default {
         dispatch({ type: 'clear-console' });
       },
       Icon: ClearIcon,
+    },
+    {
+      title: 'Search',
+      onClick: () => {
+        dispatch({ type: 'Search Click' });
+      },
+      Icon: withTheme(ConsoleFilterInput),
+    },
+    {
+      title: 'Log Filter',
+      onClick: () => {},
+      Icon: withTheme(ConsoleFilterSelect),
     },
   ],
 };
