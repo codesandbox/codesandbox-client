@@ -1,6 +1,8 @@
 import React from 'react';
 import FontFaceObserver from 'fontfaceobserver';
 
+import loaderBootstrap from 'app/vscode/dev-bootstrap';
+
 function noop() {}
 
 class MonacoEditor extends React.PureComponent {
@@ -34,9 +36,7 @@ class MonacoEditor extends React.PureComponent {
       return;
     }
 
-    context
-      .require('app/vscode/dev-bootstrap')
-      .default(['vs/editor/editor.main'])(() => {
+    loaderBootstrap(['vs/editor/editor.main'])(() => {
       this.initMonaco();
     });
   };

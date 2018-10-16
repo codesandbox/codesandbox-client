@@ -2,6 +2,7 @@ import React from 'react';
 import FontFaceObserver from 'fontfaceobserver';
 
 import controller from 'app/controller';
+import loaderBootstrap from 'app/vscode/dev-bootstrap';
 import './icon-theme.css';
 import './workbench-theme.css';
 
@@ -39,9 +40,7 @@ class MonacoEditor extends React.PureComponent {
   };
 
   afterViewInit = () => {
-    window
-      .require('app/vscode/dev-bootstrap')
-      .default(['vs/editor/codesandbox.editor.main'])(() => {
+    loaderBootstrap(['vs/editor/codesandbox.editor.main'])(() => {
       this.initMonaco();
     });
   };

@@ -14,6 +14,7 @@ import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
 import 'common/global.css';
 import theme from 'common/theme';
+import loaderBootstrap from 'app/vscode/dev-bootstrap';
 
 import controller from './controller';
 import App from './pages/index';
@@ -160,9 +161,7 @@ window.BrowserFS.configure(
       throw e;
     }
 
-    window
-      .require('app/vscode/dev-bootstrap')
-      .default(['vs/editor/editor.main'])(() => {
+    loaderBootstrap(['vs/editor/editor.main'])(() => {
       if (localStorage.getItem('settings.experimentVSCode') === 'true') {
         window.require(['vs/editor/codesandbox.editor.main'], () => {
           boot();
