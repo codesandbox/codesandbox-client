@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import { getModulePath } from 'common/sandbox/modules';
 
 import DirectoryEntry from './DirectoryEntry/index';
 import WorkspaceItem from '../WorkspaceItem';
 
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
-import { getModulePath } from 'common/sandbox/modules';
 
 class Files extends React.Component {
   createModule = () => {

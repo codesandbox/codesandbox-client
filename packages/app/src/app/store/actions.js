@@ -18,7 +18,7 @@ export function getSandbox({ props, api, path }) {
     });
 }
 
-export function callVSCodeCallback({ state, props }) {
+export function callVSCodeCallback({ props }) {
   const { cbID } = props;
   if (cbID) {
     if (window.cbs && window.cbs[cbID]) {

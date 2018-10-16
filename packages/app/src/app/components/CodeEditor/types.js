@@ -6,6 +6,7 @@ import type {
   ModuleError,
   ModuleCorrection,
 } from 'common/types';
+
 export type Settings = {
   autoCompleteEnabled: boolean,
   autoDownloadTypes: boolean,

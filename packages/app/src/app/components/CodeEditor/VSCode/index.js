@@ -188,8 +188,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  provideDocumentFormattingEdits = (model, options, token) => {
-    return prettify(
+  provideDocumentFormattingEdits = (model, options, token) =>
+    prettify(
       model.uri.fsPath,
       () => model.getValue(),
       this.getPrettierConfig(),
@@ -201,7 +201,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         text: newCode,
       },
     ]);
-  };
 
   setupTranspilationListener() {
     return listen(({ type, code, path }) => {
@@ -220,7 +219,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco = monaco;
 
     // Load Vue eagerly
-    getMode('stub.vue', monaco)
+    getMode('stub.vue', monaco);
 
     monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
     monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
@@ -339,7 +338,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
 
     this.registerAutoCompletions();
-
 
     liftOff(monaco);
   };
@@ -1094,15 +1092,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  swapDocuments = (currentModule: Module, nextModule: Module) => {
-    return new Promise(resolve => {
+  swapDocuments = (currentModule: Module, nextModule: Module) =>
+    new Promise(resolve => {
       this.openModule(nextModule);
 
       // Reset changes
       this.changes = { code: '', changes: [] };
       resolve();
     });
-  };
 
   updateCode(code: string = '') {
     const operation = getTextOperation(this.getCode(), code);

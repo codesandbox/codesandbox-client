@@ -137,7 +137,7 @@ function boot() {
 }
 
 // Configures BrowserFS to use the LocalStorage file system.
-BrowserFS.configure(
+window.BrowserFS.configure(
   {
     fs: 'MountableFileSystem',
     options: {
@@ -151,26 +151,6 @@ BrowserFS.configure(
       '/vscode': {
         fs: 'LocalStorage',
       },
-      // '/extensions': {
-      //   fs: 'ZipFS',
-      //   options: {
-      //     zipData: window.Buffer.from(tsServerExtension),
-      //   },
-      // },
-      // '/vscode': {
-      //   fs: 'AsyncMirror',
-      //   options: {
-      //     sync: {
-      //       fs: 'InMemory',
-      //     },
-      //     async: {
-      //       fs: 'IndexedDB',
-      //       options: {
-      //         storeName: 'VSCode',
-      //       },
-      //     },
-      //   },
-      // },
     },
   },
   e => {
@@ -180,16 +160,16 @@ BrowserFS.configure(
       throw e;
     }
 
-    require('app/vscode/dev-bootstrap').default(['vs/editor/editor.main'])(
-      () => {
-        if (localStorage.getItem('settings.experimentVSCode') === 'true') {
-          window.require(['vs/editor/codesandbox.editor.main'], () => {
-            boot();
-          });
-        } else {
+    window
+      .require('app/vscode/dev-bootstrap')
+      .default(['vs/editor/editor.main'])(() => {
+      if (localStorage.getItem('settings.experimentVSCode') === 'true') {
+        window.require(['vs/editor/codesandbox.editor.main'], () => {
           boot();
-        }
+        });
+      } else {
+        boot();
       }
-    );
+    });
   }
 );

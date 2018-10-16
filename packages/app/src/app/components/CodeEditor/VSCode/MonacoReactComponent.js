@@ -39,9 +39,9 @@ class MonacoEditor extends React.PureComponent {
   };
 
   afterViewInit = () => {
-    require('app/vscode/dev-bootstrap').default([
-      'vs/editor/codesandbox.editor.main',
-    ])(() => {
+    window
+      .require('app/vscode/dev-bootstrap')
+      .default(['vs/editor/codesandbox.editor.main'])(() => {
       this.initMonaco();
     });
   };
@@ -155,6 +155,7 @@ class MonacoEditor extends React.PureComponent {
             editorService,
           };
           if (process.env.NODE_ENV === 'development') {
+            // eslint-disable-next-line
             console.log(services);
           }
 

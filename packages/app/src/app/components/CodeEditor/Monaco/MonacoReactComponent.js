@@ -34,11 +34,11 @@ class MonacoEditor extends React.PureComponent {
       return;
     }
 
-    require('app/vscode/dev-bootstrap').default(['vs/editor/editor.main'])(
-      () => {
-        this.initMonaco();
-      }
-    );
+    context
+      .require('app/vscode/dev-bootstrap')
+      .default(['vs/editor/editor.main'])(() => {
+      this.initMonaco();
+    });
   };
 
   initMonaco = () => {
