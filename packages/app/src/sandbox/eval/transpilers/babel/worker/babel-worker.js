@@ -1,6 +1,7 @@
 // @flow
 import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
+import macrosPlugin from 'babel-plugin-macros';
 
 import delay from 'common/utils/delay';
 
@@ -21,6 +22,19 @@ import {
 let fsInitialized = false;
 let fsLoading = false;
 let lastConfig = null;
+
+// This one is called from babel-plugin-macros
+self.require = path => {
+  const fs = BrowserFS.BFSRequire('fs');
+  return evaluateFromPath(
+    fs,
+    BrowserFS.BFSRequire,
+    path,
+    '/node_modules/babel-plugin-macros/index.js',
+    Babel.availablePlugins,
+    Babel.availablePresets
+  );
+};
 
 async function initializeBrowserFS() {
   fsLoading = true;
@@ -145,8 +159,8 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
 
 self.importScripts(
   process.env.NODE_ENV === 'development'
-    ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
-    : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
+    ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
+    : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
 );
 
 self.postMessage('ready');
@@ -225,6 +239,7 @@ self.addEventListener('message', async event => {
     loaderOptions,
     version,
     type,
+    hasMacros,
   } = event.data;
 
   if (type !== 'compile') {
@@ -239,12 +254,11 @@ self.addEventListener('message', async event => {
 
   if (babelUrl || babelEnvUrl) {
     loadCustomTranspiler(babelUrl, babelEnvUrl);
-  } else if (version === 7) {
+  } else if (version !== 7) {
     loadCustomTranspiler(
       process.env.NODE_ENV === 'development'
-        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-beta.js`
-        : `${process.env.CODESANDBOX_HOST ||
-            ''}/static/js/babel.7.00-beta-1.min.js`
+        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
+        : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
     );
   }
 
@@ -301,6 +315,17 @@ self.addEventListener('message', async event => {
     ) {
       const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') === -1
+    ) {
+      if (hasMacros) {
+        await waitForFs();
+      }
+
+      Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
     }
 
     if (

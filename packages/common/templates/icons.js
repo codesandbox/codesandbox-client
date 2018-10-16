@@ -2,6 +2,7 @@
 
 import React from 'common/components/logos/React';
 import Angular from 'common/components/logos/Angular';
+import Ember from 'common/components/logos/Ember';
 import Parcel from 'common/components/logos/Parcel';
 import Preact from 'common/components/logos/Preact';
 import Vue from 'common/components/logos/Vue';
@@ -18,6 +19,7 @@ import Nest from 'common/components/logos/Nest';
 
 import {
   react,
+  ember,
   vue,
   preact,
   reactTs,
@@ -55,6 +57,8 @@ export default function getIcon(theme: Template) {
       return Parcel;
     case dojo.name:
       return Dojo;
+    case ember.name:
+      return Ember;
     case cxjs.name:
       return CxJS;
     case reason.name:

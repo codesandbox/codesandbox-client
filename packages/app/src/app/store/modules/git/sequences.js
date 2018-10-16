@@ -2,7 +2,10 @@ import { set, when, wait } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
 import * as actions from './actions';
 
-export const changeRepoTitle = set(state`git.repoTitle`, props`title`);
+export const changeRepoTitle = [
+  set(state`git.repoTitle`, props`title`),
+  set(state`git.error`, null),
+];
 
 export const changeSubject = set(state`git.subject`, props`subject`);
 

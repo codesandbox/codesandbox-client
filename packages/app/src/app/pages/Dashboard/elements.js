@@ -35,6 +35,17 @@ export const NavigationContainer = styled.div`
   right: 1rem;
 `;
 
+export const ShowSidebarButton = styled.button`
+  opacity: 0;
+  transition: opacity 200ms ease;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.1);
+
+  @media (max-width: 768px) {
+    opacity: 1;
+  }
+`;
+
 const paddingTop = css`
   padding-top: 100px;
 `;
@@ -49,6 +60,19 @@ export const Sidebar = styled.div`
   ${paddingTop};
 
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 768px) {
+    width: 0;
+    position: fixed;
+    transition: width 200ms ease;
+    z-index: 1;
+
+    ${props =>
+      props.active &&
+      css`
+        width: 275px;
+      `};
+  }
 `;
 
 export const Content = styled.div`

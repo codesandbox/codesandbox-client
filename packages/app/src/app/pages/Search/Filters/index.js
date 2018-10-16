@@ -1,10 +1,11 @@
 import React from 'react';
 
 import Filter from './Filter';
+import { Container } from './elements';
 
 function Filters() {
   return (
-    <div style={{ flex: 1 }}>
+    <Container>
       <Filter
         title="Templates"
         operator="or"
@@ -17,7 +18,7 @@ function Filters() {
         attributeName="npm_dependencies.dependency"
       />
       <Filter title="Tags" operator="or" attributeName="tags" />
-    </div>
+    </Container>
   );
 }
 

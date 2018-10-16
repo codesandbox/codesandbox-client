@@ -24,7 +24,7 @@ const resolveAsyncModule = (
   { ignoredExtensions }?: { ignoredExtensions?: Array<string> }
 ) =>
   new Promise((r, reject) => {
-    const sendId = Math.random() * 10000;
+    const sendId = Math.floor(Math.random() * 10000);
     self.postMessage({
       type: 'resolve-async-transpiled-module',
       path,

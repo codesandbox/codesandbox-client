@@ -12,6 +12,7 @@ import {
   Templates,
   Title,
   ImportChoice,
+  ImportChoices,
 } from './elements';
 import Template from './Template';
 
@@ -106,7 +107,7 @@ export default class Modal extends React.PureComponent {
             </Templates>
           ))}
 
-          <Templates style={{ marginTop: '1.5rem' }}>
+          <ImportChoices style={{ marginTop: '1.5rem' }}>
             <ImportChoice
               href="/docs/importing#import-from-github"
               target="_blank"
@@ -122,7 +123,7 @@ export default class Modal extends React.PureComponent {
             <ImportChoice href="/docs/importing#define-api" target="_blank">
               <UploadIcon /> Create with API
             </ImportChoice>
-          </Templates>
+          </ImportChoices>
         </InnerContainer>
       </Container>
     );

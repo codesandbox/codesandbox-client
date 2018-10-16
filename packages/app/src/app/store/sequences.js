@@ -146,11 +146,15 @@ export const forkSandbox = sequence('forkSandbox', [
   },
 ]);
 
-export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
-  when(state`editor.currentSandbox.owned`),
+export const ensureOwnedEditable = sequence('ensureOwnedEditable', [
+  when(
+    state`editor.currentSandbox.owned`,
+    state`editor.currentSandbox.isFrozen`,
+    (owned, frozen) => !owned || frozen
+  ),
   {
-    true: [],
-    false: forkSandbox,
+    true: forkSandbox,
+    false: [],
   },
 ]);
 

@@ -2,16 +2,17 @@ import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
 import { dirname } from 'path';
 import type FSType from 'fs';
+import detectOldBrowser from 'common/detect-old-browser';
 import evaluateCode from '../../../loaders/eval';
 
 let cache = {};
 let cachedPaths = {};
-let transpileBeforeExec = false;
+let transpileBeforeExec = detectOldBrowser();
 
 export const resetCache = () => {
   cache = {};
   cachedPaths = {};
-  transpileBeforeExec = false;
+  transpileBeforeExec = detectOldBrowser();
 };
 
 export default function evaluate(
@@ -79,7 +80,7 @@ export default function evaluate(
 
     cachedPaths[dirName][requirePath] = resolvedPath;
 
-    let resolvedCode = fs.readFileSync(resolvedPath).toString();
+    const resolvedCode = fs.readFileSync(resolvedPath).toString();
     const id = hashsum(resolvedCode + resolvedPath);
 
     if (cache[id]) {
@@ -87,12 +88,6 @@ export default function evaluate(
     }
 
     cache[id] = {};
-
-    if (transpileBeforeExec) {
-      const { code: transpiledCode } = Babel.transform(resolvedCode);
-
-      resolvedCode = transpiledCode;
-    }
 
     return evaluate(
       fs,
@@ -125,6 +120,36 @@ export default function evaluate(
     finalCode = `module.exports = JSON.parse(${JSON.stringify(code)})`;
   }
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
+
+  if (transpileBeforeExec) {
+    const { code: transpiledCode } = Babel.transform(finalCode, {
+      presets: ['es2015', 'react', 'stage-0'],
+      plugins: [
+        'transform-async-to-generator',
+        'transform-object-rest-spread',
+        'transform-decorators-legacy',
+        'transform-class-properties',
+        // Polyfills the runtime needed for async/await and generators
+        [
+          'transform-runtime',
+          {
+            helpers: false,
+            polyfill: false,
+            regenerator: true,
+          },
+        ],
+        [
+          'transform-regenerator',
+          {
+            // Async functions are converted to generators by babel-preset-env
+            async: false,
+          },
+        ],
+      ],
+    });
+
+    finalCode = transpiledCode;
+  }
 
   const exports = evaluateCode(finalCode, require, cache[id], {
     VUE_CLI_BABEL_TRANSPILE_MODULES: true,

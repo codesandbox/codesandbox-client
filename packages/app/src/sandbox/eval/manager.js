@@ -540,6 +540,7 @@ export default class Manager {
 
         const dependencyName = getDependencyName(connectedPath);
 
+        // TODO: fix the stack hack
         if (
           this.manifest.dependencies.find(d => d.name === dependencyName) ||
           this.manifest.dependencyDependencies[dependencyName]
@@ -579,16 +580,22 @@ export default class Manager {
 
   resolveTranspiledModuleAsync = (
     path: string,
-    currentPath: string,
+    currentTModule: ?TranspiledModule,
     ignoredExtensions?: Array<string>
   ): Promise<TranspiledModule> => {
+    const tModule =
+      currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
     try {
       return Promise.resolve(
-        this.resolveTranspiledModule(path, currentPath, ignoredExtensions)
+        this.resolveTranspiledModule(
+          path,
+          tModule.module.path,
+          ignoredExtensions
+        )
       );
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
-        return this.downloadDependency(e.path, currentPath, ignoredExtensions);
+        return this.downloadDependency(e.path, tModule, ignoredExtensions);
       }
 
       throw e;

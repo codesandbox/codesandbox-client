@@ -7,6 +7,7 @@ import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
 import type { default as Manager } from '../../manager';
+import { isBabel7 } from '../../utils/is-babel-7';
 
 import delay from '../../../utils/delay';
 
@@ -17,7 +18,7 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', BabelWorker, 3, { hasFS: true });
+    super('babel-loader', BabelWorker, 3, { hasFS: true, preload: true });
   }
 
   startupWorkersInitialized = false;
@@ -71,15 +72,25 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const loaderOptions = loaderContext.options || {};
 
-      const isV7 = !!(
+      const dependencies =
         configs.package &&
         configs.package.parsed &&
-        configs.package.parsed.devDependencies &&
-        configs.package.parsed.devDependencies['@vue/cli-plugin-babel']
+        configs.package.parsed.dependencies || {};
+
+      const devDependencies =
+        configs.package &&
+        configs.package.parsed &&
+        configs.package.parsed.devDependencies || {};
+
+      const isV7 =
+        loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
+
+      const hasMacros = Object.keys(dependencies).some(
+        d => d.indexOf('macro') > -1
       );
 
       const babelConfig = getBabelConfig(
-        foundConfig,
+        foundConfig || loaderOptions.config,
         loaderOptions,
         path,
         isV7
@@ -97,6 +108,7 @@ class BabelTranspiler extends WorkerTranspiler {
             configs.babelTranspiler.parsed,
           sandboxOptions: configs && configs.sandbox && configs.sandbox.parsed,
           version: isV7 ? 7 : 6,
+          hasMacros,
         },
         loaderContext._module.getId(),
         loaderContext,

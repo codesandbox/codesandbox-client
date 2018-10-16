@@ -3,13 +3,13 @@ import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 
 import getPreset from './eval';
 import Manager from './eval/manager';
 
 import { resetScreen } from './status-screen';
 
-import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 
@@ -26,6 +26,8 @@ import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
+
+import { isBabel7 } from './eval/utils/is-babel-7';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
@@ -109,7 +111,6 @@ const BABEL_DEPENDENCIES = [
 // system in the future
 const PREINSTALLED_DEPENDENCIES = [
   'node-lib-browser',
-  'babel-runtime',
   'react-scripts',
   'react-scripts-ts',
   'parcel-bundler',
@@ -263,6 +264,16 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       '@jaredly/bs-core': '3.0.0-alpha.2',
       '@jaredly/reason-react': '0.3.4',
     };
+  }
+
+  // Always include this, because most sandboxes need this with babel6 and the
+  // packager will only include the package.json for it.
+  if (isBabel7(d, devDependencies)) {
+    returnedDependencies['@babel/runtime'] =
+      returnedDependencies['@babel/runtime'] || '7.1.2';
+  } else {
+    returnedDependencies['babel-runtime'] =
+      returnedDependencies['babel-runtime'] || '6.26.0';
   }
 
   preinstalledDependencies.forEach(dep => {

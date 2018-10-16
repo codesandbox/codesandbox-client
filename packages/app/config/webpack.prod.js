@@ -55,6 +55,8 @@ module.exports = merge(commonConfig, {
 
     splitChunks: {
       chunks: 'all',
+      maxInitialRequests: 20, // for HTTP2
+      maxAsyncRequests: 20, // for HTTP2
       name(module, chunks, cacheGroup) {
         const name = normalize(module, chunks, cacheGroup);
 
@@ -109,16 +111,19 @@ module.exports = merge(commonConfig, {
       maximumFileSizeToCacheInBytes: 5242880,
 
       runtimeCaching: [
-        {
-          urlPattern: /api\/v1\/sandboxes/,
-          handler: 'networkFirst',
-          options: {
-            cache: {
-              maxEntries: 50,
-              name: 'sandboxes-cache',
-            },
-          },
-        },
+        // Don't add this runtime cache as this causes us to give back *old*
+        // API responses, this will lead people to believe that they lost work
+        // when they can't connect to our servers.
+        // {
+        //   urlPattern: /api\/v1\/sandboxes/,
+        //   handler: 'networkFirst',
+        //   options: {
+        //     cache: {
+        //       maxEntries: 50,
+        //       name: 'sandboxes-cache',
+        //     },
+        //   },
+        // },
         {
           urlPattern: /^https:\/\/unpkg\.com/,
           handler: 'cacheFirst',

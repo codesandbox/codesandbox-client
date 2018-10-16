@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import Logo from 'common/components/Logo';
+import Row from 'common/components/flex/Row';
 
 export const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
@@ -58,4 +59,15 @@ export const UnreadIcon = styled.div`
 
   top: 4px;
   right: 0;
+`;
+
+export const TitleWrapper = styled(Row)`
+  position: relative;
+  z-index: 10;
+`;
+
+export const Wrapper = styled(Row)`
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
