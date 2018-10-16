@@ -256,6 +256,11 @@ const TEMPLATE_SUPPORT = {
     css: ['Global', 'Modules'],
     description: 'Used for any kind of project, based on: ',
   },
+  ember: {
+    loaders: [js, ts, image, scss, sass, less],
+    css: ['Global', 'Modules'],
+    description: 'Used for any kind of project, based on: ',
+  },
 };
 
 export default class Frameworks extends React.Component {
