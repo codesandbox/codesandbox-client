@@ -16,5 +16,6 @@ export default new Template(
     isServer: true,
     mainFile: ['/pages/index.vue'],
     showOnHomePage: true,
+    main: true,
   }
 );
