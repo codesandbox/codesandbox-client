@@ -29,11 +29,17 @@ gulp.task('homepage', () =>
   gulp.src('packages/homepage/public/**/*').pipe(gulp.dest('www'))
 );
 
+gulp.task('monaco', () =>
+  gulp
+    .src('standalone-packages/monaco-editor/release/min/vs/**/*')
+    .pipe(gulp.dest('www/public/13/vs'))
+);
+
 gulp.task('statics', () =>
   gulp.src('packages/app/public/**/*').pipe(gulp.dest('www'))
 );
 
-gulp.task('default', ['app', 'homepage', 'statics']);
+gulp.task('default', ['app', 'homepage', 'statics', 'monaco']);
 
 gulp.task('clean-vscode', rimraf('standalone-packages/monaco-editor-core'));
 
