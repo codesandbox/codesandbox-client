@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { Sandbox, Module } from 'common/types';
-import { listen, dispatch, registerFrame } from 'codesandbox-api';
+import { listen, dispatch, registerFrame, resetState } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import io from 'socket.io-client';
 
@@ -336,6 +336,8 @@ class BasePreview extends React.Component<Props, State> {
   handleSandboxChange = (newId: string) => {
     this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
 
+    resetState();
+
     const url = this.serverPreview
       ? getSSEUrl(newId)
       : frameUrl(newId, this.props.initialPath || '');
@@ -360,7 +362,12 @@ class BasePreview extends React.Component<Props, State> {
   handleMessage = (data: Object, source: any) => {
     if (data && data.codesandbox) {
       if (data.type === 'initialized' && source) {
-        registerFrame(source);
+        registerFrame(
+          source,
+          this.serverPreview
+            ? getSSEUrl(this.props.sandbox.id)
+            : frameUrl(this.props.sandbox.id)
+        );
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);

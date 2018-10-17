@@ -49,6 +49,7 @@ class Content extends React.Component {
           <DelayedAnimation
             delay={0.6}
             style={{
+              textAlign: 'center',
               marginTop: '2rem',
               fontWeight: 600,
               color: 'rgba(255, 255, 255, 0.5)',

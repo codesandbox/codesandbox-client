@@ -4,7 +4,6 @@ import { Highlight } from 'react-instantsearch/dom';
 import Tags from 'app/components/Tags';
 
 import { sandboxUrl } from 'common/utils/url-generator';
-import Row from 'common/components/flex/Row';
 
 import SandboxInfo from './SandboxInfo';
 
@@ -14,13 +13,14 @@ import {
   Title,
   Description,
   TagContainer,
+  Header,
 } from './elements';
 
 function SandboxCard({ hit }) {
   return (
     <StyledLink to={sandboxUrl({ id: hit.objectID, git: hit.git })}>
       <Container template={hit.template}>
-        <Row alignItems="flex-start">
+        <Header alignItems="flex-start">
           <Title>
             {hit.title ? (
               <Highlight attributeName="title" hit={hit} />
@@ -35,7 +35,7 @@ function SandboxCard({ hit }) {
               tags={(hit.tags || []).filter(tag => tag.length < 20)}
             />
           </TagContainer>
-        </Row>
+        </Header>
         <Description>
           <Highlight attributeName="description" hit={hit} />
         </Description>

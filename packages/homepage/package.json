@@ -43,7 +43,7 @@
     "remove-styles": "rimraf public/styles.css",
     "start": "gatsby develop",
     "lint": "echo TODO && exit 0",
-    "format": "prettier --trailing-comma es5 --no-semi --single-quote --write 'src/**/*.js'",
+    "format": "prettier --trailing-comma es5 --single-quote --write 'src/**/*.js'",
     "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "devDependencies": {

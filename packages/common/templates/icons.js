@@ -2,6 +2,7 @@
 
 import React from 'common/components/logos/React';
 import Angular from 'common/components/logos/Angular';
+import Ember from 'common/components/logos/Ember';
 import Parcel from 'common/components/logos/Parcel';
 import Preact from 'common/components/logos/Preact';
 import Vue from 'common/components/logos/Vue';
@@ -14,9 +15,11 @@ import Next from 'common/components/logos/Next';
 import Nuxt from 'common/components/logos/Nuxt';
 import Node from 'common/components/logos/Node';
 import Apollo from 'common/components/logos/Apollo';
+import Nest from 'common/components/logos/Nest';
 
 import {
   react,
+  ember,
   vue,
   preact,
   reactTs,
@@ -31,6 +34,7 @@ import {
   nuxt,
   node,
   apollo,
+  nest,
 } from './';
 
 import type { Template } from './';
@@ -53,6 +57,8 @@ export default function getIcon(theme: Template) {
       return Parcel;
     case dojo.name:
       return Dojo;
+    case ember.name:
+      return Ember;
     case cxjs.name:
       return CxJS;
     case reason.name:
@@ -67,6 +73,8 @@ export default function getIcon(theme: Template) {
       return Node;
     case apollo.name:
       return Apollo;
+    case nest.name:
+      return Nest;
     default:
       return React;
   }

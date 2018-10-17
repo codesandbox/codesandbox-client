@@ -27,6 +27,8 @@ import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
 
+import { isBabel7 } from './eval/utils/is-babel-7';
+
 let initializedResizeListener = false;
 let manager: ?Manager = null;
 let actionsEnabled = false;
@@ -112,7 +114,6 @@ const PREINSTALLED_DEPENDENCIES = [
   'react-scripts',
   'react-scripts-ts',
   'parcel-bundler',
-  '@babel/runtime',
   'babel-plugin-check-es2015-constants',
   'babel-plugin-external-helpers',
   'babel-plugin-inline-replace-variables',
@@ -267,8 +268,13 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
 
   // Always include this, because most sandboxes need this with babel6 and the
   // packager will only include the package.json for it.
-  returnedDependencies['babel-runtime'] =
-    returnedDependencies['babel-runtime'] || '6.26.0';
+  if (isBabel7(d, devDependencies)) {
+    returnedDependencies['@babel/runtime'] =
+      returnedDependencies['@babel/runtime'] || '7.1.2';
+  } else {
+    returnedDependencies['babel-runtime'] =
+      returnedDependencies['babel-runtime'] || '6.26.0';
+  }
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {

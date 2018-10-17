@@ -21,7 +21,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream"
+    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall"
   },
   "lint-staged": {
     "*.{js,css,json}": [
@@ -66,5 +66,13 @@
     "lerna": "^2.5.1",
     "lint-staged": "^5.0.0",
     "prettier": "^1.8.2"
+  },
+  "dependencies": {
+    "opencollective": "^1.0.3"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/codesandbox",
+    "logo": "https://opencollective.com/codesandbox/logo.txt"
   }
 }

@@ -59,6 +59,25 @@ const config: ConfigurationFile = {
       });
     }
 
+    if (template === 'nest') {
+      return JSON.stringify({
+        compilerOptions: {
+          module: 'commonjs',
+          declaration: true,
+          noImplicitAny: false,
+          removeComments: true,
+          noLib: false,
+          allowSyntheticDefaultImports: true,
+          emitDecoratorMetadata: true,
+          experimentalDecorators: true,
+          target: 'es6',
+          sourceMap: true,
+          outDir: './dist',
+          baseUrl: './src',
+        },
+      });
+    }
+
     return JSON.stringify(
       {
         compilerOptions: {
