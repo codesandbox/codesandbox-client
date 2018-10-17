@@ -301,7 +301,8 @@ configurationRegistry.registerConfiguration({
     properties: {
         'editor.formatOnSave': {
             'type': 'boolean',
-            'default': false,
+            // CODESANDBOX EDIT
+            'default': true,
             'description': nls.localize('formatOnSave', "Format a file on save. A formatter must be available, the file must not be auto-saved, and editor must not be shutting down."),
             'overridable': true,
             'scope': 3 /* RESOURCE */

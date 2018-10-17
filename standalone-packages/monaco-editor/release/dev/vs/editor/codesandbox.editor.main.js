@@ -1,6 +1,6 @@
 /*!-----------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.14.3(1e203a3446fe4397d33e4ee9997d1654bb8c7a32)
+ * Version: 0.14.3(c14426cc27edcd4b0ed43c2d569a0c9f2b64c6b2)
  * Released under the MIT license
  * https://github.com/Microsoft/vscode/blob/master/LICENSE.txt
  *-----------------------------------------------------------*/
@@ -68716,7 +68716,8 @@ define(__m[260/*vs/workbench/parts/files/electron-browser/files.contribution*/],
         properties: {
             'editor.formatOnSave': {
                 'type': 'boolean',
-                'default': false,
+                // CODESANDBOX EDIT
+                'default': true,
                 'description': nls.localize('formatOnSave', "Format a file on save. A formatter must be available, the file must not be auto-saved, and editor must not be shutting down."),
                 'overridable': true,
                 'scope': 3 /* RESOURCE */
