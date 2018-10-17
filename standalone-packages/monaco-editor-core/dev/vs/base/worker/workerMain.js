@@ -4316,9 +4316,12 @@ define(__m[8/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,5/*vs/base/c
             // unc path: file://shares/c$/far/boo
             value = "//" + uri.authority + uri.path;
         }
-        else if (uri.path.charCodeAt(0) === 47 /* Slash */
-            && (uri.path.charCodeAt(1) >= 65 /* A */ && uri.path.charCodeAt(1) <= 90 /* Z */ || uri.path.charCodeAt(1) >= 97 /* a */ && uri.path.charCodeAt(1) <= 122 /* z */)
-            && uri.path.charCodeAt(2) === 58 /* Colon */) {
+        else if (
+        // CODESANDBOX CHANGE, Windows also has forward slash
+        // uri.path.charCodeAt(0) === CharCode.Slash
+        // && (uri.path.charCodeAt(1) >= CharCode.A && uri.path.charCodeAt(1) <= CharCode.Z || uri.path.charCodeAt(1) >= CharCode.a && uri.path.charCodeAt(1) <= CharCode.z)
+        // && uri.path.charCodeAt(2) === CharCode.Colon
+        false) {
             // windows drive letter: file:///c:/far/boo
             value = uri.path[1].toLowerCase() + uri.path.substr(2);
         }
