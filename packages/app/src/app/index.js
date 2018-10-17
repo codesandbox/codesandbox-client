@@ -162,6 +162,9 @@ window.BrowserFS.configure(
     }
 
     loaderBootstrap(['vs/editor/editor.main'])(() => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Loaded Monaco'); // eslint-disable-line
+      }
       if (localStorage.getItem('settings.experimentVSCode') === 'true') {
         window.require(['vs/editor/codesandbox.editor.main'], () => {
           boot();
