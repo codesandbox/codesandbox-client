@@ -492,9 +492,9 @@ function _makeFsPath(uri) {
         // other path
         value = uri.path;
     }
-    if (isWindows) {
-        value = value.replace(/\//g, '\\');
-    }
+    // if (isWindows) {
+    // 	value = value.replace(/\//g, '\\');
+    // }
     return value;
 }
 /**

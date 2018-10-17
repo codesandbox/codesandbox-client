@@ -4329,9 +4329,9 @@ define(__m[8/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,5/*vs/base/c
             // other path
             value = uri.path;
         }
-        if (platform_1.isWindows) {
-            value = value.replace(/\//g, '\\');
-        }
+        // if (isWindows) {
+        // 	value = value.replace(/\//g, '\\');
+        // }
         return value;
     }
     /**
