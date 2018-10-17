@@ -12,7 +12,9 @@ export var sep = '/';
 /**
  * The native path separator depending on the OS.
  */
-export var nativeSep = isWindows ? '\\' : '/';
+// CODESANDBOX CHANGE, FIX WINDOWS PATHS
+// export const nativeSep = isWindows ? '\\' : '/';
+export var nativeSep = '/';
 /**
  * @param path the path to get the dirname from
  * @param separator the separator to use
