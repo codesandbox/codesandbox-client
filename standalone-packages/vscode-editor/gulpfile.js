@@ -125,7 +125,7 @@ function pluginStream(plugin, type, destinationPath) {
  */
 function addPluginContribs(type) {
 	return es.through(function(data) {
-		if (!/editor\.main\.js$/.test(data.path)) {
+		if (!/editor\.main\.js$/.test(data.path) || /codesandbox\.editor\.main\.js$/.test(data.path)) {
 			this.emit('data', data);
 			return;
 		}
