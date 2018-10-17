@@ -452,7 +452,7 @@ module.exports = {
         // },
         {
           from: '../../standalone-packages/monaco-editor/release/min/vs',
-          to: 'public/vscode/vs',
+          to: 'public/vscode1/vs',
           force: true,
         },
         __PROD__ && {
@@ -473,7 +473,7 @@ module.exports = {
         },
         {
           from: '../../standalone-packages/codesandbox-browserfs/dist',
-          to: 'static/browserfs',
+          to: 'static/browserfs2',
         },
       ].filter(x => x)
     ),

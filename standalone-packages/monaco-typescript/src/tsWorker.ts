@@ -30,7 +30,7 @@ declare global {
 const oldamd = self.define.amd;
 (self as any).define.amd = null;
 (self as any).importScripts(
-  `/static/browserfs/browserfs.min.js`
+  `/static/browserfs2/browserfs.min.js`
 );
 (self as any).define.amd = oldamd;
 
