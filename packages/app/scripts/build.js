@@ -59,6 +59,8 @@ recursive(paths.appBuild, (err, fileNames) => {
 
 // Print a detailed summary of build files.
 function printFileSizes(stats, previousSizeMap) {
+  console.log('make it stop');
+  return;
   let assets = stats
     .toJson()
     .assets.filter(asset => /\.(js|css)$/.test(asset.name))
