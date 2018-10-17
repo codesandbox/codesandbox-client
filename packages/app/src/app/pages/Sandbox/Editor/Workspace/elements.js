@@ -85,7 +85,7 @@ export const getContainerStyles = props => {
   return styles;
 };
 
-export const EntryContainer = styled.span`
+export const EntryContainer = styled.div`
   ${props => getContainerStyles(props)};
 `;
 
