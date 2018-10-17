@@ -385,7 +385,7 @@ export default function(requiredModule: string) {
       const requireToUrl = p => require('path').join('/vs', p);
       self.require.toUrl = requireToUrl;
 
-      if (!requiresDefined) {
+      if (!requiresDefined && self.require.define) {
         requiresDefined = true;
         initializeRequires();
 
