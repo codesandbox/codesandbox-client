@@ -9,6 +9,7 @@
     "typescript": "^2.9.2"
   },
   "scripts": {
+    "build": "tsc",
     "start": "tsc --watch -p ./tsconfig.json"
   }
 }

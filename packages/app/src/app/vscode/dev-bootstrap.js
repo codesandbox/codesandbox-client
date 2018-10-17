@@ -1,7 +1,7 @@
 /* eslint-disable */
-import * as child_process from 'node-services/lib/child_process';
-import * as net from 'node-services/lib/net';
-import electron from 'node-services/lib/electron';
+// import * as child_process from 'node-services/lib/child_process';
+// import * as net from 'node-services/lib/net';
+// import electron from 'node-services/lib/electron';
 
 import { METADATA } from './metadata';
 
@@ -98,15 +98,15 @@ function initializeRequires() {
   });
 
   self.require.define('child_process', [], () => {
-    return child_process;
+    return {};
   });
 
   self.require.define('electron', [], () => {
-    return electron;
+    return {};
   });
 
   self.require.define('net', [], () => {
-    return net;
+    return {};
   });
 
   self.require.define('fs', [], () => {
