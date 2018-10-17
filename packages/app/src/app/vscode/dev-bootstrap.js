@@ -3,8 +3,6 @@ import * as child_process from 'node-services/lib/child_process';
 import * as net from 'node-services/lib/net';
 import electron from 'node-services/lib/electron';
 
-import { host } from 'common/utils/url-generator';
-
 import { METADATA } from './metadata';
 
 const PREFIX = '/vs';
@@ -236,7 +234,8 @@ export default function(requiredModule: string) {
     return resolvedPath;
   };
   Component.prototype.generateLoaderConfig = function(dest) {
-    dest[this.modulePrefix] = host() + this.getResolvedPath();
+    dest[this.modulePrefix] =
+      process.env.CODESANDBOX_HOST + this.getResolvedPath();
   };
   Component.prototype.generateUrlForPath = function(pathName) {
     var NEW_LOADER_OPTS = {};
