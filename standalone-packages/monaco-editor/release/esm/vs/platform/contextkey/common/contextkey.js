@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -18,6 +15,15 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 import { isFalsyOrWhitespace } from '../../../base/common/strings.js';
+export var ContextKeyExprType;
+(function (ContextKeyExprType) {
+    ContextKeyExprType[ContextKeyExprType["Defined"] = 1] = "Defined";
+    ContextKeyExprType[ContextKeyExprType["Not"] = 2] = "Not";
+    ContextKeyExprType[ContextKeyExprType["Equals"] = 3] = "Equals";
+    ContextKeyExprType[ContextKeyExprType["NotEquals"] = 4] = "NotEquals";
+    ContextKeyExprType[ContextKeyExprType["And"] = 5] = "And";
+    ContextKeyExprType[ContextKeyExprType["Regex"] = 6] = "Regex";
+})(ContextKeyExprType || (ContextKeyExprType = {}));
 var ContextKeyExpr = /** @class */ (function () {
     function ContextKeyExpr() {
     }
@@ -116,15 +122,15 @@ function cmp(a, b) {
         return aType - bType;
     }
     switch (aType) {
-        case 1 /* Defined */:
+        case ContextKeyExprType.Defined:
             return a.cmp(b);
-        case 2 /* Not */:
+        case ContextKeyExprType.Not:
             return a.cmp(b);
-        case 3 /* Equals */:
+        case ContextKeyExprType.Equals:
             return a.cmp(b);
-        case 4 /* NotEquals */:
+        case ContextKeyExprType.NotEquals:
             return a.cmp(b);
-        case 6 /* Regex */:
+        case ContextKeyExprType.Regex:
             return a.cmp(b);
         default:
             throw new Error('Unknown ContextKeyExpr!');
@@ -135,7 +141,7 @@ var ContextKeyDefinedExpr = /** @class */ (function () {
         this.key = key;
     }
     ContextKeyDefinedExpr.prototype.getType = function () {
-        return 1 /* Defined */;
+        return ContextKeyExprType.Defined;
     };
     ContextKeyDefinedExpr.prototype.cmp = function (other) {
         if (this.key < other.key) {
@@ -173,7 +179,7 @@ var ContextKeyEqualsExpr = /** @class */ (function () {
         this.value = value;
     }
     ContextKeyEqualsExpr.prototype.getType = function () {
-        return 3 /* Equals */;
+        return ContextKeyExprType.Equals;
     };
     ContextKeyEqualsExpr.prototype.cmp = function (other) {
         if (this.key < other.key) {
@@ -229,7 +235,7 @@ var ContextKeyNotEqualsExpr = /** @class */ (function () {
         this.value = value;
     }
     ContextKeyNotEqualsExpr.prototype.getType = function () {
-        return 4 /* NotEquals */;
+        return ContextKeyExprType.NotEquals;
     };
     ContextKeyNotEqualsExpr.prototype.cmp = function (other) {
         if (this.key < other.key) {
@@ -284,7 +290,7 @@ var ContextKeyNotExpr = /** @class */ (function () {
         this.key = key;
     }
     ContextKeyNotExpr.prototype.getType = function () {
-        return 2 /* Not */;
+        return ContextKeyExprType.Not;
     };
     ContextKeyNotExpr.prototype.cmp = function (other) {
         if (this.key < other.key) {
@@ -323,7 +329,7 @@ var ContextKeyRegexExpr = /** @class */ (function () {
         //
     }
     ContextKeyRegexExpr.prototype.getType = function () {
-        return 6 /* Regex */;
+        return ContextKeyExprType.Regex;
     };
     ContextKeyRegexExpr.prototype.cmp = function (other) {
         if (this.key < other.key) {
@@ -371,7 +377,7 @@ var ContextKeyAndExpr = /** @class */ (function () {
         this.expr = ContextKeyAndExpr._normalizeArr(expr);
     }
     ContextKeyAndExpr.prototype.getType = function () {
-        return 5 /* And */;
+        return ContextKeyExprType.And;
     };
     ContextKeyAndExpr.prototype.equals = function (other) {
         if (other instanceof ContextKeyAndExpr) {

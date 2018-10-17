@@ -451,7 +451,7 @@ module.exports = {
           force: true,
         },
         {
-          from: '../../standalone-packages/monaco-editor/release/min/vs',
+          from: '../../standalone-packages/vscode-editor/release/min/vs',
           to: 'public/vscode1/vs',
           force: true,
         },

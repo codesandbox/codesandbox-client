@@ -15,14 +15,10 @@ var CharacterPairSupport = /** @class */ (function () {
         else {
             this._autoClosingPairs = [];
         }
-        this._autoCloseBefore = typeof config.autoCloseBefore === 'string' ? config.autoCloseBefore : CharacterPairSupport.DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED;
         this._surroundingPairs = config.surroundingPairs || this._autoClosingPairs;
     }
     CharacterPairSupport.prototype.getAutoClosingPairs = function () {
         return this._autoClosingPairs;
-    };
-    CharacterPairSupport.prototype.getAutoCloseBeforeSet = function () {
-        return this._autoCloseBefore;
     };
     CharacterPairSupport.prototype.shouldAutoClosePair = function (character, context, column) {
         // Always complete on empty line
@@ -42,8 +38,6 @@ var CharacterPairSupport = /** @class */ (function () {
     CharacterPairSupport.prototype.getSurroundingPairs = function () {
         return this._surroundingPairs;
     };
-    CharacterPairSupport.DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED = ';:.,=}])> \n\t';
-    CharacterPairSupport.DEFAULT_AUTOCLOSE_BEFORE_WHITESPACE = ' \n\t';
     return CharacterPairSupport;
 }());
 export { CharacterPairSupport };

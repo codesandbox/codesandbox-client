@@ -153,10 +153,6 @@
 	background-position: center;
 }
 
-.monaco-editor .suggest-widget.no-icons .monaco-list .monaco-list-row .icon {
-	display: none;
-}
-
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojZjZmNmY2fS5pY29uLXZzLW91dHtmaWxsOiNmNmY2ZjZ9Lmljb24tdnMtYmd7ZmlsbDojNDI0MjQyfTwvc3R5bGU+PHBhdGggY2xhc3M9Imljb24tY2FudmFzLXRyYW5zcGFyZW50IiBkPSJNMTYgMTZIMFYwaDE2djE2eiIgaWQ9ImNhbnZhcyIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLW91dCIgZD0iTTE2IDEwYzAgMi4yMDUtMS43OTQgNC00IDQtMS44NTggMC0zLjQxMS0xLjI3OS0zLjg1OC0zaC0uOTc4bDIuMzE4IDRIMHYtMS43MDNsMi0zLjQwOFYwaDExdjYuMTQyYzEuNzIxLjQ0NyAzIDIgMyAzLjg1OHoiIGlkPSJvdXRsaW5lIi8+PHBhdGggY2xhc3M9Imljb24tdnMtYmciIGQ9Ik0xMiAxdjQuNzVBNC4yNTUgNC4yNTUgMCAwIDAgNy43NSAxMGgtLjczMkw0LjI3NSA1LjI2OSAzIDcuNDQyVjFoOXpNNy43NDcgMTRMNC4yNjkgOCAuNzQ4IDE0aDYuOTk5ek0xNSAxMGEzIDMgMCAxIDEtNiAwIDMgMyAwIDAgMSA2IDB6IiBpZD0iaWNvbkJnIi8+PC9zdmc+"); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.method,
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.function,

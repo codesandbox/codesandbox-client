@@ -7,6 +7,7 @@ import { Action } from '../../../base/common/actions.js';
 import { always } from '../../../base/common/async.js';
 import { canceled } from '../../../base/common/errors.js';
 import { Emitter } from '../../../base/common/event.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { Position } from '../../common/core/position.js';
 var CodeActionContextMenu = /** @class */ (function () {
     function CodeActionContextMenu(_editor, _contextMenuService, _onApplyCodeAction) {
@@ -18,7 +19,7 @@ var CodeActionContextMenu = /** @class */ (function () {
     }
     CodeActionContextMenu.prototype.show = function (fixes, at) {
         var _this = this;
-        var actions = fixes ? fixes.then(function (value) {
+        var actions = fixes.then(function (value) {
             return value.map(function (action) {
                 return new Action(action.command ? action.command.id : action.title, action.title, undefined, true, function () {
                     return always(_this._onApplyCodeAction(action), function () { return _this._onDidExecuteCodeAction.fire(undefined); });
@@ -27,10 +28,10 @@ var CodeActionContextMenu = /** @class */ (function () {
         }).then(function (actions) {
             if (!_this._editor.getDomNode()) {
                 // cancel when editor went off-dom
-                return Promise.reject(canceled());
+                return TPromise.wrapError(canceled());
             }
             return actions;
-        }) : Promise.resolve([]);
+        });
         this._contextMenuService.showContextMenu({
             getAnchor: function () {
                 if (Position.isIPosition(at)) {
@@ -38,7 +39,7 @@ var CodeActionContextMenu = /** @class */ (function () {
                 }
                 return at;
             },
-            getActions: function () { return actions; },
+            getActions: function () { return TPromise.wrap(actions); },
             onHide: function () {
                 _this._visible = false;
                 _this._editor.focus();

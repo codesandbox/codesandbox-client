@@ -3,12 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -34,8 +31,8 @@ var SelectBox = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         mixin(_this.styles, defaultStyles, false);
         // Instantiate select implementation based on platform
-        if (isMacintosh && !(selectBoxOptions && selectBoxOptions.hasDetails)) {
-            _this.selectBoxDelegate = new SelectBoxNative(options, selected, styles, selectBoxOptions);
+        if (isMacintosh) {
+            _this.selectBoxDelegate = new SelectBoxNative(options, selected, styles);
         }
         else {
             _this.selectBoxDelegate = new SelectBoxList(options, selected, contextViewProvider, styles, selectBoxOptions);
@@ -56,12 +53,6 @@ var SelectBox = /** @class */ (function (_super) {
     };
     SelectBox.prototype.select = function (index) {
         this.selectBoxDelegate.select(index);
-    };
-    SelectBox.prototype.setAriaLabel = function (label) {
-        this.selectBoxDelegate.setAriaLabel(label);
-    };
-    SelectBox.prototype.setDetailsProvider = function (provider) {
-        this.selectBoxDelegate.setDetailsProvider(provider);
     };
     SelectBox.prototype.focus = function () {
         this.selectBoxDelegate.focus();

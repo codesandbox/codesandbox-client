@@ -139,9 +139,7 @@ export var language = {
         "VERSION", "WAIT_FOR_EXECUTED_GTID_SET", "WAIT_UNTIL_SQL_THREAD_AFTER_GTIDS", "WEEK", "WEEKDAY", "WEEKOFYEAR", "WEIGHT_STRING", "Within",
         "X", "Y", "YEAR", "YEARWEEK"
     ],
-    builtinVariables: [
-    // NOT SUPPORTED
-    ],
+    builtinVariables: [],
     tokenizer: {
         root: [
             { include: '@comments' },
@@ -206,8 +204,6 @@ export var language = {
             [/``/, 'identifier'],
             [/`/, { token: 'identifier.quote', next: '@pop' }]
         ],
-        scopes: [
-        // NOT SUPPORTED
-        ]
+        scopes: []
     }
 };

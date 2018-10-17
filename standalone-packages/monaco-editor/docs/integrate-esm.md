@@ -91,6 +91,7 @@ monaco.editor.create(document.getElementById('container'), {
 * `webpack.config.js`:
 ```js
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -112,6 +113,13 @@ module.exports = {
       test: /\.css$/,
       use: ['style-loader', 'css-loader']
     }]
-  }
+  },
+  plugins: [
+    // Ignore require() calls in vs/language/typescript/lib/typescriptServices.js
+    new webpack.IgnorePlugin(
+      /^((fs)|(path)|(os)|(crypto)|(source-map-support))$/,
+      /vs(\/|\\)language(\/|\\)typescript(\/|\\)lib/
+    )
+  ]
 };
 ```

@@ -4,87 +4,67 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-export var Iterator;
-(function (Iterator) {
-    var _empty = {
+var _empty = {
+    next: function () {
+        return { done: true, value: undefined };
+    }
+};
+export function empty() {
+    return _empty;
+}
+export function iter(array, index, length) {
+    if (index === void 0) { index = 0; }
+    if (length === void 0) { length = array.length; }
+    return {
         next: function () {
-            return { done: true, value: undefined };
+            if (index >= length) {
+                return { done: true, value: undefined };
+            }
+            return { done: false, value: array[index++] };
         }
     };
-    function empty() {
-        return _empty;
-    }
-    Iterator.empty = empty;
-    function fromArray(array, index, length) {
-        if (index === void 0) { index = 0; }
-        if (length === void 0) { length = array.length; }
-        return {
-            next: function () {
-                if (index >= length) {
-                    return { done: true, value: undefined };
-                }
-                return { done: false, value: array[index++] };
-            }
-        };
-    }
-    Iterator.fromArray = fromArray;
-    function map(iterator, fn) {
-        return {
-            next: function () {
-                var _a = iterator.next(), done = _a.done, value = _a.value;
-                return { done: done, value: done ? undefined : fn(value) };
-            }
-        };
-    }
-    Iterator.map = map;
-    function filter(iterator, fn) {
-        return {
-            next: function () {
-                while (true) {
-                    var _a = iterator.next(), done = _a.done, value = _a.value;
-                    if (done) {
-                        return { done: done, value: undefined };
-                    }
-                    if (fn(value)) {
-                        return { done: done, value: value };
-                    }
-                }
-            }
-        };
-    }
-    Iterator.filter = filter;
-    function forEach(iterator, fn) {
-        for (var next = iterator.next(); !next.done; next = iterator.next()) {
-            fn(next.value);
+}
+export function map(iterator, fn) {
+    return {
+        next: function () {
+            var _a = iterator.next(), done = _a.done, value = _a.value;
+            return { done: done, value: done ? undefined : fn(value) };
         }
+    };
+}
+export function filter(iterator, fn) {
+    return {
+        next: function () {
+            while (true) {
+                var _a = iterator.next(), done = _a.done, value = _a.value;
+                if (done) {
+                    return { done: done, value: undefined };
+                }
+                if (fn(value)) {
+                    return { done: done, value: value };
+                }
+            }
+        }
+    };
+}
+export function forEach(iterator, fn) {
+    for (var next = iterator.next(); !next.done; next = iterator.next()) {
+        fn(next.value);
     }
-    Iterator.forEach = forEach;
-    function collect(iterator) {
-        var result = [];
-        forEach(iterator, function (value) { return result.push(value); });
-        return result;
-    }
-    Iterator.collect = collect;
-})(Iterator || (Iterator = {}));
-export function getSequenceIterator(arg) {
-    if (Array.isArray(arg)) {
-        return Iterator.fromArray(arg);
-    }
-    else {
-        return arg;
-    }
+}
+export function collect(iterator) {
+    var result = [];
+    forEach(iterator, function (value) { return result.push(value); });
+    return result;
 }
 var ArrayIterator = /** @class */ (function () {
     function ArrayIterator(items, start, end, index) {

@@ -3,20 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-import { combinedDisposable, Disposable } from './lifecycle.js';
+import { TPromise } from './winjs.base.js';
+import { combinedDisposable } from './lifecycle.js';
 import { Emitter } from './event.js';
 var Action = /** @class */ (function () {
     function Action(id, label, cssClass, enabled, actionCallback) {
@@ -24,13 +12,22 @@ var Action = /** @class */ (function () {
         if (cssClass === void 0) { cssClass = ''; }
         if (enabled === void 0) { enabled = true; }
         this._onDidChange = new Emitter();
-        this.onDidChange = this._onDidChange.event;
         this._id = id;
         this._label = label;
         this._cssClass = cssClass;
         this._enabled = enabled;
         this._actionCallback = actionCallback;
     }
+    Action.prototype.dispose = function () {
+        this._onDidChange.dispose();
+    };
+    Object.defineProperty(Action.prototype, "onDidChange", {
+        get: function () {
+            return this._onDidChange.event;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Action.prototype, "id", {
         get: function () {
             return this._id;
@@ -134,32 +131,48 @@ var Action = /** @class */ (function () {
             this._onDidChange.fire({ radio: value });
         }
     };
+    Object.defineProperty(Action.prototype, "order", {
+        get: function () {
+            return this._order;
+        },
+        set: function (value) {
+            this._order = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Action.prototype.run = function (event, data) {
         if (this._actionCallback !== void 0) {
             return this._actionCallback(event);
         }
-        return Promise.resolve(true);
-    };
-    Action.prototype.dispose = function () {
-        this._onDidChange.dispose();
+        return TPromise.as(true);
     };
     return Action;
 }());
 export { Action };
-var ActionRunner = /** @class */ (function (_super) {
-    __extends(ActionRunner, _super);
+var ActionRunner = /** @class */ (function () {
     function ActionRunner() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._onDidBeforeRun = _this._register(new Emitter());
-        _this.onDidBeforeRun = _this._onDidBeforeRun.event;
-        _this._onDidRun = _this._register(new Emitter());
-        _this.onDidRun = _this._onDidRun.event;
-        return _this;
+        this._onDidBeforeRun = new Emitter();
+        this._onDidRun = new Emitter();
     }
+    Object.defineProperty(ActionRunner.prototype, "onDidRun", {
+        get: function () {
+            return this._onDidRun.event;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActionRunner.prototype, "onDidBeforeRun", {
+        get: function () {
+            return this._onDidBeforeRun.event;
+        },
+        enumerable: true,
+        configurable: true
+    });
     ActionRunner.prototype.run = function (action, context) {
         var _this = this;
         if (!action.enabled) {
-            return Promise.resolve(null);
+            return TPromise.as(null);
         }
         this._onDidBeforeRun.fire({ action: action });
         return this.runAction(action, context).then(function (result) {
@@ -170,17 +183,22 @@ var ActionRunner = /** @class */ (function (_super) {
     };
     ActionRunner.prototype.runAction = function (action, context) {
         var res = context ? action.run(context) : action.run();
-        return Promise.resolve(res);
+        if (TPromise.is(res)) {
+            return res;
+        }
+        return TPromise.wrap(res);
+    };
+    ActionRunner.prototype.dispose = function () {
+        this._onDidBeforeRun.dispose();
+        this._onDidRun.dispose();
     };
     return ActionRunner;
-}(Disposable));
+}());
 export { ActionRunner };
-var RadioGroup = /** @class */ (function (_super) {
-    __extends(RadioGroup, _super);
+var RadioGroup = /** @class */ (function () {
     function RadioGroup(actions) {
-        var _this = _super.call(this) || this;
-        _this.actions = actions;
-        _this._register(combinedDisposable(actions.map(function (action) {
+        this.actions = actions;
+        this._disposable = combinedDisposable(actions.map(function (action) {
             return action.onDidChange(function (e) {
                 if (e.checked && action.checked) {
                     for (var _i = 0, actions_1 = actions; _i < actions_1.length; _i++) {
@@ -191,9 +209,11 @@ var RadioGroup = /** @class */ (function (_super) {
                     }
                 }
             });
-        })));
-        return _this;
+        }));
     }
+    RadioGroup.prototype.dispose = function () {
+        this._disposable.dispose();
+    };
     return RadioGroup;
-}(Disposable));
+}());
 export { RadioGroup };

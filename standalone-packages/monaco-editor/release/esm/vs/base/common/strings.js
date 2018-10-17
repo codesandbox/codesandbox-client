@@ -90,8 +90,8 @@ export function ltrim(haystack, needle) {
     if (needleLen === 0 || haystack.length === 0) {
         return haystack;
     }
-    var offset = 0;
-    while (haystack.indexOf(needle, offset) === offset) {
+    var offset = 0, idx = -1;
+    while ((idx = haystack.indexOf(needle, offset)) === offset) {
         offset = offset + needleLen;
     }
     return haystack.substring(offset);
@@ -585,7 +585,4 @@ export function containsUppercaseCharacter(target, ignoreEscapedChars) {
         target = target.replace(/\\./g, '');
     }
     return target.toLowerCase() !== target;
-}
-export function uppercaseFirstLetter(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
 }

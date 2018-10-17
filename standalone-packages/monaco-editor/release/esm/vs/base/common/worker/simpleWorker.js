@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -19,6 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 import { transformErrorForSerialization } from '../errors.js';
 import { Disposable } from '../lifecycle.js';
 import { TPromise } from '../winjs.base.js';
+import { ShallowCancelThenPromise } from '../async.js';
 import { isWeb } from '../platform.js';
 var INITIALIZE = '$initialize';
 var webWorkerWarningLogged = false;
@@ -52,6 +50,8 @@ var SimpleWorkerProtocol = /** @class */ (function () {
         var result = new TPromise(function (c, e) {
             reply.c = c;
             reply.e = e;
+        }, function () {
+            // Cancel not supported
         });
         this._pendingReplies[req] = reply;
         this._send({
@@ -171,7 +171,7 @@ var SimpleWorkerClient = /** @class */ (function (_super) {
         _this._lazyProxy = new TPromise(function (c, e) {
             lazyProxyFulfill = c;
             lazyProxyReject = e;
-        });
+        }, function () { });
         // Send initialize message
         _this._onModuleLoaded = _this._protocol.sendMessage(INITIALIZE, [
             _this._worker.getId(),
@@ -201,7 +201,8 @@ var SimpleWorkerClient = /** @class */ (function (_super) {
         return _this;
     }
     SimpleWorkerClient.prototype.getProxyObject = function () {
-        return this._lazyProxy;
+        // Do not allow chaining promises to cancel the proxy creation
+        return new ShallowCancelThenPromise(this._lazyProxy);
     };
     SimpleWorkerClient.prototype._request = function (method, args) {
         var _this = this;
@@ -209,6 +210,8 @@ var SimpleWorkerClient = /** @class */ (function (_super) {
             _this._onModuleLoaded.then(function () {
                 _this._protocol.sendMessage(method, args).then(c, e);
             }, e);
+        }, function () {
+            // Cancel intentionally not supported
         });
     };
     SimpleWorkerClient.prototype._onError = function (message, error) {

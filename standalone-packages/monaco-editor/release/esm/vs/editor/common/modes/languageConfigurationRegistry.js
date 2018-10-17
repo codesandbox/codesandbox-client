@@ -11,7 +11,6 @@ import { RichEditBrackets } from './supports/richEditBrackets.js';
 import { Emitter } from '../../../base/common/event.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
 import * as strings from '../../../base/common/strings.js';
-import { toDisposable } from '../../../base/common/lifecycle.js';
 import { DEFAULT_WORD_REGEXP, ensureValidWordDefinition } from '../model/wordHelper.js';
 import { createScopedLineTokens } from './supports.js';
 import { Range } from '../core/range.js';
@@ -74,7 +73,6 @@ var RichEditSupport = /** @class */ (function () {
             onEnterRules: (prev ? current.onEnterRules || prev.onEnterRules : current.onEnterRules),
             autoClosingPairs: (prev ? current.autoClosingPairs || prev.autoClosingPairs : current.autoClosingPairs),
             surroundingPairs: (prev ? current.surroundingPairs || prev.surroundingPairs : current.surroundingPairs),
-            autoCloseBefore: (prev ? current.autoCloseBefore || prev.autoCloseBefore : current.autoCloseBefore),
             folding: (prev ? current.folding || prev.folding : current.folding),
             __electricCharacterSupport: (prev ? current.__electricCharacterSupport || prev.__electricCharacterSupport : current.__electricCharacterSupport),
         };
@@ -137,12 +135,14 @@ var LanguageConfigurationRegistryImpl = /** @class */ (function () {
         var current = new RichEditSupport(languageIdentifier, previous, configuration);
         this._entries[languageIdentifier.id] = current;
         this._onDidChange.fire({ languageIdentifier: languageIdentifier });
-        return toDisposable(function () {
-            if (_this._entries[languageIdentifier.id] === current) {
-                _this._entries[languageIdentifier.id] = previous;
-                _this._onDidChange.fire({ languageIdentifier: languageIdentifier });
+        return {
+            dispose: function () {
+                if (_this._entries[languageIdentifier.id] === current) {
+                    _this._entries[languageIdentifier.id] = previous;
+                    _this._onDidChange.fire({ languageIdentifier: languageIdentifier });
+                }
             }
-        });
+        };
     };
     LanguageConfigurationRegistryImpl.prototype._getRichEditSupport = function (languageId) {
         return this._entries[languageId] || null;
@@ -202,13 +202,6 @@ var LanguageConfigurationRegistryImpl = /** @class */ (function () {
             return [];
         }
         return characterPairSupport.getAutoClosingPairs();
-    };
-    LanguageConfigurationRegistryImpl.prototype.getAutoCloseBeforeSet = function (languageId) {
-        var characterPairSupport = this._getCharacterPairSupport(languageId);
-        if (!characterPairSupport) {
-            return CharacterPairSupport.DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED;
-        }
-        return characterPairSupport.getAutoCloseBeforeSet();
     };
     LanguageConfigurationRegistryImpl.prototype.getSurroundingPairs = function (languageId) {
         var characterPairSupport = this._getCharacterPairSupport(languageId);

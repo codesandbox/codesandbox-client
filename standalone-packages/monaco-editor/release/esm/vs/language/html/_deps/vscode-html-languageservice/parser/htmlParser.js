@@ -3,10 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { createScanner } from './htmlScanner.js';
+import { TokenType, createScanner } from './htmlScanner.js';
 import { findFirst } from '../utils/arrays.js';
 import { isEmptyElement } from './htmlTags.js';
-import { TokenType } from '../htmlLanguageTypes.js';
 var Node = /** @class */ (function () {
     function Node(start, end, children, parent) {
         this.start = start;

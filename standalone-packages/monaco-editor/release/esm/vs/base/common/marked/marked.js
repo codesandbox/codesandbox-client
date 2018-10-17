@@ -4,7 +4,9 @@
  * https://github.com/markedjs/marked
  */
 
-;(function(root) {
+var __marked_exports;
+
+; (function (root) {
 'use strict';
 
 /**
@@ -135,7 +137,7 @@ block.pedantic = merge({}, block.normal, {
 
 function Lexer(options) {
   this.tokens = [];
-  this.tokens.links = Object.create(null);
+  this.tokens.links = {};
   this.options = options || marked.defaults;
   this.rules = block.normal;
 
@@ -191,9 +193,6 @@ Lexer.prototype.token = function(src, top) {
       bull,
       b,
       item,
-      listStart,
-      listItems,
-      t,
       space,
       i,
       tag,
@@ -319,19 +318,15 @@ Lexer.prototype.token = function(src, top) {
       bull = cap[2];
       isordered = bull.length > 1;
 
-      listStart = {
+      this.tokens.push({
         type: 'list_start',
         ordered: isordered,
-        start: isordered ? +bull : '',
-        loose: false
-      };
-
-      this.tokens.push(listStart);
+        start: isordered ? +bull : ''
+      });
 
       // Get each top-level item.
       cap = cap[0].match(this.rules.item);
 
-      listItems = [];
       next = false;
       l = cap.length;
       i = 0;
@@ -372,10 +367,6 @@ Lexer.prototype.token = function(src, top) {
           if (!loose) loose = next;
         }
 
-        if (loose) {
-          listStart.loose = true;
-        }
-
         // Check for task list items
         istask = /^\[[ xX]\] /.test(item);
         ischecked = undefined;
@@ -384,15 +375,13 @@ Lexer.prototype.token = function(src, top) {
           item = item.replace(/^\[[ xX]\] +/, '');
         }
 
-        t = {
-          type: 'list_item_start',
+        this.tokens.push({
+          type: loose
+            ? 'loose_item_start'
+            : 'list_item_start',
           task: istask,
-          checked: ischecked,
-          loose: loose
-        };
-
-        listItems.push(t);
-        this.tokens.push(t);
+          checked: ischecked
+        });
 
         // Recurse.
         this.token(item, false);
@@ -400,14 +389,6 @@ Lexer.prototype.token = function(src, top) {
         this.tokens.push({
           type: 'list_item_end'
         });
-      }
-
-      if (listStart.loose) {
-        l = listItems.length;
-        i = 0;
-        for (; i < l; i++) {
-          listItems[i].loose = true;
-        }
       }
 
       this.tokens.push({
@@ -540,10 +521,10 @@ var inline = {
   link: /^!?\[(label)\]\(href(?:\s+(title))?\s*\)/,
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
-  strong: /^__([^\s])__(?!_)|^\*\*([^\s])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)/,
-  em: /^_([^\s_])_(?!_)|^\*([^\s*"<\[])\*(?!\*)|^_([^\s][\s\S]*?[^\s_])_(?!_)|^_([^\s_][\s\S]*?[^\s])_(?!_)|^\*([^\s"<\[][\s\S]*?[^\s*])\*(?!\*)|^\*([^\s*"<\[][\s\S]*?[^\s])\*(?!\*)/,
+  strong: /^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)|^__([^\s])__(?!_)|^\*\*([^\s])\*\*(?!\*)/,
+  em: /^_([^\s][\s\S]*?[^\s_])_(?!_)|^_([^\s_][\s\S]*?[^\s])_(?!_)|^\*([^\s][\s\S]*?[^\s*])\*(?!\*)|^\*([^\s*][\s\S]*?[^\s])\*(?!\*)|^_([^\s_])_(?!_)|^\*([^\s*])\*(?!\*)/,
   code: /^(`+)\s*([\s\S]*?[^`]?)\s*\1(?!`)/,
-  br: /^( {2,}|\\)\n(?!\s*$)/,
+  br: /^ {2,}\n(?!\s*$)/,
   del: noop,
   text: /^[\s\S]+?(?=[\\<!\[`*]|\b_| {2,}\n|$)/
 };
@@ -565,7 +546,7 @@ inline.tag = edit(inline.tag)
   .getRegex();
 
 inline._label = /(?:\[[^\[\]]*\]|\\[\[\]]?|`[^`]*`|[^\[\]\\])*?/;
-inline._href = /\s*(<(?:\\[<>]?|[^\s<>\\])*>|(?:\\[()]?|\([^\s\x00-\x1f\\]*\)|[^\s\x00-\x1f()\\])*?)/;
+inline._href = /\s*(<(?:\\[<>]?|[^\s<>\\])*>|(?:\\[()]?|\([^\s\x00-\x1f()\\]*\)|[^\s\x00-\x1f()\\])*?)/;
 inline._title = /"(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)/;
 
 inline.link = edit(inline.link)
@@ -609,7 +590,7 @@ inline.gfm = merge({}, inline.normal, {
     .replace('email', inline._email)
     .getRegex(),
   _backpedal: /(?:[^?!.,:;*_~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_~)]+(?!$))+/,
-  del: /^~+(?=\S)([\s\S]*?\S)~+/,
+  del: /^~~(?=\S)([\s\S]*?\S)~~/,
   text: edit(inline.text)
     .replace(']|', '~]|')
     .replace('|', '|https?://|ftp://|www\\.|[a-zA-Z0-9.!#$%&\'*+/=?^_`{\\|}~-]+@|')
@@ -676,8 +657,7 @@ InlineLexer.prototype.output = function(src) {
       text,
       href,
       title,
-      cap,
-      prevCapZero;
+      cap;
 
   while (src) {
     // escape
@@ -703,10 +683,7 @@ InlineLexer.prototype.output = function(src) {
 
     // url (gfm)
     if (!this.inLink && (cap = this.rules.url.exec(src))) {
-      do {
-        prevCapZero = cap[0];
-        cap[0] = this.rules._backpedal.exec(cap[0])[0];
-      } while (prevCapZero !== cap[0]);
+      cap[0] = this.rules._backpedal.exec(cap[0])[0];
       src = src.substring(cap[0].length);
       if (cap[2] === '@') {
         text = escape(cap[0]);
@@ -1242,16 +1219,24 @@ Parser.prototype.tok = function() {
     }
     case 'list_item_start': {
       body = '';
-      var loose = this.token.loose;
 
       if (this.token.task) {
         body += this.renderer.checkbox(this.token.checked);
       }
 
       while (this.next().type !== 'list_item_end') {
-        body += !loose && this.token.type === 'text'
+        body += this.token.type === 'text'
           ? this.parseText()
           : this.tok();
+      }
+
+      return this.renderer.listitem(body);
+    }
+    case 'loose_item_start': {
+      body = '';
+
+      while (this.next().type !== 'list_item_end') {
+        body += this.tok();
       }
 
       return this.renderer.listitem(body);
@@ -1562,12 +1547,27 @@ marked.InlineLexer = InlineLexer;
 marked.inlineLexer = InlineLexer.output;
 
 marked.parse = marked;
+__marked_exports = marked;
 
-if (typeof module !== 'undefined' && typeof exports === 'object') {
-  module.exports = marked;
-} else if (typeof define === 'function' && define.amd) {
-  define(function() { return marked; });
-} else {
-  root.marked = marked;
-}
-})(this || (typeof window !== 'undefined' ? window : global));
+}).call(this);
+
+// ESM-comment-begin
+// define([], function() {
+// return {
+//   marked: __marked_exports
+// };
+// });
+// ESM-comment-end
+
+// ESM-uncomment-begin
+export var marked = __marked_exports;
+export var Parser = __marked_exports.Parser;
+export var parser = __marked_exports.parser;
+export var Renderer = __marked_exports.Renderer;
+export var TextRenderer = __marked_exports.TextRenderer;
+export var Lexer = __marked_exports.Lexer;
+export var lexer = __marked_exports.lexer;
+export var InlineLexer = __marked_exports.InlineLexer;
+export var inlineLexer = __marked_exports.inlineLexer;
+export var parse = __marked_exports.parse;
+// ESM-uncomment-end

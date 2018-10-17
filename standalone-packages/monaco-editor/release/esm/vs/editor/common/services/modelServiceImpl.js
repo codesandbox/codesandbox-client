@@ -17,6 +17,7 @@ import * as network from '../../../base/common/network.js';
 import { Emitter } from '../../../base/common/event.js';
 import { MarkdownString } from '../../../base/common/htmlContent.js';
 import { dispose } from '../../../base/common/lifecycle.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { IMarkerService, MarkerSeverity, MarkerTag } from '../../../platform/markers/common/markers.js';
 import { Range } from '../core/range.js';
 import { TextModel, createTextBuffer } from '../model/textModel.js';
@@ -24,13 +25,13 @@ import * as platform from '../../../base/common/platform.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
 import { EDITOR_MODEL_DEFAULTS } from '../config/editorOptions.js';
 import { PLAINTEXT_LANGUAGE_IDENTIFIER } from '../modes/modesRegistry.js';
+import { ClassName } from '../model/intervalTree.js';
 import { EditOperation } from '../core/editOperation.js';
 import { themeColorFromId } from '../../../platform/theme/common/themeService.js';
 import { overviewRulerWarning, overviewRulerError, overviewRulerInfo } from '../view/editorColorRegistry.js';
 import { TrackedRangeStickiness, OverviewRulerLane, DefaultEndOfLine, EndOfLineSequence, EndOfLinePreference } from '../model.js';
 import { isFalsyOrEmpty } from '../../../base/common/arrays.js';
 import { basename } from '../../../base/common/paths.js';
-import { isThenable } from '../../../base/common/async.js';
 function MODEL_ID(resource) {
     return resource.toString();
 }
@@ -56,24 +57,22 @@ var ModelMarkerHandler = /** @class */ (function () {
     function ModelMarkerHandler() {
     }
     ModelMarkerHandler.setMarkers = function (modelData, markerService) {
+        var _this = this;
         // Limit to the first 500 errors/warnings
         var markers = markerService.read({ resource: modelData.model.uri, take: 500 });
         var newModelDecorations = markers.map(function (marker) {
             return {
-                range: ModelMarkerHandler._createDecorationRange(modelData.model, marker),
-                options: ModelMarkerHandler._createDecorationOption(marker)
+                range: _this._createDecorationRange(modelData.model, marker),
+                options: _this._createDecorationOption(marker)
             };
         });
         modelData.acceptMarkerDecorations(newModelDecorations);
     };
     ModelMarkerHandler._createDecorationRange = function (model, rawMarker) {
         var ret = Range.lift(rawMarker);
-        if (rawMarker.severity === MarkerSeverity.Hint) {
-            if (!rawMarker.tags || rawMarker.tags.indexOf(MarkerTag.Unnecessary) === -1) {
-                // * never render hints on multiple lines
-                // * make enough space for three dots
-                ret = ret.setEndPosition(ret.startLineNumber, ret.startColumn + 2);
-            }
+        if (rawMarker.severity === MarkerSeverity.Hint && Range.spansMultipleLines(ret)) {
+            // never render hints on multiple lines
+            ret = ret.setEndPosition(ret.startLineNumber, ret.startColumn);
         }
         ret = model.validateRange(ret);
         if (ret.isEmpty()) {
@@ -110,38 +109,42 @@ var ModelMarkerHandler = /** @class */ (function () {
     ModelMarkerHandler._createDecorationOption = function (marker) {
         var className;
         var color;
+        var darkColor;
         var zIndex;
         var inlineClassName;
         switch (marker.severity) {
             case MarkerSeverity.Hint:
                 if (marker.tags && marker.tags.indexOf(MarkerTag.Unnecessary) >= 0) {
-                    className = "squiggly-unnecessary" /* EditorUnnecessaryDecoration */;
+                    className = ClassName.EditorUnnecessaryDecoration;
                 }
                 else {
-                    className = "squiggly-hint" /* EditorHintDecoration */;
+                    className = ClassName.EditorHintDecoration;
                 }
                 zIndex = 0;
                 break;
             case MarkerSeverity.Warning:
-                className = "squiggly-warning" /* EditorWarningDecoration */;
+                className = ClassName.EditorWarningDecoration;
                 color = themeColorFromId(overviewRulerWarning);
+                darkColor = themeColorFromId(overviewRulerWarning);
                 zIndex = 20;
                 break;
             case MarkerSeverity.Info:
-                className = "squiggly-info" /* EditorInfoDecoration */;
+                className = ClassName.EditorInfoDecoration;
                 color = themeColorFromId(overviewRulerInfo);
+                darkColor = themeColorFromId(overviewRulerInfo);
                 zIndex = 10;
                 break;
             case MarkerSeverity.Error:
             default:
-                className = "squiggly-error" /* EditorErrorDecoration */;
+                className = ClassName.EditorErrorDecoration;
                 color = themeColorFromId(overviewRulerError);
+                darkColor = themeColorFromId(overviewRulerError);
                 zIndex = 30;
                 break;
         }
         if (marker.tags) {
             if (marker.tags.indexOf(MarkerTag.Unnecessary) !== -1) {
-                inlineClassName = "squiggly-inline-unnecessary" /* EditorUnnecessaryInlineDecoration */;
+                inlineClassName = ClassName.EditorUnnecessaryInlineDecoration;
             }
         }
         var hoverMessage = null;
@@ -175,6 +178,7 @@ var ModelMarkerHandler = /** @class */ (function () {
             showIfCollapsed: true,
             overviewRuler: {
                 color: color,
+                darkColor: darkColor,
                 position: OverviewRulerLane.Right
             },
             zIndex: zIndex,
@@ -395,7 +399,7 @@ var ModelServiceImpl = /** @class */ (function () {
     ModelServiceImpl.prototype.createModel = function (value, modeOrPromise, resource, isForSimpleWidget) {
         if (isForSimpleWidget === void 0) { isForSimpleWidget = false; }
         var modelData;
-        if (!modeOrPromise || isThenable(modeOrPromise)) {
+        if (!modeOrPromise || TPromise.is(modeOrPromise)) {
             modelData = this._createModelData(value, PLAINTEXT_LANGUAGE_IDENTIFIER, resource, isForSimpleWidget);
             this.setMode(modelData.model, modeOrPromise);
         }
@@ -413,7 +417,7 @@ var ModelServiceImpl = /** @class */ (function () {
         if (!modeOrPromise) {
             return;
         }
-        if (isThenable(modeOrPromise)) {
+        if (TPromise.is(modeOrPromise)) {
             modeOrPromise.then(function (mode) {
                 if (!model.isDisposed()) {
                     model.setMode(mode.getLanguageIdentifier());

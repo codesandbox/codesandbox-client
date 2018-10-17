@@ -3,12 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -22,7 +19,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import './list.css';
-import { localize } from '../../../../nls.js';
 import { dispose } from '../../../common/lifecycle.js';
 import { isNumber } from '../../../common/types.js';
 import { range, firstIndex } from '../../../common/arrays.js';
@@ -65,9 +61,6 @@ var TraitRenderer = /** @class */ (function () {
             this.renderedElements.push(rendered);
         }
         this.trait.renderIndex(index, templateData);
-    };
-    TraitRenderer.prototype.disposeElement = function () {
-        // noop
     };
     TraitRenderer.prototype.splice = function (start, deleteCount, insertCount) {
         var rendered = [];
@@ -178,12 +171,6 @@ var FocusTrait = /** @class */ (function (_super) {
         _super.prototype.renderIndex.call(this, index, container);
         container.setAttribute('role', 'treeitem');
         container.setAttribute('id', this.getDomId(index));
-        if (this.contains(index)) {
-            container.setAttribute('aria-selected', 'true');
-        }
-        else {
-            container.removeAttribute('aria-selected');
-        }
     };
     return FocusTrait;
 }(Trait));
@@ -307,11 +294,7 @@ var DOMFocusController = /** @class */ (function () {
         }
         var focusedDomElement = this.view.domElement(focus[0]);
         var tabIndexElement = focusedDomElement.querySelector('[tabIndex]');
-        if (!tabIndexElement || !(tabIndexElement instanceof HTMLElement) || tabIndexElement.tabIndex === -1) {
-            return;
-        }
-        var style = window.getComputedStyle(tabIndexElement);
-        if (style.visibility === 'hidden' || style.display === 'none') {
+        if (!tabIndexElement || !(tabIndexElement instanceof HTMLElement)) {
             return;
         }
         e.preventDefault();
@@ -676,13 +659,6 @@ var PipelineRenderer = /** @class */ (function () {
             renderer.renderElement(element, index, templateData[i++]);
         }
     };
-    PipelineRenderer.prototype.disposeElement = function (element, index, templateData) {
-        var i = 0;
-        for (var _i = 0, _a = this.renderers; _i < _a.length; _i++) {
-            var renderer = _a[_i];
-            renderer.disposeElement(element, index, templateData[i++]);
-        }
-    };
     PipelineRenderer.prototype.disposeTemplate = function (templateData) {
         var i = 0;
         for (var _i = 0, _a = this.renderers; _i < _a.length; _i++) {
@@ -693,7 +669,7 @@ var PipelineRenderer = /** @class */ (function () {
     return PipelineRenderer;
 }());
 var List = /** @class */ (function () {
-    function List(container, virtualDelegate, renderers, options) {
+    function List(container, delegate, renderers, options) {
         if (options === void 0) { options = DefaultOptions; }
         var _this = this;
         this.idPrefix = "list_id_" + ++List.InstanceCount;
@@ -707,7 +683,7 @@ var List = /** @class */ (function () {
         this.selection = new Trait('selected');
         mixin(options, defaultStyles, false);
         renderers = renderers.map(function (r) { return new PipelineRenderer(r.templateId, [_this.focus.renderer, _this.selection.renderer, r]); });
-        this.view = new ListView(container, virtualDelegate, renderers, options);
+        this.view = new ListView(container, delegate, renderers, options);
         this.view.domNode.setAttribute('role', 'tree');
         DOM.addClass(this.view.domNode, this.idPrefix);
         this.view.domNode.tabIndex = 0;
@@ -737,7 +713,7 @@ var List = /** @class */ (function () {
         this.onFocusChange(this._onFocusChange, this, this.disposables);
         this.onSelectionChange(this._onSelectionChange, this, this.disposables);
         if (options.ariaLabel) {
-            this.view.domNode.setAttribute('aria-label', localize('aria list', "{0}. Use the navigation keys to navigate.", options.ariaLabel));
+            this.view.domNode.setAttribute('aria-label', options.ariaLabel);
         }
         this.style(options);
     }
@@ -772,11 +748,6 @@ var List = /** @class */ (function () {
     });
     Object.defineProperty(List.prototype, "onMouseDblClick", {
         get: function () { return this.view.onMouseDblClick; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(List.prototype, "onMouseMiddleClick", {
-        get: function () { return this.view.onMouseMiddleClick; },
         enumerable: true,
         configurable: true
     });
@@ -838,12 +809,6 @@ var List = /** @class */ (function () {
     List.prototype.splice = function (start, deleteCount, elements) {
         var _this = this;
         if (elements === void 0) { elements = []; }
-        if (start < 0 || start > this.view.length) {
-            throw new Error("Invalid start index: " + start);
-        }
-        if (deleteCount < 0) {
-            throw new Error("Invalid delete count: " + deleteCount);
-        }
         if (deleteCount === 0 && elements.length === 0) {
             return;
         }
@@ -1110,9 +1075,6 @@ var List = /** @class */ (function () {
     List.prototype.dispose = function () {
         this._onDidDispose.fire();
         this.disposables = dispose(this.disposables);
-        this._onOpen.dispose();
-        this._onPin.dispose();
-        this._onDidDispose.dispose();
     };
     List.InstanceCount = 0;
     __decorate([

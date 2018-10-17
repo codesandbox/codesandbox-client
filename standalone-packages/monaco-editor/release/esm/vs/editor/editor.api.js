@@ -29,6 +29,7 @@ export var Position = api.Position;
 export var Range = api.Range;
 export var Selection = api.Selection;
 export var SelectionDirection = api.SelectionDirection;
+export var Severity = api.Severity;
 export var MarkerSeverity = api.MarkerSeverity;
 export var MarkerTag = api.MarkerTag;
 export var Promise = api.Promise;
@@ -47,8 +48,7 @@ if (typeof global.require !== 'undefined' && typeof global.require.config === 'f
             'jsonc-parser',
             'jsonc-parser/main',
             'vscode-uri',
-            'vscode-uri/index',
-            'vs/basic-languages/typescript/typescript'
+            'vscode-uri/index'
         ]
     });
 }

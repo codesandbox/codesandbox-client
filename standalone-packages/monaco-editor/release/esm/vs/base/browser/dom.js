@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -17,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as platform from '../common/platform.js';
+import { TPromise } from '../common/winjs.base.js';
 import { TimeoutTimer } from '../common/async.js';
 import { onUnexpectedError } from '../common/errors.js';
 import { Disposable, dispose } from '../common/lifecycle.js';
@@ -416,8 +414,8 @@ export function getClientArea(element) {
     if (window.innerWidth && window.innerHeight) {
         return new Dimension(window.innerWidth, window.innerHeight);
     }
-    // Try with document.body.clientWidth / document.body.clientHeight
-    if (document.body && document.body.clientWidth && document.body.clientHeight) {
+    // Try with document.body.clientWidth / document.body.clientHeigh
+    if (document.body && document.body.clientWidth && document.body.clientWidth) {
         return new Dimension(document.body.clientWidth, document.body.clientHeight);
     }
     // Try with document.documentElement.clientWidth / document.documentElement.clientHeight
@@ -699,6 +697,7 @@ export function isHTMLElement(o) {
 export var EventType = {
     // Mouse
     CLICK: 'click',
+    AUXCLICK: 'auxclick',
     DBLCLICK: 'dblclick',
     MOUSE_UP: 'mouseup',
     MOUSE_DOWN: 'mousedown',
@@ -726,8 +725,6 @@ export var EventType = {
     SUBMIT: 'submit',
     RESET: 'reset',
     FOCUS: 'focus',
-    FOCUS_IN: 'focusin',
-    FOCUS_OUT: 'focusout',
     BLUR: 'blur',
     INPUT: 'input',
     // Local Storage
@@ -789,7 +786,7 @@ var FocusTracker = /** @class */ (function () {
         this._onDidBlur = new Emitter();
         this.onDidBlur = this._onDidBlur.event;
         this.disposables = [];
-        var hasFocus = isAncestor(document.activeElement, element);
+        var hasFocus = false;
         var loosingFocus = false;
         var onFocus = function () {
             loosingFocus = false;
@@ -836,6 +833,7 @@ export function prepend(parent, child) {
     return child;
 }
 var SELECTOR_REGEX = /([\w\-]+)?(#([\w\-]+))?((.([\w\-]+))*)/;
+// Similar to builder, but much more lightweight
 export function $(description, attrs) {
     var children = [];
     for (var _i = 2; _i < arguments.length; _i++) {
@@ -951,13 +949,13 @@ export function finalHandler(fn) {
     };
 }
 export function domContentLoaded() {
-    return new Promise(function (resolve) {
+    return new TPromise(function (c, e) {
         var readyState = document.readyState;
         if (readyState === 'complete' || (document && document.body !== null)) {
-            platform.setImmediate(resolve);
+            platform.setImmediate(c);
         }
         else {
-            window.addEventListener('DOMContentLoaded', resolve, false);
+            window.addEventListener('DOMContentLoaded', c, false);
         }
     });
 }

@@ -38,11 +38,12 @@ var HoverOperation = /** @class */ (function () {
         this._secondWaitScheduler.schedule(this._secondWaitTime());
         if (this._computer.computeAsync) {
             this._asyncComputationPromiseDone = false;
-            this._asyncComputationPromise = createCancelablePromise(function (token) { return _this._computer.computeAsync(token); });
-            this._asyncComputationPromise.then(function (asyncResult) {
-                _this._asyncComputationPromiseDone = true;
-                _this._withAsyncResult(asyncResult);
-            }, function (e) { return _this._onError(e); });
+            this._asyncComputationPromise = createCancelablePromise(function (token) {
+                return _this._computer.computeAsync(token).then(function (asyncResult) {
+                    _this._asyncComputationPromiseDone = true;
+                    _this._withAsyncResult(asyncResult);
+                }, function (e) { return _this._onError(e); });
+            });
         }
         else {
             this._asyncComputationPromiseDone = true;

@@ -3,15 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+import { Language } from './tokenization.js';
 import { WorkerManager } from './workerManager.js';
 import * as languageFeatures from './languageFeatures.js';
 var javaScriptWorker;
 var typeScriptWorker;
 export function setupTypeScript(defaults) {
-    typeScriptWorker = setupMode(defaults, 'typescript');
+    typeScriptWorker = setupMode(defaults, 'typescript', Language.TypeScript);
 }
 export function setupJavaScript(defaults) {
-    javaScriptWorker = setupMode(defaults, 'javascript');
+    javaScriptWorker = setupMode(defaults, 'javascript', Language.EcmaScript5);
 }
 export function getJavaScriptWorker() {
     return new monaco.Promise(function (resolve, reject) {
@@ -29,7 +30,7 @@ export function getTypeScriptWorker() {
         resolve(typeScriptWorker);
     });
 }
-function setupMode(defaults, modeId) {
+function setupMode(defaults, modeId, language) {
     var client = new WorkerManager(modeId, defaults);
     var worker = function (first) {
         var more = [];
@@ -48,5 +49,56 @@ function setupMode(defaults, modeId) {
     monaco.languages.registerDocumentRangeFormattingEditProvider(modeId, new languageFeatures.FormatAdapter(worker));
     monaco.languages.registerOnTypeFormattingEditProvider(modeId, new languageFeatures.FormatOnTypeAdapter(worker));
     new languageFeatures.DiagnostcsAdapter(defaults, modeId, worker);
+    monaco.languages.setLanguageConfiguration(modeId, richEditConfiguration);
     return worker;
 }
+var richEditConfiguration = {
+    wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+    comments: {
+        lineComment: '//',
+        blockComment: ['/*', '*/']
+    },
+    brackets: [
+        ['{', '}'],
+        ['[', ']'],
+        ['(', ')']
+    ],
+    onEnterRules: [
+        {
+            // e.g. /** | */
+            beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+            afterText: /^\s*\*\/$/,
+            action: { indentAction: monaco.languages.IndentAction.IndentOutdent, appendText: ' * ' }
+        },
+        {
+            // e.g. /** ...|
+            beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+            action: { indentAction: monaco.languages.IndentAction.None, appendText: ' * ' }
+        },
+        {
+            // e.g.  * ...|
+            beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
+            action: { indentAction: monaco.languages.IndentAction.None, appendText: '* ' }
+        },
+        {
+            // e.g.  */|
+            beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
+            action: { indentAction: monaco.languages.IndentAction.None, removeText: 1 }
+        }
+    ],
+    autoClosingPairs: [
+        { open: '{', close: '}' },
+        { open: '[', close: ']' },
+        { open: '(', close: ')' },
+        { open: '"', close: '"', notIn: ['string'] },
+        { open: '\'', close: '\'', notIn: ['string', 'comment'] },
+        { open: '`', close: '`', notIn: ['string', 'comment'] },
+        { open: "/**", close: " */", notIn: ["string"] }
+    ],
+    folding: {
+        markers: {
+            start: new RegExp("^\\s*//\\s*#?region\\b"),
+            end: new RegExp("^\\s*//\\s*#?endregion\\b")
+        }
+    }
+};

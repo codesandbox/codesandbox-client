@@ -4,15 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import * as ts from './lib/typescriptServices.js';
-import { lib_dts, lib_es6_dts } from './lib/lib.js';
+import { contents as libdts } from './lib/lib-ts.js';
+import { contents as libes6ts } from './lib/lib-es6-ts.js';
 var Promise = monaco.Promise;
 var DEFAULT_LIB = {
     NAME: 'defaultLib:lib.d.ts',
-    CONTENTS: lib_dts
+    CONTENTS: libdts
 };
 var ES6_LIB = {
     NAME: 'defaultLib:lib.es6.d.ts',
-    CONTENTS: lib_es6_dts
+    CONTENTS: libes6ts
 };
 var TypeScriptWorker = /** @class */ (function () {
     function TypeScriptWorker(ctx, createData) {
@@ -98,40 +99,29 @@ var TypeScriptWorker = /** @class */ (function () {
         return fileName === this.getDefaultLibFileName(this._compilerOptions);
     };
     // --- language features
-    TypeScriptWorker.clearFiles = function (diagnostics) {
-        // Clear the `file` field, which cannot be JSON'yfied because it
-        // contains cyclic data structures.
-        diagnostics.forEach(function (diag) {
-            diag.file = undefined;
-            var related = diag.relatedInformation;
-            if (related) {
-                related.forEach(function (diag2) { return diag2.file = undefined; });
-            }
-        });
-    };
     TypeScriptWorker.prototype.getSyntacticDiagnostics = function (fileName) {
         var diagnostics = this._languageService.getSyntacticDiagnostics(fileName);
-        TypeScriptWorker.clearFiles(diagnostics);
+        diagnostics.forEach(function (diag) { return diag.file = undefined; }); // diag.file cannot be JSON'yfied
         return Promise.as(diagnostics);
     };
     TypeScriptWorker.prototype.getSemanticDiagnostics = function (fileName) {
         var diagnostics = this._languageService.getSemanticDiagnostics(fileName);
-        TypeScriptWorker.clearFiles(diagnostics);
+        diagnostics.forEach(function (diag) { return diag.file = undefined; }); // diag.file cannot be JSON'yfied
         return Promise.as(diagnostics);
     };
     TypeScriptWorker.prototype.getCompilerOptionsDiagnostics = function (fileName) {
         var diagnostics = this._languageService.getCompilerOptionsDiagnostics();
-        TypeScriptWorker.clearFiles(diagnostics);
+        diagnostics.forEach(function (diag) { return diag.file = undefined; }); // diag.file cannot be JSON'yfied
         return Promise.as(diagnostics);
     };
     TypeScriptWorker.prototype.getCompletionsAtPosition = function (fileName, position) {
         return Promise.as(this._languageService.getCompletionsAtPosition(fileName, position, undefined));
     };
     TypeScriptWorker.prototype.getCompletionEntryDetails = function (fileName, position, entry) {
-        return Promise.as(this._languageService.getCompletionEntryDetails(fileName, position, entry, undefined, undefined, undefined));
+        return Promise.as(this._languageService.getCompletionEntryDetails(fileName, position, entry, undefined, undefined));
     };
     TypeScriptWorker.prototype.getSignatureHelpItems = function (fileName, position) {
-        return Promise.as(this._languageService.getSignatureHelpItems(fileName, position, undefined));
+        return Promise.as(this._languageService.getSignatureHelpItems(fileName, position));
     };
     TypeScriptWorker.prototype.getQuickInfoAtPosition = function (fileName, position) {
         return Promise.as(this._languageService.getQuickInfoAtPosition(fileName, position));

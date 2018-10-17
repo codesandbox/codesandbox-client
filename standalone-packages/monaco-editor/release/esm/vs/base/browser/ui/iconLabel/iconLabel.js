@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -19,6 +16,8 @@ var __extends = (this && this.__extends) || (function () {
 import './iconlabel.css';
 import * as dom from '../../dom.js';
 import { HighlightedLabel } from '../highlightedlabel/highlightedLabel.js';
+import * as paths from '../../../common/paths.js';
+import { getPathLabel, getBaseLabel } from '../../../common/labels.js';
 import { combinedDisposable, Disposable } from '../../../common/lifecycle.js';
 var FastLabelNode = /** @class */ (function () {
     function FastLabelNode(_element) {
@@ -158,3 +157,17 @@ var IconLabel = /** @class */ (function (_super) {
     return IconLabel;
 }(Disposable));
 export { IconLabel };
+var FileLabel = /** @class */ (function (_super) {
+    __extends(FileLabel, _super);
+    function FileLabel(container, file, provider, userHome) {
+        var _this = _super.call(this, container) || this;
+        _this.setFile(file, provider, userHome);
+        return _this;
+    }
+    FileLabel.prototype.setFile = function (file, provider, userHome) {
+        var parent = paths.dirname(file.fsPath);
+        this.setValue(getBaseLabel(file), parent && parent !== '.' ? getPathLabel(parent, userHome, provider) : '', { title: file.fsPath });
+    };
+    return FileLabel;
+}(IconLabel));
+export { FileLabel };

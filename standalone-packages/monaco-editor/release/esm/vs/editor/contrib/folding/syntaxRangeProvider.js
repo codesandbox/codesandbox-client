@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { onUnexpectedExternalError } from '../../../base/common/errors.js';
+import { toPromiseLike } from '../../../base/common/async.js';
 import { TPromise } from '../../../base/common/winjs.base.js';
 import { MAX_LINE_NUMBER, FoldingRegions } from './foldingRanges.js';
 var MAX_FOLDING_REGIONS = 5000;
@@ -35,7 +36,7 @@ export { SyntaxRangeProvider };
 function collectSyntaxRanges(providers, model, cancellationToken) {
     var rangeData = null;
     var promises = providers.map(function (provider, i) {
-        return Promise.resolve(provider.provideFoldingRanges(model, foldingContext, cancellationToken)).then(function (ranges) {
+        return toPromiseLike(provider.provideFoldingRanges(model, foldingContext, cancellationToken)).then(function (ranges) {
             if (cancellationToken.isCancellationRequested) {
                 return;
             }

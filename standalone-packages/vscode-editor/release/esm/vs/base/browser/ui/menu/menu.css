@@ -1,0 +1,145 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-menu .monaco-action-bar.vertical {
+	margin-left: 0;
+	overflow: visible;
+}
+
+.monaco-menu .monaco-action-bar.vertical .actions-container {
+	display: block;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-item {
+	padding: 0;
+	-ms-transform: none;
+	-webkit-transform: none;
+	-moz-transform: none;
+	-o-transform: none;
+	transform: none;
+	display: -ms-flexbox;
+	display: flex;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-item.active {
+	-ms-transform: none;
+	-webkit-transform: none;
+	-moz-transform: none;
+	-o-transform: none;
+	transform: none;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-menu-item {
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	display: -ms-flexbox;
+	display: flex;
+	height: 2em;
+	align-items: center;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-label {
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	text-decoration: none;
+	padding: 0 1em;
+	background: none;
+	font-size: 12px;
+	line-height: 1;
+}
+
+.monaco-menu .monaco-action-bar.vertical .keybinding,
+.monaco-menu .monaco-action-bar.vertical .submenu-indicator {
+	display: inline-block;
+	-ms-flex: 2 1 auto;
+	flex: 2 1 auto;
+	padding: 0 1em;
+	text-align: right;
+	font-size: 12px;
+	line-height: 1;
+}
+
+.monaco-menu .monaco-action-bar.vertical .submenu-indicator {
+	height: 100%;
+	-webkit-mask: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAxNCAxNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuNTIwNTEgMTMuMzY0M0w5Ljg3NzkzIDdMMy41MjA1MSAwLjYzNTc0Mkw0LjEzNTc0IDAuMDIwNTA3OEwxMS4xMjIxIDdMNC4xMzU3NCAxMy45Nzk1TDMuNTIwNTEgMTMuMzY0M1oiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPgo=") no-repeat 90% 50%/14px 14px;
+	mask: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAxNCAxNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuNTIwNTEgMTMuMzY0M0w5Ljg3NzkzIDdMMy41MjA1MSAwLjYzNTc0Mkw0LjEzNTc0IDAuMDIwNTA3OEwxMS4xMjIxIDdMNC4xMzU3NCAxMy45Nzk1TDMuNTIwNTEgMTMuMzY0M1oiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPgo=") no-repeat 90% 50%/14px 14px;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-item.disabled .keybinding,
+.monaco-menu .monaco-action-bar.vertical .action-item.disabled .submenu-indicator {
+	opacity: 0.4;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-label:not(.separator) {
+	display: inline-block;
+	-webkit-box-sizing:	border-box;
+	-o-box-sizing:		border-box;
+	-moz-box-sizing:	border-box;
+	-ms-box-sizing:		border-box;
+	box-sizing:			border-box;
+	margin: 0;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-label.separator {
+	padding: 0.5em 0 0 0;
+	margin-bottom: 0.5em;
+	width: 100%;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-label.separator.text {
+	padding: 0.7em 1em 0.1em 1em;
+	font-weight: bold;
+	opacity: 1;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-label:hover {
+	color: inherit;
+}
+
+.monaco-menu .monaco-action-bar.vertical .menu-item-check {
+	position: absolute;
+	visibility: hidden;
+	-webkit-mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iLTIgLTIgMTYgMTYiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTIgLTIgMTYgMTYiPjxwb2x5Z29uIGZpbGw9IiM0MjQyNDIiIHBvaW50cz0iOSwwIDQuNSw5IDMsNiAwLDYgMywxMiA2LDEyIDEyLDAiLz48L3N2Zz4=") no-repeat 50% 56%/15px 15px;
+	mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iLTIgLTIgMTYgMTYiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTIgLTIgMTYgMTYiPjxwb2x5Z29uIGZpbGw9IiM0MjQyNDIiIHBvaW50cz0iOSwwIDQuNSw5IDMsNiAwLDYgMywxMiA2LDEyIDEyLDAiLz48L3N2Zz4=") no-repeat 50% 56%/15px 15px;
+	width: 1em;
+	height: 100%;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-menu-item.checked .menu-item-check {
+	visibility: visible;
+}
+
+/* Context Menu */
+
+.context-view.monaco-menu-container {
+	font-family: "Segoe WPC", "Segoe UI", ".SFNSDisplay-Light", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	outline: 0;
+	border: none;
+	-webkit-animation: fadeIn 0.083s linear;
+	-o-animation: fadeIn 0.083s linear;
+	-moz-animation: fadeIn 0.083s linear;
+	-ms-animation: fadeIn 0.083s linear;
+	animation: fadeIn 0.083s linear;
+}
+
+.context-view.monaco-menu-container :focus,
+.context-view.monaco-menu-container .monaco-action-bar.vertical:focus,
+.context-view.monaco-menu-container .monaco-action-bar.vertical :focus {
+	outline: 0;
+}
+
+.monaco-menu .monaco-action-bar.vertical .action-item {
+	border: 1px solid transparent; /* prevents jumping behaviour on hover or focus */
+}
+
+
+/* High Contrast Theming */
+.hc-black .context-view.monaco-menu-container {
+	box-shadow: none;
+}
+
+.hc-black .monaco-menu .monaco-action-bar.vertical .action-item.focused {
+	background: none;
+}

@@ -4,10 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { Position, CompletionItemKind, Range, TextEdit, InsertTextFormat } from '../../vscode-languageserver-types/main.js';
-import { createScanner } from '../parser/htmlScanner.js';
+import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner.js';
 import { isEmptyElement } from '../parser/htmlTags.js';
 import { allTagProviders } from './tagProviders.js';
-import { ScannerState, TokenType } from '../htmlLanguageTypes.js';
 import { entities } from '../parser/htmlEntities.js';
 import * as nls from '../../../fillers/vscode-nls.js';
 import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings.js';
@@ -142,7 +141,7 @@ var HTMLCompletion = /** @class */ (function () {
         function collectAttributeNameSuggestions(nameStart, nameEnd) {
             if (nameEnd === void 0) { nameEnd = offset; }
             var replaceEnd = offset;
-            while (replaceEnd < nameEnd && text[replaceEnd] !== '<') { // < is a valid attribute name character, but we rather assume the attribute name ends. See #23236.
+            while (replaceEnd < nameEnd && text[replaceEnd] !== '<') {
                 replaceEnd++;
             }
             var range = getReplaceRange(nameStart, replaceEnd);

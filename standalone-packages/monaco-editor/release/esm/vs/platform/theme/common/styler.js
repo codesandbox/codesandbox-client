@@ -3,18 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
 };
-import { focusBorder, inputBackground, inputForeground, selectForeground, selectBackground, selectListBackground, selectBorder, inputBorder, foreground, editorBackground, contrastBorder, inputActiveOptionBorder, listFocusBackground, listFocusForeground, listActiveSelectionBackground, listActiveSelectionForeground, listInactiveSelectionForeground, listInactiveSelectionBackground, listInactiveFocusBackground, listHoverBackground, listHoverForeground, listDropBackground, pickerGroupBorder, pickerGroupForeground, widgetShadow, inputValidationInfoBorder, inputValidationInfoBackground, inputValidationWarningBorder, inputValidationWarningBackground, inputValidationErrorBorder, inputValidationErrorBackground, activeContrastBorder, buttonForeground, buttonBackground, buttonHoverBackground, badgeBackground, badgeForeground, progressBarBackground, breadcrumbsForeground, breadcrumbsFocusForeground, breadcrumbsActiveSelectionForeground, breadcrumbsBackground, editorWidgetBorder, inputValidationInfoForeground, inputValidationWarningForeground, inputValidationErrorForeground, menuForeground, menuBackground, menuSelectionForeground, menuSelectionBackground, menuSelectionBorder, menuBorder, menuSeparatorBackground } from './colorRegistry.js';
+import { focusBorder, inputBackground, inputForeground, selectForeground, selectBackground, selectListBackground, selectBorder, inputBorder, foreground, editorBackground, contrastBorder, inputActiveOptionBorder, listFocusBackground, listFocusForeground, listActiveSelectionBackground, listActiveSelectionForeground, listInactiveSelectionForeground, listInactiveSelectionBackground, listInactiveFocusBackground, listHoverBackground, listHoverForeground, listDropBackground, pickerGroupBorder, pickerGroupForeground, widgetShadow, inputValidationInfoBorder, inputValidationInfoBackground, inputValidationWarningBorder, inputValidationWarningBackground, inputValidationErrorBorder, inputValidationErrorBackground, activeContrastBorder, buttonForeground, buttonBackground, buttonHoverBackground, lighten, badgeBackground, badgeForeground, progressBarBackground } from './colorRegistry.js';
 import { mixin } from '../../../base/common/objects.js';
 export function computeStyles(theme, styleMap) {
     var styles = Object.create(null);
@@ -61,13 +58,10 @@ export function attachInputBoxStyler(widget, themeService, style) {
         inputBorder: (style && style.inputBorder) || inputBorder,
         inputValidationInfoBorder: (style && style.inputValidationInfoBorder) || inputValidationInfoBorder,
         inputValidationInfoBackground: (style && style.inputValidationInfoBackground) || inputValidationInfoBackground,
-        inputValidationInfoForeground: (style && style.inputValidationInfoForeground) || inputValidationInfoForeground,
         inputValidationWarningBorder: (style && style.inputValidationWarningBorder) || inputValidationWarningBorder,
         inputValidationWarningBackground: (style && style.inputValidationWarningBackground) || inputValidationWarningBackground,
-        inputValidationWarningForeground: (style && style.inputValidationWarningForeground) || inputValidationWarningForeground,
         inputValidationErrorBorder: (style && style.inputValidationErrorBorder) || inputValidationErrorBorder,
-        inputValidationErrorBackground: (style && style.inputValidationErrorBackground) || inputValidationErrorBackground,
-        inputValidationErrorForeground: (style && style.inputValidationErrorForeground) || inputValidationErrorForeground
+        inputValidationErrorBackground: (style && style.inputValidationErrorBackground) || inputValidationErrorBackground
     }, widget);
 }
 export function attachSelectBoxStyler(widget, themeService, style) {
@@ -82,8 +76,7 @@ export function attachSelectBoxStyler(widget, themeService, style) {
         listFocusOutline: (style && style.listFocusOutline) || activeContrastBorder,
         listHoverBackground: (style && style.listHoverBackground) || listHoverBackground,
         listHoverForeground: (style && style.listHoverForeground) || listHoverForeground,
-        listHoverOutline: (style && style.listFocusOutline) || activeContrastBorder,
-        selectListBorder: (style && style.selectListBorder) || editorWidgetBorder
+        listHoverOutline: (style && style.listFocusOutline) || activeContrastBorder
     }, widget);
 }
 export function attachFindInputBoxStyler(widget, themeService, style) {
@@ -94,13 +87,10 @@ export function attachFindInputBoxStyler(widget, themeService, style) {
         inputActiveOptionBorder: (style && style.inputActiveOptionBorder) || inputActiveOptionBorder,
         inputValidationInfoBorder: (style && style.inputValidationInfoBorder) || inputValidationInfoBorder,
         inputValidationInfoBackground: (style && style.inputValidationInfoBackground) || inputValidationInfoBackground,
-        inputValidationInfoForeground: (style && style.inputValidationInfoForeground) || inputValidationInfoForeground,
         inputValidationWarningBorder: (style && style.inputValidationWarningBorder) || inputValidationWarningBorder,
         inputValidationWarningBackground: (style && style.inputValidationWarningBackground) || inputValidationWarningBackground,
-        inputValidationWarningForeground: (style && style.inputValidationWarningForeground) || inputValidationWarningForeground,
         inputValidationErrorBorder: (style && style.inputValidationErrorBorder) || inputValidationErrorBorder,
-        inputValidationErrorBackground: (style && style.inputValidationErrorBackground) || inputValidationErrorBackground,
-        inputValidationErrorForeground: (style && style.inputValidationErrorForeground) || inputValidationErrorForeground
+        inputValidationErrorBackground: (style && style.inputValidationErrorBackground) || inputValidationErrorBackground
     }, widget);
 }
 export function attachQuickOpenStyler(widget, themeService, style) {
@@ -117,16 +107,13 @@ export function attachQuickOpenStyler(widget, themeService, style) {
         inputBorder: (style && style.inputBorder) || inputBorder,
         inputValidationInfoBorder: (style && style.inputValidationInfoBorder) || inputValidationInfoBorder,
         inputValidationInfoBackground: (style && style.inputValidationInfoBackground) || inputValidationInfoBackground,
-        inputValidationInfoForeground: (style && style.inputValidationInfoForeground) || inputValidationInfoForeground,
         inputValidationWarningBorder: (style && style.inputValidationWarningBorder) || inputValidationWarningBorder,
         inputValidationWarningBackground: (style && style.inputValidationWarningBackground) || inputValidationWarningBackground,
-        inputValidationWarningForeground: (style && style.inputValidationWarningForeground) || inputValidationWarningForeground,
         inputValidationErrorBorder: (style && style.inputValidationErrorBorder) || inputValidationErrorBorder,
         inputValidationErrorBackground: (style && style.inputValidationErrorBackground) || inputValidationErrorBackground,
-        inputValidationErrorForeground: (style && style.inputValidationErrorForeground) || inputValidationErrorForeground,
         listFocusBackground: (style && style.listFocusBackground) || listFocusBackground,
         listFocusForeground: (style && style.listFocusForeground) || listFocusForeground,
-        listActiveSelectionBackground: (style && style.listActiveSelectionBackground) || listActiveSelectionBackground,
+        listActiveSelectionBackground: (style && style.listActiveSelectionBackground) || lighten(listActiveSelectionBackground, 0.1),
         listActiveSelectionForeground: (style && style.listActiveSelectionForeground) || listActiveSelectionForeground,
         listFocusAndSelectionBackground: style && style.listFocusAndSelectionBackground || listActiveSelectionBackground,
         listFocusAndSelectionForeground: (style && style.listFocusAndSelectionForeground) || listActiveSelectionForeground,
@@ -147,7 +134,7 @@ export function attachListStyler(widget, themeService, overrides) {
 export var defaultListStyles = {
     listFocusBackground: listFocusBackground,
     listFocusForeground: listFocusForeground,
-    listActiveSelectionBackground: listActiveSelectionBackground,
+    listActiveSelectionBackground: lighten(listActiveSelectionBackground, 0.1),
     listActiveSelectionForeground: listActiveSelectionForeground,
     listFocusAndSelectionBackground: listActiveSelectionBackground,
     listFocusAndSelectionForeground: listActiveSelectionForeground,
@@ -178,29 +165,18 @@ export function attachStylerCallback(themeService, colors, callback) {
     return attachStyler(themeService, colors, callback);
 }
 export var defaultBreadcrumbsStyles = {
-    breadcrumbsBackground: breadcrumbsBackground,
-    breadcrumbsForeground: breadcrumbsForeground,
-    breadcrumbsHoverForeground: breadcrumbsFocusForeground,
-    breadcrumbsFocusForeground: breadcrumbsFocusForeground,
-    breadcrumbsFocusAndSelectionForeground: breadcrumbsActiveSelectionForeground,
+    breadcrumbsBackground: editorBackground,
+    breadcrumbsItemHoverBackground: listHoverBackground,
+    breadcrumbsItemHoverForeground: listHoverForeground,
+    breadcrumbsItemFocusBackground: listFocusBackground,
+    breadcrumbsItemFocusForeground: listFocusForeground,
+    breadcrumbsItemSelectionBackground: listActiveSelectionBackground,
+    breadcrumbsItemSelectionForeground: listActiveSelectionForeground,
+    breadcrumbsActiveItemSelectionBackground: listActiveSelectionBackground,
+    breadcrumbsActiveItemSelectionForeground: listActiveSelectionForeground,
+    breadcrumbsInactiveItemSelectionBackground: editorBackground,
+    breadcrumbsInactiveItemSelectionForeground: listInactiveSelectionForeground,
 };
 export function attachBreadcrumbsStyler(widget, themeService, style) {
     return attachStyler(themeService, __assign({}, defaultBreadcrumbsStyles, style), widget);
-}
-export var defaultMenuStyles = {
-    shadowColor: widgetShadow,
-    borderColor: menuBorder,
-    foregroundColor: menuForeground,
-    backgroundColor: menuBackground,
-    selectionForegroundColor: menuSelectionForeground,
-    selectionBackgroundColor: menuSelectionBackground,
-    selectionBorderColor: menuSelectionBorder,
-    separatorColor: menuSeparatorBackground
-};
-export function attachMenuStyler(widget, themeService, style) {
-    var styles = __assign({}, defaultMenuStyles, style);
-    var fallback = {
-        foregroundColor: !!styles.foregroundColor && !!themeService && !!themeService.getTheme().getColor(styles.foregroundColor) ? styles.foregroundColor : foreground
-    };
-    return attachStyler(themeService, __assign({}, styles, fallback), widget);
 }

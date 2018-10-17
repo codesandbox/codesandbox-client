@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+import { Range, TextEdit } from '../vscode-languageserver-types/main.js';
 import { Parser } from './parser/cssParser.js';
 import { CSSCompletion } from './services/cssCompletion.js';
 import { CSSHover } from './services/cssHover.js';
@@ -13,9 +14,7 @@ import { SCSSParser } from './parser/scssParser.js';
 import { SCSSCompletion } from './services/scssCompletion.js';
 import { LESSParser } from './parser/lessParser.js';
 import { LESSCompletion } from './services/lessCompletion.js';
-import { getFoldingRanges } from './services/cssFolding.js';
-export * from './cssLanguageTypes.js';
-export * from '../vscode-languageserver-types/main.js';
+export { TextEdit, Range };
 function createFacade(parser, completion, hover, navigation, codeActions, validation) {
     return {
         configure: validation.configure.bind(validation),
@@ -33,7 +32,6 @@ function createFacade(parser, completion, hover, navigation, codeActions, valida
         findDocumentColors: navigation.findDocumentColors.bind(navigation),
         getColorPresentations: navigation.getColorPresentations.bind(navigation),
         doRename: navigation.doRename.bind(navigation),
-        getFoldingRanges: getFoldingRanges
     };
 }
 export function getCSSLanguageService() {

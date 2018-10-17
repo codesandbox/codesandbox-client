@@ -886,7 +886,7 @@ var PieceTreeBase = /** @class */ (function () {
         var endIndex = this._buffers[0].lineStarts.length - 1;
         var endColumn = endOffset - this._buffers[0].lineStarts[endIndex];
         var endPos = { line: endIndex, column: endColumn };
-        var newPiece = new Piece(0, /** todo@peng */ start, endPos, this.getLineFeedCnt(0, start, endPos), endOffset - startOffset);
+        var newPiece = new Piece(0, /** todo */ start, endPos, this.getLineFeedCnt(0, start, endPos), endOffset - startOffset);
         this._lastChangeBufferPos = endPos;
         return [newPiece];
     };

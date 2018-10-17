@@ -12,33 +12,6 @@ var Position = /** @class */ (function () {
         this.column = column;
     }
     /**
-     * Create a new postion from this position.
-     *
-     * @param newLineNumber new line number
-     * @param newColumn new column
-     */
-    Position.prototype.with = function (newLineNumber, newColumn) {
-        if (newLineNumber === void 0) { newLineNumber = this.lineNumber; }
-        if (newColumn === void 0) { newColumn = this.column; }
-        if (newLineNumber === this.lineNumber && newColumn === this.column) {
-            return this;
-        }
-        else {
-            return new Position(newLineNumber, newColumn);
-        }
-    };
-    /**
-     * Derive a new position from this position.
-     *
-     * @param deltaLineNumber line number delta
-     * @param deltaColumn column delta
-     */
-    Position.prototype.delta = function (deltaLineNumber, deltaColumn) {
-        if (deltaLineNumber === void 0) { deltaLineNumber = 0; }
-        if (deltaColumn === void 0) { deltaColumn = 0; }
-        return this.with(this.lineNumber + deltaLineNumber, this.column + deltaColumn);
-    };
-    /**
      * Test if this position equals other position
      */
     Position.prototype.equals = function (other) {

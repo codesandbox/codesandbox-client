@@ -4,18 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import { ShallowCancelThenPromise } from '../../../base/common/async.js';
 import { EditorWorkerClient } from './editorWorkerServiceImpl.js';
 /**
  * Create a new web worker that has model syncing capabilities built in.
@@ -36,7 +34,7 @@ var MonacoWebWorkerImpl = /** @class */ (function (_super) {
     MonacoWebWorkerImpl.prototype._getForeignProxy = function () {
         var _this = this;
         if (!this._foreignProxy) {
-            this._foreignProxy = this._getProxy().then(function (proxy) {
+            this._foreignProxy = new ShallowCancelThenPromise(this._getProxy().then(function (proxy) {
                 return proxy.loadForeignModule(_this._foreignModuleId, _this._foreignModuleCreateData).then(function (foreignMethods) {
                     _this._foreignModuleId = null;
                     _this._foreignModuleCreateData = null;
@@ -55,7 +53,7 @@ var MonacoWebWorkerImpl = /** @class */ (function (_super) {
                     }
                     return foreignProxy;
                 });
-            });
+            }));
         }
         return this._foreignProxy;
     };

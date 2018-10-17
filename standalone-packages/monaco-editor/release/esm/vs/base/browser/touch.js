@@ -3,19 +3,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -23,7 +10,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import * as arrays from '../common/arrays.js';
-import { Disposable } from '../common/lifecycle.js';
+import { dispose } from '../common/lifecycle.js';
 import * as DomUtils from './dom.js';
 import { memoize } from '../common/decorators.js';
 export var EventType;
@@ -34,17 +21,16 @@ export var EventType;
     EventType.End = '-monaco-gesturesend';
     EventType.Contextmenu = '-monaco-gesturecontextmenu';
 })(EventType || (EventType = {}));
-var Gesture = /** @class */ (function (_super) {
-    __extends(Gesture, _super);
+var Gesture = /** @class */ (function () {
     function Gesture() {
-        var _this = _super.call(this) || this;
-        _this.activeTouches = {};
-        _this.handle = null;
-        _this.targets = [];
-        _this._register(DomUtils.addDisposableListener(document, 'touchstart', function (e) { return _this.onTouchStart(e); }));
-        _this._register(DomUtils.addDisposableListener(document, 'touchend', function (e) { return _this.onTouchEnd(e); }));
-        _this._register(DomUtils.addDisposableListener(document, 'touchmove', function (e) { return _this.onTouchMove(e); }));
-        return _this;
+        var _this = this;
+        this.toDispose = [];
+        this.activeTouches = {};
+        this.handle = null;
+        this.targets = [];
+        this.toDispose.push(DomUtils.addDisposableListener(document, 'touchstart', function (e) { return _this.onTouchStart(e); }));
+        this.toDispose.push(DomUtils.addDisposableListener(document, 'touchend', function (e) { return _this.onTouchEnd(e); }));
+        this.toDispose.push(DomUtils.addDisposableListener(document, 'touchmove', function (e) { return _this.onTouchMove(e); }));
     }
     Gesture.addTarget = function (element) {
         if (!Gesture.isTouchDevice()) {
@@ -61,9 +47,9 @@ var Gesture = /** @class */ (function (_super) {
     Gesture.prototype.dispose = function () {
         if (this.handle) {
             this.handle.dispose();
+            dispose(this.toDispose);
             this.handle = null;
         }
-        _super.prototype.dispose.call(this);
     };
     Gesture.prototype.onTouchStart = function (e) {
         var timestamp = Date.now(); // use Date.now() because on FF e.timeStamp is not epoch based.
@@ -229,5 +215,5 @@ var Gesture = /** @class */ (function (_super) {
         memoize
     ], Gesture, "isTouchDevice", null);
     return Gesture;
-}(Disposable));
+}());
 export { Gesture };

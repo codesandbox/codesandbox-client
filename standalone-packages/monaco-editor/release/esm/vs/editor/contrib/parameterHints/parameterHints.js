@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -33,7 +30,7 @@ import { ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.j
 import { registerEditorAction, registerEditorContribution, EditorAction, EditorCommand, registerEditorCommand } from '../../browser/editorExtensions.js';
 import { ParameterHintsWidget } from './parameterHintsWidget.js';
 import { Context } from './provideSignatureHelp.js';
-import * as modes from '../../common/modes.js';
+import { KeybindingsRegistry } from '../../../platform/keybinding/common/keybindingsRegistry.js';
 var ParameterHintsController = /** @class */ (function () {
     function ParameterHintsController(editor, instantiationService) {
         this.editor = editor;
@@ -54,8 +51,8 @@ var ParameterHintsController = /** @class */ (function () {
     ParameterHintsController.prototype.next = function () {
         this.widget.next();
     };
-    ParameterHintsController.prototype.trigger = function (context) {
-        this.widget.trigger(context);
+    ParameterHintsController.prototype.trigger = function () {
+        this.widget.trigger();
     };
     ParameterHintsController.prototype.dispose = function () {
         this.widget = dispose(this.widget);
@@ -76,15 +73,14 @@ var TriggerParameterHintsAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.hasSignatureHelpProvider,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 10 /* Space */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 10 /* Space */
             }
         }) || this;
     }
     TriggerParameterHintsAction.prototype.run = function (accessor, editor) {
         var controller = ParameterHintsController.get(editor);
         if (controller) {
-            controller.trigger({ triggerReason: modes.SignatureHelpTriggerReason.Invoke });
+            controller.trigger();
         }
     };
     return TriggerParameterHintsAction;
@@ -92,7 +88,7 @@ var TriggerParameterHintsAction = /** @class */ (function (_super) {
 export { TriggerParameterHintsAction };
 registerEditorContribution(ParameterHintsController);
 registerEditorAction(TriggerParameterHintsAction);
-var weight = 100 /* EditorContrib */ + 75;
+var weight = KeybindingsRegistry.WEIGHT.editorContrib(75);
 var ParameterHintsCommand = EditorCommand.bindToContribution(ParameterHintsController.get);
 registerEditorCommand(new ParameterHintsCommand({
     id: 'closeParameterHints',

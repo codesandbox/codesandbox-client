@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { LRUCache } from './map.js';
 import * as strings from './strings.js';
+import { LRUCache } from './map.js';
 // Combined filters
 /**
  * @returns A filter which combines the provided set
@@ -310,21 +310,14 @@ export function anyScore(pattern, word, patternMaxWhitespaceIgnore) {
     return [matches.length, matches];
 }
 //#region --- fuzzyScore ---
-export function createMatches(offsetOrScore) {
+export function createMatches(position) {
     var ret = [];
-    if (!offsetOrScore) {
+    if (!position) {
         return ret;
     }
-    var offsets;
-    if (Array.isArray(offsetOrScore[1])) {
-        offsets = offsetOrScore[1];
-    }
-    else {
-        offsets = offsetOrScore;
-    }
     var last;
-    for (var _i = 0, offsets_1 = offsets; _i < offsets_1.length; _i++) {
-        var pos = offsets_1[_i];
+    for (var _i = 0, position_1 = position; _i < position_1.length; _i++) {
+        var pos = position_1[_i];
         if (last && last.end === pos) {
             last.end += 1;
         }

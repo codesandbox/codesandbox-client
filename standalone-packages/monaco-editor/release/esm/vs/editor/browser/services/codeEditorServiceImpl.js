@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -26,7 +23,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import * as strings from '../../../base/common/strings.js';
-import { URI } from '../../../base/common/uri.js';
+import URI from '../../../base/common/uri.js';
 import * as dom from '../../../base/browser/dom.js';
 import { isThemeColor } from '../../common/editorCommon.js';
 import { OverviewRulerLane } from '../../common/model.js';
@@ -181,7 +178,7 @@ var DecorationTypeOptionsProvider = /** @class */ (function () {
 }());
 var _CSS_MAP = {
     color: 'color:{0} !important;',
-    opacity: 'opacity:{0}; will-change: opacity;',
+    opacity: 'opacity:{0};',
     backgroundColor: 'background-color:{0};',
     outline: 'outline:{0};',
     outlineColor: 'outline-color:{0};',

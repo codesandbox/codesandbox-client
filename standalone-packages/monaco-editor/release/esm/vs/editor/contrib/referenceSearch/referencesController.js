@@ -51,23 +51,31 @@ import * as nls from '../../../nls.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
 import { dispose } from '../../../base/common/lifecycle.js';
 import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
-import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
+import { IInstantiationService, optional } from '../../../platform/instantiation/common/instantiation.js';
 import { IContextKeyService, RawContextKey } from '../../../platform/contextkey/common/contextkey.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
+import { IWorkspaceContextService } from '../../../platform/workspace/common/workspace.js';
 import { IStorageService } from '../../../platform/storage/common/storage.js';
 import { ReferenceWidget } from './referencesWidget.js';
 import { Range } from '../../common/core/range.js';
+import { ITextModelService } from '../../common/services/resolverService.js';
+import { IThemeService } from '../../../platform/theme/common/themeService.js';
 import { Position } from '../../common/core/position.js';
+import { IEnvironmentService } from '../../../platform/environment/common/environment.js';
 import { INotificationService } from '../../../platform/notification/common/notification.js';
 export var ctxReferenceSearchVisible = new RawContextKey('referenceSearchVisible', false);
 var ReferencesController = /** @class */ (function () {
-    function ReferencesController(_defaultTreeKeyboardSupport, editor, contextKeyService, _editorService, _notificationService, _instantiationService, _storageService, _configurationService) {
+    function ReferencesController(_defaultTreeKeyboardSupport, editor, contextKeyService, _editorService, _textModelResolverService, _notificationService, _instantiationService, _contextService, _storageService, _themeService, _configurationService, _environmentService) {
         this._defaultTreeKeyboardSupport = _defaultTreeKeyboardSupport;
         this._editorService = _editorService;
+        this._textModelResolverService = _textModelResolverService;
         this._notificationService = _notificationService;
         this._instantiationService = _instantiationService;
+        this._contextService = _contextService;
         this._storageService = _storageService;
+        this._themeService = _themeService;
         this._configurationService = _configurationService;
+        this._environmentService = _environmentService;
         this._requestIdPool = 0;
         this._disposables = [];
         this._ignoreModelChangeEvent = false;
@@ -110,7 +118,7 @@ var ReferencesController = /** @class */ (function () {
         }));
         var storageKey = 'peekViewLayout';
         var data = JSON.parse(this._storageService.get(storageKey, undefined, '{}'));
-        this._widget = this._instantiationService.createInstance(ReferenceWidget, this._editor, this._defaultTreeKeyboardSupport, data);
+        this._widget = new ReferenceWidget(this._editor, this._defaultTreeKeyboardSupport, data, this._textModelResolverService, this._contextService, this._themeService, this._instantiationService, this._environmentService);
         this._widget.setTitle(nls.localize('labelLoading', "Loading..."));
         this._widget.show(range);
         this._disposables.push(this._widget.onDidClose(function () {
@@ -235,24 +243,28 @@ var ReferencesController = /** @class */ (function () {
         });
     };
     ReferencesController.prototype.openReference = function (ref, sideBySide) {
-        // clear stage
-        if (!sideBySide) {
-            this.closeWidget();
-        }
         var uri = ref.uri, range = ref.range;
         this._editorService.openCodeEditor({
             resource: uri,
             options: { selection: range }
         }, this._editor, sideBySide);
+        // clear stage
+        if (!sideBySide) {
+            this.closeWidget();
+        }
     };
     ReferencesController.ID = 'editor.contrib.referencesController';
     ReferencesController = __decorate([
         __param(2, IContextKeyService),
         __param(3, ICodeEditorService),
-        __param(4, INotificationService),
-        __param(5, IInstantiationService),
-        __param(6, IStorageService),
-        __param(7, IConfigurationService)
+        __param(4, ITextModelService),
+        __param(5, INotificationService),
+        __param(6, IInstantiationService),
+        __param(7, IWorkspaceContextService),
+        __param(8, IStorageService),
+        __param(9, IThemeService),
+        __param(10, IConfigurationService),
+        __param(11, optional(IEnvironmentService))
     ], ReferencesController);
     return ReferencesController;
 }());

@@ -32,7 +32,6 @@ var DragAndDropController = /** @class */ (function () {
         this._toUnhook.push(this._editor.onMouseDrop(function (e) { return _this._onEditorMouseDrop(e); }));
         this._toUnhook.push(this._editor.onKeyDown(function (e) { return _this.onEditorKeyDown(e); }));
         this._toUnhook.push(this._editor.onKeyUp(function (e) { return _this.onEditorKeyUp(e); }));
-        this._toUnhook.push(this._editor.onDidBlurEditorWidget(function () { return _this.onEditorBlur(); }));
         this._dndDecorationIds = [];
         this._mouseDown = false;
         this._modiferPressed = false;
@@ -40,12 +39,6 @@ var DragAndDropController = /** @class */ (function () {
     }
     DragAndDropController.get = function (editor) {
         return editor.getContribution(DragAndDropController.ID);
-    };
-    DragAndDropController.prototype.onEditorBlur = function () {
-        this._removeDecoration();
-        this._dragSelection = null;
-        this._mouseDown = false;
-        this._modiferPressed = false;
     };
     DragAndDropController.prototype.onEditorKeyDown = function (e) {
         if (!this._editor.getConfiguration().dragAndDrop) {
@@ -115,14 +108,13 @@ var DragAndDropController = /** @class */ (function () {
         if (mouseEvent.target && (this._hitContent(mouseEvent.target) || this._hitMargin(mouseEvent.target)) && mouseEvent.target.position) {
             var newCursorPosition_1 = new Position(mouseEvent.target.position.lineNumber, mouseEvent.target.position.column);
             if (this._dragSelection === null) {
-                var newSelections = null;
                 if (mouseEvent.event.shiftKey) {
                     var primarySelection = this._editor.getSelection();
-                    var selectionStartLineNumber = primarySelection.selectionStartLineNumber, selectionStartColumn = primarySelection.selectionStartColumn;
-                    newSelections = [new Selection(selectionStartLineNumber, selectionStartColumn, newCursorPosition_1.lineNumber, newCursorPosition_1.column)];
+                    var startLineNumber = primarySelection.startLineNumber, startColumn = primarySelection.startColumn;
+                    this._editor.setSelections([new Selection(startLineNumber, startColumn, newCursorPosition_1.lineNumber, newCursorPosition_1.column)]);
                 }
                 else {
-                    newSelections = this._editor.getSelections().map(function (selection) {
+                    var newSelections = this._editor.getSelections().map(function (selection) {
                         if (selection.containsPosition(newCursorPosition_1)) {
                             return new Selection(newCursorPosition_1.lineNumber, newCursorPosition_1.column, newCursorPosition_1.lineNumber, newCursorPosition_1.column);
                         }
@@ -130,9 +122,8 @@ var DragAndDropController = /** @class */ (function () {
                             return selection;
                         }
                     });
+                    this._editor.setSelections(newSelections);
                 }
-                // Use `mouse` as the source instead of `api`.
-                this._editor.setSelections(newSelections, 'mouse');
             }
             else if (!this._dragSelection.containsPosition(newCursorPosition_1) ||
                 ((hasTriggerModifier(mouseEvent.event) ||

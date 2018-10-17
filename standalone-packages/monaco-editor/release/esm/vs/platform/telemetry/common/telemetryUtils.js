@@ -3,20 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 import { TPromise } from '../../../base/common/winjs.base.js';
 import { guessMimeTypes } from '../../../base/common/mime.js';
 import * as paths from '../../../base/common/paths.js';
-import { ConfigurationTargetToString } from '../../configuration/common/configuration.js';
-import { ILogService } from '../../log/common/log.js';
+import { ConfigurationTarget } from '../../configuration/common/configuration.js';
+import { KeybindingSource } from '../../keybinding/common/keybinding.js';
 export var NullTelemetryService = new /** @class */ (function () {
     function class_1() {
     }
@@ -43,30 +34,6 @@ export function combinedAppender() {
     };
 }
 export var NullAppender = { log: function () { return null; }, dispose: function () { return TPromise.as(null); } };
-var LogAppender = /** @class */ (function () {
-    function LogAppender(_logService) {
-        this._logService = _logService;
-        this.commonPropertiesRegex = /^sessionID$|^version$|^timestamp$|^commitHash$|^common\./;
-    }
-    LogAppender.prototype.dispose = function () {
-        return TPromise.as(undefined);
-    };
-    LogAppender.prototype.log = function (eventName, data) {
-        var _this = this;
-        var strippedData = {};
-        Object.keys(data).forEach(function (key) {
-            if (!_this.commonPropertiesRegex.test(key)) {
-                strippedData[key] = data[key];
-            }
-        });
-        this._logService.trace("telemetry/" + eventName, strippedData);
-    };
-    LogAppender = __decorate([
-        __param(0, ILogService)
-    ], LogAppender);
-    return LogAppender;
-}());
-export { LogAppender };
 export function telemetryURIDescriptor(uri, hashPath) {
     var fsPath = uri && uri.fsPath;
     return fsPath ? { mimeType: guessMimeTypes(fsPath).join(', '), ext: paths.extname(fsPath), path: hashPath(fsPath) } : {};
@@ -75,6 +42,7 @@ export function telemetryURIDescriptor(uri, hashPath) {
  * Only add settings that cannot contain any personal/private information of users (PII).
  */
 var configurationValueWhitelist = [
+    'editor.tabCompletion',
     'editor.fontFamily',
     'editor.fontWeight',
     'editor.fontSize',
@@ -101,11 +69,8 @@ var configurationValueWhitelist = [
     'editor.multiCursorModifier',
     'editor.quickSuggestions',
     'editor.quickSuggestionsDelay',
-    'editor.parameterHints.enabled',
-    'editor.parameterHints.cycle',
+    'editor.parameterHints',
     'editor.autoClosingBrackets',
-    'editor.autoClosingQuotes',
-    'editor.autoSurround',
     'editor.autoIndent',
     'editor.formatOnType',
     'editor.formatOnPaste',
@@ -118,7 +83,6 @@ var configurationValueWhitelist = [
     'editor.suggestSelection',
     'editor.suggestFontSize',
     'editor.suggestLineHeight',
-    'editor.tabCompletion',
     'editor.selectionHighlight',
     'editor.occurrencesHighlight',
     'editor.overviewRulerLanes',
@@ -143,43 +107,39 @@ var configurationValueWhitelist = [
     'editor.dragAndDrop',
     'editor.formatOnSave',
     'editor.colorDecorators',
-    'breadcrumbs.enabled',
-    'breadcrumbs.filePath',
-    'breadcrumbs.symbolPath',
-    'breadcrumbs.useQuickPick',
-    'explorer.openEditors.visible',
-    'extensions.autoUpdate',
-    'files.associations',
-    'files.autoGuessEncoding',
+    'window.zoomLevel',
     'files.autoSave',
-    'files.autoSaveDelay',
-    'files.encoding',
-    'files.eol',
     'files.hotExit',
+    'files.associations',
+    'workbench.statusBar.visible',
     'files.trimTrailingWhitespace',
     'git.confirmSync',
+    'workbench.sideBar.location',
+    'window.openFilesInNewWindow',
+    'javascript.validate.enable',
+    'window.restoreWindows',
+    'extensions.autoUpdate',
+    'files.eol',
+    'explorer.openEditors.visible',
+    'workbench.editor.enablePreview',
+    'files.autoSaveDelay',
+    'workbench.editor.showTabs',
+    'files.encoding',
+    'files.autoGuessEncoding',
     'git.enabled',
     'http.proxyStrictSSL',
-    'javascript.validate.enable',
+    'terminal.integrated.fontFamily',
+    'workbench.editor.enablePreviewFromQuickOpen',
+    'workbench.editor.swipeToNavigate',
     'php.builtInCompletions.enable',
     'php.validate.enable',
     'php.validate.run',
-    'terminal.integrated.fontFamily',
-    'window.openFilesInNewWindow',
-    'window.restoreWindows',
-    'window.zoomLevel',
-    'workbench.editor.enablePreview',
-    'workbench.editor.enablePreviewFromQuickOpen',
-    'workbench.editor.showTabs',
-    'workbench.editor.swipeToNavigate',
-    'workbench.sideBar.location',
-    'workbench.startupEditor',
-    'workbench.statusBar.visible',
     'workbench.welcome.enabled',
+    'workbench.startupEditor',
 ];
 export function configurationTelemetry(telemetryService, configurationService) {
     return configurationService.onDidChangeConfiguration(function (event) {
-        if (event.source !== 4 /* DEFAULT */) {
+        if (event.source !== ConfigurationTarget.DEFAULT) {
             /* __GDPR__
                 "updateConfiguration" : {
                     "configurationSource" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
@@ -187,7 +147,7 @@ export function configurationTelemetry(telemetryService, configurationService) {
                 }
             */
             telemetryService.publicLog('updateConfiguration', {
-                configurationSource: ConfigurationTargetToString(event.source),
+                configurationSource: ConfigurationTarget[event.source],
                 configurationKeys: flattenKeys(event.sourceConfig)
             });
             /* __GDPR__
@@ -197,7 +157,7 @@ export function configurationTelemetry(telemetryService, configurationService) {
                 }
             */
             telemetryService.publicLog('updateConfigurationValues', {
-                configurationSource: ConfigurationTargetToString(event.source),
+                configurationSource: ConfigurationTarget[event.source],
                 configurationValues: flattenValues(event.sourceConfig, configurationValueWhitelist)
             });
         }
@@ -205,7 +165,7 @@ export function configurationTelemetry(telemetryService, configurationService) {
 }
 export function keybindingsTelemetry(telemetryService, keybindingService) {
     return keybindingService.onDidUpdateKeybindings(function (event) {
-        if (event.source === 2 /* User */ && event.keybindings) {
+        if (event.source === KeybindingSource.User && event.keybindings) {
             /* __GDPR__
                 "updateKeybindings" : {
                     "bindings": { "classification": "CustomerContent", "purpose": "FeatureInsight" }

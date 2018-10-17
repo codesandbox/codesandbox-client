@@ -4,19 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import * as nls from '../../../nls.js';
 import { Position } from '../../common/core/position.js';
 import { Range } from '../../common/core/range.js';
 import * as editorCommon from '../../common/editorCommon.js';
@@ -26,14 +22,14 @@ import { CursorMoveCommands, CursorMove as CursorMove_ } from '../../common/cont
 import { registerEditorCommand, EditorCommand, Command } from '../editorExtensions.js';
 import { ColumnSelection } from '../../common/controller/cursorColumnSelection.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { KeybindingsRegistry } from '../../../platform/keybinding/common/keybindingsRegistry.js';
 var H = editorCommon.Handler;
 import { ICodeEditorService } from '../services/codeEditorService.js';
 import { ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.js';
 import * as types from '../../../base/common/types.js';
 import { TypeOperations } from '../../common/controller/cursorTypeOperations.js';
 import { DeleteOperations } from '../../common/controller/cursorDeleteOperations.js';
-import { MenuId } from '../../../platform/actions/common/actions.js';
-var CORE_WEIGHT = 0 /* EditorCore */;
+var CORE_WEIGHT = KeybindingsRegistry.WEIGHT.editorCore();
 var CoreEditorCommand = /** @class */ (function (_super) {
     __extends(CoreEditorCommand, _super);
     function CoreEditorCommand() {
@@ -1369,7 +1365,7 @@ function findFocusedEditor(accessor) {
     return accessor.get(ICodeEditorService).getFocusedCodeEditor();
 }
 function registerCommand(command) {
-    command.register();
+    KeybindingsRegistry.registerCommandAndKeybindingRule(command.toCommandAndKeybindingRule(CORE_WEIGHT));
 }
 /**
  * A command that will:
@@ -1443,17 +1439,11 @@ registerCommand(new EditorOrNativeTextInputCommand({
     editorHandler: CoreNavigationCommands.SelectAll,
     inputHandler: 'selectAll',
     id: 'editor.action.selectAll',
-    precondition: EditorContextKeys.textInputFocus,
+    precondition: EditorContextKeys.focus,
     kbOpts: {
         weight: CORE_WEIGHT,
         kbExpr: null,
         primary: 2048 /* CtrlCmd */ | 31 /* KEY_A */
-    },
-    menubarOpts: {
-        menuId: MenuId.MenubarSelectionMenu,
-        group: '1_basic',
-        title: nls.localize({ key: 'miSelectAll', comment: ['&& denotes a mnemonic'] }, "&&Select All"),
-        order: 1
     }
 }));
 registerCommand(new EditorOrNativeTextInputCommand({
@@ -1465,12 +1455,6 @@ registerCommand(new EditorOrNativeTextInputCommand({
         weight: CORE_WEIGHT,
         kbExpr: EditorContextKeys.textInputFocus,
         primary: 2048 /* CtrlCmd */ | 56 /* KEY_Z */
-    },
-    menubarOpts: {
-        menuId: MenuId.MenubarEditMenu,
-        group: '1_do',
-        title: nls.localize({ key: 'miUndo', comment: ['&& denotes a mnemonic'] }, "&&Undo"),
-        order: 1
     }
 }));
 registerCommand(new EditorHandlerCommand('default:' + H.Undo, H.Undo));
@@ -1485,12 +1469,6 @@ registerCommand(new EditorOrNativeTextInputCommand({
         primary: 2048 /* CtrlCmd */ | 55 /* KEY_Y */,
         secondary: [2048 /* CtrlCmd */ | 1024 /* Shift */ | 56 /* KEY_Z */],
         mac: { primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 56 /* KEY_Z */ }
-    },
-    menubarOpts: {
-        menuId: MenuId.MenubarEditMenu,
-        group: '1_do',
-        title: nls.localize({ key: 'miRedo', comment: ['&& denotes a mnemonic'] }, "&&Redo"),
-        order: 2
     }
 }));
 registerCommand(new EditorHandlerCommand('default:' + H.Redo, H.Redo));

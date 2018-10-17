@@ -28,20 +28,15 @@ var OnEnterSupport = /** @class */ (function () {
         // (1): `regExpRules`
         for (var i = 0, len = this._regExpRules.length; i < len; i++) {
             var rule = this._regExpRules[i];
-            var regResult = [{
-                    reg: rule.beforeText,
-                    text: beforeEnterText
-                }, {
-                    reg: rule.afterText,
-                    text: afterEnterText
-                }, {
-                    reg: rule.oneLineAboveText,
-                    text: oneLineAboveText
-                }].every(function (obj) {
-                return obj.reg ? obj.reg.test(obj.text) : true;
-            });
-            if (regResult) {
-                return rule.action;
+            if (rule.beforeText.test(beforeEnterText)) {
+                if (rule.afterText) {
+                    if (rule.afterText.test(afterEnterText)) {
+                        return rule.action;
+                    }
+                }
+                else {
+                    return rule.action;
+                }
             }
         }
         // (2): Special indent-outdent

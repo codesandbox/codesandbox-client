@@ -6,7 +6,6 @@ import './list.css';
 import { range } from '../../../common/arrays.js';
 import { List } from './listWidget.js';
 import { mapEvent } from '../../../common/event.js';
-import { CancellationTokenSource } from '../../../common/cancellation.js';
 var PagedRenderer = /** @class */ (function () {
     function PagedRenderer(renderer, modelProvider) {
         this.renderer = renderer;
@@ -28,14 +27,10 @@ var PagedRenderer = /** @class */ (function () {
         if (model.isResolved(index)) {
             return this.renderer.renderElement(model.get(index), index, data.data);
         }
-        var cts = new CancellationTokenSource();
-        var promise = model.resolve(index, cts.token);
-        data.disposable = { dispose: function () { return cts.cancel(); } };
+        var promise = model.resolve(index);
+        data.disposable = { dispose: function () { return promise.cancel(); } };
         this.renderer.renderPlaceholder(index, data.data);
-        promise.then(function (entry) { return _this.renderer.renderElement(entry, index, data.data); });
-    };
-    PagedRenderer.prototype.disposeElement = function () {
-        // noop
+        promise.done(function (entry) { return _this.renderer.renderElement(entry, index, data.data); });
     };
     PagedRenderer.prototype.disposeTemplate = function (data) {
         data.disposable.dispose();
@@ -46,11 +41,11 @@ var PagedRenderer = /** @class */ (function () {
     return PagedRenderer;
 }());
 var PagedList = /** @class */ (function () {
-    function PagedList(container, virtualDelegate, renderers, options) {
+    function PagedList(container, delegate, renderers, options) {
         if (options === void 0) { options = {}; }
         var _this = this;
         var pagedRenderers = renderers.map(function (r) { return new PagedRenderer(r, function () { return _this.model; }); });
-        this.list = new List(container, virtualDelegate, pagedRenderers, options);
+        this.list = new List(container, delegate, pagedRenderers, options);
     }
     PagedList.prototype.getHTMLElement = function () {
         return this.list.getHTMLElement();
@@ -128,17 +123,6 @@ var PagedList = /** @class */ (function () {
             return mapEvent(this.list.onPin, function (_a) {
                 var elements = _a.elements, indexes = _a.indexes;
                 return ({ elements: elements.map(function (e) { return _this._model.get(e); }), indexes: indexes });
-            });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PagedList.prototype, "onContextMenu", {
-        get: function () {
-            var _this = this;
-            return mapEvent(this.list.onContextMenu, function (_a) {
-                var element = _a.element, index = _a.index, anchor = _a.anchor;
-                return ({ element: _this._model.get(element), index: index, anchor: anchor });
             });
         },
         enumerable: true,

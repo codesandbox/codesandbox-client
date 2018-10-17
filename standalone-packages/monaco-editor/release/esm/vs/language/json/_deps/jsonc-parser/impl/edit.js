@@ -30,7 +30,7 @@ export function setProperty(text, path, value, formattingOptions, getInsertionIn
     }
     if (!parent) {
         // empty document
-        if (value === void 0) { // delete
+        if (value === void 0) {
             throw new Error('Can not delete in empty document');
         }
         return withFormatting(text, { offset: root ? root.offset : 0, length: root ? root.length : 0, content: JSON.stringify(value) }, formattingOptions);
@@ -38,7 +38,7 @@ export function setProperty(text, path, value, formattingOptions, getInsertionIn
     else if (parent.type === 'object' && typeof lastSegment === 'string' && Array.isArray(parent.children)) {
         var existing = findNodeAtLocation(parent, [lastSegment]);
         if (existing !== void 0) {
-            if (value === void 0) { // delete
+            if (value === void 0) {
                 if (!existing.parent) {
                     throw new Error('Malformed AST');
                 }
@@ -66,7 +66,7 @@ export function setProperty(text, path, value, formattingOptions, getInsertionIn
             }
         }
         else {
-            if (value === void 0) { // delete
+            if (value === void 0) {
                 return []; // property does not exist, nothing to do
             }
             var newProperty = JSON.stringify(lastSegment) + ": " + JSON.stringify(value);
@@ -138,7 +138,7 @@ function withFormatting(text, edit, formattingOptions) {
     // format the new text
     var begin = edit.offset;
     var end = edit.offset + edit.content.length;
-    if (edit.length === 0 || edit.content.length === 0) { // insert or remove
+    if (edit.length === 0 || edit.content.length === 0) {
         while (begin > 0 && !isEOL(newText, begin - 1)) {
             begin--;
         }

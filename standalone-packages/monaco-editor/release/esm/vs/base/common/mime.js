@@ -176,22 +176,17 @@ export function isUnspecific(mime) {
     }
     return mime.length === 1 && isUnspecific(mime[0]);
 }
-/**
- * Returns a suggestion for the filename by the following logic:
- * 1. If a relevant extension exists and is an actual filename extension (starting with a dot), suggest the prefix appended by the first one.
- * 2. Otherwise, if there are other extensions, suggest the first one.
- * 3. Otherwise, suggest the prefix.
- */
 export function suggestFilename(langId, prefix) {
-    var extensions = registeredAssociations
-        .filter(function (assoc) { return !assoc.userConfigured && assoc.extension && assoc.id === langId; })
-        .map(function (assoc) { return assoc.extension; });
-    var extensionsWithDotFirst = extensions
-        .filter(function (assoc) { return strings.startsWith(assoc, '.'); });
-    if (extensionsWithDotFirst.length > 0) {
-        return prefix + extensionsWithDotFirst[0];
+    for (var i = 0; i < registeredAssociations.length; i++) {
+        var association = registeredAssociations[i];
+        if (association.userConfigured) {
+            continue; // only support registered ones
+        }
+        if (association.id === langId && association.extension) {
+            return prefix + association.extension;
+        }
     }
-    return extensions[0] || prefix;
+    return prefix; // without any known extension, just return the prefix
 }
 // Known media mimes that we can handle
 var mapExtToMediaMimes = {

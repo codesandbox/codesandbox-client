@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -163,7 +160,7 @@ var ModelRawTokenScanner = /** @class */ (function () {
             this._model.forceTokenization(this._lineNumber);
             this._lineTokens = this._model.getLineTokens(this._lineNumber);
             this._tokenIndex = 0;
-            if (this._lineTokens.getLineContent().length === 0) {
+            if (this._lineTokens.getCount() === 0) {
                 // Skip empty lines
                 this._lineTokens = null;
             }
@@ -359,7 +356,7 @@ export function find(node, position) {
         }
     }
     else if (node instanceof Block) {
-        result = find(node.elements, position) || find(node.open, position) || find(node.close, position);
+        result = find(node.open, position) || find(node.elements, position) || find(node.close, position);
     }
     return result || node;
 }

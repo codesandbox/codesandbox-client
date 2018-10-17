@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import * as ls from './_deps/vscode-languageserver-types/main.js';
+var Uri = monaco.Uri;
 var Range = monaco.Range;
 // --- diagnostics --- ---
 var DiagnosticsAdapter = /** @class */ (function () {
@@ -285,6 +286,47 @@ function toMarkdownString(entry) {
     }
     return { value: '```' + entry.language + '\n' + entry.value + '\n```\n' };
 }
+function toMarkedStringArray(contents) {
+    if (!contents) {
+        return void 0;
+    }
+    if (Array.isArray(contents)) {
+        return contents.map(toMarkdownString);
+    }
+    return [toMarkdownString(contents)];
+}
+// --- definition ------
+function toLocation(location) {
+    return {
+        uri: Uri.parse(location.uri),
+        range: toRange(location.range)
+    };
+}
+// --- document symbols ------
+function toSymbolKind(kind) {
+    var mKind = monaco.languages.SymbolKind;
+    switch (kind) {
+        case ls.SymbolKind.File: return mKind.Array;
+        case ls.SymbolKind.Module: return mKind.Module;
+        case ls.SymbolKind.Namespace: return mKind.Namespace;
+        case ls.SymbolKind.Package: return mKind.Package;
+        case ls.SymbolKind.Class: return mKind.Class;
+        case ls.SymbolKind.Method: return mKind.Method;
+        case ls.SymbolKind.Property: return mKind.Property;
+        case ls.SymbolKind.Field: return mKind.Field;
+        case ls.SymbolKind.Constructor: return mKind.Constructor;
+        case ls.SymbolKind.Enum: return mKind.Enum;
+        case ls.SymbolKind.Interface: return mKind.Interface;
+        case ls.SymbolKind.Function: return mKind.Function;
+        case ls.SymbolKind.Variable: return mKind.Variable;
+        case ls.SymbolKind.Constant: return mKind.Constant;
+        case ls.SymbolKind.String: return mKind.String;
+        case ls.SymbolKind.Number: return mKind.Number;
+        case ls.SymbolKind.Boolean: return mKind.Boolean;
+        case ls.SymbolKind.Array: return mKind.Array;
+    }
+    return mKind.Function;
+}
 function toHighlighKind(kind) {
     var mKind = monaco.languages.DocumentHighlightKind;
     switch (kind) {
@@ -374,39 +416,6 @@ var DocumentRangeFormattingEditProvider = /** @class */ (function () {
     return DocumentRangeFormattingEditProvider;
 }());
 export { DocumentRangeFormattingEditProvider };
-var FoldingRangeAdapter = /** @class */ (function () {
-    function FoldingRangeAdapter(_worker) {
-        this._worker = _worker;
-    }
-    FoldingRangeAdapter.prototype.provideFoldingRanges = function (model, context, token) {
-        var resource = model.uri;
-        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
-            if (!ranges) {
-                return;
-            }
-            return ranges.map(function (range) {
-                var result = {
-                    start: range.startLine + 1,
-                    end: range.endLine + 1
-                };
-                if (typeof range.kind !== 'undefined') {
-                    result.kind = toFoldingRangeKind(range.kind);
-                }
-                return result;
-            });
-        }));
-    };
-    return FoldingRangeAdapter;
-}());
-export { FoldingRangeAdapter };
-function toFoldingRangeKind(kind) {
-    switch (kind) {
-        case ls.FoldingRangeKind.Comment: return monaco.languages.FoldingRangeKind.Comment;
-        case ls.FoldingRangeKind.Imports: return monaco.languages.FoldingRangeKind.Imports;
-        case ls.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
-    }
-    return void 0;
-}
 /**
  * Hook a cancellation token to a WinJS Promise
  */

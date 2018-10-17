@@ -4,28 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -40,7 +34,7 @@ import { dispose } from '../../../base/common/lifecycle.js';
 import { CommandsRegistry } from '../../commands/common/commands.js';
 import { KeybindingResolver } from '../../keybinding/common/keybindingResolver.js';
 import { IContextKeyService, SET_CONTEXT_COMMAND_ID } from '../common/contextkey.js';
-import { IConfigurationService } from '../../configuration/common/configuration.js';
+import { IConfigurationService, ConfigurationTarget } from '../../configuration/common/configuration.js';
 import { Emitter, debounceEvent } from '../../../base/common/event.js';
 var KEYBINDING_CONTEXT_ATTR = 'data-keybinding-context';
 var Context = /** @class */ (function () {
@@ -96,7 +90,7 @@ var ConfigAwareContextValuesContainer = /** @class */ (function (_super) {
         this._subscription.dispose();
     };
     ConfigAwareContextValuesContainer.prototype._onConfigurationUpdated = function (event) {
-        if (event.source === 4 /* DEFAULT */) {
+        if (event.source === ConfigurationTarget.DEFAULT) {
             // new setting, rebuild everything
             this._initFromConfiguration();
         }
@@ -124,24 +118,20 @@ var ConfigAwareContextValuesContainer = /** @class */ (function (_super) {
                 if (Object.prototype.hasOwnProperty.call(obj, key)) {
                     keys.push(key);
                     var value = obj[key];
-                    switch (typeof value) {
-                        case 'boolean':
-                        case 'string':
-                        case 'number':
-                            var configKey = keys.join('.');
-                            var oldValue = _this._value[configKey];
-                            _this._value[configKey] = value;
-                            if (oldValue !== value) {
-                                configKeysChanged.push(configKey);
-                                configKeys[configKey] = true;
-                            }
-                            else {
-                                configKeys[configKey] = false;
-                            }
-                            break;
-                        case 'object':
-                            walk(value, keys);
-                            break;
+                    if (typeof value === 'boolean') {
+                        var configKey = keys.join('.');
+                        var oldValue = _this._value[configKey];
+                        _this._value[configKey] = value;
+                        if (oldValue !== value) {
+                            configKeysChanged.push(configKey);
+                            configKeys[configKey] = true;
+                        }
+                        else {
+                            configKeys[configKey] = false;
+                        }
+                    }
+                    else if (typeof value === 'object') {
+                        walk(value, keys);
                     }
                     keys.pop();
                 }

@@ -6,7 +6,6 @@
 import { isFalsyOrEmpty } from '../../../base/common/arrays.js';
 import { ContextKeyAndExpr } from '../../contextkey/common/contextkey.js';
 import { CommandsRegistry } from '../../commands/common/commands.js';
-import { MenuRegistry } from '../../actions/common/actions.js';
 var KeybindingResolver = /** @class */ (function () {
     function KeybindingResolver(defaultKeybindings, overrides) {
         this._defaultKeybindings = defaultKeybindings;
@@ -243,31 +242,20 @@ var KeybindingResolver = /** @class */ (function () {
         return rules.evaluate(context);
     };
     KeybindingResolver.getAllUnboundCommands = function (boundCommands) {
+        var commands = CommandsRegistry.getCommands();
         var unboundCommands = [];
-        var seenMap = new Map();
-        var addCommand = function (id) {
-            if (seenMap.has(id)) {
-                return;
-            }
-            seenMap.set(id);
+        for (var id in commands) {
             if (id[0] === '_' || id.indexOf('vscode.') === 0) { // private command
-                return;
+                continue;
+            }
+            if (typeof commands[id].description === 'object'
+                && !isFalsyOrEmpty(commands[id].description.args)) { // command with args
+                continue;
             }
             if (boundCommands.get(id) === true) {
-                return;
-            }
-            var command = CommandsRegistry.getCommand(id);
-            if (command && typeof command.description === 'object'
-                && !isFalsyOrEmpty(command.description.args)) { // command with args
-                return;
+                continue;
             }
             unboundCommands.push(id);
-        };
-        for (var id in MenuRegistry.getCommands()) {
-            addCommand(id);
-        }
-        for (var id in CommandsRegistry.getCommands()) {
-            addCommand(id);
         }
         return unboundCommands;
     };

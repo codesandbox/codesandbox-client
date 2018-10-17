@@ -22,7 +22,7 @@ var TreeContext = /** @class */ (function () {
         }
         this.dataSource = configuration.dataSource;
         this.renderer = configuration.renderer;
-        this.controller = configuration.controller || new TreeDefaults.DefaultController({ clickBehavior: 1 /* ON_MOUSE_UP */, keyboardSupport: typeof options.keyboardSupport !== 'boolean' || options.keyboardSupport });
+        this.controller = configuration.controller || new TreeDefaults.DefaultController({ clickBehavior: TreeDefaults.ClickBehavior.ON_MOUSE_UP, keyboardSupport: typeof options.keyboardSupport !== 'boolean' || options.keyboardSupport });
         this.dnd = configuration.dnd || new TreeDefaults.DefaultDragAndDrop();
         this.filter = configuration.filter || new TreeDefaults.DefaultFilter();
         this.sorter = configuration.sorter || null;
@@ -151,6 +151,9 @@ var Tree = /** @class */ (function () {
         if (recursive === void 0) { recursive = false; }
         return this.model.collapseAll(elements, recursive);
     };
+    Tree.prototype.collapseDeepestExpandedLevel = function () {
+        return this.model.collapseDeepestExpandedLevel();
+    };
     Tree.prototype.toggleExpansion = function (element, recursive) {
         if (recursive === void 0) { recursive = false; }
         return this.model.toggleExpansion(element, recursive);
@@ -174,9 +177,6 @@ var Tree = /** @class */ (function () {
     };
     Tree.prototype.getFirstVisibleElement = function () {
         return this.view.getFirstVisibleElement();
-    };
-    Tree.prototype.getLastVisibleElement = function () {
-        return this.view.getLastVisibleElement();
     };
     Tree.prototype.getScrollPosition = function () {
         return this.view.getScrollPosition();

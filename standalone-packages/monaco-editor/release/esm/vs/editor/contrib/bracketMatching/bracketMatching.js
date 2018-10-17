@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -40,8 +37,7 @@ var JumpToBracketAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 88 /* US_BACKSLASH */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 88 /* US_BACKSLASH */
             }
         }) || this;
     }
@@ -99,14 +95,7 @@ var BracketMatchingController = /** @class */ (function (_super) {
             }
             _this._updateBracketsSoon.schedule();
         }));
-        _this._register(editor.onDidChangeModelContent(function (e) {
-            _this._updateBracketsSoon.schedule();
-        }));
-        _this._register(editor.onDidChangeModel(function (e) {
-            _this._lastBracketsData = [];
-            _this._decorations = [];
-            _this._updateBracketsSoon.schedule();
-        }));
+        _this._register(editor.onDidChangeModel(function (e) { _this._decorations = []; _this._updateBracketsSoon.schedule(); }));
         _this._register(editor.onDidChangeModelLanguageConfiguration(function (e) {
             _this._lastBracketsData = [];
             _this._updateBracketsSoon.schedule();
@@ -266,6 +255,7 @@ var BracketMatchingController = /** @class */ (function (_super) {
         className: 'bracket-match',
         overviewRuler: {
             color: themeColorFromId(overviewRulerBracketMatchForeground),
+            darkColor: themeColorFromId(overviewRulerBracketMatchForeground),
             position: OverviewRulerLane.Center
         }
     });

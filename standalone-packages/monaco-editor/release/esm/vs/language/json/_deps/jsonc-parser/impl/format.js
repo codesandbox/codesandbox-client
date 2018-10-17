@@ -22,7 +22,7 @@ export function format(documentText, range, options) {
             endOffset++;
         }
         formatText = documentText.substring(formatTextStart, endOffset);
-        initialIndentLevel = computeIndentLevel(formatText, options);
+        initialIndentLevel = computeIndentLevel(formatText, 0, options);
     }
     else {
         formatText = documentText;
@@ -155,7 +155,7 @@ function repeat(s, count) {
     }
     return result;
 }
-function computeIndentLevel(content, options) {
+function computeIndentLevel(content, offset, options) {
     var i = 0;
     var nChars = 0;
     var tabSize = options.tabSize || 4;

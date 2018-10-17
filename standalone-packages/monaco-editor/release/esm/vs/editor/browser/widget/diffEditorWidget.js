@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -32,7 +29,7 @@ import { Disposable } from '../../../base/common/lifecycle.js';
 import * as objects from '../../../base/common/objects.js';
 import * as dom from '../../../base/browser/dom.js';
 import { createFastDomNode } from '../../../base/browser/fastDomNode.js';
-import { Sash } from '../../../base/browser/ui/sash/sash.js';
+import { Sash, SashState } from '../../../base/browser/ui/sash/sash.js';
 import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
 import { IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
 import { ICodeEditorService } from '../services/codeEditorService.js';
@@ -48,7 +45,7 @@ import { ServiceCollection } from '../../../platform/instantiation/common/servic
 import { Emitter } from '../../../base/common/event.js';
 import * as editorOptions from '../../common/config/editorOptions.js';
 import { registerThemingParticipant, IThemeService, getThemeTypeSelector } from '../../../platform/theme/common/themeService.js';
-import { scrollbarShadow, diffInserted, diffRemoved, defaultInsertColor, defaultRemoveColor, diffInsertedOutline, diffRemovedOutline, diffBorder } from '../../../platform/theme/common/colorRegistry.js';
+import { scrollbarShadow, diffInserted, diffRemoved, defaultInsertColor, defaultRemoveColor, diffInsertedOutline, diffRemovedOutline } from '../../../platform/theme/common/colorRegistry.js';
 import { OverviewRulerZone } from '../../common/view/overviewZoneManager.js';
 import { ModelDecorationOptions } from '../../common/model/textModel.js';
 import { DiffReview } from './diffReview.js';
@@ -736,7 +733,7 @@ var DiffEditorWidget = /** @class */ (function (_super) {
         clonedOptions.folding = false;
         clonedOptions.codeLens = false;
         clonedOptions.fixedOverflowWidgets = true;
-        // clonedOptions.lineDecorationsWidth = '2ch';
+        clonedOptions.lineDecorationsWidth = '2ch';
         if (!clonedOptions.minimap) {
             clonedOptions.minimap = {};
         }
@@ -1051,15 +1048,10 @@ var ViewZonesComputer = /** @class */ (function () {
                 else {
                     viewZoneLineNumber = originalEndEquivalentLineNumber;
                 }
-                var marginDomNode = null;
-                if (lineChange && lineChange.modifiedStartLineNumber <= modifiedForeignVZ.current.afterLineNumber && modifiedForeignVZ.current.afterLineNumber <= lineChange.modifiedEndLineNumber) {
-                    marginDomNode = this._createOriginalMarginDomNodeForModifiedForeignViewZoneInAddedRegion();
-                }
                 stepOriginal.push({
                     afterLineNumber: viewZoneLineNumber,
                     heightInLines: modifiedForeignVZ.current.heightInLines,
-                    domNode: null,
-                    marginDomNode: marginDomNode
+                    domNode: null
                 });
                 modifiedForeignVZ.advance();
             }
@@ -1211,7 +1203,7 @@ var DiffEdtorWidgetSideBySide = /** @class */ (function (_super) {
         _this._sashPosition = null;
         _this._sash = _this._register(new Sash(_this._dataSource.getContainerDomNode(), _this));
         if (_this._disableSash) {
-            _this._sash.state = 0 /* Disabled */;
+            _this._sash.state = SashState.Disabled;
         }
         _this._sash.onDidStart(function () { return _this.onSashDragStart(); });
         _this._sash.onDidChange(function (e) { return _this.onSashDrag(e); });
@@ -1219,11 +1211,14 @@ var DiffEdtorWidgetSideBySide = /** @class */ (function (_super) {
         _this._sash.onDidReset(function () { return _this.onSashReset(); });
         return _this;
     }
+    DiffEdtorWidgetSideBySide.prototype.dispose = function () {
+        _super.prototype.dispose.call(this);
+    };
     DiffEdtorWidgetSideBySide.prototype.setEnableSplitViewResizing = function (enableSplitViewResizing) {
         var newDisableSash = (enableSplitViewResizing === false);
         if (this._disableSash !== newDisableSash) {
             this._disableSash = newDisableSash;
-            this._sash.state = this._disableSash ? 0 /* Disabled */ : 3 /* Enabled */;
+            this._sash.state = this._disableSash ? SashState.Disabled : SashState.Enabled;
         }
     };
     DiffEdtorWidgetSideBySide.prototype.layout = function (sashRatio) {
@@ -1391,9 +1386,6 @@ var SideBySideViewZonesComputer = /** @class */ (function (_super) {
     function SideBySideViewZonesComputer(lineChanges, originalForeignVZ, modifiedForeignVZ) {
         return _super.call(this, lineChanges, originalForeignVZ, modifiedForeignVZ) || this;
     }
-    SideBySideViewZonesComputer.prototype._createOriginalMarginDomNodeForModifiedForeignViewZoneInAddedRegion = function () {
-        return null;
-    };
     SideBySideViewZonesComputer.prototype._produceOriginalFromDiff = function (lineChange, lineChangeOriginalLength, lineChangeModifiedLength) {
         if (lineChangeModifiedLength > lineChangeOriginalLength) {
             return {
@@ -1429,6 +1421,9 @@ var DiffEdtorWidgetInline = /** @class */ (function (_super) {
         }));
         return _this;
     }
+    DiffEdtorWidgetInline.prototype.dispose = function () {
+        _super.prototype.dispose.call(this);
+    };
     DiffEdtorWidgetInline.prototype.setEnableSplitViewResizing = function (enableSplitViewResizing) {
         // Nothing to do..
     };
@@ -1523,14 +1518,10 @@ var InlineViewZonesComputer = /** @class */ (function (_super) {
         _this.renderIndicators = renderIndicators;
         return _this;
     }
-    InlineViewZonesComputer.prototype._createOriginalMarginDomNodeForModifiedForeignViewZoneInAddedRegion = function () {
-        var result = document.createElement('div');
-        result.className = 'inline-added-margin-view-zone';
-        return result;
-    };
     InlineViewZonesComputer.prototype._produceOriginalFromDiff = function (lineChange, lineChangeOriginalLength, lineChangeModifiedLength) {
         var marginDomNode = document.createElement('div');
         marginDomNode.className = 'inline-added-margin-view-zone';
+        Configuration.applyFontInfoSlow(marginDomNode, this.modifiedEditorConfiguration.fontInfo);
         return {
             afterLineNumber: Math.max(lineChange.originalStartLineNumber, lineChange.originalEndLineNumber),
             heightInLines: lineChangeModifiedLength,
@@ -1595,7 +1586,7 @@ var InlineViewZonesComputer = /** @class */ (function (_super) {
         sb.appendASCIIString('px;width:1000000px;">');
         var isBasicASCII = ViewLineRenderingData.isBasicASCII(lineContent, originalModel.mightContainNonBasicASCII());
         var containsRTL = ViewLineRenderingData.containsRTL(lineContent, isBasicASCII, originalModel.mightContainRTL());
-        var output = renderViewLine(new RenderLineInput((config.fontInfo.isMonospace && !config.viewInfo.disableMonospaceOptimizations), config.fontInfo.canUseHalfwidthRightwardsArrow, lineContent, false, isBasicASCII, containsRTL, 0, lineTokens, actualDecorations, tabSize, config.fontInfo.spaceWidth, config.viewInfo.stopRenderingLineAfter, config.viewInfo.renderWhitespace, config.viewInfo.renderControlCharacters, config.viewInfo.fontLigatures), sb);
+        var output = renderViewLine(new RenderLineInput((config.fontInfo.isMonospace && !config.viewInfo.disableMonospaceOptimizations), lineContent, false, isBasicASCII, containsRTL, 0, lineTokens, actualDecorations, tabSize, config.fontInfo.spaceWidth, config.viewInfo.stopRenderingLineAfter, config.viewInfo.renderWhitespace, config.viewInfo.renderControlCharacters, config.viewInfo.fontLigatures), sb);
         sb.appendASCIIString('</div>');
         var absoluteOffsets = output.characterMapping.getAbsoluteOffsets();
         return absoluteOffsets.length > 0 ? absoluteOffsets[absoluteOffsets.length - 1] : 0;
@@ -1637,9 +1628,5 @@ registerThemingParticipant(function (theme, collector) {
     var shadow = theme.getColor(scrollbarShadow);
     if (shadow) {
         collector.addRule(".monaco-diff-editor.side-by-side .editor.modified { box-shadow: -6px 0 5px -5px " + shadow + "; }");
-    }
-    var border = theme.getColor(diffBorder);
-    if (border) {
-        collector.addRule(".monaco-diff-editor.side-by-side .editor.modified { border-left: 1px solid " + border + "; }");
     }
 });

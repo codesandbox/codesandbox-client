@@ -9,6 +9,28 @@ import { CommandsRegistry } from '../../commands/common/commands.js';
 import { Registry } from '../../registry/common/platform.js';
 var KeybindingsRegistryImpl = /** @class */ (function () {
     function KeybindingsRegistryImpl() {
+        this.WEIGHT = {
+            editorCore: function (importance) {
+                if (importance === void 0) { importance = 0; }
+                return 0 + importance;
+            },
+            editorContrib: function (importance) {
+                if (importance === void 0) { importance = 0; }
+                return 100 + importance;
+            },
+            workbenchContrib: function (importance) {
+                if (importance === void 0) { importance = 0; }
+                return 200 + importance;
+            },
+            builtinExtension: function (importance) {
+                if (importance === void 0) { importance = 0; }
+                return 300 + importance;
+            },
+            externalExtension: function (importance) {
+                if (importance === void 0) { importance = 0; }
+                return 400 + importance;
+            }
+        };
         this._keybindings = [];
         this._keybindingsSorted = true;
     }

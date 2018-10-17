@@ -404,11 +404,9 @@ var DocumentSymbolAdapter = /** @class */ (function () {
             }
             return items.map(function (item) { return ({
                 name: item.name,
-                detail: '',
                 containerName: item.containerName,
                 kind: toSymbolKind(item.kind),
-                range: toRange(item.location.range),
-                selectionRange: toRange(item.location.range)
+                location: toLocation(item.location)
             }); });
         }));
     };
@@ -454,39 +452,6 @@ var DocumentColorAdapter = /** @class */ (function () {
     return DocumentColorAdapter;
 }());
 export { DocumentColorAdapter };
-var FoldingRangeAdapter = /** @class */ (function () {
-    function FoldingRangeAdapter(_worker) {
-        this._worker = _worker;
-    }
-    FoldingRangeAdapter.prototype.provideFoldingRanges = function (model, context, token) {
-        var resource = model.uri;
-        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
-            if (!ranges) {
-                return;
-            }
-            return ranges.map(function (range) {
-                var result = {
-                    start: range.startLine + 1,
-                    end: range.endLine + 1
-                };
-                if (typeof range.kind !== 'undefined') {
-                    result.kind = toFoldingRangeKind(range.kind);
-                }
-                return result;
-            });
-        }));
-    };
-    return FoldingRangeAdapter;
-}());
-export { FoldingRangeAdapter };
-function toFoldingRangeKind(kind) {
-    switch (kind) {
-        case ls.FoldingRangeKind.Comment: return monaco.languages.FoldingRangeKind.Comment;
-        case ls.FoldingRangeKind.Imports: return monaco.languages.FoldingRangeKind.Imports;
-        case ls.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
-    }
-    return void 0;
-}
 /**
  * Hook a cancellation token to a WinJS Promise
  */

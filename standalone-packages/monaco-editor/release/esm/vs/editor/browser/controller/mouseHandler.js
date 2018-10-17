@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -264,7 +261,6 @@ var MouseDownOperation = /** @class */ (function (_super) {
             && e.detail < 2 // only single click on a selection can work
             && !this._isActive // the mouse is not down yet
             && !this._currentSelection.isEmpty() // we don't drag single cursor
-            && (position.type === editorBrowser.MouseTargetType.CONTENT_TEXT) // single click on text
             && this._currentSelection.containsPosition(position.position) // single click on a selection
         ) {
             this._mouseState.isDragAndDrop = true;

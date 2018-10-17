@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -19,6 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 import './gotoLine.css';
 import * as nls from '../../../../nls.js';
 import { QuickOpenEntry, QuickOpenModel } from '../../../../base/parts/quickopen/browser/quickOpenModel.js';
+import { Mode } from '../../../../base/parts/quickopen/common/quickOpen.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { isCodeEditor } from '../../../browser/editorBrowser.js';
 import { BaseEditorQuickOpenAction } from './editorQuickOpen.js';
@@ -80,7 +78,7 @@ var GotoLineEntry = /** @class */ (function (_super) {
         return nls.localize('gotoLineAriaLabel', "Go to line {0}", this._parseResult.label);
     };
     GotoLineEntry.prototype.run = function (mode, context) {
-        if (mode === 1 /* OPEN */) {
+        if (mode === Mode.OPEN) {
             return this.runOpen();
         }
         return this.runPreview();
@@ -127,8 +125,7 @@ var GotoLineAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
                 primary: 2048 /* CtrlCmd */ | 37 /* KEY_G */,
-                mac: { primary: 256 /* WinCtrl */ | 37 /* KEY_G */ },
-                weight: 100 /* EditorContrib */
+                mac: { primary: 256 /* WinCtrl */ | 37 /* KEY_G */ }
             }
         }) || this;
     }

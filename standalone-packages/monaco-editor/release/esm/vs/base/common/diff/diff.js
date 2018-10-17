@@ -189,7 +189,7 @@ var LcsDiff = /** @class */ (function () {
             // We have to clean up the computed diff to be more intuitive
             // but it turns out this cannot be done correctly until the entire set
             // of diffs have been computed
-            return this.PrettifyChanges(changes);
+            return this.ShiftChanges(changes);
         }
         return changes;
     };
@@ -586,29 +586,41 @@ var LcsDiff = /** @class */ (function () {
      * @param changes The list of changes to shift
      * @returns The shifted changes
      */
-    LcsDiff.prototype.PrettifyChanges = function (changes) {
-        // Shift all the changes down first
-        for (var i = 0; i < changes.length; i++) {
-            var change = changes[i];
-            var originalStop = (i < changes.length - 1) ? changes[i + 1].originalStart : this.OriginalSequence.getLength();
-            var modifiedStop = (i < changes.length - 1) ? changes[i + 1].modifiedStart : this.ModifiedSequence.getLength();
-            var checkOriginal = change.originalLength > 0;
-            var checkModified = change.modifiedLength > 0;
-            while (change.originalStart + change.originalLength < originalStop &&
-                change.modifiedStart + change.modifiedLength < modifiedStop &&
-                (!checkOriginal || this.OriginalElementsAreEqual(change.originalStart, change.originalStart + change.originalLength)) &&
-                (!checkModified || this.ModifiedElementsAreEqual(change.modifiedStart, change.modifiedStart + change.modifiedLength))) {
-                change.originalStart++;
-                change.modifiedStart++;
+    LcsDiff.prototype.ShiftChanges = function (changes) {
+        var mergedDiffs;
+        do {
+            mergedDiffs = false;
+            // Shift all the changes down first
+            for (var i = 0; i < changes.length; i++) {
+                var change = changes[i];
+                var originalStop = (i < changes.length - 1) ? changes[i + 1].originalStart : this.OriginalSequence.getLength();
+                var modifiedStop = (i < changes.length - 1) ? changes[i + 1].modifiedStart : this.ModifiedSequence.getLength();
+                var checkOriginal = change.originalLength > 0;
+                var checkModified = change.modifiedLength > 0;
+                while (change.originalStart + change.originalLength < originalStop &&
+                    change.modifiedStart + change.modifiedLength < modifiedStop &&
+                    (!checkOriginal || this.OriginalElementsAreEqual(change.originalStart, change.originalStart + change.originalLength)) &&
+                    (!checkModified || this.ModifiedElementsAreEqual(change.modifiedStart, change.modifiedStart + change.modifiedLength))) {
+                    change.originalStart++;
+                    change.modifiedStart++;
+                }
             }
+            // Build up the new list (we have to build a new list because we
+            // might have changes we can merge together now)
+            var result = new Array();
             var mergedChangeArr = [null];
-            if (i < changes.length - 1 && this.ChangesOverlap(changes[i], changes[i + 1], mergedChangeArr)) {
-                changes[i] = mergedChangeArr[0];
-                changes.splice(i + 1, 1);
-                i--;
-                continue;
+            for (var i = 0; i < changes.length; i++) {
+                if (i < changes.length - 1 && this.ChangesOverlap(changes[i], changes[i + 1], mergedChangeArr)) {
+                    mergedDiffs = true;
+                    result.push(mergedChangeArr[0]);
+                    i++;
+                }
+                else {
+                    result.push(changes[i]);
+                }
             }
-        }
+            changes = result;
+        } while (mergedDiffs);
         // Shift changes back up until we hit empty or whitespace-only lines
         for (var i = changes.length - 1; i >= 0; i--) {
             var change = changes[i];

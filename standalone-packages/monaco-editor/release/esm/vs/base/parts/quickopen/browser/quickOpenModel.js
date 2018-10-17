@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -73,9 +70,7 @@ var QuickOpenEntry = /** @class */ (function () {
      * The label of the entry to use when a screen reader wants to read about the entry
      */
     QuickOpenEntry.prototype.getAriaLabel = function () {
-        return [this.getLabel(), this.getDescription(), this.getDetail()]
-            .filter(function (s) { return !!s; })
-            .join(', ');
+        return this.getLabel();
     };
     /**
      * Detail information about the entry that is optional and can be shown below the label

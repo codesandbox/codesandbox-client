@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -21,6 +18,7 @@ import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { matchesFuzzy } from '../../../../base/common/filters.js';
 import { TPromise } from '../../../../base/common/winjs.base.js';
 import { QuickOpenEntryGroup, QuickOpenModel } from '../../../../base/parts/quickopen/browser/quickOpenModel.js';
+import { Mode } from '../../../../base/parts/quickopen/common/quickOpen.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
 import { EditorContextKeys } from '../../../common/editorContextKeys.js';
 import { BaseEditorQuickOpenAction } from './editorQuickOpen.js';
@@ -47,19 +45,19 @@ var EditorActionCommandEntry = /** @class */ (function (_super) {
     };
     EditorActionCommandEntry.prototype.run = function (mode, context) {
         var _this = this;
-        if (mode === 1 /* OPEN */) {
+        if (mode === Mode.OPEN) {
             // Use a timeout to give the quick open widget a chance to close itself first
-            setTimeout(function () {
+            TPromise.timeout(50).done(function () {
                 // Some actions are enabled only when editor has focus
                 _this.editor.focus();
                 try {
                     var promise = _this.action.run() || TPromise.as(null);
-                    promise.then(null, onUnexpectedError);
+                    promise.done(null, onUnexpectedError);
                 }
                 catch (error) {
                     onUnexpectedError(error);
                 }
-            }, 50);
+            }, onUnexpectedError);
             return true;
         }
         return false;
@@ -77,13 +75,9 @@ var QuickCommandAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
-                primary: (browser.isIE ? 512 /* Alt */ | 59 /* F1 */ : 59 /* F1 */),
-                weight: 100 /* EditorContrib */
+                primary: (browser.isIE ? 512 /* Alt */ | 59 /* F1 */ : 59 /* F1 */)
             },
-            menuOpts: {
-                group: 'z_commands',
-                order: 1
-            }
+            menuOpts: {}
         }) || this;
     }
     QuickCommandAction.prototype.run = function (accessor, editor) {

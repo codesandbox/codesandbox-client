@@ -3,14 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { URI } from './uri.js';
+import URI from './uri.js';
 import { nativeSep, normalize, basename as pathsBasename, sep } from './paths.js';
 import { endsWith, ltrim, startsWithIgnoreCase, rtrim, startsWith } from './strings.js';
 import { Schemas } from './network.js';
 import { isLinux, isWindows, isMacintosh } from './platform.js';
 import { isEqual } from './resources.js';
 /**
- * @deprecated use LabelService instead
+ * @param resource for which to compute the path label
+ * @param userHomeProvider if a resource has a file schema userHomeProvider is used for tildifiying the label
+ * @param rootProvider only passed in if the label should be relative to the workspace root
  */
 export function getPathLabel(resource, userHomeProvider, rootProvider) {
     if (!resource) {
@@ -58,7 +60,7 @@ export function getBaseLabel(resource) {
     if (typeof resource === 'string') {
         resource = URI.file(resource);
     }
-    var base = pathsBasename(resource.path) || (resource.scheme === Schemas.file ? resource.fsPath : resource.path) /* can be empty string if '/' is passed in */;
+    var base = pathsBasename(resource.fsPath) || resource.fsPath /* can be empty string if '/' is passed in */;
     // convert c: => C:
     if (hasDriveLetter(base)) {
         return normalizeDriveLetter(base);

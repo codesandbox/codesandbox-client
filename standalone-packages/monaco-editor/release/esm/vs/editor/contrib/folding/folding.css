@@ -4,11 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 .monaco-editor .margin-view-overlays .folding {
+	margin-left: 5px;
 	cursor: pointer;
 	background-repeat: no-repeat;
 	background-origin: border-box;
-	background-position: calc(50% + 2px) center;
-	background-size: auto calc(100% - 3px);
+	background-position: 3px center;
+	background-size: 15px;
 	opacity: 0;
 	transition: opacity 0.5s;
 }
@@ -45,3 +46,4 @@
 	line-height: 1em;
 	cursor: pointer;
 }
+

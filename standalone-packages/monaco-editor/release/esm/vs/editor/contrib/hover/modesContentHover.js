@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -249,7 +246,7 @@ var ModesContentHoverWidget = /** @class */ (function (_super) {
         this._colorPicker = null;
         // update column from which to show
         var renderColumn = Number.MAX_VALUE;
-        var highlightRange = Range.lift(messages[0].range);
+        var highlightRange = messages[0].range;
         var fragment = document.createDocumentFragment();
         var isEmptyHoverContent = true;
         var containColorPicker = false;
@@ -297,11 +294,10 @@ var ModesContentHoverWidget = /** @class */ (function (_super) {
                             textEdits = [{ identifier: null, range: range_2, text: model_1.presentation.label, forceMoveMarkers: false }];
                             newRange = range_2.setEndPosition(range_2.endLineNumber, range_2.startColumn + model_1.presentation.label.length);
                         }
-                        _this._editor.pushUndoStop();
-                        _this._editor.executeEdits('colorpicker', textEdits);
+                        editorModel_1.pushEditOperations([], textEdits, function () { return []; });
                         if (model_1.presentation.additionalTextEdits) {
                             textEdits = model_1.presentation.additionalTextEdits.slice();
-                            _this._editor.executeEdits('colorpicker', textEdits);
+                            editorModel_1.pushEditOperations([], textEdits, function () { return []; });
                             _this.hide();
                         }
                         _this._editor.pushUndoStop();
@@ -325,7 +321,7 @@ var ModesContentHoverWidget = /** @class */ (function (_super) {
                     });
                     var colorChangeListener = model_1.onDidChangeColor(updateColorPresentations);
                     _this._colorPicker = widget_1;
-                    _this.showAt(range_2.getStartPosition(), range_2, _this._shouldFocus);
+                    _this.showAt(new Position(renderRange.startLineNumber, renderColumn), _this._shouldFocus);
                     _this.updateContents(fragment);
                     _this._colorPicker.layout();
                     _this.renderDisposable = combinedDisposable([colorListener, colorChangeListener, widget_1, markdownDisposeable]);
@@ -334,7 +330,7 @@ var ModesContentHoverWidget = /** @class */ (function (_super) {
         });
         // show
         if (!containColorPicker && !isEmptyHoverContent) {
-            this.showAt(new Position(renderRange.startLineNumber, renderColumn), highlightRange, this._shouldFocus);
+            this.showAt(new Position(renderRange.startLineNumber, renderColumn), this._shouldFocus);
             this.updateContents(fragment);
         }
         this._isChangingDecorations = true;

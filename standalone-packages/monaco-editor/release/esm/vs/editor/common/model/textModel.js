@@ -4,19 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { URI } from '../../../base/common/uri.js';
+import URI from '../../../base/common/uri.js';
 import { Emitter } from '../../../base/common/event.js';
 import * as model from '../model.js';
 import { TokenizationRegistry } from '../modes.js';
@@ -41,7 +38,6 @@ import { EDITOR_MODEL_DEFAULTS } from '../config/editorOptions.js';
 import { TextModelSearch, SearchParams } from './textModelSearch.js';
 import { TPromise } from '../../../base/common/winjs.base.js';
 import { PieceTreeTextBufferBuilder } from './pieceTreeTextBuffer/pieceTreeTextBufferBuilder.js';
-var CHEAP_TOKENIZATION_LENGTH_LIMIT = 2048;
 function createTextBufferBuilder() {
     return new PieceTreeTextBufferBuilder();
 }
@@ -1063,13 +1059,7 @@ var TextModel = /** @class */ (function (_super) {
             for (var i = 0, len = contentChanges.length; i < len; i++) {
                 var change = contentChanges[i];
                 var _a = TextModel._eolCount(change.text), eolCount = _a[0], firstLineLength = _a[1];
-                try {
-                    this._tokens.applyEdits(change.range, eolCount, firstLineLength);
-                }
-                catch (err) {
-                    // emergency recovery => reset tokens
-                    this._tokens = new ModelLinesTokens(this._tokens.languageIdentifier, this._tokens.tokenizationSupport);
-                }
+                this._tokens.applyEdits(change.range, eolCount, firstLineLength);
                 this._onDidChangeDecorations.fire();
                 this._decorationsTree.acceptReplace(change.rangeOffset, change.rangeLength, change.text.length, change.forceMoveMarkers);
                 var startLineNumber = change.range.startLineNumber;
@@ -1138,9 +1128,6 @@ var TextModel = /** @class */ (function (_super) {
             this._onDidChangeDecorations.endDeferredEmit();
         }
     };
-    TextModel.prototype.canUndo = function () {
-        return this._commandManager.canUndo();
-    };
     TextModel.prototype._redo = function () {
         this._isRedoing = true;
         var r = this._commandManager.redo();
@@ -1161,9 +1148,6 @@ var TextModel = /** @class */ (function (_super) {
             this._eventEmitter.endDeferredEmit();
             this._onDidChangeDecorations.endDeferredEmit();
         }
-    };
-    TextModel.prototype.canRedo = function () {
-        return this._commandManager.canRedo();
     };
     //#endregion
     //#region Decorations
@@ -1373,8 +1357,8 @@ var TextModel = /** @class */ (function (_super) {
         if (!node) {
             return;
         }
-        var nodeWasInOverviewRuler = (node.options.overviewRuler && node.options.overviewRuler.color ? true : false);
-        var nodeIsInOverviewRuler = (options.overviewRuler && options.overviewRuler.color ? true : false);
+        var nodeWasInOverviewRuler = (node.options.overviewRuler.color ? true : false);
+        var nodeIsInOverviewRuler = (options.overviewRuler.color ? true : false);
         if (nodeWasInOverviewRuler !== nodeIsInOverviewRuler) {
             // Delete + Insert due to an overview ruler status change
             this._decorationsTree.delete(node);
@@ -1520,16 +1504,7 @@ var TextModel = /** @class */ (function (_super) {
         }
     };
     TextModel.prototype.isCheapToTokenize = function (lineNumber) {
-        if (!this._tokens.isCheapToTokenize(lineNumber)) {
-            return false;
-        }
-        if (lineNumber < this._tokens.inValidLineStartIndex + 1) {
-            return true;
-        }
-        if (this.getLineLength(lineNumber) < CHEAP_TOKENIZATION_LENGTH_LIMIT) {
-            return true;
-        }
-        return false;
+        return this._tokens.isCheapToTokenize(lineNumber);
     };
     TextModel.prototype.tokenizeIfCheap = function (lineNumber) {
         if (this.isCheapToTokenize(lineNumber)) {
@@ -2308,35 +2283,25 @@ function cleanClassName(className) {
 }
 var ModelDecorationOverviewRulerOptions = /** @class */ (function () {
     function ModelDecorationOverviewRulerOptions(options) {
-        this.color = options.color || strings.empty;
-        this.darkColor = options.darkColor || strings.empty;
-        this.position = (typeof options.position === 'number' ? options.position : model.OverviewRulerLane.Center);
+        this.color = strings.empty;
+        this.darkColor = strings.empty;
+        this.hcColor = strings.empty;
+        this.position = model.OverviewRulerLane.Center;
         this._resolvedColor = null;
+        if (options && options.color) {
+            this.color = options.color;
+        }
+        if (options && options.darkColor) {
+            this.darkColor = options.darkColor;
+            this.hcColor = options.darkColor;
+        }
+        if (options && options.hcColor) {
+            this.hcColor = options.hcColor;
+        }
+        if (options && options.hasOwnProperty('position')) {
+            this.position = options.position;
+        }
     }
-    ModelDecorationOverviewRulerOptions.prototype.getColor = function (theme) {
-        if (!this._resolvedColor) {
-            if (theme.type !== 'light' && this.darkColor) {
-                this._resolvedColor = this._resolveColor(this.darkColor, theme);
-            }
-            else {
-                this._resolvedColor = this._resolveColor(this.color, theme);
-            }
-        }
-        return this._resolvedColor;
-    };
-    ModelDecorationOverviewRulerOptions.prototype.invalidateCachedColor = function () {
-        this._resolvedColor = null;
-    };
-    ModelDecorationOverviewRulerOptions.prototype._resolveColor = function (color, theme) {
-        if (typeof color === 'string') {
-            return color;
-        }
-        var c = color ? theme.getColor(color.id) : null;
-        if (!c) {
-            return strings.empty;
-        }
-        return c.toString();
-    };
     return ModelDecorationOverviewRulerOptions;
 }());
 export { ModelDecorationOverviewRulerOptions };
@@ -2344,20 +2309,19 @@ var ModelDecorationOptions = /** @class */ (function () {
     function ModelDecorationOptions(options) {
         this.stickiness = options.stickiness || model.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges;
         this.zIndex = options.zIndex || 0;
-        this.className = options.className ? cleanClassName(options.className) : null;
-        this.hoverMessage = options.hoverMessage || null;
-        this.glyphMarginHoverMessage = options.glyphMarginHoverMessage || null;
+        this.className = options.className ? cleanClassName(options.className) : strings.empty;
+        this.hoverMessage = options.hoverMessage || [];
+        this.glyphMarginHoverMessage = options.glyphMarginHoverMessage || [];
         this.isWholeLine = options.isWholeLine || false;
         this.showIfCollapsed = options.showIfCollapsed || false;
-        this.collapseOnReplaceEdit = options.collapseOnReplaceEdit || false;
-        this.overviewRuler = options.overviewRuler ? new ModelDecorationOverviewRulerOptions(options.overviewRuler) : null;
-        this.glyphMarginClassName = options.glyphMarginClassName ? cleanClassName(options.glyphMarginClassName) : null;
-        this.linesDecorationsClassName = options.linesDecorationsClassName ? cleanClassName(options.linesDecorationsClassName) : null;
-        this.marginClassName = options.marginClassName ? cleanClassName(options.marginClassName) : null;
-        this.inlineClassName = options.inlineClassName ? cleanClassName(options.inlineClassName) : null;
+        this.overviewRuler = new ModelDecorationOverviewRulerOptions(options.overviewRuler);
+        this.glyphMarginClassName = options.glyphMarginClassName ? cleanClassName(options.glyphMarginClassName) : strings.empty;
+        this.linesDecorationsClassName = options.linesDecorationsClassName ? cleanClassName(options.linesDecorationsClassName) : strings.empty;
+        this.marginClassName = options.marginClassName ? cleanClassName(options.marginClassName) : strings.empty;
+        this.inlineClassName = options.inlineClassName ? cleanClassName(options.inlineClassName) : strings.empty;
         this.inlineClassNameAffectsLetterSpacing = options.inlineClassNameAffectsLetterSpacing || false;
-        this.beforeContentClassName = options.beforeContentClassName ? cleanClassName(options.beforeContentClassName) : null;
-        this.afterContentClassName = options.afterContentClassName ? cleanClassName(options.afterContentClassName) : null;
+        this.beforeContentClassName = options.beforeContentClassName ? cleanClassName(options.beforeContentClassName) : strings.empty;
+        this.afterContentClassName = options.afterContentClassName ? cleanClassName(options.afterContentClassName) : strings.empty;
     }
     ModelDecorationOptions.register = function (options) {
         return new ModelDecorationOptions(options);

@@ -4,8 +4,32 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import * as nls from '../../../fillers/vscode-nls.js';
-import { TokenType, ScannerState } from '../htmlLanguageTypes.js';
 var localize = nls.loadMessageBundle();
+export var TokenType;
+(function (TokenType) {
+    TokenType[TokenType["StartCommentTag"] = 0] = "StartCommentTag";
+    TokenType[TokenType["Comment"] = 1] = "Comment";
+    TokenType[TokenType["EndCommentTag"] = 2] = "EndCommentTag";
+    TokenType[TokenType["StartTagOpen"] = 3] = "StartTagOpen";
+    TokenType[TokenType["StartTagClose"] = 4] = "StartTagClose";
+    TokenType[TokenType["StartTagSelfClose"] = 5] = "StartTagSelfClose";
+    TokenType[TokenType["StartTag"] = 6] = "StartTag";
+    TokenType[TokenType["EndTagOpen"] = 7] = "EndTagOpen";
+    TokenType[TokenType["EndTagClose"] = 8] = "EndTagClose";
+    TokenType[TokenType["EndTag"] = 9] = "EndTag";
+    TokenType[TokenType["DelimiterAssign"] = 10] = "DelimiterAssign";
+    TokenType[TokenType["AttributeName"] = 11] = "AttributeName";
+    TokenType[TokenType["AttributeValue"] = 12] = "AttributeValue";
+    TokenType[TokenType["StartDoctypeTag"] = 13] = "StartDoctypeTag";
+    TokenType[TokenType["Doctype"] = 14] = "Doctype";
+    TokenType[TokenType["EndDoctypeTag"] = 15] = "EndDoctypeTag";
+    TokenType[TokenType["Content"] = 16] = "Content";
+    TokenType[TokenType["Whitespace"] = 17] = "Whitespace";
+    TokenType[TokenType["Unknown"] = 18] = "Unknown";
+    TokenType[TokenType["Script"] = 19] = "Script";
+    TokenType[TokenType["Styles"] = 20] = "Styles";
+    TokenType[TokenType["EOS"] = 21] = "EOS";
+})(TokenType || (TokenType = {}));
 var MultiLineStream = /** @class */ (function () {
     function MultiLineStream(source, position) {
         this.source = source;
@@ -131,6 +155,20 @@ var _CAR = '\r'.charCodeAt(0);
 var _LFD = '\f'.charCodeAt(0);
 var _WSP = ' '.charCodeAt(0);
 var _TAB = '\t'.charCodeAt(0);
+export var ScannerState;
+(function (ScannerState) {
+    ScannerState[ScannerState["WithinContent"] = 0] = "WithinContent";
+    ScannerState[ScannerState["AfterOpeningStartTag"] = 1] = "AfterOpeningStartTag";
+    ScannerState[ScannerState["AfterOpeningEndTag"] = 2] = "AfterOpeningEndTag";
+    ScannerState[ScannerState["WithinDoctype"] = 3] = "WithinDoctype";
+    ScannerState[ScannerState["WithinTag"] = 4] = "WithinTag";
+    ScannerState[ScannerState["WithinEndTag"] = 5] = "WithinEndTag";
+    ScannerState[ScannerState["WithinComment"] = 6] = "WithinComment";
+    ScannerState[ScannerState["WithinScriptContent"] = 7] = "WithinScriptContent";
+    ScannerState[ScannerState["WithinStyleContent"] = 8] = "WithinStyleContent";
+    ScannerState[ScannerState["AfterAttributeName"] = 9] = "AfterAttributeName";
+    ScannerState[ScannerState["BeforeAttributeValue"] = 10] = "BeforeAttributeValue";
+})(ScannerState || (ScannerState = {}));
 var htmlScriptContents = {
     'text/x-handlebars-template': true
 };
@@ -177,7 +215,7 @@ export function createScanner(input, initialOffset, initialState) {
         var errorMessage;
         switch (state) {
             case ScannerState.WithinComment:
-                if (stream.advanceIfChars([_MIN, _MIN, _RAN])) { // -->
+                if (stream.advanceIfChars([_MIN, _MIN, _RAN])) {
                     state = ScannerState.WithinContent;
                     return finishToken(offset, TokenType.EndCommentTag);
                 }
@@ -191,9 +229,9 @@ export function createScanner(input, initialOffset, initialState) {
                 stream.advanceUntilChar(_RAN); // >
                 return finishToken(offset, TokenType.Doctype);
             case ScannerState.WithinContent:
-                if (stream.advanceIfChar(_LAN)) { // <
-                    if (!stream.eos() && stream.peekChar() === _BNG) { // !
-                        if (stream.advanceIfChars([_BNG, _MIN, _MIN])) { // <!--
+                if (stream.advanceIfChar(_LAN)) {
+                    if (!stream.eos() && stream.peekChar() === _BNG) {
+                        if (stream.advanceIfChars([_BNG, _MIN, _MIN])) {
                             state = ScannerState.WithinComment;
                             return finishToken(offset, TokenType.StartCommentTag);
                         }
@@ -202,7 +240,7 @@ export function createScanner(input, initialOffset, initialState) {
                             return finishToken(offset, TokenType.StartDoctypeTag);
                         }
                     }
-                    if (stream.advanceIfChar(_FSL)) { // /
+                    if (stream.advanceIfChar(_FSL)) {
                         state = ScannerState.AfterOpeningEndTag;
                         return finishToken(offset, TokenType.EndTagOpen);
                     }
@@ -217,7 +255,7 @@ export function createScanner(input, initialOffset, initialState) {
                     state = ScannerState.WithinEndTag;
                     return finishToken(offset, TokenType.EndTag);
                 }
-                if (stream.skipWhitespace()) { // white space is not valid here
+                if (stream.skipWhitespace()) {
                     return finishToken(offset, TokenType.Whitespace, localize('error.unexpectedWhitespace', 'Tag name must directly follow the open bracket.'));
                 }
                 state = ScannerState.WithinEndTag;
@@ -227,10 +265,10 @@ export function createScanner(input, initialOffset, initialState) {
                 }
                 return internalScan();
             case ScannerState.WithinEndTag:
-                if (stream.skipWhitespace()) { // white space is valid here
+                if (stream.skipWhitespace()) {
                     return finishToken(offset, TokenType.Whitespace);
                 }
-                if (stream.advanceIfChar(_RAN)) { // >
+                if (stream.advanceIfChar(_RAN)) {
                     state = ScannerState.WithinContent;
                     return finishToken(offset, TokenType.EndTagClose);
                 }
@@ -245,7 +283,7 @@ export function createScanner(input, initialOffset, initialState) {
                     state = ScannerState.WithinTag;
                     return finishToken(offset, TokenType.StartTag);
                 }
-                if (stream.skipWhitespace()) { // white space is not valid here
+                if (stream.skipWhitespace()) {
                     return finishToken(offset, TokenType.Whitespace, localize('error.unexpectedWhitespace', 'Tag name must directly follow the open bracket.'));
                 }
                 state = ScannerState.WithinTag;
@@ -267,11 +305,11 @@ export function createScanner(input, initialOffset, initialState) {
                         return finishToken(offset, TokenType.AttributeName);
                     }
                 }
-                if (stream.advanceIfChars([_FSL, _RAN])) { // />
+                if (stream.advanceIfChars([_FSL, _RAN])) {
                     state = ScannerState.WithinContent;
                     return finishToken(offset, TokenType.StartTagSelfClose);
                 }
-                if (stream.advanceIfChar(_RAN)) { // >
+                if (stream.advanceIfChar(_RAN)) {
                     if (lastTag === 'script') {
                         if (lastTypeValue && htmlScriptContents[lastTypeValue]) {
                             // stay in html
@@ -348,12 +386,12 @@ export function createScanner(input, initialOffset, initialState) {
                     else if (match === '-->') {
                         sciptState = 1;
                     }
-                    else if (match[1] !== '/') { // <script
+                    else if (match[1] !== '/') {
                         if (sciptState === 2) {
                             sciptState = 3;
                         }
                     }
-                    else { // </script
+                    else {
                         if (sciptState === 3) {
                             sciptState = 2;
                         }

@@ -15,13 +15,36 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import * as Json from '../../jsonc-parser/main.js';
 import * as objects from '../utils/objects.js';
-import { ErrorCode } from '../jsonLanguageTypes.js';
 import * as nls from '../../../fillers/vscode-nls.js';
 import Uri from '../../vscode-uri/index.js';
-import { Diagnostic, DiagnosticSeverity, Range } from '../../vscode-languageserver-types/main.js';
+import { DiagnosticSeverity } from '../../vscode-languageserver-types/main.js';
 var localize = nls.loadMessageBundle();
+export var ErrorCode;
+(function (ErrorCode) {
+    ErrorCode[ErrorCode["Undefined"] = 0] = "Undefined";
+    ErrorCode[ErrorCode["EnumValueMismatch"] = 1] = "EnumValueMismatch";
+    ErrorCode[ErrorCode["UnexpectedEndOfComment"] = 257] = "UnexpectedEndOfComment";
+    ErrorCode[ErrorCode["UnexpectedEndOfString"] = 258] = "UnexpectedEndOfString";
+    ErrorCode[ErrorCode["UnexpectedEndOfNumber"] = 259] = "UnexpectedEndOfNumber";
+    ErrorCode[ErrorCode["InvalidUnicode"] = 260] = "InvalidUnicode";
+    ErrorCode[ErrorCode["InvalidEscapeCharacter"] = 261] = "InvalidEscapeCharacter";
+    ErrorCode[ErrorCode["InvalidCharacter"] = 262] = "InvalidCharacter";
+    ErrorCode[ErrorCode["PropertyExpected"] = 513] = "PropertyExpected";
+    ErrorCode[ErrorCode["CommaExpected"] = 514] = "CommaExpected";
+    ErrorCode[ErrorCode["ColonExpected"] = 515] = "ColonExpected";
+    ErrorCode[ErrorCode["ValueExpected"] = 516] = "ValueExpected";
+    ErrorCode[ErrorCode["CommaOrCloseBacketExpected"] = 517] = "CommaOrCloseBacketExpected";
+    ErrorCode[ErrorCode["CommaOrCloseBraceExpected"] = 518] = "CommaOrCloseBraceExpected";
+    ErrorCode[ErrorCode["TrailingComma"] = 519] = "TrailingComma";
+})(ErrorCode || (ErrorCode = {}));
 var colorHexPattern = /^#([0-9A-Fa-f]{3,4}|([0-9A-Fa-f]{2}){3,4})$/;
 var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+export var ProblemSeverity;
+(function (ProblemSeverity) {
+    ProblemSeverity["Ignore"] = "ignore";
+    ProblemSeverity["Error"] = "error";
+    ProblemSeverity["Warning"] = "warning";
+})(ProblemSeverity || (ProblemSeverity = {}));
 var ASTNodeImpl = /** @class */ (function () {
     function ASTNodeImpl(parent, offset, length) {
         this.offset = offset;
@@ -46,7 +69,6 @@ var NullASTNodeImpl = /** @class */ (function (_super) {
     function NullASTNodeImpl(parent, offset) {
         var _this = _super.call(this, parent, offset) || this;
         _this.type = 'null';
-        _this.value = null;
         return _this;
     }
     return NullASTNodeImpl;
@@ -163,8 +185,8 @@ var SchemaCollector = /** @class */ (function () {
         this.schemas.push(schema);
     };
     SchemaCollector.prototype.merge = function (other) {
-        var _a;
         (_a = this.schemas).push.apply(_a, other.schemas);
+        var _a;
     };
     SchemaCollector.prototype.include = function (node) {
         return (this.focusOffset === -1 || contains(node, this.focusOffset)) && (node !== this.exclude);
@@ -250,58 +272,117 @@ var ValidationResult = /** @class */ (function () {
     return ValidationResult;
 }());
 export { ValidationResult };
+function toProblemSeverity(diagnosticsSeverity) {
+    switch (diagnosticsSeverity) {
+        case DiagnosticSeverity.Error: return ProblemSeverity.Error;
+        case DiagnosticSeverity.Warning: return ProblemSeverity.Warning;
+        case DiagnosticSeverity.Information: return ProblemSeverity.Warning;
+    }
+    return ProblemSeverity.Ignore;
+}
 export function newJSONDocument(root, diagnostics) {
     if (diagnostics === void 0) { diagnostics = []; }
-    return new JSONDocument(root, diagnostics, []);
+    return new JSONDocument(root, [], [], diagnostics);
 }
 export function getNodeValue(node) {
-    return Json.getNodeValue(node);
+    switch (node.type) {
+        case 'array':
+            return node.items.map(getNodeValue);
+        case 'object':
+            var obj = Object.create(null);
+            for (var _i = 0, _a = node.properties; _i < _a.length; _i++) {
+                var prop = _a[_i];
+                obj[prop.keyNode.value] = getNodeValue(prop.valueNode);
+            }
+            return obj;
+        case 'string':
+        case 'number':
+        case 'boolean':
+            return node.value;
+    }
+    return null;
 }
 export function getNodePath(node) {
-    return Json.getNodePath(node);
+    if (!node.parent) {
+        return [];
+    }
+    var path = getNodePath(node.parent);
+    if (node.parent.type === 'property') {
+        var key = node.parent.keyNode.value;
+        path.push(key);
+    }
+    else if (node.parent.type === 'array') {
+        var index = node.parent.items.indexOf(node);
+        if (index !== -1) {
+            path.push(index);
+        }
+    }
+    return path;
 }
 export function contains(node, offset, includeRightBound) {
     if (includeRightBound === void 0) { includeRightBound = false; }
     return offset >= node.offset && offset < (node.offset + node.length) || includeRightBound && offset === (node.offset + node.length);
 }
 var JSONDocument = /** @class */ (function () {
-    function JSONDocument(root, syntaxErrors, comments) {
+    function JSONDocument(root, syntaxErrors, comments, externalDiagnostic) {
         if (syntaxErrors === void 0) { syntaxErrors = []; }
         if (comments === void 0) { comments = []; }
+        if (externalDiagnostic === void 0) { externalDiagnostic = []; }
         this.root = root;
         this.syntaxErrors = syntaxErrors;
         this.comments = comments;
+        this.externalDiagnostic = externalDiagnostic;
     }
-    JSONDocument.prototype.getNodeFromOffset = function (offset, includeRightBound) {
-        if (includeRightBound === void 0) { includeRightBound = false; }
-        if (this.root) {
-            return Json.findNodeAtOffset(this.root, offset, includeRightBound);
-        }
-        return void 0;
+    JSONDocument.prototype.getNodeFromOffset = function (offset) {
+        var findNode = function (node) {
+            if (offset >= node.offset && offset < (node.offset + node.length)) {
+                var children = node.children;
+                for (var i = 0; i < children.length && children[i].offset <= offset; i++) {
+                    var item = findNode(children[i]);
+                    if (item) {
+                        return item;
+                    }
+                }
+                return node;
+            }
+            return null;
+        };
+        return this.root && findNode(this.root);
+    };
+    JSONDocument.prototype.getNodeFromOffsetEndInclusive = function (offset) {
+        var findNode = function (node) {
+            if (offset >= node.offset && offset <= (node.offset + node.length)) {
+                var children = node.children;
+                for (var i = 0; i < children.length && children[i].offset <= offset; i++) {
+                    var item = findNode(children[i]);
+                    if (item) {
+                        return item;
+                    }
+                }
+                return node;
+            }
+            return null;
+        };
+        return this.root && findNode(this.root);
     };
     JSONDocument.prototype.visit = function (visitor) {
         if (this.root) {
             var doVisit_1 = function (node) {
                 var ctn = visitor(node);
                 var children = node.children;
-                if (Array.isArray(children)) {
-                    for (var i = 0; i < children.length && ctn; i++) {
-                        ctn = doVisit_1(children[i]);
-                    }
+                for (var i = 0; i < children.length && ctn; i++) {
+                    ctn = doVisit_1(children[i]);
                 }
                 return ctn;
             };
             doVisit_1(this.root);
         }
     };
-    JSONDocument.prototype.validate = function (textDocument, schema) {
+    JSONDocument.prototype.validate = function (schema) {
         if (this.root && schema) {
             var validationResult = new ValidationResult();
             validate(this.root, schema, validationResult, NoOpSchemaCollector.instance);
-            return validationResult.problems.map(function (p) {
-                var range = Range.create(textDocument.positionAt(p.location.offset), textDocument.positionAt(p.location.offset + p.location.length));
-                return Diagnostic.create(range, p.message, p.severity, p.code);
-            });
+            return validationResult.problems;
         }
         return null;
     };
@@ -347,7 +428,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (!schema.type.some(matchesType)) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: schema.errorMessage || localize('typeArrayMismatchWarning', 'Incorrect type. Expected one of {0}.', schema.type.join(', '))
                 });
             }
@@ -356,7 +437,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (!matchesType(schema.type)) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: schema.errorMessage || localize('typeMismatchWarning', 'Incorrect type. Expected "{0}".', schema.type)
                 });
             }
@@ -374,7 +455,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (!subValidationResult.hasProblems()) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: localize('notSchemaWarning', "Matches a schema that is not allowed.")
                 });
             }
@@ -422,7 +503,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (matches.length > 1 && maxOneMatch) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: 1 },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: localize('oneOfWarning', "Matches multiple schemas when only one must validate.")
                 });
             }
@@ -455,7 +536,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (!enumValueMatch) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     code: ErrorCode.EnumValueMismatch,
                     message: schema.errorMessage || localize('enumWarning', 'Value is not accepted. Valid values: {0}.', schema.enum.map(function (v) { return JSON.stringify(v); }).join(', '))
                 });
@@ -466,7 +547,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (!objects.equals(val, schema.const)) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     code: ErrorCode.EnumValueMismatch,
                     message: schema.errorMessage || localize('constWarning', 'Value must be {0}.', JSON.stringify(schema.const))
                 });
@@ -480,7 +561,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
         if (schema.deprecationMessage && node.parent) {
             validationResult.problems.push({
                 location: { offset: node.parent.offset, length: node.parent.length },
-                severity: DiagnosticSeverity.Warning,
+                severity: ProblemSeverity.Warning,
                 message: schema.deprecationMessage
             });
         }
@@ -491,7 +572,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (val % schema.multipleOf !== 0) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: localize('multipleOfWarning', 'Value is not divisible by {0}.', schema.multipleOf)
                 });
             }
@@ -515,7 +596,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
         if (typeof exclusiveMinimum === 'number' && val <= exclusiveMinimum) {
             validationResult.problems.push({
                 location: { offset: node.offset, length: node.length },
-                severity: DiagnosticSeverity.Warning,
+                severity: ProblemSeverity.Warning,
                 message: localize('exclusiveMinimumWarning', 'Value is below the exclusive minimum of {0}.', exclusiveMinimum)
             });
         }
@@ -523,7 +604,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
         if (typeof exclusiveMaximum === 'number' && val >= exclusiveMaximum) {
             validationResult.problems.push({
                 location: { offset: node.offset, length: node.length },
-                severity: DiagnosticSeverity.Warning,
+                severity: ProblemSeverity.Warning,
                 message: localize('exclusiveMaximumWarning', 'Value is above the exclusive maximum of {0}.', exclusiveMaximum)
             });
         }
@@ -531,7 +612,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
         if (typeof minimum === 'number' && val < minimum) {
             validationResult.problems.push({
                 location: { offset: node.offset, length: node.length },
-                severity: DiagnosticSeverity.Warning,
+                severity: ProblemSeverity.Warning,
                 message: localize('minimumWarning', 'Value is below the minimum of {0}.', minimum)
             });
         }
@@ -539,7 +620,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
         if (typeof maximum === 'number' && val > maximum) {
             validationResult.problems.push({
                 location: { offset: node.offset, length: node.length },
-                severity: DiagnosticSeverity.Warning,
+                severity: ProblemSeverity.Warning,
                 message: localize('maximumWarning', 'Value is above the maximum of {0}.', maximum)
             });
         }
@@ -548,14 +629,14 @@ function validate(node, schema, validationResult, matchingSchemas) {
         if (schema.minLength && node.value.length < schema.minLength) {
             validationResult.problems.push({
                 location: { offset: node.offset, length: node.length },
-                severity: DiagnosticSeverity.Warning,
+                severity: ProblemSeverity.Warning,
                 message: localize('minLengthWarning', 'String is shorter than the minimum length of {0}.', schema.minLength)
             });
         }
         if (schema.maxLength && node.value.length > schema.maxLength) {
             validationResult.problems.push({
                 location: { offset: node.offset, length: node.length },
-                severity: DiagnosticSeverity.Warning,
+                severity: ProblemSeverity.Warning,
                 message: localize('maxLengthWarning', 'String is longer than the maximum length of {0}.', schema.maxLength)
             });
         }
@@ -564,7 +645,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (!regex.test(node.value)) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: schema.patternErrorMessage || schema.errorMessage || localize('patternWarning', 'String does not match the pattern of "{0}".', schema.pattern)
                 });
             }
@@ -592,7 +673,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                         if (errorMessage) {
                             validationResult.problems.push({
                                 location: { offset: node.offset, length: node.length },
-                                severity: DiagnosticSeverity.Warning,
+                                severity: ProblemSeverity.Warning,
                                 message: schema.patternErrorMessage || schema.errorMessage || localize('uriFormatWarning', 'String is not a URI: {0}', errorMessage)
                             });
                         }
@@ -603,7 +684,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                         if (!node.value.match(emailPattern)) {
                             validationResult.problems.push({
                                 location: { offset: node.offset, length: node.length },
-                                severity: DiagnosticSeverity.Warning,
+                                severity: ProblemSeverity.Warning,
                                 message: schema.patternErrorMessage || schema.errorMessage || localize('emailFormatWarning', 'String is not an e-mail address.')
                             });
                         }
@@ -614,7 +695,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                         if (!node.value.match(colorHexPattern)) {
                             validationResult.problems.push({
                                 location: { offset: node.offset, length: node.length },
-                                severity: DiagnosticSeverity.Warning,
+                                severity: ProblemSeverity.Warning,
                                 message: schema.patternErrorMessage || schema.errorMessage || localize('colorHexFormatWarning', 'Invalid color format. Use #RGB, #RGBA, #RRGGBB or #RRGGBBAA.')
                             });
                         }
@@ -650,7 +731,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                 else if (schema.additionalItems === false) {
                     validationResult.problems.push({
                         location: { offset: node.offset, length: node.length },
-                        severity: DiagnosticSeverity.Warning,
+                        severity: ProblemSeverity.Warning,
                         message: localize('additionalItemsWarning', 'Array has too many items according to schema. Expected {0} or fewer.', subSchemas_1.length)
                     });
                 }
@@ -676,23 +757,23 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (!doesContain) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
-                    message: schema.errorMessage || localize('requiredItemMissingWarning', 'Array does not contain required item.')
+                    severity: ProblemSeverity.Warning,
+                    message: schema.errorMessage || localize('requiredItemMissingWarning', 'Array does not contain required item.', schema.minItems)
                 });
             }
         }
         if (schema.minItems && node.items.length < schema.minItems) {
             validationResult.problems.push({
                 location: { offset: node.offset, length: node.length },
-                severity: DiagnosticSeverity.Warning,
+                severity: ProblemSeverity.Warning,
                 message: localize('minItemsWarning', 'Array has too few items. Expected {0} or more.', schema.minItems)
             });
         }
         if (schema.maxItems && node.items.length > schema.maxItems) {
             validationResult.problems.push({
                 location: { offset: node.offset, length: node.length },
-                severity: DiagnosticSeverity.Warning,
-                message: localize('maxItemsWarning', 'Array has too many items. Expected {0} or fewer.', schema.maxItems)
+                severity: ProblemSeverity.Warning,
+                message: localize('maxItemsWarning', 'Array has too many items. Expected {0} or fewer.', schema.minItems)
             });
         }
         if (schema.uniqueItems === true) {
@@ -703,7 +784,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (duplicates) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: localize('uniqueItemsWarning', 'Array has duplicate items.')
                 });
             }
@@ -724,7 +805,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                     var location = keyNode ? { offset: keyNode.offset, length: keyNode.length } : { offset: node.offset, length: 1 };
                     validationResult.problems.push({
                         location: location,
-                        severity: DiagnosticSeverity.Warning,
+                        severity: ProblemSeverity.Warning,
                         message: localize('MissingRequiredPropWarning', 'Missing property "{0}".', propertyName)
                     });
                 }
@@ -748,7 +829,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                             var propertyNode = child.parent;
                             validationResult.problems.push({
                                 location: { offset: propertyNode.keyNode.offset, length: propertyNode.keyNode.length },
-                                severity: DiagnosticSeverity.Warning,
+                                severity: ProblemSeverity.Warning,
                                 message: schema.errorMessage || localize('DisallowedExtraPropWarning', 'Property {0} is not allowed.', propertyName)
                             });
                         }
@@ -779,7 +860,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                                     var propertyNode = child.parent;
                                     validationResult.problems.push({
                                         location: { offset: propertyNode.keyNode.offset, length: propertyNode.keyNode.length },
-                                        severity: DiagnosticSeverity.Warning,
+                                        severity: ProblemSeverity.Warning,
                                         message: schema.errorMessage || localize('DisallowedExtraPropWarning', 'Property {0} is not allowed.', propertyName)
                                     });
                                 }
@@ -816,7 +897,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                         var propertyNode = child.parent;
                         validationResult.problems.push({
                             location: { offset: propertyNode.keyNode.offset, length: propertyNode.keyNode.length },
-                            severity: DiagnosticSeverity.Warning,
+                            severity: ProblemSeverity.Warning,
                             message: schema.errorMessage || localize('DisallowedExtraPropWarning', 'Property {0} is not allowed.', propertyName)
                         });
                     }
@@ -827,7 +908,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (node.properties.length > schema.maxProperties) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: localize('MaxPropWarning', 'Object has more properties than limit of {0}.', schema.maxProperties)
                 });
             }
@@ -836,7 +917,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
             if (node.properties.length < schema.minProperties) {
                 validationResult.problems.push({
                     location: { offset: node.offset, length: node.length },
-                    severity: DiagnosticSeverity.Warning,
+                    severity: ProblemSeverity.Warning,
                     message: localize('MinPropWarning', 'Object has fewer properties than the required number of {0}', schema.minProperties)
                 });
             }
@@ -851,7 +932,7 @@ function validate(node, schema, validationResult, matchingSchemas) {
                             if (!seenKeys[requiredProp]) {
                                 validationResult.problems.push({
                                     location: { offset: node.offset, length: node.length },
-                                    severity: DiagnosticSeverity.Warning,
+                                    severity: ProblemSeverity.Warning,
                                     message: localize('RequiredDependentPropWarning', 'Object is missing property {0} required by property {1}.', requiredProp, key)
                                 });
                             }
@@ -884,10 +965,9 @@ function validate(node, schema, validationResult, matchingSchemas) {
 }
 export function parse(textDocument, config) {
     var problems = [];
-    var lastProblemOffset = -1;
     var text = textDocument.getText();
     var scanner = Json.createScanner(text, false);
-    var commentRanges = config && config.collectComments ? [] : void 0;
+    var comments = config && config.collectComments ? [] : void 0;
     function _scanNext() {
         while (true) {
             var token_1 = scanner.scan();
@@ -895,8 +975,8 @@ export function parse(textDocument, config) {
             switch (token_1) {
                 case 12 /* LineCommentTrivia */:
                 case 13 /* BlockCommentTrivia */:
-                    if (Array.isArray(commentRanges)) {
-                        commentRanges.push(Range.create(textDocument.positionAt(scanner.getTokenOffset()), textDocument.positionAt(scanner.getTokenOffset() + scanner.getTokenLength())));
+                    if (Array.isArray(comments)) {
+                        comments.push({ offset: scanner.getTokenOffset(), length: scanner.getTokenLength() });
                     }
                     break;
                 case 15 /* Trivia */:
@@ -914,12 +994,9 @@ export function parse(textDocument, config) {
         }
         return false;
     }
-    function _errorAtRange(message, code, startOffset, endOffset, severity) {
-        if (severity === void 0) { severity = DiagnosticSeverity.Error; }
-        if (problems.length === 0 || startOffset !== lastProblemOffset) {
-            var range = Range.create(textDocument.positionAt(startOffset), textDocument.positionAt(endOffset));
-            problems.push(Diagnostic.create(range, message, severity, code, textDocument.languageId));
-            lastProblemOffset = startOffset;
+    function _errorAtRange(message, code, location) {
+        if (problems.length === 0 || problems[problems.length - 1].location.offset !== location.offset) {
+            problems.push({ message: message, location: location, code: code, severity: ProblemSeverity.Error });
         }
     }
     function _error(message, code, node, skipUntilAfter, skipUntil) {
@@ -935,7 +1012,7 @@ export function parse(textDocument, config) {
             }
             end = start + 1;
         }
-        _errorAtRange(message, code, start, end);
+        _errorAtRange(message, code, { offset: start, length: end - start });
         if (node) {
             _finalize(node, false);
         }
@@ -1001,7 +1078,7 @@ export function parse(textDocument, config) {
                 _scanNext(); // consume comma
                 if (scanner.getToken() === 4 /* CloseBracketToken */) {
                     if (needsComma) {
-                        _errorAtRange(localize('TrailingComma', 'Trailing comma'), ErrorCode.TrailingComma, commaOffset, commaOffset + 1);
+                        _errorAtRange(localize('TrailingComma', 'Trailing comma'), ErrorCode.TrailingComma, { offset: commaOffset, length: 1 });
                     }
                     continue;
                 }
@@ -1042,9 +1119,9 @@ export function parse(textDocument, config) {
         node.keyNode = key;
         var seen = keysSeen[key.value];
         if (seen) {
-            _errorAtRange(localize('DuplicateKeyWarning', "Duplicate object key"), ErrorCode.DuplicateKey, node.keyNode.offset, node.keyNode.offset + node.keyNode.length, DiagnosticSeverity.Warning);
+            problems.push({ location: { offset: node.keyNode.offset, length: node.keyNode.length }, message: localize('DuplicateKeyWarning', "Duplicate object key"), code: ErrorCode.Undefined, severity: ProblemSeverity.Warning });
             if (typeof seen === 'object') {
-                _errorAtRange(localize('DuplicateKeyWarning', "Duplicate object key"), ErrorCode.DuplicateKey, seen.keyNode.offset, seen.keyNode.offset + seen.keyNode.length, DiagnosticSeverity.Warning);
+                problems.push({ location: { offset: seen.keyNode.offset, length: seen.keyNode.length }, message: localize('DuplicateKeyWarning', "Duplicate object key"), code: ErrorCode.Undefined, severity: ProblemSeverity.Warning });
             }
             keysSeen[key.value] = true; // if the same key is duplicate again, avoid duplicate error reporting
         }
@@ -1087,7 +1164,7 @@ export function parse(textDocument, config) {
                 _scanNext(); // consume comma
                 if (scanner.getToken() === 2 /* CloseBraceToken */) {
                     if (needsComma) {
-                        _errorAtRange(localize('TrailingComma', 'Trailing comma'), ErrorCode.TrailingComma, commaOffset, commaOffset + 1);
+                        _errorAtRange(localize('TrailingComma', 'Trailing comma'), ErrorCode.TrailingComma, { offset: commaOffset, length: 1 });
                     }
                     continue;
                 }
@@ -1165,6 +1242,6 @@ export function parse(textDocument, config) {
             _error(localize('End of file expected', 'End of file expected.'), ErrorCode.Undefined);
         }
     }
-    return new JSONDocument(_root, problems, commentRanges);
+    return new JSONDocument(_root, problems, comments);
 }
 //# sourceMappingURL=jsonParser.js.map

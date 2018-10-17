@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -27,12 +24,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import * as nls from '../../../nls.js';
 import * as arrays from '../../../base/common/arrays.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
 import { Range } from '../../common/core/range.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import { registerEditorAction, EditorAction, registerEditorContribution } from '../../browser/editorExtensions.js';
 import { TokenSelectionSupport } from './tokenSelectionSupport.js';
-import { MenuId } from '../../../platform/actions/common/actions.js';
 // --- selection state machine
 var State = /** @class */ (function () {
     function State(editor) {
@@ -69,9 +66,9 @@ var SmartSelectController = /** @class */ (function () {
                 this._state = null;
             }
         }
-        var promise = Promise.resolve(null);
+        var promise = TPromise.as(null);
         if (!this._state) {
-            promise = Promise.resolve(this._tokenSelectionSupport.getRangesToPositionSync(model.uri, selection.getStartPosition())).then(function (elements) {
+            promise = this._tokenSelectionSupport.getRangesToPosition(model.uri, selection.getStartPosition()).then(function (elements) {
                 if (arrays.isFalsyOrEmpty(elements)) {
                     return;
                 }
@@ -160,14 +157,7 @@ var GrowSelectionAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: 1024 /* Shift */ | 512 /* Alt */ | 17 /* RightArrow */,
-                mac: { primary: 2048 /* CtrlCmd */ | 256 /* WinCtrl */ | 1024 /* Shift */ | 17 /* RightArrow */ },
-                weight: 100 /* EditorContrib */
-            },
-            menubarOpts: {
-                menuId: MenuId.MenubarSelectionMenu,
-                group: '1_basic',
-                title: nls.localize({ key: 'miSmartSelectGrow', comment: ['&& denotes a mnemonic'] }, "&&Expand Selection"),
-                order: 2
+                mac: { primary: 2048 /* CtrlCmd */ | 256 /* WinCtrl */ | 1024 /* Shift */ | 17 /* RightArrow */ }
             }
         }) || this;
     }
@@ -184,14 +174,7 @@ var ShrinkSelectionAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: 1024 /* Shift */ | 512 /* Alt */ | 15 /* LeftArrow */,
-                mac: { primary: 2048 /* CtrlCmd */ | 256 /* WinCtrl */ | 1024 /* Shift */ | 15 /* LeftArrow */ },
-                weight: 100 /* EditorContrib */
-            },
-            menubarOpts: {
-                menuId: MenuId.MenubarSelectionMenu,
-                group: '1_basic',
-                title: nls.localize({ key: 'miSmartSelectShrink', comment: ['&& denotes a mnemonic'] }, "&&Shrink Selection"),
-                order: 3
+                mac: { primary: 2048 /* CtrlCmd */ | 256 /* WinCtrl */ | 1024 /* Shift */ | 15 /* LeftArrow */ }
             }
         }) || this;
     }

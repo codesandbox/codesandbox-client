@@ -30,7 +30,7 @@ var SearchParams = /** @class */ (function () {
                     break;
                 }
                 var nextChCode = searchString.charCodeAt(i);
-                if (nextChCode === 110 /* n */ || nextChCode === 114 /* r */ || nextChCode === 87 /* W */) {
+                if (nextChCode === 110 /* n */ || nextChCode === 114 /* r */) {
                     return true;
                 }
             }

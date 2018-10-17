@@ -22,7 +22,6 @@ import { getColors } from './color.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
 import { ModelDecorationOptions } from '../../common/model/textModel.js';
 import { TimeoutTimer, createCancelablePromise } from '../../../base/common/async.js';
-import { onUnexpectedError } from '../../../base/common/errors.js';
 var MAX_DECORATORS = 500;
 var ColorDetector = /** @class */ (function () {
     function ColorDetector(_editor, _codeEditorService, _configurationService) {
@@ -112,12 +111,13 @@ var ColorDetector = /** @class */ (function () {
     };
     ColorDetector.prototype.beginCompute = function () {
         var _this = this;
-        this._computePromise = createCancelablePromise(function (token) { return getColors(_this._editor.getModel(), token); });
-        this._computePromise.then(function (colorInfos) {
-            _this.updateDecorations(colorInfos);
-            _this.updateColorDecorators(colorInfos);
-            _this._computePromise = null;
-        }, onUnexpectedError);
+        this._computePromise = createCancelablePromise(function (token) {
+            return getColors(_this._editor.getModel(), token).then(function (colorInfos) {
+                _this.updateDecorations(colorInfos);
+                _this.updateColorDecorators(colorInfos);
+                _this._computePromise = null;
+            });
+        });
     };
     ColorDetector.prototype.stop = function () {
         if (this._timeoutTimer) {

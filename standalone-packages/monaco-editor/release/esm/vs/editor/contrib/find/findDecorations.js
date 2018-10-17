@@ -233,6 +233,7 @@ var FindDecorations = /** @class */ (function () {
         showIfCollapsed: true,
         overviewRuler: {
             color: themeColorFromId(overviewRulerFindMatchForeground),
+            darkColor: themeColorFromId(overviewRulerFindMatchForeground),
             position: OverviewRulerLane.Center
         }
     });
@@ -242,6 +243,7 @@ var FindDecorations = /** @class */ (function () {
         showIfCollapsed: true,
         overviewRuler: {
             color: themeColorFromId(overviewRulerFindMatchForeground),
+            darkColor: themeColorFromId(overviewRulerFindMatchForeground),
             position: OverviewRulerLane.Center
         }
     });
@@ -254,6 +256,7 @@ var FindDecorations = /** @class */ (function () {
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
         overviewRuler: {
             color: themeColorFromId(overviewRulerFindMatchForeground),
+            darkColor: themeColorFromId(overviewRulerFindMatchForeground),
             position: OverviewRulerLane.Center
         }
     });

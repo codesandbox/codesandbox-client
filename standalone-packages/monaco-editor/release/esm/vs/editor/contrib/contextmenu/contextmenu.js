@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -135,8 +132,8 @@ var ContextMenuController = /** @class */ (function () {
                 enabled: false
             }
         });
-        var anchor = forcedPosition;
-        if (!anchor) {
+        var menuPosition = forcedPosition;
+        if (!menuPosition) {
             // Ensure selection is visible
             this._editor.revealPosition(this._editor.getPosition(), 1 /* Immediate */);
             this._editor.render();
@@ -145,15 +142,12 @@ var ContextMenuController = /** @class */ (function () {
             var editorCoords = dom.getDomNodePagePosition(this._editor.getDomNode());
             var posx = editorCoords.left + cursorCoords.left;
             var posy = editorCoords.top + cursorCoords.top + cursorCoords.height;
-            anchor = { x: posx, y: posy };
+            menuPosition = { x: posx, y: posy };
         }
-        // prevent menu from appearing right below the cursor
-        anchor.height = 1;
-        anchor.width = 2;
         // Show menu
         this._contextMenuIsBeingShownCount++;
         this._contextMenuService.showContextMenu({
-            getAnchor: function () { return anchor; },
+            getAnchor: function () { return menuPosition; },
             getActions: function () {
                 return TPromise.as(actions);
             },
@@ -213,8 +207,7 @@ var ShowContextMenu = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
-                primary: 1024 /* Shift */ | 68 /* F10 */,
-                weight: 100 /* EditorContrib */
+                primary: 1024 /* Shift */ | 68 /* F10 */
             }
         }) || this;
     }

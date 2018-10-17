@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -17,6 +14,24 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 var _a;
+export var TokenType;
+(function (TokenType) {
+    TokenType[TokenType["Dollar"] = 0] = "Dollar";
+    TokenType[TokenType["Colon"] = 1] = "Colon";
+    TokenType[TokenType["Comma"] = 2] = "Comma";
+    TokenType[TokenType["CurlyOpen"] = 3] = "CurlyOpen";
+    TokenType[TokenType["CurlyClose"] = 4] = "CurlyClose";
+    TokenType[TokenType["Backslash"] = 5] = "Backslash";
+    TokenType[TokenType["Forwardslash"] = 6] = "Forwardslash";
+    TokenType[TokenType["Pipe"] = 7] = "Pipe";
+    TokenType[TokenType["Int"] = 8] = "Int";
+    TokenType[TokenType["VariableName"] = 9] = "VariableName";
+    TokenType[TokenType["Format"] = 10] = "Format";
+    TokenType[TokenType["Plus"] = 11] = "Plus";
+    TokenType[TokenType["Dash"] = 12] = "Dash";
+    TokenType[TokenType["QuestionMark"] = 13] = "QuestionMark";
+    TokenType[TokenType["EOF"] = 14] = "EOF";
+})(TokenType || (TokenType = {}));
 var Scanner = /** @class */ (function () {
     function Scanner() {
         this.text('');
@@ -38,7 +53,7 @@ var Scanner = /** @class */ (function () {
     };
     Scanner.prototype.next = function () {
         if (this.pos >= this.value.length) {
-            return { type: 14 /* EOF */, pos: this.pos, len: 0 };
+            return { type: TokenType.EOF, pos: this.pos, len: 0 };
         }
         var pos = this.pos;
         var len = 0;
@@ -52,7 +67,7 @@ var Scanner = /** @class */ (function () {
         }
         // number
         if (Scanner.isDigitCharacter(ch)) {
-            type = 8 /* Int */;
+            type = TokenType.Int;
             do {
                 len += 1;
                 ch = this.value.charCodeAt(pos + len);
@@ -62,7 +77,7 @@ var Scanner = /** @class */ (function () {
         }
         // variable name
         if (Scanner.isVariableCharacter(ch)) {
-            type = 9 /* VariableName */;
+            type = TokenType.VariableName;
             do {
                 ch = this.value.charCodeAt(pos + (++len));
             } while (Scanner.isVariableCharacter(ch) || Scanner.isDigitCharacter(ch));
@@ -70,7 +85,7 @@ var Scanner = /** @class */ (function () {
             return { type: type, pos: pos, len: len };
         }
         // format
-        type = 10 /* Format */;
+        type = TokenType.Format;
         do {
             len += 1;
             ch = this.value.charCodeAt(pos + len);
@@ -83,17 +98,17 @@ var Scanner = /** @class */ (function () {
         return { type: type, pos: pos, len: len };
     };
     Scanner._table = (_a = {},
-        _a[36 /* DollarSign */] = 0 /* Dollar */,
-        _a[58 /* Colon */] = 1 /* Colon */,
-        _a[44 /* Comma */] = 2 /* Comma */,
-        _a[123 /* OpenCurlyBrace */] = 3 /* CurlyOpen */,
-        _a[125 /* CloseCurlyBrace */] = 4 /* CurlyClose */,
-        _a[92 /* Backslash */] = 5 /* Backslash */,
-        _a[47 /* Slash */] = 6 /* Forwardslash */,
-        _a[124 /* Pipe */] = 7 /* Pipe */,
-        _a[43 /* Plus */] = 11 /* Plus */,
-        _a[45 /* Dash */] = 12 /* Dash */,
-        _a[63 /* QuestionMark */] = 13 /* QuestionMark */,
+        _a[36 /* DollarSign */] = TokenType.Dollar,
+        _a[58 /* Colon */] = TokenType.Colon,
+        _a[44 /* Comma */] = TokenType.Comma,
+        _a[123 /* OpenCurlyBrace */] = TokenType.CurlyOpen,
+        _a[125 /* CloseCurlyBrace */] = TokenType.CurlyClose,
+        _a[92 /* Backslash */] = TokenType.Backslash,
+        _a[47 /* Slash */] = TokenType.Forwardslash,
+        _a[124 /* Pipe */] = TokenType.Pipe,
+        _a[43 /* Plus */] = TokenType.Plus,
+        _a[45 /* Dash */] = TokenType.Dash,
+        _a[63 /* QuestionMark */] = TokenType.QuestionMark,
         _a);
     return Scanner;
 }());
@@ -120,13 +135,7 @@ var Marker = /** @class */ (function () {
         var newChildren = parent.children.slice(0);
         newChildren.splice.apply(newChildren, [idx, 1].concat(others));
         parent._children = newChildren;
-        (function _fixParent(children, parent) {
-            for (var _i = 0, children_1 = children; _i < children_1.length; _i++) {
-                var child_1 = children_1[_i];
-                child_1.parent = parent;
-                _fixParent(child_1.children, child_1);
-            }
-        })(others, parent);
+        others.forEach(function (node) { return node.parent = parent; });
     };
     Object.defineProperty(Marker.prototype, "children", {
         get: function () {
@@ -305,38 +314,27 @@ var Transform = /** @class */ (function (_super) {
     }
     Transform.prototype.resolve = function (value) {
         var _this = this;
-        var didMatch = false;
-        var ret = value.replace(this.regexp, function () {
-            didMatch = true;
-            return _this._replace(Array.prototype.slice.call(arguments, 0, -2));
+        return value.replace(this.regexp, function () {
+            var ret = '';
+            for (var _i = 0, _a = _this._children; _i < _a.length; _i++) {
+                var marker = _a[_i];
+                if (marker instanceof FormatString) {
+                    var value_1 = arguments.length - 2 > marker.index ? arguments[marker.index] : '';
+                    value_1 = marker.resolve(value_1);
+                    ret += value_1;
+                }
+                else {
+                    ret += marker.toString();
+                }
+            }
+            return ret;
         });
-        // when the regex didn't match and when the transform has
-        // else branches, then run those
-        if (!didMatch && this._children.some(function (child) { return child instanceof FormatString && Boolean(child.elseValue); })) {
-            ret = this._replace([]);
-        }
-        return ret;
-    };
-    Transform.prototype._replace = function (groups) {
-        var ret = '';
-        for (var _i = 0, _a = this._children; _i < _a.length; _i++) {
-            var marker = _a[_i];
-            if (marker instanceof FormatString) {
-                var value = groups[marker.index] || '';
-                value = marker.resolve(value);
-                ret += value;
-            }
-            else {
-                ret += marker.toString();
-            }
-        }
-        return ret;
     };
     Transform.prototype.toString = function () {
         return '';
     };
     Transform.prototype.toTextmateString = function () {
-        return "/" + this.regexp.source + "/" + this.children.map(function (c) { return c.toTextmateString(); }) + "/" + ((this.regexp.ignoreCase ? 'i' : '') + (this.regexp.global ? 'g' : ''));
+        return "/" + Text.escape(this.regexp.source) + "/" + this.children.map(function (c) { return c.toTextmateString(); }) + "/" + ((this.regexp.ignoreCase ? 'i' : '') + (this.regexp.global ? 'g' : ''));
     };
     Transform.prototype.clone = function () {
         var ret = new Transform();
@@ -367,9 +365,6 @@ var FormatString = /** @class */ (function (_super) {
         else if (this.shorthandName === 'capitalize') {
             return !value ? '' : (value[0].toLocaleUpperCase() + value.substr(1));
         }
-        else if (this.shorthandName === 'pascalcase') {
-            return !value ? '' : this._toPascalCase(value);
-        }
         else if (Boolean(value) && typeof this.ifValue === 'string') {
             return this.ifValue;
         }
@@ -379,14 +374,6 @@ var FormatString = /** @class */ (function (_super) {
         else {
             return value || '';
         }
-    };
-    FormatString.prototype._toPascalCase = function (value) {
-        return value.match(/[a-z]+/gi)
-            .map(function (word) {
-            return word.charAt(0).toUpperCase()
-                + word.substr(1).toLowerCase();
-        })
-            .join('');
     };
     FormatString.prototype.toTextmateString = function () {
         var value = '${';
@@ -640,13 +627,13 @@ var SnippetParser = /** @class */ (function () {
         return false;
     };
     SnippetParser.prototype._until = function (type) {
-        if (this._token.type === 14 /* EOF */) {
+        if (this._token.type === TokenType.EOF) {
             return false;
         }
         var start = this._token;
         while (this._token.type !== type) {
             this._token = this._scanner.next();
-            if (this._token.type === 14 /* EOF */) {
+            if (this._token.type === TokenType.EOF) {
                 return false;
             }
         }
@@ -664,11 +651,11 @@ var SnippetParser = /** @class */ (function () {
     // \$, \\, \} -> just text
     SnippetParser.prototype._parseEscaped = function (marker) {
         var value;
-        if (value = this._accept(5 /* Backslash */, true)) {
+        if (value = this._accept(TokenType.Backslash, true)) {
             // saw a backslash, append escaped token or that backslash
-            value = this._accept(0 /* Dollar */, true)
-                || this._accept(4 /* CurlyClose */, true)
-                || this._accept(5 /* Backslash */, true)
+            value = this._accept(TokenType.Dollar, true)
+                || this._accept(TokenType.CurlyClose, true)
+                || this._accept(TokenType.Backslash, true)
                 || value;
             marker.appendChild(new Text(value));
             return true;
@@ -679,8 +666,8 @@ var SnippetParser = /** @class */ (function () {
     SnippetParser.prototype._parseTabstopOrVariableName = function (parent) {
         var value;
         var token = this._token;
-        var match = this._accept(0 /* Dollar */)
-            && (value = this._accept(9 /* VariableName */, true) || this._accept(8 /* Int */, true));
+        var match = this._accept(TokenType.Dollar)
+            && (value = this._accept(TokenType.VariableName, true) || this._accept(TokenType.Int, true));
         if (!match) {
             return this._backTo(token);
         }
@@ -693,18 +680,18 @@ var SnippetParser = /** @class */ (function () {
     SnippetParser.prototype._parseComplexPlaceholder = function (parent) {
         var index;
         var token = this._token;
-        var match = this._accept(0 /* Dollar */)
-            && this._accept(3 /* CurlyOpen */)
-            && (index = this._accept(8 /* Int */, true));
+        var match = this._accept(TokenType.Dollar)
+            && this._accept(TokenType.CurlyOpen)
+            && (index = this._accept(TokenType.Int, true));
         if (!match) {
             return this._backTo(token);
         }
         var placeholder = new Placeholder(Number(index));
-        if (this._accept(1 /* Colon */)) {
+        if (this._accept(TokenType.Colon)) {
             // ${1:<children>}
             while (true) {
                 // ...} -> done
-                if (this._accept(4 /* CurlyClose */)) {
+                if (this._accept(TokenType.CurlyClose)) {
                     parent.appendChild(placeholder);
                     return true;
                 }
@@ -717,18 +704,18 @@ var SnippetParser = /** @class */ (function () {
                 return true;
             }
         }
-        else if (placeholder.index > 0 && this._accept(7 /* Pipe */)) {
+        else if (placeholder.index > 0 && this._accept(TokenType.Pipe)) {
             // ${1|one,two,three|}
             var choice = new Choice();
             while (true) {
                 if (this._parseChoiceElement(choice)) {
-                    if (this._accept(2 /* Comma */)) {
+                    if (this._accept(TokenType.Comma)) {
                         // opt, -> more
                         continue;
                     }
-                    if (this._accept(7 /* Pipe */)) {
+                    if (this._accept(TokenType.Pipe)) {
                         placeholder.appendChild(choice);
-                        if (this._accept(4 /* CurlyClose */)) {
+                        if (this._accept(TokenType.CurlyClose)) {
                             // ..|} -> done
                             parent.appendChild(placeholder);
                             return true;
@@ -739,7 +726,7 @@ var SnippetParser = /** @class */ (function () {
                 return false;
             }
         }
-        else if (this._accept(6 /* Forwardslash */)) {
+        else if (this._accept(TokenType.Forwardslash)) {
             // ${1/<regex>/<format>/<options>}
             if (this._parseTransform(placeholder)) {
                 parent.appendChild(placeholder);
@@ -748,7 +735,7 @@ var SnippetParser = /** @class */ (function () {
             this._backTo(token);
             return false;
         }
-        else if (this._accept(4 /* CurlyClose */)) {
+        else if (this._accept(TokenType.CurlyClose)) {
             // ${1}
             parent.appendChild(placeholder);
             return true;
@@ -762,15 +749,14 @@ var SnippetParser = /** @class */ (function () {
         var token = this._token;
         var values = [];
         while (true) {
-            if (this._token.type === 2 /* Comma */ || this._token.type === 7 /* Pipe */) {
+            if (this._token.type === TokenType.Comma || this._token.type === TokenType.Pipe) {
                 break;
             }
             var value = void 0;
-            if (value = this._accept(5 /* Backslash */, true)) {
-                // \, \|, or \\
-                value = this._accept(2 /* Comma */, true)
-                    || this._accept(7 /* Pipe */, true)
-                    || this._accept(5 /* Backslash */, true)
+            if (value = this._accept(TokenType.Backslash, true)) {
+                // \, or \|
+                value = this._accept(TokenType.Comma, true)
+                    || this._accept(TokenType.Pipe, true)
                     || value;
             }
             else {
@@ -794,18 +780,18 @@ var SnippetParser = /** @class */ (function () {
     SnippetParser.prototype._parseComplexVariable = function (parent) {
         var name;
         var token = this._token;
-        var match = this._accept(0 /* Dollar */)
-            && this._accept(3 /* CurlyOpen */)
-            && (name = this._accept(9 /* VariableName */, true));
+        var match = this._accept(TokenType.Dollar)
+            && this._accept(TokenType.CurlyOpen)
+            && (name = this._accept(TokenType.VariableName, true));
         if (!match) {
             return this._backTo(token);
         }
         var variable = new Variable(name);
-        if (this._accept(1 /* Colon */)) {
+        if (this._accept(TokenType.Colon)) {
             // ${foo:<children>}
             while (true) {
                 // ...} -> done
-                if (this._accept(4 /* CurlyClose */)) {
+                if (this._accept(TokenType.CurlyClose)) {
                     parent.appendChild(variable);
                     return true;
                 }
@@ -818,7 +804,7 @@ var SnippetParser = /** @class */ (function () {
                 return true;
             }
         }
-        else if (this._accept(6 /* Forwardslash */)) {
+        else if (this._accept(TokenType.Forwardslash)) {
             // ${foo/<regex>/<format>/<options>}
             if (this._parseTransform(variable)) {
                 parent.appendChild(variable);
@@ -827,7 +813,7 @@ var SnippetParser = /** @class */ (function () {
             this._backTo(token);
             return false;
         }
-        else if (this._accept(4 /* CurlyClose */)) {
+        else if (this._accept(TokenType.CurlyClose)) {
             // ${foo}
             parent.appendChild(variable);
             return true;
@@ -844,16 +830,16 @@ var SnippetParser = /** @class */ (function () {
         var regexOptions = '';
         // (1) /regex
         while (true) {
-            if (this._accept(6 /* Forwardslash */)) {
+            if (this._accept(TokenType.Forwardslash)) {
                 break;
             }
             var escaped = void 0;
-            if (escaped = this._accept(5 /* Backslash */, true)) {
-                escaped = this._accept(6 /* Forwardslash */, true) || escaped;
+            if (escaped = this._accept(TokenType.Backslash, true)) {
+                escaped = this._accept(TokenType.Forwardslash, true) || escaped;
                 regexValue += escaped;
                 continue;
             }
-            if (this._token.type !== 14 /* EOF */) {
+            if (this._token.type !== TokenType.EOF) {
                 regexValue += this._accept(undefined, true);
                 continue;
             }
@@ -861,12 +847,12 @@ var SnippetParser = /** @class */ (function () {
         }
         // (2) /format
         while (true) {
-            if (this._accept(6 /* Forwardslash */)) {
+            if (this._accept(TokenType.Forwardslash)) {
                 break;
             }
             var escaped = void 0;
-            if (escaped = this._accept(5 /* Backslash */, true)) {
-                escaped = this._accept(6 /* Forwardslash */, true) || escaped;
+            if (escaped = this._accept(TokenType.Backslash, true)) {
+                escaped = this._accept(TokenType.Forwardslash, true) || escaped;
                 transform.appendChild(new Text(escaped));
                 continue;
             }
@@ -877,10 +863,10 @@ var SnippetParser = /** @class */ (function () {
         }
         // (3) /option
         while (true) {
-            if (this._accept(4 /* CurlyClose */)) {
+            if (this._accept(TokenType.CurlyClose)) {
                 break;
             }
-            if (this._token.type !== 14 /* EOF */) {
+            if (this._token.type !== TokenType.EOF) {
                 regexOptions += this._accept(undefined, true);
                 continue;
             }
@@ -898,14 +884,14 @@ var SnippetParser = /** @class */ (function () {
     };
     SnippetParser.prototype._parseFormatString = function (parent) {
         var token = this._token;
-        if (!this._accept(0 /* Dollar */)) {
+        if (!this._accept(TokenType.Dollar)) {
             return false;
         }
         var complex = false;
-        if (this._accept(3 /* CurlyOpen */)) {
+        if (this._accept(TokenType.CurlyOpen)) {
             complex = true;
         }
-        var index = this._accept(8 /* Int */, true);
+        var index = this._accept(TokenType.Int, true);
         if (!index) {
             this._backTo(token);
             return false;
@@ -915,19 +901,19 @@ var SnippetParser = /** @class */ (function () {
             parent.appendChild(new FormatString(Number(index)));
             return true;
         }
-        else if (this._accept(4 /* CurlyClose */)) {
+        else if (this._accept(TokenType.CurlyClose)) {
             // ${1}
             parent.appendChild(new FormatString(Number(index)));
             return true;
         }
-        else if (!this._accept(1 /* Colon */)) {
+        else if (!this._accept(TokenType.Colon)) {
             this._backTo(token);
             return false;
         }
-        if (this._accept(6 /* Forwardslash */)) {
+        if (this._accept(TokenType.Forwardslash)) {
             // ${1:/upcase}
-            var shorthand = this._accept(9 /* VariableName */, true);
-            if (!shorthand || !this._accept(4 /* CurlyClose */)) {
+            var shorthand = this._accept(TokenType.VariableName, true);
+            if (!shorthand || !this._accept(TokenType.CurlyClose)) {
                 this._backTo(token);
                 return false;
             }
@@ -936,27 +922,27 @@ var SnippetParser = /** @class */ (function () {
                 return true;
             }
         }
-        else if (this._accept(11 /* Plus */)) {
+        else if (this._accept(TokenType.Plus)) {
             // ${1:+<if>}
-            var ifValue = this._until(4 /* CurlyClose */);
+            var ifValue = this._until(TokenType.CurlyClose);
             if (ifValue) {
                 parent.appendChild(new FormatString(Number(index), undefined, ifValue, undefined));
                 return true;
             }
         }
-        else if (this._accept(12 /* Dash */)) {
+        else if (this._accept(TokenType.Dash)) {
             // ${2:-<else>}
-            var elseValue = this._until(4 /* CurlyClose */);
+            var elseValue = this._until(TokenType.CurlyClose);
             if (elseValue) {
                 parent.appendChild(new FormatString(Number(index), undefined, undefined, elseValue));
                 return true;
             }
         }
-        else if (this._accept(13 /* QuestionMark */)) {
+        else if (this._accept(TokenType.QuestionMark)) {
             // ${2:?<if>:<else>}
-            var ifValue = this._until(1 /* Colon */);
+            var ifValue = this._until(TokenType.Colon);
             if (ifValue) {
-                var elseValue = this._until(4 /* CurlyClose */);
+                var elseValue = this._until(TokenType.CurlyClose);
                 if (elseValue) {
                     parent.appendChild(new FormatString(Number(index), undefined, ifValue, elseValue));
                     return true;
@@ -965,7 +951,7 @@ var SnippetParser = /** @class */ (function () {
         }
         else {
             // ${1:<else>}
-            var elseValue = this._until(4 /* CurlyClose */);
+            var elseValue = this._until(TokenType.CurlyClose);
             if (elseValue) {
                 parent.appendChild(new FormatString(Number(index), undefined, undefined, elseValue));
                 return true;
@@ -975,7 +961,7 @@ var SnippetParser = /** @class */ (function () {
         return false;
     };
     SnippetParser.prototype._parseAnything = function (marker) {
-        if (this._token.type !== 14 /* EOF */) {
+        if (this._token.type !== TokenType.EOF) {
             marker.appendChild(new Text(this._scanner.tokenText(this._token)));
             this._accept(undefined);
             return true;

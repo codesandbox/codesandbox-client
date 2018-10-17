@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -22,53 +19,9 @@ import { Widget } from '../widget.js';
 import { Color } from '../../../common/color.js';
 import { Emitter } from '../../../common/event.js';
 import * as objects from '../../../common/objects.js';
-import { BaseActionItem } from '../actionbar/actionbar.js';
-import { dispose } from '../../../common/lifecycle.js';
 var defaultOpts = {
     inputActiveOptionBorder: Color.fromHex('#007ACC')
 };
-var CheckboxActionItem = /** @class */ (function (_super) {
-    __extends(CheckboxActionItem, _super);
-    function CheckboxActionItem() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.disposables = [];
-        return _this;
-    }
-    CheckboxActionItem.prototype.render = function (container) {
-        var _this = this;
-        this.element = container;
-        this.disposables = dispose(this.disposables);
-        this.checkbox = new Checkbox({
-            actionClassName: this._action.class,
-            isChecked: this._action.checked,
-            title: this._action.label
-        });
-        this.disposables.push(this.checkbox);
-        this.checkbox.onChange(function () { return _this._action.checked = _this.checkbox.checked; }, this, this.disposables);
-        this.element.appendChild(this.checkbox.domNode);
-    };
-    CheckboxActionItem.prototype.updateEnabled = function () {
-        if (this.checkbox) {
-            if (this.isEnabled()) {
-                this.checkbox.enable();
-            }
-            else {
-                this.checkbox.disable();
-            }
-        }
-    };
-    CheckboxActionItem.prototype.updateChecked = function () {
-        if (this.checkbox) {
-            this.checkbox.checked = this._action.checked;
-        }
-    };
-    CheckboxActionItem.prototype.dipsose = function () {
-        this.disposables = dispose(this.disposables);
-        _super.prototype.dispose.call(this);
-    };
-    return CheckboxActionItem;
-}(BaseActionItem));
-export { CheckboxActionItem };
 var Checkbox = /** @class */ (function (_super) {
     __extends(Checkbox, _super);
     function Checkbox(opts) {

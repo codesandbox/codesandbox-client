@@ -257,40 +257,37 @@ export function toElement(node, parentElement) {
                 result.addAttr(unescape(child.getText()), '');
                 break;
             case nodes.NodeType.AttributeSelector:
-                var selector = child;
-                var identifuer = selector.getIdentifier();
-                if (identifuer) {
-                    var expression = selector.getValue();
-                    var operator = selector.getOperator();
+                var expr = child.getExpression();
+                if (expr) {
                     var value = void 0;
-                    if (expression) {
-                        switch (unescape(operator.getText())) {
+                    if (expr.getRight()) {
+                        switch (unescape(expr.getOperator().getText())) {
                             case '|=':
                                 // excatly or followed by -words
-                                value = quotes.remove(unescape(expression.getText())) + "-\u2026";
+                                value = quotes.remove(unescape(expr.getRight().getText())) + "-\u2026";
                                 break;
                             case '^=':
                                 // prefix
-                                value = quotes.remove(unescape(expression.getText())) + "\u2026";
+                                value = quotes.remove(unescape(expr.getRight().getText())) + "\u2026";
                                 break;
                             case '$=':
                                 // suffix
-                                value = "\u2026" + quotes.remove(unescape(expression.getText()));
+                                value = "\u2026" + quotes.remove(unescape(expr.getRight().getText()));
                                 break;
                             case '~=':
                                 // one of a list of words
-                                value = " \u2026 " + quotes.remove(unescape(expression.getText())) + " \u2026 ";
+                                value = " \u2026 " + quotes.remove(unescape(expr.getRight().getText())) + " \u2026 ";
                                 break;
                             case '*=':
                                 // substring
-                                value = "\u2026" + quotes.remove(unescape(expression.getText())) + "\u2026";
+                                value = "\u2026" + quotes.remove(unescape(expr.getRight().getText())) + "\u2026";
                                 break;
                             default:
-                                value = quotes.remove(unescape(expression.getText()));
+                                value = quotes.remove(unescape(expr.getRight().getText()));
                                 break;
                         }
                     }
-                    result.addAttr(unescape(identifuer.getText()), value);
+                    result.addAttr(unescape(expr.getLeft().getText()), value);
                 }
                 break;
         }

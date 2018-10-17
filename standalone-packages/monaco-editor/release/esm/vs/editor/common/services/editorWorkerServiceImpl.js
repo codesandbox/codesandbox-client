@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -25,8 +22,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { IntervalTimer } from '../../../base/common/async.js';
-import { Disposable, dispose, toDisposable } from '../../../base/common/lifecycle.js';
+import { IntervalTimer, ShallowCancelThenPromise, wireCancellationToken } from '../../../base/common/async.js';
+import { Disposable, dispose } from '../../../base/common/lifecycle.js';
 import { TPromise } from '../../../base/common/winjs.base.js';
 import { SimpleWorkerClient, logOnceWebWorkerWarning } from '../../../base/common/worker/simpleWorker.js';
 import { DefaultWorkerFactory } from '../../../base/worker/defaultWorkerFactory.js';
@@ -65,10 +62,10 @@ var EditorWorkerServiceImpl = /** @class */ (function (_super) {
                 if (!canSyncModel(_this._modelService, model.uri)) {
                     return TPromise.as([]); // File too large
                 }
-                return _this._workerManager.withWorker().then(function (client) { return client.computeLinks(model.uri); });
+                return wireCancellationToken(token, _this._workerManager.withWorker().then(function (client) { return client.computeLinks(model.uri); }));
             }
         }));
-        _this._register(modes.CompletionProviderRegistry.register('*', new WordBasedCompletionItemProvider(_this._workerManager, configurationService, _this._modelService)));
+        _this._register(modes.SuggestRegistry.register('*', new WordBasedCompletionItemProvider(_this._workerManager, configurationService, _this._modelService)));
         return _this;
     }
     EditorWorkerServiceImpl.prototype.dispose = function () {
@@ -102,12 +99,6 @@ var EditorWorkerServiceImpl = /** @class */ (function (_super) {
     };
     EditorWorkerServiceImpl.prototype.navigateValueSet = function (resource, range, up) {
         return this._workerManager.withWorker().then(function (client) { return client.navigateValueSet(resource, range, up); });
-    };
-    EditorWorkerServiceImpl.prototype.canComputeWordRanges = function (resource) {
-        return canSyncModel(this._modelService, resource);
-    };
-    EditorWorkerServiceImpl.prototype.computeWordRanges = function (resource, range) {
-        return this._workerManager.withWorker().then(function (client) { return client.computeWordRanges(resource, range); });
     };
     EditorWorkerServiceImpl = __decorate([
         __param(0, IModelService),
@@ -259,9 +250,11 @@ var EditorModelManager = /** @class */ (function (_super) {
         toDispose.push(model.onWillDispose(function () {
             _this._stopModelSync(modelUrl);
         }));
-        toDispose.push(toDisposable(function () {
-            _this._proxy.acceptRemovedModel(modelUrl);
-        }));
+        toDispose.push({
+            dispose: function () {
+                _this._proxy.acceptRemovedModel(modelUrl);
+            }
+        });
         this._syncedModels[modelUrl] = toDispose;
     };
     EditorModelManager.prototype._stopModelSync = function (modelUrl) {
@@ -283,7 +276,7 @@ var SynchronousWorkerClient = /** @class */ (function () {
         this._proxyObj = null;
     };
     SynchronousWorkerClient.prototype.getProxyObject = function () {
-        return this._proxyObj;
+        return new ShallowCancelThenPromise(this._proxyObj);
     };
     return SynchronousWorkerClient;
 }());
@@ -301,8 +294,6 @@ var EditorWorkerClient = /** @class */ (function (_super) {
         if (!this._worker) {
             try {
                 this._worker = this._register(new SimpleWorkerClient(this._workerFactory, 'vs/editor/common/services/editorSimpleWorker'));
-                // CODESANDBOX-EDIT
-                window.BrowserFS.FileSystem.WorkerFS.attachRemoteListener(this._worker._worker.worker);
             }
             catch (err) {
                 logOnceWebWorkerWarning(err);
@@ -313,11 +304,11 @@ var EditorWorkerClient = /** @class */ (function (_super) {
     };
     EditorWorkerClient.prototype._getProxy = function () {
         var _this = this;
-        return this._getOrCreateWorker().getProxyObject().then(null, function (err) {
+        return new ShallowCancelThenPromise(this._getOrCreateWorker().getProxyObject().then(null, function (err) {
             logOnceWebWorkerWarning(err);
             _this._worker = new SynchronousWorkerClient(new EditorSimpleWorkerImpl(null));
             return _this._getOrCreateWorker().getProxyObject();
-        });
+        }));
     };
     EditorWorkerClient.prototype._getOrCreateModelManager = function (proxy) {
         if (!this._modelManager) {
@@ -363,19 +354,6 @@ var EditorWorkerClient = /** @class */ (function (_super) {
             var wordDef = wordDefRegExp.source;
             var wordDefFlags = (wordDefRegExp.global ? 'g' : '') + (wordDefRegExp.ignoreCase ? 'i' : '') + (wordDefRegExp.multiline ? 'm' : '');
             return proxy.textualSuggest(resource.toString(), position, wordDef, wordDefFlags);
-        });
-    };
-    EditorWorkerClient.prototype.computeWordRanges = function (resource, range) {
-        var _this = this;
-        return this._withSyncedResources([resource]).then(function (proxy) {
-            var model = _this._modelService.getModel(resource);
-            if (!model) {
-                return null;
-            }
-            var wordDefRegExp = LanguageConfigurationRegistry.getWordDefinition(model.getLanguageIdentifier().id);
-            var wordDef = wordDefRegExp.source;
-            var wordDefFlags = (wordDefRegExp.global ? 'g' : '') + (wordDefRegExp.ignoreCase ? 'i' : '') + (wordDefRegExp.multiline ? 'm' : '');
-            return proxy.computeWordRanges(resource.toString(), range, wordDef, wordDefFlags);
         });
     };
     EditorWorkerClient.prototype.navigateValueSet = function (resource, range, up) {

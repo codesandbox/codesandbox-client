@@ -8,16 +8,11 @@ import * as dom from '../../dom.js';
 import * as arrays from '../../../common/arrays.js';
 import { isMacintosh } from '../../../common/platform.js';
 var SelectBoxNative = /** @class */ (function () {
-    function SelectBoxNative(options, selected, styles, selectBoxOptions) {
+    function SelectBoxNative(options, selected, styles) {
         this.toDispose = [];
-        this.selectBoxOptions = selectBoxOptions || Object.create(null);
         this.selectElement = document.createElement('select');
         this.selectElement.className = 'monaco-select-box';
-        if (typeof this.selectBoxOptions.ariaLabel === 'string') {
-            this.selectElement.setAttribute('aria-label', this.selectBoxOptions.ariaLabel);
-        }
         this._onDidSelect = new Emitter();
-        this.toDispose.push(this._onDidSelect);
         this.styles = styles;
         this.registerListeners();
         this.setOptions(options, selected);
@@ -84,13 +79,6 @@ var SelectBoxNative = /** @class */ (function () {
         }
         this.selectElement.selectedIndex = this.selected;
         this.selectElement.title = this.options[this.selected];
-    };
-    SelectBoxNative.prototype.setAriaLabel = function (label) {
-        this.selectBoxOptions.ariaLabel = label;
-        this.selectElement.setAttribute('aria-label', label);
-    };
-    SelectBoxNative.prototype.setDetailsProvider = function (provider) {
-        console.error('details are not available for native select boxes');
     };
     SelectBoxNative.prototype.focus = function () {
         if (this.selectElement) {

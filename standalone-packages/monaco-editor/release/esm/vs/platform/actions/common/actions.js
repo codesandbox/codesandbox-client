@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -68,13 +65,11 @@ var MenuId = /** @class */ (function () {
     MenuId.MenubarRecentMenu = new MenuId();
     MenuId.MenubarSelectionMenu = new MenuId();
     MenuId.MenubarViewMenu = new MenuId();
-    MenuId.MenubarAppearanceMenu = new MenuId();
     MenuId.MenubarLayoutMenu = new MenuId();
     MenuId.MenubarGoMenu = new MenuId();
-    MenuId.MenubarSwitchEditorMenu = new MenuId();
-    MenuId.MenubarSwitchGroupMenu = new MenuId();
     MenuId.MenubarDebugMenu = new MenuId();
-    MenuId.MenubarNewBreakpointMenu = new MenuId();
+    MenuId.MenubarTasksMenu = new MenuId();
+    MenuId.MenubarWindowMenu = new MenuId();
     MenuId.MenubarPreferencesMenu = new MenuId();
     MenuId.MenubarHelpMenu = new MenuId();
     MenuId.MenubarTerminalMenu = new MenuId();
@@ -94,13 +89,6 @@ export var MenuRegistry = new /** @class */ (function () {
     };
     class_1.prototype.getCommand = function (id) {
         return this._commands[id];
-    };
-    class_1.prototype.getCommands = function () {
-        var result = Object.create(null);
-        for (var key in this._commands) {
-            result[key] = this.getCommand(key);
-        }
-        return result;
     };
     class_1.prototype.appendMenuItem = function (_a, item) {
         var id = _a.id;

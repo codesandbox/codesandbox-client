@@ -8,7 +8,6 @@ import * as strings from './strings.js';
 import * as paths from './paths.js';
 import { LRUCache } from './map.js';
 import { TPromise } from './winjs.base.js';
-import { isThenable } from './async.js';
 export function getEmptyExpression() {
     return Object.create(null);
 }
@@ -244,7 +243,7 @@ function wrapRelativePattern(parsedPattern, arg2) {
         if (!paths.isEqualOrParent(path, arg2.base)) {
             return null;
         }
-        return parsedPattern(arg2.pathToRelative(arg2.base, path), basename);
+        return parsedPattern(paths.normalize(arg2.pathToRelative(arg2.base, path)), basename);
     };
 }
 function trimForExclusions(pattern, options) {
@@ -323,11 +322,11 @@ function toRegExp(pattern) {
         return NULL;
     }
 }
-export function match(arg1, path, hasSibling) {
+export function match(arg1, path, siblingsFn) {
     if (!arg1 || !path) {
         return false;
     }
-    return parse(arg1)(path, undefined, hasSibling);
+    return parse(arg1)(path, undefined, siblingsFn);
 }
 export function parse(arg1, options) {
     if (options === void 0) { options = {}; }
@@ -354,40 +353,6 @@ export function parse(arg1, options) {
     // Glob with Expression
     return parsedExpression(arg1, options);
 }
-export function hasSiblingPromiseFn(siblingsFn) {
-    if (!siblingsFn) {
-        return undefined;
-    }
-    var siblings;
-    return function (name) {
-        if (!siblings) {
-            siblings = (siblingsFn() || TPromise.as([]))
-                .then(function (list) { return list ? listToMap(list) : {}; });
-        }
-        return siblings.then(function (map) { return !!map[name]; });
-    };
-}
-export function hasSiblingFn(siblingsFn) {
-    if (!siblingsFn) {
-        return undefined;
-    }
-    var siblings;
-    return function (name) {
-        if (!siblings) {
-            var list = siblingsFn();
-            siblings = list ? listToMap(list) : {};
-        }
-        return !!siblings[name];
-    };
-}
-function listToMap(list) {
-    var map = {};
-    for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
-        var key = list_1[_i];
-        map[key] = true;
-    }
-    return map;
-}
 export function isRelativePattern(obj) {
     var rp = obj;
     return rp && typeof rp.base === 'string' && typeof rp.pattern === 'string' && typeof rp.pathToRelative === 'function';
@@ -397,8 +362,8 @@ export function isRelativePattern(obj) {
  */
 export function parseToAsync(expression, options) {
     var parsedExpression = parse(expression, options);
-    return function (path, basename, hasSibling) {
-        var result = parsedExpression(path, basename, hasSibling);
+    return function (path, basename, siblingsFn) {
+        var result = parsedExpression(path, basename, siblingsFn);
         return result instanceof TPromise ? result : TPromise.as(result);
     };
 }
@@ -420,7 +385,7 @@ function parsedExpression(expression, options) {
         if (n === 1) {
             return parsedPatterns[0];
         }
-        var resultExpression_1 = function (path, basename) {
+        var resultExpression_1 = function (path, basename, siblingsFn) {
             for (var i = 0, n_2 = parsedPatterns.length; i < n_2; i++) {
                 // Pattern matches path
                 var result = parsedPatterns[i](path, basename);
@@ -440,20 +405,33 @@ function parsedExpression(expression, options) {
         }
         return resultExpression_1;
     }
-    var resultExpression = function (path, basename, hasSibling) {
-        var name;
-        for (var i = 0, n_3 = parsedPatterns.length; i < n_3; i++) {
-            // Pattern matches path
-            var parsedPattern = parsedPatterns[i];
-            if (parsedPattern.requiresSiblings && hasSibling) {
+    var resultExpression = function (path, basename, siblingsFn) {
+        var siblingsPattern;
+        var siblingsResolved = !siblingsFn;
+        function siblingsToSiblingsPattern(siblings) {
+            if (siblings && siblings.length) {
                 if (!basename) {
                     basename = paths.basename(path);
                 }
-                if (!name) {
-                    name = basename.substr(0, basename.length - paths.extname(path).length);
-                }
+                var name_1 = basename.substr(0, basename.length - paths.extname(path).length);
+                return { siblings: siblings, name: name_1 };
             }
-            var result = parsedPattern(path, basename, name, hasSibling);
+            return undefined;
+        }
+        function siblingsPatternFn() {
+            // Resolve siblings only once
+            if (!siblingsResolved) {
+                siblingsResolved = true;
+                var siblings = siblingsFn();
+                siblingsPattern = TPromise.is(siblings) ?
+                    siblings.then(siblingsToSiblingsPattern) :
+                    siblingsToSiblingsPattern(siblings);
+            }
+            return siblingsPattern;
+        }
+        for (var i = 0, n_3 = parsedPatterns.length; i < n_3; i++) {
+            // Pattern matches path
+            var result = parsedPatterns[i](path, basename, siblingsPatternFn);
             if (result) {
                 return result;
             }
@@ -486,15 +464,26 @@ function parseExpressionPattern(pattern, value, options) {
     if (value) {
         var when_1 = value.when;
         if (typeof when_1 === 'string') {
-            var result = function (path, basename, name, hasSibling) {
-                if (!hasSibling || !parsedPattern(path, basename)) {
+            var siblingsPatternToMatchingPattern_1 = function (siblingsPattern) {
+                var clausePattern = when_1.replace('$(basename)', siblingsPattern.name);
+                if (siblingsPattern.siblings.indexOf(clausePattern) !== -1) {
+                    return pattern;
+                }
+                else {
+                    return null; // pattern does not match in the end because the when clause is not satisfied
+                }
+            };
+            var result = function (path, basename, siblingsPatternFn) {
+                if (!parsedPattern(path, basename)) {
                     return null;
                 }
-                var clausePattern = when_1.replace('$(basename)', name);
-                var matched = hasSibling(clausePattern);
-                return isThenable(matched) ?
-                    matched.then(function (m) { return m ? pattern : null; }) :
-                    matched ? pattern : null;
+                var siblingsPattern = siblingsPatternFn();
+                if (!siblingsPattern) {
+                    return null; // pattern is malformed or we don't have siblings
+                }
+                return TPromise.is(siblingsPattern) ?
+                    siblingsPattern.then(siblingsPatternToMatchingPattern_1) :
+                    siblingsPatternToMatchingPattern_1(siblingsPattern);
             };
             result.requiresSiblings = true;
             return result;

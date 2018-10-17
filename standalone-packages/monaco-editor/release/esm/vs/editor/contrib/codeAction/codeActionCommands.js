@@ -3,12 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -60,9 +57,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { dispose } from '../../../base/common/lifecycle.js';
-import { escapeRegExpCharacters } from '../../../base/common/strings.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { EditorAction, EditorCommand } from '../../browser/editorExtensions.js';
-import { IBulkEditService } from '../../browser/services/bulkEditService.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import { MessageController } from '../message/messageController.js';
 import * as nls from '../../../nls.js';
@@ -71,12 +67,13 @@ import { ContextKeyExpr, IContextKeyService } from '../../../platform/contextkey
 import { IContextMenuService } from '../../../platform/contextview/browser/contextView.js';
 import { IKeybindingService } from '../../../platform/keybinding/common/keybinding.js';
 import { IMarkerService } from '../../../platform/markers/common/markers.js';
-import { IProgressService } from '../../../platform/progress/common/progress.js';
 import { CodeActionModel, SUPPORTED_CODE_ACTIONS } from './codeActionModel.js';
-import { CodeActionKind } from './codeActionTrigger.js';
+import { CodeActionAutoApply, CodeActionKind } from './codeActionTrigger.js';
 import { CodeActionContextMenu } from './codeActionWidget.js';
 import { LightBulbWidget } from './lightBulbWidget.js';
-import { onUnexpectedError } from '../../../base/common/errors.js';
+import { escapeRegExpCharacters } from '../../../base/common/strings.js';
+import { IBulkEditService } from '../../browser/services/bulkEditService.js';
+import { IProgressService } from '../../../platform/progress/common/progress.js';
 function contextKeyForSupportedActions(kind) {
     return ContextKeyExpr.regex(SUPPORTED_CODE_ACTIONS.keys()[0], new RegExp('(\\s|^)' + escapeRegExpCharacters(kind.value) + '\\b'));
 }
@@ -110,17 +107,17 @@ var QuickFixController = /** @class */ (function () {
         if (e && e.actions) {
             this._activeRequest = e.actions;
         }
-        if (e && e.actions && e.trigger.filter && e.trigger.filter.kind) {
+        if (e && e.trigger.filter && e.trigger.filter.kind) {
             // Triggered for specific scope
             // Apply if we only have one action or requested autoApply, otherwise show menu
             e.actions.then(function (fixes) {
-                if (e.trigger.autoApply === 2 /* First */ || (e.trigger.autoApply === 1 /* IfSingle */ && fixes.length === 1)) {
+                if (e.trigger.autoApply === CodeActionAutoApply.First || (e.trigger.autoApply === CodeActionAutoApply.IfSingle && fixes.length === 1)) {
                     _this._onApplyCodeAction(fixes[0]);
                 }
                 else {
                     _this._codeActionContextMenu.show(e.actions, e.position);
                 }
-            }).catch(onUnexpectedError);
+            });
             return;
         }
         if (e && e.trigger.type === 'manual') {
@@ -145,9 +142,7 @@ var QuickFixController = /** @class */ (function () {
         return QuickFixController.ID;
     };
     QuickFixController.prototype._handleLightBulbSelect = function (coords) {
-        if (this._lightBulbWidget.model && this._lightBulbWidget.model.actions) {
-            this._codeActionContextMenu.show(this._lightBulbWidget.model.actions, coords);
-        }
+        this._codeActionContextMenu.show(this._lightBulbWidget.model.actions, coords);
     };
     QuickFixController.prototype.triggerFromEditorSelection = function (filter, autoApply) {
         return this._model.trigger({ type: 'manual', filter: filter, autoApply: autoApply });
@@ -164,7 +159,7 @@ var QuickFixController = /** @class */ (function () {
         this._lightBulbWidget.title = title;
     };
     QuickFixController.prototype._onApplyCodeAction = function (action) {
-        return applyCodeAction(action, this._bulkEditService, this._commandService, this._editor);
+        return TPromise.wrap(applyCodeAction(action, this._bulkEditService, this._commandService, this._editor));
     };
     QuickFixController.ID = 'editor.contrib.quickFixController';
     QuickFixController = __decorate([
@@ -222,12 +217,11 @@ var QuickFixAction = /** @class */ (function (_super) {
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasCodeActionsProvider),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 2048 /* CtrlCmd */ | 84 /* US_DOT */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 84 /* US_DOT */
             }
         }) || this;
     }
-    QuickFixAction.prototype.run = function (_accessor, editor) {
+    QuickFixAction.prototype.run = function (accessor, editor) {
         return showCodeActionsForEditorSelection(editor, nls.localize('editor.action.quickFix.noneMessage', "No code actions available"));
     };
     QuickFixAction.Id = 'editor.action.quickFix';
@@ -241,19 +235,19 @@ var CodeActionCommandArgs = /** @class */ (function () {
     }
     CodeActionCommandArgs.fromUser = function (arg) {
         if (!arg || typeof arg !== 'object') {
-            return new CodeActionCommandArgs(CodeActionKind.Empty, 1 /* IfSingle */);
+            return new CodeActionCommandArgs(CodeActionKind.Empty, CodeActionAutoApply.IfSingle);
         }
         return new CodeActionCommandArgs(CodeActionCommandArgs.getKindFromUser(arg), CodeActionCommandArgs.getApplyFromUser(arg));
     };
     CodeActionCommandArgs.getApplyFromUser = function (arg) {
         switch (typeof arg.apply === 'string' ? arg.apply.toLowerCase() : '') {
             case 'first':
-                return 2 /* First */;
+                return CodeActionAutoApply.First;
             case 'never':
-                return 3 /* Never */;
+                return CodeActionAutoApply.Never;
             case 'ifsingle':
             default:
-                return 1 /* IfSingle */;
+                return CodeActionAutoApply.IfSingle;
         }
     };
     CodeActionCommandArgs.getKindFromUser = function (arg) {
@@ -271,7 +265,7 @@ var CodeActionCommand = /** @class */ (function (_super) {
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasCodeActionsProvider)
         }) || this;
     }
-    CodeActionCommand.prototype.runEditorCommand = function (_accessor, editor, userArg) {
+    CodeActionCommand.prototype.runEditorCommand = function (accessor, editor, userArg) {
         var args = CodeActionCommandArgs.fromUser(userArg);
         return showCodeActionsForEditorSelection(editor, nls.localize('editor.action.quickFix.noneMessage', "No code actions available"), { kind: args.kind, includeSourceActions: true }, args.apply);
     };
@@ -292,8 +286,7 @@ var RefactorAction = /** @class */ (function (_super) {
                 primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 48 /* KEY_R */,
                 mac: {
                     primary: 256 /* WinCtrl */ | 1024 /* Shift */ | 48 /* KEY_R */
-                },
-                weight: 100 /* EditorContrib */
+                }
             },
             menuOpts: {
                 group: '1_modification',
@@ -302,8 +295,8 @@ var RefactorAction = /** @class */ (function (_super) {
             }
         }) || this;
     }
-    RefactorAction.prototype.run = function (_accessor, editor) {
-        return showCodeActionsForEditorSelection(editor, nls.localize('editor.action.refactor.noneMessage', "No refactorings available"), { kind: CodeActionKind.Refactor }, 3 /* Never */);
+    RefactorAction.prototype.run = function (accessor, editor) {
+        return showCodeActionsForEditorSelection(editor, nls.localize('editor.action.refactor.noneMessage', "No refactorings available"), { kind: CodeActionKind.Refactor }, CodeActionAutoApply.Never);
     };
     RefactorAction.Id = 'editor.action.refactor';
     return RefactorAction;
@@ -324,8 +317,8 @@ var SourceAction = /** @class */ (function (_super) {
             }
         }) || this;
     }
-    SourceAction.prototype.run = function (_accessor, editor) {
-        return showCodeActionsForEditorSelection(editor, nls.localize('editor.action.source.noneMessage', "No source actions available"), { kind: CodeActionKind.Source, includeSourceActions: true }, 3 /* Never */);
+    SourceAction.prototype.run = function (accessor, editor) {
+        return showCodeActionsForEditorSelection(editor, nls.localize('editor.action.source.noneMessage', "No source actions available"), { kind: CodeActionKind.Source, includeSourceActions: true }, CodeActionAutoApply.Never);
     };
     SourceAction.Id = 'editor.action.sourceAction';
     return SourceAction;
@@ -341,13 +334,12 @@ var OrganizeImportsAction = /** @class */ (function (_super) {
             precondition: ContextKeyExpr.and(EditorContextKeys.writable, contextKeyForSupportedActions(CodeActionKind.SourceOrganizeImports)),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 1024 /* Shift */ | 512 /* Alt */ | 45 /* KEY_O */,
-                weight: 100 /* EditorContrib */
+                primary: 1024 /* Shift */ | 512 /* Alt */ | 45 /* KEY_O */
             }
         }) || this;
     }
-    OrganizeImportsAction.prototype.run = function (_accessor, editor) {
-        return showCodeActionsForEditorSelection(editor, nls.localize('editor.action.organize.noneMessage', "No organize imports action available"), { kind: CodeActionKind.SourceOrganizeImports, includeSourceActions: true }, 1 /* IfSingle */);
+    OrganizeImportsAction.prototype.run = function (accessor, editor) {
+        return showCodeActionsForEditorSelection(editor, nls.localize('editor.action.organize.noneMessage', "No organize imports action available"), { kind: CodeActionKind.SourceOrganizeImports, includeSourceActions: true }, CodeActionAutoApply.IfSingle);
     };
     OrganizeImportsAction.Id = 'editor.action.organizeImports';
     return OrganizeImportsAction;

@@ -4,25 +4,36 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { CancellationTokenSource } from './cancellation.js';
 import * as errors from './errors.js';
-import { Emitter } from './event.js';
-import { Disposable } from './lifecycle.js';
 import { TPromise } from './winjs.base.js';
-export function isThenable(obj) {
+import { CancellationTokenSource } from './cancellation.js';
+import { Disposable } from './lifecycle.js';
+import { Emitter } from './event.js';
+export function isPromiseLike(obj) {
     return obj && typeof obj.then === 'function';
+}
+export function toPromiseLike(arg) {
+    if (isPromiseLike(arg)) {
+        return arg;
+    }
+    else {
+        return TPromise.as(arg);
+    }
+}
+export function toWinJsPromise(arg) {
+    if (arg instanceof TPromise) {
+        return arg;
+    }
+    return new TPromise(function (resolve, reject) { return arg.then(resolve, reject); });
 }
 export function createCancelablePromise(callback) {
     var source = new CancellationTokenSource();
@@ -54,16 +65,77 @@ export function createCancelablePromise(callback) {
         return class_1;
     }());
 }
-export function asThenable(callback) {
-    return new Promise(function (resolve, reject) {
-        var item = callback();
-        if (isThenable(item)) {
-            item.then(resolve, reject);
+export function asWinJsPromise(callback) {
+    var source = new CancellationTokenSource();
+    return new TPromise(function (resolve, reject, progress) {
+        var item = callback(source.token);
+        if (item instanceof TPromise) {
+            item.then(function (result) {
+                source.dispose();
+                resolve(result);
+            }, function (err) {
+                source.dispose();
+                reject(err);
+            }, progress);
+        }
+        else if (isPromiseLike(item)) {
+            item.then(function (result) {
+                source.dispose();
+                resolve(result);
+            }, function (err) {
+                source.dispose();
+                reject(err);
+            });
         }
         else {
+            source.dispose();
             resolve(item);
         }
+    }, function () {
+        source.cancel();
     });
+}
+/**
+ * Hook a cancellation token to a WinJS Promise
+ */
+export function wireCancellationToken(token, promise, resolveAsUndefinedWhenCancelled) {
+    var subscription = token.onCancellationRequested(function () { return promise.cancel(); });
+    if (resolveAsUndefinedWhenCancelled) {
+        promise = promise.then(undefined, function (err) {
+            if (!errors.isPromiseCanceledError(err)) {
+                return TPromise.wrapError(err);
+            }
+            return undefined;
+        });
+    }
+    return always(promise, function () { return subscription.dispose(); });
+}
+export function asDisposablePromise(input, cancelValue, bucket) {
+    var dispose;
+    var promise = new TPromise(function (resolve, reject) {
+        dispose = function () {
+            resolve(cancelValue);
+            if (isWinJSPromise(input)) {
+                input.cancel();
+            }
+        };
+        input.then(resolve, function (err) {
+            if (errors.isPromiseCanceledError(err)) {
+                resolve(cancelValue);
+            }
+            else {
+                reject(err);
+            }
+        });
+    });
+    var res = {
+        promise: promise,
+        dispose: dispose
+    };
+    if (Array.isArray(bucket)) {
+        bucket.push(res);
+    }
+    return res;
 }
 /**
  * A helper to prevent accumulation of sequential async tasks.
@@ -108,23 +180,29 @@ var Throttler = /** @class */ (function () {
                     _this.queuedPromiseFactory = null;
                     return result;
                 };
-                this.queuedPromise = new TPromise(function (c) {
-                    _this.activePromise.then(onComplete_1, onComplete_1).then(c);
+                this.queuedPromise = new TPromise(function (c, e, p) {
+                    _this.activePromise.then(onComplete_1, onComplete_1, p).done(c);
+                }, function () {
+                    _this.activePromise.cancel();
                 });
             }
-            return new TPromise(function (c, e) {
-                _this.queuedPromise.then(c, e);
+            return new TPromise(function (c, e, p) {
+                _this.queuedPromise.then(c, e, p);
+            }, function () {
+                // no-op
             });
         }
         this.activePromise = promiseFactory();
-        return new TPromise(function (c, e) {
-            _this.activePromise.then(function (result) {
+        return new TPromise(function (c, e, p) {
+            _this.activePromise.done(function (result) {
                 _this.activePromise = null;
                 c(result);
             }, function (err) {
                 _this.activePromise = null;
                 e(err);
-            });
+            }, p);
+        }, function () {
+            _this.activePromise.cancel();
         });
     };
     return Throttler;
@@ -169,7 +247,7 @@ var Delayer = /** @class */ (function () {
         this.defaultDelay = defaultDelay;
         this.timeout = null;
         this.completionPromise = null;
-        this.doResolve = null;
+        this.onSuccess = null;
         this.task = null;
     }
     Delayer.prototype.trigger = function (task, delay) {
@@ -178,12 +256,13 @@ var Delayer = /** @class */ (function () {
         this.task = task;
         this.cancelTimeout();
         if (!this.completionPromise) {
-            this.completionPromise = new TPromise(function (c, e) {
-                _this.doResolve = c;
-                _this.doReject = e;
+            this.completionPromise = new TPromise(function (c) {
+                _this.onSuccess = c;
+            }, function () {
+                // no-op
             }).then(function () {
                 _this.completionPromise = null;
-                _this.doResolve = null;
+                _this.onSuccess = null;
                 var task = _this.task;
                 _this.task = null;
                 return task();
@@ -191,7 +270,7 @@ var Delayer = /** @class */ (function () {
         }
         this.timeout = setTimeout(function () {
             _this.timeout = null;
-            _this.doResolve(null);
+            _this.onSuccess(null);
         }, delay);
         return this.completionPromise;
     };
@@ -201,7 +280,7 @@ var Delayer = /** @class */ (function () {
     Delayer.prototype.cancel = function () {
         this.cancelTimeout();
         if (this.completionPromise) {
-            this.doReject(errors.canceled());
+            this.completionPromise.cancel();
             this.completionPromise = null;
         }
     };
@@ -244,6 +323,8 @@ var Barrier = /** @class */ (function () {
         this._isOpen = false;
         this._promise = new TPromise(function (c, e) {
             _this._completePromise = c;
+        }, function () {
+            console.warn('You should really not try to cancel this ready promise!');
         });
     }
     Barrier.prototype.isOpen = function () {
@@ -259,36 +340,74 @@ var Barrier = /** @class */ (function () {
     return Barrier;
 }());
 export { Barrier };
-export function timeout(millis, token) {
-    if (!token) {
-        return createCancelablePromise(function (token) { return timeout(millis, token); });
+var ShallowCancelThenPromise = /** @class */ (function (_super) {
+    __extends(ShallowCancelThenPromise, _super);
+    function ShallowCancelThenPromise(outer) {
+        var _this = this;
+        var completeCallback, errorCallback, progressCallback;
+        _this = _super.call(this, function (c, e, p) {
+            completeCallback = c;
+            errorCallback = e;
+            progressCallback = p;
+        }, function () {
+            // cancel this promise but not the
+            // outer promise
+            errorCallback(errors.canceled());
+        }) || this;
+        outer.then(completeCallback, errorCallback, progressCallback);
+        return _this;
     }
-    return new Promise(function (resolve, reject) {
-        var handle = setTimeout(resolve, millis);
-        token.onCancellationRequested(function () {
-            clearTimeout(handle);
-            reject(errors.canceled());
+    return ShallowCancelThenPromise;
+}(TPromise));
+export { ShallowCancelThenPromise };
+/**
+ * Replacement for `WinJS.TPromise.timeout`.
+ */
+export function timeout(n) {
+    return createCancelablePromise(function (token) {
+        return new Promise(function (resolve, reject) {
+            var handle = setTimeout(resolve, n);
+            token.onCancellationRequested(function (_) {
+                clearTimeout(handle);
+                reject(errors.canceled());
+            });
         });
     });
 }
-/**
- * Returns a new promise that joins the provided promise. Upon completion of
- * the provided promise the provided function will always be called. This
- * method is comparable to a try-finally code block.
- * @param promise a promise
- * @param callback a function that will be call in the success and error case.
- */
-export function always(promise, callback) {
-    function safeCallback() {
-        try {
-            callback();
-        }
-        catch (err) {
-            errors.onUnexpectedError(err);
-        }
+function isWinJSPromise(candidate) {
+    return TPromise.is(candidate) && typeof candidate.done === 'function';
+}
+export function always(winjsPromiseOrPromiseLike, f) {
+    if (isWinJSPromise(winjsPromiseOrPromiseLike)) {
+        return new TPromise(function (c, e, p) {
+            winjsPromiseOrPromiseLike.done(function (result) {
+                try {
+                    f(result);
+                }
+                catch (e1) {
+                    errors.onUnexpectedError(e1);
+                }
+                c(result);
+            }, function (err) {
+                try {
+                    f(err);
+                }
+                catch (e1) {
+                    errors.onUnexpectedError(e1);
+                }
+                e(err);
+            }, function (progress) {
+                p(progress);
+            });
+        }, function () {
+            winjsPromiseOrPromiseLike.cancel();
+        });
     }
-    promise.then(function (_) { return safeCallback(); }, function (_) { return safeCallback(); });
-    return Promise.resolve(promise);
+    else {
+        // simple
+        winjsPromiseOrPromiseLike.then(function (_) { return f(); }, function (_) { return f(); });
+        return winjsPromiseOrPromiseLike;
+    }
 }
 /**
  * Runs the provided list of promise factories in sequential order. The returned
@@ -309,11 +428,11 @@ export function sequence(promiseFactories) {
         if (n) {
             return n.then(thenHandler);
         }
-        return Promise.resolve(results);
+        return TPromise.as(results);
     }
-    return Promise.resolve(null).then(thenHandler);
+    return TPromise.as(null).then(thenHandler);
 }
-export function first(promiseFactories, shouldStop, defaultValue) {
+export function first2(promiseFactories, shouldStop, defaultValue) {
     if (shouldStop === void 0) { shouldStop = function (t) { return !!t; }; }
     if (defaultValue === void 0) { defaultValue = null; }
     var index = 0;
@@ -323,10 +442,30 @@ export function first(promiseFactories, shouldStop, defaultValue) {
             return Promise.resolve(defaultValue);
         }
         var factory = promiseFactories[index++];
-        var promise = Promise.resolve(factory());
+        var promise = factory();
         return promise.then(function (result) {
             if (shouldStop(result)) {
                 return Promise.resolve(result);
+            }
+            return loop();
+        });
+    };
+    return loop();
+}
+export function first(promiseFactories, shouldStop, defaultValue) {
+    if (shouldStop === void 0) { shouldStop = function (t) { return !!t; }; }
+    if (defaultValue === void 0) { defaultValue = null; }
+    var index = 0;
+    var len = promiseFactories.length;
+    var loop = function () {
+        if (index >= len) {
+            return TPromise.as(defaultValue);
+        }
+        var factory = promiseFactories[index++];
+        var promise = factory();
+        return promise.then(function (result) {
+            if (shouldStop(result)) {
+                return TPromise.as(result);
             }
             return loop();
         });
@@ -358,10 +497,15 @@ var Limiter = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Limiter.prototype.queue = function (factory) {
+    Limiter.prototype.queue = function (promiseFactory) {
         var _this = this;
-        return new TPromise(function (c, e) {
-            _this.outstandingPromises.push({ factory: factory, c: c, e: e });
+        return new TPromise(function (c, e, p) {
+            _this.outstandingPromises.push({
+                factory: promiseFactory,
+                c: c,
+                e: e,
+                p: p
+            });
             _this.consume();
         });
     };
@@ -371,8 +515,8 @@ var Limiter = /** @class */ (function () {
             var iLimitedTask = this.outstandingPromises.shift();
             this.runningPromises++;
             var promise = iLimitedTask.factory();
-            promise.then(iLimitedTask.c, iLimitedTask.e);
-            promise.then(function () { return _this.consumed(); }, function () { return _this.consumed(); });
+            promise.done(iLimitedTask.c, iLimitedTask.e, iLimitedTask.p);
+            promise.done(function () { return _this.consumed(); }, function () { return _this.consumed(); });
         }
     };
     Limiter.prototype.consumed = function () {
@@ -425,14 +569,19 @@ var ResourceQueue = /** @class */ (function () {
     return ResourceQueue;
 }());
 export { ResourceQueue };
+export function setDisposableTimeout(handler, timeout) {
+    var args = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        args[_i - 2] = arguments[_i];
+    }
+    var handle = setTimeout.apply(void 0, [handler, timeout].concat(args));
+    return { dispose: function () { clearTimeout(handle); } };
+}
 var TimeoutTimer = /** @class */ (function (_super) {
     __extends(TimeoutTimer, _super);
-    function TimeoutTimer(runner, timeout) {
+    function TimeoutTimer() {
         var _this = _super.call(this) || this;
         _this._token = -1;
-        if (typeof runner === 'function' && typeof timeout === 'number') {
-            _this.setIfNotSet(runner, timeout);
-        }
         return _this;
     }
     TimeoutTimer.prototype.dispose = function () {
@@ -572,71 +721,12 @@ export function nfcall(fn) {
     for (var _i = 1; _i < arguments.length; _i++) {
         args[_i - 1] = arguments[_i];
     }
-    return new TPromise(function (c, e) { return fn.apply(void 0, args.concat([function (err, result) { return err ? e(err) : c(result); }])); });
+    return new TPromise(function (c, e) { return fn.apply(void 0, args.concat([function (err, result) { return err ? e(err) : c(result); }])); }, function () { return null; });
 }
 export function ninvoke(thisArg, fn) {
     var args = [];
     for (var _i = 2; _i < arguments.length; _i++) {
         args[_i - 2] = arguments[_i];
     }
-    return new TPromise(function (c, e) { return fn.call.apply(fn, [thisArg].concat(args, [function (err, result) { return err ? e(err) : c(result); }])); });
+    return new TPromise(function (c, e) { return fn.call.apply(fn, [thisArg].concat(args, [function (err, result) { return err ? e(err) : c(result); }])); }, function () { return null; });
 }
-/**
- * Execute the callback the next time the browser is idle
- */
-export var runWhenIdle;
-(function () {
-    if (typeof requestIdleCallback !== 'function' || typeof cancelIdleCallback !== 'function') {
-        var dummyIdle_1 = Object.freeze({
-            didTimeout: true,
-            timeRemaining: function () { return 15; }
-        });
-        runWhenIdle = function (runner, timeout) {
-            if (timeout === void 0) { timeout = 0; }
-            var handle = setTimeout(function () { return runner(dummyIdle_1); }, timeout);
-            return { dispose: function () { clearTimeout(handle); handle = undefined; } };
-        };
-    }
-    else {
-        runWhenIdle = function (runner, timeout) {
-            var handle = requestIdleCallback(runner, typeof timeout === 'number' ? { timeout: timeout } : undefined);
-            return { dispose: function () { cancelIdleCallback(handle); handle = undefined; } };
-        };
-    }
-})();
-/**
- * An implementation of the "idle-until-urgent"-strategy as introduced
- * here: https://philipwalton.com/articles/idle-until-urgent/
- */
-var IdleValue = /** @class */ (function () {
-    function IdleValue(executor) {
-        var _this = this;
-        this._executor = function () {
-            try {
-                _this._value = executor();
-            }
-            catch (err) {
-                _this._error = err;
-            }
-            finally {
-                _this._didRun = true;
-            }
-        };
-        this._handle = runWhenIdle(function () { return _this._executor(); });
-    }
-    IdleValue.prototype.dispose = function () {
-        this._handle.dispose();
-    };
-    IdleValue.prototype.getValue = function () {
-        if (!this._didRun) {
-            this._handle.dispose();
-            this._executor();
-        }
-        if (this._error) {
-            throw this._error;
-        }
-        return this._value;
-    };
-    return IdleValue;
-}());
-export { IdleValue };

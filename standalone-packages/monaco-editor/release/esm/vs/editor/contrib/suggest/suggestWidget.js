@@ -3,16 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -43,13 +40,13 @@ import { ITelemetryService } from '../../../platform/telemetry/common/telemetry.
 import { attachListStyler } from '../../../platform/theme/common/styler.js';
 import { IThemeService, registerThemingParticipant } from '../../../platform/theme/common/themeService.js';
 import { registerColor, editorWidgetBackground, listFocusBackground, activeContrastBorder, listHighlightForeground, editorForeground, editorWidgetBorder, focusBorder, textLinkForeground, textCodeBlockBackground } from '../../../platform/theme/common/colorRegistry.js';
-import { IStorageService } from '../../../platform/storage/common/storage.js';
+import { IStorageService, StorageScope } from '../../../platform/storage/common/storage.js';
 import { MarkdownRenderer } from '../markdown/markdownRenderer.js';
 import { IModeService } from '../../common/services/modeService.js';
 import { IOpenerService } from '../../../platform/opener/common/opener.js';
 import { TimeoutTimer, createCancelablePromise } from '../../../base/common/async.js';
 import { CancellationToken } from '../../../base/common/cancellation.js';
-import { completionKindToCssClass } from '../../common/modes.js';
+var sticky = false; // for development purposes
 var expandSuggestionDocsByDefault = false;
 var maxSuggestionsToShow = 12;
 /**
@@ -106,11 +103,9 @@ var Renderer = /** @class */ (function () {
             var fontFamily = configuration.fontInfo.fontFamily;
             var fontSize = configuration.contribInfo.suggestFontSize || configuration.fontInfo.fontSize;
             var lineHeight = configuration.contribInfo.suggestLineHeight || configuration.fontInfo.lineHeight;
-            var fontWeight = configuration.fontInfo.fontWeight;
             var fontSizePx = fontSize + "px";
             var lineHeightPx = lineHeight + "px";
             data.root.style.fontSize = fontSizePx;
-            data.root.style.fontWeight = fontWeight;
             main.style.fontFamily = fontFamily;
             main.style.lineHeight = lineHeightPx;
             data.icon.style.height = lineHeightPx;
@@ -128,9 +123,15 @@ var Renderer = /** @class */ (function () {
         var _this = this;
         var data = templateData;
         var suggestion = element.suggestion;
-        data.icon.className = 'icon ' + completionKindToCssClass(suggestion.kind);
+        if (canExpandCompletionItem(element)) {
+            data.root.setAttribute('aria-label', nls.localize('suggestionWithDetailsAriaLabel', "{0}, suggestion, has details", suggestion.label));
+        }
+        else {
+            data.root.setAttribute('aria-label', nls.localize('suggestionAriaLabel', "{0}, suggestion", suggestion.label));
+        }
+        data.icon.className = 'icon ' + suggestion.type;
         data.colorspan.style.backgroundColor = '';
-        if (suggestion.kind === 20 /* Color */) {
+        if (suggestion.type === 'color') {
             var color = matchesColor(suggestion.label) || typeof suggestion.documentation === 'string' && matchesColor(suggestion.documentation);
             if (color) {
                 data.icon.className = 'icon customcolor';
@@ -157,9 +158,6 @@ var Renderer = /** @class */ (function () {
             data.readMore.onmousedown = null;
             data.readMore.onclick = null;
         }
-    };
-    Renderer.prototype.disposeElement = function () {
-        // noop
     };
     Renderer.prototype.disposeTemplate = function (templateData) {
         templateData.disposables = dispose(templateData.disposables);
@@ -242,7 +240,7 @@ var SuggestionDetails = /** @class */ (function () {
         };
         this.body.scrollTop = 0;
         this.scrollbar.scanDomNode();
-        this.ariaLabel = strings.format('{0}{1}', item.suggestion.detail || '', item.suggestion.documentation ? (typeof item.suggestion.documentation === 'string' ? item.suggestion.documentation : item.suggestion.documentation.value) : '');
+        this.ariaLabel = strings.format('{0}\n{1}\n{2}', item.suggestion.label || '', item.suggestion.detail || '', item.suggestion.documentation || '');
     };
     SuggestionDetails.prototype.getAriaLabel = function () {
         return this.ariaLabel;
@@ -275,11 +273,9 @@ var SuggestionDetails = /** @class */ (function () {
         var fontFamily = configuration.fontInfo.fontFamily;
         var fontSize = configuration.contribInfo.suggestFontSize || configuration.fontInfo.fontSize;
         var lineHeight = configuration.contribInfo.suggestLineHeight || configuration.fontInfo.lineHeight;
-        var fontWeight = configuration.fontInfo.fontWeight;
         var fontSizePx = fontSize + "px";
         var lineHeightPx = lineHeight + "px";
         this.el.style.fontSize = fontSizePx;
-        this.el.style.fontWeight = fontWeight;
         this.type.style.fontFamily = fontFamily;
         this.close.style.height = lineHeightPx;
         this.close.style.width = lineHeightPx;
@@ -320,7 +316,7 @@ var SuggestWidget = /** @class */ (function () {
         this.focusedItem = null;
         this.storageService = storageService;
         if (this.expandDocsSettingFromStorage() === undefined) {
-            this.storageService.store('expandSuggestionDocs', expandSuggestionDocsByDefault, 0 /* GLOBAL */);
+            this.storageService.store('expandSuggestionDocs', expandSuggestionDocsByDefault, StorageScope.GLOBAL);
             if (this.expandDocsSettingFromStorage() === undefined) {
                 this.storageServiceAvailable = false;
             }
@@ -345,6 +341,7 @@ var SuggestWidget = /** @class */ (function () {
                 listInactiveFocusOutline: activeContrastBorder
             }),
             themeService.onThemeChange(function (t) { return _this.onThemeChange(t); }),
+            editor.onDidBlurEditorText(function () { return _this.onEditorBlur(); }),
             editor.onDidLayoutChange(function () { return _this.onEditorLayoutChange(); }),
             this.list.onSelectionChange(function (e) { return _this.onListSelection(e); }),
             this.list.onFocusChange(function (e) { return _this.onListFocus(e); }),
@@ -362,6 +359,17 @@ var SuggestWidget = /** @class */ (function () {
             return;
         }
         this.editor.layoutContentWidget(this);
+    };
+    SuggestWidget.prototype.onEditorBlur = function () {
+        var _this = this;
+        if (sticky) {
+            return;
+        }
+        this.editorBlurTimeout.cancelAndSet(function () {
+            if (!_this.editor.hasTextFocus()) {
+                _this.setState(0 /* Hidden */);
+            }
+        }, 150);
     };
     SuggestWidget.prototype.onEditorLayoutChange = function () {
         if ((this.state === 3 /* Open */ || this.state === 5 /* Details */) && this.expandDocsSettingFromStorage()) {
@@ -382,18 +390,11 @@ var SuggestWidget = /** @class */ (function () {
         });
     };
     SuggestWidget.prototype._getSuggestionAriaAlertLabel = function (item) {
-        var isSnippet = item.suggestion.kind === 18 /* Snippet */;
-        if (!canExpandCompletionItem(item)) {
-            return isSnippet ? nls.localize('ariaCurrentSnippetSuggestion', "{0}, snippet suggestion", item.suggestion.label)
-                : nls.localize('ariaCurrentSuggestion', "{0}, suggestion", item.suggestion.label);
-        }
-        else if (this.expandDocsSettingFromStorage()) {
-            return isSnippet ? nls.localize('ariaCurrentSnippeSuggestionReadDetails', "{0}, snippet suggestion. Reading details. {1}", item.suggestion.label, this.details.getAriaLabel())
-                : nls.localize('ariaCurrenttSuggestionReadDetails', "{0}, suggestion. Reading details. {1}", item.suggestion.label, this.details.getAriaLabel());
+        if (canExpandCompletionItem(item)) {
+            return nls.localize('ariaCurrentSuggestionWithDetails', "{0}, suggestion, has details", item.suggestion.label);
         }
         else {
-            return isSnippet ? nls.localize('ariaCurrentSnippetSuggestionWithDetails', "{0}, snippet suggestion, has details", item.suggestion.label)
-                : nls.localize('ariaCurrentSuggestionWithDetails', "{0}, suggestion, has details", item.suggestion.label);
+            return nls.localize('ariaCurrentSuggestion', "{0}, suggestion", item.suggestion.label);
         }
     };
     SuggestWidget.prototype._ariaAlert = function (newAriaAlertLabel) {
@@ -440,39 +441,33 @@ var SuggestWidget = /** @class */ (function () {
             return;
         }
         var item = e.elements[0];
-        var index = e.indexes[0];
+        this._ariaAlert(this._getSuggestionAriaAlertLabel(item));
         this.firstFocusInCurrentList = !this.focusedItem;
-        if (item !== this.focusedItem) {
-            if (this.currentSuggestionDetails) {
-                this.currentSuggestionDetails.cancel();
-                this.currentSuggestionDetails = null;
-            }
-            this.suggestionSupportsAutoAccept.set(!item.suggestion.noAutoAccept);
-            this.focusedItem = item;
-            this.list.reveal(index);
-            this.currentSuggestionDetails = createCancelablePromise(function (token) { return item.resolve(token); });
-            this.currentSuggestionDetails.then(function () {
-                if (_this.list.length < index) {
-                    return;
-                }
-                // item can have extra information, so re-render
-                _this.ignoreFocusEvents = true;
-                _this.list.splice(index, 1, [item]);
-                _this.list.setFocus([index]);
-                _this.ignoreFocusEvents = false;
-                if (_this.expandDocsSettingFromStorage()) {
-                    _this.showDetails();
-                }
-                else {
-                    removeClass(_this.element, 'docs-side');
-                }
-                _this._ariaAlert(_this._getSuggestionAriaAlertLabel(item));
-            }).catch(onUnexpectedError).then(function () {
-                if (_this.focusedItem === item) {
-                    _this.currentSuggestionDetails = null;
-                }
-            });
+        if (item === this.focusedItem) {
+            return;
         }
+        if (this.currentSuggestionDetails) {
+            this.currentSuggestionDetails.cancel();
+            this.currentSuggestionDetails = null;
+        }
+        var index = e.indexes[0];
+        this.suggestionSupportsAutoAccept.set(!item.suggestion.noAutoAccept);
+        this.focusedItem = item;
+        this.list.reveal(index);
+        this.currentSuggestionDetails = createCancelablePromise(function (token) { return item.resolve(token); });
+        this.currentSuggestionDetails.then(function () {
+            // item can have extra information, so re-render
+            _this.ignoreFocusEvents = true;
+            _this.list.splice(index, 1, [item]);
+            _this.list.setFocus([index]);
+            _this.ignoreFocusEvents = false;
+            if (_this.expandDocsSettingFromStorage()) {
+                _this.showDetails();
+            }
+            else {
+                removeClass(_this.element, 'docs-side');
+            }
+        }).catch(onUnexpectedError).then(function () { return _this.currentSuggestionDetails = null; });
         // emit an event
         this.onDidFocusEmitter.fire({ item: item, index: index, model: this.completionModel });
     };
@@ -527,7 +522,7 @@ var SuggestWidget = /** @class */ (function () {
                 break;
         }
     };
-    SuggestWidget.prototype.showTriggered = function (auto, delay) {
+    SuggestWidget.prototype.showTriggered = function (auto) {
         var _this = this;
         if (this.state !== 0 /* Hidden */) {
             return;
@@ -537,7 +532,7 @@ var SuggestWidget = /** @class */ (function () {
             this.loadingTimeout = setTimeout(function () {
                 _this.loadingTimeout = null;
                 _this.setState(1 /* Loading */);
-            }, delay);
+            }, 50);
         }
     };
     SuggestWidget.prototype.showSuggestions = function (completionModel, selectionIndex, isFrozen, isAuto) {
@@ -565,20 +560,18 @@ var SuggestWidget = /** @class */ (function () {
             this.completionModel = null;
         }
         else {
-            if (this.state !== 3 /* Open */) {
-                var stats = this.completionModel.stats;
-                stats['wasAutomaticallyTriggered'] = !!isAuto;
-                /* __GDPR__
-                    "suggestWidget" : {
-                        "wasAutomaticallyTriggered" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-                        "${include}": [
-                            "${ICompletionStats}",
-                            "${EditorTelemetryData}"
-                        ]
-                    }
-                */
-                this.telemetryService.publicLog('suggestWidget', __assign({}, stats, this.editor.getTelemetryData()));
-            }
+            var stats = this.completionModel.stats;
+            stats['wasAutomaticallyTriggered'] = !!isAuto;
+            /* __GDPR__
+                "suggestWidget" : {
+                    "wasAutomaticallyTriggered" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+                    "${include}": [
+                        "${ICompletionStats}",
+                        "${EditorTelemetryData}"
+                    ]
+                }
+            */
+            this.telemetryService.publicLog('suggestWidget', __assign({}, stats, this.editor.getTelemetryData()));
             this.list.splice(0, this.list.length, this.completionModel.items);
             if (isFrozen) {
                 this.setState(4 /* Frozen */);
@@ -726,12 +719,11 @@ var SuggestWidget = /** @class */ (function () {
             this.telemetryService.publicLog('suggestWidget:collapseDetails', this.editor.getTelemetryData());
         }
         else {
-            if (this.state !== 3 /* Open */ && this.state !== 5 /* Details */ && this.state !== 4 /* Frozen */) {
+            if (this.state !== 3 /* Open */ && this.state !== 5 /* Details */) {
                 return;
             }
             this.updateExpandDocsSetting(true);
             this.showDetails();
-            this._ariaAlert(this.details.getAriaLabel());
             /* __GDPR__
                 "suggestWidget:expandDetails" : {
                     "${include}": [
@@ -753,6 +745,7 @@ var SuggestWidget = /** @class */ (function () {
         this.editor.layoutContentWidget(this);
         this.adjustDocsPosition();
         this.editor.focus();
+        this._ariaAlert(this.details.getAriaLabel());
     };
     SuggestWidget.prototype.show = function () {
         var _this = this;
@@ -875,7 +868,7 @@ var SuggestWidget = /** @class */ (function () {
     // Monaco Editor does not have a storage service
     SuggestWidget.prototype.expandDocsSettingFromStorage = function () {
         if (this.storageServiceAvailable) {
-            return this.storageService.getBoolean('expandSuggestionDocs', 0 /* GLOBAL */);
+            return this.storageService.getBoolean('expandSuggestionDocs', StorageScope.GLOBAL);
         }
         else {
             return this.expandSuggestionDocs;
@@ -884,7 +877,7 @@ var SuggestWidget = /** @class */ (function () {
     // Monaco Editor does not have a storage service
     SuggestWidget.prototype.updateExpandDocsSetting = function (value) {
         if (this.storageServiceAvailable) {
-            this.storageService.store('expandSuggestionDocs', value, 0 /* GLOBAL */);
+            this.storageService.store('expandSuggestionDocs', value, StorageScope.GLOBAL);
         }
         else {
             this.expandSuggestionDocs = value;

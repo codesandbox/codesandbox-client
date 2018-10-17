@@ -4,56 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import * as ts from './lib/typescriptServices.js';
 var Uri = monaco.Uri;
 var Promise = monaco.Promise;
-//#region utils copied from typescript to prevent loading the entire typescriptServices ---
-var IndentStyle;
-(function (IndentStyle) {
-    IndentStyle[IndentStyle["None"] = 0] = "None";
-    IndentStyle[IndentStyle["Block"] = 1] = "Block";
-    IndentStyle[IndentStyle["Smart"] = 2] = "Smart";
-})(IndentStyle || (IndentStyle = {}));
-function flattenDiagnosticMessageText(messageText, newLine) {
-    if (typeof messageText === "string") {
-        return messageText;
-    }
-    else {
-        var diagnosticChain = messageText;
-        var result = "";
-        var indent = 0;
-        while (diagnosticChain) {
-            if (indent) {
-                result += newLine;
-                for (var i = 0; i < indent; i++) {
-                    result += "  ";
-                }
-            }
-            result += diagnosticChain.messageText;
-            indent++;
-            diagnosticChain = diagnosticChain.next;
-        }
-        return result;
-    }
-}
-function displayPartsToString(displayParts) {
-    if (displayParts) {
-        return displayParts.map(function (displayPart) { return displayPart.text; }).join("");
-    }
-    return "";
-}
-//#endregion
 var Adapter = /** @class */ (function () {
     function Adapter(_worker) {
         this._worker = _worker;
@@ -177,7 +139,7 @@ var DiagnostcsAdapter = /** @class */ (function (_super) {
             startColumn: startColumn,
             endLineNumber: endLineNumber,
             endColumn: endColumn,
-            message: flattenDiagnosticMessageText(diag.messageText, '\n')
+            message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
         };
     };
     return DiagnostcsAdapter;
@@ -233,8 +195,8 @@ var SuggestAdapter = /** @class */ (function (_super) {
                 position: position,
                 label: details.name,
                 kind: SuggestAdapter.convertKind(details.kind),
-                detail: displayPartsToString(details.displayParts),
-                documentation: displayPartsToString(details.documentation)
+                detail: ts.displayPartsToString(details.displayParts),
+                documentation: ts.displayPartsToString(details.documentation)
             };
         }));
     };
@@ -297,20 +259,20 @@ var SignatureHelpAdapter = /** @class */ (function (_super) {
                     documentation: null,
                     parameters: []
                 };
-                signature.label += displayPartsToString(item.prefixDisplayParts);
+                signature.label += ts.displayPartsToString(item.prefixDisplayParts);
                 item.parameters.forEach(function (p, i, a) {
-                    var label = displayPartsToString(p.displayParts);
+                    var label = ts.displayPartsToString(p.displayParts);
                     var parameter = {
                         label: label,
-                        documentation: displayPartsToString(p.documentation)
+                        documentation: ts.displayPartsToString(p.documentation)
                     };
                     signature.label += label;
                     signature.parameters.push(parameter);
                     if (i < a.length - 1) {
-                        signature.label += displayPartsToString(item.separatorDisplayParts);
+                        signature.label += ts.displayPartsToString(item.separatorDisplayParts);
                     }
                 });
-                signature.label += displayPartsToString(item.suffixDisplayParts);
+                signature.label += ts.displayPartsToString(item.suffixDisplayParts);
                 ret.signatures.push(signature);
             });
             return ret;
@@ -334,7 +296,7 @@ var QuickInfoAdapter = /** @class */ (function (_super) {
             if (!info) {
                 return;
             }
-            var documentation = displayPartsToString(info.documentation);
+            var documentation = ts.displayPartsToString(info.documentation);
             var tags = info.tags ? info.tags.map(function (tag) {
                 var label = "*@" + tag.name + "*";
                 if (!tag.text) {
@@ -343,7 +305,7 @@ var QuickInfoAdapter = /** @class */ (function (_super) {
                 return label + (tag.text.match(/\r\n|\n/g) ? ' \n' + tag.text : " - " + tag.text);
             })
                 .join('  \n\n') : '';
-            var contents = displayPartsToString(info.displayParts);
+            var contents = ts.displayPartsToString(info.displayParts);
             return {
                 range: _this._textSpanToRange(resource, info.textSpan),
                 contents: [{
@@ -463,10 +425,11 @@ var OutlineAdapter = /** @class */ (function (_super) {
             var convert = function (bucket, item, containerLabel) {
                 var result = {
                     name: item.text,
-                    detail: '',
                     kind: (outlineTypeTable[item.kind] || monaco.languages.SymbolKind.Variable),
-                    range: _this._textSpanToRange(resource, item.spans[0]),
-                    selectionRange: _this._textSpanToRange(resource, item.spans[0]),
+                    location: {
+                        uri: resource,
+                        range: _this._textSpanToRange(resource, item.spans[0])
+                    },
                     containerName: containerLabel
                 };
                 if (item.childItems && item.childItems.length > 0) {
@@ -545,7 +508,7 @@ var FormatHelper = /** @class */ (function (_super) {
             ConvertTabsToSpaces: options.insertSpaces,
             TabSize: options.tabSize,
             IndentSize: options.tabSize,
-            IndentStyle: IndentStyle.Smart,
+            IndentStyle: ts.IndentStyle.Smart,
             NewLineCharacter: '\n',
             InsertSpaceAfterCommaDelimiter: true,
             InsertSpaceAfterSemicolonInForStatements: true,

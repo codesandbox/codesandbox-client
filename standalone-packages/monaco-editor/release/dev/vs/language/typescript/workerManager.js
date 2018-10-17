@@ -12,7 +12,6 @@ define(["require", "exports"], function (require, exports) {
             this._modeId = modeId;
             this._defaults = defaults;
             this._worker = null;
-            // @ts-ignore
             this._idleCheckInterval = setInterval(function () { return _this._checkIfIdle(); }, 30 * 1000);
             this._lastUsedTime = 0;
             this._configChangeListener = this._defaults.onDidChange(function () { return _this._stopWorker(); });

@@ -172,12 +172,8 @@ define(["require", "exports"], function (require, exports) {
             "width_bucket", "xml_is_well_formed", "xml_is_well_formed_content", "xml_is_well_formed_document", "xmlagg", "xmlcomment", "xmlconcat", "xmlelement", "xmlexists",
             "xmlforest", "xmlparse", "xmlpi", "xmlroot", "xmlserialize", "xpath", "xpath_exists"
         ],
-        builtinVariables: [
-        // NOT SUPPORTED
-        ],
-        pseudoColumns: [
-        // NOT SUPPORTED
-        ],
+        builtinVariables: [],
+        pseudoColumns: [],
         tokenizer: {
             root: [
                 { include: '@comments' },
@@ -244,9 +240,7 @@ define(["require", "exports"], function (require, exports) {
                 [/""/, 'identifier'],
                 [/"/, { token: 'identifier.quote', next: '@pop' }]
             ],
-            scopes: [
-            // NOT SUPPORTED
-            ]
+            scopes: []
         }
     };
 });

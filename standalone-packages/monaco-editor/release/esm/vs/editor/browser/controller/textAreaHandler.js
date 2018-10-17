@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -20,7 +17,7 @@ import './textAreaHandler.css';
 import * as platform from '../../../base/common/platform.js';
 import * as browser from '../../../base/browser/browser.js';
 import * as strings from '../../../base/common/strings.js';
-import { TextAreaInput, CopyOptions } from './textAreaInput.js';
+import { TextAreaInput } from './textAreaInput.js';
 import { TextAreaState, PagedScreenReaderStrategy } from './textAreaState.js';
 import { Range } from '../../common/core/range.js';
 import { Selection } from '../../common/core/selection.js';
@@ -85,7 +82,6 @@ var TextAreaHandler = /** @class */ (function (_super) {
         _this._fontInfo = conf.fontInfo;
         _this._lineHeight = conf.lineHeight;
         _this._emptySelectionClipboard = conf.emptySelectionClipboard;
-        _this._copyWithSyntaxHighlighting = conf.copyWithSyntaxHighlighting;
         _this._visibleTextArea = null;
         _this._selections = [new Selection(1, 1, 1, 1)];
         // Text Area (The focus will always be in the textarea when the cursor is blinking)
@@ -138,9 +134,6 @@ var TextAreaHandler = /** @class */ (function (_super) {
                 return whatToCopy;
             },
             getHTMLToCopy: function () {
-                if (!_this._copyWithSyntaxHighlighting && !CopyOptions.forceCopyWithSyntaxHighlighting) {
-                    return null;
-                }
                 return _this._context.model.getHTMLToCopy(_this._selections, _this._emptySelectionClipboard);
             },
             getScreenReaderContent: function (currentState) {
@@ -296,9 +289,6 @@ var TextAreaHandler = /** @class */ (function (_super) {
         }
         if (e.emptySelectionClipboard) {
             this._emptySelectionClipboard = conf.emptySelectionClipboard;
-        }
-        if (e.copyWithSyntaxHighlighting) {
-            this._copyWithSyntaxHighlighting = conf.copyWithSyntaxHighlighting;
         }
         return true;
     };

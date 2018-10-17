@@ -4,19 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { URI } from './uri.js';
+import URI from './uri.js';
 export function values(forEachable) {
     var result = [];
     forEachable.forEach(function (value) { return result.push(value); });
@@ -413,6 +410,12 @@ var ResourceMap = /** @class */ (function () {
     return ResourceMap;
 }());
 export { ResourceMap };
+export var Touch;
+(function (Touch) {
+    Touch[Touch["None"] = 0] = "None";
+    Touch[Touch["AsOld"] = 1] = "AsOld";
+    Touch[Touch["AsNew"] = 2] = "AsNew";
+})(Touch || (Touch = {}));
 var LinkedMap = /** @class */ (function () {
     function LinkedMap() {
         this._map = new Map();
@@ -440,35 +443,35 @@ var LinkedMap = /** @class */ (function () {
         return this._map.has(key);
     };
     LinkedMap.prototype.get = function (key, touch) {
-        if (touch === void 0) { touch = 0 /* None */; }
+        if (touch === void 0) { touch = Touch.None; }
         var item = this._map.get(key);
         if (!item) {
             return undefined;
         }
-        if (touch !== 0 /* None */) {
+        if (touch !== Touch.None) {
             this.touch(item, touch);
         }
         return item.value;
     };
     LinkedMap.prototype.set = function (key, value, touch) {
-        if (touch === void 0) { touch = 0 /* None */; }
+        if (touch === void 0) { touch = Touch.None; }
         var item = this._map.get(key);
         if (item) {
             item.value = value;
-            if (touch !== 0 /* None */) {
+            if (touch !== Touch.None) {
                 this.touch(item, touch);
             }
         }
         else {
             item = { key: key, value: value, next: undefined, previous: undefined };
             switch (touch) {
-                case 0 /* None */:
+                case Touch.None:
                     this.addItemLast(item);
                     break;
-                case 1 /* AsOld */:
+                case Touch.AsOld:
                     this.addItemFirst(item);
                     break;
-                case 2 /* AsNew */:
+                case Touch.AsNew:
                     this.addItemLast(item);
                     break;
                 default:
@@ -646,10 +649,10 @@ var LinkedMap = /** @class */ (function () {
         if (!this._head || !this._tail) {
             throw new Error('Invalid list');
         }
-        if ((touch !== 1 /* AsOld */ && touch !== 2 /* AsNew */)) {
+        if ((touch !== Touch.AsOld && touch !== Touch.AsNew)) {
             return;
         }
-        if (touch === 1 /* AsOld */) {
+        if (touch === Touch.AsOld) {
             if (item === this._head) {
                 return;
             }
@@ -673,7 +676,7 @@ var LinkedMap = /** @class */ (function () {
             this._head.previous = item;
             this._head = item;
         }
-        else if (touch === 2 /* AsNew */) {
+        else if (touch === Touch.AsNew) {
             if (item === this._tail) {
                 return;
             }
@@ -746,13 +749,13 @@ var LRUCache = /** @class */ (function (_super) {
         configurable: true
     });
     LRUCache.prototype.get = function (key) {
-        return _super.prototype.get.call(this, key, 2 /* AsNew */);
+        return _super.prototype.get.call(this, key, Touch.AsNew);
     };
     LRUCache.prototype.peek = function (key) {
-        return _super.prototype.get.call(this, key, 0 /* None */);
+        return _super.prototype.get.call(this, key, Touch.None);
     };
     LRUCache.prototype.set = function (key, value) {
-        _super.prototype.set.call(this, key, value, 2 /* AsNew */);
+        _super.prototype.set.call(this, key, value, Touch.AsNew);
         this.checkTrim();
     };
     LRUCache.prototype.checkTrim = function () {

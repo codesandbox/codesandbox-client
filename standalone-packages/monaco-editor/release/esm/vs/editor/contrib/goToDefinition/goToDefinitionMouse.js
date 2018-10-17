@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import './goToDefinitionMouse.css';
 import * as nls from '../../../nls.js';
-import { createCancelablePromise } from '../../../base/common/async.js';
+import { Throttler } from '../../../base/common/async.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
 import { MarkdownString } from '../../../base/common/htmlContent.js';
 import { TPromise } from '../../../base/common/winjs.base.js';
@@ -40,7 +40,7 @@ var GotoDefinitionWithMouseEditorContribution = /** @class */ (function () {
         this.toUnhook = [];
         this.decorations = [];
         this.editor = editor;
-        this.previousPromise = null;
+        this.throttler = new Throttler();
         var linkGesture = new ClickLinkGesture(editor);
         this.toUnhook.push(linkGesture);
         this.toUnhook.push(linkGesture.onMouseMoveOrRelevantKeyDown(function (_a) {
@@ -49,7 +49,7 @@ var GotoDefinitionWithMouseEditorContribution = /** @class */ (function () {
         }));
         this.toUnhook.push(linkGesture.onExecute(function (mouseEvent) {
             if (_this.isEnabled(mouseEvent)) {
-                _this.gotoDefinition(mouseEvent.target, mouseEvent.hasSideBySideModifier).then(function () {
+                _this.gotoDefinition(mouseEvent.target, mouseEvent.hasSideBySideModifier).done(function () {
                     _this.removeDecorations();
                 }, function (error) {
                     _this.removeDecorations();
@@ -84,12 +84,11 @@ var GotoDefinitionWithMouseEditorContribution = /** @class */ (function () {
         this.currentWordUnderMouse = word;
         // Find definition and decorate word if found
         var state = new EditorState(this.editor, 4 /* Position */ | 1 /* Value */ | 2 /* Selection */ | 8 /* Scroll */);
-        if (this.previousPromise) {
-            this.previousPromise.cancel();
-            this.previousPromise = null;
-        }
-        this.previousPromise = createCancelablePromise(function (token) { return _this.findDefinition(mouseEvent.target, token); });
-        this.previousPromise.then(function (results) {
+        this.throttler.queue(function () {
+            return state.validate(_this.editor)
+                ? _this.findDefinition(mouseEvent.target)
+                : TPromise.wrap(null);
+        }).then(function (results) {
             if (!results || !results.length || !state.validate(_this.editor)) {
                 _this.removeDecorations();
                 return;
@@ -111,8 +110,7 @@ var GotoDefinitionWithMouseEditorContribution = /** @class */ (function () {
                     }
                     var textEditorModel = ref.object.textEditorModel;
                     var startLineNumber = result_1.range.startLineNumber;
-                    if (startLineNumber < 1 || startLineNumber > textEditorModel.getLineCount()) {
-                        // invalid range
+                    if (textEditorModel.getLineMaxColumn(startLineNumber) === 0) {
                         ref.dispose();
                         return;
                     }
@@ -124,11 +122,11 @@ var GotoDefinitionWithMouseEditorContribution = /** @class */ (function () {
                     else {
                         wordRange = new Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn);
                     }
-                    _this.addDecoration(wordRange, new MarkdownString().appendCodeblock(_this.modeService.getModeIdByFilepathOrFirstLine(textEditorModel.uri.fsPath), previewValue));
+                    _this.addDecoration(wordRange, new MarkdownString().appendCodeblock(_this.modeService.getModeIdByFilenameOrFirstLine(textEditorModel.uri.fsPath), previewValue));
                     ref.dispose();
                 });
             }
-        }).then(undefined, onUnexpectedError);
+        }).done(undefined, onUnexpectedError);
     };
     GotoDefinitionWithMouseEditorContribution.prototype.getPreviewValue = function (textEditorModel, startLineNumber) {
         var rangeToUse = this.getPreviewRangeBasedOnBrackets(textEditorModel, startLineNumber);
@@ -223,12 +221,12 @@ var GotoDefinitionWithMouseEditorContribution = /** @class */ (function () {
             (mouseEvent.hasTriggerModifier || (withKey && withKey.keyCodeIsTriggerKey)) &&
             DefinitionProviderRegistry.has(this.editor.getModel());
     };
-    GotoDefinitionWithMouseEditorContribution.prototype.findDefinition = function (target, token) {
+    GotoDefinitionWithMouseEditorContribution.prototype.findDefinition = function (target) {
         var model = this.editor.getModel();
         if (!model) {
             return TPromise.as(null);
         }
-        return getDefinitionsAtPosition(model, target.position, token);
+        return getDefinitionsAtPosition(model, target.position);
     };
     GotoDefinitionWithMouseEditorContribution.prototype.gotoDefinition = function (target, sideBySide) {
         var _this = this;

@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -30,20 +27,19 @@ import { Disposable } from '../../../base/common/lifecycle.js';
 import { IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
 import * as strings from '../../../base/common/strings.js';
 import { registerEditorContribution, registerEditorAction, EditorAction, EditorCommand, registerEditorCommand } from '../../browser/editorExtensions.js';
-import { FIND_IDS, FindModelBoundToEditorModel, ToggleCaseSensitiveKeybinding, ToggleRegexKeybinding, ToggleWholeWordKeybinding, ToggleSearchScopeKeybinding, CONTEXT_FIND_WIDGET_VISIBLE, CONTEXT_FIND_INPUT_FOCUSED } from './findModel.js';
+import { FIND_IDS, FindModelBoundToEditorModel, ToggleCaseSensitiveKeybinding, ToggleRegexKeybinding, ToggleWholeWordKeybinding, ToggleSearchScopeKeybinding, CONTEXT_FIND_WIDGET_VISIBLE } from './findModel.js';
 import { FindReplaceState } from './findState.js';
 import { Delayer } from '../../../base/common/async.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
-import { IStorageService } from '../../../platform/storage/common/storage.js';
+import { IStorageService, StorageScope } from '../../../platform/storage/common/storage.js';
 import { IClipboardService } from '../../../platform/clipboard/common/clipboardService.js';
 import { IContextViewService } from '../../../platform/contextview/browser/contextView.js';
 import { IKeybindingService } from '../../../platform/keybinding/common/keybinding.js';
 import { FindWidget } from './findWidget.js';
 import { FindOptionsWidget } from './findOptionsWidget.js';
 import { IThemeService } from '../../../platform/theme/common/themeService.js';
+import { KeybindingsRegistry } from '../../../platform/keybinding/common/keybindingsRegistry.js';
 import { optional } from '../../../platform/instantiation/common/instantiation.js';
-import { MenuId } from '../../../platform/actions/common/actions.js';
-var SEARCH_STRING_MAX_LENGTH = 524288;
 export function getSelectionSearchString(editor) {
     var selection = editor.getSelection();
     // if selection spans multiple lines, default search string to empty
@@ -55,9 +51,7 @@ export function getSelectionSearchString(editor) {
             }
         }
         else {
-            if (editor.getModel().getValueLengthInRange(selection) < SEARCH_STRING_MAX_LENGTH) {
-                return editor.getModel().getValueInRange(selection);
-            }
+            return editor.getModel().getValueInRange(selection);
         }
     }
     return null;
@@ -68,7 +62,6 @@ var CommonFindController = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this._editor = editor;
         _this._findWidgetVisible = CONTEXT_FIND_WIDGET_VISIBLE.bindTo(contextKeyService);
-        _this._contextKeyService = contextKeyService;
         _this._storageService = storageService;
         _this._clipboardService = clipboardService;
         _this._updateHistoryDelayer = new Delayer(500);
@@ -81,9 +74,9 @@ var CommonFindController = /** @class */ (function (_super) {
             _this.disposeModel();
             _this._state.change({
                 searchScope: null,
-                matchCase: _this._storageService.getBoolean('editor.matchCase', 1 /* WORKSPACE */, false),
-                wholeWord: _this._storageService.getBoolean('editor.wholeWord', 1 /* WORKSPACE */, false),
-                isRegex: _this._storageService.getBoolean('editor.isRegex', 1 /* WORKSPACE */, false)
+                matchCase: _this._storageService.getBoolean('editor.matchCase', StorageScope.WORKSPACE, false),
+                wholeWord: _this._storageService.getBoolean('editor.wholeWord', StorageScope.WORKSPACE, false),
+                isRegex: _this._storageService.getBoolean('editor.isRegex', StorageScope.WORKSPACE, false)
             }, false);
             if (shouldRestartFind) {
                 _this._start({
@@ -92,7 +85,6 @@ var CommonFindController = /** @class */ (function (_super) {
                     seedSearchStringFromGlobalClipboard: false,
                     shouldFocus: 0 /* NoFocusChange */,
                     shouldAnimate: false,
-                    updateSearchScope: false
                 });
             }
         }));
@@ -131,24 +123,21 @@ var CommonFindController = /** @class */ (function (_super) {
     };
     CommonFindController.prototype.saveQueryState = function (e) {
         if (e.isRegex) {
-            this._storageService.store('editor.isRegex', this._state.actualIsRegex, 1 /* WORKSPACE */);
+            this._storageService.store('editor.isRegex', this._state.actualIsRegex, StorageScope.WORKSPACE);
         }
         if (e.wholeWord) {
-            this._storageService.store('editor.wholeWord', this._state.actualWholeWord, 1 /* WORKSPACE */);
+            this._storageService.store('editor.wholeWord', this._state.actualWholeWord, StorageScope.WORKSPACE);
         }
         if (e.matchCase) {
-            this._storageService.store('editor.matchCase', this._state.actualMatchCase, 1 /* WORKSPACE */);
+            this._storageService.store('editor.matchCase', this._state.actualMatchCase, StorageScope.WORKSPACE);
         }
     };
     CommonFindController.prototype.loadQueryState = function () {
         this._state.change({
-            matchCase: this._storageService.getBoolean('editor.matchCase', 1 /* WORKSPACE */, this._state.matchCase),
-            wholeWord: this._storageService.getBoolean('editor.wholeWord', 1 /* WORKSPACE */, this._state.wholeWord),
-            isRegex: this._storageService.getBoolean('editor.isRegex', 1 /* WORKSPACE */, this._state.isRegex)
+            matchCase: this._storageService.getBoolean('editor.matchCase', StorageScope.WORKSPACE, this._state.matchCase),
+            wholeWord: this._storageService.getBoolean('editor.wholeWord', StorageScope.WORKSPACE, this._state.wholeWord),
+            isRegex: this._storageService.getBoolean('editor.isRegex', StorageScope.WORKSPACE, this._state.isRegex)
         }, false);
-    };
-    CommonFindController.prototype.isFindInputFocused = function () {
-        return CONTEXT_FIND_INPUT_FOCUSED.getValue(this._contextKeyService);
     };
     CommonFindController.prototype.getState = function () {
         return this._state;
@@ -162,21 +151,12 @@ var CommonFindController = /** @class */ (function (_super) {
     };
     CommonFindController.prototype.toggleCaseSensitive = function () {
         this._state.change({ matchCase: !this._state.matchCase }, false);
-        if (!this._state.isRevealed) {
-            this.highlightFindOptions();
-        }
     };
     CommonFindController.prototype.toggleWholeWords = function () {
         this._state.change({ wholeWord: !this._state.wholeWord }, false);
-        if (!this._state.isRevealed) {
-            this.highlightFindOptions();
-        }
     };
     CommonFindController.prototype.toggleRegex = function () {
         this._state.change({ isRegex: !this._state.isRegex }, false);
-        if (!this._state.isRevealed) {
-            this.highlightFindOptions();
-        }
     };
     CommonFindController.prototype.toggleSearchScope = function () {
         if (this._state.searchScope) {
@@ -185,7 +165,7 @@ var CommonFindController = /** @class */ (function (_super) {
         else {
             var selection = this._editor.getSelection();
             if (selection.endColumn === 1 && selection.endLineNumber > selection.startLineNumber) {
-                selection = selection.setEndPosition(selection.endLineNumber - 1, this._editor.getModel().getLineMaxColumn(selection.endLineNumber - 1));
+                selection = selection.setEndPosition(selection.endLineNumber - 1, 1);
             }
             if (!selection.isEmpty()) {
                 this._state.change({ searchScope: selection }, true);
@@ -233,12 +213,6 @@ var CommonFindController = /** @class */ (function (_super) {
         }
         else if (!this._findWidgetVisible.get()) {
             stateChanges.isReplaceRevealed = false;
-        }
-        if (opts.updateSearchScope) {
-            var currentSelection = this._editor.getSelection();
-            if (!currentSelection.isEmpty()) {
-                stateChanges.searchScope = currentSelection;
-            }
         }
         this._state.change(stateChanges, false);
         if (!this._model) {
@@ -313,6 +287,7 @@ var FindController = /** @class */ (function (_super) {
     function FindController(editor, _contextViewService, _contextKeyService, _keybindingService, _themeService, storageService, clipboardService) {
         var _this = _super.call(this, editor, _contextKeyService, storageService, clipboardService) || this;
         _this._contextViewService = _contextViewService;
+        _this._contextKeyService = _contextKeyService;
         _this._keybindingService = _keybindingService;
         _this._themeService = _themeService;
         return _this;
@@ -320,10 +295,6 @@ var FindController = /** @class */ (function (_super) {
     FindController.prototype._start = function (opts) {
         if (!this._widget) {
             this._createFindWidget();
-        }
-        if (!this._widget.getPosition() && this._editor.getConfiguration().contribInfo.find.autoFindInSelection) {
-            // not visible yet so we need to set search scope if `editor.find.autoFindInSelection` is `true`
-            opts.updateSearchScope = true;
         }
         _super.prototype._start.call(this, opts);
         if (opts.shouldFocus === 2 /* FocusReplaceInput */) {
@@ -369,14 +340,7 @@ var StartFindAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: null,
-                primary: 2048 /* CtrlCmd */ | 36 /* KEY_F */,
-                weight: 100 /* EditorContrib */
-            },
-            menubarOpts: {
-                menuId: MenuId.MenubarEditMenu,
-                group: '3_find',
-                title: nls.localize({ key: 'miFind', comment: ['&& denotes a mnemonic'] }, "&&Find"),
-                order: 1
+                primary: 2048 /* CtrlCmd */ | 36 /* KEY_F */
             }
         }) || this;
     }
@@ -388,8 +352,7 @@ var StartFindAction = /** @class */ (function (_super) {
                 seedSearchStringFromSelection: editor.getConfiguration().contribInfo.find.seedSearchStringFromSelection,
                 seedSearchStringFromGlobalClipboard: editor.getConfiguration().contribInfo.find.globalFindClipboard,
                 shouldFocus: 1 /* FocusFindInput */,
-                shouldAnimate: true,
-                updateSearchScope: false
+                shouldAnimate: true
             });
         }
     };
@@ -409,8 +372,7 @@ var StartFindWithSelectionAction = /** @class */ (function (_super) {
                 primary: null,
                 mac: {
                     primary: 2048 /* CtrlCmd */ | 35 /* KEY_E */,
-                },
-                weight: 100 /* EditorContrib */
+                }
             }
         }) || this;
     }
@@ -422,8 +384,7 @@ var StartFindWithSelectionAction = /** @class */ (function (_super) {
                 seedSearchStringFromSelection: true,
                 seedSearchStringFromGlobalClipboard: false,
                 shouldFocus: 1 /* FocusFindInput */,
-                shouldAnimate: true,
-                updateSearchScope: false
+                shouldAnimate: true
             });
             controller.setGlobalBufferTerm(controller.getState().searchString);
         }
@@ -444,8 +405,7 @@ var MatchFindAction = /** @class */ (function (_super) {
                 seedSearchStringFromSelection: (controller.getState().searchString.length === 0) && editor.getConfiguration().contribInfo.find.seedSearchStringFromSelection,
                 seedSearchStringFromGlobalClipboard: true,
                 shouldFocus: 0 /* NoFocusChange */,
-                shouldAnimate: true,
-                updateSearchScope: false
+                shouldAnimate: true
             });
             this._run(controller);
         }
@@ -464,8 +424,7 @@ var NextMatchFindAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
                 primary: 61 /* F3 */,
-                mac: { primary: 2048 /* CtrlCmd */ | 37 /* KEY_G */, secondary: [61 /* F3 */] },
-                weight: 100 /* EditorContrib */
+                mac: { primary: 2048 /* CtrlCmd */ | 37 /* KEY_G */, secondary: [61 /* F3 */] }
             }
         }) || this;
     }
@@ -486,8 +445,7 @@ var PreviousMatchFindAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
                 primary: 1024 /* Shift */ | 61 /* F3 */,
-                mac: { primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 37 /* KEY_G */, secondary: [1024 /* Shift */ | 61 /* F3 */] },
-                weight: 100 /* EditorContrib */
+                mac: { primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 37 /* KEY_G */, secondary: [1024 /* Shift */ | 61 /* F3 */] }
             }
         }) || this;
     }
@@ -517,8 +475,7 @@ var SelectionMatchFindAction = /** @class */ (function (_super) {
                 seedSearchStringFromSelection: editor.getConfiguration().contribInfo.find.seedSearchStringFromSelection,
                 seedSearchStringFromGlobalClipboard: false,
                 shouldFocus: 0 /* NoFocusChange */,
-                shouldAnimate: true,
-                updateSearchScope: false
+                shouldAnimate: true
             });
             this._run(controller);
         }
@@ -536,8 +493,7 @@ var NextSelectionMatchFindAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
-                primary: 2048 /* CtrlCmd */ | 61 /* F3 */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 61 /* F3 */
             }
         }) || this;
     }
@@ -557,8 +513,7 @@ var PreviousSelectionMatchFindAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.focus,
-                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 61 /* F3 */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 61 /* F3 */
             }
         }) || this;
     }
@@ -579,14 +534,7 @@ var StartFindReplaceAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: null,
                 primary: 2048 /* CtrlCmd */ | 38 /* KEY_H */,
-                mac: { primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 36 /* KEY_F */ },
-                weight: 100 /* EditorContrib */
-            },
-            menubarOpts: {
-                menuId: MenuId.MenubarEditMenu,
-                group: '3_find',
-                title: nls.localize({ key: 'miReplace', comment: ['&& denotes a mnemonic'] }, "&&Replace"),
-                order: 2
+                mac: { primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 36 /* KEY_F */ }
             }
         }) || this;
     }
@@ -596,20 +544,13 @@ var StartFindReplaceAction = /** @class */ (function (_super) {
         }
         var controller = CommonFindController.get(editor);
         var currentSelection = editor.getSelection();
-        var findInputFocused = controller.isFindInputFocused();
-        // we only seed search string from selection when the current selection is single line and not empty,
-        // + the find input is not focused
-        var seedSearchStringFromSelection = !currentSelection.isEmpty()
-            && currentSelection.startLineNumber === currentSelection.endLineNumber && editor.getConfiguration().contribInfo.find.seedSearchStringFromSelection
-            && !findInputFocused;
-        /*
-         * if the existing search string in find widget is empty and we don't seed search string from selection, it means the Find Input is still empty, so we should focus the Find Input instead of Replace Input.
-
-         * findInputFocused true -> seedSearchStringFromSelection false, FocusReplaceInput
-         * findInputFocused false, seedSearchStringFromSelection true FocusReplaceInput
-         * findInputFocused false seedSearchStringFromSelection false FocusFindInput
-         */
-        var shouldFocus = (findInputFocused || seedSearchStringFromSelection) ?
+        // we only seed search string from selection when the current selection is single line and not empty.
+        var seedSearchStringFromSelection = !currentSelection.isEmpty() &&
+            currentSelection.startLineNumber === currentSelection.endLineNumber && editor.getConfiguration().contribInfo.find.seedSearchStringFromSelection;
+        var oldSearchString = controller.getState().searchString;
+        // if the existing search string in find widget is empty and we don't seed search string from selection, it means the Find Input
+        // is still empty, so we should focus the Find Input instead of Replace Input.
+        var shouldFocus = (!!oldSearchString || seedSearchStringFromSelection) ?
             2 /* FocusReplaceInput */ : 1 /* FocusFindInput */;
         if (controller) {
             controller.start({
@@ -617,8 +558,7 @@ var StartFindReplaceAction = /** @class */ (function (_super) {
                 seedSearchStringFromSelection: seedSearchStringFromSelection,
                 seedSearchStringFromGlobalClipboard: editor.getConfiguration().contribInfo.find.seedSearchStringFromSelection,
                 shouldFocus: shouldFocus,
-                shouldAnimate: true,
-                updateSearchScope: false
+                shouldAnimate: true
             });
         }
     };
@@ -639,7 +579,7 @@ registerEditorCommand(new FindCommand({
     precondition: CONTEXT_FIND_WIDGET_VISIBLE,
     handler: function (x) { return x.closeFindWidget(); },
     kbOpts: {
-        weight: 100 /* EditorContrib */ + 5,
+        weight: KeybindingsRegistry.WEIGHT.editorContrib(5),
         kbExpr: EditorContextKeys.focus,
         primary: 9 /* Escape */,
         secondary: [1024 /* Shift */ | 9 /* Escape */]
@@ -650,7 +590,7 @@ registerEditorCommand(new FindCommand({
     precondition: null,
     handler: function (x) { return x.toggleCaseSensitive(); },
     kbOpts: {
-        weight: 100 /* EditorContrib */ + 5,
+        weight: KeybindingsRegistry.WEIGHT.editorContrib(5),
         kbExpr: EditorContextKeys.focus,
         primary: ToggleCaseSensitiveKeybinding.primary,
         mac: ToggleCaseSensitiveKeybinding.mac,
@@ -663,7 +603,7 @@ registerEditorCommand(new FindCommand({
     precondition: null,
     handler: function (x) { return x.toggleWholeWords(); },
     kbOpts: {
-        weight: 100 /* EditorContrib */ + 5,
+        weight: KeybindingsRegistry.WEIGHT.editorContrib(5),
         kbExpr: EditorContextKeys.focus,
         primary: ToggleWholeWordKeybinding.primary,
         mac: ToggleWholeWordKeybinding.mac,
@@ -676,7 +616,7 @@ registerEditorCommand(new FindCommand({
     precondition: null,
     handler: function (x) { return x.toggleRegex(); },
     kbOpts: {
-        weight: 100 /* EditorContrib */ + 5,
+        weight: KeybindingsRegistry.WEIGHT.editorContrib(5),
         kbExpr: EditorContextKeys.focus,
         primary: ToggleRegexKeybinding.primary,
         mac: ToggleRegexKeybinding.mac,
@@ -689,7 +629,7 @@ registerEditorCommand(new FindCommand({
     precondition: null,
     handler: function (x) { return x.toggleSearchScope(); },
     kbOpts: {
-        weight: 100 /* EditorContrib */ + 5,
+        weight: KeybindingsRegistry.WEIGHT.editorContrib(5),
         kbExpr: EditorContextKeys.focus,
         primary: ToggleSearchScopeKeybinding.primary,
         mac: ToggleSearchScopeKeybinding.mac,
@@ -702,7 +642,7 @@ registerEditorCommand(new FindCommand({
     precondition: CONTEXT_FIND_WIDGET_VISIBLE,
     handler: function (x) { return x.replace(); },
     kbOpts: {
-        weight: 100 /* EditorContrib */ + 5,
+        weight: KeybindingsRegistry.WEIGHT.editorContrib(5),
         kbExpr: EditorContextKeys.focus,
         primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 22 /* KEY_1 */
     }
@@ -712,7 +652,7 @@ registerEditorCommand(new FindCommand({
     precondition: CONTEXT_FIND_WIDGET_VISIBLE,
     handler: function (x) { return x.replaceAll(); },
     kbOpts: {
-        weight: 100 /* EditorContrib */ + 5,
+        weight: KeybindingsRegistry.WEIGHT.editorContrib(5),
         kbExpr: EditorContextKeys.focus,
         primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 3 /* Enter */
     }
@@ -722,7 +662,7 @@ registerEditorCommand(new FindCommand({
     precondition: CONTEXT_FIND_WIDGET_VISIBLE,
     handler: function (x) { return x.selectAllMatches(); },
     kbOpts: {
-        weight: 100 /* EditorContrib */ + 5,
+        weight: KeybindingsRegistry.WEIGHT.editorContrib(5),
         kbExpr: EditorContextKeys.focus,
         primary: 512 /* Alt */ | 3 /* Enter */
     }

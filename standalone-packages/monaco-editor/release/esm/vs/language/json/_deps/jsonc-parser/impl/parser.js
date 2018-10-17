@@ -15,8 +15,7 @@ export function getLocation(text, position) {
         value: {},
         offset: 0,
         length: 0,
-        type: 'object',
-        parent: void 0
+        type: 'object'
     };
     var isAtPropertyKey = false;
     function setPreviousNode(value, offset, length, type) {
@@ -24,7 +23,7 @@ export function getLocation(text, position) {
         previousNodeInst.offset = offset;
         previousNodeInst.length = length;
         previousNodeInst.type = type;
-        previousNodeInst.colonOffset = void 0;
+        previousNodeInst.columnOffset = void 0;
         previousNode = previousNodeInst;
     }
     try {
@@ -82,7 +81,7 @@ export function getLocation(text, position) {
                     throw earlyReturnException;
                 }
                 if (sep === ':' && previousNode && previousNode.type === 'property') {
-                    previousNode.colonOffset = offset;
+                    previousNode.columnOffset = offset;
                     isAtPropertyKey = false;
                     previousNode = void 0;
                 }
@@ -177,7 +176,7 @@ export function parse(text, errors, options) {
  */
 export function parseTree(text, errors, options) {
     if (errors === void 0) { errors = []; }
-    var currentParent = { type: 'array', offset: -1, length: -1, children: [], parent: void 0 }; // artificial root
+    var currentParent = { type: 'array', offset: -1, length: -1, children: [] }; // artificial root
     function ensurePropertyComplete(endOffset) {
         if (currentParent.type === 'property') {
             currentParent.length = endOffset - currentParent.offset;
@@ -216,7 +215,7 @@ export function parseTree(text, errors, options) {
         onSeparator: function (sep, offset, length) {
             if (currentParent.type === 'property') {
                 if (sep === ':') {
-                    currentParent.colonOffset = offset;
+                    currentParent.columnOffset = offset;
                 }
                 else if (sep === ',') {
                     ensurePropertyComplete(offset);
@@ -272,73 +271,21 @@ export function findNodeAtLocation(root, path) {
     return node;
 }
 /**
- * Gets the JSON path of the given JSON DOM node
- */
-export function getNodePath(node) {
-    if (!node.parent || !node.parent.children) {
-        return [];
-    }
-    var path = getNodePath(node.parent);
-    if (node.parent.type === 'property') {
-        var key = node.parent.children[0].value;
-        path.push(key);
-    }
-    else if (node.parent.type === 'array') {
-        var index = node.parent.children.indexOf(node);
-        if (index !== -1) {
-            path.push(index);
-        }
-    }
-    return path;
-}
-/**
  * Evaluates the JavaScript object of the given JSON DOM node
  */
 export function getNodeValue(node) {
-    switch (node.type) {
-        case 'array':
-            return node.children.map(getNodeValue);
-        case 'object':
-            var obj = Object.create(null);
-            for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
-                var prop = _a[_i];
-                var valueNode = prop.children[1];
-                if (valueNode) {
-                    obj[prop.children[0].value] = getNodeValue(valueNode);
-                }
-            }
-            return obj;
-        case 'null':
-        case 'string':
-        case 'number':
-        case 'boolean':
-            return node.value;
-        default:
-            return void 0;
+    if (node.type === 'array') {
+        return node.children.map(getNodeValue);
     }
-}
-export function contains(node, offset, includeRightBound) {
-    if (includeRightBound === void 0) { includeRightBound = false; }
-    return (offset >= node.offset && offset < (node.offset + node.length)) || includeRightBound && (offset === (node.offset + node.length));
-}
-/**
- * Finds the most inner node at the given offset. If includeRightBound is set, also finds nodes that end at the given offset.
- */
-export function findNodeAtOffset(node, offset, includeRightBound) {
-    if (includeRightBound === void 0) { includeRightBound = false; }
-    if (contains(node, offset, includeRightBound)) {
-        var children = node.children;
-        if (Array.isArray(children)) {
-            for (var i = 0; i < children.length && children[i].offset <= offset; i++) {
-                var item = findNodeAtOffset(children[i], offset, includeRightBound);
-                if (item) {
-                    return item;
-                }
-            }
+    else if (node.type === 'object') {
+        var obj = Object.create(null);
+        for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
+            var prop = _a[_i];
+            obj[prop.children[0].value] = getNodeValue(prop.children[1]);
         }
-        return node;
+        return obj;
     }
-    return void 0;
+    return node.value;
 }
 /**
  * Parses the given text and invokes the visitor functions for each object, array and literal reached.

@@ -3,17 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var SpacesDiffResult = /** @class */ (function () {
-    function SpacesDiffResult() {
-    }
-    return SpacesDiffResult;
-}());
 /**
  * Compute the diff in spaces between two line's indentation.
  */
-function spacesDiff(a, aLength, b, bLength, result) {
-    result.spacesDiff = 0;
-    result.looksLikeAlignment = false;
+function spacesDiff(a, aLength, b, bLength) {
     // This can go both ways (e.g.):
     //  - a: "\t"
     //  - b: "\t    "
@@ -47,31 +40,20 @@ function spacesDiff(a, aLength, b, bLength, result) {
         }
     }
     if (aSpacesCnt > 0 && aTabsCount > 0) {
-        return;
+        return 0;
     }
     if (bSpacesCnt > 0 && bTabsCount > 0) {
-        return;
+        return 0;
     }
     var tabsDiff = Math.abs(aTabsCount - bTabsCount);
     var spacesDiff = Math.abs(aSpacesCnt - bSpacesCnt);
     if (tabsDiff === 0) {
-        // check if the indentation difference might be caused by alignment reasons
-        // sometime folks like to align their code, but this should not be used as a hint
-        result.spacesDiff = spacesDiff;
-        if (spacesDiff > 0 && 0 <= bSpacesCnt - 1 && bSpacesCnt - 1 < a.length && bSpacesCnt < b.length) {
-            if (b.charCodeAt(bSpacesCnt) !== 32 /* Space */ && a.charCodeAt(bSpacesCnt - 1) === 32 /* Space */) {
-                // This looks like an alignment desire: e.g.
-                // const a = b + c,
-                //       d = b - c;
-                result.looksLikeAlignment = true;
-            }
-        }
-        return;
+        return spacesDiff;
     }
     if (spacesDiff % tabsDiff === 0) {
-        result.spacesDiff = spacesDiff / tabsDiff;
-        return;
+        return spacesDiff / tabsDiff;
     }
+    return 0;
 }
 export function guessIndentation(source, defaultTabSize, defaultInsertSpaces) {
     // Look at most at the first 10k lines
@@ -83,7 +65,6 @@ export function guessIndentation(source, defaultTabSize, defaultInsertSpaces) {
     var ALLOWED_TAB_SIZE_GUESSES = [2, 4, 6, 8]; // limit guesses for `tabSize` to 2, 4, 6 or 8.
     var MAX_ALLOWED_TAB_SIZE_GUESS = 8; // max(2,4,6,8) = 8
     var spacesDiffCount = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // `tabSize` scores
-    var tmp = new SpacesDiffResult();
     for (var lineNumber = 1; lineNumber <= linesCount; lineNumber++) {
         var currentLineLength = source.getLineLength(lineNumber);
         var currentLineText = source.getLineContent(lineNumber);
@@ -119,12 +100,7 @@ export function guessIndentation(source, defaultTabSize, defaultInsertSpaces) {
         else if (currentLineSpacesCount > 1) {
             linesIndentedWithSpacesCount++;
         }
-        spacesDiff(previousLineText, previousLineIndentation, currentLineText, currentLineIndentation, tmp);
-        if (tmp.looksLikeAlignment) {
-            // skip this line entirely
-            continue;
-        }
-        var currentSpacesDiff = tmp.spacesDiff;
+        var currentSpacesDiff = spacesDiff(previousLineText, previousLineIndentation, currentLineText, currentLineIndentation);
         if (currentSpacesDiff <= MAX_ALLOWED_TAB_SIZE_GUESS) {
             spacesDiffCount[currentSpacesDiff]++;
         }

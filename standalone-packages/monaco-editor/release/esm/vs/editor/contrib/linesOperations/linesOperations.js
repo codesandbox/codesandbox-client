@@ -4,12 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -32,7 +29,6 @@ import { DeleteLinesCommand } from './deleteLinesCommand.js';
 import { MoveLinesCommand } from './moveLinesCommand.js';
 import { TypeOperations } from '../../common/controller/cursorTypeOperations.js';
 import { CoreEditingCommands } from '../../browser/controller/coreCommands.js';
-import { MenuId } from '../../../platform/actions/common/actions.js';
 // copy lines
 var AbstractCopyLinesAction = /** @class */ (function (_super) {
     __extends(AbstractCopyLinesAction, _super);
@@ -64,14 +60,7 @@ var CopyLinesUpAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: 512 /* Alt */ | 1024 /* Shift */ | 16 /* UpArrow */,
-                linux: { primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 1024 /* Shift */ | 16 /* UpArrow */ },
-                weight: 100 /* EditorContrib */
-            },
-            menubarOpts: {
-                menuId: MenuId.MenubarSelectionMenu,
-                group: '2_line',
-                title: nls.localize({ key: 'miCopyLinesUp', comment: ['&& denotes a mnemonic'] }, "&&Copy Line Up"),
-                order: 1
+                linux: { primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 1024 /* Shift */ | 16 /* UpArrow */ }
             }
         }) || this;
     }
@@ -88,14 +77,7 @@ var CopyLinesDownAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: 512 /* Alt */ | 1024 /* Shift */ | 18 /* DownArrow */,
-                linux: { primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 1024 /* Shift */ | 18 /* DownArrow */ },
-                weight: 100 /* EditorContrib */
-            },
-            menubarOpts: {
-                menuId: MenuId.MenubarSelectionMenu,
-                group: '2_line',
-                title: nls.localize({ key: 'miCopyLinesDown', comment: ['&& denotes a mnemonic'] }, "Co&&py Line Down"),
-                order: 2
+                linux: { primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 1024 /* Shift */ | 18 /* DownArrow */ }
             }
         }) || this;
     }
@@ -133,14 +115,7 @@ var MoveLinesUpAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: 512 /* Alt */ | 16 /* UpArrow */,
-                linux: { primary: 512 /* Alt */ | 16 /* UpArrow */ },
-                weight: 100 /* EditorContrib */
-            },
-            menubarOpts: {
-                menuId: MenuId.MenubarSelectionMenu,
-                group: '2_line',
-                title: nls.localize({ key: 'miMoveLinesUp', comment: ['&& denotes a mnemonic'] }, "Mo&&ve Line Up"),
-                order: 3
+                linux: { primary: 512 /* Alt */ | 16 /* UpArrow */ }
             }
         }) || this;
     }
@@ -157,14 +132,7 @@ var MoveLinesDownAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: 512 /* Alt */ | 18 /* DownArrow */,
-                linux: { primary: 512 /* Alt */ | 18 /* DownArrow */ },
-                weight: 100 /* EditorContrib */
-            },
-            menubarOpts: {
-                menuId: MenuId.MenubarSelectionMenu,
-                group: '2_line',
-                title: nls.localize({ key: 'miMoveLinesDown', comment: ['&& denotes a mnemonic'] }, "Move &&Line Down"),
-                order: 4
+                linux: { primary: 512 /* Alt */ | 18 /* DownArrow */ }
             }
         }) || this;
     }
@@ -232,8 +200,7 @@ var TrimTrailingWhitespaceAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 54 /* KEY_X */),
-                weight: 100 /* EditorContrib */
+                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 54 /* KEY_X */)
             }
         }) || this;
     }
@@ -264,8 +231,7 @@ var DeleteLinesAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
-                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 41 /* KEY_K */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 41 /* KEY_K */
             }
         }) || this;
     }
@@ -326,8 +292,7 @@ var IndentLinesAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 2048 /* CtrlCmd */ | 89 /* US_CLOSE_SQUARE_BRACKET */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 89 /* US_CLOSE_SQUARE_BRACKET */
             }
         }) || this;
     }
@@ -349,8 +314,7 @@ var OutdentLinesAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 2048 /* CtrlCmd */ | 87 /* US_OPEN_SQUARE_BRACKET */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 87 /* US_OPEN_SQUARE_BRACKET */
             }
         }) || this;
     }
@@ -369,8 +333,7 @@ var InsertLineBeforeAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 3 /* Enter */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 3 /* Enter */
             }
         }) || this;
     }
@@ -391,8 +354,7 @@ var InsertLineAfterAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 2048 /* CtrlCmd */ | 3 /* Enter */,
-                weight: 100 /* EditorContrib */
+                primary: 2048 /* CtrlCmd */ | 3 /* Enter */
             }
         }) || this;
     }
@@ -446,8 +408,7 @@ var DeleteAllLeftAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
                 primary: null,
-                mac: { primary: 2048 /* CtrlCmd */ | 1 /* Backspace */ },
-                weight: 100 /* EditorContrib */
+                mac: { primary: 2048 /* CtrlCmd */ | 1 /* Backspace */ }
             }
         }) || this;
     }
@@ -512,8 +473,7 @@ var DeleteAllRightAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
                 primary: null,
-                mac: { primary: 256 /* WinCtrl */ | 41 /* KEY_K */, secondary: [2048 /* CtrlCmd */ | 20 /* Delete */] },
-                weight: 100 /* EditorContrib */
+                mac: { primary: 256 /* WinCtrl */ | 41 /* KEY_K */, secondary: [2048 /* CtrlCmd */ | 20 /* Delete */] }
             }
         }) || this;
     }
@@ -566,8 +526,7 @@ var JoinLinesAction = /** @class */ (function (_super) {
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: 0,
-                mac: { primary: 256 /* WinCtrl */ | 40 /* KEY_J */ },
-                weight: 100 /* EditorContrib */
+                mac: { primary: 256 /* WinCtrl */ | 40 /* KEY_J */ }
             }
         }) || this;
     }

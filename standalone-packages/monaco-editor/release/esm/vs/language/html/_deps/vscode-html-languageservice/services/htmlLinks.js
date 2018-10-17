@@ -3,11 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { createScanner } from '../parser/htmlScanner.js';
+import { TokenType, createScanner } from '../parser/htmlScanner.js';
 import { Range } from '../../vscode-languageserver-types/main.js';
 import * as strings from '../utils/strings.js';
 import Uri from '../../vscode-uri/index.js';
-import { TokenType } from '../htmlLanguageTypes.js';
 function normalizeRef(url, languageId) {
     var first = url[0];
     var last = url[url.length - 1];
@@ -105,7 +104,7 @@ export function findDocumentLinks(document, documentContext) {
             case TokenType.AttributeValue:
                 if (afterHrefOrSrc) {
                     var attributeValue = scanner.getTokenText();
-                    if (!afterBase) { // don't highlight the base link itself
+                    if (!afterBase) {
                         var link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base);
                         if (link) {
                             newLinks.push(link);
