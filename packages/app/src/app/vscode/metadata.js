@@ -30,7 +30,7 @@ const METADATA = {
       modulePrefix: 'vs/language/css',
       paths: {
         src: process.env.VSCODE
-          ? '/monaco-css/release/dev'
+          ? '/vscode-editor/node_modules/monaco-css/release/dev'
           : '/public/vscode1/vs/language/css',
         'npm/dev': 'node_modules/monaco-css/release/dev',
         'npm/min': '/public/vscode1/vs/language/css',
@@ -43,7 +43,7 @@ const METADATA = {
       modulePrefix: 'vs/language/json',
       paths: {
         src: process.env.VSCODE
-          ? '/monaco-json/release/dev'
+          ? '/vscode-editor/node_modules/monaco-json/release/dev'
           : '/public/vscode1/vs/language/json',
         'npm/dev': 'node_modules/monaco-json/release/dev',
         'npm/min': '/public/vscode1/vs/language/json',
@@ -57,7 +57,7 @@ const METADATA = {
       thirdPartyNotices: 'node_modules/monaco-html/ThirdPartyNotices.txt',
       paths: {
         src: process.env.VSCODE
-          ? '/monaco-html/release/dev'
+          ? '/vscode-editor/node_modules/monaco-html/release/dev'
           : '/public/vscode1/vs/language/html',
         'npm/dev': 'node_modules/monaco-html/release/dev',
         'npm/min': '/public/vscode1/vs/language/html',
@@ -72,9 +72,9 @@ const METADATA = {
       paths: {
         src: process.env.VSCODE
           ? '/monaco-languages/release/dev'
-          : '/public/vscode1/vs/language/basic-languages',
+          : '/public/vscode1/vs/basic-languages',
         'npm/dev': '../monaco-languages/release/dev',
-        'npm/min': '/public/vscode1/vs/language/basic-languages',
+        'npm/min': '/public/vscode1/vs/basic-languages',
         esm: 'node_modules/monaco-languages/release/esm',
       },
     },
