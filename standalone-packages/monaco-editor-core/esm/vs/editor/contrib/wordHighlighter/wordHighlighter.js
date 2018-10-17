@@ -3,9 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -22,8 +25,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import * as nls from '../../../nls';
-import { first2, createCancelablePromise } from '../../../base/common/async';
-import { onUnexpectedExternalError } from '../../../base/common/errors';
+import { first, createCancelablePromise, timeout } from '../../../base/common/async';
+import { onUnexpectedExternalError, onUnexpectedError } from '../../../base/common/errors';
 import { Range } from '../../common/core/range';
 import { registerEditorContribution, EditorAction, registerEditorAction, registerDefaultLanguageCommand } from '../../browser/editorExtensions';
 import { DocumentHighlightKind, DocumentHighlightProviderRegistry } from '../../common/modes';
@@ -45,22 +48,106 @@ export var overviewRulerWordHighlightForeground = registerColor('editorOverviewR
 export var overviewRulerWordHighlightStrongForeground = registerColor('editorOverviewRuler.wordHighlightStrongForeground', { dark: '#C0A0C0CC', light: '#C0A0C0CC', hc: '#C0A0C0CC' }, nls.localize('overviewRulerWordHighlightStrongForeground', 'Overview ruler marker color for write-access symbol highlights. The color must not be opaque to not hide underlying decorations.'), true);
 export var ctxHasWordHighlights = new RawContextKey('hasWordHighlights', false);
 export function getOccurrencesAtPosition(model, position, token) {
-    if (token === void 0) { token = CancellationToken.None; }
     var orderedByScore = DocumentHighlightProviderRegistry.ordered(model);
     // in order of score ask the occurrences provider
     // until someone response with a good result
     // (good = none empty array)
-    return first2(orderedByScore.map(function (provider) { return function () {
+    return first(orderedByScore.map(function (provider) { return function () {
         return Promise.resolve(provider.provideDocumentHighlights(model, position, token))
             .then(undefined, onUnexpectedExternalError);
     }; }), function (result) { return !isFalsyOrEmpty(result); });
 }
-registerDefaultLanguageCommand('_executeDocumentHighlights', getOccurrencesAtPosition);
+var OccurenceAtPositionRequest = /** @class */ (function () {
+    function OccurenceAtPositionRequest(model, selection, wordSeparators) {
+        var _this = this;
+        this._wordRange = this._getCurrentWordRange(model, selection);
+        this.result = createCancelablePromise(function (token) { return _this._compute(model, selection, wordSeparators, token); });
+    }
+    OccurenceAtPositionRequest.prototype._getCurrentWordRange = function (model, selection) {
+        var word = model.getWordAtPosition(selection.getPosition());
+        if (word) {
+            return new Range(selection.startLineNumber, word.startColumn, selection.startLineNumber, word.endColumn);
+        }
+        return null;
+    };
+    OccurenceAtPositionRequest.prototype.isValid = function (model, selection, decorationIds) {
+        var lineNumber = selection.startLineNumber;
+        var startColumn = selection.startColumn;
+        var endColumn = selection.endColumn;
+        var currentWordRange = this._getCurrentWordRange(model, selection);
+        var requestIsValid = (this._wordRange && this._wordRange.equalsRange(currentWordRange));
+        // Even if we are on a different word, if that word is in the decorations ranges, the request is still valid
+        // (Same symbol)
+        for (var i = 0, len = decorationIds.length; !requestIsValid && i < len; i++) {
+            var range = model.getDecorationRange(decorationIds[i]);
+            if (range && range.startLineNumber === lineNumber) {
+                if (range.startColumn <= startColumn && range.endColumn >= endColumn) {
+                    requestIsValid = true;
+                }
+            }
+        }
+        return requestIsValid;
+    };
+    OccurenceAtPositionRequest.prototype.cancel = function () {
+        this.result.cancel();
+    };
+    return OccurenceAtPositionRequest;
+}());
+var SemanticOccurenceAtPositionRequest = /** @class */ (function (_super) {
+    __extends(SemanticOccurenceAtPositionRequest, _super);
+    function SemanticOccurenceAtPositionRequest() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    SemanticOccurenceAtPositionRequest.prototype._compute = function (model, selection, wordSeparators, token) {
+        return getOccurrencesAtPosition(model, selection.getPosition(), token);
+    };
+    return SemanticOccurenceAtPositionRequest;
+}(OccurenceAtPositionRequest));
+var TextualOccurenceAtPositionRequest = /** @class */ (function (_super) {
+    __extends(TextualOccurenceAtPositionRequest, _super);
+    function TextualOccurenceAtPositionRequest(model, selection, wordSeparators) {
+        var _this = _super.call(this, model, selection, wordSeparators) || this;
+        _this._selectionIsEmpty = selection.isEmpty();
+        return _this;
+    }
+    TextualOccurenceAtPositionRequest.prototype._compute = function (model, selection, wordSeparators, token) {
+        return timeout(250, token).then(function () {
+            if (!selection.isEmpty()) {
+                return [];
+            }
+            var word = model.getWordAtPosition(selection.getPosition());
+            if (!word) {
+                return [];
+            }
+            var matches = model.findMatches(word.word, true, false, true, wordSeparators, false);
+            return matches.map(function (m) {
+                return {
+                    range: m.range,
+                    kind: DocumentHighlightKind.Text
+                };
+            });
+        });
+    };
+    TextualOccurenceAtPositionRequest.prototype.isValid = function (model, selection, decorationIds) {
+        var currentSelectionIsEmpty = selection.isEmpty();
+        if (this._selectionIsEmpty !== currentSelectionIsEmpty) {
+            return false;
+        }
+        return _super.prototype.isValid.call(this, model, selection, decorationIds);
+    };
+    return TextualOccurenceAtPositionRequest;
+}(OccurenceAtPositionRequest));
+function computeOccurencesAtPosition(model, selection, wordSeparators) {
+    if (DocumentHighlightProviderRegistry.has(model)) {
+        return new SemanticOccurenceAtPositionRequest(model, selection, wordSeparators);
+    }
+    return new TextualOccurenceAtPositionRequest(model, selection, wordSeparators);
+}
+registerDefaultLanguageCommand('_executeDocumentHighlights', function (model, position) { return getOccurrencesAtPosition(model, position, CancellationToken.None); });
 var WordHighlighter = /** @class */ (function () {
     function WordHighlighter(editor, contextKeyService) {
         var _this = this;
         this.workerRequestTokenId = 0;
-        this.workerRequest = null;
         this.workerRequestCompleted = false;
         this.workerRequestValue = [];
         this.lastCursorPositionChangeTime = 0;
@@ -97,7 +184,6 @@ var WordHighlighter = /** @class */ (function () {
                 _this._stopAll();
             }
         }));
-        this._lastWordRange = null;
         this._decorationIds = [];
         this.workerRequestTokenId = 0;
         this.workerRequest = null;
@@ -158,7 +244,6 @@ var WordHighlighter = /** @class */ (function () {
         }
     };
     WordHighlighter.prototype._stopAll = function () {
-        this._lastWordRange = null;
         // Remove any existing decorations
         this._removeDecorations();
         // Cancel any renderDecorationsTimer
@@ -192,11 +277,6 @@ var WordHighlighter = /** @class */ (function () {
     };
     WordHighlighter.prototype._run = function () {
         var _this = this;
-        // no providers for this model
-        if (!DocumentHighlightProviderRegistry.has(this.model)) {
-            this._stopAll();
-            return;
-        }
         var editorSelection = this.editor.getSelection();
         // ignore multiline selection
         if (editorSelection.startLineNumber !== editorSelection.endLineNumber) {
@@ -219,18 +299,7 @@ var WordHighlighter = /** @class */ (function () {
         // - when cursor is moved to a word, trigger immediately a findOccurrences request
         // - 250ms later after the last cursor move event, render the occurrences
         // - no flickering!
-        var currentWordRange = new Range(lineNumber, word.startColumn, lineNumber, word.endColumn);
-        var workerRequestIsValid = this._lastWordRange && this._lastWordRange.equalsRange(currentWordRange);
-        // Even if we are on a different word, if that word is in the decorations ranges, the request is still valid
-        // (Same symbol)
-        for (var i = 0, len = this._decorationIds.length; !workerRequestIsValid && i < len; i++) {
-            var range = this.model.getDecorationRange(this._decorationIds[i]);
-            if (range && range.startLineNumber === lineNumber) {
-                if (range.startColumn <= startColumn && range.endColumn >= endColumn) {
-                    workerRequestIsValid = true;
-                }
-            }
-        }
+        var workerRequestIsValid = (this.workerRequest && this.workerRequest.isValid(this.model, editorSelection, this._decorationIds));
         // There are 4 cases:
         // a) old workerRequest is valid & completed, renderDecorationsTimer fired
         // b) old workerRequest is valid & completed, renderDecorationsTimer not fired
@@ -254,16 +323,15 @@ var WordHighlighter = /** @class */ (function () {
             this._stopAll();
             var myRequestId_1 = ++this.workerRequestTokenId;
             this.workerRequestCompleted = false;
-            this.workerRequest = createCancelablePromise(function (token) { return getOccurrencesAtPosition(_this.model, _this.editor.getPosition(), token); });
-            this.workerRequest.then(function (data) {
+            this.workerRequest = computeOccurencesAtPosition(this.model, this.editor.getSelection(), this.editor.getConfiguration().wordSeparators);
+            this.workerRequest.result.then(function (data) {
                 if (myRequestId_1 === _this.workerRequestTokenId) {
                     _this.workerRequestCompleted = true;
                     _this.workerRequestValue = data || [];
                     _this._beginRenderDecorations();
                 }
-            });
+            }, onUnexpectedError);
         }
-        this._lastWordRange = currentWordRange;
     };
     WordHighlighter.prototype._beginRenderDecorations = function () {
         var _this = this;
@@ -314,7 +382,6 @@ var WordHighlighter = /** @class */ (function () {
         className: 'wordHighlightStrong',
         overviewRuler: {
             color: themeColorFromId(overviewRulerWordHighlightStrongForeground),
-            darkColor: themeColorFromId(overviewRulerWordHighlightStrongForeground),
             position: OverviewRulerLane.Center
         }
     });
@@ -323,7 +390,6 @@ var WordHighlighter = /** @class */ (function () {
         className: 'selectionHighlight',
         overviewRuler: {
             color: themeColorFromId(overviewRulerSelectionHighlightForeground),
-            darkColor: themeColorFromId(overviewRulerSelectionHighlightForeground),
             position: OverviewRulerLane.Center
         }
     });
@@ -332,7 +398,6 @@ var WordHighlighter = /** @class */ (function () {
         className: 'wordHighlight',
         overviewRuler: {
             color: themeColorFromId(overviewRulerWordHighlightForeground),
-            darkColor: themeColorFromId(overviewRulerWordHighlightForeground),
             position: OverviewRulerLane.Center
         }
     });
@@ -405,7 +470,8 @@ var NextWordHighlightAction = /** @class */ (function (_super) {
             precondition: ctxHasWordHighlights,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 65 /* F7 */
+                primary: 65 /* F7 */,
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -421,15 +487,41 @@ var PrevWordHighlightAction = /** @class */ (function (_super) {
             precondition: ctxHasWordHighlights,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: 1024 /* Shift */ | 65 /* F7 */
+                primary: 1024 /* Shift */ | 65 /* F7 */,
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
     return PrevWordHighlightAction;
 }(WordHighlightNavigationAction));
+var TriggerWordHighlightAction = /** @class */ (function (_super) {
+    __extends(TriggerWordHighlightAction, _super);
+    function TriggerWordHighlightAction() {
+        return _super.call(this, {
+            id: 'editor.action.wordHighlight.trigger',
+            label: nls.localize('wordHighlight.trigger.label', "Trigger Symbol Highlight"),
+            alias: 'Trigger Symbol Highlight',
+            precondition: ctxHasWordHighlights.toNegated(),
+            kbOpts: {
+                kbExpr: EditorContextKeys.editorTextFocus,
+                primary: null,
+                weight: 100 /* EditorContrib */
+            }
+        }) || this;
+    }
+    TriggerWordHighlightAction.prototype.run = function (accessor, editor, args) {
+        var controller = WordHighlighterContribution.get(editor);
+        if (!controller) {
+            return;
+        }
+        controller.restoreViewState(true);
+    };
+    return TriggerWordHighlightAction;
+}(EditorAction));
 registerEditorContribution(WordHighlighterContribution);
 registerEditorAction(NextWordHighlightAction);
 registerEditorAction(PrevWordHighlightAction);
+registerEditorAction(TriggerWordHighlightAction);
 registerThemingParticipant(function (theme, collector) {
     var selectionHighlight = theme.getColor(editorSelectionHighlight);
     if (selectionHighlight) {

@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -32,6 +35,7 @@ import { IndentRangeProvider } from './indentRangeProvider';
 import { FoldingRangeProviderRegistry, FoldingRangeKind } from '../../common/modes';
 import { SyntaxRangeProvider, ID_SYNTAX_PROVIDER } from './syntaxRangeProvider';
 import { InitializingRangeProvider, ID_INIT_PROVIDER } from './intializingRangeProvider';
+import { onUnexpectedError } from '../../../base/common/errors';
 export var ID = 'editor.contrib.folding';
 var FoldingController = /** @class */ (function () {
     function FoldingController(editor) {
@@ -113,7 +117,7 @@ var FoldingController = /** @class */ (function () {
                 if (foldingModel) {
                     foldingModel.applyMemento(state.collapsedRegions);
                 }
-            });
+            }).then(undefined, onUnexpectedError);
         }
     };
     FoldingController.prototype.onModelChanged = function () {
@@ -254,7 +258,7 @@ var FoldingController = /** @class */ (function () {
                     }
                 }
             }
-        });
+        }).then(undefined, onUnexpectedError);
     };
     FoldingController.prototype.onEditorMouseDown = function (e) {
         this.mouseDownInfo = null;
@@ -269,9 +273,11 @@ var FoldingController = /** @class */ (function () {
         switch (e.target.type) {
             case MouseTargetType.GUTTER_LINE_DECORATIONS:
                 var data = e.target.detail;
-                var gutterOffsetX = data.offsetX - data.glyphMarginWidth - data.lineNumbersWidth - data.glyphMarginLeft;
+                var offsetLeftInGutter = e.target.element.offsetLeft;
+                var gutterOffsetX = data.offsetX - offsetLeftInGutter;
+                // const gutterOffsetX = data.offsetX - data.glyphMarginWidth - data.lineNumbersWidth - data.glyphMarginLeft;
                 // TODO@joao TODO@alex TODO@martin this is such that we don't collide with dirty diff
-                if (gutterOffsetX <= 10) {
+                if (gutterOffsetX < 5) { // the whitespace between the border and the real folding icon border is 5px
                     return;
                 }
                 iconClicked = true;
@@ -336,7 +342,7 @@ var FoldingController = /** @class */ (function () {
                     }
                 }
             }
-        });
+        }).then(undefined, onUnexpectedError);
     };
     FoldingController.prototype.reveal = function (position) {
         this.editor.revealPositionInCenterIfOutsideViewport(position, 0 /* Smooth */);
@@ -412,14 +418,15 @@ var UnfoldAction = /** @class */ (function (_super) {
                 primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 89 /* US_CLOSE_SQUARE_BRACKET */,
                 mac: {
                     primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 89 /* US_CLOSE_SQUARE_BRACKET */
-                }
+                },
+                weight: 100 /* EditorContrib */
             },
             description: {
                 description: 'Unfold the content in the editor',
                 args: [
                     {
                         name: 'Unfold editor argument',
-                        description: "Property-value pairs that can be passed through this argument:\n\t\t\t\t\t\t* 'levels': Number of levels to unfold. If not set, defaults to 1.\n\t\t\t\t\t\t* 'direction': If 'up', unfold given number of levels up otherwise unfolds down\n\t\t\t\t\t\t* 'selectionLines': The start lines (0-based) of the editor selections to apply the unfold action to. If not set, the active selection(s) will be used.\n\t\t\t\t\t\t",
+                        description: "Property-value pairs that can be passed through this argument:\n\t\t\t\t\t\t* 'levels': Number of levels to unfold. If not set, defaults to 1.\n\t\t\t\t\t\t* 'direction': If 'up', unfold given number of levels up otherwise unfolds down.\n\t\t\t\t\t\t* 'selectionLines': The start lines (0-based) of the editor selections to apply the unfold action to. If not set, the active selection(s) will be used.\n\t\t\t\t\t\t",
                         constraint: foldingArgumentsConstraint
                     }
                 ]
@@ -448,7 +455,8 @@ var UnFoldRecursivelyAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 89 /* US_CLOSE_SQUARE_BRACKET */)
+                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 89 /* US_CLOSE_SQUARE_BRACKET */),
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -470,14 +478,15 @@ var FoldAction = /** @class */ (function (_super) {
                 primary: 2048 /* CtrlCmd */ | 1024 /* Shift */ | 87 /* US_OPEN_SQUARE_BRACKET */,
                 mac: {
                     primary: 2048 /* CtrlCmd */ | 512 /* Alt */ | 87 /* US_OPEN_SQUARE_BRACKET */
-                }
+                },
+                weight: 100 /* EditorContrib */
             },
             description: {
                 description: 'Fold the content in the editor',
                 args: [
                     {
                         name: 'Fold editor argument',
-                        description: "Property-value pairs that can be passed through this argument:\n\t\t\t\t\t\t\t* 'levels': Number of levels to fold. Defaults to 1\n\t\t\t\t\t\t\t* 'direction': If 'up', folds given number of levels up otherwise folds down\n\t\t\t\t\t\t\t* 'selectionLines': The start lines (0-based) of the editor selections to apply the fold action to. If not set, the active selection(s) will be used.\n\t\t\t\t\t\t",
+                        description: "Property-value pairs that can be passed through this argument:\n\t\t\t\t\t\t\t* 'levels': Number of levels to fold. Defaults to 1.\n\t\t\t\t\t\t\t* 'direction': If 'up', folds given number of levels up otherwise folds down.\n\t\t\t\t\t\t\t* 'selectionLines': The start lines (0-based) of the editor selections to apply the fold action to. If not set, the active selection(s) will be used.\n\t\t\t\t\t\t",
                         constraint: foldingArgumentsConstraint
                     }
                 ]
@@ -506,7 +515,8 @@ var FoldRecursivelyAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 87 /* US_OPEN_SQUARE_BRACKET */)
+                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 87 /* US_OPEN_SQUARE_BRACKET */),
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -526,7 +536,8 @@ var FoldAllBlockCommentsAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 85 /* US_SLASH */)
+                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 85 /* US_SLASH */),
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -554,7 +565,8 @@ var FoldAllRegionsAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 29 /* KEY_8 */)
+                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 29 /* KEY_8 */),
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -582,7 +594,8 @@ var UnfoldAllRegionsAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 30 /* KEY_9 */)
+                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 30 /* KEY_9 */),
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -610,7 +623,8 @@ var FoldAllAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 21 /* KEY_0 */)
+                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 21 /* KEY_0 */),
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -629,7 +643,8 @@ var UnfoldAllAction = /** @class */ (function (_super) {
             precondition: null,
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
-                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 40 /* KEY_J */)
+                primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 40 /* KEY_J */),
+                weight: 100 /* EditorContrib */
             }
         }) || this;
     }
@@ -671,7 +686,8 @@ for (var i = 1; i <= 7; i++) {
         precondition: null,
         kbOpts: {
             kbExpr: EditorContextKeys.editorTextFocus,
-            primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | (21 /* KEY_0 */ + i))
+            primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | (21 /* KEY_0 */ + i)),
+            weight: 100 /* EditorContrib */
         }
     }));
 }

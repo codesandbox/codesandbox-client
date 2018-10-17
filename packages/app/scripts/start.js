@@ -217,6 +217,15 @@ function addMiddleware(devServer, index) {
       })
     );
   }
+  if (process.env.VSCODE) {
+    devServer.use(
+      ['/vscode**', '/node_modules**', '/monaco**'],
+      proxy({
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      })
+    );
+  }
   // Finally, by now we have certainly resolved the URL.
   // It may be /index.html, so let the dev server try serving it again.
   devServer.use(devServer.middleware);
@@ -235,7 +244,7 @@ function runDevServer(port, protocol, index) {
     publicPath: config.output.publicPath,
     // WebpackDevServer is noisy by default so we emit custom message instead
     // by listening to the compiler events with `compiler.hooks[...].tap` calls above.
-    quiet: false,
+    quiet: true,
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {

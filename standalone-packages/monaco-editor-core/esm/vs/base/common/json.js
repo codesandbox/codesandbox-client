@@ -3,43 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-export var ScanError;
-(function (ScanError) {
-    ScanError[ScanError["None"] = 0] = "None";
-    ScanError[ScanError["UnexpectedEndOfComment"] = 1] = "UnexpectedEndOfComment";
-    ScanError[ScanError["UnexpectedEndOfString"] = 2] = "UnexpectedEndOfString";
-    ScanError[ScanError["UnexpectedEndOfNumber"] = 3] = "UnexpectedEndOfNumber";
-    ScanError[ScanError["InvalidUnicode"] = 4] = "InvalidUnicode";
-    ScanError[ScanError["InvalidEscapeCharacter"] = 5] = "InvalidEscapeCharacter";
-    ScanError[ScanError["InvalidCharacter"] = 6] = "InvalidCharacter";
-})(ScanError || (ScanError = {}));
-export var SyntaxKind;
-(function (SyntaxKind) {
-    SyntaxKind[SyntaxKind["Unknown"] = 0] = "Unknown";
-    SyntaxKind[SyntaxKind["OpenBraceToken"] = 1] = "OpenBraceToken";
-    SyntaxKind[SyntaxKind["CloseBraceToken"] = 2] = "CloseBraceToken";
-    SyntaxKind[SyntaxKind["OpenBracketToken"] = 3] = "OpenBracketToken";
-    SyntaxKind[SyntaxKind["CloseBracketToken"] = 4] = "CloseBracketToken";
-    SyntaxKind[SyntaxKind["CommaToken"] = 5] = "CommaToken";
-    SyntaxKind[SyntaxKind["ColonToken"] = 6] = "ColonToken";
-    SyntaxKind[SyntaxKind["NullKeyword"] = 7] = "NullKeyword";
-    SyntaxKind[SyntaxKind["TrueKeyword"] = 8] = "TrueKeyword";
-    SyntaxKind[SyntaxKind["FalseKeyword"] = 9] = "FalseKeyword";
-    SyntaxKind[SyntaxKind["StringLiteral"] = 10] = "StringLiteral";
-    SyntaxKind[SyntaxKind["NumericLiteral"] = 11] = "NumericLiteral";
-    SyntaxKind[SyntaxKind["LineCommentTrivia"] = 12] = "LineCommentTrivia";
-    SyntaxKind[SyntaxKind["BlockCommentTrivia"] = 13] = "BlockCommentTrivia";
-    SyntaxKind[SyntaxKind["LineBreakTrivia"] = 14] = "LineBreakTrivia";
-    SyntaxKind[SyntaxKind["Trivia"] = 15] = "Trivia";
-    SyntaxKind[SyntaxKind["EOF"] = 16] = "EOF";
-})(SyntaxKind || (SyntaxKind = {}));
 /**
  * Creates a JSON scanner on the given text.
  * If ignoreTrivia is set, whitespaces or comments are ignored.
  */
 export function createScanner(text, ignoreTrivia) {
     if (ignoreTrivia === void 0) { ignoreTrivia = false; }
-    var pos = 0, len = text.length, value = '', tokenOffset = 0, token = SyntaxKind.Unknown, scanError = ScanError.None;
+    var pos = 0, len = text.length, value = '', tokenOffset = 0, token = 0 /* Unknown */, scanError = 0 /* None */;
     function scanHexDigits(count, exact) {
         var digits = 0;
         var value = 0;
@@ -69,8 +39,8 @@ export function createScanner(text, ignoreTrivia) {
         pos = newPosition;
         value = '';
         tokenOffset = 0;
-        token = SyntaxKind.Unknown;
-        scanError = ScanError.None;
+        token = 0 /* Unknown */;
+        scanError = 0 /* None */;
     }
     function scanNumber() {
         var start = pos;
@@ -92,7 +62,7 @@ export function createScanner(text, ignoreTrivia) {
                 }
             }
             else {
-                scanError = ScanError.UnexpectedEndOfNumber;
+                scanError = 3 /* UnexpectedEndOfNumber */;
                 return text.substring(start, pos);
             }
         }
@@ -110,7 +80,7 @@ export function createScanner(text, ignoreTrivia) {
                 end = pos;
             }
             else {
-                scanError = ScanError.UnexpectedEndOfNumber;
+                scanError = 3 /* UnexpectedEndOfNumber */;
             }
         }
         return text.substring(start, end);
@@ -120,7 +90,7 @@ export function createScanner(text, ignoreTrivia) {
         while (true) {
             if (pos >= len) {
                 result += text.substring(start, pos);
-                scanError = ScanError.UnexpectedEndOfString;
+                scanError = 2 /* UnexpectedEndOfString */;
                 break;
             }
             var ch = text.charCodeAt(pos);
@@ -133,7 +103,7 @@ export function createScanner(text, ignoreTrivia) {
                 result += text.substring(start, pos);
                 pos++;
                 if (pos >= len) {
-                    scanError = ScanError.UnexpectedEndOfString;
+                    scanError = 2 /* UnexpectedEndOfString */;
                     break;
                 }
                 ch = text.charCodeAt(pos++);
@@ -168,11 +138,11 @@ export function createScanner(text, ignoreTrivia) {
                             result += String.fromCharCode(ch_1);
                         }
                         else {
-                            scanError = ScanError.InvalidUnicode;
+                            scanError = 4 /* InvalidUnicode */;
                         }
                         break;
                     default:
-                        scanError = ScanError.InvalidEscapeCharacter;
+                        scanError = 5 /* InvalidEscapeCharacter */;
                 }
                 start = pos;
                 continue;
@@ -180,11 +150,11 @@ export function createScanner(text, ignoreTrivia) {
             if (ch >= 0 && ch <= 0x1f) {
                 if (isLineBreak(ch)) {
                     result += text.substring(start, pos);
-                    scanError = ScanError.UnexpectedEndOfString;
+                    scanError = 2 /* UnexpectedEndOfString */;
                     break;
                 }
                 else {
-                    scanError = ScanError.InvalidCharacter;
+                    scanError = 6 /* InvalidCharacter */;
                     // mark as error but continue with string
                 }
             }
@@ -194,12 +164,12 @@ export function createScanner(text, ignoreTrivia) {
     }
     function scanNext() {
         value = '';
-        scanError = ScanError.None;
+        scanError = 0 /* None */;
         tokenOffset = pos;
         if (pos >= len) {
             // at the end
             tokenOffset = len;
-            return token = SyntaxKind.EOF;
+            return token = 16 /* EOF */;
         }
         var code = text.charCodeAt(pos);
         // trivia: whitespace
@@ -209,7 +179,7 @@ export function createScanner(text, ignoreTrivia) {
                 value += String.fromCharCode(code);
                 code = text.charCodeAt(pos);
             } while (isWhiteSpace(code));
-            return token = SyntaxKind.Trivia;
+            return token = 15 /* Trivia */;
         }
         // trivia: newlines
         if (isLineBreak(code)) {
@@ -219,33 +189,33 @@ export function createScanner(text, ignoreTrivia) {
                 pos++;
                 value += '\n';
             }
-            return token = SyntaxKind.LineBreakTrivia;
+            return token = 14 /* LineBreakTrivia */;
         }
         switch (code) {
             // tokens: []{}:,
             case 123 /* openBrace */:
                 pos++;
-                return token = SyntaxKind.OpenBraceToken;
+                return token = 1 /* OpenBraceToken */;
             case 125 /* closeBrace */:
                 pos++;
-                return token = SyntaxKind.CloseBraceToken;
+                return token = 2 /* CloseBraceToken */;
             case 91 /* openBracket */:
                 pos++;
-                return token = SyntaxKind.OpenBracketToken;
+                return token = 3 /* OpenBracketToken */;
             case 93 /* closeBracket */:
                 pos++;
-                return token = SyntaxKind.CloseBracketToken;
+                return token = 4 /* CloseBracketToken */;
             case 58 /* colon */:
                 pos++;
-                return token = SyntaxKind.ColonToken;
+                return token = 6 /* ColonToken */;
             case 44 /* comma */:
                 pos++;
-                return token = SyntaxKind.CommaToken;
+                return token = 5 /* CommaToken */;
             // strings
             case 34 /* doubleQuote */:
                 pos++;
                 value = scanString();
-                return token = SyntaxKind.StringLiteral;
+                return token = 10 /* StringLiteral */;
             // comments
             case 47 /* slash */:
                 var start = pos - 1;
@@ -259,7 +229,7 @@ export function createScanner(text, ignoreTrivia) {
                         pos++;
                     }
                     value = text.substring(start, pos);
-                    return token = SyntaxKind.LineCommentTrivia;
+                    return token = 12 /* LineCommentTrivia */;
                 }
                 // Multi-line comment
                 if (text.charCodeAt(pos + 1) === 42 /* asterisk */) {
@@ -277,21 +247,21 @@ export function createScanner(text, ignoreTrivia) {
                     }
                     if (!commentClosed) {
                         pos++;
-                        scanError = ScanError.UnexpectedEndOfComment;
+                        scanError = 1 /* UnexpectedEndOfComment */;
                     }
                     value = text.substring(start, pos);
-                    return token = SyntaxKind.BlockCommentTrivia;
+                    return token = 13 /* BlockCommentTrivia */;
                 }
                 // just a single slash
                 value += String.fromCharCode(code);
                 pos++;
-                return token = SyntaxKind.Unknown;
+                return token = 0 /* Unknown */;
             // numbers
             case 45 /* minus */:
                 value += String.fromCharCode(code);
                 pos++;
                 if (pos === len || !isDigit(text.charCodeAt(pos))) {
-                    return token = SyntaxKind.Unknown;
+                    return token = 0 /* Unknown */;
                 }
             // found a minus, followed by a number so
             // we fall through to proceed with scanning
@@ -307,7 +277,7 @@ export function createScanner(text, ignoreTrivia) {
             case 56 /* _8 */:
             case 57 /* _9 */:
                 value += scanNumber();
-                return token = SyntaxKind.NumericLiteral;
+                return token = 11 /* NumericLiteral */;
             // literals and unknown symbols
             default:
                 // is a literal? Read the full word.
@@ -319,16 +289,16 @@ export function createScanner(text, ignoreTrivia) {
                     value = text.substring(tokenOffset, pos);
                     // keywords: true, false, null
                     switch (value) {
-                        case 'true': return token = SyntaxKind.TrueKeyword;
-                        case 'false': return token = SyntaxKind.FalseKeyword;
-                        case 'null': return token = SyntaxKind.NullKeyword;
+                        case 'true': return token = 8 /* TrueKeyword */;
+                        case 'false': return token = 9 /* FalseKeyword */;
+                        case 'null': return token = 7 /* NullKeyword */;
                     }
-                    return token = SyntaxKind.Unknown;
+                    return token = 0 /* Unknown */;
                 }
                 // some
                 value += String.fromCharCode(code);
                 pos++;
-                return token = SyntaxKind.Unknown;
+                return token = 0 /* Unknown */;
         }
     }
     function isUnknownContentCharacter(code) {
@@ -352,7 +322,7 @@ export function createScanner(text, ignoreTrivia) {
         var result;
         do {
             result = scanNext();
-        } while (result >= SyntaxKind.LineCommentTrivia && result <= SyntaxKind.Trivia);
+        } while (result >= 12 /* LineCommentTrivia */ && result <= 15 /* Trivia */);
         return result;
     }
     return {
@@ -377,18 +347,6 @@ function isLineBreak(ch) {
 function isDigit(ch) {
     return ch >= 48 /* _0 */ && ch <= 57 /* _9 */;
 }
-export var ParseErrorCode;
-(function (ParseErrorCode) {
-    ParseErrorCode[ParseErrorCode["InvalidSymbol"] = 0] = "InvalidSymbol";
-    ParseErrorCode[ParseErrorCode["InvalidNumberFormat"] = 1] = "InvalidNumberFormat";
-    ParseErrorCode[ParseErrorCode["PropertyNameExpected"] = 2] = "PropertyNameExpected";
-    ParseErrorCode[ParseErrorCode["ValueExpected"] = 3] = "ValueExpected";
-    ParseErrorCode[ParseErrorCode["ColonExpected"] = 4] = "ColonExpected";
-    ParseErrorCode[ParseErrorCode["CommaExpected"] = 5] = "CommaExpected";
-    ParseErrorCode[ParseErrorCode["CloseBraceExpected"] = 6] = "CloseBraceExpected";
-    ParseErrorCode[ParseErrorCode["CloseBracketExpected"] = 7] = "CloseBracketExpected";
-    ParseErrorCode[ParseErrorCode["EndOfFileExpected"] = 8] = "EndOfFileExpected";
-})(ParseErrorCode || (ParseErrorCode = {}));
 function getLiteralNodeType(value) {
     switch (typeof value) {
         case 'boolean': return 'boolean';
@@ -574,17 +532,17 @@ export function visit(text, visitor, options) {
         while (true) {
             var token = _scanner.scan();
             switch (token) {
-                case SyntaxKind.LineCommentTrivia:
-                case SyntaxKind.BlockCommentTrivia:
+                case 12 /* LineCommentTrivia */:
+                case 13 /* BlockCommentTrivia */:
                     if (disallowComments) {
-                        handleError(ParseErrorCode.InvalidSymbol);
+                        handleError(0 /* InvalidSymbol */);
                     }
                     break;
-                case SyntaxKind.Unknown:
-                    handleError(ParseErrorCode.InvalidSymbol);
+                case 0 /* Unknown */:
+                    handleError(0 /* InvalidSymbol */);
                     break;
-                case SyntaxKind.Trivia:
-                case SyntaxKind.LineBreakTrivia:
+                case 15 /* Trivia */:
+                case 14 /* LineBreakTrivia */:
                     break;
                 default:
                     return token;
@@ -597,7 +555,7 @@ export function visit(text, visitor, options) {
         onError(error);
         if (skipUntilAfter.length + skipUntil.length > 0) {
             var token = _scanner.getToken();
-            while (token !== SyntaxKind.EOF) {
+            while (token !== 16 /* EOF */) {
                 if (skipUntilAfter.indexOf(token) !== -1) {
                     scanNext();
                     break;
@@ -622,27 +580,27 @@ export function visit(text, visitor, options) {
     }
     function parseLiteral() {
         switch (_scanner.getToken()) {
-            case SyntaxKind.NumericLiteral:
+            case 11 /* NumericLiteral */:
                 var value = 0;
                 try {
                     value = JSON.parse(_scanner.getTokenValue());
                     if (typeof value !== 'number') {
-                        handleError(ParseErrorCode.InvalidNumberFormat);
+                        handleError(1 /* InvalidNumberFormat */);
                         value = 0;
                     }
                 }
                 catch (e) {
-                    handleError(ParseErrorCode.InvalidNumberFormat);
+                    handleError(1 /* InvalidNumberFormat */);
                 }
                 onLiteralValue(value);
                 break;
-            case SyntaxKind.NullKeyword:
+            case 7 /* NullKeyword */:
                 onLiteralValue(null);
                 break;
-            case SyntaxKind.TrueKeyword:
+            case 8 /* TrueKeyword */:
                 onLiteralValue(true);
                 break;
-            case SyntaxKind.FalseKeyword:
+            case 9 /* FalseKeyword */:
                 onLiteralValue(false);
                 break;
             default:
@@ -652,20 +610,20 @@ export function visit(text, visitor, options) {
         return true;
     }
     function parseProperty() {
-        if (_scanner.getToken() !== SyntaxKind.StringLiteral) {
-            handleError(ParseErrorCode.PropertyNameExpected, [], [SyntaxKind.CloseBraceToken, SyntaxKind.CommaToken]);
+        if (_scanner.getToken() !== 10 /* StringLiteral */) {
+            handleError(2 /* PropertyNameExpected */, [], [2 /* CloseBraceToken */, 5 /* CommaToken */]);
             return false;
         }
         parseString(false);
-        if (_scanner.getToken() === SyntaxKind.ColonToken) {
+        if (_scanner.getToken() === 6 /* ColonToken */) {
             onSeparator(':');
             scanNext(); // consume colon
             if (!parseValue()) {
-                handleError(ParseErrorCode.ValueExpected, [], [SyntaxKind.CloseBraceToken, SyntaxKind.CommaToken]);
+                handleError(3 /* ValueExpected */, [], [2 /* CloseBraceToken */, 5 /* CommaToken */]);
             }
         }
         else {
-            handleError(ParseErrorCode.ColonExpected, [], [SyntaxKind.CloseBraceToken, SyntaxKind.CommaToken]);
+            handleError(4 /* ColonExpected */, [], [2 /* CloseBraceToken */, 5 /* CommaToken */]);
         }
         return true;
     }
@@ -673,28 +631,28 @@ export function visit(text, visitor, options) {
         onObjectBegin();
         scanNext(); // consume open brace
         var needsComma = false;
-        while (_scanner.getToken() !== SyntaxKind.CloseBraceToken && _scanner.getToken() !== SyntaxKind.EOF) {
-            if (_scanner.getToken() === SyntaxKind.CommaToken) {
+        while (_scanner.getToken() !== 2 /* CloseBraceToken */ && _scanner.getToken() !== 16 /* EOF */) {
+            if (_scanner.getToken() === 5 /* CommaToken */) {
                 if (!needsComma) {
-                    handleError(ParseErrorCode.ValueExpected, [], []);
+                    handleError(3 /* ValueExpected */, [], []);
                 }
                 onSeparator(',');
                 scanNext(); // consume comma
-                if (_scanner.getToken() === SyntaxKind.CloseBraceToken && !disallowTrailingComma) {
+                if (_scanner.getToken() === 2 /* CloseBraceToken */ && !disallowTrailingComma) {
                     break;
                 }
             }
             else if (needsComma) {
-                handleError(ParseErrorCode.CommaExpected, [], []);
+                handleError(5 /* CommaExpected */, [], []);
             }
             if (!parseProperty()) {
-                handleError(ParseErrorCode.ValueExpected, [], [SyntaxKind.CloseBraceToken, SyntaxKind.CommaToken]);
+                handleError(3 /* ValueExpected */, [], [2 /* CloseBraceToken */, 5 /* CommaToken */]);
             }
             needsComma = true;
         }
         onObjectEnd();
-        if (_scanner.getToken() !== SyntaxKind.CloseBraceToken) {
-            handleError(ParseErrorCode.CloseBraceExpected, [SyntaxKind.CloseBraceToken], []);
+        if (_scanner.getToken() !== 2 /* CloseBraceToken */) {
+            handleError(6 /* CloseBraceExpected */, [2 /* CloseBraceToken */], []);
         }
         else {
             scanNext(); // consume close brace
@@ -705,28 +663,28 @@ export function visit(text, visitor, options) {
         onArrayBegin();
         scanNext(); // consume open bracket
         var needsComma = false;
-        while (_scanner.getToken() !== SyntaxKind.CloseBracketToken && _scanner.getToken() !== SyntaxKind.EOF) {
-            if (_scanner.getToken() === SyntaxKind.CommaToken) {
+        while (_scanner.getToken() !== 4 /* CloseBracketToken */ && _scanner.getToken() !== 16 /* EOF */) {
+            if (_scanner.getToken() === 5 /* CommaToken */) {
                 if (!needsComma) {
-                    handleError(ParseErrorCode.ValueExpected, [], []);
+                    handleError(3 /* ValueExpected */, [], []);
                 }
                 onSeparator(',');
                 scanNext(); // consume comma
-                if (_scanner.getToken() === SyntaxKind.CloseBracketToken && !disallowTrailingComma) {
+                if (_scanner.getToken() === 4 /* CloseBracketToken */ && !disallowTrailingComma) {
                     break;
                 }
             }
             else if (needsComma) {
-                handleError(ParseErrorCode.CommaExpected, [], []);
+                handleError(5 /* CommaExpected */, [], []);
             }
             if (!parseValue()) {
-                handleError(ParseErrorCode.ValueExpected, [], [SyntaxKind.CloseBracketToken, SyntaxKind.CommaToken]);
+                handleError(3 /* ValueExpected */, [], [4 /* CloseBracketToken */, 5 /* CommaToken */]);
             }
             needsComma = true;
         }
         onArrayEnd();
-        if (_scanner.getToken() !== SyntaxKind.CloseBracketToken) {
-            handleError(ParseErrorCode.CloseBracketExpected, [SyntaxKind.CloseBracketToken], []);
+        if (_scanner.getToken() !== 4 /* CloseBracketToken */) {
+            handleError(7 /* CloseBracketExpected */, [4 /* CloseBracketToken */], []);
         }
         else {
             scanNext(); // consume close bracket
@@ -735,26 +693,26 @@ export function visit(text, visitor, options) {
     }
     function parseValue() {
         switch (_scanner.getToken()) {
-            case SyntaxKind.OpenBracketToken:
+            case 3 /* OpenBracketToken */:
                 return parseArray();
-            case SyntaxKind.OpenBraceToken:
+            case 1 /* OpenBraceToken */:
                 return parseObject();
-            case SyntaxKind.StringLiteral:
+            case 10 /* StringLiteral */:
                 return parseString(true);
             default:
                 return parseLiteral();
         }
     }
     scanNext();
-    if (_scanner.getToken() === SyntaxKind.EOF) {
+    if (_scanner.getToken() === 16 /* EOF */) {
         return true;
     }
     if (!parseValue()) {
-        handleError(ParseErrorCode.ValueExpected, [], []);
+        handleError(3 /* ValueExpected */, [], []);
         return false;
     }
-    if (_scanner.getToken() !== SyntaxKind.EOF) {
-        handleError(ParseErrorCode.EndOfFileExpected, [], []);
+    if (_scanner.getToken() !== 16 /* EOF */) {
+        handleError(8 /* EndOfFileExpected */, [], []);
     }
     return true;
 }

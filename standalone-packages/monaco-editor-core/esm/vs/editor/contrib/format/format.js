@@ -3,9 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -13,14 +16,14 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { illegalArgument, onUnexpectedExternalError } from '../../../base/common/errors';
-import URI from '../../../base/common/uri';
+import { URI } from '../../../base/common/uri';
 import { isFalsyOrEmpty } from '../../../base/common/arrays';
-import { TPromise } from '../../../base/common/winjs.base';
 import { Range } from '../../common/core/range';
 import { registerDefaultLanguageCommand, registerLanguageCommand } from '../../browser/editorExtensions';
 import { DocumentFormattingEditProviderRegistry, DocumentRangeFormattingEditProviderRegistry, OnTypeFormattingEditProviderRegistry } from '../../common/modes';
 import { IModelService } from '../../common/services/modelService';
-import { asWinJsPromise, first } from '../../../base/common/async';
+import { first } from '../../../base/common/async';
+import { CancellationToken } from '../../../base/common/cancellation';
 var NoProviderError = /** @class */ (function (_super) {
     __extends(NoProviderError, _super);
     function NoProviderError(message) {
@@ -33,38 +36,36 @@ var NoProviderError = /** @class */ (function (_super) {
     return NoProviderError;
 }(Error));
 export { NoProviderError };
-export function getDocumentRangeFormattingEdits(model, range, options) {
+export function getDocumentRangeFormattingEdits(model, range, options, token) {
     var providers = DocumentRangeFormattingEditProviderRegistry.ordered(model);
     if (providers.length === 0) {
-        return TPromise.wrapError(new NoProviderError());
+        return Promise.reject(new NoProviderError());
     }
     return first(providers.map(function (provider) { return function () {
-        return asWinJsPromise(function (token) { return provider.provideDocumentRangeFormattingEdits(model, range, options, token); })
+        return Promise.resolve(provider.provideDocumentRangeFormattingEdits(model, range, options, token))
             .then(undefined, onUnexpectedExternalError);
     }; }), function (result) { return !isFalsyOrEmpty(result); });
 }
-export function getDocumentFormattingEdits(model, options) {
+export function getDocumentFormattingEdits(model, options, token) {
     var providers = DocumentFormattingEditProviderRegistry.ordered(model);
     // try range formatters when no document formatter is registered
     if (providers.length === 0) {
-        return getDocumentRangeFormattingEdits(model, model.getFullModelRange(), options);
+        return getDocumentRangeFormattingEdits(model, model.getFullModelRange(), options, token);
     }
     return first(providers.map(function (provider) { return function () {
-        return asWinJsPromise(function (token) { return provider.provideDocumentFormattingEdits(model, options, token); })
+        return Promise.resolve(provider.provideDocumentFormattingEdits(model, options, token))
             .then(undefined, onUnexpectedExternalError);
     }; }), function (result) { return !isFalsyOrEmpty(result); });
 }
 export function getOnTypeFormattingEdits(model, position, ch, options) {
     var support = OnTypeFormattingEditProviderRegistry.ordered(model)[0];
     if (!support) {
-        return TPromise.as(undefined);
+        return Promise.resolve(undefined);
     }
     if (support.autoFormatTriggerCharacters.indexOf(ch) < 0) {
-        return TPromise.as(undefined);
+        return Promise.resolve(undefined);
     }
-    return asWinJsPromise(function (token) {
-        return support.provideOnTypeFormattingEdits(model, position, ch, options, token);
-    }).then(function (r) { return r; }, onUnexpectedExternalError);
+    return Promise.resolve(support.provideOnTypeFormattingEdits(model, position, ch, options, CancellationToken.None)).then(function (r) { return r; }, onUnexpectedExternalError);
 }
 registerLanguageCommand('_executeFormatRangeProvider', function (accessor, args) {
     var resource = args.resource, range = args.range, options = args.options;
@@ -75,7 +76,7 @@ registerLanguageCommand('_executeFormatRangeProvider', function (accessor, args)
     if (!model) {
         throw illegalArgument('resource');
     }
-    return getDocumentRangeFormattingEdits(model, Range.lift(range), options);
+    return getDocumentRangeFormattingEdits(model, Range.lift(range), options, CancellationToken.None);
 });
 registerLanguageCommand('_executeFormatDocumentProvider', function (accessor, args) {
     var resource = args.resource, options = args.options;
@@ -86,7 +87,7 @@ registerLanguageCommand('_executeFormatDocumentProvider', function (accessor, ar
     if (!model) {
         throw illegalArgument('resource');
     }
-    return getDocumentFormattingEdits(model, options);
+    return getDocumentFormattingEdits(model, options, CancellationToken.None);
 });
 registerDefaultLanguageCommand('_executeFormatOnTypeProvider', function (model, position, args) {
     var ch = args.ch, options = args.options;

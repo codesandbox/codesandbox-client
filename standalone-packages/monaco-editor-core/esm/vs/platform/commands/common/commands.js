@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { TPromise } from '../../../base/common/winjs.base';
+import { toDisposable } from '../../../base/common/lifecycle';
 import { validateConstraints } from '../../../base/common/types';
 import { createDecorator } from '../../instantiation/common/instantiation';
 import { LinkedList } from '../../../base/common/linkedList';
@@ -48,14 +48,22 @@ export var CommandsRegistry = new /** @class */ (function () {
             this._commands.set(id, commands);
         }
         var removeFn = commands.unshift(idOrCommand);
-        return {
-            dispose: function () {
-                removeFn();
-                if (_this._commands.get(id).isEmpty()) {
-                    _this._commands.delete(id);
-                }
+        return toDisposable(function () {
+            removeFn();
+            if (_this._commands.get(id).isEmpty()) {
+                _this._commands.delete(id);
             }
-        };
+        });
+    };
+    class_1.prototype.registerCommandAlias = function (oldId, newId) {
+        return CommandsRegistry.registerCommand(oldId, function (accessor) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            var _a;
+            (_a = accessor.get(ICommandService)).executeCommand.apply(_a, [newId].concat(args));
+        });
     };
     class_1.prototype.getCommand = function (id) {
         var list = this._commands.get(id);
@@ -78,6 +86,6 @@ export var NullCommandService = {
     _serviceBrand: undefined,
     onWillExecuteCommand: function () { return ({ dispose: function () { } }); },
     executeCommand: function () {
-        return TPromise.as(undefined);
+        return Promise.resolve(undefined);
     }
 };

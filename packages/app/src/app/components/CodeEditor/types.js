@@ -5,24 +5,23 @@ import type {
   Sandbox,
   ModuleError,
   ModuleCorrection,
-  Preferences,
 } from 'common/types';
 
-export type Settings =
-  | Preferences
-  | {
-      autoCompleteEnabled: boolean,
-      autoDownloadTypes: boolean,
-      codeMirror: boolean,
-      fontFamily?: string,
-      fontSize: number,
-      lineHeight: number,
-      lintEnabled: boolean,
-      vimMode: boolean,
-      tabWidth: number,
-      enableLigatures: boolean,
-      forceRefresh: boolean,
-    };
+export type Settings = {
+  autoCompleteEnabled: boolean,
+  autoDownloadTypes: boolean,
+  codeMirror: boolean,
+  fontFamily?: string,
+  fontSize: number,
+  lineHeight: number,
+  lintEnabled: boolean,
+  vimMode: boolean,
+  tabWidth: number,
+  enableLigatures: boolean,
+  forceRefresh: boolean,
+  experimentVSCode: boolean,
+  prettierConfig: Object,
+};
 
 type ModuleTab = {
   type: 'MODULE',

@@ -5,7 +5,7 @@
 'use strict';
 import { onUnexpectedError } from '../../../base/common/errors';
 import { ReplaceCommand, ReplaceCommandWithoutChangingPosition, ReplaceCommandWithOffsetCursorState } from '../commands/replaceCommand';
-import { CursorColumns, EditOperationResult } from './cursorCommon';
+import { CursorColumns, EditOperationResult, isQuote } from './cursorCommon';
 import { Range } from '../core/range';
 import * as strings from '../../../base/common/strings';
 import { ShiftCommand } from '../commands/shiftCommand';
@@ -378,7 +378,8 @@ var TypeOperations = /** @class */ (function () {
         return null;
     };
     TypeOperations._isAutoClosingCloseCharType = function (config, model, selections, ch) {
-        if (!config.autoClosingBrackets || !config.autoClosingPairsClose.hasOwnProperty(ch)) {
+        var autoCloseConfig = isQuote(ch) ? config.autoClosingQuotes : config.autoClosingBrackets;
+        if (autoCloseConfig === 'never' || !config.autoClosingPairsClose.hasOwnProperty(ch)) {
             return false;
         }
         var isEqualPair = (ch === config.autoClosingPairsClose[ch]);
@@ -440,9 +441,12 @@ var TypeOperations = /** @class */ (function () {
         return isBeforeCloseBrace;
     };
     TypeOperations._isAutoClosingOpenCharType = function (config, model, selections, ch) {
-        if (!config.autoClosingBrackets || !config.autoClosingPairsOpen.hasOwnProperty(ch)) {
+        var chIsQuote = isQuote(ch);
+        var autoCloseConfig = chIsQuote ? config.autoClosingQuotes : config.autoClosingBrackets;
+        if (autoCloseConfig === 'never' || !config.autoClosingPairsOpen.hasOwnProperty(ch)) {
             return false;
         }
+        var shouldAutoCloseBefore = chIsQuote ? config.shouldAutoCloseBefore.quote : config.shouldAutoCloseBefore.bracket;
         for (var i = 0, len = selections.length; i < len; i++) {
             var selection = selections[i];
             if (!selection.isEmpty()) {
@@ -451,7 +455,7 @@ var TypeOperations = /** @class */ (function () {
             var position = selection.getPosition();
             var lineText = model.getLineContent(position.lineNumber);
             // Do not auto-close ' or " after a word character
-            if ((ch === '\'' || ch === '"') && position.column > 1) {
+            if (chIsQuote && position.column > 1) {
                 var wordSeparators = getMapForWordSeparators(config.wordSeparators);
                 var characterBeforeCode = lineText.charCodeAt(position.column - 2);
                 var characterBeforeType = wordSeparators.get(characterBeforeCode);
@@ -463,7 +467,7 @@ var TypeOperations = /** @class */ (function () {
             var characterAfter = lineText.charAt(position.column - 1);
             if (characterAfter) {
                 var isBeforeCloseBrace = TypeOperations._isBeforeClosingBrace(config, ch, characterAfter);
-                if (!isBeforeCloseBrace && !/\s/.test(characterAfter)) {
+                if (!isBeforeCloseBrace && !shouldAutoCloseBefore(characterAfter)) {
                     return false;
                 }
             }
@@ -498,11 +502,20 @@ var TypeOperations = /** @class */ (function () {
             shouldPushStackElementAfter: false
         });
     };
+    TypeOperations._shouldSurroundChar = function (config, ch) {
+        if (isQuote(ch)) {
+            return (config.autoSurround === 'quotes' || config.autoSurround === 'languageDefined');
+        }
+        else {
+            // Character is a bracket
+            return (config.autoSurround === 'brackets' || config.autoSurround === 'languageDefined');
+        }
+    };
     TypeOperations._isSurroundSelectionType = function (config, model, selections, ch) {
-        if (!config.autoClosingBrackets || !config.surroundingPairs.hasOwnProperty(ch)) {
+        if (!TypeOperations._shouldSurroundChar(config, ch) || !config.surroundingPairs.hasOwnProperty(ch)) {
             return false;
         }
-        var isTypingAQuoteCharacter = (ch === '\'' || ch === '"');
+        var isTypingAQuoteCharacter = isQuote(ch);
         for (var i = 0, len = selections.length; i < len; i++) {
             var selection = selections[i];
             if (selection.isEmpty()) {
@@ -525,7 +538,7 @@ var TypeOperations = /** @class */ (function () {
             }
             if (isTypingAQuoteCharacter && selection.startLineNumber === selection.endLineNumber && selection.startColumn + 1 === selection.endColumn) {
                 var selectionText = model.getValueInRange(selection);
-                if ((selectionText === '\'' || selectionText === '"')) {
+                if (isQuote(selectionText)) {
                     // Typing a quote character on top of another quote character
                     // => disable surround selection type
                     return false;
@@ -605,7 +618,7 @@ var TypeOperations = /** @class */ (function () {
         return null;
     };
     TypeOperations.compositionEndWithInterceptors = function (prevEditOperationType, config, model, selections) {
-        if (!config.autoClosingBrackets) {
+        if (config.autoClosingQuotes === 'never') {
             return null;
         }
         var commands = [];
@@ -628,7 +641,7 @@ var TypeOperations = /** @class */ (function () {
             // As we are not typing in a new character, so we don't need to run `_runAutoClosingCloseCharType`
             // Next step, let's try to check if it's an open char.
             if (config.autoClosingPairsOpen.hasOwnProperty(ch)) {
-                if ((ch === '\'' || ch === '"') && position.column > 2) {
+                if (isQuote(ch) && position.column > 2) {
                     var wordSeparators = getMapForWordSeparators(config.wordSeparators);
                     var characterBeforeCode = lineText.charCodeAt(position.column - 3);
                     var characterBeforeType = wordSeparators.get(characterBeforeCode);
@@ -639,7 +652,14 @@ var TypeOperations = /** @class */ (function () {
                 var characterAfter = lineText.charAt(position.column - 1);
                 if (characterAfter) {
                     var isBeforeCloseBrace = TypeOperations._isBeforeClosingBrace(config, ch, characterAfter);
-                    if (!isBeforeCloseBrace && !/\s/.test(characterAfter)) {
+                    var shouldAutoCloseBefore = isQuote(ch) ? config.shouldAutoCloseBefore.quote : config.shouldAutoCloseBefore.bracket;
+                    if (isBeforeCloseBrace) {
+                        // In normal auto closing logic, we will auto close if the cursor is even before a closing brace intentionally.
+                        // However for composition mode, we do nothing here as users might clear all the characters for composition and we don't want to do a unnecessary auto close.
+                        // Related: microsoft/vscode#57250.
+                        continue;
+                    }
+                    if (!shouldAutoCloseBefore(characterAfter)) {
                         continue;
                     }
                 }

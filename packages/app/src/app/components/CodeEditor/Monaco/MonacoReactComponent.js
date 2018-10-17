@@ -34,17 +34,12 @@ class MonacoEditor extends React.PureComponent {
       return;
     }
 
-    context.require.config({
-      url: '/public/13/vs/loader.js',
-      paths: {
-        vs: '/public/13/vs',
-      },
-    });
-
-    // Load monaco
-    context.require(['vs/editor/editor.main'], () => {
-      this.initMonaco();
-    });
+    // eslint-disable-next-line global-require
+    require('app/vscode/dev-bootstrap').default(['vs/editor/editor.main'])(
+      () => {
+        this.initMonaco();
+      }
+    );
   };
 
   initMonaco = () => {
@@ -58,7 +53,7 @@ class MonacoEditor extends React.PureComponent {
         openModel: model => this.props.openReference(model),
       };
 
-      const appliedOptions = { ...options };
+      let appliedOptions = { ...options };
 
       const fonts = appliedOptions.fontFamily.split(',').map(x => x.trim());
       // We first just set the default fonts for the editor. When the custom font has loaded
@@ -83,6 +78,10 @@ class MonacoEditor extends React.PureComponent {
       );
 
       appliedOptions.fontFamily = fonts.slice(1).join(', ');
+
+      if (localStorage.getItem('settings.experimentVSCode') === 'true') {
+        appliedOptions = {};
+      }
 
       this.editor = context.monaco.editor[
         diffEditor ? 'createDiffEditor' : 'create'

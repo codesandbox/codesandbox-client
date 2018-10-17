@@ -6,17 +6,6 @@
 import { createDecorator } from '../../instantiation/common/instantiation';
 export var ID = 'storageService';
 export var IStorageService = createDecorator(ID);
-export var StorageScope;
-(function (StorageScope) {
-    /**
-     * The stored data will be scoped to all workspaces of this domain.
-     */
-    StorageScope[StorageScope["GLOBAL"] = 0] = "GLOBAL";
-    /**
-     * The stored data will be scoped to the current workspace.
-     */
-    StorageScope[StorageScope["WORKSPACE"] = 1] = "WORKSPACE";
-})(StorageScope || (StorageScope = {}));
 export var NullStorageService = {
     _serviceBrand: undefined,
     store: function () { return undefined; },

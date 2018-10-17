@@ -27,6 +27,8 @@ export var EditorContextKeys;
     EditorContextKeys.tabMovesFocus = new RawContextKey('editorTabMovesFocus', false);
     EditorContextKeys.tabDoesNotMoveFocus = EditorContextKeys.tabMovesFocus.toNegated();
     EditorContextKeys.isInEmbeddedEditor = new RawContextKey('isInEmbeddedEditor', undefined);
+    EditorContextKeys.canUndo = new RawContextKey('canUndo', false);
+    EditorContextKeys.canRedo = new RawContextKey('canRedo', false);
     // -- mode context keys
     EditorContextKeys.languageId = new RawContextKey('editorLangId', undefined);
     EditorContextKeys.hasCompletionItemProvider = new RawContextKey('editorHasCompletionItemProvider', undefined);

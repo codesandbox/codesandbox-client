@@ -210,6 +210,7 @@ class DirectoryEntry extends React.Component {
       depth = 0,
       root,
       store,
+      getModulePath,
     } = this.props;
     const { creating, open } = this.state;
     const currentSandbox = store.editor.currentSandbox;
@@ -245,6 +246,7 @@ class DirectoryEntry extends React.Component {
               deleteEntry={!root && this.deleteDirectory}
               hasChildren={this.getChildren().length > 0}
               closeTree={this.closeTree}
+              getModulePath={getModulePath}
             />
             {this.state.showDeleteDirectoryModal && (
               <Modal
@@ -296,6 +298,7 @@ class DirectoryEntry extends React.Component {
             setCurrentModule={this.setCurrentModule}
             markTabsNotDirty={this.markTabsNotDirty}
             discardModuleChanges={this.discardChanges}
+            getModulePath={getModulePath}
           />
           {this.state.showDeleteModuleModal && (
             <Modal

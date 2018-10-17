@@ -277,7 +277,8 @@ module.exports = {
       /typescriptServices\.js$/,
       /browserfs\.js/,
       /browserfs\.min\.js/,
-      /standalone-packages/,
+      /standalone-packages\/codesandbox-browserfs/,
+      /standalone-packages\/vscode\//,
     ],
   },
 
@@ -449,6 +450,11 @@ module.exports = {
           to: 'public/13/vs',
           force: true,
         },
+        {
+          from: '../../standalone-packages/vscode-editor/release/min/vs',
+          to: 'public/vscode1/vs',
+          force: true,
+        },
         __PROD__ && {
           from: '../../node_modules/monaco-editor/min-maps',
           to: 'public/min-maps',
@@ -467,7 +473,7 @@ module.exports = {
         },
         {
           from: '../../standalone-packages/codesandbox-browserfs/dist',
-          to: 'static/browserfs',
+          to: 'static/browserfs2',
         },
       ].filter(x => x)
     ),

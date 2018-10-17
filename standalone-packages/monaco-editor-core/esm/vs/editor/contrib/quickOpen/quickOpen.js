@@ -4,17 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { illegalArgument, onUnexpectedExternalError } from '../../../base/common/errors';
-import URI from '../../../base/common/uri';
-import { TPromise } from '../../../base/common/winjs.base';
+import { URI } from '../../../base/common/uri';
 import { Range } from '../../common/core/range';
 import { registerLanguageCommand } from '../../browser/editorExtensions';
 import { DocumentSymbolProviderRegistry } from '../../common/modes';
 import { IModelService } from '../../common/services/modelService';
-import { asWinJsPromise } from '../../../base/common/async';
-export function getDocumentSymbols(model) {
+import { CancellationToken } from '../../../base/common/cancellation';
+export function getDocumentSymbols(model, flat, token) {
     var roots = [];
     var promises = DocumentSymbolProviderRegistry.all(model).map(function (support) {
-        return asWinJsPromise(function (token) { return support.provideDocumentSymbols(model, token); }).then(function (result) {
+        return Promise.resolve(support.provideDocumentSymbols(model, token)).then(function (result) {
             if (Array.isArray(result)) {
                 roots.push.apply(roots, result);
             }
@@ -22,9 +21,17 @@ export function getDocumentSymbols(model) {
             onUnexpectedExternalError(err);
         });
     });
-    return TPromise.join(promises).then(function () {
+    return Promise.all(promises).then(function () {
         var flatEntries = [];
-        flatten(flatEntries, roots, '');
+        if (token.isCancellationRequested) {
+            return flatEntries;
+        }
+        if (flat) {
+            flatten(flatEntries, roots, '');
+        }
+        else {
+            flatEntries = roots;
+        }
         flatEntries.sort(compareEntriesUsingStart);
         return flatEntries;
     });
@@ -58,5 +65,5 @@ registerLanguageCommand('_executeDocumentSymbolProvider', function (accessor, ar
     if (!model) {
         throw illegalArgument('resource');
     }
-    return getDocumentSymbols(model);
+    return getDocumentSymbols(model, false, CancellationToken.None);
 });

@@ -2,7 +2,6 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 import './standalone-tokens.css';
 import * as editorCommon from '../../common/editorCommon';
 import { ContentWidgetPositionPreference, OverlayWidgetPositionPreference, MouseTargetType } from '../../browser/editorBrowser';
@@ -97,7 +96,7 @@ export function createModel(value, language, uri) {
         if (firstLF !== -1) {
             firstLine = value.substring(0, firstLF);
         }
-        return doCreateModel(value, StaticServices.modeService.get().getOrCreateModeByFilenameOrFirstLine(path, firstLine), uri);
+        return doCreateModel(value, StaticServices.modeService.get().getOrCreateModeByFilepathOrFirstLine(path, firstLine), uri);
     }
     return doCreateModel(value, StaticServices.modeService.get().getOrCreateMode(language), uri);
 }

@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -75,6 +78,7 @@ import { MarkdownString } from '../../../base/common/htmlContent';
 import { TrackedRangeStickiness } from '../../common/model';
 import { INotificationService } from '../../../platform/notification/common/notification';
 import * as async from '../../../base/common/async';
+import { CancellationToken } from '../../../base/common/cancellation';
 var HOVER_MESSAGE_GENERAL_META = new MarkdownString().appendText(platform.isMacintosh
     ? nls.localize('links.navigate.mac', "Cmd + click to follow link")
     : nls.localize('links.navigate', "Ctrl + click to follow link"));
@@ -90,41 +94,49 @@ var HOVER_MESSAGE_COMMAND_ALT = new MarkdownString().appendText(platform.isMacin
 var decoration = {
     meta: ModelDecorationOptions.register({
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        collapseOnReplaceEdit: true,
         inlineClassName: 'detected-link',
         hoverMessage: HOVER_MESSAGE_GENERAL_META
     }),
     metaActive: ModelDecorationOptions.register({
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        collapseOnReplaceEdit: true,
         inlineClassName: 'detected-link-active',
         hoverMessage: HOVER_MESSAGE_GENERAL_META
     }),
     alt: ModelDecorationOptions.register({
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        collapseOnReplaceEdit: true,
         inlineClassName: 'detected-link',
         hoverMessage: HOVER_MESSAGE_GENERAL_ALT
     }),
     altActive: ModelDecorationOptions.register({
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        collapseOnReplaceEdit: true,
         inlineClassName: 'detected-link-active',
         hoverMessage: HOVER_MESSAGE_GENERAL_ALT
     }),
     altCommand: ModelDecorationOptions.register({
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        collapseOnReplaceEdit: true,
         inlineClassName: 'detected-link',
         hoverMessage: HOVER_MESSAGE_COMMAND_ALT
     }),
     altCommandActive: ModelDecorationOptions.register({
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        collapseOnReplaceEdit: true,
         inlineClassName: 'detected-link-active',
         hoverMessage: HOVER_MESSAGE_COMMAND_ALT
     }),
     metaCommand: ModelDecorationOptions.register({
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        collapseOnReplaceEdit: true,
         inlineClassName: 'detected-link',
         hoverMessage: HOVER_MESSAGE_COMMAND_META
     }),
     metaCommandActive: ModelDecorationOptions.register({
         stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        collapseOnReplaceEdit: true,
         inlineClassName: 'detected-link-active',
         hoverMessage: HOVER_MESSAGE_COMMAND_META
     }),
@@ -204,7 +216,7 @@ var LinkDetector = /** @class */ (function () {
         this.listenersToRemove.push(editor.onDidChangeModel(function (e) { return _this.onModelChanged(); }));
         this.listenersToRemove.push(editor.onDidChangeModelLanguage(function (e) { return _this.onModelModeChanged(); }));
         this.listenersToRemove.push(LinkProviderRegistry.onDidChange(function (e) { return _this.onModelModeChanged(); }));
-        this.timeoutPromise = null;
+        this.timeout = new async.TimeoutTimer();
         this.computePromise = null;
         this.currentOccurrences = {};
         this.activeLinkDecorationId = null;
@@ -228,13 +240,7 @@ var LinkDetector = /** @class */ (function () {
     };
     LinkDetector.prototype.onChange = function () {
         var _this = this;
-        if (!this.timeoutPromise) {
-            this.timeoutPromise = async.timeout(LinkDetector.RECOMPUTE_TIME);
-            this.timeoutPromise.then(function () {
-                _this.timeoutPromise = null;
-                _this.beginCompute();
-            });
-        }
+        this.timeout.setIfNotSet(function () { return _this.beginCompute(); }, LinkDetector.RECOMPUTE_TIME);
     };
     LinkDetector.prototype.beginCompute = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -339,7 +345,7 @@ var LinkDetector = /** @class */ (function () {
             return;
         }
         var link = occurrence.link;
-        link.resolve().then(function (uri) {
+        link.resolve(CancellationToken.None).then(function (uri) {
             // open the uri
             return _this.openerService.open(uri, { openToSide: openToSide });
         }, function (err) {
@@ -353,7 +359,7 @@ var LinkDetector = /** @class */ (function () {
             else {
                 onUnexpectedError(err);
             }
-        }).done(null, onUnexpectedError);
+        });
     };
     LinkDetector.prototype.getLinkOccurrence = function (position) {
         var decorations = this.editor.getModel().getDecorationsInRange({
@@ -376,10 +382,7 @@ var LinkDetector = /** @class */ (function () {
             && (mouseEvent.hasTriggerModifier || (withKey && withKey.keyCodeIsTriggerKey)));
     };
     LinkDetector.prototype.stop = function () {
-        if (this.timeoutPromise) {
-            this.timeoutPromise.cancel();
-            this.timeoutPromise = null;
-        }
+        this.timeout.cancel();
         if (this.computePromise) {
             this.computePromise.cancel();
             this.computePromise = null;
@@ -388,6 +391,7 @@ var LinkDetector = /** @class */ (function () {
     LinkDetector.prototype.dispose = function () {
         this.listenersToRemove = dispose(this.listenersToRemove);
         this.stop();
+        this.timeout.dispose();
     };
     LinkDetector.ID = 'editor.linkDetector';
     LinkDetector.RECOMPUTE_TIME = 1000; // ms

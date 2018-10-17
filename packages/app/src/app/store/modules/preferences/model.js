@@ -43,6 +43,8 @@ export default {
     enableLigatures: types.boolean,
     editorTheme: types.string,
     customVSCodeTheme: types.maybeNull(types.string),
+
+    experimentVSCode: types.maybeNull(types.boolean),
   }),
   isLoadingPaymentDetails: types.boolean,
   itemId: types.string,

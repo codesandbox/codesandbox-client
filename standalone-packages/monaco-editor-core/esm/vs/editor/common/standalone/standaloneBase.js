@@ -11,18 +11,11 @@ import { Selection, SelectionDirection } from '../core/selection';
 import { TPromise } from '../../../base/common/winjs.base';
 import { CancellationTokenSource } from '../../../base/common/cancellation';
 import { Token } from '../core/token';
-import URI from '../../../base/common/uri';
+import { URI } from '../../../base/common/uri';
 // --------------------------------------------
 // This is repeated here so it can be exported
 // because TS inlines const enums
 // --------------------------------------------
-export var Severity;
-(function (Severity) {
-    Severity[Severity["Ignore"] = 0] = "Ignore";
-    Severity[Severity["Info"] = 1] = "Info";
-    Severity[Severity["Warning"] = 2] = "Warning";
-    Severity[Severity["Error"] = 3] = "Error";
-})(Severity || (Severity = {}));
 export var MarkerTag;
 (function (MarkerTag) {
     MarkerTag[MarkerTag["Unnecessary"] = 1] = "Unnecessary";
@@ -248,7 +241,6 @@ export function createMonacoBaseAPI() {
         Range: Range,
         Selection: Selection,
         SelectionDirection: SelectionDirection,
-        Severity: Severity,
         MarkerSeverity: MarkerSeverity,
         MarkerTag: MarkerTag,
         Promise: TPromise,

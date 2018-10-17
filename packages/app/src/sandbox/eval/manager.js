@@ -113,7 +113,12 @@ export default class Manager {
 
   stage: Stage;
 
-  constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
+  constructor(
+    id: string,
+    preset: Preset,
+    modules: { [path: string]: Module },
+    cb?: Function
+  ) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
@@ -144,7 +149,11 @@ export default class Manager {
           manager: this.bfsWrapper,
         },
       },
-      () => {}
+      () => {
+        if (cb) {
+          cb();
+        }
+      }
     );
   }
 

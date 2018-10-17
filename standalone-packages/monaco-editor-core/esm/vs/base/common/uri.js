@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -18,7 +21,25 @@ import { isWindows } from './platform';
 var _schemePattern = /^\w[\w\d+.-]*$/;
 var _singleSlashStart = /^\//;
 var _doubleSlashStart = /^\/\//;
+var _throwOnMissingSchema = true;
+/**
+ * @internal
+ */
+export function setUriThrowOnMissingScheme(value) {
+    var old = _throwOnMissingSchema;
+    _throwOnMissingSchema = value;
+    return old;
+}
 function _validateUri(ret) {
+    // scheme, must be set
+    if (!ret.scheme) {
+        if (_throwOnMissingSchema) {
+            throw new Error("[UriError]: Scheme is missing: {scheme: \"\", authority: \"" + ret.authority + "\", path: \"" + ret.path + "\", query: \"" + ret.query + "\", fragment: \"" + ret.fragment + "\"}");
+        }
+        else {
+            console.warn("[UriError]: Scheme is missing: {scheme: \"\", authority: \"" + ret.authority + "\", path: \"" + ret.path + "\", query: \"" + ret.query + "\", fragment: \"" + ret.fragment + "\"}");
+        }
+    }
     // scheme, https://tools.ietf.org/html/rfc3986#section-3.1
     // ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
     if (ret.scheme && !_schemePattern.test(ret.scheme)) {
@@ -67,7 +88,7 @@ var _slash = '/';
 var _regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
 /**
  * Uniform Resource Identifier (URI) http://tools.ietf.org/html/rfc3986.
- * This class is a simple parser which creates the basic component paths
+ * This class is a simple parser which creates the basic component parts
  * (http://tools.ietf.org/html/rfc3986#section-3) with minimal validation
  * and encoding.
  *
@@ -78,8 +99,6 @@ var _regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
  *        |   _____________________|__
  *       / \ /                        \
  *       urn:example:animal:ferret:nose
- *
- *
  */
 var URI = /** @class */ (function () {
     /**
@@ -122,11 +141,32 @@ var URI = /** @class */ (function () {
         // ---- filesystem path -----------------------
         /**
          * Returns a string representing the corresponding file system path of this URI.
-         * Will handle UNC paths and normalize windows drive letters to lower-case. Also
-         * uses the platform specific path separator. Will *not* validate the path for
-         * invalid characters and semantics. Will *not* look at the scheme of this URI.
+         * Will handle UNC paths, normalizes windows drive letters to lower-case, and uses the
+         * platform specific path separator.
+         *
+         * * Will *not* validate the path for invalid characters and semantics.
+         * * Will *not* look at the scheme of this URI.
+         * * The result shall *not* be used for display purposes but for accessing a file on disk.
+         *
+         *
+         * The *difference* to `URI#path` is the use of the platform specific separator and the handling
+         * of UNC paths. See the below sample of a file-uri with an authority (UNC path).
+         *
+         * ```ts
+            const u = URI.parse('file://server/c$/folder/file.txt')
+            u.authority === 'server'
+            u.path === '/shares/c$/file.txt'
+            u.fsPath === '\\server\c$\folder\file.txt'
+        ```
+         *
+         * Using `URI#path` to read a file (using fs-apis) would not be enough because parts of the path,
+         * namely the server name, would be missing. Therefore `URI#fsPath` exists - it's sugar to ease working
+         * with URIs that represent files on disk (`file` scheme).
          */
         get: function () {
+            // if (this.scheme !== 'file') {
+            // 	console.warn(`[UriError] calling fsPath with scheme ${this.scheme}`);
+            // }
             return _makeFsPath(this);
         },
         enumerable: true,
@@ -178,6 +218,12 @@ var URI = /** @class */ (function () {
         return new _URI(scheme, authority, path, query, fragment);
     };
     // ---- parse & validate ------------------------
+    /**
+     * Creates a new URI from a string, e.g. `http://www.msft.com/some/path`,
+     * `file:///usr/home`, or `scheme:with/path`.
+     *
+     * @param value A string which represents an URI (see `URI#toString`).
+     */
     URI.parse = function (value) {
         var match = _regexp.exec(value);
         if (!match) {
@@ -185,6 +231,27 @@ var URI = /** @class */ (function () {
         }
         return new _URI(match[2] || _empty, decodeURIComponent(match[4] || _empty), decodeURIComponent(match[5] || _empty), decodeURIComponent(match[7] || _empty), decodeURIComponent(match[9] || _empty));
     };
+    /**
+     * Creates a new URI from a file system path, e.g. `c:\my\files`,
+     * `/usr/home`, or `\\server\share\some\path`.
+     *
+     * The *difference* between `URI#parse` and `URI#file` is that the latter treats the argument
+     * as path, not as stringified-uri. E.g. `URI.file(path)` is **not the same as**
+     * `URI.parse('file://' + path)` because the path might contain characters that are
+     * interpreted (# and ?). See the following sample:
+     * ```ts
+    const good = URI.file('/coding/c#/project1');
+    good.scheme === 'file';
+    good.path === '/coding/c#/project1';
+    good.fragment === '';
+    const bad = URI.parse('file://' + '/coding/c#/project1');
+    bad.scheme === 'file';
+    bad.path === '/coding/c'; // path is now broken
+    bad.fragment === '/project1';
+    ```
+     *
+     * @param path A file system path (see `URI#fsPath`)
+     */
     URI.file = function (path) {
         var authority = _empty;
         // normalize to fwd-slashes on windows,
@@ -213,6 +280,13 @@ var URI = /** @class */ (function () {
     };
     // ---- printing/externalize ---------------------------
     /**
+     * Creates a string presentation for this URI. It's guardeed that calling
+     * `URI.parse` with the result of this function creates an URI which is equal
+     * to this URI.
+     *
+     * * The result shall *not* be used for display purposes but for externalization or transport.
+     * * The result will be encoded using the percentage encoding and encoding happens mostly
+     * ignore the scheme-specific encoding rules.
      *
      * @param skipEncoding Do not encode the result, default is `false`
      */
@@ -239,7 +313,7 @@ var URI = /** @class */ (function () {
     };
     return URI;
 }());
-export default URI;
+export { URI };
 // tslint:disable-next-line:class-name
 var _URI = /** @class */ (function (_super) {
     __extends(_URI, _super);
@@ -325,10 +399,11 @@ var encodeTable = (_a = {},
     _a[61 /* Equals */] = '%3D',
     _a[32 /* Space */] = '%20',
     _a);
-function encodeURIComponentFast(uriComponent, allowSlash) {
+function encodeURIComponentFast(uriComponent, allowSlash, firstPos) {
+    if (firstPos === void 0) { firstPos = 0; }
     var res = undefined;
     var nativeEncodePos = -1;
-    for (var pos = 0; pos < uriComponent.length; pos++) {
+    for (var pos = firstPos; pos < uriComponent.length; pos++) {
         var code = uriComponent.charCodeAt(pos);
         // unreserved characters: https://tools.ietf.org/html/rfc3986#section-2.3
         if ((code >= 97 /* a */ && code <= 122 /* z */)
@@ -404,9 +479,12 @@ function _makeFsPath(uri) {
         // unc path: file://shares/c$/far/boo
         value = "//" + uri.authority + uri.path;
     }
-    else if (uri.path.charCodeAt(0) === 47 /* Slash */
-        && (uri.path.charCodeAt(1) >= 65 /* A */ && uri.path.charCodeAt(1) <= 90 /* Z */ || uri.path.charCodeAt(1) >= 97 /* a */ && uri.path.charCodeAt(1) <= 122 /* z */)
-        && uri.path.charCodeAt(2) === 58 /* Colon */) {
+    else if (
+    // CODESANDBOX CHANGE, Windows also has forward slash
+    // uri.path.charCodeAt(0) === CharCode.Slash
+    // && (uri.path.charCodeAt(1) >= CharCode.A && uri.path.charCodeAt(1) <= CharCode.Z || uri.path.charCodeAt(1) >= CharCode.a && uri.path.charCodeAt(1) <= CharCode.z)
+    // && uri.path.charCodeAt(2) === CharCode.Colon
+    false) {
         // windows drive letter: file:///c:/far/boo
         value = uri.path[1].toLowerCase() + uri.path.substr(2);
     }
@@ -414,9 +492,9 @@ function _makeFsPath(uri) {
         // other path
         value = uri.path;
     }
-    if (isWindows) {
-        value = value.replace(/\//g, '\\');
-    }
+    // if (isWindows) {
+    // 	value = value.replace(/\//g, '\\');
+    // }
     return value;
 }
 /**
@@ -467,20 +545,32 @@ function _asFormatted(uri, skipEncoding) {
     }
     if (path) {
         // lower-case windows drive letters in /C:/fff or C:/fff
+        var encodeOffset = 0;
         if (path.length >= 3 && path.charCodeAt(0) === 47 /* Slash */ && path.charCodeAt(2) === 58 /* Colon */) {
             var code = path.charCodeAt(1);
             if (code >= 65 /* A */ && code <= 90 /* Z */) {
                 path = "/" + String.fromCharCode(code + 32) + ":" + path.substr(3); // "/c:".length === 3
+                encodeOffset = 3;
+            }
+            else if (code >= 97 /* a */ && code <= 122 /* z */) {
+                encodeOffset = 3;
             }
         }
         else if (path.length >= 2 && path.charCodeAt(1) === 58 /* Colon */) {
             var code = path.charCodeAt(0);
             if (code >= 65 /* A */ && code <= 90 /* Z */) {
                 path = String.fromCharCode(code + 32) + ":" + path.substr(2); // "/c:".length === 3
+                encodeOffset = 2;
+            }
+            else if (code >= 97 /* a */ && code <= 122 /* z */) {
+                encodeOffset = 2;
             }
         }
+        if (scheme !== 'file' || path.length > encodeOffset && path.charCodeAt(encodeOffset) !== 47 /* Slash */) {
+            encodeOffset = 0;
+        }
         // encode the rest of the path
-        res += encoder(path, true);
+        res += encoder(path, true, encodeOffset);
     }
     if (query) {
         res += '?';

@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+import { canceled } from './errors';
 import { TPromise } from './winjs.base';
 /**
  * Returns the last element of an array.
@@ -56,6 +57,12 @@ export function tail2(arr) {
 }
 export function equals(one, other, itemEquals) {
     if (itemEquals === void 0) { itemEquals = function (a, b) { return a === b; }; }
+    if (one === other) {
+        return true;
+    }
+    if (!one || !other) {
+        return false;
+    }
     if (one.length !== other.length) {
         return false;
     }
@@ -266,12 +273,11 @@ export function top(array, compare, n) {
  * @param batch The number of elements to examine before yielding to the event loop.
  * @return The first n elemnts from array when sorted with compare.
  */
-export function topAsync(array, compare, n, batch) {
+export function topAsync(array, compare, n, batch, token) {
     var _this = this;
     if (n === 0) {
         return TPromise.as([]);
     }
-    var canceled = false;
     return new TPromise(function (resolve, reject) {
         (function () { return __awaiter(_this, void 0, void 0, function () {
             var o, result, i, m;
@@ -290,8 +296,8 @@ export function topAsync(array, compare, n, batch) {
                         _a.sent(); // nextTick() would starve I/O.
                         _a.label = 3;
                     case 3:
-                        if (canceled) {
-                            throw new Error('canceled');
+                        if (token && token.isCancellationRequested) {
+                            throw canceled();
                         }
                         topStep(array, compare, result, i, m);
                         _a.label = 4;
@@ -303,8 +309,6 @@ export function topAsync(array, compare, n, batch) {
             });
         }); })()
             .then(resolve, reject);
-    }, function () {
-        canceled = true;
     });
 }
 function topStep(array, compare, result, i, m) {
@@ -472,11 +476,17 @@ export function arrayInsert(target, insertIndex, insertArr) {
  * Uses Fisher-Yates shuffle to shuffle the given array
  * @param array
  */
-export function shuffle(array) {
-    var i = 0, j = 0, temp = null;
-    for (i = array.length - 1; i > 0; i -= 1) {
-        j = Math.floor(Math.random() * (i + 1));
-        temp = array[i];
+export function shuffle(array, seed) {
+    // Seeded random number generator in JS. Modified from:
+    // https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
+    var random = function () {
+        var x = Math.sin(seed++) * 179426549; // throw away most significant digits and reduce any potential bias
+        return x - Math.floor(x);
+    };
+    var rand = typeof seed === 'number' ? random : Math.random;
+    for (var i = array.length - 1; i > 0; i -= 1) {
+        var j = Math.floor(rand() * (i + 1));
+        var temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
@@ -500,4 +510,13 @@ export function pushToEnd(arr, value) {
         arr.splice(index, 1);
         arr.push(value);
     }
+}
+export function find(arr, predicate) {
+    for (var i = 0; i < arr.length; i++) {
+        var element = arr[i];
+        if (predicate(element, i, arr)) {
+            return element;
+        }
+    }
+    return undefined;
 }

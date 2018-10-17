@@ -17,5 +17,6 @@ export default Module({
     directoryMovedToDirectory: sequences.moveDirectoryToDirectory,
     directoryDeleted: sequences.deleteDirectory,
     moduleDeleted: sequences.deleteModule,
+    createModulesByPath: sequences.createModulesByPath,
   },
 });

@@ -13,11 +13,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import * as dom from '../../../base/browser/dom';
+import * as resources from '../../../base/common/resources';
 import { parse } from '../../../base/common/marshalling';
 import { Schemas } from '../../../base/common/network';
 import { TPromise } from '../../../base/common/winjs.base';
 import { ICodeEditorService } from './codeEditorService';
-import { normalize } from '../../../base/common/paths';
 import { ICommandService, CommandsRegistry } from '../../../platform/commands/common/commands';
 import { ITelemetryService } from '../../../platform/telemetry/common/telemetry';
 import { optional } from '../../../platform/instantiation/common/instantiation';
@@ -73,14 +73,14 @@ var OpenerService = /** @class */ (function () {
             }
             if (!resource.scheme) {
                 // we cannot handle those
-                return TPromise.as(undefined);
+                return Promise.resolve(undefined);
             }
             else if (resource.scheme === Schemas.file) {
-                resource = resource.with({ path: normalize(resource.path) }); // workaround for non-normalized paths (https://github.com/Microsoft/vscode/issues/12954)
+                resource = resources.normalizePath(resource); // workaround for non-normalized paths (https://github.com/Microsoft/vscode/issues/12954)
             }
             promise = this._editorService.openCodeEditor({ resource: resource, options: { selection: selection, } }, this._editorService.getFocusedCodeEditor(), options && options.openToSide);
         }
-        return promise;
+        return Promise.resolve(promise);
     };
     OpenerService = __decorate([
         __param(0, ICodeEditorService),

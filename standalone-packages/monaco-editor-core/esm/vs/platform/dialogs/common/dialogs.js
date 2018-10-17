@@ -7,6 +7,7 @@ import { createDecorator } from '../../instantiation/common/instantiation';
 import { basename } from '../../../base/common/paths';
 import { localize } from '../../../nls';
 export var IDialogService = createDecorator('dialogService');
+export var IFileDialogService = createDecorator('fileDialogService');
 var MAX_CONFIRM_FILES = 10;
 export function getConfirmMessage(start, resourcesToConfirm) {
     var message = [start];

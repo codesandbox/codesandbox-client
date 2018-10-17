@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -24,7 +27,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import './messageController.css';
 import * as nls from '../../../nls';
-import { setDisposableTimeout } from '../../../base/common/async';
+import { TimeoutTimer } from '../../../base/common/async';
 import { dispose, Disposable } from '../../../base/common/lifecycle';
 import { alert } from '../../../base/browser/ui/aria/aria';
 import { Range } from '../../common/core/range';
@@ -32,8 +35,7 @@ import { registerEditorContribution, EditorCommand, registerEditorCommand } from
 import { ContentWidgetPositionPreference } from '../../browser/editorBrowser';
 import { IContextKeyService, RawContextKey } from '../../../platform/contextkey/common/contextkey';
 import { registerThemingParticipant, HIGH_CONTRAST } from '../../../platform/theme/common/themeService';
-import { inputValidationInfoBorder, inputValidationInfoBackground } from '../../../platform/theme/common/colorRegistry';
-import { KeybindingsRegistry } from '../../../platform/keybinding/common/keybindingsRegistry';
+import { inputValidationInfoBorder, inputValidationInfoBackground, inputValidationInfoForeground } from '../../../platform/theme/common/colorRegistry';
 var MessageController = /** @class */ (function (_super) {
     __extends(MessageController, _super);
     function MessageController(editor, contextKeyService) {
@@ -70,7 +72,7 @@ var MessageController = /** @class */ (function (_super) {
         this._messageListeners.push(this._editor.onDidDispose(function () { return _this.closeMessage(); }));
         this._messageListeners.push(this._editor.onDidChangeModel(function () { return _this.closeMessage(); }));
         // close after 3s
-        this._messageListeners.push(setDisposableTimeout(function () { return _this.closeMessage(); }, 3000));
+        this._messageListeners.push(new TimeoutTimer(function () { return _this.closeMessage(); }, 3000));
         // close on mouse move
         var bounds;
         this._messageListeners.push(this._editor.onMouseMove(function (e) {
@@ -110,7 +112,7 @@ registerEditorCommand(new MessageCommand({
     precondition: MessageController.MESSAGE_VISIBLE,
     handler: function (c) { return c.closeMessage(); },
     kbOpts: {
-        weight: KeybindingsRegistry.WEIGHT.editorContrib(30),
+        weight: 100 /* EditorContrib */ + 30,
         primary: 9 /* Escape */
     }
 }));
@@ -172,5 +174,9 @@ registerThemingParticipant(function (theme, collector) {
     var background = theme.getColor(inputValidationInfoBackground);
     if (background) {
         collector.addRule(".monaco-editor .monaco-editor-overlaymessage .message { background-color: " + background + "; }");
+    }
+    var foreground = theme.getColor(inputValidationInfoForeground);
+    if (foreground) {
+        collector.addRule(".monaco-editor .monaco-editor-overlaymessage .message { color: " + foreground + "; }");
     }
 });

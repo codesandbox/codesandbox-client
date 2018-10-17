@@ -1,0 +1,13 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vs .monaco-workbench .flip-editor-layout {
+	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojZjZmNmY2fS5pY29uLXZzLW91dHtmaWxsOiNmNmY2ZjZ9Lmljb24tdnMtYmd7ZmlsbDojNDI0MjQyfS5pY29uLXZzLWZne2ZpbGw6I2YwZWZmMX08L3N0eWxlPjxwYXRoIGNsYXNzPSJpY29uLWNhbnZhcy10cmFuc3BhcmVudCIgZD0iTTE2IDE2SDBWMGgxNnYxNnoiIGlkPSJjYW52YXMiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1vdXQiIGQ9Ik0wIDE2VjBoMTF2Nmg1djEwSDB6IiBpZD0ib3V0bGluZSIgc3R5bGU9ImRpc3BsYXk6IG5vbmU7Ii8+PHBhdGggY2xhc3M9Imljb24tdnMtZmciIGQ9Ik00IDE0SDJWNGg3djNINHY3em0xMCAwSDV2LTRoOXY0eiIgaWQ9Imljb25GZyIgc3R5bGU9ImRpc3BsYXk6IG5vbmU7Ii8+PHBhdGggY2xhc3M9Imljb24tdnMtYmciIGQ9Ik0xMCA3VjFIMXYxNGgxNFY3aC01em0tNiA3SDJWNGg3djNINHY3em0xMCAwSDV2LTRoOXY0eiIgaWQ9Imljb25CZyIvPjwvc3ZnPg==");
+}
+
+.vs-dark .monaco-workbench .flip-editor-layout,
+.hc-black .monaco-workbench .flip-editor-layout {
+	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojMmQyZDMwfS5pY29uLXZzLW91dHtmaWxsOiMyZDJkMzB9Lmljb24tdnMtYmd7ZmlsbDojYzVjNWM1fS5pY29uLXZzLWZne2ZpbGw6IzJiMjgyZX08L3N0eWxlPjxwYXRoIGNsYXNzPSJpY29uLWNhbnZhcy10cmFuc3BhcmVudCIgZD0iTTE2IDE2SDBWMGgxNnYxNnoiIGlkPSJjYW52YXMiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1vdXQiIGQ9Ik0wIDE2VjBoMTF2Nmg1djEwSDB6IiBpZD0ib3V0bGluZSIgc3R5bGU9ImRpc3BsYXk6IG5vbmU7Ii8+PHBhdGggY2xhc3M9Imljb24tdnMtZmciIGQ9Ik00IDE0SDJWNGg3djNINHY3em0xMCAwSDV2LTRoOXY0eiIgaWQ9Imljb25GZyIgc3R5bGU9ImRpc3BsYXk6IG5vbmU7Ii8+PHBhdGggY2xhc3M9Imljb24tdnMtYmciIGQ9Ik0xMCA3VjFIMXYxNGgxNFY3aC01em0tNiA3SDJWNGg3djNINHY3em0xMCAwSDV2LTRoOXY0eiIgaWQ9Imljb25CZyIvPjwvc3ZnPg==") !important;
+}

@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -72,6 +75,7 @@ var ViewLineOptions = /** @class */ (function () {
         this.spaceWidth = config.editor.fontInfo.spaceWidth;
         this.useMonospaceOptimizations = (config.editor.fontInfo.isMonospace
             && !config.editor.viewInfo.disableMonospaceOptimizations);
+        this.canUseHalfwidthRightwardsArrow = config.editor.fontInfo.canUseHalfwidthRightwardsArrow;
         this.lineHeight = config.editor.lineHeight;
         this.stopRenderingLineAfter = config.editor.viewInfo.stopRenderingLineAfter;
         this.fontLigatures = config.editor.viewInfo.fontLigatures;
@@ -82,6 +86,7 @@ var ViewLineOptions = /** @class */ (function () {
             && this.renderControlCharacters === other.renderControlCharacters
             && this.spaceWidth === other.spaceWidth
             && this.useMonospaceOptimizations === other.useMonospaceOptimizations
+            && this.canUseHalfwidthRightwardsArrow === other.canUseHalfwidthRightwardsArrow
             && this.lineHeight === other.lineHeight
             && this.stopRenderingLineAfter === other.stopRenderingLineAfter
             && this.fontLigatures === other.fontLigatures);
@@ -154,7 +159,7 @@ var ViewLine = /** @class */ (function () {
                 }
             }
         }
-        var renderLineInput = new RenderLineInput(options.useMonospaceOptimizations, lineData.content, lineData.continuesWithWrappedLine, lineData.isBasicASCII, lineData.containsRTL, lineData.minColumn - 1, lineData.tokens, actualInlineDecorations, lineData.tabSize, options.spaceWidth, options.stopRenderingLineAfter, options.renderWhitespace, options.renderControlCharacters, options.fontLigatures);
+        var renderLineInput = new RenderLineInput(options.useMonospaceOptimizations, options.canUseHalfwidthRightwardsArrow, lineData.content, lineData.continuesWithWrappedLine, lineData.isBasicASCII, lineData.containsRTL, lineData.minColumn - 1, lineData.tokens, actualInlineDecorations, lineData.tabSize, options.spaceWidth, options.stopRenderingLineAfter, options.renderWhitespace, options.renderControlCharacters, options.fontLigatures);
         if (this._renderedViewLine && this._renderedViewLine.input.equals(renderLineInput)) {
             // no need to do anything, we have the same render input
             return false;
@@ -433,17 +438,16 @@ var WebKitRenderedViewLine = /** @class */ (function (_super) {
         }
         // WebKit is buggy and returns an expanded range (to contain words in some cases)
         // The last client rect is enlarged (I think)
-        // This is an attempt to patch things up
-        // Find position of previous column
-        var beforeEndPixelOffset = this._readPixelOffset(endColumn - 1, context);
-        // Find position of last column
-        var endPixelOffset = this._readPixelOffset(endColumn, context);
-        if (beforeEndPixelOffset !== -1 && endPixelOffset !== -1) {
-            var isLTR = (beforeEndPixelOffset <= endPixelOffset);
-            var lastRange = output[output.length - 1];
-            if (isLTR && lastRange.left < endPixelOffset) {
-                // Trim down the width of the last visible range to not go after the last column's position
-                lastRange.width = endPixelOffset - lastRange.left;
+        if (!this.input.containsRTL) {
+            // This is an attempt to patch things up
+            // Find position of last column
+            var endPixelOffset = this._readPixelOffset(endColumn, context);
+            if (endPixelOffset !== -1) {
+                var lastRange = output[output.length - 1];
+                if (lastRange.left < endPixelOffset) {
+                    // Trim down the width of the last visible range to not go after the last column's position
+                    lastRange.width = endPixelOffset - lastRange.left;
+                }
             }
         }
         return output;

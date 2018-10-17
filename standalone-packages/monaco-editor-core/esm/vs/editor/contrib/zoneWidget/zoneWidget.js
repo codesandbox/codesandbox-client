@@ -7,7 +7,7 @@ import './zoneWidget.css';
 import { dispose } from '../../../base/common/lifecycle';
 import * as objects from '../../../base/common/objects';
 import * as dom from '../../../base/browser/dom';
-import { Sash, Orientation, SashState } from '../../../base/browser/ui/sash/sash';
+import { Sash } from '../../../base/browser/ui/sash/sash';
 import { Range } from '../../common/core/range';
 import { Color, RGBA } from '../../../base/common/color';
 import { ModelDecorationOptions } from '../../common/model/textModel';
@@ -338,10 +338,10 @@ var ZoneWidget = /** @class */ (function () {
     // --- sash
     ZoneWidget.prototype._initSash = function () {
         var _this = this;
-        this._resizeSash = new Sash(this.domNode, this, { orientation: Orientation.HORIZONTAL });
+        this._resizeSash = new Sash(this.domNode, this, { orientation: 1 /* HORIZONTAL */ });
         if (!this.options.isResizeable) {
             this._resizeSash.hide();
-            this._resizeSash.state = SashState.Disabled;
+            this._resizeSash.state = 0 /* Disabled */;
         }
         var data;
         this._disposables.push(this._resizeSash.onDidStart(function (e) {

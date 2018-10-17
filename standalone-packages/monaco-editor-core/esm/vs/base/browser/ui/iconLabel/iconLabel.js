@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,8 +19,6 @@ var __extends = (this && this.__extends) || (function () {
 import './iconlabel.css';
 import * as dom from '../../dom';
 import { HighlightedLabel } from '../highlightedlabel/highlightedLabel';
-import * as paths from '../../../common/paths';
-import { getPathLabel, getBaseLabel } from '../../../common/labels';
 import { combinedDisposable, Disposable } from '../../../common/lifecycle';
 var FastLabelNode = /** @class */ (function () {
     function FastLabelNode(_element) {
@@ -157,17 +158,3 @@ var IconLabel = /** @class */ (function (_super) {
     return IconLabel;
 }(Disposable));
 export { IconLabel };
-var FileLabel = /** @class */ (function (_super) {
-    __extends(FileLabel, _super);
-    function FileLabel(container, file, provider, userHome) {
-        var _this = _super.call(this, container) || this;
-        _this.setFile(file, provider, userHome);
-        return _this;
-    }
-    FileLabel.prototype.setFile = function (file, provider, userHome) {
-        var parent = paths.dirname(file.fsPath);
-        this.setValue(getBaseLabel(file), parent && parent !== '.' ? getPathLabel(parent, userHome, provider) : '', { title: file.fsPath });
-    };
-    return FileLabel;
-}(IconLabel));
-export { FileLabel };

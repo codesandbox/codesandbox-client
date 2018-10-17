@@ -43,23 +43,24 @@ else if (typeof navigator === 'object') {
     _locale = navigator.language;
     _language = _locale;
 }
-export var Platform;
-(function (Platform) {
-    Platform[Platform["Web"] = 0] = "Web";
-    Platform[Platform["Mac"] = 1] = "Mac";
-    Platform[Platform["Linux"] = 2] = "Linux";
-    Platform[Platform["Windows"] = 3] = "Windows";
-})(Platform || (Platform = {}));
-var _platform = Platform.Web;
+export function PlatformToString(platform) {
+    switch (platform) {
+        case 0 /* Web */: return 'Web';
+        case 1 /* Mac */: return 'Mac';
+        case 2 /* Linux */: return 'Linux';
+        case 3 /* Windows */: return 'Windows';
+    }
+}
+var _platform = 0 /* Web */;
 if (_isNative) {
     if (_isMacintosh) {
-        _platform = Platform.Mac;
+        _platform = 1 /* Mac */;
     }
     else if (_isWindows) {
-        _platform = Platform.Windows;
+        _platform = 3 /* Windows */;
     }
     else if (_isLinux) {
-        _platform = Platform.Linux;
+        _platform = 2 /* Linux */;
     }
 }
 export var isWindows = _isWindows;
