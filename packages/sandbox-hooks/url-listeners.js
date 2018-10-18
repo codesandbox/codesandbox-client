@@ -17,11 +17,9 @@ let historyPosition = -1;
 let disableNextHashChange = false;
 
 function pushHistory(url, state) {
-  if (historyPosition === -1 || historyList[historyPosition].url !== url) {
-    historyPosition += 1;
-    historyList.length = historyPosition + 1;
-    historyList[historyPosition] = { url, state };
-  }
+  historyPosition += 1;
+  historyList.length = historyPosition + 1;
+  historyList[historyPosition] = { url, state };
 }
 
 function pathWithHash(location) {
