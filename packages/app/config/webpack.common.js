@@ -442,22 +442,10 @@ module.exports = {
     // Make the monaco editor work
     new CopyWebpackPlugin(
       [
-        // Our own custom version of monaco
-        {
-          from: __DEV__
-            ? '../../standalone-packages/monaco-editor/release/dev/vs'
-            : '../../standalone-packages/monaco-editor/release/min/vs',
-          to: 'public/13/vs',
-          force: true,
-        },
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
           to: 'public/vscode1/vs',
           force: true,
-        },
-        __PROD__ && {
-          from: '../../node_modules/monaco-editor/min-maps',
-          to: 'public/min-maps',
         },
         {
           from: '../../node_modules/onigasm/lib/onigasm.wasm',

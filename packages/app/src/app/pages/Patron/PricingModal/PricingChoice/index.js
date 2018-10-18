@@ -39,6 +39,7 @@ function PricingChoice({ store, signals, badge }) {
               signals.patron.priceChanged({ price: Number(event.target.value) })
             }
             value={store.patron.price}
+            min={5}
             type="number"
           />
           <Month>/month</Month>
