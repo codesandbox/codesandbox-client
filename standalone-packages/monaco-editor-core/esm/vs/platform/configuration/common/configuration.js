@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import * as objects from '../../../base/common/objects';
 import * as types from '../../../base/common/types';
-import URI from '../../../base/common/uri';
+import { URI } from '../../../base/common/uri';
 import { Registry } from '../../registry/common/platform';
 import { createDecorator } from '../../instantiation/common/instantiation';
 import { Extensions, OVERRIDE_PROPERTY_PATTERN } from './configurationRegistry';
@@ -15,14 +15,15 @@ export function isConfigurationOverrides(thing) {
         && (!thing.overrideIdentifier || typeof thing.overrideIdentifier === 'string')
         && (!thing.resource || thing.resource instanceof URI);
 }
-export var ConfigurationTarget;
-(function (ConfigurationTarget) {
-    ConfigurationTarget[ConfigurationTarget["USER"] = 1] = "USER";
-    ConfigurationTarget[ConfigurationTarget["WORKSPACE"] = 2] = "WORKSPACE";
-    ConfigurationTarget[ConfigurationTarget["WORKSPACE_FOLDER"] = 3] = "WORKSPACE_FOLDER";
-    ConfigurationTarget[ConfigurationTarget["DEFAULT"] = 4] = "DEFAULT";
-    ConfigurationTarget[ConfigurationTarget["MEMORY"] = 5] = "MEMORY";
-})(ConfigurationTarget || (ConfigurationTarget = {}));
+export function ConfigurationTargetToString(configurationTarget) {
+    switch (configurationTarget) {
+        case 1 /* USER */: return 'USER';
+        case 2 /* WORKSPACE */: return 'WORKSPACE';
+        case 3 /* WORKSPACE_FOLDER */: return 'WORKSPACE_FOLDER';
+        case 4 /* DEFAULT */: return 'DEFAULT';
+        case 5 /* MEMORY */: return 'MEMORY';
+    }
+}
 export function compare(from, to) {
     var added = to.keys.filter(function (key) { return from.keys.indexOf(key) === -1; });
     var removed = from.keys.filter(function (key) { return to.keys.indexOf(key) === -1; });

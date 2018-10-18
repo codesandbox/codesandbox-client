@@ -4,64 +4,40 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import './contextMenuHandler.css';
-import { $ } from '../../../base/browser/builder';
-import { combinedDisposable } from '../../../base/common/lifecycle';
+import { combinedDisposable, dispose } from '../../../base/common/lifecycle';
 import { StandardMouseEvent } from '../../../base/browser/mouseEvent';
 import { ActionRunner } from '../../../base/common/actions';
 import { Menu } from '../../../base/browser/ui/menu/menu';
+import { addDisposableListener, EventType } from '../../../base/browser/dom';
+import { attachMenuStyler } from '../../theme/common/styler';
+import { domEvent } from '../../../base/browser/event';
 var ContextMenuHandler = /** @class */ (function () {
-    function ContextMenuHandler(element, contextViewService, telemetryService, notificationService) {
-        var _this = this;
-        this.setContainer(element);
+    function ContextMenuHandler(element, contextViewService, telemetryService, notificationService, keybindingService, themeService) {
         this.contextViewService = contextViewService;
         this.telemetryService = telemetryService;
         this.notificationService = notificationService;
-        this.actionRunner = new ActionRunner();
-        this.menuContainerElement = null;
-        this.toDispose = [];
-        var hideViewOnRun = false;
-        this.toDispose.push(this.actionRunner.onDidBeforeRun(function (e) {
-            if (_this.telemetryService) {
-                /* __GDPR__
-                    "workbenchActionExecuted" : {
-                        "id" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-                        "from": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-                    }
-                */
-                _this.telemetryService.publicLog('workbenchActionExecuted', { id: e.action.id, from: 'contextMenu' });
-            }
-            hideViewOnRun = !!e.retainActionItem;
-            if (!hideViewOnRun) {
-                _this.contextViewService.hideContextView(false);
-            }
-        }));
-        this.toDispose.push(this.actionRunner.onDidRun(function (e) {
-            if (hideViewOnRun) {
-                _this.contextViewService.hideContextView(false);
-            }
-            hideViewOnRun = false;
-            if (e.error && _this.notificationService) {
-                _this.notificationService.error(e.error);
-            }
-        }));
+        this.keybindingService = keybindingService;
+        this.themeService = themeService;
+        this.setContainer(element);
     }
     ContextMenuHandler.prototype.setContainer = function (container) {
         var _this = this;
-        if (this.$el) {
-            this.$el.off(['click', 'mousedown']);
-            this.$el = null;
+        if (this.element) {
+            this.elementDisposable = dispose(this.elementDisposable);
+            this.element = null;
         }
         if (container) {
-            this.$el = $(container);
-            this.$el.on('mousedown', function (e) { return _this.onMouseDown(e); });
+            this.element = container;
+            this.elementDisposable = addDisposableListener(this.element, EventType.MOUSE_DOWN, function (e) { return _this.onMouseDown(e); });
         }
     };
     ContextMenuHandler.prototype.showContextMenu = function (delegate) {
         var _this = this;
-        delegate.getActions().done(function (actions) {
+        delegate.getActions().then(function (actions) {
             if (!actions.length) {
                 return; // Don't render an empty context menu
             }
+            _this.focusToReturn = document.activeElement;
             _this.contextViewService.showContextView({
                 getAnchor: function () { return delegate.getAnchor(); },
                 canRelayout: false,
@@ -71,20 +47,22 @@ var ContextMenuHandler = /** @class */ (function () {
                     if (className) {
                         container.className += ' ' + className;
                     }
+                    var menuDisposables = [];
+                    var actionRunner = delegate.actionRunner || new ActionRunner();
+                    actionRunner.onDidBeforeRun(_this.onActionRun, _this, menuDisposables);
+                    actionRunner.onDidRun(_this.onDidActionRun, _this, menuDisposables);
                     var menu = new Menu(container, actions, {
                         actionItemProvider: delegate.getActionItem,
                         context: delegate.getActionsContext ? delegate.getActionsContext() : null,
-                        actionRunner: _this.actionRunner,
-                        getKeyBinding: delegate.getKeyBinding
+                        actionRunner: actionRunner,
+                        getKeyBinding: delegate.getKeyBinding ? delegate.getKeyBinding : function (action) { return _this.keybindingService.lookupKeybinding(action.id); }
                     });
-                    var listener1 = menu.onDidCancel(function () {
-                        _this.contextViewService.hideContextView(true);
-                    });
-                    var listener2 = menu.onDidBlur(function () {
-                        _this.contextViewService.hideContextView(true);
-                    });
-                    menu.focus();
-                    return combinedDisposable([listener1, listener2, menu]);
+                    menuDisposables.push(attachMenuStyler(menu, _this.themeService));
+                    menu.onDidCancel(function () { return _this.contextViewService.hideContextView(true); }, null, menuDisposables);
+                    menu.onDidBlur(function () { return _this.contextViewService.hideContextView(true); }, null, menuDisposables);
+                    domEvent(window, EventType.BLUR)(function () { _this.contextViewService.hideContextView(true); }, null, menuDisposables);
+                    menu.focus(!!delegate.autoSelectFirstItem);
+                    return combinedDisposable(menuDisposables.concat([menu]));
                 },
                 onHide: function (didCancel) {
                     if (delegate.onHide) {
@@ -94,6 +72,27 @@ var ContextMenuHandler = /** @class */ (function () {
                 }
             });
         });
+    };
+    ContextMenuHandler.prototype.onActionRun = function (e) {
+        if (this.telemetryService) {
+            /* __GDPR__
+                "workbenchActionExecuted" : {
+                    "id" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+                    "from": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                }
+            */
+            this.telemetryService.publicLog('workbenchActionExecuted', { id: e.action.id, from: 'contextMenu' });
+        }
+        this.contextViewService.hideContextView(false);
+        // Restore focus here
+        if (this.focusToReturn) {
+            this.focusToReturn.focus();
+        }
+    };
+    ContextMenuHandler.prototype.onDidActionRun = function (e) {
+        if (e.error && this.notificationService) {
+            this.notificationService.error(e.error);
+        }
     };
     ContextMenuHandler.prototype.onMouseDown = function (e) {
         if (!this.menuContainerElement) {

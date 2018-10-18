@@ -1,7 +1,7 @@
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
-import { closeTabByIndex } from '../../actions';
+import { closeTabByIndex, callVSCodeCallback } from '../../actions';
 import { renameModule } from '../files/sequences';
 import {
   sendModuleSaved,
@@ -53,24 +53,35 @@ export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
 
+export const clearCurrentModule = [
+  set(state`editor.currentModuleShortid`, null),
+];
+
 export const changeCurrentModule = [
   track('Open File', {}),
   setReceivingStatus,
-  setCurrentModule(props`id`),
-  equals(state`live.isLive`),
+  actions.getIdFromModulePath,
+  when(props`id`),
   {
     true: [
-      equals(state`live.isCurrentEditor`),
+      setCurrentModule(props`id`),
+      equals(state`live.isLive`),
       {
         true: [
-          getSelectionsForCurrentModule,
-          set(state`editor.pendingUserSelections`, props`selections`),
-          sendChangeCurrentModule,
+          equals(state`live.isCurrentEditor`),
+          {
+            true: [
+              getSelectionsForCurrentModule,
+              set(state`editor.pendingUserSelections`, props`selections`),
+              sendChangeCurrentModule,
+            ],
+            false: [],
+          },
         ],
         false: [],
       },
     ],
-    false: [],
+    false: [clearCurrentModule],
   },
 ];
 
@@ -179,13 +190,21 @@ export const prettifyCode = [
 export const saveCode = [
   track('Save Code', {}),
   ensureOwnedEditable,
-  when(state`preferences.settings.prettifyOnSaveEnabled`),
+  when(state`preferences.settings.experimentVSCode`),
   {
-    true: [prettifyCode],
-    false: [],
+    true: [changeCode],
+    false: [
+      when(state`preferences.settings.prettifyOnSaveEnabled`),
+      {
+        true: [prettifyCode],
+        false: [],
+      },
+    ],
   },
+
   actions.saveModuleCode,
   actions.setModuleSaved,
+  callVSCodeCallback,
   when(state`editor.currentSandbox.originalGit`),
   {
     true: [
@@ -273,6 +292,13 @@ export const handlePreviewAction = [
 ];
 
 export const setPreviewBounds = [actions.setPreviewBounds];
+export const togglePreview = [
+  when(state`editor.previewWindow.content`),
+  {
+    true: [set(state`editor.previewWindow.content`, undefined)],
+    false: [set(state`editor.previewWindow.content`, 'browser')],
+  },
+];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),

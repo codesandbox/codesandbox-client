@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { createDecorator } from '../../instantiation/common/instantiation';
+import { toDisposable } from '../../../base/common/lifecycle';
 import * as platform from '../../registry/common/platform';
 import { Emitter } from '../../../base/common/event';
 export var IThemeService = createDecorator('themeService');
@@ -37,12 +38,10 @@ var ThemingRegistry = /** @class */ (function () {
         var _this = this;
         this.themingParticipants.push(participant);
         this.onThemingParticipantAddedEmitter.fire(participant);
-        return {
-            dispose: function () {
-                var idx = _this.themingParticipants.indexOf(participant);
-                _this.themingParticipants.splice(idx, 1);
-            }
-        };
+        return toDisposable(function () {
+            var idx = _this.themingParticipants.indexOf(participant);
+            _this.themingParticipants.splice(idx, 1);
+        });
     };
     Object.defineProperty(ThemingRegistry.prototype, "onThemingParticipantAdded", {
         get: function () {

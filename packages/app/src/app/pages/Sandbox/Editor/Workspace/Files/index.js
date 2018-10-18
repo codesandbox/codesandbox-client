@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import { getModulePath } from 'common/sandbox/modules';
 
 import DirectoryEntry from './DirectoryEntry/index';
 import WorkspaceItem from '../WorkspaceItem';
@@ -20,6 +21,15 @@ class Files extends React.Component {
   uploadFile = () => {
     // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
     this.directory.onUploadFileClick();
+  };
+
+  getModulePath = (moduleId: string) => {
+    try {
+      const sandbox = this.props.store.editor.currentSandbox;
+      return getModulePath(sandbox.modules, sandbox.directories, moduleId);
+    } catch (e) {
+      return '';
+    }
   };
 
   render() {
@@ -50,6 +60,7 @@ class Files extends React.Component {
           innerRef={el => {
             this.directory = el;
           }}
+          getModulePath={this.getModulePath}
           title={sandbox.title || 'Project'}
           depth={-1}
           id={null}

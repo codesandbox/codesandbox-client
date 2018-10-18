@@ -16,6 +16,15 @@ export function whenModuleIsSelected({ state, props, path }) {
     : path.false();
 }
 
+export function denormalizeModules({ state, props }) {
+  const { files } = props;
+  const sandbox = state.get('editor.currentSandbox');
+
+  const { modules, directories } = denormalize(files, sandbox.directories);
+
+  return { modules, directories };
+}
+
 export function massCreateModules({ state, props, api, path }) {
   const { directories, modules, directoryShortid } = props;
   const sandboxId = state.get('editor.currentId');
@@ -522,7 +531,9 @@ export function setDefaultNewCode({ state, props }) {
   ) {
     let code = '';
 
-    if (config.generateFileFromState) {
+    if (props.code) {
+      code = props.code;
+    } else if (config.generateFileFromState) {
       code = config.generateFileFromState(state);
     } else if (config.generateFileFromSandbox) {
       code = config.generateFileFromSandbox(sandbox);

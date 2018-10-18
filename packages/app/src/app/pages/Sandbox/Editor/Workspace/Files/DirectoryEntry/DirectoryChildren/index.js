@@ -22,6 +22,7 @@ class DirectoryChildren extends React.Component {
       markTabsNotDirty,
       store,
       discardModuleChanges,
+      getModulePath,
     } = this.props;
 
     const {
@@ -60,6 +61,7 @@ class DirectoryChildren extends React.Component {
               markTabsNotDirty={markTabsNotDirty}
               errors={errors}
               corrections={corrections}
+              getModulePath={getModulePath}
             />
           ))}
         {sortBy(
@@ -75,6 +77,7 @@ class DirectoryChildren extends React.Component {
             renameModule={renameModule}
             deleteEntry={deleteEntry}
             discardModuleChanges={discardModuleChanges}
+            getModulePath={getModulePath}
           />
         ))}
       </div>

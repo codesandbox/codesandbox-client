@@ -8,14 +8,15 @@ import htmlGrammar from '!raw-loader!./tmGrammars/html.json.tmLanguage';
 import tsGrammar from '!raw-loader!./tmGrammars/TypeScriptReact.tmLanguage';
 /* eslint-enable */
 
-let wasmLoaded = false;
+let grammarsLoaded = false;
 
 export async function liftOff(monaco) {
-  if (!wasmLoaded) {
-    // eslint-disable-next-line global-require
-    await loadWASM('/public/onigasm/2.2.1/onigasm.wasm'); // See https://www.npmjs.com/package/onigasm#light-it-up
-    wasmLoaded = true;
+  if (grammarsLoaded) {
+    return;
   }
+  grammarsLoaded = true;
+  // eslint-disable-next-line global-require
+  await loadWASM('/public/onigasm/2.2.1/onigasm.wasm'); // See https://www.npmjs.com/package/onigasm#light-it-up
 
   const registry = new Registry({
     getGrammarDefinition: async scopeName => {
@@ -44,7 +45,7 @@ export async function liftOff(monaco) {
   grammars.set('html', 'text.html.basic');
   grammars.set('vue', 'text.html.basic');
   grammars.set('typescript', 'source.tsx');
-  grammars.set('javascript', 'source.tsx');
+  grammars.set('javascript', 'source.js');
 
   await wireTmGrammars(monaco, registry, grammars);
 }

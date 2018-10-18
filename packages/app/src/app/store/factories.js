@@ -101,12 +101,12 @@ export function updateSandboxUrl(sandbox) {
   };
 }
 
-const shouldShowThemingOption = when(state`isLoggedIn`, () => {
-  if (document.cookie.includes('theming-seen=1')) {
+const shouldShowVSCodeOption = when(state`isLoggedIn`, () => {
+  if (document.cookie.includes('vscode-seen=1')) {
     return false;
   }
 
-  document.cookie = 'theming-seen=1; Path=/;';
+  document.cookie = 'vscode-seen=1; Path=/;';
 
   return true;
 });
@@ -124,11 +124,11 @@ export function withLoadApp(continueSequence) {
         actions.setKeybindings,
         actions.startKeybindings,
 
-        shouldShowThemingOption,
+        shouldShowVSCodeOption,
         {
           true: [
             addNotification(
-              'You can now use your VSCode theme on CodeSandbox! Check it out in your preferences.',
+              'You can now open VSCode directly in CodeSandbox, enable it in Preferences under experiments!',
               'notice',
               60 // a minute
             ),

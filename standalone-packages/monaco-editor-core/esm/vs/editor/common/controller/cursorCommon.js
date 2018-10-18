@@ -10,6 +10,9 @@ import { Selection } from '../core/selection';
 import { Range } from '../core/range';
 import { LanguageConfigurationRegistry } from '../modes/languageConfigurationRegistry';
 import { onUnexpectedError } from '../../../base/common/errors';
+var autoCloseAlways = function (_) { return true; };
+var autoCloseNever = function (_) { return false; };
+var autoCloseBeforeWhitespace = function (chr) { return (chr === ' ' || chr === '\t'); };
 var CursorConfiguration = /** @class */ (function () {
     function CursorConfiguration(languageIdentifier, oneIndent, modelOptions, configuration) {
         this._languageIdentifier = languageIdentifier;
@@ -23,13 +26,20 @@ var CursorConfiguration = /** @class */ (function () {
         this.useTabStops = c.useTabStops;
         this.wordSeparators = c.wordSeparators;
         this.emptySelectionClipboard = c.emptySelectionClipboard;
+        this.copyWithSyntaxHighlighting = c.copyWithSyntaxHighlighting;
         this.multiCursorMergeOverlapping = c.multiCursorMergeOverlapping;
         this.autoClosingBrackets = c.autoClosingBrackets;
+        this.autoClosingQuotes = c.autoClosingQuotes;
+        this.autoSurround = c.autoSurround;
         this.autoIndent = c.autoIndent;
         this.autoClosingPairsOpen = {};
         this.autoClosingPairsClose = {};
         this.surroundingPairs = {};
         this._electricChars = null;
+        this.shouldAutoCloseBefore = {
+            quote: CursorConfiguration._getShouldAutoClose(languageIdentifier, this.autoClosingQuotes),
+            bracket: CursorConfiguration._getShouldAutoClose(languageIdentifier, this.autoClosingBrackets)
+        };
         var autoClosingPairs = CursorConfiguration._getAutoClosingPairs(languageIdentifier);
         if (autoClosingPairs) {
             for (var i = 0; i < autoClosingPairs.length; i++) {
@@ -50,6 +60,8 @@ var CursorConfiguration = /** @class */ (function () {
             || e.emptySelectionClipboard
             || e.multiCursorMergeOverlapping
             || e.autoClosingBrackets
+            || e.autoClosingQuotes
+            || e.autoSurround
             || e.useTabStops
             || e.lineHeight
             || e.readOnly);
@@ -89,6 +101,28 @@ var CursorConfiguration = /** @class */ (function () {
         catch (e) {
             onUnexpectedError(e);
             return null;
+        }
+    };
+    CursorConfiguration._getShouldAutoClose = function (languageIdentifier, autoCloseConfig) {
+        switch (autoCloseConfig) {
+            case 'beforeWhitespace':
+                return autoCloseBeforeWhitespace;
+            case 'languageDefined':
+                return CursorConfiguration._getLanguageDefinedShouldAutoClose(languageIdentifier);
+            case 'always':
+                return autoCloseAlways;
+            case 'never':
+                return autoCloseNever;
+        }
+    };
+    CursorConfiguration._getLanguageDefinedShouldAutoClose = function (languageIdentifier) {
+        try {
+            var autoCloseBeforeSet_1 = LanguageConfigurationRegistry.getAutoCloseBeforeSet(languageIdentifier.id);
+            return function (c) { return autoCloseBeforeSet_1.indexOf(c) !== -1; };
+        }
+        catch (e) {
+            onUnexpectedError(e);
+            return autoCloseNever;
         }
     };
     CursorConfiguration._getSurroundingPairs = function (languageIdentifier) {
@@ -351,3 +385,6 @@ var CursorColumns = /** @class */ (function () {
     return CursorColumns;
 }());
 export { CursorColumns };
+export function isQuote(ch) {
+    return (ch === '\'' || ch === '"' || ch === '`');
+}

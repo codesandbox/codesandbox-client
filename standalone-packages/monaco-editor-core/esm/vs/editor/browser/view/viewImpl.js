@@ -4,9 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,7 +19,7 @@ var __extends = (this && this.__extends) || (function () {
 import { onUnexpectedError } from '../../../base/common/errors';
 import * as dom from '../../../base/browser/dom';
 import { createFastDomNode } from '../../../base/browser/fastDomNode';
-import { Range } from '../../common/core/range';
+import { Position } from '../../common/core/position';
 import { ViewEventHandler } from '../../common/viewModel/viewEventHandler';
 import { TextAreaHandler } from '../controller/textAreaHandler';
 import { PointerHandler } from '../controller/pointerHandler';
@@ -184,11 +187,7 @@ var View = /** @class */ (function (_super) {
             },
             visibleRangeForPosition2: function (lineNumber, column) {
                 _this._flushAccumulatedAndRenderNow();
-                var visibleRanges = _this.viewLines.visibleRangesForRange2(new Range(lineNumber, column, lineNumber, column));
-                if (!visibleRanges) {
-                    return null;
-                }
-                return visibleRanges[0];
+                return _this.viewLines.visibleRangeForPosition(new Position(lineNumber, column));
             },
             getLineWidth: function (lineNumber) {
                 _this._flushAccumulatedAndRenderNow();
@@ -201,11 +200,7 @@ var View = /** @class */ (function (_super) {
         return {
             visibleRangeForPositionRelativeToEditor: function (lineNumber, column) {
                 _this._flushAccumulatedAndRenderNow();
-                var visibleRanges = _this.viewLines.visibleRangesForRange2(new Range(lineNumber, column, lineNumber, column));
-                if (!visibleRanges) {
-                    return null;
-                }
-                return visibleRanges[0];
+                return _this.viewLines.visibleRangeForPosition(new Position(lineNumber, column));
             }
         };
     };
@@ -347,11 +342,11 @@ var View = /** @class */ (function (_super) {
         });
         var viewPosition = this._context.model.coordinatesConverter.convertModelPositionToViewPosition(modelPosition);
         this._flushAccumulatedAndRenderNow();
-        var visibleRanges = this.viewLines.visibleRangesForRange2(new Range(viewPosition.lineNumber, viewPosition.column, viewPosition.lineNumber, viewPosition.column));
-        if (!visibleRanges) {
+        var visibleRange = this.viewLines.visibleRangeForPosition(new Position(viewPosition.lineNumber, viewPosition.column));
+        if (!visibleRange) {
             return -1;
         }
-        return visibleRanges[0].left;
+        return visibleRange.left;
     };
     View.prototype.getTargetAtClientPoint = function (clientX, clientY) {
         return this.pointerHandler.getTargetAtClientPoint(clientX, clientY);
@@ -424,8 +419,9 @@ var View = /** @class */ (function (_super) {
     };
     View.prototype.layoutContentWidget = function (widgetData) {
         var newPosition = widgetData.position ? widgetData.position.position : null;
+        var newRange = widgetData.position ? widgetData.position.range : null;
         var newPreference = widgetData.position ? widgetData.position.preference : null;
-        this.contentWidgets.setWidgetPosition(widgetData.widget, newPosition, newPreference);
+        this.contentWidgets.setWidgetPosition(widgetData.widget, newPosition, newRange, newPreference);
         this._scheduleRender();
     };
     View.prototype.removeContentWidget = function (widgetData) {

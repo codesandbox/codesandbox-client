@@ -58,21 +58,24 @@ export function memoize(target, key, descriptor) {
 export function debounce(delay, reducer, initialValueProvider) {
     return createDecorator(function (fn, key) {
         var timerKey = "$debounce$" + key;
-        var result = initialValueProvider ? initialValueProvider() : void 0;
+        var resultKey = "$debounce$result$" + key;
         return function () {
             var _this = this;
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
+            if (!this[resultKey]) {
+                this[resultKey] = initialValueProvider ? initialValueProvider() : void 0;
+            }
             clearTimeout(this[timerKey]);
             if (reducer) {
-                result = reducer.apply(void 0, [result].concat(args));
-                args = [result];
+                this[resultKey] = reducer.apply(void 0, [this[resultKey]].concat(args));
+                args = [this[resultKey]];
             }
             this[timerKey] = setTimeout(function () {
                 fn.apply(_this, args);
-                result = initialValueProvider ? initialValueProvider() : void 0;
+                _this[resultKey] = initialValueProvider ? initialValueProvider() : void 0;
             }, delay);
         };
     });

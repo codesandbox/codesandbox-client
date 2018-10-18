@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+import { isObject } from '../../base/common/types';
 import LanguageFeatureRegistry from './modes/languageFeatureRegistry';
 import { TokenizationRegistryImpl } from './modes/tokenizationRegistry';
-import { isObject } from '../../base/common/types';
 /**
  * @internal
  */
@@ -72,22 +72,90 @@ var TokenMetadata = /** @class */ (function () {
 }());
 export { TokenMetadata };
 /**
- * How a suggest provider was triggered.
+ * @internal
  */
-export var SuggestTriggerKind;
-(function (SuggestTriggerKind) {
-    SuggestTriggerKind[SuggestTriggerKind["Invoke"] = 0] = "Invoke";
-    SuggestTriggerKind[SuggestTriggerKind["TriggerCharacter"] = 1] = "TriggerCharacter";
-    SuggestTriggerKind[SuggestTriggerKind["TriggerForIncompleteCompletions"] = 2] = "TriggerForIncompleteCompletions";
-})(SuggestTriggerKind || (SuggestTriggerKind = {}));
+export var completionKindToCssClass = (function () {
+    var data = Object.create(null);
+    data[0 /* Method */] = 'method';
+    data[1 /* Function */] = 'function';
+    data[2 /* Constructor */] = 'constructor';
+    data[3 /* Field */] = 'field';
+    data[4 /* Variable */] = 'variable';
+    data[5 /* Class */] = 'class';
+    data[6 /* Struct */] = 'struct';
+    data[7 /* Interface */] = 'interface';
+    data[8 /* Module */] = 'module';
+    data[9 /* Property */] = 'property';
+    data[10 /* Event */] = 'event';
+    data[11 /* Operator */] = 'operator';
+    data[12 /* Unit */] = 'unit';
+    data[13 /* Value */] = 'value';
+    data[14 /* Constant */] = 'constant';
+    data[15 /* Enum */] = 'enum';
+    data[16 /* EnumMember */] = 'enum-member';
+    data[17 /* Keyword */] = 'keyword';
+    data[18 /* Snippet */] = 'snippet';
+    data[19 /* Text */] = 'text';
+    data[20 /* Color */] = 'color';
+    data[21 /* File */] = 'file';
+    data[22 /* Reference */] = 'reference';
+    data[23 /* Customcolor */] = 'customcolor';
+    data[24 /* Folder */] = 'folder';
+    data[25 /* TypeParameter */] = 'type-parameter';
+    return function (kind) {
+        return data[kind] || 'property';
+    };
+})();
 /**
  * @internal
  */
-export var CodeActionTrigger;
-(function (CodeActionTrigger) {
-    CodeActionTrigger[CodeActionTrigger["Automatic"] = 1] = "Automatic";
-    CodeActionTrigger[CodeActionTrigger["Manual"] = 2] = "Manual";
-})(CodeActionTrigger || (CodeActionTrigger = {}));
+export var completionKindFromLegacyString = (function () {
+    var data = Object.create(null);
+    data['method'] = 0 /* Method */;
+    data['function'] = 1 /* Function */;
+    data['constructor'] = 2 /* Constructor */;
+    data['field'] = 3 /* Field */;
+    data['variable'] = 4 /* Variable */;
+    data['class'] = 5 /* Class */;
+    data['struct'] = 6 /* Struct */;
+    data['interface'] = 7 /* Interface */;
+    data['module'] = 8 /* Module */;
+    data['property'] = 9 /* Property */;
+    data['event'] = 10 /* Event */;
+    data['operator'] = 11 /* Operator */;
+    data['unit'] = 12 /* Unit */;
+    data['value'] = 13 /* Value */;
+    data['constant'] = 14 /* Constant */;
+    data['enum'] = 15 /* Enum */;
+    data['enum-member'] = 16 /* EnumMember */;
+    data['keyword'] = 17 /* Keyword */;
+    data['snippet'] = 18 /* Snippet */;
+    data['text'] = 19 /* Text */;
+    data['color'] = 20 /* Color */;
+    data['file'] = 21 /* File */;
+    data['reference'] = 22 /* Reference */;
+    data['customcolor'] = 23 /* Customcolor */;
+    data['folder'] = 24 /* Folder */;
+    data['type-parameter'] = 25 /* TypeParameter */;
+    return function (value) {
+        return data[value] || 'property';
+    };
+})();
+/**
+ * How a suggest provider was triggered.
+ */
+export var CompletionTriggerKind;
+(function (CompletionTriggerKind) {
+    CompletionTriggerKind[CompletionTriggerKind["Invoke"] = 0] = "Invoke";
+    CompletionTriggerKind[CompletionTriggerKind["TriggerCharacter"] = 1] = "TriggerCharacter";
+    CompletionTriggerKind[CompletionTriggerKind["TriggerForIncompleteCompletions"] = 2] = "TriggerForIncompleteCompletions";
+})(CompletionTriggerKind || (CompletionTriggerKind = {}));
+export var SignatureHelpTriggerReason;
+(function (SignatureHelpTriggerReason) {
+    SignatureHelpTriggerReason[SignatureHelpTriggerReason["Invoke"] = 1] = "Invoke";
+    SignatureHelpTriggerReason[SignatureHelpTriggerReason["TriggerCharacter"] = 2] = "TriggerCharacter";
+    SignatureHelpTriggerReason[SignatureHelpTriggerReason["Retrigger"] = 3] = "Retrigger";
+})(SignatureHelpTriggerReason || (SignatureHelpTriggerReason = {}));
 /**
  * A document highlight kind.
  */
@@ -170,7 +238,7 @@ export var symbolKindToCssClass = (function () {
     _fromMapping[SymbolKind.Operator] = 'operator';
     _fromMapping[SymbolKind.TypeParameter] = 'type-parameter';
     return function toCssClassName(kind) {
-        return _fromMapping[kind] || 'property';
+        return "symbol-icon " + (_fromMapping[kind] || 'property');
     };
 })();
 var FoldingRangeKind = /** @class */ (function () {
@@ -210,6 +278,9 @@ export function isResourceFileEdit(thing) {
 export function isResourceTextEdit(thing) {
     return isObject(thing) && thing.resource && Array.isArray(thing.edits);
 }
+/**
+ * @internal
+ */
 export var CommentThreadCollapsibleState;
 (function (CommentThreadCollapsibleState) {
     /**
@@ -233,7 +304,7 @@ export var RenameProviderRegistry = new LanguageFeatureRegistry();
 /**
  * @internal
  */
-export var SuggestRegistry = new LanguageFeatureRegistry();
+export var CompletionProviderRegistry = new LanguageFeatureRegistry();
 /**
  * @internal
  */

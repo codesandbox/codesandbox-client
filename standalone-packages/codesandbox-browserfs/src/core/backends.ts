@@ -7,15 +7,16 @@ import AsyncMirror from '../backend/AsyncMirror';
 // import FolderAdapter from '../backend/FolderAdapter';
 // import HTML5FS from '../backend/HTML5FS';
 import InMemory from '../backend/InMemory';
-// import IndexedDB from '../backend/IndexedDB';
-// import LocalStorage from '../backend/LocalStorage';
-// import MountableFileSystem from '../backend/MountableFileSystem';
+import IndexedDB from '../backend/IndexedDB';
+import LocalStorage from '../backend/LocalStorage';
+import MountableFileSystem from '../backend/MountableFileSystem';
 // import OverlayFS from '../backend/OverlayFS';
 import WorkerFS from '../backend/WorkerFS';
 // import HTTPRequest from '../backend/HTTPRequest';
-// import ZipFS from '../backend/ZipFS';
+import ZipFS from '../backend/ZipFS';
 // import IsoFS from '../backend/IsoFS';
 import CodeSandboxFS from '../backend/CodeSandboxFS';
+import CodeSandboxEditorFS from '../backend/CodeSandboxEditorFS';
 
 // Monkey-patch `Create` functions to check options before file system initialization.
 [
@@ -25,15 +26,16 @@ import CodeSandboxFS from '../backend/CodeSandboxFS';
   // FolderAdapter,
   // HTML5FS,
   InMemory,
-  // IndexedDB,
+  IndexedDB,
   // IsoFS,
-  // LocalStorage,
-  // MountableFileSystem,
+  LocalStorage,
+  MountableFileSystem,
   // OverlayFS,
   WorkerFS,
   // HTTPRequest,
-  // ZipFS,
+  ZipFS,
   CodeSandboxFS,
+  CodeSandboxEditorFS,
 ].forEach((fsType: FileSystemConstructor) => {
   const create = fsType.Create;
   fsType.Create = function(opts?: any, cb?: BFSCallback<FileSystem>): void {
@@ -63,16 +65,17 @@ const Backends = {
   // FolderAdapter,
   // HTML5FS,
   InMemory,
-  // IndexedDB,
+  IndexedDB,
   // IsoFS,
-  // LocalStorage,
-  // MountableFileSystem,
+  LocalStorage,
+  MountableFileSystem,
   // OverlayFS,
   WorkerFS,
   // HTTPRequest,
   // XmlHttpRequest: HTTPRequest,
-  // ZipFS,
+  ZipFS,
   CodeSandboxFS,
+  CodeSandboxEditorFS,
 };
 // Make sure all backends cast to FileSystemConstructor (for type checking)
 const _: { [name: string]: FileSystemConstructor } = Backends;

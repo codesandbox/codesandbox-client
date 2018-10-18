@@ -4,25 +4,31 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 import { illegalArgument } from '../../base/common/errors';
-import URI from '../../base/common/uri';
+import { URI } from '../../base/common/uri';
 import { CommandsRegistry } from '../../platform/commands/common/commands';
 import { KeybindingsRegistry } from '../../platform/keybinding/common/keybindingsRegistry';
 import { Registry } from '../../platform/registry/common/platform';
@@ -37,33 +43,52 @@ var Command = /** @class */ (function () {
         this.id = opts.id;
         this.precondition = opts.precondition;
         this._kbOpts = opts.kbOpts;
+        this._menubarOpts = opts.menubarOpts;
         this._description = opts.description;
     }
-    Command.prototype.toCommandAndKeybindingRule = function (defaultWeight) {
+    Command.prototype.register = function () {
         var _this = this;
-        var kbOpts = this._kbOpts || { primary: 0 };
-        var kbWhen = kbOpts.kbExpr;
-        if (this.precondition) {
-            if (kbWhen) {
-                kbWhen = ContextKeyExpr.and(kbWhen, this.precondition);
-            }
-            else {
-                kbWhen = this.precondition;
-            }
+        if (this._menubarOpts) {
+            MenuRegistry.appendMenuItem(this._menubarOpts.menuId, {
+                group: this._menubarOpts.group,
+                command: {
+                    id: this.id,
+                    title: this._menubarOpts.title,
+                },
+                when: this._menubarOpts.when,
+                order: this._menubarOpts.order
+            });
         }
-        var weight = (typeof kbOpts.weight === 'number' ? kbOpts.weight : defaultWeight);
-        return {
-            id: this.id,
-            handler: function (accessor, args) { return _this.runCommand(accessor, args); },
-            weight: weight,
-            when: kbWhen,
-            primary: kbOpts.primary,
-            secondary: kbOpts.secondary,
-            win: kbOpts.win,
-            linux: kbOpts.linux,
-            mac: kbOpts.mac,
-            description: this._description
-        };
+        if (this._kbOpts) {
+            var kbWhen = this._kbOpts.kbExpr;
+            if (this.precondition) {
+                if (kbWhen) {
+                    kbWhen = ContextKeyExpr.and(kbWhen, this.precondition);
+                }
+                else {
+                    kbWhen = this.precondition;
+                }
+            }
+            KeybindingsRegistry.registerCommandAndKeybindingRule({
+                id: this.id,
+                handler: function (accessor, args) { return _this.runCommand(accessor, args); },
+                weight: this._kbOpts.weight,
+                when: kbWhen,
+                primary: this._kbOpts.primary,
+                secondary: this._kbOpts.secondary,
+                win: this._kbOpts.win,
+                linux: this._kbOpts.linux,
+                mac: this._kbOpts.mac,
+                description: this._description
+            });
+        }
+        else {
+            CommandsRegistry.registerCommand({
+                id: this.id,
+                handler: function (accessor, args) { return _this.runCommand(accessor, args); },
+                description: this._description
+            });
+        }
     };
     return Command;
 }());
@@ -123,19 +148,19 @@ var EditorAction = /** @class */ (function (_super) {
         _this.menuOpts = opts.menuOpts;
         return _this;
     }
-    EditorAction.prototype.toMenuItem = function () {
-        if (!this.menuOpts) {
-            return null;
+    EditorAction.prototype.register = function () {
+        if (this.menuOpts) {
+            MenuRegistry.appendMenuItem(MenuId.EditorContext, {
+                command: {
+                    id: this.id,
+                    title: this.label
+                },
+                when: ContextKeyExpr.and(this.precondition, this.menuOpts.when),
+                group: this.menuOpts.group,
+                order: this.menuOpts.order
+            });
         }
-        return {
-            command: {
-                id: this.id,
-                title: this.label
-            },
-            when: ContextKeyExpr.and(this.precondition, this.menuOpts.when),
-            group: this.menuOpts.group,
-            order: this.menuOpts.order
-        };
+        _super.prototype.register.call(this);
     };
     EditorAction.prototype.runEditorCommand = function (accessor, editor, args) {
         this.reportTelemetry(accessor, editor);
@@ -220,11 +245,7 @@ var EditorContributionRegistry = /** @class */ (function () {
         this.editorContributions.push(ctor);
     };
     EditorContributionRegistry.prototype.registerEditorAction = function (action) {
-        var menuItem = action.toMenuItem();
-        if (menuItem) {
-            MenuRegistry.appendMenuItem(MenuId.EditorContext, menuItem);
-        }
-        KeybindingsRegistry.registerCommandAndKeybindingRule(action.toCommandAndKeybindingRule(KeybindingsRegistry.WEIGHT.editorContrib()));
+        action.register();
         this.editorActions.push(action);
     };
     EditorContributionRegistry.prototype.getEditorContributions = function () {
@@ -234,7 +255,7 @@ var EditorContributionRegistry = /** @class */ (function () {
         return this.editorActions.slice(0);
     };
     EditorContributionRegistry.prototype.registerEditorCommand = function (editorCommand) {
-        KeybindingsRegistry.registerCommandAndKeybindingRule(editorCommand.toCommandAndKeybindingRule(KeybindingsRegistry.WEIGHT.editorContrib()));
+        editorCommand.register();
         this.editorCommands[editorCommand.id] = editorCommand;
     };
     EditorContributionRegistry.prototype.getEditorCommand = function (commandId) {
