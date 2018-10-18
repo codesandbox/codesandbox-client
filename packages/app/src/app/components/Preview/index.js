@@ -567,7 +567,6 @@ class BasePreview extends React.Component<Props, State> {
 
   commitUrl = (url: string, action: string, diff: number) => {
     const { history, historyPosition } = this.state;
-
     switch (action) {
       case 'POP':
         this.setState(prevState => {
@@ -590,7 +589,7 @@ class BasePreview extends React.Component<Props, State> {
         break;
       default:
         this.setState({
-          history: [...history, url],
+          history: [...history.slice(0, historyPosition + 1), url],
           historyPosition: historyPosition + 1,
           urlInAddressBar: url,
         });
