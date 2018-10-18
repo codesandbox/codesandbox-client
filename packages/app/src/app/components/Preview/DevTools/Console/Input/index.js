@@ -96,7 +96,7 @@ const monacoOptions = {
   },
   contextmenu: false,
   ariaLabel: 'ConsoleInput',
-  fontFamily: 'Menlo, monospace',
+  fontFamily: 'dm, Menlo, monospace',
   fontSize: 13,
 };
 

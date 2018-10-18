@@ -15,6 +15,8 @@ export type EditorAPI = {
   editorService: any,
 };
 
+const fontPromise = new FontFaceObserver('dm').load().catch(() => {});
+
 class MonacoEditor extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -48,7 +50,7 @@ class MonacoEditor extends React.PureComponent {
   };
 
   initMonaco = () => {
-    const { theme, options, diffEditor = false } = this.props;
+    const { theme, diffEditor = false } = this.props;
     const context = this.props.context || window;
     if (this.containerElement && typeof context.monaco !== 'undefined') {
       // Before initializing monaco editor
@@ -58,31 +60,6 @@ class MonacoEditor extends React.PureComponent {
         openModel: model => this.props.openReference(model),
       };
 
-      const appliedOptions = { ...options };
-
-      const fonts = appliedOptions.fontFamily.split(',').map(x => x.trim());
-      // We first just set the default fonts for the editor. When the custom font has loaded
-      // we set that one so that Monaco doesn't get confused.
-      // https://github.com/Microsoft/monaco-editor/issues/392
-      let firstFont = fonts[0];
-      if (firstFont.startsWith('"')) {
-        // Font is eg. '"aaaa"'
-        firstFont = JSON.parse(firstFont);
-      }
-      const font = new FontFaceObserver(firstFont);
-
-      font.load().then(
-        () => {
-          if (this.editor && this.props.getEditorOptions) {
-            this.editor.updateOptions(this.props.getEditorOptions());
-          }
-        },
-        () => {
-          // Font was not loaded in 3s, do nothing
-        }
-      );
-
-      appliedOptions.fontFamily = fonts.slice(1).join(', ');
       const r = context.require;
 
       const [
@@ -112,7 +89,7 @@ class MonacoEditor extends React.PureComponent {
 
       context.monaco.editor[diffEditor ? 'createDiffEditor' : 'create'](
         container,
-        appliedOptions,
+        {},
         {
           codesandboxService: i =>
             i.createInstance(CodeSandboxService, controller),
@@ -144,8 +121,10 @@ class MonacoEditor extends React.PureComponent {
 
           const editorApi = {
             openFile(path: string) {
-              return codeEditorService.openCodeEditor({
-                resource: context.monaco.Uri.file('/sandbox' + path),
+              fontPromise.then(() => {
+                codeEditorService.openCodeEditor({
+                  resource: context.monaco.Uri.file('/sandbox' + path),
+                });
               });
             },
             getActiveCodeEditor() {
