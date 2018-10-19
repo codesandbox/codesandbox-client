@@ -67,6 +67,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 
   private fs: any;
   private files: {[path: string]: string} = {};
+  private typesLoaded: boolean = false;
 
 	constructor(ctx: IWorkerContext, createData: ICreateData) {
 		this._ctx = ctx;
@@ -102,6 +103,20 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
   }
 
   getTypings() {
+    const ensureDirectoryExistence = (filePath, cb) => {
+      const dirname = BrowserFS.BFSRequire('path').dirname(filePath);
+      this.fs.stat(dirname, (err, exists) => {
+        if (!!exists) {
+          cb(true);
+          return;
+        }
+
+        ensureDirectoryExistence(dirname, () => {
+          this.fs.mkdir(dirname, cb);
+        });
+      });
+    }
+
     this.fs.readFile('/sandbox/package.json', (e, data) => {
       if (e) {
         return;
@@ -113,9 +128,17 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 
         fetchTypings.fetchAndAddDependencies(p.dependencies, (paths) => {
           Object.keys(paths).forEach(p => {
-            this.files['/' + p] = paths[p];
+            const pathToWrite = '/sandbox/' + p;
+            this.files[pathToWrite] = paths[p];
+
+            ensureDirectoryExistence(pathToWrite, () => {
+              this.fs.writeFile(pathToWrite, paths[p], () => {});
+            });
           })
-        })
+        }).then(() => {
+          this.typesLoaded = true;
+          this._languageService.cleanupSemanticCache();
+        });
       } catch (e) {
         return
       }
@@ -301,12 +324,20 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 	}
 
 	getSyntacticDiagnostics(fileName: string): Promise<ts.Diagnostic[]> {
+    if (!this.typesLoaded) {
+      return Promise.as([]);
+    }
+
 		const diagnostics = this._languageService.getSyntacticDiagnostics(fileName);
 		TypeScriptWorker.clearFiles(diagnostics);
 		return Promise.as(diagnostics);
 	}
 
 	getSemanticDiagnostics(fileName: string): Promise<ts.Diagnostic[]> {
+    if (!this.typesLoaded) {
+      return Promise.as([]);
+    }
+
 		const diagnostics = this._languageService.getSemanticDiagnostics(fileName);
 		TypeScriptWorker.clearFiles(diagnostics);
 		return Promise.as(diagnostics);

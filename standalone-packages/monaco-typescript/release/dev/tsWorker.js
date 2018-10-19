@@ -45,6 +45,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             this._extraLibs = Object.create(null);
             this._languageService = ts.createLanguageService(this);
             this.files = {};
+            this.typesLoaded = false;
             this._ctx = ctx;
             this._compilerOptions = createData.compilerOptions;
             this._extraLibs = createData.extraLibs;
@@ -68,6 +69,18 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         }
         TypeScriptWorker.prototype.getTypings = function () {
             var _this = this;
+            var ensureDirectoryExistence = function (filePath, cb) {
+                var dirname = BrowserFS.BFSRequire('path').dirname(filePath);
+                _this.fs.stat(dirname, function (err, exists) {
+                    if (!!exists) {
+                        cb(true);
+                        return;
+                    }
+                    ensureDirectoryExistence(dirname, function () {
+                        _this.fs.mkdir(dirname, cb);
+                    });
+                });
+            };
             this.fs.readFile('/sandbox/package.json', function (e, data) {
                 if (e) {
                     return;
@@ -77,8 +90,15 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                     var p = JSON.parse(code);
                     fetchTypings.fetchAndAddDependencies(p.dependencies, function (paths) {
                         Object.keys(paths).forEach(function (p) {
-                            _this.files['/' + p] = paths[p];
+                            var pathToWrite = '/sandbox/' + p;
+                            _this.files[pathToWrite] = paths[p];
+                            ensureDirectoryExistence(pathToWrite, function () {
+                                _this.fs.writeFile(pathToWrite, paths[p], function () { });
+                            });
                         });
+                    }).then(function () {
+                        _this.typesLoaded = true;
+                        _this._languageService.cleanupSemanticCache();
                     });
                 }
                 catch (e) {
@@ -245,11 +265,17 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             });
         };
         TypeScriptWorker.prototype.getSyntacticDiagnostics = function (fileName) {
+            if (!this.typesLoaded) {
+                return Promise.as([]);
+            }
             var diagnostics = this._languageService.getSyntacticDiagnostics(fileName);
             TypeScriptWorker.clearFiles(diagnostics);
             return Promise.as(diagnostics);
         };
         TypeScriptWorker.prototype.getSemanticDiagnostics = function (fileName) {
+            if (!this.typesLoaded) {
+                return Promise.as([]);
+            }
             var diagnostics = this._languageService.getSemanticDiagnostics(fileName);
             TypeScriptWorker.clearFiles(diagnostics);
             return Promise.as(diagnostics);

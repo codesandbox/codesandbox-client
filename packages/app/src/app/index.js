@@ -148,6 +148,9 @@ window.BrowserFS.configure(
           manager: controller,
         },
       },
+      '/sandbox/node_modules': {
+        fs: 'InMemory',
+      },
       '/vscode': {
         fs: 'LocalStorage',
       },
