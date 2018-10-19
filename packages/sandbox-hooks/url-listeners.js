@@ -17,9 +17,10 @@ let historyPosition = -1;
 let disableNextHashChange = false;
 
 function pushHistory(url, state) {
-  historyPosition += 1;
-  historyList.length = historyPosition + 1;
-  historyList[historyPosition] = { url, state };
+  // remove "future" locations
+  historyList.splice(historyPosition + 1);
+  historyList.push({ url, state });
+  historyPosition = historyList.length - 1;
 }
 
 function pathWithHash(location) {
