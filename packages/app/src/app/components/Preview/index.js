@@ -567,6 +567,7 @@ class BasePreview extends React.Component<Props, State> {
 
   commitUrl = (url: string, action: string, diff: number) => {
     const { history, historyPosition } = this.state;
+
     switch (action) {
       case 'POP':
         this.setState(prevState => {
