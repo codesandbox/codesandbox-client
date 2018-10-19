@@ -114,7 +114,6 @@ class MonacoEditor extends React.PureComponent {
           const codeEditorService = services.get(ICodeEditorService);
           const textFileService = services.get(ITextFileService);
           const editorService = services.get(IEditorService);
-
           const lifecycleService = services.get(ILifecycleService);
 
           lifecycleService.phase = 3; // Running

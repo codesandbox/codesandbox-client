@@ -85,6 +85,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   sandbox: $PropertyType<Props, 'sandbox'>;
   currentModule: $PropertyType<Props, 'currentModule'>;
+  currentTitle: string;
+  currentDirectoryShortid: ?string;
   settings: $PropertyType<Props, 'settings'>;
   dependencies: ?$PropertyType<Props, 'dependencies'>;
   tsconfig: ?$PropertyType<Props, 'tsconfig'>;
@@ -104,6 +106,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     };
     this.sandbox = props.sandbox;
     this.currentModule = props.currentModule;
+    this.currentTitle = props.currentModule.title;
+    this.currentDirectoryShortid = props.currentModule.directoryShortid;
     this.settings = props.settings;
     this.dependencies = props.dependencies;
 
@@ -171,6 +175,41 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.disposeInitializer();
     }
   }
+
+  updateModules = () => {
+    if (
+      this.currentTitle !== this.currentModule.title ||
+      this.currentDirectoryShortid !== this.currentModule.directoryShortid
+    ) {
+      const id = this.currentModule.id;
+      const title = this.currentModule.title;
+      const directoryShortid = this.currentModule.directoryShortid;
+      // Rename of current file.
+      this.currentTitle = this.currentModule.title;
+      this.currentDirectoryShortid = this.currentModule.directoryShortid;
+
+      const editor = this.editor.getActiveCodeEditor();
+      if (editor && editor.getValue() === (this.currentModule.code || '')) {
+        const model = editor.model;
+        const newPath = getModulePath(
+          this.sandbox.modules,
+          this.sandbox.directories,
+          this.currentModule.id
+        );
+        this.editor.textFileService
+          .move(model.uri, this.monaco.Uri.file(newPath))
+          .then(() => {
+            if (
+              this.currentModule.id === id &&
+              this.currentModule.title === title &&
+              this.currentModule.directoryShortid === directoryShortid
+            ) {
+              this.editor.openFile(newPath);
+            }
+          });
+      }
+    }
+  };
 
   getPrettierConfig = () => {
     try {
@@ -408,6 +447,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.swapDocuments(oldModule, newModule).then(() => {
       this.currentModule = newModule;
+      this.currentTitle = newModule.title;
+      this.currentDirectoryShortid = newModule.directoryShortid;
 
       if (errors) {
         this.setErrors(errors);
