@@ -30,7 +30,7 @@ sourced.
 - Nginx: Nginx config files
 - [Git Extractor](https://github.com/CompuIves/codesandbox-git-extractor):
   responsible for extracting the source from a GitHub repository
-- [CLI](https://github.com/CompuIves/codesandbox-cli): the CLI to upload a
+- [CLI](https://github.com/codesandbox-app/codesandbox-importers/tree/master/packages/cli): the CLI to upload a
   CodeSandbox project from your command line
 
 ## Contributors
