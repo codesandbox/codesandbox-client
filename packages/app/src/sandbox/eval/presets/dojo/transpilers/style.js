@@ -12,14 +12,19 @@ class DojoStyleTranspiler extends StyleTranspiler {
   async doTranspilation(code: string, loaderContext: LoaderContext) {
     const id = getStyleId(loaderContext._module.getId());
     const { path } = loaderContext;
-    const { code: packageJson } = loaderContext
-      .getModules()
-      .find(module => module.path === '/package.json');
+    const modules = loaderContext.getModules();
+    let result = modules.find(module => module.path === `${path}.js`);
+    if (result) {
+      return { transpiledCode: `${insertCss(id, code)}\n${result.code}` };
+    }
+    const { code: packageJson } = modules.find(
+      module => module.path === '/package.json'
+    );
     const { name: packageName } = JSON.parse(packageJson);
     const [, baseName] = /\/([^/.]*)[^/]*$/.exec(path);
     const key = `${packageName}/${baseName}`;
     const { css, exportTokens } = await getModules(code, loaderContext);
-    let result = insertCss(id, css);
+    result = insertCss(id, css);
     result += `\nmodule.exports=${JSON.stringify({
       ' _key': key,
       ...exportTokens,

@@ -16,6 +16,15 @@ export function whenModuleIsSelected({ state, props, path }) {
     : path.false();
 }
 
+export function denormalizeModules({ state, props }) {
+  const { files } = props;
+  const sandbox = state.get('editor.currentSandbox');
+
+  const { modules, directories } = denormalize(files, sandbox.directories);
+
+  return { modules, directories };
+}
+
 export function massCreateModules({ state, props, api, path }) {
   const { directories, modules, directoryShortid } = props;
   const sandboxId = state.get('editor.currentId');
@@ -68,8 +77,14 @@ export async function uploadFiles({ api, props, path }) {
 
           if (
             (/\.(j|t)sx?$/.test(filePath) ||
-              /\.json?$/.test(filePath) ||
-              /\.html?$/.test(filePath) ||
+              /\.coffee$/.test(filePath) ||
+              /\.json$/.test(filePath) ||
+              /\.html$/.test(filePath) ||
+              /\.vue$/.test(filePath) ||
+              /\.styl$/.test(filePath) ||
+              /\.(le|sc|sa)ss$/.test(filePath) ||
+              /\.haml$/.test(filePath) ||
+              /\.pug$/.test(filePath) ||
               file.type.startsWith('text/') ||
               file.type === 'application/json') &&
             dataURI.length < MAX_FILE_SIZE
@@ -516,7 +531,9 @@ export function setDefaultNewCode({ state, props }) {
   ) {
     let code = '';
 
-    if (config.generateFileFromState) {
+    if (props.code) {
+      code = props.code;
+    } else if (config.generateFileFromState) {
       code = config.generateFileFromState(state);
     } else if (config.generateFileFromSandbox) {
       code = config.generateFileFromSandbox(sandbox);

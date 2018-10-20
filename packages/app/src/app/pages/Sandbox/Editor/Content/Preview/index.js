@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 
 import BasePreview from 'app/components/Preview';
 import RunOnClick from 'common/components/RunOnClick';
+import getTemplate from 'common/templates';
 
 import FlyingContainer from './FlyingContainer';
 import Tests from './DevTools/Tests';
@@ -25,7 +26,6 @@ type State = {
 class Preview extends React.Component<Props, State> {
   state = {
     aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
-    previewSizeScalar: 0.5,
     running: !this.props.runOnClick,
   };
 
@@ -109,11 +109,17 @@ class Preview extends React.Component<Props, State> {
       if (width !== this.props.width || height !== this.props.height) {
         if (this.state.aligned === 'bottom') {
           this.props.signals.editor.setPreviewBounds(
-            this.getBottomCoordinates(props, this.state.previewSizeScalar)
+            this.getBottomCoordinates(
+              props,
+              1 - this.props.store.editor.previewWindow.editorSize / 100
+            )
           );
         } else {
           this.props.signals.editor.setPreviewBounds(
-            this.getRightCoordinates(props, this.state.previewSizeScalar)
+            this.getRightCoordinates(
+              props,
+              1 - this.props.store.editor.previewWindow.editorSize / 100
+            )
           );
         }
       }
@@ -161,7 +167,10 @@ class Preview extends React.Component<Props, State> {
 
   handleCodeChange = preview => {
     const settings = this.props.store.preferences.settings;
-    if (settings.livePreviewEnabled) {
+    const isServer = getTemplate(
+      this.props.store.editor.currentSandbox.template
+    ).isServer;
+    if (!isServer && settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
       } else {
@@ -183,7 +192,10 @@ class Preview extends React.Component<Props, State> {
 
   handleModuleSyncedChange = (preview, change) => {
     const settings = this.props.store.preferences.settings;
-    if (!settings.livePreviewEnabled && change) {
+    const isServer = getTemplate(
+      this.props.store.editor.currentSandbox.template
+    ).isServer;
+    if ((isServer || !settings.livePreviewEnabled) && change) {
       preview.executeCodeImmediately();
     }
   };
@@ -213,9 +225,13 @@ class Preview extends React.Component<Props, State> {
     ) {
       this.setState({ aligned: null });
     } else if (aligned === 'right' && newSizes.width) {
-      this.setState({ previewSizeScalar: newSizes.width / this.props.width });
+      this.props.signals.editor.editorSizeUpdated({
+        editorSize: (1 - newSizes.width / this.props.width) * 100,
+      });
     } else if (aligned === 'bottom' && newSizes.height) {
-      this.setState({ previewSizeScalar: newSizes.height / this.props.height });
+      this.props.signals.editor.editorSizeUpdated({
+        editorSize: (1 - newSizes.height / this.props.height) * 100,
+      });
     }
   };
 
@@ -257,7 +273,10 @@ class Preview extends React.Component<Props, State> {
               e.stopPropagation();
             }
             resize(this.getRightCoordinates());
-            this.setState({ aligned: 'right', previewSizeScalar: 0.5 });
+            this.setState({ aligned: 'right' });
+            this.props.signals.editor.editorSizeUpdated({
+              editorSize: 50,
+            });
           };
           const alignBottom = e => {
             if (e) {
@@ -265,7 +284,10 @@ class Preview extends React.Component<Props, State> {
               e.stopPropagation();
             }
             resize(this.getBottomCoordinates());
-            this.setState({ aligned: 'bottom', previewSizeScalar: 0.5 });
+            this.setState({ aligned: 'bottom' });
+            this.props.signals.editor.editorSizeUpdated({
+              editorSize: 50,
+            });
           };
 
           return (
@@ -293,7 +315,7 @@ class Preview extends React.Component<Props, State> {
                   hide={hide}
                   noPreview={completelyHidden}
                   onOpenNewWindow={() =>
-                    this.props.signals.preferences.viewModeChanged({
+                    signals.preferences.viewModeChanged({
                       showEditor: true,
                       showPreview: false,
                     })
@@ -305,6 +327,9 @@ class Preview extends React.Component<Props, State> {
                   isResizing={store.editor.isResizing}
                   alignRight={alignRight}
                   alignBottom={alignBottom}
+                  setServerStatus={(status: string) => {
+                    signals.server.statusChanged({ status });
+                  }}
                 />
               ) : (
                 <RunOnClick

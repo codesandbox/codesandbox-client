@@ -1,6 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import TrashIcon from 'react-icons/lib/fa/trash';
+import getTemplate from 'common/templates';
 
 import Button from 'app/components/Button';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
@@ -9,6 +10,7 @@ import { PrivacySelect, PatronMessage, CenteredText } from './elements';
 
 function SandboxActions({ store, signals }) {
   const sandbox = store.editor.currentSandbox;
+  const isServer = getTemplate(sandbox.template).isServer;
 
   return (
     <div>
@@ -22,20 +24,28 @@ function SandboxActions({ store, signals }) {
         </PatronMessage>
       )}
       {store.isPatron && (
-        <WorkspaceInputContainer>
-          <PrivacySelect
-            value={sandbox.privacy}
-            onChange={event =>
-              signals.workspace.sandboxPrivacyChanged({
-                privacy: Number(event.target.value),
-              })
-            }
-          >
-            <option value={0}>Public</option>
-            <option value={1}>Unlisted (only available by url)</option>
-            <option value={2}>Private</option>
-          </PrivacySelect>
-        </WorkspaceInputContainer>
+        <React.Fragment>
+          {isServer && (
+            <PatronMessage style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+              This is a server sandbox, we don{"'"}t support private server
+              sandboxes yet.
+            </PatronMessage>
+          )}
+          <WorkspaceInputContainer>
+            <PrivacySelect
+              value={sandbox.privacy}
+              onChange={event =>
+                signals.workspace.sandboxPrivacyChanged({
+                  privacy: Number(event.target.value),
+                })
+              }
+            >
+              <option value={0}>Public</option>
+              <option value={1}>Unlisted (only available by url)</option>
+              {!isServer && <option value={2}>Private</option>}
+            </PrivacySelect>
+          </WorkspaceInputContainer>
+        </React.Fragment>
       )}
 
       <WorkspaceInputContainer style={{ fontSize: '1rem' }}>

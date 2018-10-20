@@ -21,6 +21,7 @@ const allowedKeys = {
   enableLigatures: 'settings.enableLigatures',
   editorTheme: 'settings.editorTheme',
   customVSCodeTheme: 'settings.customVSCodeTheme',
+  experimentVSCode: 'settings.experimentVSCode',
 };
 
 export default Provider({

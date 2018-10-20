@@ -38,6 +38,12 @@ export default [
       'https://cdn.rawgit.com/ahmadawais/shades-of-purple-vscode/983101b2e9f57638fbc1bd5c551f5c84e561756e/themes/shades-of-purple-color-theme.json',
   },
   {
+    name: 'Lucy',
+    id: 'lucy',
+    url:
+      'https://cdn.rawgit.com/juliettepretot/lucy-vscode/f27d8363/dist/color-theme.json',
+  },
+  {
     name: 'High Contrast',
     id: 'highContrast',
     get: () => import('./high-contrast'),

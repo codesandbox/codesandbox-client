@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
 import delayOutEffect from 'common/utils/animation/delay-out-effect';
 
-export const Container = styled.div`
+export const Container = styled.main`
   transition: 0.3s ease all;
   background-color: ${props => props.theme.background};
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -51,7 +51,7 @@ export const Title = styled.h2`
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: 1rem;
   margin-top: 1rem;
 
@@ -63,4 +63,32 @@ export const Title = styled.h2`
 export const Templates = styled.div`
   display: flex;
   align-items: center;
+
+  @media (max-width: 870px) {
+    flex-wrap: wrap;
+  }
+`;
+
+export const ImportChoices = Templates.extend`
+  justify-content: space-between;
+`;
+
+export const ImportChoice = styled.a`
+  transition: 0.2s ease color;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 1.125rem;
+  margin-top: 0.2rem;
+
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 0.5rem;
+  }
+
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
 `;

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import Row from 'common/components/flex/Row';
 import getTemplateDefinition from 'common/templates';
 
 export const Container = styled.div`
@@ -51,4 +52,14 @@ export const Description = styled.p`
 export const TagContainer = styled.div`
   font-size: 0.75rem;
   width: 30%;
+
+  @media (max-width: 768px) {
+    width: auto;
+  }
+`;
+
+export const Header = styled(Row)`
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;

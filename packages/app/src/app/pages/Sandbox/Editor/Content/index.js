@@ -15,7 +15,6 @@ import FilePath from 'app/components/CodeEditor/FilePath';
 
 import Preview from './Preview';
 import Tabs from './Tabs';
-import { FullSize } from './elements';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 
 const settings = store =>
@@ -32,6 +31,9 @@ const settings = store =>
       ? store.preferences.settings.prettierConfig.tabWidth || 2
       : 2,
     enableLigatures: store.preferences.settings.enableLigatures,
+    experimentVSCode: store.preferences.settings.experimentVSCode,
+    prettierConfig: store.preferences.settings.prettierConfig,
+    forceRefresh: store.preferences.settings.forceRefresh,
   }: Settings);
 
 type Props = {
@@ -366,27 +368,53 @@ class EditorPreview extends React.Component<Props, State> {
 
     const windowRightSize = -x + width + 16;
 
-    const isVerticalMode = this.state.width
-      ? this.state.width / 4 > this.state.width - windowRightSize
+    const { width: absoluteWidth, height: absoluteHeight } = this.state;
+    const isVerticalMode = absoluteWidth
+      ? absoluteWidth / 4 > absoluteWidth - windowRightSize
       : false;
 
     let editorWidth = isVerticalMode
-      ? '100%'
-      : `calc(100% - ${windowRightSize}px)`;
-    let editorHeight = isVerticalMode ? `${y + 16}px` : '100%';
+      ? absoluteWidth
+      : absoluteWidth - windowRightSize;
+    let editorHeight = isVerticalMode ? y + 16 : absoluteHeight;
 
     if (!windowVisible) {
-      editorWidth = '100%';
-      editorHeight = '100%';
+      editorWidth = absoluteWidth;
+      editorHeight = absoluteHeight;
     }
+
+    const template = getTemplateDefinition(sandbox.template);
+
+    const isReadOnly = () => {
+      if (store.live.isCurrentEditor) {
+        return false;
+      }
+
+      if (template.isServer) {
+        if (!store.isLoggedIn || store.server.status !== 'connected') {
+          return true;
+        }
+      }
+
+      return store.live.isLive;
+    };
 
     return (
       <ThemeProvider
         theme={{
-          templateColor: getTemplateDefinition(sandbox.template).color,
+          templateColor: template.color,
+          templateBackgroundColor: template.backgroundColor,
         }}
       >
-        <FullSize
+        <div
+          id="workbench.main.container"
+          style={{
+            height: '100%',
+            width: '100%',
+
+            display: 'flex',
+            flexDirection: 'column',
+          }}
           innerRef={node => {
             if (node) {
               this.contentNode = node;
@@ -399,32 +427,37 @@ class EditorPreview extends React.Component<Props, State> {
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          {preferences.settings.zenMode ? (
-            <FilePath
-              modules={sandbox.modules}
-              directories={sandbox.directories}
-              currentModule={currentModule}
-              workspaceHidden={!store.workspace.openedWorkspaceItem}
-              toggleWorkspace={() => {
-                signals.workspace.toggleCurrentWorkspaceItem();
-              }}
-              exitZenMode={() =>
-                this.props.signals.preferences.settingChanged({
-                  name: 'zenMode',
-                  value: false,
-                })
-              }
-            />
-          ) : (
-            <Tabs />
-          )}
+          {!preferences.settings.experimentVSCode &&
+            (preferences.settings.zenMode ? (
+              <FilePath
+                modules={sandbox.modules}
+                directories={sandbox.directories}
+                currentModule={currentModule}
+                workspaceHidden={!store.workspace.openedWorkspaceItem}
+                toggleWorkspace={() => {
+                  signals.workspace.toggleCurrentWorkspaceItem();
+                }}
+                exitZenMode={() =>
+                  this.props.signals.preferences.settingChanged({
+                    name: 'zenMode',
+                    value: false,
+                  })
+                }
+              />
+            ) : (
+              <Tabs />
+            ))}
           <div
             ref={this.getBounds}
             style={{
               position: 'relative',
               display: 'flex',
               flex: 1,
-              marginTop: preferences.settings.zenMode ? 0 : '2.5rem',
+              marginTop:
+                preferences.settings.experimentVSCode ||
+                preferences.settings.zenMode
+                  ? 0
+                  : '2.5rem',
             }}
           >
             <CodeEditor
@@ -437,11 +470,11 @@ class EditorPreview extends React.Component<Props, State> {
               )}
               width={editorWidth}
               height={editorHeight}
-              absoluteWidth={this.state.width}
-              absoluteHeight={this.state.height}
+              absoluteWidth={absoluteWidth}
+              absoluteHeight={absoluteHeight}
               settings={settings(store)}
               sendTransforms={this.sendTransforms}
-              readOnly={store.live.isLive && !store.live.isCurrentEditor}
+              readOnly={isReadOnly()}
               isLive={store.live.isLive}
               onCodeReceived={signals.live.onCodeReceived}
               onSelectionChanged={signals.live.onSelectionChanged}
@@ -474,8 +507,8 @@ class EditorPreview extends React.Component<Props, State> {
 
             <Preview
               runOnClick={this.props.store.preferences.runOnClick}
-              width={this.state.width}
-              height={this.state.height}
+              width={absoluteWidth}
+              height={absoluteHeight}
             />
           </div>
 
@@ -493,13 +526,15 @@ class EditorPreview extends React.Component<Props, State> {
               }
             }}
             sandboxId={sandbox.id}
+            template={sandbox.template}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}
             setDevToolsOpen={open =>
               this.props.signals.preferences.setDevtoolsOpen({ open })
             }
+            owned={sandbox.owned}
           />
-        </FullSize>
+        </div>
       </ThemeProvider>
     );
   }

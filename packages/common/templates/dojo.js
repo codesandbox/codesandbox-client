@@ -20,7 +20,7 @@ export class DojoTemplate extends Template {
 
 export default new DojoTemplate(
   '@dojo/cli-create-app',
-  'Dojo 2',
+  'Dojo',
   'https://github.com/dojo/cli-create-app',
   'github/dojo/dojo-codesandbox-template',
   decorateSelector(() => '#D3471C'),

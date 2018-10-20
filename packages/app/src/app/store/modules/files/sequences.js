@@ -1,8 +1,8 @@
 import { push, set, concat } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import { ensureOwnedSandbox, closeModal } from '../../sequences';
+import { ensureOwnedEditable, closeModal } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
-import { closeTabByIndex, setModal } from '../../actions';
+import { closeTabByIndex, setModal, callVSCodeCallback } from '../../actions';
 import {
   sendModuleCreated,
   sendModuleDeleted,
@@ -31,7 +31,7 @@ export const getUploadedFiles = [
 ];
 
 export const removeModule = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.whenModuleIsSelected,
   {
     true: setCurrentModule(state`editor.mainModule.id`),
@@ -46,16 +46,22 @@ export const removeModule = [
 ];
 
 export const massCreateModules = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.massCreateModules,
   {
     success: [
       concat(state`editor.currentSandbox.modules`, props`modules`),
       concat(state`editor.currentSandbox.directories`, props`directories`),
       sendMassModuleCreated,
+      callVSCodeCallback,
     ],
     error: [],
   },
+];
+
+export const createModulesByPath = [
+  actions.denormalizeModules,
+  massCreateModules,
 ];
 
 export const deleteUploadedFile = [
@@ -67,7 +73,7 @@ export const deleteUploadedFile = [
 ];
 
 export const createModule = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.createOptimisticModule,
   push(
     state`editor.sandboxes.${state`editor.currentId`}.modules`,
@@ -112,7 +118,7 @@ export const uploadFiles = [
 ];
 
 export const renameModule = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.renameModule,
   actions.saveNewModuleName,
   {
@@ -125,7 +131,7 @@ export const renameModule = [
 ];
 
 export const renameDirectory = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.renameDirectory,
   actions.saveNewDirectoryName,
   {
@@ -138,7 +144,7 @@ export const renameDirectory = [
 ];
 
 export const createDirectory = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.createOptimisticDirectory,
   push(
     state`editor.sandboxes.${state`editor.currentId`}.directories`,
@@ -164,7 +170,7 @@ export const removeDirectory = [
 ];
 
 export const deleteDirectory = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   removeDirectory,
   actions.deleteDirectory,
   {
@@ -180,7 +186,7 @@ export const deleteDirectory = [
 ];
 
 export const moveDirectoryToDirectory = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.moveDirectoryToDirectory,
   actions.saveNewDirectoryDirectoryShortid,
   {
@@ -196,7 +202,7 @@ export const moveDirectoryToDirectory = [
 ];
 
 export const moveModuleToDirectory = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.moveModuleToDirectory,
   actions.saveNewModuleDirectoryShortid,
   {

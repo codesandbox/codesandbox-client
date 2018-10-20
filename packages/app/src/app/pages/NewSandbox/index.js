@@ -7,12 +7,19 @@ import MaxWidth from 'common/components/flex/MaxWidth';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 import Title from 'app/components/Title';
-import NewSandbox from 'app/components/NewSandbox';
+import history from 'app/utils/history';
+import { sandboxUrl } from 'common/utils/url-generator';
+
+import NewSandboxModal from '../Dashboard/Content/CreateNewSandbox/Modal';
 
 class NewSandboxComponent extends React.PureComponent {
   componentDidMount() {
     this.props.signals.sandboxPageMounted();
   }
+
+  createSandbox = template => {
+    history.push(sandboxUrl({ id: template.shortid }));
+  };
 
   render() {
     return (
@@ -23,8 +30,11 @@ class NewSandboxComponent extends React.PureComponent {
           <Margin top={9}>
             <Centered horizontal vertical>
               <Title>New Sandbox</Title>
-              <Margin top={2}>
-                <NewSandbox />
+              <Margin style={{ maxWidth: '100%', width: 950 }} top={2}>
+                <NewSandboxModal
+                  createSandbox={this.createSandbox}
+                  width={950}
+                />
               </Margin>
             </Centered>
           </Margin>

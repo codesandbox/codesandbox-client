@@ -2,6 +2,9 @@ import { fromPairs, toPairs, sortBy } from 'lodash-es';
 import slugify from 'common/utils/slugify';
 import { clone } from 'mobx-state-tree';
 
+import getTemplate from 'common/templates';
+import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
 }
@@ -13,6 +16,26 @@ export async function getLatestVersion({ props, api }) {
     .get(`/dependencies/${name}@latest`)
     .then(({ version }) => ({ version }))
     .catch(() => {});
+}
+
+export function getIdFromModulePath({ props, state, utils }) {
+  if (!props.path) {
+    return {};
+  }
+
+  const sandbox = state.get('editor.currentSandbox');
+
+  try {
+    const module = utils.resolveModule(
+      props.path.replace(/^\//, ''),
+      sandbox.modules,
+      sandbox.directories
+    );
+
+    return { id: module.id };
+  } catch (e) {
+    return {};
+  }
 }
 
 export function addNpmDependencyToPackage({ state, props }) {
@@ -125,6 +148,18 @@ export function updatePrivacy({ api, props, state }) {
       },
     })
     .then(() => undefined);
+}
+
+export function updateFrozen({ api, props, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .put(`/sandboxes/${id}`, {
+      sandbox: {
+        is_frozen: props.frozen,
+      },
+    })
+    .then(() => state.set('editor.currentSandbox.isFrozen', props.frozen));
 }
 
 export function forceRender({ state }) {
@@ -392,6 +427,34 @@ export function prettifyCode({ utils, state, props, path }) {
     )
     .then(newCode => path.success({ code: newCode }))
     .catch(error => path.error({ error }));
+}
+
+export function updateTemplateIfSSE({ state, api }) {
+  try {
+    const currentTemplate = state.get('editor.currentSandbox.template');
+    const templateDefinition = getTemplate(currentTemplate);
+
+    if (templateDefinition.isServer) {
+      const { parsed } = state.get('editor.parsedConfigurations.package');
+
+      const newTemplate = computeTemplate(parsed, {}) || 'node';
+
+      if (
+        newTemplate !== currentTemplate &&
+        getTemplate(newTemplate).isServer
+      ) {
+        state.set('editor.currentSandbox.template', newTemplate);
+        api.put(`/sandboxes/${state.get('editor.currentSandbox.id')}/`, {
+          sandbox: { template: newTemplate },
+        });
+      }
+    }
+  } catch (e) {
+    // We don't want this to be blocking at all, it's low prio
+    if (process.env.NODE_ENV === 'development') {
+      console.error(e);
+    }
+  }
 }
 
 export function saveModuleCode({ props, state, api, recover }) {

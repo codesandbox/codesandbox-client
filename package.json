@@ -4,12 +4,13 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "yarn build:deps && yarn build:prod",
+    "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
     "build:prod": "lerna run build  --scope homepage --stream && lerna run build --scope app --stream && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
-    "build:deps": "lerna run build:dev --scope codesandbox-api --scope codesandbox-browserfs",
+    "build:deps": "lerna run build:dev --scope codesandbox-api --scope codesandbox-browserfs --scope node-services",
     "start": "yarn build:deps && lerna run start --scope app --stream",
     "start:fast": "lerna run start --scope app --stream",
+    "start:vscode": "VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
     "start:home": "lerna run start --scope homepage --stream",
     "start:test": "lerna run start:test --scope app --stream",
     "start:dev_api": "lerna run start --parallel --scope codesandbox-api & lerna run start:dev_api --scope app --stream",
@@ -20,7 +21,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --stream"
+    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall"
   },
   "lint-staged": {
     "*.{js,css,json}": [
@@ -35,15 +36,21 @@
       "packages/codesandbox-api",
       "packages/sandpack",
       "packages/react-sandpack",
-      "packages/homepage"
+      "packages/homepage",
+      "packages/node-services",
+      "packages/sandbox-hooks",
+      "packages/sse-hooks"
     ],
-    "nohoist": ["**/gatsby", "**/gatsby/**"]
-},
+    "nohoist": [
+      "**/gatsby",
+      "**/gatsby/**"
+    ]
+  },
   "resolutions": {
     "uglify-es": "npm:terser"
   },
   "devDependencies": {
-    "all-contributors-cli": "^4.3.0",
+    "all-contributors-cli": "^5.4.0",
     "babel-eslint": "^8.2.1",
     "eslint": "CompuIves/eslint#add/define-parser",
     "eslint-config-airbnb": "^15.0.1",
@@ -59,5 +66,13 @@
     "lerna": "^2.5.1",
     "lint-staged": "^5.0.0",
     "prettier": "^1.8.2"
+  },
+  "dependencies": {
+    "opencollective": "^1.0.3"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/codesandbox",
+    "logo": "https://opencollective.com/codesandbox/logo.txt"
   }
 }

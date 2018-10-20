@@ -1,7 +1,7 @@
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
-import { closeTabByIndex } from '../../actions';
+import { closeTabByIndex, callVSCodeCallback } from '../../actions';
 import { renameModule } from '../files/sequences';
 import {
   sendModuleSaved,
@@ -13,7 +13,7 @@ import {
   unSetReceivingStatus,
 } from '../live/actions';
 import {
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   forkSandbox,
   fetchGitChanges,
   closeModal,
@@ -53,24 +53,35 @@ export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
 
+export const clearCurrentModule = [
+  set(state`editor.currentModuleShortid`, null),
+];
+
 export const changeCurrentModule = [
   track('Open File', {}),
   setReceivingStatus,
-  setCurrentModule(props`id`),
-  equals(state`live.isLive`),
+  actions.getIdFromModulePath,
+  when(props`id`),
   {
     true: [
-      equals(state`live.isCurrentEditor`),
+      setCurrentModule(props`id`),
+      equals(state`live.isLive`),
       {
         true: [
-          getSelectionsForCurrentModule,
-          set(state`editor.pendingUserSelections`, props`selections`),
-          sendChangeCurrentModule,
+          equals(state`live.isCurrentEditor`),
+          {
+            true: [
+              getSelectionsForCurrentModule,
+              set(state`editor.pendingUserSelections`, props`selections`),
+              sendChangeCurrentModule,
+            ],
+            false: [],
+          },
         ],
         false: [],
       },
     ],
-    false: [],
+    false: [clearCurrentModule],
   },
 ];
 
@@ -89,6 +100,8 @@ export const updatePrivacy = [
     invalid: [],
   },
 ];
+
+export const updateFrozen = actions.updateFrozen;
 
 export const toggleLikeSandbox = [
   when(state`editor.sandboxes.${props`id`}.userLiked`),
@@ -144,7 +157,7 @@ export const changeCode = [
 
 export const saveChangedModules = [
   track('Save Modified Modules', {}),
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.outputChangedModules,
   actions.saveChangedModules,
   actions.removeChangedModules,
@@ -176,14 +189,22 @@ export const prettifyCode = [
 
 export const saveCode = [
   track('Save Code', {}),
-  ensureOwnedSandbox,
-  when(state`preferences.settings.prettifyOnSaveEnabled`),
+  ensureOwnedEditable,
+  when(state`preferences.settings.experimentVSCode`),
   {
-    true: [prettifyCode],
-    false: [],
+    true: [changeCode],
+    false: [
+      when(state`preferences.settings.prettifyOnSaveEnabled`),
+      {
+        true: [prettifyCode],
+        false: [],
+      },
+    ],
   },
+
   actions.saveModuleCode,
   actions.setModuleSaved,
+  callVSCodeCallback,
   when(state`editor.currentSandbox.originalGit`),
   {
     true: [
@@ -196,6 +217,8 @@ export const saveCode = [
     false: [],
   },
   sendModuleSaved,
+
+  actions.updateTemplateIfSSE,
 ];
 
 export const discardModuleChanges = [
@@ -211,7 +234,7 @@ export const discardModuleChanges = [
 export const addNpmDependency = [
   track('Add NPM Dependency', {}),
   closeModal,
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   when(props`version`),
   {
     true: [],
@@ -224,7 +247,7 @@ export const addNpmDependency = [
 
 export const removeNpmDependency = [
   track('Remove NPM Dependency', {}),
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.removeNpmDependencyFromPackage,
   changeCode,
   saveCode,
@@ -269,7 +292,18 @@ export const handlePreviewAction = [
 ];
 
 export const setPreviewBounds = [actions.setPreviewBounds];
+export const togglePreview = [
+  when(state`editor.previewWindow.content`),
+  {
+    true: [set(state`editor.previewWindow.content`, undefined)],
+    false: [set(state`editor.previewWindow.content`, 'browser')],
+  },
+];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
+];
+
+export const updateEditorSize = [
+  set(state`editor.previewWindow.editorSize`, props`editorSize`),
 ];

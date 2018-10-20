@@ -1,4 +1,5 @@
 import React from 'react';
+import { forEach } from 'lodash-es';
 
 import badges from 'common/utils/badges/patron-info';
 import { Particle } from './elements';
@@ -37,10 +38,10 @@ const createParticles = (amount: number, badge) =>
 export default class Particles extends React.Component {
   makeItRain = () => {
     const particleSelector = document.getElementsByClassName('particle');
-    Array.forEach(particleSelector, hideElement);
+    forEach(particleSelector, hideElement);
 
     requestAnimationFrame(() => {
-      Array.forEach(particleSelector, showElement);
+      forEach(particleSelector, showElement);
     });
   };
 
@@ -52,10 +53,10 @@ export default class Particles extends React.Component {
         `${nextProps.badge}-particle`
       );
 
-      Array.forEach(particleSelector, hideElement);
+      forEach(particleSelector, hideElement);
 
       requestAnimationFrame(() => {
-        Array.forEach(particleSelector, showElement);
+        forEach(particleSelector, showElement);
       });
 
       if (this.timeout) {
@@ -64,7 +65,7 @@ export default class Particles extends React.Component {
 
       this.timeout = setTimeout(() => {
         const allParticleSelector = document.getElementsByClassName('particle');
-        Array.forEach(allParticleSelector, hideElement);
+        forEach(allParticleSelector, hideElement);
       }, 700);
     }
 

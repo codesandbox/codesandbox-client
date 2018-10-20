@@ -18,13 +18,14 @@ export function getSandbox({ props, api, path }) {
     });
 }
 
-export function optimisticallyAddNpmDependency({ state, props }) {
-  const id = state.get('editor.currentId');
-
-  state.set(
-    `editor.sandboxes.${id}.npmDependencies.${props.name}`,
-    props.version
-  );
+export function callVSCodeCallback({ props }) {
+  const { cbID } = props;
+  if (cbID) {
+    if (window.cbs && window.cbs[cbID]) {
+      window.cbs[cbID](undefined, undefined);
+      delete window.cbs[cbID];
+    }
+  }
 }
 
 export function setWorkspace({ state, props }) {
@@ -84,7 +85,7 @@ export function setUrlOptions({ state, router, utils }) {
   if (options.highlightedLines)
     state.set('editor.highlightedLines', options.highlightedLines);
   if (options.editorSize)
-    state.set('preferences.settings.editorSize', options.editorSize);
+    state.set('editor.previewWindow.editorSize', options.editorSize);
   if (options.hideNavigation)
     state.set('preferences.hideNavigation', options.hideNavigation);
   if (options.isInProjectView)

@@ -16,7 +16,7 @@ export default Module({
     originalGitChanges: null,
     commit: null,
     pr: null,
-    isCommiting: false,
+    isCommitting: false,
     isCreatingPr: false,
   },
   signals: {
