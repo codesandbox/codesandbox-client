@@ -35,11 +35,18 @@ gulp.task('monaco', () =>
     .pipe(gulp.dest('www/public/13/vs'))
 );
 
+// Used for cases where HTML is cached
+gulp.task('old-browserfs', () =>
+  gulp
+    .src('standalone-packages/codesandbox-browserfs/dist/**/*')
+    .pipe(gulp.dest('www/static/browserfs'))
+);
+
 gulp.task('statics', () =>
   gulp.src('packages/app/public/**/*').pipe(gulp.dest('www'))
 );
 
-gulp.task('default', ['app', 'homepage', 'statics', 'monaco']);
+gulp.task('default', ['app', 'homepage', 'statics', 'monaco', 'old-browserfs']);
 
 gulp.task('clean-vscode', rimraf('standalone-packages/monaco-editor-core'));
 
