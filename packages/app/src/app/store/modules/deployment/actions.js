@@ -37,6 +37,9 @@ export async function createApiData({ props, state }) {
 
     const parsed = JSON.parse(data);
     nowJSON = parsed;
+  } else if (packageJSON.now) {
+    // Also support package.json if imported like that
+    nowJSON = packageJSON.now;
   }
 
   const nowDefaults = {
