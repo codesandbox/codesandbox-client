@@ -310,6 +310,7 @@ async function updateManager(
   }
 
   manager.updateConfigurations(configurations);
+  await manager.preset.setup(manager);
   return manager.updateData(managerModules).then(x => {
     changedModuleCount = x.length;
   });
@@ -476,8 +477,6 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
-
-    await manager.preset.setup(manager);
 
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
