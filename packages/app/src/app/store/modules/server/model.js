@@ -5,5 +5,7 @@ export default {
     'connected',
     'disconnected',
     'initializing',
+    'hibernated',
+    'error',
   ]),
 };
