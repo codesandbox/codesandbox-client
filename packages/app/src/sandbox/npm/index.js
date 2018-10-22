@@ -1,6 +1,7 @@
 import { pickBy } from 'lodash-es';
 
 import fetchDependencies from './fetch-dependencies';
+import { getDependencyVersions } from '../version-resolving';
 import dependenciesToQuery from './dependencies-to-query';
 
 import setScreen from '../status-screen';
@@ -11,6 +12,9 @@ let manifest = null;
 type NPMDependencies = {
   [dependency: string]: string,
 };
+
+const DISABLE_EXTERNAL_CONNECTION =
+  document.location.search.indexOf('disex') > -1;
 
 /**
  * This fetches the manifest and dependencies from the
@@ -30,7 +34,9 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
     if (loadedDependencyCombination !== depQuery) {
       isNewCombination = true;
 
-      const data = await fetchDependencies(dependenciesWithoutTypings);
+      const data = await (DISABLE_EXTERNAL_CONNECTION
+        ? getDependencyVersions
+        : fetchDependencies)(dependenciesWithoutTypings);
 
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
