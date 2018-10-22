@@ -22,6 +22,7 @@ const defaultConfigurations = {
   '/package.json': configurations.packageJSON,
   '/.prettierrc': configurations.prettierRC,
   '/sandbox.config.json': configurations.sandboxConfig,
+  '/now.json': configurations.nowConfig,
 };
 
 export default class Template {

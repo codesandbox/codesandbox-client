@@ -8,6 +8,7 @@ const specialCasesMap = {
   'yarn.lock': 'yarn',
   'package.json': 'npm',
   'sandbox.config.json': 'codesandbox',
+  'now.json': 'now',
   'readme.md': 'readme',
   'contributing.md': 'contributing',
   'tsconfig.json': 'typescript',
