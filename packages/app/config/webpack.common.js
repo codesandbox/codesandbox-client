@@ -88,6 +88,7 @@ module.exports = {
     path: paths.appBuild,
     publicPath,
     globalObject: 'this',
+    jsonpFunction: 'csbJsonP', // So we don't conflict with webpack generated libraries in the sandbox
   },
 
   module: {
