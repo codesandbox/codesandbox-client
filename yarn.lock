@@ -6736,8 +6736,8 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
 console-feed@^2.8.0:
-  version "2.8.3"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.3.tgz#81c07b14c236033fe26d76d2b5b305c3345cae99"
+  version "2.8.5"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.5.tgz#d91c360faf79c73fbc774fc5175b9ebbe6e1ebb4"
   integrity sha1-gcB7FMI2Az/ibXbStbMFwzRcrpk=
   dependencies:
     emotion "^9.1.1"
