@@ -1,4 +1,4 @@
-define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchDependencyTypings"], function (require, exports, ts, lib_1, fetchTypings) {
+define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchDependencyTypings", "./lib/emmet/expand/languageserver-types", "./lib/emmet/emmetHelper"], function (require, exports, ts, lib_1, fetchTypings, ls, emmet) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -14,6 +14,11 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         NAME: 'defaultLib:lib.es6.d.ts',
         CONTENTS: lib_1.lib_es6_dts
     };
+    var Priority;
+    (function (Priority) {
+        Priority[Priority["Emmet"] = 0] = "Emmet";
+        Priority[Priority["Platform"] = 1] = "Platform";
+    })(Priority = exports.Priority || (exports.Priority = {}));
     // Quickly remove amd so BrowserFS will register to global scope instead.
     // @ts-ignore
     var oldamd = self.define.amd;
@@ -89,13 +94,18 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 try {
                     var p = JSON.parse(code);
                     fetchTypings.fetchAndAddDependencies(p.dependencies, function (paths) {
-                        Object.keys(paths).forEach(function (p) {
-                            var pathToWrite = '/sandbox/' + p;
-                            _this.files[pathToWrite] = paths[p];
-                            ensureDirectoryExistence(pathToWrite, function () {
-                                _this.fs.writeFile(pathToWrite, paths[p], function () { });
+                        var fileAmount = Object.keys(paths).length;
+                        // Only sync if the file amount is not too high, otherwise we'll
+                        // clog all resources
+                        if (fileAmount < 400) {
+                            Object.keys(paths).forEach(function (p) {
+                                var pathToWrite = '/sandbox/' + p;
+                                _this.files[pathToWrite] = paths[p];
+                                ensureDirectoryExistence(pathToWrite, function () {
+                                    _this.fs.writeFile(pathToWrite, paths[p], function () { });
+                                });
                             });
-                        });
+                        }
                     }).then(function () {
                         _this.typesLoaded = true;
                         _this._languageService.cleanupSemanticCache();
@@ -252,6 +262,16 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 return newP[newP.length - 1];
             });
         };
+        TypeScriptWorker.prototype._getTextDocument = function (uri) {
+            var models = this._ctx.getMirrorModels();
+            for (var _i = 0, models_1 = models; _i < models_1.length; _i++) {
+                var model = models_1[_i];
+                if (model.uri.toString() === uri) {
+                    return ls.TextDocument.create(uri, 'javascript', model.version, model.getValue());
+                }
+            }
+            return null;
+        };
         // --- language features
         TypeScriptWorker.clearFiles = function (diagnostics) {
             // Clear the `file` field, which cannot be JSON'yfied because it
@@ -285,8 +305,22 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             TypeScriptWorker.clearFiles(diagnostics);
             return Promise.as(diagnostics);
         };
-        TypeScriptWorker.prototype.getCompletionsAtPosition = function (fileName, position) {
-            return Promise.as(this._languageService.getCompletionsAtPosition(fileName, position, undefined));
+        TypeScriptWorker.prototype.getCompletionsAtPosition = function (fileName, offset) {
+            var document = this._getTextDocument(fileName);
+            var position = document.positionAt(offset);
+            var languageCompletions = this._languageService.getCompletionsAtPosition(fileName, offset, undefined);
+            var emmetCompletions = emmet.doComplete(document, position, 'jsx', {
+                showExpandedAbbreviation: 'always',
+                showAbbreviationSuggestions: true,
+                syntaxProfiles: {},
+                variables: {},
+                preferences: {}
+            });
+            var newLanguageCompletions = {
+                languageCompletions: languageCompletions,
+                emmetCompletions: emmetCompletions
+            };
+            return Promise.as(newLanguageCompletions);
         };
         TypeScriptWorker.prototype.getCompletionEntryDetails = function (fileName, position, entry) {
             return Promise.as(this._languageService.getCompletionEntryDetails(fileName, position, entry, undefined, undefined, undefined));

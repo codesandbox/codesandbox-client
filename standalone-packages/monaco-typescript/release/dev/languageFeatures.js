@@ -11,6 +11,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -46,7 +57,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "./lib/emmet/expand/languageserver-types"], function (require, exports, ls) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -54,6 +65,7 @@ define(["require", "exports"], function (require, exports) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var Uri = monaco.Uri;
+    var Range = monaco.Range;
     // @ts-ignore
     var Promise = monaco.Promise;
     //#region utils copied from typescript to prevent loading the entire typescriptServices ---
@@ -63,6 +75,41 @@ define(["require", "exports"], function (require, exports) {
         IndentStyle[IndentStyle["Block"] = 1] = "Block";
         IndentStyle[IndentStyle["Smart"] = 2] = "Smart";
     })(IndentStyle || (IndentStyle = {}));
+    var Priority;
+    (function (Priority) {
+        Priority[Priority["Emmet"] = 0] = "Emmet";
+        Priority[Priority["Platform"] = 1] = "Platform";
+    })(Priority = exports.Priority || (exports.Priority = {}));
+    function toCompletionItemKind(kind) {
+        var mItemKind = monaco.languages.CompletionItemKind;
+        switch (kind) {
+            case ls.CompletionItemKind.Text: return mItemKind.Text;
+            case ls.CompletionItemKind.Method: return mItemKind.Method;
+            case ls.CompletionItemKind.Function: return mItemKind.Function;
+            case ls.CompletionItemKind.Constructor: return mItemKind.Constructor;
+            case ls.CompletionItemKind.Field: return mItemKind.Field;
+            case ls.CompletionItemKind.Variable: return mItemKind.Variable;
+            case ls.CompletionItemKind.Class: return mItemKind.Class;
+            case ls.CompletionItemKind.Interface: return mItemKind.Interface;
+            case ls.CompletionItemKind.Module: return mItemKind.Module;
+            case ls.CompletionItemKind.Property: return mItemKind.Property;
+            case ls.CompletionItemKind.Unit: return mItemKind.Unit;
+            case ls.CompletionItemKind.Value: return mItemKind.Value;
+            case ls.CompletionItemKind.Enum: return mItemKind.Enum;
+            case ls.CompletionItemKind.Keyword: return mItemKind.Keyword;
+            case ls.CompletionItemKind.Snippet: return mItemKind.Snippet;
+            case ls.CompletionItemKind.Color: return mItemKind.Color;
+            case ls.CompletionItemKind.File: return mItemKind.File;
+            case ls.CompletionItemKind.Reference: return mItemKind.Reference;
+        }
+        return mItemKind.Property;
+    }
+    function toRange(range) {
+        if (!range) {
+            return void 0;
+        }
+        return new Range(range.start.line + 1, range.start.character + 1, range.end.line + 1, range.end.character + 1);
+    }
     function flattenDiagnosticMessageText(messageText, newLine) {
         if (typeof messageText === 'string') {
             return messageText;
@@ -225,6 +272,7 @@ define(["require", "exports"], function (require, exports) {
         return DiagnostcsAdapter;
     }(Adapter));
     exports.DiagnostcsAdapter = DiagnostcsAdapter;
+    var emmetTriggerCharacters = ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     var SuggestAdapter = /** @class */ (function (_super) {
         __extends(SuggestAdapter, _super);
         function SuggestAdapter() {
@@ -232,7 +280,7 @@ define(["require", "exports"], function (require, exports) {
         }
         Object.defineProperty(SuggestAdapter.prototype, "triggerCharacters", {
             get: function () {
-                return ['.'];
+                return emmetTriggerCharacters.concat(['.']);
             },
             enumerable: true,
             configurable: true
@@ -249,16 +297,47 @@ define(["require", "exports"], function (require, exports) {
                 if (!info) {
                     return;
                 }
-                var suggestions = info.entries.map(function (entry) {
-                    return {
+                var emmetItems = info.emmetCompletions ? info.emmetCompletions.items.map(function (i) {
+                    var entry = __assign({}, i, { sortText: Priority.Emmet + i.label });
+                    var item = {
+                        label: entry.label,
+                        insertText: entry.insertText,
+                        sortText: entry.sortText,
+                        filterText: entry.filterText,
+                        documentation: entry.documentation,
+                        detail: entry.detail,
                         uri: resource,
                         position: position,
-                        label: entry.name,
-                        sortText: entry.sortText,
-                        kind: SuggestAdapter.convertKind(entry.kind),
+                        kind: toCompletionItemKind(entry.kind),
                     };
-                });
-                return suggestions;
+                    if (entry.textEdit) {
+                        item.range = toRange(entry.textEdit.range);
+                        item.insertText = entry.textEdit.newText;
+                    }
+                    if (entry.insertTextFormat === ls.InsertTextFormat.Snippet) {
+                        item.insertText = { value: item.insertText };
+                    }
+                    return item;
+                }) : [];
+                var suggestions;
+                if (info.languageCompletions) {
+                    suggestions = info.languageCompletions.entries.map(function (entry) {
+                        return {
+                            uri: resource,
+                            position: position,
+                            label: entry.name,
+                            sortText: entry.sortText,
+                            kind: SuggestAdapter.convertKind(entry.kind),
+                        };
+                    });
+                }
+                else {
+                    suggestions = [];
+                }
+                return {
+                    isIncomplete: emmetItems.length !== 0,
+                    items: emmetItems.concat(suggestions)
+                };
             }));
         };
         SuggestAdapter.prototype.resolveCompletionItem = function (item, token) {
