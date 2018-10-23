@@ -17,5 +17,6 @@ export default new Template(
     mainFile: ['/pages/index.js'],
     backgroundColor: decorateSelector(() => '#000000'),
     showOnHomePage: true,
+    main: true,
   }
 );
