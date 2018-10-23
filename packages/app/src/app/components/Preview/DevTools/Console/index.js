@@ -28,6 +28,7 @@ class Console extends React.Component {
     scrollToBottom: true,
     initialClear: true,
     filter: [],
+    searchKeywords: '',
   };
 
   listener;
@@ -108,6 +109,10 @@ class Console extends React.Component {
         } else {
           this.addMessage('error', [error]);
         }
+        break;
+      }
+      case 'search-log': {
+        this.setState({ searchKeywords: data.value });
         break;
       }
       case 'filter-log': {
@@ -203,6 +208,7 @@ class Console extends React.Component {
       return null;
     }
 
+    const { messages, filter, searchKeywords } = this.state;
     return (
       <Container>
         <Messages
@@ -211,10 +217,11 @@ class Console extends React.Component {
           }}
         >
           <ConsoleFeed
-            logs={this.state.messages}
+            logs={messages}
             variant={this.props.theme.light ? 'light' : 'dark'}
             styles={inspectorTheme(this.props.theme)}
-            filter={this.state.filter}
+            filter={filter}
+            searchKeywords={searchKeywords}
           />
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />
@@ -223,8 +230,14 @@ class Console extends React.Component {
   }
 }
 
-const ConsoleFilterInput = ({ style, onClick }) => (
-  <Input2 placeholder="Filter" style={style} onChange={onClick} />
+const ConsoleFilterInput = ({ style }) => (
+  <Input2
+    placeholder="Filter"
+    style={style}
+    onChange={({ target: { value } }) =>
+      dispatch({ type: 'search-log', value })
+    }
+  />
 );
 
 const ConsoleFilterSelect = props => {
