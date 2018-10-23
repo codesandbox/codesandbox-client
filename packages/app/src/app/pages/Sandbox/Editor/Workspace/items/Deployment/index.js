@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import TrashIcon from 'react-icons/lib/fa/trash';
+import LinkIcon from 'react-icons/lib/fa/external-link';
 import Button from 'app/components/Button';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 
@@ -93,7 +94,7 @@ class Deployment extends Component {
                             target="_blank"
                             rel="noreferrer noopener"
                           >
-                            Go to Deploy
+                            <LinkIcon /> <span>Visit</span>
                           </Link>
                           <Action
                             disabled={deployment[`${deploy.uid}Deleting`]}
@@ -110,7 +111,7 @@ class Deployment extends Component {
                               'Deleting'
                             ) : (
                               <Fragment>
-                                <TrashIcon />
+                                <TrashIcon /> <span>Delete</span>
                               </Fragment>
                             )}
                           </Action>
