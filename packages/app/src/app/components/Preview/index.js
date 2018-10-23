@@ -203,6 +203,14 @@ class BasePreview extends React.Component<Props, State> {
 
   setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
+    let connectTimeout = null;
+
+    function onTimeout(setServerStatus) {
+      connectTimeout = null;
+      if (setServerStatus) {
+        setServerStatus('disconnected');
+      }
+    }
 
     if (hasInitialized) {
       this.setState({
@@ -212,6 +220,10 @@ class BasePreview extends React.Component<Props, State> {
         this.$socket.close();
         setTimeout(() => {
           if (this.$socket) {
+            connectTimeout = setTimeout(
+              () => onTimeout(this.props.setServerStatus),
+              3000
+            );
             this.$socket.open();
           }
         }, 0);
@@ -239,6 +251,11 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('connect', async () => {
+        if (connectTimeout) {
+          clearTimeout(connectTimeout);
+          connectTimeout = null;
+        }
+
         if (this.props.setServerStatus) {
           this.props.setServerStatus('connected');
         }
@@ -298,6 +315,8 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('sandbox:stop', () => {
+        sseTerminalMessage(`sandbox ${this.props.sandbox.id} restarting...`);
+
         this.setState({
           frameInitialized: false,
           overlayMessage: 'Restarting the sandbox...',
@@ -332,6 +351,10 @@ class BasePreview extends React.Component<Props, State> {
         }
       });
 
+      connectTimeout = setTimeout(
+        () => onTimeout(this.props.setServerStatus),
+        3000
+      );
       socket.open();
     }
   };
