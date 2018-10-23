@@ -2,10 +2,15 @@
 
 ## Table of Contents
 
-* [Code Organization](#code-organization)
-* [Setting Up the project locally](#setting-up-the-project-locally)
-* [Submitting a Pull Request](#submitting-a-pull-request)
-* [Add yourself as a contributor](#add-yourself-as-a-contributor)
+- [Code of Conduct](#code-of-conduct)
+- [Code Organization](#code-organization)
+- [Setting Up the project locally](#setting-up-the-project-locally)
+- [Submitting a Pull Request](#submitting-a-pull-request)
+- [Add yourself as a contributor](#add-yourself-as-a-contributor)
+
+## Code of Conduct
+
+We have a code of conduct you can find [here](https://github.com/CompuIves/codesandbox-client/blob/master/CODE_OF_CONDUCT.md) and every contributor is expect to obey the rules on it. Any issues or PR may be closes if not in terms with it.
 
 ## Code Organization
 
@@ -19,26 +24,27 @@ The CodeSandbox client is currently divided in to 5 parts. We use `lerna` to sha
 
 This version of CodeSandbox is using the production server as source of truth, this is specified by the environment variable `LOCAL_SERVER`. If you're working on a feature that needs you to be logged in, you can login on [https://codesandbox.io/](https://codesandbox.io/) and copy the contents of the `jwt` local storage key over to your development environment on [http://localhost:3000/](http://localhost:3000/). **Be very careful with how you handle the token**, as anyone who knows it can login as you and have read/write access to all your CodeSandbox content!
 
-**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+**Working on your first Pull Request?** You can learn how from this _free_ series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
 
 ## Setting Up the project locally
 
 To install the project you need to have `yarn` and `node`
 
-1. [Fork](https://help.github.com/articles/fork-a-repo/) the project, clone your fork:
+1.  [Fork](https://help.github.com/articles/fork-a-repo/) the project, clone your fork:
 
-   ```
-   # Clone your fork
-   git clone https://github.com/<your-username>/codesandbox-client.git
+    ```
+    # Clone your fork
+    git clone https://github.com/<your-username>/codesandbox-client.git
 
-   # Navigate to the newly cloned directory
-   cd codesandbox-client
-   ```
-2. `yarn` to install dependencies
-3. `yarn start` to start the app
-   * this builds the dependencies (`codesandbox-api` and `codesandbox-browserfs`) and runs the `app` development environment, available on [http://localhost:3000/s/new](http://localhost:3000/s/new)
-   * on subsequent runs you can also bypass dependencies building and use `yarn start:fast`
-   * if you want to work on the homepage, start it with `yarn start:home`, it will be available on [http://localhost:8000/](http://localhost:8000/)
+    # Navigate to the newly cloned directory
+    cd codesandbox-client
+    ```
+
+2.  `yarn` to install dependencies
+3.  `yarn start` to start the app
+    - this builds the dependencies (`codesandbox-api` and `codesandbox-browserfs`) and runs the `app` development environment, available on [http://localhost:3000/s/new](http://localhost:3000/s/new)
+    - on subsequent runs you can also bypass dependencies building and use `yarn start:fast`
+    - if you want to work on the homepage, start it with `yarn start:home`, it will be available on [http://localhost:8000/](http://localhost:8000/)
 
 > Tip: Keep your `master` branch pointing at the original repository and make
 > pull requests from branches on your fork. To do this, run:
