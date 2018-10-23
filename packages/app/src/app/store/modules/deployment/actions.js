@@ -84,19 +84,19 @@ export async function createApiData({ props, state }) {
   return { apiData };
 }
 
-// Will be used later to create alias but I wanna get this PR merged first
-export async function addAlias({ http, path, props, state }) {
-  const { apiData, deploymentId } = props;
+export async function aliasDeployment({ http, path, props, state }) {
+  const { nowData, id } = props;
   const token = state.get('user.integrations.zeit.token');
   try {
     const alias = await http.request({
-      url: `https://api.zeit.co/v2/now/deployments/${deploymentId}/aliases`,
-      body: { alias: apiData.config.alias },
+      url: `https://api.zeit.co/v2/now/deployments/${id}/aliases`,
+      body: { alias: nowData.alias },
       method: 'POST',
       headers: { Authorization: `bearer ${token}` },
     });
     const url = `https://${alias.result.alias}`;
-    return path.success({ url });
+
+    return path.success({ message: `Deployment aliased to ${url}` });
   } catch (error) {
     console.error(error);
     return path.error({ error });
@@ -121,5 +121,90 @@ export async function postToZeit({ http, path, props, state }) {
   } catch (error) {
     console.error(error);
     return path.error({ error });
+  }
+}
+
+export function getDeploymentData({ state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const nowData =
+    sandbox.modules
+      .filter(
+        m => m.title === 'now.json' || (m.title === 'package.json' && m.now)
+      )
+      .map(c => JSON.parse(c.code))[0] || {};
+
+  if (!nowData.name) {
+    nowData.name = `csb-${sandbox.id}`;
+  }
+
+  state.set('deployment.hasAlias', !!nowData.alias);
+
+  return { nowData };
+}
+
+async function deploysByID(id, token, http) {
+  try {
+    const data = await http.request({
+      url: `https://api.zeit.co/v3/now/deployments/${id}/aliases`,
+      method: 'GET',
+      headers: { Authorization: `bearer ${token}` },
+    });
+
+    return data.result;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
+export async function getDeploys({ http, path, state, props }) {
+  const token = state.get('user.integrations.zeit.token');
+  const { nowData } = props;
+
+  try {
+    const data = await http.request({
+      url: 'https://api.zeit.co/v3/now/deployments',
+      method: 'GET',
+      headers: { Authorization: `bearer ${token}` },
+    });
+    const deploys = data.result.deployments;
+
+    const deploysNoAlias = deploys
+      .filter(d => d.name === nowData.name)
+      .sort((a, b) => (a.created < b.created ? 1 : -1));
+
+    const assignAlias = async d => {
+      const alias = await deploysByID(d.uid, token, http);
+      // eslint-disable-next-line
+      d.alias = alias.aliases;
+      return d;
+    };
+
+    const sandboxAlias = await deploysNoAlias.map(assignAlias);
+
+    const sandboxDeploys = await Promise.all(sandboxAlias);
+
+    return path.success({ sandboxDeploys });
+  } catch (error) {
+    console.error(error);
+    return path.error();
+  }
+}
+
+export async function deleteDeployment({ http, path, state }) {
+  const id = state.get('deployment.deployToDelete');
+  const token = state.get('user.integrations.zeit.token');
+
+  try {
+    await http.request({
+      url: `https://api.zeit.co/v2/now/deployments/${id}`,
+      method: 'DELETE',
+      headers: { Authorization: `bearer ${token}` },
+    });
+
+    return path.success();
+  } catch (error) {
+    console.error(error);
+    return path.error();
   }
 }
