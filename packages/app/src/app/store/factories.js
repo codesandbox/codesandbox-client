@@ -77,19 +77,22 @@ export function setCurrentModule(id) {
 export function addNotification(
   title,
   notificationType,
-  timeAlive = 2,
+  timeAlive,
   buttons = []
 ) {
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-shadow
   return function addNotification({ state, resolve }) {
     const now = Date.now();
+    const notificationTypeValue = resolve.value(notificationType);
+    const timeAliveDefault = notificationTypeValue === 'error' ? 6 : 3;
 
     state.push('notifications', {
       id: now,
       title: resolve.value(title),
-      notificationType: resolve.value(notificationType),
+      notificationType: notificationTypeValue,
       buttons: resolve.value(buttons),
-      endTime: now + resolve.value(timeAlive) * 1000,
+      endTime:
+        now + (timeAlive ? resolve.value(timeAlive) : timeAliveDefault) * 1000,
     });
   };
 }

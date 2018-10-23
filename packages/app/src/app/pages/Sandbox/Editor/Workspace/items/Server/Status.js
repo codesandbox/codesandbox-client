@@ -3,7 +3,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 type Props = {
-  status: 'connected' | 'disconnected',
+  status:
+    | 'connected'
+    | 'disconnected'
+    | 'initializing'
+    | 'hibernated'
+    | 'error',
 };
 
 const StatusCircle = styled.div`
@@ -24,15 +29,19 @@ const Container = styled.div`
 `;
 
 const STATUS_MESSAGES = {
-  disconnected: 'Reconnecting to the server...',
-  connected: 'Connected to the server!',
-  initializing: 'Initializing connection to the server...',
+  disconnected: 'Reconnecting to sandbox...',
+  connected: 'Connected to sandbox',
+  initializing: 'Initializing connection to sandbox...',
+  hibernated: 'Sandbox hibernated',
+  error: 'Unrecoverable sandbox error',
 };
 
 const STATUS_COLOR = {
-  disconnected: '#fd2439fa',
+  disconnected: '#FD2439',
   connected: '#4CFF00',
   initializing: '#FFD399',
+  hibernated: '#FF662E',
+  error: '#FD2439',
 };
 
 export default ({ status }: Props) => (

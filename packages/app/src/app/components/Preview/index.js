@@ -48,6 +48,8 @@ type State = {
   urlInAddressBar: string,
   url: ?string,
   overlayMessage: ?string,
+  hibernated: boolean,
+  sseError: boolean,
 };
 
 const getSSEUrl = (id?: string) =>
@@ -131,6 +133,13 @@ async function retrieveSSEToken() {
   return null;
 }
 
+function sseTerminalMessage(msg) {
+  dispatch({
+    type: 'terminal:message',
+    data: `> Sandbox Container: ${msg}\n\r`,
+  });
+}
+
 class BasePreview extends React.Component<Props, State> {
   serverPreview: boolean;
   lastSent: {
@@ -157,6 +166,8 @@ class BasePreview extends React.Component<Props, State> {
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
       overlayMessage: null,
+      hibernated: false,
+      sseError: false,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -192,6 +203,14 @@ class BasePreview extends React.Component<Props, State> {
 
   setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
+    let connectTimeout = null;
+
+    function onTimeout(setServerStatus) {
+      connectTimeout = null;
+      if (setServerStatus) {
+        setServerStatus('disconnected');
+      }
+    }
 
     if (hasInitialized) {
       this.setState({
@@ -201,6 +220,10 @@ class BasePreview extends React.Component<Props, State> {
         this.$socket.close();
         setTimeout(() => {
           if (this.$socket) {
+            connectTimeout = setTimeout(
+              () => onTimeout(this.props.setServerStatus),
+              3000
+            );
             this.$socket.open();
           }
         }, 0);
@@ -216,12 +239,23 @@ class BasePreview extends React.Component<Props, State> {
 
       socket.on('disconnect', () => {
         if (this.props.setServerStatus) {
-          this.props.setServerStatus('disconnected');
+          let status = 'disconnected';
+          if (this.state.hibernated) {
+            status = 'hibernated';
+          } else if (this.state.sseError) {
+            status = 'error';
+          }
+          this.props.setServerStatus(status);
           dispatch({ type: 'codesandbox:sse:disconnect' });
         }
       });
 
       socket.on('connect', async () => {
+        if (connectTimeout) {
+          clearTimeout(connectTimeout);
+          connectTimeout = null;
+        }
+
         if (this.props.setServerStatus) {
           this.props.setServerStatus('connected');
         }
@@ -231,10 +265,7 @@ class BasePreview extends React.Component<Props, State> {
 
         socket.emit('sandbox', { id, token });
 
-        dispatch({
-          type: 'terminal:message',
-          data: `> CodeSandbox SSE: connected! Starting sandbox ${id}...\n\r`,
-        });
+        sseTerminalMessage(`connected, starting sandbox ${id}...`);
 
         socket.emit('sandbox:start');
       });
@@ -257,12 +288,7 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('sandbox:start', () => {
-        const { id } = this.props.sandbox;
-
-        dispatch({
-          type: 'terminal:message',
-          data: `> CodeSandbox SSE: sandbox ${id} started\n\r`,
-        });
+        sseTerminalMessage(`sandbox ${this.props.sandbox.id} started.`);
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
@@ -275,30 +301,60 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('sandbox:hibernate', () => {
-        this.setState({
-          frameInitialized: false,
-          overlayMessage:
-            'The sandbox is hibernating, refresh to start the sandbox',
-        });
+        sseTerminalMessage(`sandbox ${this.props.sandbox.id} hibernated.`);
 
-        this.$socket.close();
+        this.setState(
+          {
+            frameInitialized: false,
+            overlayMessage:
+              'The sandbox was hibernated because of inactivity. Refresh the page to restart it.',
+            hibernated: true,
+          },
+          () => this.$socket.close()
+        );
       });
 
       socket.on('sandbox:stop', () => {
+        sseTerminalMessage(`sandbox ${this.props.sandbox.id} restarting...`);
+
         this.setState({
           frameInitialized: false,
           overlayMessage: 'Restarting the sandbox...',
         });
       });
 
-      socket.on('sandbox:log', ({ chan, data }) => {
+      socket.on('sandbox:log', ({ data }) => {
         dispatch({
           type: 'terminal:message',
-          chan,
           data,
         });
       });
 
+      socket.on('sandbox:error', ({ message, unrecoverable }) => {
+        sseTerminalMessage(
+          `sandbox ${this.props.sandbox.id} ${
+            unrecoverable ? 'unrecoverable ' : ''
+          }error "${message}"`
+        );
+        if (unrecoverable) {
+          this.setState(
+            {
+              frameInitialized: false,
+              overlayMessage:
+                'An unrecoverable sandbox error occurred. :-( Try refreshing the page.',
+              sseError: true,
+            },
+            () => this.$socket.close()
+          );
+        } else {
+          window.showNotification(`Sandbox Container: ${message}`, 'error');
+        }
+      });
+
+      connectTimeout = setTimeout(
+        () => onTimeout(this.props.setServerStatus),
+        3000
+      );
       socket.open();
     }
   };

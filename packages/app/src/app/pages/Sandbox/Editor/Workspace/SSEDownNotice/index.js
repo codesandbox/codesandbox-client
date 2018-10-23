@@ -10,10 +10,7 @@ const ConnectionNotice = ({ store }) => {
     return null;
   }
 
-  if (
-    store.server.status === 'connected' ||
-    store.server.status === 'initializing'
-  ) {
+  if (store.server.status !== 'disconnected') {
     return null;
   }
 
