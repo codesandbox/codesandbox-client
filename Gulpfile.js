@@ -58,7 +58,7 @@ gulp.task('default', [
   'statics',
   'monaco',
   'old-browserfs',
-  ['old-vscode'],
+  'old-vscode',
 ]);
 
 gulp.task('clean-vscode', rimraf('standalone-packages/monaco-editor-core'));
