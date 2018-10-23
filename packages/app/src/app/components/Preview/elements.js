@@ -30,8 +30,6 @@ export const Loading = styled.div`
   bottom: 0;
   right: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.75);
   padding: 2rem;
   display: flex;
@@ -39,6 +37,8 @@ export const Loading = styled.div`
   justify-content: center;
 
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 300;
   color: white;
+  line-height: 1.3;
+  text-align: center;
 `;

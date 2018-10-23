@@ -120,13 +120,20 @@ export default function prettify(
   title,
   getCode,
   prettierConfig = DEFAULT_PRETTIER_CONFIG,
-  isCurrentModule = () => false
+  isCurrentModule = () => false,
+  cancellationToken: {
+    isCancellationRequested: boolean,
+    onCancellationRequested: (cb: Function) => {},
+  }
 ) {
   const mode = getMode(title);
 
   worker = worker || new Worker('/static/js/prettier/worker.js');
 
   return new Promise((resolve, reject) => {
+    if (cancellationToken && cancellationToken.isCancellationRequested) {
+      return;
+    }
     if (!mode) {
       resolve(getCode());
       return;
@@ -147,46 +154,51 @@ export default function prettify(
       },
     });
 
-    let timeout = setTimeout(() => {
-      // If worker doesn't respond in time
-      reject({ error: 'Prettify timeout' });
-      timeout = null;
-    }, 5000);
+    let handler;
+    let timeout;
+    if (!cancellationToken) {
+      timeout = setTimeout(() => {
+        // If worker doesn't respond in time
+        reject({ error: 'Prettify timeout' });
+        timeout = null;
+        worker.removeEventListener('message', handler);
+      }, 5000);
+    } else {
+      cancellationToken.onCancellationRequested(() => {
+        worker.removeEventListener('message', handler);
+      });
+    }
 
-    const handler = e => {
+    handler = e => {
       const { result, text, error } = e.data;
 
-      if (timeout) {
-        if (text === getCode()) {
-          worker.removeEventListener('message', handler);
-          clearTimeout(timeout);
-          timeout = null;
-
-          if (error) {
-            console.error(error);
-            reject({ error });
-          }
-
-          if (result && result.formatted != null) {
-            resolve(result.formatted);
-          }
-
-          // After code is applied
-          if (
-            result &&
-            result.newCursorOffset &&
-            isCurrentModule() &&
-            result.formatted != null
-          ) {
-            const newCursorOffset = result.cursorOffset;
-            requestAnimationFrame(() => {
-              // After model code has changed
-              applyNewCursorOffset(newCursorOffset, result.formatted, getCode);
-            });
-          }
-        }
-      } else {
+      if (text === getCode()) {
         worker.removeEventListener('message', handler);
+        clearTimeout(timeout);
+        timeout = null;
+
+        if (error) {
+          console.error(error);
+          reject({ error });
+        }
+
+        if (result && result.formatted != null) {
+          resolve(result.formatted);
+        }
+
+        // After code is applied
+        if (
+          result &&
+          result.newCursorOffset &&
+          isCurrentModule() &&
+          result.formatted != null
+        ) {
+          const newCursorOffset = result.cursorOffset;
+          requestAnimationFrame(() => {
+            // After model code has changed
+            applyNewCursorOffset(newCursorOffset, result.formatted, getCode);
+          });
+        }
       }
     };
 

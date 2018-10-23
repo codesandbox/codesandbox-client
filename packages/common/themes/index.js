@@ -38,6 +38,12 @@ export default [
       'https://cdn.rawgit.com/ahmadawais/shades-of-purple-vscode/983101b2e9f57638fbc1bd5c551f5c84e561756e/themes/shades-of-purple-color-theme.json',
   },
   {
+    name: 'Lucy',
+    id: 'lucy',
+    url:
+      'https://cdn.rawgit.com/juliettepretot/lucy-vscode/f27d8363/dist/color-theme.json',
+  },
+  {
     name: 'High Contrast',
     id: 'highContrast',
     get: () => import('./high-contrast'),
@@ -58,11 +64,5 @@ export default [
     id: 'solarizedLight',
     url:
       'https://raw.githubusercontent.com/Microsoft/vscode/d2b6bbb46fbdf535e2c96b3e00ac56ac1d427a69/extensions/theme-solarized-light/themes/solarized-light-color-theme.json',
-  },
-  {
-    name: 'Lucy',
-    id: 'lucy',
-    url:
-      'https://cdn.rawgit.com/juliettepretot/lucy-vscode/f27d8363/dist/color-theme.json',
   },
 ];

@@ -5,6 +5,7 @@ import Modal from 'app/components/Modal';
 import NewSandbox from './NewSandbox';
 import PreferencesModal from './PreferencesModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
+import DeleteDeploymentModal from './DeleteDeploymentModal/';
 import ShareModal from './ShareModal';
 import DeploymentModal from './DeploymentModal';
 import ExportGitHubModal from './ExportGitHubModal';
@@ -51,6 +52,10 @@ const modals = {
   },
   deleteSandbox: {
     Component: DeleteSandboxModal,
+    width: 400,
+  },
+  deleteDeployment: {
+    Component: DeleteDeploymentModal,
     width: 400,
   },
   deleteProfileSandbox: {

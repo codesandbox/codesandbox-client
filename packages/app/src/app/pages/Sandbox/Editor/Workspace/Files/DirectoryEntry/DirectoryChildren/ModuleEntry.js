@@ -20,6 +20,7 @@ class ModuleEntry extends React.Component {
       renameModule,
       deleteEntry,
       discardModuleChanges,
+      getModulePath,
     } = this.props;
     const currentModuleShortid = store.editor.currentModuleShortid;
     const mainModuleId = store.editor.mainModule.id;
@@ -54,6 +55,7 @@ class ModuleEntry extends React.Component {
         moduleHasError={hasError}
         markTabsNotDirty={markTabsNotDirty}
         discardModuleChanges={discardModuleChanges}
+        getModulePath={getModulePath}
       />
     );
   }

@@ -8,6 +8,7 @@ const specialCasesMap = {
   'yarn.lock': 'yarn',
   'package.json': 'npm',
   'sandbox.config.json': 'codesandbox',
+  'now.json': 'now',
   'readme.md': 'readme',
   'contributing.md': 'contributing',
   'tsconfig.json': 'typescript',
@@ -51,6 +52,7 @@ export function getMode(title: string = '') {
   // TEST BASED
   const regexValues = Object.values(regexCasesMap);
   const match = regexValues.find(value =>
+    // $FlowIssue
     new RegExp(value).test(removeIgnoreTitle)
   );
 

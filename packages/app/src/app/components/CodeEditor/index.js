@@ -17,6 +17,7 @@ import QuestionIcon from 'react-icons/lib/go/question';
 
 import type { Props } from './types';
 import Monaco from './Monaco';
+import VSCode from './VSCode';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
 import MonacoDiff from './MonacoDiff';
@@ -112,7 +113,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       module.id
     );
     const config = template.configurationFiles[modulePath];
-    if (config && getUI(config.type) && this.state.showConfigUI) {
+    if (
+      !settings.experimentVSCode &&
+      config &&
+      getUI(config.type) &&
+      this.state.showConfigUI
+    ) {
       return (
         <Configuration
           {...props}
@@ -123,7 +129,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       );
     }
 
-    if (module.isBinary) {
+    if (!settings.experimentVSCode && module.isBinary) {
       if (isImage(module.title)) {
         return <ImageViewer {...props} dependencies={dependencies} />;
       }
@@ -151,10 +157,14 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       );
     }
 
-    const Editor =
+    let Editor =
       (settings.vimMode || settings.codeMirror) && !props.isLive
         ? CodeMirror
         : Monaco;
+
+    if (settings.experimentVSCode) {
+      Editor = VSCode;
+    }
 
     return (
       <div

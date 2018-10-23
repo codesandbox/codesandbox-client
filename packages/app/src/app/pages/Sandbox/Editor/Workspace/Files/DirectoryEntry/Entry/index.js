@@ -212,10 +212,14 @@ const entrySource = {
   canDrag: props => !!props.id && !props.isMainModule,
   beginDrag: props => {
     if (props.closeTree) props.closeTree();
+
+    const directory =
+      props.type === 'directory' || props.type === 'directory-open';
     return {
       id: props.id,
       shortid: props.shortid,
-      directory: props.type === 'directory' || props.type === 'directory-open',
+      directory,
+      path: !directory && props.getModulePath(props.id),
     };
   },
 };

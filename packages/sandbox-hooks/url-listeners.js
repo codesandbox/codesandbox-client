@@ -1,9 +1,11 @@
 import { dispatch, isStandalone, listen } from 'codesandbox-api';
 
-function sendUrlChange(url: string) {
+function sendUrlChange(url: string, action?: string, diff?: number) {
   dispatch({
     type: 'urlchange',
     url,
+    diff,
+    action,
   });
 }
 
@@ -15,11 +17,10 @@ let historyPosition = -1;
 let disableNextHashChange = false;
 
 function pushHistory(url, state) {
-  if (historyPosition === -1 || historyList[historyPosition].url !== url) {
-    historyPosition += 1;
-    historyList.length = historyPosition + 1;
-    historyList[historyPosition] = { url, state };
-  }
+  // remove "future" locations
+  historyList.splice(historyPosition + 1);
+  historyList.push({ url, state });
+  historyPosition = historyList.length - 1;
 }
 
 function pathWithHash(location) {
@@ -48,7 +49,7 @@ export default function setupHistoryListeners() {
           const oldURL = document.location.href;
           origHistoryProto.replaceState.call(window.history, state, '', url);
           const newURL = document.location.href;
-          sendUrlChange(newURL);
+          sendUrlChange(newURL, 'POP', delta);
           if (newURL.indexOf('#') === -1) {
             window.dispatchEvent(new PopStateEvent('popstate', { state }));
           } else {
@@ -77,7 +78,7 @@ export default function setupHistoryListeners() {
       replaceState(state, title, url) {
         origHistoryProto.replaceState.call(window.history, state, title, url);
         historyList[historyPosition] = { state, url };
-        sendUrlChange(document.location.href);
+        sendUrlChange(document.location.href, 'REPLACE');
       },
     });
 
@@ -137,7 +138,7 @@ export default function setupHistoryListeners() {
     pushHistory(pathWithHash(document.location), null);
 
     setTimeout(() => {
-      sendUrlChange(document.location.href);
+      sendUrlChange(document.location.href, 'REPLACE');
     });
   }
   return listen(handleMessage);

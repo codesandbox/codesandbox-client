@@ -11,6 +11,6 @@ export default new Template(
   {
     isServer: true,
     mainFile: ['/src/routes/index.html'],
-    // showOnHomePage: true,
+    showOnHomePage: false,
   }
 );

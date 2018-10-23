@@ -8,6 +8,7 @@ import react from './react';
 import reactTs from './react-ts';
 import svelte from './svelte';
 import vue from './vue';
+import ember from './ember';
 import cxjs from './cxjs';
 import dojo from './dojo';
 import gatsby from './gatsby';
@@ -16,6 +17,7 @@ import next from './next';
 import node from './node';
 import apollo from './apollo-server';
 import sapper from './sapper';
+import nest from './nest';
 
 export {
   angular,
@@ -35,6 +37,8 @@ export {
   svelte,
   vue,
   sapper,
+  nest,
+  ember,
 };
 
 export type Template =
@@ -52,7 +56,8 @@ export type Template =
   | 'next'
   | 'reason'
   | 'apollo'
-  | 'sapper';
+  | 'sapper'
+  | 'nest';
 
 export default function getDefinition(theme: Template) {
   switch (theme) {
@@ -90,6 +95,8 @@ export default function getDefinition(theme: Template) {
       return apollo;
     case sapper.name:
       return sapper;
+    case nest.name:
+      return nest;
     default:
       return react;
   }

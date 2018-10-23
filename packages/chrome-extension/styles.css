@@ -1,0 +1,10 @@
+a.open-codesanbox-chrome-extension {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+}
+
+.open-codesanbox-chrome-extension svg {
+  margin-right: 6px;
+}

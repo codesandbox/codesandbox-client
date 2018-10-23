@@ -4,6 +4,7 @@ import faviconSvg from 'common/components/icons/favicon.svg';
 import fileSvg from 'common/components/icons/file.svg';
 import imageSvg from 'common/components/icons/image.svg';
 import codesandboxSvg from 'common/components/icons/codesandbox.svg';
+import nowSvg from 'common/components/icons/now.svg';
 
 function imageExists(url) {
   return new Promise((resolve, reject) => {
@@ -20,6 +21,7 @@ const icons = {
   favicon: faviconSvg,
   image: imageSvg,
   codesandbox: codesandboxSvg,
+  now: nowSvg,
 };
 
 async function getIconURL(type) {

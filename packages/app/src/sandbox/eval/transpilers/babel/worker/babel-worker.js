@@ -159,8 +159,8 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
 
 self.importScripts(
   process.env.NODE_ENV === 'development'
-    ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
-    : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
+    ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
+    : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
 );
 
 self.postMessage('ready');
@@ -239,6 +239,7 @@ self.addEventListener('message', async event => {
     loaderOptions,
     version,
     type,
+    hasMacros,
   } = event.data;
 
   if (type !== 'compile') {
@@ -253,12 +254,11 @@ self.addEventListener('message', async event => {
 
   if (babelUrl || babelEnvUrl) {
     loadCustomTranspiler(babelUrl, babelEnvUrl);
-  } else if (version === 7) {
+  } else if (version !== 7) {
     loadCustomTranspiler(
       process.env.NODE_ENV === 'development'
-        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
-        : `${process.env.CODESANDBOX_HOST ||
-            ''}/static/js/babel.7.00-1.min.js`
+        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
+        : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
     );
   }
 
@@ -321,7 +321,9 @@ self.addEventListener('message', async event => {
       flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
       Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') === -1
     ) {
-      await waitForFs();
+      if (hasMacros) {
+        await waitForFs();
+      }
 
       Babel.registerPlugin('babel-plugin-macros', macrosPlugin);
     }

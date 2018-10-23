@@ -1,0 +1,33 @@
+{
+  "name": "monaco-typescript",
+  "version": "3.2.0",
+  "description": "TypeScript and JavaScript language support for Monaco Editor",
+  "scripts": {
+    "compile-amd": "mcopy ./src/lib/typescriptServices-amd.js ./release/dev/lib/typescriptServices.js && cp -R ./src/lib/emmet/ ./release/dev/lib/emmet/ && tsc -p ./src/tsconfig.json",
+    "compile-esm": "mcopy ./src/lib/typescriptServices.js ./release/esm/lib/typescriptServices.js && tsc -p ./src/tsconfig.esm.json",
+    "compile": "rm -rf ./release && npm run compile-amd && npm run compile-esm",
+    "watch": "tsc -p ./src --watch",
+    "prepublish": "npm run compile && node ./scripts/bundle && mcopy ./src/monaco.d.ts ./release/monaco.d.ts",
+    "import-typescript": "node ./scripts/importTypescript"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/monaco-typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/Microsoft/monaco-typescript/issues"
+  },
+  "devDependencies": {
+    "monaco-editor-core": "0.14.1",
+    "monaco-languages": "^1.4.0",
+    "monaco-plugin-helpers": "^1.0.2",
+    "requirejs": "^2.3.5",
+    "typescript": "3.0.1",
+    "uglify-js": "^3.4.7"
+  },
+  "dependencies": {
+    "vscode-languageserver-types": "^3.13.0"
+  }
+}

@@ -9,18 +9,15 @@ import rawTranspiler from '../../transpilers/raw';
 import svgrTranspiler from '../../transpilers/svgr';
 import sassTranspiler from '../../transpilers/sass';
 
-function isVersion2(configurations) {
-  if (
-    configurations &&
-    configurations.package &&
-    configurations.package.parsed &&
-    configurations.package.parsed.dependencies &&
-    configurations.package.parsed.dependencies['react-scripts']
-  ) {
-    const reactScriptsVersion =
-      configurations.package.parsed.dependencies['react-scripts'];
+export function isVersion2(dependencies) {
+  const usedDeps = dependencies || {};
+  if (usedDeps['react-scripts']) {
+    const reactScriptsVersion = usedDeps['react-scripts'];
 
-    return semver.intersects(reactScriptsVersion, '^2.0.0');
+    return (
+      /^[a-z]/.test(reactScriptsVersion) ||
+      semver.intersects(reactScriptsVersion, '^2.0.0')
+    );
   }
 
   return false;
@@ -35,7 +32,17 @@ export default function initialize() {
     {
       hasDotEnv: true,
       setup: manager => {
-        if (isVersion2(manager.configurations) && !v2Initialized) {
+        const configurations = manager.configurations;
+
+        if (
+          isVersion2(
+            configurations &&
+              configurations.package &&
+              configurations.package.parsed &&
+              configurations.package.parsed.dependencies
+          ) &&
+          !v2Initialized
+        ) {
           const babelOptions = {
             isV7: true,
             config: {
@@ -70,7 +77,7 @@ export default function initialize() {
             },
           };
           preset.registerTranspiler(
-            module => /\.js$/.test(module.path),
+            module => /\.jsx?$/.test(module.path),
             [
               {
                 transpiler: babelTranspiler,

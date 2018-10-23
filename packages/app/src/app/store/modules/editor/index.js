@@ -1,4 +1,5 @@
 import { Module } from 'cerebral';
+import themes from 'common/themes';
 import model from './model';
 import * as sequences from './sequences';
 import {
@@ -10,6 +11,7 @@ import {
   currentPackageJSONCode,
   parsedConfigurations,
   currentTab,
+  modulesByPath,
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -48,6 +50,7 @@ export default Module({
       y: 0,
       content: 'browser',
     },
+    themes,
   },
   getters: {
     isAllModulesSynced,
@@ -58,6 +61,7 @@ export default Module({
     currentPackageJSONCode,
     parsedConfigurations,
     currentTab,
+    modulesByPath,
   },
   computed: {
     isModuleSynced,
@@ -77,6 +81,7 @@ export default Module({
     forkSandboxClicked: sequences.forceForkSandbox,
     likeSandboxToggled: sequences.toggleLikeSandbox,
     moduleSelected: sequences.changeCurrentModule,
+    clearModuleSelected: sequences.clearCurrentModule,
     moduleDoubleClicked: sequences.unsetDirtyTab,
     tabClosed: sequences.closeTab,
     tabMoved: sequences.moveTab,
@@ -90,6 +95,7 @@ export default Module({
     quickActionsClosed: sequences.closeQuickActions,
     setPreviewBounds: sequences.setPreviewBounds,
     setPreviewContent: sequences.setPreviewContent,
+    togglePreviewContent: sequences.togglePreview,
     currentTabChanged: sequences.changeCurrentTab,
     discardModuleChanges: sequences.discardModuleChanges,
     editorSizeUpdated: sequences.updateEditorSize,

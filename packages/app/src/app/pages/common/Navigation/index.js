@@ -23,6 +23,8 @@ import {
   Actions,
   Action,
   UnreadIcon,
+  TitleWrapper,
+  Wrapper,
 } from './elements';
 
 function Navigation({ signals, store, title }) {
@@ -30,14 +32,14 @@ function Navigation({ signals, store, title }) {
 
   return (
     <Row justifyContent="space-between">
-      <Row>
+      <TitleWrapper>
         <a href="/?from-app=1">
           <LogoWithBorder height={40} width={40} />
         </a>
         <Border width={1} size={500} />
         <Title>{title}</Title>
-      </Row>
-      <Row>
+      </TitleWrapper>
+      <Wrapper>
         <Actions>
           <Action>
             <HeaderSearchBar />
@@ -106,7 +108,7 @@ function Navigation({ signals, store, title }) {
         </Actions>
 
         {isLoggedIn ? <UserMenu /> : <SignInButton />}
-      </Row>
+      </Wrapper>
     </Row>
   );
 }

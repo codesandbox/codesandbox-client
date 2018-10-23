@@ -88,6 +88,7 @@ module.exports = {
     path: paths.appBuild,
     publicPath,
     globalObject: 'this',
+    jsonpFunction: 'csbJsonP', // So we don't conflict with webpack generated libraries in the sandbox
   },
 
   module: {
@@ -277,7 +278,8 @@ module.exports = {
       /typescriptServices\.js$/,
       /browserfs\.js/,
       /browserfs\.min\.js/,
-      /standalone-packages/,
+      /standalone-packages\/codesandbox-browserfs/,
+      /standalone-packages\/vscode\//,
     ],
   },
 
@@ -441,17 +443,10 @@ module.exports = {
     // Make the monaco editor work
     new CopyWebpackPlugin(
       [
-        // Our own custom version of monaco
         {
-          from: __DEV__
-            ? '../../standalone-packages/monaco-editor/release/dev/vs'
-            : '../../standalone-packages/monaco-editor/release/min/vs',
-          to: 'public/13/vs',
+          from: '../../standalone-packages/vscode-editor/release/min/vs',
+          to: 'public/vscode3/vs',
           force: true,
-        },
-        __PROD__ && {
-          from: '../../node_modules/monaco-editor/min-maps',
-          to: 'public/min-maps',
         },
         {
           from: '../../node_modules/onigasm/lib/onigasm.wasm',
@@ -467,7 +462,7 @@ module.exports = {
         },
         {
           from: '../../standalone-packages/codesandbox-browserfs/dist',
-          to: 'static/browserfs',
+          to: 'static/browserfs2',
         },
       ].filter(x => x)
     ),

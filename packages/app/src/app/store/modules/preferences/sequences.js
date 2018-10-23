@@ -1,6 +1,7 @@
 import { set, when, toggle, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import { getZeitUserDetails } from 'app/store/sequences';
+import track from 'common/utils/analytics';
 import * as actions from './actions';
 import { setKeybindings, startKeybindings } from '../../actions';
 
@@ -45,6 +46,14 @@ export const changeItemId = [
 export const setSetting = [
   set(state`preferences.settings.${props`name`}`, props`value`),
   actions.storeSetting,
+  ({ props: p }) => {
+    track('Change Settings', { name: p.name, value: p.value });
+  },
+  when(props`name`, n => n === 'experimentVSCode'),
+  {
+    true: [() => window.location.reload()],
+    false: [],
+  },
 ];
 
 export const setBadgeVisibility = [

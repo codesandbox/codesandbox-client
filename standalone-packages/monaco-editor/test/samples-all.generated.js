@@ -154,7 +154,7 @@ define([], function() { return[
 	},
 	{
 		"name": "sample.python.txt",
-		"content": "from banana import *\r\n\r\nclass Monkey:\r\n\t# Bananas the monkey can eat.\r\n\tcapacity = 10\r\n\tdef eat(self, N):\r\n\t\t'''Make the monkey eat N bananas!'''\r\n\t\tcapacity = capacity - N*banana.size\r\n\r\n\tdef feeding_frenzy(self):\r\n\t\teat(9.25)\r\n\t\treturn \"Yum yum\""
+		"content": "from banana import *\n\nclass Monkey:\n\t# Bananas the monkey can eat.\n\tcapacity = 10\n\tdef eat(self, N):\n\t\t'''Make the monkey eat N bananas!'''\n\t\tcapacity = capacity - N*banana.size\n\n\tdef feeding_frenzy(self):\n\t\teat(9.25)\n\t\treturn \"Yum yum\""
 	},
 	{
 		"name": "sample.r.txt",
