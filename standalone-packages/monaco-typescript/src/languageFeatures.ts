@@ -8,6 +8,9 @@ import { LanguageServiceDefaultsImpl } from './monaco.contribution';
 import * as ts from './lib/typescriptServices';
 import { TypeScriptWorker } from './tsWorker';
 
+import * as emmet from './lib/emmet/emmetHelper';
+import * as ls from './lib/emmet/expand/languageserver-types';
+
 import Uri = monaco.Uri;
 import Position = monaco.Position;
 import Range = monaco.Range;
@@ -23,6 +26,44 @@ enum IndentStyle {
   None = 0,
   Block = 1,
   Smart = 2,
+}
+
+export enum Priority {
+	Emmet,
+	Platform
+}
+
+function toCompletionItemKind(kind: number): monaco.languages.CompletionItemKind {
+	let mItemKind = monaco.languages.CompletionItemKind;
+
+	switch (kind) {
+		case ls.CompletionItemKind.Text: return mItemKind.Text;
+		case ls.CompletionItemKind.Method: return mItemKind.Method;
+		case ls.CompletionItemKind.Function: return mItemKind.Function;
+		case ls.CompletionItemKind.Constructor: return mItemKind.Constructor;
+		case ls.CompletionItemKind.Field: return mItemKind.Field;
+		case ls.CompletionItemKind.Variable: return mItemKind.Variable;
+		case ls.CompletionItemKind.Class: return mItemKind.Class;
+		case ls.CompletionItemKind.Interface: return mItemKind.Interface;
+		case ls.CompletionItemKind.Module: return mItemKind.Module;
+		case ls.CompletionItemKind.Property: return mItemKind.Property;
+		case ls.CompletionItemKind.Unit: return mItemKind.Unit;
+		case ls.CompletionItemKind.Value: return mItemKind.Value;
+		case ls.CompletionItemKind.Enum: return mItemKind.Enum;
+		case ls.CompletionItemKind.Keyword: return mItemKind.Keyword;
+		case ls.CompletionItemKind.Snippet: return mItemKind.Snippet;
+		case ls.CompletionItemKind.Color: return mItemKind.Color;
+		case ls.CompletionItemKind.File: return mItemKind.File;
+		case ls.CompletionItemKind.Reference: return mItemKind.Reference;
+	}
+	return mItemKind.Property;
+}
+
+function toRange(range: ls.Range): Range {
+	if (!range) {
+		return void 0;
+	}
+	return new Range(range.start.line + 1, range.start.character + 1, range.end.line + 1, range.end.character + 1);
 }
 
 function flattenDiagnosticMessageText(
@@ -233,17 +274,19 @@ interface MyCompletionItem extends monaco.languages.CompletionItem {
   position: Position;
 }
 
+const emmetTriggerCharacters = ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
 export class SuggestAdapter extends Adapter
   implements monaco.languages.CompletionItemProvider {
   public get triggerCharacters(): string[] {
-    return ['.'];
+    return [...emmetTriggerCharacters, '.'];
   }
 
   provideCompletionItems(
     model: monaco.editor.IReadOnlyModel,
     position: Position,
     token: CancellationToken
-  ): Thenable<monaco.languages.CompletionItem[]> {
+  ): Thenable<monaco.languages.CompletionList> {
     const wordInfo = model.getWordUntilPosition(position);
     const resource = model.uri;
     const offset = this._positionToOffset(resource, position);
@@ -258,17 +301,53 @@ export class SuggestAdapter extends Adapter
           if (!info) {
             return;
           }
-          let suggestions: MyCompletionItem[] = info.entries.map(entry => {
-            return {
-              uri: resource,
-              position: position,
-              label: entry.name,
-              sortText: entry.sortText,
-              kind: SuggestAdapter.convertKind(entry.kind),
-            };
-          });
 
-          return suggestions;
+          const emmetItems = info.emmetCompletions ?  info.emmetCompletions.items.map(i => {
+            const entry = {
+              ...i,
+              sortText: Priority.Emmet + i.label
+            };
+
+            let item : MyCompletionItem = {
+              label: entry.label,
+              insertText: entry.insertText,
+              sortText: entry.sortText,
+              filterText: entry.filterText,
+              documentation: entry.documentation,
+              detail: entry.detail,
+              uri: resource,
+              position,
+              kind: toCompletionItemKind(entry.kind),
+            };
+            if (entry.textEdit) {
+              item.range = toRange(entry.textEdit.range);
+              item.insertText = entry.textEdit.newText;
+            }
+            if (entry.insertTextFormat === ls.InsertTextFormat.Snippet) {
+              item.insertText = { value: <string> item.insertText };
+            }
+            return item;
+          }) : [];
+
+          let suggestions: MyCompletionItem[];
+          if (info.languageCompletions) {
+            suggestions = info.languageCompletions.entries.map(entry => {
+              return {
+                uri: resource,
+                position: position,
+                label: entry.name,
+                sortText: entry.sortText,
+                kind: SuggestAdapter.convertKind(entry.kind),
+              };
+            });
+          } else {
+            suggestions = []
+          }
+
+          return {
+            isIncomplete: emmetItems.length !== 0,
+            items: emmetItems.concat(suggestions)
+          };
         })
     );
   }

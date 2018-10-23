@@ -8,6 +8,9 @@ import * as ts from './lib/typescriptServices';
 import { lib_dts, lib_es6_dts } from './lib/lib';
 import * as fetchTypings from './fetchDependencyTypings';
 
+import * as ls from './lib/emmet/expand/languageserver-types';
+import * as emmet from './lib/emmet/emmetHelper';
+
 import Promise = monaco.Promise;
 import IWorkerContext = monaco.worker.IWorkerContext;
 
@@ -20,6 +23,11 @@ const ES6_LIB = {
 	NAME: 'defaultLib:lib.es6.d.ts',
 	CONTENTS: lib_es6_dts
 };
+
+export enum Priority {
+	Emmet,
+	Platform
+}
 
 declare global {
   interface Window { BrowserFS: any; }
@@ -127,14 +135,19 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
         const p = JSON.parse(code);
 
         fetchTypings.fetchAndAddDependencies(p.dependencies, (paths) => {
-          Object.keys(paths).forEach(p => {
-            const pathToWrite = '/sandbox/' + p;
-            this.files[pathToWrite] = paths[p];
+          const fileAmount = Object.keys(paths).length;
+          // Only sync if the file amount is not too high, otherwise we'll
+          // clog all resources
+          if (fileAmount < 400) {
+            Object.keys(paths).forEach(p => {
+              const pathToWrite = '/sandbox/' + p;
+              this.files[pathToWrite] = paths[p];
 
-            ensureDirectoryExistence(pathToWrite, () => {
-              this.fs.writeFile(pathToWrite, paths[p], () => {});
+              ensureDirectoryExistence(pathToWrite, () => {
+                this.fs.writeFile(pathToWrite, paths[p], () => {});
+              });
             });
-          })
+          }
         }).then(() => {
           this.typesLoaded = true;
           this._languageService.cleanupSemanticCache();
@@ -308,6 +321,15 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
     });
   }
 
+  private _getTextDocument(uri: string): ls.TextDocument {
+		let models = this._ctx.getMirrorModels();
+		for (let model of models) {
+			if (model.uri.toString() === uri) {
+				return ls.TextDocument.create(uri, 'javascript', model.version, model.getValue());
+			}
+		}
+		return null;
+  }
 
 	// --- language features
 
@@ -349,8 +371,23 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 		return Promise.as(diagnostics);
 	}
 
-	getCompletionsAtPosition(fileName: string, position: number): Promise<ts.CompletionInfo> {
-		return Promise.as(this._languageService.getCompletionsAtPosition(fileName, position, undefined));
+	getCompletionsAtPosition(fileName: string, offset: number): Promise<{languageCompletions: ts.CompletionInfo | undefined, emmetCompletions: any | undefined}> {
+    const document = this._getTextDocument(fileName);
+    const position = document.positionAt(offset);
+    const languageCompletions = this._languageService.getCompletionsAtPosition(fileName, offset, undefined)
+    const emmetCompletions = emmet.doComplete(document, position, 'jsx', {
+      showExpandedAbbreviation: 'always',
+      showAbbreviationSuggestions: true,
+      syntaxProfiles: {},
+      variables: {},
+      preferences: {}
+    });
+
+    const newLanguageCompletions = {
+      languageCompletions,
+      emmetCompletions
+    }
+		return Promise.as(newLanguageCompletions);
 	}
 
 	getCompletionEntryDetails(fileName: string, position: number, entry: string): Promise<ts.CompletionEntryDetails> {

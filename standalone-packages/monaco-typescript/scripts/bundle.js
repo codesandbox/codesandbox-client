@@ -11,6 +11,7 @@ const helpers = require('monaco-plugin-helpers');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 
+
 const sha1 = helpers.getGitVersion(REPO_ROOT);
 const semver = require('../package.json').version;
 const headerVersion = semver + '(' + sha1 + ')';
@@ -30,16 +31,23 @@ bundleOne('tsMode');
 bundleOne('tsWorker');
 
 function bundleOne(moduleId, exclude) {
+
 	requirejs.optimize({
 		baseUrl: 'release/dev/',
 		name: 'vs/language/typescript/' + moduleId,
 		out: 'release/min/' + moduleId + '.js',
 		exclude: exclude,
 		paths: {
-			'vs/language/typescript': REPO_ROOT + '/release/dev'
-		},
+      'vs/language/typescript': REPO_ROOT + '/release/dev',
+    },
+    packages: [{
+      name: 'vscode-languageserver-types',
+      location: path.join(__dirname, '../node_modules/vscode-languageserver-types/lib/umd'),
+      main: 'main'
+    }],
 		optimize: 'none'
 	}, function(buildResponse) {
+    console.log(buildResponse)
 		const filePath = path.join(REPO_ROOT, 'release/min/' + moduleId + '.js');
 		const fileContents = fs.readFileSync(filePath).toString();
 		console.log();

@@ -241,7 +241,8 @@ const getRequireStatements = (title: string, code: string) => {
     }
   });
 
-  return requires;
+  // Early exit with too many imports, takes too much CPU
+  return requires.length > 400 ? [] : requires;
 };
 
 const tempTransformFiles = files => {

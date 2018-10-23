@@ -42,11 +42,24 @@ gulp.task('old-browserfs', () =>
     .pipe(gulp.dest('www/static/browserfs'))
 );
 
+gulp.task('old-vscode', () =>
+  gulp
+    .src('standalone-packages/vscode-editor/release/min/vs/**/*')
+    .pipe(gulp.dest('public/vscode2/vs'))
+);
+
 gulp.task('statics', () =>
   gulp.src('packages/app/public/**/*').pipe(gulp.dest('www'))
 );
 
-gulp.task('default', ['app', 'homepage', 'statics', 'monaco', 'old-browserfs']);
+gulp.task('default', [
+  'app',
+  'homepage',
+  'statics',
+  'monaco',
+  'old-browserfs',
+  ['old-vscode'],
+]);
 
 gulp.task('clean-vscode', rimraf('standalone-packages/monaco-editor-core'));
 
