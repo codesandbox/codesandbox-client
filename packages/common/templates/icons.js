@@ -7,6 +7,7 @@ import Parcel from 'common/components/logos/Parcel';
 import Preact from 'common/components/logos/Preact';
 import Vue from 'common/components/logos/Vue';
 import Svelte from 'common/components/logos/Svelte';
+import Sapper from 'common/components/logos/Sapper';
 import Dojo from 'common/components/logos/Dojo';
 import CxJS from 'common/components/logos/CxJS';
 import Reason from 'common/components/logos/Reason';
@@ -35,6 +36,7 @@ import {
   node,
   apollo,
   nest,
+  sapper,
 } from './';
 
 import type { Template } from './';
@@ -59,6 +61,8 @@ export default function getIcon(theme: Template) {
       return Dojo;
     case ember.name:
       return Ember;
+    case sapper.name:
+      return Sapper;
     case cxjs.name:
       return CxJS;
     case reason.name:
