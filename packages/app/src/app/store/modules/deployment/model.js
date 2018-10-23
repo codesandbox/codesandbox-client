@@ -32,8 +32,9 @@ const Deploy = types.model('Deploy', {
     'FROZEN',
     'ERROR',
   ]),
+  instanceCount: types.maybeNull(types.integer),
   alias: types.maybeNull(types.array(Alias)),
-  scale: Scale,
+  scale: types.maybeNull(Scale),
   creator: Creator,
   type: types.enumeration('types', ['NPM', 'DOCKER', 'STATIC']),
 });

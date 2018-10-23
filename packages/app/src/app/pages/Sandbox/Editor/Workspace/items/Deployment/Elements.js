@@ -58,6 +58,15 @@ export const Name = styled.span`
   margin-top: 0;
   margin-bottom: 0.5rem;
   vertical-align: middle;
+
+  span {
+    color: ${props =>
+      props.theme.light
+        ? props.theme.background3.darken(0.5)
+        : props.theme.background3.lighten(0.5)};
+    font-size: 12px;
+    margin-left: 0.5rem;
+  }
 `;
 
 export const Link = styled.a`

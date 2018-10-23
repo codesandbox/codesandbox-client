@@ -126,11 +126,12 @@ export async function postToZeit({ http, path, props, state }) {
 
 export function getDeploymentData({ state }) {
   const sandbox = state.get('editor.currentSandbox');
-  const nowData = sandbox.modules
-    .filter(
-      m => m.title === 'now.json' || (m.title === 'package.json' && m.now)
-    )
-    .map(c => JSON.parse(c.code))[0];
+  const nowData =
+    sandbox.modules
+      .filter(
+        m => m.title === 'now.json' || (m.title === 'package.json' && m.now)
+      )
+      .map(c => JSON.parse(c.code))[0] || {};
 
   if (!nowData.name) {
     nowData.name = `csb-${sandbox.id}`;
@@ -168,7 +169,9 @@ export async function getDeploys({ http, path, state, props }) {
     });
     const deploys = data.result.deployments;
 
-    const deploysNoAlias = deploys.filter(d => d.name === nowData.name);
+    const deploysNoAlias = deploys
+      .filter(d => d.name === nowData.name)
+      .sort((a, b) => (a.created < b.created ? 1 : -1));
 
     const assignAlias = async d => {
       const alias = await deploysByID(d.uid, token, http);
