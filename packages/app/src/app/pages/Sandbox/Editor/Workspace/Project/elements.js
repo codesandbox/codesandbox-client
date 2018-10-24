@@ -35,7 +35,7 @@ export const PrivacyContainer = styled.span`
   margin-bottom: 1rem;
 `;
 
-export const FreezeConatainer = styled.span`
+export const FreezeContainer = styled.span`
   display: flex;
   justify-content: flex-end;
 `;

@@ -32,7 +32,7 @@ import {
   PropertyValue,
   PropertyName,
   Icon,
-  FreezeConatainer,
+  FreezeContainer,
 } from './elements';
 
 class Project extends React.Component {
@@ -275,7 +275,7 @@ class Project extends React.Component {
               </Tooltip>
             </PropertyName>
             <PropertyValue>
-              <FreezeConatainer>
+              <FreezeContainer>
                 <Switch
                   small
                   right={sandbox.isFrozen}
@@ -283,7 +283,7 @@ class Project extends React.Component {
                   offMode
                   secondary
                 />
-              </FreezeConatainer>
+              </FreezeContainer>
             </PropertyValue>
           </Item>
         ) : null}
