@@ -17,6 +17,7 @@ import {
 } from './modules/files/actions';
 
 import { disconnect } from './modules/live/actions';
+import { alertForkingFrozenSandbox } from './modules/editor/actions';
 import { initializeLive } from './modules/live/common-sequences';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
@@ -146,15 +147,25 @@ export const forkSandbox = sequence('forkSandbox', [
   },
 ]);
 
+export const forkFrozenSandbox = sequence('forkFrozenSandbox', [
+  when(state`editor.currentSandbox.isFrozen`),
+  {
+    true: [alertForkingFrozenSandbox, forkSandbox],
+    false: [],
+  },
+]);
+
 export const ensureOwnedEditable = sequence('ensureOwnedEditable', [
-  when(
-    state`editor.currentSandbox.owned`,
-    state`editor.currentSandbox.isFrozen`,
-    (owned, frozen) => !owned || frozen
-  ),
+  when(state`editor.currentSandbox.owned`, owned => !owned),
   {
     true: forkSandbox,
-    false: [],
+    false: [
+      when(state`editor.currentSandbox.isFrozen`, isFrozen => isFrozen),
+      {
+        true: forkFrozenSandbox,
+        false: [],
+      },
+    ],
   },
 ]);
 
