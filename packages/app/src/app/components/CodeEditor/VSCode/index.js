@@ -428,10 +428,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
-  setReceivingCode = (receiving: boolean) => {
-    this.receivingCode = receiving;
-  };
-
   setTSConfig = (config: Object) => {
     this.tsconfig = config;
 
@@ -444,28 +440,27 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     corrections?: Array<ModuleCorrection>
   ) => {
     const oldModule = this.currentModule;
+    this.swapDocuments(oldModule, newModule);
 
-    this.swapDocuments(oldModule, newModule).then(() => {
-      this.currentModule = newModule;
-      this.currentTitle = newModule.title;
-      this.currentDirectoryShortid = newModule.directoryShortid;
+    this.currentModule = newModule;
+    this.currentTitle = newModule.title;
+    this.currentDirectoryShortid = newModule.directoryShortid;
 
-      if (errors) {
-        this.setErrors(errors);
-      }
+    if (errors) {
+      this.setErrors(errors);
+    }
 
-      if (corrections) {
-        this.setCorrections(corrections);
-      }
+    if (corrections) {
+      this.setCorrections(corrections);
+    }
 
-      if (this.props.onCodeReceived) {
-        // Whenever the user changes a module we set up a state that defines
-        // that the changes of code are not sent to live users. We need to reset
-        // this state when we're doing changing modules
-        this.props.onCodeReceived();
-        this.liveOperationCode = '';
-      }
-    });
+    if (this.props.onCodeReceived) {
+      // Whenever the user changes a module we set up a state that defines
+      // that the changes of code are not sent to live users. We need to reset
+      // this state when we're doing changing modules
+      this.props.onCodeReceived();
+      this.liveOperationCode = '';
+    }
   };
 
   onSelectionChangedDebounced = data => {
@@ -737,7 +732,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       code !== this.getCode() &&
       (!moduleId || this.currentModule.id === moduleId)
     ) {
-      // this.updateCode(code);
       this.lint(
         code,
         this.currentModule.title,
@@ -749,9 +743,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  applyOperationToModel = (operation, pushStack) => {
-    const model = this.editor.getActiveCodeEditor().getModel();
-
+  applyOperationToModel = (
+    operation,
+    pushStack = false,
+    model = this.editor.getActiveCodeEditor().getModel()
+  ) => {
     const results = [];
     let index = 0;
     for (let i = 0; i < operation.ops.length; i++) {
@@ -791,11 +787,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       }
     }
 
+    this.receivingCode = true;
     if (pushStack) {
       model.pushEditOperations([], results);
     } else {
       model.applyEdits(results);
     }
+    this.receivingCode = false;
   };
 
   applyOperations = (operations: { [moduleShortid: string]: any }) => {
@@ -804,25 +802,30 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     Object.keys(operationsJSON).forEach(moduleShortid => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
 
-      if (moduleShortid !== this.currentModule.shortid) {
-        // Apply the code to the current module code itself
-        const module = this.sandbox.modules.find(
-          m => m.shortid === moduleShortid
-        );
+      const module = this.sandbox.modules.find(
+        m => m.shortid === moduleShortid
+      );
+      if (!module) {
+        return;
+      }
 
-        if (!module) {
-          return;
-        }
+      const modulePath = getModulePath(
+        this.sandbox.modules,
+        this.sandbox.directories,
+        module.id
+      );
+      const uri = this.monaco.Uri.file('/sandbox' + modulePath);
+      const model = this.editor.textFileService.modelService.getModel(uri);
 
+      if (model) {
+        this.applyOperationToModel(operation, false, model);
+        this.liveOperationCode = '';
+      } else {
         const code = operation.apply(module.code || '');
         if (this.props.onChange) {
           this.props.onChange(code, module.shortid);
         }
-        return;
       }
-
-      this.liveOperationCode = '';
-      this.applyOperationToModel(operation);
     });
   };
 
@@ -1108,6 +1111,17 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       .deltaDecorations(modelInfo.decorations || [], decorations);
   };
 
+  getModelById = (id: string) => {
+    const modulePath = getModulePath(
+      this.sandbox.modules,
+      this.sandbox.directories,
+      id
+    );
+
+    const uri = this.monaco.Uri.file('/sandbox' + modulePath);
+    return this.editor.textFileService.modelService.getModel(uri);
+  };
+
   updateLintWarnings = async (markers: Array<Object>) => {
     const currentModule = this.currentModule;
 
@@ -1133,14 +1147,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  swapDocuments = (currentModule: Module, nextModule: Module) =>
-    new Promise(resolve => {
-      this.openModule(nextModule);
-
-      // Reset changes
-      this.changes = { code: '', changes: [] };
-      resolve();
-    });
+  swapDocuments = (currentModule: Module, nextModule: Module) => {
+    this.openModule(nextModule);
+  };
 
   updateCode(code: string = '') {
     const operation = getTextOperation(this.getCode(), code);
