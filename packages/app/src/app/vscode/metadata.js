@@ -30,9 +30,9 @@ const METADATA = {
       modulePrefix: 'vs/language/css',
       paths: {
         src: process.env.VSCODE
-          ? '/vscode-editor/node_modules/monaco-css/release/dev'
+          ? '/monaco-css/release/dev'
           : '/public/vscode3/vs/language/css',
-        'npm/dev': 'node_modules/monaco-css/release/dev',
+        'npm/dev': '../monaco-css/release/dev',
         'npm/min': '/public/vscode3/vs/language/css',
         esm: 'node_modules/monaco-css/release/esm',
       },
