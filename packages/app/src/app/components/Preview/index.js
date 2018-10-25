@@ -232,6 +232,7 @@ class BasePreview extends React.Component<Props, State> {
     } else {
       const socket = io(getSSEUrl(), {
         autoConnect: false,
+        transports: ['websocket', 'polling'],
       });
       this.$socket = socket;
       if (process.env.NODE_ENV === 'development') {
