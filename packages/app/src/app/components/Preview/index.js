@@ -50,7 +50,6 @@ type State = {
   overlayMessage: ?string,
   hibernated: boolean,
   sseError: boolean,
-  localClose: boolean,
 };
 
 const getSSEUrl = (id?: string) =>
@@ -152,6 +151,8 @@ class BasePreview extends React.Component<Props, State> {
   // TODO: Find typedefs for this
   $socket: ?any;
   connectTimeout: ?number;
+  // indicates if the socket closing is initiated by us
+  localClose: boolean;
 
   constructor(props: Props) {
     super(props);
@@ -170,7 +171,6 @@ class BasePreview extends React.Component<Props, State> {
       overlayMessage: null,
       hibernated: false,
       sseError: false,
-      localClose: false,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -185,6 +185,7 @@ class BasePreview extends React.Component<Props, State> {
 
     if (this.serverPreview) {
       this.connectTimeout = null;
+      this.localClose = false;
       this.setupSSESockets();
     }
     this.listener = listen(this.handleMessage);
@@ -220,7 +221,7 @@ class BasePreview extends React.Component<Props, State> {
         frameInitialized: false,
       });
       if (this.$socket) {
-        this.state.localClose = true;
+        this.localClose = true;
         this.$socket.close();
         // we need this setTimeout() for socket open() to work immediately after close()
         setTimeout(() => {
@@ -238,8 +239,8 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       socket.on('disconnect', () => {
-        if (this.state.localClose) {
-          this.state.localClose = false;
+        if (this.localClose) {
+          this.localClose = false;
           return;
         }
 
@@ -379,7 +380,7 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     if (this.$socket) {
-      this.state.localClose = true;
+      this.localClose = true;
       this.$socket.close();
     }
   }
