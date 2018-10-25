@@ -2,7 +2,7 @@
 /** @jsx h */
 import io from 'socket.io-client';
 import { Terminal } from 'xterm';
-import { render, h } from 'preact';
+import { render, h } from 'preact'; // eslint-disable-line import/extensions
 import * as fit from 'xterm/lib/addons/fit/fit';
 import * as WebfontLoader from 'xterm-webfont';
 import 'xterm/dist/xterm.css';
@@ -173,9 +173,9 @@ const createMainCube = () => {
       '-=.1'
     );
 
-  //topfront 0 -16
-  //topleft -52 -42
-  //topright 53 -41
+  // topfront 0 -16
+  // topleft -52 -42
+  // topright 53 -41
 
   // createCube(cubeEl, 'second', true);
   // TweenLite.to('#second', 0.5, { x: 53, y: 26 });
@@ -232,7 +232,7 @@ async function start() {
     socket.emit('sandbox:start');
   });
 
-  socket.on('sandbox:log', ({ chan, data }) => {
+  socket.on('sandbox:log', ({ data }) => {
     term.write(data);
   });
 
@@ -279,7 +279,7 @@ async function start() {
 
     setTimeout(() => {
       // if (process.env.NODE_ENV === 'production') {
-      window.location.replace(`https://${sandbox}.${domain}/`);
+      window.location.reload(true);
       // }
     }, 100);
   });
