@@ -40,11 +40,7 @@ function bundleOne(moduleId, exclude) {
 		paths: {
       'vs/language/typescript': REPO_ROOT + '/release/dev',
     },
-    packages: [{
-      name: 'vscode-languageserver-types',
-      location: path.join(__dirname, '../node_modules/vscode-languageserver-types/lib/umd'),
-      main: 'main'
-    }],
+    packages: [],
 		optimize: 'none'
 	}, function(buildResponse) {
     console.log(buildResponse)
