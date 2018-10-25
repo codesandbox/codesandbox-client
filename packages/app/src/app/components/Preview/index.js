@@ -50,6 +50,7 @@ type State = {
   overlayMessage: ?string,
   hibernated: boolean,
   sseError: boolean,
+  localClose: boolean,
 };
 
 const getSSEUrl = (id?: string) =>
@@ -150,6 +151,7 @@ class BasePreview extends React.Component<Props, State> {
   };
   // TODO: Find typedefs for this
   $socket: ?any;
+  connectTimeout: ?number;
 
   constructor(props: Props) {
     super(props);
@@ -168,6 +170,7 @@ class BasePreview extends React.Component<Props, State> {
       overlayMessage: null,
       hibernated: false,
       sseError: false,
+      localClose: false,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -181,6 +184,7 @@ class BasePreview extends React.Component<Props, State> {
     };
 
     if (this.serverPreview) {
+      this.connectTimeout = null;
       this.setupSSESockets();
     }
     this.listener = listen(this.handleMessage);
@@ -203,12 +207,11 @@ class BasePreview extends React.Component<Props, State> {
 
   setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
-    let connectTimeout = null;
 
-    function onTimeout(setServerStatus) {
-      connectTimeout = null;
-      if (setServerStatus) {
-        setServerStatus('disconnected');
+    function onTimeout(comp) {
+      comp.connectTimeout = null;
+      if (comp.props.setServerStatus) {
+        comp.props.setServerStatus('disconnected');
       }
     }
 
@@ -217,15 +220,12 @@ class BasePreview extends React.Component<Props, State> {
         frameInitialized: false,
       });
       if (this.$socket) {
+        this.state.localClose = true;
         this.$socket.close();
+        // we need this setTimeout() for socket open() to work immediately after close()
         setTimeout(() => {
-          if (this.$socket) {
-            connectTimeout = setTimeout(
-              () => onTimeout(this.props.setServerStatus),
-              3000
-            );
-            this.$socket.open();
-          }
+          this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
+          this.$socket.open();
         }, 0);
       }
     } else {
@@ -238,6 +238,11 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       socket.on('disconnect', () => {
+        if (this.state.localClose) {
+          this.state.localClose = false;
+          return;
+        }
+
         if (this.props.setServerStatus) {
           let status = 'disconnected';
           if (this.state.hibernated) {
@@ -251,9 +256,9 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('connect', async () => {
-        if (connectTimeout) {
-          clearTimeout(connectTimeout);
-          connectTimeout = null;
+        if (this.connectTimeout) {
+          clearTimeout(this.connectTimeout);
+          this.connectTimeout = null;
         }
 
         if (this.props.setServerStatus) {
@@ -351,10 +356,7 @@ class BasePreview extends React.Component<Props, State> {
         }
       });
 
-      connectTimeout = setTimeout(
-        () => onTimeout(this.props.setServerStatus),
-        3000
-      );
+      this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
       socket.open();
     }
   };
@@ -377,6 +379,7 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     if (this.$socket) {
+      this.state.localClose = true;
       this.$socket.close();
     }
   }
