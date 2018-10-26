@@ -1046,23 +1046,31 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   setupLintWorker = () => {
-    this.lintWorker = new LinterWorker();
+    if (!this.lintWorker) {
+      this.lintWorker = new LinterWorker();
 
-    this.lintWorker.addEventListener('message', event => {
-      const { markers, version } = event.data;
+      this.lintWorker.addEventListener('message', event => {
+        const { markers, version } = event.data;
 
-      requestAnimationFrame(() => {
-        if (this.editor.getModel()) {
-          if (version === this.editor.getModel().getVersionId()) {
-            this.updateLintWarnings(markers);
-          } else {
-            this.updateLintWarnings([]);
+        requestAnimationFrame(() => {
+          if (this.editor.getModel()) {
+            if (version === this.editor.getModel().getVersionId()) {
+              this.updateLintWarnings(markers);
+            } else {
+              this.updateLintWarnings([]);
+            }
           }
-        }
+        });
       });
-    });
 
-    this.lint = debounce(this.lint, 400);
+      this.lint = debounce(this.lint, 400);
+
+      this.lint(
+        this.getCode(),
+        this.currentModule.title,
+        this.editor.getModel().getVersionId()
+      );
+    }
   };
 
   setupWorkers = () => {
