@@ -27,7 +27,7 @@ export default function initialize() {
   let v2Initialized = false;
   const preset = new Preset(
     'create-react-app',
-    ['web.js', 'js', 'json', 'web.jsx', 'jsx'],
+    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
     { 'react-native': 'react-native-web' },
     {
       hasDotEnv: true,
@@ -73,11 +73,12 @@ export default function initialize() {
                   },
                 ],
                 'react',
+                'typescript',
               ],
             },
           };
           preset.registerTranspiler(
-            module => /\.jsx?$/.test(module.path),
+            module => /\.(t|j)sx?$/.test(module.path),
             [
               {
                 transpiler: babelTranspiler,
