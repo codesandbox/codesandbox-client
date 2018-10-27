@@ -11,5 +11,6 @@ export default class ModuleError extends Error {
     this.message =
       err && typeof err === 'object' && err.message ? err.message : err;
     this.error = err;
+    this.stack = err.stack;
   }
 }

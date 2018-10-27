@@ -32,7 +32,6 @@ We infer sandbox settings based on several files in a repository.
 | Template - React            | If `package.json` dependencies contains `react-scripts`.    |
 | Template - React-Typescript | If `package.json` dependencies contains `react-scripts-ts`. |
 | Template - Svelte           | If `package.json` dependencies contains `svelte`.           |
-| Template - Node             | If `package.json` dependencies contains `ember-cli`.        |
 
 Additionally, you may specify a `template` property in your `./sandbox.config.json` file.
 

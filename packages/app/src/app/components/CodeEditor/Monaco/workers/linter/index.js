@@ -39,6 +39,9 @@ const allRules = {
   'jsx-a11y/role-has-required-aria-props': require('eslint-plugin-jsx-a11y/lib/rules/role-has-required-aria-props'),
   'jsx-a11y/role-supports-aria-props': require('eslint-plugin-jsx-a11y/lib/rules/role-supports-aria-props'),
   'jsx-a11y/scope': require('eslint-plugin-jsx-a11y/lib/rules/scope'),
+  'react-hooks/rules-of-hooks': require('eslint-plugin-react-hooks').rules[
+    'rules-of-hooks'
+  ],
 };
 /* eslint-enable global-require */
 
@@ -282,6 +285,7 @@ const defaultConfig = {
     // 'react/react-in-jsx-scope': 'error',
     'react/require-render-return': 'error',
     'react/style-prop-object': 'warn',
+    'react-hooks/rules-of-hooks': 'error',
 
     // https://github.com/evcohen/eslint-plugin-jsx-a11y/tree/master/docs/rules
     'jsx-a11y/accessible-emoji': 'warn',

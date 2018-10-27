@@ -30,8 +30,8 @@
 				modulePrefix: 'vs/language/css',
 				paths: {
 					src: '/monaco-css/release/dev',
-					'npm/dev': 'node_modules/monaco-css/release/dev',
-					'npm/min': 'node_modules/monaco-css/release/min',
+					'npm/dev': '../monaco-css/release/dev',
+					'npm/min': '../monaco-css/release/min',
 					esm: 'node_modules/monaco-css/release/esm',
 				}
 			},

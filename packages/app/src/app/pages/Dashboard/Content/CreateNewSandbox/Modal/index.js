@@ -26,7 +26,6 @@ const usedTemplates = sortBy(
 
 const TEMPLATE_BASE_WIDTH = 150;
 const MAIN_TEMPLATE_BASE_WIDTH = 190;
-const SERVER_TEMPLATE_BASE_WIDTH = 150; // 150
 
 export default class Modal extends React.PureComponent {
   selectTemplate = template => {
@@ -39,21 +38,21 @@ export default class Modal extends React.PureComponent {
     const paddedWidth = width;
     const mainTemplates = usedTemplates.filter(t => t.main && !t.isServer);
     const otherTemplates = usedTemplates.filter(t => !t.main && !t.isServer);
-    const serverTemplates = usedTemplates.filter(t => t.isServer);
+    const mainServerTemplates = usedTemplates.filter(t => t.main && t.isServer);
+    const otherServerTemplates = usedTemplates.filter(
+      t => !t.main && t.isServer
+    );
 
     const mainTemplatesPerRow = Math.max(
       1,
       paddedWidth / MAIN_TEMPLATE_BASE_WIDTH
     );
     const templatesPerRow = Math.max(1, paddedWidth / TEMPLATE_BASE_WIDTH);
-    const serverTemplatesPerRow = Math.max(
-      1,
-      paddedWidth / SERVER_TEMPLATE_BASE_WIDTH
-    );
 
     const mainRows = chunk(mainTemplates, mainTemplatesPerRow);
     const rows = chunk(otherTemplates, templatesPerRow);
-    const serverRows = chunk(serverTemplates, serverTemplatesPerRow);
+    const mainServerRows = chunk(mainServerTemplates, mainTemplatesPerRow);
+    const serverRows = chunk(otherServerTemplates, templatesPerRow);
 
     return (
       <Container
@@ -64,7 +63,7 @@ export default class Modal extends React.PureComponent {
         <InnerContainer forking={forking} closing={closing}>
           <Title>Client Templates</Title>
           {mainRows.map((ts, i) => (
-            // eslint-disable-next-line
+            // eslint-disable-next-line react/no-array-index-key
             <Templates key={i}>
               {ts.map(t => (
                 <Template
@@ -78,7 +77,7 @@ export default class Modal extends React.PureComponent {
           ))}
 
           {rows.map((ts, i) => (
-            // eslint-disable-next-line
+            // eslint-disable-next-line react/no-array-index-key
             <Templates style={{ fontSize: '.8rem' }} key={i}>
               {ts.map(t => (
                 <Template
@@ -93,12 +92,27 @@ export default class Modal extends React.PureComponent {
           ))}
 
           <Title>Server Templates</Title>
-          {serverRows.map((ts, i) => (
-            // eslint-disable-next-line
-            <Templates style={{ fontSize: '.9rem' }} key={i}>
+          {mainServerRows.map((ts, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Templates key={i}>
               {ts.map(t => (
                 <Template
-                  width={Math.floor(paddedWidth / serverTemplatesPerRow - 16)}
+                  width={Math.floor(paddedWidth / mainTemplatesPerRow - 16)}
+                  key={t.name}
+                  template={t}
+                  selectTemplate={this.selectTemplate}
+                />
+              ))}
+            </Templates>
+          ))}
+
+          {serverRows.map((ts, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Templates style={{ fontSize: '.8rem' }} key={i}>
+              {ts.map(t => (
+                <Template
+                  small
+                  width={Math.floor(paddedWidth / templatesPerRow - 16)}
                   key={t.name}
                   template={t}
                   selectTemplate={this.selectTemplate}

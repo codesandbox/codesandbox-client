@@ -16,5 +16,6 @@ export default new Template(
     isServer: true,
     mainFile: ['/src/pages/index.js'],
     showOnHomePage: true,
+    main: true,
   }
 );
