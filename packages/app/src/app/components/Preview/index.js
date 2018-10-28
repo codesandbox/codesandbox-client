@@ -76,6 +76,7 @@ const getDiff = (a, b) => {
       diff[p] = {
         code: b[p].code,
         path: p,
+        isBinary: b[p].isBinary,
       };
     });
 
@@ -500,6 +501,7 @@ class BasePreview extends React.Component<Props, State> {
         modulesObject[path] = {
           path,
           code: m.code,
+          isBinary: m.isBinary,
         };
       }
     });
@@ -511,6 +513,7 @@ class BasePreview extends React.Component<Props, State> {
       modulesToSend['/package.json'] = {
         code: generateFileFromSandbox(sandbox),
         path: '/package.json',
+        isBinary: false,
       };
     }
 
