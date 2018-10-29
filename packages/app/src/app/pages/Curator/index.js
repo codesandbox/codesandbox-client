@@ -31,16 +31,26 @@ class Curator extends React.Component {
   };
 
   getPopularSandboxes = date =>
-    this.props.signals.popularSandboxesMounted({
+    this.props.signals.explore.popularSandboxesMounted({
       date,
     });
 
+  pickSandbox = id => {
+    this.props.signals.explore.pickSandbox({
+      id,
+    });
+  };
+
   render() {
     const {
-      store: { popularSandboxes },
+      store: {
+        explore: { popularSandboxes },
+      },
     } = this.props;
 
     const { showPicker, selectedDate } = this.state;
+
+    console.log(popularSandboxes);
 
     return (
       <MaxWidth>
@@ -48,7 +58,7 @@ class Curator extends React.Component {
           <Navigation title="Curator Page" />
           <Heading>Curator Page</Heading>
           <SubTitle>
-            Here you can choose the sandboxes that go in the explorer page
+            Here you can choose the sandboxes that go in the explore page
           </SubTitle>
           <Buttons>
             Most popular sandboxes in the:
@@ -98,7 +108,7 @@ class Curator extends React.Component {
           {popularSandboxes ? (
             <Container>
               {popularSandboxes.sandboxes.map(sandbox => (
-                <SandboxCard {...sandbox} />
+                <SandboxCard {...sandbox} pickSandbox={this.pickSandbox} />
               ))}
             </Container>
           ) : (

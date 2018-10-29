@@ -47,13 +47,6 @@ export function setWorkspace({ state, props }) {
   state.set(`workspace.openedWorkspaceItem`, 'files');
 }
 
-export function mountPopularSandboxes({ path, api, props }) {
-  return api
-    .get(`/sandboxes/popular?start_date=${props.date}`)
-    .then(data => path.success({ popularSandboxes: data }))
-    .catch(() => path.error());
-}
-
 export function setUrlOptions({ state, router, utils }) {
   const options = router.getSandboxOptions();
 

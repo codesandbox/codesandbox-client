@@ -2,38 +2,6 @@ import { types } from 'mobx-state-tree';
 
 export default {
   hasLoadedApp: types.boolean,
-  popularSandboxes: types.maybeNull(
-    types.model({
-      startDate: types.string,
-      sandboxes: types.array(
-        types.model({
-          viewCount: types.number,
-          title: types.maybeNull(types.string),
-          template: types.string,
-          id: types.string,
-          description: types.maybeNull(types.string),
-          git: types.maybeNull(
-            types.model({
-              username: types.string,
-              repo: types.string,
-              path: types.string,
-              commitSha: types.maybeNull(types.string),
-              branch: types.string,
-            })
-          ),
-          author: types.maybeNull(
-            types.model({
-              username: types.string,
-              name: types.maybeNull(types.string),
-              id: types.string,
-              avatarUrl: types.maybeNull(types.string),
-            })
-          ),
-        })
-      ),
-      endDate: types.string,
-    })
-  ),
   jwt: types.maybeNull(types.string),
   isAuthenticating: types.boolean,
   userMenuOpen: types.boolean,

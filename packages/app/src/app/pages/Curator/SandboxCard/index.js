@@ -121,6 +121,7 @@ class SandboxItem extends React.PureComponent<Props> {
       author,
       git,
       description,
+      pickSandbox,
     } = this.props;
 
     const { screenshotUrl } = this.state;
@@ -201,7 +202,9 @@ class SandboxItem extends React.PureComponent<Props> {
               </Details>
             </div>
           </SandboxInfo>
-          <Pick small>✨ Pick Sandbox</Pick>
+          <Pick small onClick={() => pickSandbox(id)}>
+            ✨ Pick Sandbox
+          </Pick>
         </Container>
       </div>
     );

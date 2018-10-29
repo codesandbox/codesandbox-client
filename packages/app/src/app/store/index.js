@@ -29,6 +29,7 @@ import editor from './modules/editor';
 import profile from './modules/profile';
 import server from './modules/server';
 import deployment from './modules/deployment';
+import explore from './modules/explore';
 import git from './modules/git';
 import preferences from './modules/preferences';
 import workspace from './modules/workspace';
@@ -81,7 +82,6 @@ export default Module({
     sandboxPageMounted: sequences.loadSandboxPage,
     cliMounted: sequences.loadCLI,
     cliInstructionsMounted: sequences.loadCLIInstructions,
-    popularSandboxesMounted: sequences.mountPopularSandboxes,
     githubPageMounted: sequences.loadGitHubPage,
     connectionChanged: sequences.setConnection,
     modalOpened: sequences.openModal,
@@ -115,6 +115,7 @@ export default Module({
     live,
     userNotifications,
     server,
+    explore,
   },
   providers: {
     api: ApiProvider,
