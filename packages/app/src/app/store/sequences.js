@@ -99,6 +99,19 @@ export const signOutGithubIntegration = [
   set(state`user.integrations.github`, null),
 ];
 
+export const mountPopularSandboxes = [
+  actions.mountPopularSandboxes,
+  {
+    success: [set(state`popularSandboxes`, props`popularSandboxes`)],
+    error: [
+      factories.addNotification(
+        'There has been a problem getting the sandboxes',
+        'error'
+      ),
+    ],
+  },
+];
+
 export const getAuthToken = actions.getAuthToken;
 
 export const openUserMenu = set(state`userMenuOpen`, true);

@@ -40,6 +40,7 @@ import userNotifications from './modules/user-notifications';
 export default Module({
   model,
   state: {
+    popularSandboxes: null,
     hasLoadedApp: false,
     jwt: null,
     isAuthenticating: true,
@@ -80,6 +81,7 @@ export default Module({
     sandboxPageMounted: sequences.loadSandboxPage,
     cliMounted: sequences.loadCLI,
     cliInstructionsMounted: sequences.loadCLIInstructions,
+    popularSandboxesMounted: sequences.mountPopularSandboxes,
     githubPageMounted: sequences.loadGitHubPage,
     connectionChanged: sequences.setConnection,
     modalOpened: sequences.openModal,
