@@ -15,6 +15,12 @@ const Author = types.model('Author', {
   avatarUrl: types.maybeNull(types.string),
 });
 
+const Picks = types.model('Picks', {
+  description: types.maybeNull(types.string),
+  id: types.string,
+  insertedAt: types.string,
+});
+
 const PopularSandboxes = types.model('PopularSandboxes', {
   startDate: types.string,
   sandboxes: types.array(
@@ -23,6 +29,7 @@ const PopularSandboxes = types.model('PopularSandboxes', {
       title: types.maybeNull(types.string),
       template: types.string,
       id: types.string,
+      picks: types.optional(types.array(Picks), []),
       description: types.maybeNull(types.string),
       git: types.maybeNull(Git),
       author: types.maybeNull(Author),

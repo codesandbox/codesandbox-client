@@ -19,12 +19,9 @@ export const mountPopularSandboxes = [
 export const pickSandbox = [
   actions.pickSandbox,
   {
-    success: [set(state`picked-${props`sandbox.id`}`, true)],
+    success: [addNotification('Sandbox picked', 'success')],
     error: [
-      addNotification(
-        'There has been a problem getting the sandboxes',
-        'error'
-      ),
+      addNotification('There has been a problem picking the sandbox', 'error'),
     ],
   },
 ];

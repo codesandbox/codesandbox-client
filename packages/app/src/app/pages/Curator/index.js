@@ -43,14 +43,10 @@ class Curator extends React.Component {
 
   render() {
     const {
-      store: {
-        explore: { popularSandboxes },
-      },
+      store: { explore },
     } = this.props;
 
     const { showPicker, selectedDate } = this.state;
-
-    console.log(popularSandboxes);
 
     return (
       <MaxWidth>
@@ -97,7 +93,6 @@ class Curator extends React.Component {
             {showPicker ? (
               <PickerWrapper>
                 <DayPicker
-                  fromMonth={subMonths(new Date(), 6)}
                   selectedDays={selectedDate}
                   onDayClick={this.handleDayClick}
                 />
@@ -105,10 +100,14 @@ class Curator extends React.Component {
             ) : null}
           </Buttons>
 
-          {popularSandboxes ? (
+          {explore.popularSandboxes ? (
             <Container>
-              {popularSandboxes.sandboxes.map(sandbox => (
-                <SandboxCard {...sandbox} pickSandbox={this.pickSandbox} />
+              {explore.popularSandboxes.sandboxes.map(sandbox => (
+                <SandboxCard
+                  key={sandbox.id}
+                  {...sandbox}
+                  pickSandbox={this.pickSandbox}
+                />
               ))}
             </Container>
           ) : (

@@ -4,6 +4,7 @@ import React from 'react';
 import history from 'app/utils/history';
 import { sandboxUrl, profileUrl } from 'common/utils/url-generator';
 
+import { observer } from 'mobx-react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import GithubIcon from 'react-icons/lib/fa/github';
 
@@ -31,7 +32,7 @@ type Props = {
   description: string,
 };
 
-class SandboxItem extends React.PureComponent<Props> {
+class SandboxItem extends React.Component<Props> {
   el: HTMLDivElement;
 
   state = {
@@ -50,14 +51,6 @@ class SandboxItem extends React.PureComponent<Props> {
       this.screenshotTimeout = setTimeout(() => {
         this.requestScreenshot();
       }, 1000);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.id !== this.props.id) {
-      this.setState({ screenshotUrl: nextProps.screenshotUrl }, () => {
-        this.checkScreenshot();
-      });
     }
   }
 
@@ -122,6 +115,7 @@ class SandboxItem extends React.PureComponent<Props> {
       git,
       description,
       pickSandbox,
+      picks,
     } = this.props;
 
     const { screenshotUrl } = this.state;
@@ -203,7 +197,7 @@ class SandboxItem extends React.PureComponent<Props> {
             </div>
           </SandboxInfo>
           <Pick small onClick={() => pickSandbox(id)}>
-            ✨ Pick Sandbox
+            {!picks.length ? '✨ Pick Sandbox' : '✨ Pick Sandbox again'}
           </Pick>
         </Container>
       </div>
@@ -211,4 +205,4 @@ class SandboxItem extends React.PureComponent<Props> {
   }
 }
 
-export default SandboxItem;
+export default observer(SandboxItem);
