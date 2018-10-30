@@ -1059,14 +1059,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         const { markers, version } = event.data;
 
         requestAnimationFrame(() => {
-          if (this.editor.getActiveCodeEditor().getModel()) {
-            if (
-              version ===
-              this.editor
-                .getActiveCodeEditor()
-                .getModel()
-                .getVersionId()
-            ) {
+          const activeEditor = this.editor.getActiveCodeEditor();
+          if (activeEditor && activeEditor.getModel()) {
+            if (version === activeEditor.getModel().getVersionId()) {
               this.updateLintWarnings(markers);
             } else {
               this.updateLintWarnings([]);
