@@ -378,7 +378,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.registerAutoCompletions();
 
-    liftOff(monaco);
+    requestAnimationFrame(() => {
+      liftOff(monaco);
+    });
   };
 
   setCompilerOptions = () => {

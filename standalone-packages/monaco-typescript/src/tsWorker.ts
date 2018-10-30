@@ -82,6 +82,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 		this._compilerOptions = createData.compilerOptions;
     this._extraLibs = createData.extraLibs;
 
+    // @ts-ignore
     ctx.onModelRemoved((str) => {
       const p = str.indexOf('file://') === 0 ? monaco.Uri.parse(str).fsPath : str;
 
@@ -162,7 +163,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
     this.fs.readFile(path, (e, str) => {
       if (e) {
         delete this.files[path];
-        throw e;
+        return;
       }
 
       this.files[path] = str.toString();
@@ -171,13 +172,16 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 
   syncDirectory(path: string) {
     this.fs.readdir(path, (e, entries) => {
-      if (e) throw e;
+      if (e) {
+        return;
+      }
 
       entries.forEach(entry => {
         const fullEntry = path + '/' + entry;
         this.fs.stat(fullEntry, (err, stat) => {
           if (err) {
-            throw err;
+            delete this.files[path];
+            return;
           }
 
           if (stat.isDirectory()) {
