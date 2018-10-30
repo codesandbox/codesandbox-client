@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "rimraf dist && parcel build src/index.html",
+    "build": "rimraf dist && parcel build src/index.html --no-source-maps",
     "install-dependencies": "yarn install"
   }
 }
