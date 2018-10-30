@@ -32,6 +32,18 @@ export default [
       'https://cdn.rawgit.com/wesbos/cobalt2-vscode/master/theme/cobalt2.json',
   },
   {
+    name: 'Palenight',
+    id: 'palenight',
+    url:
+      'https://cdn.rawgit.com/whizkydee/vscode-material-palenight-theme/master/themes/palenight.json',
+  },
+  {
+    name: 'Palenight Italic',
+    id: 'palenightItalic',
+    url:
+      'https://cdn.rawgit.com/whizkydee/vscode-material-palenight-theme/master/themes/palenight-italic.json',
+  },
+  {
     name: 'Shades of Purple',
     id: 'shadesOfPurple',
     url:

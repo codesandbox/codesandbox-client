@@ -38,7 +38,11 @@ export default class VersionEntry extends React.PureComponent {
     fetch(`/api/v1/dependencies/${pkg}`)
       .then(response => response.json())
       .then(data => that.setState({ version: data.data.version }))
-      .catch(err => console.err(err)); // eslint-disable-line no-console
+      .catch(err => {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(err); // eslint-disable-line no-console
+        }
+      });
   }
 
   getSizeForPKG(pkg) {
@@ -49,7 +53,11 @@ export default class VersionEntry extends React.PureComponent {
           size,
         })
       )
-      .catch(err => console.err(err)); // eslint-disable-line no-console
+      .catch(err => {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(err); // eslint-disable-line no-console
+        }
+      });
   }
 
   componentWillMount() {

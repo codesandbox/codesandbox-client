@@ -22,11 +22,21 @@ import {
   StyledUserWithAvatar,
 } from './elements';
 
+const getDefaultSelectedVersion = tags => {
+  if (!tags) {
+    return '';
+  }
+
+  if (!tags.latest) {
+    return '';
+  }
+
+  return tags.latest + ' - latest';
+};
+
 export default class DependencyHit extends React.PureComponent {
   state = {
-    selectedVersion: this.props.hit.tags
-      ? this.props.hit.tags.latest || ''
-      : '',
+    selectedVersion: getDefaultSelectedVersion(this.props.hit.tags),
   };
 
   makeGitHubRepoUrl(repo) {

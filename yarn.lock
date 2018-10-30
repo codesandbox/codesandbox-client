@@ -8981,6 +8981,11 @@ eslint-plugin-jsx-a11y@^5.0.3:
     emoji-regex "^6.1.0"
     jsx-ast-utils "^1.4.0"
 
+eslint-plugin-react-hooks@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-0.0.0.tgz#9988f14082a159931c3dfa9ba699130457da927a"
+  integrity sha512-SXyU7C3E8AJbXKMdb10P/zHazcxzfuWR5OFwAVZKXVU7P/H56NLszVG6WdQBo9Pt80FfnPXtUGGbWhs3/98N4w==
+
 eslint-plugin-react@~7.4.0:
   version "7.4.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.4.0.tgz#300a95861b9729c087d362dd64abcc351a74364a"

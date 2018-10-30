@@ -378,7 +378,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.registerAutoCompletions();
 
-    liftOff(monaco);
+    requestAnimationFrame(() => {
+      liftOff(monaco);
+    });
   };
 
   setCompilerOptions = () => {
@@ -1050,29 +1052,37 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   setupLintWorker = () => {
-    this.lintWorker = new LinterWorker();
+    if (!this.lintWorker) {
+      this.lintWorker = new LinterWorker();
 
-    this.lintWorker.addEventListener('message', event => {
-      const { markers, version } = event.data;
+      this.lintWorker.addEventListener('message', event => {
+        const { markers, version } = event.data;
 
-      requestAnimationFrame(() => {
-        if (this.editor.getActiveCodeEditor().getModel()) {
-          if (
-            version ===
-            this.editor
-              .getActiveCodeEditor()
-              .getModel()
-              .getVersionId()
-          ) {
-            this.updateLintWarnings(markers);
-          } else {
-            this.updateLintWarnings([]);
+        requestAnimationFrame(() => {
+          const activeEditor = this.editor.getActiveCodeEditor();
+          if (activeEditor && activeEditor.getModel()) {
+            if (version === activeEditor.getModel().getVersionId()) {
+              this.updateLintWarnings(markers);
+            } else {
+              this.updateLintWarnings([]);
+            }
           }
-        }
+        });
       });
-    });
 
-    this.lint = debounce(this.lint, 400);
+      this.lint = debounce(this.lint, 400);
+
+      if (this.editor.getActiveCodeEditor()) {
+        this.lint(
+          this.getCode(),
+          this.currentModule.title,
+          this.editor
+            .getActiveCodeEditor()
+            .getModel()
+            .getVersionId()
+        );
+      }
+    }
   };
 
   setupWorkers = () => {
@@ -1264,7 +1274,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemas: [
-        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions,
+        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions.schemas,
         ...monacoSchemas,
       ],
     });

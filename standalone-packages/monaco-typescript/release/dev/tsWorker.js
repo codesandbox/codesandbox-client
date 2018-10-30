@@ -54,6 +54,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             this._ctx = ctx;
             this._compilerOptions = createData.compilerOptions;
             this._extraLibs = createData.extraLibs;
+            // @ts-ignore
             ctx.onModelRemoved(function (str) {
                 var p = str.indexOf('file://') === 0 ? monaco.Uri.parse(str).fsPath : str;
                 _this.syncFile(p);
@@ -121,7 +122,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             this.fs.readFile(path, function (e, str) {
                 if (e) {
                     delete _this.files[path];
-                    throw e;
+                    return;
                 }
                 _this.files[path] = str.toString();
             });
@@ -129,13 +130,15 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         TypeScriptWorker.prototype.syncDirectory = function (path) {
             var _this = this;
             this.fs.readdir(path, function (e, entries) {
-                if (e)
-                    throw e;
+                if (e) {
+                    return;
+                }
                 entries.forEach(function (entry) {
                     var fullEntry = path + '/' + entry;
                     _this.fs.stat(fullEntry, function (err, stat) {
                         if (err) {
-                            throw err;
+                            delete _this.files[path];
+                            return;
                         }
                         if (stat.isDirectory()) {
                             _this.syncDirectory(fullEntry);

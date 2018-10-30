@@ -17,6 +17,9 @@ export type EditorAPI = {
 
 const fontPromise = new FontFaceObserver('dm').load().catch(() => {});
 
+let serviceCache;
+let editorPart;
+
 class MonacoEditor extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -49,8 +52,35 @@ class MonacoEditor extends React.PureComponent {
     });
   };
 
+  initializeEditor(container, cb) {
+    if (serviceCache) {
+      cb(serviceCache);
+      return;
+    }
+
+    const context = this.props.context || window;
+    const [{ CodeSandboxService }] = [
+      window.require(
+        'vs/codesandbox/services/codesandbox/browser/codesandboxService'
+      ),
+    ];
+
+    context.monaco.editor.create(
+      container,
+      {},
+      {
+        codesandboxService: i =>
+          i.createInstance(CodeSandboxService, controller),
+      },
+      returnedServices => {
+        serviceCache = returnedServices;
+        cb(serviceCache);
+      }
+    );
+  }
+
   initMonaco = () => {
-    const { theme, diffEditor = false } = this.props;
+    const { theme } = this.props;
     const context = this.props.context || window;
     if (this.containerElement && typeof context.monaco !== 'undefined') {
       // Before initializing monaco editor
@@ -63,14 +93,12 @@ class MonacoEditor extends React.PureComponent {
       const r = context.require;
 
       const [
-        { CodeSandboxService },
         { IEditorService },
         { ICodeEditorService },
         { ITextFileService },
         { ILifecycleService },
         { IEditorGroupsService },
       ] = [
-        r('vs/codesandbox/services/codesandbox/browser/codesandboxService'),
         r('vs/workbench/services/editor/common/editorService'),
         r('vs/editor/browser/services/codeEditorService'),
         r('vs/workbench/services/textfile/common/textfiles'),
@@ -87,61 +115,61 @@ class MonacoEditor extends React.PureComponent {
       const rootEl = document.getElementById('vscode-container');
       rootEl.appendChild(container);
 
-      context.monaco.editor[diffEditor ? 'createDiffEditor' : 'create'](
-        container,
-        {},
-        {
-          codesandboxService: i =>
-            i.createInstance(CodeSandboxService, controller),
-        },
-        services => {
-          const editorElement = document.getElementById(
-            'workbench.main.container'
-          );
+      this.initializeEditor(container, services => {
+        const editorElement = document.getElementById(
+          'workbench.main.container'
+        );
 
-          container.className = 'monaco-workbench';
-          part.className = 'part editor has-watermark';
-          editorElement.className += ' monaco-workbench mac nopanel';
+        container.className = 'monaco-workbench';
+        part.className = 'part editor has-watermark';
+        editorElement.className += ' monaco-workbench mac nopanel';
 
-          const EditorPart = services.get(IEditorGroupsService);
+        const EditorPart = services.get(IEditorGroupsService);
+
+        if (editorPart) {
+          editorPart.parent = part;
+          editorPart = EditorPart;
+        } else {
           EditorPart.create(part);
-
-          EditorPart.layout({
-            width: this.props.width,
-            height: this.props.height,
-          });
-
-          const codeEditorService = services.get(ICodeEditorService);
-          const textFileService = services.get(ITextFileService);
-          const editorService = services.get(IEditorService);
-          const lifecycleService = services.get(ILifecycleService);
-
-          lifecycleService.phase = 3; // Running
-
-          const editorApi = {
-            openFile(path: string) {
-              fontPromise.then(() => {
-                codeEditorService.openCodeEditor({
-                  resource: context.monaco.Uri.file('/sandbox' + path),
-                });
-              });
-            },
-            getActiveCodeEditor() {
-              return codeEditorService.getActiveCodeEditor();
-            },
-            textFileService,
-            editorPart: EditorPart,
-            editorService,
-          };
-          if (process.env.NODE_ENV === 'development') {
-            // eslint-disable-next-line
-            console.log(services);
-          }
-
-          // After initializing monaco editor
-          this.editorDidMount(editorApi, context.monaco);
         }
-      );
+
+        EditorPart.layout({
+          width: this.props.width,
+          height: this.props.height,
+        });
+
+        const codeEditorService = services.get(ICodeEditorService);
+        const textFileService = services.get(ITextFileService);
+        const editorService = services.get(IEditorService);
+        const lifecycleService = services.get(ILifecycleService);
+
+        lifecycleService.phase = 3; // Running
+
+        const editorApi = {
+          openFile(path: string) {
+            fontPromise.then(() => {
+              codeEditorService.openCodeEditor({
+                resource: context.monaco.Uri.file('/sandbox' + path),
+              });
+            });
+          },
+          getActiveCodeEditor() {
+            return codeEditorService.getActiveCodeEditor();
+          },
+          textFileService,
+          editorPart: EditorPart,
+          editorService,
+        };
+        if (process.env.NODE_ENV === 'development') {
+          // eslint-disable-next-line
+          console.log(services);
+        }
+
+        this.editor = editorApi;
+
+        // After initializing monaco editor
+        this.editorDidMount(editorApi, context.monaco);
+      });
 
       // TODO: move this to a better place
       if (theme) {
@@ -151,9 +179,17 @@ class MonacoEditor extends React.PureComponent {
   };
 
   destroyMonaco = () => {
-    if (typeof this.editor !== 'undefined') {
-      this.editor.dispose();
-    }
+    const groupsToClose = this.editor.editorService.editorGroupService.getGroups();
+
+    Promise.all(groupsToClose.map(g => g.closeAllEditors()))
+      .then(() => {
+        groupsToClose.forEach(group =>
+          this.editor.editorService.editorGroupService.removeGroup(group)
+        );
+      })
+      .then(() => {
+        this.editor.editorPart.shutdown();
+      });
   };
 
   assignRef = component => {

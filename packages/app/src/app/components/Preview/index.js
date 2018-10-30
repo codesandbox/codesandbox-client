@@ -76,6 +76,7 @@ const getDiff = (a, b) => {
       diff[p] = {
         code: b[p].code,
         path: p,
+        isBinary: b[p].isBinary,
       };
     });
 
@@ -150,6 +151,9 @@ class BasePreview extends React.Component<Props, State> {
   };
   // TODO: Find typedefs for this
   $socket: ?any;
+  connectTimeout: ?number;
+  // indicates if the socket closing is initiated by us
+  localClose: boolean;
 
   constructor(props: Props) {
     super(props);
@@ -181,6 +185,8 @@ class BasePreview extends React.Component<Props, State> {
     };
 
     if (this.serverPreview) {
+      this.connectTimeout = null;
+      this.localClose = false;
       this.setupSSESockets();
     }
     this.listener = listen(this.handleMessage);
@@ -203,12 +209,11 @@ class BasePreview extends React.Component<Props, State> {
 
   setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
-    let connectTimeout = null;
 
-    function onTimeout(setServerStatus) {
-      connectTimeout = null;
-      if (setServerStatus) {
-        setServerStatus('disconnected');
+    function onTimeout(comp) {
+      comp.connectTimeout = null;
+      if (comp.props.setServerStatus) {
+        comp.props.setServerStatus('disconnected');
       }
     }
 
@@ -217,20 +222,18 @@ class BasePreview extends React.Component<Props, State> {
         frameInitialized: false,
       });
       if (this.$socket) {
+        this.localClose = true;
         this.$socket.close();
+        // we need this setTimeout() for socket open() to work immediately after close()
         setTimeout(() => {
-          if (this.$socket) {
-            connectTimeout = setTimeout(
-              () => onTimeout(this.props.setServerStatus),
-              3000
-            );
-            this.$socket.open();
-          }
+          this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
+          this.$socket.open();
         }, 0);
       }
     } else {
       const socket = io(getSSEUrl(), {
         autoConnect: false,
+        transports: ['websocket', 'polling'],
       });
       this.$socket = socket;
       if (process.env.NODE_ENV === 'development') {
@@ -238,6 +241,11 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       socket.on('disconnect', () => {
+        if (this.localClose) {
+          this.localClose = false;
+          return;
+        }
+
         if (this.props.setServerStatus) {
           let status = 'disconnected';
           if (this.state.hibernated) {
@@ -251,9 +259,9 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('connect', async () => {
-        if (connectTimeout) {
-          clearTimeout(connectTimeout);
-          connectTimeout = null;
+        if (this.connectTimeout) {
+          clearTimeout(this.connectTimeout);
+          this.connectTimeout = null;
         }
 
         if (this.props.setServerStatus) {
@@ -351,10 +359,7 @@ class BasePreview extends React.Component<Props, State> {
         }
       });
 
-      connectTimeout = setTimeout(
-        () => onTimeout(this.props.setServerStatus),
-        3000
-      );
+      this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
       socket.open();
     }
   };
@@ -377,6 +382,7 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     if (this.$socket) {
+      this.localClose = true;
       this.$socket.close();
     }
   }
@@ -500,6 +506,7 @@ class BasePreview extends React.Component<Props, State> {
         modulesObject[path] = {
           path,
           code: m.code,
+          isBinary: m.isBinary,
         };
       }
     });
@@ -511,6 +518,7 @@ class BasePreview extends React.Component<Props, State> {
       modulesToSend['/package.json'] = {
         code: generateFileFromSandbox(sandbox),
         path: '/package.json',
+        isBinary: false,
       };
     }
 
