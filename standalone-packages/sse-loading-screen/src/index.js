@@ -31,36 +31,15 @@ if (process.env.NODE_ENV === 'development') {
 const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
 const domain = `sse.${rootDomain}`;
 const sandbox = hostParts[0];
+const lastLoadedAt = parseInt(localStorage.getItem('last_loaded_at'), 10);
+const now = Date.now();
+let isLoop = false;
 
-if (process.env.NODE_ENV === 'production') {
-  fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
-    .then(res => {
-      if (res.status === 404) {
-        window.location.replace(`https://${rootDomain}/s/${sandbox}`);
-        return {};
-      }
-
-      return res.json();
-    })
-    .then(json => {
-      if (Object.keys(json) > 0 && !json.is_sse) {
-        window.location.replace(`https://${sandbox}.${rootDomain}/`);
-      }
-      if (json.template) {
-        const templateDef = getTemplate(json.template);
-
-        color =
-          json.template === 'next'
-            ? templateDef.color.darken(0.3)
-            : templateDef.color;
-      }
-    });
-} else {
-  setTimeout(() => {
-    const templateDef = getTemplate('gatsby');
-
-    color = templateDef.color;
-  }, 1200);
+if (lastLoadedAt) {
+  const timeDiff = now - lastLoadedAt;
+  if (timeDiff <= 5000) {
+    isLoop = true;
+  }
 }
 
 function createCube(element, id, noAnimation = false, styles = {}) {
@@ -285,9 +264,7 @@ async function start() {
     updateStatus(4, 3, 'started');
 
     setTimeout(() => {
-      // if (process.env.NODE_ENV === 'production') {
       window.location.reload(true);
-      // }
     }, 100);
   });
 
@@ -296,4 +273,41 @@ async function start() {
   socket.connect();
 }
 
-start();
+if (isLoop) {
+  document.getElementById('loading-text').textContent = 'Error: Reloading too fast.';
+} else {
+  localStorage.setItem('last_loaded_at', now);
+
+  if (process.env.NODE_ENV === 'production') {
+    fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
+      .then(res => {
+        if (res.status === 404) {
+          window.location.replace(`https://${rootDomain}/s/${sandbox}`);
+          return {};
+        }
+
+        return res.json();
+      })
+      .then(json => {
+        if (Object.keys(json) > 0 && !json.is_sse) {
+          window.location.replace(`https://${sandbox}.${rootDomain}/`);
+        }
+        if (json.template) {
+          const templateDef = getTemplate(json.template);
+
+          color =
+            json.template === 'next'
+              ? templateDef.color.darken(0.3)
+              : templateDef.color;
+        }
+      });
+  } else {
+    setTimeout(() => {
+      const templateDef = getTemplate('gatsby');
+
+      color = templateDef.color;
+    }, 1200);
+  }
+
+  start();
+}
