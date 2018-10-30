@@ -236,6 +236,13 @@ async function start() {
     term.write(data);
   });
 
+  socket.on('sandbox:error', ({ message, unrecoverable }) => {
+    if (unrecoverable) {
+      document.getElementById('loading-text').textContent = message;
+      socket.close();
+    }
+  });
+
   window.s = socket;
 
   const maximizeTerminal = () => {
