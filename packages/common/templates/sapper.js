@@ -22,7 +22,7 @@ export default new Template(
   'sapper',
   'Sapper',
   'https://sapper.svelte.technology/',
-  'github/sveltejs/sapper-template',
+  'github/codesandbox-app/sapper-template',
   decorateSelector(() => '#105E10'),
   {
     extraConfigurations: {
