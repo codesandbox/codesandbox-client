@@ -455,7 +455,6 @@ export function updateTemplateIfSSE({ state, api }) {
     if (shouldUpdateTemplate) {
       const { parsed } = state.get('editor.parsedConfigurations.package');
 
-      const a = Date.now();
       const modulesByPath = mapValues(state.get('editor.modulesByPath'), m => ({
         content: m.code,
         isBinary: m.isBinary,
