@@ -6331,6 +6331,11 @@ codemirror@^5.27.4, codemirror@^5.35.0:
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
   integrity sha512-PEPnDg8U3DTGFB/Dn2T/INiRNC9CB5k2vLAQJidYCsHvAgtXbklqnuidEwx7yGrMrdGhl0L0P3iNKW9I07J6tQ==
 
+codesandbox-api@^0.0.20:
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.20.tgz#174bcd76c9f31521175c6bceabc37da6b1fbc30b"
+  integrity sha512-jhxZzAmjCKBZad8QWMeueiQVFE87igK6F2DBOEVFFJO6jgTXT8qjuzGYepr+B8bjgo/icN7bc/2xmEMBA63s2w==
+
 codesandbox-import-util-types@^1.2.8:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-1.2.17.tgz#376ae6b5872e362dc397d375bd82e903f9c1f247"
@@ -6553,6 +6558,11 @@ commander@~2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.1.0.tgz#d121bbae860d9992a3d517ba96f56588e47c6781"
   integrity sha1-0SG7roYNmZKj1Re6lvVliOR8Z4E=
+
+commander@~2.17.1:
+  version "2.17.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.17.1.tgz#bd77ab7de6de94205ceacc72f1716d29f20a77bf"
+  integrity sha512-wPMUt6FnH2yzG95SA6mzjQOEKUU3aLaDEmzs1ti+1E9h+CsrZghRlqEM/EJ4KscsQVG8uNN4uVreUeT8+drlgg==
 
 commander@~2.8.1:
   version "2.8.1"
@@ -23624,11 +23634,11 @@ ua-parser-js@^0.7.18, ua-parser-js@^0.7.9:
   integrity sha512-LtzwHlVHwFGTptfNSgezHp7WUlwiqb0gA9AALRbKaERfxwJoiX0A73QbTToxteIAuIaFshhgIZfqK8s7clqgnA==
 
 uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9, "uglify-es@npm:terser":
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-3.8.1.tgz#cb70070ac9e0a71add169dfb63c0a64fca2738ac"
-  integrity sha512-FRin3gKQ0vm0xPPLuxw1FqpVgv1b2pBpYCaFb5qe6A7sD749Fnq1VbDiX3CEFM0BV0fqDzFtBfgmxhxCdzKQIg==
+  version "3.10.8"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-3.10.8.tgz#2fe3967396a10cdc3d575074fe857efd30a2895a"
+  integrity sha512-GQJHWJ/vbx0EgRk+lBMONMmKaT+ifeo/XgT/hi3KpzEEFOERVyFuJSVXH8grcmJjiqKY35ds8rBCxvABUeyyuQ==
   dependencies:
-    commander "~2.16.0"
+    commander "~2.17.1"
     source-map "~0.6.1"
     source-map-support "~0.5.6"
 

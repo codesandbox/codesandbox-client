@@ -82,7 +82,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "codemirror": "^5.35.0",
-    "codesandbox-api": "^0.0.18",
+    "codesandbox-api": "^0.0.20",
     "codesandbox-import-utils": "^1.2.3",
     "react-broadcast": "^0.6.2",
     "react-codemirror2": "^4.0.1",
