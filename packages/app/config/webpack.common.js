@@ -457,6 +457,11 @@ module.exports = {
           to: 'public/13/vs/language/vue',
         },
         {
+          from: '../../sse-hooks/dist/sse-hooks.js',
+          to: 'public/sse-hooks.[hash].js',
+          toType: 'template',
+        },
+        {
           from: 'static',
           to: 'static',
         },

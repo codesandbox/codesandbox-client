@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "source": "index.js",
   "scripts": {
-    "build": "rollup -c rollup.config.js"
+    "build:dev": "rollup -c rollup.config.js"
   },
   "devDependencies": {
     "babel-preset-env": "^1.7.0",
