@@ -643,6 +643,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "dv297",
+      "name": "Daniel Vu",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5365325?v=4",
+      "profile": "https://twitter.com/dvv297",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
