@@ -13,7 +13,7 @@ export default new Template(
   decorateSelector(() => '#009fff'),
   {
     isTypescript: true,
-    showOnHomePage: true,
+    showOnHomePage: false,
     extraConfigurations: {
       '/tsconfig.json': configurations.tsconfig,
     },

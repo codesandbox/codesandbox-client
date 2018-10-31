@@ -6336,10 +6336,19 @@ codesandbox-import-util-types@^1.2.8:
   resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-1.2.17.tgz#376ae6b5872e362dc397d375bd82e903f9c1f247"
   integrity sha512-eNbxzBJlUa/pIWdx80is4H31wwQMttycM6dbMfZeEOjhpO0kGZy8XIMgNm7hn8xjzfXsnlPlzgVlzqeLc74q9Q==
 
-codesandbox-import-util-types@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-1.3.3.tgz#92bb482f2af6bef0d5b308cb55982aba1563ccfe"
-  integrity sha512-m4V8wOxWE2RRMxsfA/jvJ+x2R1lQ5mkIeatoPMtjYgKEy69pHKr82DQzRgWF8y6GMJLx33rpk6EUtpXTXCgf5A==
+codesandbox-import-util-types@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-1.3.4.tgz#108cd8ec4256f9284a5e75afc0171311ae58afd8"
+  integrity sha512-RWfqvrPSC3MZLFf059jNo61FJR+Eiw2Zg+MsMWR0AXcdgqjaAca8MtGUIw81purMt8OamI4Owk2ng8NlMs2cIg==
+
+codesandbox-import-utils@1.3.5:
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-1.3.5.tgz#8b834d16a4bb9995140fba1b64bbcbd18db9ff81"
+  integrity sha512-FlU9HZPDN8tZhnN4f+M0731fk+Vk4iFiviHaDf15nW/dv49cwnib7iinxjJztIWHFY4L9vN4xX61i773XtW0QQ==
+  dependencies:
+    codesandbox-import-util-types "^1.3.4"
+    istextorbinary "^2.2.1"
+    lz-string "^1.4.4"
 
 codesandbox-import-utils@^1.2.3:
   version "1.2.10"
@@ -6347,15 +6356,6 @@ codesandbox-import-utils@^1.2.3:
   integrity sha512-5bsrVBIN1KifHGz7lKg7HMG/+wl9qb6WgqzZjho/Ec0yib2X8Bhodh6FIugdGWrmiswZMnT4HA0IvbRnGMUHLQ==
   dependencies:
     codesandbox-import-util-types "^1.2.8"
-    istextorbinary "^2.2.1"
-    lz-string "^1.4.4"
-
-codesandbox-import-utils@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-1.3.3.tgz#93da5b66f269613e96cfda393abe71e1e6e4580d"
-  integrity sha512-G6PMtVJTPwqKpW/DCkJMLuzmg5jotWdwpfk59O7EJzcVSNPi+5DUf5jPcsjDIxXW+W8953BtoozKsAppr5nkGQ==
-  dependencies:
-    codesandbox-import-util-types "^1.3.3"
     istextorbinary "^2.2.1"
     lz-string "^1.4.4"
 

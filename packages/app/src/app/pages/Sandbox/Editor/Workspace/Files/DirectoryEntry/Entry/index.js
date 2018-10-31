@@ -185,20 +185,29 @@ class Entry extends React.PureComponent {
             {isNotSynced && !state && <NotSyncedIconWithMargin />}
             {state === '' && (
               <Right>
-                {isMainModule ? (
-                  <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
-                ) : (
-                  <EditIcons
-                    hovering={hovering}
-                    onCreateFile={onCreateModuleClick}
-                    onCreateDirectory={onCreateDirectoryClick}
-                    onUploadFile={onUploadFileClick}
-                    onDelete={deleteEntry && this.delete}
-                    onEdit={rename && this.rename}
-                    active={active}
-                    forceShow={window.__isTouch && type === 'directory-open'}
-                  />
+                {isMainModule && (
+                  <span
+                    style={{
+                      fontSize: '.75rem',
+                      fontWeight: 600,
+                      opacity: hovering ? 0.6 : 0,
+                      marginTop: 3,
+                      marginRight: 3,
+                    }}
+                  >
+                    entry
+                  </span>
                 )}
+                <EditIcons
+                  hovering={hovering}
+                  onCreateFile={onCreateModuleClick}
+                  onCreateDirectory={onCreateDirectoryClick}
+                  onUploadFile={onUploadFileClick}
+                  onDelete={deleteEntry && this.delete}
+                  onEdit={rename && this.rename}
+                  active={active}
+                  forceShow={window.__isTouch && type === 'directory-open'}
+                />
               </Right>
             )}
           </EntryContainer>
@@ -209,7 +218,7 @@ class Entry extends React.PureComponent {
 }
 
 const entrySource = {
-  canDrag: props => !!props.id && !props.isMainModule,
+  canDrag: props => !!props.id,
   beginDrag: props => {
     if (props.closeTree) props.closeTree();
 
