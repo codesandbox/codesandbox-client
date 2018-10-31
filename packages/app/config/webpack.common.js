@@ -457,8 +457,8 @@ module.exports = {
           to: 'public/13/vs/language/vue',
         },
         {
-          from: '../../sse-hooks/dist/sse-hooks.js',
-          to: 'public/sse-hooks.[hash].js',
+          from: '../../sse-hooks/dist',
+          to: 'public/sse-hooks/[name].[hash].[ext]',
           toType: 'template',
         },
         {
