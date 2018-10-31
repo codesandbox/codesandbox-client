@@ -6331,11 +6331,6 @@ codemirror@^5.27.4, codemirror@^5.35.0:
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
   integrity sha512-PEPnDg8U3DTGFB/Dn2T/INiRNC9CB5k2vLAQJidYCsHvAgtXbklqnuidEwx7yGrMrdGhl0L0P3iNKW9I07J6tQ==
 
-codesandbox-api@^0.0.20:
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.20.tgz#174bcd76c9f31521175c6bceabc37da6b1fbc30b"
-  integrity sha512-jhxZzAmjCKBZad8QWMeueiQVFE87igK6F2DBOEVFFJO6jgTXT8qjuzGYepr+B8bjgo/icN7bc/2xmEMBA63s2w==
-
 codesandbox-import-util-types@^1.2.8:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-1.2.17.tgz#376ae6b5872e362dc397d375bd82e903f9c1f247"

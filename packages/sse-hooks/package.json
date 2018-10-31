@@ -18,6 +18,6 @@
     "rollup-plugin-uglify": "^4.0.0"
   },
   "dependencies": {
-    "codesandbox-api": "^0.0.20"
+    "codesandbox-api": "^0.0.18"
   }
 }
