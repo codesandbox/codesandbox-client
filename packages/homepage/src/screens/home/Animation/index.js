@@ -6,16 +6,7 @@ import Fullscreen from 'common/components/flex/Fullscreen';
 import Centered from 'common/components/flex/Centered';
 import Relative from 'common/components/Relative';
 
-import {
-  angular,
-  vue,
-  react,
-  preact,
-  svelte,
-  parcel,
-  cxjs,
-  dojo,
-} from 'common/templates';
+import { staticTemplate, ember, sapper, nest } from 'common/templates';
 
 import Background from './Background';
 import HomeTitle from './Title';
@@ -65,7 +56,7 @@ const Message = styled.div`
 `};
 `;
 
-const TEMPLATES = [parcel, react, vue, angular, preact, svelte, cxjs, dojo];
+const TEMPLATES = [staticTemplate, ember, sapper, nest];
 
 export default class Animation extends React.PureComponent {
   state = {
@@ -137,7 +128,7 @@ export default class Animation extends React.PureComponent {
             applications, from prototype to deployment.
           </Message>
         </Centered>
-        <Frameworks templates={TEMPLATES.filter(tem => tem.showOnHomePage)} />
+        {/* <Frameworks templates={TEMPLATES.filter(tem => tem.showOnHomePage)} /> */}
       </Relative>
     );
   }
