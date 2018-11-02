@@ -6,9 +6,12 @@ export default Module({
   model,
   state: {
     popularSandboxes: null,
+    pickedSandboxes: null,
+    pickedSandboxesLoading: false,
   },
   signals: {
     popularSandboxesMounted: sequences.mountPopularSandboxes,
     pickSandbox: sequences.pickSandbox,
+    pickedSandboxesMounted: sequences.pickedSandboxes,
   },
 });

@@ -18,7 +18,7 @@ export default {
           visible: types.boolean,
         })
       ),
-      curatorAt: types.string,
+      curatorAt: types.maybeNull(types.string),
       email: types.maybeNull(types.string),
       id: types.maybeNull(types.string),
       integrations: types.model({

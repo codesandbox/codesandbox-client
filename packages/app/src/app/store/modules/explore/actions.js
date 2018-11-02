@@ -5,6 +5,13 @@ export function mountPopularSandboxes({ path, api, props }) {
     .catch(() => path.error());
 }
 
+export function mountPickedSandboxes({ path, api }) {
+  return api
+    .get(`/sandboxes/picked`)
+    .then(data => path.success({ pickedSandboxes: data }))
+    .catch(() => path.error());
+}
+
 export function pickSandbox({ path, api, props, state }) {
   return api
     .post(`/sandboxes/${props.id}/pick`)

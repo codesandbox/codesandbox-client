@@ -3,6 +3,23 @@ import { state, props } from 'cerebral/tags';
 import { addNotification } from '../../factories';
 import * as actions from './actions';
 
+export const pickedSandboxes = [
+  set(state`explore.pickedSandboxesLoading`, true),
+  actions.mountPickedSandboxes,
+  {
+    success: [
+      set(state`explore.pickedSandboxes`, props`pickedSandboxes`),
+      set(state`explore.pickedSandboxesLoading`, false),
+    ],
+    error: [
+      addNotification(
+        'There has been a problem getting the sandboxes',
+        'error'
+      ),
+    ],
+  },
+];
+
 export const mountPopularSandboxes = [
   actions.mountPopularSandboxes,
   {

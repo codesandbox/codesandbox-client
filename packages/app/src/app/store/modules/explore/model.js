@@ -21,23 +21,30 @@ const Picks = types.model('Picks', {
   insertedAt: types.string,
 });
 
+const Sandbox = types.model('Sandbox', {
+  viewCount: types.number,
+  title: types.maybeNull(types.string),
+  template: types.string,
+  id: types.string,
+  picks: types.optional(types.array(Picks), []),
+  description: types.maybeNull(types.string),
+  git: types.maybeNull(Git),
+  author: types.maybeNull(Author),
+});
+
 const PopularSandboxes = types.model('PopularSandboxes', {
   startDate: types.string,
-  sandboxes: types.array(
-    types.model({
-      viewCount: types.number,
-      title: types.maybeNull(types.string),
-      template: types.string,
-      id: types.string,
-      picks: types.optional(types.array(Picks), []),
-      description: types.maybeNull(types.string),
-      git: types.maybeNull(Git),
-      author: types.maybeNull(Author),
-    })
-  ),
+  sandboxes: types.array(Sandbox),
   endDate: types.string,
+});
+
+const PickedSandboxes = types.model('PickedSandboxes', {
+  sandboxes: types.array(Sandbox),
+  page: types.number,
 });
 
 export default {
   popularSandboxes: types.maybeNull(PopularSandboxes),
+  pickedSandboxesLoading: types.boolean,
+  pickedSandboxes: types.maybeNull(PickedSandboxes),
 };
