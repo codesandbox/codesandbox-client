@@ -457,6 +457,10 @@ module.exports = {
           to: 'public/13/vs/language/vue',
         },
         {
+          from: '../sse-hooks/dist',
+          to: 'public/sse-hooks',
+        },
+        {
           from: 'static',
           to: 'static',
         },

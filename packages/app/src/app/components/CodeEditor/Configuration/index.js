@@ -85,7 +85,7 @@ export default class Configuration extends React.PureComponent<Props>
   };
 
   render() {
-    const { config, width, height } = this.props;
+    const { config, width, height, sandbox } = this.props;
     const currentModule = this.currentModule;
 
     const { ConfigWizard } = getUI(config.type);
@@ -117,7 +117,11 @@ export default class Configuration extends React.PureComponent<Props>
           </a>
         </Description>
 
-        <ConfigWizard updateFile={this.updateFile} file={currentModule.code} />
+        <ConfigWizard
+          sandbox={sandbox}
+          updateFile={this.updateFile}
+          file={currentModule.code}
+        />
       </Container>
     );
   }

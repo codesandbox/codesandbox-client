@@ -9,7 +9,7 @@ export default {
   input: 'index.js',
 
   output: {
-    file: 'dist/index.js',
+    file: 'dist/sse-hooks.js',
     format: 'umd',
   },
   plugins: [json(), babel(), resolve(), commonjs(), uglify()],

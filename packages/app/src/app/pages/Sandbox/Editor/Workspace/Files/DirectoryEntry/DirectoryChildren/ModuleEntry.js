@@ -46,8 +46,8 @@ class ModuleEntry extends React.Component {
         depth={depth + 1}
         active={isActive}
         type={type || 'function'}
-        rename={isMainModule ? undefined : renameModule}
-        deleteEntry={isMainModule ? undefined : deleteEntry}
+        rename={renameModule}
+        deleteEntry={deleteEntry}
         isNotSynced={isNotSynced}
         renameValidator={this.validateTitle}
         setCurrentModule={setCurrentModule}
