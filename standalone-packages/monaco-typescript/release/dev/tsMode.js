@@ -1,3 +1,23 @@
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 define(["require", "exports", "./workerManager", "./languageFeatures"], function (require, exports, workerManager_1, languageFeatures) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -40,7 +60,7 @@ define(["require", "exports", "./workerManager", "./languageFeatures"], function
             for (var _i = 1; _i < arguments.length; _i++) {
                 more[_i - 1] = arguments[_i];
             }
-            return client.getLanguageServiceWorker.apply(client, [first].concat(more));
+            return client.getLanguageServiceWorker.apply(client, __spread([first].concat(more)));
         };
         monaco.languages.registerCompletionItemProvider(modeId, new languageFeatures.SuggestAdapter(worker));
         monaco.languages.registerSignatureHelpProvider(modeId, new languageFeatures.SignatureHelpAdapter(worker));

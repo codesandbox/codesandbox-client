@@ -420,42 +420,45 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
 }
 
 export async function fetchAndAddDependencies(
-  dependencies,
+  dep,
+  version,
   onDependencies,
   fetchedPaths = {}
 ) {
-  const depNames = Object.keys(dependencies);
+  try {
+    if (loadedTypings.indexOf(dep) === -1) {
+      loadedTypings.push(dep);
 
-  await Promise.all(
-    depNames.map(async dep => {
+      let depVersion = version;
+
       try {
-        if (loadedTypings.indexOf(dep) === -1) {
-          loadedTypings.push(dep);
-
-          const depVersion = await doFetch(
-            `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${
-              dependencies[dep]
-            }`
-          )
-            .then(x => JSON.parse(x))
-            .then(x => x.version);
-          // eslint-disable-next-line no-await-in-loop
-          await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
-            // not available in package.json, try checking meta for inline .d.ts files
-            fetchFromMeta(dep, depVersion, fetchedPaths).catch(() =>
-              // Not available in package.json or inline from meta, try checking in @types/
-              fetchFromDefinitelyTyped(dep, depVersion, fetchedPaths)
-            )
-          );
-        }
+        await doFetch(
+          `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${
+            version
+          }`
+        )
+        .then(x => JSON.parse(x))
+        .then(x => {
+          depVersion = x.version
+        });
       } catch (e) {
-        // // Don't show these cryptic messages to users, because this is not vital
-        // if (process.env.NODE_ENV === 'development') {
-        //   console.error(`Couldn't find typings for ${dep}`, e);
-        // }
+
       }
-    })
-  );
+      // eslint-disable-next-line no-await-in-loop
+      await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
+        // not available in package.json, try checking meta for inline .d.ts files
+        fetchFromMeta(dep, depVersion, fetchedPaths).catch(() =>
+          // Not available in package.json or inline from meta, try checking in @types/
+          fetchFromDefinitelyTyped(dep, depVersion, fetchedPaths)
+        )
+      );
+    }
+  } catch (e) {
+    // // Don't show these cryptic messages to users, because this is not vital
+    // if (process.env.NODE_ENV === 'development') {
+    //   console.error(`Couldn't find typings for ${dep}`, e);
+    // }
+  }
 
   onDependencies(fetchedPaths);
 }

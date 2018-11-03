@@ -75,6 +75,7 @@
   },
   "devDependencies": {
     "@types/debug": "^0.0.30",
+    "@types/glob": "^7.1.1",
     "@types/jest": "^20.0.0",
     "@types/uuid": "^3.4.3",
     "colors": "^1.1.2",
