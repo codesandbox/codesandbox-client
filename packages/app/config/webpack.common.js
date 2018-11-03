@@ -119,16 +119,32 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
+          overrides: [
+            !__DEV__ && {
+              include: path.join(__dirname, '../../sandbox'),
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    targets: {
+                      ie: 11,
+                    },
+                    modules: 'umd',
+                    useBuiltIns: false,
+                  },
+                ],
+              ],
+            },
+          ].filter(Boolean),
           presets: [
             '@babel/preset-flow',
             [
               '@babel/preset-env',
               {
                 targets: {
-                  ie: 11,
-                  esmodules: true,
+                  browsers: 'last 2 versions',
                 },
-                modules: 'umd',
+                modules: false,
                 useBuiltIns: false,
               },
             ],
