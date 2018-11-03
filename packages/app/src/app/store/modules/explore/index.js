@@ -7,6 +7,7 @@ export default Module({
   state: {
     popularSandboxes: null,
     pickedSandboxes: null,
+    pickedSandboxesIndexes: null,
     pickedSandboxesLoading: false,
   },
   signals: {

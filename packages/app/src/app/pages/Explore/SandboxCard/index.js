@@ -1,8 +1,6 @@
 // @ts-check
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import history from 'app/utils/history';
-import { sandboxUrl, profileUrl } from 'common/utils/url-generator';
 
 import { observer } from 'mobx-react';
 import EyeIcon from 'react-icons/lib/fa/eye';
@@ -64,23 +62,6 @@ class SandboxItem extends React.Component<Props> {
     }
   }
 
-  openSandbox = (openNewWindow = false) => {
-    // Git sandboxes aren't shown here anyway
-    const url = sandboxUrl({ id: this.props.id });
-    if (openNewWindow === true) {
-      window.open(url, '_blank');
-    } else {
-      history.push(url);
-    }
-
-    return true;
-  };
-
-  openUser = username => {
-    const url = profileUrl(username);
-    window.open(url, '_blank');
-  };
-
   getImageMessage = () => {
     const templateDefinition = getTemplate(this.props.template);
 
@@ -106,24 +87,19 @@ class SandboxItem extends React.Component<Props> {
   };
 
   render() {
-    const { id, title, viewCount, template, author, description } = this.props;
+    const { id, title, viewCount, author, description, onClick } = this.props;
 
     const { screenshotUrl } = this.state;
 
-    const templateInfo = getTemplate(template);
-
     return (
-      <Wrapper>
+      <Wrapper role="button" tabIndex={0} onClick={onClick}>
         <Container style={{ outline: 'none' }}>
-          <SandboxImageContainer
-            role="button"
-            tabIndex={0}
-            onClick={this.openSandbox}
-          >
+          <SandboxImageContainer>
             <ImageMessage>{this.getImageMessage()}</ImageMessage>
 
             {this.hasScreenshot() && (
               <SandboxImage
+                className="sandbox-image"
                 style={{
                   backgroundImage: `url(${screenshotUrl})`,
                 }}
@@ -132,7 +108,7 @@ class SandboxItem extends React.Component<Props> {
           </SandboxImageContainer>
           <SandboxInfo>
             <div style={{ flex: 1 }}>
-              <div role="button" tabIndex={0} onClick={this.openSandbox}>
+              <div>
                 <Header>
                   <SandboxTitle>{title || id}</SandboxTitle>
                   {description ? (
@@ -141,20 +117,12 @@ class SandboxItem extends React.Component<Props> {
                 </Header>
               </div>
               <Details>
-                <FlexCenter
-                  role="button"
-                  tabIndex={0}
-                  onClick={this.openSandbox}
-                >
+                <FlexCenter>
                   <EyeIcon style={{ fill: 'white', marginRight: '0.5rem' }} />
                   {viewCount}
                 </FlexCenter>
                 {author ? (
-                  <FlexCenter
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => this.openUser(author.username)}
-                  >
+                  <FlexCenter role="button" tabIndex={0}>
                     <Avatar src={author.avatarUrl} alt={author.username} />
                     {author.name || author.username}
                   </FlexCenter>

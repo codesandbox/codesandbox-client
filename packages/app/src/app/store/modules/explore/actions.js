@@ -5,10 +5,16 @@ export function mountPopularSandboxes({ path, api, props }) {
     .catch(() => path.error());
 }
 
-export function mountPickedSandboxes({ path, api }) {
+export function mountPickedSandboxes({ path, api, state }) {
   return api
     .get(`/sandboxes/picked`)
-    .then(data => path.success({ pickedSandboxes: data }))
+    .then(data => {
+      const indexes = data.sandboxes.map(a => a.id);
+
+      state.set(`explore.pickedSandboxesIndexes`, indexes);
+
+      return path.success({ pickedSandboxes: data });
+    })
     .catch(() => path.error());
 }
 

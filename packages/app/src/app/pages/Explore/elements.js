@@ -1,5 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Title from 'app/components/Title';
+import NextIcon from 'react-icons/lib/md/navigate-next';
+import PrevIcon from 'react-icons/lib/md/navigate-before';
 
 export const Heading = styled(Title)`
   margin-top: 7rem;
@@ -27,4 +29,36 @@ export const FancyHeader = styled.section`
   border-radius: 10% 10% 50% 50% / 0% 0% 31% 34%;
   box-shadow: 0 0 14px 15px rgba(0, 0, 0, 0.08);
   background: #48b2f5;
+`;
+
+export const ModalContainer = styled.div`
+  background-color: ${props => props.theme.background};
+  padding: 1rem;
+  padding-top: 0.75rem;
+
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+`;
+export const Iframe = styled.iframe`
+  border: none;
+  width: 100%;
+  height: 400px;
+`;
+
+const Icon = css`
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+`;
+
+export const NextIconStyled = styled(NextIcon)`
+  ${Icon};
+  right: -50px;
+`;
+export const PrevIconStyled = styled(PrevIcon)`
+  ${Icon};
+  left: -50px;
 `;

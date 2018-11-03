@@ -1,8 +1,15 @@
 // @ts-check
-import styled from 'styled-components';
+import styled, { injectGlobal } from 'styled-components';
 import fadeIn from 'common/utils/animation/fade-in';
 import Tooltip from 'common/components/Tooltip';
 import Button from 'app/components/Button';
+
+// eslint-disable-next-line
+injectGlobal`
+  .ReactModal__Content.ReactModal__Content--after-open {
+    overflow: visible !important;
+  }
+`;
 
 export const PADDING = 32;
 
@@ -10,9 +17,38 @@ export const Wrapper = styled.div`
   padding: 2;
   border-radius: 2;
   background-color: transparent;
+  position: relative;
 
   &:nth-child(5n + 1) {
     grid-column: span 2;
+
+    footer {
+      background: transparent;
+      position: relative;
+      z-index: 12;
+    }
+
+    .sandbox-image {
+      height: 185%;
+    }
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      height: 80%;
+      background: linear-gradient(
+        180deg,
+        rgba(196, 196, 196, 0) 0%,
+        rgba(67, 70, 72, 0.86) 75.14%,
+        rgba(6, 10, 12, 0.7) 100%
+      );
+      width: 100%;
+      bottom: 25px;
+      border-radius: 4px;
+      z-index: 10;
+      opacity: 0.5;
+    }
   }
 `;
 

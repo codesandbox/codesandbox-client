@@ -44,6 +44,7 @@ const PickedSandboxes = types.model('PickedSandboxes', {
 });
 
 export default {
+  pickedSandboxesIndexes: types.maybeNull(types.array(types.string)),
   popularSandboxes: types.maybeNull(PopularSandboxes),
   pickedSandboxesLoading: types.boolean,
   pickedSandboxes: types.maybeNull(PickedSandboxes),
