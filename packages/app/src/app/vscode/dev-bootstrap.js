@@ -7,8 +7,8 @@ import { METADATA } from './metadata';
 
 const PREFIX = '/vs';
 
-const window = window || self;
-window.global = window;
+const global = window || self;
+global.global = window;
 let requiresDefined = false;
 
 function initializeRequires() {
@@ -142,21 +142,21 @@ function initializeRequires() {
 }
 
 export default function(requiredModule: string) {
-  var IS_FILE_PROTOCOL = window.location.protocol === 'file:';
+  var IS_FILE_PROTOCOL = global.location.protocol === 'file:';
   var DIRNAME = null;
   if (IS_FILE_PROTOCOL) {
-    var port = window.location.port;
+    var port = global.location.port;
     if (port.length > 0) {
       port = ':' + port;
     }
     DIRNAME =
-      window.location.protocol +
+      global.location.protocol +
       '//' +
-      window.location.hostname +
+      global.location.hostname +
       port +
-      window.location.pathname.substr(
+      global.location.pathname.substr(
         0,
-        window.location.pathname.lastIndexOf('/')
+        global.location.pathname.lastIndexOf('/')
       );
 
     var bases = document.getElementsByTagName('base');
@@ -167,7 +167,7 @@ export default function(requiredModule: string) {
 
   var LOADER_OPTS = (function() {
     function parseQueryString() {
-      var str = window.location.search;
+      var str = global.location.search;
       str = str.replace(/^\?/, '');
       var pieces = str.split(/&/);
       var result = {};
@@ -187,18 +187,18 @@ export default function(requiredModule: string) {
     return result;
   })();
   function toHREF(search) {
-    var port = window.location.port;
+    var port = global.location.port;
     if (port.length > 0) {
       port = ':' + port;
     }
     return (
-      window.location.protocol +
+      global.location.protocol +
       '//' +
-      window.location.hostname +
+      global.location.hostname +
       port +
-      window.location.pathname +
+      global.location.pathname +
       search +
-      window.location.hash
+      global.location.hash
     );
   }
 
@@ -341,7 +341,7 @@ export default function(requiredModule: string) {
       for (var i = 0; i < aElements.length; i++) {
         var aElement = aElements[i];
         if (aElement.className === 'loading-opts') {
-          aElement.href += window.location.search;
+          aElement.href += global.location.search;
         }
       }
     }
@@ -350,7 +350,7 @@ export default function(requiredModule: string) {
   return function(callback, PATH_PREFIX) {
     PATH_PREFIX = PATH_PREFIX || '';
 
-    window.nodeRequire = path => {
+    global.nodeRequire = path => {
       // Trick AMD in that this is the node require function
       // console.log('nodeRequire', path);
 
@@ -362,7 +362,7 @@ export default function(requiredModule: string) {
       // }
 
       if (path === 'module') {
-        return { _load: window.nodeRequire };
+        return { _load: global.nodeRequire };
       }
     };
 
@@ -401,7 +401,7 @@ export default function(requiredModule: string) {
         });
       }
 
-      window.deps = new Set();
+      global.deps = new Set();
 
       self.require(requiredModule, function() {
         if (!RESOLVED_CORE.isRelease()) {
@@ -421,7 +421,7 @@ export default function(requiredModule: string) {
       });
     }
 
-    if (window.require) {
+    if (global.require) {
       loadFiles();
     } else {
       loadScript(
