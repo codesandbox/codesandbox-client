@@ -306,25 +306,17 @@ const getFileTypes = (
 
     const isNoDependency = dep => dep.startsWith(".") || dep.endsWith(".d.ts");
 
-    const dependencies = requireStatements
-      .filter(x => !isNoDependency(x))
-      .reduce(
-        (p, n) => ({
-          ...p,
-          [n]: "latest"
-        }),
-        {}
-      );
+    const dependencies = requireStatements.filter(x => !isNoDependency(x));
 
     // Now find all require statements, so we can download those types too
     return Promise.all(
-      [
-        fetchAndAddDependencies(dependencies, () => {}, fetchedPaths).catch(
+      dependencies.map(dep => {
+        fetchAndAddDependencies(dep, 'latest', () => {}, fetchedPaths).catch(
           () => {
             /* ignore */
           }
         )
-      ].concat(
+      }).concat(
         requireStatements
           .filter(
             // Don't add global deps, only if those are typing files as they are often relative
@@ -432,18 +424,12 @@ export async function fetchAndAddDependencies(
       let depVersion = version;
 
       try {
-        await doFetch(
-          `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${
-            version
-          }`
-        )
+        await doFetch(`https://unpkg.com/${dep}@${version}/package.json`)
         .then(x => JSON.parse(x))
         .then(x => {
           depVersion = x.version
         });
-      } catch (e) {
-
-      }
+      } catch (e) {}
       // eslint-disable-next-line no-await-in-loop
       await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
         // not available in package.json, try checking meta for inline .d.ts files
