@@ -6,17 +6,31 @@ export const DNT = !!(
   window.navigator.msDoNotTrack
 );
 
+export function identify(key, value) {
+  try {
+    if (!DNT) {
+      if (typeof window.amplitude !== 'undefined') {
+        const identity = new window.amplitude.Identify();
+        identity.set('signed_in', value);
+        window.amplitude.identify(identity);
+      }
+    }
+  } catch (e) {
+    /* */
+  }
+}
+
 export default function track(eventName, secondArg: Object = {}) {
   try {
-    if (window.ga && !DNT) {
+    if (!DNT) {
       const data = {
         ...secondArg,
         version: VERSION,
         path: location.pathname + location.search,
       };
-
-      window.ga('send', data);
-
+      if (window.ga) {
+        window.ga('send', data);
+      }
       if (typeof window.amplitude !== 'undefined') {
         window.amplitude.logEvent(eventName, data);
       }

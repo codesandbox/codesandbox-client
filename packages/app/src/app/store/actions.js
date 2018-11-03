@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import { identify } from 'common/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
@@ -311,6 +312,7 @@ export function removeJwtFromStorage({ jwt }) {
 
 export function setSignedInCookie() {
   document.cookie = 'signedIn=true; Path=/;';
+  identify('signed_in', true);
 }
 
 export function listenToConnectionChange({ connection }) {
