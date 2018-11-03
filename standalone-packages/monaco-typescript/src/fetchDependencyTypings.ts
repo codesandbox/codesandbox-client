@@ -439,7 +439,8 @@ export async function fetchAndAddDependencies(
         .then(x => {
           depVersion = x.version
         });
-      } catch (e) {}
+      } catch (e) {
+      }
       // eslint-disable-next-line no-await-in-loop
       await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
         // not available in package.json, try checking meta for inline .d.ts files
