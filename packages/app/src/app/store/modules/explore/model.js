@@ -1,4 +1,5 @@
 import { types } from 'mobx-state-tree';
+import { Sandbox } from '../editor/model';
 
 const Git = types.model('Git', {
   username: types.string,
@@ -21,7 +22,7 @@ const Picks = types.model('Picks', {
   insertedAt: types.string,
 });
 
-const Sandbox = types.model('Sandbox', {
+const MiniSandbox = types.model('Sandbox', {
   viewCount: types.number,
   title: types.maybeNull(types.string),
   template: types.string,
@@ -34,12 +35,12 @@ const Sandbox = types.model('Sandbox', {
 
 const PopularSandboxes = types.model('PopularSandboxes', {
   startDate: types.string,
-  sandboxes: types.array(Sandbox),
+  sandboxes: types.array(MiniSandbox),
   endDate: types.string,
 });
 
 const PickedSandboxes = types.model('PickedSandboxes', {
-  sandboxes: types.array(Sandbox),
+  sandboxes: types.array(MiniSandbox),
   page: types.number,
 });
 
@@ -48,4 +49,5 @@ export default {
   popularSandboxes: types.maybeNull(PopularSandboxes),
   pickedSandboxesLoading: types.boolean,
   pickedSandboxes: types.maybeNull(PickedSandboxes),
+  selectedSandbox: types.maybeNull(Sandbox),
 };

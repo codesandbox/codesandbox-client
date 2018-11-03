@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { inject, observer } from 'mobx-react';
 
@@ -10,13 +10,13 @@ import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 import SandboxCard from './SandboxCard';
+import ShowcasePreview from '../Profile/Showcase/ShowcasePreview';
 
 import {
   Container,
   Heading,
   FancyHeader,
   ModalContainer,
-  Iframe,
   NextIconStyled,
   PrevIconStyled,
 } from './elements';
@@ -24,7 +24,6 @@ import {
 class Curator extends React.Component {
   state = {
     modalOpen: false,
-    selectedSandbox: {},
   };
   componentDidMount = () => {
     window.addEventListener('keyup', this.handleKeyPress);
@@ -45,57 +44,59 @@ class Curator extends React.Component {
     }
   };
 
-  getSelectedSandbox = id => {
-    const pickedSandboxes = this.props.store.explore.pickedSandboxes;
-    return pickedSandboxes.sandboxes.find(s => s.id === id);
-  };
-
-  openModal = id => {
+  openModal = async id => {
+    await this.props.signals.explore.getSandbox({ id });
     this.setState({
       modalOpen: true,
-      selectedSandbox: this.getSelectedSandbox(id),
     });
   };
 
-  getAdjacentSandbox = number => {
+  getAdjacentSandbox = async number => {
     const indexes = this.props.store.explore.pickedSandboxesIndexes;
-    const nextSandboxIndex =
-      indexes.indexOf(this.state.selectedSandbox.id) + number;
+    const selectedSandbox = this.props.store.explore.selectedSandbox;
+    const nextSandboxIndex = indexes.indexOf(selectedSandbox.id) + number;
 
-    this.setState({
-      modalOpen: true,
-      selectedSandbox: this.getSelectedSandbox(indexes[nextSandboxIndex]),
+    await this.props.signals.explore.getSandbox({
+      id: indexes[nextSandboxIndex],
     });
   };
 
   render() {
     const {
       store: {
-        explore: { pickedSandboxes },
+        explore: { pickedSandboxes, selectedSandbox },
       },
     } = this.props;
 
-    const { modalOpen, selectedSandbox } = this.state;
+    const { modalOpen } = this.state;
 
     return (
       <MaxWidth>
-        <Modal
-          onClose={() => this.setState({ modalOpen: false })}
-          isOpen={Boolean(modalOpen)}
-          title={selectedSandbox.title}
-          width={900}
-        >
-          <ModalContainer style={{ position: 'relative' }}>
-            <PrevIconStyled onClick={() => this.getAdjacentSandbox(-1)} />
-            {JSON.stringify(selectedSandbox)}
-            <Iframe
-              src={`https://codesandbox.dev/embed/${
-                selectedSandbox.id
-              }?view=preview`}
-            />
-            <NextIconStyled onClick={() => this.getAdjacentSandbox(1)} />
-          </ModalContainer>
-        </Modal>
+        {modalOpen ? (
+          <Modal
+            onClose={() => this.setState({ modalOpen: false })}
+            isOpen={Boolean(modalOpen)}
+            title={(selectedSandbox || {}).title}
+            width={900}
+          >
+            <ModalContainer style={{ position: 'relative' }}>
+              {selectedSandbox ? (
+                <Fragment>
+                  <PrevIconStyled onClick={() => this.getAdjacentSandbox(-1)} />
+
+                  <ShowcasePreview
+                    sandbox={selectedSandbox}
+                    settings={this.props.store.preferences.settings}
+                  />
+                  <NextIconStyled onClick={() => this.getAdjacentSandbox(1)} />
+                  {JSON.stringify(selectedSandbox)}
+                </Fragment>
+              ) : (
+                'loading'
+              )}
+            </ModalContainer>
+          </Modal>
+        ) : null}
         <Margin vertical={1.5} horizontal={1.5}>
           <Navigation title="Explore Page" />
           <FancyHeader>

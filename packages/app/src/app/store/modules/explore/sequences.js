@@ -42,3 +42,13 @@ export const pickSandbox = [
     ],
   },
 ];
+
+export const getSandbox = [
+  actions.getSandbox,
+  {
+    success: [set(state`explore.selectedSandbox`, props`selectedSandbox`)],
+    error: [
+      addNotification('There has been a problem getting the sandbox', 'error'),
+    ],
+  },
+];

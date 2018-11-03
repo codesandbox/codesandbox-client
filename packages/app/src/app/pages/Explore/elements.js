@@ -39,11 +39,6 @@ export const ModalContainer = styled.div`
   margin: 0;
   color: rgba(255, 255, 255, 0.8);
 `;
-export const Iframe = styled.iframe`
-  border: none;
-  width: 100%;
-  height: 400px;
-`;
 
 const Icon = css`
   width: 50px;

@@ -1,7 +1,14 @@
 export function mountPopularSandboxes({ path, api, props }) {
   return api
     .get(`/sandboxes/popular?start_date=${props.date}`)
-    .then(data => path.success({ popularSandboxes: data }))
+    .then(popularSandboxes => path.success({ popularSandboxes }))
+    .catch(() => path.error());
+}
+
+export function getSandbox({ path, api, props }) {
+  return api
+    .get(`/sandboxes/${props.id}`)
+    .then(selectedSandbox => path.success({ selectedSandbox }))
     .catch(() => path.error());
 }
 

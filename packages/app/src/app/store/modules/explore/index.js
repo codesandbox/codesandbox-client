@@ -9,10 +9,12 @@ export default Module({
     pickedSandboxes: null,
     pickedSandboxesIndexes: null,
     pickedSandboxesLoading: false,
+    selectedSandbox: null,
   },
   signals: {
     popularSandboxesMounted: sequences.mountPopularSandboxes,
     pickSandbox: sequences.pickSandbox,
+    getSandbox: sequences.getSandbox,
     pickedSandboxesMounted: sequences.pickedSandboxes,
   },
 });
