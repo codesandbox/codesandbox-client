@@ -29,7 +29,6 @@ module.exports = {
     require.resolve('@babel/plugin-transform-destructuring'),
     require.resolve('@babel/plugin-proposal-object-rest-spread'),
     require.resolve('@babel/plugin-proposal-class-properties'),
-    require.resolve('@babel/plugin-transform-runtime'),
     require.resolve('babel-plugin-lodash'),
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     require.resolve('babel-plugin-styled-components'),

@@ -3,15 +3,32 @@ const path = require('path');
 module.exports = {
   // Don't try to find .babelrc because we want to force this configuration.
   babelrc: false,
+  overrides: [
+    {
+      presets: [
+        [
+          require.resolve('@babel/preset-env'),
+          {
+            targets: {
+              ie11: true,
+            },
+            // Disable polyfill transforms
+            useBuiltIns: false,
+            modules: false,
+            forceAllTransforms: true,
+          },
+        ],
+      ],
+      include: path.join(__dirname, '../src/sandbox'),
+    },
+  ],
   presets: [
     require.resolve('@babel/preset-flow'),
     // Latest stable ECMAScript features
     [
       require.resolve('@babel/preset-env'),
       {
-        targets: {
-          ie: 11,
-        },
+        targets: 'last 2 versions',
         // Disable polyfill transforms
         useBuiltIns: false,
         modules: false,
