@@ -7,20 +7,20 @@ module.exports = {
   presets: [
     // Latest stable ECMAScript features
     require.resolve('@babel/preset-flow'),
-    [
-      require.resolve('@babel/preset-env'),
-      {
-        targets: {
-          chrome: 67,
-          // We currently minify with uglify
-          // Remove after https://github.com/mishoo/UglifyJS2/issues/448
-        },
-        // Disable polyfill transforms
-        useBuiltIns: false,
-        modules: false,
-        forceAllTransforms: true,
-      },
-    ],
+    // [
+    //   require.resolve('@babel/preset-env'),
+    //   {
+    //     targets: {
+    //       chrome: 67,
+    //       // We currently minify with uglify
+    //       // Remove after https://github.com/mishoo/UglifyJS2/issues/448
+    //     },
+    //     // Disable polyfill transforms
+    //     useBuiltIns: false,
+    //     modules: false,
+    //     forceAllTransforms: true,
+    //   },
+    // ],
     // JSX, Flow
     require.resolve('@babel/preset-react'),
   ],
