@@ -129,7 +129,9 @@ export function absolute(path: string) {
   return "/" + path;
 }
 
-const ROOT_URL = `https://cdn.jsdelivr.net/`;
+const UNPKG = true;
+
+const ROOT_URL = UNPKG ? `https://unpkg.com/` : `https://cdn.jsdelivr.net/npm/`;
 const loadedTypings = [];
 
 /**
@@ -168,7 +170,7 @@ const doFetch = url => {
 };
 
 const fetchFromDefinitelyTyped = (dependency, version, fetchedPaths) => {
-  const depUrl = `${ROOT_URL}npm/@types/${dependency
+  const depUrl = `${ROOT_URL}@types/${dependency
     .replace("@", "")
     .replace(/\//g, "__")}`;
 
@@ -266,13 +268,21 @@ const transformFiles = dir =>
       }, {})
     : {};
 
-const getFileMetaData = (dependency, version, depPath) =>
-  doFetch(
+const getFileMetaData = (dependency, version, depPath) => {
+  if (UNPKG) {
+    return doFetch(
+      `https://unpkg.com/${dependency}@${version}/${depPath}?meta`
+    )
+    .then(response => JSON.parse(response))
+  }
+
+  return doFetch(
     `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`
   )
     .then(response => JSON.parse(response))
     .then(response => response.files.filter(f => f.name.startsWith(depPath)))
     .then(tempTransformFiles);
+}
 
 const resolveAppropiateFile = (fileMetaData, relativePath) => {
   const absolutePath = `/${relativePath}`;
@@ -297,7 +307,7 @@ const getFileTypes = (
 
   if (fetchedPaths[virtualPath]) return null;
 
-  return doFetch(`${depUrl}/${depPath}`).then(typings => {
+  return doFetch(`${depUrl}${depPath}`).then(typings => {
     if (fetchedPaths[virtualPath]) return null;
 
     addLib(virtualPath, typings, fetchedPaths);
@@ -378,7 +388,7 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
 }
 
 function fetchFromTypings(dependency, version, fetchedPaths) {
-  const depUrl = `${ROOT_URL}npm/${dependency}@${version}`;
+  const depUrl = `${ROOT_URL}${dependency}@${version}`;
   return doFetch(`${depUrl}/package.json`)
     .then(response => JSON.parse(response))
     .then(packageJSON => {
