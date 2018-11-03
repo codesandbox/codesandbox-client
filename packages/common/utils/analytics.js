@@ -28,11 +28,19 @@ export default function track(eventName, secondArg: Object = {}) {
         version: VERSION,
         path: location.pathname + location.search,
       };
-      if (window.ga) {
-        window.ga('send', data);
+      try {
+        if (window.ga) {
+          window.ga('send', data);
+        }
+      } catch (e) {
+        /* */
       }
-      if (typeof window.amplitude !== 'undefined') {
-        window.amplitude.logEvent(eventName, data);
+      try {
+        if (typeof window.amplitude !== 'undefined') {
+          window.amplitude.logEvent(eventName, data);
+        }
+      } catch (e) {
+        /* */
       }
     }
   } catch (e) {
