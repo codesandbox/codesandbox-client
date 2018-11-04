@@ -45,7 +45,7 @@ gulp.task('old-browserfs', () =>
 gulp.task('old-vscode', () =>
   gulp
     .src('standalone-packages/vscode-editor/release/min/vs/**/*')
-    .pipe(gulp.dest('public/vscode4/vs'))
+    .pipe(gulp.dest('public/vscode5/vs'))
 );
 
 gulp.task('statics', () =>
