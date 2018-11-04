@@ -26,12 +26,23 @@ class Curator extends React.Component {
     document.removeEventListener('keyup', this.handleKeyPress);
   }
 
+  getData = () => ({
+    indexes: this.props.store.explore.pickedSandboxesIndexes,
+    selectedSandbox: this.props.store.explore.selectedSandbox,
+  });
+
   handleKeyPress = e => {
     if (!this.state.modalOpen) return;
+    const { indexes, selectedSandbox = {} } = this.getData();
+    const notFirst = indexes.indexOf(selectedSandbox.id) > 0;
+    const notLast = indexes.indexOf(selectedSandbox.id) + 1 < indexes.length;
     const code = e.which || e.keyCode;
-    if (code === 37) {
+
+    // left arrow pressed
+    if (code === 37 && notFirst) {
       this.getAdjacentSandbox(-1);
-    } else if (code === 39) {
+      // right arrow pressed
+    } else if (code === 39 && notLast) {
       this.getAdjacentSandbox(1);
     }
   };
@@ -44,8 +55,7 @@ class Curator extends React.Component {
   };
 
   getAdjacentSandbox = async number => {
-    const indexes = this.props.store.explore.pickedSandboxesIndexes;
-    const selectedSandbox = this.props.store.explore.selectedSandbox;
+    const { indexes, selectedSandbox } = this.getData();
     const adjacentSandboxIndex = indexes.indexOf(selectedSandbox.id) + number;
 
     await this.props.signals.explore.getSandbox({
@@ -56,7 +66,7 @@ class Curator extends React.Component {
   render() {
     const {
       store: {
-        explore: { pickedSandboxes, selectedSandbox },
+        explore: { pickedSandboxes, selectedSandbox, pickedSandboxesIndexes },
       },
     } = this.props;
 
@@ -70,6 +80,7 @@ class Curator extends React.Component {
             modalOpen={modalOpen}
             selectedSandbox={selectedSandbox}
             settings={this.props.store.preferences.settings}
+            indexes={pickedSandboxesIndexes}
             next={() => this.getAdjacentSandbox(1)}
             prev={() => this.getAdjacentSandbox(-1)}
           />

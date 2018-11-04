@@ -11,6 +11,7 @@ export const Name = styled(Title)`
 
 export const ModalContainer = styled.div`
   background-color: ${props => props.theme.background};
+  position: relative;
   padding: 1rem;
   padding-top: 0.75rem;
 
@@ -50,4 +51,20 @@ export const Tag = styled.span`
   padding: 0.3em 0.5em;
   border-radius: 4px;
   font-weight: 500;
+`;
+
+export const Author = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  > section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  > img {
+    border-radius: 50%;
+    margin-right: 0.5rem;
+  }
 `;
