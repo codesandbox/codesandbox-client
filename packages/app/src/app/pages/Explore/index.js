@@ -1,27 +1,17 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { inject, observer } from 'mobx-react';
 
 import Navigation from 'app/pages/common/Navigation';
 import SubTitle from 'app/components/SubTitle';
-import Modal from 'app/components/Modal';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 import SandboxCard from './SandboxCard';
-import ShowcasePreview from '../Profile/Showcase/ShowcasePreview';
+import Modal from './Modal/index';
 
-import {
-  Container,
-  Heading,
-  FancyHeader,
-  ModalContainer,
-  NextIconStyled,
-  PrevIconStyled,
-  Content,
-  Tag,
-} from './elements';
+import { Container, Heading, FancyHeader } from './elements';
 
 class Curator extends React.Component {
   state = {
@@ -56,10 +46,10 @@ class Curator extends React.Component {
   getAdjacentSandbox = async number => {
     const indexes = this.props.store.explore.pickedSandboxesIndexes;
     const selectedSandbox = this.props.store.explore.selectedSandbox;
-    const nextSandboxIndex = indexes.indexOf(selectedSandbox.id) + number;
+    const adjacentSandboxIndex = indexes.indexOf(selectedSandbox.id) + number;
 
     await this.props.signals.explore.getSandbox({
-      id: indexes[nextSandboxIndex],
+      id: indexes[adjacentSandboxIndex],
     });
   };
 
@@ -77,62 +67,12 @@ class Curator extends React.Component {
         {modalOpen ? (
           <Modal
             onClose={() => this.setState({ modalOpen: false })}
-            isOpen={Boolean(modalOpen)}
-            width={900}
-          >
-            <ModalContainer style={{ position: 'relative' }}>
-              {selectedSandbox ? (
-                <Fragment>
-                  <PrevIconStyled onClick={() => this.getAdjacentSandbox(-1)} />
-
-                  <ShowcasePreview
-                    sandbox={selectedSandbox}
-                    settings={this.props.store.preferences.settings}
-                  />
-                  <NextIconStyled onClick={() => this.getAdjacentSandbox(1)} />
-                  {/* {JSON.stringify(selectedSandbox)} */}
-                  <Content>
-                    <section>
-                      <span style={{ display: 'block' }}>
-                        Title: {selectedSandbox.title}
-                      </span>
-                      <span style={{ display: 'block' }}>
-                        Description: {selectedSandbox.description}
-                      </span>
-                      <span style={{ display: 'block' }}>
-                        Template: {selectedSandbox.template}
-                      </span>
-                      <span style={{ display: 'block' }}>
-                        Tags: {selectedSandbox.tags.map(t => <Tag>{t}</Tag>)}
-                      </span>
-                    </section>
-
-                    <aside>
-                      <span style={{ display: 'block' }}>Author: </span>
-                      <span style={{ display: 'block' }}>
-                        <img
-                          src={selectedSandbox.author.avatarUrl}
-                          width="50"
-                          alt={selectedSandbox.author.name}
-                        />
-                      </span>
-                      <span style={{ display: 'block' }}>
-                        {selectedSandbox.author.name}
-                      </span>
-                      <span style={{ display: 'block' }}>
-                        Views:{selectedSandbox.viewCount}
-                      </span>
-                      <span style={{ display: 'block' }}>
-                        Forks:{selectedSandbox.forkCount}
-                      </span>
-                    </aside>
-                  </Content>
-                </Fragment>
-              ) : (
-                'loading'
-              )}
-            </ModalContainer>
-          </Modal>
+            modalOpen={modalOpen}
+            selectedSandbox={selectedSandbox}
+            settings={this.props.store.preferences.settings}
+            next={() => this.getAdjacentSandbox(1)}
+            prev={() => this.getAdjacentSandbox(-1)}
+          />
         ) : null}
         <Margin vertical={1.5} horizontal={1.5}>
           <Navigation title="Explore Page" />
