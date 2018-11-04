@@ -99,6 +99,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   transpilationListener: ?Function;
   sizeProbeInterval: ?number;
 
+  modelSelectionListener: {
+    dispose: Function,
+  };
+  modelContentChangedListener: {
+    dispose: Function,
+  };
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -160,9 +167,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     window.removeEventListener('resize', this.resizeEditor);
     // Make sure that everything has run before disposing, to prevent any inconsistensies
 
-    // if (this.editor) {
-    //   this.editor.dispose();
-    // }
     if (this.lintWorker) {
       this.lintWorker.terminate();
     }
@@ -170,6 +174,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.transpilationListener();
     }
     clearInterval(this.sizeProbeInterval);
+    if (this.modelContentChangedListener) {
+      this.modelContentChangedListener.dispose();
+    }
+    if (this.modelSelectionListener) {
+      this.modelSelectionListener.dispose();
+    }
 
     if (this.disposeInitializer) {
       this.disposeInitializer();
@@ -274,14 +284,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       monaco: this.monaco,
     };
 
-    let modelContentChangedListener;
-    let modelSelectionListener;
     editor.editorService.onDidActiveEditorChange(() => {
-      if (modelContentChangedListener) {
-        modelContentChangedListener.dispose();
+      if (this.modelContentChangedListener) {
+        this.modelContentChangedListener.dispose();
       }
-      if (modelSelectionListener) {
-        modelSelectionListener.dispose();
+      if (this.modelSelectionListener) {
+        this.modelSelectionListener.dispose();
       }
 
       const activeEditor = editor.getActiveCodeEditor();
@@ -289,7 +297,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       if (activeEditor) {
         activeEditor.updateOptions({ readOnly: this.props.readOnly });
 
-        modelContentChangedListener = activeEditor.onDidChangeModelContent(
+        this.modelContentChangedListener = activeEditor.onDidChangeModelContent(
           e => {
             const { isLive, sendTransforms } = this.props;
 
@@ -301,7 +309,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           }
         );
 
-        modelSelectionListener = activeEditor.onDidChangeCursorSelection(
+        this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
           selectionChange => {
             // TODO: add another debounced action to send the current data. So we can
             // have the correct cursor pos no matter what
@@ -718,6 +726,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     dependencies: $PropertyType<Props, 'dependencies'>
   ): Promise<null> =>
     new Promise(resolve => {
+      if (this.modelContentChangedListener) {
+        this.modelContentChangedListener.dispose();
+      }
+      if (this.modelSelectionListener) {
+        this.modelSelectionListener.dispose();
+      }
       this.sandbox = newSandbox;
       this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
@@ -859,7 +873,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           .map(error => {
             if (error) {
               return {
-                severity: this.monaco.Severity.Error,
+                severity: this.monaco.MarkerSeverity.Error,
                 startColumn: 1,
                 startLineNumber: error.line,
                 endColumn: error.column,
@@ -898,8 +912,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               return {
                 severity:
                   correction.severity === 'warning'
-                    ? this.monaco.Severity.Warning
-                    : this.monaco.Severity.Notice,
+                    ? this.monaco.MarkerSeverity.Warning
+                    : this.monaco.MarkerSeverity.Notice,
                 startColumn: correction.column,
                 startLineNumber: correction.line,
                 endColumn: 1,

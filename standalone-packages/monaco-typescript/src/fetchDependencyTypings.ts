@@ -307,6 +307,7 @@ const getFileTypes = (
 
   if (fetchedPaths[virtualPath]) return null;
 
+  console.log(`${depUrl}${depPath}`);
   return doFetch(`${depUrl}${depPath}`).then(typings => {
     if (fetchedPaths[virtualPath]) return null;
 
@@ -388,8 +389,8 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
 }
 
 function fetchFromTypings(dependency, version, fetchedPaths) {
-  const depUrl = `${ROOT_URL}${dependency}@${version}`;
-  return doFetch(`${depUrl}/package.json`)
+  const depUrl = `${ROOT_URL}${dependency}@${version}/`;
+  return doFetch(`${depUrl}package.json`)
     .then(response => JSON.parse(response))
     .then(packageJSON => {
       const types = packageJSON.typings || packageJSON.types;

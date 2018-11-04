@@ -2,7 +2,12 @@ import { push, set, concat } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import { ensureOwnedEditable, closeModal } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
-import { closeTabByIndex, setModal, callVSCodeCallback } from '../../actions';
+import {
+  closeTabByIndex,
+  setModal,
+  callVSCodeCallback,
+  callVSCodeCallbackError,
+} from '../../actions';
 import {
   sendModuleCreated,
   sendModuleDeleted,
@@ -55,7 +60,7 @@ export const massCreateModules = [
       sendMassModuleCreated,
       callVSCodeCallback,
     ],
-    error: [],
+    error: [callVSCodeCallbackError],
   },
 ];
 

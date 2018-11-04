@@ -191,6 +191,8 @@ export function createOptimisticModule({ state, props, utils }) {
     shortid: utils.createOptimisticId(),
     isBinary: props.isBinary === undefined ? false : props.isBinary,
     sourceId: state.get('editor.currentSandbox.sourceId'),
+    insertedAt: new Date().toString(),
+    updatedAt: new Date().toString(),
   };
 
   return { optimisticModule };
@@ -203,6 +205,8 @@ export function createOptimisticDirectory({ state, props, utils }) {
     directoryShortid: props.directoryShortid || null,
     shortid: utils.createOptimisticId(),
     sourceId: state.get('editor.currentSandbox.sourceId'),
+    insertedAt: new Date().toString(),
+    updatedAt: new Date().toString(),
   };
 
   return { optimisticDirectory };

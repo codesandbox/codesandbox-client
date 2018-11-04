@@ -480,7 +480,7 @@ export function updateTemplateIfSSE({ state, api }) {
   }
 }
 
-export function saveModuleCode({ props, state, api, recover }) {
+export function saveModuleCode({ props, state, api, recover, path }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleToSave = sandbox.modules.find(
     module => module.shortid === props.moduleShortid
@@ -504,6 +504,14 @@ export function saveModuleCode({ props, state, api, recover }) {
       );
 
       if (index > -1) {
+        state.set(
+          `editor.sandboxes.${newSandbox.id}.modules.${index}.insertedAt`,
+          x.insertedAt
+        );
+        state.set(
+          `editor.sandboxes.${newSandbox.id}.modules.${index}.updatedAt`,
+          x.updatedAt
+        );
         if (newModuleToSave.code === codeToSave) {
           state.set(
             `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
@@ -515,14 +523,20 @@ export function saveModuleCode({ props, state, api, recover }) {
             `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
             x.code
           );
-          throw new Error(
-            `The code of '${title}' changed while saving, will ignore the save now. Please try again with saving.`
-          );
+
+          return path.codeOutdated({
+            message: `The code of '${title}' changed while saving. Please try again with saving.`,
+          });
         }
       }
 
-      return x;
-    });
+      return path.success(x);
+    })
+    .catch(e =>
+      path.error({
+        message: e.message,
+      })
+    );
 }
 
 export function getCurrentModuleId({ state }) {
@@ -620,6 +634,22 @@ export function getSavedCode({ props, state }) {
     }
 
     return { oldCode: module.code, code: module.code };
+  }
+
+  return {};
+}
+
+export function touchFile({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === props.moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    state.set(
+      `editor.currentSandbox.modules.${moduleIndex}.updatedAt`,
+      new Date().toString()
+    );
   }
 
   return {};

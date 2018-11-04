@@ -29,6 +29,18 @@ export function callVSCodeCallback({ props }) {
   }
 }
 
+export function callVSCodeCallbackError({ props }) {
+  const { cbID } = props;
+  if (cbID) {
+    if (window.cbs && window.cbs[cbID]) {
+      const errorMessage =
+        props.message || 'Something went wrong while saving the file.';
+      window.cbs[cbID](new Error(errorMessage), undefined);
+      delete window.cbs[cbID];
+    }
+  }
+}
+
 export function setWorkspace({ state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');

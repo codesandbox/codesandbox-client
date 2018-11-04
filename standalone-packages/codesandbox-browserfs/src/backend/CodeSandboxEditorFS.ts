@@ -14,6 +14,8 @@ import { ErrorCode, ApiError } from '../core/api_error';
 export interface IModule {
   path: string;
   code: string | undefined;
+  updatedAt: string;
+  insertedAt: string;
 }
 
 export interface IManager {
@@ -159,7 +161,11 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
 
     const stats = new Stats(
       FileType.FILE,
-      (moduleInfo.code || '').length
+      (moduleInfo.code || '').length,
+      undefined,
+      new Date(),
+      new Date(moduleInfo.updatedAt),
+      new Date(moduleInfo.insertedAt)
     );
 
     return stats;
@@ -178,7 +184,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
 
     const { code = '' } = moduleInfo;
     const buffer = Buffer.from(code || '');
-    const stats = new Stats(FileType.FILE, buffer.length);
+    const stats = new Stats(FileType.FILE, buffer.length, undefined, new Date(), new Date(moduleInfo.updatedAt), new Date(moduleInfo.insertedAt));
 
     return new CodeSandboxFile(this, p, flag, stats, buffer);
   }
