@@ -19,6 +19,8 @@ import {
   ModalContainer,
   NextIconStyled,
   PrevIconStyled,
+  Content,
+  Tag,
 } from './elements';
 
 class Curator extends React.Component {
@@ -76,7 +78,6 @@ class Curator extends React.Component {
           <Modal
             onClose={() => this.setState({ modalOpen: false })}
             isOpen={Boolean(modalOpen)}
-            title={(selectedSandbox || {}).title}
             width={900}
           >
             <ModalContainer style={{ position: 'relative' }}>
@@ -89,7 +90,43 @@ class Curator extends React.Component {
                     settings={this.props.store.preferences.settings}
                   />
                   <NextIconStyled onClick={() => this.getAdjacentSandbox(1)} />
-                  {JSON.stringify(selectedSandbox)}
+                  {/* {JSON.stringify(selectedSandbox)} */}
+                  <Content>
+                    <section>
+                      <span style={{ display: 'block' }}>
+                        Title: {selectedSandbox.title}
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        Description: {selectedSandbox.description}
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        Template: {selectedSandbox.template}
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        Tags: {selectedSandbox.tags.map(t => <Tag>{t}</Tag>)}
+                      </span>
+                    </section>
+
+                    <aside>
+                      <span style={{ display: 'block' }}>Author: </span>
+                      <span style={{ display: 'block' }}>
+                        <img
+                          src={selectedSandbox.author.avatarUrl}
+                          width="50"
+                          alt={selectedSandbox.author.name}
+                        />
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        {selectedSandbox.author.name}
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        Views:{selectedSandbox.viewCount}
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        Forks:{selectedSandbox.forkCount}
+                      </span>
+                    </aside>
+                  </Content>
                 </Fragment>
               ) : (
                 'loading'

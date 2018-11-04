@@ -57,3 +57,19 @@ export const PrevIconStyled = styled(PrevIcon)`
   ${Icon};
   left: -50px;
 `;
+
+export const Content = styled.section`
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-column-gap: 60px;
+`;
+
+export const Tag = styled.span`
+  position: relative;
+  color: white;
+  background-color: ${props => props.theme.secondary};
+  padding: 0.3em 0.5em;
+  border-radius: 4px;
+  font-weight: 500;
+`;
