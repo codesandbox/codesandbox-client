@@ -23,6 +23,16 @@ class LivePage extends React.Component {
     this.initializeLive();
   }
 
+  disconnectLive() {
+    if (this.props.store.live.isLive) {
+      this.props.signals.live.onNavigateAway({});
+    }
+  }
+
+  componentWillUnmount() {
+    this.disconnectLive();
+  }
+
   initializeLive = () => {
     if (this.props.store.hasLogIn) {
       this.loggedIn = true;
@@ -37,6 +47,7 @@ class LivePage extends React.Component {
       prevProps.match.params.id !== this.props.match.params.id ||
       (this.props.store.hasLogIn && !this.loggedIn)
     ) {
+      this.disconnectLive();
       this.initializeLive();
     }
   }
