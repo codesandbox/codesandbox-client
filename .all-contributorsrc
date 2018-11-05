@@ -652,6 +652,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vivek12345",
+      "name": "Vivek Nayyar",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/4931048?v=4",
+      "profile": "https://www.viveknayyar.in/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
