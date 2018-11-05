@@ -19,10 +19,10 @@ class Filter extends Component {
           <Button onClick={this.toggle}>{open ? <Up /> : <Down />}</Button>
         </Title>
         <RefinementList
-          withSearchBox={!noSearch}
+          searchable={!noSearch}
           showMore={!noSearch}
           operator={operator}
-          attributeName={attributeName}
+          attribute={attributeName}
         />
       </Container>
     );
