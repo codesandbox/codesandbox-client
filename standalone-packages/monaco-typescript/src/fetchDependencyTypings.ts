@@ -307,7 +307,6 @@ const getFileTypes = (
 
   if (fetchedPaths[virtualPath]) return null;
 
-  console.log(`${depUrl}${depPath}`);
   return doFetch(`${depUrl}${depPath}`).then(typings => {
     if (fetchedPaths[virtualPath]) return null;
 
