@@ -7,6 +7,7 @@ import {
   setModal,
   callVSCodeCallback,
   callVSCodeCallbackError,
+  getSandbox,
 } from '../../actions';
 import {
   sendModuleCreated,
@@ -32,6 +33,21 @@ export const getUploadedFiles = [
     error: [
       addNotification('Unable to get uploaded files information', 'error'),
     ],
+  },
+];
+
+export const syncSandbox = [
+  set(props`id`, state`editor.currentId`),
+  getSandbox,
+  {
+    success: [actions.processSSEUpdates],
+    error: [
+      addNotification(
+        "We weren't able to retrieve the latest files of the sandbox, please refresh",
+        'error'
+      ),
+    ],
+    notFound: [],
   },
 ];
 
