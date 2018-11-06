@@ -97,12 +97,12 @@ export function getModulesInDirectory(
   dirPath.pop();
 
   const dir = resolveDirectory(
-    dirPath.join('/'),
+    dirPath.join('/') || '/',
     modules,
     directories,
     _startdirectoryShortid
   );
-  const foundDirectoryShortid = dir.shortid;
+  const foundDirectoryShortid = dir ? dir.shortid : null;
 
   const lastPath = splitPath[splitPath.length - 1];
   const modulesInFoundDirectory = modules.filter(
