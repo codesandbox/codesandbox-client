@@ -7,7 +7,7 @@
     "uglify-es": "npm:terser"
   },
   "scripts": {
-    "start": "cross-env LOCAL_SERVER=1 node scripts/start.js",
+    "start": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node scripts/start.js",
     "start:sandbox": "cross-env SANDBOX_ONLY=true node scripts/start.js",
     "start:dev_api": "node scripts/start.js",
     "start:test": "cross-env LOCAL_SERVER=1 SANDBOX_ONLY=true node scripts/start.js",

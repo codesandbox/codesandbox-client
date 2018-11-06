@@ -18,7 +18,7 @@ module.exports = {
         // Disable polyfill transforms
         useBuiltIns: false,
         modules: false,
-        forceAllTransforms: true,
+        forceAllTransforms: !process.env.LOCAL_DEV,
       },
     ],
     // JSX, Flow
