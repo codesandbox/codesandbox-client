@@ -330,6 +330,7 @@ class Preview extends React.Component<Props, State> {
                   setServerStatus={(status: string) => {
                     signals.server.statusChanged({ status });
                   }}
+                  syncSandbox={signals.files.syncSandbox}
                 />
               ) : (
                 <RunOnClick

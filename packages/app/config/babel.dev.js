@@ -7,7 +7,7 @@ module.exports = {
   presets: [
     // Latest stable ECMAScript features
     require.resolve('@babel/preset-flow'),
-    process.env.NODE_ENV === 'test' && [
+    [
       require.resolve('@babel/preset-env'),
       {
         targets: {
@@ -18,7 +18,7 @@ module.exports = {
         // Disable polyfill transforms
         useBuiltIns: false,
         modules: false,
-        forceAllTransforms: true,
+        forceAllTransforms: !process.env.LOCAL_DEV,
       },
     ],
     // JSX, Flow
