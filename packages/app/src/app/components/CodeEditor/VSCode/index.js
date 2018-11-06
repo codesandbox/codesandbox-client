@@ -299,6 +299,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
         this.modelContentChangedListener = activeEditor.onDidChangeModelContent(
           e => {
+            if (activeEditor !== editor.getActiveCodeEditor()) {
+              // This check ensures that we can't have multiple editor listeners working
+              // with the current editor. I noticed an issue where we suddenly
+              // had 2 listeners for 2 different editors and it updated code
+              // for the current editor. This caused code to enter the wrong modules.
+              return;
+            }
+
             const { isLive, sendTransforms } = this.props;
 
             if (isLive && sendTransforms && !this.receivingCode) {
@@ -1159,6 +1167,20 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
+  getCurrentModelPath = () => {
+    const activeEditor = this.editor.getActiveCodeEditor();
+
+    if (!activeEditor) {
+      return undefined;
+    }
+    const model = activeEditor.getModel();
+    if (!model) {
+      return undefined;
+    }
+
+    return model.uri.path.replace(/^\/sandbox/, '');
+  };
+
   openModule = (module: Module) => {
     if (module.id) {
       const path = getModulePath(
@@ -1167,7 +1189,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         module.id
       );
 
-      this.editor.openFile(path);
+      if (this.getCurrentModelPath() !== path) {
+        this.editor.openFile(path);
+      }
     }
   };
 

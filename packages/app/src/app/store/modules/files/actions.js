@@ -6,7 +6,58 @@ import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
 import track from 'common/utils/analytics';
 
-import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
+import {
+  resolveModuleWrapped,
+  resolveDirectoryWrapped,
+} from '../../utils/resolve-module-wrapped';
+
+export function processSSEUpdates({ state, props, controller }) {
+  const newSandbox = props.sandbox;
+  const oldSandbox = state.get('editor.currentSandbox');
+
+  props.updates.forEach(update => {
+    const { op, path, type } = update;
+    if (type === 'file') {
+      const resolveModuleOld = resolveModuleWrapped(oldSandbox);
+      const resolveModuleNew = resolveModuleWrapped(newSandbox);
+      const oldModule = resolveModuleOld(path);
+      if (op === 'update') {
+        const newModule = resolveModuleNew(path);
+
+        if (oldModule) {
+          const modulePos = oldSandbox.modules.indexOf(oldModule);
+          state.merge(
+            `editor.sandboxes.${oldSandbox.id}.modules.${modulePos}`,
+            newModule
+          );
+        } else {
+          state.push(`editor.sandboxes.${oldSandbox.id}.modules`, newModule);
+        }
+      } else if (op === 'delete') {
+        controller.getSignal('files.removeModule')({
+          moduleShortid: oldModule.shortid,
+        });
+      }
+    } else {
+      const resolveDirectoryOld = resolveDirectoryWrapped(oldSandbox);
+      const resolveDirectoryNew = resolveDirectoryWrapped(newSandbox);
+
+      if (op === 'update') {
+        // Create
+        const newDirectory = resolveDirectoryNew(path);
+        state.push(
+          `editor.sandboxes.${oldSandbox.id}.directories`,
+          newDirectory
+        );
+      } else {
+        const oldDirectory = resolveDirectoryOld(path);
+        controller.getSignal('files.removeDirectory')({
+          directoryShortid: oldDirectory.shortid,
+        });
+      }
+    }
+  });
+}
 
 export function whenModuleIsSelected({ state, props, path }) {
   const currentModule = state.get('editor.currentModule');

@@ -39,6 +39,7 @@ type Props = {
   alignDirection?: 'right' | 'bottom',
   delay?: number,
   setServerStatus?: (status: string) => void,
+  syncSandbox?: (updates: any) => void,
 };
 
 type State = {
@@ -148,6 +149,7 @@ class BasePreview extends React.Component<Props, State> {
     modules: {
       [path: string]: any,
     },
+    ignoreNextUpdate: boolean,
   };
   // TODO: Find typedefs for this
   $socket: ?any;
@@ -179,10 +181,7 @@ class BasePreview extends React.Component<Props, State> {
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
 
-    this.lastSent = {
-      sandboxId: props.sandbox.id,
-      modules: this.getModulesToSend(),
-    };
+    this.initializeLastSent();
 
     if (this.serverPreview) {
       this.connectTimeout = null;
@@ -197,6 +196,14 @@ class BasePreview extends React.Component<Props, State> {
 
     window.openNewWindow = this.openNewWindow;
   }
+
+  initializeLastSent = () => {
+    this.lastSent = {
+      sandboxId: this.props.sandbox.id,
+      modules: this.getModulesToSend(),
+      ignoreNextUpdate: false,
+    };
+  };
 
   componentWillUpdate(nextProps: Props, nextState: State) {
     if (
@@ -293,6 +300,14 @@ class BasePreview extends React.Component<Props, State> {
           signal,
           id,
         });
+      });
+
+      socket.on('sandbox:update', message => {
+        this.lastSent.ignoreNextUpdate = true;
+
+        if (this.props.syncSandbox) {
+          this.props.syncSandbox({ updates: message.updates });
+        }
       });
 
       socket.on('sandbox:start', () => {
@@ -405,6 +420,7 @@ class BasePreview extends React.Component<Props, State> {
       : frameUrl(newId, this.props.initialPath || '');
 
     if (this.serverPreview) {
+      this.initializeLastSent();
       this.setupSSESockets();
     }
     this.setState(
@@ -553,8 +569,10 @@ class BasePreview extends React.Component<Props, State> {
 
         this.lastSent.modules = modulesToSend;
 
-        if (Object.keys(diff).length > 0 && this.$socket) {
+        const ignoreUpdate = this.lastSent.ignoreNextUpdate;
+        if (!ignoreUpdate && Object.keys(diff).length > 0 && this.$socket) {
           this.$socket.emit('sandbox:update', diff);
+          this.lastSent.ignoreNextUpdate = false;
         }
       } else {
         dispatch({
