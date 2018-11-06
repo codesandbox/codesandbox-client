@@ -7,7 +7,7 @@ module.exports = {
   presets: [
     // Latest stable ECMAScript features
     require.resolve('@babel/preset-flow'),
-    process.env.NODE_ENV === 'test' && [
+    [
       require.resolve('@babel/preset-env'),
       {
         targets: {
