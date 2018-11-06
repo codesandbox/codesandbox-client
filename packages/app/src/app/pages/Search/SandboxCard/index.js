@@ -23,7 +23,7 @@ function SandboxCard({ hit }) {
         <Header alignItems="flex-start">
           <Title>
             {hit.title ? (
-              <Highlight attributeName="title" hit={hit} />
+              <Highlight attribute="title" hit={hit} />
             ) : (
               hit.objectID
             )}
@@ -37,7 +37,7 @@ function SandboxCard({ hit }) {
           </TagContainer>
         </Header>
         <Description>
-          <Highlight attributeName="description" hit={hit} />
+          <Highlight attribute="description" hit={hit} />
         </Description>
 
         <SandboxInfo
