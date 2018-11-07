@@ -572,8 +572,8 @@ class BasePreview extends React.Component<Props, State> {
         const ignoreUpdate = this.lastSent.ignoreNextUpdate;
         if (!ignoreUpdate && Object.keys(diff).length > 0 && this.$socket) {
           this.$socket.emit('sandbox:update', diff);
-          this.lastSent.ignoreNextUpdate = false;
         }
+        this.lastSent.ignoreNextUpdate = false;
       } else {
         dispatch({
           type: 'compile',
