@@ -238,7 +238,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   provideDocumentFormattingEdits = (model, options, token) =>
-    console.log('prettify') || prettify(
+    prettify(
       model.uri.fsPath,
       () => model.getValue(),
       this.getPrettierConfig(),
@@ -280,8 +280,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     monaco.languages.registerDocumentFormattingEditProvider('html', this);
     monaco.languages.registerDocumentFormattingEditProvider('markdown', this);
     monaco.languages.registerDocumentFormattingEditProvider('json', this);
-
-    console.log('hey');
 
     // eslint-disable-next-line no-underscore-dangle
     window.CSEditor = {
