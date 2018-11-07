@@ -1,7 +1,5 @@
 /* eslint-env worker */
-/* eslint no-var: off, strict: off */
-/* eslint-env worker */
-/* eslint no-var: off, strict: off */
+/* eslint no-var: off, vars-on-top: off, strict: off, no-use-before-define: off */
 /* globals prettier prettierPlugins */
 
 var imported = Object.create(null);
@@ -147,7 +145,7 @@ function handleMessage(message) {
   delete options.doc;
   delete options.output2;
 
-  var plugins = [{ parsers: parsers }];
+  var plugins = [{ parsers }];
   options.plugins = plugins;
 
   var response = {
@@ -167,5 +165,6 @@ function formatCode(text, options) {
     return prettier.format(text, options);
   } catch (e) {
     self.postMessage({ error: e.message, text });
+    return undefined
   }
 }
