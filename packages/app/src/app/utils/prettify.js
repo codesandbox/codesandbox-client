@@ -48,7 +48,7 @@ function getMode(title: string) {
   }
 
   if (/\.json$/.test(title)) {
-    return 'json5';
+    return 'json';
   }
 
   if (/\.component\.html$/.test(title)) {
