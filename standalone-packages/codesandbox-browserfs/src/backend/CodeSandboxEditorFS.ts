@@ -11,11 +11,36 @@ import { default as Stats, FileType } from '../core/node_fs_stats';
 import PreloadFile from '../generic/preload_file';
 import { ErrorCode, ApiError } from '../core/api_error';
 
+function blobToBuffer(blob: Blob, cb: (err: any | undefined | null, result?: Buffer) => void) {
+  if (typeof Blob === 'undefined' || !(blob instanceof Blob)) {
+    throw new Error('first argument must be a Blob');
+  }
+  if (typeof cb !== 'function') {
+    throw new Error('second argument must be a function');
+  }
+
+  const reader = new FileReader();
+
+  function onLoadEnd(e: any) {
+    reader.removeEventListener('loadend', onLoadEnd, false);
+    if (e.error) {
+      cb(e.error);
+    } else {
+      // @ts-ignore
+      cb(null, Buffer.from(reader.result));
+    }
+  }
+
+  reader.addEventListener('loadend', onLoadEnd, false);
+  reader.readAsArrayBuffer(blob);
+}
+
 export interface IModule {
   path: string;
   code: string | undefined;
   updatedAt: string;
   insertedAt: string;
+  isBinary: boolean;
 }
 
 export interface IManager {
@@ -175,7 +200,41 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     throw new Error("Create file not supported");
   }
 
+  public openFile(p: string, flag: FileFlag, cb: BFSCallback<File>): void {
+    console.log('hey');
+    const moduleInfo = this.manager.getState().editor.modulesByPath[p];
+
+    if (!moduleInfo) {
+      cb(ApiError.ENOENT(p));
+      return;
+    }
+
+    const { isBinary, code = '' } = moduleInfo;
+
+    if (isBinary) {
+      fetch(code).then(x => x.blob()).then(blob => {
+        const stats = new Stats(FileType.FILE, blob.size, undefined, new Date(), new Date(moduleInfo.updatedAt), new Date(moduleInfo.insertedAt));
+
+        blobToBuffer(blob, (err, r) => {
+          if (err) {
+            cb(err);
+            return;
+          }
+
+          cb(undefined, new CodeSandboxFile(this, p, flag, stats, r))  ;
+        });
+      });
+      return;
+    }
+
+    const buffer = Buffer.from(code || '');
+    const stats = new Stats(FileType.FILE, buffer.length, undefined, new Date(), new Date(moduleInfo.updatedAt), new Date(moduleInfo.insertedAt));
+
+    cb(null, new CodeSandboxFile(this, p, flag, stats, buffer));
+  }
+
   public openFileSync(p: string, flag: FileFlag, mode: number): File {
+    console.log('hey2');
     const moduleInfo = this.manager.getState().editor.modulesByPath[p];
 
     if (!moduleInfo) {

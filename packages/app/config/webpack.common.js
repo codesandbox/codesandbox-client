@@ -465,7 +465,9 @@ module.exports = {
           to: 'static',
         },
         {
-          from: '../../standalone-packages/codesandbox-browserfs/dist',
+          from: __DEV__
+            ? '../../standalone-packages/codesandbox-browserfs/build'
+            : '../../standalone-packages/codesandbox-browserfs/dist',
           to: 'static/browserfs2',
         },
       ].filter(x => x)
