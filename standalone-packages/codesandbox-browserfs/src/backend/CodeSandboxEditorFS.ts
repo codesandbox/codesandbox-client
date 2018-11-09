@@ -200,8 +200,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     throw new Error("Create file not supported");
   }
 
-  public openFile(p: string, flag: FileFlag, cb: BFSCallback<File>): void {
-    console.log('hey');
+  public open(p: string, flag: FileFlag, mode: number, cb: BFSCallback<File>): void {
     const moduleInfo = this.manager.getState().editor.modulesByPath[p];
 
     if (!moduleInfo) {
@@ -234,7 +233,6 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
   }
 
   public openFileSync(p: string, flag: FileFlag, mode: number): File {
-    console.log('hey2');
     const moduleInfo = this.manager.getState().editor.modulesByPath[p];
 
     if (!moduleInfo) {

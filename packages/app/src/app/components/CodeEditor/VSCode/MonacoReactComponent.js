@@ -59,9 +59,12 @@ class MonacoEditor extends React.PureComponent {
     }
 
     const context = this.props.context || window;
-    const [{ CodeSandboxService }] = [
+    const [{ CodeSandboxService }, { CodeSandboxConfigurationUIService }] = [
       window.require(
         'vs/codesandbox/services/codesandbox/browser/codesandboxService'
+      ),
+      window.require(
+        'vs/codesandbox/services/codesandbox/configurationUIService'
       ),
     ];
 
@@ -71,6 +74,11 @@ class MonacoEditor extends React.PureComponent {
       {
         codesandboxService: i =>
           i.createInstance(CodeSandboxService, controller),
+        codesandboxConfigurationUIService: i =>
+          i.createInstance(
+            CodeSandboxConfigurationUIService,
+            this.props.customEditorAPI
+          ),
       },
       returnedServices => {
         serviceCache = returnedServices;

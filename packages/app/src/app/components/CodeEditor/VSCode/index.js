@@ -752,17 +752,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
 
   changeCode = (code: string, moduleId?: string) => {
+    const editor = this.editor.getActiveCodeEditor();
     if (
       code !== this.getCode() &&
-      (!moduleId || this.currentModule.id === moduleId)
+      (!moduleId || this.currentModule.id === moduleId) &&
+      editor
     ) {
       this.lint(
         code,
         this.currentModule.title,
-        this.editor
-          .getActiveCodeEditor()
-          .getModel()
-          .getVersionId()
+        editor.getModel().getVersionId()
       );
     }
   };
@@ -1413,6 +1412,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             defineTheme(monaco, this.props.theme.vscodeTheme)
           }
           getEditorOptions={this.getEditorOptions}
+          customEditorAPI={this.props.customEditorAPI}
         />
       </Container>
     );
