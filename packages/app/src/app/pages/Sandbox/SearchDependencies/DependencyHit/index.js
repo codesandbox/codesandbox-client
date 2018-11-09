@@ -85,7 +85,7 @@ export default class DependencyHit extends React.PureComponent {
       <Container highlighted={highlighted} onClick={onClick}>
         <Left>
           <Row>
-            <Highlight attributeName="name" hit={hit} />
+            <Highlight attribute="name" hit={hit} />
             <Downloads>{formatDownloads(hit.downloadsLast30Days)}</Downloads>
             {hit.license && <License>{hit.license}</License>}
           </Row>
