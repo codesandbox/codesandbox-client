@@ -1,7 +1,7 @@
 import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import { inject, observer } from 'mobx-react';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 
 import Fullscreen from 'common/components/flex/Fullscreen';
 import getTemplateDefinition from 'common/templates';
@@ -13,6 +13,14 @@ import Content from './Content';
 import Header from './Header';
 import Navigation from './Navigation';
 import getVSCodeTheme from './utils/get-vscode-theme';
+
+const STATUS_BAR_SIZE = 22;
+
+const AOverride = styled.div`
+  a {
+    color: inherit;
+  }
+`;
 
 class ContentSplit extends React.Component {
   state = {
@@ -79,7 +87,7 @@ class ContentSplit extends React.Component {
         <Container>
           {!store.preferences.settings.zenMode && <Header />}
 
-          <Fullscreen>
+          <Fullscreen style={{ width: 'initial', height: 'initial' }}>
             {!hideNavigation && <Navigation />}
 
             <div
@@ -88,7 +96,7 @@ class ContentSplit extends React.Component {
                 left: hideNavigation ? 0 : 'calc(4rem + 1px)',
                 top: store.preferences.settings.zenMode ? 0 : '3rem',
                 right: 0,
-                bottom: 0,
+                bottom: STATUS_BAR_SIZE,
               }}
             >
               <SplitPane
@@ -120,6 +128,22 @@ class ContentSplit extends React.Component {
                 {store.workspace.openedWorkspaceItem && <Workspace />}
                 <Content match={match} />
               </SplitPane>
+
+              <AOverride
+                style={{
+                  position: 'fixed',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: STATUS_BAR_SIZE,
+                }}
+                className="monaco-workbench mac nopanel"
+              >
+                <div
+                  className="part statusbar"
+                  id="workbench.parts.statusbar"
+                />
+              </AOverride>
             </div>
           </Fullscreen>
         </Container>

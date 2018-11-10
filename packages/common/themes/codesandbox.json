@@ -5,7 +5,13 @@
   "colors": {
     "editor.background": "#1C2022",
     "editor.foreground": "#E0E0E0",
-    "editor.selectionBackground": "#ADD6FF26"
+    "editor.selectionBackground": "#ADD6FF26",
+    "statusBar.background": "#141618",
+    "statusBar.debuggingForeground": "#ffffff",
+    "statusBar.foreground": "#9da5b4",
+    "statusBar.noFolderBackground": "#141618",
+    "statusBarItem.hoverBackground": "#2c313a",
+    "statusBar.border": "#0B0D0E"
   },
   "tokenColors": [
     {

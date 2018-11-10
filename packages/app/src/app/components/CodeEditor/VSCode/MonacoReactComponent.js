@@ -106,12 +106,14 @@ class MonacoEditor extends React.PureComponent {
         { ITextFileService },
         { ILifecycleService },
         { IEditorGroupsService },
+        { IStatusbarService },
       ] = [
         r('vs/workbench/services/editor/common/editorService'),
         r('vs/editor/browser/services/codeEditorService'),
         r('vs/workbench/services/textfile/common/textfiles'),
         r('vs/platform/lifecycle/common/lifecycle'),
         r('vs/workbench/services/group/common/editorGroupsService'),
+        r('vs/platform/statusbar/common/statusbar'),
       ];
 
       document.getElementById('root').className += ' monaco-shell vs-dark';
@@ -140,6 +142,11 @@ class MonacoEditor extends React.PureComponent {
         } else {
           EditorPart.create(part);
         }
+
+        const statusBarPart = services.get(IStatusbarService);
+        statusBarPart.create(
+          document.getElementById('workbench.parts.statusbar')
+        );
 
         EditorPart.layout({
           width: this.props.width,
