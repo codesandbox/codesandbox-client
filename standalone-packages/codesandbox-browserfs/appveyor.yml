@@ -1,5 +1,7 @@
 environment:
-  nodejs_version: "4"
+  matrix:
+    - nodejs_version: "8"
+    - nodejs_version: "10"
 install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
@@ -21,3 +23,5 @@ build: off
 cache:
   - node_modules
   - "%LOCALAPPDATA%/Yarn"
+
+clone_depth: 5

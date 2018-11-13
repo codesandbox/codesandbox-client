@@ -90,14 +90,14 @@ export class EmscriptenFile extends BaseFile implements File {
       throw convertError(e, this._path);
     }
   }
-  public write(buffer: NodeBuffer, offset: number, length: number, position: number, cb: BFSThreeArgCallback<number, Buffer>): void {
+  public write(buffer: Buffer, offset: number, length: number, position: number, cb: BFSThreeArgCallback<number, Buffer>): void {
     try {
       cb(null, this.writeSync(buffer, offset, length, position), buffer);
     } catch (e) {
       cb(e);
     }
   }
-  public writeSync(buffer: NodeBuffer, offset: number, length: number, position: number | null): number {
+  public writeSync(buffer: Buffer, offset: number, length: number, position: number | null): number {
     try {
       const u8 = buffer2Uint8array(buffer);
       // Emscripten is particular about what position is set to.
@@ -107,14 +107,14 @@ export class EmscriptenFile extends BaseFile implements File {
       throw convertError(e, this._path);
     }
   }
-  public read(buffer: NodeBuffer, offset: number, length: number, position: number, cb: BFSThreeArgCallback<number, Buffer>): void {
+  public read(buffer: Buffer, offset: number, length: number, position: number, cb: BFSThreeArgCallback<number, Buffer>): void {
     try {
       cb(null, this.readSync(buffer, offset, length, position), buffer);
     } catch (e) {
       cb(e);
     }
   }
-  public readSync(buffer: NodeBuffer, offset: number, length: number, position: number | null): number {
+  public readSync(buffer: Buffer, offset: number, length: number, position: number | null): number {
     try {
       const u8 = buffer2Uint8array(buffer);
       // Emscripten is particular about what position is set to.
@@ -241,9 +241,9 @@ export default class EmscriptenFileSystem extends SynchronousFileSystem {
         itemType,
         stats.size,
         stats.mode,
-        stats.atime,
-        stats.mtime,
-        stats.ctime
+        stats.atime.getTime(),
+        stats.mtime.getTime(),
+        stats.ctime.getTime()
       );
     } catch (e) {
       throw convertError(e, p);

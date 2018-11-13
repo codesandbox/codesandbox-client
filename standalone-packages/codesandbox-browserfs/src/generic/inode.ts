@@ -33,7 +33,7 @@ export default class Inode {
   public toStats(): Stats {
     return new Stats(
       (this.mode & 0xF000) === FileType.DIRECTORY ? FileType.DIRECTORY : FileType.FILE,
-      this.size, this.mode, new Date(this.atime), new Date(this.mtime), new Date(this.ctime));
+      this.size, this.mode, this.atime, this.mtime, this.ctime);
   }
 
   /**

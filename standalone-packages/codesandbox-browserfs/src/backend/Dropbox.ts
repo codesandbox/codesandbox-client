@@ -9,7 +9,6 @@ import {Dropbox} from 'dropbox_bridge';
 import setImmediate from '../generic/setImmediate';
 import {dirname} from 'path';
 type DropboxClient = DropboxTypes.Dropbox;
-declare const Dropbox: Dropbox;
 
 /**
  * Dropbox paths do not begin with a /, they just begin with a folder at the root node.
@@ -363,7 +362,7 @@ export default class DropboxFileSystem extends BaseFileSystem implements FileSys
       const b: Blob = (<any> res).fileBlob;
       const fr = new FileReader();
       fr.onload = () => {
-        const ab: ArrayBuffer = fr.result;
+        const ab = fr.result as ArrayBuffer;
         cb(null, new DropboxFile(this, path, flags, new Stats(FileType.FILE, ab.byteLength), arrayBuffer2Buffer(ab)));
       };
       fr.readAsArrayBuffer(b);
@@ -384,7 +383,7 @@ export default class DropboxFileSystem extends BaseFileSystem implements FileSys
 
   public createFile(p: string, flags: FileFlag, mode: number, cb: BFSCallback<File>): void {
     const fileData = Buffer.alloc(0);
-    const blob = new Blob([buffer2ArrayBuffer(fileData)], {type: "octet/stream"});
+    const blob = new Blob([buffer2ArrayBuffer(fileData) as ArrayBuffer], {type: "octet/stream"});
     const commitInfo: DropboxTypes.files.CommitInfo = {
       contents: blob,
       path: FixPath(p)
@@ -397,7 +396,7 @@ export default class DropboxFileSystem extends BaseFileSystem implements FileSys
       switch (<string> err['.tag']) {
         case 'path':
           const upError = <DropboxTypes.files.UploadErrorPath> err;
-          cb(WriteErrorToError(upError.path.reason, p, GetErrorMessage(e)));
+          cb(WriteErrorToError((upError as any).path.reason, p, GetErrorMessage(e)));
           break;
         case 'too_many_write_operations':
           // Retry in (500, 800) ms.
@@ -492,7 +491,7 @@ export default class DropboxFileSystem extends BaseFileSystem implements FileSys
    * (Internal) Syncs file to Dropbox.
    */
   public _syncFile(p: string, d: Buffer, cb: BFSOneArgCallback): void {
-    const blob = new Blob([buffer2ArrayBuffer(d)], {type: "octet/stream"});
+    const blob = new Blob([buffer2ArrayBuffer(d) as ArrayBuffer], {type: "octet/stream"});
     const arg: DropboxTypes.files.CommitInfo = {
       contents: blob,
       path: FixPath(p),
@@ -507,7 +506,7 @@ export default class DropboxFileSystem extends BaseFileSystem implements FileSys
       switch (<string> err['.tag']) {
         case 'path':
           const upError = <DropboxTypes.files.UploadErrorPath> err;
-          cb(WriteErrorToError(upError.path.reason, p, GetErrorMessage(e)));
+          cb(WriteErrorToError((upError as any).path.reason, p, GetErrorMessage(e)));
           break;
         case 'too_many_write_operations':
           setTimeout(() => this._syncFile(p, d, cb), 500 + (300 * (Math.random())));

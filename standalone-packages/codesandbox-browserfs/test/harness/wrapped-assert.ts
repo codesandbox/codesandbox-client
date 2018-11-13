@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-const wrapper = require('object-wrapper');
-import * as wrapperInterfaces from 'object-wrapper/interfaces';
+import wrapper from 'object-wrapper';
+import {IFunctionInfo} from 'object-wrapper/js/es6/interfaces';
 
 function construct(constructor: any, args: any): any {
     function F(this: any): void {
@@ -14,7 +14,7 @@ function isAssertionError(e: any): e is assert.AssertionError {
   return typeof(e) === 'object' && e.hasOwnProperty('actual');
 }
 
-function wrapperFcn(funcInfo: wrapperInterfaces.IFunctionInfo, args: IArguments, isConstructor: boolean, caller: Function) {
+function wrapperFcn(funcInfo: IFunctionInfo, args: IArguments, isConstructor: boolean, caller: Function) {
   try {
     if (!isConstructor) {
       return funcInfo.originalFcn.apply(funcInfo.namespace, args);
@@ -29,7 +29,7 @@ function wrapperFcn(funcInfo: wrapperInterfaces.IFunctionInfo, args: IArguments,
         actual: e.actual,
         expected: e.expected,
         operator: e.operator,
-        stackStartFunction: caller
+        stackStartFn: caller
       }));
     } else {
       mocha.throwError(e);

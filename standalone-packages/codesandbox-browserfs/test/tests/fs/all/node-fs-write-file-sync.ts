@@ -4,7 +4,7 @@ import assert from '../../../harness/wrapped-assert';
 import common from '../../../harness/common';
 
 export default function() {
-  var openCount = 0;
+  //var openCount = 0;
   var mode: number;
   var content: string;
   var rootFS = fs.getRootFS();
@@ -22,12 +22,12 @@ export default function() {
   }
 
   function openSync() {
-    openCount++;
+    //openCount++;
     return (<any>rootFS)._openSync.apply(rootFS, arguments);
   }
 
   function closeSync() {
-    openCount--;
+    //openCount--;
     return (<any>fs)._closeSync.apply(fs, arguments);
   }
 

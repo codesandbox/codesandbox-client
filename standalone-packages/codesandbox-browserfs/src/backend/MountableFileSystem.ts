@@ -143,7 +143,7 @@ export default class MountableFileSystem extends BaseFileSystem implements FileS
   /**
    * Returns the file system that the path points to.
    */
-  public _getFs(path: string): {fs: FileSystem; path: string} {
+  public _getFs(path: string): {fs: FileSystem; path: string, mountPoint: string} {
     const mountList = this.mountList, len = mountList.length;
     for (let i = 0; i < len; i++) {
       const mountPoint = mountList[i];
@@ -153,11 +153,11 @@ export default class MountableFileSystem extends BaseFileSystem implements FileS
         if (path === '') {
           path = '/';
         }
-        return {fs: this.mntMap[mountPoint], path: path};
+        return {fs: this.mntMap[mountPoint], path: path, mountPoint: mountPoint};
       }
     }
     // Query our root file system.
-    return {fs: this.rootFs, path: path};
+    return {fs: this.rootFs, path: path, mountPoint: '/'};
   }
 
   // Global information methods
@@ -313,6 +313,31 @@ export default class MountableFileSystem extends BaseFileSystem implements FileS
     });
   }
 
+  public realpathSync(p: string, cache: {[path: string]: string}): string {
+    const fsInfo = this._getFs(p);
+
+    try {
+      const mountedPath = fsInfo.fs.realpathSync(fsInfo.path, {});
+      // resolve is there to remove any trailing slash that may be present
+      return path.resolve(path.join(fsInfo.mountPoint, mountedPath));
+    } catch (e) {
+      throw this.standardizeError(e, fsInfo.path, p);
+    }
+  }
+
+  public realpath(p: string, cache: {[path: string]: string}, cb: BFSCallback<string>): void {
+    const fsInfo = this._getFs(p);
+
+    fsInfo.fs.realpath(fsInfo.path, {}, (err, rv) => {
+      if (err) {
+        cb(this.standardizeError(err, fsInfo.path, p));
+      } else {
+        // resolve is there to remove any trailing slash that may be present
+        cb(null, path.resolve(path.join(fsInfo.mountPoint, rv!)));
+      }
+    });
+  }
+
   public rmdirSync(p: string): void {
     const fsInfo = this._getFs(p);
     if (this._containsMountPt(p)) {
@@ -399,7 +424,7 @@ const fsCmdMap = [
    // 1 arg functions
    ['exists', 'unlink', 'readlink'],
    // 2 arg functions
-   ['stat', 'mkdir', 'realpath', 'truncate'],
+   ['stat', 'mkdir', 'truncate'],
    // 3 arg functions
    ['open', 'readFile', 'chmod', 'utimes'],
    // 4 arg functions

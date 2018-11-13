@@ -4,17 +4,52 @@ import {FileSystem, BFSOneArgCallback, BFSCallback, BFSThreeArgCallback} from '.
 import {FileFlag} from './file_flag';
 import * as path from 'path';
 import Stats from './node_fs_stats';
+import setImmediate from '../generic/setImmediate';
 
 // Typing info only.
 import * as _fs from 'fs';
 
-/**
- * Wraps a callback function. Used for unit testing. Defaults to a NOP.
- * @hidden
- */
-let wrapCb = function<T>(cb: T, numArgs: number): T {
+/** Used for unit testing. Defaults to a NOP. */
+let wrapCbHook = function<T>(cb: T, numArgs: number): T {
   return cb;
 };
+
+/**
+ * Wraps a callback function, ensuring it is invoked through setImmediate.
+ * @hidden
+ */
+function wrapCb<T extends Function>(cb: T, numArgs: number): T {
+  if (typeof cb !== 'function') {
+    throw new Error('Callback must be a function.');
+  }
+
+  const hookedCb = wrapCbHook(cb, numArgs);
+
+  // We could use `arguments`, but Function.call/apply is expensive. And we only
+  // need to handle 1-3 arguments
+  switch (numArgs) {
+    case 1:
+      return <any> function(arg1: any) {
+        setImmediate(function() {
+          return hookedCb(arg1);
+        });
+      };
+    case 2:
+      return <any> function(arg1: any, arg2: any) {
+        setImmediate(function() {
+          return hookedCb(arg1, arg2);
+        });
+      };
+    case 3:
+      return <any> function(arg1: any, arg2: any, arg3: any) {
+        setImmediate(function() {
+          return hookedCb(arg1, arg2, arg3);
+        });
+      };
+    default:
+      throw new Error('Invalid invocation of wrapCb.');
+  }
+}
 
 /**
  * @hidden
@@ -77,7 +112,8 @@ function normalizePath(p: string): string {
  * @hidden
  */
 function normalizeOptions(options: any, defEnc: string | null, defFlag: string, defMode: number | null): {encoding: string; flag: string; mode: number} {
-  switch (typeof options) {
+  // typeof null === 'object' so special-case handing is needed.
+  switch (options === null ? 'null' : typeof options) {
     case 'object':
       return {
         encoding: typeof options['encoding'] !== 'undefined' ? options['encoding'] : defEnc,
@@ -90,12 +126,16 @@ function normalizeOptions(options: any, defEnc: string | null, defFlag: string, 
         flag: defFlag,
         mode: defMode!
       };
-    default:
+    case 'null':
+    case 'undefined':
+    case 'function':
       return {
         encoding: defEnc!,
         flag: defFlag,
         mode: defMode!
       };
+    default:
+      throw new TypeError(`"options" must be a string or an object, got ${typeof options} instead.`);
   }
 }
 
@@ -419,7 +459,7 @@ export default class FS {
   public readFile(filename: string, options: { flag?: string; }, callback?: BFSCallback<Buffer>): void;
   public readFile(filename: string, options: { encoding: string; flag?: string; }, callback?: BFSCallback<string>): void;
   public readFile(filename: string, encoding: string, cb: BFSCallback<string>): void;
-  public readFile(filename: string, arg2: any = {}, cb: BFSCallback<any> = nopCb ) {
+  public readFile(filename: string, arg2: any = {}, cb: BFSCallback<any> = nopCb) {
     const options = normalizeOptions(arg2, null, 'r', null);
     cb = typeof arg2 === 'function' ? arg2 : cb;
     const newCb = wrapCb(cb, 2);
@@ -1422,7 +1462,7 @@ export default class FS {
    * For unit testing. Passes all incoming callbacks to cbWrapper for wrapping.
    */
   public wrapCallbacks(cbWrapper: (cb: Function, args: number) => Function) {
-    wrapCb = <any> cbWrapper;
+    wrapCbHook = <any> cbWrapper;
   }
 
   private getFdForFile(file: File): number {
@@ -1448,6 +1488,10 @@ export interface FSModule extends FS {
    * The FS constructor.
    */
   FS: typeof FS;
+  /**
+   * The FS.Stats constructor.
+   */
+  Stats: typeof Stats;
   /**
    * Retrieve the FS object backing the fs module.
    */

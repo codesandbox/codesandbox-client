@@ -34,7 +34,7 @@ export default function() {
     } else {
       // BFS: IE doesn't have a toString method for the arguments pseudo-array,
       // so we create a real array for printing w/ slice.
-      console.log('FAILED:', arguments.callee.name, Array.prototype.slice.call(arguments,0));
+      console.log('FAILED:', Array.prototype.slice.call(arguments,0));
     }
   }
 
@@ -46,7 +46,7 @@ export default function() {
     } else {
       // BFS: IE doesn't have a toString method for the arguments pseudo-array,
       // so we create a real array for printing w/ slice.
-      console.log('FAILED:', arguments.callee.name, Array.prototype.slice.call(arguments,0));
+      console.log('FAILED:', Array.prototype.slice.call(arguments,0));
     }
   }
 

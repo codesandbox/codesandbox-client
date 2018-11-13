@@ -141,6 +141,96 @@ export interface SimpleSyncStore {
   del(key: string): void;
 }
 
+class LRUNode {
+  public prev: LRUNode | null = null;
+  public next: LRUNode | null = null;
+  constructor(public key: string, public value: string) {}
+}
+
+// Adapted from https://chrisrng.svbtle.com/lru-cache-in-javascript
+class LRUCache {
+  private size = 0;
+  private map: {[id: string]: LRUNode} = {};
+  private head: LRUNode | null = null;
+  private tail: LRUNode | null = null;
+  constructor(public readonly limit: number) {}
+
+  /**
+   * Change or add a new value in the cache
+   * We overwrite the entry if it already exists
+   */
+  public set(key: string, value: string): void {
+    const node = new LRUNode(key, value);
+    if (this.map[key]) {
+      this.map[key].value = node.value;
+      this.remove(node.key);
+    } else {
+      if (this.size >= this.limit) {
+        delete this.map[this.tail!.key];
+        this.size--;
+        this.tail = this.tail!.prev;
+        this.tail!.next = null;
+      }
+    }
+    this.setHead(node);
+  }
+
+  /* Retrieve a single entry from the cache */
+  public get(key: string): string | null {
+    if (this.map[key]) {
+      const value = this.map[key].value;
+      const node = new LRUNode(key, value);
+      this.remove(key);
+      this.setHead(node);
+      return value;
+    } else {
+      return null;
+    }
+  }
+
+  /* Remove a single entry from the cache */
+  public remove(key: string): void {
+    const node = this.map[key];
+    if (!node) {
+      return;
+    }
+    if (node.prev !== null) {
+      node.prev.next = node.next;
+    } else {
+      this.head = node.next;
+    }
+    if (node.next !== null) {
+      node.next.prev = node.prev;
+    } else {
+      this.tail = node.prev;
+    }
+    delete this.map[key];
+    this.size--;
+  }
+
+  /* Resets the entire cache - Argument limit is optional to be reset */
+  public removeAll() {
+    this.size = 0;
+    this.map = {};
+    this.head = null;
+    this.tail = null;
+  }
+
+  private setHead(node: LRUNode): void {
+    node.next = this.head;
+    node.prev = null;
+    if (this.head !== null) {
+        this.head.prev = node;
+    }
+    this.head = node;
+    if (this.tail === null) {
+        this.tail = node;
+    }
+    this.size++;
+    this.map[node.key] = node;
+  }
+}
+
 /**
  * A simple RW transaction for simple synchronous key-value stores.
  */
@@ -719,6 +809,14 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   public static isAvailable(): boolean { return true; }
 
   protected store: AsyncKeyValueStore;
+  private _cache: LRUCache | null = null;
+
+  constructor(cacheSize: number) {
+    super();
+    if (cacheSize > 0) {
+      this._cache = new LRUCache(cacheSize);
+    }
+  }
 
   /**
    * Initializes the file system. Typically called by subclasses' async
@@ -739,6 +837,9 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
    * Delete all contents stored in the file system.
    */
   public empty(cb: BFSOneArgCallback): void {
+    if (this._cache) {
+      this._cache.removeAll();
+    }
     this.store.clear((e?) => {
       if (noError(e, cb)) {
         // INVARIANT: Root always exists.
@@ -748,6 +849,20 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
   }
 
   public rename(oldPath: string, newPath: string, cb: BFSOneArgCallback): void {
+    // TODO: Make rename compatible with the cache.
+    if (this._cache) {
+      // Clear and disable cache during renaming process.
+      const c = this._cache;
+      this._cache = null;
+      c.removeAll();
+      const oldCb = cb;
+      cb = (e?: ApiError | null) => {
+        // Restore empty cache.
+        this._cache = c;
+        oldCb(e);
+      };
+    }
+
     const tx = this.store.beginTransaction('readwrite');
     const oldParent = path.dirname(oldPath), oldName = path.basename(oldPath);
     const newParent = path.dirname(newPath), newName = path.basename(newPath);
@@ -933,7 +1048,7 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
       if (noError(e, cb)) {
         this.getDirListing(tx, p, inode!, (e: ApiError, dirListing?: {[name: string]: string}) => {
           if (noError(e, cb)) {
-            cb(null, Object.keys(dirListing));
+            cb(null, Object.keys(dirListing!));
           }
         });
       }
@@ -1012,11 +1127,21 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
    * @param cb Passed an error or the ID of the file's inode in the file system.
    */
   private _findINode(tx: AsyncKeyValueROTransaction, parent: string, filename: string, cb: BFSCallback<string>): void {
+    if (this._cache) {
+      const id = this._cache.get(path.join(parent, filename));
+      if (id) {
+        return cb(null, id);
+      }
+    }
     const handleDirectoryListings = (e?: ApiError | null, inode?: Inode, dirList?: {[name: string]: string}): void => {
       if (e) {
         cb(e);
       } else if (dirList![filename]) {
-        cb(null, dirList![filename]);
+        const id = dirList![filename];
+        if (this._cache) {
+          this._cache.set(path.join(parent, filename), id);
+        }
+        cb(null, id);
       } else {
         cb(ApiError.ENOENT(path.resolve(parent, filename)));
       }
@@ -1025,6 +1150,9 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
     if (parent === '/') {
       if (filename === '') {
         // BASE CASE #1: Return the root's ID.
+        if (this._cache) {
+          this._cache.set(path.join(parent, filename), ROOT_NODE_ID);
+        }
         cb(null, ROOT_NODE_ID);
       } else {
         // BASE CASE #2: Find the item in the root node.
@@ -1211,6 +1339,10 @@ export class AsyncKeyValueFileSystem extends BaseFileSystem {
    * @todo Update mtime.
    */
   private removeEntry(p: string, isDir: boolean, cb: BFSOneArgCallback): void {
+    // Eagerly delete from cache (harmless even if removal fails)
+    if (this._cache) {
+      this._cache.remove(p);
+    }
     const tx = this.store.beginTransaction('readwrite'),
       parent: string = path.dirname(p), fileName: string = path.basename(p);
     // Step 1: Get parent directory's node and directory listing.

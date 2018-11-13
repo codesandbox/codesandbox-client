@@ -8,6 +8,8 @@ const logPath = '/.deletedFiles.log';
 declare var __numWaiting: number;
 
 export default function() {
+  // HACK around TypeScript bug.
+  if (__numWaiting) {}
   var rootFS = (<OverlayFS> fs.getRootFS()).unwrap(),
     fses = rootFS.getOverlayedFileSystems(),
     // XXX: Make these proper API calls.

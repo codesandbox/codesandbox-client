@@ -39,6 +39,21 @@ export default function() {
       newmfs.mount('/root/anotherRoot', rootForMfs);
       BrowserFS.initialize(newmfs);
 
+      const realPathSyncResult = fs.realpathSync('/root/anotherRoot');
+      assert.equal(
+        realPathSyncResult,
+        '/root/anotherRoot',
+        `Invariant fail: non-linked directly resolved to different path: ${realPathSyncResult}`,
+      );
+
+      fs.realpath('/root/anotherRoot', function(err, p) {
+        assert.equal(
+          p,
+          '/root/anotherRoot',
+          `Invariant fail: non-linked directly resolved to different path: ${p}`,
+        );
+      });
+
       assert.equal(fs.readdirSync('/')[0], 'root', 'Invariant fail: Can query root directory.');
 
       var t1text = 'Invariant fail: Can query folder that contains items and a mount point.';

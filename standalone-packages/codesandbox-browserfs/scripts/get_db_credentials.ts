@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import {readFileSync, writeFileSync, existsSync} from 'fs';
-import Dropbox = require('dropbox');
+import {Dropbox} from 'dropbox';
 import express = require('express');
 import {parse as parseUrl} from 'url';
 import {json as jsonBodyParser} from 'body-parser';
@@ -9,6 +9,9 @@ import {Server} from 'http';
 
 const CLIENT_ID = 'c6oex2qavccb2l3';
 
+// Required for DropboxJS to work.
+// https://github.com/dropbox/dropbox-sdk-js/issues/188
+(global as any).fetch = require('isomorphic-fetch');
 
 const tokenPath = process.argv[2];
 if (!tokenPath) {

@@ -4,6 +4,7 @@ const SOCKET_IDENTIFIER = 'node-socket';
 
 export class Socket extends EventEmitter {
   public destroyed = false;
+  private encoding: string;
 
   constructor(
     private target: Window,
@@ -17,13 +18,17 @@ export class Socket extends EventEmitter {
     this.startListening();
   }
 
+  setEncoding(encoding: string) {
+    this.encoding = encoding;
+  }
+
   startListening() {
     self.addEventListener('message', e => {
       if ((e.source || self) !== this.target) {
         return;
       }
 
-      const data = e.data.$data
+      const data = e.data.$data;
 
       if (!data) {
         return;
@@ -36,10 +41,13 @@ export class Socket extends EventEmitter {
     });
   }
 
+  unref() {}
+
   write(buffer: Buffer) {
     const message = {
       $type: SOCKET_IDENTIFIER,
       $channel: this.channel,
+      $sing: true,
       data: JSON.stringify(buffer),
     };
 
@@ -123,4 +131,6 @@ function createConnection(pipeName: string, cb?: Function) {
   return socket;
 }
 
-export { createServer, createConnection };
+const connect = createConnection;
+
+export { createServer, createConnection, connect };

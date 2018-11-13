@@ -2,19 +2,36 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+const parser = require('gitignore-parser');
+
 const symLinks: {[dev: number]: {[ino: number]: boolean}} = {};
-const ignoreFiles = ['.git', 'node_modules', 'bower_components', 'build'];
+const ignoreFiles = ['.git'];
 
 type FileTree = {[name: string]: FileTree | null};
 
+let vscodeignores: {[path: string]: { denies: (p: string) => boolean } | null} = {}
+
 function rdSync(dpath: string, tree: FileTree, name: string): FileTree {
   const files = fs.readdirSync(dpath);
+
+  if (files.indexOf('.vscodeignore') > -1) {
+    vscodeignores[dpath] = parser.compile(fs.readFileSync(path.join(dpath, '.vscodeignore'), 'utf8'));
+  }
+
+  const vscodeignorePath = Object.keys(vscodeignores).find(f => dpath.indexOf(f) === 0);
+  const vscodeignore = vscodeignorePath ? vscodeignores[vscodeignorePath] : undefined;
+
   files.forEach((file) => {
     // ignore non-essential directories / files
     if (ignoreFiles.indexOf(file) !== -1 || file[0] === '.') {
       return;
     }
     const fpath = `${dpath}/${file}`;
+
+    if (vscodeignore && vscodeignore.denies(fpath.replace(vscodeignorePath!, ''))) {
+      console.log('ignores', fpath);
+      return;
+    }
     try {
       // Avoid infinite loops.
       const lstat = fs.lstatSync(fpath)

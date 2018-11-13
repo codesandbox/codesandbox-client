@@ -1,26 +1,21 @@
 {
   "extends": "tslint:latest",
   "rules": {
-    "member-ordering": [
-      true,
-      {
-        "order": [
-          "public-static-field",
-          "protected-static-field",
-          "private-static-field",
-          "public-static-method",
-          "protected-static-method",
-          "private-static-method",
-          "public-instance-field",
-          "protected-instance-field",
-          "private-instance-field",
-          "constructor",
-          "public-instance-method",
-          "protected-instance-method",
-          "private-instance-method"
-        ]
-      }
-    ],
+    "member-ordering": [true, { "order": [
+      "public-static-field",
+      "protected-static-field",
+      "private-static-field",
+      "public-static-method",
+      "protected-static-method",
+      "private-static-method",
+      "public-instance-field",
+      "protected-instance-field",
+      "private-instance-field",
+      "constructor",
+      "public-instance-method",
+      "protected-instance-method",
+      "private-instance-method"
+    ] }],
     "no-internal-module": true,
     "no-reference": true,
     "typedef-whitespace": [
@@ -45,7 +40,9 @@
     "curly": true,
     "forin": true,
     "label-position": true,
-    "max-classes-per-file": [false],
+    "max-classes-per-file": [
+      false
+    ],
     "array-type": [false],
     "no-arg": true,
     "no-conditional-assignment": true,
@@ -60,8 +57,13 @@
     "use-isnan": true,
     "eofline": true,
     "indent": [true, "spaces"],
-    "interface-name": [false],
-    "quotemark": [false],
+    "interface-name": [
+      false
+    ],
+    "quotemark": [
+      false
+    ],
+    "linebreak-style": [true, "LF"],
     "no-require-imports": false,
     "no-var-requires": false,
     "no-trailing-whitespace": true,
@@ -69,31 +71,13 @@
     "comment-format": [true, "check-space"],
     "jsdoc-format": true,
     "new-parens": true,
-    "one-line": [
-      true,
-      "check-catch",
-      "check-finally",
-      "check-else",
-      "check-open-brace",
-      "check-whitespace"
-    ],
+    "one-line": [true, "check-catch", "check-finally", "check-else", "check-open-brace", "check-whitespace"],
     "semicolon": [true, "always"],
-    "variable-name": [
-      true,
-      "ban-keywords",
-      "check-format",
-      "allow-leading-underscore",
-      "allow-pascal-case"
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
+    "whitespace": [true, "check-branch", "check-decl", "check-operator", "check-separator", "check-typecast"],
+    "max-line-length": [
+      false
     ],
-    "whitespace": [
-      true,
-      "check-branch",
-      "check-decl",
-      "check-operator",
-      "check-separator",
-      "check-typecast"
-    ],
-    "max-line-length": [false],
     "no-string-literal": false,
     "no-bitwise": false,
     "trailing-comma": [false],
@@ -107,15 +91,15 @@
     "no-use-before-declare": false,
     "no-angle-bracket-type-assertion": false,
     "unified-signatures": false,
-    "ban-types": [
-      true,
-      ["Object", "Avoid using the `Object` type. Did you mean `object`?"],
-      ["Boolean", "Avoid using the `Boolean` type. Did you mean `boolean`?"],
-      ["Number", "Avoid using the `Number` type. Did you mean `number`?"],
-      ["String", "Avoid using the `String` type. Did you mean `string`?"],
-      ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
+    "ban-types": [true,
+        ["Object", "Avoid using the `Object` type. Did you mean `object`?"],
+        ["Boolean", "Avoid using the `Boolean` type. Did you mean `boolean`?"],
+        ["Number", "Avoid using the `Number` type. Did you mean `number`?"],
+        ["String", "Avoid using the `String` type. Did you mean `string`?"],
+        ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
     ],
-    "arrow-parens": false
+    "no-submodule-imports": false,
+    "no-implicit-dependencies": false
   },
   "rulesDirectory": []
 }

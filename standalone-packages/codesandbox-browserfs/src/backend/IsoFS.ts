@@ -1352,7 +1352,7 @@ export default class IsoFS extends SynchronousFileSystem implements FileSystem {
     } else {
       const len = record.dataLength();
       let mode = 0x16D;
-      const date = record.recordingDate();
+      const date = record.recordingDate().getTime();
       let atime = date;
       let mtime = date;
       let ctime = date;
@@ -1364,13 +1364,13 @@ export default class IsoFS extends SynchronousFileSystem implements FileSystem {
           } else if (entry instanceof TFEntry) {
             const flags = entry.flags();
             if (flags & TFFlags.ACCESS) {
-              atime = entry.access()!;
+              atime = entry.access()!.getTime();
             }
             if (flags & TFFlags.MODIFY) {
-              mtime = entry.modify()!;
+              mtime = entry.modify()!.getTime();
             }
             if (flags & TFFlags.CREATION) {
-              ctime = entry.creation()!;
+              ctime = entry.creation()!.getTime();
             }
           }
         }

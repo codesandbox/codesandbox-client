@@ -158,7 +158,10 @@ class MonacoEditor extends React.PureComponent {
         const editorService = services.get(IEditorService);
         const lifecycleService = services.get(ILifecycleService);
 
-        lifecycleService.phase = 3; // Running
+        lifecycleService.phase = 2;
+        requestAnimationFrame(() => {
+          lifecycleService.phase = 3; // Running
+        });
 
         const editorApi = {
           openFile(path: string) {

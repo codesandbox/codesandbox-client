@@ -15,16 +15,21 @@ import 'normalize.css';
 import 'common/global.css';
 import theme from 'common/theme';
 
+import * as child_process from 'node-services/lib/child_process';
+
 import controller from './controller';
 import App from './pages/index';
 import './split-pane.css';
 import logError from './utils/error';
 
+// import tsServerExtension from 'buffer-loader!vscode/extensions/styled-components.zip';
+import ExtHostWorkerLoader from 'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker';
+
 const debug = _debug('cs:app');
 
-window.setImmediate = setTimeout;
+window.setImmediate = (func, delay) => setTimeout(func, delay);
 
-// child_process.addForkHandler('bootstrap', ExtHostWorkerLoader);
+child_process.addForkHandler('/vs/bootstrap-fork', ExtHostWorkerLoader);
 
 window.addEventListener('unhandledrejection', e => {
   if (e && e.reason && e.reason.name === 'Canceled') {
@@ -86,6 +91,26 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 window.__isTouch = !matchMedia('(pointer:fine)').matches;
+
+window.twoWayCommunication = function twoWayCommunication(message: string) {
+  if (navigator.serviceWorker.controller) {
+    const messageChannel = new MessageChannel();
+    messageChannel.port1.onmessage = function(event) {
+      console.log('Response from the SW : ', event.data.message);
+    };
+
+    console.log('Sending message to the service worker');
+    navigator.serviceWorker.controller.postMessage(
+      {
+        command: 'twoWayCommunication',
+        message,
+      },
+      [messageChannel.port2]
+    );
+  } else {
+    console.log('No active ServiceWorker');
+  }
+};
 
 function boot() {
   requirePolyfills().then(() => {
@@ -154,6 +179,19 @@ window.BrowserFS.configure(
       '/vscode': {
         fs: 'LocalStorage',
       },
+      '/extensions': {
+        fs: 'HTTPRequest',
+        options: {
+          index: '/vscode/extensions-bundle/extensions/index.json',
+          baseUrl: '/vscode/extensions-bundle/extensions',
+        },
+      },
+      // '/extensions': {
+      //   fs: 'ZipFS',
+      //   options: {
+      //     zipData: tsServerExtension,
+      //   },
+      // },
     },
   },
   e => {

@@ -32,7 +32,7 @@ import getSettings from '../Monaco/settings';
 
 import type { Props, Editor } from '../types';
 import getMode from '../Monaco/mode';
-import { liftOff } from '../Monaco/grammars/configure-tokenizer';
+// import { liftOff } from '../Monaco/grammars/configure-tokenizer';
 import {
   lineAndColumnToIndex,
   indexToLineAndColumn,
@@ -268,7 +268,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco = monaco;
 
     // Load Vue eagerly
-    getMode('stub.vue', monaco);
+    // getMode('stub.vue', monaco);
 
     monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
     monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
@@ -365,10 +365,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.setupWorkers();
     });
 
-    monaco.languages.typescript.typescriptDefaults.setMaximumWorkerIdleTime(-1);
-    monaco.languages.typescript.javascriptDefaults.setMaximumWorkerIdleTime(-1);
+    // monaco.languages.typescript.typescriptDefaults.setMaximumWorkerIdleTime(-1);
+    // monaco.languages.typescript.javascriptDefaults.setMaximumWorkerIdleTime(-1);
 
-    this.setCompilerOptions();
+    // this.setCompilerOptions();
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(() => {
@@ -383,7 +383,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (dependencies != null) {
       if (Object.keys(dependencies)) {
         setTimeout(() => {
-          this.getConfigSchemas();
+          // this.getConfigSchemas();
         }, this.hasNativeTypescript() ? 500 : 5000);
       }
     }
@@ -394,9 +394,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.registerAutoCompletions();
 
-    requestAnimationFrame(() => {
-      liftOff(monaco);
-    });
+    // requestAnimationFrame(() => {
+    //   liftOff(monaco);
+    // });
   };
 
   setCompilerOptions = () => {
@@ -433,17 +433,17 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       newLine: this.monaco.languages.typescript.NewLineKind.LineFeed,
     };
 
-    this.monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-      compilerDefaults
-    );
-    this.monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
-      compilerDefaults
-    );
+    // this.monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
+    //   compilerDefaults
+    // );
+    // this.monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
+    //   compilerDefaults
+    // );
 
-    this.monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false,
-      noSyntaxValidation: !hasNativeTypescript,
-    });
+    // this.monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+    //   noSemanticValidation: false,
+    //   noSyntaxValidation: !hasNativeTypescript,
+    // });
   };
 
   setTSConfig = (config: Object) => {

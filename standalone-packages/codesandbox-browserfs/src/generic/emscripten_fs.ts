@@ -78,8 +78,8 @@ export interface EmscriptenFS {
 }
 
 class BFSEmscriptenStreamOps implements EmscriptenStreamOps {
+  public PATH: any;
   private FS: any;
-  private PATH: any;
   private ERRNO_CODES: any;
   private nodefs: FS;
 

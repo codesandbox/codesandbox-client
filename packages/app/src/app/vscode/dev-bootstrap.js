@@ -1,62 +1,37 @@
 /* eslint-disable */
-// import * as child_process from 'node-services/lib/child_process';
-// import * as net from 'node-services/lib/net';
-// import electron from 'node-services/lib/electron';
+import * as child_process from 'node-services/lib/child_process';
+import * as net from 'node-services/lib/net';
+import { default as Module } from 'node-services/lib/module';
+import preval from 'preval.macro';
+
+import styled from 'styled-components';
+
+// TODO move this all to monaco-textmate
+import { loadWASM } from 'onigasm'; // peer dependency of 'monaco-textmate'
+
+import resolve from 'resolve';
 
 import { METADATA } from './metadata';
 
 const PREFIX = '/vs';
 
-const global = window || self;
-global.global = window;
+const global = self || window;
+global.global = typeof window === 'undefined' ? self : window;
 let requiresDefined = false;
 
 function initializeRequires() {
   self.require.define('vs/platform/node/product', [], () => {
     return {
-      nameShort: 'Code - OSS',
-      nameLong: 'Code - OSS',
-      applicationName: 'code-oss',
-      dataFolderName: '.vscode-oss',
-      win32MutexName: 'vscodeoss',
-      licenseName: 'MIT',
-      licenseUrl: 'https://github.com/Microsoft/vscode/blob/master/LICENSE.txt',
-      win32DirName: 'Microsoft Code OSS',
-      win32NameVersion: 'Microsoft Code OSS',
-      win32RegValueName: 'CodeOSS',
-      win32AppId: '{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}',
-      win32x64AppId: '{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}',
-      win32UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
-      win32x64UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
-      win32AppUserModelId: 'Microsoft.CodeOSS',
-      win32ShellNameShort: 'C&ode - OSS',
-      darwinBundleIdentifier: 'com.visualstudio.code.oss',
-      reportIssueUrl: 'https://github.com/Microsoft/vscode/issues/new',
-      urlProtocol: 'code-oss',
+      default: preval`
+      module.exports = require('../../../../../standalone-packages/vscode/product.json');
+      `,
     };
   });
   self.require.define('vs/platform/node/package', [], () => {
     return {
-      name: 'code-oss-dev',
-      version: '1.29.0',
-      distro: 'd880cac56e2f97abfbd0a6b8388caebfa96bb40c',
-      author: {
-        name: 'Microsoft Corporation',
-      },
-      main: './out/main',
-      private: true,
-      repository: {
-        type: 'git',
-        url: 'https://github.com/Microsoft/vscode.git',
-      },
-      bugs: {
-        url: 'https://github.com/Microsoft/vscode/issues',
-      },
-      optionalDependencies: {
-        'windows-foreground-love': '0.1.0',
-        'windows-mutex': '^0.2.0',
-        'windows-process-tree': '0.2.2',
-      },
+      default: preval`
+      module.exports = require('../../../../../standalone-packages/vscode/package.json');
+      `,
     };
   });
 
@@ -84,6 +59,12 @@ function initializeRequires() {
     return {};
   });
 
+  self.require.define('vs/workbench/node/proxyResolver', [], () => {
+    return {
+      connectProxyResolver: () => Promise.resolve(undefined),
+    };
+  });
+
   self.require.define('os', [], () => {
     return { tmpdir: () => '/tmp' };
   });
@@ -98,7 +79,7 @@ function initializeRequires() {
   });
 
   self.require.define('child_process', [], () => {
-    return {};
+    return child_process;
   });
 
   self.require.define('electron', [], () => {
@@ -106,7 +87,7 @@ function initializeRequires() {
   });
 
   self.require.define('net', [], () => {
-    return {};
+    return net;
   });
 
   self.require.define('fs', [], () => {
@@ -121,6 +102,11 @@ function initializeRequires() {
     return require('assert');
   });
 
+  self.require.define('vs/base/common/amd', [], () => ({
+    getPathFromAmdModule: (_, relativePath) =>
+      require('path').join('/vs', relativePath),
+  }));
+
   self.require.define('vs/platform/request/node/request', [], () => {
     // TODO
     return {};
@@ -134,6 +120,10 @@ function initializeRequires() {
   self.require.define('vs/base/node/proxy', [], () => {
     // TODO
     return {};
+  });
+
+  self.require.define('vscode-textmate', [], () => {
+    return require('vscode-textmate/out/main');
   });
 
   self.require.define('yauzl', [], () => {
@@ -351,18 +341,21 @@ export default function(requiredModule: string) {
     PATH_PREFIX = PATH_PREFIX || '';
 
     global.nodeRequire = path => {
-      // Trick AMD in that this is the node require function
-      // console.log('nodeRequire', path);
+      if (path.indexOf('/extensions/') === 0) {
+        const resolvedPath = resolve.sync(path);
 
-      // if (path.endsWith('package.json')) {
-      //   return require('vscode/package.json');
-      // }
-      // if (path.endsWith('product.json')) {
-      //   return require('vscode/product.json');
-      // }
+        const module = new Module(path);
+        module.load(resolvedPath);
+
+        return module.exports;
+      }
 
       if (path === 'module') {
-        return { _load: global.nodeRequire };
+        return Module;
+      }
+
+      if (path === 'native-watchdog') {
+        return { start: () => {} };
       }
     };
 
@@ -403,22 +396,26 @@ export default function(requiredModule: string) {
 
       global.deps = new Set();
 
-      self.require(requiredModule, function() {
-        if (!RESOLVED_CORE.isRelease()) {
-          // At this point we've loaded the monaco-editor-core
-          self.require(
-            RESOLVED_PLUGINS.map(function(plugin) {
-              return plugin.contrib;
-            }),
-            function() {
-              // At this point we've loaded all the plugins
-              callback();
-            }
-          );
-        } else {
-          callback();
-        }
-      });
+      if (requiredModule) {
+        self.require(requiredModule, function() {
+          if (false && !RESOLVED_CORE.isRelease()) {
+            // At this point we've loaded the monaco-editor-core
+            self.require(
+              RESOLVED_PLUGINS.map(function(plugin) {
+                return plugin.contrib;
+              }),
+              function() {
+                // At this point we've loaded all the plugins
+                callback();
+              }
+            );
+          } else {
+            callback();
+          }
+        });
+      } else {
+        callback();
+      }
     }
 
     if (global.require) {

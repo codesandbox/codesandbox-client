@@ -188,9 +188,9 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
       FileType.FILE,
       (moduleInfo.code || '').length,
       undefined,
-      new Date(),
-      new Date(moduleInfo.updatedAt),
-      new Date(moduleInfo.insertedAt)
+      +new Date(),
+      +new Date(moduleInfo.updatedAt),
+      +new Date(moduleInfo.insertedAt)
     );
 
     return stats;
@@ -212,7 +212,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
 
     if (isBinary) {
       fetch(code).then(x => x.blob()).then(blob => {
-        const stats = new Stats(FileType.FILE, blob.size, undefined, new Date(), new Date(moduleInfo.updatedAt), new Date(moduleInfo.insertedAt));
+        const stats = new Stats(FileType.FILE, blob.size, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
         blobToBuffer(blob, (err, r) => {
           if (err) {
@@ -227,7 +227,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
     }
 
     const buffer = Buffer.from(code || '');
-    const stats = new Stats(FileType.FILE, buffer.length, undefined, new Date(), new Date(moduleInfo.updatedAt), new Date(moduleInfo.insertedAt));
+    const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
     cb(null, new CodeSandboxFile(this, p, flag, stats, buffer));
   }
@@ -241,7 +241,7 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
 
     const { code = '' } = moduleInfo;
     const buffer = Buffer.from(code || '');
-    const stats = new Stats(FileType.FILE, buffer.length, undefined, new Date(), new Date(moduleInfo.updatedAt), new Date(moduleInfo.insertedAt));
+    const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
     return new CodeSandboxFile(this, p, flag, stats, buffer);
   }

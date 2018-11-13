@@ -61,7 +61,13 @@
 
     <script>
       if (BrowserFS) {
-        window.process = { nextTick: requestAnimationFrame };
+        window.process = {
+          env: {
+            VSCODE_DEV: false
+          },
+          nextTick: (cb) => requestAnimationFrame(cb),
+          once: BrowserFS.BFSRequire('process').once
+        };
         window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
       }
     </script>

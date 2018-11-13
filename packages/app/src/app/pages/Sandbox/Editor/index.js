@@ -69,6 +69,8 @@ class ContentSplit extends React.Component {
     this.props.store.preferences.settings.editorTheme; // eslint-disable-line
     this.props.store.preferences.settings.customVSCodeTheme; // eslint-disable-line
 
+    const vscode = this.props.store.preferences.settings.experimentVSCode;
+
     const hideNavigation =
       (store.preferences.settings.zenMode &&
         !store.workspace.openedWorkspaceItem) ||
@@ -96,7 +98,7 @@ class ContentSplit extends React.Component {
                 left: hideNavigation ? 0 : 'calc(4rem + 1px)',
                 top: store.preferences.settings.zenMode ? 0 : '3rem',
                 right: 0,
-                bottom: STATUS_BAR_SIZE,
+                bottom: vscode ? STATUS_BAR_SIZE : 0,
               }}
             >
               <SplitPane
@@ -129,21 +131,23 @@ class ContentSplit extends React.Component {
                 <Content match={match} />
               </SplitPane>
 
-              <AOverride
-                style={{
-                  position: 'fixed',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: STATUS_BAR_SIZE,
-                }}
-                className="monaco-workbench mac nopanel"
-              >
-                <div
-                  className="part statusbar"
-                  id="workbench.parts.statusbar"
-                />
-              </AOverride>
+              {vscode && (
+                <AOverride
+                  style={{
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: STATUS_BAR_SIZE,
+                  }}
+                  className="monaco-workbench mac nopanel"
+                >
+                  <div
+                    className="part statusbar"
+                    id="workbench.parts.statusbar"
+                  />
+                </AOverride>
+              )}
             </div>
           </Fullscreen>
         </Container>

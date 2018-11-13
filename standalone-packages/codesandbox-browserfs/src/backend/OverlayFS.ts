@@ -362,7 +362,7 @@ export class UnlockedOverlayFS extends BaseFileSystem implements FileSystem {
             // Make the oldStat's mode writable. Preserve the topmost
             // part of the mode, which specifies if it is a file or a
             // directory.
-            stat = stat.clone();
+            stat = Stats.clone(stat);
             stat.mode = makeModeWritable(stat.mode);
           }
           cb(err, stat);
@@ -381,7 +381,7 @@ export class UnlockedOverlayFS extends BaseFileSystem implements FileSystem {
       if (this._deletedFiles[p]) {
         throw ApiError.ENOENT(p);
       }
-      const oldStat = this._readable.statSync(p, isLstat).clone();
+      const oldStat = Stats.clone(this._readable.statSync(p, isLstat));
       // Make the oldStat's mode writable. Preserve the topmost part of the
       // mode, which specifies if it is a file or a directory.
       oldStat.mode = makeModeWritable(oldStat.mode);
@@ -410,7 +410,7 @@ export class UnlockedOverlayFS extends BaseFileSystem implements FileSystem {
             } else {
               // at this point we know the stats object we got is from
               // the readable FS.
-              stats = stats!.clone();
+              stats = Stats.clone(stats!);
               stats.mode = mode;
               this._readable.readFile(p, null, getFlag('r'), (readFileErr: ApiError, data?: any) => {
                 if (readFileErr) {
@@ -460,7 +460,7 @@ export class UnlockedOverlayFS extends BaseFileSystem implements FileSystem {
           } else {
             // Create an OverlayFile.
             const buf = this._readable.readFileSync(p, null, getFlag('r'));
-            const stats = this._readable.statSync(p, false).clone();
+            const stats = Stats.clone(this._readable.statSync(p, false));
             stats.mode = mode;
             return new OverlayFile(this, p, flag, stats, buf);
           }
@@ -854,9 +854,13 @@ export class UnlockedOverlayFS extends BaseFileSystem implements FileSystem {
     this._writable.stat(parent, false, statDone);
     function statDone(err: ApiError, stat?: Stats): void {
       if (err) {
-        toCreate.push(parent);
-        parent = path.dirname(parent);
-        self._writable.stat(parent, false, statDone);
+        if (parent === "/") {
+          cb(new ApiError(ErrorCode.EBUSY, "Invariant failed: root does not exist!"));
+        } else {
+          toCreate.push(parent);
+          parent = path.dirname(parent);
+          self._writable.stat(parent, false, statDone);
+        }
       } else {
         createParents();
       }
