@@ -449,7 +449,10 @@ async function compile({
       templateDefinition,
       configurations
     );
-    const { manifest, isNewCombination } = await loadDependencies(dependencies);
+    const { manifest, isNewCombination } = await loadDependencies(
+      dependencies,
+      disableDependencyPreprocessing
+    );
 
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
