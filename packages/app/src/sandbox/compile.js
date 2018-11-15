@@ -389,6 +389,7 @@ async function compile({
   showOpenInCodeSandbox = false,
   skipEval = false,
   hasFileResolver = false,
+  disableDependencyPreprocessing = false,
 }) {
   dispatch({
     type: 'start',

@@ -23,6 +23,7 @@ export interface State {
 }
 
 export interface Props {
+  showOpenInCodeSandbox?: boolean;
   className?: string;
   style?: Object;
   files: IFiles;
@@ -171,7 +172,11 @@ export default class SandpackProvider extends React.PureComponent<
       this.props.onFileChange(files, this._getSandpackState());
     }
     if (this.manager) {
-      this.manager.updatePreview({ files, template: this.props.template });
+      this.manager.updatePreview({
+        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
+        files,
+        template: this.props.template,
+      });
     }
   };
 

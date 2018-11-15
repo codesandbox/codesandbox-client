@@ -67,6 +67,12 @@ export interface ISandboxInfo {
   template?: string;
 
   showOpenInCodeSandbox?: boolean;
+
+  /**
+   * Only use unpkg for fetching the dependencies, no preprocessing. It's slower, but doesn't talk
+   * to AWS.
+   */
+  disableDependencyPreprocessing?: boolean;
 }
 
 const BUNDLER_URL =
@@ -195,6 +201,8 @@ export default class PreviewManager {
       modules,
       externalResources: [],
       hasFileResolver: !!this.options.fileResolver,
+      disableDependencyPreprocessing: this.sandboxInfo
+        .disableDependencyPreprocessing,
       template:
         this.sandboxInfo.template ||
         getTemplate(packageJSON, normalizedModules),
