@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="833px" height="833px" viewBox="0 0 833 833" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-    <title>Artboard Copy</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Artboard-Copy" fill="#FFFFFF" fill-rule="nonzero">
-            <polygon id="Shape" points="455 787.75271 375 787.75271 375 394.446916 728.814859 198 767.648634 267.94239 455 441.532782"></polygon>
-            <polygon id="Shape" points="66 268.999689 104.730395 199 437.39223 383.059735 398.661835 453.059425"></polygon>
-            <path d="M43,626.773691 L43,209.890523 L416.18869,1 L789.463493,209.018289 L789.463493,626.124111 L416.189073,832.909898 L43,626.773691 Z M123,579.569823 L416.132583,741.485707 L709.463493,578.986859 L709.463493,256.01971 L416.274803,92.6317472 L123,256.790867 L123,579.569823 Z" id="Shape"></path>
-            <polyline id="Shape" points="599 695.640089 599 522.137494 755.361734 435 755.361734 608.759786 599 695.640089"></polyline>
-            <polyline id="Shape" points="242.72664 524.705279 89 439 89 610.410559 242.72664 696.550515 242.72664 524.705279"></polyline>
-            <polyline id="Shape" points="421.829113 222.85264 578.154961 135.619829 421.89576 48 265 135.910709 421.829113 222.85264"></polyline>
-        </g>
-    </g>
-</svg>
+<svg width="833" height="833" xmlns="http://www.w3.org/2000/svg"><g fill="#FFF" fill-rule="nonzero"><path d="M455 787.753h-80V394.447L728.815 198l38.834 69.942L455 441.532z"/><path d="M66 269l38.73-70 332.662 184.06-38.73 70z"/><path d="M43 626.774V209.89L416.189 1l373.274 208.018v417.106L416.19 832.91 43 626.774zm80-47.204l293.133 161.916 293.33-162.5V256.02L416.275 92.632 123 256.79V579.57z"/><path d="M599 695.64V522.137L755.362 435v173.76L599 695.64M242.727 524.705L89 439v171.41l153.727 86.14V524.706M421.83 222.853l156.325-87.233L421.895 48 265 135.91l156.83 86.943"/></g></svg>

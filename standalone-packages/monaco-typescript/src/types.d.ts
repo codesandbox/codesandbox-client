@@ -1,0 +1,2 @@
+
+declare var BrowserFS: any;

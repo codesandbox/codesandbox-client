@@ -1,13 +1,21 @@
 // @flow
 import type { ConfigurationFile } from '../types';
 
+const JSX_PRAGMA = {
+  react: 'React.createElement',
+  preact: 'h',
+};
+
 const config: ConfigurationFile = {
   title: 'tsconfig.json',
   type: 'typescript',
   description: 'Configuration for how TypeScript transpiles.',
   moreInfoUrl: 'http://www.typescriptlang.org/docs/handbook/tsconfig-json.html',
 
-  getDefaultCode: (template: string) => {
+  getDefaultCode: (
+    template: string,
+    resolveModule: (path: string) => ?{ code: string }
+  ) => {
     if (template === 'create-react-app-typescript') {
       return JSON.stringify(
         {
@@ -45,16 +53,95 @@ const config: ConfigurationFile = {
     }
 
     if (template === 'parcel') {
-      return JSON.stringify({
+      const tsconfig = {
         compilerOptions: {
           module: 'commonjs',
           jsx: 'preserve',
+          jsxFactory: undefined,
           esModuleInterop: true,
           sourceMap: true,
           allowJs: true,
           lib: ['es6', 'dom'],
           rootDir: 'src',
           moduleResolution: 'node',
+        },
+      };
+
+      const packageJSONModule = resolveModule('/package.json');
+
+      if (packageJSONModule) {
+        try {
+          const parsed = JSON.parse(packageJSONModule.code);
+
+          let pragma = null;
+          Object.keys(JSX_PRAGMA).forEach(dep => {
+            if (
+              (parsed.dependencies && parsed.dependencies[dep]) ||
+              (parsed.devDependencies && parsed.devDependencies[dep])
+            ) {
+              pragma = JSX_PRAGMA[dep];
+            }
+          });
+
+          if (pragma !== null) {
+            tsconfig.compilerOptions.jsx = 'react';
+            tsconfig.compilerOptions.jsxFactory = pragma;
+          }
+        } catch (e) {
+          /* do nothing */
+        }
+      }
+      return JSON.stringify(tsconfig, null, 2);
+    }
+
+    if (template === 'nest') {
+      return JSON.stringify(
+        {
+          compilerOptions: {
+            module: 'commonjs',
+            declaration: true,
+            noImplicitAny: false,
+            removeComments: true,
+            noLib: false,
+            allowSyntheticDefaultImports: true,
+            emitDecoratorMetadata: true,
+            experimentalDecorators: true,
+            target: 'es6',
+            sourceMap: true,
+            outDir: './dist',
+            baseUrl: './src',
+          },
+        },
+        null,
+        2
+      );
+    }
+
+    if (template === '@dojo/cli-create-app') {
+      return JSON.stringify({
+        compilerOptions: {
+          declaration: false,
+          experimentalDecorators: true,
+          jsx: 'react',
+          jsxFactory: 'tsx',
+          lib: [
+            'dom',
+            'es5',
+            'es2015.promise',
+            'es2015.iterable',
+            'es2015.symbol',
+            'es2015.symbol.wellknown',
+          ],
+          module: 'commonjs',
+          moduleResolution: 'node',
+          noUnusedLocals: true,
+          outDir: '_build/',
+          removeComments: false,
+          importHelpers: true,
+          downLevelIteration: true,
+          sourceMap: true,
+          strict: true,
+          target: 'es5',
         },
       });
     }

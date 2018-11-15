@@ -508,7 +508,7 @@ export default class TranspiledModule {
       resolveTranspiledModuleAsync: (depPath: string, options = {}) =>
         manager.resolveTranspiledModuleAsync(
           depPath,
-          options.isAbsolute ? '/' : this.module.path,
+          options.isAbsolute ? null : this,
           options.ignoredExtensions
         ),
       getModules: (): Array<Module> => manager.getModules(),
@@ -906,10 +906,7 @@ export default class TranspiledModule {
         }
 
         // So it must be a dependency
-        if (
-          path.startsWith('codesandbox-api') ||
-          path.startsWith('babel-runtime')
-        ) {
+        if (path.startsWith('codesandbox-api')) {
           return resolveDependency(path, manager.externals);
         }
 

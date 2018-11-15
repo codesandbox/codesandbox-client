@@ -34,6 +34,8 @@ const Directory = types.model({
   shortid: types.string,
   sourceId: types.string,
   title: types.string,
+  insertedAt: types.string,
+  updatedAt: types.string,
 });
 
 const Module = types.model({
@@ -45,6 +47,8 @@ const Module = types.model({
   shortid: types.string,
   sourceId: types.string,
   title: types.string,
+  insertedAt: types.string,
+  updatedAt: types.string,
 });
 
 const Git = types.model({
@@ -84,6 +88,7 @@ const Sandbox = types.model({
   originalGit: types.maybeNull(Git),
   originalGitCommitSha: types.maybeNull(types.string),
   owned: types.boolean,
+  isFrozen: types.boolean,
   privacy: types.number,
   sourceId: types.string,
   tags: types.array(types.string),
@@ -176,4 +181,12 @@ export default {
     x: types.maybeNull(types.number),
     y: types.maybeNull(types.number),
   }),
+  themes: types.array(
+    types.model({
+      name: types.string,
+      id: types.string,
+      url: types.maybeNull(types.string),
+      type: types.maybeNull(types.string),
+    })
+  ),
 };

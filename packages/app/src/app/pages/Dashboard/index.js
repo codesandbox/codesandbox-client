@@ -1,6 +1,9 @@
 // @ts-check
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import RightIcon from 'react-icons/lib/md/keyboard-arrow-right';
+import LeftIcon from 'react-icons/lib/md/keyboard-arrow-left';
+import { withRouter } from 'react-router-dom';
 
 import Navigation from 'app/pages/common/Navigation';
 import SignInButton from 'app/pages/common/SignInButton';
@@ -16,9 +19,14 @@ import {
   LoggedInSubTitle,
   Sidebar,
   NavigationContainer,
+  ShowSidebarButton,
 } from './elements';
 
 class Dashboard extends React.Component {
+  state = {
+    showSidebar: false,
+  };
+
   componentDidMount() {
     this.props.signals.dashboard.dashboardMounted();
   }
@@ -28,13 +36,36 @@ class Dashboard extends React.Component {
     client.resetStore();
   }
 
+  onRouteChange = () => {
+    this.setState({ showSidebar: false });
+  };
+
+  toggleSidebar = () => {
+    this.setState(({ showSidebar }) => ({ showSidebar: !showSidebar }));
+  };
+
   render() {
-    const signedIn = this.props.store.hasLogIn;
+    const {
+      store: { hasLogIn },
+      history,
+    } = this.props;
+    const { showSidebar } = this.state;
+
+    history.listen(() => {
+      this.onRouteChange();
+    });
 
     let DashboardContent = (
       <React.Fragment>
-        <Sidebar>
+        <Sidebar active={showSidebar}>
           <SidebarContents />
+          <ShowSidebarButton onClick={this.toggleSidebar}>
+            {showSidebar ? (
+              <LeftIcon style={{ color: 'white' }} />
+            ) : (
+              <RightIcon style={{ color: 'white' }} />
+            )}
+          </ShowSidebarButton>
         </Sidebar>
 
         <ContentContainer>
@@ -43,7 +74,7 @@ class Dashboard extends React.Component {
       </React.Fragment>
     );
 
-    if (!signedIn) {
+    if (!hasLogIn) {
       DashboardContent = (
         <Container>
           <LoggedInContainer>
@@ -71,4 +102,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(observer(Dashboard));
+export default inject('store', 'signals')(observer(withRouter(Dashboard)));

@@ -21,4 +21,9 @@ export const Content = styled.div`
   height: calc(100% - 23px);
   padding-top: 2rem;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    width: calc(100% - 30px);
+    margin-left: 30px;
+  }
 `;

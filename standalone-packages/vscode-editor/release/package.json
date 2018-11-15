@@ -1,0 +1,37 @@
+{
+  "name": "monaco-editor",
+  "private": false,
+  "version": "0.14.3",
+  "description": "A browser based code editor",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "scripts": {
+    "simpleserver": "gulp simpleserver",
+    "release": "gulp release",
+    "website": "gulp website"
+  },
+  "typings": "./esm/vs/editor/editor.api.d.ts",
+  "module": "./esm/vs/editor/editor.main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/monaco-editor"
+  },
+  "devDependencies": {
+    "clean-css": "^4.2.1",
+    "event-stream": "^3.3.4",
+    "gulp": "^3.9.1",
+    "gulp-typedoc": "^2.2.0",
+    "http-server": "^0.11.1",
+    "monaco-css": "2.2.0",
+    "monaco-editor-core": "0.14.6",
+    "monaco-html": "2.2.0",
+    "monaco-json": "2.2.0",
+    "monaco-languages": "1.5.1",
+    "monaco-typescript": "3.2.0",
+    "rimraf": "^2.6.2",
+    "typedoc": "^0.11.1",
+    "typescript": "^3.0.1",
+    "uncss": "^0.16.2",
+    "vinyl": "^0.5.3"
+  }
+}

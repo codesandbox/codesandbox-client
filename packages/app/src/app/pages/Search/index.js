@@ -5,7 +5,6 @@ import qs from 'qs';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
-import Row from 'common/components/flex/Row';
 
 import Navigation from 'app/pages/common/Navigation';
 import {
@@ -14,10 +13,12 @@ import {
   ALGOLIA_DEFAULT_INDEX,
 } from 'common/utils/config';
 
+import 'instantsearch.css/themes/reset.css';
 import './search.css';
+
 import Results from './Results';
 import Filters from './Filters';
-import { Content, StyledTitle } from './elements';
+import { Content, StyledTitle, Main } from './elements';
 
 const SEARCHABLE_THINGS = [
   'dependency',
@@ -80,7 +81,7 @@ class Search extends React.PureComponent {
         <Margin vertical={1.5} horizontal={1.5}>
           <Navigation title="Search" />
           <Content>
-            <MaxWidth width={1024}>
+            <MaxWidth responsive width={1024}>
               <InstantSearch
                 appId={ALGOLIA_APPLICATION_ID}
                 apiKey={ALGOLIA_API_KEY}
@@ -97,10 +98,10 @@ class Search extends React.PureComponent {
                     placeholder: `Search for a ${this.state.randomSearch}...`,
                   }}
                 />
-                <Row alignItems="flex-start">
+                <Main alignItems="flex-start">
                   <Results />
                   <Filters />
-                </Row>
+                </Main>
               </InstantSearch>
             </MaxWidth>
           </Content>

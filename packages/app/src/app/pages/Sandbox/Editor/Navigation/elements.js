@@ -34,7 +34,9 @@ export const IconContainer = styled.div`
     css`
       color: white;
       background-color: ${props.theme.templateColor
-        ? props.theme.templateColor()
+        ? props.theme.templateBackgroundColor
+          ? props.theme.templateBackgroundColor()
+          : props.theme.templateColor()
         : props.theme.secondary()};
     `};
 `;

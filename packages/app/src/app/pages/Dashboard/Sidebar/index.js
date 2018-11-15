@@ -12,7 +12,7 @@ import { teamOverviewUrl } from 'common/utils/url-generator';
 import Item from './Item';
 import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
-import { Items, CategoryHeader } from './elements';
+import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
 import { TEAMS_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
@@ -34,8 +34,8 @@ class Sidebar extends React.Component {
     const { store } = this.props;
 
     return (
-      <div style={{ width: 275, overflowY: 'auto' }}>
-        <div style={{ margin: '0 1rem', marginBottom: '1.5rem' }}>
+      <SidebarStyled>
+        <InputWrapper>
           <Input
             onFocus={this.handleSearchFocus}
             block
@@ -43,7 +43,7 @@ class Sidebar extends React.Component {
             onChange={this.handleSearchChange}
             placeholder="Filter Sandboxes"
           />
-        </div>
+        </InputWrapper>
 
         <Items style={{ marginBottom: '1rem' }}>
           <Item Icon={TimeIcon} path="/dashboard/recent" name="Recent" />
@@ -89,7 +89,7 @@ class Sidebar extends React.Component {
             Create Team
           </Button>
         </div>
-      </div>
+      </SidebarStyled>
     );
   }
 }

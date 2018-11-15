@@ -1,12 +1,33 @@
 import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+import getTemplate from 'common/templates';
 import * as actions from './actions';
-import { ensureOwnedSandbox, loadSandbox, closeModal } from '../../sequences';
+import {
+  ensureOwnedEditable,
+  loadSandbox,
+  closeModal,
+  openModal,
+} from '../../sequences';
 import { updateSandboxPackage } from './../editor/sequences';
 import { addNotification } from '../../factories';
 
 export const changeSandboxPrivacy = [
+  when(
+    state`editor.currentSandbox.template`,
+    props`privacy`,
+    (template, privacy) => {
+      const templateDefinition = getTemplate(template);
+
+      return templateDefinition.isServer && privacy === 2;
+    }
+  ),
+  {
+    true: [set(props`modal`, 'privacyServerWarning'), openModal],
+    false: [],
+  },
+
   actions.saveSandboxPrivacy,
+
   set(
     state`editor.sandboxes.${state`editor.currentId`}.privacy`,
     props`privacy`
@@ -33,7 +54,7 @@ export const changeValue = [
 ];
 
 export const updateSandboxInfo = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   set(
     state`editor.sandboxes.${state`editor.currentId`}.title`,
     state`workspace.project.title`
@@ -47,7 +68,7 @@ export const updateSandboxInfo = [
 ];
 
 export const addExternalResource = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   push(
     state`editor.sandboxes.${state`editor.currentId`}.externalResources`,
     props`resource`
@@ -63,7 +84,7 @@ export const addExternalResource = [
 ];
 
 export const removeExternalResource = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.removeOptimisticExternalResource,
   actions.removeExternalResource,
   {
@@ -81,7 +102,7 @@ export const removeExternalResource = [
 export const updateTag = [set(state`workspace.tags.tagName`, props`tagName`)];
 
 export const addTag = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   push(
     state`editor.sandboxes.${state`editor.currentId`}.tags`,
     state`workspace.tags.tagName`
@@ -98,7 +119,7 @@ export const addTag = [
 ];
 
 export const removeTag = [
-  ensureOwnedSandbox,
+  ensureOwnedEditable,
   actions.removeTagFromState,
   actions.removeTag,
   set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`tags`),

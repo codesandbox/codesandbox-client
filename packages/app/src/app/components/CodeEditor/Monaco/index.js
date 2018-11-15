@@ -25,6 +25,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
+import eventToTransform from './event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
@@ -432,45 +433,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
     if (sendTransforms && changeEvent.changes) {
-      const otOperation = new TextOperation();
-      // TODO: add a comment explaining what "delta" is
-      let delta = 0;
-
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
-      // eslint-disable-next-line no-restricted-syntax
-      for (const change of [...changeEvent.changes].reverse()) {
-        const cursorStartOffset =
-          lineAndColumnToIndex(
-            this.liveOperationCode.split(/\r?\n/),
-            change.range.startLineNumber,
-            change.range.startColumn
-          ) + delta;
+      const { operation, newCode } = eventToTransform(
+        changeEvent,
+        this.liveOperationCode
+      );
 
-        const retain = cursorStartOffset - otOperation.targetLength;
-        if (retain > 0) {
-          otOperation.retain(retain);
-        }
+      this.liveOperationCode = newCode;
 
-        if (change.rangeLength > 0) {
-          otOperation.delete(change.rangeLength);
-          delta -= change.rangeLength;
-        }
-
-        if (change.text) {
-          const normalizedChangeText = change.text.split(/\r?\n/).join('\n');
-          otOperation.insert(normalizedChangeText);
-          delta += normalizedChangeText.length;
-        }
-      }
-
-      const remaining = this.liveOperationCode.length - otOperation.baseLength;
-      if (remaining > 0) {
-        otOperation.retain(remaining);
-      }
-      this.liveOperationCode = otOperation.apply(this.liveOperationCode);
-
-      sendTransforms(otOperation);
+      sendTransforms(operation);
 
       requestAnimationFrame(() => {
         this.liveOperationCode = '';
@@ -1074,23 +1046,35 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   setupLintWorker = () => {
-    this.lintWorker = new LinterWorker();
+    if (!this.lintWorker) {
+      this.lintWorker = new LinterWorker();
 
-    this.lintWorker.addEventListener('message', event => {
-      const { markers, version } = event.data;
+      this.lintWorker.addEventListener('message', event => {
+        const { markers, version } = event.data;
+
+        requestAnimationFrame(() => {
+          if (this.editor.getModel()) {
+            if (version === this.editor.getModel().getVersionId()) {
+              this.updateLintWarnings(markers);
+            } else {
+              this.updateLintWarnings([]);
+            }
+          }
+        });
+      });
+
+      this.lint = debounce(this.lint, 400);
 
       requestAnimationFrame(() => {
         if (this.editor.getModel()) {
-          if (version === this.editor.getModel().getVersionId()) {
-            this.updateLintWarnings(markers);
-          } else {
-            this.updateLintWarnings([]);
-          }
+          this.lint(
+            this.getCode(),
+            this.currentModule.title,
+            this.editor.getModel().getVersionId()
+          );
         }
       });
-    });
-
-    this.lint = debounce(this.lint, 400);
+    }
   };
 
   setupWorkers = () => {
@@ -1184,9 +1168,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             // the old extraLib definition and defining a new one.
             modelCache[id].lib.dispose();
             modelCache[id].lib = this.addLib(currentModule.code || '', path);
-
-            // Reset changes
-            this.changes = { code: '', changes: [] };
           }
         }
 
@@ -1295,7 +1276,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemas: [
-        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions,
+        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions.schemas,
         ...monacoSchemas,
       ],
     });
@@ -1420,7 +1401,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           const model = this.monaco.editor.createModel(
             module.code || '',
             mode === 'javascript' ? 'typescript' : mode,
-            new this.monaco.Uri().with({ path, scheme: 'file' })
+            new this.monaco.Uri({ path, scheme: 'file' })
           );
 
           model.updateOptions({ tabSize: this.props.settings.tabWidth });

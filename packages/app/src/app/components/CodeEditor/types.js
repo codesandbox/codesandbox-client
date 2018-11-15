@@ -1,4 +1,5 @@
 // @flow
+
 import type {
   Module,
   Sandbox,
@@ -17,6 +18,9 @@ export type Settings = {
   vimMode: boolean,
   tabWidth: number,
   enableLigatures: boolean,
+  forceRefresh: boolean,
+  experimentVSCode: boolean,
+  prettierConfig: Object,
 };
 
 type ModuleTab = {

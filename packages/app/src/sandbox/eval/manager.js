@@ -6,6 +6,8 @@ import localforage from 'localforage';
 
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
+import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
+import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
@@ -18,8 +20,6 @@ import fetchModule, {
 } from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
-import DependencyNotFoundError from '../errors/dependency-not-found-error';
-import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import isESModule from './utils/is-es-module';
@@ -131,7 +131,8 @@ export default class Manager {
     id: string,
     preset: Preset,
     modules: { [path: string]: Module },
-    options: TManagerOptions
+    options: TManagerOptions,
+    cb?: Function
   ) {
     this.id = id;
     this.preset = preset;
@@ -163,7 +164,11 @@ export default class Manager {
           manager: this.bfsWrapper,
         },
       },
-      () => {}
+      () => {
+        if (cb) {
+          cb();
+        }
+      }
     );
 
     if (options.hasFileResolver) {
@@ -710,6 +715,7 @@ export default class Manager {
 
         const dependencyName = getDependencyName(connectedPath);
 
+        // TODO: fix the stack hack
         if (
           this.manifest.dependencies.find(d => d.name === dependencyName) ||
           this.manifest.dependencyDependencies[dependencyName]
@@ -749,19 +755,22 @@ export default class Manager {
 
   resolveTranspiledModuleAsync = async (
     path: string,
-    currentPath: string,
+    currentTModule: ?TranspiledModule,
     ignoredExtensions?: Array<string>
   ): Promise<TranspiledModule> => {
+    const tModule =
+      currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
     try {
-      return await this.resolveTranspiledModule(
-        path,
-        currentPath,
-        ignoredExtensions,
-        true
+      return Promise.resolve(
+        this.resolveTranspiledModule(
+          path,
+          tModule.module.path,
+          ignoredExtensions
+        )
       );
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
-        return this.downloadDependency(e.path, currentPath, ignoredExtensions);
+        return this.downloadDependency(e.path, tModule, ignoredExtensions);
       }
 
       throw e;

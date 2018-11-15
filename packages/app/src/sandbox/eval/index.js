@@ -11,6 +11,7 @@ import {
   babel,
   dojo,
   custom,
+  reason,
 } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
@@ -22,6 +23,7 @@ import angularPreset from './presets/angular-cli';
 import parcelPreset from './presets/parcel';
 import babelPreset from './presets/babel-repl';
 import cxjsPreset from './presets/cxjs';
+import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
 
@@ -31,6 +33,8 @@ export default function getPreset(template: string) {
       return reactPreset();
     case reactTs.name:
       return reactTsPreset();
+    case reason.name:
+      return reasonPreset();
     case vue.name:
       return vuePreset();
     case preact.name:

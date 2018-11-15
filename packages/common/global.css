@@ -13,6 +13,7 @@ body {
   -webkit-text-size-adjust: 100%;
   height: 100%;
   background: #1c2022;
+  color: #cccccc;
 
   -ms-overflow-style: -ms-autohiding-scrollbar;
 }

@@ -1,0 +1,30 @@
+{
+  "name": "sse-loading-screen",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "babel-plugin-emotion": "^9.2.10",
+    "emotion": "^9.2.10",
+    "gsap": "^2.0.2",
+    "preact": "^8.3.1",
+    "preact-emotion": "^9.2.10",
+    "socket.io-client": "^2.1.1",
+    "xterm": "^3.5.1",
+    "xterm-webfont": "^1.1.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-runtime": "^6.26.0",
+    "cssnano": "^4.0.5",
+    "parcel-bundler": "^1.9.7",
+    "rimraf": "^2.6.2"
+  },
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "rimraf dist && parcel build src/index.html",
+    "install-dependencies": "yarn install"
+  }
+}

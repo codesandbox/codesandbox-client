@@ -1,3 +1,5 @@
+import getTemplate from 'common/templates';
+
 const PROJECT = {
   id: 'project',
   name: 'Project Info',
@@ -33,6 +35,11 @@ const MORE = {
   name: 'More',
 };
 
+const SERVER = {
+  id: 'server',
+  name: 'Server Control Panel',
+};
+
 export default function getItems(store) {
   if (
     store.live.isLive &&
@@ -48,6 +55,13 @@ export default function getItems(store) {
   }
 
   const items = [PROJECT, FILES];
+
+  if (store.isLoggedIn && store.editor.currentSandbox) {
+    const templateDef = getTemplate(store.editor.currentSandbox.template);
+    if (templateDef.isServer) {
+      items.push(SERVER);
+    }
+  }
 
   if (
     store.isLoggedIn &&

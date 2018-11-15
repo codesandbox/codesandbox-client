@@ -3,6 +3,7 @@ import packageJSON from './package-json';
 import prettierRC from './prettierRC';
 import sandboxConfig from './sandbox';
 import babelrc from './babelrc';
+import nowConfig from './now';
 import angularCli from './angular-cli';
 import angularJSON from './angular-json';
 import tsconfig from './tsconfig';
@@ -19,6 +20,7 @@ const configs = {
   angularJSON,
   tsconfig,
   customCodeSandbox,
+  nowConfig,
 };
 
 export default configs;

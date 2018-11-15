@@ -1,5 +1,11 @@
 // @flow
 import React from 'react';
+import { sortBy } from 'lodash-es';
+
+import type { Sandbox } from 'common/types';
+
+import * as templates from 'common/templates';
+import type { default as Template } from 'common/templates/template';
 
 import {
   PaddedPreference,
@@ -11,6 +17,7 @@ import {
 type Props = {
   file: string,
   updateFile: (code: string) => void,
+  sandbox: Sandbox,
 };
 
 class ConfigWizard extends React.Component<Props> {
@@ -30,7 +37,7 @@ class ConfigWizard extends React.Component<Props> {
   });
 
   render() {
-    const { file } = this.props;
+    const { file, sandbox } = this.props;
 
     let parsedFile;
     let error;
@@ -47,6 +54,27 @@ class ConfigWizard extends React.Component<Props> {
     if (!parsedFile) {
       return <div>Could not parse sandbox.config.json</div>;
     }
+
+    const currentTemplate = templates.default(sandbox.template);
+
+    // $FlowIssue: Can't detect difference between filter/no-filter
+    const possibleTemplates: Array<Template> = Object.keys(templates)
+      .filter(t => t !== 'default')
+      .map(n => templates[n]);
+
+    const templateOptions = sortBy(
+      possibleTemplates.filter(
+        template =>
+          template.isServer === currentTemplate.isServer &&
+          template.showOnHomePage
+      ),
+      template => template.niceName
+    ).map(template => template.name);
+
+    const templateNameMap = {};
+    possibleTemplates.forEach(template => {
+      templateNameMap[template.name] = template.niceName;
+    });
 
     return (
       <div>
@@ -84,11 +112,26 @@ class ConfigWizard extends React.Component<Props> {
               title="Default View"
               type="dropdown"
               options={['browser', 'console', 'tests']}
-              {...this.bindValue(parsedFile, 'view')}
+              {...this.bindValue(parsedFile, 'view') || sandbox.template}
             />
           </ConfigItem>
           <ConfigDescription>
             Which view to show in the preview by default.
+          </ConfigDescription>
+        </PaddedConfig>
+
+        <PaddedConfig>
+          <ConfigItem>
+            <PaddedPreference
+              title="Template"
+              type="dropdown"
+              options={templateOptions}
+              mapName={name => templateNameMap[name]}
+              {...this.bindValue(parsedFile, 'template')}
+            />
+          </ConfigItem>
+          <ConfigDescription>
+            Which template to use for this sandbox.
           </ConfigDescription>
         </PaddedConfig>
       </div>

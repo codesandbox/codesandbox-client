@@ -10,6 +10,7 @@ import {
   PaddedPreference,
 } from '../elements';
 import { Rule, ErrorMessage } from './elements';
+import VSCodePlaceholder from '../VSCodePlaceholder';
 
 class KeyMapping extends React.Component {
   state = { error: null };
@@ -77,34 +78,36 @@ class KeyMapping extends React.Component {
     const existingBindings = this.getUserBindings();
 
     return (
-      <div>
-        <Title style={{ marginBottom: 1 }}>Key Bindings</Title>
-        <SubDescription>
-          Record CodeSandbox specific keybindings here. You can cancel a
-          recording by pressing ESCAPE, you can confirm by pressing ENTER and
-          you can delete a mapping by pressing BACKSPACE.
-          <p>
-            The second input can be specified for a <em>sequence</em> of
-            actions, like double tapping shift.
-          </p>
-        </SubDescription>
+      <VSCodePlaceholder>
+        <div>
+          <Title style={{ marginBottom: 1 }}>Key Bindings</Title>
+          <SubDescription>
+            Record CodeSandbox specific keybindings here. You can cancel a
+            recording by pressing ESCAPE, you can confirm by pressing ENTER and
+            you can delete a mapping by pressing BACKSPACE.
+            <p>
+              The second input can be specified for a <em>sequence</em> of
+              actions, like double tapping shift.
+            </p>
+          </SubDescription>
 
-        <SubContainer>
-          <PreferenceContainer>
-            {keyBindingKeys.map((id, i) => [
-              <PaddedPreference
-                key={id}
-                title={KEYBINDINGS[id].title}
-                value={existingBindings[id] || KEYBINDINGS[id].bindings}
-                type="keybinding"
-                {...this.bindValue(id)}
-              />,
-              i !== keyBindingKeys.length - 1 && <Rule key={id + 'rule'} />,
-            ])}
-            <ErrorMessage>{this.state.error}</ErrorMessage>
-          </PreferenceContainer>
-        </SubContainer>
-      </div>
+          <SubContainer>
+            <PreferenceContainer>
+              {keyBindingKeys.map((id, i) => [
+                <PaddedPreference
+                  key={id}
+                  title={KEYBINDINGS[id].title}
+                  value={existingBindings[id] || KEYBINDINGS[id].bindings}
+                  type="keybinding"
+                  {...this.bindValue(id)}
+                />,
+                i !== keyBindingKeys.length - 1 && <Rule key={id + 'rule'} />,
+              ])}
+              <ErrorMessage>{this.state.error}</ErrorMessage>
+            </PreferenceContainer>
+          </SubContainer>
+        </div>
+      </VSCodePlaceholder>
     );
   }
 }

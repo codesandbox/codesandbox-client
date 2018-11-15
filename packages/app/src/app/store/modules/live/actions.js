@@ -265,11 +265,13 @@ export function sendModuleCreated(context) {
   sendModuleInfo(context, 'module:created', 'module', moduleShortid);
 }
 
-export function sendMassModuleCreated({ live, props }) {
-  live.send('module:mass-created', {
-    directories: props.directories,
-    modules: props.modules,
-  });
+export function sendMassModuleCreated({ state, live, props }) {
+  if (state.get('live.isCurrentEditor')) {
+    live.send('module:mass-created', {
+      directories: props.directories,
+      modules: props.modules,
+    });
+  }
 }
 
 export function sendModuleDeleted(context) {

@@ -7,4 +7,10 @@ export const Container = styled.div`
   bottom: 0;
   display: flex;
   align-items: center;
+
+  @media (max-width: 1000px) {
+    position: relative;
+    right: 0;
+    margin-top: 1rem;
+  }
 `;

@@ -7,11 +7,10 @@ import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import { Encode } from 'console-feed/lib/Transform';
+import setupConsole from 'sandbox-hooks/console';
+import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
-import setupHistoryListeners from './url-listeners';
 import compile, { getCurrentManager } from './compile';
-import setupConsole from './console';
 
 const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
@@ -53,45 +52,6 @@ requirePolyfills().then(() => {
         } else {
           const compileOld = await import('./compile-old').then(x => x.default);
           compileOld(data);
-        }
-      } else if (data.type === 'urlback') {
-        history.back();
-      } else if (data.type === 'urlforward') {
-        history.forward();
-      } else if (data.type === 'refresh') {
-        document.location.reload();
-      } else if (data.type === 'evaluate') {
-        let result = null;
-        let error = false;
-        try {
-          // Attempt to wrap command in parentheses, fixing issues
-          // where directly returning objects results in unexpected
-          // behaviour.
-          if (data.command && data.command.charAt(0) === '{') {
-            try {
-              const wrapped = `(${data.command})`;
-              // `new Function` is used to validate Javascript syntax
-              const validate = new Function(wrapped);
-              data.command = wrapped;
-            } catch (e) {
-              // We shouldn't wrap the expression
-            }
-          }
-
-          result = (0, eval)(data.command); // eslint-disable-line no-eval
-        } catch (e) {
-          result = e;
-          error = true;
-        }
-
-        try {
-          dispatch({
-            type: 'eval-result',
-            error,
-            result: Encode(result),
-          });
-        } catch (e) {
-          console.error(e);
         }
       } else if (data.type === 'get-transpiler-context') {
         const manager = getCurrentManager();

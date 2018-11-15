@@ -4,6 +4,8 @@ import Tooltip from 'common/components/Tooltip';
 
 import PlayIcon from 'react-icons/lib/go/playback-play';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
+import ExpandTestsIcon from 'react-icons/lib/fa/expand';
+import CollapseTestsIcon from 'react-icons/lib/fa/minus';
 
 import type { File, Status } from '../';
 
@@ -28,11 +30,17 @@ type Props = {
   status: Status,
   runTests: (file: File) => void,
   openFile: (path: string) => void,
+  isExpanded: Boolean,
+  onFileExpandToggle: (file: File) => void,
 };
 
 class TestElement extends Component<Props> {
   selectFile = () => {
     this.props.selectFile(this.props.file);
+  };
+
+  toggleFileExpansion = () => {
+    this.props.onFileExpandToggle(this.props.file);
   };
 
   runTests = (e: MouseEvent) => {
@@ -72,29 +80,41 @@ class TestElement extends Component<Props> {
             <Tooltip title="Run Tests">
               <PlayIcon onClick={this.runTests} />
             </Tooltip>
+            <Tooltip
+              title={this.props.isExpanded ? 'Collapse Tests' : 'Expand Tests'}
+            >
+              {this.props.isExpanded ? (
+                <CollapseTestsIcon onClick={this.toggleFileExpansion} />
+              ) : (
+                <ExpandTestsIcon onClick={this.toggleFileExpansion} />
+              )}
+            </Tooltip>
           </Actions>
         </FileData>
+        {this.props.isExpanded && (
+          <Tests>
+            {testKeys
+              .filter(t => file.tests[t].status === 'fail')
+              .map(tName => {
+                const test = file.tests[tName];
 
-        <Tests>
-          {testKeys.filter(t => file.tests[t].status === 'fail').map(tName => {
-            const test = file.tests[tName];
-
-            const TestStatusElement = StatusElements[test.status];
-            const testParts = [...test.testName];
-            const testName = testParts.pop();
-            return (
-              <Test key={tName}>
-                <TestStatusElement />
-                {testParts.map((part, i) => (
-                  <Block last={i === testParts.length - 1} key={part}>
-                    <span style={{ zIndex: 10 }}>{part}</span>
-                  </Block>
-                ))}
-                <TestName>{testName}</TestName>
-              </Test>
-            );
-          })}
-        </Tests>
+                const TestStatusElement = StatusElements[test.status];
+                const testParts = [...test.testName];
+                const testName = testParts.pop();
+                return (
+                  <Test key={tName}>
+                    <TestStatusElement />
+                    {testParts.map((part, i) => (
+                      <Block last={i === testParts.length - 1} key={part}>
+                        <span style={{ zIndex: 10 }}>{part}</span>
+                      </Block>
+                    ))}
+                    <TestName>{testName}</TestName>
+                  </Test>
+                );
+              })}
+          </Tests>
+        )}
       </Container>
     );
   }

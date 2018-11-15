@@ -3,7 +3,7 @@ import { inject } from 'mobx-react';
 
 import VERSION, { getTimestamp } from 'common/version';
 
-import { Container, Heading, Explanation } from './elements';
+import { Container, Heading, Explanation } from '../elements';
 
 function LiveVersionMismatch({ store }) {
   const newer =

@@ -29,10 +29,14 @@ class SandboxPage extends React.Component {
     this.fetchSandbox();
   }
 
-  componentWillUnmount() {
+  disconnectLive() {
     if (this.props.store.live.isLive) {
       this.props.signals.live.onNavigateAway({});
     }
+  }
+
+  componentWillUnmount() {
+    this.disconnectLive();
   }
 
   fetchSandbox = () => {
@@ -42,6 +46,7 @@ class SandboxPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.disconnectLive();
       this.fetchSandbox();
     }
   }

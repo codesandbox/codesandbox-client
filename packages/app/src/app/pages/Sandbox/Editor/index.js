@@ -66,11 +66,13 @@ class ContentSplit extends React.Component {
         !store.workspace.openedWorkspaceItem) ||
       !sandboxOwned;
 
+    const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+
     return (
       <ThemeProvider
         theme={{
-          templateColor:
-            sandbox && getTemplateDefinition(sandbox.template).color,
+          templateColor: templateDef && templateDef.color,
+          templateBackgroundColor: templateDef && templateDef.backgroundColor,
           ...this.state.theme,
         }}
       >

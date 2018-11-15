@@ -20,6 +20,7 @@ class ModuleEntry extends React.Component {
       renameModule,
       deleteEntry,
       discardModuleChanges,
+      getModulePath,
     } = this.props;
     const currentModuleShortid = store.editor.currentModuleShortid;
     const mainModuleId = store.editor.mainModule.id;
@@ -45,8 +46,8 @@ class ModuleEntry extends React.Component {
         depth={depth + 1}
         active={isActive}
         type={type || 'function'}
-        rename={isMainModule ? undefined : renameModule}
-        deleteEntry={isMainModule ? undefined : deleteEntry}
+        rename={renameModule}
+        deleteEntry={deleteEntry}
         isNotSynced={isNotSynced}
         renameValidator={this.validateTitle}
         setCurrentModule={setCurrentModule}
@@ -54,6 +55,7 @@ class ModuleEntry extends React.Component {
         moduleHasError={hasError}
         markTabsNotDirty={markTabsNotDirty}
         discardModuleChanges={discardModuleChanges}
+        getModulePath={getModulePath}
       />
     );
   }

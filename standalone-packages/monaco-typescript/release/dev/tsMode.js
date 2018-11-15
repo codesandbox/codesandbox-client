@@ -1,4 +1,24 @@
-define(["require", "exports", "./tokenization", "./workerManager", "./languageFeatures"], function (require, exports, tokenization_1, workerManager_1, languageFeatures) {
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+define(["require", "exports", "./workerManager", "./languageFeatures"], function (require, exports, workerManager_1, languageFeatures) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8,11 +28,11 @@ define(["require", "exports", "./tokenization", "./workerManager", "./languageFe
     var javaScriptWorker;
     var typeScriptWorker;
     function setupTypeScript(defaults) {
-        typeScriptWorker = setupMode(defaults, 'typescript', tokenization_1.Language.TypeScript);
+        typeScriptWorker = setupMode(defaults, 'typescript');
     }
     exports.setupTypeScript = setupTypeScript;
     function setupJavaScript(defaults) {
-        javaScriptWorker = setupMode(defaults, 'javascript', tokenization_1.Language.EcmaScript5);
+        javaScriptWorker = setupMode(defaults, 'javascript');
     }
     exports.setupJavaScript = setupJavaScript;
     function getJavaScriptWorker() {
@@ -33,14 +53,14 @@ define(["require", "exports", "./tokenization", "./workerManager", "./languageFe
         });
     }
     exports.getTypeScriptWorker = getTypeScriptWorker;
-    function setupMode(defaults, modeId, language) {
+    function setupMode(defaults, modeId) {
         var client = new workerManager_1.WorkerManager(modeId, defaults);
         var worker = function (first) {
             var more = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 more[_i - 1] = arguments[_i];
             }
-            return client.getLanguageServiceWorker.apply(client, [first].concat(more));
+            return client.getLanguageServiceWorker.apply(client, __spread([first].concat(more)));
         };
         monaco.languages.registerCompletionItemProvider(modeId, new languageFeatures.SuggestAdapter(worker));
         monaco.languages.registerSignatureHelpProvider(modeId, new languageFeatures.SignatureHelpAdapter(worker));
@@ -52,57 +72,6 @@ define(["require", "exports", "./tokenization", "./workerManager", "./languageFe
         monaco.languages.registerDocumentRangeFormattingEditProvider(modeId, new languageFeatures.FormatAdapter(worker));
         monaco.languages.registerOnTypeFormattingEditProvider(modeId, new languageFeatures.FormatOnTypeAdapter(worker));
         new languageFeatures.DiagnostcsAdapter(defaults, modeId, worker);
-        monaco.languages.setLanguageConfiguration(modeId, richEditConfiguration);
         return worker;
     }
-    var richEditConfiguration = {
-        wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
-        comments: {
-            lineComment: '//',
-            blockComment: ['/*', '*/']
-        },
-        brackets: [
-            ['{', '}'],
-            ['[', ']'],
-            ['(', ')']
-        ],
-        onEnterRules: [
-            {
-                // e.g. /** | */
-                beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-                afterText: /^\s*\*\/$/,
-                action: { indentAction: monaco.languages.IndentAction.IndentOutdent, appendText: ' * ' }
-            },
-            {
-                // e.g. /** ...|
-                beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-                action: { indentAction: monaco.languages.IndentAction.None, appendText: ' * ' }
-            },
-            {
-                // e.g.  * ...|
-                beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
-                action: { indentAction: monaco.languages.IndentAction.None, appendText: '* ' }
-            },
-            {
-                // e.g.  */|
-                beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
-                action: { indentAction: monaco.languages.IndentAction.None, removeText: 1 }
-            }
-        ],
-        autoClosingPairs: [
-            { open: '{', close: '}' },
-            { open: '[', close: ']' },
-            { open: '(', close: ')' },
-            { open: '"', close: '"', notIn: ['string'] },
-            { open: '\'', close: '\'', notIn: ['string', 'comment'] },
-            { open: '`', close: '`', notIn: ['string', 'comment'] },
-            { open: "/**", close: " */", notIn: ["string"] }
-        ],
-        folding: {
-            markers: {
-                start: new RegExp("^\\s*//\\s*#?region\\b"),
-                end: new RegExp("^\\s*//\\s*#?endregion\\b")
-            }
-        }
-    };
 });

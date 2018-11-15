@@ -13,6 +13,7 @@ import {
   Container,
   AnimatedModalContainer,
   ContainerLink,
+  DarkBG,
 } from './elements';
 
 import Modal from './Modal';
@@ -35,18 +36,19 @@ class CreateNewSandbox extends React.PureComponent {
   }
 
   createSandbox = template => {
-    if (!this.props.collectionId) {
-      history.push(sandboxUrl({ id: template.shortid }));
-      return;
-    }
-
     this.setState({ forking: true }, () => {
-      this.props.signals.dashboard.createSandboxClicked({
-        sandboxId: template.shortid,
-        body: {
-          collectionId: this.props.collectionId,
-        },
-      });
+      if (!this.props.collectionId) {
+        setTimeout(() => {
+          history.push(sandboxUrl({ id: template.shortid }));
+        }, 300);
+      } else {
+        this.props.signals.dashboard.createSandboxClicked({
+          sandboxId: template.shortid,
+          body: {
+            collectionId: this.props.collectionId,
+          },
+        });
+      }
     });
   };
 
@@ -138,38 +140,45 @@ class CreateNewSandbox extends React.PureComponent {
     return (
       <React.Fragment>
         {this.state.creating && (
-          <Portal>
-            <ThemeProvider theme={theme}>
-              <Spring native from={usedRects[0]} to={usedRects[1]}>
-                {newStyle => (
-                  <AnimatedModalContainer
-                    tabIndex="-1"
-                    aria-modal="true"
-                    aria-labelledby="new-sandbox"
-                    forking={this.state.forking}
-                    style={
-                      this.state.forking
-                        ? {
-                            position: 'fixed',
-                            left: 0,
-                            top: 0,
-                            right: 0,
-                            bottom: 0,
-                          }
-                        : newStyle
-                    }
-                  >
-                    <Modal
-                      width={toRects.width}
-                      forking={this.state.forking}
-                      closing={this.state.closingCreating}
-                      createSandbox={this.createSandbox}
-                    />
-                  </AnimatedModalContainer>
-                )}
-              </Spring>
-            </ThemeProvider>
-          </Portal>
+          <React.Fragment>
+            <Portal>
+              <DarkBG closing={this.state.closingCreating} />
+            </Portal>
+            <Portal>
+              <ThemeProvider theme={theme}>
+                <Spring native from={usedRects[0]} to={usedRects[1]}>
+                  {newStyle => (
+                    <AnimatedModalContainer
+                      tabIndex="-1"
+                      aria-modal="true"
+                      aria-labelledby="new-sandbox"
+                      forking={
+                        this.state.forking ? this.state.forking : undefined
+                      }
+                      style={
+                        this.state.forking
+                          ? {
+                              position: 'fixed',
+                              left: 0,
+                              top: 0,
+                              right: 0,
+                              bottom: 0,
+                            }
+                          : newStyle
+                      }
+                    >
+                      <Modal
+                        width={toRects.width}
+                        forking={this.state.forking}
+                        closing={this.state.closingCreating}
+                        createSandbox={this.createSandbox}
+                      />
+                    </AnimatedModalContainer>
+                  )}
+                </Spring>
+              </ThemeProvider>
+            </Portal>
+          </React.Fragment>
         )}
 
         <div style={style}>
