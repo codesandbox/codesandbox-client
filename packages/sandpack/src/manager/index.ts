@@ -122,7 +122,7 @@ export default class PreviewManager {
         case 'initialized': {
           if (this.iframe) {
             if (this.iframe.contentWindow) {
-              registerFrame(this.iframe.contentWindow);
+              registerFrame(this.iframe.contentWindow, BUNDLER_URL);
 
               if (this.options.fileResolver) {
                 this.fileResolverProtocol = new Protocol(
