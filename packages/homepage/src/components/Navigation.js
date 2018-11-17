@@ -146,7 +146,6 @@ export default class Navigation extends React.PureComponent {
             >
               GitHub
             </Item>
-            <ItemLink to="/changelog">Updates</ItemLink>
             <ItemLink to="/docs">Docs</ItemLink>
             <Item hidePhone href="/s" rel="noopener noreferrer" button={!user}>
               Create Sandbox
