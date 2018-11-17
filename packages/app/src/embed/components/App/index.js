@@ -78,7 +78,7 @@ export default class App extends React.PureComponent<{}, State> {
       forceRefresh,
       expandDevTools,
       runOnClick,
-      verticalMode,
+      verticalMode = window.innerWidth < window.innerHeight,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -199,7 +199,9 @@ export default class App extends React.PureComponent<{}, State> {
         <Centered vertical horizontal>
           <Title delay={0.1}>Not Found</Title>
           <SubTitle delay={0.05}>
-            We could not find the sandbox you{"'"}re looking for.
+            We could not find the sandbox you
+            {"'"}
+            re looking for.
           </SubTitle>
         </Centered>
       );
