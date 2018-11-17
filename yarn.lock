@@ -6368,6 +6368,17 @@ codesandbox-import-utils@^1.2.3:
     istextorbinary "^2.2.1"
     lz-string "^1.4.4"
 
+codesandboxer@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/codesandboxer/-/codesandboxer-0.6.1.tgz#34920a34739d6cf10de55c12ca54e8ead42da6f3"
+  integrity sha512-kfFE949rNESRwIlwKuAYiQiJfw8EYzQ786lD7dIKt3TS5a/DCzM9un9gyU/M+TsQ2nxpiZDtRjUSx6XSNWcffA==
+  dependencies:
+    babel-runtime "^6.26.0"
+    form-data "^2.3.2"
+    isomorphic-unfetch "^2.0.0"
+    lz-string "^1.4.4"
+    path-browserify "^1.0.0"
+
 collapse-white-space@^1.0.0, collapse-white-space@^1.0.2:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/collapse-white-space/-/collapse-white-space-1.0.4.tgz#ce05cf49e54c3277ae573036a26851ba430a0091"
@@ -6507,7 +6518,7 @@ combined-stream@1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
-combined-stream@^1.0.5, combined-stream@~1.0.5, combined-stream@~1.0.6:
+combined-stream@^1.0.5, combined-stream@^1.0.6, combined-stream@~1.0.5, combined-stream@~1.0.6:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.7.tgz#2d1d24317afb8abe95d6d2c0b07b57813539d828"
   integrity sha512-brWl9y6vOB1xYPZcpZde3N9zDByXTosAeMDo4p1wzo6UMOX4vumB+TP1RZ76sfE6Md68Q0NJSrE/gbezd4Ul+w==
@@ -10028,6 +10039,15 @@ forever-agent@~0.6.1:
   resolved "https://registry.yarnpkg.com/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
   integrity sha1-+8cfDEGt6zf5bFd60e1C2P2sypE=
 
+form-data@^2.3.2:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.3.3.tgz#dcce52c05f644f298c6a7ab936bd724ceffbf3a6"
+  integrity sha512-1lLKB2Mu3aGP1Q/2eCOx0fNbRMe7XdwktwOruhfqqd0rIJWwN4Dh+E3hrPSlDCXnSR7UtZ1N38rVXm+6+MEhJQ==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.6"
+    mime-types "^2.1.12"
+
 form-data@~1.0.0-rc4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-1.0.1.tgz#ae315db9a4907fa065502304a66d7733475ee37c"
@@ -13217,6 +13237,14 @@ isomorphic-fetch@^2.1.1:
   dependencies:
     node-fetch "^1.0.1"
     whatwg-fetch ">=0.10.0"
+
+isomorphic-unfetch@^2.0.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/isomorphic-unfetch/-/isomorphic-unfetch-2.1.1.tgz#c321770bcd682c5c8550f31146fc7dd21ac33e7b"
+  integrity sha512-nd8AULy4i2rA8dv0nOBT9xieIegd3xi7NDxTQ9+iNXDTyaG6VbUYW3F+TdMRqxqXhDFWM2k7fttKx9W2Wd8JpQ==
+  dependencies:
+    node-fetch "^2.1.2"
+    unfetch "^3.1.0"
 
 isstream@0.1.x, isstream@~0.1.2:
   version "0.1.2"
@@ -16458,6 +16486,11 @@ node-fetch@^1.0.1:
     encoding "^0.1.11"
     is-stream "^1.0.1"
 
+node-fetch@^2.1.2:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.3.0.tgz#1a1d940bbfb916a1d3e0219f037e89e71f8c5fa5"
+  integrity sha512-MOd8pV3fxENbryESLgVIeaGKrdl+uaYhCSSVkjeOb/31/njTpcis5aWfdqgNlHIrKOLRbMnfPINPOML2CIFeXA==
+
 node-forge@0.7.5:
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.7.5.tgz#6c152c345ce11c52f465c2abd957e8639cd674df"
@@ -17647,6 +17680,11 @@ path-browserify@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.0.tgz#a0b870729aae214005b7d5032ec2cbbb0fb4451a"
   integrity sha1-oLhwcpquIUAFt9UDLsLLuw+0RRo=
+
+path-browserify@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.0.tgz#40702a97af46ae00b0ea6fa8998c0b03c0af160d"
+  integrity sha512-Hkavx/nY4/plImrZPHRk2CL9vpOymZLgEbMNX1U0bjcBL7QN9wODxyx0yaMZURSQaUtSEvDrfAvxa9oPb0at9g==
 
 path-dirname@^1.0.0:
   version "1.0.2"
@@ -19248,6 +19286,14 @@ react-codemirror2@^4.0.1:
   resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-4.3.0.tgz#e79aedca4da60d22402d2cd74f2885a3e5c009fd"
   integrity sha512-tC0n9CHgrQYc976pUlKOaVJYEHAAYTVMers04gNy6jbkFf4rbPlw72y7bbOAfkHHvu6COG5S629Fek30bvHe8w==
 
+react-codesandboxer@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-codesandboxer/-/react-codesandboxer-3.0.1.tgz#3cdbf5676cd8ff45367f650ba0ac6265b70aec22"
+  integrity sha512-ZjEhVp0KSWcve4GynBr14iaW4+Kyf2iHfFVd55qbcUHFNnio9bLCd/ueylPegMw9+JHFbkRF/npni/YTSK9mJA==
+  dependencies:
+    codesandboxer "^0.6.1"
+    react-node-resolver "^1.0.1"
+
 react-color@^2.14.0:
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.14.1.tgz#db8ad4f45d81e74896fc2e1c99508927c6d084e0"
@@ -19627,6 +19673,11 @@ react-motion@^0.5.0:
     performance-now "^0.2.0"
     prop-types "^15.5.8"
     raf "^3.1.0"
+
+react-node-resolver@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-1.0.1.tgz#1798a729c0e218bf2f0e8ddf79c550d4af61d83a"
+  integrity sha1-F5inKcDiGL8vDo3fecVQ1K9h2Do=
 
 react-onclickoutside@^6.5.0:
   version "6.7.1"
@@ -23669,7 +23720,7 @@ ua-parser-js@^0.7.18, ua-parser-js@^0.7.9:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.18.tgz#a7bfd92f56edfb117083b69e31d2aa8882d4b1ed"
   integrity sha512-LtzwHlVHwFGTptfNSgezHp7WUlwiqb0gA9AALRbKaERfxwJoiX0A73QbTToxteIAuIaFshhgIZfqK8s7clqgnA==
 
-uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9, "uglify-es@npm:terser":
+uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9:
   version "3.10.11"
   resolved "https://registry.yarnpkg.com/terser/-/terser-3.10.11.tgz#e063da74b194dde9faf0a561f3a438c549d2da3f"
   integrity sha512-iruZ7j14oBbRYJC5cP0/vTU7YOWjN+J1ZskEGoF78tFzXdkK2hbCL/3TRZN8XB+MuvFhvOHMp7WkOCBO4VEL5g==
@@ -23805,6 +23856,11 @@ underscore@~1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.6.0.tgz#8b38b10cacdef63337b8b24e4ff86d45aea529a8"
   integrity sha1-izixDKze9jM3uLJOT/htRa6lKag=
+
+unfetch@^3.1.0:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-3.1.2.tgz#dc271ef77a2800768f7b459673c5604b5101ef77"
+  integrity sha512-L0qrK7ZeAudGiKYw6nzFjnJ2D5WHblUBwmHIqtPS6oKUd+Hcpk7/hKsSmcHsTlpd1TbTNsiRBUKRq3bHLNIqIw==
 
 unherit@^1.0.4:
   version "1.1.1"

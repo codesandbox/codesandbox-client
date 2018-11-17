@@ -39,7 +39,8 @@
       "packages/homepage",
       "packages/node-services",
       "packages/sandbox-hooks",
-      "packages/sse-hooks"
+      "packages/sse-hooks",
+      "packages/react-embed"
     ],
     "nohoist": [
       "**/gatsby",
