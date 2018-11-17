@@ -374,7 +374,12 @@ export default class Content extends React.PureComponent<Props, State> {
                       <React.Fragment>
                         <EntryIcons type={getType(module.title)} />
                         <TabTitle>{module.title}</TabTitle>
-                        {dirName && <TabDir>../{dirName}</TabDir>}
+                        {dirName && (
+                          <TabDir>
+                            ../
+                            {dirName}
+                          </TabDir>
+                        )}
 
                         {this.renderTabStatus(hovering, closeTab)}
                       </React.Fragment>
@@ -422,6 +427,7 @@ export default class Content extends React.PureComponent<Props, State> {
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
+                  overflow: 'auto',
                 }}
               >
                 <BasePreview
