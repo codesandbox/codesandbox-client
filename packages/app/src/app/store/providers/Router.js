@@ -10,6 +10,9 @@ export default Provider({
   redirectToNewSandbox() {
     history.push('/s/new');
   },
+  redirectToSandboxWizard() {
+    history.push('/s');
+  },
   getSandboxOptions() {
     return getSandboxOptions(decodeURIComponent(document.location.href));
   },
