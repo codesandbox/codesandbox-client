@@ -79,7 +79,7 @@ export default class App extends React.PureComponent<{}, State> {
       forceRefresh,
       expandDevTools,
       runOnClick,
-      verticalMode,
+      verticalMode = window.innerWidth < window.innerHeight,
       tabs,
     } = getSandboxOptions(document.location.href);
 

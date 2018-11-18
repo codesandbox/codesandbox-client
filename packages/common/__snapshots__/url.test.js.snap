@@ -16,7 +16,6 @@ Object {
   "isTestPreviewWindow": false,
   "runOnClick": undefined,
   "useCodeMirror": false,
-  "verticalMode": false,
 }
 `;
 
@@ -37,7 +36,6 @@ Object {
   "isTestPreviewWindow": false,
   "runOnClick": undefined,
   "useCodeMirror": false,
-  "verticalMode": false,
 }
 `;
 
@@ -57,7 +55,6 @@ Object {
   "isTestPreviewWindow": false,
   "runOnClick": undefined,
   "useCodeMirror": false,
-  "verticalMode": false,
 }
 `;
 
@@ -77,7 +74,6 @@ Object {
   "isTestPreviewWindow": false,
   "runOnClick": undefined,
   "useCodeMirror": false,
-  "verticalMode": false,
 }
 `;
 
@@ -97,7 +93,6 @@ Object {
   "isTestPreviewWindow": false,
   "runOnClick": undefined,
   "useCodeMirror": false,
-  "verticalMode": false,
 }
 `;
 
@@ -118,7 +113,6 @@ Object {
   "isTestPreviewWindow": false,
   "runOnClick": undefined,
   "useCodeMirror": false,
-  "verticalMode": false,
 }
 `;
 
@@ -138,7 +132,6 @@ Object {
   "isTestPreviewWindow": false,
   "runOnClick": undefined,
   "useCodeMirror": false,
-  "verticalMode": false,
 }
 `;
 
@@ -158,6 +151,5 @@ Object {
   "isTestPreviewWindow": false,
   "runOnClick": undefined,
   "useCodeMirror": false,
-  "verticalMode": false,
 }
 `;
