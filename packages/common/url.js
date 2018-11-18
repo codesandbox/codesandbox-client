@@ -6,7 +6,13 @@ export const getSandboxOptions = (url: string) => {
   };
   const moduleMatch = url.match(/(\?|&)(module)=([^&]+)/);
   if (moduleMatch) {
-    result.currentModule = moduleMatch[3];
+    if (moduleMatch[3].indexOf(',') > -1) {
+      const tabs = moduleMatch[3].split(',');
+      result.tabs = tabs;
+      result.currentModule = tabs[0];
+    } else {
+      result.currentModule = moduleMatch[3];
+    }
   }
 
   const initialPathMatch = url.match(/(\?|&)(initialpath)=([^&]+)/);
@@ -74,5 +80,6 @@ export const getSandboxOptions = (url: string) => {
       ? true
       : undefined;
 
+  console.log(result);
   return result;
 };
