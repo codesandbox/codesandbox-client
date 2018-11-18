@@ -39,9 +39,7 @@ export const deleteSandbox = [
   actions.deleteSandbox,
   set(state`workspace.showDeleteSandboxModal`, false),
   addNotification('Sandbox deleted!', 'success'),
-  actions.redirectToNewSandbox,
-  set(props`id`, 'new'),
-  loadSandbox,
+  actions.redirectToSandboxWizard,
 ];
 
 export const openIntegrations = [

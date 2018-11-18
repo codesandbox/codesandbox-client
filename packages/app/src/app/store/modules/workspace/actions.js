@@ -27,6 +27,10 @@ export function redirectToNewSandbox({ router }) {
   router.redirectToNewSandbox();
 }
 
+export function redirectToSandboxWizard({ router }) {
+  router.redirectToSandboxWizard();
+}
+
 export function updateSandbox({ api, state }) {
   const sandboxId = state.get('editor.currentId');
   const body = {
