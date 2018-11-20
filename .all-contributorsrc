@@ -661,6 +661,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "bobziroll",
+      "name": "Bob Ziroll",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6244647?v=4",
+      "profile": "https://github.com/bobziroll",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github"
