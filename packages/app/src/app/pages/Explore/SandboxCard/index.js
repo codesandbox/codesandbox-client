@@ -119,7 +119,7 @@ class SandboxItem extends React.Component<Props> {
               <div>
                 <Header>
                   <SandboxTitle>{lastPick.title || title || id}</SandboxTitle>
-                  {description ? (
+                  {lastPick.description || description ? (
                     <Description>
                       {lastPick.description || description}
                     </Description>
