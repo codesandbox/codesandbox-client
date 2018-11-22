@@ -121,6 +121,7 @@ const ConfigurationFiles = ({ store, signals }) => {
 
           return (
             <FileConfig
+              key={path}
               openModule={id => {
                 signals.editor.moduleSelected({ id });
               }}
@@ -137,6 +138,7 @@ const ConfigurationFiles = ({ store, signals }) => {
 
           return (
             <FileConfig
+              key={path}
               createModule={title => {
                 signals.files.moduleCreated({ title });
               }}

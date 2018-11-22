@@ -12,6 +12,7 @@ import {
   Rule,
 } from '../elements';
 import { BigTitle } from './elements';
+import VSCodePlaceholder from '../VSCodePlaceholder';
 
 function EditorSettings({ store, signals }) {
   const bindValue = (name, setUndefined) => ({
@@ -34,74 +35,75 @@ function EditorSettings({ store, signals }) {
 
       <SubContainer>
         <PreferenceContainer>
-          <PaddedPreference
-            title="Font Size"
-            type="number"
-            {...bindValue('fontSize')}
-          />
-          <Rule />
-          <PaddedPreference
-            title="Font Family"
-            type="dropdown"
-            options={['Custom'].concat(fontOptions)}
-            placeholder="Source Code Pro"
-            {...bindValue('fontFamily')}
-          />
-          <SubDescription>
-            We use{' '}
-            <a
-              href="https://dank.sh/affiliate?n=cjgw9wi2q7sf20a86q0k176oj"
-              rel="noreferrer noopener"
-              target="_blank"
-            >
-              Dank Mono
-            </a>{' '}
-            as default font, you can also use locally installed fonts
-          </SubDescription>
-          {fontOptions.indexOf(store.preferences.settings.fontFamily) ===
-            -1 && (
-            <PreferenceText
-              style={{ marginTop: '1rem' }}
-              placeholder="Enter your custom font"
-              block
+          <VSCodePlaceholder>
+            <PaddedPreference
+              title="Font Size"
+              type="number"
+              {...bindValue('fontSize')}
+            />
+            <Rule />
+            <PaddedPreference
+              title="Font Family"
+              type="dropdown"
+              options={['Custom'].concat(fontOptions)}
+              placeholder="Source Code Pro"
               {...bindValue('fontFamily')}
             />
-          )}
-          <Rule />
-          <PaddedPreference
-            title="Font Ligatures"
-            type="boolean"
-            {...bindValue('enableLigatures')}
-          />
-          <SubDescription>
-            Whether we should enable{' '}
-            <a
-              href="https://en.wikipedia.org/wiki/Typographic_ligature"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              font ligatures
-            </a>.
-          </SubDescription>
-          <Rule />
-          <PaddedPreference
-            title="Line Height"
-            type="number"
-            placeholder="1.15"
-            step="0.05"
-            {...bindValue('lineHeight')}
-          />
-          <Rule />
-
-          <PaddedPreference
-            title="Zen Mode"
-            type="boolean"
-            {...bindValue('zenMode')}
-          />
-          <SubDescription>
-            Hide all distracting elements, perfect for lessons and
-            presentations.
-          </SubDescription>
+            <SubDescription>
+              We use{' '}
+              <a
+                href="https://dank.sh/affiliate?n=cjgw9wi2q7sf20a86q0k176oj"
+                rel="noreferrer noopener"
+                target="_blank"
+              >
+                Dank Mono
+              </a>{' '}
+              as default font, you can also use locally installed fonts
+            </SubDescription>
+            {fontOptions.indexOf(store.preferences.settings.fontFamily) ===
+              -1 && (
+              <PreferenceText
+                style={{ marginTop: '1rem' }}
+                placeholder="Enter your custom font"
+                block
+                {...bindValue('fontFamily')}
+              />
+            )}
+            <Rule />
+            <PaddedPreference
+              title="Font Ligatures"
+              type="boolean"
+              {...bindValue('enableLigatures')}
+            />
+            <SubDescription>
+              Whether we should enable{' '}
+              <a
+                href="https://en.wikipedia.org/wiki/Typographic_ligature"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                font ligatures
+              </a>.
+            </SubDescription>
+            <Rule />
+            <PaddedPreference
+              title="Line Height"
+              type="number"
+              placeholder="1.15"
+              step="0.05"
+              {...bindValue('lineHeight')}
+            />
+            <Rule />
+            <PaddedPreference
+              title="Zen Mode"
+              type="boolean"
+              {...bindValue('zenMode')}
+            />
+            <SubDescription>
+              Hide all distracting elements, perfect for lessons and
+              presentations.
+            </SubDescription>
+          </VSCodePlaceholder>
 
           <div>
             <BigTitle>Editor Theme</BigTitle>

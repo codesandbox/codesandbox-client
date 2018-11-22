@@ -11,6 +11,10 @@ export const HeaderContainer = styled.div`
   position: relative;
   font-size: 1.25rem;
   color: white;
+
+  @media (max-width: 768px) {
+    margin-left: 1rem;
+  }
 `;
 
 export const Description = styled.p`
@@ -21,4 +25,14 @@ export const Description = styled.p`
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 
   line-height: 1.6;
+
+  @media (max-width: 768px) {
+    margin-left: 1rem;
+  }
+`;
+
+export const HeaderTitle = styled.div`
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
 `;

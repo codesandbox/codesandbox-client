@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import { identify } from 'common/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
@@ -18,13 +19,26 @@ export function getSandbox({ props, api, path }) {
     });
 }
 
-export function optimisticallyAddNpmDependency({ state, props }) {
-  const id = state.get('editor.currentId');
+export function callVSCodeCallback({ props }) {
+  const { cbID } = props;
+  if (cbID) {
+    if (window.cbs && window.cbs[cbID]) {
+      window.cbs[cbID](undefined, undefined);
+      delete window.cbs[cbID];
+    }
+  }
+}
 
-  state.set(
-    `editor.sandboxes.${id}.npmDependencies.${props.name}`,
-    props.version
-  );
+export function callVSCodeCallbackError({ props }) {
+  const { cbID } = props;
+  if (cbID) {
+    if (window.cbs && window.cbs[cbID]) {
+      const errorMessage =
+        props.message || 'Something went wrong while saving the file.';
+      window.cbs[cbID](new Error(errorMessage), undefined);
+      delete window.cbs[cbID];
+    }
+  }
 }
 
 export function setWorkspace({ state, props }) {
@@ -310,6 +324,7 @@ export function removeJwtFromStorage({ jwt }) {
 
 export function setSignedInCookie() {
   document.cookie = 'signedIn=true; Path=/;';
+  identify('signed_in', true);
 }
 
 export function listenToConnectionChange({ connection }) {

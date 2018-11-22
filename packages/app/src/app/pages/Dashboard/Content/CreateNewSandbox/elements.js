@@ -1,6 +1,30 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { animated } from 'react-spring';
+
+const fadeIn = keyframes`
+  0%   { opacity: 0; }
+  100% { opacity: 0.5; }
+`;
+
+export const DarkBG = styled.div`
+  transition: 0.3s ease opacity;
+
+  ${props =>
+    !props.closing &&
+    css`
+      animation: ${fadeIn} 0.3s;
+      animation-fill-mode: forwards;
+    `};
+
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  background-color: black;
+`;
 
 export const ButtonsContainer = styled.div`
   display: flex;

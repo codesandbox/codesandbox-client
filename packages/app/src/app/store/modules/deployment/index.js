@@ -5,11 +5,19 @@ import * as sequences from './sequences';
 export default Module({
   model,
   state: {
+    hasAlias: false,
+    deployToDelete: null,
     deploying: false,
     url: null,
+    gettingDeploys: true,
+    sandboxDeploys: [],
   },
   signals: {
+    getDeploys: sequences.getDeploys,
     deployClicked: sequences.deploy,
     deploySandboxClicked: sequences.openDeployModal,
+    setDeploymentToDelete: sequences.deploymentToDelete,
+    deleteDeployment: sequences.deleteDeployment,
+    aliasDeployment: sequences.aliasDeployment,
   },
 });

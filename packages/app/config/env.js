@@ -18,5 +18,6 @@ module.exports = Object.keys(process.env)
       'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
       'process.env.LOCAL_SERVER': !!LOCAL_SERVER,
       'process.env.STAGING': 'STAGING_BRANCH' in process.env,
+      'process.env.VSCODE': !!JSON.stringify(process.env.VSCODE),
     }
   );

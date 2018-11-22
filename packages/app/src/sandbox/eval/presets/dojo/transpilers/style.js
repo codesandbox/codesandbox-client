@@ -17,7 +17,9 @@ class DojoStyleTranspiler extends StyleTranspiler {
     if (result) {
       return { transpiledCode: `${insertCss(id, code)}\n${result.code}` };
     }
-    const { code: packageJson } = modules.find(module => module.path === '/package.json');
+    const { code: packageJson } = modules.find(
+      module => module.path === '/package.json'
+    );
     const { name: packageName } = JSON.parse(packageJson);
     const [, baseName] = /\/([^/.]*)[^/]*$/.exec(path);
     const key = `${packageName}/${baseName}`;

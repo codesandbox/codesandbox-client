@@ -7,6 +7,10 @@ export default new Template(
   'React',
   'https://github.com/facebookincubator/create-react-app',
   'new',
-  decorateSelector(() => '#6CAEDD'),
-  { showOnHomePage: true, main: true }
+  decorateSelector(() => '#61DAFB'),
+  {
+    showOnHomePage: true,
+    main: true,
+    mainFile: ['/src/index.js', '/src/index.tsx', '/src/index.ts'],
+  }
 );

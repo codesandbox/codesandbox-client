@@ -7,7 +7,9 @@ export const getContainerStyles = props => {
     props.color ||
     (props.alternative
       ? theme.primary
-      : theme.templateColor || theme.secondary);
+      : theme.templateBackgroundColor ||
+        theme.templateColor ||
+        theme.secondary);
   let styles = `
     ${styleProps => styleProps.noTransition || 'transition: 0.3s ease all;'}
     position: relative;
@@ -83,7 +85,7 @@ export const getContainerStyles = props => {
   return styles;
 };
 
-export const EntryContainer = styled.span`
+export const EntryContainer = styled.div`
   ${props => getContainerStyles(props)};
 `;
 

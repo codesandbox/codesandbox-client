@@ -67,7 +67,7 @@ async function addAngularJSONResources(manager) {
 
       const tModule = await manager.resolveTranspiledModuleAsync(
         finalPath,
-        '/'
+        null
       );
 
       await tModule.transpile(manager);
@@ -80,7 +80,7 @@ async function addAngularJSONResources(manager) {
         const finalPath = absolute(join(project.root, p));
         const tModule = await manager.resolveTranspiledModuleAsync(
           finalPath,
-          '/'
+          null
         );
         tModule.setIsEntry(true);
         return tModule.transpile(manager);
@@ -107,7 +107,7 @@ async function addAngularCLIResources(manager) {
 
       const tModule = await manager.resolveTranspiledModuleAsync(
         finalPath,
-        '/'
+        null
       );
 
       await tModule.transpile(manager);
@@ -121,7 +121,7 @@ async function addAngularCLIResources(manager) {
         const finalPath = absolute(join(app.root || 'src', p));
         const tModule = await manager.resolveTranspiledModuleAsync(
           finalPath,
-          '/'
+          null
         );
         tModule.setIsEntry(true);
         return tModule.transpile(manager);

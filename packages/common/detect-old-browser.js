@@ -1,5 +1,5 @@
 function detectIE() {
-  const ua = window.navigator.userAgent;
+  const ua = navigator.userAgent;
 
   const msie = ua.indexOf('MSIE ');
   if (msie > 0) {

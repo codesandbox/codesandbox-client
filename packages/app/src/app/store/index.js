@@ -17,6 +17,7 @@ import NotificationsProvider from './providers/Notifications';
 import ModuleRecover from './providers/ModuleRecover';
 import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
+import SSEProvider from './providers/SSE';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -26,6 +27,7 @@ import { isPatron, isLoggedIn, hasLogIn } from './getters';
 import patron from './modules/patron';
 import editor from './modules/editor';
 import profile from './modules/profile';
+import server from './modules/server';
 import deployment from './modules/deployment';
 import git from './modules/git';
 import preferences from './modules/preferences';
@@ -57,7 +59,7 @@ export default Module({
       x: 0,
       y: 0,
     },
-    currentModal: null,
+    currentModal: undefined,
     uploadedFiles: null,
     maxStorage: 0,
     usedStorage: 0,
@@ -110,6 +112,7 @@ export default Module({
     files,
     live,
     userNotifications,
+    server,
   },
   providers: {
     api: ApiProvider,
@@ -128,5 +131,6 @@ export default Module({
     live: LiveProvider,
     recover: ModuleRecover,
     ot: OTProvider,
+    sse: SSEProvider,
   },
 });

@@ -12,8 +12,8 @@ import { teamOverviewUrl } from 'common/utils/url-generator';
 import Item from './Item';
 import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
-import { Items, CategoryHeader } from './elements';
-import { TEAMS_QUERY } from '../queries';
+import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
+import { TEAMS_QUERY, PATHED_SANDBOXES_FOLDER_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
   shouldComponentUpdate() {
@@ -34,20 +34,31 @@ class Sidebar extends React.Component {
     const { store } = this.props;
 
     return (
-      <div style={{ width: 275, overflowY: 'auto' }}>
-        <div style={{ margin: '0 1rem', marginBottom: '1.5rem' }}>
+      <SidebarStyled>
+        <InputWrapper>
           <Input
             onFocus={this.handleSearchFocus}
             block
             value={store.dashboard.filters.search}
             onChange={this.handleSearchChange}
-            placeholder="Filter Sandboxes"
+            placeholder="Search Sandboxes"
           />
-        </div>
+        </InputWrapper>
 
         <Items style={{ marginBottom: '1rem' }}>
           <Item Icon={TimeIcon} path="/dashboard/recent" name="Recent" />
-          <SandboxesItem />
+          <Query
+            variables={{ teamId: undefined }}
+            query={PATHED_SANDBOXES_FOLDER_QUERY}
+          >
+            {({ data }) => {
+              // We open this by default if there are no folders yet, to let the user know
+              // that they can create folders.
+              const openByDefault =
+                data && data.me && data.me.collections.length === 1;
+              return <SandboxesItem openByDefault={openByDefault} />;
+            }}
+          </Query>
           <TrashItem />
         </Items>
 
@@ -89,7 +100,7 @@ class Sidebar extends React.Component {
             Create Team
           </Button>
         </div>
-      </div>
+      </SidebarStyled>
     );
   }
 }

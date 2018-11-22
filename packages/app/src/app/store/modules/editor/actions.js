@@ -1,6 +1,9 @@
-import { fromPairs, toPairs, sortBy } from 'lodash-es';
+import { fromPairs, toPairs, sortBy, mapValues } from 'lodash-es';
 import slugify from 'common/utils/slugify';
 import { clone } from 'mobx-state-tree';
+
+import getTemplate from 'common/templates';
+import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -13,6 +16,26 @@ export async function getLatestVersion({ props, api }) {
     .get(`/dependencies/${name}@latest`)
     .then(({ version }) => ({ version }))
     .catch(() => {});
+}
+
+export function getIdFromModulePath({ props, state, utils }) {
+  if (!props.path) {
+    return {};
+  }
+
+  const sandbox = state.get('editor.currentSandbox');
+
+  try {
+    const module = utils.resolveModule(
+      props.path.replace(/^\//, ''),
+      sandbox.modules,
+      sandbox.directories
+    );
+
+    return { id: module.id };
+  } catch (e) {
+    return {};
+  }
 }
 
 export function addNpmDependencyToPackage({ state, props }) {
@@ -125,6 +148,18 @@ export function updatePrivacy({ api, props, state }) {
       },
     })
     .then(() => undefined);
+}
+
+export function updateFrozen({ api, props, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .put(`/sandboxes/${id}`, {
+      sandbox: {
+        is_frozen: props.frozen,
+      },
+    })
+    .then(() => state.set('editor.currentSandbox.isFrozen', props.frozen));
 }
 
 export function forceRender({ state }) {
@@ -394,7 +429,58 @@ export function prettifyCode({ utils, state, props, path }) {
     .catch(error => path.error({ error }));
 }
 
-export function saveModuleCode({ props, state, api, recover }) {
+export function updateTemplateIfSSE({ state, api }) {
+  try {
+    const currentTemplate = state.get('editor.currentSandbox.template');
+    const templateDefinition = getTemplate(currentTemplate);
+
+    const shouldUpdateTemplate = (() => {
+      // We always want to be able to update server template based on its detection.
+      // We only want to update the client template when it's explicitly specified
+      // in the sandbox configuration.
+
+      if (templateDefinition.isServer) {
+        return true;
+      }
+
+      const sandboxConfig = state.get('editor.parsedConfigurations.sandbox');
+
+      if (sandboxConfig.parsed.template) {
+        return true;
+      }
+
+      return false;
+    })();
+
+    if (shouldUpdateTemplate) {
+      const { parsed } = state.get('editor.parsedConfigurations.package');
+
+      const modulesByPath = mapValues(state.get('editor.modulesByPath'), m => ({
+        content: m.code,
+        isBinary: m.isBinary,
+      }));
+
+      const newTemplate = computeTemplate(parsed, modulesByPath) || 'node';
+
+      if (
+        newTemplate !== currentTemplate &&
+        templateDefinition.isServer === getTemplate(newTemplate).isServer
+      ) {
+        state.set('editor.currentSandbox.template', newTemplate);
+        api.put(`/sandboxes/${state.get('editor.currentSandbox.id')}/`, {
+          sandbox: { template: newTemplate },
+        });
+      }
+    }
+  } catch (e) {
+    // We don't want this to be blocking at all, it's low prio
+    if (process.env.NODE_ENV === 'development') {
+      console.error(e);
+    }
+  }
+}
+
+export function saveModuleCode({ props, state, api, recover, path }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleToSave = sandbox.modules.find(
     module => module.shortid === props.moduleShortid
@@ -418,6 +504,14 @@ export function saveModuleCode({ props, state, api, recover }) {
       );
 
       if (index > -1) {
+        state.set(
+          `editor.sandboxes.${newSandbox.id}.modules.${index}.insertedAt`,
+          x.insertedAt
+        );
+        state.set(
+          `editor.sandboxes.${newSandbox.id}.modules.${index}.updatedAt`,
+          x.updatedAt
+        );
         if (newModuleToSave.code === codeToSave) {
           state.set(
             `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
@@ -429,14 +523,20 @@ export function saveModuleCode({ props, state, api, recover }) {
             `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
             x.code
           );
-          throw new Error(
-            `The code of '${title}' changed while saving, will ignore the save now. Please try again with saving.`
-          );
+
+          return path.codeOutdated({
+            message: `The code of '${title}' changed while saving. Please try again with saving.`,
+          });
         }
       }
 
-      return x;
-    });
+      return path.success(x);
+    })
+    .catch(e =>
+      path.error({
+        message: e.message,
+      })
+    );
 }
 
 export function getCurrentModuleId({ state }) {
@@ -534,6 +634,22 @@ export function getSavedCode({ props, state }) {
     }
 
     return { oldCode: module.code, code: module.code };
+  }
+
+  return {};
+}
+
+export function touchFile({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === props.moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    state.set(
+      `editor.currentSandbox.modules.${moduleIndex}.updatedAt`,
+      new Date().toString()
+    );
   }
 
   return {};

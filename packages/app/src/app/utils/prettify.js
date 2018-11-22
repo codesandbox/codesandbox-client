@@ -16,15 +16,15 @@ function getMode(title: string) {
   }
 
   if (/\.css$/.test(title)) {
-    return 'postcss';
+    return 'css';
   }
 
   if (/\.s[c|a]ss$/.test(title)) {
-    return 'postcss';
+    return 'scss';
   }
 
   if (/\.less$/.test(title)) {
-    return 'postcss';
+    return 'less';
   }
 
   if (/\.vue$/.test(title)) {
@@ -33,6 +33,26 @@ function getMode(title: string) {
 
   if (/\.gql$/.test(title)) {
     return 'graphql';
+  }
+
+  if (/\.html$/.test(title)) {
+    return 'html';
+  }
+
+  if (/\.md$/.test(title)) {
+    return 'markdown';
+  }
+
+  if (/\.mdx$/.test(title)) {
+    return 'mdx';
+  }
+
+  if (/\.json$/.test(title)) {
+    return 'json';
+  }
+
+  if (/\.component\.html$/.test(title)) {
+    return 'angular';
   }
 
   return null;
@@ -120,13 +140,20 @@ export default function prettify(
   title,
   getCode,
   prettierConfig = DEFAULT_PRETTIER_CONFIG,
-  isCurrentModule = () => false
+  isCurrentModule = () => false,
+  cancellationToken: {
+    isCancellationRequested: boolean,
+    onCancellationRequested: (cb: Function) => {},
+  }
 ) {
   const mode = getMode(title);
 
-  worker = worker || new Worker('/static/js/prettier/worker.js');
+  worker = worker || new Worker('/static/js/prettier/worker-1.15.1.js');
 
   return new Promise((resolve, reject) => {
+    if (cancellationToken && cancellationToken.isCancellationRequested) {
+      return;
+    }
     if (!mode) {
       resolve(getCode());
       return;
@@ -147,46 +174,51 @@ export default function prettify(
       },
     });
 
-    let timeout = setTimeout(() => {
-      // If worker doesn't respond in time
-      reject({ error: 'Prettify timeout' });
-      timeout = null;
-    }, 5000);
+    let handler;
+    let timeout;
+    if (!cancellationToken) {
+      timeout = setTimeout(() => {
+        // If worker doesn't respond in time
+        reject({ error: 'Prettify timeout' });
+        timeout = null;
+        worker.removeEventListener('message', handler);
+      }, 5000);
+    } else {
+      cancellationToken.onCancellationRequested(() => {
+        worker.removeEventListener('message', handler);
+      });
+    }
 
-    const handler = e => {
+    handler = e => {
       const { result, text, error } = e.data;
 
-      if (timeout) {
-        if (text === getCode()) {
-          worker.removeEventListener('message', handler);
-          clearTimeout(timeout);
-          timeout = null;
-
-          if (error) {
-            console.error(error);
-            reject({ error });
-          }
-
-          if (result && result.formatted != null) {
-            resolve(result.formatted);
-          }
-
-          // After code is applied
-          if (
-            result &&
-            result.newCursorOffset &&
-            isCurrentModule() &&
-            result.formatted != null
-          ) {
-            const newCursorOffset = result.cursorOffset;
-            requestAnimationFrame(() => {
-              // After model code has changed
-              applyNewCursorOffset(newCursorOffset, result.formatted, getCode);
-            });
-          }
-        }
-      } else {
+      if (text === getCode()) {
         worker.removeEventListener('message', handler);
+        clearTimeout(timeout);
+        timeout = null;
+
+        if (error) {
+          console.error(error);
+          reject({ error });
+        }
+
+        if (result && result.formatted != null) {
+          resolve(result.formatted);
+        }
+
+        // After code is applied
+        if (
+          result &&
+          result.newCursorOffset &&
+          isCurrentModule() &&
+          result.formatted != null
+        ) {
+          const newCursorOffset = result.cursorOffset;
+          requestAnimationFrame(() => {
+            // After model code has changed
+            applyNewCursorOffset(newCursorOffset, result.formatted, getCode);
+          });
+        }
       }
     };
 

@@ -1,6 +1,20 @@
 // @flow
 import buildProcess from './utils/process';
 
+const g = typeof window === 'undefined' ? self : window;
+const requestFrame = (() => {
+  const raf =
+    g.requestAnimationFrame ||
+    g.mozRequestAnimationFrame ||
+    g.webkitRequestAnimationFrame ||
+    function(fn) {
+      return g.setTimeout(fn, 20);
+    };
+  return function(fn) {
+    return raf(fn);
+  };
+})();
+
 /* eslint-disable no-unused-vars */
 export default function(
   code: string,
@@ -10,27 +24,35 @@ export default function(
   globals: Object = {},
   { asUMD = false }: { asUMD: boolean } = {}
 ) {
-  const g = typeof window === 'undefined' ? self : window;
   const exports = module.exports;
 
   const global = g;
   const process = buildProcess(env);
   g.global = global;
 
-  const globalsCode = ', ' + Object.keys(globals).join(', ');
+  const globalsCode = Object.keys(globals).length
+    ? ', ' + Object.keys(globals).join(', ')
+    : '';
   const globalsValues = Object.keys(globals).map(k => globals[k]);
   try {
-    const newCode = `(function evaluate(require, module, exports, process, setImmediate, global${globalsCode}) {${code}\n})`;
+    const newCode =
+      `(function evaluate(require, module, exports, process, setImmediate, global` +
+      globalsCode +
+      `) {` +
+      code +
+      `\n})`;
     // eslint-disable-next-line no-eval
-    (0, eval)(newCode).apply(this, [
-      require,
-      asUMD ? undefined : module,
-      asUMD ? undefined : exports,
-      process,
-      setImmediate,
-      asUMD ? undefined : global,
-      ...globalsValues,
-    ]);
+    (0, eval)(newCode).apply(
+      this,
+      [
+        require,
+        asUMD ? undefined : module,
+        asUMD ? undefined : exports,
+        process,
+        requestFrame,
+        asUMD ? undefined : global,
+      ].concat(globalsValues)
+    );
 
     return module.exports;
   } catch (e) {

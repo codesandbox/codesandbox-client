@@ -40,7 +40,7 @@ export const closeSession = [
   when(state`live.isOwner`),
   {
     true: [actions.disconnect, resetLive],
-    false: [],
+    false: [actions.disconnect],
   },
 ];
 

@@ -9,11 +9,15 @@ export default class PreferenceInput extends React.PureComponent {
   };
 
   render() {
-    const { value, options } = this.props;
+    const { value, options, mapName } = this.props;
 
     return (
       <Select onChange={this.handleChange} value={value}>
-        {options.map(op => <option key={op}>{op}</option>)}
+        {options.map(op => (
+          <option key={op} value={op}>
+            {mapName ? mapName(op) : op}
+          </option>
+        ))}
       </Select>
     );
   }

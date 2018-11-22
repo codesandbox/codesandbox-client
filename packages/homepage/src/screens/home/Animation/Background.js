@@ -31,6 +31,7 @@ export default class Background extends React.PureComponent {
     '@dojo/cli-create-app': '#211D1C',
     'vue-cli': '#1D2525',
     'preact-cli': '#202328',
+    'ember': '#2a201d',
     svelte: '#202022',
   };
 
@@ -48,7 +49,8 @@ export default class Background extends React.PureComponent {
     return (
       <Container
         style={{
-          background: `linear-gradient(rgba(228, 3, 3, 0.05), rgba(255, 140, 0, 0.05), rgba(255, 237, 0, 0.05), rgba(0, 128, 38, 0.05), rgba(0, 77, 255, 0.05), rgba(117, 7, 135, 0.05))`,
+          backgroundColor:
+            this.colors[template.name] || template.color.clearer(0.97)(),
         }}
       >
         <canvas

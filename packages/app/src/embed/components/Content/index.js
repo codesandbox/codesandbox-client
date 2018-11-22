@@ -8,6 +8,8 @@ import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 
+import getTemplate from 'common/templates';
+
 import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
 import {
   TabTitle,
@@ -70,8 +72,22 @@ export default class Content extends React.PureComponent<Props, State> {
     const module = props.sandbox.modules.find(
       m => m.id === props.currentModule.id
     );
-    // Show all tabs if there are not many files
-    if (props.sandbox.modules.length <= 5 || !module) {
+    if (props.tabs) {
+      tabs = props.tabs
+        .map(modulePath => {
+          try {
+            return resolveModule(
+              modulePath,
+              props.sandbox.modules,
+              props.sandbox.directories
+            );
+          } catch (e) {
+            return undefined;
+          }
+        })
+        .filter(Boolean);
+    } else if (props.sandbox.modules.length <= 5 || !module) {
+      // Show all tabs if there are not many files
       tabs = [...props.sandbox.modules];
     } else {
       tabs = [module];
@@ -314,6 +330,8 @@ export default class Content extends React.PureComponent<Props, State> {
 
     if (!mainModule) throw new Error('Cannot find main module');
 
+    const templateDefinition = getTemplate(sandbox.template);
+
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'
     );
@@ -370,7 +388,12 @@ export default class Content extends React.PureComponent<Props, State> {
                       <React.Fragment>
                         <EntryIcons type={getType(module.title)} />
                         <TabTitle>{module.title}</TabTitle>
-                        {dirName && <TabDir>../{dirName}</TabDir>}
+                        {dirName && (
+                          <TabDir>
+                            ../
+                            {dirName}
+                          </TabDir>
+                        )}
 
                         {this.renderTabStatus(hovering, closeTab)}
                       </React.Fragment>
@@ -393,6 +416,7 @@ export default class Content extends React.PureComponent<Props, State> {
                 sandbox={sandbox}
                 settings={this.getPreferences()}
                 canSave={false}
+                readOnly={templateDefinition.isServer}
                 onChange={this.setCode}
                 onModuleChange={this.setCurrentModule}
                 onUnMount={this.onCodeEditorUnMount}
@@ -437,8 +461,10 @@ export default class Content extends React.PureComponent<Props, State> {
                 <DevTools
                   setDragging={this.setDragging}
                   sandboxId={sandbox.id}
+                  template={sandbox.template}
                   shouldExpandDevTools={this.props.expandDevTools}
                   view={view}
+                  owned={false}
                 />
               </div>
             )}

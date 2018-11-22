@@ -15,6 +15,7 @@ import PrivacyStatus from 'app/components/PrivacyStatus';
 import GithubBadge from 'app/components/GithubBadge';
 import createEditableTags from 'app/components/EditableTags';
 import Tags from 'app/components/Tags';
+import Switch from 'common/components/Switch';
 import Tooltip from 'common/components/Tooltip';
 
 import getTemplateDefinition from 'common/templates';
@@ -30,6 +31,8 @@ import {
   EditPen,
   PropertyValue,
   PropertyName,
+  Icon,
+  FreezeConatainer,
 } from './elements';
 
 class Project extends React.Component {
@@ -67,6 +70,13 @@ class Project extends React.Component {
     }
   };
 
+  updateFrozenState = () => {
+    const frozen = !this.props.store.editor.currentSandbox.isFrozen;
+    this.props.signals.editor.frozenUpdated({
+      frozen,
+    });
+  };
+
   updateSandboxInfo = () => {
     this.props.signals.workspace.sandboxInfoUpdated();
     this.setState({
@@ -93,7 +103,6 @@ class Project extends React.Component {
     const template = getTemplateDefinition(sandbox.template);
 
     const EditableTags = createEditableTags(template.color);
-
     return (
       <div style={{ marginBottom: '1rem' }}>
         <Item style={{ marginTop: '.5rem' }}>
@@ -257,6 +266,27 @@ class Project extends React.Component {
             </a>
           </PropertyValue>
         </Item>
+        {sandbox.owned ? (
+          <Item style={{ marginTop: 5 }} flex>
+            <PropertyName>
+              Frozen
+              <Tooltip title="When true this sandbox will fork on edit">
+                <Icon />
+              </Tooltip>
+            </PropertyName>
+            <PropertyValue>
+              <FreezeConatainer>
+                <Switch
+                  small
+                  right={sandbox.isFrozen}
+                  onClick={this.updateFrozenState}
+                  offMode
+                  secondary
+                />
+              </FreezeConatainer>
+            </PropertyValue>
+          </Item>
+        ) : null}
       </div>
     );
   }

@@ -26,7 +26,13 @@ class SandboxesItem extends React.Component {
   };
 
   render() {
-    const { isOver, canDrop, teamId, connectDropTarget } = this.props;
+    const {
+      isOver,
+      canDrop,
+      teamId,
+      connectDropTarget,
+      openByDefault,
+    } = this.props;
 
     const basePath = teamId
       ? `/dashboard/teams/${teamId}/sandboxes`
@@ -35,6 +41,7 @@ class SandboxesItem extends React.Component {
     return connectDropTarget(
       <div>
         <Item
+          openByDefault={openByDefault}
           path={basePath}
           Icon={InfoIcon}
           name={teamId ? 'Our Sandboxes' : 'My Sandboxes'}

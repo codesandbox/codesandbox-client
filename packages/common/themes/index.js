@@ -32,10 +32,28 @@ export default [
       'https://cdn.rawgit.com/wesbos/cobalt2-vscode/master/theme/cobalt2.json',
   },
   {
+    name: 'Palenight',
+    id: 'palenight',
+    url:
+      'https://cdn.rawgit.com/whizkydee/vscode-material-palenight-theme/master/themes/palenight.json',
+  },
+  {
+    name: 'Palenight Italic',
+    id: 'palenightItalic',
+    url:
+      'https://cdn.rawgit.com/whizkydee/vscode-material-palenight-theme/master/themes/palenight-italic.json',
+  },
+  {
     name: 'Shades of Purple',
     id: 'shadesOfPurple',
     url:
       'https://cdn.rawgit.com/ahmadawais/shades-of-purple-vscode/983101b2e9f57638fbc1bd5c551f5c84e561756e/themes/shades-of-purple-color-theme.json',
+  },
+  {
+    name: 'Lucy',
+    id: 'lucy',
+    url:
+      'https://cdn.rawgit.com/juliettepretot/lucy-vscode/f27d8363/dist/color-theme.json',
   },
   {
     name: 'High Contrast',

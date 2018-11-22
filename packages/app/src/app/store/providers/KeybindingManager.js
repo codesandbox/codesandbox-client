@@ -289,7 +289,10 @@ export default Provider({
     );
   },
   start() {
-    if (isStarted) {
+    if (
+      isStarted ||
+      this.context.controller.getState().preferences.settings.experimentVSCode
+    ) {
       return;
     }
 
