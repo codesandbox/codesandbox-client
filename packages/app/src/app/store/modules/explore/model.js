@@ -17,6 +17,7 @@ const Author = types.model('Author', {
 });
 
 const Picks = types.model('Picks', {
+  title: types.maybeNull(types.string),
   description: types.maybeNull(types.string),
   id: types.string,
   insertedAt: types.string,
