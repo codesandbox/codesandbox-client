@@ -232,7 +232,7 @@ export function closeTabByIndex({ state, props }) {
 export function signInGithub({ browser, path, props }) {
   const { useExtraScopes } = props;
   const popup = browser.openPopup(
-    `/auth/github${useExtraScopes ? '?scope=user:email,public_repo' : ''}`,
+    `/auth/github${useExtraScopes ? '?scope=user:email,repo' : ''}`,
     'sign in'
   );
 
