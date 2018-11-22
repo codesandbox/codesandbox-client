@@ -44,10 +44,17 @@ const PickedSandboxes = types.model('PickedSandboxes', {
   page: types.number,
 });
 
+const PickedSandboxDetails = types.model('PickedSandboxDetails', {
+  title: types.maybeNull(types.string),
+  id: types.string,
+  description: types.maybeNull(types.string),
+});
+
 export default {
   pickedSandboxesIndexes: types.maybeNull(types.array(types.string)),
   popularSandboxes: types.maybeNull(PopularSandboxes),
   pickedSandboxesLoading: types.boolean,
   pickedSandboxes: types.maybeNull(PickedSandboxes),
   selectedSandbox: types.maybeNull(Sandbox),
+  pickedSandboxDetails: types.maybeNull(PickedSandboxDetails),
 };

@@ -36,11 +36,19 @@ export const mountPopularSandboxes = [
 export const pickSandbox = [
   actions.pickSandbox,
   {
-    success: [addNotification('Sandbox picked', 'success')],
+    success: [
+      addNotification('Sandbox picked', 'success'),
+      set(state`currentModal`, null),
+    ],
     error: [
       addNotification('There has been a problem picking the sandbox', 'error'),
     ],
   },
+];
+
+export const pickSandboxModal = [
+  actions.setDetails,
+  set(state`currentModal`, 'pickSandbox'),
 ];
 
 export const getSandbox = [

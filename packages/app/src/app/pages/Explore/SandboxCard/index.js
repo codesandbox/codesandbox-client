@@ -87,10 +87,18 @@ class SandboxItem extends React.Component<Props> {
   };
 
   render() {
-    const { id, title, viewCount, author, description, onClick } = this.props;
+    const {
+      id,
+      title,
+      viewCount,
+      author,
+      description,
+      onClick,
+      picks,
+    } = this.props;
 
     const { screenshotUrl } = this.state;
-
+    const lastPick = picks[picks.length - 1];
     return (
       <Wrapper role="button" tabIndex={0} onClick={onClick}>
         <Container style={{ outline: 'none' }}>
@@ -110,9 +118,11 @@ class SandboxItem extends React.Component<Props> {
             <div style={{ flex: 1 }}>
               <div>
                 <Header>
-                  <SandboxTitle>{title || id}</SandboxTitle>
+                  <SandboxTitle>{lastPick.title || title || id}</SandboxTitle>
                   {description ? (
-                    <Description>{description}</Description>
+                    <Description>
+                      {lastPick.description || description}
+                    </Description>
                   ) : null}
                 </Header>
               </div>

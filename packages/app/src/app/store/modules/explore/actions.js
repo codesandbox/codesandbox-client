@@ -12,6 +12,10 @@ export function getSandbox({ path, api, props }) {
     .catch(() => path.error());
 }
 
+export function setDetails({ path, state, props }) {
+  return state.set(`explore.pickedSandboxDetails`, props.details);
+}
+
 export function mountPickedSandboxes({ path, api, state }) {
   return api
     .get(`/sandboxes/picked`)
@@ -27,7 +31,10 @@ export function mountPickedSandboxes({ path, api, state }) {
 
 export function pickSandbox({ path, api, props, state }) {
   return api
-    .post(`/sandboxes/${props.id}/pick`)
+    .post(`/sandboxes/${props.id}/pick`, {
+      title: props.title,
+      description: props.description,
+    })
     .then(data => {
       const index = state
         .get(`explore.popularSandboxes.sandboxes`)

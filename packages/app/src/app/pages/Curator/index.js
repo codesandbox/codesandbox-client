@@ -35,9 +35,13 @@ class Curator extends React.Component {
       date,
     });
 
-  pickSandbox = id => {
-    this.props.signals.explore.pickSandbox({
-      id,
+  pickSandbox = (id, title, description) => {
+    this.props.signals.explore.pickSandboxModal({
+      details: {
+        id,
+        title,
+        description,
+      },
     });
   };
 

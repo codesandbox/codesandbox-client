@@ -196,7 +196,7 @@ class SandboxItem extends React.Component<Props> {
               </Details>
             </div>
           </SandboxInfo>
-          <Pick small onClick={() => pickSandbox(id)}>
+          <Pick small onClick={() => pickSandbox(id, title, description)}>
             {!picks.length ? '✨ Pick Sandbox' : '✨ Pick Sandbox again'}
           </Pick>
         </Container>
