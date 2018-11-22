@@ -12,7 +12,7 @@ export function getSandbox({ path, api, props }) {
     .catch(() => path.error());
 }
 
-export function setDetails({ path, state, props }) {
+export function setDetails({ state, props }) {
   return state.set(`explore.pickedSandboxDetails`, props.details);
 }
 
