@@ -15,8 +15,9 @@ import { Field, Label } from './elements';
 
 class PickSandboxModal extends Component {
   state = {
-    title: this.props.store.explore.pickedSandboxDetails.title,
-    description: this.props.store.explore.pickedSandboxDetails.description,
+    title: this.props.store.explore.pickedSandboxDetails.title || '',
+    description:
+      this.props.store.explore.pickedSandboxDetails.description || '',
   };
 
   onChange = e =>
@@ -36,52 +37,56 @@ class PickSandboxModal extends Component {
           Please add a title and description to this sandbox if none exists or
           you think you have a better description for it
         </Explanation>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            signals.explore.pickSandbox({
+              id,
+              title,
+              description,
+            });
+          }}
+        >
+          <Field>
+            <Label htmlFor="title">Sandbox name</Label>
+            <Input
+              style={{
+                width: '100%',
+              }}
+              value={title}
+              onChange={this.onChange}
+              name="title"
+              id="title"
+              required
+            />
+          </Field>
+          <Field>
+            <Label htmlFor="description">Sandbox Description</Label>
+            <TextArea
+              style={{
+                width: '100%',
+              }}
+              value={description}
+              onChange={this.onChange}
+              name="description"
+              id="description"
+              required
+              rows="3"
+            />
+          </Field>
 
-        <Field>
-          <Label htmlFor="title">A description</Label>
-          <Input
-            style={{
-              width: '100%',
-            }}
-            value={title}
-            onChange={this.onChange}
-            name="title"
-            id="title"
-            required
-          />
-        </Field>
-        <Field>
-          <Label htmlFor="description">A description</Label>
-          <TextArea
-            style={{
-              width: '100%',
-            }}
-            value={description}
-            onChange={this.onChange}
-            name="description"
-            id="description"
-            required
-            rows="3"
-          />
-        </Field>
-
-        <Row justifyContent="space-around">
-          <Button
-            onClick={() => {
-              signals.explore.pickSandbox({
-                id,
-                title,
-                description,
-              });
-            }}
-          >
-            Ship it{' '}
-            <span role="img" aria-label="rocket">
-              🚀
-            </span>
-          </Button>
-          <Button onClick={() => signals.modalClosed()}>Cancel</Button>
-        </Row>
+          <Row justifyContent="space-around">
+            <Button type="submit">
+              Ship it{' '}
+              <span role="img" aria-label="rocket">
+                🚀
+              </span>
+            </Button>
+            <Button danger onClick={() => signals.modalClosed()}>
+              Cancel
+            </Button>
+          </Row>
+        </form>
       </Container>
     );
   }
