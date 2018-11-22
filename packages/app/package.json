@@ -131,6 +131,8 @@
     "@cerebral/http": "^4.0.0",
     "@cerebral/mobx-state-tree": "^3.0.0",
     "@emmetio/codemirror-plugin": "^0.3.5",
+    "@mdx-js/mdx": "^0.16.3",
+    "@mdx-js/tag": "^0.16.1",
     "@svgr/core": "^2.4.1",
     "@vue/babel-preset-app": "^3.2.0",
     "airtable": "^0.5.8",

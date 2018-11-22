@@ -20,7 +20,7 @@ import evaluate from './loaders/eval';
 import Manager, { HMRStatus } from './manager';
 import HMR from './hmr';
 
-declare var BrowserFS: any;
+let var BrowserFS: any;
 
 const debug = _debug('cs:compiler:transpiled-module');
 
@@ -486,8 +486,44 @@ export default class TranspiledModule {
       addTranspilationDependency: (depPath: string, options) => {
         this.addDependency(manager, depPath, options, true);
       },
-      addDependency: async (depPath: string, options = {}) => {
-        this.addDependency(manager, depPath, options);
+
+      addDependency: (depPath: string, options = {}) => {
+        if (
+          depPath === '@mdx-js/mdx' ||
+          depPath === '@mdx-js/tag' ||
+          depPath.startsWith('codesandbox-api')
+        ) {
+          return;
+        }
+
+        try {
+          const tModule = manager.resolveTranspiledModule(
+            depPath,
+            options && options.isAbsolute ? '/' : this.module.path
+          );
+
+          this.dependencies.add(tModule);
+          tModule.initiators.add(this);
+
+          if (options.isEntry) {
+            tModule.setIsEntry(true);
+          }
+        } catch (e) {
+          if (e.type === 'module-not-found' && e.isDependency) {
+            this.asyncDependencies.push(
+              manager.downloadDependency(e.path, this)
+            );
+          } else {
+            // Don't throw the error, we want to throw this error during evaluation
+            // so we get the correct line as error
+            // eslint-disable-next-line
+            if (process.env.NODE_ENV === 'development') {
+              console.error(e);
+            }
+
+            this.hasMissingDependencies = true;
+          }
+        }
       },
       addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
@@ -902,6 +938,14 @@ export default class TranspiledModule {
           return os;
         }
 
+        if (path === '@mdx-js/mdx') {
+          return resolveDependency(path, manager.externals);
+        }
+
+        if (path === '@mdx-js/tag') {
+          return resolveDependency(path, manager.externals);
+        }
+
         if (bfsModule) {
           return bfsModule;
         }
@@ -1039,7 +1083,7 @@ export default class TranspiledModule {
       isEntry: this.isEntry,
       isTestFile: this.isTestFile,
 
-      sourceEqualsCompiled: sourceEqualsCompiled,
+      sourceEqualsCompiled,
       childModules: this.childModules.map(m => m.getId()),
       dependencies: Array.from(this.dependencies).map(m => m.getId()),
       initiators: Array.from(this.initiators).map(m => m.getId()),
@@ -1109,13 +1153,11 @@ export default class TranspiledModule {
         } else {
           tModule.dependencies.add(this);
         }
-      } else {
-        if (transpilation) {
+      } else if (transpilation) {
           tModule.transpilationInitiators.add(this);
         } else {
           tModule.initiators.add(this);
         }
-      }
 
       return tModule;
     };

@@ -6,6 +6,7 @@ import { getCurrentManager } from '../compile';
 let cachedBoilerplates = [];
 
 export async function evalBoilerplates(boilerplates: Array<any>) {
+  console.log(boilerplates);
   cachedBoilerplates = await Promise.all(
     boilerplates.map(async boilerplate => {
       const fakeModule: Module = {
