@@ -44,7 +44,9 @@
     ],
     "nohoist": [
       "**/gatsby",
-      "**/gatsby/**"
+      "**/gatsby/**",
+      "**/@types",
+      "**/@types/**"
     ]
   },
   "resolutions": {
