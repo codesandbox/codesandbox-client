@@ -5,6 +5,7 @@ const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*
 
 function splitPath(filename: string) {
   return splitPathRe.exec(filename).slice(1);
+}
 
 // resolves . and .. elements in a path array with directory names there
 // must be no slashes or device names (c:\) in the array
@@ -380,9 +381,7 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
             .then(dtsFile =>
               addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
             )
-            .catch(() => {
-        
-            })
+            .catch(() => {})
         )
       );
     });
@@ -440,8 +439,7 @@ export async function fetchAndAddDependencies(
         .then(x => {
           depVersion = x.version
         });
-      } catch (e) {
-      }
+      } catch (e) {}
       // eslint-disable-next-line no-await-in-loop
       await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
         // not available in package.json, try checking meta for inline .d.ts files
