@@ -1,5 +1,6 @@
 // @flow
 import { flattenDeep, uniq, values } from 'lodash-es';
+import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
@@ -78,6 +79,13 @@ const debug = _debug('cs:compiler:manager');
 type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
 type Stage = 'transpilation' | 'evaluation';
 
+type TManagerOptions = {
+  /**
+   * Whether the parent window has its own file resolver that can be used by the manager to resolve files
+   */
+  hasFileResolver: boolean,
+};
+
 export default class Manager {
   id: string;
   transpiledModules: {
@@ -101,6 +109,12 @@ export default class Manager {
   testRunner: TestRunner;
   isFirstLoad: boolean;
 
+  fileResolver: ?{
+    protocol: Protocol,
+    isFile: (path: string) => Promise<boolean>,
+    readFile: (path: string) => Promise<string>,
+  };
+
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
   transpiledModulesByHash: { [hash: string]: TranspiledModule };
@@ -117,6 +131,7 @@ export default class Manager {
     id: string,
     preset: Preset,
     modules: { [path: string]: Module },
+    options: TManagerOptions,
     cb?: Function
   ) {
     this.id = id;
@@ -155,6 +170,27 @@ export default class Manager {
         }
       }
     );
+
+    if (options.hasFileResolver) {
+      this.setupFileResolver();
+    }
+  }
+
+  setupFileResolver() {
+    const fileResolver = {};
+
+    fileResolver.protocol = new Protocol(
+      'file-resolver',
+      () => true,
+      window.parent
+    );
+
+    fileResolver.isFile = path =>
+      fileResolver.protocol.sendMessage({ m: 'isFile', p: path });
+    fileResolver.readFile = path =>
+      fileResolver.protocol.sendMessage({ m: 'readFile', p: path });
+
+    this.fileResolver = fileResolver;
   }
 
   bfsWrapper = {
@@ -181,24 +217,51 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string) => {
+  isFile = (p: string, cb: ?Function, c: Function) => {
+    const callback = c || cb;
+    const hasCallback = typeof callback === 'function';
+
+    let returnValue;
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.
-      return !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+      returnValue = this.transpiledModules[p] || getCombinedMetas()[p];
+    } else {
+      returnValue = this.transpiledModules[p];
     }
-    return !!this.transpiledModules[p];
+
+    if (returnValue == null && hasCallback && this.fileResolver) {
+      return this.fileResolver.isFile(p).then(bool => {
+        callback(null, !!bool);
+      });
+    }
+
+    return hasCallback ? callback(null, !!returnValue) : !!returnValue;
   };
 
-  readFileSync = (p: string) => {
+  readFileSync = (p: string, cb: ?Function, c: Function) => {
+    const callback = c || cb;
+    const hasCallback = typeof callback === 'function';
+
     if (this.transpiledModules[p]) {
-      return this.transpiledModules[p].module.code;
+      const code = this.transpiledModules[p].module.code;
+
+      return hasCallback ? callback(null, code) : code;
+    } else if (hasCallback && this.fileResolver) {
+      return this.fileResolver.readFile(p).then(code => {
+        this.addModule({ code, path: p });
+
+        callback(code);
+      });
     }
 
     const err = new Error('Could not find ' + p);
     // $FlowIssue
     err.code = 'ENOENT';
 
+    if (hasCallback) {
+      return callback(err);
+    }
     throw err;
   };
 
@@ -476,6 +539,109 @@ export default class Manager {
       .replace(/.*\{\{sandboxRoot\}\}/, '');
   }
 
+  // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
+  async resolveModuleAsync(
+    path: string,
+    currentPath: string,
+    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+  ): Promise<Module> {
+    return new Promise(promiseResolve => {
+      const dirredPath = pathUtils.dirname(currentPath);
+      if (this.cachedPaths[dirredPath] === undefined) {
+        this.cachedPaths[dirredPath] = {};
+      }
+
+      const cachedPath = this.cachedPaths[dirredPath][path];
+
+      let resolvedPath;
+
+      if (cachedPath) {
+        resolvedPath = cachedPath;
+      } else {
+        const presetAliasedPath = this.getPresetAliasedPath(path);
+
+        const aliasedPath = this.getAliasedDependencyPath(
+          presetAliasedPath,
+          currentPath
+        );
+        const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+
+        if (NODE_LIBS.includes(shimmedPath)) {
+          this.cachedPaths[dirredPath][path] = shimmedPath;
+          return SHIMMED_MODULE;
+        }
+
+        try {
+          resolve(
+            shimmedPath,
+            {
+              filename: currentPath,
+              extensions: defaultExtensions.map(ext => '.' + ext),
+              isFile: this.isFile,
+              readFileSync: this.readFileSync,
+              packageFilter,
+              moduleDirectory: [
+                'node_modules',
+                this.envVariables.NODE_PATH,
+              ].filter(Boolean),
+            },
+            (err, foundPath) => {
+              if (err) {
+                throw err;
+              }
+
+              this.cachedPaths[dirredPath][path] = foundPath;
+
+              if (foundPath === '//empty.js') {
+                promiseResolve(SHIMMED_MODULE);
+              }
+
+              if (!this.transpiledModules[foundPath]) {
+                this.readFileSync(foundPath, code => {
+                  this.addModule({ path: foundPath, code });
+                  promiseResolve(this.transpiledModules[foundPath].module);
+                });
+              } else {
+                promiseResolve(this.transpiledModules[foundPath].module);
+              }
+            }
+          );
+        } catch (e) {
+          if (
+            this.cachedPaths[dirredPath] &&
+            this.cachedPaths[dirredPath][path]
+          ) {
+            delete this.cachedPaths[dirredPath][path];
+          }
+
+          let connectedPath = /^(\w|@\w)/.test(shimmedPath)
+            ? pathUtils.join('/node_modules', shimmedPath)
+            : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+
+          const isDependency = connectedPath.includes('/node_modules/');
+
+          connectedPath = connectedPath.replace('/node_modules/', '');
+
+          if (!isDependency) {
+            throw new ModuleNotFoundError(shimmedPath, false, currentPath);
+          }
+
+          const dependencyName = getDependencyName(connectedPath);
+
+          if (
+            this.manifest.dependencies.find(d => d.name === dependencyName) ||
+            this.manifest.dependencyDependencies[dependencyName]
+          ) {
+            throw new ModuleNotFoundError(connectedPath, true, currentPath);
+          } else {
+            throw new DependencyNotFoundError(connectedPath, currentPath);
+          }
+        }
+      }
+    });
+  }
+
+  // ALWAYS KEEP THIS METHOD IN SYNC WITH ASYNC VERSION
   resolveModule(
     path: string,
     currentPath: string,
@@ -587,7 +753,7 @@ export default class Manager {
     });
   }
 
-  resolveTranspiledModuleAsync = (
+  resolveTranspiledModuleAsync = async (
     path: string,
     currentTModule: ?TranspiledModule,
     ignoredExtensions?: Array<string>
@@ -635,7 +801,8 @@ export default class Manager {
   resolveTranspiledModule(
     path: string,
     currentPath: string,
-    ignoredExtensions?: Array<string>
+    ignoredExtensions?: Array<string>,
+    async: boolean = false
   ): TranspiledModule {
     if (path.startsWith('webpack:')) {
       throw new Error('Cannot resolve webpack path');
@@ -645,10 +812,20 @@ export default class Manager {
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
+    if (async) {
+      return this.resolveModuleAsync(
+        modulePath,
+        currentPath,
+        ignoredExtensions || this.preset.ignoredExtensions,
+        async
+      ).then(module => this.getTranspiledModule(module, queryPath.join('!')));
+    }
+
     const module = this.resolveModule(
       modulePath,
       currentPath,
-      ignoredExtensions || this.preset.ignoredExtensions
+      ignoredExtensions || this.preset.ignoredExtensions,
+      async
     );
 
     return this.getTranspiledModule(module, queryPath.join('!'));
@@ -693,7 +870,7 @@ export default class Manager {
    * Find all changed, added and deleted modules. Update trees and
    * delete caches accordingly
    */
-  updateData(modules: { [path: string]: Module }) {
+  async updateData(modules: { [path: string]: Module }) {
     this.transpileJobs = {};
     this.hardReload = false;
     this.isFirstLoad = false;
@@ -776,15 +953,15 @@ export default class Manager {
       transpiledModulesToUpdate
     );
 
-    return Promise.all(
+    return (await Promise.all(
       transpiledModulesToUpdate.map(tModule => {
         if (tModule.shouldTranspile()) {
           return tModule.transpile(this);
         }
 
-        return Promise.resolve(tModule);
+        return Promise.resolve(false);
       })
-    );
+    )).filter(Boolean);
   }
 
   /**
@@ -796,7 +973,7 @@ export default class Manager {
     this.hardReload = true;
   }
 
-  serialize() {
+  serialize(optimizeForSize: boolean = true) {
     const serializedTModules = {};
 
     Object.keys(this.transpiledModules).forEach(path => {
@@ -810,7 +987,9 @@ export default class Manager {
           tModule.module.downloaded
         ) {
           // Only save modules that are not precomputed
-          serializedTModules[tModule.getId()] = tModule.serialize();
+          serializedTModules[tModule.getId()] = tModule.serialize(
+            optimizeForSize
+          );
         }
       });
     });
@@ -919,8 +1098,14 @@ export default class Manager {
   dispose() {
     if (this.preset) {
       this.preset.transpilers.forEach(t => {
-        t.dispose();
+        if (t.dispose) {
+          t.dispose();
+        }
       });
+
+      if (this.fileResolver) {
+        this.fileResolver.protocol.dispose();
+      }
     }
   }
 

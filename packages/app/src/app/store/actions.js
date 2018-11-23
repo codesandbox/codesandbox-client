@@ -9,7 +9,10 @@ import { mainModule, defaultOpenedModule } from './utils/main-module';
 export function getSandbox({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
-    .then(data => path.success({ sandbox: data }))
+    .then(data => {
+      // data.template = 'custom';
+      return path.success({ sandbox: data });
+    })
     .catch(error => {
       if (error.response.status === 404) {
         return path.notFound();

@@ -326,7 +326,7 @@ module.exports = {
       ? [
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'sandbox'],
+            chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
             minify: __PROD__ && {

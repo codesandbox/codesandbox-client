@@ -10,6 +10,7 @@ import {
   cxjs,
   babel,
   dojo,
+  custom,
   reason,
 } from 'common/templates';
 
@@ -24,6 +25,7 @@ import babelPreset from './presets/babel-repl';
 import cxjsPreset from './presets/cxjs';
 import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
+import customPreset from './presets/custom';
 
 export default function getPreset(template: string) {
   switch (template) {
@@ -49,6 +51,8 @@ export default function getPreset(template: string) {
       return cxjsPreset();
     case dojo.name:
       return dojoPreset();
+    case custom.name:
+      return customPreset();
     default:
       return reactPreset();
   }
