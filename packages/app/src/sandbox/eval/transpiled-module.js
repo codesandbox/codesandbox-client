@@ -322,12 +322,9 @@ export default class TranspiledModule {
       isAbsolute: boolean,
       isEntry: boolean,
     },
-    isTranspilationDep = false
+    isTranspilationDep: boolean = false
   ) {
-    if (
-      depPath.startsWith('babel-runtime') ||
-      depPath.startsWith('codesandbox-api')
-    ) {
+    if (depPath.startsWith('codesandbox-api')) {
       return;
     }
 
@@ -465,8 +462,8 @@ export default class TranspiledModule {
         transpiledModule =
           transpiledModule ||
           manager.addTranspiledModule(moduleCopy, queryPath.join('!'));
-        // this.childModules.push(transpiledModule);
 
+        this.childModules.push(transpiledModule);
         this.dependencies.add(transpiledModule);
         transpiledModule.initiators.add(this);
 
@@ -575,8 +572,12 @@ export default class TranspiledModule {
     this.transpilationDependencies.forEach(tModule => {
       tModule.transpilationInitiators.delete(this);
     });
+    this.childModules.forEach(tModule => {
+      tModule.dispose(manager);
+    });
     this.dependencies.clear();
     this.transpilationDependencies.clear();
+    this.childModules.length = 0;
     this.errors = [];
     this.warnings = [];
 
