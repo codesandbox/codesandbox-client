@@ -25058,6 +25058,7 @@ slide@^1.1.3:
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 smooshpack@^0.0.50:
   version "0.0.50"
   resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-0.0.50.tgz#416b2f6324ec9444d606754631a1f6aaff731611"
@@ -25067,6 +25068,8 @@ smooshpack@^0.0.50:
     lodash.isequal "^4.5.0"
 >>>>>>> Custom template (#854)
 
+=======
+>>>>>>> Update yarn.lock
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
@@ -27374,6 +27377,7 @@ ua-parser-js@^0.7.18, ua-parser-js@^0.7.9:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.18.tgz#a7bfd92f56edfb117083b69e31d2aa8882d4b1ed"
 >>>>>>> Custom template (#854)
 
+<<<<<<< HEAD
 uglify-js@3.4.x, uglify-js@^3.1.4, uglify-js@^3.3.25:
   version "3.4.9"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.4.9.tgz#af02f180c1207d76432e473ed24a28f4a782bae3"
@@ -27384,6 +27388,8 @@ uglify-js@3.4.x, uglify-js@^3.1.4, uglify-js@^3.3.25:
     source-map "~0.6.1"
     source-map-support "~0.5.6"
 
+=======
+>>>>>>> Update yarn.lock
 uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9, "uglify-es@npm:terser":
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/terser/-/terser-3.8.1.tgz#cb70070ac9e0a71add169dfb63c0a64fca2738ac"
