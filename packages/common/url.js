@@ -6,7 +6,13 @@ export const getSandboxOptions = (url: string) => {
   };
   const moduleMatch = url.match(/(\?|&)(module)=([^&]+)/);
   if (moduleMatch) {
-    result.currentModule = moduleMatch[3];
+    if (moduleMatch[3].indexOf(',') > -1) {
+      const tabs = moduleMatch[3].split(',');
+      result.tabs = tabs;
+      result.currentModule = tabs[0];
+    } else {
+      result.currentModule = moduleMatch[3];
+    }
   }
 
   const initialPathMatch = url.match(/(\?|&)(initialpath)=([^&]+)/);
@@ -67,12 +73,16 @@ export const getSandboxOptions = (url: string) => {
   result.enableEslint = url.includes('eslint=1');
   result.forceRefresh = url.includes('forcerefresh=1');
   result.expandDevTools = url.includes('expanddevtools=1');
-  result.verticalMode = url.includes('verticallayout=1');
+  if (url.includes('verticallayout=')) {
+    result.verticalMode = url.includes('verticallayout=1');
+  }
+  console.log(result);
   result.runOnClick = url.includes('runonclick=0')
     ? false
     : url.includes('runonclick=1')
       ? true
       : undefined;
 
+  console.log(result);
   return result;
 };

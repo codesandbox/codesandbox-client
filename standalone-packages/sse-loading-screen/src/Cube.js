@@ -6,6 +6,7 @@ import styled, { keyframes } from 'preact-emotion';
 const isSafari =
   typeof navigator !== 'undefined' &&
   /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
 const SHADOW_SIZE = (() => {
