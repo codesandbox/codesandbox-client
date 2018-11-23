@@ -333,6 +333,10 @@ export default class TranspiledModule {
       return;
     }
 
+    if (manager.preloadedDependencies[depPath]) {
+      return;
+    }
+
     try {
       const tModule = manager.resolveTranspiledModule(
         depPath,
@@ -468,7 +472,6 @@ export default class TranspiledModule {
         transpiledModule =
           transpiledModule ||
           manager.addTranspiledModule(moduleCopy, queryPath.join('!'));
-
         if (isChild) {
           this.childModules.push(transpiledModule);
         }
@@ -938,12 +941,8 @@ export default class TranspiledModule {
           return os;
         }
 
-        if (path === '@mdx-js/mdx') {
-          return resolveDependency(path, manager.externals);
-        }
-
-        if (path === '@mdx-js/tag') {
-          return resolveDependency(path, manager.externals);
+        if (manager.preloadedDependencies[path]) {
+          return manager.preloadedDependencies[path];
         }
 
         if (bfsModule) {

@@ -20,8 +20,11 @@ const global = window as any;
 class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
-  constructor() {
-    super('babel-loader', BabelWorker, 3, { hasFS: true, preload: true });
+  constructor(workerCount: number = 3) {
+    super('babel-loader', BabelWorker, workerCount, {
+      hasFS: true,
+      preload: true,
+    });
   }
 
   startupWorkersInitialized = false;
@@ -87,6 +90,8 @@ class BabelTranspiler extends WorkerTranspiler {
           configs.package.parsed.devDependencies) ||
         {};
 
+      // If a config is found it means that the user configured babel, we can't
+      // enforce a version in this case and need to detect it dynamically
       const isV7 =
         loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
 

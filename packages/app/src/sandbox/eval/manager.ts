@@ -27,7 +27,7 @@ import { shouldTranspile } from './transpilers/babel/check';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 
-declare var BrowserFS: any;
+let var BrowserFS: any;
 
 type Externals = {
   [name: string]: string;
@@ -126,6 +126,7 @@ export default class Manager {
   // We can improve performance by almost 2x in this scenario if we cache the lookups
   cachedPaths: { [path: string]: { [path: string]: string } };
 
+  preloadedDependencies: { [path: string]: any } = {};
   configurations: ParsedConfigurationFiles;
 
   stage: Stage;
@@ -261,6 +262,12 @@ export default class Manager {
     }
     throw err;
   };
+
+  addPreloadedDependency(dependency: string, module: any) {
+    if (!this.manifest.dependencies[dependency]) {
+      this.preloadedDependencies[dependency] = module;
+    }
+  }
 
   setStage = (stage: Stage) => {
     this.stage = stage;

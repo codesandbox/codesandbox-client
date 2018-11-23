@@ -25,9 +25,7 @@ export default function initialize() {
   );
 
   preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
-    {
-      transpiler: babelTranspiler,
-    },
+    { transpiler: babelTranspiler },
   ]);
 
   // For these routes we need to enable css modules

@@ -2,26 +2,26 @@
 import type { Module } from '../eval/entities/module';
 
 import { getCurrentManager } from '../compile';
+import defaultBoilerplates from './default-boilerplates';
 
-let cachedBoilerplates = [];
+const cachedBoilerplates = [];
 
-export async function evalBoilerplates(boilerplates: Array<any>) {
-  console.log(boilerplates);
-  cachedBoilerplates = await Promise.all(
-    boilerplates.map(async boilerplate => {
-      const fakeModule: Module = {
-        path: `/boilerplate-${boilerplate.condition}${boilerplate.extension}`,
-        code: boilerplate.code,
-      };
+export async function evalBoilerplate(boilerplate) {
+  const fakeModule: Module = {
+    path: `/boilerplate-${boilerplate.condition}${boilerplate.extension}`,
+    code: boilerplate.code,
+  };
 
-      const manager = getCurrentManager();
+  const manager = getCurrentManager();
 
-      await manager.transpileModules(fakeModule);
-      const module = manager.evaluateModule(fakeModule);
+  await manager.transpileModules(fakeModule);
+  const module = manager.evaluateModule(fakeModule);
 
-      return { ...boilerplate, module };
-    })
-  );
+  const cachedBoilerplate = { ...boilerplate, module };
+
+  cachedBoilerplates.push(cachedBoilerplate);
+
+  return cachedBoilerplate;
 }
 
 export function getBoilerplates(): Array<any> {
@@ -29,19 +29,15 @@ export function getBoilerplates(): Array<any> {
 }
 
 export function findBoilerplate(module: Module): any {
-  const boilerplates = getBoilerplates();
-  const boilerplate = boilerplates.find(b => {
+  const cachedBoilerplate = cachedBoilerplates.find(b => {
     const regex = new RegExp(b.condition);
     return regex.test(module.path);
   });
 
-  if (boilerplate == null) {
-    throw new Error(
-      `No boilerplate found for ${
-        module.path
-      }, you can create one in the future`
-    );
-  }
+  const boilerplate = defaultBoilerplates.find(b => {
+    const regex = new RegExp(b.condition);
+    return regex.test(module.path);
+  });
 
-  return boilerplate;
+  return cachedBoilerplate || boilerplate;
 }

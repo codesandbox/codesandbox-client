@@ -17,11 +17,9 @@ import { resetScreen } from './status-screen';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 
-import defaultBoilerplates from './boilerplates/default-boilerplates';
-
 import {
   getBoilerplates,
-  evalBoilerplates,
+  evalBoilerplate,
   findBoilerplate,
 } from './boilerplates';
 
@@ -274,6 +272,8 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
     };
   }
 
+  returnedDependencies['@babel/runtime'] =
+    returnedDependencies['@babel/runtime'] || '7.1.2';
   // Always include this, because most sandboxes need this with babel6 and the
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
@@ -461,6 +461,16 @@ async function compile({
       disableDependencyPreprocessing
     );
 
+    manifest.dependencies.push({ name: 'react', version: '16.2.0' });
+    manifest.dependencies.push({ name: 'object-assign', version: 'latest' });
+
+    manifest['react-dom'] = {
+      contents: {},
+      dependencies: [],
+      dependencyDependencies: {},
+      dependencyAliases: {},
+    };
+
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
       if (manager) {
@@ -503,6 +513,12 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
+
+    let boilerplate = findBoilerplate(managerModuleToTranspile);
+
+    if (boilerplate && isModuleView && boilerplate.prepare) {
+      await boilerplate.prepare(manager);
+    }
 
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
@@ -586,18 +602,13 @@ async function compile({
           managerModuleToTranspile.code.includes('React');
 
         if (evalled) {
-          // initiate boilerplates
-          if (getBoilerplates().length === 0) {
-            try {
-              await evalBoilerplates(defaultBoilerplates);
-            } catch (e) {
-              console.log("Couldn't load all boilerplates: " + e.message);
-            }
-          }
-
-          const boilerplate = findBoilerplate(managerModuleToTranspile);
-
           if (boilerplate) {
+            if (!boilerplate.module) {
+              if (boilerplate.prepare) {
+                await boilerplate.prepare(manager);
+              }
+              boilerplate = await evalBoilerplate(boilerplate);
+            }
             try {
               boilerplate.module.default(evalled);
             } catch (e) {

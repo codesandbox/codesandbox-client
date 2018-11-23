@@ -1,11 +1,16 @@
-
 import { orderBy } from 'lodash-es';
 import querystring from 'querystring';
 import { Module } from '../entities/module';
 
 import Manager from '../manager';
 import Transpiler from '../transpilers';
-import TranspiledModule from '../transpiled-module';
+
+import { BabelTranspiler } from '../transpilers/babel';
+import { MDXTranspiler } from '../transpilers/mdx';
+
+export type TranspiledModule = Module & {
+  transpiledCode: string;
+};
 
 type TranspilerDefinition = {
   transpiler: Transpiler;
@@ -91,6 +96,32 @@ export default class Preset {
     this.teardown = teardown || noop;
     this.preEvaluate = preEvaluate || noop;
     this.htmlDisabled = htmlDisabled || false;
+
+    this.registerTranspiler(module => /\.mdx?$/.test(module.path), [
+      { transpiler: new MDXTranspiler() },
+      {
+        transpiler: new BabelTranspiler(1),
+        options: {
+          isV7: true,
+          config: { plugins: [], presets: ['env', 'react'] },
+        },
+      },
+      {
+        transpiler: new class extends Transpiler {
+          doTranspilation(code, context) {
+            return Promise.resolve({
+              transpiledCode: code.replace(
+                'exports.default = MDXContent;',
+                `
+exports.default = ${JSON.stringify(context._module.module.code)};
+exports.__csbMdx = MDXContent;
+            `.trim()
+              ),
+            });
+          }
+        }(),
+      },
+    ]);
   }
 
   setAdditionalAliases = (aliases: { [path: string]: string }) => {
@@ -161,7 +192,7 @@ export default class Preset {
   registerTranspiler(
     test: (module: Module) => boolean,
     transpilers: Array<TranspilerDefinition>,
-    prepend: boolean = false
+    prepend?: boolean = false
   ) {
     const transpilerObject = {
       test,

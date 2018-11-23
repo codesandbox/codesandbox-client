@@ -1,3 +1,5 @@
+import mdxCode from 'raw-loader!./mdx-boilerplate';
+
 export const JS = {
   id: 'js',
   extension: '.js',
@@ -13,38 +15,59 @@ export default function(module) {
 `,
 };
 
+// Yes, we need to do this because of static imports with bundlers...
+function importReact(manager) {
+  if (manager.manifest.dependencies.react) {
+    return Promise.resolve();
+  }
+
+  return import('react').then(x => {
+    manager.addPreloadedDependency('react', x);
+  });
+}
+
+function importReactDOM(manager) {
+  if (manager.manifest.dependencies['react-dom']) {
+    return Promise.resolve();
+  }
+
+  return import('react-dom').then(x => {
+    manager.addPreloadedDependency('react-dom', x);
+  });
+}
+
+function importMDX(manager) {
+  if (manager.manifest.dependencies['@mdx-js/mdx']) {
+    return Promise.resolve();
+  }
+
+  return import('@mdx-js/mdx').then(x => {
+    manager.addPreloadedDependency('@mdx-js/mdx', x);
+  });
+}
+
+function importMDXTag(manager) {
+  if (manager.manifest.dependencies['@mdx-js/tag']) {
+    return Promise.resolve();
+  }
+
+  return import('@mdx-js/tag').then(x => {
+    manager.addPreloadedDependency('@mdx-js/tag', x);
+  });
+}
+
 export const MDX = {
   id: 'mdx',
   extension: '.js',
   condition: '.mdx?$',
-  code: `
-import React from 'react';
-import { render } from 'react-dom';
-
-export default async function(module) {
-  const node = document.createElement('div');
-  document.body.appendChild(node);
-
-  render(React.createElement(module.default, {
-    components: {
-      a: (props) => {
-        if (props.href && props.href.startsWith('./')) {
-          return <a {...props} onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const api = require('codesandbox-api');
-
-            api.dispatch(api.actions.editor.openModule(props.href.replace('.', '')));
-          }}  />;
-        }
-
-        return <a target="_blank" rel="noopener noreferrer" {...props} />;
-      }
-    }
-  }), node);
-}
-`,
+  prepare: manager =>
+    Promise.all([
+      importReact(manager),
+      importReactDOM(manager),
+      importMDX(manager),
+      importMDXTag(manager),
+    ]),
+  code: mdxCode,
 };
 
 export const HTML = {
