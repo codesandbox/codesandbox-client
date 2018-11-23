@@ -690,6 +690,8 @@ export default class TranspiledModule {
           code = transpiledCode;
           finalSourceMap = sourceMap;
         } catch (e) {
+          delete manager.transpileJobs[this.getId()];
+
           e.fileName = loaderContext.path;
           e.tModule = this;
           this.resetTranspilation();
@@ -708,7 +710,7 @@ export default class TranspiledModule {
     const sourceEqualsCompiled = code === this.module.code;
     const sourceURL = `//# sourceURL=${location.origin}${this.module.path}${
       this.query ? `?${this.hash}` : ''
-    }`;
+      }`;
 
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
@@ -763,6 +765,8 @@ export default class TranspiledModule {
       ])
     );
 
+    delete manager.transpileJobs[this.getId()];
+
     return this;
   }
 
@@ -771,8 +775,9 @@ export default class TranspiledModule {
     {
       asUMD = false,
       force = false,
-      testGlobals = false,
-    }: { asUMD?: boolean; force?: boolean; testGlobals?: boolean } = {},
+      inScope = false,
+      testGlobals = false
+    }: { asUMD: boolean, inScope: boolean, force?: boolean, testGlobals?: boolean } = {},
     initiator?: TranspiledModule
   ) {
     if (this.source == null) {
@@ -784,7 +789,7 @@ export default class TranspiledModule {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
             `[WARN] Sandpack: loading an untranspiled module: ${
-              this.module.path
+            this.module.path
             }`
           );
         }
@@ -799,7 +804,7 @@ export default class TranspiledModule {
 
         code += `\n//# sourceURL=${location.origin}${this.module.path}${
           this.query ? `?${this.hash}` : ''
-        }`;
+          }`;
 
         this.source = new ModuleSource(this.module.path, code, null);
 
@@ -987,10 +992,10 @@ export default class TranspiledModule {
         return cache
           ? cache.exports
           : manager.evaluateTranspiledModule(
-              requiredTranspiledModule,
-              transpiledModule,
-              { force, testGlobals }
-            );
+            requiredTranspiledModule,
+            transpiledModule,
+            { force, testGlobals }
+          );
       }
 
       // @ts-ignore
@@ -1014,7 +1019,7 @@ export default class TranspiledModule {
         this.compilation,
         manager.envVariables,
         globals,
-        { asUMD }
+        { asUMD, inScope }
       );
 
       /* eslint-disable no-param-reassign */
@@ -1153,10 +1158,10 @@ export default class TranspiledModule {
           tModule.dependencies.add(this);
         }
       } else if (transpilation) {
-          tModule.transpilationInitiators.add(this);
-        } else {
-          tModule.initiators.add(this);
-        }
+        tModule.transpilationInitiators.add(this);
+      } else {
+        tModule.initiators.add(this);
+      }
 
       return tModule;
     };

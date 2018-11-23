@@ -597,20 +597,20 @@ async function compile({
         !domChanged &&
         !managerModuleToTranspile.path.endsWith('.html')
       ) {
-        const isReact =
-          managerModuleToTranspile.code &&
-          managerModuleToTranspile.code.includes('React');
-
         if (evalled) {
           if (boilerplate) {
             if (!boilerplate.module) {
-              if (boilerplate.prepare) {
-                await boilerplate.prepare(manager);
-              }
               boilerplate = await evalBoilerplate(boilerplate);
             }
             try {
-              boilerplate.module.default(evalled);
+              boilerplate.module.default(
+                evalled,
+                document.body,
+                managerModuleToTranspile.path,
+                findBoilerplate,
+                evalBoilerplate,
+                manager
+              );
             } catch (e) {
               console.error(e);
             }

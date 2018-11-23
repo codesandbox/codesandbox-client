@@ -22,7 +22,7 @@ export default function(
   module: Object,
   env: Object = {},
   globals: Object = {},
-  { asUMD = false }: { asUMD: boolean } = {}
+  { asUMD = false, inScope = false }: { asUMD: boolean, inScope: boolean } = {}
 ) {
   const exports = module.exports;
 
@@ -35,6 +35,13 @@ export default function(
     : '';
   const globalsValues = Object.keys(globals).map(k => globals[k]);
   try {
+    if (inScope) {
+      // eslint-disable-next-line no-eval
+      const value = eval(code);
+      module.exports = value;
+      return value;
+    }
+
     const newCode =
       `(function evaluate(require, module, exports, process, setImmediate, global` +
       globalsCode +

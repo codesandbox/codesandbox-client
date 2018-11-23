@@ -4,13 +4,52 @@ export const JS = {
   id: 'js',
   extension: '.js',
   condition: '.jsx?$',
+  prepare: manager => {
+    if (manager.manifest.dependencies['@mdx-js/tag']) {
+      return Promise.resolve();
+    }
+
+    return import('object-inspect').then(x => {
+      manager.addPreloadedDependency('object-inspect', x);
+    });
+  },
   code: `
 import React from 'react';
 import { render } from 'react-dom';
-export default function(module) {
+
+function isReactComponent(module) {
+  try {
+    return module({props:{}}).$$typeof.toString() === "Symbol(react.element)";
+  } catch(e) {
+    return false;
+  }
+}
+
+function isReactElement(module) {
+  try {
+    return module.$$typeof.toString() === "Symbol(react.element)";
+  } catch(e) {
+    return false;
+  }
+}
+
+export default function(module, container) {
   const node = document.createElement('div');
-  document.body.appendChild(node);
-  render(React.createElement(module.default), node);
+  container.appendChild(node);
+
+  const [isReactEl, isReactCom] = [isReactElement(module.default || module), isReactComponent(module.default || module)]
+
+  console.log(isReactEl, isReactCom)
+  if (isReactEl || isReactCom) {
+    console.log(isReactEl ? module.default || module : React.createElement(module.default || module))
+    render(isReactEl ? module.default || module : React.createElement(module.default || module), node);
+  } else {
+    var inspect = require('object-inspect');
+
+    console.log(inspect.default)
+    console.log(inspect.default(module.default || module))
+    container.innerHTML = JSON.stringify(module.default || module, null, 2);
+  }
 }
 `,
 };
@@ -72,11 +111,11 @@ export const MDX = {
 
 export const HTML = {
   id: 'html',
-  extension: '.html',
+  extension: '.js',
   condition: '.html$',
   code: `
-export default function(module) {
-  document.body.innerHTML = module
+export default function(module, container = document.body) {
+  container.innerHTML = module
 }
 `,
 };

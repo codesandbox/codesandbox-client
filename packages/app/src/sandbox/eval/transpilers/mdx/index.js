@@ -16,15 +16,13 @@ class MDXTranspiler extends Transpiler {
         () => tree => {
           visit(tree, 'code', node => {
             const extension = node.lang || 'js';
+
             const tModule = loaderContext.emitModule(
               `${basename(loaderContext.path)}?eval${evalId++}.${extension}`,
               node.value
             );
 
-            node.type = 'jsx';
-            node.value = `<Evaluate code=${JSON.stringify(
-              node.value
-            )} moduleName="${tModule.module.path}" />`;
+            node.meta = tModule.module.path;
           });
         },
       ],
