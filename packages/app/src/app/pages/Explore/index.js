@@ -76,6 +76,7 @@ class Curator extends React.Component {
       <MaxWidth>
         {modalOpen ? (
           <Modal
+            className="picked-sandbox-modal"
             onClose={() => this.setState({ modalOpen: false })}
             modalOpen={modalOpen}
             selectedSandbox={selectedSandbox}

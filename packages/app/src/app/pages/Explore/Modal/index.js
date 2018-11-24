@@ -24,13 +24,14 @@ const SelectedSandboxModal = ({
   next,
   prev,
   indexes,
+  ...props
 }) => {
   const notFirst = selectedSandbox && indexes.indexOf(selectedSandbox.id) > 0;
   const notLast =
     selectedSandbox && indexes.indexOf(selectedSandbox.id) + 1 < indexes.length;
 
   return (
-    <Modal onClose={onClose} isOpen={Boolean(modalOpen)} width={900}>
+    <Modal {...props} onClose={onClose} isOpen={Boolean(modalOpen)} width={900}>
       <ModalContainer>
         {selectedSandbox ? (
           <Fragment>
@@ -50,7 +51,10 @@ const SelectedSandboxModal = ({
                   Template: {getTemplate(selectedSandbox.template).niceName}
                 </span>
                 <span style={{ display: 'block' }}>
-                  Tags: {selectedSandbox.tags.map(t => <Tag>{t}</Tag>)}
+                  Tags:{' '}
+                  {selectedSandbox.tags.map(t => (
+                    <Tag>{t}</Tag>
+                  ))}
                 </span>
               </section>
 

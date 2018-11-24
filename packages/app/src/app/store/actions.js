@@ -11,7 +11,8 @@ export function getSandbox({ props, api, path }) {
     .get(`/sandboxes/${props.id}`)
     .then(data => {
       // data.template = 'custom';
-      return path.success({ sandbox: data });
+      const sandbox = data;
+      return path.success({ sandbox });
     })
     .catch(error => {
       if (error.response.status === 404) {

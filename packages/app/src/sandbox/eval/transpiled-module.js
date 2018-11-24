@@ -322,18 +322,9 @@ export default class TranspiledModule {
       isAbsolute: boolean,
       isEntry: boolean,
     },
-<<<<<<< HEAD
     isTranspilationDep: boolean = false
   ) {
     if (depPath.startsWith('codesandbox-api')) {
-=======
-    isTranspilationDep = false
-  ) {
-    if (
-      depPath.startsWith('babel-runtime') ||
-      depPath.startsWith('codesandbox-api')
-    ) {
->>>>>>> Custom template (#854)
       return;
     }
 

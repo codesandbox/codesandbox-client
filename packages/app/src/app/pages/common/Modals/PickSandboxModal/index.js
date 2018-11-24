@@ -35,7 +35,8 @@ class PickSandboxModal extends Component {
         <Heading>Pick this sandbox</Heading>
         <Explanation>
           Please add a title and description to this sandbox if none exists or
-          you think you have a better description for it
+          you think you have a better description for it. This title and
+          description will be the ones used in the explore page.
         </Explanation>
         <form
           onSubmit={e => {

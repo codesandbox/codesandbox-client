@@ -4,9 +4,9 @@ import fadeIn from 'common/utils/animation/fade-in';
 import Tooltip from 'common/components/Tooltip';
 import Button from 'app/components/Button';
 
-// eslint-disable-next-line
+// eslint-disable-next-line no-unused-expressions
 injectGlobal`
-  .ReactModal__Content.ReactModal__Content--after-open {
+  .ReactModal__Content.ReactModal__Content--after-open.picked-sandbox-modal {
     overflow: visible !important;
   }
 `;

@@ -1,0 +1,182 @@
+<testsuites name="jest tests" tests="67" failures="0" time="13.439">
+  <testsuite name="Live" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:27" time="2.102" tests="2">
+    <testcase classname="Live Monaco Event to OT Transform correctly transforms undo of adding text" name="Live Monaco Event to OT Transform correctly transforms undo of adding text" time="0.02">
+    </testcase>
+    <testcase classname="Live Monaco Event to OT Transform correctly transforms undo of removing text" name="Live Monaco Event to OT Transform correctly transforms undo of removing text" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="TestRunner class" errors="0" failures="0" skipped="26" timestamp="2018-11-24T11:48:27" time="2.25" tests="26">
+    <testcase classname="TestRunner class exports a module" name="TestRunner class exports a module" time="0.001">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class #constructor returns a TestRunner instance" name="TestRunner class #constructor returns a TestRunner instance" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class initialize should reset results" name="TestRunner class initialize should reset results" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class testGlobals returns an object" name="TestRunner class testGlobals returns an object" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class testGlobals describe calls the function block" name="TestRunner class testGlobals describe calls the function block" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class testGlobals test calls the function block" name="TestRunner class testGlobals test calls the function block" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class testGlobals test adds pass test result" name="TestRunner class testGlobals test adds pass test result" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class testGlobals test adds fail test result" name="TestRunner class testGlobals test adds fail test result" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class findTests should be initialized with no tests" name="TestRunner class findTests should be initialized with no tests" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class findTests should not find any tests when no modules are passed" name="TestRunner class findTests should not find any tests when no modules are passed" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class findTests should find tests when modules are passed" name="TestRunner class findTests should find tests when modules are passed" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class transpileTests todo" name="TestRunner class transpileTests todo" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class runTests todo" name="TestRunner class runTests todo" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class addResult should start off with no test results" name="TestRunner class addResult should start off with no test results" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class addResult should add pass test results" name="TestRunner class addResult should add pass test results" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class addResult should add fail test results" name="TestRunner class addResult should add fail test results" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class addResult should add pass &amp; fail test results" name="TestRunner class addResult should add pass &amp; fail test results" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class addResult should add pass &amp; fail test results by suite" name="TestRunner class addResult should add pass &amp; fail test results by suite" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class reportResults should start off with no tests to report" name="TestRunner class reportResults should start off with no tests to report" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class reportResults should report pass tests" name="TestRunner class reportResults should report pass tests" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class reportResults should report fail tests" name="TestRunner class reportResults should report fail tests" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class reportResults should add pass &amp; fail test results by suite" name="TestRunner class reportResults should add pass &amp; fail test results by suite" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class reportResults should report fail tests by describe" name="TestRunner class reportResults should report fail tests by describe" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class reportResults should report fail tests by nested describe" name="TestRunner class reportResults should report fail tests by nested describe" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class reportResults should report pass &amp; fail tests" name="TestRunner class reportResults should report pass &amp; fail tests" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="TestRunner class reportResults should report pass &amp; fail tests by suite" name="TestRunner class reportResults should report pass &amp; fail tests by suite" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="get-require-statements" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:29" time="1.089" tests="7">
+    <testcase classname="get-require-statements can find simple requires" name="get-require-statements can find simple requires" time="0.042">
+    </testcase>
+    <testcase classname="get-require-statements can find plain requires" name="get-require-statements can find plain requires" time="0.008">
+    </testcase>
+    <testcase classname="get-require-statements can find import promises" name="get-require-statements can find import promises" time="0.002">
+    </testcase>
+    <testcase classname="get-require-statements can find dynamic imports" name="get-require-statements can find dynamic imports" time="0.001">
+    </testcase>
+    <testcase classname="get-require-statements can find reexports" name="get-require-statements can find reexports" time="0">
+    </testcase>
+    <testcase classname="get-require-statements can find relative imports" name="get-require-statements can find relative imports" time="0.003">
+    </testcase>
+    <testcase classname="get-require-statements can work with real life code" name="get-require-statements can work with real life code" time="0.01">
+    </testcase>
+  </testsuite>
+  <testsuite name="getDependencyName" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:30" time="0.112" tests="5">
+    <testcase classname="getDependencyName can find a simple dependency name" name="getDependencyName can find a simple dependency name" time="0.002">
+    </testcase>
+    <testcase classname="getDependencyName can find a simple dependency name from no path" name="getDependencyName can find a simple dependency name from no path" time="0">
+    </testcase>
+    <testcase classname="getDependencyName can find a simple dependency name from an organization" name="getDependencyName can find a simple dependency name from an organization" time="0">
+    </testcase>
+    <testcase classname="getDependencyName can find a simple dependency name with a version" name="getDependencyName can find a simple dependency name with a version" time="0.001">
+    </testcase>
+    <testcase classname="getDependencyName can find a simple dependency name with a version from an organization" name="getDependencyName can find a simple dependency name with a version from an organization" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="get-direct-children" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:30" time="0.215" tests="3">
+    <testcase classname="get-direct-children works with root path" name="get-direct-children works with root path" time="0.003">
+    </testcase>
+    <testcase classname="get-direct-children works with sub paths" name="get-direct-children works with sub paths" time="0.001">
+    </testcase>
+    <testcase classname="get-direct-children works with deeper paths" name="get-direct-children works with deeper paths" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="formatDownloads" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:31" time="0.143" tests="3">
+    <testcase classname="formatDownloads leaves numbers under 1000 unchanged" name="formatDownloads leaves numbers under 1000 unchanged" time="0.001">
+    </testcase>
+    <testcase classname="formatDownloads formats numbers between 1000000 and 1000 with &quot;K&quot;" name="formatDownloads formats numbers between 1000000 and 1000 with &quot;K&quot;" time="0.001">
+    </testcase>
+    <testcase classname="formatDownloads formats numbers 1000000 and above &quot;M&quot;" name="formatDownloads formats numbers 1000000 and above &quot;M&quot;" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="get-require-statements" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:29" time="1.661" tests="6">
+    <testcase classname="get-require-statements can find simple requires" name="get-require-statements can find simple requires" time="0.213">
+    </testcase>
+    <testcase classname="get-require-statements can find plain requires" name="get-require-statements can find plain requires" time="0.02">
+    </testcase>
+    <testcase classname="get-require-statements can find import promises" name="get-require-statements can find import promises" time="0.032">
+    </testcase>
+    <testcase classname="get-require-statements can find dynamic imports" name="get-require-statements can find dynamic imports" time="0.014">
+    </testcase>
+    <testcase classname="get-require-statements can find reexports" name="get-require-statements can find reexports" time="0.035">
+    </testcase>
+    <testcase classname="get-require-statements can work with real life code" name="get-require-statements can work with real life code" time="0.221">
+    </testcase>
+  </testsuite>
+  <testsuite name="formatNumber" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:31" time="0.158" tests="2">
+    <testcase classname="formatNumber handles all numbers under 1000" name="formatNumber handles all numbers under 1000" time="0.002">
+    </testcase>
+    <testcase classname="formatNumber handles all numbers over 1000" name="formatNumber handles all numbers over 1000" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:31" time="0.141" tests="1">
+    <testcase classname=" creates a right query" name=" creates a right query" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="sandbox" errors="0" failures="0" skipped="0" timestamp="2018-11-24T11:48:27" time="5.568" tests="12">
+    <testcase classname="sandbox preset query generates the right query for 1 transpiler" name="sandbox preset query generates the right query for 1 transpiler" time="0.004">
+    </testcase>
+    <testcase classname="sandbox preset query generates the right query for 2 transpiler" name="sandbox preset query generates the right query for 2 transpiler" time="0.001">
+    </testcase>
+    <testcase classname="sandbox preset query generates the right query for absolute custom query" name="sandbox preset query generates the right query for absolute custom query" time="0.001">
+    </testcase>
+    <testcase classname="sandbox preset query generates the right query for custom query" name="sandbox preset query generates the right query for custom query" time="0.001">
+    </testcase>
+    <testcase classname="sandbox preset alias finds the right simple alias" name="sandbox preset alias finds the right simple alias" time="0.001">
+    </testcase>
+    <testcase classname="sandbox preset alias chooses the right simple alias" name="sandbox preset alias chooses the right simple alias" time="0.001">
+    </testcase>
+    <testcase classname="sandbox preset alias works with paths" name="sandbox preset alias works with paths" time="0">
+    </testcase>
+    <testcase classname="sandbox preset alias works with deeper paths" name="sandbox preset alias works with deeper paths" time="0">
+    </testcase>
+    <testcase classname="sandbox preset alias works in a real life scenario" name="sandbox preset alias works in a real life scenario" time="0.001">
+    </testcase>
+    <testcase classname="sandbox preset alias doesn&apos;t replace partial paths" name="sandbox preset alias doesn&apos;t replace partial paths" time="0">
+    </testcase>
+    <testcase classname="sandbox preset alias exact alias resolves an exact alias" name="sandbox preset alias exact alias resolves an exact alias" time="0">
+    </testcase>
+    <testcase classname="sandbox preset alias exact alias doesnt&apos;t resolve a not exact alias" name="sandbox preset alias exact alias doesnt&apos;t resolve a not exact alias" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>
