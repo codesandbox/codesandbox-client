@@ -17,6 +17,7 @@ import {
   BrowserPreview,
   SandpackProvider,
 } from 'react-sandpack/es/components';
+import "react-smooshpack/dist/styles.css";
 
 const files = {
   '/index.js': {
