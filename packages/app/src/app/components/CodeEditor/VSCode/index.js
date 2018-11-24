@@ -298,6 +298,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const activeEditor = editor.getActiveCodeEditor();
 
       if (activeEditor) {
+        const currentModuleShortid =
+          this.currentModule && this.currentModule.shortid;
+        const currentModuleTitle =
+          this.currentModule && this.currentModule.title;
         activeEditor.updateOptions({ readOnly: this.props.readOnly });
 
         this.modelContentChangedListener = activeEditor.onDidChangeModelContent(
@@ -316,7 +320,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               this.sendChangeOperations(e);
             }
 
-            this.handleChange();
+            this.handleChange(currentModuleShortid, currentModuleTitle);
           }
         );
 
@@ -1235,34 +1239,25 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  handleChange = () => {
+  handleChange = (currentModuleShortid, currentModuleTitle) => {
     const newCode =
       this.editor
         .getActiveCodeEditor()
         .getModel()
         .getValue(1) || '';
-    const currentModule = this.currentModule;
-    const title = currentModule.title;
 
-    const oldCode = this.currentModule.code || '';
-
-    const codeEquals =
-      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n');
-
-    if (!codeEquals) {
-      if (this.props.onChange) {
-        this.props.onChange(newCode, this.currentModule.shortid);
-      }
-
-      this.lint(
-        newCode,
-        title,
-        this.editor
-          .getActiveCodeEditor()
-          .getModel()
-          .getVersionId()
-      );
+    if (this.props.onChange) {
+      this.props.onChange(newCode, currentModuleShortid);
     }
+
+    this.lint(
+      newCode,
+      currentModuleTitle,
+      this.editor
+        .getActiveCodeEditor()
+        .getModel()
+        .getVersionId()
+    );
   };
 
   hasNativeTypescript = () => {
