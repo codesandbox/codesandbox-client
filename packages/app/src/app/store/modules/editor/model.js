@@ -59,7 +59,7 @@ const Git = types.model({
   username: types.string,
 });
 
-const Sandbox = types.model({
+export const Sandbox = types.model({
   author: types.maybeNull(Author),
   description: types.maybeNull(types.string),
   directories: types.array(Directory),

@@ -1,5 +1,5 @@
 // @flow
-import * as React from 'react';
+import React, { Component, Fragment } from 'react';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
@@ -23,7 +23,7 @@ type State = {
   aligned: ?'right' | 'bottom',
 };
 
-class Preview extends React.Component<Props, State> {
+class Preview extends Component<Props, State> {
   state = {
     aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
     running: !this.props.runOnClick,
@@ -291,7 +291,7 @@ class Preview extends React.Component<Props, State> {
           };
 
           return (
-            <React.Fragment>
+            <Fragment>
               {content === 'tests' && (
                 <Tests alignRight={alignRight} alignBottom={alignBottom} />
               )}
@@ -339,7 +339,7 @@ class Preview extends React.Component<Props, State> {
                   }}
                 />
               )}
-            </React.Fragment>
+            </Fragment>
           );
         }}
       </FlyingContainer>
