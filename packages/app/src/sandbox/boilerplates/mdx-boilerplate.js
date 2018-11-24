@@ -102,10 +102,27 @@ export default function(
 
         return (
           <div>
-            <code contentEditable="true" onInput={this.handleCodeChange}>
+            <code
+              style={{
+                padding: '0.8em',
+                borderRadius: 4,
+                display: 'block',
+                fontSize: 16,
+                fontFamily: 'Menlo',
+              }}
+              contentEditable="true"
+              onInput={this.handleCodeChange}
+            >
               {props.children}
             </code>
-            <div ref={this.compileCode} />
+            <div
+              style={{
+                padding: '0.8em',
+                backgroundColor: 'white',
+                color: 'rgba(0, 0, 0, 0.9)',
+              }}
+              ref={this.compileCode}
+            />
           </div>
         );
       }
