@@ -614,9 +614,12 @@ export default class Manager {
             delete this.cachedPaths[dirredPath][path];
           }
 
-          let connectedPath = /^(\w|@\w)/.test(shimmedPath)
-            ? pathUtils.join('/node_modules', shimmedPath)
-            : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+          let connectedPath = shimmedPath;
+          if (connectedPath.indexOf('/node_modules') !== 0) {
+            connectedPath = /^(\w|@\w)/.test(shimmedPath)
+              ? pathUtils.join('/node_modules', shimmedPath)
+              : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+          }
 
           const isDependency = connectedPath.includes('/node_modules/');
 
@@ -694,6 +697,7 @@ export default class Manager {
           throw new Error(`Could not find '${resolvedPath}' in local files.`);
         }
       } catch (e) {
+        // MAKE SURE TO SYNC THIS WITH ASYNC VERSION
         if (
           this.cachedPaths[dirredPath] &&
           this.cachedPaths[dirredPath][path]
@@ -701,9 +705,12 @@ export default class Manager {
           delete this.cachedPaths[dirredPath][path];
         }
 
-        let connectedPath = /^(\w|@\w)/.test(shimmedPath)
-          ? pathUtils.join('/node_modules', shimmedPath)
-          : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+        let connectedPath = shimmedPath;
+        if (connectedPath.indexOf('/node_modules') !== 0) {
+          connectedPath = /^(\w|@\w)/.test(shimmedPath)
+            ? pathUtils.join('/node_modules', shimmedPath)
+            : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+        }
 
         const isDependency = connectedPath.includes('/node_modules/');
 
