@@ -1,5 +1,4 @@
-/// <reference types="node" />
-import { dispatch, listen, registerFrame } from 'codesandbox-api';
+import { dispatch, listen, registerFrame, Protocol } from 'codesandbox-api';
 import { getTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
 import isEqual from 'lodash.isequal';
@@ -26,6 +25,15 @@ export interface IManagerOptions {
    * If we should skip the third step: evaluation.
    */
   skipEval?: boolean;
+
+  /**
+   * You can pass a custom file resolver that is responsible for resolving files.
+   * We will use this to get all files from the file system.
+   */
+  fileResolver?: {
+    isFile: (path: string) => Promise<boolean>;
+    readFile: (path: string) => Promise<string>;
+  };
 }
 
 export interface IFile {
@@ -59,6 +67,12 @@ export interface ISandboxInfo {
   template?: string;
 
   showOpenInCodeSandbox?: boolean;
+
+  /**
+   * Only use unpkg for fetching the dependencies, no preprocessing. It's slower, but doesn't talk
+   * to AWS.
+   */
+  disableDependencyPreprocessing?: boolean;
 }
 
 const BUNDLER_URL =
@@ -72,6 +86,7 @@ export default class PreviewManager {
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
   listener?: Function;
+  fileResolverProtocol?: Protocol;
   bundlerURL: string;
 
   sandboxInfo: ISandboxInfo;
@@ -106,7 +121,23 @@ export default class PreviewManager {
       switch (message.type) {
         case 'initialized': {
           if (this.iframe) {
-            registerFrame(this.iframe.contentWindow);
+            if (this.iframe.contentWindow) {
+              registerFrame(this.iframe.contentWindow, BUNDLER_URL);
+
+              if (this.options.fileResolver) {
+                this.fileResolverProtocol = new Protocol(
+                  'file-resolver',
+                  async (data: { m: 'isFile' | 'readFile'; p: string }) => {
+                    if (data.m === 'isFile') {
+                      return this.options.fileResolver!.isFile(data.p);
+                    } else {
+                      return this.options.fileResolver!.readFile(data.p);
+                    }
+                  },
+                  this.iframe.contentWindow
+                );
+              }
+            }
 
             this.updatePreview();
           }
@@ -169,6 +200,9 @@ export default class PreviewManager {
       version: 3,
       modules,
       externalResources: [],
+      hasFileResolver: !!this.options.fileResolver,
+      disableDependencyPreprocessing: this.sandboxInfo
+        .disableDependencyPreprocessing,
       template:
         this.sandboxInfo.template ||
         getTemplate(packageJSON, normalizedModules),
@@ -201,7 +235,7 @@ export default class PreviewManager {
       {}
     );
 
-    return fetch('https://codesandbox.io/api/v1/sandboxes/define', {
+    return fetch('https://codesandbox.io/api/v1/sandboxes/define?json=1', {
       method: 'POST',
       body: JSON.stringify({ files: paramFiles }),
       headers: {

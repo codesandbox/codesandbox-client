@@ -39,6 +39,7 @@ type Props = {
   alignDirection?: 'right' | 'bottom',
   delay?: number,
   setServerStatus?: (status: string) => void,
+  syncSandbox?: (updates: any) => void,
 };
 
 type State = {
@@ -148,9 +149,13 @@ class BasePreview extends React.Component<Props, State> {
     modules: {
       [path: string]: any,
     },
+    ignoreNextUpdate: boolean,
   };
   // TODO: Find typedefs for this
   $socket: ?any;
+  connectTimeout: ?number;
+  // indicates if the socket closing is initiated by us
+  localClose: boolean;
 
   constructor(props: Props) {
     super(props);
@@ -176,12 +181,11 @@ class BasePreview extends React.Component<Props, State> {
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
 
-    this.lastSent = {
-      sandboxId: props.sandbox.id,
-      modules: this.getModulesToSend(),
-    };
+    this.initializeLastSent();
 
     if (this.serverPreview) {
+      this.connectTimeout = null;
+      this.localClose = false;
       this.setupSSESockets();
     }
     this.listener = listen(this.handleMessage);
@@ -192,6 +196,14 @@ class BasePreview extends React.Component<Props, State> {
 
     window.openNewWindow = this.openNewWindow;
   }
+
+  initializeLastSent = () => {
+    this.lastSent = {
+      sandboxId: this.props.sandbox.id,
+      modules: this.getModulesToSend(),
+      ignoreNextUpdate: false,
+    };
+  };
 
   componentWillUpdate(nextProps: Props, nextState: State) {
     if (
@@ -204,12 +216,11 @@ class BasePreview extends React.Component<Props, State> {
 
   setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
-    let connectTimeout = null;
 
-    function onTimeout(setServerStatus) {
-      connectTimeout = null;
-      if (setServerStatus) {
-        setServerStatus('disconnected');
+    function onTimeout(comp) {
+      comp.connectTimeout = null;
+      if (comp.props.setServerStatus) {
+        comp.props.setServerStatus('disconnected');
       }
     }
 
@@ -218,20 +229,18 @@ class BasePreview extends React.Component<Props, State> {
         frameInitialized: false,
       });
       if (this.$socket) {
+        this.localClose = true;
         this.$socket.close();
+        // we need this setTimeout() for socket open() to work immediately after close()
         setTimeout(() => {
-          if (this.$socket) {
-            connectTimeout = setTimeout(
-              () => onTimeout(this.props.setServerStatus),
-              3000
-            );
-            this.$socket.open();
-          }
+          this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
+          this.$socket.open();
         }, 0);
       }
     } else {
       const socket = io(getSSEUrl(), {
         autoConnect: false,
+        transports: ['websocket', 'polling'],
       });
       this.$socket = socket;
       if (process.env.NODE_ENV === 'development') {
@@ -239,6 +248,11 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       socket.on('disconnect', () => {
+        if (this.localClose) {
+          this.localClose = false;
+          return;
+        }
+
         if (this.props.setServerStatus) {
           let status = 'disconnected';
           if (this.state.hibernated) {
@@ -252,9 +266,9 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('connect', async () => {
-        if (connectTimeout) {
-          clearTimeout(connectTimeout);
-          connectTimeout = null;
+        if (this.connectTimeout) {
+          clearTimeout(this.connectTimeout);
+          this.connectTimeout = null;
         }
 
         if (this.props.setServerStatus) {
@@ -286,6 +300,14 @@ class BasePreview extends React.Component<Props, State> {
           signal,
           id,
         });
+      });
+
+      socket.on('sandbox:update', message => {
+        this.lastSent.ignoreNextUpdate = true;
+
+        if (this.props.syncSandbox) {
+          this.props.syncSandbox({ updates: message.updates });
+        }
       });
 
       socket.on('sandbox:start', () => {
@@ -352,10 +374,7 @@ class BasePreview extends React.Component<Props, State> {
         }
       });
 
-      connectTimeout = setTimeout(
-        () => onTimeout(this.props.setServerStatus),
-        3000
-      );
+      this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
       socket.open();
     }
   };
@@ -378,6 +397,7 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     if (this.$socket) {
+      this.localClose = true;
       this.$socket.close();
     }
   }
@@ -400,6 +420,7 @@ class BasePreview extends React.Component<Props, State> {
       : frameUrl(newId, this.props.initialPath || '');
 
     if (this.serverPreview) {
+      this.initializeLastSent();
       this.setupSSESockets();
     }
     this.setState(
@@ -548,9 +569,11 @@ class BasePreview extends React.Component<Props, State> {
 
         this.lastSent.modules = modulesToSend;
 
-        if (Object.keys(diff).length > 0 && this.$socket) {
+        const ignoreUpdate = this.lastSent.ignoreNextUpdate;
+        if (!ignoreUpdate && Object.keys(diff).length > 0 && this.$socket) {
           this.$socket.emit('sandbox:update', diff);
         }
+        this.lastSent.ignoreNextUpdate = false;
       } else {
         dispatch({
           type: 'compile',

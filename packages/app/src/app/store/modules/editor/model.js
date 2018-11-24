@@ -34,6 +34,8 @@ const Directory = types.model({
   shortid: types.string,
   sourceId: types.string,
   title: types.string,
+  insertedAt: types.string,
+  updatedAt: types.string,
 });
 
 const Module = types.model({
@@ -45,6 +47,8 @@ const Module = types.model({
   shortid: types.string,
   sourceId: types.string,
   title: types.string,
+  insertedAt: types.string,
+  updatedAt: types.string,
 });
 
 const Git = types.model({
@@ -55,7 +59,7 @@ const Git = types.model({
   username: types.string,
 });
 
-const Sandbox = types.model({
+export const Sandbox = types.model({
   author: types.maybeNull(Author),
   description: types.maybeNull(types.string),
   directories: types.array(Directory),

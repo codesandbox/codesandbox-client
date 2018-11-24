@@ -129,7 +129,9 @@ export function absolute(path: string) {
   return "/" + path;
 }
 
-const ROOT_URL = `https://cdn.jsdelivr.net/`;
+const UNPKG = true;
+
+const ROOT_URL = UNPKG ? `https://unpkg.com/` : `https://cdn.jsdelivr.net/npm/`;
 const loadedTypings = [];
 
 /**
@@ -168,7 +170,7 @@ const doFetch = url => {
 };
 
 const fetchFromDefinitelyTyped = (dependency, version, fetchedPaths) => {
-  const depUrl = `${ROOT_URL}npm/@types/${dependency
+  const depUrl = `${ROOT_URL}@types/${dependency
     .replace("@", "")
     .replace(/\//g, "__")}`;
 
@@ -266,13 +268,21 @@ const transformFiles = dir =>
       }, {})
     : {};
 
-const getFileMetaData = (dependency, version, depPath) =>
-  doFetch(
+const getFileMetaData = (dependency, version, depPath) => {
+  if (UNPKG) {
+    return doFetch(
+      `https://unpkg.com/${dependency}@${version}/${depPath}?meta`
+    )
+    .then(response => JSON.parse(response))
+  }
+
+  return doFetch(
     `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`
   )
     .then(response => JSON.parse(response))
     .then(response => response.files.filter(f => f.name.startsWith(depPath)))
     .then(tempTransformFiles);
+}
 
 const resolveAppropiateFile = (fileMetaData, relativePath) => {
   const absolutePath = `/${relativePath}`;
@@ -297,7 +307,7 @@ const getFileTypes = (
 
   if (fetchedPaths[virtualPath]) return null;
 
-  return doFetch(`${depUrl}/${depPath}`).then(typings => {
+  return doFetch(`${depUrl}${depPath}`).then(typings => {
     if (fetchedPaths[virtualPath]) return null;
 
     addLib(virtualPath, typings, fetchedPaths);
@@ -306,25 +316,17 @@ const getFileTypes = (
 
     const isNoDependency = dep => dep.startsWith(".") || dep.endsWith(".d.ts");
 
-    const dependencies = requireStatements
-      .filter(x => !isNoDependency(x))
-      .reduce(
-        (p, n) => ({
-          ...p,
-          [n]: "latest"
-        }),
-        {}
-      );
+    const dependencies = requireStatements.filter(x => !isNoDependency(x));
 
     // Now find all require statements, so we can download those types too
     return Promise.all(
-      [
-        fetchAndAddDependencies(dependencies, () => {}, fetchedPaths).catch(
+      dependencies.map(dep => {
+        fetchAndAddDependencies(dep, 'latest', () => {}, fetchedPaths).catch(
           () => {
             /* ignore */
           }
         )
-      ].concat(
+      }).concat(
         requireStatements
           .filter(
             // Don't add global deps, only if those are typing files as they are often relative
@@ -386,8 +388,8 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
 }
 
 function fetchFromTypings(dependency, version, fetchedPaths) {
-  const depUrl = `${ROOT_URL}npm/${dependency}@${version}`;
-  return doFetch(`${depUrl}/package.json`)
+  const depUrl = `${ROOT_URL}${dependency}@${version}/`;
+  return doFetch(`${depUrl}package.json`)
     .then(response => JSON.parse(response))
     .then(packageJSON => {
       const types = packageJSON.typings || packageJSON.types;
@@ -420,42 +422,39 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
 }
 
 export async function fetchAndAddDependencies(
-  dependencies,
+  dep,
+  version,
   onDependencies,
   fetchedPaths = {}
 ) {
-  const depNames = Object.keys(dependencies);
+  try {
+    if (loadedTypings.indexOf(dep) === -1) {
+      loadedTypings.push(dep);
 
-  await Promise.all(
-    depNames.map(async dep => {
+      let depVersion = version;
+
       try {
-        if (loadedTypings.indexOf(dep) === -1) {
-          loadedTypings.push(dep);
-
-          const depVersion = await doFetch(
-            `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${
-              dependencies[dep]
-            }`
-          )
-            .then(x => JSON.parse(x))
-            .then(x => x.version);
-          // eslint-disable-next-line no-await-in-loop
-          await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
-            // not available in package.json, try checking meta for inline .d.ts files
-            fetchFromMeta(dep, depVersion, fetchedPaths).catch(() =>
-              // Not available in package.json or inline from meta, try checking in @types/
-              fetchFromDefinitelyTyped(dep, depVersion, fetchedPaths)
-            )
-          );
-        }
-      } catch (e) {
-        // // Don't show these cryptic messages to users, because this is not vital
-        // if (process.env.NODE_ENV === 'development') {
-        //   console.error(`Couldn't find typings for ${dep}`, e);
-        // }
-      }
-    })
-  );
+        await doFetch(`https://unpkg.com/${dep}@${version}/package.json`)
+        .then(x => JSON.parse(x))
+        .then(x => {
+          depVersion = x.version
+        });
+      } catch (e) {}
+      // eslint-disable-next-line no-await-in-loop
+      await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
+        // not available in package.json, try checking meta for inline .d.ts files
+        fetchFromMeta(dep, depVersion, fetchedPaths).catch(() =>
+          // Not available in package.json or inline from meta, try checking in @types/
+          fetchFromDefinitelyTyped(dep, depVersion, fetchedPaths)
+        )
+      );
+    }
+  } catch (e) {
+    // // Don't show these cryptic messages to users, because this is not vital
+    // if (process.env.NODE_ENV === 'development') {
+    //   console.error(`Couldn't find typings for ${dep}`, e);
+    // }
+  }
 
   onDependencies(fetchedPaths);
 }

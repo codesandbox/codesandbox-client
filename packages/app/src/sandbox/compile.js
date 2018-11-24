@@ -193,6 +193,7 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-plugin-transform-vue-jsx',
   'babel-plugin-jsx-pragmatic',
   'flow-bin',
+  ...BABEL_DEPENDENCIES,
 ];
 
 function getDependencies(parsedPackage, templateDefinition, configurations) {
@@ -250,13 +251,16 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
     }
   });
 
-  let preinstalledDependencies = PREINSTALLED_DEPENDENCIES;
-  if (templateDefinition.name !== 'babel-repl') {
-    preinstalledDependencies = [
-      ...preinstalledDependencies,
-      ...BABEL_DEPENDENCIES,
-    ];
-  }
+  const sandpackConfig =
+    (configurations.customTemplate &&
+      configurations.customTemplate.parsed &&
+      configurations.customTemplate.parsed.sandpack) ||
+    {};
+
+  const preinstalledDependencies =
+    sandpackConfig.preInstalledDependencies == null
+      ? PREINSTALLED_DEPENDENCIES
+      : sandpackConfig.preInstalledDependencies;
 
   if (templateDefinition.name === 'reason') {
     returnedDependencies = {
@@ -291,12 +295,15 @@ async function updateManager(
   managerModules,
   manifest,
   configurations,
-  isNewCombination
+  isNewCombination,
+  hasFileResolver
 ) {
   let newManager = false;
   if (!manager || manager.id !== sandboxId) {
     newManager = true;
-    manager = new Manager(sandboxId, getPreset(template), managerModules);
+    manager = new Manager(sandboxId, getPreset(template), managerModules, {
+      hasFileResolver,
+    });
   }
 
   if (isNewCombination || newManager) {
@@ -327,6 +334,8 @@ function getDocumentHeight() {
     html.scrollHeight,
     html.offsetHeight
   );
+
+  return height;
 }
 
 function sendResize() {
@@ -379,6 +388,8 @@ async function compile({
   entry,
   showOpenInCodeSandbox = false,
   skipEval = false,
+  hasFileResolver = false,
+  disableDependencyPreprocessing = false,
 }) {
   dispatch({
     type: 'start',
@@ -438,7 +449,10 @@ async function compile({
       templateDefinition,
       configurations
     );
-    const { manifest, isNewCombination } = await loadDependencies(dependencies);
+    const { manifest, isNewCombination } = await loadDependencies(
+      dependencies,
+      disableDependencyPreprocessing
+    );
 
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
@@ -449,14 +463,16 @@ async function compile({
     }
     const t = Date.now();
 
-    await updateManager(
-      sandboxId,
-      template,
-      modules,
-      manifest,
-      configurations,
-      isNewCombination
-    );
+    const updatedModules =
+      (await updateManager(
+        sandboxId,
+        template,
+        modules,
+        manifest,
+        configurations,
+        isNewCombination,
+        hasFileResolver
+      )) || [];
 
     const possibleEntries = templateDefinition.getEntries(configurations);
 
@@ -474,6 +490,8 @@ async function compile({
 
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
+
+    await manager.preset.setup(manager, updatedModules);
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
@@ -650,7 +668,7 @@ async function compile({
 
     if (manager) {
       const managerState = {
-        ...manager.serialize(),
+        ...manager.serialize(false),
       };
       delete managerState.cachedPaths;
       managerState.entry = managerModuleToTranspile

@@ -77,8 +77,11 @@ requirePolyfills().then(() => {
 
     sendReady();
 
-    setupHistoryListeners();
-    setupConsole();
+    if (!window.opener) {
+      // Means we're in the editor
+      setupHistoryListeners();
+      setupConsole();
+    }
   }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {

@@ -1065,11 +1065,15 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
       this.lint = debounce(this.lint, 400);
 
-      this.lint(
-        this.getCode(),
-        this.currentModule.title,
-        this.editor.getModel().getVersionId()
-      );
+      requestAnimationFrame(() => {
+        if (this.editor.getModel()) {
+          this.lint(
+            this.getCode(),
+            this.currentModule.title,
+            this.editor.getModel().getVersionId()
+          );
+        }
+      });
     }
   };
 
@@ -1164,9 +1168,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             // the old extraLib definition and defining a new one.
             modelCache[id].lib.dispose();
             modelCache[id].lib = this.addLib(currentModule.code || '', path);
-
-            // Reset changes
-            this.changes = { code: '', changes: [] };
           }
         }
 

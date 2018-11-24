@@ -157,6 +157,46 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
   );
 }
 
+function compile(code, customConfig, path) {
+  let result;
+  try {
+    result = Babel.transform(code, customConfig);
+  } catch (e) {
+    e.message = e.message.replace('unknown', path);
+
+    // Match the line+col
+    const lineColRegex = /\((\d+):(\d+)\)/;
+
+    const match = e.message.match(lineColRegex);
+    if (match && match[1] && match[2]) {
+      const lineNumber = +match[1];
+      const colNumber = +match[2];
+
+      const niceMessage =
+        e.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
+
+      e.message = niceMessage;
+    }
+
+    throw e;
+  }
+
+  const dependencies = getDependencies(detective.metadata(result));
+
+  dependencies.forEach(dependency => {
+    self.postMessage({
+      type: 'add-dependency',
+      path: dependency.path,
+      isGlob: dependency.type === 'glob',
+    });
+  });
+
+  self.postMessage({
+    type: 'result',
+    transpiledCode: result.code,
+  });
+}
+
 self.importScripts(
   process.env.NODE_ENV === 'development'
     ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
@@ -430,44 +470,20 @@ self.addEventListener('message', async event => {
             plugins,
           };
 
-    let result;
     try {
-      result = Babel.transform(code, customConfig);
+      compile(code, customConfig, path);
     } catch (e) {
-      // Match the line+col
-      const lineColRegex = /\((\d+):(\d+)\)/;
+      if (e.code === 'EIO') {
+        // BrowserFS was needed but wasn't initialized
+        await waitForFs();
 
-      const match = e.message.match(lineColRegex);
-      if (match && match[1] && match[2]) {
-        const lineNumber = +match[1];
-        const colNumber = +match[2];
-
-        const niceMessage =
-          e.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
-
-        e.message = niceMessage;
+        compile(code, customConfig, path);
+      } else {
+        throw e;
       }
-
-      throw e;
     }
-
-    const dependencies = getDependencies(detective.metadata(result));
-
-    dependencies.forEach(dependency => {
-      self.postMessage({
-        type: 'add-dependency',
-        path: dependency.path,
-        isGlob: dependency.type === 'glob',
-      });
-    });
-
-    self.postMessage({
-      type: 'result',
-      transpiledCode: result.code,
-    });
   } catch (e) {
     console.error(e);
-    e.message = e.message.replace('unknown', path);
     self.postMessage({
       type: 'error',
       error: buildWorkerError(e),

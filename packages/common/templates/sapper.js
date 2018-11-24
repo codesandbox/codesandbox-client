@@ -22,7 +22,7 @@ export default new Template(
   'sapper',
   'Sapper',
   'https://sapper.svelte.technology/',
-  'github/sveltejs/sapper-template',
+  'github/codesandbox-app/sapper-template',
   decorateSelector(() => '#105E10'),
   {
     extraConfigurations: {
@@ -30,6 +30,6 @@ export default new Template(
     },
     isServer: true,
     mainFile: ['/src/routes/index.html'],
-    showOnHomePage: false,
+    showOnHomePage: true,
   }
 );

@@ -142,7 +142,11 @@ export const forkSandbox = sequence('forkSandbox', [
       ensurePackageJSON,
       set(state`editor.isForkingSandbox`, false),
     ],
-    false: [set(props`modal`, 'forkServerModal'), openModal],
+    false: [
+      factories.track('Show Server Fork Sign In Modal', {}),
+      set(props`modal`, 'forkServerModal'),
+      openModal,
+    ],
   },
 ]);
 

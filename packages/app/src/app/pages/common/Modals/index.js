@@ -20,6 +20,7 @@ import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
 import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
+import PickSandboxModal from './PickSandboxModal';
 
 const modals = {
   preferences: {
@@ -50,13 +51,17 @@ const modals = {
     Component: PRModal,
     width: 400,
   },
+  deleteDeployment: {
+    Component: DeleteDeploymentModal,
+    width: 400,
+  },
   deleteSandbox: {
     Component: DeleteSandboxModal,
     width: 400,
   },
-  deleteDeployment: {
-    Component: DeleteDeploymentModal,
-    width: 400,
+  pickSandbox: {
+    Component: PickSandboxModal,
+    width: 600,
   },
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,
@@ -105,7 +110,11 @@ function Modals({ store, signals }) {
       width={modal && modal.width}
       onClose={(isKeyDown: boolean) => signals.modalClosed({ isKeyDown })}
     >
-      {modal ? React.createElement(modal.Component) : null}
+      {modal
+        ? React.createElement(modal.Component, {
+            closeModal: () => signals.modalClosed({ isKeyDown: false }),
+          })
+        : null}
     </Modal>
   );
 }

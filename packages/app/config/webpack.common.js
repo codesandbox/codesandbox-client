@@ -326,7 +326,7 @@ module.exports = {
       ? [
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'sandbox'],
+            chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
             minify: __PROD__ && {
@@ -445,7 +445,7 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode3/vs',
+          to: 'public/vscode7/vs',
           force: true,
         },
         {
@@ -455,6 +455,10 @@ module.exports = {
         {
           from: '../../node_modules/monaco-vue/release/min',
           to: 'public/13/vs/language/vue',
+        },
+        {
+          from: '../sse-hooks/dist',
+          to: 'public/sse-hooks',
         },
         {
           from: 'static',

@@ -36,13 +36,13 @@ export const NavigationContainer = styled.div`
 `;
 
 export const ShowSidebarButton = styled.button`
-  opacity: 0;
+  display: none;
   transition: opacity 200ms ease;
   border: none;
   background-color: rgba(255, 255, 255, 0.1);
 
   @media (max-width: 768px) {
-    opacity: 1;
+    display: block;
   }
 `;
 

@@ -16,15 +16,15 @@ function getMode(title: string) {
   }
 
   if (/\.css$/.test(title)) {
-    return 'postcss';
+    return 'css';
   }
 
   if (/\.s[c|a]ss$/.test(title)) {
-    return 'postcss';
+    return 'scss';
   }
 
   if (/\.less$/.test(title)) {
-    return 'postcss';
+    return 'less';
   }
 
   if (/\.vue$/.test(title)) {
@@ -33,6 +33,26 @@ function getMode(title: string) {
 
   if (/\.gql$/.test(title)) {
     return 'graphql';
+  }
+
+  if (/\.html$/.test(title)) {
+    return 'html';
+  }
+
+  if (/\.md$/.test(title)) {
+    return 'markdown';
+  }
+
+  if (/\.mdx$/.test(title)) {
+    return 'mdx';
+  }
+
+  if (/\.json$/.test(title)) {
+    return 'json';
+  }
+
+  if (/\.component\.html$/.test(title)) {
+    return 'angular';
   }
 
   return null;
@@ -128,7 +148,7 @@ export default function prettify(
 ) {
   const mode = getMode(title);
 
-  worker = worker || new Worker('/static/js/prettier/worker.js');
+  worker = worker || new Worker('/static/js/prettier/worker-1.15.1.js');
 
   return new Promise((resolve, reject) => {
     if (cancellationToken && cancellationToken.isCancellationRequested) {

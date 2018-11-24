@@ -48,6 +48,7 @@ function UserMenu({ signals, store, small }) {
               signals.signOutClicked();
             }}
             username={user.username}
+            curator={user.curatorAt}
           />
         </HoverMenu>
       )}

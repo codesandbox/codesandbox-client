@@ -18,12 +18,12 @@ module.exports = {
         // Disable polyfill transforms
         useBuiltIns: false,
         modules: false,
-        forceAllTransforms: true,
+        forceAllTransforms: !process.env.LOCAL_DEV,
       },
     ],
     // JSX, Flow
     require.resolve('@babel/preset-react'),
-  ],
+  ].filter(Boolean),
   plugins: [
     require.resolve('@babel/plugin-transform-template-literals'),
     require.resolve('@babel/plugin-transform-destructuring'),
