@@ -60,7 +60,7 @@ export const createZip = actions.createZip;
 export const fetchEnvironmentVariables = [
   actions.fetchEnvironmentVariables,
   {
-    success: [actions.restartSandbox],
+    success: [],
   },
 ];
 export const updateEnvironmentVariables = [
