@@ -1,6 +1,7 @@
 import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import EditIcon from 'react-icons/lib/go/pencil';
+import TagIcon from 'react-icons/lib/go/tag';
 
 import {
   EntryContainer,
@@ -38,7 +39,8 @@ export default class VersionEntry extends React.PureComponent {
     this.props.onSubmit(values);
   };
 
-  onDelete = () => {
+  onDelete = e => {
+    e.stopPropagation();
     this.props.onDelete(this.props.name);
   };
 
@@ -57,8 +59,18 @@ export default class VersionEntry extends React.PureComponent {
       <EntryContainer
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
+        onClick={this.enableEditing}
       >
-        <div>{this.props.name}</div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <TagIcon
+            style={{
+              marginRight: '0.6rem',
+              fontSize: '1.125rem',
+              marginLeft: 8,
+            }}
+          />{' '}
+          {this.props.name}
+        </div>
         {hovering && (
           <IconArea>
             <Icon>
