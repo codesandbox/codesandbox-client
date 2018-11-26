@@ -63,11 +63,10 @@ const Server = ({ store }) => {
       </Margin>
 
       <Margin top={1}>
-        <SubTitle>Environment Variables</SubTitle>
+        <SubTitle>Secret Keys</SubTitle>
         <Description>
-          Put your secrets here, they will be available as environment
-          variables. Secrets will be kept private and will not be transferred
-          between forks.
+          Secrets are available as environment variables. They are kept private
+          and will not be transferred between forks.
         </Description>
         <Margin top={0.5}>
           <EnvironmentVariables />
