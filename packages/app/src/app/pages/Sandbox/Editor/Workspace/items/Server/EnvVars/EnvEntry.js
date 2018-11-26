@@ -66,7 +66,7 @@ export default class VersionEntry extends React.PureComponent {
             style={{
               marginRight: '0.6rem',
               fontSize: '1rem',
-              marginLeft: 8,
+              marginLeft: 4,
             }}
           />{' '}
           {this.props.name}
