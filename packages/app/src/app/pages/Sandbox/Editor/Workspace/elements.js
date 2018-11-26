@@ -133,8 +133,7 @@ export const Icon = styled.div`
     props.theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)'};
   padding-left: 0.5rem;
   &:hover {
-    color: ${props =>
-      props.theme.light ? 'black' : 'rgba(255, 255, 255, 0.5)'};
+    color: ${props => (props.theme.light ? 'black' : 'rgba(255, 255, 255, 1)')};
   }
 `;
 

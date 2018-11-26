@@ -9,7 +9,7 @@ function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
 }
 
-export async function getLatestVersion({ props, api }) {
+export function getLatestVersion({ props, api }) {
   const { name } = props;
 
   return api
@@ -160,6 +160,52 @@ export function updateFrozen({ api, props, state }) {
       },
     })
     .then(() => state.set('editor.currentSandbox.isFrozen', props.frozen));
+}
+
+export function fetchEnvironmentVariables({ state, api }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .get(
+      `/sandboxes/${id}/env`,
+      {},
+      {
+        shouldCamelize: false,
+      }
+    )
+    .then(data =>
+      state.set('editor.currentSandbox.environmentVariables', data)
+    );
+}
+
+export function deleteEnvironmentVariable({ state, props, api }) {
+  const id = state.get('editor.currentId');
+  return api
+    .delete(`/sandboxes/${id}/env/${props.name}`, {}, { shouldCamelize: false })
+    .then(data =>
+      state.set('editor.currentSandbox.environmentVariables', data)
+    );
+}
+
+export function updateEnvironmentVariables({ state, props, api }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .post(
+      `/sandboxes/${id}/env`,
+      {
+        environment_variable: {
+          name: props.name,
+          value: props.value,
+        },
+      },
+      {
+        shouldCamelize: false,
+      }
+    )
+    .then(data =>
+      state.set('editor.currentSandbox.environmentVariables', data)
+    );
 }
 
 export function forceRender({ state }) {
