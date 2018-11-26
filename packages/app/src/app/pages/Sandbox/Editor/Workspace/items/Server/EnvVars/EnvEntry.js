@@ -1,7 +1,7 @@
 import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import EditIcon from 'react-icons/lib/go/pencil';
-import TagIcon from 'react-icons/lib/go/tag';
+import EnvIcon from 'react-icons/lib/go/key';
 
 import {
   EntryContainer,
@@ -62,10 +62,10 @@ export default class VersionEntry extends React.PureComponent {
         onClick={this.enableEditing}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <TagIcon
+          <EnvIcon
             style={{
               marginRight: '0.6rem',
-              fontSize: '1.125rem',
+              fontSize: '1rem',
               marginLeft: 8,
             }}
           />{' '}
