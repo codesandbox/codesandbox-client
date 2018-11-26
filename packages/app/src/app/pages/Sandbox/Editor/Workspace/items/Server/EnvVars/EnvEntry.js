@@ -1,12 +1,6 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import EditIcon from 'react-icons/lib/go/pencil';
-import RefreshIcon from 'react-icons/lib/md/refresh';
-import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
-import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
-
-import Input from 'common/components/Input';
-import Button from 'app/components/Button';
 
 import {
   EntryContainer,
