@@ -196,7 +196,11 @@ class Preview extends Component<Props, State> {
       this.props.store.editor.currentSandbox.template
     ).isServer;
     if ((isServer || !settings.livePreviewEnabled) && change) {
-      preview.executeCodeImmediately();
+      if (this.props.store.editor.currentSandbox.template === 'static') {
+        preview.handleRefresh();
+      } else {
+        preview.executeCodeImmediately();
+      }
     }
   };
 
