@@ -303,7 +303,8 @@ async function updateManager(
   manifest: Manifest,
   configurations: ParsedConfigurationFiles,
   isNewCombination: boolean,
-  hasFileResolver: boolean
+  hasFileResolver: boolean,
+  entry: any
 ): Promise<TranspiledModule[]> {
   let newManager = false;
   if (!manager || manager.id !== sandboxId) {
@@ -324,7 +325,9 @@ async function updateManager(
   }
 
   manager.updateConfigurations(configurations);
+  manager.updateLastEntry(entry);
   await manager.preset.setup(manager);
+
   return manager.updateData(managerModules).then(x => {
     changedModuleCount = x.length;
     return x;
@@ -488,6 +491,7 @@ async function compile({
         manifest,
         configurations,
         isNewCombination,
+        entry,
         hasFileResolver
       )) || [];
 

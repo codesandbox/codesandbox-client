@@ -211,6 +211,7 @@ export default class Manager {
     this.getTranspiledModules().forEach(t => {
       t.resetTranspilation();
       t.resetCompilation();
+      t.cleanTranspilerSideEffects(this);
     });
   }
 
@@ -237,7 +238,7 @@ export default class Manager {
     return hasCallback ? callback(null, !!returnValue) : !!returnValue;
   };
 
-  readFileSync = (p: string, cb: Function | undefined, c?: Function) => {
+  readFileSync = (p: string, cb?: ?Function, c?: Function) => {
     const callback = c || cb;
     const hasCallback = typeof callback === 'function';
 
@@ -464,6 +465,15 @@ export default class Manager {
         console.error(e);
       }
     }
+  }
+
+  lastEntry: ?string = undefined;
+
+  updateLastEntry(entry: string) {
+    if (this.lastEntry && this.lastEntry !== entry) {
+      this.resetAllModules();
+    }
+    this.lastEntry = entry;
   }
 
   /**
@@ -1067,7 +1077,7 @@ export default class Manager {
       version: SCRIPT_VERSION,
       timestamp: new Date().getTime(),
       configurations: this.configurations,
-      entry: entryPath,
+      lastEntry: this.lastEntry,
       meta,
       dependenciesQuery,
     };
@@ -1122,6 +1132,7 @@ export default class Manager {
           });
           setCombinedMetas(combinedMetas);
 
+          this.lastEntry = data.lastEntry;
           this.cachedPaths = cachedPaths;
           this.configurations = configurations;
 

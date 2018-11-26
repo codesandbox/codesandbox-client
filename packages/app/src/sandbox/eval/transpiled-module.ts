@@ -226,6 +226,12 @@ export default class TranspiledModule {
       tModule.resetTranspilation();
     });
 
+    this.cleanTranspilerSideEffects(manager);
+
+    manager.removeTranspiledModule(this);
+  }
+
+  cleanTranspilerSideEffects(manager: Manager) {
     // There are no other modules calling this module, so we run a function on
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
@@ -234,7 +240,6 @@ export default class TranspiledModule {
         t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
       }
     });
-    manager.removeTranspiledModule(this);
   }
 
   reset() {
