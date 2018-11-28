@@ -196,7 +196,12 @@ function addMiddleware(devServer, index) {
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       cors({
-        origin: ['http://localhost:3000', 'http://localhost:3002'],
+        origin: [
+          'http://localhost:3000',
+          'http://localhost:3002',
+          'http://localhost:8000',
+          'http://localhost:8001',
+        ],
         credentials: true,
       })
     );

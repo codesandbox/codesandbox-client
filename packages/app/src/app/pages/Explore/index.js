@@ -12,6 +12,7 @@ import SandboxCard from './SandboxCard';
 import Modal from './Modal/index';
 
 import { Container, Heading, FancyHeader } from './elements';
+import WideSandboxCard from './WideSandboxCard';
 
 class Curator extends React.Component {
   state = {
@@ -104,13 +105,18 @@ class Curator extends React.Component {
 
           {pickedSandboxes ? (
             <Container>
-              {pickedSandboxes.sandboxes.map(sandbox => (
+              <WideSandboxCard
+                onClick={() => this.openModal(pickedSandboxes.sandboxes[1].id)}
+                key={pickedSandboxes.sandboxes[1].id}
+                sandbox={pickedSandboxes.sandboxes[1]}
+              />
+              {/* {pickedSandboxes.sandboxes.map(sandbox => (
                 <SandboxCard
                   onClick={() => this.openModal(sandbox.id)}
                   key={sandbox.id}
                   {...sandbox}
                 />
-              ))}
+              ))} */}
             </Container>
           ) : (
             <DelayedAnimation

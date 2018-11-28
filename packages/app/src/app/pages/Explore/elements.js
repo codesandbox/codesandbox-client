@@ -26,5 +26,5 @@ export const FancyHeader = styled.section`
   z-index: 0;
   border-radius: 10% 10% 50% 50% / 0% 0% 31% 34%;
   box-shadow: 0 0 14px 15px rgba(0, 0, 0, 0.08);
-  background: #48b2f5;
+  /* background: #48b2f5; */
 `;

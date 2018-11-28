@@ -39,7 +39,7 @@ export const Wrapper = styled.div`
       height: 80%;
       background: linear-gradient(
         180deg,
-        rgba(196, 196, 196, 0) 0%,
+        0% rgba(0, 0, 0, 0),
         rgba(67, 70, 72, 0.86) 75.14%,
         rgba(6, 10, 12, 0.7) 100%
       );
