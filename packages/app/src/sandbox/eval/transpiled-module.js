@@ -250,7 +250,6 @@ export default class TranspiledModule {
   }
 
   resetTranspilation() {
-    console.log('resetting', this);
     Array.from(this.transpilationInitiators)
       .filter(t => t.source)
       .forEach(dep => {
@@ -803,7 +802,6 @@ export default class TranspiledModule {
     }
 
     const hotData = this.hmrConfig ? this.hmrConfig.data : undefined;
-    console.log(hotData);
 
     this.compilation = this.compilation || {
       id: this.getId(),
