@@ -17,8 +17,20 @@ export default function(content: string, loaderContext) {
   const isServer = false;
   const isProduction = false;
 
-  loaderContext.emitModule(addStylesClientPath, addStylesClientRaw, '/', false);
-  loaderContext.emitModule(listToStylesPath, listToStylesRaw, '/', false);
+  loaderContext.emitModule(
+    addStylesClientPath,
+    addStylesClientRaw,
+    '/',
+    false,
+    false
+  );
+  loaderContext.emitModule(
+    listToStylesPath,
+    listToStylesRaw,
+    '/',
+    false,
+    false
+  );
 
   const request = loaderUtils.stringifyRequest(
     loaderContext,

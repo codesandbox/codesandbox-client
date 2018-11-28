@@ -77,7 +77,8 @@ export type LoaderContext = {
     title: string,
     code: string,
     currentPath?: string,
-    overwrite?: boolean
+    overwrite?: boolean,
+    isChild?: boolean
   ) => TranspiledModule,
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
@@ -249,6 +250,7 @@ export default class TranspiledModule {
   }
 
   resetTranspilation() {
+    console.log('resetting', this);
     Array.from(this.transpilationInitiators)
       .filter(t => t.source)
       .forEach(dep => {
@@ -432,7 +434,8 @@ export default class TranspiledModule {
         path: string,
         code: string,
         directoryPath: string = pathUtils.dirname(this.module.path),
-        overwrite?: boolean = true
+        overwrite?: boolean = true,
+        isChild?: boolean = true
       ) => {
         const queryPath = path.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
@@ -463,7 +466,9 @@ export default class TranspiledModule {
           transpiledModule ||
           manager.addTranspiledModule(moduleCopy, queryPath.join('!'));
 
-        this.childModules.push(transpiledModule);
+        if (isChild) {
+          this.childModules.push(transpiledModule);
+        }
         this.dependencies.add(transpiledModule);
         transpiledModule.initiators.add(this);
 
@@ -798,6 +803,7 @@ export default class TranspiledModule {
     }
 
     const hotData = this.hmrConfig ? this.hmrConfig.data : undefined;
+    console.log(hotData);
 
     this.compilation = this.compilation || {
       id: this.getId(),
