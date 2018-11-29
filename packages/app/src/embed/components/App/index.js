@@ -143,14 +143,18 @@ export default class App extends React.PureComponent<{}, State> {
   };
 
   componentWillMount() {
-    const id = this.getId();
+    if (window.__SANDBOX_DATA__) {
+      this.setState({ sandbox: camelizeKeys(window.__SANDBOX_DATA__) });
+    } else {
+      const id = this.getId();
 
-    if (!id) {
-      this.setState({ notFound: true });
-      return;
+      if (!id) {
+        this.setState({ notFound: true });
+        return;
+      }
+
+      this.fetchSandbox(id);
     }
-
-    this.fetchSandbox(id);
   }
 
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
