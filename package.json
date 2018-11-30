@@ -21,7 +21,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall"
+    "postinstall": "rimraf packages/app/node_modules/styled-components && cp -R node_modules/uglify-es node_modules/terser && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall"
   },
   "lint-staged": {
     "*.{js,css,json}": [
@@ -36,7 +36,6 @@
       "packages/codesandbox-api",
       "packages/sandpack",
       "packages/react-sandpack",
-      "packages/homepage",
       "packages/node-services",
       "packages/sandbox-hooks",
       "packages/sse-hooks",
@@ -46,7 +45,9 @@
       "**/gatsby",
       "**/gatsby/**",
       "**/@types",
-      "**/@types/**"
+      "**/@types/**",
+      "**/homepage",
+      "**/homepage/**"
     ]
   },
   "resolutions": {

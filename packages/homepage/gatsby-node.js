@@ -130,38 +130,3 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
     }
   });
 };
-
-exports.modifyWebpackConfig = ({ config, stage }) => {
-  config.merge({
-    resolve: {
-      root: resolve(__dirname, './src'),
-      extensions: ['', '.js', '.jsx', '.json'],
-    },
-  });
-
-  config._config.resolve.alias = {
-    react: dirname(require.resolve('react')),
-    'react-dom': dirname(require.resolve('react-dom')),
-  };
-
-  const timestamp = Date.now();
-  switch (stage) {
-    case 'build-javascript':
-      config.merge({
-        output: {
-          filename: `[name]-${timestamp}-[chunkhash].js`,
-          chunkFilename: `[name]-${timestamp}-[chunkhash].js`,
-        },
-      });
-
-      break;
-    case 'build-css': {
-      config._config.plugins[1].filename = 'codesandbox-homepage-styles.css';
-      break;
-    }
-    default:
-      break;
-  }
-
-  return config;
-};
