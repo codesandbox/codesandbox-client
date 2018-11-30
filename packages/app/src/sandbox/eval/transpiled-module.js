@@ -17,7 +17,6 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
-import isESModule from './utils/is-es-module';
 
 import type { default as Manager } from './manager';
 import HMR from './hmr';
@@ -977,7 +976,10 @@ export default class TranspiledModule {
       this.initiators.size === 0 &&
       this.transpilationInitiators.size === 0 &&
       !this.isEntry &&
-      !manager.isFirstLoad
+      !manager.isFirstLoad &&
+      // Don't delete stubbed modules, they are here for a reason, most probably
+      // because they are aliased with a browser field
+      !this.module.stubbed
     ) {
       // Remove the module from the transpiler if it's not used anymore
       debug(`Removing '${this.getId()}' from manager.`);
