@@ -194,7 +194,6 @@ const Description = styled.p`
 export default class Docs extends React.Component {
   render() {
     const { data } = this.props;
-    console.log(data);
 
     const { edges: docs } = data.allMarkdownRemark;
     const { html, frontmatter, fields } = data.markdownRemark;

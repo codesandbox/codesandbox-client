@@ -114,18 +114,6 @@ export default class WideSandbox extends React.PureComponent {
     color: null,
   };
 
-  loadColor = e => {
-    const img = e.target;
-
-    const v = new Vibrant(img);
-
-    v.getPalette().then(x => {
-      this.setState({
-        color: `rgba(${x.DarkMuted.r}, ${x.DarkMuted.g}, ${x.DarkMuted.b}, 1)`,
-      });
-    });
-  };
-
   render() {
     const sandbox = this.props.sandbox;
 
@@ -135,7 +123,6 @@ export default class WideSandbox extends React.PureComponent {
     return (
       <Container color={this.state.color} role="button" tabIndex={0}>
         <SandboxImage
-          onLoad={this.loadColor}
           alt={sandbox.img}
           src={getScreenshot(sandbox.id)}
           color={template.color}

@@ -29,9 +29,10 @@ export default class Explore extends React.PureComponent {
 
   componentDidMount() {
     fetch('http://localhost:3000/api/v1/sandboxes/new')
-      .then(x => x.json)
+      .then(x => x.json())
       .then(x => {
-        this.setState({ sandbox: x });
+        console.log(x);
+        this.setState({ sandbox: x.data });
       });
 
     fetch('http://localhost:3000/api/v1/sandboxes/picked')
@@ -60,7 +61,15 @@ export default class Explore extends React.PureComponent {
               }}
             >
               <div style={{ width: '100%', flex: 1 }} />
-              {this.state.sandbox && <Preview sandbox={this.state.sandbox} />}
+              {this.state.sandbox && (
+                <Preview
+                  sandbox={this.state.sandbox}
+                  settings={{}}
+                  template={this.state.sandbox.template}
+                  isInProjectView
+                  noDelay
+                />
+              )}
             </div>
 
             <Heading2 style={{ marginBottom: '2rem' }}>

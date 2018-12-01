@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { graphql } from 'gatsby';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -183,7 +184,7 @@ export default class ChangelogPage extends React.Component {
 export const pageQuery = graphql`
   query Changelogs {
     allMarkdownRemark(
-      filter: { id: { regex: "/changelog/" } }
+      filter: { fileAbsolutePath: { regex: "/changelog/" } }
       sort: { fields: [fields___date], order: DESC }
     ) {
       edges {

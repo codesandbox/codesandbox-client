@@ -30,6 +30,10 @@ input {
   pointer-events: none !important;
 }
 
+iframe {
+  margin-bottom: 0;
+}
+
 a {
   color: #40a9f3;
 }
