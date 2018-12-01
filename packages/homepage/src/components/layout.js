@@ -19,7 +19,7 @@ export default class TemplateWrapper extends React.Component {
             <Navigation />
           </div>
           <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
-            {children()}
+            {children}
           </div>
           <Footer />
         </div>

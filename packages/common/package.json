@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "color": "0.11.4",
     "image-extensions": "^1.1.0",
     "jsonlint": "^1.6.3",
     "memoize-one": "^3.1.1",

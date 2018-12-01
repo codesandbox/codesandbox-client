@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading1 } from '../components/headings';
+import Layout from '../components/layout';
 
 import media from '../utils/media';
 
@@ -127,50 +128,54 @@ export default class ChangelogPage extends React.Component {
     const { edges: posts } = data.allMarkdownRemark;
 
     return (
-      <Container>
-        <TitleAndMetaTags title="CodeSandbox - Recent Updates" />
-        <PageContainer width={1024}>
-          <Heading1>Recent Updates</Heading1>
-          <Description>
-            This the list of recent updates to CodeSandbox. We only keep track
-            of our notable updates here, for smaller updates you can check our{' '}
-            <a href="https://github.com/CompuIves/codesandbox-client">
-              GitHub repository
-            </a>{' '}
-            and the Twitter of{' '}
-            <a href="https://twitter.com/@codesandboxapp">@codesandboxapp</a>{' '}
-            and <a href="https://twitter.com/@CompuIves">@CompuIves</a>.
-          </Description>
-          <Changelogs>
-            {posts.map(({ node: post }) => {
-              const { frontmatter, fields, html } = post;
+      <Layout>
+        <Container>
+          <TitleAndMetaTags title="CodeSandbox - Recent Updates" />
+          <PageContainer width={1024}>
+            <Heading1>Recent Updates</Heading1>
+            <Description>
+              This the list of recent updates to CodeSandbox. We only keep track
+              of our notable updates here, for smaller updates you can check our{' '}
+              <a href="https://github.com/CompuIves/codesandbox-client">
+                GitHub repository
+              </a>{' '}
+              and the Twitter of{' '}
+              <a href="https://twitter.com/@codesandboxapp">@codesandboxapp</a>{' '}
+              and <a href="https://twitter.com/@CompuIves">@CompuIves</a>.
+            </Description>
+            <Changelogs>
+              {posts.map(({ node: post }) => {
+                const { frontmatter, fields, html } = post;
 
-              return (
-                <Changelog>
-                  <ReleaseDate>
-                    <p>{fields.date}</p>
-                    <div>
-                      {frontmatter.authors.map(username => (
-                        <GitHubUser username={username} key={username} />
-                      ))}
-                    </div>
-                  </ReleaseDate>
+                return (
+                  <Changelog>
+                    <ReleaseDate>
+                      <p>{fields.date}</p>
+                      <div>
+                        {frontmatter.authors.map(username => (
+                          <GitHubUser username={username} key={username} />
+                        ))}
+                      </div>
+                    </ReleaseDate>
 
-                  <Info>
-                    <Anchor name={`#${fields.slug}`} href={`#${fields.slug}`}>
-                      <ChangelogTitle id={fields.slug}>
-                        {frontmatter.title}
-                      </ChangelogTitle>
-                    </Anchor>
-                    <Content dangerouslySetInnerHTML={{ __html: html }} />
-                  </Info>
-                </Changelog>
-              );
-            })}
-          </Changelogs>
-          <OlderPosts>We keep track of updates since December 2017.</OlderPosts>
-        </PageContainer>
-      </Container>
+                    <Info>
+                      <Anchor name={`#${fields.slug}`} href={`#${fields.slug}`}>
+                        <ChangelogTitle id={fields.slug}>
+                          {frontmatter.title}
+                        </ChangelogTitle>
+                      </Anchor>
+                      <Content dangerouslySetInnerHTML={{ __html: html }} />
+                    </Info>
+                  </Changelog>
+                );
+              })}
+            </Changelogs>
+            <OlderPosts>
+              We keep track of updates since December 2017.
+            </OlderPosts>
+          </PageContainer>
+        </Container>
+      </Layout>
     );
   }
 }

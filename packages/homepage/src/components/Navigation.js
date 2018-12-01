@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import Link from 'gatsby-link';
+import { Link } from 'gatsby';
 
 import Logo from 'common/components/Logo';
 import MaxWidth from 'common/components/flex/MaxWidth';

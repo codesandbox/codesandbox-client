@@ -5,10 +5,11 @@
   "version": "1.0.0",
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "dependencies": {
+    "@babel/preset-flow": "^7.0.0",
     "algoliasearch": "^3.24.5",
+    "babel-preset-gatsby": "^0.1.5",
     "gatsby": "^2.0.0",
     "gatsby-cli": "^2.4.6",
-    "gatsby-link": "^2.0.7",
     "gatsby-plugin-google-fonts": "^0.0.4",
     "gatsby-plugin-google-tagmanager": "^2.0.7",
     "gatsby-plugin-nprogress": "^2.0.7",

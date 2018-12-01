@@ -5,6 +5,7 @@ import Preview from 'app/src/app/components/Preview';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
+import Layout from '../components/layout';
 
 import WideSandbox from '../screens/explore/WideSandbox';
 
@@ -43,32 +44,36 @@ export default class Explore extends React.PureComponent {
 
   render() {
     return (
-      <Container>
-        <TitleAndMetaTags title="Explore - CodeSandbox" />
+      <Layout>
+        <Container>
+          <TitleAndMetaTags title="Explore - CodeSandbox" />
 
-        <PageContainer>
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              marginBottom: '2rem',
-              height: 400,
-              backgroundColor: '#40A9F3',
-              borderRadius: 4,
-            }}
-          >
-            <div style={{ width: '100%', flex: 1 }} />
-            {this.state.sandbox && <Preview sandbox={this.state.sandbox} />}
-          </div>
+          <PageContainer>
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                marginBottom: '2rem',
+                height: 400,
+                backgroundColor: '#40A9F3',
+                borderRadius: 4,
+              }}
+            >
+              <div style={{ width: '100%', flex: 1 }} />
+              {this.state.sandbox && <Preview sandbox={this.state.sandbox} />}
+            </div>
 
-          <Heading2 style={{ marginBottom: '2rem' }}>Picked Sandboxes</Heading2>
-          <Sandboxes>
-            {this.state.sandboxes.map(sandbox => (
-              <WideSandbox sandbox={sandbox} />
-            ))}
-          </Sandboxes>
-        </PageContainer>
-      </Container>
+            <Heading2 style={{ marginBottom: '2rem' }}>
+              Picked Sandboxes
+            </Heading2>
+            <Sandboxes>
+              {this.state.sandboxes.map(sandbox => (
+                <WideSandbox sandbox={sandbox} />
+              ))}
+            </Sandboxes>
+          </PageContainer>
+        </Container>
+      </Layout>
     );
   }
 }
