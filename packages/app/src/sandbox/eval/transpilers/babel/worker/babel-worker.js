@@ -453,17 +453,43 @@ self.addEventListener('message', async event => {
     const customConfig =
       /^\/node_modules/.test(path) && /\.js$/.test(path)
         ? {
-            parserOpts: { plugins: ['dynamicImport'] },
+            parserOpts: version === 7 && {
+              plugins: ['dynamicImport', 'objectRestSpread'],
+            },
+            presets:
+              version === 7 ? ['env', 'react'] : ['es2015', 'react', 'stage-0'],
             plugins: [
               version === 7
                 ? 'transform-modules-commonjs'
                 : 'transform-es2015-modules-commonjs',
+              version === 7
+                ? 'proposal-class-properties'
+                : 'transform-class-properties',
+              ...(version === 7
+                ? []
+                : [
+                    [
+                      'transform-runtime',
+                      {
+                        helpers: false,
+                        polyfill: false,
+                        regenerator: true,
+                      },
+                    ],
+                    [
+                      'transform-regenerator',
+                      {
+                        // Async functions are converted to generators by babel-preset-env
+                        async: false,
+                      },
+                    ],
+                  ]),
               'dynamic-import-node',
               [
                 'babel-plugin-detective',
                 { source: true, nodes: true, generated: true },
               ],
-            ],
+            ].filter(Boolean),
           }
         : {
             ...config,
