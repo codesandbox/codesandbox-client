@@ -8,8 +8,8 @@ export const Heading1 = styled.h1`
 
 export const Heading2 = styled.h2`
   font-size: 1.5rem;
-  color: white;
-  font-weight: 200;
+  color: #eeeeff;
+  font-weight: 600;
 `;
 
 export const Heading3 = styled.h3`

@@ -453,11 +453,13 @@ self.addEventListener('message', async event => {
     const customConfig =
       /^\/node_modules/.test(path) && /\.js$/.test(path)
         ? {
-            parserOpts: { plugins: ['dynamicImport'] },
+            parserOpts: { plugins: ['dynamicImport', 'objectRestSpread'] },
+            presets: ['env', 'react'],
             plugins: [
               version === 7
                 ? 'transform-modules-commonjs'
                 : 'transform-es2015-modules-commonjs',
+              'proposal-class-properties',
               'dynamic-import-node',
               [
                 'babel-plugin-detective',

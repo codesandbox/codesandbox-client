@@ -14,7 +14,7 @@ const Container = styled.div`
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   position: relative;
   flex: 1;
-  min-width: 300px;
+  min-width: 400px;
   width: 100%;
   /* padding: 1.5rem 1rem; */
   /* box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); */

@@ -31,14 +31,12 @@ export default class Explore extends React.PureComponent {
     fetch('http://localhost:3000/api/v1/sandboxes/new')
       .then(x => x.json())
       .then(x => {
-        console.log(x);
         this.setState({ sandbox: x.data });
       });
 
     fetch('http://localhost:3000/api/v1/sandboxes/picked')
       .then(x => x.json())
       .then(data => {
-        console.log(data.sandboxes.map(s => s.picks[0].inserted_at));
         this.setState({ sandboxes: data.sandboxes });
       });
   }
@@ -55,9 +53,10 @@ export default class Explore extends React.PureComponent {
                 width: '100%',
                 display: 'flex',
                 marginBottom: '2rem',
-                height: 400,
-                backgroundColor: '#40A9F3',
-                borderRadius: 4,
+                height: 500,
+                backgroundColor: '#2B2E41',
+                borderRadius: 8,
+                overflow: 'hidden',
               }}
             >
               <div style={{ width: '100%', flex: 1 }} />
