@@ -370,26 +370,15 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      (flattenedPresets.indexOf('env') > -1 ||
-        flattenedPresets.indexOf('@babel/preset-env') > -1) &&
-      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
-      version === 7
+      flattenedPresets.indexOf('env') > -1 ||
+      flattenedPresets.indexOf('@babel/preset-env') > -1 ||
+      (flattenedPresets.indexOf('@vue/app') > -1 &&
+        Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
+        version === 7)
     ) {
-      Babel.registerPreset('env', Babel.availablePresets.es2015);
+      const envPreset = await import(/* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env');
+      Babel.registerPreset('env', envPreset);
     }
-
-    // Future vue preset
-    // if (
-    //   flattenedPresets.indexOf('@vue/app') > -1 &&
-    //   Object.keys(Babel.availablePresets).indexOf('@vue/app') === -1 &&
-    //   version === 7
-    // ) {
-    //   const vuePreset = await import(/* webpackChunkName: 'babel-preset-vue' */ '@vue/babel-preset-app');
-
-    //   Babel.registerPreset('@vue/app', vuePreset);
-    //   Babel.registerPreset('@vue/babel-preset-app', vuePreset);
-
-    // }
 
     if (
       flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&

@@ -115,7 +115,7 @@
     "@cerebral/mobx-state-tree": "^3.0.0",
     "@emmetio/codemirror-plugin": "^0.3.5",
     "@svgr/core": "^2.4.1",
-    "@vue/babel-preset-app": "^3.0.1",
+    "@vue/babel-preset-app": "^3.2.0",
     "apollo-boost": "^0.1.7",
     "apollo-link-batch-http": "^1.2.2",
     "apollo-link-context": "^1.0.8",
