@@ -124,7 +124,7 @@ export default class Navigation extends React.PureComponent {
   render() {
     const { user } = this.state;
     return (
-      <MaxWidth width={1280}>
+      <MaxWidth width={1440}>
         <Container>
           <Left>
             <Link to="/?from-app=1">

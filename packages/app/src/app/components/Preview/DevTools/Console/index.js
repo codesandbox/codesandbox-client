@@ -196,7 +196,7 @@ class Console extends React.Component {
     return (
       <Container>
         <Messages
-          innerRef={el => {
+          ref={el => {
             this.list = el;
           }}
         >

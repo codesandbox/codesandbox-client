@@ -114,7 +114,7 @@ class CreateNewSandbox extends React.PureComponent {
       if (collectionId) {
         mostUsedSandboxComponent = (
           <Container
-            innerRef={node => {
+            ref={node => {
               this.ref = node;
             }}
             onClick={() => this.createSandbox(mostUsedSandboxTemplate)}
@@ -184,7 +184,7 @@ class CreateNewSandbox extends React.PureComponent {
         <div style={style}>
           <ButtonsContainer>
             <Container
-              innerRef={node => {
+              ref={node => {
                 this.ref = node;
               }}
               onClick={this.handleClick}

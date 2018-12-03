@@ -1,11 +1,11 @@
 // @ts-check
-import styled, { injectGlobal } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import fadeIn from 'common/utils/animation/fade-in';
 import Tooltip from 'common/components/Tooltip';
 import Button from 'app/components/Button';
 
 // eslint-disable-next-line no-unused-expressions
-injectGlobal`
+export const GlobalStyle = createGlobalStyle`
   .ReactModal__Content.ReactModal__Content--after-open.picked-sandbox-modal {
     overflow: visible !important;
   }

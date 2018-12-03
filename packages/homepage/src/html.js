@@ -23,6 +23,7 @@ export default class HTML extends Component {
             content="https://codesandbox.io/static/img/banner.png"
           />
           <meta property="og:image:width" content="1200" />
+
           <meta property="og:image:height" content="630" />
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:site" content="@CompuIves" />
@@ -35,7 +36,6 @@ export default class HTML extends Component {
           <meta property="twitter:image:height" content="630" />
         </head>
         <body>
-          <GlobalStyle />
           <div
             id="___gatsby"
             dangerouslySetInnerHTML={{ __html: this.props.body }}

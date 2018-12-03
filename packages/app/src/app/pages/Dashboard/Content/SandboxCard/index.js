@@ -415,7 +415,7 @@ class SandboxItem extends React.PureComponent<Props> {
                 onBlur={this.handleOnBlur}
                 onFocus={this.handleOnFocus}
                 onKeyDown={this.handleKeyDown}
-                innerRef={el => {
+                ref={el => {
                   this.el = el;
                 }}
                 role="button"
@@ -474,7 +474,7 @@ class SandboxItem extends React.PureComponent<Props> {
 
                             return (
                               <Input
-                                innerRef={node => {
+                                ref={node => {
                                   input = node;
                                   if (node) {
                                     node.select();

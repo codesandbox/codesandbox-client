@@ -1,9 +1,9 @@
-import { injectGlobal } from 'styled-components';
+import React, { Fragment } from 'react';
+import { createGlobalStyle } from 'styled-components';
 import TagsInput from 'react-tagsinput';
 
 export default function(color) {
-  // eslint-disable-next-line
-  injectGlobal`
+  const GlobalStyle = createGlobalStyle`
   .react-tagsinput {
     display: flex;
     flex-wrap: row;
@@ -58,5 +58,10 @@ export default function(color) {
   }
 `;
 
-  return TagsInput;
+  return props => (
+    <Fragment>
+      <GlobalStyle />
+      <TagsInput {...props} />
+    </Fragment>
+  );
 }

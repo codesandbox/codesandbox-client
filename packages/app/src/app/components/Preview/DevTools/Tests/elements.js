@@ -23,7 +23,7 @@ export const Navigation = styled.div`
   min-width: 450px;
 `;
 
-export const TestContainer = Navigation.extend`
+export const TestContainer = styled(Navigation)`
   background-color: ${props => props.theme.background2};
   height: 100%;
 `;

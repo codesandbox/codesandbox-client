@@ -57,9 +57,16 @@ const isSafari = () => {
   return false;
 };
 
-export default class App extends React.PureComponent<{}, State> {
-  constructor() {
-    super();
+export default class App extends React.PureComponent<
+  {
+    id?: string,
+    embedOptions?: Object,
+    sandbox?: any,
+  },
+  State
+> {
+  constructor(props) {
+    super(props);
 
     const {
       currentModule,
@@ -81,11 +88,11 @@ export default class App extends React.PureComponent<{}, State> {
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
-    } = getSandboxOptions(document.location.href);
+    } = props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
       notFound: false,
-      sandbox: null,
+      sandbox: this.props.sandbox || null,
       fontSize: fontSize || 16,
       showEditor: isSplitScreen || isEditorScreen,
       showPreview: isSplitScreen || isPreviewScreen,
@@ -115,6 +122,14 @@ export default class App extends React.PureComponent<{}, State> {
   }
 
   getId = () => {
+    if (this.props.id) {
+      return this.props.id;
+    }
+
+    if (this.props.sandbox) {
+      return this.props.sandbox.id;
+    }
+
     const matches = location.pathname.match(/^\/embed\/(.*?)$/);
 
     if (matches && matches.length > 1) {

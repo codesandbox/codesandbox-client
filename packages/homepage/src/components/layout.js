@@ -5,8 +5,8 @@ import theme from 'common/theme';
 import '../css/typography.css';
 import '../css/global.css';
 
-import Navigation from '../components/Navigation';
-import Footer from '../components/Footer';
+import Navigation from './Navigation';
+import Footer from './Footer';
 
 // eslint-disable-next-line
 export default class TemplateWrapper extends React.Component {

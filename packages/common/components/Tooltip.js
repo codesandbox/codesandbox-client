@@ -1,10 +1,11 @@
-import { injectGlobal } from 'styled-components';
+import React, { Fragment } from 'react';
+import { createGlobalStyle } from 'styled-components';
 import 'react-tippy/dist/tippy.css';
 import { Tooltip, withTooltip } from 'react-tippy';
 import theme from 'common/theme';
 
 // eslint-disable-next-line
-injectGlobal`
+const GlobalStyle = createGlobalStyle`
   .tippy-popper {
     position: absolute;
   }
@@ -29,5 +30,10 @@ injectGlobal`
   }
 `;
 
-export default Tooltip;
+export default props => (
+  <Fragment>
+    <GlobalStyle />
+    <Tooltip {...props} />
+  </Fragment>
+);
 export { withTooltip };

@@ -695,6 +695,7 @@ class BasePreview extends React.Component<Props, State> {
       dragging,
       hide,
       noPreview,
+      className,
     } = this.props;
 
     const {
@@ -714,6 +715,7 @@ class BasePreview extends React.Component<Props, State> {
 
     return (
       <Container
+        className={className}
         style={{
           position: 'relative',
           flex: 1,

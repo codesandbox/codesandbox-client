@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Preview from 'app/src/app/components/Preview';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -8,9 +7,11 @@ import { Heading2 } from '../components/headings';
 import Layout from '../components/layout';
 
 import WideSandbox from '../screens/explore/WideSandbox';
+import FeaturedSandbox from '../screens/explore/FeaturedSandbox';
+import SandboxModal from '../screens/explore/SandboxModal';
 
 const Container = styled.div`
-  color: rgba(255, 255, 255, 0.9);
+  color: ${props => props.theme.new.title}
 
   margin-bottom: 4rem;
 `;
@@ -24,16 +25,10 @@ const Sandboxes = styled.div`
 export default class Explore extends React.PureComponent {
   state = {
     sandboxes: [],
-    sandbox: undefined,
+    selectedSandbox: 'oq25kr0y8y',
   };
 
   componentDidMount() {
-    fetch('http://localhost:3000/api/v1/sandboxes/new')
-      .then(x => x.json())
-      .then(x => {
-        this.setState({ sandbox: x.data });
-      });
-
     fetch('http://localhost:3000/api/v1/sandboxes/picked')
       .then(x => x.json())
       .then(data => {
@@ -41,42 +36,41 @@ export default class Explore extends React.PureComponent {
       });
   }
 
+  closeModal = () => {
+    this.setState({ selectedSandbox: undefined });
+  };
+
+  selectSandbox = id => {
+    this.setState({ selectedSandbox: id });
+  };
+
   render() {
+    const { selectedSandbox } = this.state;
     return (
       <Layout>
         <Container>
           <TitleAndMetaTags title="Explore - CodeSandbox" />
+          {selectedSandbox && (
+            <SandboxModal
+              onClose={this.closeModal}
+              sandboxId={selectedSandbox}
+            />
+          )}
 
-          <PageContainer>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                marginBottom: '2rem',
-                height: 500,
-                backgroundColor: '#2B2E41',
-                borderRadius: 8,
-                overflow: 'hidden',
-              }}
-            >
-              <div style={{ width: '100%', flex: 1 }} />
-              {this.state.sandbox && (
-                <Preview
-                  sandbox={this.state.sandbox}
-                  settings={{}}
-                  template={this.state.sandbox.template}
-                  isInProjectView
-                  noDelay
-                />
-              )}
-            </div>
+          <PageContainer width={1440}>
+            <FeaturedSandbox
+              title="Material UI - Grid"
+              description="Good implementation that highlights the use of using a Grid in Material UI."
+              sandboxId={'oq25kr0y8y'}
+            />
 
-            <Heading2 style={{ marginBottom: '2rem' }}>
-              Picked Sandboxes
-            </Heading2>
+            <Heading2 style={{ margin: '3rem 0' }}>Picked Sandboxes</Heading2>
             <Sandboxes>
               {this.state.sandboxes.map(sandbox => (
-                <WideSandbox sandbox={sandbox} />
+                <WideSandbox
+                  pickSandbox={this.selectSandbox}
+                  sandbox={sandbox}
+                />
               ))}
             </Sandboxes>
           </PageContainer>

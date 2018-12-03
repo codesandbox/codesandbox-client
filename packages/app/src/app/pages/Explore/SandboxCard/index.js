@@ -20,6 +20,7 @@ import {
   Wrapper,
   Description,
   Header,
+  GlobalStyle,
 } from './elements';
 
 type Props = {
@@ -100,48 +101,51 @@ class SandboxItem extends React.Component<Props> {
     const { screenshotUrl } = this.state;
     const lastPick = picks[picks.length - 1];
     return (
-      <Wrapper role="button" tabIndex={0} onClick={onClick}>
-        <Container style={{ outline: 'none' }}>
-          <SandboxImageContainer>
-            <ImageMessage>{this.getImageMessage()}</ImageMessage>
+      <React.Fragment>
+        <GlobalStyle />
+        <Wrapper role="button" tabIndex={0} onClick={onClick}>
+          <Container style={{ outline: 'none' }}>
+            <SandboxImageContainer>
+              <ImageMessage>{this.getImageMessage()}</ImageMessage>
 
-            {this.hasScreenshot() && (
-              <SandboxImage
-                className="sandbox-image"
-                style={{
-                  backgroundImage: `url(${screenshotUrl})`,
-                }}
-              />
-            )}
-          </SandboxImageContainer>
-          <SandboxInfo>
-            <div style={{ flex: 1 }}>
-              <div>
-                <Header>
-                  <SandboxTitle>{lastPick.title || title || id}</SandboxTitle>
-                  {lastPick.description || description ? (
-                    <Description>
-                      {lastPick.description || description}
-                    </Description>
-                  ) : null}
-                </Header>
-              </div>
-              <Details>
-                <FlexCenter>
-                  <EyeIcon style={{ fill: 'white', marginRight: '0.5rem' }} />
-                  {viewCount}
-                </FlexCenter>
-                {author ? (
-                  <FlexCenter role="button" tabIndex={0}>
-                    <Avatar src={author.avatarUrl} alt={author.username} />
-                    {author.name || author.username}
+              {this.hasScreenshot() && (
+                <SandboxImage
+                  className="sandbox-image"
+                  style={{
+                    backgroundImage: `url(${screenshotUrl})`,
+                  }}
+                />
+              )}
+            </SandboxImageContainer>
+            <SandboxInfo>
+              <div style={{ flex: 1 }}>
+                <div>
+                  <Header>
+                    <SandboxTitle>{lastPick.title || title || id}</SandboxTitle>
+                    {lastPick.description || description ? (
+                      <Description>
+                        {lastPick.description || description}
+                      </Description>
+                    ) : null}
+                  </Header>
+                </div>
+                <Details>
+                  <FlexCenter>
+                    <EyeIcon style={{ fill: 'white', marginRight: '0.5rem' }} />
+                    {viewCount}
                   </FlexCenter>
-                ) : null}
-              </Details>
-            </div>
-          </SandboxInfo>
-        </Container>
-      </Wrapper>
+                  {author ? (
+                    <FlexCenter role="button" tabIndex={0}>
+                      <Avatar src={author.avatarUrl} alt={author.username} />
+                      {author.name || author.username}
+                    </FlexCenter>
+                  ) : null}
+                </Details>
+              </div>
+            </SandboxInfo>
+          </Container>
+        </Wrapper>
+      </React.Fragment>
     );
   }
 }

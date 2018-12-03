@@ -67,6 +67,12 @@ const theme = {
     dangerBackground: '#DC3545',
   }),
   vscodeTheme: codesandbox,
+
+  new: {
+    title: '#EEEEFF',
+    description: '#777788',
+    bg: '#2B2E41',
+  },
 };
 
 export default theme;

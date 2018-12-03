@@ -413,7 +413,7 @@ export default class CycleFeatures extends React.PureComponent {
 
           <CubeSteps>
             <OffsettedCube
-              innerRef={el => {
+              ref={el => {
                 this.cube = el;
               }}
             >

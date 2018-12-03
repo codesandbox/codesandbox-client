@@ -1,23 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
+import Card from 'card-vibes';
 
-import Vibrant from 'node-vibrant';
 import getIcon from 'common/templates/icons';
 
 import getTemplate from 'common/templates';
 import { profileUrl } from 'common/utils/url-generator';
 
-const BG_COLOR = '#26282a';
+import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
 
-const Container = styled.div`
+const BG_COLOR = '#1C2022';
+const BG_HOVER = '#212629';
+
+const Container = styled(Card)`
+  transition: 0.3s ease background-color;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   position: relative;
   flex: 1;
   min-width: 400px;
   width: 100%;
-  /* padding: 1.5rem 1rem; */
-  /* box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); */
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
@@ -25,11 +27,16 @@ const Container = styled.div`
   margin-bottom: 2rem;
   margin-right: 1rem;
 
-  background-color: ${props => props.color || BG_COLOR};
+  background-color: ${BG_COLOR};
+
+  &:hover {
+    background-color: ${BG_HOVER};
+  }
 `;
 
 const SandboxTitle = styled.h2`
   color: ${props => props.color};
+  font-family: 'Poppins';
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 6px;
@@ -37,8 +44,9 @@ const SandboxTitle = styled.h2`
 `;
 
 const SandboxDescription = styled.p`
-  font-size: 0.75rem;
-  color: #b9bbbe;
+  font-size: 0.8rem;
+  color: ${props => props.theme.new.description};
+  font-weight: 500;
   line-height: 1.3;
   margin-top: 8px;
 `;
@@ -48,31 +56,14 @@ const SandboxImage = styled.img`
   margin-bottom: 0;
   z-index: 0;
   border-bottom: 3.2px solid ${props => props.color};
-
-  /* box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3); */
-
-  /* mask: linear-gradient(#000 30%, transparent); */
 `;
 
 const SandboxInfo = styled.div`
-  /* position: absolute; */
   left: -1px;
   right: -1px;
-  /* background: linear-gradient(
-    -180deg,
-    transparent 0%,
-    ${props => props.color || BG_COLOR} 75%
-  ); */
-
-  padding: .75rem;
-
-
+  padding: 0.75rem;
   height: 130px;
-
-
-
   z-index: 1;
-  /* bottom: calc(${CHIN_HEIGHT - 6}rem - 1px); */
 `;
 
 const TemplateIcon = styled.div`
@@ -83,51 +74,48 @@ const TemplateIcon = styled.div`
   right: 0.75rem;
 `;
 
-const Author = styled.a`
-  display: flex;
-  align-items: center;
-
+const Author = styled(UserWithAvatar)`
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
 
   position: absolute;
   bottom: 0.75rem;
   left: 0.75rem;
-  color: white;
   text-decoration: none;
-
-  img {
-    border-radius: 100%;
-    width: 24px;
-    height: 24px;
-    margin-right: 0.4rem;
-    margin-bottom: 0;
-  }
+  color: ${props => props.theme.new.description};
 `;
 
 const getScreenshot = id =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
-// eslint-disable-next-line
 export default class WideSandbox extends React.PureComponent {
   state = {
-    color: null,
+    open: false,
+  };
+
+  toggleOpen = () => {
+    this.props.pickSandbox(this.props.sandbox.id);
   };
 
   render() {
-    const sandbox = this.props.sandbox;
+    const { sandbox } = this.props;
 
     const template = getTemplate(sandbox.template);
     const Icon = getIcon(sandbox.template);
 
     return (
-      <Container color={this.state.color} role="button" tabIndex={0}>
+      <Container
+        style={{}}
+        onClick={this.toggleOpen}
+        role="button"
+        tabIndex={0}
+      >
         <SandboxImage
           alt={sandbox.img}
           src={getScreenshot(sandbox.id)}
           color={template.color}
         />
-        <SandboxInfo color={this.state.color}>
+        <SandboxInfo>
           <SandboxTitle color={template.color}>
             {sandbox.picks[0].title || sandbox.title}
           </SandboxTitle>
@@ -136,13 +124,12 @@ export default class WideSandbox extends React.PureComponent {
           </SandboxDescription>
 
           {sandbox.author && (
-            <Author href={profileUrl(sandbox.author.username)}>
-              <img
-                src={sandbox.author.avatar_url}
-                alt={sandbox.author.username}
+            <a href={profileUrl(sandbox.author.username)}>
+              <Author
+                username={sandbox.author.username}
+                avatarUrl={sandbox.author.avatar_url}
               />
-              {sandbox.author.username}
-            </Author>
+            </a>
           )}
           <TemplateIcon>
             <Icon width={24} height={24} />
