@@ -233,12 +233,12 @@ async function compile(code, customConfig, path) {
       // BrowserFS was needed but wasn't initialized
       await waitForFs();
 
-      compile(code, customConfig, path);
+      await compile(code, customConfig, path);
     } else if (e.message.indexOf('Cannot find module') > -1) {
       // Try to download the file and all dependencies, retry compilation then
-      await downloadFromError(e).then(() => {
+      await downloadFromError(e).then(resolve => {
         resetCache();
-        compile(code, customConfig, path);
+        resolve(compile(code, customConfig, path));
       });
     } else {
       throw e;
@@ -546,7 +546,7 @@ self.addEventListener('message', async event => {
             plugins,
           };
 
-    compile(
+    await compile(
       code,
       version === 7 ? normalizeV7Config(customConfig) : customConfig,
       path
