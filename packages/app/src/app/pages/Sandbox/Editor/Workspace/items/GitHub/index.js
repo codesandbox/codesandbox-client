@@ -2,6 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import GithubIntegration from '../../../../../common/GithubIntegration';
+import WorkspaceItem from '../../WorkspaceItem';
 import Git from '../../Git';
 import CreateRepo from '../../CreateRepo';
 import { Description } from '../../elements';
@@ -10,11 +11,16 @@ const GitHub = ({ store }) => {
   const sandbox = store.editor.currentSandbox;
 
   return store.user.integrations.github ? ( // eslint-disable-line
-    sandbox.originalGit ? (
-      <Git />
-    ) : (
-      <CreateRepo />
-    )
+    <React.Fragment>
+      {sandbox.originalGit && <Git />}
+
+      <WorkspaceItem
+        defaultOpen={!sandbox.originalGit}
+        title="Export to GitHub"
+      >
+        <CreateRepo />
+      </WorkspaceItem>
+    </React.Fragment>
   ) : (
     <div>
       <Description margin={1} top={0}>
