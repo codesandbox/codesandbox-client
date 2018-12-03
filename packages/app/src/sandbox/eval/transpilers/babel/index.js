@@ -1,5 +1,6 @@
 // @flow
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index.js';
+import { isBabel7 } from 'common/utils/is-babel-7';
 
 import isESModule from '../../utils/is-es-module';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
@@ -7,7 +8,6 @@ import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
 import type { default as Manager } from '../../manager';
-import { isBabel7 } from '../../utils/is-babel-7';
 
 import delay from '../../../utils/delay';
 
