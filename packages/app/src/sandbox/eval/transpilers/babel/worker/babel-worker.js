@@ -157,6 +157,37 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
   );
 }
 
+function stripParams(regexp) {
+  return p => {
+    if (typeof p === 'string') {
+      return p.replace(regexp, '');
+    }
+
+    if (Array.isArray(p)) {
+      const [name, options] = p;
+      return [name.replace(regexp, ''), options];
+    }
+
+    return p;
+  };
+}
+
+const pluginRegExp = new RegExp('@babel/plugin-');
+const presetRegExp = new RegExp('@babel/preset-');
+
+/**
+ * Remove the @babel/plugin- and @babel/preset- as the standalone version of Babel7 doesn't
+ * like that
+ * @param {} config
+ */
+function normalizeV7Config(config) {
+  return {
+    ...config,
+    plugins: config.plugins.map(stripParams(pluginRegExp)),
+    presets: config.presets.map(stripParams(presetRegExp)),
+  };
+}
+
 function compile(code, customConfig, path) {
   let result;
   try {
@@ -321,7 +352,8 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPresets.indexOf('env') > -1 &&
+      (flattenedPresets.indexOf('env') > -1 ||
+        flattenedPresets.indexOf('@babel/preset-env') > -1) &&
       Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
       version === 7
     ) {
@@ -497,7 +529,11 @@ self.addEventListener('message', async event => {
           };
 
     try {
-      compile(code, customConfig, path);
+      compile(
+        code,
+        version === 7 ? normalizeV7Config(customConfig) : customConfig,
+        path
+      );
     } catch (e) {
       if (e.code === 'EIO') {
         // BrowserFS was needed but wasn't initialized

@@ -5,6 +5,10 @@ export function isBabel7(dependencies = {}, devDependencies = {}) {
     return true;
   }
 
+  if (devDependencies['@babel/core']) {
+    return true;
+  }
+
   if (isVersion2(dependencies)) {
     return true;
   }
