@@ -370,11 +370,11 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPresets.indexOf('env') > -1 ||
-      flattenedPresets.indexOf('@babel/preset-env') > -1 ||
-      (flattenedPresets.indexOf('@vue/app') > -1 &&
-        Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
-        version === 7)
+      version === 7 &&
+      (flattenedPresets.indexOf('env') > -1 ||
+        flattenedPresets.indexOf('@babel/preset-env') > -1 ||
+        (flattenedPresets.indexOf('@vue/app') > -1 &&
+          Object.keys(Babel.availablePresets).indexOf('env') === -1))
     ) {
       const envPreset = await import(/* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env');
       Babel.registerPreset('env', envPreset);
