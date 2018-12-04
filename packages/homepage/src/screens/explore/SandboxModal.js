@@ -1,60 +1,23 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { camelizeKeys } from 'humps';
-import styled from 'styled-components';
 import Stats from 'common/components/Stats';
 import { Spring } from 'react-spring';
-
+import getIcon from 'common/templates/icons';
+import { profileUrl } from 'common/utils/url-generator';
+import getTemplate from 'common/templates';
 import Modal from './Modal';
 import EmbedSkeleton from './EmbedSkeleton';
-
-const Container = styled.div`
-  background-color: ${props => props.theme.background2};
-  display: flex;
-  flex-direction: column;
-  border-radius: 4px;
-  overflow: hidden;
-`;
-
-const StatsContainer = styled.div`
-  font-family: 'Poppins';
-
-  flex: 1;
-  padding: 1.5rem;
-  margin-top: 3px;
-  font-weight: 600;
-  color: ${props => props.theme.new.description};
-`;
-
-const StatsHeader = styled.h2`
-  font-family: 'Poppins';
-  color: ${props => props.theme.new.title};
-  font-size: 1.25rem;
-  margin-top: 0 !important;
-  margin-bottom: 0;
-  font-weight: 700;
-`;
-
-const SandboxInfo = styled.div`
-  padding: 1.5rem;
-  font-family: 'Poppins';
-  color: ${props => props.theme.new.title};
-  flex: 2;
-  min-height: 200px;
-`;
-
-const SandboxTitle = styled.h1`
-  font-size: 1.5rem;
-  font-family: 'Poppins';
-  color: ${props => props.theme.new.title};
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-`;
-
-const SandboxDescription = styled.p`
-  font-family: 'Poppins';
-  color: ${props => props.theme.new.title};
-  color: ${props => props.theme.new.description};
-`;
+import {
+  Container,
+  StatsContainer,
+  StatsHeader,
+  Author,
+  SandboxInfo,
+  Footer,
+  SandboxTitle,
+  SandboxDescription,
+  TemplateLogo,
+} from './_SandboxModal.elements';
 
 export default class SandboxModal extends React.PureComponent {
   state = {
@@ -134,6 +97,8 @@ export default class SandboxModal extends React.PureComponent {
 
   render() {
     const { sandbox } = this.state;
+    const Icon = sandbox ? getIcon(sandbox.template) : Fragment;
+    const template = sandbox ? getTemplate(sandbox.template) : {};
 
     return (
       <Modal
@@ -196,6 +161,34 @@ export default class SandboxModal extends React.PureComponent {
               )}
             </StatsContainer>
           </div>
+          <Footer>
+            {sandbox ? (
+              <Fragment>
+                {sandbox.author && (
+                  <a
+                    href={profileUrl(sandbox.author.username)}
+                    style={{
+                      top: 28,
+                      position: 'relative',
+                    }}
+                  >
+                    <Author
+                      username={sandbox.author.username}
+                      avatarUrl={sandbox.author.avatarUrl}
+                    />
+                  </a>
+                )}
+                <TemplateLogo>
+                  <Icon width={31} height={31} />
+                  <SandboxDescription
+                    style={{ margin: 0, color: template.color() }}
+                  >
+                    {template.niceName}
+                  </SandboxDescription>
+                </TemplateLogo>
+              </Fragment>
+            ) : null}
+          </Footer>
         </Container>
       </Modal>
     );
