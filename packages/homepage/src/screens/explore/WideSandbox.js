@@ -56,6 +56,10 @@ const SandboxImage = styled.img`
   margin-bottom: 0;
   z-index: 0;
   border-bottom: 3.2px solid ${props => props.color};
+  height: auto;
+  width: 100%;
+  background-color: ${BG_HOVER};
+  border-image-width: 0;
 `;
 
 const SandboxInfo = styled.div`
@@ -90,15 +94,34 @@ const getScreenshot = id =>
 
 export default class WideSandbox extends React.PureComponent {
   state = {
-    open: false,
+    imageLoaded: false,
   };
 
+  getTitle = () =>
+    this.props.sandbox.picks[0].title || this.props.sandbox.title;
+
+  getDescription = () =>
+    this.props.sandbox.picks[0].description || this.props.sandbox.description;
+
   toggleOpen = () => {
-    this.props.pickSandbox(this.props.sandbox.id);
+    this.props.pickSandbox({
+      id: this.props.sandbox.id,
+      title: this.getTitle(),
+      description: this.getDescription(),
+    });
   };
 
   render() {
     const { sandbox } = this.props;
+
+    if (!sandbox) {
+      return (
+        <Container style={{}}>
+          <SandboxImage as="div" style={{ border: 0, height: 245 }} />
+          <SandboxInfo />
+        </Container>
+      );
+    }
 
     const template = getTemplate(sandbox.template);
     const Icon = getIcon(sandbox.template);
@@ -111,17 +134,17 @@ export default class WideSandbox extends React.PureComponent {
         tabIndex={0}
       >
         <SandboxImage
-          alt={sandbox.img}
+          alt={this.getTitle()}
           src={getScreenshot(sandbox.id)}
           color={template.color}
+          style={{ height: this.state.imageLoaded ? 'auto' : 245 }}
+          onLoad={() => {
+            this.setState({ imageLoaded: true });
+          }}
         />
         <SandboxInfo>
-          <SandboxTitle color={template.color}>
-            {sandbox.picks[0].title || sandbox.title}
-          </SandboxTitle>
-          <SandboxDescription>
-            {sandbox.picks[0].description || sandbox.description}
-          </SandboxDescription>
+          <SandboxTitle color={template.color}>{this.getTitle()}</SandboxTitle>
+          <SandboxDescription>{this.getDescription()}</SandboxDescription>
 
           {sandbox.author && (
             <a href={profileUrl(sandbox.author.username)}>

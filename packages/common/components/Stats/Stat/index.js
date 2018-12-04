@@ -14,16 +14,16 @@ function format(count: number): string {
   return `${count}`;
 }
 
-function Stat({ Icon, count }) {
+function Stat({ Icon, text, textOne, count, vertical }) {
   return (
-    <CenteredText>
+    <CenteredText text={text} disableCenter={vertical}>
       {Icon}
       <span
         style={{
           marginLeft: '0.5em',
         }}
       >
-        {format(count)}
+        {format(count)} {text && (count === 1 ? textOne || text : text)}
       </span>
     </CenteredText>
   );

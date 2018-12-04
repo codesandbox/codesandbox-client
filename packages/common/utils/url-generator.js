@@ -78,6 +78,7 @@ const stagingFrameUrl = (shortid: string, path: string) => {
 
 export const frameUrl = (shortid: string, append: string = '') => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
+  return `https://${shortid}.codesandbox.io/${path}`;
 
   if (process.env.LOCAL_SERVER) {
     return `http://localhost:3002/${path}`;

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { clone } from 'mobx-state-tree';
 import { Transition } from 'react-spring';
-import Portal from 'app/components/Portal';
+import Portal from 'common/components/Portal';
 
 import Notification from './Notification';
 

@@ -7,12 +7,37 @@ import Stat from './Stat';
 
 import { Stats } from './elements';
 
-function StatsComponent({ viewCount, likeCount, forkCount, ...props }) {
+function StatsComponent({
+  viewCount,
+  likeCount,
+  forkCount,
+  vertical,
+  text,
+  ...props
+}) {
   return (
-    <Stats {...props}>
-      <Stat Icon={<EyeIcon />} count={viewCount} />
-      <Stat Icon={<LikeHeart />} count={likeCount} />
-      <Stat Icon={<ForkIcon />} count={forkCount} />
+    <Stats vertical={vertical} {...props}>
+      <Stat
+        text={text ? 'views' : undefined}
+        textOne={text ? 'view' : undefined}
+        vertical={vertical}
+        Icon={<EyeIcon />}
+        count={viewCount}
+      />
+      <Stat
+        text={text ? 'likes' : undefined}
+        textOne={text ? 'like' : undefined}
+        vertical={vertical}
+        Icon={<LikeHeart />}
+        count={likeCount}
+      />
+      <Stat
+        text={text ? 'forks' : undefined}
+        textOne={text ? 'fork' : undefined}
+        vertical={vertical}
+        Icon={<ForkIcon />}
+        count={forkCount}
+      />
     </Stats>
   );
 }

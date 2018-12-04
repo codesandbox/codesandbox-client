@@ -141,6 +141,21 @@ export default class App extends React.PureComponent<
   getAppOrigin = () => location.origin.replace('embed.', '');
 
   fetchSandbox = async (id: string) => {
+    if (id === 'custom') {
+      return new Promise(resolve => {
+        window.parent.postMessage('ready', '*');
+        window.addEventListener('message', e => {
+          if (e.data && e.data.sandbox) {
+            this.setState({
+              sandbox: e.data.sandbox,
+            });
+
+            resolve();
+          }
+        });
+      });
+    }
+
     try {
       const response = await fetch(
         `${this.getAppOrigin()}/api/v1/sandboxes/${id}`

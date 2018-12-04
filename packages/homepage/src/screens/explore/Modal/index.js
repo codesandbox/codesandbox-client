@@ -1,0 +1,69 @@
+import React from 'react';
+import styled, { createGlobalStyle } from 'styled-components';
+import Portal from 'common/components/Portal';
+
+import { Spring, animated } from 'react-spring';
+
+const NoScroll = createGlobalStyle`
+  html {
+    overflow: hidden;
+  }
+`;
+
+const Container = styled(animated.div)`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: rgba(0, 0, 0, 0.5);
+
+  display: ${props => (props.isOpen ? 'flex' : 'none')};
+
+  align-items: center;
+  justify-content: center;
+`;
+
+const Content = styled.div`
+  width: 1000px;
+`;
+
+export default class Modal extends React.PureComponent {
+  state = {
+    open: false,
+  };
+
+  render() {
+    const { children } = this.props;
+    return (
+      <Portal>
+        {this.props.isOpen && <NoScroll />}
+        <Spring
+          from={{ opacity: 0 }}
+          to={{ opacity: this.props.isOpen ? 1 : 0 }}
+          config={{ tension: 240, velocity: 10 }}
+          native
+        >
+          {props => (
+            <Container
+              style={props}
+              onClick={this.props.onClose}
+              isOpen={this.props.isOpen}
+            >
+              <Content
+                onClick={e => {
+                  if (e) {
+                    e.stopPropagation();
+                  }
+                }}
+              >
+                {children}
+              </Content>
+            </Container>
+          )}
+        </Spring>
+      </Portal>
+    );
+  }
+}

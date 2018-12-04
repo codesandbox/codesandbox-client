@@ -1,12 +1,17 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const CenteredText = styled.div`
-  display: inline-flex;
-  justify-content: center;
+  ${props =>
+    !props.disableCenter &&
+    css`
+      justify-content: center;
+    `};
   align-items: center;
+  display: inline-flex;
   flex-direction: row;
+  margin-bottom: 0.5rem;
 
-  width: 5em;
+  width: ${props => (props.text ? '10em' : '5em')};
 
   svg {
     opacity: 0.75;

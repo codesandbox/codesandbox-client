@@ -6,7 +6,7 @@ import history from 'app/utils/history';
 
 import theme from 'common/theme';
 import { sandboxUrl } from 'common/utils/url-generator';
-import Portal from 'app/components/Portal';
+import Portal from 'common/components/Portal';
 
 import {
   ButtonsContainer,

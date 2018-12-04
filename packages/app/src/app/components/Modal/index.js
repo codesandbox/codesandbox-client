@@ -6,8 +6,8 @@ import { CLOSE_TIMEOUT_MS, BaseModal, ModalTitle, ModalBody } from './elements';
 
 if (document.getElementById('root')) {
   Modal.setAppElement('#root');
-} else {
-  Modal.setAppElement(document.body);
+} else if (document.getElementById('___gatsby')) {
+  Modal.setAppElement('#___gatsby');
 }
 
 const GlobalStyles = createGlobalStyle`
@@ -35,7 +35,7 @@ const GlobalStyles = createGlobalStyle`
   opacity: 1;
 }
 
-.ReactModal__Body--open {
+.ReactModal__Html--open {
   overflow-y: hidden;
 }
 
@@ -80,6 +80,7 @@ class ModalComponent extends React.Component {
   render() {
     const {
       isOpen,
+
       width,
       top,
       onClose,
@@ -97,14 +98,13 @@ class ModalComponent extends React.Component {
           contentLabel={title || 'Modal'}
           style={this.getStyles(width, top)}
           closeTimeoutMS={CLOSE_TIMEOUT_MS}
+          htmlOpenClassName="ReactModal__Html--open"
           {...props}
         >
-          {isOpen ? (
-            <BaseModal>
-              {title && <ModalTitle>{title}</ModalTitle>}
-              <ModalBody>{children}</ModalBody>
-            </BaseModal>
-          ) : null}
+          <BaseModal>
+            {title && <ModalTitle>{title}</ModalTitle>}
+            <ModalBody>{children}</ModalBody>
+          </BaseModal>
         </Modal>
       </React.Fragment>
     );

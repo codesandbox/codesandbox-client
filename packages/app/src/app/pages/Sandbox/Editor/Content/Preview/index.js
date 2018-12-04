@@ -65,10 +65,6 @@ class Preview extends Component<Props, State> {
       this.detectStructureChange,
       this.handleStructureChange.bind(this, preview)
     );
-    const disposeHandleSandboxChange = reaction(
-      () => this.props.store.editor.currentSandbox.id,
-      this.handleSandboxChange.bind(this, preview)
-    );
     const disposeDependenciesHandler = reaction(
       () =>
         this.props.store.editor.currentSandbox.npmDependencies.keys().length,
@@ -83,7 +79,6 @@ class Preview extends Component<Props, State> {
       disposeHandleModuleSyncedChange();
       disposeHandleCodeChange();
       disposeHandleStructureChange();
-      disposeHandleSandboxChange();
       disposeDependenciesHandler();
     };
   };
@@ -156,10 +151,6 @@ class Preview extends Component<Props, State> {
       }
     }
   }
-
-  handleSandboxChange = (preview, newId) => {
-    preview.handleSandboxChange(newId);
-  };
 
   handleDependenciesChange = preview => {
     preview.handleDependenciesChange();
