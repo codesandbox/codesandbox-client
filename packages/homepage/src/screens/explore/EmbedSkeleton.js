@@ -1,27 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const Header = styled.div`
-  height: 48px;
-  min-height: 48px;
-
-  width: 100%;
-  background-color: ${props => props.theme.background};
-`;
-
-const NavigationBar = styled.div`
-  height: 40px;
-  min-height: 40px;
-  width: 100%;
-  background-color: #eee;
-`;
-
-const StatusBar = styled.div`
-  height: 33px;
-  min-height: 33px;
-  width: 100%;
-  background-color: ${props => props.theme.background4};
-`;
+import { Header, NavigationBar, StatusBar } from './_EmbedSkeleton.elements';
 
 export default ({ id, style }) => (
   <div
