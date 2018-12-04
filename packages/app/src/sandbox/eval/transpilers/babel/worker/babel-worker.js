@@ -12,6 +12,7 @@ import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
+import { downloadFromError } from './dynamic-download';
 
 import { evaluateFromPath, resetCache } from './evaluate';
 import {
@@ -157,44 +158,92 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
   );
 }
 
-function compile(code, customConfig, path) {
-  let result;
-  try {
-    result = Babel.transform(code, customConfig);
-  } catch (e) {
-    e.message = e.message.replace('unknown', path);
-
-    // Match the line+col
-    const lineColRegex = /\((\d+):(\d+)\)/;
-
-    const match = e.message.match(lineColRegex);
-    if (match && match[1] && match[2]) {
-      const lineNumber = +match[1];
-      const colNumber = +match[2];
-
-      const niceMessage =
-        e.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
-
-      e.message = niceMessage;
+function stripParams(regexp) {
+  return p => {
+    if (typeof p === 'string') {
+      return p.replace(regexp, '');
     }
 
-    throw e;
-  }
+    if (Array.isArray(p)) {
+      const [name, options] = p;
+      return [name.replace(regexp, ''), options];
+    }
 
-  const dependencies = getDependencies(detective.metadata(result));
+    return p;
+  };
+}
 
-  dependencies.forEach(dependency => {
-    self.postMessage({
-      type: 'add-dependency',
-      path: dependency.path,
-      isGlob: dependency.type === 'glob',
+const pluginRegExp = new RegExp('@babel/plugin-');
+const presetRegExp = new RegExp('@babel/preset-');
+
+/**
+ * Remove the @babel/plugin- and @babel/preset- as the standalone version of Babel7 doesn't
+ * like that
+ * @param {} config
+ */
+function normalizeV7Config(config) {
+  return {
+    ...config,
+    plugins: config.plugins.map(stripParams(pluginRegExp)),
+    presets: config.presets.map(stripParams(presetRegExp)),
+  };
+}
+
+async function compile(code, customConfig, path) {
+  try {
+    let result;
+    try {
+      result = Babel.transform(code, customConfig);
+    } catch (e) {
+      e.message = e.message.replace('unknown', path);
+
+      // Match the line+col
+      const lineColRegex = /\((\d+):(\d+)\)/;
+
+      const match = e.message.match(lineColRegex);
+      if (match && match[1] && match[2]) {
+        const lineNumber = +match[1];
+        const colNumber = +match[2];
+
+        const niceMessage =
+          e.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
+
+        e.message = niceMessage;
+      }
+
+      throw e;
+    }
+
+    const dependencies = getDependencies(detective.metadata(result));
+
+    dependencies.forEach(dependency => {
+      self.postMessage({
+        type: 'add-dependency',
+        path: dependency.path,
+        isGlob: dependency.type === 'glob',
+      });
     });
-  });
 
-  self.postMessage({
-    type: 'result',
-    transpiledCode: result.code,
-  });
+    self.postMessage({
+      type: 'result',
+      transpiledCode: result.code,
+    });
+  } catch (e) {
+    if (e.code === 'EIO') {
+      // BrowserFS was needed but wasn't initialized
+      await waitForFs();
+
+      await compile(code, customConfig, path);
+    } else if (e.message.indexOf('Cannot find module') > -1) {
+      // Try to download the file and all dependencies, retry compilation then
+      await downloadFromError(e).then(() => {
+        resetCache();
+        return compile(code, customConfig, path);
+      });
+    } else {
+      throw e;
+    }
+  }
 }
 
 self.importScripts(
@@ -321,25 +370,15 @@ self.addEventListener('message', async event => {
     }
 
     if (
-      flattenedPresets.indexOf('env') > -1 &&
+      version === 7 &&
       Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
-      version === 7
+      (flattenedPresets.indexOf('env') > -1 ||
+        flattenedPresets.indexOf('@babel/preset-env') > -1 ||
+        flattenedPresets.indexOf('@vue/app') > -1)
     ) {
-      Babel.registerPreset('env', Babel.availablePresets.es2015);
+      const envPreset = await import(/* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env');
+      Babel.registerPreset('env', envPreset);
     }
-
-    // Future vue preset
-    // if (
-    //   flattenedPresets.indexOf('@vue/app') > -1 &&
-    //   Object.keys(Babel.availablePresets).indexOf('@vue/app') === -1 &&
-    //   version === 7
-    // ) {
-    //   const vuePreset = await import(/* webpackChunkName: 'babel-preset-vue' */ '@vue/babel-preset-app');
-
-    //   Babel.registerPreset('@vue/app', vuePreset);
-    //   Babel.registerPreset('@vue/babel-preset-app', vuePreset);
-
-    // }
 
     if (
       flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
@@ -453,35 +492,54 @@ self.addEventListener('message', async event => {
     const customConfig =
       /^\/node_modules/.test(path) && /\.js$/.test(path)
         ? {
-            parserOpts: { plugins: ['dynamicImport'] },
+            parserOpts: version === 7 && {
+              plugins: ['dynamicImport', 'objectRestSpread'],
+            },
+            presets:
+              version === 7 ? ['env', 'react'] : ['es2015', 'react', 'stage-0'],
             plugins: [
               version === 7
                 ? 'transform-modules-commonjs'
                 : 'transform-es2015-modules-commonjs',
+              version === 7
+                ? 'proposal-class-properties'
+                : 'transform-class-properties',
+              ...(version === 7
+                ? []
+                : [
+                    [
+                      'transform-runtime',
+                      {
+                        helpers: false,
+                        polyfill: false,
+                        regenerator: true,
+                      },
+                    ],
+                    [
+                      'transform-regenerator',
+                      {
+                        // Async functions are converted to generators by babel-preset-env
+                        async: false,
+                      },
+                    ],
+                  ]),
               'dynamic-import-node',
               [
                 'babel-plugin-detective',
                 { source: true, nodes: true, generated: true },
               ],
-            ],
+            ].filter(Boolean),
           }
         : {
             ...config,
             plugins,
           };
 
-    try {
-      compile(code, customConfig, path);
-    } catch (e) {
-      if (e.code === 'EIO') {
-        // BrowserFS was needed but wasn't initialized
-        await waitForFs();
-
-        compile(code, customConfig, path);
-      } else {
-        throw e;
-      }
-    }
+    await compile(
+      code,
+      version === 7 ? normalizeV7Config(customConfig) : customConfig,
+      path
+    );
   } catch (e) {
     console.error(e);
     self.postMessage({

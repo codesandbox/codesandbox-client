@@ -37,7 +37,15 @@ class ModalComponent extends React.Component {
   });
 
   render() {
-    const { isOpen, width, top, onClose, children, title } = this.props;
+    const {
+      isOpen,
+      width,
+      top,
+      onClose,
+      children,
+      title,
+      ...props
+    } = this.props;
 
     return (
       <Modal
@@ -46,6 +54,7 @@ class ModalComponent extends React.Component {
         contentLabel={title || 'Modal'}
         style={this.getStyles(width, top)}
         closeTimeoutMS={CLOSE_TIMEOUT_MS}
+        {...props}
       >
         {isOpen ? (
           <BaseModal>

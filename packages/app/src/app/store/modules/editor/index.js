@@ -99,5 +99,8 @@ export default Module({
     currentTabChanged: sequences.changeCurrentTab,
     discardModuleChanges: sequences.discardModuleChanges,
     editorSizeUpdated: sequences.updateEditorSize,
+    fetchEnvironmentVariables: sequences.fetchEnvironmentVariables,
+    updateEnvironmentVariables: sequences.updateEnvironmentVariables,
+    deleteEnvironmentVariable: sequences.deleteEnvironmentVariable,
   },
 });

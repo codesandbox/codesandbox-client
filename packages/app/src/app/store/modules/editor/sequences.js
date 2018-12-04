@@ -1,7 +1,11 @@
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
-import { closeTabByIndex, callVSCodeCallback } from '../../actions';
+import {
+  closeTabByIndex,
+  callVSCodeCallback,
+  callVSCodeCallbackError,
+} from '../../actions';
 import { renameModule } from '../files/sequences';
 import {
   sendModuleSaved,
@@ -52,6 +56,25 @@ export const startResizing = set(state`editor.isResizing`, true);
 export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
+
+export const fetchEnvironmentVariables = [
+  actions.fetchEnvironmentVariables,
+  {
+    success: [],
+  },
+];
+export const updateEnvironmentVariables = [
+  actions.updateEnvironmentVariables,
+  {
+    success: [actions.restartSandbox],
+  },
+];
+export const deleteEnvironmentVariable = [
+  actions.deleteEnvironmentVariable,
+  {
+    success: [actions.restartSandbox],
+  },
+];
 
 export const clearCurrentModule = [
   set(state`editor.currentModuleShortid`, null),
@@ -203,22 +226,32 @@ export const saveCode = [
   },
 
   actions.saveModuleCode,
-  actions.setModuleSaved,
-  callVSCodeCallback,
-  when(state`editor.currentSandbox.originalGit`),
   {
-    true: [
-      when(state`workspace.openedWorkspaceItem`, item => item === 'github'),
+    success: [
+      actions.setModuleSaved,
+      callVSCodeCallback,
+      when(state`editor.currentSandbox.originalGit`),
       {
-        true: fetchGitChanges,
+        true: [
+          when(state`workspace.openedWorkspaceItem`, item => item === 'github'),
+          {
+            true: fetchGitChanges,
+            false: [],
+          },
+        ],
         false: [],
       },
-    ],
-    false: [],
-  },
-  sendModuleSaved,
+      sendModuleSaved,
 
-  actions.updateTemplateIfSSE,
+      actions.updateTemplateIfSSE,
+    ],
+
+    error: [callVSCodeCallbackError],
+    codeOutdated: [
+      addNotification(props`message`, 'warning'),
+      callVSCodeCallbackError,
+    ],
+  },
 ];
 
 export const discardModuleChanges = [
@@ -226,7 +259,7 @@ export const discardModuleChanges = [
   actions.getSavedCode,
   when(props`code`),
   {
-    true: [changeCode],
+    true: [changeCode, actions.touchFile],
     false: [],
   },
 ];

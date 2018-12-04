@@ -99,6 +99,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   transpilationListener: ?Function;
   sizeProbeInterval: ?number;
 
+  modelSelectionListener: {
+    dispose: Function,
+  };
+  modelContentChangedListener: {
+    dispose: Function,
+  };
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -160,9 +167,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     window.removeEventListener('resize', this.resizeEditor);
     // Make sure that everything has run before disposing, to prevent any inconsistensies
 
-    // if (this.editor) {
-    //   this.editor.dispose();
-    // }
     if (this.lintWorker) {
       this.lintWorker.terminate();
     }
@@ -170,6 +174,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.transpilationListener();
     }
     clearInterval(this.sizeProbeInterval);
+    if (this.modelContentChangedListener) {
+      this.modelContentChangedListener.dispose();
+    }
+    if (this.modelSelectionListener) {
+      this.modelSelectionListener.dispose();
+    }
 
     if (this.disposeInitializer) {
       this.disposeInitializer();
@@ -267,6 +277,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     monaco.languages.registerDocumentFormattingEditProvider('sass', this);
     monaco.languages.registerDocumentFormattingEditProvider('vue', this);
     monaco.languages.registerDocumentFormattingEditProvider('graphql', this);
+    monaco.languages.registerDocumentFormattingEditProvider('html', this);
+    monaco.languages.registerDocumentFormattingEditProvider('markdown', this);
+    monaco.languages.registerDocumentFormattingEditProvider('json', this);
 
     // eslint-disable-next-line no-underscore-dangle
     window.CSEditor = {
@@ -274,34 +287,44 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       monaco: this.monaco,
     };
 
-    let modelContentChangedListener;
-    let modelSelectionListener;
     editor.editorService.onDidActiveEditorChange(() => {
-      if (modelContentChangedListener) {
-        modelContentChangedListener.dispose();
+      if (this.modelContentChangedListener) {
+        this.modelContentChangedListener.dispose();
       }
-      if (modelSelectionListener) {
-        modelSelectionListener.dispose();
+      if (this.modelSelectionListener) {
+        this.modelSelectionListener.dispose();
       }
 
       const activeEditor = editor.getActiveCodeEditor();
 
       if (activeEditor) {
+        const currentModuleShortid =
+          this.currentModule && this.currentModule.shortid;
+        const currentModuleTitle =
+          this.currentModule && this.currentModule.title;
         activeEditor.updateOptions({ readOnly: this.props.readOnly });
 
-        modelContentChangedListener = activeEditor.onDidChangeModelContent(
+        this.modelContentChangedListener = activeEditor.onDidChangeModelContent(
           e => {
+            if (activeEditor !== editor.getActiveCodeEditor()) {
+              // This check ensures that we can't have multiple editor listeners working
+              // with the current editor. I noticed an issue where we suddenly
+              // had 2 listeners for 2 different editors and it updated code
+              // for the current editor. This caused code to enter the wrong modules.
+              return;
+            }
+
             const { isLive, sendTransforms } = this.props;
 
             if (isLive && sendTransforms && !this.receivingCode) {
               this.sendChangeOperations(e);
             }
 
-            this.handleChange();
+            this.handleChange(currentModuleShortid, currentModuleTitle);
           }
         );
 
-        modelSelectionListener = activeEditor.onDidChangeCursorSelection(
+        this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
           selectionChange => {
             // TODO: add another debounced action to send the current data. So we can
             // have the correct cursor pos no matter what
@@ -718,6 +741,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     dependencies: $PropertyType<Props, 'dependencies'>
   ): Promise<null> =>
     new Promise(resolve => {
+      if (this.modelContentChangedListener) {
+        this.modelContentChangedListener.dispose();
+      }
+      if (this.modelSelectionListener) {
+        this.modelSelectionListener.dispose();
+      }
       this.sandbox = newSandbox;
       this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
@@ -859,7 +888,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           .map(error => {
             if (error) {
               return {
-                severity: this.monaco.Severity.Error,
+                severity: this.monaco.MarkerSeverity.Error,
                 startColumn: 1,
                 startLineNumber: error.line,
                 endColumn: error.column,
@@ -898,8 +927,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               return {
                 severity:
                   correction.severity === 'warning'
-                    ? this.monaco.Severity.Warning
-                    : this.monaco.Severity.Notice,
+                    ? this.monaco.MarkerSeverity.Warning
+                    : this.monaco.MarkerSeverity.Notice,
                 startColumn: correction.column,
                 startLineNumber: correction.line,
                 endColumn: 1,
@@ -1145,6 +1174,20 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
+  getCurrentModelPath = () => {
+    const activeEditor = this.editor.getActiveCodeEditor();
+
+    if (!activeEditor) {
+      return undefined;
+    }
+    const model = activeEditor.getModel();
+    if (!model) {
+      return undefined;
+    }
+
+    return model.uri.path.replace(/^\/sandbox/, '');
+  };
+
   openModule = (module: Module) => {
     if (module.id) {
       const path = getModulePath(
@@ -1153,7 +1196,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         module.id
       );
 
-      this.editor.openFile(path);
+      if (this.getCurrentModelPath() !== path) {
+        this.editor.openFile(path);
+      }
     }
   };
 
@@ -1194,34 +1239,25 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  handleChange = () => {
+  handleChange = (currentModuleShortid, currentModuleTitle) => {
     const newCode =
       this.editor
         .getActiveCodeEditor()
         .getModel()
         .getValue(1) || '';
-    const currentModule = this.currentModule;
-    const title = currentModule.title;
 
-    const oldCode = this.currentModule.code || '';
-
-    const codeEquals =
-      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n');
-
-    if (!codeEquals) {
-      if (this.props.onChange) {
-        this.props.onChange(newCode, this.currentModule.shortid);
-      }
-
-      this.lint(
-        newCode,
-        title,
-        this.editor
-          .getActiveCodeEditor()
-          .getModel()
-          .getVersionId()
-      );
+    if (this.props.onChange) {
+      this.props.onChange(newCode, currentModuleShortid);
     }
+
+    this.lint(
+      newCode,
+      currentModuleTitle,
+      this.editor
+        .getActiveCodeEditor()
+        .getModel()
+        .getVersionId()
+    );
   };
 
   hasNativeTypescript = () => {

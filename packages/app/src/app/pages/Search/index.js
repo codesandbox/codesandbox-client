@@ -13,7 +13,9 @@ import {
   ALGOLIA_DEFAULT_INDEX,
 } from 'common/utils/config';
 
+import 'instantsearch.css/themes/reset.css';
 import './search.css';
+
 import Results from './Results';
 import Filters from './Filters';
 import { Content, StyledTitle, Main } from './elements';

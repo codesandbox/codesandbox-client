@@ -9,7 +9,13 @@ import transformSrcset from './modules/transform-srcset';
 
 const hotReloadAPIPath = '!noop-loader!/node_modules/vue-hot-reload-api.js';
 export default function(html: string, loaderContext: LoaderContext) {
-  loaderContext.emitModule(hotReloadAPIPath, vueHotReloadAPIRaw, '/', false);
+  loaderContext.emitModule(
+    hotReloadAPIPath,
+    vueHotReloadAPIRaw,
+    '/',
+    false,
+    false
+  );
 
   const options = loaderContext.options;
   const vueOptions = options.vueOptions || {};

@@ -52,6 +52,26 @@ const Header = ({ store, signals }) => {
           }
         />
 
+        {store.user && store.user.curatorAt ? (
+          <Action
+            title="Pick"
+            Icon={() => (
+              <span role="img" aria-label="star">
+                ✨
+              </span>
+            )}
+            onClick={() => {
+              signals.explore.pickSandboxModal({
+                details: {
+                  id: sandbox.id,
+                  title: sandbox.title,
+                  description: sandbox.description,
+                },
+              });
+            }}
+          />
+        ) : null}
+
         {(sandbox.owned || !store.editor.isAllModulesSynced) && (
           <Action
             onClick={

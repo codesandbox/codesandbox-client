@@ -1,3 +1,33 @@
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+var __values = (this && this.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
 define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchDependencyTypings", "./lib/emmet/expand/languageserver-types", "./lib/emmet/emmetHelper"], function (require, exports, ts, lib_1, fetchTypings, ls, emmet) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -49,7 +79,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             var _this = this;
             this._extraLibs = Object.create(null);
             this._languageService = ts.createLanguageService(this);
-            this.files = {};
+            this.files = new Map();
             this.typesLoaded = false;
             this._ctx = ctx;
             this._compilerOptions = createData.compilerOptions;
@@ -93,21 +123,24 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 }
                 var code = data.toString();
                 try {
-                    var p = JSON.parse(code);
-                    fetchTypings.fetchAndAddDependencies(p.dependencies, function (paths) {
-                        var fileAmount = Object.keys(paths).length;
-                        // Only sync if the file amount is not too high, otherwise we'll
-                        // clog all resources
-                        if (fileAmount < 400) {
+                    var p_1 = JSON.parse(code);
+                    Promise.join(Object.keys(p_1.dependencies).map(function (depName) {
+                        var version = p_1.dependencies[depName];
+                        fetchTypings.fetchAndAddDependencies(depName, version, function (paths) {
+                            var fileAmount = Object.keys(paths).length;
                             Object.keys(paths).forEach(function (p) {
                                 var pathToWrite = '/sandbox/' + p;
-                                _this.files[pathToWrite] = paths[p];
-                                ensureDirectoryExistence(pathToWrite, function () {
-                                    _this.fs.writeFile(pathToWrite, paths[p], function () { });
-                                });
+                                _this.files.set(pathToWrite, paths[p]);
+                                // Only sync with browsersfs if the file amount is not too high, otherwise we'll
+                                // clog all resources of browserfs
+                                if (fileAmount < 400) {
+                                    ensureDirectoryExistence(pathToWrite, function () {
+                                        _this.fs.writeFile(pathToWrite, paths[p], function () { });
+                                    });
+                                }
                             });
-                        }
-                    }).then(function () {
+                        }).catch(function (e) { });
+                    })).then(function () {
                         _this.typesLoaded = true;
                         _this._languageService.cleanupSemanticCache();
                     });
@@ -121,10 +154,10 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             var _this = this;
             this.fs.readFile(path, function (e, str) {
                 if (e) {
-                    delete _this.files[path];
+                    _this.files.delete(path);
                     return;
                 }
-                _this.files[path] = str.toString();
+                _this.files.set(path, str.toString());
             });
         };
         TypeScriptWorker.prototype.syncDirectory = function (path) {
@@ -137,7 +170,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                     var fullEntry = path + '/' + entry;
                     _this.fs.stat(fullEntry, function (err, stat) {
                         if (err) {
-                            delete _this.files[path];
+                            _this.files.delete(path);
                             return;
                         }
                         if (stat.isDirectory()) {
@@ -157,13 +190,13 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         TypeScriptWorker.prototype.readFile = function (resource, encoding) {
             var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
             if (this.fs) {
-                return this.files[path];
+                return this.files.get(path);
             }
             return undefined;
         };
         TypeScriptWorker.prototype.getScriptFileNames = function () {
             var models = this._ctx.getMirrorModels().map(function (model) { return model.uri.toString(); });
-            return models.concat(Object.keys(this._extraLibs)).concat(Object.keys(this.files).map(function (p) { return "file://" + p; }));
+            return models.concat(Object.keys(this._extraLibs)).concat(__spread(this.files.keys()).map(function (p) { return "file://" + p; }));
         };
         TypeScriptWorker.prototype._getModel = function (fileName) {
             var models = this._ctx.getMirrorModels();
@@ -203,7 +236,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             }
             else if (this.fs) {
                 var usedFilename = fileName.indexOf('file://') === 0 ? monaco.Uri.parse(fileName).fsPath : fileName;
-                text = this.files[usedFilename];
+                text = this.files.get(usedFilename);
             }
             else {
                 return;
@@ -244,14 +277,14 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 return false;
             }
             var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
-            return this.files[path] !== undefined;
+            return this.files.has(path);
         };
         TypeScriptWorker.prototype.directoryExists = function (resource) {
             if (!this.fs) {
                 return false;
             }
             var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
-            return Object.keys(this.files).some(function (f) { return f.indexOf(path) === 0; });
+            return __spread(this.files.keys()).some(function (f) { return f.indexOf(path) === 0; });
         };
         TypeScriptWorker.prototype.getDirectories = function (resource) {
             if (!this.fs) {
@@ -259,19 +292,29 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             }
             var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
             var resourceSplits = path.split('/').length;
-            return Object.keys(this.files).filter(function (f) { return f.indexOf(path) === 0; }).map(function (p) {
+            return __spread(this.files.keys()).filter(function (f) { return f.indexOf(path) === 0; }).map(function (p) {
                 var newP = p.split('/');
                 newP.length = resourceSplits;
                 return newP[newP.length - 1];
             });
         };
         TypeScriptWorker.prototype._getTextDocument = function (uri) {
+            var e_1, _a;
             var models = this._ctx.getMirrorModels();
-            for (var _i = 0, models_1 = models; _i < models_1.length; _i++) {
-                var model = models_1[_i];
-                if (model.uri.toString() === uri) {
-                    return ls.TextDocument.create(uri, 'javascript', model.version, model.getValue());
+            try {
+                for (var models_1 = __values(models), models_1_1 = models_1.next(); !models_1_1.done; models_1_1 = models_1.next()) {
+                    var model = models_1_1.value;
+                    if (model.uri.toString() === uri) {
+                        return ls.TextDocument.create(uri, 'javascript', model.version, model.getValue());
+                    }
                 }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (models_1_1 && !models_1_1.done && (_a = models_1.return)) _a.call(models_1);
+                }
+                finally { if (e_1) throw e_1.error; }
             }
             return null;
         };

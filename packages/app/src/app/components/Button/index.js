@@ -11,7 +11,6 @@ type Props = {
 
 function ButtonComponent({ small = false, style = {}, ...props }: Props) {
   const newStyle = {
-    ...style,
     ...(small
       ? {
           padding: '0.5em 0.7em',
@@ -20,6 +19,7 @@ function ButtonComponent({ small = false, style = {}, ...props }: Props) {
       : {
           padding: '0.65em 2.25em',
         }),
+    ...style,
   };
 
   // Link

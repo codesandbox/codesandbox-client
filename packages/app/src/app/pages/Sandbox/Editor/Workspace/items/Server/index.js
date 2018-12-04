@@ -12,6 +12,7 @@ import { Description, WorkspaceInputContainer } from '../../elements';
 
 import Status from './Status';
 import Tasks from './Tasks';
+import EnvironmentVariables from './EnvVars';
 
 const SubTitle = styled.div`
   text-transform: uppercase;
@@ -60,24 +61,41 @@ const Server = ({ store }) => {
           </WorkspaceInputContainer>
         </Margin>
       </Margin>
-      <WorkspaceInputContainer style={{ marginTop: '1rem' }}>
-        <Button
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          small
-          block
-          disabled={disconnected}
-          onClick={() =>
-            dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
-          }
-        >
-          <PowerIcon style={{ fontSize: '1.125em', marginRight: '.25rem ' }} />{' '}
-          Restart Sandbox
-        </Button>
-      </WorkspaceInputContainer>
+
+      <Margin top={1}>
+        <SubTitle>Secret Keys</SubTitle>
+        <Description>
+          Secrets are available as environment variables. They are kept private
+          and will not be transferred between forks.
+        </Description>
+        <Margin top={0.5}>
+          <EnvironmentVariables />
+        </Margin>
+      </Margin>
+
+      <Margin top={1} bottom={0.5}>
+        <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
+        <WorkspaceInputContainer>
+          <Button
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            small
+            block
+            disabled={disconnected}
+            onClick={() =>
+              dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
+            }
+          >
+            <PowerIcon
+              style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+            />{' '}
+            Restart Sandbox
+          </Button>
+        </WorkspaceInputContainer>
+      </Margin>
     </div>
   );
 };

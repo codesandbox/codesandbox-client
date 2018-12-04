@@ -66,6 +66,9 @@ export type File = {
 
 type State = {
   selectedFilePath: ?string,
+  fileExpansionState: {
+    [path: string]: Boolean,
+  },
   files: {
     [path: string]: File,
   },
@@ -76,6 +79,7 @@ type State = {
 const INITIAL_STATE = {
   files: {},
   selectedFilePath: null,
+  fileExpansionState: {},
   running: true,
   watching: true,
 };
@@ -119,6 +123,16 @@ class Tests extends React.Component<Props, State> {
       selectedFilePath:
         file.fileName === this.state.selectedFilePath ? null : file.fileName,
     });
+  };
+
+  toggleFileExpansion = (file: File) => {
+    this.setState(
+      immer(this.state, state => {
+        state.fileExpansionState[file.fileName] = !state.fileExpansionState[
+          file.fileName
+        ];
+      })
+    );
   };
 
   handleMessage = (data: Object) => {
@@ -188,6 +202,8 @@ class Tests extends React.Component<Props, State> {
                 tests: {},
                 fileName: data.path,
               };
+
+              state.fileExpansionState[data.path] = true;
             })
           );
           break;
@@ -198,6 +214,8 @@ class Tests extends React.Component<Props, State> {
               if (state.files[data.path]) {
                 delete state.files[data.path];
               }
+
+              delete state.fileExpansionState[data.path];
             })
           );
           break;
@@ -230,6 +248,8 @@ class Tests extends React.Component<Props, State> {
                   tests: {},
                   fileName: data.path,
                 };
+
+                state.fileExpansionState[data.path] = true;
               }
 
               state.files[data.path].tests[testName.join('||||')] = {
@@ -437,6 +457,8 @@ class Tests extends React.Component<Props, State> {
                     key={fileName}
                     runTests={this.runTests}
                     openFile={this.openFile}
+                    isExpanded={this.state.fileExpansionState[fileName]}
+                    onFileExpandToggle={this.toggleFileExpansion}
                   />
                 ))}
             </div>

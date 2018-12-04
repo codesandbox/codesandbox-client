@@ -119,32 +119,16 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          overrides: [
-            !__DEV__ && {
-              include: path.join(__dirname, '../../sandbox'),
-              presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    targets: {
-                      ie: 11,
-                    },
-                    modules: 'umd',
-                    useBuiltIns: false,
-                  },
-                ],
-              ],
-            },
-          ].filter(Boolean),
           presets: [
             '@babel/preset-flow',
             [
               '@babel/preset-env',
               {
                 targets: {
-                  browsers: 'last 2 versions',
+                  ie: 11,
+                  esmodules: true,
                 },
-                modules: false,
+                modules: 'umd',
                 useBuiltIns: false,
               },
             ],
@@ -342,7 +326,7 @@ module.exports = {
       ? [
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'sandbox'],
+            chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
             minify: __PROD__ && {
@@ -461,7 +445,7 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode4/vs',
+          to: 'public/vscode7/vs',
           force: true,
         },
         {

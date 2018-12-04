@@ -74,7 +74,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
   private _compilerOptions: ts.CompilerOptions;
 
   private fs: any;
-  private files: {[path: string]: string} = {};
+  private files: Map<string, string> = new Map()
   private typesLoaded: boolean = false;
 
 	constructor(ctx: IWorkerContext, createData: ICreateData) {
@@ -135,26 +135,31 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
       try {
         const p = JSON.parse(code);
 
-        fetchTypings.fetchAndAddDependencies(p.dependencies, (paths) => {
-          const fileAmount = Object.keys(paths).length;
-          // Only sync if the file amount is not too high, otherwise we'll
-          // clog all resources
-          if (fileAmount < 400) {
+        Promise.join(Object.keys(p.dependencies).map(depName => {
+          const version = p.dependencies[depName];
+
+          fetchTypings.fetchAndAddDependencies(depName, version, (paths) => {
+            const fileAmount = Object.keys(paths).length;
+
             Object.keys(paths).forEach(p => {
               const pathToWrite = '/sandbox/' + p;
-              this.files[pathToWrite] = paths[p];
+              this.files.set(pathToWrite, paths[p]);
 
-              ensureDirectoryExistence(pathToWrite, () => {
-                this.fs.writeFile(pathToWrite, paths[p], () => {});
-              });
+              // Only sync with browsersfs if the file amount is not too high, otherwise we'll
+              // clog all resources of browserfs
+              if (fileAmount < 400) {
+                ensureDirectoryExistence(pathToWrite, () => {
+                  this.fs.writeFile(pathToWrite, paths[p], () => {});
+                });
+              }
             });
-          }
-        }).then(() => {
+          }).catch(e => {});
+        })).then(() => {
           this.typesLoaded = true;
           this._languageService.cleanupSemanticCache();
         });
       } catch (e) {
-        return
+        return;
       }
     })
   }
@@ -162,11 +167,11 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
   syncFile(path: string) {
     this.fs.readFile(path, (e, str) => {
       if (e) {
-        delete this.files[path];
+        this.files.delete(path);
         return;
       }
 
-      this.files[path] = str.toString();
+      this.files.set(path, str.toString());
     })
   }
 
@@ -180,7 +185,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
         const fullEntry = path + '/' + entry;
         this.fs.stat(fullEntry, (err, stat) => {
           if (err) {
-            delete this.files[path];
+            this.files.delete(path);
             return;
           }
 
@@ -204,7 +209,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
   readFile(resource: string, encoding?: string) {
     const path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
     if (this.fs) {
-      return this.files[path];
+      return this.files.get(path);
     }
 
     return undefined;
@@ -212,7 +217,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 
 	getScriptFileNames(): string[] {
 		let models = this._ctx.getMirrorModels().map(model => model.uri.toString());
-		return models.concat(Object.keys(this._extraLibs)).concat(Object.keys(this.files).map(p => `file://${p}`));
+		return models.concat(Object.keys(this._extraLibs)).concat([...this.files.keys()].map(p => `file://${p}`));
 	}
 
 	private _getModel(fileName: string): monaco.worker.IMirrorModel {
@@ -253,7 +258,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
 			text = ES6_LIB.CONTENTS;
 		} else if (this.fs) {
       const usedFilename = fileName.indexOf('file://') === 0 ? monaco.Uri.parse(fileName).fsPath : fileName;
-      text = this.files[usedFilename];
+      text = this.files.get(usedFilename);
 		} else {
       return;
     }
@@ -300,7 +305,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
       return false;
     }
     const path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
-    return this.files[path] !== undefined;
+    return this.files.has(path);
   }
 
   directoryExists(resource: string) {
@@ -308,7 +313,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
       return false;
     }
     const path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
-    return Object.keys(this.files).some(f => f.indexOf(path) === 0);
+    return [...this.files.keys()].some(f => f.indexOf(path) === 0);
   }
 
   getDirectories(resource: string) {
@@ -317,7 +322,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
     }
     const path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
     const resourceSplits = path.split('/').length;
-    return Object.keys(this.files).filter(f => f.indexOf(path) === 0).map(p => {
+    return [...this.files.keys()].filter(f => f.indexOf(path) === 0).map(p => {
       const newP = p.split('/');
       newP.length = resourceSplits;
 

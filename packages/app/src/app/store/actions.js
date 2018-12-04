@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import { identify } from 'common/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
@@ -8,7 +9,11 @@ import { mainModule, defaultOpenedModule } from './utils/main-module';
 export function getSandbox({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
-    .then(data => path.success({ sandbox: data }))
+    .then(data => {
+      // data.template = 'custom';
+      const sandbox = data;
+      return path.success({ sandbox });
+    })
     .catch(error => {
       if (error.response.status === 404) {
         return path.notFound();
@@ -23,6 +28,18 @@ export function callVSCodeCallback({ props }) {
   if (cbID) {
     if (window.cbs && window.cbs[cbID]) {
       window.cbs[cbID](undefined, undefined);
+      delete window.cbs[cbID];
+    }
+  }
+}
+
+export function callVSCodeCallbackError({ props }) {
+  const { cbID } = props;
+  if (cbID) {
+    if (window.cbs && window.cbs[cbID]) {
+      const errorMessage =
+        props.message || 'Something went wrong while saving the file.';
+      window.cbs[cbID](new Error(errorMessage), undefined);
       delete window.cbs[cbID];
     }
   }
@@ -219,7 +236,7 @@ export function closeTabByIndex({ state, props }) {
 export function signInGithub({ browser, path, props }) {
   const { useExtraScopes } = props;
   const popup = browser.openPopup(
-    `/auth/github${useExtraScopes ? '?scope=user:email,public_repo' : ''}`,
+    `/auth/github${useExtraScopes ? '?scope=user:email,repo' : ''}`,
     'sign in'
   );
 
@@ -311,6 +328,7 @@ export function removeJwtFromStorage({ jwt }) {
 
 export function setSignedInCookie() {
   document.cookie = 'signedIn=true; Path=/;';
+  identify('signed_in', true);
 }
 
 export function listenToConnectionChange({ connection }) {

@@ -17,7 +17,6 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
-import isESModule from './utils/is-es-module';
 
 import type { default as Manager } from './manager';
 import HMR from './hmr';
@@ -77,7 +76,8 @@ export type LoaderContext = {
     title: string,
     code: string,
     currentPath?: string,
-    overwrite?: boolean
+    overwrite?: boolean,
+    isChild?: boolean
   ) => TranspiledModule,
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
@@ -225,7 +225,9 @@ export default class TranspiledModule {
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
     manager.preset.getLoaders(this.module, this.query).forEach(t => {
-      t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+      if (t.transpiler.cleanModule) {
+        t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+      }
     });
     manager.removeTranspiledModule(this);
   }
@@ -313,6 +315,93 @@ export default class TranspiledModule {
     );
   }
 
+  addDependency(
+    manager: Manager,
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+      isEntry: boolean,
+    },
+    isTranspilationDep: boolean = false
+  ) {
+    if (depPath.startsWith('codesandbox-api')) {
+      return;
+    }
+
+    try {
+      const tModule = manager.resolveTranspiledModule(
+        depPath,
+        options && options.isAbsolute ? '/' : this.module.path
+      );
+
+      if (isTranspilationDep) {
+        this.transpilationDependencies.add(tModule);
+        tModule.transpilationInitiators.add(this);
+      } else {
+        this.dependencies.add(tModule);
+        tModule.initiators.add(this);
+      }
+
+      if (options.isEntry) {
+        tModule.setIsEntry(true);
+      }
+    } catch (e) {
+      if (e.type === 'module-not-found' && e.isDependency) {
+        this.asyncDependencies.push(manager.downloadDependency(e.path, this));
+      } else {
+        // When a custom file resolver is given to the manager we will try
+        // to resolve using this file resolver. If that fails we will still
+        // mark the dependency as having missing deps.
+        if (manager.fileResolver) {
+          this.asyncDependencies.push(
+            new Promise(async resolve => {
+              try {
+                const tModule = await manager.resolveTranspiledModule(
+                  depPath,
+                  options && options.isAbsolute ? '/' : this.module.path,
+                  undefined,
+                  true
+                );
+
+                if (isTranspilationDep) {
+                  this.transpilationDependencies.add(tModule);
+                  tModule.transpilationInitiators.add(this);
+                } else {
+                  this.dependencies.add(tModule);
+                  tModule.initiators.add(this);
+                }
+
+                if (options.isEntry) {
+                  tModule.setIsEntry(true);
+                }
+                resolve(tModule);
+              } catch (err) {
+                if (process.env.NODE_ENV === 'development') {
+                  console.error(
+                    'Problem while trying to fetch file from custom fileResolver'
+                  );
+                  console.error(err);
+                }
+
+                this.hasMissingDependencies = true;
+              }
+            })
+          );
+          return;
+        }
+
+        // Don't throw the error, we want to throw this error during evaluation
+        // so we get the correct line as error
+        // ... Thank you so much for this younger Ives, you saved me here.
+        if (process.env.NODE_ENV === 'development') {
+          console.error(e);
+        }
+
+        this.hasMissingDependencies = true;
+      }
+    }
+  }
+
   update(module: Module): TranspiledModule {
     if (this.module.path !== module.path || this.module.code !== module.code) {
       this.module = module;
@@ -343,7 +432,8 @@ export default class TranspiledModule {
         path: string,
         code: string,
         directoryPath: string = pathUtils.dirname(this.module.path),
-        overwrite?: boolean = true
+        overwrite?: boolean = true,
+        isChild?: boolean = true
       ) => {
         const queryPath = path.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
@@ -373,8 +463,10 @@ export default class TranspiledModule {
         transpiledModule =
           transpiledModule ||
           manager.addTranspiledModule(moduleCopy, queryPath.join('!'));
-        // this.childModules.push(transpiledModule);
 
+        if (isChild) {
+          this.childModules.push(transpiledModule);
+        }
         this.dependencies.add(transpiledModule);
         transpiledModule.initiators.add(this);
 
@@ -387,51 +479,10 @@ export default class TranspiledModule {
       // that include the source of another file by themselves, we need to
       // force transpilation to rebuild the file
       addTranspilationDependency: (depPath: string, options) => {
-        const tModule = manager.resolveTranspiledModule(
-          depPath,
-          options && options.isAbsolute ? '/' : this.module.path
-        );
-
-        this.transpilationDependencies.add(tModule);
-        tModule.transpilationInitiators.add(this);
-
-        if (options.isEntry) {
-          tModule.setIsEntry(true);
-        }
+        this.addDependency(manager, depPath, options, true);
       },
-      addDependency: (depPath: string, options = {}) => {
-        if (depPath.startsWith('codesandbox-api')) {
-          return;
-        }
-
-        try {
-          const tModule = manager.resolveTranspiledModule(
-            depPath,
-            options && options.isAbsolute ? '/' : this.module.path
-          );
-
-          this.dependencies.add(tModule);
-          tModule.initiators.add(this);
-
-          if (options.isEntry) {
-            tModule.setIsEntry(true);
-          }
-        } catch (e) {
-          if (e.type === 'module-not-found' && e.isDependency) {
-            this.asyncDependencies.push(
-              manager.downloadDependency(e.path, this)
-            );
-          } else {
-            // Don't throw the error, we want to throw this error during evaluation
-            // so we get the correct line as error
-            // eslint-disable-next-line
-            if (process.env.NODE_ENV === 'development') {
-              console.error(e);
-            }
-
-            this.hasMissingDependencies = true;
-          }
-        }
+      addDependency: async (depPath: string, options = {}) => {
+        this.addDependency(manager, depPath, options);
       },
       addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
@@ -524,8 +575,12 @@ export default class TranspiledModule {
     this.transpilationDependencies.forEach(tModule => {
       tModule.transpilationInitiators.delete(this);
     });
+    this.childModules.forEach(tModule => {
+      tModule.dispose(manager);
+    });
     this.dependencies.clear();
     this.transpilationDependencies.clear();
+    this.childModules.length = 0;
     this.errors = [];
     this.warnings = [];
 
@@ -621,7 +676,10 @@ export default class TranspiledModule {
     ) {
       const hasHMR = manager.preset
         .getLoaders(this.module, this.query)
-        .some(t => t.transpiler.HMREnabled);
+        .some(
+          t =>
+            t.transpiler.HMREnabled == null ? true : t.transpiler.HMREnabled
+        );
 
       if (!hasHMR) {
         manager.markHardReload();
@@ -830,6 +888,27 @@ export default class TranspiledModule {
           return bfsModule;
         }
 
+        if (path === 'module') {
+          return class NodeModule {
+            filename = undefined;
+            id = undefined;
+            loaded = false;
+
+            static _resolveFilename(toPath: string, module) {
+              if (module.filename == null) {
+                throw new Error('Module has no filename');
+              }
+
+              const m = manager.resolveModule(toPath, module.filename);
+              return m.path;
+            }
+
+            static _nodeModulePaths() {
+              return [];
+            }
+          };
+        }
+
         // So it must be a dependency
         if (path.startsWith('codesandbox-api')) {
           return resolveDependency(path, manager.externals);
@@ -897,7 +976,10 @@ export default class TranspiledModule {
       this.initiators.size === 0 &&
       this.transpilationInitiators.size === 0 &&
       !this.isEntry &&
-      !manager.isFirstLoad
+      !manager.isFirstLoad &&
+      // Don't delete stubbed modules, they are here for a reason, most probably
+      // because they are aliased with a browser field
+      !this.module.stubbed
     ) {
       // Remove the module from the transpiler if it's not used anymore
       debug(`Removing '${this.getId()}' from manager.`);
@@ -911,14 +993,17 @@ export default class TranspiledModule {
     if (
       manager.preset
         .getLoaders(this.module, this.query)
-        .some(t => !t.transpiler.cacheable)
+        .some(
+          t =>
+            t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
+        )
     ) {
       debug(`Removing '${this.getId()}' cache as it's not cacheable.`);
       this.compilation = null;
     }
   }
 
-  serialize(): SerializedTranspiledModule {
+  serialize(optimizeForSize: boolean = true): SerializedTranspiledModule {
     const serializableObject = {};
 
     const sourceEqualsCompiled =
@@ -930,7 +1015,7 @@ export default class TranspiledModule {
     serializableObject.emittedAssets = this.emittedAssets;
     serializableObject.isEntry = this.isEntry;
     serializableObject.isTestFile = this.isTestFile;
-    if (!sourceEqualsCompiled) {
+    if (!sourceEqualsCompiled || !optimizeForSize) {
       serializableObject.source = this.source;
     }
     serializableObject.sourceEqualsCompiled = sourceEqualsCompiled;
