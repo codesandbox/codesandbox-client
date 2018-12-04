@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -9,18 +8,14 @@ import Layout from '../components/layout';
 import WideSandbox from '../screens/explore/WideSandbox';
 import FeaturedSandbox from '../screens/explore/FeaturedSandbox';
 import SandboxModal from '../screens/explore/SandboxModal';
+import featuredSandboxes from '../utils/featuredSandboxes';
+import { SliderStyled, Container, Sandboxes } from './_explore.elements';
 
-const Container = styled.div`
-  color: ${props => props.theme.new.title}
-
-  margin-bottom: 4rem;
-`;
-
-const Sandboxes = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-`;
+const sliderSettings = {
+  dots: true,
+  arrows: false,
+  speed: 500,
+};
 
 export default class Explore extends React.PureComponent {
   state = {
@@ -98,11 +93,11 @@ export default class Explore extends React.PureComponent {
           />
 
           <PageContainer width={1440}>
-            <FeaturedSandbox
-              title="Material UI - Grid"
-              description="Good implementation that highlights the use of using a Grid in Material UI."
-              sandboxId={'q75m7wn514'}
-            />
+            <SliderStyled {...sliderSettings}>
+              {featuredSandboxes.map(sandbox => (
+                <FeaturedSandbox key={sandbox.sandboxId} {...sandbox} />
+              ))}
+            </SliderStyled>
 
             <Heading2 style={{ margin: '3rem 0' }}>Picked Sandboxes</Heading2>
             <Sandboxes>
@@ -113,11 +108,11 @@ export default class Explore extends React.PureComponent {
                       sandbox={sandbox}
                     />
                   ))
-                : new Array(16)
-                    .fill(undefined)
-                    .map(
-                      (_, i) => console.log('hello') || <WideSandbox key={i} />
-                    )}
+                : new Array(16).fill(undefined).map(
+                    (_, i) =>
+                      // eslint-disable-next-line react/no-array-index-key,no-console
+                      console.log('hello') || <WideSandbox key={i} />
+                  )}
             </Sandboxes>
           </PageContainer>
         </Container>
