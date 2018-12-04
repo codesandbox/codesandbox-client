@@ -89,7 +89,7 @@ class ReasonTranspiler extends Transpiler {
   ): Promise<{ transpiledCode: string }> {
     if (!window.ocaml) {
       await addScript(
-        'https://cdn.rawgit.com/jaredly/reason-react/more-docs/docs/bucklescript.js'
+        'https://cdn.jsdelivr.net/gh/jaredly/reason-react@more-docs/docs/bucklescript.js'
       );
       await addScript('https://reason.surge.sh/bucklescript-deps.js');
       await addScript('https://unpkg.com/reason@3.3.4/refmt.js');
