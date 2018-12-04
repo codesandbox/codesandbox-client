@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Preview from 'app/src/app/components/Preview';
 import { camelizeKeys } from 'humps';
 import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
+import { profileUrl } from 'common/utils/url-generator';
 
 import Stats from 'common/components/Stats';
 import getIcon from 'common/templates/icons';
@@ -114,10 +115,12 @@ export default class FeaturedSandbox extends React.PureComponent {
           {sandbox && (
             <React.Fragment>
               {sandbox.author && (
-                <Author
-                  username={sandbox.author.username}
-                  avatarUrl={sandbox.author.avatar_url}
-                />
+                <a href={profileUrl(sandbox.author.username)}>
+                  <Author
+                    username={sandbox.author.username}
+                    avatarUrl={sandbox.author.avatar_url}
+                  />
+                </a>
               )}
               <SandboxIcon template={sandbox.template} />
             </React.Fragment>
