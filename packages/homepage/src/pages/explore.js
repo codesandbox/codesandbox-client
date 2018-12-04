@@ -1,5 +1,7 @@
 import React from 'react';
 
+import getTemplate from 'common/templates';
+
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
@@ -15,6 +17,7 @@ const sliderSettings = {
   dots: true,
   arrows: false,
   speed: 500,
+  lazyLoad: 'progressive',
 };
 
 export default class Explore extends React.PureComponent {
@@ -93,7 +96,12 @@ export default class Explore extends React.PureComponent {
           />
 
           <PageContainer width={1440}>
-            <SliderStyled {...sliderSettings}>
+            <SliderStyled
+              colors={featuredSandboxes.map(({ template }) =>
+                getTemplate(template).color()
+              )}
+              {...sliderSettings}
+            >
               {featuredSandboxes.map(sandbox => (
                 <FeaturedSandbox key={sandbox.sandboxId} {...sandbox} />
               ))}

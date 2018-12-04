@@ -30,7 +30,7 @@ export const StatsHeader = styled.h2`
 
 export const Author = styled(UserWithAvatar)`
   position: absolute;
-  left: 1.5rem;
+  left: 0.875rem;
   bottom: 1.5rem;
   color: ${props => props.theme.new.description};
   font-weight: 600;
@@ -48,8 +48,8 @@ export const Footer = styled.footer`
   display: flex;
   justify-content: space-between;
   position: relative;
-  padding: 10px 30px;
-  padding-bottom: 20px;
+  padding: 1rem 1.5rem;
+  padding-top: 10px;
 `;
 
 export const SandboxTitle = styled.h1`
@@ -70,7 +70,8 @@ export const TemplateLogo = styled.section`
   display: flex;
   align-items: center;
 
-  svg {
+  svg,
+  img {
     margin-right: 10px;
   }
 `;

@@ -60,7 +60,7 @@ export default class WideSandbox extends React.PureComponent {
       >
         <SandboxImage
           alt={this.getTitle()}
-          src={getScreenshot(sandbox.id)}
+          src={sandbox.screenshotUrl || getScreenshot(sandbox.id)}
           color={template.color}
           style={{ height: this.state.imageLoaded ? 'auto' : 245 }}
           onLoad={() => {

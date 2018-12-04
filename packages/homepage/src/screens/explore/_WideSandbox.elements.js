@@ -56,7 +56,7 @@ export const SandboxDescription = styled.p`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  max-height: 25px;
+  max-height: 35px;
 `;
 
 export const SandboxImage = styled.img`

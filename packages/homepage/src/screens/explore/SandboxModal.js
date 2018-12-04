@@ -164,7 +164,7 @@ export default class SandboxModal extends React.PureComponent {
           <Footer>
             {sandbox ? (
               <Fragment>
-                {sandbox.author && (
+                {sandbox.author ? (
                   <a
                     href={profileUrl(sandbox.author.username)}
                     style={{
@@ -177,6 +177,8 @@ export default class SandboxModal extends React.PureComponent {
                       avatarUrl={sandbox.author.avatarUrl}
                     />
                   </a>
+                ) : (
+                  <div />
                 )}
                 <TemplateLogo>
                   <Icon width={31} height={31} />
