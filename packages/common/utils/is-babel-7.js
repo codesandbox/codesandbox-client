@@ -1,7 +1,7 @@
 import semver from 'semver';
 
-function isCRAVersion2(dependencies) {
-  const usedDeps = dependencies || {};
+function isCRAVersion2(dependencies, devDependencies) {
+  const usedDeps = { ...dependencies, ...devDependencies };
   if (usedDeps['react-scripts']) {
     const reactScriptsVersion = usedDeps['react-scripts'];
 
@@ -23,7 +23,7 @@ export function isBabel7(dependencies = {}, devDependencies = {}) {
     return true;
   }
 
-  if (isCRAVersion2(dependencies)) {
+  if (isCRAVersion2(dependencies, devDependencies)) {
     return true;
   }
 
