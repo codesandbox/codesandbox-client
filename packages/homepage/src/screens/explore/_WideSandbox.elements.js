@@ -35,6 +35,13 @@ export const SandboxTitle = styled.h2`
   font-weight: 600;
   margin-bottom: 6px;
   margin-top: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  max-height: 20px;
 `;
 
 export const SandboxDescription = styled.p`
@@ -43,6 +50,13 @@ export const SandboxDescription = styled.p`
   font-weight: 500;
   line-height: 1.3;
   margin-top: 8px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  max-height: 25px;
 `;
 
 export const SandboxImage = styled.img`

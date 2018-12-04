@@ -27,6 +27,8 @@ const Container = styled(animated.div)`
 
 const Content = styled.div`
   width: 1000px;
+
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
 `;
 
 export default class Modal extends React.PureComponent {
