@@ -236,9 +236,9 @@ async function compile(code, customConfig, path) {
       await compile(code, customConfig, path);
     } else if (e.message.indexOf('Cannot find module') > -1) {
       // Try to download the file and all dependencies, retry compilation then
-      await downloadFromError(e).then(resolve => {
+      await downloadFromError(e).then(() => {
         resetCache();
-        resolve(compile(code, customConfig, path));
+        return compile(code, customConfig, path);
       });
     } else {
       throw e;
@@ -371,10 +371,10 @@ self.addEventListener('message', async event => {
 
     if (
       version === 7 &&
+      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
       (flattenedPresets.indexOf('env') > -1 ||
         flattenedPresets.indexOf('@babel/preset-env') > -1 ||
-        (flattenedPresets.indexOf('@vue/app') > -1 &&
-          Object.keys(Babel.availablePresets).indexOf('env') === -1))
+        flattenedPresets.indexOf('@vue/app') > -1)
     ) {
       const envPreset = await import(/* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env');
       Babel.registerPreset('env', envPreset);

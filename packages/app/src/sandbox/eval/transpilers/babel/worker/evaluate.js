@@ -28,6 +28,10 @@ export default function evaluate(
       return () => {};
     }
 
+    if (requirePath === 'constants') {
+      return {};
+    }
+
     if (requirePath === 'babel-register') {
       transpileBeforeExec = true;
       return () => {};
