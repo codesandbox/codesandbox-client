@@ -2,7 +2,6 @@
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index.js';
 import { isBabel7 } from 'common/utils/is-babel-7';
 
-import isESModule from '../../utils/is-es-module';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
@@ -10,6 +9,7 @@ import { type LoaderContext } from '../../transpiled-module';
 import type { default as Manager } from '../../manager';
 
 import delay from '../../../utils/delay';
+import { shouldTranspile } from './check';
 
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
@@ -50,7 +50,7 @@ class BabelTranspiler extends WorkerTranspiler {
       if (
         (loaderContext.options.simpleRequire ||
           path.startsWith('/node_modules')) &&
-        !isESModule(code)
+        !shouldTranspile(code, path)
       ) {
         regexGetRequireStatements(code).forEach(dependency => {
           if (dependency.isGlob) {

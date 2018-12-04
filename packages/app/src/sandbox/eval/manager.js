@@ -22,10 +22,10 @@ import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
-import isESModule from './utils/is-es-module';
 import { packageFilter } from './utils/resolve-utils';
 
 import { ignoreNextCache, deleteAPICache } from './cache';
+import { shouldTranspile } from './transpilers/babel/check';
 
 type Externals = {
   [name: string]: string,
@@ -292,7 +292,7 @@ export default class Manager {
 
       // Check if module syntax, only transpile when that's NOT the case
       // TODO move this check to the packager
-      if (!isESModule(module.code)) {
+      if (!shouldTranspile(module.code, path)) {
         module.requires = this.manifest.contents[path].requires;
       }
 
