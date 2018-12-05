@@ -1,27 +1,35 @@
 import React, { Fragment } from 'react';
 import { camelizeKeys } from 'humps';
-import Stats from 'common/components/Stats';
 import { Spring } from 'react-spring';
 import getIcon from 'common/templates/icons';
-import { profileUrl } from 'common/utils/url-generator';
+import { profileUrl, githubRepoUrl } from 'common/utils/url-generator';
 import getTemplate from 'common/templates';
+import GithubBadge from 'common/components/GithubBadge';
+
+import Tags from 'common/components/Tags';
+
 import Modal from './Modal';
 import EmbedSkeleton from './EmbedSkeleton';
 import {
   Container,
   StatsContainer,
   StatsHeader,
+  StyledStats,
   Author,
   SandboxInfo,
   Footer,
+  FooterInfo,
   SandboxTitle,
   SandboxDescription,
   TemplateLogo,
+  StyledRightArrow,
+  StyledLeftArrow,
 } from './_SandboxModal.elements';
 
 export default class SandboxModal extends React.PureComponent {
   state = {
     sandbox: undefined,
+    showFrame: false,
   };
   loadedSandboxes = {};
 
@@ -45,30 +53,39 @@ export default class SandboxModal extends React.PureComponent {
     }
 
     const sandbox = await this.getSandbox(props.sandboxId);
-    if (this.frame) {
-      requestAnimationFrame(() => {
-        this.frame.contentWindow.postMessage({ sandbox }, '*');
-      });
-    }
 
     this.setState({ sandbox });
+
+    if (this.frame) {
+      await this.frameInitializedPromise;
+      this.frame.contentWindow.postMessage({ sandbox }, '*');
+    }
   };
 
   componentDidMount() {
     this.fetchSandbox();
     this.registerListeners();
+
+    this.frameInitializedPromise = new Promise(resolve => {
+      this.resolveFrameInitializedPromise = resolve;
+    });
+
+    setTimeout(() => {
+      this.setState({ showFrame: true });
+    }, 1000);
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     this.unregisterListeners();
   }
 
   registerListeners = () => {
-    document.addEventListener('keydown', this.handleKeyPress);
+    document.addEventListener('keyup', this.handleKeyPress);
   };
 
   unregisterListeners = () => {
-    document.removeEventListener('keydown', this.handleKeyPress);
+    document.removeEventListener('keyup', this.handleKeyPress);
+    window.removeEventListener('message', this.listenForInitialized);
   };
 
   handleKeyPress = e => {
@@ -91,8 +108,16 @@ export default class SandboxModal extends React.PureComponent {
     }
   }
 
+  listenForInitialized = e => {
+    if (e && e.data && e.data.type === 'initialized') {
+      this.resolveFrameInitializedPromise();
+    }
+  };
+
   setupFrame = el => {
     this.frame = el;
+
+    window.addEventListener('message', this.listenForInitialized);
   };
 
   render() {
@@ -107,6 +132,12 @@ export default class SandboxModal extends React.PureComponent {
         width={1000}
       >
         <Container>
+          {this.props.openPreviousSandbox && (
+            <StyledLeftArrow onClick={this.props.openPreviousSandbox} />
+          )}
+          {this.props.openNextSandbox && (
+            <StyledRightArrow onClick={this.props.openNextSandbox} />
+          )}
           <Spring
             from={{ opacity: this.state.sandbox ? 1 : 0 }}
             to={{ opacity: this.state.sandbox ? 1 : 0 }}
@@ -119,20 +150,24 @@ export default class SandboxModal extends React.PureComponent {
                   height: 550,
                 }}
               >
-                <iframe
-                  ref={this.setupFrame}
-                  title="sandbox"
-                  src={`http://localhost:3000/embed/custom?view=preview`}
-                  style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    border: 0,
-                    outline: 0,
-                    zIndex: 20,
-                    ...styles,
-                  }}
-                />
+                {this.state.showFrame && (
+                  <iframe
+                    ref={this.setupFrame}
+                    title="sandbox"
+                    src={`http://localhost:3000/embed/custom?view=preview`}
+                    style={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      border: 0,
+                      outline: 0,
+                      zIndex: 20,
+                      borderTopLeftRadius: 4,
+                      borderTopRightRadius: 4,
+                      ...styles,
+                    }}
+                  />
+                )}
 
                 {styles.opacity !== 1 && (
                   <EmbedSkeleton id={this.props.sandboxId} />
@@ -145,38 +180,60 @@ export default class SandboxModal extends React.PureComponent {
             <SandboxInfo>
               <SandboxTitle>{this.props.title}</SandboxTitle>
               <SandboxDescription>{this.props.description}</SandboxDescription>
+              {sandbox &&
+                sandbox.tags && (
+                  <Tags style={{ fontSize: '.7rem' }} tags={sandbox.tags} />
+                )}
             </SandboxInfo>
 
             <StatsContainer>
               <StatsHeader>Stats</StatsHeader>
               {sandbox && (
-                <Stats
-                  style={{ marginTop: 11 }}
-                  vertical
-                  text
-                  viewCount={sandbox.viewCount}
-                  likeCount={sandbox.likeCount}
-                  forkCount={sandbox.forkCount}
-                />
+                <Spring from={{ opacity: sandbox ? 1 : 0 }} to={{ opacity: 1 }}>
+                  {style => (
+                    <StyledStats
+                      style={style}
+                      vertical
+                      text
+                      viewCount={sandbox.viewCount}
+                      likeCount={sandbox.likeCount}
+                      forkCount={sandbox.forkCount}
+                    />
+                  )}
+                </Spring>
               )}
             </StatsContainer>
           </div>
           <Footer>
             {sandbox ? (
-              <Fragment>
-                {sandbox.author ? (
-                  <a
-                    href={profileUrl(sandbox.author.username)}
-                    style={{
-                      top: 28,
-                      position: 'relative',
-                    }}
-                  >
-                    <Author
-                      username={sandbox.author.username}
-                      avatarUrl={sandbox.author.avatarUrl}
-                    />
-                  </a>
+              <FooterInfo>
+                {sandbox.author || sandbox.git ? (
+                  <React.Fragment>
+                    {sandbox.author && (
+                      <a
+                        href={profileUrl(sandbox.author.username)}
+                        style={{
+                          top: 28,
+                          position: 'relative',
+                        }}
+                      >
+                        <Author
+                          username={sandbox.author.username}
+                          avatarUrl={sandbox.author.avatarUrl}
+                        />
+                      </a>
+                    )}
+
+                    {sandbox.git && (
+                      <GithubBadge
+                        style={{ lineHeight: 1.7 }}
+                        username={sandbox.git.username}
+                        repo={sandbox.git.repo}
+                        branch={sandbox.git.branch}
+                        url={githubRepoUrl(sandbox.git)}
+                      />
+                    )}
+                  </React.Fragment>
                 ) : (
                   <div />
                 )}
@@ -188,8 +245,10 @@ export default class SandboxModal extends React.PureComponent {
                     {template.niceName}
                   </SandboxDescription>
                 </TemplateLogo>
-              </Fragment>
-            ) : null}
+              </FooterInfo>
+            ) : (
+              <div style={{ height: 31 }} />
+            )}
           </Footer>
         </Container>
       </Modal>

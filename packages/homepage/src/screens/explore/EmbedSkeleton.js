@@ -32,7 +32,6 @@ export default ({ id, style }) => (
           backgroundImage: `url("https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png")`,
           backgroundRepeat: 'no-repeat',
           backgroundPositionX: 'center',
-          backgroundSize: 'cover',
           transform: 'scale(1.025, 1.025)',
           width: '100%',
           height: '100%',

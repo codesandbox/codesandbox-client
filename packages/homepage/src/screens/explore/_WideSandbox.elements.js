@@ -1,30 +1,40 @@
 import styled from 'styled-components';
-import Card from 'card-vibes';
 
 import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
 
 export const BG_COLOR = '#1C2022';
 export const BG_HOVER = '#212629';
 
-export const Container = styled(Card)`
-  transition: 0.3s ease background-color;
+export const Container = styled.div`
+  transition: 0.3s ease all;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   position: relative;
   flex: 1;
   min-width: 400px;
+
+  flex-grow: 1;
   width: 100%;
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
 
   margin-bottom: 2rem;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
 
   background-color: ${BG_COLOR};
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
 
   &:hover {
     background-color: ${BG_HOVER};
+    transform: translateY(-5px);
+    box-shadow: 0 8px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  &:last-child {
+    flex-grow: 0;
+    min-width: calc(33% - 1rem);
   }
 `;
 

@@ -1,12 +1,43 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
 
+import RightArrow from 'react-icons/lib/md/keyboard-arrow-right';
+import LeftArrow from 'react-icons/lib/md/keyboard-arrow-left';
+import fadeIn from 'common/utils/animation/fade-in';
+import Stats from 'common/components/Stats';
+
 export const Container = styled.div`
+  position: relative;
   background-color: ${props => props.theme.background2};
   display: flex;
   flex-direction: column;
   border-radius: 4px;
-  overflow: hidden;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+`;
+
+const ArrowStyles = css`
+  transition: 0.3s ease color;
+  top: 50%;
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
+`;
+
+export const StyledRightArrow = styled(RightArrow)`
+  position: absolute;
+  right: -54px;
+  ${ArrowStyles};
+`;
+
+export const StyledLeftArrow = styled(LeftArrow)`
+  position: absolute;
+  left: -54px;
+  ${ArrowStyles};
 `;
 
 export const StatsContainer = styled.div`
@@ -17,6 +48,10 @@ export const StatsContainer = styled.div`
   margin-top: 3px;
   font-weight: 600;
   color: ${props => props.theme.new.description};
+`;
+
+export const StyledStats = styled(Stats)`
+  margin-top: 11px;
 `;
 
 export const StatsHeader = styled.h2`
@@ -45,11 +80,16 @@ export const SandboxInfo = styled.div`
 `;
 
 export const Footer = styled.footer`
+  font-family: 'Poppins';
+  padding: 1rem 1.5rem;
+  padding-top: 10px;
+`;
+
+export const FooterInfo = styled.div`
+  ${fadeIn(0)};
   display: flex;
   justify-content: space-between;
   position: relative;
-  padding: 1rem 1.5rem;
-  padding-top: 10px;
 `;
 
 export const SandboxTitle = styled.h1`

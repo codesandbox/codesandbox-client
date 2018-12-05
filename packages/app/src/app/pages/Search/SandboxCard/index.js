@@ -1,7 +1,7 @@
 import React from 'react';
 import { Highlight } from 'react-instantsearch/dom';
 
-import Tags from 'app/components/Tags';
+import Tags from 'common/components/Tags';
 
 import { sandboxUrl } from 'common/utils/url-generator';
 

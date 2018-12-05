@@ -436,6 +436,11 @@ class BasePreview extends React.Component<Props, State> {
     if (this.serverPreview) {
       this.initializeLastSent();
       this.setupSSESockets();
+
+      setTimeout(() => {
+        // Remove screenshot after specific time, so the loading container spinner can still show
+        this.setState({ showScreenshot: false });
+      }, 800);
     }
 
     this.setState(
@@ -773,7 +778,7 @@ class BasePreview extends React.Component<Props, State> {
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
 
         <Spring
-          from={{ opacity: 1 }}
+          from={{ opacity: 0 }}
           to={{
             opacity: this.state.showScreenshot ? 0 : 1,
           }}
@@ -792,6 +797,8 @@ class BasePreview extends React.Component<Props, State> {
                 hideNavigation={!showNavigation}
                 style={{
                   ...style,
+                  zIndex: 1,
+                  backgroundColor: 'white',
                   pointerEvents:
                     dragging || inactive || this.props.isResizing
                       ? 'none'
@@ -812,7 +819,7 @@ class BasePreview extends React.Component<Props, State> {
                       right: 0,
                       bottom: 0,
                       top: 40,
-                      opacity: 1 - style.opacity,
+                      zIndex: 0,
                     }}
                   >
                     <div
@@ -827,7 +834,6 @@ class BasePreview extends React.Component<Props, State> {
                         }")`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPositionX: 'center',
-                        backgroundSize: 'cover',
                       }}
                     />
                   </div>

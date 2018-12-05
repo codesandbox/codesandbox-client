@@ -1,61 +1,51 @@
-import styled from 'styled-components';
-import Slider from 'react-slick';
-import SliderCSS from 'slick-carousel/slick/slick.css';
+import styled, { css } from 'styled-components';
 
-export const SliderStyled = styled(Slider)`
-  ${SliderCSS};
+export const Dots = styled.div`
+  display: flex !important;
 
-  .slick-dots {
-    /* Damn you ken */
-    display: flex !important;
+  list-style: none;
+  align-items: center;
+  justify-content: center;
 
-    list-style: none;
-    align-items: center;
-    justify-content: center;
-    margin-top: 30px;
-    margin-left: 0;
-
-    li {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-
-      button {
-        cursor: pointer;
-        width: 8px;
-        height: 8px;
-      }
-
-      &.slick-active button {
-        width: 12px;
-        height: 12px;
-      }
-    }
-
-    ${props =>
-      props.colors.map(
-        (color, i) => `
-    li:nth-child(${i + 1}) {
-      button {
-        background: ${color}
-      }
-    }
-   `
-      )};
-
-    button {
-      appearance: none;
-      border: none;
-      text-indent: -9999px;
-      border-radius: 50%;
-      width: 10px;
-      height: 10px;
-      padding: 0;
-      transition: all 200ms ease;
-    }
-  }
+  margin: 0 auto;
+  margin-top: 30px;
 `;
+
+export const DotContainer = styled.div`
+  height: 16px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Dot = styled.button`
+  transition: 0.3s ease all;
+  border-radius: 100%;
+
+  width: 8px;
+  height: 8px;
+  border: 0;
+  outline: 0;
+  padding: 0;
+
+  background-color: ${props => props.color};
+  cursor: pointer;
+
+  ${props =>
+    props.active
+      ? css`
+          width: 12px;
+          height: 12px;
+        `
+      : css`
+          &:hover {
+            width: 12px;
+            height: 12px;
+          }
+        `};
+`;
+
 export const Container = styled.div`
   color: ${props => props.theme.new.title}
 
@@ -66,4 +56,39 @@ export const Sandboxes = styled.div`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+
+  /* accomodate for the margin of the sandboxes */
+  margin: 0 -0.5rem;
+`;
+
+export const ShowMore = styled.button`
+  transition: 0.3s ease all;
+  font-family: 'Poppins';
+
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: ${props => props.theme.new.title};
+  border: 0;
+  outline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 0;
+
+  cursor: pointer;
+
+  ${props =>
+    props.disable
+      ? css`
+          cursor: auto;
+          background-color: rgba(0, 0, 0, 0.1);
+        `
+      : css`
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+          }
+        `};
 `;

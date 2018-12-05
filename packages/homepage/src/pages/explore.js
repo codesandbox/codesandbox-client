@@ -11,28 +11,44 @@ import WideSandbox from '../screens/explore/WideSandbox';
 import FeaturedSandbox from '../screens/explore/FeaturedSandbox';
 import SandboxModal from '../screens/explore/SandboxModal';
 import featuredSandboxes from '../utils/featuredSandboxes';
-import { SliderStyled, Container, Sandboxes } from './_explore.elements';
-
-const sliderSettings = {
-  dots: true,
-  arrows: false,
-  speed: 500,
-  lazyLoad: 'progressive',
-};
+import {
+  Container,
+  Dots,
+  Dot,
+  DotContainer,
+  Sandboxes,
+  ShowMore,
+} from './_explore.elements';
 
 export default class Explore extends React.PureComponent {
   state = {
     sandboxes: [],
     selectedSandbox: undefined,
+    featuredSandboxIndex: 0,
+    currentPage: 0,
+    fetching: false,
   };
 
   componentDidMount() {
-    fetch('http://localhost:3000/api/v1/sandboxes/picked')
+    this.loadSandboxes();
+  }
+
+  loadSandboxes = () => {
+    this.setState({ fetching: true });
+    fetch(
+      `http://localhost:3000/api/v1/sandboxes/picked?page=${
+        this.state.currentPage
+      }`
+    )
       .then(x => x.json())
       .then(data => {
-        this.setState({ sandboxes: data.sandboxes });
+        this.setState(s => ({
+          fetching: false,
+          sandboxes: [...s.sandboxes, ...data.sandboxes],
+          currentPage: s.currentPage + 1,
+        }));
       });
-  }
+  };
 
   closeModal = () => {
     this.setState({ selectedSandbox: undefined });
@@ -74,6 +90,9 @@ export default class Explore extends React.PureComponent {
   render() {
     const { selectedSandbox } = this.state;
 
+    const featuredSandboxInfo =
+      featuredSandboxes[this.state.featuredSandboxIndex];
+
     const currentIndex = this.getCurrentIndex();
 
     return (
@@ -96,32 +115,57 @@ export default class Explore extends React.PureComponent {
           />
 
           <PageContainer width={1440}>
-            <SliderStyled
-              colors={featuredSandboxes.map(({ template }) =>
-                getTemplate(template).color()
-              )}
-              {...sliderSettings}
-            >
-              {featuredSandboxes.map(sandbox => (
-                <FeaturedSandbox key={sandbox.sandboxId} {...sandbox} />
-              ))}
-            </SliderStyled>
+            <FeaturedSandbox
+              title={featuredSandboxInfo.title}
+              description={featuredSandboxInfo.description}
+              sandboxId={featuredSandboxInfo.sandboxId}
+              featuredSandboxes={featuredSandboxes}
+            />
+
+            <Dots>
+              {featuredSandboxes.map((sandbox, i) => {
+                const template = getTemplate(sandbox.template);
+
+                return (
+                  <DotContainer key={sandbox.sandboxId}>
+                    <Dot
+                      active={i === this.state.featuredSandboxIndex}
+                      color={template.color()}
+                      onClick={() =>
+                        this.setState({
+                          featuredSandboxIndex: i,
+                        })
+                      }
+                    />
+                  </DotContainer>
+                );
+              })}
+            </Dots>
 
             <Heading2 style={{ margin: '3rem 0' }}>Picked Sandboxes</Heading2>
             <Sandboxes>
               {this.state.sandboxes.length !== 0
-                ? this.state.sandboxes.map(sandbox => (
+                ? this.state.sandboxes.map((sandbox, i) => (
                     <WideSandbox
+                      // We force i here so we reuse the existing components
+                      // eslint-disable-next-line react/no-array-index-key,no-console
+                      key={i}
                       pickSandbox={this.selectSandbox}
                       sandbox={sandbox}
                     />
                   ))
-                : new Array(16).fill(undefined).map(
-                    (_, i) =>
-                      // eslint-disable-next-line react/no-array-index-key,no-console
-                      console.log('hello') || <WideSandbox key={i} />
-                  )}
+                : new Array(16).fill(undefined).map((_, i) => (
+                    // eslint-disable-next-line react/no-array-index-key,no-console
+                    <WideSandbox key={i} />
+                  ))}
             </Sandboxes>
+
+            <ShowMore
+              disable={this.state.fetching}
+              onClick={this.loadSandboxes}
+            >
+              {this.state.fetching ? 'Loading Sandboxes...' : 'Show More'}
+            </ShowMore>
           </PageContainer>
         </Container>
       </Layout>

@@ -16,24 +16,41 @@ const Container = styled(animated.div)`
   bottom: 0;
   left: 0;
   right: 0;
+  overflow: auto;
+  z-index: 10;
 
   background-color: rgba(0, 0, 0, 0.5);
 
   display: ${props => (props.isOpen ? 'flex' : 'none')};
 
-  align-items: center;
   justify-content: center;
 `;
 
 const Content = styled.div`
   width: 1000px;
-
-  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
+  margin-top: 5%;
+  z-index: 20;
 `;
 
 export default class Modal extends React.PureComponent {
   state = {
     open: false,
+  };
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.listenForEsc);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.listenForEsc);
+  }
+
+  listenForEsc = e => {
+    if (e.keyCode === 27) {
+      // Esc
+
+      this.props.onClose();
+    }
   };
 
   render() {
