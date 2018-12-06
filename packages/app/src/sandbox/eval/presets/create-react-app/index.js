@@ -25,12 +25,7 @@ export default function initialize() {
             configurations &&
               configurations.package &&
               configurations.package.parsed &&
-              configurations.package.parsed.dependencies,
-
-            configurations &&
-              configurations.package &&
-              configurations.package.parsed &&
-              configurations.package.parsed.devDependencies
+              configurations.package.parsed.dependencies
           ) &&
           !v2Initialized
         ) {
