@@ -336,9 +336,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               }
 
               this.handleChange(module.shortid, module.title);
-            } catch (e) {
+            } catch (err) {
               if (process.env.NODE_ENV === 'development') {
-                console.error('catched', e);
+                console.error('catched', err);
               }
             }
           }
