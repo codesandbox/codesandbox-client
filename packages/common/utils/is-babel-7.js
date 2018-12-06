@@ -1,10 +1,9 @@
 import semver from 'semver';
 
 function isCRAVersion2(dependencies, devDependencies) {
-  const usedDeps = { ...dependencies, ...devDependencies };
-  if (usedDeps['react-scripts']) {
-    const reactScriptsVersion = usedDeps['react-scripts'];
-
+  const reactScriptsVersion =
+    dependencies['react-scripts'] || devDependencies['react-scripts'];
+  if (reactScriptsVersion) {
     return (
       /^[a-z]/.test(reactScriptsVersion) ||
       semver.intersects(reactScriptsVersion, '^2.0.0')
