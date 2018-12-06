@@ -29,6 +29,7 @@ export default ({ id, style }) => (
     >
       <div
         style={{
+          // TODO CHANGE THIS TO THE URL GIVEn TO THE SANDBOX SO IT CAN BE PReCHACED
           backgroundImage: `url("https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png")`,
           backgroundRepeat: 'no-repeat',
           backgroundPositionX: 'center',
