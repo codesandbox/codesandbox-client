@@ -27,6 +27,7 @@ export default class Explore extends React.PureComponent {
     featuredSandboxIndex: 0,
     currentPage: 0,
     fetching: false,
+    loadedAll: false,
   };
 
   componentDidMount() {
@@ -42,11 +43,15 @@ export default class Explore extends React.PureComponent {
     )
       .then(x => x.json())
       .then(data => {
-        this.setState(s => ({
-          fetching: false,
-          sandboxes: [...s.sandboxes, ...data.sandboxes],
-          currentPage: s.currentPage + 1,
-        }));
+        if (data.sandboxes.length === 0) {
+          this.setState({ loadedAll: true });
+        } else {
+          this.setState(s => ({
+            fetching: false,
+            sandboxes: [...s.sandboxes, ...data.sandboxes],
+            currentPage: s.currentPage + 1,
+          }));
+        }
       });
   };
 
@@ -160,12 +165,14 @@ export default class Explore extends React.PureComponent {
                   ))}
             </Sandboxes>
 
-            <ShowMore
-              disable={this.state.fetching}
-              onClick={this.loadSandboxes}
-            >
-              {this.state.fetching ? 'Loading Sandboxes...' : 'Show More'}
-            </ShowMore>
+            {!this.state.loadedAll && (
+              <ShowMore
+                disable={this.state.fetching}
+                onClick={this.loadSandboxes}
+              >
+                {this.state.fetching ? 'Loading Sandboxes...' : 'Show More'}
+              </ShowMore>
+            )}
           </PageContainer>
         </Container>
       </Layout>
