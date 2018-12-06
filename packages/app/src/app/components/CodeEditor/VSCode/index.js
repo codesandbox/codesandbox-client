@@ -298,10 +298,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const activeEditor = editor.getActiveCodeEditor();
 
       if (activeEditor) {
-        const currentModuleShortid =
-          this.currentModule && this.currentModule.shortid;
-        const currentModuleTitle =
-          this.currentModule && this.currentModule.title;
+        const modulePath = `/sandbox${getModulePath(
+          this.sandbox.modules,
+          this.sandbox.directories,
+          this.currentModule.id
+        )}`;
+
         activeEditor.updateOptions({ readOnly: this.props.readOnly });
 
         this.modelContentChangedListener = activeEditor.onDidChangeModelContent(
@@ -314,13 +316,31 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               return;
             }
 
-            const { isLive, sendTransforms } = this.props;
+            const path = activeEditor.model.uri.path;
+            try {
+              const module = resolveModule(
+                path.replace(/^\/sandbox/, ''),
+                this.sandbox.modules,
+                this.sandbox.directories
+              );
 
-            if (isLive && sendTransforms && !this.receivingCode) {
-              this.sendChangeOperations(e);
+              const { isLive, sendTransforms } = this.props;
+
+              if (
+                path === modulePath &&
+                isLive &&
+                sendTransforms &&
+                !this.receivingCode
+              ) {
+                this.sendChangeOperations(e);
+              }
+
+              this.handleChange(module.shortid, module.title);
+            } catch (e) {
+              if (process.env.NODE_ENV === 'development') {
+                console.error('catched', e);
+              }
             }
-
-            this.handleChange(currentModuleShortid, currentModuleTitle);
           }
         );
 
