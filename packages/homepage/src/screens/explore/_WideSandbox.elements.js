@@ -11,7 +11,7 @@ export const Container = styled.div`
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   position: relative;
   flex: 1;
-  min-width: 400px;
+  min-width: 300px;
 
   flex-grow: 1;
   width: 100%;

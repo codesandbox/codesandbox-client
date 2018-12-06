@@ -53,12 +53,20 @@ export const Container = styled.div`
 `;
 
 export const Sandboxes = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 2rem;
 
   /* accomodate for the margin of the sandboxes */
   margin: 0 -0.5rem;
+
+  @media screen and (max-width: 1100px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const ShowMore = styled.button`
