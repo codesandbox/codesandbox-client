@@ -67,6 +67,8 @@ export const TitleWrapper = styled(Row)`
 `;
 
 export const Wrapper = styled(Row)`
+  position: relative;
+  z-index: 10;
   @media (max-width: 768px) {
     display: none;
   }

@@ -5,7 +5,6 @@ import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
 import { getModulePath, resolveModule } from 'common/sandbox/modules';
-import { css } from 'glamor';
 import { listen } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
@@ -24,6 +23,7 @@ import { getTextOperation } from 'common/utils/diff';
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
 /* eslint-enable import/no-webpack-loader-syntax */
 
+import eventToTransform from '../Monaco/event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
 import type { EditorAPI } from './MonacoReactComponent';
 import { Container } from './elements';
@@ -37,22 +37,11 @@ import {
   lineAndColumnToIndex,
   indexToLineAndColumn,
 } from '../Monaco/monaco-index-converter';
+import { updateUserSelections } from '../Monaco/live-decorations';
 
 type State = {
   fuzzySearchEnabled: boolean,
 };
-
-const fadeIn = css.keyframes('fadeIn', {
-  // optional name
-  '0%': { opacity: 0 },
-  '100%': { opacity: 1 },
-});
-
-const fadeOut = css.keyframes('fadeOut', {
-  // optional name
-  '0%': { opacity: 1 },
-  '100%': { opacity: 0 },
-});
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
@@ -298,6 +287,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const activeEditor = editor.getActiveCodeEditor();
 
       if (activeEditor) {
+        const modulePath = `/sandbox${getModulePath(
+          this.sandbox.modules,
+          this.sandbox.directories,
+          this.currentModule.id
+        )}`;
+
         activeEditor.updateOptions({ readOnly: this.props.readOnly });
 
         this.modelContentChangedListener = activeEditor.onDidChangeModelContent(
@@ -310,13 +305,31 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               return;
             }
 
-            const { isLive, sendTransforms } = this.props;
+            const path = activeEditor.model.uri.path;
+            try {
+              const module = resolveModule(
+                path.replace(/^\/sandbox/, ''),
+                this.sandbox.modules,
+                this.sandbox.directories
+              );
 
-            if (isLive && sendTransforms && !this.receivingCode) {
-              this.sendChangeOperations(e);
+              const { isLive, sendTransforms } = this.props;
+
+              if (
+                path === modulePath &&
+                isLive &&
+                sendTransforms &&
+                !this.receivingCode
+              ) {
+                this.sendChangeOperations(e);
+              }
+
+              this.handleChange(module.shortid, module.title);
+            } catch (err) {
+              if (process.env.NODE_ENV === 'development') {
+                console.error('catched', err);
+              }
             }
-
-            this.handleChange();
           }
         );
 
@@ -495,45 +508,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
     if (sendTransforms && changeEvent.changes) {
-      const otOperation = new TextOperation();
-      // TODO: add a comment explaining what "delta" is
-      let delta = 0;
-
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
-      // eslint-disable-next-line no-restricted-syntax
-      for (const change of [...changeEvent.changes].reverse()) {
-        const cursorStartOffset =
-          lineAndColumnToIndex(
-            this.liveOperationCode.split(/\r?\n/),
-            change.range.startLineNumber,
-            change.range.startColumn
-          ) + delta;
+      const { operation, newCode } = eventToTransform(
+        changeEvent,
+        this.liveOperationCode
+      );
 
-        const retain = cursorStartOffset - otOperation.targetLength;
-        if (retain > 0) {
-          otOperation.retain(retain);
-        }
+      this.liveOperationCode = newCode;
 
-        if (change.rangeLength > 0) {
-          otOperation.delete(change.rangeLength);
-          delta -= change.rangeLength;
-        }
-
-        if (change.text) {
-          const normalizedChangeText = change.text.split(/\r?\n/).join('\n');
-          otOperation.insert(normalizedChangeText);
-          delta += normalizedChangeText.length;
-        }
-      }
-
-      const remaining = this.liveOperationCode.length - otOperation.baseLength;
-      if (remaining > 0) {
-        otOperation.retain(remaining);
-      }
-      this.liveOperationCode = otOperation.apply(this.liveOperationCode);
-
-      sendTransforms(otOperation);
+      sendTransforms(operation);
 
       requestAnimationFrame(() => {
         this.liveOperationCode = '';
@@ -559,176 +543,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
     >
   ) => {
-    const lines =
-      this.editor
-        .getActiveCodeEditor()
-        .getModel()
-        .getLinesContent() || [];
-
-    userSelections.forEach(data => {
-      const { userId } = data;
-
-      const decorationId = this.currentModule.shortid + userId;
-      if (data.selection === null) {
-        this.userSelectionDecorations[
-          decorationId
-        ] = this.editor
-          .getActiveCodeEditor()
-          .deltaDecorations(
-            this.userSelectionDecorations[decorationId] || [],
-            [],
-            data.userId
-          );
-
-        return;
-      }
-
-      const decorations = [];
-      const { selection, color, name } = data;
-
-      if (selection) {
-        const addCursor = (position, className) => {
-          const cursorPos = indexToLineAndColumn(lines, position);
-
-          decorations.push({
-            range: new this.monaco.Range(
-              cursorPos.lineNumber,
-              cursorPos.column,
-              cursorPos.lineNumber,
-              cursorPos.column
-            ),
-            options: {
-              className: this.userClassesGenerated[className],
-            },
-          });
-        };
-
-        const addSelection = (start, end, className) => {
-          const from = indexToLineAndColumn(lines, start);
-          const to = indexToLineAndColumn(lines, end);
-
-          decorations.push({
-            range: new this.monaco.Range(
-              from.lineNumber,
-              from.column,
-              to.lineNumber,
-              to.column
-            ),
-            options: {
-              className: this.userClassesGenerated[className],
-            },
-          });
-        };
-
-        const prefix = color.join('-') + userId;
-        const cursorClassName = prefix + '-cursor';
-        const secondaryCursorClassName = prefix + '-secondary-cursor';
-        const selectionClassName = prefix + '-selection';
-        const secondarySelectionClassName = prefix + '-secondary-selection';
-
-        if (!this.userClassesGenerated[cursorClassName]) {
-          const nameStyles = {
-            content: name,
-            position: 'absolute',
-            top: -17,
-            backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-            zIndex: 20,
-            color:
-              color[0] + color[1] + color[2] > 500
-                ? 'rgba(0, 0, 0, 0.8)'
-                : 'white',
-            padding: '2px 4px',
-            borderRadius: 2,
-            borderBottomLeftRadius: 0,
-            fontSize: '.75rem',
-            fontWeight: 600,
-            userSelect: 'none',
-            pointerEvents: 'none',
-            width: 'max-content',
-          };
-          this.userClassesGenerated[cursorClassName] = `${css({
-            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
-            width: '2px !important',
-            cursor: 'text',
-            zIndex: 30,
-            ':before': {
-              animation: `${fadeOut} 0.3s`,
-              animationDelay: '1s',
-              animationFillMode: 'forwards',
-              opacity: 1,
-              ...nameStyles,
-            },
-            ':hover': {
-              ':before': {
-                animation: `${fadeIn} 0.3s`,
-                animationFillMode: 'forwards',
-                opacity: 0,
-                ...nameStyles,
-              },
-            },
-          })}`;
-        }
-
-        if (!this.userClassesGenerated[secondaryCursorClassName]) {
-          this.userClassesGenerated[secondaryCursorClassName] = `${css({
-            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`,
-            width: '2px !important',
-          })}`;
-        }
-
-        if (!this.userClassesGenerated[selectionClassName]) {
-          this.userClassesGenerated[selectionClassName] = `${css({
-            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`,
-            borderRadius: '3px',
-            minWidth: 7.6,
-          })}`;
-        }
-
-        if (!this.userClassesGenerated[secondarySelectionClassName]) {
-          this.userClassesGenerated[secondarySelectionClassName] = `${css({
-            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.2)`,
-            borderRadius: '3px',
-            minWidth: 7.6,
-          })}`;
-        }
-
-        addCursor(selection.primary.cursorPosition, cursorClassName);
-        if (selection.primary.selection.length) {
-          addSelection(
-            selection.primary.selection[0],
-            selection.primary.selection[1],
-            selectionClassName
-          );
-        }
-
-        if (selection.secondary.length) {
-          selection.secondary.forEach(s => {
-            addCursor(s.cursorPosition, secondaryCursorClassName);
-
-            if (s.selection.length) {
-              addSelection(
-                s.selection[0],
-                s.selection[1],
-                secondarySelectionClassName
-              );
-            }
-          });
-        }
-      }
-
-      // Allow new model to attach in case it's attaching
-      requestAnimationFrame(() => {
-        this.userSelectionDecorations[
-          decorationId
-        ] = this.editor
-          .getActiveCodeEditor()
-          .deltaDecorations(
-            this.userSelectionDecorations[decorationId] || [],
-            decorations,
-            userId
-          );
-      });
-    });
+    if (this.editor.getActiveCodeEditor()) {
+      updateUserSelections(
+        this.monaco,
+        this.editor.getActiveCodeEditor(),
+        this.currentModule,
+        userSelections
+      );
+    }
   };
 
   changeSandbox = (
@@ -829,30 +651,25 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     Object.keys(operationsJSON).forEach(moduleShortid => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
 
-      const module = this.sandbox.modules.find(
-        m => m.shortid === moduleShortid
-      );
-      if (!module) {
-        return;
-      }
+      if (moduleShortid !== this.currentModule.shortid) {
+        // Apply the code to the current module code itself
+        const module = this.sandbox.modules.find(
+          m => m.shortid === moduleShortid
+        );
 
-      const modulePath = getModulePath(
-        this.sandbox.modules,
-        this.sandbox.directories,
-        module.id
-      );
-      const uri = this.monaco.Uri.file('/sandbox' + modulePath);
-      const model = this.editor.textFileService.modelService.getModel(uri);
+        if (!module) {
+          return;
+        }
 
-      if (model) {
-        this.applyOperationToModel(operation, false, model);
-        this.liveOperationCode = '';
-      } else {
         const code = operation.apply(module.code || '');
         if (this.props.onChange) {
           this.props.onChange(code, module.shortid);
         }
+        return;
       }
+
+      this.liveOperationCode = '';
+      this.applyOperationToModel(operation);
     });
   };
 
@@ -1235,34 +1052,25 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  handleChange = () => {
+  handleChange = (currentModuleShortid, currentModuleTitle) => {
     const newCode =
       this.editor
         .getActiveCodeEditor()
         .getModel()
         .getValue(1) || '';
-    const currentModule = this.currentModule;
-    const title = currentModule.title;
 
-    const oldCode = this.currentModule.code || '';
-
-    const codeEquals =
-      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n');
-
-    if (!codeEquals) {
-      if (this.props.onChange) {
-        this.props.onChange(newCode, this.currentModule.shortid);
-      }
-
-      this.lint(
-        newCode,
-        title,
-        this.editor
-          .getActiveCodeEditor()
-          .getModel()
-          .getVersionId()
-      );
+    if (this.props.onChange) {
+      this.props.onChange(newCode, currentModuleShortid);
     }
+
+    this.lint(
+      newCode,
+      currentModuleTitle,
+      this.editor
+        .getActiveCodeEditor()
+        .getModel()
+        .getVersionId()
+    );
   };
 
   hasNativeTypescript = () => {

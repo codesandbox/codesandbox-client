@@ -30,7 +30,7 @@ export default new DojoTemplate(
     showCube: false,
     isTypescript: true,
     extraConfigurations: {
-      '/tsconfig.json': configurations.tsconfig
+      '/tsconfig.json': configurations.tsconfig,
     },
   }
 );

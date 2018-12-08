@@ -26,7 +26,7 @@ const icons = {
 
 async function getIconURL(type) {
   const base =
-    'https://cdn.rawgit.com/PKief/vscode-material-icon-theme/e04ab459/icons';
+    'https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@e04ab459209a1d0c9fdb7b3682e5b4aa6d586090/icons';
 
   let url;
 

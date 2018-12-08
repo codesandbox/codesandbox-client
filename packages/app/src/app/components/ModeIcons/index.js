@@ -17,7 +17,7 @@ function getCurrentMode({
   setPreviewView,
 }) {
   const both = (
-    <Tooltip title="Show Split view">
+    <Tooltip touchHold title="Show Split view">
       <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
         <EditorIcon half />
         <PreviewIcon half />
@@ -26,7 +26,7 @@ function getCurrentMode({
   );
 
   const editor = (
-    <Tooltip title="Show Editor view">
+    <Tooltip touchHold title="Show Editor view">
       <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
         <EditorIcon />
       </ViewIcon>
@@ -34,7 +34,7 @@ function getCurrentMode({
   );
 
   const preview = (
-    <Tooltip title="Show Preview view">
+    <Tooltip touchHold title="Show Preview view">
       <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
         <PreviewIcon />
       </ViewIcon>
@@ -147,18 +147,18 @@ export default class ModeIcons extends React.PureComponent {
 
     return (
       <Tooltips>
-        <Tooltip title="Show Editor view">
+        <Tooltip title="Editor View">
           <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
             <EditorIcon />
           </ViewIcon>
         </Tooltip>
-        <Tooltip title="Show Split view">
+        <Tooltip title="Split View">
           <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
             <EditorIcon half />
             <PreviewIcon half />
           </ViewIcon>
         </Tooltip>
-        <Tooltip title="Show Preview view">
+        <Tooltip title="Preview View">
           <ViewIcon
             onClick={setPreviewView}
             active={!showEditor && showPreview}

@@ -118,34 +118,32 @@ const config: ConfigurationFile = {
     }
 
     if (template === '@dojo/cli-create-app') {
-      return JSON.stringify(
-        {
-          compilerOptions: {
-            declaration: false,
-            experimentalDecorators: true,
-            jsx: 'react',
-            jsxFactory: 'tsx',
-            lib: [
-              'dom',
-              'es5',
-              'es2015.promise',
-              'es2015.iterable',
-              'es2015.symbol',
-              'es2015.symbol.wellknown'
-            ],
-            module: 'commonjs',
-            moduleResolution: 'node',
-            noUnusedLocals: true,
-            outDir: '_build/',
-            removeComments: false,
-            importHelpers: true,
-            downLevelIteration: true,
-            sourceMap: true,
-            strict: true,
-            target: 'es5'
-          }
-        }
-      );
+      return JSON.stringify({
+        compilerOptions: {
+          declaration: false,
+          experimentalDecorators: true,
+          jsx: 'react',
+          jsxFactory: 'tsx',
+          lib: [
+            'dom',
+            'es5',
+            'es2015.promise',
+            'es2015.iterable',
+            'es2015.symbol',
+            'es2015.symbol.wellknown',
+          ],
+          module: 'commonjs',
+          moduleResolution: 'node',
+          noUnusedLocals: true,
+          outDir: '_build/',
+          removeComments: false,
+          importHelpers: true,
+          downLevelIteration: true,
+          sourceMap: true,
+          strict: true,
+          target: 'es5',
+        },
+      });
     }
 
     return JSON.stringify(

@@ -2,12 +2,7 @@ import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import getTemplate from 'common/templates';
 import * as actions from './actions';
-import {
-  ensureOwnedEditable,
-  loadSandbox,
-  closeModal,
-  openModal,
-} from '../../sequences';
+import { ensureOwnedEditable, closeModal, openModal } from '../../sequences';
 import { updateSandboxPackage } from './../editor/sequences';
 import { addNotification } from '../../factories';
 
@@ -39,9 +34,7 @@ export const deleteSandbox = [
   actions.deleteSandbox,
   set(state`workspace.showDeleteSandboxModal`, false),
   addNotification('Sandbox deleted!', 'success'),
-  actions.redirectToNewSandbox,
-  set(props`id`, 'new'),
-  loadSandbox,
+  actions.redirectToSandboxWizard,
 ];
 
 export const openIntegrations = [

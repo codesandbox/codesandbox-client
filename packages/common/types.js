@@ -57,6 +57,7 @@ export type CurrentUser = {
     since: string,
     amount: string,
   },
+  curatorAt: string,
   badges: Array<Badge>,
   integrations: {
     zeit?: {
