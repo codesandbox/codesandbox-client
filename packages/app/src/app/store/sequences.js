@@ -14,6 +14,7 @@ import {
   updateOptimisticModule,
   removeModule,
   recoverFiles,
+  syncFilesToFS,
 } from './modules/files/actions';
 
 import { disconnect } from './modules/live/actions';
@@ -387,7 +388,7 @@ export const loadSandbox = factories.withLoadApp([
 
       actions.getSandbox,
       {
-        success: [joinLiveSessionIfTeam, ensurePackageJSON],
+        success: [joinLiveSessionIfTeam, ensurePackageJSON, syncFilesToFS],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },

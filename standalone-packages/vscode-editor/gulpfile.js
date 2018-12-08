@@ -62,7 +62,7 @@ gulp.task('release', ['clean-release'], function() {
 			'../monaco-editor-core/ThirdPartyNotices.txt',
 			'README.md'
 		])
-		.pipe(addPluginDTS())
+		// .pipe(addPluginDTS())
 		.pipe(addPluginThirdPartyNotices())
 		.pipe(gulp.dest('release'))
 	)
@@ -74,9 +74,9 @@ gulp.task('release', ['clean-release'], function() {
 function releaseOne(type) {
 	return es.merge(
 		gulp.src('../monaco-editor-core/' + type + '/**/*')
-			.pipe(addPluginContribs(type))
+			// .pipe(addPluginContribs(type))
 			.pipe(gulp.dest('release/' + type)),
-		pluginStreams(type, 'release/' + type + '/')
+		// pluginStreams(type, 'release/' + type + '/')
 	)
 }
 

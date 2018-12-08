@@ -1,5 +1,10 @@
 import loader from '../dev-bootstrap';
-// import tsServerExtension from 'buffer-loader!vscode/extensions/styled-components.zip';
+import _debug from 'app/utils/debug';
+// import extensionsBuffer from 'buffer-loader!vscode/extensions-bundle/extensions/extensions.zip';
+
+const debug = _debug('cs:cp-worker');
+
+debug('Starting Worker');
 
 function syncFile(fs, path: string, target: string) {
   return new Promise(resolve => {
@@ -73,7 +78,13 @@ async function initializeBrowserFS() {
           '/': { fs: 'InMemory', options: {} },
           '/tmp': { fs: 'InMemory', options: {} },
           '/worker': { fs: 'WorkerFS', options: { worker: self } },
-          '/sandbox': { fs: 'InMemory', options: {} },
+          '/sandbox': {
+            fs: 'DynamicHTTPRequest',
+            options: {
+              index: '/sw-api/index.json',
+              baseUrl: '/sw-api',
+            },
+          },
           '/vscode': {
             fs: 'InMemory',
             options: {},
@@ -81,7 +92,7 @@ async function initializeBrowserFS() {
           // '/extensions': {
           //   fs: 'ZipFS',
           //   options: {
-          //     zipData: tsServerExtension,
+          //     zipData: extensionsBuffer,
           //   },
           // },
           '/extensions': {
@@ -113,15 +124,7 @@ async function initializeBrowserFS() {
           return;
         }
 
-        const fs = BrowserFS.BFSRequire('fs');
-
-        resolve(
-          syncDirectory(fs, '/worker/sandbox', '/sandbox')
-            .then(() => syncDirectory(fs, '/worker/worker/sandbox', '/sandbox'))
-            .then(() =>
-              syncDirectory(fs, '/worker/worker/worker/sandbox', '/sandbox')
-            )
-        );
+        resolve();
 
         // BrowserFS is initialized and ready-to-use!
       }
@@ -133,7 +136,9 @@ self.addEventListener('message', async e => {
   const { data } = e;
   if (data.$type === 'worker-manager') {
     if (data.$event === 'init') {
+      debug('Initializing BrowserFS');
       await initializeBrowserFS();
+      debug('Initialized BrowserFS');
 
       process.env = data.data.env || {};
       process.env.HOME = '/home';

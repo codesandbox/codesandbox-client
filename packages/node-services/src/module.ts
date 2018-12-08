@@ -9,6 +9,11 @@ function getConstants() {
   return constants;
 }
 
+function updateChildren(parent: Module, child: Module, scan: boolean) {
+  var children = parent && parent.children;
+  if (children && !(scan && children.includes(child))) children.push(child);
+}
+
 export default class Module {
   id: string;
   exports: any;
@@ -44,9 +49,7 @@ export default class Module {
     this.id = id;
     this.exports = {};
     this.parent = parent;
-    if (parent && parent.children) {
-      parent.children.push(this);
-    }
+    updateChildren(parent, this, false);
 
     this.filename = null;
     this.loaded = false;
@@ -147,7 +150,15 @@ export default class Module {
       return require('debug');
     }
 
+    if (request == '/vscode/node_modules.asar/vscode-textmate') {
+      return require('vscode-textmate/out/main');
+    }
+
     if (request === 'zlib') {
+      return {};
+    }
+
+    if (request === 'execa') {
       return {};
     }
 
@@ -255,6 +266,7 @@ export default class Module {
 
     var cachedModule = Module._cache[filename];
     if (cachedModule) {
+      updateChildren(parent, cachedModule, true);
       return cachedModule.exports;
     }
 
@@ -267,14 +279,14 @@ export default class Module {
 
     Module._cache[filename] = module;
 
-    var hadException = true;
-
+    var threw = true;
     try {
       module.load(filename);
-      hadException = false;
+      threw = false;
     } finally {
-      if (hadException) {
+      if (threw) {
         delete Module._cache[filename];
+        console.error(module, 'had trouble loading...');
       }
     }
 

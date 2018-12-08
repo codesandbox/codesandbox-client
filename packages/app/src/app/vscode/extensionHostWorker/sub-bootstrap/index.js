@@ -16,6 +16,7 @@ self.process = BrowserFS.BFSRequire('process');
 self.process.platform = 'linux';
 self.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
 self.setTimeout = setTimeout.bind(self);
+self.clearTimeout = clearTimeout.bind(self);
 self.setImmediate = (func, delay) => setTimeout(func, delay);
 self.clearImmediate = id => self.clearTimeout(id);
 

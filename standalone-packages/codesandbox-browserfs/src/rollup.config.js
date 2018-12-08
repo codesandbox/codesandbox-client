@@ -32,7 +32,8 @@ export default {
     buble({
       transforms: {
         // Assumes all `for of` statements are on arrays or array-like items.
-        dangerousForOf: true
+        dangerousForOf: true,
+        generator: false
       }
     })
   ]

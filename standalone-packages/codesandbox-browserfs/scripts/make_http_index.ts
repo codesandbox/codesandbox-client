@@ -11,7 +11,7 @@ type FileTree = {[name: string]: FileTree | null};
 
 let vscodeignores: {[path: string]: { denies: (p: string) => boolean } | null} = {}
 
-function rdSync(dpath: string, tree: FileTree, name: string): FileTree {
+function rdSync(dpath: string, tree: FileTree): FileTree {
   const files = fs.readdirSync(dpath);
 
   if (files.indexOf('.vscodeignore') > -1) {
@@ -29,7 +29,6 @@ function rdSync(dpath: string, tree: FileTree, name: string): FileTree {
     const fpath = `${dpath}/${file}`;
 
     if (vscodeignore && vscodeignore.denies(fpath.replace(vscodeignorePath!, ''))) {
-      console.log('ignores', fpath);
       return;
     }
     try {
@@ -48,7 +47,7 @@ function rdSync(dpath: string, tree: FileTree, name: string): FileTree {
       const fstat = fs.statSync(fpath);
       if (fstat.isDirectory()) {
         const child = tree[file] = {}
-        rdSync(fpath, child, file)
+        rdSync(fpath, child)
       } else {
         tree[file] = null
       }
@@ -59,7 +58,7 @@ function rdSync(dpath: string, tree: FileTree, name: string): FileTree {
   return tree
 }
 
-const fsListing = JSON.stringify(rdSync(process.cwd(), {}, '/'));
+const fsListing = JSON.stringify(rdSync(process.cwd(), {}));
 if (process.argv.length === 3) {
   const fname = process.argv[2];
   let parent = path.dirname(fname);

@@ -1,5 +1,6 @@
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 import { getModulePath } from 'common/sandbox/modules';
+import getTemplate from 'common/templates';
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 
@@ -52,22 +53,21 @@ export function currentTab() {
   return tabs.find(tab => tab.moduleShortid === currentModuleShortid);
 }
 
-// Will be used in the future
-// export function normalizedModules() {
-//   const sandbox = this.currentSandbox;
+/**
+ * We have two types of editors in CodeSandbox: an editor focused on smaller projects and
+ * an editor that works with bigger projects that run on a container. The advanced editor
+ * only has added features, so it's a subset on top of the existing editor.
+ */
+export function isAdvancedEditor() {
+  const currentSandbox = this.currentSandbox;
+  if (!currentSandbox) {
+    return false;
+  }
 
-//   const modulesObject = {};
+  const isServer = getTemplate(currentSandbox.template).isServer;
 
-//   sandbox.modules.forEach(m => {
-//     const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
-//     modulesObject[path] = {
-//       path,
-//       code: m.code,
-//     };
-//   });
-
-//   return modulesObject;
-// }
+  return isServer && currentSandbox.owned;
+}
 
 export function parsedConfigurations() {
   return parseConfigurations(this.currentSandbox);

@@ -664,3 +664,7 @@ export function recoverFiles({ recover, controller, state }) {
 
   return {};
 }
+
+export function syncFilesToFS({ props, fsSync }) {
+  fsSync.syncCurrentSandbox(props.sandbox.id);
+}

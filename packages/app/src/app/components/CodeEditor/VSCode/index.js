@@ -22,6 +22,7 @@ import { getTextOperation } from 'common/utils/diff';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
+import DependencyTypingsFetcher from 'worker-loader?publicPath=/&name=dependency-typings-fetcher.[hash:8].worker.js!./fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import MonacoEditorComponent from './MonacoReactComponent';
@@ -131,6 +132,17 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     );
 
     this.transpilationListener = this.setupTranspilationListener();
+
+    this.fetcher = new DependencyTypingsFetcher();
+
+    setTimeout(() => {
+      Object.keys(this.dependencies).forEach(dep => {
+        this.fetcher.postMessage({
+          dependency: dep,
+          version: this.dependencies[dep],
+        });
+      });
+    }, 8000);
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -154,10 +166,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     if (this.props.readOnly !== nextProps.readOnly && activeEditor) {
       activeEditor.updateOptions({ readOnly: !!nextProps.readOnly });
-    }
-
-    if (this.props.theme.vscodeTheme !== nextProps.theme.vscodeTheme) {
-      defineTheme(this.monaco, nextProps.theme.vscodeTheme);
     }
 
     return false;
@@ -295,6 +303,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const activeEditor = editor.getActiveCodeEditor();
 
       if (activeEditor) {
+        const currentModuleShortid =
+          this.currentModule && this.currentModule.shortid;
+        const currentModuleTitle =
+          this.currentModule && this.currentModule.title;
+        const currentModuleCode = this.currentModule && this.currentModule.code;
         activeEditor.updateOptions({ readOnly: this.props.readOnly });
 
         this.modelContentChangedListener = activeEditor.onDidChangeModelContent(
@@ -313,7 +326,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               this.sendChangeOperations(e);
             }
 
-            this.handleChange();
+            this.handleChange(currentModuleShortid, currentModuleTitle);
           }
         );
 
@@ -1231,34 +1244,25 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  handleChange = () => {
+  handleChange = (currentModuleShortid, currentModuleTitle) => {
     const newCode =
       this.editor
         .getActiveCodeEditor()
         .getModel()
         .getValue(1) || '';
-    const currentModule = this.currentModule;
-    const title = currentModule.title;
 
-    const oldCode = this.currentModule.code || '';
-
-    const codeEquals =
-      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n');
-
-    if (!codeEquals) {
-      if (this.props.onChange) {
-        this.props.onChange(newCode, this.currentModule.shortid);
-      }
-
-      this.lint(
-        newCode,
-        title,
-        this.editor
-          .getActiveCodeEditor()
-          .getModel()
-          .getVersionId()
-      );
+    if (this.props.onChange) {
+      this.props.onChange(newCode, currentModuleShortid);
     }
+
+    this.lint(
+      newCode,
+      currentModuleTitle,
+      this.editor
+        .getActiveCodeEditor()
+        .getModel()
+        .getVersionId()
+    );
   };
 
   hasNativeTypescript = () => {
@@ -1403,6 +1407,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     return (
       <Container id="vscode-container">
         <MonacoEditorComponent
+          id={this.props.sandbox.id}
           width={width}
           height={height}
           theme="CodeSandbox"

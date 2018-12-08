@@ -1,6 +1,11 @@
-// import tsServerExtension from 'buffer-loader!vscode/extensions/styled-components.zip';
+// import extensionsBuffer from 'buffer-loader!vscode/extensions-bundle/extensions/extensions.zip';
 import { default as Module } from 'node-services/lib/module';
 import resolve from 'resolve';
+import _debug from 'app/utils/debug';
+
+const debug = _debug('cs:cp-bootstrap-worker');
+
+debug('Starting Worker');
 
 function syncFile(fs, path: string, target: string) {
   return new Promise(resolve => {
@@ -74,7 +79,13 @@ async function initializeBrowserFS() {
           '/': { fs: 'InMemory', options: {} },
           '/tmp': { fs: 'InMemory', options: {} },
           '/worker': { fs: 'WorkerFS', options: { worker: self } },
-          '/sandbox': { fs: 'InMemory', options: {} },
+          '/sandbox': {
+            fs: 'DynamicHTTPRequest',
+            options: {
+              index: '/sw-api/index.json',
+              baseUrl: '/sw-api',
+            },
+          },
           '/vscode': {
             fs: 'InMemory',
             options: {},
@@ -82,7 +93,7 @@ async function initializeBrowserFS() {
           // '/extensions': {
           //   fs: 'ZipFS',
           //   options: {
-          //     zipData: tsServerExtension,
+          //     zipData: extensionsBuffer,
           //   },
           // },
           '/extensions': {
@@ -114,15 +125,7 @@ async function initializeBrowserFS() {
           return;
         }
 
-        const fs = BrowserFS.BFSRequire('fs');
-
-        resolve(
-          syncDirectory(fs, '/worker/sandbox', '/sandbox')
-            .then(() => syncDirectory(fs, '/worker/worker/sandbox', '/sandbox'))
-            .then(() =>
-              syncDirectory(fs, '/worker/worker/worker/sandbox', '/sandbox')
-            )
-        );
+        resolve();
 
         // BrowserFS is initialized and ready-to-use!
       }
@@ -157,8 +160,10 @@ self.addEventListener('message', async e => {
 
   if (data.$type === 'worker-manager') {
     if (data.$event === 'init') {
+      debug('Initializing BrowserFS');
       const process = BrowserFS.BFSRequire('process');
       await initializeBrowserFS();
+      debug('Initialized BrowserFS');
 
       process.send = (message, _a, _b, callback) => {
         const m = {
@@ -167,7 +172,14 @@ self.addEventListener('message', async e => {
         };
 
         self.postMessage(m);
-        callback(null);
+
+        if (typeof _a === 'function') {
+          _a(null);
+        } else if (typeof _b === 'function') {
+          _b(null);
+        } else if (typeof callback === 'function') {
+          callback(null);
+        }
       };
 
       process.stdout = {
@@ -206,11 +218,9 @@ self.addEventListener('message', async e => {
         }
       }
     }
+  } else if (!initialized) {
+    pendingMessages.push(data);
   } else {
-    if (!initialized) {
-      pendingMessages.push(data);
-    } else {
-      processMessage(data);
-    }
+    processMessage(data);
   }
 });

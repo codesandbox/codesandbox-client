@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
 
-let DefaultWorker: () => Worker;
+let DefaultWorker: false | (() => Worker);
 let workerMap: Map<string, false | (() => Worker)> = new Map();
 
-function addDefaultForkHandler(worker: () => Worker) {
+function addDefaultForkHandler(worker: false | (() => Worker)) {
   DefaultWorker = worker;
 }
-function addForkHandler(path: string, worker: () => Worker) {
+function addForkHandler(path: string, worker: false | (() => Worker)) {
   workerMap.set(path, worker);
 }
 
@@ -21,31 +21,35 @@ interface IProcessOpts {
 }
 
 class Stream extends EventEmitter {
-  private encoding;
-
   constructor(private worker: Worker) {
     super();
   }
 
-  setEncoding(encoding: string) {
-    this.encoding = encoding;
-  }
+  setEncoding(encoding: string) {}
 
   write(message: string, encoding: string) {
     this.worker.postMessage({ $type: 'input-write', $data: message });
   }
 }
 
+class NullStream extends EventEmitter {
+  setEncoding(encoding: string) {}
+}
+
 class NullChildProcess extends EventEmitter {
-  public stdout: EventEmitter = new EventEmitter();
-  public stderr: EventEmitter = new EventEmitter();
-  public stdin: EventEmitter = new EventEmitter();
+  public stdout: NullStream = new NullStream();
+  public stderr: NullStream = new NullStream();
+  public stdin: NullStream = new NullStream();
+
+  public kill() {}
 }
 
 class ChildProcess extends EventEmitter {
   public stdout: Stream;
   public stderr: Stream;
   public stdin: Stream;
+
+  private destroyed = false;
 
   constructor(private worker: Worker) {
     super();
@@ -57,6 +61,11 @@ class ChildProcess extends EventEmitter {
   }
 
   public send(message: any, _a: any, _b: any, callback: Function) {
+    if (this.destroyed) {
+      callback(new Error('This connection has been killed'));
+      return;
+    }
+
     const m = {
       $type: 'message',
       $data: JSON.stringify(message),
@@ -72,37 +81,47 @@ class ChildProcess extends EventEmitter {
     }
   }
 
-  private listen() {
-    this.worker.addEventListener('message', message => {
-      const data = message.data.$data;
+  public kill() {
+    this.destroyed = true;
+    this.worker.removeEventListener('message', this.listener.bind(this));
 
-      if (data) {
-        switch (message.data.$type) {
-          case 'stdout':
-            this.stdout.emit('data', data);
-            break;
-          case 'message':
-            this.emit('message', JSON.parse(data));
-            break;
-          default:
-            break;
-        }
+    this.worker.terminate();
+  }
+
+  private listener(message: MessageEvent) {
+    const data = message.data.$data;
+
+    if (data) {
+      switch (message.data.$type) {
+        case 'stdout':
+          this.stdout.emit('data', data);
+          break;
+        case 'message':
+          this.emit('message', JSON.parse(data));
+          break;
+        default:
+          break;
       }
-    });
+    }
+  }
+
+  private listen() {
+    this.worker.addEventListener('message', this.listener.bind(this));
   }
 }
 
-function fork(path: string, argv: string[], processOpts: IProcessOpts) {
+const cachedWorkers: { [path: string]: Array<Worker | false> } = {};
+const cachedDefaultWorkers: Array<Worker | false> = [];
+
+function getWorker(path: string) {
   let WorkerConstructor = workerMap.get(path);
-  let isDefaultWorker = false;
 
   if (!WorkerConstructor) {
     WorkerConstructor = DefaultWorker;
-    isDefaultWorker = true;
 
     // Explicitly ignore
     if (WorkerConstructor === false) {
-      return new NullChildProcess();
+      return false;
     }
 
     if (WorkerConstructor == null) {
@@ -110,7 +129,42 @@ function fork(path: string, argv: string[], processOpts: IProcessOpts) {
     }
   }
 
-  const worker: Worker = WorkerConstructor();
+  const worker = WorkerConstructor();
+
+  // Register file system that syncs with filesystem in manager
+  BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
+
+  return worker;
+}
+
+function getWorkerFromCache(path: string, isDefaultWorker: boolean) {
+  if (isDefaultWorker) {
+    const cachedDefaultWorker = cachedDefaultWorkers.pop();
+
+    if (cachedDefaultWorker) {
+      return cachedDefaultWorker;
+    }
+  } else {
+    if (cachedWorkers[path]) {
+      const worker = cachedWorkers[path].pop();
+
+      return worker;
+    }
+  }
+
+  return undefined;
+}
+
+function fork(path: string, argv: string[], processOpts: IProcessOpts) {
+  console.log('forking', path);
+  const WorkerConstructor = workerMap.get(path);
+  const isDefaultWorker = !WorkerConstructor;
+
+  const worker = getWorkerFromCache(path, isDefaultWorker) || getWorker(path);
+
+  if (worker === false) {
+    return new NullChildProcess();
+  }
 
   self.addEventListener('message', e => {
     const { data } = e;
@@ -138,8 +192,6 @@ function fork(path: string, argv: string[], processOpts: IProcessOpts) {
     }
   });
 
-  // Register file system that syncs with filesystem in manager
-  BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
   worker.postMessage({
     $type: 'worker-manager',
     $event: 'init',
@@ -155,4 +207,18 @@ function fork(path: string, argv: string[], processOpts: IProcessOpts) {
   return new ChildProcess(worker);
 }
 
-export { addForkHandler, addDefaultForkHandler, fork };
+function preloadWorker(path: string) {
+  const WorkerConstructor = workerMap.get(path);
+  const isDefaultWorker = !WorkerConstructor;
+
+  const worker = getWorker(path);
+
+  if (isDefaultWorker) {
+    cachedDefaultWorkers.push(worker);
+  } else {
+    cachedWorkers[path] = cachedWorkers[path] || [];
+    cachedWorkers[path].push(worker);
+  }
+}
+
+export { addForkHandler, addDefaultForkHandler, preloadWorker, fork };

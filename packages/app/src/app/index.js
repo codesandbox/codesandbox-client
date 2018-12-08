@@ -22,14 +22,11 @@ import App from './pages/index';
 import './split-pane.css';
 import logError from './utils/error';
 
-// import tsServerExtension from 'buffer-loader!vscode/extensions/styled-components.zip';
-import ExtHostWorkerLoader from 'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker';
+// import extensionsBuffer from 'buffer-loader!vscode/extensions-bundle/extensions/extensions.zip';
 
 const debug = _debug('cs:app');
 
 window.setImmediate = (func, delay) => setTimeout(func, delay);
-
-child_process.addForkHandler('/vs/bootstrap-fork', ExtHostWorkerLoader);
 
 window.addEventListener('unhandledrejection', e => {
   if (e && e.reason && e.reason.name === 'Canceled') {
@@ -91,26 +88,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 window.__isTouch = !matchMedia('(pointer:fine)').matches;
-
-window.twoWayCommunication = function twoWayCommunication(message: string) {
-  if (navigator.serviceWorker.controller) {
-    const messageChannel = new MessageChannel();
-    messageChannel.port1.onmessage = function(event) {
-      console.log('Response from the SW : ', event.data.message);
-    };
-
-    console.log('Sending message to the service worker');
-    navigator.serviceWorker.controller.postMessage(
-      {
-        command: 'twoWayCommunication',
-        message,
-      },
-      [messageChannel.port2]
-    );
-  } else {
-    console.log('No active ServiceWorker');
-  }
-};
 
 function boot() {
   requirePolyfills().then(() => {
@@ -174,9 +151,15 @@ window.BrowserFS.configure(
         },
       },
       '/sandbox/node_modules': {
-        fs: 'InMemory',
+        fs: 'IndexedDB',
+        options: {
+          storeName: 'TypingsData',
+        },
       },
       '/vscode': {
+        fs: 'LocalStorage',
+      },
+      '/home/sandbox': {
         fs: 'LocalStorage',
       },
       '/extensions': {
@@ -189,7 +172,7 @@ window.BrowserFS.configure(
       // '/extensions': {
       //   fs: 'ZipFS',
       //   options: {
-      //     zipData: tsServerExtension,
+      //     zipData: extensionsBuffer,
       //   },
       // },
     },
@@ -201,20 +184,30 @@ window.BrowserFS.configure(
       throw e;
     }
 
+    const isVSCode =
+      localStorage.getItem('settings.experimentVSCode') === 'true';
+
     // eslint-disable-next-line global-require
-    require('app/vscode/dev-bootstrap').default(['vs/editor/editor.main'])(
-      () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Loaded Monaco'); // eslint-disable-line
-        }
-        if (localStorage.getItem('settings.experimentVSCode') === 'true') {
-          window.require(['vs/editor/codesandbox.editor.main'], () => {
-            boot();
-          });
-        } else {
-          boot();
-        }
+    require('app/vscode/dev-bootstrap').default(
+      [
+        'vs/editor/editor.main',
+        isVSCode && 'vs/editor/codesandbox.editor.main',
+      ].filter(Boolean),
+      isVSCode
+    )(() => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Loaded Monaco'); // eslint-disable-line
       }
-    );
+      if (isVSCode) {
+        import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker').then(
+          ExtHostWorkerLoader => {
+            console.log(ExtHostWorkerLoader);
+            child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
+            // child_process.preloadWorker('/vs/bootstrap-fork');
+          }
+        );
+      }
+      boot();
+    });
   }
 );

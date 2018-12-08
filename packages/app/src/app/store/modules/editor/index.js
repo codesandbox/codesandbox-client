@@ -12,6 +12,7 @@ import {
   parsedConfigurations,
   currentTab,
   modulesByPath,
+  isAdvancedEditor,
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -62,6 +63,7 @@ export default Module({
     parsedConfigurations,
     currentTab,
     modulesByPath,
+    isAdvancedEditor,
   },
   computed: {
     isModuleSynced,

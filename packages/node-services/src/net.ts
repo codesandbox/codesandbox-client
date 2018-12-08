@@ -22,28 +22,43 @@ export class Socket extends EventEmitter {
     this.encoding = encoding;
   }
 
+  defaultListener(e: Event) {
+    const evt = e as MessageEvent;
+    if ((evt.source || self) !== this.target) {
+      return;
+    }
+
+    const data = evt.data.$data;
+
+    if (!data) {
+      return;
+    }
+
+    if (data.$type === SOCKET_IDENTIFIER && data.$channel === this.channel) {
+      this.emit('data', Buffer.from(JSON.parse(data.data)));
+    }
+  }
+
   startListening() {
-    self.addEventListener('message', e => {
-      if ((e.source || self) !== this.target) {
-        return;
-      }
+    self.addEventListener('message', this.defaultListener.bind(this));
+  }
 
-      const data = e.data.$data;
+  end() {
+    self.removeEventListener('message', this.defaultListener.bind(this));
+    this.destroyed = true;
 
-      if (!data) {
-        return;
-      }
-
-      if (data.$type === SOCKET_IDENTIFIER && data.$channel === this.channel) {
-        this.emit('data', Buffer.from(JSON.parse(data.data)));
-        // this.emit('end');
-      }
-    });
+    if (this.isWorker) {
+      this.target.terminate();
+    }
   }
 
   unref() {}
 
   write(buffer: Buffer) {
+    if (this.destroyed) {
+      return;
+    }
+
     const message = {
       $type: SOCKET_IDENTIFIER,
       $channel: this.channel,
@@ -108,8 +123,108 @@ export class Server extends EventEmitter {
   }
 }
 
-function createServer() {
+function blobToBuffer(
+  blob: Blob,
+  cb: (err: any | undefined | null, result?: Buffer) => void
+) {
+  if (typeof Blob === 'undefined' || !(blob instanceof Blob)) {
+    throw new Error('first argument must be a Blob');
+  }
+  if (typeof cb !== 'function') {
+    throw new Error('second argument must be a function');
+  }
+
+  const reader = new FileReader();
+
+  function onLoadEnd(e: any) {
+    reader.removeEventListener('loadend', onLoadEnd, false);
+    if (e.error) {
+      cb(e.error);
+    } else {
+      // @ts-ignore
+      cb(null, Buffer.from(reader.result));
+    }
+  }
+
+  reader.addEventListener('loadend', onLoadEnd, false);
+  reader.readAsArrayBuffer(blob);
+}
+
+export class WebSocketServer extends EventEmitter {
+  public connected = false;
+  public closed = false;
+  private socket: WebSocket | null = null;
+  private listenerFunctions: Array<(e: MessageEvent) => void> = [];
+
+  constructor(public url: string) {
+    super();
+  }
+
+  listen(listenPath: string, listenCallback?: Function) {
+    this.socket = new WebSocket(this.url);
+
+    this.socket.onmessage = message => {
+      blobToBuffer(message.data, (err, r) => {
+        this.emit('data', r);
+      });
+    };
+
+    this.socket.onclose = () => {
+      this.emit('close');
+    };
+
+    if (listenCallback) {
+      listenCallback();
+    }
+
+    this.socket.onopen = () => {
+      this.connected = true;
+      this.emit('connection', this);
+    };
+  }
+
+  public write(buffer: Buffer) {
+    this.socket!.send(buffer);
+  }
+
+  public end() {
+    this.socket!.close();
+  }
+
+  close(cb?: Function) {
+    this.closed = true;
+    this.removeAllListeners();
+
+    // This is not according to spec, but we do this anyways for clean cleanup
+    this.listenerFunctions.forEach(func => {
+      self.removeEventListener('message', func);
+    });
+
+    if (cb) {
+      cb();
+    }
+  }
+}
+
+let socketUrl: string = '';
+function setSocketURL(url: string) {
+  socketUrl = url;
+}
+
+function createServerWS() {
+  return new WebSocketServer(socketUrl);
+}
+
+function createServerLocal() {
   return new Server();
+}
+
+function createServer(...args: any[]) {
+  if (socketUrl) {
+    return createServerWS.apply(undefined, args);
+  } else {
+    return createServerLocal.apply(undefined, args);
+  }
 }
 
 function createConnection(pipeName: string, cb?: Function) {
@@ -133,4 +248,4 @@ function createConnection(pipeName: string, cb?: Function) {
 
 const connect = createConnection;
 
-export { createServer, createConnection, connect };
+export { setSocketURL, createServer, createConnection, connect };

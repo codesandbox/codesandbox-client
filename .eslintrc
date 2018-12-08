@@ -28,6 +28,7 @@
     "no-nested-ternary": "warn",
     "react/require-default-props": "off",
     "import/no-named-default": 0,
-    "no-param-reassign": ["error", { "props": false }]
+    "no-param-reassign": ["error", { "props": false }],
+    "camelcase": ["error", { "allow": ["child_process"] }]
   }
 }

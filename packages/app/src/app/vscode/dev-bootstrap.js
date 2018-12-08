@@ -131,7 +131,7 @@ function initializeRequires() {
   });
 }
 
-export default function(requiredModule: string) {
+export default function(requiredModule: string, isVSCode = false) {
   var IS_FILE_PROTOCOL = global.location.protocol === 'file:';
   var DIRNAME = null;
   if (IS_FILE_PROTOCOL) {
@@ -398,7 +398,7 @@ export default function(requiredModule: string) {
 
       if (requiredModule) {
         self.require(requiredModule, function() {
-          if (false && !RESOLVED_CORE.isRelease()) {
+          if (!isVSCode && !RESOLVED_CORE.isRelease()) {
             // At this point we've loaded the monaco-editor-core
             self.require(
               RESOLVED_PLUGINS.map(function(plugin) {

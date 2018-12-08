@@ -18,6 +18,7 @@ import ModuleRecover from './providers/ModuleRecover';
 import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
 import SSEProvider from './providers/SSE';
+import FSSyncProvider from './providers/FSSync';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -132,5 +133,6 @@ export default Module({
     recover: ModuleRecover,
     ot: OTProvider,
     sse: SSEProvider,
+    fsSync: FSSyncProvider,
   },
 });

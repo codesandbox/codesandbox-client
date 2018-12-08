@@ -72,8 +72,22 @@ export default class Content extends React.PureComponent<Props, State> {
     const module = props.sandbox.modules.find(
       m => m.id === props.currentModule.id
     );
-    // Show all tabs if there are not many files
-    if (props.sandbox.modules.length <= 5 || !module) {
+    if (props.tabs) {
+      tabs = props.tabs
+        .map(modulePath => {
+          try {
+            return resolveModule(
+              modulePath,
+              props.sandbox.modules,
+              props.sandbox.directories
+            );
+          } catch (e) {
+            return undefined;
+          }
+        })
+        .filter(Boolean);
+    } else if (props.sandbox.modules.length <= 5 || !module) {
+      // Show all tabs if there are not many files
       tabs = [...props.sandbox.modules];
     } else {
       tabs = [module];

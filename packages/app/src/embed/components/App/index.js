@@ -45,6 +45,7 @@ type State = {
   runOnClick: boolean,
   verticalMode: boolean,
   highlightedLines: Array<number>,
+  tabs?: Array<number>,
 };
 
 const isSafari = () => {
@@ -79,6 +80,7 @@ export default class App extends React.PureComponent<{}, State> {
       expandDevTools,
       runOnClick,
       verticalMode,
+      tabs,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -99,6 +101,7 @@ export default class App extends React.PureComponent<{}, State> {
       editorSize,
       forceRefresh,
       expandDevTools,
+      tabs,
       runOnClick:
         runOnClick === false
           ? false
@@ -259,6 +262,7 @@ export default class App extends React.PureComponent<{}, State> {
             highlightedLines={this.state.highlightedLines}
             forceRefresh={this.state.forceRefresh}
             expandDevTools={this.state.expandDevTools}
+            tabs={this.state.tabs}
             runOnClick={runOnClick}
             verticalMode={verticalMode}
           />

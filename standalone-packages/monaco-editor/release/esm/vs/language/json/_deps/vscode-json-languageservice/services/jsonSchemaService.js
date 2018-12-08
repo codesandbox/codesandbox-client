@@ -295,6 +295,7 @@ var JSONSchemaService = /** @class */ (function () {
             return _this.getOrAddSchemaHandle(uri).getUnresolvedSchema().then(function (unresolvedSchema) {
                 if (unresolvedSchema.errors.length) {
                     var loc = linkPath ? uri + '#' + linkPath : uri;
+                    console.log(unresolvedSchema)
                     resolveErrors.push(localize('json.schema.problemloadingref', 'Problems loading reference \'{0}\': {1}', loc, unresolvedSchema.errors[0]));
                 }
                 merge(node, unresolvedSchema.schema, uri, linkPath);

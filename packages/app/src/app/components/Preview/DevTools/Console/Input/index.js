@@ -200,6 +200,8 @@ class ConsoleInput extends React.PureComponent<Props, State> {
   }
 
   render() {
+    // TODO: fix this
+    return null;
     return (
       <Container height={this.state.editorHeight + 12}>
         <IconContainer style={{ color: theme.secondary() }}>
