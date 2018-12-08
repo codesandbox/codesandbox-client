@@ -11,6 +11,11 @@ export const Container = styled.div`
   display: flex;
   box-shadow: 0 9px 14px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+
+  @media screen and (max-width: 900px) {
+    flex-direction: column;
+    height: 600px;
+  }
 `;
 
 export const SandboxContainer = styled.div`
@@ -21,6 +26,12 @@ export const SandboxContainer = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
+
+  @media screen and (max-width: 900px) {
+    height: 230px;
+    z-index: 11;
+    background-color: ${props => props.theme.new.bg};
+  }
 `;
 
 export const SandboxInfo = styled.div`
