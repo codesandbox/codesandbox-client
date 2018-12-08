@@ -440,7 +440,7 @@ export async function fetchAndAddDependencies(
   } catch (e) {
     // // Don't show these cryptic messages to users, because this is not vital
     // if (process.env.NODE_ENV === 'development') {
-    console.error(`Couldn't find typings for ${dep}`, e);
+    // console.error(`Couldn't find typings for ${dep}`, e);
     // }
   }
 
