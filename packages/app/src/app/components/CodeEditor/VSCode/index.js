@@ -19,12 +19,11 @@ import type {
 } from 'common/types';
 import { getTextOperation } from 'common/utils/diff';
 
-import eventToTransform from '../Monaco/event-to-transform';
-
 /* eslint-disable import/no-webpack-loader-syntax */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
 /* eslint-enable import/no-webpack-loader-syntax */
 
+import eventToTransform from '../Monaco/event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
 import type { EditorAPI } from './MonacoReactComponent';
 import { Container } from './elements';
