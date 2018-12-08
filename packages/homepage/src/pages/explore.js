@@ -18,6 +18,9 @@ import {
   DotContainer,
   Sandboxes,
   ShowMore,
+  StyledRightArrow,
+  StyledLeftArrow,
+  Navigation,
 } from './_explore.elements';
 
 export default class Explore extends React.PureComponent {
@@ -94,7 +97,7 @@ export default class Explore extends React.PureComponent {
       : -1;
 
   render() {
-    const { selectedSandbox } = this.state;
+    const { selectedSandbox, featuredSandboxIndex } = this.state;
 
     const featuredSandboxInfo =
       featuredSandboxes[this.state.featuredSandboxIndex];
@@ -129,25 +132,45 @@ export default class Explore extends React.PureComponent {
               featuredSandboxes={featuredSandboxes}
             />
 
-            <Dots>
-              {featuredSandboxes.map((sandbox, i) => {
-                const template = getTemplate(sandbox.template);
+            <Navigation>
+              <Dots>
+                {featuredSandboxIndex !== 0 ? (
+                  <StyledLeftArrow
+                    onClick={() =>
+                      this.setState(state => ({
+                        featuredSandboxIndex: state.featuredSandboxIndex - 1,
+                      }))
+                    }
+                  />
+                ) : null}
+                {featuredSandboxes.map((sandbox, i) => {
+                  const template = getTemplate(sandbox.template);
 
-                return (
-                  <DotContainer key={sandbox.sandboxId}>
-                    <Dot
-                      active={i === this.state.featuredSandboxIndex}
-                      color={template.color()}
-                      onClick={() =>
-                        this.setState({
-                          featuredSandboxIndex: i,
-                        })
-                      }
-                    />
-                  </DotContainer>
-                );
-              })}
-            </Dots>
+                  return (
+                    <DotContainer key={sandbox.sandboxId}>
+                      <Dot
+                        active={i === this.state.featuredSandboxIndex}
+                        color={template.color()}
+                        onClick={() =>
+                          this.setState({
+                            featuredSandboxIndex: i,
+                          })
+                        }
+                      />
+                    </DotContainer>
+                  );
+                })}
+                {featuredSandboxIndex < featuredSandboxes.length - 1 ? (
+                  <StyledRightArrow
+                    onClick={() =>
+                      this.setState(state => ({
+                        featuredSandboxIndex: state.featuredSandboxIndex + 1,
+                      }))
+                    }
+                  />
+                ) : null}
+              </Dots>
+            </Navigation>
 
             <Heading2 style={{ margin: '3rem 0' }}>Picked Sandboxes</Heading2>
             <Sandboxes>

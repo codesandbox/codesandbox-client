@@ -1,14 +1,13 @@
 import styled, { css } from 'styled-components';
+import RightArrow from 'react-icons/lib/md/keyboard-arrow-right';
+import LeftArrow from 'react-icons/lib/md/keyboard-arrow-left';
 
 export const Dots = styled.div`
   display: flex !important;
-
+  position: relative;
   list-style: none;
   align-items: center;
   justify-content: center;
-
-  margin: 0 auto;
-  margin-top: 30px;
 `;
 
 export const DotContainer = styled.div`
@@ -99,4 +98,38 @@ export const ShowMore = styled.button`
             background-color: rgba(255, 255, 255, 0.15);
           }
         `};
+`;
+
+export const Navigation = styled.div`
+  position: relative;
+  margin: 0 auto;
+  margin-top: 30px;
+  display: flex;
+  position: relative;
+  list-style: none;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ArrowStyles = css`
+  transition: 0.3s ease color;
+  font-size: 48px;
+  height: 40px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  position: absolute;
+
+  &:hover {
+    color: white;
+  }
+`;
+
+export const StyledRightArrow = styled(RightArrow)`
+  ${ArrowStyles};
+  right: -40px;
+`;
+
+export const StyledLeftArrow = styled(LeftArrow)`
+  ${ArrowStyles};
+  left: -40px;
 `;
