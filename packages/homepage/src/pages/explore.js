@@ -69,6 +69,7 @@ export default class Explore extends React.PureComponent {
         id,
         title,
         description,
+        screenshotUrl: sandbox.screenshot_url,
       },
     });
   };
@@ -108,6 +109,7 @@ export default class Explore extends React.PureComponent {
           <SandboxModal
             onClose={this.closeModal}
             sandboxId={selectedSandbox && selectedSandbox.id}
+            screenshotUrl={selectedSandbox && selectedSandbox.screenshotUrl}
             title={selectedSandbox && selectedSandbox.title}
             description={selectedSandbox && selectedSandbox.description}
             openPreviousSandbox={

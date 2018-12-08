@@ -33,6 +33,7 @@ export default class WideSandbox extends React.PureComponent {
       id: this.props.sandbox.id,
       title: this.getTitle(),
       description: this.getDescription(),
+      screensotUrl: this.props.sandbox.screenshot_url,
     });
   };
 

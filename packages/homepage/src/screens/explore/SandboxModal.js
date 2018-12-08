@@ -170,7 +170,10 @@ export default class SandboxModal extends React.PureComponent {
                 )}
 
                 {styles.opacity !== 1 && (
-                  <EmbedSkeleton id={this.props.sandboxId} />
+                  <EmbedSkeleton
+                    screenshotUrl={this.props.screenshotUrl}
+                    id={this.props.sandboxId}
+                  />
                 )}
               </div>
             )}
