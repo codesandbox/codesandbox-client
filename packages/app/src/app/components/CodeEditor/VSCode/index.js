@@ -5,7 +5,6 @@ import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
 import { getModulePath, resolveModule } from 'common/sandbox/modules';
-import { css } from 'glamor';
 import { listen } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
@@ -44,18 +43,6 @@ import { updateUserSelections } from '../Monaco/live-decorations';
 type State = {
   fuzzySearchEnabled: boolean,
 };
-
-const fadeIn = css.keyframes('fadeIn', {
-  // optional name
-  '0%': { opacity: 0 },
-  '100%': { opacity: 1 },
-});
-
-const fadeOut = css.keyframes('fadeOut', {
-  // optional name
-  '0%': { opacity: 1 },
-  '100%': { opacity: 0 },
-});
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
