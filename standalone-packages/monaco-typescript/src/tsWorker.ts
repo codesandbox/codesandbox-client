@@ -135,8 +135,13 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
       try {
         const p = JSON.parse(code);
 
-        Promise.join(Object.keys(p.dependencies).map(depName => {
-          const version = p.dependencies[depName];
+        const devDependencies = p.devDependencies || {}
+
+        Promise.join([
+          ...Object.keys(p.dependencies),
+          ...Object.keys(devDependencies).filter(p => p.indexOf('@types/') === 0)
+        ].map(depName => {
+          const version = p.dependencies[depName] || devDependencies[depName];
 
           fetchTypings.fetchAndAddDependencies(depName, version, (paths) => {
             const fileAmount = Object.keys(paths).length;

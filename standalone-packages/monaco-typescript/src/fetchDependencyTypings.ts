@@ -270,7 +270,8 @@ const transformFiles = dir =>
 
 const getFileMetaData = (dependency, version, depPath) => {
   if (UNPKG) {
-    return doFetch(`https://unpkg.com/${dependency}@${version}${depPath}?meta`)
+    const usedDepPath = /\/$/.test(depPath) ? depPath : (depPath + '/');
+    return doFetch(`https://unpkg.com/${dependency}@${version}${usedDepPath}?meta`)
       .then(response => JSON.parse(response))
       .then(transformFiles);
   }
@@ -295,6 +296,16 @@ const resolveAppropiateFile = (fileMetaData, absolutePath) => {
   return absolutePath;
 };
 
+const getDependencyName = (depPath:string) => {
+  const parts= depPath.split('/');
+
+  if (depPath.indexOf('@') === 0) {
+    return parts[0] + '/' + parts[1];
+  }
+
+  return parts[0];
+}
+
 const getFileTypes = (
   depUrl,
   dependency,
@@ -317,11 +328,13 @@ const getFileTypes = (
 
     const dependencies = requireStatements.filter(x => !isNoDependency(x));
 
+    // console.log(fileMetaData, new Error().stack)
+
     // Now find all require statements, so we can download those types too
     return Promise.all(
       dependencies
-        .map(dep =>
-          fetchAndAddDependencies(dep, "latest", () => {}, fetchedPaths).catch(
+        .map(depPath =>
+          fetchAndAddDependencies(getDependencyName(depPath), "latest", () => {}, fetchedPaths).catch(
             () => {
               /* ignore */
             }
@@ -365,19 +378,15 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
 
     return Promise.all(
       dtsFiles.map(file =>
-        doFetch(`https://cdn.jsdelivr.net/npm/${dependency}@${version}${file}`)
-          .then(dtsFile =>
-            addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
-          )
-          .catch(() => {})
+        getFileTypes(`${ROOT_URL}${dependency}@${version}`, dependency, file, fetchedPaths, meta)
       )
     );
   });
 }
 
 function fetchFromTypings(dependency, version, fetchedPaths) {
-  const depUrl = `${ROOT_URL}${dependency}@${version}/`;
-  return doFetch(`${depUrl}package.json`)
+  const depUrl = `${ROOT_URL}${dependency}@${version}`;
+  return doFetch(`${depUrl}/package.json`)
     .then(response => JSON.parse(response))
     .then(packageJSON => {
       // Add package.json, since this defines where all types lie
