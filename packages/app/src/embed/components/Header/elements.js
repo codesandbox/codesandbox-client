@@ -1,6 +1,7 @@
 // @flow
 import styled from 'styled-components';
 import MenuIconSVG from 'react-icons/lib/md/menu';
+import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 
 export const Container = styled.div`
   position: relative;
@@ -29,7 +30,15 @@ export const LeftAligned = styled.div`
   height: 100%;
   align-items: center;
   justify-content: flex-start;
+
+  @media (min-width: ${SIDEBAR_SHOW_SCREEN_SIZE}px) {
+    svg {
+      visibility: hidden;
+      display: none;
+    }
+  }
 `;
+
 export const CenterAligned = styled.div`
   position: relative;
   display: flex;

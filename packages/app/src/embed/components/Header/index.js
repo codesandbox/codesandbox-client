@@ -2,6 +2,7 @@
 import * as React from 'react';
 import type { Sandbox } from 'common/types';
 import ModeIcons from 'app/components/ModeIcons';
+import HeartIcon from 'react-icons/lib/fa/heart-o';
 import EditorLink from '../EditorLink';
 
 import {
@@ -50,6 +51,15 @@ function Header({
         />
       </CenterAligned>
       <RightAligned>
+        <div
+          style={{
+            display: 'flex',
+            marginRight: '0.5rem',
+            alignItems: 'center',
+          }}
+        >
+          <HeartIcon /> Like
+        </div>
         <EditorLink small sandbox={sandbox} />
       </RightAligned>
     </Container>
