@@ -1,22 +1,29 @@
 export default [
   {
-    title: 'Material UI - Grid',
-    description:
-      'Good implementation that highlights the use of using a Grid in Material UI.',
-    sandboxId: 'q75m7wn514',
-    template: 'create-react-app',
-  },
-  {
     title: 'Tailwind Workflow Animation',
-    description: 'Animation showing the power of Tailwind.',
+    description: 'An incredible animation showing the power of Tailwind.',
     sandboxId: 'nw10kz7m3j',
     template: 'vue-cli',
   },
   {
-    title: 'ReactVizHoliday Day 1: Christmas trees sold in USA',
+    title: 'Hooks in Vue',
     description:
-      'Every year americans buy a bunch of christmas trees. Use the dataset to compare real and fake sales with two bar charts.',
-    sandboxId: 'p9p89w86wx',
+      'An example by Evan You on how you can potentionally use Hooks in Vue',
+    sandboxId: 'jpqo566289',
+    template: 'vue-cli',
+  },
+  {
+    title: 'Mario Kart in Pure CSS',
+    description:
+      'This Mario Kart game is written only(!) in CSS, no JavaScript involved!',
+    sandboxId: 'zk15o120xl',
+    template: 'parcel',
+  },
+  {
+    title: 'Animation Using React Hooks',
+    description:
+      'This example shows how React Hooks can be used in combination with react-spring to create new type of animations.',
+    sandboxId: 'ppxnl191zx',
     template: 'create-react-app',
   },
 ];
