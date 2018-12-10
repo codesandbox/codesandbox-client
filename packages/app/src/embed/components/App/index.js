@@ -243,6 +243,13 @@ export default class App extends React.PureComponent<
     const jwt = this.jwt();
 
     if (this.state.sandbox.userLiked) {
+      this.setState(s => ({
+        sandbox: {
+          ...s.sandbox,
+          userLiked: false,
+          likeCount: s.sandbox.likeCount - 1,
+        },
+      }));
       fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
         method: 'DELETE',
         headers: {
@@ -262,8 +269,24 @@ export default class App extends React.PureComponent<
               likeCount: s.sandbox.likeCount - 1,
             },
           }));
+        })
+        .catch(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: true,
+              likeCount: s.sandbox.likeCount + 1,
+            },
+          }));
         });
     } else {
+      this.setState(s => ({
+        sandbox: {
+          ...s.sandbox,
+          userLiked: true,
+          likeCount: s.sandbox.likeCount + 1,
+        },
+      }));
       fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
         method: 'POST',
         headers: {
@@ -275,6 +298,15 @@ export default class App extends React.PureComponent<
         .then(res => {
           this.setState(s => ({
             sandbox: { ...s.sandbox, userLiked: true, likeCount: res.count },
+          }));
+        })
+        .catch(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: false,
+              likeCount: s.sandbox.likeCount - 1,
+            },
           }));
         });
     }
