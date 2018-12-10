@@ -4,6 +4,8 @@ import { observer } from 'mobx-react';
 import { Transition, animated, config } from 'react-spring';
 import track from 'common/utils/analytics';
 
+import Relative from 'common/components/Relative';
+
 class OverlayComponent extends React.Component {
   state = {
     isOpen: this.props.isOpen === undefined ? false : this.props.isOpen,
@@ -65,10 +67,7 @@ class OverlayComponent extends React.Component {
 
     return (
       // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-      <div
-        style={{ position: 'relative' }}
-        onMouseDown={e => e.preventDefault()}
-      >
+      <Relative onMouseDown={e => e.preventDefault()}>
         {children(this.open)}
         <Transition
           items={isOpen}
@@ -97,7 +96,7 @@ class OverlayComponent extends React.Component {
               : style => <animated.span style={style} />
           }
         </Transition>
-      </div>
+      </Relative>
     );
   }
 }

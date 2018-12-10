@@ -21,6 +21,11 @@ export const Container = styled.div`
   overflow: auto;
 `;
 
+export const CM = styled.div`
+  height: 100%;
+  font-size: ${props => props.fontSize || '14px'};
+`;
+
 const getTokenColor = (scope, defaultStyles) => ({ theme: givenTheme }) => {
   if (
     !givenTheme ||

@@ -11,6 +11,11 @@ export const Icons = styled.div`
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   padding: 0.5rem 1rem;
   z-index: 40;
+
+  ${props =>
+    props.small &&
+    `fontSize: .875rem
+`};
 `;
 
 export const Icon = styled.div`
@@ -22,4 +27,14 @@ export const Icon = styled.div`
   &:hover {
     color: rgba(255, 255, 255, 1);
   }
+`;
+
+export const Container = styled.div`
+  height: ${props => props.height || '100%'};
+  width: ${props => props.width || '100%'};
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 `;

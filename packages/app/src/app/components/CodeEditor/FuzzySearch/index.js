@@ -4,6 +4,7 @@ import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 import { getModulePath } from 'common/sandbox/modules';
 import Input from 'common/components/Input';
+import FullWidth from 'common/components/fullWidth';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 
@@ -83,7 +84,7 @@ export default class FuzzySearch extends React.PureComponent {
             inputValue,
             highlightedIndex,
           }) => (
-            <div style={{ width: '100%' }}>
+            <FullWidth>
               <InputContainer>
                 <Input
                   {...getInputProps({
@@ -122,7 +123,7 @@ export default class FuzzySearch extends React.PureComponent {
                   </Entry>
                 ))}
               </Items>
-            </div>
+            </FullWidth>
           )}
         </Downshift>
       </Container>

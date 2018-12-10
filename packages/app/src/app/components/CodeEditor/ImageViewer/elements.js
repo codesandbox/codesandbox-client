@@ -7,6 +7,8 @@ export const Container = styled(Centered)`
     props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.9)'};
   overflow: auto;
   padding: 1rem;
+  width: ${props => props.width};
+  height: ${props => props.height};
 `;
 
 export const Title = styled.div`

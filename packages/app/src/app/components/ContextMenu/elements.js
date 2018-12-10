@@ -16,6 +16,11 @@ export const Container = styled(animated.div)`
 
   transform-origin: 0% 0%;
   font-weight: 600;
+
+  left: ${props => (props.left ? props.x : props.x - props.width)};
+  top: ${props => (props.down ? props.y : props.y - props.height)};
+  opacity: ${props => props.opacity};
+  height: ${props => props.height};
 `;
 
 export const Item = styled.div`

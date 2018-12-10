@@ -158,17 +158,8 @@ class ContextMenu extends React.PureComponent {
                 from={{ opacity: 0.6, height: 0, width: 'auto' }}
                 to={{ opacity: 1, height: 'auto', width: 'auto' }}
               >
-                {({ opacity, height, width }) => (
-                  <Container
-                    style={{
-                      left: left ? x : x - width,
-                      top: down ? y : y - height,
-                      opacity,
-                      height,
-                    }}
-                  >
-                    {items.map(mapFunction)}
-                  </Container>
+                {({ ...styles }) => (
+                  <Container {...styles}>{items.map(mapFunction)}</Container>
                 )}
               </Spring>
             </div>

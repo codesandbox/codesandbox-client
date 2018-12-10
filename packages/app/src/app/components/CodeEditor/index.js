@@ -21,7 +21,7 @@ import VSCode from './VSCode';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
 import MonacoDiff from './MonacoDiff';
-import { Icons, Icon } from './elements';
+import { Icons, Icon, Container } from './elements';
 
 const CodeMirror = Loadable(() =>
   import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
@@ -83,24 +83,14 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     if (currentTab && currentTab.type === 'DIFF') {
       return (
-        <div
-          style={{
-            height: props.height || '100%',
-            width: props.width || '100%',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
-        >
+        <Container width={props.width} height={props.height}>
           <MonacoDiff
             originalCode={currentTab.codeA}
             modifiedCode={currentTab.codeB}
             title={currentTab.fileTitle}
             {...props}
           />
-        </div>
+        </Container>
       );
     }
 
@@ -167,20 +157,10 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div
-        style={{
-          height: props.height || '100%',
-          width: props.width || '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-      >
+      <Conatiner>
         {!isModuleSynced &&
           module.title === 'index.html' && (
-            <Icons style={{ fontSize: '.875rem' }}>
+            <Icons small>
               You may have to save this file and refresh the preview to see
               changes
             </Icons>
@@ -195,7 +175,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
               </Tooltip>
             </Icons>
           ) : (
-            <Icons style={{ fontSize: '.875rem' }}>
+            <Icons small>
               {config.partialSupportDisclaimer ? (
                 <Tooltip
                   position="bottom"
@@ -214,7 +194,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
             </Icons>
           ))}
         <Editor {...props} dependencies={dependencies} />
-      </div>
+      </Conatiner>
     );
   }
 }

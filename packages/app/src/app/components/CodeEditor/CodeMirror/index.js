@@ -14,7 +14,7 @@ import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/lint';
 
 import FuzzySearch from '../FuzzySearch';
-import { Container, CodeContainer } from './elements';
+import { Container, CodeContainer, CM } from './elements';
 
 // eslint-disable-next-line
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
@@ -447,11 +447,8 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
               currentModuleId={currentModule.id}
             />
           )}
-          <div
-            style={{
-              height: '100%',
-              fontSize: settings.fontSize || 14,
-            }}
+          <CM
+            fontSize={settings.fontSize}
             ref={node => {
               this.codemirrorElement = node;
             }}

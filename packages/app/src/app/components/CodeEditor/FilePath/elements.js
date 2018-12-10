@@ -37,10 +37,19 @@ export const Chevron = styled(ChevronLeft)`
   }
 `;
 
-export const FileName = styled.div`
+export const FileNameContainer = styled.div`
   transition: 0.3s ease transform;
   transform: ${props => (props.hovering ? 'translateX(20px)' : 'none')};
   flex: 1;
+`;
+
+export const FileName = styled.span`
+  margin-left: 0.25rem;
+`;
+
+export const Directory = styled.span`
+  margin-left: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
 `;
 
 export const StyledExitZen = withTooltip(

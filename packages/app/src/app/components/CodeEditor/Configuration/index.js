@@ -10,7 +10,7 @@ import Tooltip from 'common/components/Tooltip';
 import CodeIcon from 'react-icons/lib/md/code';
 
 import type { Props as EditorProps, Editor } from '../types';
-import { Container, Icon, Title, Description } from './elements';
+import { Container, Icon, Title, Description, Header } from './elements';
 
 type Props = EditorProps & {
   config: Object,
@@ -91,8 +91,8 @@ export default class Configuration extends React.PureComponent<Props>
     const { ConfigWizard } = getUI(config.type);
 
     return (
-      <Container style={{ width, height }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Container width={width} height={height}>
+        <Header>
           <EntryIcons
             width={32}
             height={32}
@@ -105,7 +105,7 @@ export default class Configuration extends React.PureComponent<Props>
               <CodeIcon />
             </Icon>
           </Tooltip>
-        </div>
+        </Header>
         <Description>
           {config.description}{' '}
           <a

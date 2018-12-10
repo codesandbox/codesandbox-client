@@ -32,4 +32,6 @@ export const IconContainer = styled.div`
   width: 24px;
   align-items: center;
   justify-content: center;
+
+  color: ${props => props.color};
 `;

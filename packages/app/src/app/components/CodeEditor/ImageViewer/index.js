@@ -23,13 +23,10 @@ export default class ImageViewer extends React.Component<Props>
   };
 
   render() {
-    const { currentModule } = this.props;
+    const { currentModule, width, height } = this.props;
 
     return (
-      <Container
-        style={{ width: this.props.width, height: this.props.height }}
-        horizontal
-      >
+      <Container width={width} height={height} horizontal>
         <Title>Image</Title>
         <SubTitle>
           We refer to these files by URL, you can edit this url to change the

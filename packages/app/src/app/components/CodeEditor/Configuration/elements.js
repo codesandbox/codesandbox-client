@@ -4,8 +4,15 @@ export const Container = styled.div`
   padding: 1rem;
   color: rgba(255, 255, 255, 0.8);
   box-sizing: border-box;
-
   overflow: auto;
+
+  width: ${props => props.width};
+  height: ${props => props.height};
+`;
+
+export const Header = styled.header`
+  display: flex;
+  align-items: center;
 `;
 
 export const Title = styled.h1`
