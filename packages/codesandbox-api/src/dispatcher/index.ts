@@ -1,5 +1,5 @@
 // import * as debug from 'debug';
-import host from './host';
+// import host from './host';
 
 const bundlers: Map<Window, string> = new Map();
 

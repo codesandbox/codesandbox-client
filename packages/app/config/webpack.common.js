@@ -8,7 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
-const getHost = require('./host');
+const getHost = require('common/utils/host');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
