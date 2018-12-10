@@ -62,3 +62,7 @@ export const Actions = styled.div`
     }
   }
 `;
+
+export const Total = styled.div`
+  font-size: 0.875rem;
+`;

@@ -3,7 +3,7 @@ import React from 'react';
 import type { Test } from '../../../';
 
 import { StatusElements } from '../../../elements';
-import { Block, TestName } from './elements';
+import { Block, TestName, Container, Part } from './elements';
 
 type Props = {
   test: Test,
@@ -16,14 +16,14 @@ export default ({ test }: Props) => {
   const testName = testParts.pop();
 
   return (
-    <div style={{ display: 'flex', flex: 1, alignItems: 'center' }}>
+    <Container>
       <StatusElement />
       {testParts.map((part, i) => (
         <Block last={i === testParts.length - 1} key={part}>
-          <span style={{ zIndex: 10 }}>{part}</span>
+          <Part>{part}</Part>
         </Block>
       ))}
       <TestName>{testName}</TestName>
-    </div>
+    </Container>
   );
 };

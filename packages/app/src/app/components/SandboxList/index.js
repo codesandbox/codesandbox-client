@@ -15,6 +15,7 @@ import PrivacyStatus from '../PrivacyStatus';
 import {
   HeaderTitle,
   Table,
+  TR,
   StatTitle,
   StatBody,
   Body,
@@ -30,7 +31,7 @@ type Props = {
 export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
   <Table>
     <thead>
-      <tr style={{ height: '3rem' }}>
+      <TR>
         <HeaderTitle>Title</HeaderTitle>
         <HeaderTitle>Created</HeaderTitle>
         <HeaderTitle>Updated</HeaderTitle>
@@ -45,7 +46,7 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
           <ForkIcon />
         </StatTitle>
         {isCurrentUser && <HeaderTitle />}
-      </tr>
+      </TR>
     </thead>
     <Body>
       {sandboxes.map((s, i) => {
@@ -65,9 +66,7 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
             <StatBody>{s.viewCount}</StatBody>
             <StatBody>{s.forkCount}</StatBody>
             {isCurrentUser && (
-              <StatBody
-                style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
-              >
+              <StatBody>
                 <DeleteSandboxButton id={s.id} onDelete={onDelete} />
               </StatBody>
             )}

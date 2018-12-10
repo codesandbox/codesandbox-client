@@ -22,6 +22,7 @@ import {
 } from './elements';
 
 import { StatusElements } from '../elements';
+import { Part } from '../TestDetails/TestBlock/TestName/elements';
 
 type Props = {
   file: File,
@@ -106,7 +107,7 @@ class TestElement extends Component<Props> {
                     <TestStatusElement />
                     {testParts.map((part, i) => (
                       <Block last={i === testParts.length - 1} key={part}>
-                        <span style={{ zIndex: 10 }}>{part}</span>
+                        <Part>{part}</Part>
                       </Block>
                     ))}
                     <TestName>{testName}</TestName>

@@ -10,8 +10,11 @@ export const Container = styled.div`
   width: 100%;
   background-color: white;
 
-  display: flex;
   flex-direction: column;
+
+  position: relative;
+  flex: 1;
+  display: ${props => (props.hide ? 'none' : 'flex')};
 `;
 
 export const StyledFrame = styled.iframe`

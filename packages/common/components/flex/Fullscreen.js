@@ -5,4 +5,16 @@ export default styled.div`
   flex: auto;
   width: 100%;
   height: 100%;
+
+  ${props =>
+    props.vh &&
+    `
+      height: 100vh
+  `};
+
+  ${props =>
+    props.vw &&
+    `
+      width: 100vw
+  `};
 `;

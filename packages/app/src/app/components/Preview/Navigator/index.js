@@ -19,6 +19,12 @@ import {
   SwitchContainer,
 } from './elements';
 
+const IconStyles = {
+  fontSize: 18,
+  padding: 4,
+  marginRight: 4,
+};
+
 function Navigator({
   url,
   onChange,
@@ -36,7 +42,7 @@ function Navigator({
   isServer,
 }) {
   return (
-    <Container className="flying-container-handler" style={{ cursor: 'move' }}>
+    <Container className="flying-container-handler">
       <Icons>
         <Icon aria-label="Go Back" disabled={!onBack} onClick={onBack}>
           <LeftIcon />
@@ -57,7 +63,7 @@ function Navigator({
       </AddressBarContainer>
       {alignBottom && (
         <Icon
-          style={{ fontSize: 18, padding: 4, marginRight: 4 }}
+          style={IconStyles}
           selected={alignDirection === 'bottom'}
           onClick={alignBottom}
         >
@@ -68,7 +74,7 @@ function Navigator({
       )}
       {alignRight && (
         <Icon
-          style={{ fontSize: 18, padding: 4, marginRight: 4 }}
+          style={IconStyles}
           selected={alignDirection === 'right'}
           onClick={alignRight}
         >
@@ -79,7 +85,7 @@ function Navigator({
       )}
       {openNewWindow && (
         <Icon
-          style={{ fontSize: 18, padding: 4, marginRight: zenMode ? 8 : 16 }}
+          style={{ ...IconStyles, marginRight: zenMode ? 8 : 16 }}
           onClick={openNewWindow}
         >
           <Tooltip title="Open In New Window">

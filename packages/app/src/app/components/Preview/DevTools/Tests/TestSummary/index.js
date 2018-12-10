@@ -15,6 +15,7 @@ import {
   FailBar,
   TestData,
   IdleBar,
+  Total,
   Actions,
 } from './elements';
 
@@ -65,9 +66,7 @@ export default ({
             />
           </TestData>
           <Actions>
-            <div style={{ fontSize: '.875rem' }}>
-              {totalTestCount !== 0 && `${totalDuration}ms`}
-            </div>
+            <Total>{totalTestCount !== 0 && `${totalDuration}ms`}</Total>
             <Tooltip title="Toggle File Watching">
               <SyncIcon
                 style={{ color: watching ? 'white' : 'inherit' }}

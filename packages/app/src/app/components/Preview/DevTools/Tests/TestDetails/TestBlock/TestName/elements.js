@@ -40,3 +40,13 @@ export const TestName = styled.div`
   flex: auto;
   white-space: nowrap;
 `;
+
+export const Container = styled.div`
+  display: flex;
+  flex: 1;
+  align-items: center;
+`;
+
+export const Part = styled.span`
+  z-index: 10;
+`;
