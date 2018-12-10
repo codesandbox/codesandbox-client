@@ -81,6 +81,8 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             this._languageService = ts.createLanguageService(this);
             this.files = new Map();
             this.typesLoaded = false;
+            this.fetchingTypes = false;
+            this.fetchedTypes = [];
             this._ctx = ctx;
             this._compilerOptions = createData.compilerOptions;
             this._extraLibs = createData.extraLibs;
@@ -106,6 +108,10 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         }
         TypeScriptWorker.prototype.getTypings = function () {
             var _this = this;
+            if (this.fetchingTypes) {
+                return;
+            }
+            this.fetchingTypes = true;
             var ensureDirectoryExistence = function (filePath, cb) {
                 var dirname = BrowserFS.BFSRequire("path").dirname(filePath);
                 _this.fs.stat(dirname, function (err, exists) {
@@ -124,10 +130,16 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 }
                 var code = data.toString();
                 try {
-                    var p_1 = JSON.parse(code);
-                    var devDependencies_1 = p_1.devDependencies || {};
-                    Promise.join(__spread(Object.keys(p_1.dependencies), Object.keys(devDependencies_1).filter(function (p) { return p.indexOf("@types/") === 0; })).map(function (depName) {
-                        var version = p_1.dependencies[depName] || devDependencies_1[depName];
+                    var p = JSON.parse(code);
+                    var dependencies_1 = p.dependencies || {};
+                    var devDependencies_1 = p.devDependencies || {};
+                    Promise.join(__spread(Object.keys(dependencies_1), Object.keys(devDependencies_1).filter(function (p) { return p.indexOf("@types/") === 0; })).map(function (depName) {
+                        var version = dependencies_1[depName] || devDependencies_1[depName];
+                        var key = depName + "@" + version;
+                        if (_this.fetchedTypes.indexOf(key) > -1) {
+                            return Promise.as(void 0);
+                        }
+                        _this.fetchedTypes.push(key);
                         return fetchTypings
                             .fetchAndAddDependencies(depName, version)
                             .then(function (paths) {
@@ -143,8 +155,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                                     });
                                 }
                             });
-                        })
-                            .catch(function () { });
+                        }).catch(function () { });
                     })).then(function () {
                         _this._languageService.cleanupSemanticCache();
                         setTimeout(function () {
@@ -154,6 +165,9 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 }
                 catch (e) {
                     return;
+                }
+                finally {
+                    _this.fetchingTypes = false;
                 }
             });
         };

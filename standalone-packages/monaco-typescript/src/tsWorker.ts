@@ -74,6 +74,8 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
   private fs: any;
   private files: Map<string, string> = new Map();
   private typesLoaded: boolean = false;
+  private fetchingTypes: boolean = false;
+  private fetchedTypes: string[] = [];
 
   constructor(ctx: IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
@@ -112,6 +114,12 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
   }
 
   getTypings() {
+    if (this.fetchingTypes) {
+      return;
+    }
+
+    this.fetchingTypes = true;
+
     const ensureDirectoryExistence = (filePath, cb) => {
       const dirname = BrowserFS.BFSRequire("path").dirname(filePath);
       this.fs.stat(dirname, (err, exists) => {
@@ -134,17 +142,24 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
       const code = data.toString();
       try {
         const p = JSON.parse(code);
-
+        const dependencies = p.dependencies || {};
         const devDependencies = p.devDependencies || {};
 
         Promise.join(
           [
-            ...Object.keys(p.dependencies),
+            ...Object.keys(dependencies),
             ...Object.keys(devDependencies).filter(
               p => p.indexOf("@types/") === 0
             )
           ].map(depName => {
-            const version = p.dependencies[depName] || devDependencies[depName];
+            const version = dependencies[depName] || devDependencies[depName];
+
+            const key = `${depName}@${version}`;
+            if (this.fetchedTypes.indexOf(key) > -1) {
+              return Promise.as(void 0);
+            }
+
+            this.fetchedTypes.push(key);
 
             return fetchTypings
               .fetchAndAddDependencies(depName, version)
@@ -163,8 +178,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
                     });
                   }
                 });
-              })
-              .catch(() => {});
+              }).catch(() => {})
           })
         ).then(() => {
           this._languageService.cleanupSemanticCache();
@@ -174,6 +188,8 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
         });
       } catch (e) {
         return;
+      } finally {
+        this.fetchingTypes = false;
       }
     });
   }
