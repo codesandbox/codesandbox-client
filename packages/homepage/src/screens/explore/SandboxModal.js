@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { camelizeKeys } from 'humps';
 import { Spring } from 'react-spring';
 import getIcon from 'common/templates/icons';
-import { profileUrl, githubRepoUrl } from 'common/utils/url-generator';
+import { profileUrl, githubRepoUrl, host } from 'common/utils/url-generator';
 import getTemplate from 'common/templates';
 import GithubBadge from 'common/components/GithubBadge';
 
@@ -39,7 +39,7 @@ export default class SandboxModal extends React.PureComponent {
       return Promise.resolve(this.loadedSandboxes[sandboxId]);
     }
 
-    return fetch(`http://localhost:3000/api/v1/sandboxes/${sandboxId}`, {
+    return fetch(`${host()}/api/v1/sandboxes/${sandboxId}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${JSON.parse(localStorage.getItem('jwt'))}`,
@@ -160,7 +160,7 @@ export default class SandboxModal extends React.PureComponent {
                   <iframe
                     ref={this.setupFrame}
                     title="sandbox"
-                    src={`http://localhost:3000/embed/custom?view=preview`}
+                    src={`${host()}/embed/custom?view=preview`}
                     style={{
                       position: 'absolute',
                       width: '100%',

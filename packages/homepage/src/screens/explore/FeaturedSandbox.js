@@ -1,7 +1,7 @@
 import React from 'react';
 import Preview from 'app/src/app/components/Preview';
 import { camelizeKeys } from 'humps';
-import { profileUrl } from 'common/utils/url-generator';
+import { profileUrl, host } from 'common/utils/url-generator';
 
 import getIcon from 'common/templates/icons';
 
@@ -41,7 +41,7 @@ export default class FeaturedSandbox extends React.PureComponent {
       return Promise.resolve(this.fetchedSandboxes[id]);
     }
 
-    return fetch(`http://localhost:3000/api/v1/sandboxes/${id}`)
+    return fetch(`${host()}/api/v1/sandboxes/${id}`)
       .then(x => x.json())
       .then(x => {
         this.fetchedSandboxes[x.data.id] = x.data;
