@@ -334,7 +334,7 @@ const getFileTypes = (
     return Promise.all(
       dependencies
         .map(depPath =>
-          fetchAndAddDependencies(getDependencyName(depPath), "latest", () => {}, fetchedPaths).catch(
+          fetchAndAddDependencies(getDependencyName(depPath), "latest", fetchedPaths).catch(
             () => {
               /* ignore */
             }
@@ -421,7 +421,6 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
 export async function fetchAndAddDependencies(
   dep,
   version,
-  onDependencies,
   fetchedPaths = {}
 ) {
   try {
@@ -453,5 +452,5 @@ export async function fetchAndAddDependencies(
     // }
   }
 
-  onDependencies(fetchedPaths);
+  return fetchedPaths;
 }

@@ -127,7 +127,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                     var devDependencies_1 = p_1.devDependencies || {};
                     Promise.join(__spread(Object.keys(p_1.dependencies), Object.keys(devDependencies_1).filter(function (p) { return p.indexOf('@types/') === 0; })).map(function (depName) {
                         var version = p_1.dependencies[depName] || devDependencies_1[depName];
-                        fetchTypings.fetchAndAddDependencies(depName, version, function (paths) {
+                        return fetchTypings.fetchAndAddDependencies(depName, version, function (paths) {
                             var fileAmount = Object.keys(paths).length;
                             Object.keys(paths).forEach(function (p) {
                                 var pathToWrite = '/sandbox/' + p;
@@ -140,10 +140,12 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                                     });
                                 }
                             });
-                        }).catch(function (e) { });
+                        }).catch(function () { });
                     })).then(function () {
-                        _this.typesLoaded = true;
                         _this._languageService.cleanupSemanticCache();
+                        setTimeout(function () {
+                            _this.typesLoaded = true;
+                        });
                     });
                 }
                 catch (e) {
