@@ -1,4 +1,6 @@
 // @flow
+import { isBabel7 } from 'common/utils/is-babel-7';
+
 import type { ConfigurationFile } from '../types';
 
 const JSX_PRAGMA = {
@@ -16,6 +18,17 @@ const config: ConfigurationFile = {
     template: string,
     resolveModule: (path: string) => ?{ code: string }
   ) => {
+    let isV7 = false;
+
+    try {
+      const packageJSON = resolveModule('/package.json');
+      const parsed = JSON.parse(packageJSON.code || '');
+
+      isV7 = isBabel7(parsed.dependencies, parsed.devDependencies);
+    } catch (e) {
+      console.error(e);
+    }
+
     if (template === 'preact-cli') {
       return JSON.stringify(
         {
@@ -48,22 +61,12 @@ const config: ConfigurationFile = {
        *
        * Need to fix this ASAP and make vue-cli 3 a separate template.
        */
-      try {
-        const packageJSON = resolveModule('/package.json');
-        const parsed = JSON.parse(packageJSON.code);
 
-        if (
-          parsed.devDependencies &&
-          parsed.devDependencies['@vue/cli-plugin-babel']
-        ) {
-          return JSON.stringify({
-            presets: ['@vue/app'],
-          });
-        }
-      } catch (e) {
-        console.error(e);
+      if (isV7) {
+        return JSON.stringify({
+          presets: ['@vue/app'],
+        });
       }
-
       return JSON.stringify(
         {
           presets: [
@@ -97,16 +100,18 @@ const config: ConfigurationFile = {
 
     if (template === 'parcel') {
       const presets = ['env'];
-      const plugins = [
-        [
-          'transform-runtime',
-          {
-            polyfill: false,
-            regenerator: true,
-          },
-        ],
-        'transform-object-rest-spread',
-      ];
+      const plugins = isV7
+        ? []
+        : [
+            [
+              'transform-runtime',
+              {
+                polyfill: false,
+                regenerator: true,
+              },
+            ],
+            'transform-object-rest-spread',
+          ];
 
       const packageJSONModule = resolveModule('/package.json');
 

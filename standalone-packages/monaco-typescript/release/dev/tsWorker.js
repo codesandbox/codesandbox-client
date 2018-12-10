@@ -124,8 +124,9 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 var code = data.toString();
                 try {
                     var p_1 = JSON.parse(code);
-                    Promise.join(Object.keys(p_1.dependencies).map(function (depName) {
-                        var version = p_1.dependencies[depName];
+                    var devDependencies_1 = p_1.devDependencies || {};
+                    Promise.join(__spread(Object.keys(p_1.dependencies), Object.keys(devDependencies_1).filter(function (p) { return p.indexOf('@types/') === 0; })).map(function (depName) {
+                        var version = p_1.dependencies[depName] || devDependencies_1[depName];
                         fetchTypings.fetchAndAddDependencies(depName, version, function (paths) {
                             var fileAmount = Object.keys(paths).length;
                             Object.keys(paths).forEach(function (p) {

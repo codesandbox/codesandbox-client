@@ -4,6 +4,7 @@ import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import { isBabel7 } from 'common/utils/is-babel-7';
 
 import getPreset from './eval';
 import Manager from './eval/manager';
@@ -26,8 +27,6 @@ import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
-
-import { isBabel7 } from './eval/utils/is-babel-7';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;

@@ -90,6 +90,8 @@ export default class Template {
         absolute(configurationFiles.package.parsed.main),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
+      '/src/index.ts',
+      '/src/index.js',
       ...(this.mainFile || []),
     ].filter(x => x);
   }
