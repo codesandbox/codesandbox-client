@@ -6,18 +6,18 @@ export default [
     template: 'vue-cli',
   },
   {
-    title: 'Hooks in Vue',
-    description:
-      'An example by Evan You on how you can potentionally use Hooks in Vue',
-    sandboxId: 'jpqo566289',
-    template: 'vue-cli',
-  },
-  {
     title: 'Mario Kart in Pure CSS',
     description:
       'This Mario Kart game is written only(!) in CSS, no JavaScript involved!',
     sandboxId: 'zk15o120xl',
     template: 'parcel',
+  },
+  {
+    title: 'Hooks in Vue',
+    description:
+      'An example by Evan You on how you can potentionally use Hooks in Vue',
+    sandboxId: 'jpqo566289',
+    template: 'vue-cli',
   },
   {
     title: 'Animation Using React Hooks',
