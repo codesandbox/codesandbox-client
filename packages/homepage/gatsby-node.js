@@ -131,7 +131,20 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 };
 
-exports.onCreateWebpackConfig = ({ getConfig, loaders, actions }) => {
+exports.onCreateWebpackConfig = ({ stage, getConfig, loaders, actions }) => {
+  if (stage === 'build-html') {
+    actions.setWebpackConfig({
+      module: {
+        rules: [
+          {
+            test: /gsap/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    });
+  }
+
   const config = getConfig();
 
   config.module.rules = [
