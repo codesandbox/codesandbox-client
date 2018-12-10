@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const getHost = require('common/utils/host');
+const env = require('common/config/env');
 
 // Parse date information out of post filename.
 const BLOG_POST_FILENAME_REGEX = /([0-9]+)-([0-9]+)-([0-9]+)-(.+)\.md$/;
@@ -152,12 +152,7 @@ exports.onCreateWebpackConfig = ({
   }
 
   actions.setWebpackConfig({
-    plugins: [
-      plugins.define({
-        'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
-        'process.env.LOCAL_SERVER': JSON.stringify(process.env.LOCAL_SERVER),
-      }),
-    ],
+    plugins: [plugins.define(env)],
   });
 
   const config = getConfig();
