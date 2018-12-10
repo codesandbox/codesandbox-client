@@ -17,7 +17,6 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
-import isESModule from './utils/is-es-module';
 
 import type { default as Manager } from './manager';
 import HMR from './hmr';
@@ -77,7 +76,8 @@ export type LoaderContext = {
     title: string,
     code: string,
     currentPath?: string,
-    overwrite?: boolean
+    overwrite?: boolean,
+    isChild?: boolean
   ) => TranspiledModule,
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
@@ -432,7 +432,8 @@ export default class TranspiledModule {
         path: string,
         code: string,
         directoryPath: string = pathUtils.dirname(this.module.path),
-        overwrite?: boolean = true
+        overwrite?: boolean = true,
+        isChild?: boolean = true
       ) => {
         const queryPath = path.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
@@ -463,7 +464,9 @@ export default class TranspiledModule {
           transpiledModule ||
           manager.addTranspiledModule(moduleCopy, queryPath.join('!'));
 
-        this.childModules.push(transpiledModule);
+        if (isChild) {
+          this.childModules.push(transpiledModule);
+        }
         this.dependencies.add(transpiledModule);
         transpiledModule.initiators.add(this);
 
@@ -973,7 +976,10 @@ export default class TranspiledModule {
       this.initiators.size === 0 &&
       this.transpilationInitiators.size === 0 &&
       !this.isEntry &&
-      !manager.isFirstLoad
+      !manager.isFirstLoad &&
+      // Don't delete stubbed modules, they are here for a reason, most probably
+      // because they are aliased with a browser field
+      !this.module.stubbed
     ) {
       // Remove the module from the transpiler if it's not used anymore
       debug(`Removing '${this.getId()}' from manager.`);
