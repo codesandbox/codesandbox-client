@@ -10,6 +10,8 @@ export default ({
   className: ?string,
 }) => (
   <svg
+    aria-label="CodeSandbox"
+    role="presentation"
     x="0px"
     y="0px"
     className={className}
@@ -17,6 +19,7 @@ export default ({
     height={typeof height === 'number' ? `${height}px` : height}
     viewBox="0 0 1024 1024"
   >
+    <title>CodeSandbox</title>
     <g id="Layer_1">
       <polyline
         fill="currentColor"

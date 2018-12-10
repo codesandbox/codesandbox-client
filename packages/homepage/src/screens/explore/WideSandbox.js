@@ -37,6 +37,14 @@ export default class WideSandbox extends React.PureComponent {
     });
   };
 
+  handleKeyUp = e => {
+    if (e.keyCode === 13) {
+      // Enter
+
+      this.toggleOpen();
+    }
+  };
+
   render() {
     const { sandbox } = this.props;
 
@@ -58,6 +66,7 @@ export default class WideSandbox extends React.PureComponent {
         onClick={this.toggleOpen}
         role="button"
         tabIndex={0}
+        onKeyUp={this.handleKeyUp}
       >
         <SandboxImage
           alt={this.getTitle()}

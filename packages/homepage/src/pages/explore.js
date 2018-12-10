@@ -134,7 +134,7 @@ export default class Explore extends React.PureComponent {
             />
           )}
 
-          <PageContainer width={1440}>
+          <PageContainer as="main" width={1440}>
             <FeaturedSandbox
               title={featuredSandboxInfo.title}
               description={featuredSandboxInfo.description}
@@ -159,6 +159,7 @@ export default class Explore extends React.PureComponent {
                   return (
                     <DotContainer key={sandbox.sandboxId}>
                       <Dot
+                        aria-label={sandbox.title || sandbox.id}
                         active={i === this.state.featuredSandboxIndex}
                         color={template.color()}
                         onClick={() =>

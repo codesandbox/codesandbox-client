@@ -6,7 +6,7 @@ export default [
     template: 'vue-cli',
   },
   {
-    title: 'Mario Kart in Pure CSS',
+    title: 'Mario Kart in CSS',
     description:
       'This Mario Kart game is written only(!) in CSS, no JavaScript involved!',
     sandboxId: 'zk15o120xl',

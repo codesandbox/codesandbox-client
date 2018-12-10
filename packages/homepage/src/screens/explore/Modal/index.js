@@ -66,6 +66,8 @@ export default class Modal extends React.PureComponent {
         >
           {props => (
             <Container
+              role="dialog"
+              aria-modal="true"
               style={props}
               onClick={this.props.onClose}
               isOpen={this.props.isOpen}

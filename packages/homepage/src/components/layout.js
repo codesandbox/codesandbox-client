@@ -18,9 +18,9 @@ export default class TemplateWrapper extends React.Component {
           <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 20 }}>
             <Navigation />
           </div>
-          <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
+          <main style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
             {children}
-          </div>
+          </main>
           <Footer />
         </div>
       </ThemeProvider>
