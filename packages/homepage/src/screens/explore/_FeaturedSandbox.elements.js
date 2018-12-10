@@ -79,6 +79,11 @@ export const IconContainer = styled.div`
   position: absolute;
   right: 1.5rem;
   bottom: 1.5rem;
+
+  img {
+    width: 40px;
+    height: 40px;
+  }
 `;
 export const StyledStats = styled(Stats)`
   color: ${props => props.theme.new.description};
