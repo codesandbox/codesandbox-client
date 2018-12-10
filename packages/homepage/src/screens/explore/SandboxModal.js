@@ -119,7 +119,7 @@ export default class SandboxModal extends React.PureComponent {
   }
 
   listenForInitialized = e => {
-    if (e && e.data && e.data.type === 'initialized') {
+    if (e && e.data === 'ready') {
       this.resolveFrameInitializedPromise();
     }
   };
