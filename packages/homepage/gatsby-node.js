@@ -148,14 +148,16 @@ exports.onCreateWebpackConfig = ({
           },
         ],
       },
-
-      plugins: [
-        plugins.define({
-          'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
-        }),
-      ],
     });
   }
+
+  actions.setWebpackConfig({
+    plugins: [
+      plugins.define({
+        'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
+      }),
+    ],
+  });
 
   const config = getConfig();
 
