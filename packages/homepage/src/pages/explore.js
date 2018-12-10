@@ -110,20 +110,22 @@ export default class Explore extends React.PureComponent {
         <Container>
           <TitleAndMetaTags title="Explore - CodeSandbox" />
 
-          <SandboxModal
-            onClose={this.closeModal}
-            sandboxId={selectedSandbox && selectedSandbox.id}
-            screenshotUrl={selectedSandbox && selectedSandbox.screenshotUrl}
-            title={selectedSandbox && selectedSandbox.title}
-            description={selectedSandbox && selectedSandbox.description}
-            openPreviousSandbox={
-              currentIndex > 0 && this.openPreviousSandbox(currentIndex)
-            }
-            openNextSandbox={
-              currentIndex < this.state.sandboxes.length - 1 &&
-              this.openNextSandbox(currentIndex)
-            }
-          />
+          {typeof window !== 'undefined' && (
+            <SandboxModal
+              onClose={this.closeModal}
+              sandboxId={selectedSandbox && selectedSandbox.id}
+              screenshotUrl={selectedSandbox && selectedSandbox.screenshotUrl}
+              title={selectedSandbox && selectedSandbox.title}
+              description={selectedSandbox && selectedSandbox.description}
+              openPreviousSandbox={
+                currentIndex > 0 && this.openPreviousSandbox(currentIndex)
+              }
+              openNextSandbox={
+                currentIndex < this.state.sandboxes.length - 1 &&
+                this.openNextSandbox(currentIndex)
+              }
+            />
+          )}
 
           <PageContainer width={1440}>
             <FeaturedSandbox
