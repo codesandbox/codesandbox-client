@@ -1,8 +1,6 @@
 const { resolve } = require('path');
 const getHost = require('common/utils/host');
 
-process.env.CODESANDBOX_HOST = getHost();
-
 // Parse date information out of post filename.
 const BLOG_POST_FILENAME_REGEX = /([0-9]+)-([0-9]+)-([0-9]+)-(.+)\.md$/;
 const DOCUMENTATION_FILENAME_REGEX = /[0-9]+-(.*)\.md$/;
@@ -133,7 +131,13 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 };
 
-exports.onCreateWebpackConfig = ({ stage, getConfig, loaders, actions }) => {
+exports.onCreateWebpackConfig = ({
+  stage,
+  getConfig,
+  loaders,
+  actions,
+  plugins,
+}) => {
   if (stage === 'build-html') {
     actions.setWebpackConfig({
       module: {
@@ -144,6 +148,12 @@ exports.onCreateWebpackConfig = ({ stage, getConfig, loaders, actions }) => {
           },
         ],
       },
+
+      plugins: [
+        plugins.define({
+          'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
+        }),
+      ],
     });
   }
 
