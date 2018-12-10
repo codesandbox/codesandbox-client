@@ -143,7 +143,7 @@ export default class App extends React.PureComponent<
 
   fetchSandbox = async (id: string) => {
     if (id === 'custom') {
-      return new Promise(resolve => {
+      await new Promise(resolve => {
         window.parent.postMessage('ready', '*');
         window.addEventListener('message', e => {
           if (e.data && e.data.sandbox) {
@@ -155,27 +155,27 @@ export default class App extends React.PureComponent<
           }
         });
       });
-    }
+    } else {
+      try {
+        const response = await fetch(
+          `${this.getAppOrigin()}/api/v1/sandboxes/${id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.jwt()}`,
+            },
+          }
+        )
+          .then(res => res.json())
+          .then(camelizeKeys);
 
-    try {
-      const response = await fetch(
-        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.jwt()}`,
-          },
-        }
-      )
-        .then(res => res.json())
-        .then(camelizeKeys);
+        document.title = `${response.data.title ||
+          response.data.id} - CodeSandbox`;
 
-      document.title = `${response.data.title ||
-        response.data.id} - CodeSandbox`;
-
-      this.setState({ sandbox: response.data });
-    } catch (e) {
-      this.setState({ notFound: true });
+        this.setState({ sandbox: response.data });
+      } catch (e) {
+        this.setState({ notFound: true });
+      }
     }
   };
 
