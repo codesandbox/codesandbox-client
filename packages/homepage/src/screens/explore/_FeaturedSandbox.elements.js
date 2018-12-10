@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
 import Stats from 'common/components/Stats';
 
+const VERTICAL_BREAKPOINT = 900;
+
 export const Container = styled.div`
   position: relative;
   background-color: ${props => props.theme.new.bg};
@@ -11,10 +13,22 @@ export const Container = styled.div`
   display: flex;
   box-shadow: 0 9px 14px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+  z-index: 1;
 
-  @media screen and (max-width: 900px) {
+  @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {
     flex-direction: column;
     height: 600px;
+  }
+`;
+
+export const SandboxPreviewImage = styled.div`
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {
+    /* Manually measured using the devtools, probably (height / 2 - navigation bar size) */
+    height: 257.5px;
   }
 `;
 

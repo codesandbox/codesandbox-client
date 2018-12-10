@@ -24,6 +24,7 @@ const Left = styled.div`
 `;
 
 const StyledLogo = styled(Logo)`
+  color: white;
   ${media.phone`
     width: 38px;
     height: 38px;

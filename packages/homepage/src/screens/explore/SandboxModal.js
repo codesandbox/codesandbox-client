@@ -24,6 +24,7 @@ import {
   TemplateLogo,
   StyledRightArrow,
   StyledLeftArrow,
+  SandboxInfoContianer,
 } from './_SandboxModal.elements';
 
 export default class SandboxModal extends React.PureComponent {
@@ -38,7 +39,12 @@ export default class SandboxModal extends React.PureComponent {
       return Promise.resolve(this.loadedSandboxes[sandboxId]);
     }
 
-    return fetch(`http://localhost:3000/api/v1/sandboxes/${sandboxId}`)
+    return fetch(`http://localhost:3000/api/v1/sandboxes/${sandboxId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('jwt'))}`,
+      },
+    })
       .then(x => x.json())
       .then(x => {
         const data = camelizeKeys(x.data);
@@ -179,7 +185,7 @@ export default class SandboxModal extends React.PureComponent {
             )}
           </Spring>
 
-          <div style={{ display: 'flex' }}>
+          <SandboxInfoContianer>
             <SandboxInfo>
               <SandboxTitle>{this.props.title}</SandboxTitle>
               <SandboxDescription>{this.props.description}</SandboxDescription>
@@ -206,7 +212,7 @@ export default class SandboxModal extends React.PureComponent {
                 </Spring>
               )}
             </StatsContainer>
-          </div>
+          </SandboxInfoContianer>
           <Footer>
             {sandbox ? (
               <FooterInfo>

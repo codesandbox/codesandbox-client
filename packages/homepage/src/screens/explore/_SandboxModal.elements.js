@@ -40,6 +40,14 @@ export const StyledLeftArrow = styled(LeftArrow)`
   ${ArrowStyles};
 `;
 
+export const SandboxInfoContianer = styled.div`
+  display: flex;
+
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+  }
+`;
+
 export const StatsContainer = styled.div`
   font-family: 'Poppins';
 

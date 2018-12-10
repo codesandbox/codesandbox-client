@@ -88,7 +88,8 @@ export default class App extends React.PureComponent<
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
-    } = props.embedOptions || getSandboxOptions(document.location.href);
+    } =
+      props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
       notFound: false,
@@ -158,7 +159,13 @@ export default class App extends React.PureComponent<
 
     try {
       const response = await fetch(
-        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`
+        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.jwt()}`,
+          },
+        }
       )
         .then(res => res.json())
         .then(camelizeKeys);
@@ -226,6 +233,49 @@ export default class App extends React.PureComponent<
     );
   };
 
+  jwt = () => JSON.parse(localStorage.getItem('jwt'));
+
+  toggleLike = () => {
+    const jwt = this.jwt();
+
+    if (this.state.sandbox.userLiked) {
+      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+          id: this.state.sandbox.id,
+        }),
+      })
+        .then(x => x.json())
+        .then(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: false,
+              likeCount: s.sandbox.likeCount - 1,
+            },
+          }));
+        });
+    } else {
+      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+        .then(x => x.json())
+        .then(res => {
+          this.setState(s => ({
+            sandbox: { ...s.sandbox, userLiked: true, likeCount: res.count },
+          }));
+        });
+    }
+  };
+
   content = () => {
     if (this.state.notFound) {
       return (
@@ -274,6 +324,8 @@ export default class App extends React.PureComponent<
             setMixedView={this.setMixedView}
             sandbox={sandbox}
             toggleSidebar={this.toggleSidebar}
+            toggleLike={this.jwt() && this.toggleLike}
+            liked={sandbox.userLiked}
           />
           <Content
             showEditor={showEditor}

@@ -8,6 +8,7 @@ export const Dots = styled.div`
   list-style: none;
   align-items: center;
   justify-content: center;
+  font-size: 0.5rem;
 `;
 
 export const DotContainer = styled.div`
@@ -113,7 +114,7 @@ export const Navigation = styled.div`
 
 const ArrowStyles = css`
   transition: 0.3s ease color;
-  font-size: 48px;
+  font-size: 3em;
   height: 40px;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
@@ -127,9 +128,25 @@ const ArrowStyles = css`
 export const StyledRightArrow = styled(RightArrow)`
   ${ArrowStyles};
   right: -40px;
+
+  ${props =>
+    props.disable &&
+    css`
+      opacity: 0.5;
+      pointer-events: none;
+      cursor: auto;
+    `};
 `;
 
 export const StyledLeftArrow = styled(LeftArrow)`
   ${ArrowStyles};
   left: -40px;
+
+  ${props =>
+    props.disable &&
+    css`
+      opacity: 0.5;
+      pointer-events: none;
+      cursor: auto;
+    `};
 `;

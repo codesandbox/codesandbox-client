@@ -4,6 +4,7 @@ import Row from 'common/components/flex/Row';
 
 export const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
+  color: white;
 `;
 
 export const Border = styled.hr`

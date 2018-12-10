@@ -16,6 +16,7 @@ import {
   Author,
   IconContainer,
   StyledStats,
+  SandboxPreviewImage,
 } from './_FeaturedSandbox.elements';
 
 const SandboxIcon = ({ template }) => {
@@ -162,13 +163,7 @@ export default class FeaturedSandbox extends React.PureComponent {
                         backgroundColor: '#eee',
                       }}
                     />
-                    <div
-                      style={{
-                        height: '100%',
-                        width: '100%',
-                        overflow: 'hidden',
-                      }}
-                    >
+                    <SandboxPreviewImage>
                       <div
                         style={{
                           height: '100%',
@@ -183,7 +178,7 @@ export default class FeaturedSandbox extends React.PureComponent {
                           marginTop: -8,
                         }}
                       />
-                    </div>
+                    </SandboxPreviewImage>
                   </animated.div>
                 )
           }

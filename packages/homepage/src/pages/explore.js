@@ -134,15 +134,15 @@ export default class Explore extends React.PureComponent {
 
             <Navigation>
               <Dots>
-                {featuredSandboxIndex !== 0 ? (
-                  <StyledLeftArrow
-                    onClick={() =>
-                      this.setState(state => ({
-                        featuredSandboxIndex: state.featuredSandboxIndex - 1,
-                      }))
-                    }
-                  />
-                ) : null}
+                <StyledLeftArrow
+                  disable={featuredSandboxIndex === 0}
+                  onClick={() =>
+                    this.setState(state => ({
+                      featuredSandboxIndex: state.featuredSandboxIndex - 1,
+                    }))
+                  }
+                />
+
                 {featuredSandboxes.map((sandbox, i) => {
                   const template = getTemplate(sandbox.template);
 
@@ -160,15 +160,17 @@ export default class Explore extends React.PureComponent {
                     </DotContainer>
                   );
                 })}
-                {featuredSandboxIndex < featuredSandboxes.length - 1 ? (
-                  <StyledRightArrow
-                    onClick={() =>
-                      this.setState(state => ({
-                        featuredSandboxIndex: state.featuredSandboxIndex + 1,
-                      }))
-                    }
-                  />
-                ) : null}
+
+                <StyledRightArrow
+                  disable={
+                    featuredSandboxIndex === featuredSandboxes.length - 1
+                  }
+                  onClick={() =>
+                    this.setState(state => ({
+                      featuredSandboxIndex: state.featuredSandboxIndex + 1,
+                    }))
+                  }
+                />
               </Dots>
             </Navigation>
 
