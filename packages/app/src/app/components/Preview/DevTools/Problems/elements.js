@@ -19,6 +19,10 @@ export const File = styled.div`
   cursor: pointer;
 `;
 
+export const NoProblems = styled.div`
+  padding: 1rem;
+`;
+
 export const Path = styled.span`
   color: rgba(255, 255, 255, 0.6);
 `;

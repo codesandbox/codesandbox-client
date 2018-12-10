@@ -7,6 +7,7 @@ import * as fit from 'xterm/lib/addons/fit/fit';
 import getTemplate, { type Template } from 'common/templates';
 import uuid from 'uuid';
 import PlusIcon from 'react-icons/lib/md/add';
+import Relative from 'common/components/Relative';
 
 import getTerminalTheme from './terminal-theme';
 
@@ -178,7 +179,7 @@ class TerminalComponent extends React.Component<Props, State> {
             />
           )}
 
-        <div style={{ position: 'relative' }}>
+        <Relative>
           <div
             style={{
               position: 'absolute',
@@ -209,7 +210,7 @@ class TerminalComponent extends React.Component<Props, State> {
               endShell={() => this.endShell(shell.id)}
             />
           ))}
-        </div>
+        </Relative>
       </div>
     );
   }

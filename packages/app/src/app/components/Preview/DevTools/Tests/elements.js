@@ -66,3 +66,7 @@ export const StatusElements = {
   running: Loading,
   idle: Dot,
 };
+
+export const TestElementContainer = styled.div`
+  margin-top: 1rem;
+`;

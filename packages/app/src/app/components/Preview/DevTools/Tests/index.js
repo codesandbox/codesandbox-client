@@ -7,7 +7,12 @@ import SplitPane from 'react-split-pane';
 import immer from 'immer';
 import getTemplate, { type Template } from 'common/templates';
 
-import { Container, TestDetails, TestContainer } from './elements';
+import {
+  Container,
+  TestDetails,
+  TestContainer,
+  TestElementContainer,
+} from './elements';
 
 import TestElement from './TestElement';
 import TestDetailsContent from './TestDetails';
@@ -445,7 +450,7 @@ class Tests extends React.Component<Props, State> {
               tests={tests}
             />
 
-            <div style={{ marginTop: '1rem' }}>
+            <TestElementContainer>
               {Object.keys(this.state.files)
                 .sort()
                 .map(fileName => (
@@ -461,7 +466,7 @@ class Tests extends React.Component<Props, State> {
                     onFileExpandToggle={this.toggleFileExpansion}
                   />
                 ))}
-            </div>
+            </TestElementContainer>
           </TestContainer>
           <TestDetails>
             {selectedFile ? (

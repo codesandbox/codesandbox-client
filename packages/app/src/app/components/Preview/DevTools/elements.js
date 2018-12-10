@@ -10,6 +10,10 @@ export const Container = styled.div`
   z-index: 100;
   background-color: ${props =>
     props.theme['statusBar.background'] || props.theme.background2};
+
+  height: ${props => props.height};
+  position: relative;
+  display: flex;
 `;
 
 export const Header = styled.div`

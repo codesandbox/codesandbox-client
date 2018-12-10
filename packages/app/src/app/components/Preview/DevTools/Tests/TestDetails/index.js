@@ -4,6 +4,7 @@ import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import PlayIcon from 'react-icons/lib/go/playback-play';
 
 import Tooltip from 'common/components/Tooltip';
+import FullHeight from 'common/components/fullHeight';
 import type { File, Status } from '../';
 
 import {
@@ -13,6 +14,7 @@ import {
   Blocks,
   Tests,
   ErrorNotice,
+  ErrorMessage,
 } from './elements';
 import { StatusElements } from '../elements';
 
@@ -55,7 +57,7 @@ export default ({ file, status, openFile, runTests }: Props) => {
   );
 
   return (
-    <div style={{ height: '100%' }}>
+    <FullHeight>
       <TestTitle>
         <Element />
         <Blocks>{parts.join('/')}/</Blocks>
@@ -89,9 +91,9 @@ export default ({ file, status, openFile, runTests }: Props) => {
       <Tests>
         {file.fileError ? (
           <ErrorNotice>
-            <div style={{ marginBottom: '1rem' }}>
+            <ErrorMessage>
               There was an error while evaluating the file:
-            </div>
+            </ErrorMessage>
             <ErrorDetails path={file.fileName} error={file.fileError} />
           </ErrorNotice>
         ) : (
@@ -102,6 +104,6 @@ export default ({ file, status, openFile, runTests }: Props) => {
           })
         )}
       </Tests>
-    </div>
+    </FullHeight>
   );
 };

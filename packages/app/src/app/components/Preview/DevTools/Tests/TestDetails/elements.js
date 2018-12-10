@@ -53,3 +53,7 @@ export const Tests = styled.div`
   overflow-y: overlay;
   height: calc(100% - 4rem);
 `;
+
+export const ErrorMessage = styled.div`
+  margin-bottom: 1rem;
+`;

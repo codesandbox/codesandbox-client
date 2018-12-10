@@ -7,7 +7,14 @@ import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import { Console } from 'console-feed';
 import { inspectorTheme } from '../Console/elements';
 
-import { Container, File, Path, FileName, Actions } from './elements';
+import {
+  Container,
+  File,
+  Path,
+  FileName,
+  Actions,
+  NoProblems,
+} from './elements';
 
 type State = {
   corrections: {
@@ -85,7 +92,7 @@ class Problems extends React.PureComponent<*, State> {
     return (
       <Container>
         {Object.keys(this.state.corrections).length === 0 && (
-          <div style={{ padding: '1rem' }}>No problems!</div>
+          <NoProblems>No problems!</NoProblems>
         )}
         {root && (
           <div>

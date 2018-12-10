@@ -364,11 +364,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
         ref={el => {
           this.node = el;
         }}
-        style={{
-          height,
-          position: 'relative',
-          display: 'flex',
-        }}
+        height={height}
       >
         <Header
           onTouchStart={this.handleTouchStart}
