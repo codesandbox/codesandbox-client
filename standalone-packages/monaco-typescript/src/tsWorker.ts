@@ -143,7 +143,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
         ].map(depName => {
           const version = p.dependencies[depName] || devDependencies[depName];
 
-          fetchTypings.fetchAndAddDependencies(depName, version, (paths) => {
+          return fetchTypings.fetchAndAddDependencies(depName, version, (paths) => {
             const fileAmount = Object.keys(paths).length;
 
             Object.keys(paths).forEach(p => {
@@ -158,10 +158,12 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
                 });
               }
             });
-          }).catch(e => {});
+          }).catch(() => {});
         })).then(() => {
-          this.typesLoaded = true;
           this._languageService.cleanupSemanticCache();
+          setTimeout(() => {
+            this.typesLoaded = true;
+          });
         });
       } catch (e) {
         return;
