@@ -155,6 +155,7 @@ exports.onCreateWebpackConfig = ({
     plugins: [
       plugins.define({
         'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
+        'process.env.LOCAL_SERVER': JSON.stringify(process.env.LOCAL_SERVER),
       }),
     ],
   });

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import getTemplate from 'common/templates';
-import { host } from 'common/utils/url-generator';
+import { protocolAndHost } from 'common/utils/url-generator';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -40,7 +40,11 @@ export default class Explore extends React.PureComponent {
 
   loadSandboxes = () => {
     this.setState({ fetching: true });
-    fetch(`${host()}/api/v1/sandboxes/picked?page=${this.state.currentPage}`)
+    fetch(
+      `${protocolAndHost()}/api/v1/sandboxes/picked?page=${
+        this.state.currentPage
+      }`
+    )
       .then(x => x.json())
       .then(data => {
         if (data.sandboxes.length === 0) {

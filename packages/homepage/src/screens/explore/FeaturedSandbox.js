@@ -1,7 +1,7 @@
 import React from 'react';
 import Preview from 'app/src/app/components/Preview';
 import { camelizeKeys } from 'humps';
-import { profileUrl, host } from 'common/utils/url-generator';
+import { profileUrl, protocolAndHost } from 'common/utils/url-generator';
 
 import getIcon from 'common/templates/icons';
 
@@ -41,7 +41,7 @@ export default class FeaturedSandbox extends React.PureComponent {
       return Promise.resolve(this.fetchedSandboxes[id]);
     }
 
-    return fetch(`${host()}/api/v1/sandboxes/${id}`)
+    return fetch(`${protocolAndHost()}/api/v1/sandboxes/${id}`)
       .then(x => x.json())
       .then(x => {
         this.fetchedSandboxes[x.data.id] = x.data;
@@ -125,64 +125,92 @@ export default class FeaturedSandbox extends React.PureComponent {
           )}
         </SandboxContainer>
 
-        <Transition
-          items={this.state.showPreview}
-          from={{ flex: 1, opacity: 1 }}
-          enter={{ opacity: 1, flex: 1 }}
-          leave={{
-            opacity: 0,
-            flex: 1,
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: '50%',
-            right: 0,
-          }}
-          native
-        >
-          {show =>
-            show
-              ? style => (
-                  <animated.div style={style}>
-                    <Preview
-                      sandbox={camelizeKeys(sandbox)}
-                      settings={{}}
-                      template={sandbox.template}
-                      isInProjectView
-                      noDelay
-                    />
-                  </animated.div>
-                )
-              : style => (
-                  <animated.div style={style}>
-                    <div
-                      style={{
-                        zIndex: 2,
-                        height: 48,
-                        minHeight: 48,
-                        backgroundColor: '#eee',
-                      }}
-                    />
-                    <SandboxPreviewImage>
+        {typeof window === 'undefined' ? (
+          <div style={{ flex: 1, opacity: 1 }}>
+            <div
+              style={{
+                zIndex: 2,
+                height: 48,
+                minHeight: 48,
+                backgroundColor: '#eee',
+              }}
+            />
+            <SandboxPreviewImage>
+              <div
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  backgroundColor: 'white',
+                  backgroundImage: `url(${sandbox && sandbox.screenshot_url})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPositionX: 'center',
+                  transform: 'scale(1.025, 1.025)',
+                  filter: 'blur(2px)',
+                  marginTop: -8,
+                }}
+              />
+            </SandboxPreviewImage>
+          </div>
+        ) : (
+          <Transition
+            items={this.state.showPreview}
+            from={{ flex: 1, opacity: 1 }}
+            enter={{ opacity: 1, flex: 1 }}
+            leave={{
+              opacity: 0,
+              flex: 1,
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: '50%',
+              right: 0,
+            }}
+            native
+          >
+            {show =>
+              show
+                ? style => (
+                    <animated.div style={style}>
+                      <Preview
+                        sandbox={camelizeKeys(sandbox)}
+                        settings={{}}
+                        template={sandbox.template}
+                        isInProjectView
+                        noDelay
+                      />
+                    </animated.div>
+                  )
+                : style => (
+                    <animated.div style={style}>
                       <div
                         style={{
-                          height: '100%',
-                          width: '100%',
-                          backgroundColor: 'white',
-                          backgroundImage: `url(${sandbox &&
-                            sandbox.screenshot_url})`,
-                          backgroundRepeat: 'no-repeat',
-                          backgroundPositionX: 'center',
-                          transform: 'scale(1.025, 1.025)',
-                          filter: 'blur(2px)',
-                          marginTop: -8,
+                          zIndex: 2,
+                          height: 48,
+                          minHeight: 48,
+                          backgroundColor: '#eee',
                         }}
                       />
-                    </SandboxPreviewImage>
-                  </animated.div>
-                )
-          }
-        </Transition>
+                      <SandboxPreviewImage>
+                        <div
+                          style={{
+                            height: '100%',
+                            width: '100%',
+                            backgroundColor: 'white',
+                            backgroundImage: `url(${sandbox &&
+                              sandbox.screenshot_url})`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPositionX: 'center',
+                            transform: 'scale(1.025, 1.025)',
+                            filter: 'blur(2px)',
+                            marginTop: -8,
+                          }}
+                        />
+                      </SandboxPreviewImage>
+                    </animated.div>
+                  )
+            }
+          </Transition>
+        )}
       </Container>
     );
   }
