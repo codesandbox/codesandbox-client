@@ -1,8 +1,10 @@
-const { createFilePath } = require('gatsby-source-filesystem');
-const { resolve, dirname } = require('path');
+const { resolve } = require('path');
+const getHost = require('common/utils/host');
+
+process.env.CODESANDBOX_HOST = getHost();
 
 // Parse date information out of post filename.
-const BLOG_POST_FILENAME_REGEX = /([0-9]+)\-([0-9]+)\-([0-9]+)\-(.+)\.md$/;
+const BLOG_POST_FILENAME_REGEX = /([0-9]+)-([0-9]+)-([0-9]+)-(.+)\.md$/;
 const DOCUMENTATION_FILENAME_REGEX = /[0-9]+-(.*)\.md$/;
 
 function dateToLocalJSON(date) {
