@@ -32,10 +32,17 @@ export default class Explore extends React.PureComponent {
     currentPage: 0,
     fetching: false,
     loadedAll: false,
+    renderModal: false,
   };
 
   componentDidMount() {
     this.loadSandboxes();
+
+    // We need to do this for SSR, the modal can't be rendered when using SSR,
+    // we cannot just put a check in `render` because that would mean that client
+    // render and server render are not the same. So we force a rerender.
+    // eslint-disable-next-line
+    this.setState({ renderModal: true });
   }
 
   loadSandboxes = () => {
@@ -110,7 +117,7 @@ export default class Explore extends React.PureComponent {
         <Container>
           <TitleAndMetaTags title="Explore - CodeSandbox" />
 
-          {typeof window !== 'undefined' && (
+          {this.state.renderModal && (
             <SandboxModal
               onClose={this.closeModal}
               sandboxId={selectedSandbox && selectedSandbox.id}
