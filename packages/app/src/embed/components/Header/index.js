@@ -18,6 +18,7 @@ import {
   CenterAligned,
   LeftAligned,
   OnlyShowWideText,
+  CodeSandboxButton,
 } from './elements';
 
 type Props = {
@@ -73,36 +74,31 @@ function Header({
       <RightAligned>
         {toggleLike && (
           <Button
-            hideSmall={700}
+            hideSmall={640}
             bgColor="rgba(255, 122, 122, 0.11)"
             color="rgb(254, 122, 122)"
             onClick={toggleLike}
           >
             {liked ? <FullHeartIcon /> : <HeartIcon />}
-            <OnlyShowWideText>{liked ? 'Undo Like' : 'Like'}</OnlyShowWideText>
+            <OnlyShowWideText hideOn={726}>
+              {liked ? 'Undo Like' : 'Like'}
+            </OnlyShowWideText>
           </Button>
         )}
         <Button
           onClick={() =>
             copyToClipboard(`https://codesandbox.io${embedUrl(sandbox)}`)
           }
-          hideSmall={910}
+          hideSmall={960}
         >
           <LinkIcon />
           <OnlyShowWideText>Copy Link</OnlyShowWideText>
         </Button>
-        <Button
-          as="a"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`${sandboxUrl(sandbox)}?from-embed`}
-          invertedHover
-          bgColor="rgba(255, 255, 255, 0.08)"
-          color="white"
-        >
+
+        <CodeSandboxButton small href={`${sandboxUrl(sandbox)}?from-embed`}>
           <Logo width={'1.125em'} height={'1.125em'} />
-          <OnlyShowWideText hideOn={486}>Open in Editor</OnlyShowWideText>
-        </Button>
+          <OnlyShowWideText hideOn={510}>Open in Editor</OnlyShowWideText>
+        </CodeSandboxButton>
         {/* <EditorLink small sandbox={sandbox} /> */}
       </RightAligned>
     </Container>

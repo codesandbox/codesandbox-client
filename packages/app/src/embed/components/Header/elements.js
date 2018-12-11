@@ -1,7 +1,26 @@
 // @flow
 import styled, { css } from 'styled-components';
 import MenuIconSVG from 'react-icons/lib/md/menu';
+import RealButton from 'app/components/Button';
+
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
+
+export const CodeSandboxButton = styled(RealButton)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 138px;
+  padding: 0.4em 0.7em;
+
+  @media (max-width: 510px) {
+    padding: 0.2em;
+    background-color: transparent;
+    border-color: transparent;
+
+    width: auto;
+    font-size: 1.4rem;
+  }
+`;
 
 export const Container = styled.div`
   position: relative;
@@ -68,8 +87,8 @@ export const Title = styled.div`
   }
 `;
 
-export const OnlyShowWideText = styled.div`
-  margin-left: 0.5rem;
+export const OnlyShowWideText = styled.span`
+  margin-left: 0.4rem;
   @media (max-width: ${props => props.hideOn || 400}px) {
     display: none;
   }
@@ -80,21 +99,21 @@ export const Button = styled.button`
   align-items: center;
   font-family: Roboto;
   transition: 0.3s ease all;
-  background-color: ${props => props.bgColor || 'rgba(63, 168, 243, 0.1)'};
-  border: 1px solid ${props => props.color || 'rgb(64, 169, 243)'};
+  background-color: transparent;
+  border: transparent;
   font-size: 0.875rem;
+  font-weight: 500;
 
   color: ${props => props.color || 'rgb(64, 169, 243)'};
   border-radius: 4px;
-  margin-right: 0.5rem;
+  margin-right: 0.75rem;
   padding: 0.4rem 0.4rem;
   text-decoration: none;
-
-  &:last-child {
-    margin-right: 0;
-  }
-
   cursor: pointer;
+
+  svg {
+    margin-right: 0.1rem;
+  }
 
   &:hover {
     background-color: ${props => props.color || 'rgb(64, 169, 243)'};
