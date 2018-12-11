@@ -115,7 +115,10 @@ export default class Explore extends React.PureComponent {
     return (
       <Layout>
         <Container>
-          <TitleAndMetaTags title="Explore - CodeSandbox" />
+          <TitleAndMetaTags
+            description="You can find the most interesting sandboxes created on CodeSandbox here. Explore examples of JavaScript and frameworks like React, Vue and Angular!"
+            title="Explore Sandboxes - CodeSandbox"
+          />
 
           {this.state.renderModal && (
             <SandboxModal
