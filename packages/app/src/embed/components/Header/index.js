@@ -95,11 +95,15 @@ function Header({
           <OnlyShowWideText>Copy Link</OnlyShowWideText>
         </Button>
 
-        <CodeSandboxButton small href={`${sandboxUrl(sandbox)}?from-embed`}>
+        <CodeSandboxButton
+          target="_blank"
+          rel="noreferrer noopener"
+          small
+          href={`${sandboxUrl(sandbox)}?from-embed`}
+        >
           <Logo width={'1.125em'} height={'1.125em'} />
           <OnlyShowWideText hideOn={510}>Open in Editor</OnlyShowWideText>
         </CodeSandboxButton>
-        {/* <EditorLink small sandbox={sandbox} /> */}
       </RightAligned>
     </Container>
   );
