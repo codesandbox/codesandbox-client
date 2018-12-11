@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import theme from 'common/theme';
 
-import Link from 'gatsby-link';
-import { Route } from 'react-router-dom';
+import { Link } from 'gatsby';
+import { Router } from '@reach/router';
 import slugify from 'common/utils/slugify';
 
 import media from '../utils/media';
@@ -101,6 +101,18 @@ type Props = {
   }>,
 };
 
+const SubLink = ({ node }) => (
+  <ul style={{ marginTop: '.5rem' }} path={node.fields.url}>
+    {node.headings.map(({ value }) => (
+      <li key={value}>
+        <SecondaryNavigationLink to={`${node.fields.url}#${slugify(value)}`}>
+          {value}
+        </SecondaryNavigationLink>
+      </li>
+    ))}
+  </ul>
+);
+
 export default class StickyNavigation extends React.PureComponent<Props> {
   state = {
     fixed: false,
@@ -162,29 +174,13 @@ export default class StickyNavigation extends React.PureComponent<Props> {
             <NavigationItem key={node.frontmatter.title}>
               <PrimaryNavigationLink
                 to={node.fields.url}
-                exact
                 activeStyle={activeStyle}
               >
                 {node.frontmatter.title}
               </PrimaryNavigationLink>
-              <Route
-                path={node.fields.url}
-                exact
-                render={() => (
-                  <ul>
-                    {node.headings.map(({ value }) => (
-                      <li key={value}>
-                        <SecondaryNavigationLink
-                          to={`${node.fields.url}#${slugify(value)}`}
-                          exact
-                        >
-                          {value}
-                        </SecondaryNavigationLink>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              />
+              <Router>
+                <SubLink node={node} path={node.fields.url} />
+              </Router>
             </NavigationItem>
           ))}
         </ul>
@@ -194,7 +190,9 @@ export default class StickyNavigation extends React.PureComponent<Props> {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Missing documentation?<br />Open an issue here!
+          Missing documentation?
+          <br />
+          Open an issue here!
         </MissingNotice>
       </Navigation>
     );

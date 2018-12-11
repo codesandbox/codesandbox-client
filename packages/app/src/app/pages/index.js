@@ -55,10 +55,6 @@ const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator')
 );
 
-// const Explore = Loadable(() =>
-//   import(/* webpackChunkName: 'page-explore' */ './Explore')
-// );
-
 type Props = {
   signals: any,
 };
@@ -102,7 +98,6 @@ class Routes extends React.Component<Props> {
             <Route exact path="/s" component={NewSandbox} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
-            {/* <Route path="/explore" component={Explore} /> */}
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin/:jwt?" component={SignIn} />

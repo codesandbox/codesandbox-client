@@ -1,9 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { graphql } from 'gatsby';
 
 import media from '../utils/media';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
+import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import StickyNavigation from '../components/StickyNavigation';
 
@@ -197,43 +199,45 @@ export default class Docs extends React.Component {
     const { html, frontmatter, fields } = data.markdownRemark;
 
     return (
-      <Container style={{ overflowX: 'auto' }}>
-        <TitleAndMetaTags
-          title={`${frontmatter.title} - CodeSandbox`}
-          description={frontmatter.description}
-        />
-        <PageContainer>
-          <DocsContainer>
-            <div
-              style={{
-                flex: 1,
-                minWidth: 250,
-              }}
-            >
-              <StickyNavigation docs={docs} />
-            </div>
-            <Article>
-              <Heading>
-                <Title>{frontmatter.title}</Title>
-                <Edit
-                  href={`https://github.com/CompuIves/codesandbox-client/tree/master/packages/homepage/content/${
-                    fields.path
-                  }`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Edit this page
-                </Edit>
-                <Description>{frontmatter.description}</Description>
-              </Heading>
+      <Layout>
+        <Container style={{ overflowX: 'auto' }}>
+          <TitleAndMetaTags
+            title={`${frontmatter.title} - CodeSandbox`}
+            description={frontmatter.description}
+          />
+          <PageContainer>
+            <DocsContainer>
+              <div
+                style={{
+                  flex: 1,
+                  minWidth: 250,
+                }}
+              >
+                <StickyNavigation docs={docs} />
+              </div>
+              <Article>
+                <Heading>
+                  <Title>{frontmatter.title}</Title>
+                  <Edit
+                    href={`https://github.com/CompuIves/codesandbox-client/tree/master/packages/homepage/content/${
+                      fields.path
+                    }`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    Edit this page
+                  </Edit>
+                  <Description>{frontmatter.description}</Description>
+                </Heading>
 
-              <DocumentationContent
-                dangerouslySetInnerHTML={{ __html: html }}
-              />
-            </Article>
-          </DocsContainer>
-        </PageContainer>
-      </Container>
+                <DocumentationContent
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
+              </Article>
+            </DocsContainer>
+          </PageContainer>
+        </Container>
+      </Layout>
     );
   }
 }
@@ -241,7 +245,7 @@ export default class Docs extends React.Component {
 export const pageQuery = graphql`
   query Docs($slug: String!) {
     allMarkdownRemark(
-      filter: { id: { regex: "/docs/" } }
+      filter: { fields: { slug: { regex: "/docs/" } } }
       sort: { fields: [fileAbsolutePath], order: ASC }
     ) {
       edges {

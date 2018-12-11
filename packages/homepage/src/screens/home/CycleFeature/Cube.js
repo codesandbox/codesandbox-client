@@ -49,7 +49,7 @@ export default class GlowCube extends React.Component<Props> {
       id,
     } = this.props;
     return (
-      <Cube id={id} innerRef={ref} className={className} size={size}>
+      <Cube id={id} ref={ref} className={className} size={size}>
         <Sides color={color} offset={offset} speed={speed} size={size}>
           <Side
             style={{ boxShadow: `0px 0px 100px ${color.clearer(0.3)()}` }}

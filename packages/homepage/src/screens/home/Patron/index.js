@@ -6,19 +6,17 @@ import getBadge from 'common/utils/badges';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Centered from 'common/components/flex/Centered';
 
-import media from '../../../utils/media';
-
 import { Heading, SubHeading } from '../../../components/style';
 
 const Container = styled.div`
   background-color: ${props => props.theme.primary};
 `;
 
-const Header = Heading.extend`
+const Header = styled(Heading)`
   color: ${props => props.theme.primaryText};
 `;
 
-const Text = SubHeading.extend`
+const Text = styled(SubHeading)`
   color: rgba(0, 0, 0, 0.5);
   text-shadow: none;
 `;

@@ -36,6 +36,7 @@ export default class extends React.PureComponent {
             onChange={this.onChange}
             onKeyDown={this.handleKeyDown}
             value={url}
+            aria-label="Address Bar Input"
           />
         </InputContainer>
       </Container>

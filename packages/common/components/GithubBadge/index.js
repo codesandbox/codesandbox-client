@@ -9,9 +9,9 @@ const DivOrA = ({ href, ...props }) =>
     <div {...props} />
   );
 
-function GithubBadge({ username, repo, url, branch }) {
+function GithubBadge({ username, repo, url, branch, ...props }) {
   return (
-    <DivOrA href={url}>
+    <DivOrA {...props} href={url}>
       <BorderRadius hasUrl={!!url}>
         <Icon>
           <GithubIcon />

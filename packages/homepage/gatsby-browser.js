@@ -1,7 +1,7 @@
 import detectOldBrowser from 'common/detect-old-browser';
 
-exports.onClientEntry = () => {
+export const onClientEntry = () => {
   if (detectOldBrowser()) {
-    require('babel-polyfill');
+    import('babel-polyfill');
   }
 };

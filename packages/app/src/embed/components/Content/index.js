@@ -54,6 +54,7 @@ type Props = {
   expandDevTools: boolean,
   runOnClick: boolean,
   verticalMode: boolean,
+  tabs?: Array<string>,
 };
 
 type State = {
@@ -67,8 +68,20 @@ export default class Content extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    let tabs = [];
+    const tabs = this.getInitTabs(props);
 
+    this.state = {
+      running: !props.runOnClick,
+      tabs,
+      dragging: false,
+      isInProjectView: props.isInProjectView,
+    };
+
+    this.errors = [];
+  }
+
+  getInitTabs = (props: Props) => {
+    let tabs: Array<Module> = [];
     const module = props.sandbox.modules.find(
       m => m.id === props.currentModule.id
     );
@@ -93,15 +106,8 @@ export default class Content extends React.PureComponent<Props, State> {
       tabs = [module];
     }
 
-    this.state = {
-      running: !props.runOnClick,
-      tabs,
-      dragging: false,
-      isInProjectView: props.isInProjectView,
-    };
-
-    this.errors = [];
-  }
+    return tabs;
+  };
 
   renderTabStatus = (hovering, closeTab) => {
     const { isNotSynced, tabCount } = this.props;
@@ -146,6 +152,12 @@ export default class Content extends React.PureComponent<Props, State> {
       if (this.editor && this.editor.changeModule) {
         this.editor.changeModule(nextProps.currentModule);
       }
+    }
+
+    if (this.props.sandbox.id !== nextProps.sandbox.id) {
+      this.setState({
+        tabs: this.getInitTabs(nextProps),
+      });
     }
   }
 

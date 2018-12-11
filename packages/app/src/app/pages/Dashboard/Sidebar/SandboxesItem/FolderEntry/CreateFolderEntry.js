@@ -83,7 +83,7 @@ export default ({ basePath, teamId, noFocus, close, depth }) => {
                   close();
                 }
               }}
-              innerRef={el => {
+              ref={el => {
                 if (el) {
                   if (!noFocus) {
                     el.focus();

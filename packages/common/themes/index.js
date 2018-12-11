@@ -28,8 +28,7 @@ export default [
   {
     name: 'Cobalt 2',
     id: 'cobalt2',
-    url:
-      'https://cdn.jsdelivr.net/gh/wesbos/cobalt2-vscode/theme/cobalt2.json',
+    url: 'https://cdn.jsdelivr.net/gh/wesbos/cobalt2-vscode/theme/cobalt2.json',
   },
   {
     name: 'Palenight',

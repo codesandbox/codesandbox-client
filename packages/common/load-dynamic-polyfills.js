@@ -8,8 +8,8 @@ export default function requirePolyfills() {
 
   if (typeof Error.captureStackTrace === 'undefined') {
     promises.push(
-      /* webpackChunkName: 'error-polyfill' */
-      import('error-polyfill')
+      import(/* webpackChunkName: 'error-polyfill' */
+      'error-polyfill')
     );
   }
 

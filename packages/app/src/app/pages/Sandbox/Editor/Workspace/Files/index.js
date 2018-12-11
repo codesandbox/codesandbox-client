@@ -57,7 +57,7 @@ class Files extends React.Component {
       >
         <DirectoryEntry
           root
-          innerRef={el => {
+          ref={el => {
             this.directory = el;
           }}
           getModulePath={this.getModulePath}

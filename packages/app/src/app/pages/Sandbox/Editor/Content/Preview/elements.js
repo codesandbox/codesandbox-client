@@ -8,7 +8,7 @@ const Resizer = styled.div`
 
 const width = 8;
 
-export const TopResizer = Resizer.extend`
+export const TopResizer = styled(Resizer)`
   top: -${width / 2}px;
   height: ${width}px;
   left: 0;
@@ -16,7 +16,7 @@ export const TopResizer = Resizer.extend`
   cursor: ns-resize;
 `;
 
-export const RightResizer = Resizer.extend`
+export const RightResizer = styled(Resizer)`
   top: 0;
   bottom: 0;
   width: ${width}px;
@@ -24,7 +24,7 @@ export const RightResizer = Resizer.extend`
   cursor: ew-resize;
 `;
 
-export const BottomResizer = Resizer.extend`
+export const BottomResizer = styled(Resizer)`
   bottom: -${width / 2}px;
   height: ${width}px;
   left: 0;
@@ -32,7 +32,7 @@ export const BottomResizer = Resizer.extend`
   cursor: ns-resize;
 `;
 
-export const LeftResizer = Resizer.extend`
+export const LeftResizer = styled(Resizer)`
   top: 0;
   bottom: 0;
   width: ${width}px;
@@ -40,7 +40,7 @@ export const LeftResizer = Resizer.extend`
   cursor: ew-resize;
 `;
 
-export const NEResizer = Resizer.extend`
+export const NEResizer = styled(Resizer)`
   top: -${width / 2}px;
   right: -${width / 2}px;
   width: ${width * 2}px;
@@ -48,7 +48,7 @@ export const NEResizer = Resizer.extend`
   cursor: nesw-resize;
 `;
 
-export const SEResizer = Resizer.extend`
+export const SEResizer = styled(Resizer)`
   bottom: -${width / 2}px;
   right: -${width / 2}px;
   width: ${width * 2}px;
@@ -56,7 +56,7 @@ export const SEResizer = Resizer.extend`
   cursor: nwse-resize;
 `;
 
-export const SWResizer = Resizer.extend`
+export const SWResizer = styled(Resizer)`
   bottom: -${width / 2}px;
   left: -${width / 2}px;
   width: ${width * 2}px;
@@ -64,7 +64,7 @@ export const SWResizer = Resizer.extend`
   cursor: nesw-resize;
 `;
 
-export const NWResizer = Resizer.extend`
+export const NWResizer = styled(Resizer)`
   top: -${width / 2}px;
   left: -${width / 2}px;
   width: ${width * 2}px;

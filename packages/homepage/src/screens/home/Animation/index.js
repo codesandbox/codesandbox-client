@@ -26,7 +26,7 @@ import getScrollPos from '../../../utils/scroll';
 
 import media from '../../../utils/media';
 
-const Container = Centered.extend`
+const Container = styled(Centered)`
   position: relative;
   width: 100%;
   height: 100vh;
@@ -47,7 +47,7 @@ const Container = Centered.extend`
 `};
 `;
 
-const Message = styled.div`
+const Message = styled.h2`
   text-align: center;
   font-weight: 200;
 

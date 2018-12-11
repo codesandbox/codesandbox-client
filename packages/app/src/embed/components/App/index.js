@@ -57,9 +57,16 @@ const isSafari = () => {
   return false;
 };
 
-export default class App extends React.PureComponent<{}, State> {
-  constructor() {
-    super();
+export default class App extends React.PureComponent<
+  {
+    id?: string,
+    embedOptions?: Object,
+    sandbox?: any,
+  },
+  State
+> {
+  constructor(props) {
+    super(props);
 
     const {
       currentModule,
@@ -81,11 +88,12 @@ export default class App extends React.PureComponent<{}, State> {
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
-    } = getSandboxOptions(document.location.href);
+    } =
+      props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
       notFound: false,
-      sandbox: null,
+      sandbox: this.props.sandbox || null,
       fontSize: fontSize || 16,
       showEditor: isSplitScreen || isEditorScreen,
       showPreview: isSplitScreen || isPreviewScreen,
@@ -115,6 +123,14 @@ export default class App extends React.PureComponent<{}, State> {
   }
 
   getId = () => {
+    if (this.props.id) {
+      return this.props.id;
+    }
+
+    if (this.props.sandbox) {
+      return this.props.sandbox.id;
+    }
+
     const matches = location.pathname.match(/^\/embed\/(.*?)$/);
 
     if (matches && matches.length > 1) {
@@ -126,19 +142,40 @@ export default class App extends React.PureComponent<{}, State> {
   getAppOrigin = () => location.origin.replace('embed.', '');
 
   fetchSandbox = async (id: string) => {
-    try {
-      const response = await fetch(
-        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`
-      )
-        .then(res => res.json())
-        .then(camelizeKeys);
+    if (id === 'custom') {
+      await new Promise(resolve => {
+        window.parent.postMessage('ready', '*');
+        window.addEventListener('message', e => {
+          if (e.data && e.data.sandbox) {
+            this.setState({
+              sandbox: e.data.sandbox,
+            });
 
-      document.title = `${response.data.title ||
-        response.data.id} - CodeSandbox`;
+            resolve();
+          }
+        });
+      });
+    } else {
+      try {
+        const response = await fetch(
+          `${this.getAppOrigin()}/api/v1/sandboxes/${id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.jwt()}`,
+            },
+          }
+        )
+          .then(res => res.json())
+          .then(camelizeKeys);
 
-      this.setState({ sandbox: response.data });
-    } catch (e) {
-      this.setState({ notFound: true });
+        document.title = `${response.data.title ||
+          response.data.id} - CodeSandbox`;
+
+        this.setState({ sandbox: response.data });
+      } catch (e) {
+        this.setState({ notFound: true });
+      }
     }
   };
 
@@ -200,6 +237,81 @@ export default class App extends React.PureComponent<{}, State> {
     );
   };
 
+  jwt = () => JSON.parse(localStorage.getItem('jwt'));
+
+  toggleLike = () => {
+    const jwt = this.jwt();
+
+    if (this.state.sandbox.userLiked) {
+      this.setState(s => ({
+        sandbox: {
+          ...s.sandbox,
+          userLiked: false,
+          likeCount: s.sandbox.likeCount - 1,
+        },
+      }));
+      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+          id: this.state.sandbox.id,
+        }),
+      })
+        .then(x => x.json())
+        .then(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: false,
+              likeCount: s.sandbox.likeCount - 1,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: true,
+              likeCount: s.sandbox.likeCount + 1,
+            },
+          }));
+        });
+    } else {
+      this.setState(s => ({
+        sandbox: {
+          ...s.sandbox,
+          userLiked: true,
+          likeCount: s.sandbox.likeCount + 1,
+        },
+      }));
+      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+        .then(x => x.json())
+        .then(res => {
+          this.setState(s => ({
+            sandbox: { ...s.sandbox, userLiked: true, likeCount: res.count },
+          }));
+        })
+        .catch(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: false,
+              likeCount: s.sandbox.likeCount - 1,
+            },
+          }));
+        });
+    }
+  };
+
   content = () => {
     if (this.state.notFound) {
       return (
@@ -248,6 +360,8 @@ export default class App extends React.PureComponent<{}, State> {
             setMixedView={this.setMixedView}
             sandbox={sandbox}
             toggleSidebar={this.toggleSidebar}
+            toggleLike={this.jwt() && this.toggleLike}
+            liked={sandbox.userLiked}
           />
           <Content
             showEditor={showEditor}

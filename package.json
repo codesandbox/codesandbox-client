@@ -6,6 +6,7 @@
   "scripts": {
     "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
     "build:prod": "lerna run build  --scope homepage --stream && lerna run build --scope app --stream && gulp",
+    "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
     "build:deps": "lerna run build:dev --scope codesandbox-api --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks",
     "start": "yarn build:deps && lerna run start --scope app --stream",
@@ -21,7 +22,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf packages/app/node_modules/styled-components && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall"
+    "postinstall": "rimraf packages/app/node_modules/styled-components && cp -R node_modules/uglify-es node_modules/terser && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall"
   },
   "lint-staged": {
     "*.{js,css,json}": [
@@ -32,19 +33,17 @@
   "workspaces": {
     "packages": [
       "packages/app",
+      "packages/homepage",
       "packages/common",
       "packages/codesandbox-api",
       "packages/sandpack",
       "packages/react-sandpack",
-      "packages/homepage",
       "packages/node-services",
       "packages/sandbox-hooks",
       "packages/sse-hooks",
       "packages/react-embed"
     ],
     "nohoist": [
-      "**/gatsby",
-      "**/gatsby/**",
       "**/@types",
       "**/@types/**"
     ]

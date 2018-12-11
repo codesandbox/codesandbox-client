@@ -4,7 +4,7 @@ export const BorderRadius = styled.div`
   transition: 0.3s ease all;
   border-radius: 4px;
   border: 1px solid #4f5459;
-  font-size: 0.75rem;
+  font-size: 0.75em;
   margin-right: 1rem;
 
   display: flex;
@@ -20,7 +20,6 @@ export const BorderRadius = styled.div`
 
 export const Text = styled.span`
   display: inline-block;
-  font-weight: 0.875rem;
 
   color: ${props =>
     props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.6)'};

@@ -19,14 +19,14 @@ const BaseBar = styled.div`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 `;
 
-export const SuccessBar = BaseBar.extend`
+export const SuccessBar = styled(BaseBar)`
   background-color: ${props => props.theme.green};
 `;
 
-export const FailedBar = BaseBar.extend`
+export const FailedBar = styled(BaseBar)`
   background-color: ${props => props.theme.red};
 `;
 
-export const IdleBar = BaseBar.extend`
+export const IdleBar = styled(BaseBar)`
   background-color: rgba(255, 255, 255, 0.5);
 `;

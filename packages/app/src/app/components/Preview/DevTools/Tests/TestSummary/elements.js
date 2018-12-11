@@ -28,15 +28,15 @@ const Bar = styled.div`
   height: 100%;
 `;
 
-export const SuccessBar = Bar.extend`
+export const SuccessBar = styled(Bar)`
   background-color: ${props => props.theme.green.clearer(0.2)};
 `;
 
-export const FailBar = Bar.extend`
+export const FailBar = styled(Bar)`
   background-color: ${props => props.theme.red.clearer(0.2)};
 `;
 
-export const IdleBar = Bar.extend`
+export const IdleBar = styled(Bar)`
   background-color: rgba(255, 255, 255, 0.5);
 `;
 
