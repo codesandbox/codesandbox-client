@@ -251,7 +251,7 @@ export const signInZeit = [
 
       actions.updateUserZeitDetails,
       {
-        success: set(state`user`, props`user`),
+        success: [set(state`user`, props`user`), getZeitUserDetails],
         error: factories.addNotification(
           'Could not authorize with ZEIT',
           'error'

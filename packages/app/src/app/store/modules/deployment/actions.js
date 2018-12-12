@@ -1,5 +1,7 @@
 import { omit } from 'lodash-es';
 
+import getTemplate from 'common/templates';
+
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
@@ -16,7 +18,8 @@ export async function createApiData({ props, state }) {
   const { contents } = props;
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
-  const apiData = {
+  const template = getTemplate(sandbox.template);
+  let apiData = {
     files: [],
   };
 
@@ -79,6 +82,10 @@ export async function createApiData({ props, state }) {
 
       apiData.files.push({ file: filePath, data });
     }
+  }
+
+  if (template.alterDeploymentData) {
+    apiData = template.alterDeploymentData(apiData);
   }
 
   return { apiData };
