@@ -32,12 +32,20 @@ export const StyledRightArrow = styled(RightArrow)`
   position: absolute;
   right: -54px;
   ${ArrowStyles};
+
+  @media screen and (max-width: 800px) {
+    right: -40px;
+  }
 `;
 
 export const StyledLeftArrow = styled(LeftArrow)`
   position: absolute;
   left: -54px;
   ${ArrowStyles};
+
+  @media screen and (max-width: 800px) {
+    left: -40px;
+  }
 `;
 
 export const SandboxInfoContianer = styled.div`

@@ -1,7 +1,6 @@
 // @ts-check
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import history from 'app/utils/history';
 import { sandboxUrl, profileUrl } from 'common/utils/url-generator';
 
 import { observer } from 'mobx-react';
@@ -64,16 +63,9 @@ class SandboxItem extends React.Component<Props> {
     }
   }
 
-  openSandbox = (openNewWindow = false) => {
-    // Git sandboxes aren't shown here anyway
+  openSandbox = () => {
     const url = sandboxUrl({ id: this.props.id });
-    if (openNewWindow === true) {
-      window.open(url, '_blank');
-    } else {
-      history.push(url);
-    }
-
-    return true;
+    window.open(url, '_blank');
   };
 
   openUser = username => {
