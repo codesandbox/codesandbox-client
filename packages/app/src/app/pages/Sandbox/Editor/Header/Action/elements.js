@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import Tooltip from 'common/components/Tooltip';
 
@@ -13,10 +13,10 @@ const blink = keyframes`
 const styles = props =>
   `
   ${props.blink &&
-    `
-        animation: ${blink} 1s infinite;
-        font-weight: 600;
-      `}
+    css`
+      animation: ${blink} 1s infinite;
+      font-weight: 600;
+    `}
 
   display: flex !important;
   transition: 0.3s ease all;
@@ -33,25 +33,24 @@ const styles = props =>
   z-index: 1;
   ${
     props.highlight
-      ? `
-      background-color: ${props.theme.secondary.darken(0.1)()};
-      color: rgba(255, 255, 255, 0.7);
-      border-bottom: 1px solid ${props.theme.secondary.darken(0.1)()};
+      ? css`
+          background-color: ${props.theme.secondary.darken(0.1)()};
+          color: rgba(255, 255, 255, 0.7);
+          border-bottom: 1px solid ${props.theme.secondary.darken(0.1)()};
 
-      &:hover {
-        background-color: ${props.theme.secondary.darken(0.2)()};
-      }
-  `
-      : `
-
-    &:hover {
-      color: ${props.theme['editor.foreground'] ||
-        (props.theme.light ? 'black' : 'white')};
-      border-color: ${
-        props.hideBottomHighlight ? 'transparent' : props.theme.secondary()
-      }
-    }
-  `
+          &:hover {
+            background-color: ${props.theme.secondary.darken(0.2)()};
+          }
+        `
+      : css`
+          &:hover {
+            color: ${props.theme['editor.foreground'] ||
+              (props.theme.light ? 'black' : 'white')};
+            border-color: ${props.hideBottomHighlight
+              ? 'transparent'
+              : props.theme.secondary()};
+          }
+        `
   }
 `;
 
@@ -77,14 +76,16 @@ export const ActionTooltip = styled(Tooltip)`
   ${styles};
   ${props =>
     props.disabledAction &&
-    `
-    color: ${props.theme.light ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'};
-    cursor: default;
+    css`
+      color: ${props.theme.light ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'};
+      cursor: default;
 
-    &:hover {
-      color: ${props.theme.light ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.4)'};
-    }
-  `};
+      &:hover {
+        color: ${props.theme.light
+          ? 'rgba(0,0,0,0.4)'
+          : 'rgba(255,255,255,0.4)'};
+      }
+    `};
 `;
 
 export const IconContainer = styled.div`
