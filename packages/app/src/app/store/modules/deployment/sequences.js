@@ -78,6 +78,7 @@ export const deploy = [
         'An unknown error occurred when connecting to ZEIT',
         'error'
       ),
+      set(state`deployment.deploying`, false),
     ],
   },
   getDeploys,
