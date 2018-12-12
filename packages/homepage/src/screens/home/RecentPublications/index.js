@@ -104,7 +104,7 @@ export default () => (
         <PublicationItem
           title="What's Unique About CodeSandbox"
           description={`I often get asked: "What's the difference between CodeSandbox and <another online editor>". This is a list of unique features that distinguishes CodeSandbox.`}
-          url="https://medium.com/@compuives/introducing-codesandbox-live-real-time-code-collaboration-in-the-browser-6d508cfc70c9"
+          url="https://medium.com/@compuives/whats-unique-about-codesandbox-f1791d867e48"
           image={firstImage}
         />
         <PublicationItem
