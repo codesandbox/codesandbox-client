@@ -12,8 +12,7 @@ export const Table = styled.table`
   ${delayEffect(0.2)};
   width: 100%;
   border-spacing: 0;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  background-color: ${props => props.theme.background2};
 `;
 
 export const StatBody = styled.td`
@@ -26,7 +25,7 @@ export const Body = styled.tbody`
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
-  background: ${props => props.theme.background2};
+  background-color: ${props => props.theme.background2};
 
   td {
     border: none;
