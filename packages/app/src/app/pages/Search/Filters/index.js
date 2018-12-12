@@ -18,7 +18,6 @@ function Filters() {
             return { ...item, label: template ? template.niceName : label };
           })
         }
-        noSearch
       />
       <Filter
         title="Dependencies"
