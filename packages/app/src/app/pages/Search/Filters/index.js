@@ -15,7 +15,10 @@ function Filters() {
           items.map(({ label, ...item }) => {
             const template = getTemplate(label);
 
-            return { ...item, label: template ? template.niceName : label };
+            return {
+              ...item,
+              label: template.name === label ? template.niceName : label,
+            };
           })
         }
       />

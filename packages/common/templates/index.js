@@ -107,6 +107,8 @@ export default function getDefinition(theme: Template) {
       return nest;
     case staticTemplate.name:
       return staticTemplate;
+    case ember.name:
+      return ember;
     default:
       return react;
   }
