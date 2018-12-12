@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import EditIcon from 'react-icons/lib/go/pencil';
 import { graphql } from 'gatsby';
 
 import media from '../utils/media';
@@ -52,6 +53,7 @@ const DocumentationContent = styled.div`
   }
 
   h2 {
+    font-family: 'Poppins';
     margin: 1.5rem 0;
     font-weight: 400;
     color: white;
@@ -153,16 +155,30 @@ const DocumentationContent = styled.div`
 `;
 
 const Edit = styled.a`
+  transition: 0.3s ease color;
+  display: flex;
+  align-items: center;
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  color: white;
+  top: 2.5rem;
+  right: 2.5rem;
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 500;
-  font-size: 1.125rem;
+  font-size: 1rem;
+  text-decoration: none;
 
   ${media.phone`
     display: none;
   `};
+
+  svg {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-right: 0.5rem;
+  }
+
+  &:hover {
+    color: white;
+  }
 `;
 
 const Heading = styled.div`
@@ -174,13 +190,14 @@ const Heading = styled.div`
     ${({ theme }) => theme.secondary.darken(0.1)()} 0%,
     ${({ theme }) => theme.secondary.darken(0.3)()} 100%
   );
-  padding: 1rem 2rem;
+  padding: 2rem 2rem;
   color: white;
 `;
 
 const Title = styled.h1`
+  font-family: 'Poppins';
   font-size: 2rem;
-  font-weight: 300;
+  font-weight: 500;
 `;
 
 const Description = styled.p`
@@ -225,7 +242,7 @@ export default class Docs extends React.Component {
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    Edit this page
+                    <EditIcon /> Edit this page
                   </Edit>
                   <Description>{frontmatter.description}</Description>
                 </Heading>
