@@ -79,7 +79,7 @@ class Search extends React.PureComponent {
     return (
       <MaxWidth>
         <Margin vertical={1.5}>
-          <Navigation title="Search" />
+          <Navigation title="Search" searchNoInput />
           <Content>
             <InstantSearch
               appId={ALGOLIA_APPLICATION_ID}
