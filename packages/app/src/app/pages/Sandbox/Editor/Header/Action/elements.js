@@ -11,28 +11,26 @@ const blink = keyframes`
 `;
 
 const styles = props =>
-  `
-  ${props.blink &&
-    css`
-      animation: ${blink} 1s infinite;
-      font-weight: 600;
-    `}
-
-  display: flex !important;
-  transition: 0.3s ease all;
-  flex-direction: row;
-  align-items: center;
-  vertical-align: middle;
-  font-size: .875rem;
-  line-height: 1;
-  height: 100%;
-  color: ${props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.7)'};
-  cursor: pointer;
-  box-sizing: inherit;
-  border-bottom: 2px solid transparent;
-  z-index: 1;
-  ${
-    props.highlight
+  css`
+    ${props.blink &&
+      css`
+        animation: ${blink} 1s infinite;
+        font-weight: 600;
+      `};
+    display: flex !important;
+    transition: 0.3s ease all;
+    flex-direction: row;
+    align-items: center;
+    vertical-align: middle;
+    font-size: 0.875rem;
+    line-height: 1;
+    height: 100%;
+    color: ${props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.7)'};
+    cursor: pointer;
+    box-sizing: inherit;
+    border-bottom: 2px solid transparent;
+    z-index: 1;
+    ${props.highlight
       ? css`
           background-color: ${props.theme.secondary.darken(0.1)()};
           color: rgba(255, 255, 255, 0.7);
@@ -50,9 +48,8 @@ const styles = props =>
               ? 'transparent'
               : props.theme.secondary()};
           }
-        `
-  }
-`;
+        `};
+  `;
 
 export const Title = styled.span`
   padding-left: 0.5rem;
