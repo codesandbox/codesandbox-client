@@ -10,7 +10,7 @@ export const Container = styled(animated.div)`
   color: rgba(255, 255, 255, 0.6);
   box-shadow: -1px 3px 4px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
-  z-index: 20;
+  z-index: 40;
   overflow: hidden;
   padding: 4px 0;
 

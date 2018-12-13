@@ -21,6 +21,7 @@ import StorageManagementModal from './StorageManagementModal';
 import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
+import MoveSandboxFolderModal from './MoveSandboxFolderModal';
 
 const modals = {
   preferences: {
@@ -98,6 +99,10 @@ const modals = {
   privacyServerWarning: {
     Component: PrivacyServerWarning,
     width: 400,
+  },
+  moveSandbox: {
+    Component: MoveSandboxFolderModal,
+    width: 350,
   },
 };
 

@@ -23,6 +23,7 @@ import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import Logo from './Logo';
 import Action from './Action';
+import CollectionInfo from './CollectionInfo';
 
 import { Container, Right, Left } from './elements';
 
@@ -114,6 +115,8 @@ const Header = ({ store, signals }) => {
             />
           ))}
       </Left>
+
+      <CollectionInfo sandbox={sandbox} />
 
       <Right>
         <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
