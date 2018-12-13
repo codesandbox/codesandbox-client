@@ -191,6 +191,11 @@ class BasePreview extends React.Component<Props, State> {
       this.connectTimeout = null;
       this.localClose = false;
       this.setupSSESockets();
+
+      setTimeout(() => {
+        // Remove screenshot after specific time, so the loading container spinner can still show
+        this.setState({ showScreenshot: false });
+      }, 100);
     }
     this.listener = listen(this.handleMessage);
 

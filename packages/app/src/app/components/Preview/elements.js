@@ -41,4 +41,6 @@ export const Loading = styled.div`
   color: white;
   line-height: 1.3;
   text-align: center;
+
+  z-index: 10;
 `;
