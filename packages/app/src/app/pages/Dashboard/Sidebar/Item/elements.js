@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 export const Container = styled(NavLink)`
-  transition: 0.3s ease background-color;
+  transition: 0.3s ease all;
   display: flex;
   width: 100%;
   height: 2.5rem;
@@ -19,6 +19,10 @@ export const Container = styled(NavLink)`
   background-color: transparent;
 
   cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
 
   ${props =>
     props.active &&

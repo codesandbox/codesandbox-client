@@ -69,28 +69,12 @@ class Sidebar extends React.Component {
                     path="/dashboard/recent"
                     name="Recent"
                   />
-                  <Query
-                    variables={{ teamId: undefined }}
-                    query={PATHED_SANDBOXES_FOLDER_QUERY}
-                  >
-                    {({ data }) => (
-                      <Observer>
-                        {() => {
-                          // We open this by default if there are no folders yet, to let the user know
-                          // that they can create folders.
-                          const openByDefault =
-                            data && data.me && data.me.collections.length === 1;
-                          return (
-                            <SandboxesItem
-                              currentPath={path}
-                              currentTeamId={currentTeamId}
-                              openByDefault={openByDefault}
-                            />
-                          );
-                        }}
-                      </Observer>
-                    )}
-                  </Query>
+
+                  <SandboxesItem
+                    currentPath={path}
+                    currentTeamId={currentTeamId}
+                    openByDefault
+                  />
                   <TrashItem />
                 </Items>
 

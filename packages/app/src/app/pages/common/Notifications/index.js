@@ -82,20 +82,16 @@ class Notifications extends React.Component {
               opacity: 0,
             })}
           >
-            {notifications.map(originalNotification => styles => {
-              const notification = clone(originalNotification);
-
-              return (
-                <NotificationContainer key={notification.id} style={styles}>
-                  <Notification
-                    title={notification.title}
-                    type={notification.notificationType}
-                    buttons={notification.buttons}
-                    close={() => this.closeNotification(notification.id)}
-                  />
-                </NotificationContainer>
-              );
-            })}
+            {notification => styles => (
+              <NotificationContainer key={notification.id} style={styles}>
+                <Notification
+                  title={notification.title}
+                  type={notification.notificationType}
+                  buttons={notification.buttons}
+                  close={() => this.closeNotification(notification.id)}
+                />
+              </NotificationContainer>
+            )}
           </Transition>
         </div>
       </Portal>

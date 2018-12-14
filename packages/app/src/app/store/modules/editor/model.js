@@ -105,7 +105,6 @@ export const Sandbox = types.model({
       types.model({
         path: types.string,
         id: types.string,
-        teamId: types.maybeNull(types.string),
       })
     )
   ),

@@ -8,7 +8,7 @@ function Loading() {
   return (
     <Centered style={{ height: '100vh' }} vertical horizontal>
       <LogoContainer>
-        <Logo width={490} height={490} />
+        <Logo width={200} height={200} />
       </LogoContainer>
     </Centered>
   );

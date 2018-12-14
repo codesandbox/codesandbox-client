@@ -8,21 +8,42 @@ import DirectoryPicker from './DirectoryPicker';
 import { Container } from '../elements';
 
 import { Block, CancelButton } from './elements';
+import { addSandboxesToFolder } from '../../../Dashboard/queries';
 
-class MoveSandboxFolderModal extends React.PureComponent {
+class MoveSandboxFolderModal extends React.Component {
+  state = {
+    loading: false,
+  };
+
   constructor(props) {
     super(props);
 
-    const collection = props.store.editor.currentSandbox.collection;
+    const sandbox = props.store.editor.currentSandbox;
+    const collection = sandbox.collection;
 
     this.state = {
-      teamId: collection ? collection.teamId : undefined,
+      teamId: sandbox.team ? sandbox.team.id || undefined : undefined,
       path: collection ? collection.path : '/',
     };
   }
 
   onSelect = ({ teamId, path }) => {
     this.setState({ teamId, path });
+  };
+
+  handleMove = () => {
+    this.setState({ loading: true }, () => {
+      addSandboxesToFolder(
+        [this.props.store.editor.currentSandbox.id],
+        this.state.path,
+        this.state.teamId
+      ).then(() => {
+        this.props.signals.refetchSandboxInfo();
+
+        this.setState({ loading: false });
+        this.props.signals.modalClosed();
+      });
+    });
   };
 
   render() {
@@ -48,14 +69,25 @@ class MoveSandboxFolderModal extends React.PureComponent {
             Cancel
           </CancelButton>
 
-          <Button css={{ display: 'inline-flex', alignItems: 'center' }} small>
-            Move to{' '}
-            {path !== '/'
-              ? basename(path)
-              : `${teamId ? 'Our' : 'My'} Sandboxes`}
-            <ChevronRight
-              css={{ marginRight: '-.25rem', marginLeft: '.25rem' }}
-            />
+          <Button
+            onClick={this.handleMove}
+            css={{ display: 'inline-flex', alignItems: 'center' }}
+            small
+            disabled={this.state.loading}
+          >
+            {this.state.loading ? (
+              'Moving Sandbox...'
+            ) : (
+              <React.Fragment>
+                Move to{' '}
+                {path !== '/'
+                  ? basename(path)
+                  : `${teamId ? 'Our' : 'My'} Sandboxes`}
+                <ChevronRight
+                  css={{ marginRight: '-.25rem', marginLeft: '.25rem' }}
+                />
+              </React.Fragment>
+            )}
           </Button>
         </Block>
       </div>

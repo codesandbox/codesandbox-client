@@ -2,6 +2,8 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Modal from 'app/components/Modal';
 
+import Loadable from 'app/utils/Loadable';
+
 import NewSandbox from './NewSandbox';
 import PreferencesModal from './PreferencesModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
@@ -21,7 +23,10 @@ import StorageManagementModal from './StorageManagementModal';
 import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
-import MoveSandboxFolderModal from './MoveSandboxFolderModal';
+
+const MoveSandboxFolderModal = Loadable(() =>
+  import('./MoveSandboxFolderModal')
+);
 
 const modals = {
   preferences: {

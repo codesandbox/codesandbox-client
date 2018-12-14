@@ -29,8 +29,6 @@ export const TemplatesName = styled.span`
 `;
 
 export const OverlayContainer = styled.div`
-  position: absolute;
-  top: calc(100% + 1rem);
   overflow: hidden;
   box-sizing: border-box;
   right: 0;

@@ -2,11 +2,8 @@ import styled, { css } from 'styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
 
 export const Container = styled.div`
-  position: absolute;
-  top: calc(100% + 1rem);
   overflow: hidden;
   box-sizing: border-box;
-  right: 0;
   text-align: left;
   line-height: 1.6;
   width: 358px;
