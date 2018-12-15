@@ -23,13 +23,19 @@ const getContainer = contextItems => {
 
 export default class Item extends React.Component {
   state = {
-    open: undefined,
+    open: this.props.openByDefault,
   };
 
   toggleOpen = e => {
     e.preventDefault();
     this.setState(state => ({ open: !state.open }));
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.openByDefault === true && !this.props.openByDefault) {
+      this.setState({ open: true });
+    }
+  }
 
   render() {
     const { name, contextItems, Icon, path, children, style } = this.props;

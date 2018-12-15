@@ -1,5 +1,5 @@
 // import * as debug from 'debug';
-import host from './host';
+// import host from './host';
 
 const bundlers: Map<Window, string> = new Map();
 
@@ -17,7 +17,9 @@ const parentOriginListener = (e: MessageEvent) => {
   }
 };
 
-self.addEventListener('message', parentOriginListener);
+if (typeof window !== 'undefined') {
+  self.addEventListener('message', parentOriginListener);
+}
 
 export function resetState() {
   parentOrigin = null;
@@ -111,8 +113,10 @@ export function registerFrame(frame: Window, origin: string) {
   );
 }
 
-// We now start listening so we can let our listeners know
-window.addEventListener('message', eventListener);
+if (typeof window !== 'undefined') {
+  // We now start listening so we can let our listeners know
+  window.addEventListener('message', eventListener);
+}
 
 export function reattach() {
   window.addEventListener('message', eventListener);

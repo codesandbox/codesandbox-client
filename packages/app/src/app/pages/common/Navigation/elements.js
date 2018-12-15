@@ -4,6 +4,7 @@ import Row from 'common/components/flex/Row';
 
 export const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
+  color: white;
 `;
 
 export const Border = styled.hr`
@@ -67,6 +68,8 @@ export const TitleWrapper = styled(Row)`
 `;
 
 export const Wrapper = styled(Row)`
+  position: relative;
+  z-index: 10;
   @media (max-width: 768px) {
     display: none;
   }

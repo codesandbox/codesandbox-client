@@ -12,9 +12,9 @@ import TeamIcon from 'react-icons/lib/md/people';
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
-import GithubBadge from 'app/components/GithubBadge';
+import GithubBadge from 'common/components/GithubBadge';
 import createEditableTags from 'app/components/EditableTags';
-import Tags from 'app/components/Tags';
+import Tags from 'common/components/Tags';
 import Switch from 'common/components/Switch';
 import Tooltip from 'common/components/Tooltip';
 
@@ -183,7 +183,10 @@ class Project extends React.Component {
         {!sandbox.team &&
           !!sandbox.author && (
             <Item>
-              <UserLink to={profileUrl(sandbox.author.username)}>
+              <UserLink
+                title={sandbox.author.username}
+                to={profileUrl(sandbox.author.username)}
+              >
                 <UserWithAvatar
                   username={sandbox.author.username}
                   avatarUrl={sandbox.author.avatarUrl}

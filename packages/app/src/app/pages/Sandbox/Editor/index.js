@@ -93,7 +93,7 @@ class ContentSplit extends React.Component {
             >
               <SplitPane
                 split="vertical"
-                defaultSize={sandboxOwned ? 16 * 16 : 18 * 16}
+                defaultSize={sandboxOwned ? 17 * 16 : 18 * 16}
                 minSize={0}
                 onDragStarted={() => signals.editor.resizingStarted()}
                 onDragFinished={() => signals.editor.resizingStopped()}

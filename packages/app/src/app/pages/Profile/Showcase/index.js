@@ -7,7 +7,7 @@ import Margin from 'common/components/spacing/Margin';
 import Button from 'app/components/Button';
 
 import SandboxInfo from './SandboxInfo';
-import ShowcasePreview from './ShowcasePreview';
+import ShowcasePreview from '../../common/ShowcasePreview';
 
 import { ErrorTitle } from './elements';
 

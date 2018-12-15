@@ -31,7 +31,7 @@ const getDefaultSelectedVersion = tags => {
     return '';
   }
 
-  return tags.latest + ' - latest';
+  return tags.latest;
 };
 
 export default class DependencyHit extends React.PureComponent {
@@ -85,7 +85,7 @@ export default class DependencyHit extends React.PureComponent {
       <Container highlighted={highlighted} onClick={onClick}>
         <Left>
           <Row>
-            <Highlight attributeName="name" hit={hit} />
+            <Highlight attribute="name" hit={hit} />
             <Downloads>{formatDownloads(hit.downloadsLast30Days)}</Downloads>
             {hit.license && <License>{hit.license}</License>}
           </Row>
@@ -141,7 +141,7 @@ export default class DependencyHit extends React.PureComponent {
               {versions.map(v => {
                 const tagName = getTagName(hit.tags, v);
                 return (
-                  <option key={v}>
+                  <option value={v} key={v}>
                     {v} {tagName && `- ${tagName}`}
                   </option>
                 );

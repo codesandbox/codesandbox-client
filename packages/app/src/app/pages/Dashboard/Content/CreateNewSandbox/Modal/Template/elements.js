@@ -46,12 +46,12 @@ export const Title = styled.div`
   transition: 0.3s ease color;
   font-size: 1.125em;
   color: ${props => (props.selected ? 'white' : props.color)};
-  margin-bottom: ${props => (props.small ? '0' : '0.25em')};
   font-weight: 600;
 `;
 
 export const SubTitle = styled.div`
-  font-size: 0.73em;
+  font-size: 0.8em;
+  margin-top: 0.25rem;
 
   color: ${props =>
     props.selected ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.4)'};

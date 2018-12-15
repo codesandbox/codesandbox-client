@@ -12,7 +12,7 @@ import {
   ACCEPT_TEAM_INVITATION,
 } from '../../../../Dashboard/queries';
 
-const Container = NotificationContainer.extend`
+const Container = styled(NotificationContainer)`
   display: flex;
 `;
 

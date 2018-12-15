@@ -51,6 +51,9 @@ const Patron = Loadable(() =>
 const Terms = Loadable(() =>
   import(/* webpackChunkName: 'page-terms' */ './Terms')
 );
+const Curator = Loadable(() =>
+  import(/* webpackChunkName: 'page-curator' */ './Curator')
+);
 
 type Props = {
   signals: any,
@@ -94,6 +97,7 @@ class Routes extends React.Component<Props> {
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
             <Route path="/dashboard" component={Dashboard} />
+            <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
             <Route path="/signin/:jwt?" component={SignIn} />

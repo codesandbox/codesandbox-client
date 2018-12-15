@@ -79,6 +79,8 @@ export const NotificationImage = styled.img`
   border-radius: 4px;
   width: 24px;
   height: 24px;
+  min-width: 24px;
+  min-height: 24px;
   margin-right: 1rem;
   margin-top: 0.25rem;
 `;

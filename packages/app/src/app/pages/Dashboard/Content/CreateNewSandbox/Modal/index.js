@@ -42,6 +42,20 @@ export default class Modal extends React.PureComponent {
     const otherServerTemplates = usedTemplates.filter(
       t => !t.main && t.isServer
     );
+    const typescriptTemplates = [
+      {
+        ...templates.react,
+        variantName: templates.react.niceName,
+        niceName: 'React + TS',
+        shortid: 'react-ts',
+      },
+      {
+        ...templates.parcel,
+        variantName: templates.parcel.niceName,
+        niceName: 'Vanilla + TS',
+        shortid: 'vanilla-ts',
+      },
+    ];
 
     const mainTemplatesPerRow = Math.max(
       1,
@@ -51,6 +65,7 @@ export default class Modal extends React.PureComponent {
 
     const mainRows = chunk(mainTemplates, mainTemplatesPerRow);
     const rows = chunk(otherTemplates, templatesPerRow);
+    const typescriptRows = chunk(typescriptTemplates, templatesPerRow);
     const mainServerRows = chunk(mainServerTemplates, mainTemplatesPerRow);
     const serverRows = chunk(otherServerTemplates, templatesPerRow);
 
@@ -116,6 +131,23 @@ export default class Modal extends React.PureComponent {
                   key={t.name}
                   template={t}
                   selectTemplate={this.selectTemplate}
+                />
+              ))}
+            </Templates>
+          ))}
+
+          <Title>Presets</Title>
+          {typescriptRows.map((ts, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Templates style={{ fontSize: '.8rem' }} key={i}>
+              {ts.map(t => (
+                <Template
+                  small
+                  width={Math.floor(paddedWidth / templatesPerRow - 16)}
+                  key={t.name}
+                  template={t}
+                  selectTemplate={this.selectTemplate}
+                  subtitle={`Using ${t.variantName} template`}
                 />
               ))}
             </Templates>

@@ -37,7 +37,13 @@ const rewriterInjectRE = /\b(css(?:-loader)?(?:\?[^!]+)?)(?:!|$)/;
 
 export default function(content: string, loaderContext: LoaderContext) {
   // Emit the vue-hot-reload-api so it's available in the sandbox
-  loaderContext.emitModule(hotReloadAPIPath, vueHotReloadAPIRaw, '/', false);
+  loaderContext.emitModule(
+    hotReloadAPIPath,
+    vueHotReloadAPIRaw,
+    '/',
+    false,
+    false
+  );
 
   const { path, _module } = loaderContext;
   const query = loaderContext.options;
@@ -213,6 +219,7 @@ export default function(content: string, loaderContext: LoaderContext) {
     '!noop-loader!/node_modules/component-normalizer.js',
     componentNormalizerRaw,
     '/',
+    false,
     false
   );
 
@@ -403,7 +410,7 @@ export default function(content: string, loaderContext: LoaderContext) {
       // getFileName(type, part, index);
       rawRequest;
 
-    // loaderContext.emitModule(rawPath, part.content, dirname(filePath), false);
+    // loaderContext.emitModule(rawPath, part.content, dirname(filePath), false, false);
 
     const depPath = loaderUtils.stringifyRequest(loaderContext, rawPath);
     loaderContext.addDependency(JSON.parse(depPath));

@@ -228,7 +228,7 @@ class FolderEntry extends React.Component {
                       <form onSubmit={submit}>
                         <Input
                           block
-                          innerRef={node => {
+                          ref={node => {
                             if (node) {
                               input = node;
                               node.focus();

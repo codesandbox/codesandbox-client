@@ -1,4 +1,4 @@
-import { keyframes } from 'styled-components';
+import { keyframes, css } from 'styled-components';
 
 const animation = keyframes`
   0%   { opacity: 1; transform: translateY(10px); }
@@ -11,7 +11,7 @@ const reverseAnimation = keyframes`
 `;
 
 export default (delay: number = 0, reverse: boolean = true) =>
-  `
+  css`
     animation: ${reverse ? reverseAnimation : animation} 0.3s;
     animation-delay: ${delay}s;
     animation-fill-mode: forwards;

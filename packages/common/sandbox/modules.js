@@ -16,7 +16,7 @@ const throwError = (path: string) => {
   throw new Error(`Cannot find module in ${path}`);
 };
 
-export function getModulesInDirectory(
+export function resolveDirectory(
   _path: ?string,
   modules: Array<Module>,
   directories: Array<Directory>,
@@ -40,8 +40,8 @@ export function getModulesInDirectory(
 
   const foundDirectoryShortid = splitPath.reduce(
     (dirId: ?string, pathPart: string, i: number) => {
-      // Meaning this is the last argument, so the file
-      if (i === splitPath.length - 1) return dirId;
+      // Meaning this is the last argument, so the directory
+      if (i === splitPath.length) return dirId;
 
       if (pathPart === '..') {
         // Find the parent
@@ -66,6 +66,43 @@ export function getModulesInDirectory(
     },
     startdirectoryShortid
   );
+
+  return directories.find(d => d.shortid === foundDirectoryShortid);
+}
+
+export function getModulesInDirectory(
+  _path: ?string,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  _startdirectoryShortid: ?string = undefined
+) {
+  if (!_path) return throwError('');
+
+  let path = _path;
+  // If paths start with {{sandboxRoot}} we see them as root paths
+  if (path.startsWith('{{sandboxRoot}}')) {
+    path = _path.replace('{{sandboxRoot}}/', './');
+  }
+
+  // Split path
+  const splitPath = path
+    .replace(/^.\//, '')
+    .split('/')
+    .filter(Boolean);
+
+  const dirPath = path
+    .replace(/^.\//, '')
+    .split('/')
+    .filter(Boolean);
+  dirPath.pop();
+
+  const dir = resolveDirectory(
+    dirPath.join('/') || '/',
+    modules,
+    directories,
+    _startdirectoryShortid
+  );
+  const foundDirectoryShortid = dir ? dir.shortid : null;
 
   const lastPath = splitPath[splitPath.length - 1];
   const modulesInFoundDirectory = modules.filter(

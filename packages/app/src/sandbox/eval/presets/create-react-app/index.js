@@ -1,4 +1,4 @@
-import semver from 'semver';
+import { isBabel7 } from 'common/utils/is-babel-7';
 
 import Preset from '../';
 
@@ -8,20 +8,6 @@ import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
 import svgrTranspiler from '../../transpilers/svgr';
 import sassTranspiler from '../../transpilers/sass';
-
-export function isVersion2(dependencies) {
-  const usedDeps = dependencies || {};
-  if (usedDeps['react-scripts']) {
-    const reactScriptsVersion = usedDeps['react-scripts'];
-
-    return (
-      /^[a-z]/.test(reactScriptsVersion) ||
-      semver.intersects(reactScriptsVersion, '^2.0.0')
-    );
-  }
-
-  return false;
-}
 
 export default function initialize() {
   let v2Initialized = false;
@@ -35,11 +21,16 @@ export default function initialize() {
         const configurations = manager.configurations;
 
         if (
-          isVersion2(
+          isBabel7(
             configurations &&
               configurations.package &&
               configurations.package.parsed &&
-              configurations.package.parsed.dependencies
+              configurations.package.parsed.dependencies,
+
+            configurations &&
+              configurations.package &&
+              configurations.package.parsed &&
+              configurations.package.parsed.devDependencies
           ) &&
           !v2Initialized
         ) {

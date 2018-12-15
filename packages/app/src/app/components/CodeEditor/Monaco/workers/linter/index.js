@@ -363,6 +363,7 @@ self.addEventListener('message', async event => {
     config.rules = {
       ...defaultConfig.rules,
       ...config.rules,
+      'react-hooks/rules-of-hooks': 'off',
     };
     options = { ...options, ...getVueVerifyOptions(filename) };
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import Link from 'gatsby-link';
+import { Link } from 'gatsby';
 
 import Logo from 'common/components/Logo';
 import MaxWidth from 'common/components/flex/MaxWidth';
@@ -24,6 +24,7 @@ const Left = styled.div`
 `;
 
 const StyledLogo = styled(Logo)`
+  color: white;
   ${media.phone`
     width: 38px;
     height: 38px;
@@ -124,7 +125,7 @@ export default class Navigation extends React.PureComponent {
   render() {
     const { user } = this.state;
     return (
-      <MaxWidth width={1280}>
+      <MaxWidth width={1440}>
         <Container>
           <Left>
             <Link to="/?from-app=1">
@@ -146,7 +147,6 @@ export default class Navigation extends React.PureComponent {
             >
               GitHub
             </Item>
-            <ItemLink to="/changelog">Updates</ItemLink>
             <ItemLink to="/docs">Docs</ItemLink>
             <Item hidePhone href="/s" rel="noopener noreferrer" button={!user}>
               Create Sandbox

@@ -3,11 +3,11 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { clone } from 'mobx-state-tree';
 import { Transition } from 'react-spring';
-import Portal from 'app/components/Portal';
+import Portal from 'common/components/Portal';
 
 import Notification from './Notification';
 
-import { NotificationContainer } from './elements';
+import { NotificationContainer, GlobalStyle } from './elements';
 
 class Notifications extends React.Component {
   constructor() {
@@ -64,6 +64,7 @@ class Notifications extends React.Component {
     return (
       <Portal>
         <div onMouseEnter={this.hoverOn} onMouseLeave={this.hoverOff}>
+          <GlobalStyle />
           <Transition
             items={notifications.map((notif, i) => ({ ...notif, i }))}
             keys={notif => notif.id}

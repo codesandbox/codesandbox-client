@@ -156,6 +156,7 @@ export default class WorkerTranspiler extends Transpiler {
               id,
               found: true,
               path: tModule.module.path,
+              code: tModule.module.code,
             });
           } catch (e) {
             worker.postMessage({

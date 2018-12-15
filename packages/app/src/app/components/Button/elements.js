@@ -92,6 +92,20 @@ const styles = css`
   font-weight: 600;
 
   ${props =>
+    props.small
+      ? css`
+          padding: 0.5em 0.7em;
+          font-size: 0.875em;
+        `
+      : css`
+          padding: 0.65em 2.25em;
+        `};
+
+  svg {
+    font-size: 1.125em;
+  }
+
+  ${props =>
     !props.disabled &&
     `
   cursor: pointer;

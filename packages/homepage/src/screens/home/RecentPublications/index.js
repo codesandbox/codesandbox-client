@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 
-import liveImage from './codesandbox-live.png';
+import firstImage from './unique.png';
 import dashboardImage from './dashboard.png';
-import parcelImage from './parcel.png';
+import secondImage from './containers3.png';
 
 import media from '../../../utils/media';
 
@@ -69,6 +69,7 @@ const PublicationDescription = styled.p`
   font-weight: 400;
   font-size: 1rem;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  opacity: 0.6;
 `;
 
 const PublicationItem = ({ title, image, url, description }) => (
@@ -101,22 +102,22 @@ export default () => (
       </SubTitle>
       <Items style={{ marginBottom: '2rem' }}>
         <PublicationItem
+          title="What's Unique About CodeSandbox"
+          description={`I often get asked: "What's the difference between CodeSandbox and <another online editor>". This is a list of unique features that distinguishes CodeSandbox.`}
+          url="https://medium.com/@compuives/whats-unique-about-codesandbox-f1791d867e48"
+          image={firstImage}
+        />
+        <PublicationItem
+          title="CodeSandbox Containers"
+          description="With Containers we execute the code on a server. This allows you to create Node servers and run any kind of web application like Nuxt, Next and Gatsby."
+          url="https://hackernoon.com/codesandbox-containers-5864a8f26715"
+          image={secondImage}
+        />
+        <PublicationItem
           title="CodeSandbox Dashboard & Teams"
           description="Announcing Dashboard & Teams, you now have a dashboard to manage your sandboxes. With that you can now also share your sandboxes with your team."
           url="https://medium.com/@compuives/announcing-codesandbox-dashboard-teams-876f5933160b"
           image={dashboardImage}
-        />
-        <PublicationItem
-          title="CodeSandbox Live"
-          description="Real time code collaboration in the browser. From now on you can open up your sandbox for live editing with others."
-          url="https://medium.com/@compuives/introducing-codesandbox-live-real-time-code-collaboration-in-the-browser-6d508cfc70c9"
-          image={liveImage}
-        />
-        <PublicationItem
-          title="Vanilla Template"
-          description="Introducing the Vanilla template: a template based on Parcel for any kind of web project you like to create."
-          url="https://hackernoon.com/introducing-the-vanilla-template-to-codesandbox-32244b58acec"
-          image={parcelImage}
         />
       </Items>
     </MaxWidth>

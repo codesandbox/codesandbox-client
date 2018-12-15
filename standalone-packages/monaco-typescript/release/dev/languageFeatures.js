@@ -57,6 +57,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 define(["require", "exports", "./lib/emmet/expand/languageserver-types"], function (require, exports, ls) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -204,18 +234,38 @@ define(["require", "exports", "./lib/emmet/expand/languageserver-types"], functi
             }));
             _this._disposables.push({
                 dispose: function () {
-                    for (var _i = 0, _a = monaco.editor.getModels(); _i < _a.length; _i++) {
-                        var model = _a[_i];
-                        onModelRemoved(model);
+                    var e_1, _a;
+                    try {
+                        for (var _b = __values(monaco.editor.getModels()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                            var model = _c.value;
+                            onModelRemoved(model);
+                        }
+                    }
+                    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                    finally {
+                        try {
+                            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                        }
+                        finally { if (e_1) throw e_1.error; }
                     }
                 },
             });
             _this._disposables.push(_this._defaults.onDidChange(function () {
-                // redo diagnostics when options change
-                for (var _i = 0, _a = monaco.editor.getModels(); _i < _a.length; _i++) {
-                    var model = _a[_i];
-                    onModelRemoved(model);
-                    onModelAdd(model);
+                var e_2, _a;
+                try {
+                    // redo diagnostics when options change
+                    for (var _b = __values(monaco.editor.getModels()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var model = _c.value;
+                        onModelRemoved(model);
+                        onModelAdd(model);
+                    }
+                }
+                catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                    }
+                    finally { if (e_2) throw e_2.error; }
                 }
             }));
             monaco.editor.getModels().forEach(onModelAdd);
@@ -280,7 +330,7 @@ define(["require", "exports", "./lib/emmet/expand/languageserver-types"], functi
         }
         Object.defineProperty(SuggestAdapter.prototype, "triggerCharacters", {
             get: function () {
-                return emmetTriggerCharacters.concat(['.']);
+                return __spread(emmetTriggerCharacters, ['.']);
             },
             enumerable: true,
             configurable: true
@@ -543,28 +593,31 @@ define(["require", "exports", "./lib/emmet/expand/languageserver-types"], functi
                 return worker.getDefinitionAtPosition(resource.toString(), _this._positionToOffset(resource, position));
             })
                 .then(function (entries) { return __awaiter(_this, void 0, void 0, function () {
-                var result, _i, entries_1, entry, uri, model_1;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
+                var e_3, _a, result, entries_1, entries_1_1, entry, uri, model_1, e_3_1;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
                         case 0:
                             if (!entries) {
                                 return [2 /*return*/];
                             }
                             result = [];
-                            _i = 0, entries_1 = entries;
-                            _a.label = 1;
+                            _b.label = 1;
                         case 1:
-                            if (!(_i < entries_1.length)) return [3 /*break*/, 5];
-                            entry = entries_1[_i];
+                            _b.trys.push([1, 7, 8, 9]);
+                            entries_1 = __values(entries), entries_1_1 = entries_1.next();
+                            _b.label = 2;
+                        case 2:
+                            if (!!entries_1_1.done) return [3 /*break*/, 6];
+                            entry = entries_1_1.value;
                             uri = Uri.parse(entry.fileName);
                             model_1 = void 0;
-                            if (!monaco.editor.resolveModel) return [3 /*break*/, 3];
+                            if (!monaco.editor.resolveModel) return [3 /*break*/, 4];
                             return [4 /*yield*/, monaco.editor.resolveModel(uri)];
-                        case 2:
-                            // @ts-ignore
-                            model_1 = _a.sent();
-                            _a.label = 3;
                         case 3:
+                            // @ts-ignore
+                            model_1 = _b.sent();
+                            _b.label = 4;
+                        case 4:
                             if (monaco.editor.getModel(uri)) {
                                 result.push({
                                     uri: uri,
@@ -574,11 +627,22 @@ define(["require", "exports", "./lib/emmet/expand/languageserver-types"], functi
                             if (model_1) {
                                 model_1.dispose();
                             }
-                            _a.label = 4;
-                        case 4:
-                            _i++;
-                            return [3 /*break*/, 1];
-                        case 5: return [2 /*return*/, result];
+                            _b.label = 5;
+                        case 5:
+                            entries_1_1 = entries_1.next();
+                            return [3 /*break*/, 2];
+                        case 6: return [3 /*break*/, 9];
+                        case 7:
+                            e_3_1 = _b.sent();
+                            e_3 = { error: e_3_1 };
+                            return [3 /*break*/, 9];
+                        case 8:
+                            try {
+                                if (entries_1_1 && !entries_1_1.done && (_a = entries_1.return)) _a.call(entries_1);
+                            }
+                            finally { if (e_3) throw e_3.error; }
+                            return [7 /*endfinally*/];
+                        case 9: return [2 /*return*/, result];
                     }
                 });
             }); }));
@@ -600,28 +664,31 @@ define(["require", "exports", "./lib/emmet/expand/languageserver-types"], functi
                 return worker.getReferencesAtPosition(resource.toString(), _this._positionToOffset(resource, position));
             })
                 .then(function (entries) { return __awaiter(_this, void 0, void 0, function () {
-                var result, _i, entries_2, entry, uri, model_2;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
+                var e_4, _a, result, entries_2, entries_2_1, entry, uri, model_2, e_4_1;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
                         case 0:
                             if (!entries) {
                                 return [2 /*return*/];
                             }
                             result = [];
-                            _i = 0, entries_2 = entries;
-                            _a.label = 1;
+                            _b.label = 1;
                         case 1:
-                            if (!(_i < entries_2.length)) return [3 /*break*/, 5];
-                            entry = entries_2[_i];
+                            _b.trys.push([1, 7, 8, 9]);
+                            entries_2 = __values(entries), entries_2_1 = entries_2.next();
+                            _b.label = 2;
+                        case 2:
+                            if (!!entries_2_1.done) return [3 /*break*/, 6];
+                            entry = entries_2_1.value;
                             uri = Uri.parse(entry.fileName);
                             model_2 = void 0;
-                            if (!monaco.editor.resolveModel) return [3 /*break*/, 3];
+                            if (!monaco.editor.resolveModel) return [3 /*break*/, 4];
                             return [4 /*yield*/, monaco.editor.resolveModel(uri)];
-                        case 2:
-                            // @ts-ignore
-                            model_2 = _a.sent();
-                            _a.label = 3;
                         case 3:
+                            // @ts-ignore
+                            model_2 = _b.sent();
+                            _b.label = 4;
+                        case 4:
                             if (monaco.editor.getModel(uri)) {
                                 result.push({
                                     uri: uri,
@@ -631,11 +698,22 @@ define(["require", "exports", "./lib/emmet/expand/languageserver-types"], functi
                             if (model_2) {
                                 model_2.dispose();
                             }
-                            _a.label = 4;
-                        case 4:
-                            _i++;
-                            return [3 /*break*/, 1];
-                        case 5: return [2 /*return*/, result];
+                            _b.label = 5;
+                        case 5:
+                            entries_2_1 = entries_2.next();
+                            return [3 /*break*/, 2];
+                        case 6: return [3 /*break*/, 9];
+                        case 7:
+                            e_4_1 = _b.sent();
+                            e_4 = { error: e_4_1 };
+                            return [3 /*break*/, 9];
+                        case 8:
+                            try {
+                                if (entries_2_1 && !entries_2_1.done && (_a = entries_2.return)) _a.call(entries_2);
+                            }
+                            finally { if (e_4) throw e_4.error; }
+                            return [7 /*endfinally*/];
+                        case 9: return [2 /*return*/, result];
                     }
                 });
             }); }));
@@ -659,6 +737,7 @@ define(["require", "exports", "./lib/emmet/expand/languageserver-types"], functi
                     return;
                 }
                 var convert = function (bucket, item, containerLabel) {
+                    var e_5, _a;
                     var result = {
                         name: item.text,
                         detail: '',
@@ -669,9 +748,18 @@ define(["require", "exports", "./lib/emmet/expand/languageserver-types"], functi
                         containerName: containerLabel,
                     };
                     if (item.childItems && item.childItems.length > 0) {
-                        for (var _i = 0, _a = item.childItems; _i < _a.length; _i++) {
-                            var child = _a[_i];
-                            convert(bucket, child, result.name);
+                        try {
+                            for (var _b = __values(item.childItems), _c = _b.next(); !_c.done; _c = _b.next()) {
+                                var child = _c.value;
+                                convert(bucket, child, result.name);
+                            }
+                        }
+                        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+                        finally {
+                            try {
+                                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                            }
+                            finally { if (e_5) throw e_5.error; }
                         }
                     }
                     bucket.push(result);

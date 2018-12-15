@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 const showAnimationKeyframes = keyframes`
   0%   { opacity: 0; transform: translateX(10px); }
@@ -11,10 +11,11 @@ const reverseShowAnimationKeyframes = keyframes`
 `;
 
 const showAnimation = (delay: number = 0, reverse: boolean = true) =>
-  `
-    animation: ${
-      reverse ? reverseShowAnimationKeyframes : showAnimationKeyframes
-    } 0.3s;
+  css`
+    animation: ${reverse
+        ? reverseShowAnimationKeyframes
+        : showAnimationKeyframes}
+      0.3s;
     animation-delay: ${delay}s;
     animation-fill-mode: forwards;
     opacity: 0;
@@ -31,10 +32,11 @@ const reverseHideAnimationKeyframes = keyframes`
 `;
 
 const hideAnimation = (delay: number = 0, reverse: boolean = true) =>
-  `
-    animation: ${
-      reverse ? reverseHideAnimationKeyframes : hideAnimationKeyframes
-    } 0.3s;
+  css`
+    animation: ${reverse
+        ? reverseHideAnimationKeyframes
+        : hideAnimationKeyframes}
+      0.3s;
     animation-delay: ${delay}s;
     animation-fill-mode: forwards;
     opacity: 1;

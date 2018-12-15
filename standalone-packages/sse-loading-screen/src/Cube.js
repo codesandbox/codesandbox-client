@@ -6,7 +6,20 @@ import styled, { keyframes } from 'preact-emotion';
 const isSafari =
   typeof navigator !== 'undefined' &&
   /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const SHADOW_SIZE = isSafari ? 100 : 150;
+
+const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+
+const SHADOW_SIZE = (() => {
+  if (iOS) {
+    return 0;
+  }
+
+  if (isSafari) {
+    return 100;
+  }
+
+  return 150;
+})();
 
 const getContainerAnimation = (offset: number) => {
   return keyframes`

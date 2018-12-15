@@ -65,7 +65,7 @@ class Chat extends React.Component {
 
     return (
       <Container
-        innerRef={el => {
+        ref={el => {
           this.messages = el;
         }}
       >

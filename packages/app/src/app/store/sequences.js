@@ -142,7 +142,11 @@ export const forkSandbox = sequence('forkSandbox', [
       ensurePackageJSON,
       set(state`editor.isForkingSandbox`, false),
     ],
-    false: [set(props`modal`, 'forkServerModal'), openModal],
+    false: [
+      factories.track('Show Server Fork Sign In Modal', {}),
+      set(props`modal`, 'forkServerModal'),
+      openModal,
+    ],
   },
 ]);
 
@@ -247,7 +251,7 @@ export const signInZeit = [
 
       actions.updateUserZeitDetails,
       {
-        success: set(state`user`, props`user`),
+        success: [set(state`user`, props`user`), getZeitUserDetails],
         error: factories.addNotification(
           'Could not authorize with ZEIT',
           'error'

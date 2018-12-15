@@ -10,8 +10,7 @@ export const CenteredText = styled.div`
 export const AuthorName = styled.span`
   display: inline-flex;
   align-items: center;
-  margin: 0 0.5em;
-  font-weight: 400;
+  margin: 0 0.75em;
 
   ${props =>
     props.useBigName &&
@@ -39,5 +38,5 @@ export const Username = styled.div`
 export const Image = styled.img`
   width: 1.75em;
   height: 1.75em;
-  border-radius: 4px;
+  border-radius: 8px;
 `;

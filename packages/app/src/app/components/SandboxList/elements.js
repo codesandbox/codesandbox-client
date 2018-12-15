@@ -13,6 +13,7 @@ export const Table = styled.table`
   width: 100%;
   border-spacing: 0;
   margin-bottom: 2rem;
+  background: ${props => props.theme.background2};
 `;
 
 export const StatTitle = styled(HeaderTitle)`

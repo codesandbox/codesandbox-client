@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Link from 'gatsby-link';
+import { Link } from 'gatsby';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 
@@ -64,7 +64,7 @@ const Background = styled.div`
   position: relative;
   background-color: ${props => props.theme.background2.darken(0.2)};
   padding: 1rem;
-  z-index: 100;
+  z-index: 5;
 `;
 
 const BasComponent = () => (

@@ -29,26 +29,29 @@ export default class CodeMirror extends React.Component<Props> {
       className = '',
     } = this.props;
 
+    const c = (
+      // @ts-ignore
+      <Controlled
+        options={{
+          keyMap: 'sublime',
+          indentUnit: 2,
+          foldGutter: true,
+          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+          lineNumbers: true,
+          lineWrapping: false,
+          mode: 'jsx',
+          ...codeMirrorOptions,
+        }}
+        onBeforeChange={onBeforeChange}
+        value={value}
+      />
+    );
     return (
       <div
         className={`${cn('CodeMirror', 'container')} ${className}`}
         style={style}
       >
-        <Controlled
-          // @ts-ignore
-          options={{
-            keyMap: 'sublime',
-            indentUnit: 2,
-            foldGutter: true,
-            gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-            lineNumbers: true,
-            lineWrapping: false,
-            mode: 'jsx',
-            ...codeMirrorOptions,
-          }}
-          onBeforeChange={onBeforeChange}
-          value={value}
-        />
+        {c}
       </div>
     );
   }

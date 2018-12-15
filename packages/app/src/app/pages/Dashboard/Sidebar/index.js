@@ -13,7 +13,7 @@ import Item from './Item';
 import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
 import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
-import { TEAMS_QUERY } from '../queries';
+import { TEAMS_QUERY, PATHED_SANDBOXES_FOLDER_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
   shouldComponentUpdate() {
@@ -41,13 +41,24 @@ class Sidebar extends React.Component {
             block
             value={store.dashboard.filters.search}
             onChange={this.handleSearchChange}
-            placeholder="Filter Sandboxes"
+            placeholder="Search Sandboxes"
           />
         </InputWrapper>
 
         <Items style={{ marginBottom: '1rem' }}>
           <Item Icon={TimeIcon} path="/dashboard/recent" name="Recent" />
-          <SandboxesItem />
+          <Query
+            variables={{ teamId: undefined }}
+            query={PATHED_SANDBOXES_FOLDER_QUERY}
+          >
+            {({ data }) => {
+              // We open this by default if there are no folders yet, to let the user know
+              // that they can create folders.
+              const openByDefault =
+                data && data.me && data.me.collections.length === 1;
+              return <SandboxesItem openByDefault={openByDefault} />;
+            }}
+          </Query>
           <TrashItem />
         </Items>
 

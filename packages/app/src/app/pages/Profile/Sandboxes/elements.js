@@ -14,10 +14,11 @@ export const Navigation = styled.div`
 `;
 
 export const Notice = styled.div`
-  text-align: center;
   color: rgba(255, 255, 255, 0.5);
   padding: 2rem 0;
   padding-bottom: 0;
+
+  margin-bottom: 2rem;
 `;
 
 const ErrorTitle = styled.div`
