@@ -20,6 +20,7 @@ import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
 import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';
+import Feedback from './Feedback';
 import SSEDownNotice from './SSEDownNotice';
 
 import {
@@ -40,7 +41,7 @@ const idToItem = {
   more: More,
 };
 
-function Workspace({ store, signals }) {
+function Workspace({ store }) {
   const sandbox = store.editor.currentSandbox;
   const preferences = store.preferences;
 
@@ -73,17 +74,7 @@ function Workspace({ store, signals }) {
             <VersionContainer className="codesandbox-version">
               {VERSION}
             </VersionContainer>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                signals.sendFeedback({
-                  sandboxId: sandbox.id,
-                  feedback: 'aaa',
-                });
-              }}
-            >
-              <input placeholder="Feedback" />
-            </form>
+            <Feedback id={sandbox.id} />
           </ContactContainer>
           <SSEDownNotice />
           <ConnectionNotice />
