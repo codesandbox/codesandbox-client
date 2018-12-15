@@ -158,31 +158,35 @@ class SandboxItem extends React.PureComponent<Props> {
     }
 
     if (selectedCount > 1) {
+      const items = [];
+
+      if (this.props.isPatron) {
+        items.push([
+          {
+            title: `Make ${selectedCount} Sandboxes Public`,
+            action: () => {
+              this.props.setSandboxesPrivacy(0);
+              return true;
+            },
+          },
+          {
+            title: `Make ${selectedCount} Sandboxes Unlisted`,
+            action: () => {
+              this.props.setSandboxesPrivacy(1);
+              return true;
+            },
+          },
+          {
+            title: `Make ${selectedCount} Sandboxes Private`,
+            action: () => {
+              this.props.setSandboxesPrivacy(2);
+              return true;
+            },
+          },
+        ]);
+      }
       return [
-        this.props.isPatron &&
-          [
-            {
-              title: `Make ${selectedCount} Sandboxes Public`,
-              action: () => {
-                this.props.setSandboxesPrivacy(0);
-                return true;
-              },
-            },
-            {
-              title: `Make ${selectedCount} Sandboxes Unlisted`,
-              action: () => {
-                this.props.setSandboxesPrivacy(1);
-                return true;
-              },
-            },
-            {
-              title: `Make ${selectedCount} Sandboxes Private`,
-              action: () => {
-                this.props.setSandboxesPrivacy(2);
-                return true;
-              },
-            },
-          ].filter(Boolean),
+        ...items,
         [
           {
             title: `Move ${selectedCount} Sandboxes To Trash`,

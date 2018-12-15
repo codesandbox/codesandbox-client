@@ -23,8 +23,8 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
       store.dashboard.filters.blacklistedTemplates.indexOf(template) > -1
   );
 
-  const Overlay = style => (
-    <OverlayContainer style={style}>
+  const Overlay = () => (
+    <OverlayContainer>
       {orderBy(
         Object.keys(templates)
           .filter(x => x !== 'default')

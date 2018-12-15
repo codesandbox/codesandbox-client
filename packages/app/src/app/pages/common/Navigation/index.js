@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
+import Media from 'react-media';
 import { patronUrl, dashboardUrl, searchUrl } from 'common/utils/url-generator';
 
 import SearchIcon from 'react-icons/lib/go/search';
@@ -43,15 +44,19 @@ function Navigation({ signals, store, title, searchNoInput }) {
       <Wrapper>
         <Actions>
           <Action>
-            {searchNoInput ? (
-              <Tooltip position="bottom" title="Search All Sandboxes">
-                <Link style={{ color: 'white' }} to={searchUrl()}>
-                  <SearchIcon height={35} />
-                </Link>
-              </Tooltip>
-            ) : (
-              <HeaderSearchBar />
-            )}
+            <Media query="(max-width: 920px)">
+              {matches =>
+                matches || searchNoInput ? (
+                  <Tooltip position="bottom" title="Search All Sandboxes">
+                    <Link style={{ color: 'white' }} to={searchUrl()}>
+                      <SearchIcon height={35} />
+                    </Link>
+                  </Tooltip>
+                ) : (
+                  <HeaderSearchBar />
+                )
+              }
+            </Media>
           </Action>
           <Action>
             <Tooltip position="bottom" title="Documentation">

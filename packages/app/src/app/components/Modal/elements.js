@@ -17,6 +17,6 @@ export const ModalTitle = styled.h1`
 `;
 
 export const ModalBody = styled.div`
-  background-color: white;
-  color: black;
+  background-color: ${props => props.theme.background2};
+  color: rgba(255, 255, 255, 0.8);
 `;

@@ -1,5 +1,6 @@
 // @ts-check
 import React from 'react';
+
 import FolderIcon from 'react-icons/lib/md/folder';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import RenameIcon from 'react-icons/lib/md/mode-edit';
@@ -11,7 +12,6 @@ import track from 'common/utils/analytics';
 import { client } from 'app/graphql/client';
 
 import ReactShow from 'react-show';
-import { Route } from 'react-router-dom';
 import { join, dirname } from 'path';
 
 import theme from 'common/theme';
@@ -48,18 +48,29 @@ class FolderEntry extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.open == null && nextProps.open === true) {
+    if (
+      (this.state.open == null || this.state.open === false) &&
+      nextProps.open === true
+    ) {
       this.setState({ open: true });
     }
   }
 
   toggleOpen = e => {
     e.preventDefault();
+    e.stopPropagation();
     this.setState(state => ({ open: !state.open }));
   };
 
   handleBlur = () => {
     this.setState({ renamingDirectory: false, open: true });
+  };
+
+  handleSelect = () => {
+    this.props.onSelect({
+      teamId: this.props.teamId,
+      path: this.props.path,
+    });
   };
 
   handleKeyDown = e => {
@@ -90,6 +101,9 @@ class FolderEntry extends React.Component {
       isDragging,
       basePath,
       teamId,
+      onSelect,
+      currentPath,
+      currentTeamId,
     } = this.props;
 
     const url = `${basePath}${path}`;
@@ -133,20 +147,26 @@ class FolderEntry extends React.Component {
                       },
                     ],
                     update: (cache, { data: { deleteCollection } }) => {
+                      const variables = {};
+                      if (teamId) {
+                        variables.teamId = teamId;
+                      }
+
                       const cacheData = cache.readQuery({
                         query: PATHED_SANDBOXES_FOLDER_QUERY,
-                        variables: {
-                          teamId,
-                        },
+                        variables,
                       });
-                      cacheData.me.collections = deleteCollection;
 
                       cache.writeQuery({
                         query: PATHED_SANDBOXES_FOLDER_QUERY,
-                        variables: {
-                          teamId,
+                        variables,
+                        data: {
+                          ...cacheData,
+                          me: {
+                            ...cacheData.me,
+                            collections: deleteCollection,
+                          },
                         },
-                        data: cacheData,
                       });
                     },
                   });
@@ -156,17 +176,19 @@ class FolderEntry extends React.Component {
             ]}
           >
             <Container
-              activeStyle={{
-                borderColor: theme.secondary(),
-                color: 'white',
-              }}
+              as={onSelect ? 'div' : undefined}
+              onClick={onSelect ? this.handleSelect : undefined}
               style={{
-                color:
-                  isOver && canDrop
-                    ? theme.secondary()
-                    : 'rgba(255, 255, 255, 0.6)',
+                color: isOver && canDrop ? theme.secondary() : undefined,
                 backgroundColor:
-                  isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : 'transparent',
+                  isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
+
+                ...(currentPath === path && currentTeamId === teamId
+                  ? {
+                      borderColor: theme.secondary(),
+                      color: 'white',
+                    }
+                  : {}),
               }}
               exact
               depth={depth}
@@ -209,11 +231,16 @@ class FolderEntry extends React.Component {
                             query: PATHED_SANDBOXES_FOLDER_QUERY,
                             variables,
                           });
-                          cacheData.me.collections = renameCollection;
 
                           cache.writeQuery({
                             query: PATHED_SANDBOXES_FOLDER_QUERY,
-                            data: cacheData,
+                            data: {
+                              ...cacheData,
+                              me: {
+                                ...cacheData.me,
+                                collections: renameCollection,
+                              },
+                            },
                             variables,
                           });
                         },
@@ -265,21 +292,20 @@ class FolderEntry extends React.Component {
                 const childPath = join(path, childName);
 
                 return (
-                  <Route key={childPath} path={`${basePath}${childPath}`}>
-                    {({ match }) => (
-                      <DropFolderEntry
-                        path={childPath}
-                        basePath={basePath}
-                        teamId={teamId}
-                        folders={folders}
-                        foldersByPath={foldersByPath}
-                        key={childName}
-                        name={childName}
-                        depth={this.props.depth + 1}
-                        open={match ? !!match : match}
-                      />
-                    )}
-                  </Route>
+                  <DropFolderEntry
+                    path={childPath}
+                    basePath={basePath}
+                    teamId={teamId}
+                    folders={folders}
+                    foldersByPath={foldersByPath}
+                    key={childName}
+                    name={childName}
+                    depth={this.props.depth + 1}
+                    open={currentPath.indexOf(childPath) === 0}
+                    onSelect={onSelect}
+                    currentPath={currentPath}
+                    currentTeamId={currentTeamId}
+                  />
                 );
               })}
           </ReactShow>

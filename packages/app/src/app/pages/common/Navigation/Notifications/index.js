@@ -57,8 +57,8 @@ const getNotificationComponent = (type, data, read) => {
   return <div />;
 };
 
-export default style => (
-  <Container style={style}>
+export default props => (
+  <Container {...props}>
     <Title>Notifications</Title>
     <NotificationsContainer>
       <Query fetchPolicy="cache-and-network" query={VIEW_QUERY}>
@@ -78,7 +78,8 @@ export default style => (
           if (data.me.notifications.length === 0) {
             return (
               <NoNotifications>
-                You don{"'"}t have any notifications
+                You don
+                {"'"}t have any notifications
               </NoNotifications>
             );
           }

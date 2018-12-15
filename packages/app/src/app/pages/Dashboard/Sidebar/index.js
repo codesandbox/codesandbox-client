@@ -1,6 +1,7 @@
 import React from 'react';
 import history from 'app/utils/history';
 import { inject, observer } from 'mobx-react';
+import { Route } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from 'common/components/Input';
 import Button from 'app/components/Button';
@@ -13,7 +14,7 @@ import Item from './Item';
 import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
 import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
-import { TEAMS_QUERY, PATHED_SANDBOXES_FOLDER_QUERY } from '../queries';
+import { TEAMS_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
   shouldComponentUpdate() {
@@ -45,50 +46,73 @@ class Sidebar extends React.Component {
           />
         </InputWrapper>
 
-        <Items style={{ marginBottom: '1rem' }}>
-          <Item Icon={TimeIcon} path="/dashboard/recent" name="Recent" />
-          <Query
-            variables={{ teamId: undefined }}
-            query={PATHED_SANDBOXES_FOLDER_QUERY}
-          >
-            {({ data }) => {
-              // We open this by default if there are no folders yet, to let the user know
-              // that they can create folders.
-              const openByDefault =
-                data && data.me && data.me.collections.length === 1;
-              return <SandboxesItem openByDefault={openByDefault} />;
-            }}
-          </Query>
-          <TrashItem />
-        </Items>
+        <Route
+          path={[
+            '/dashboard/sandboxes/:path*',
+            '/dashboard/teams/:teamId/sandboxes/:path*',
+            '/',
+          ]}
+        >
+          {routeProps => {
+            const testRegex = /\/dashboard.*?sandboxes/;
 
-        <Query query={TEAMS_QUERY}>
-          {({ loading, data, error }) => {
-            if (loading) {
-              return null;
-            }
+            const path = routeProps.location.pathname.replace(testRegex, '');
+            const currentTeamId = routeProps.match
+              ? routeProps.match.params.teamId
+              : undefined;
 
-            if (error) {
-              return null;
-            }
-
-            const teams = data.me.teams;
-
-            return teams.map(team => (
-              <div key={team.id}>
-                <Items>
-                  <CategoryHeader>{team.name}</CategoryHeader>
+            return (
+              <React.Fragment>
+                <Items style={{ marginBottom: '1rem' }}>
                   <Item
-                    Icon={PeopleIcon}
-                    path={teamOverviewUrl(team.id)}
-                    name="Team Overview"
+                    Icon={TimeIcon}
+                    path="/dashboard/recent"
+                    name="Recent"
                   />
-                  <SandboxesItem teamId={team.id} />
+
+                  <SandboxesItem
+                    currentPath={path}
+                    currentTeamId={currentTeamId}
+                    openByDefault
+                  />
+                  <TrashItem />
                 </Items>
-              </div>
-            ));
+
+                <Query query={TEAMS_QUERY}>
+                  {({ loading, data, error }) => {
+                    if (loading) {
+                      return null;
+                    }
+
+                    if (error) {
+                      return null;
+                    }
+
+                    const teams = data.me.teams;
+
+                    return teams.map(team => (
+                      <div key={team.id}>
+                        <Items>
+                          <CategoryHeader>{team.name}</CategoryHeader>
+                          <Item
+                            Icon={PeopleIcon}
+                            path={teamOverviewUrl(team.id)}
+                            name="Team Overview"
+                          />
+                          <SandboxesItem
+                            currentPath={path}
+                            currentTeamId={currentTeamId}
+                            teamId={team.id}
+                          />
+                        </Items>
+                      </div>
+                    ));
+                  }}
+                </Query>
+              </React.Fragment>
+            );
           }}
-        </Query>
+        </Route>
 
         <div style={{ margin: '2rem', fontSize: '.875rem' }}>
           <Button
