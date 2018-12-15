@@ -5,6 +5,8 @@ import Media from 'react-media';
 
 import { Spring } from 'react-spring';
 
+import track from 'common/utils/analytics';
+
 import { Container, SandboxName, SandboxInput, FolderName } from './elements';
 
 class CollectionInfo extends React.Component {
@@ -27,6 +29,8 @@ class CollectionInfo extends React.Component {
   submitNameChange = e => {
     e.preventDefault();
     this.updateSandboxInfo();
+
+    track('Change Sandbox Name From Header');
   };
 
   handleNameClick = () => {
