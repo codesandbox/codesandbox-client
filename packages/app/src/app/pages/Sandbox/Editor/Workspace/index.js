@@ -40,7 +40,7 @@ const idToItem = {
   more: More,
 };
 
-function Workspace({ store }) {
+function Workspace({ store, signals }) {
   const sandbox = store.editor.currentSandbox;
   const preferences = store.preferences;
 
@@ -73,6 +73,17 @@ function Workspace({ store }) {
             <VersionContainer className="codesandbox-version">
               {VERSION}
             </VersionContainer>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                signals.sendFeedback({
+                  sandboxId: sandbox.id,
+                  feedback: 'aaa',
+                });
+              }}
+            >
+              <input placeholder="Feedback" />
+            </form>
           </ContactContainer>
           <SSEDownNotice />
           <ConnectionNotice />

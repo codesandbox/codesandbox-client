@@ -1,10 +1,36 @@
 import axios from 'axios';
+import Airtable from 'airtable';
 
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 import track, { identify } from 'common/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
+
+const base = new Airtable({ apiKey: 'keyJugfwdJzOyL7Aa' }).base(
+  'appzdQFPct2p9gFZi'
+);
+
+export function sendFeedback({ state, path, props }) {
+  const { feedback, emoji, sandboxId } = props;
+  const { username, email } = state.get('user');
+  base('feedback').create(
+    {
+      feedback,
+      emoji,
+      sandboxId,
+      username,
+      email,
+    },
+    err => {
+      if (err) {
+        console.error(err);
+        return path.error();
+      }
+      return path.success();
+    }
+  );
+}
 
 export function getSandbox({ props, api, path }) {
   return api
