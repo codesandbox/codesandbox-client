@@ -438,17 +438,31 @@ export const signInCli = [
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
 
-  set(state`editor.isLoading`, true),
-  set(state`editor.notFound`, false),
-  // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
-  // can mark real changed modules as unchanged
-  set(state`editor.changedModuleShortids`, []),
-
-  actions.getSandbox,
+  when(
+    state`editor.sandboxes.${props`id`}`,
+    sandbox => sandbox && !sandbox.team
+  ),
   {
-    success: [joinLiveSessionIfTeam, ensurePackageJSON],
-    notFound: set(state`editor.notFound`, true),
-    error: set(state`editor.error`, props`error.message`),
+    true: [
+      set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
+      setSandbox,
+
+      refetchSandboxInfo,
+    ],
+    false: [
+      set(state`editor.isLoading`, true),
+      set(state`editor.notFound`, false),
+      // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
+      // can mark real changed modules as unchanged
+      set(state`editor.changedModuleShortids`, []),
+
+      actions.getSandbox,
+      {
+        success: [joinLiveSessionIfTeam, ensurePackageJSON],
+        notFound: set(state`editor.notFound`, true),
+        error: set(state`editor.error`, props`error.message`),
+      },
+    ],
   },
 
   set(state`editor.isLoading`, false),
