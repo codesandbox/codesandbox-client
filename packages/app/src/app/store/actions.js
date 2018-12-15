@@ -9,7 +9,7 @@ import pushToAirtable from './utils/pushToAirtable';
 
 export function sendFeedback({ state, path, props }) {
   const { feedback, emoji, sandboxId } = props;
-  const { username, email } = state.get('user');
+  const { username, email } = state.get('user') || {};
 
   return pushToAirtable({ feedback, emoji, sandboxId, username, email })
     .then(() => path.success())
