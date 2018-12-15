@@ -25,7 +25,7 @@ export const setConnection = set(state`connected`, props`connection`);
 
 export const showAuthenticationError = [];
 
-export const openModal = actions.setModal;
+export const openModal = [actions.setModal];
 
 const whenPackageJSONExists = when(props`sandbox.modules`, modules =>
   modules.find(m => m.directoryShortid == null && m.title === 'package.json')

@@ -1,6 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { basename } from 'path';
+import track from 'common/utils/analytics';
 import Button from 'app/components/Button';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
@@ -13,6 +14,7 @@ import { addSandboxesToFolder } from '../../../Dashboard/queries';
 class MoveSandboxFolderModal extends React.Component {
   state = {
     loading: false,
+    error: undefined,
   };
 
   constructor(props) {
@@ -32,17 +34,23 @@ class MoveSandboxFolderModal extends React.Component {
   };
 
   handleMove = () => {
-    this.setState({ loading: true }, () => {
+    this.setState({ loading: true, error: undefined }, () => {
       addSandboxesToFolder(
         [this.props.store.editor.currentSandbox.id],
         this.state.path,
         this.state.teamId
-      ).then(() => {
-        this.props.signals.refetchSandboxInfo();
+      )
+        .then(() => {
+          this.props.signals.refetchSandboxInfo();
 
-        this.setState({ loading: false });
-        this.props.signals.modalClosed();
-      });
+          this.setState({ loading: false });
+          this.props.signals.modalClosed();
+
+          track('Move Sandbox From Editor');
+        })
+        .catch(e => {
+          this.setState({ error: e.message, loading: false });
+        });
     });
   };
 
@@ -60,6 +68,9 @@ class MoveSandboxFolderModal extends React.Component {
             currentPath={path}
           />
         </Container>
+
+        {this.state.error}
+
         <Block right>
           <CancelButton
             onClick={() => {

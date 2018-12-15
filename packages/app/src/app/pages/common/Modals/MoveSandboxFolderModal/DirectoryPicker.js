@@ -1,14 +1,10 @@
 import React from 'react';
 
 import { Query } from 'react-apollo';
-import Loadable from 'app/utils/Loadable';
+import DirectoryComponent from 'app/pages/Dashboard/Sidebar/SandboxesItem';
+
 import { TEAMS_QUERY } from '../../../Dashboard/queries';
-
 import { TeamContainer, TeamName } from './elements';
-
-const DirectoryComponent = Loadable(() =>
-  import('app/pages/Dashboard/Sidebar/SandboxesItem')
-);
 
 export default ({ onSelect, currentPath, currentTeamId }) => (
   <div css={{ margin: '0 -1rem' }}>
