@@ -1,6 +1,6 @@
 import React from 'react';
 import history from 'app/utils/history';
-import { inject, observer, Observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from 'common/components/Input';
@@ -14,7 +14,7 @@ import Item from './Item';
 import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
 import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
-import { TEAMS_QUERY, PATHED_SANDBOXES_FOLDER_QUERY } from '../queries';
+import { TEAMS_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
   shouldComponentUpdate() {
