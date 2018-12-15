@@ -120,7 +120,7 @@ const Header = ({ store, signals }) => {
 
       {sandbox.owned && (
         <Centered>
-          <CollectionInfo sandbox={sandbox} />
+          <CollectionInfo isLoggedIn={store.isLoggedIn} sandbox={sandbox} />
         </Centered>
       )}
 

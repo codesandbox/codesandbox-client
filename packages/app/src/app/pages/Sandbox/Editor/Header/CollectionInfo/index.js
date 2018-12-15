@@ -73,7 +73,7 @@ class CollectionInfo extends React.Component {
   };
 
   render() {
-    const { sandbox, signals } = this.props;
+    const { sandbox, isLoggedIn, signals } = this.props;
 
     const folderName = sandbox.collection
       ? basename(sandbox.collection.path) ||
@@ -109,15 +109,19 @@ class CollectionInfo extends React.Component {
                       ref={this.initializeWidth}
                       style={{ ...style, overflow: 'hidden' }}
                     >
-                      <FolderName
-                        onClick={() => {
-                          signals.modalOpened({
-                            modal: 'moveSandbox',
-                          });
-                        }}
-                      >
-                        {folderName}
-                      </FolderName>
+                      {isLoggedIn ? (
+                        <FolderName
+                          onClick={() => {
+                            signals.modalOpened({
+                              modal: 'moveSandbox',
+                            });
+                          }}
+                        >
+                          {folderName}
+                        </FolderName>
+                      ) : (
+                        'Anonymous '
+                      )}
                       /{' '}
                     </div>
                   )}
