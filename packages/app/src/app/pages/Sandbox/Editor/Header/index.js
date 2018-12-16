@@ -30,6 +30,7 @@ import CollectionInfo from './CollectionInfo';
 import { Container, Right, Left, Centered } from './elements';
 
 import UpdateFound from './UpdateFound';
+import FeedbackIcon from '../../../common/UserMenu/Menu/FeedbackIcon';
 
 const Header = ({ store, signals }) => {
   const sandbox = store.editor.currentSandbox;
@@ -193,6 +194,18 @@ const Header = ({ store, signals }) => {
             href={dashboardUrl()}
             tooltip="Dashboard"
             Icon={InfoIcon}
+          />
+        )}
+
+        {!store.isLoggedIn && (
+          <Action
+            onClick={() =>
+              signals.modalOpened({
+                modal: 'feedback',
+              })
+            }
+            tooltip="Submit Feedback"
+            Icon={FeedbackIcon}
           />
         )}
 

@@ -23,6 +23,7 @@ import StorageManagementModal from './StorageManagementModal';
 import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
+import FeedbackModal from './FeedbackModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import('./MoveSandboxFolderModal')
@@ -108,6 +109,10 @@ const modals = {
   moveSandbox: {
     Component: MoveSandboxFolderModal,
     width: 350,
+  },
+  feedback: {
+    Component: FeedbackModal,
+    width: 450,
   },
 };
 

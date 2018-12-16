@@ -49,6 +49,9 @@ function UserMenu({ signals, store, small }) {
             }}
             username={user.username}
             curator={user.curatorAt}
+            openFeedback={() => {
+              signals.modalOpened({ modal: 'feedback' });
+            }}
           />
         </HoverMenu>
       )}
