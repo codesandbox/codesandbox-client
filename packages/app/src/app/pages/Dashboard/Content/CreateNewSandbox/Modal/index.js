@@ -93,7 +93,7 @@ export default class Modal extends React.PureComponent {
 
           {rows.map((ts, i) => (
             // eslint-disable-next-line react/no-array-index-key
-            <Templates style={{ fontSize: '.8rem' }} key={i}>
+            <Templates small key={i}>
               {ts.map(t => (
                 <Template
                   small
@@ -123,7 +123,7 @@ export default class Modal extends React.PureComponent {
 
           {serverRows.map((ts, i) => (
             // eslint-disable-next-line react/no-array-index-key
-            <Templates style={{ fontSize: '.8rem' }} key={i}>
+            <Templates small key={i}>
               {ts.map(t => (
                 <Template
                   small
@@ -139,7 +139,7 @@ export default class Modal extends React.PureComponent {
           <Title>Presets</Title>
           {typescriptRows.map((ts, i) => (
             // eslint-disable-next-line react/no-array-index-key
-            <Templates style={{ fontSize: '.8rem' }} key={i}>
+            <Templates small key={i}>
               {ts.map(t => (
                 <Template
                   small
@@ -153,7 +153,7 @@ export default class Modal extends React.PureComponent {
             </Templates>
           ))}
 
-          <ImportChoices style={{ marginTop: '1.5rem' }}>
+          <ImportChoices>
             <ImportChoice
               href="/docs/importing#import-from-github"
               target="_blank"

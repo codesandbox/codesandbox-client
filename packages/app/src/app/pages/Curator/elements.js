@@ -1,5 +1,13 @@
 import styled from 'styled-components';
 import Title from 'app/components/Title';
+import DelayedAnimation from 'app/components/DelayedAnimation';
+
+export const Animation = styled(DelayedAnimation)`
+  text-align: center;
+  margin-top: 2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+`;
 
 export const Heading = styled(Title)`
   margin-top: 3rem;

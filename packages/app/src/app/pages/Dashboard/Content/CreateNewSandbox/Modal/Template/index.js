@@ -22,7 +22,11 @@ export default ({ template, subtitle, width, selectTemplate, small }) => {
       }}
       tabIndex="0"
     >
-      <div style={{ width: '100%' }}>
+      <div
+        css={`
+          width: 100%;
+        `}
+      >
         <Title color={template.color}>{template.niceName}</Title>
         {(!small || subtitle) && (
           <SubTitle>{subtitle || template.name}</SubTitle>

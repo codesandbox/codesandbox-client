@@ -18,6 +18,11 @@ export const Table = styled.table`
 export const StatBody = styled.td`
   width: 2rem;
   text-align: center;
+
+  ${props => props.pointer`
+    padding: 0.55rem 0.5rem;
+    cursor: pointer
+  `};
 `;
 
 export const Body = styled.tbody`
@@ -45,4 +50,15 @@ export const FileRow = styled.tr`
     background-color: ${props => props.theme.primary.clearer(0.9)};
     color: rgba(255, 255, 255, 0.9);
   }
+`;
+
+export const TR = styled.tr`
+  height: 3rem;
+`;
+
+export const Name = styled.td`
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;

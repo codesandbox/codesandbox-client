@@ -68,7 +68,11 @@ class LivePage extends React.Component {
           >
             Sign in required
           </div>
-          <Title style={{ fontSize: '1.25rem' }}>
+          <Title
+            css={`
+              fontsize: 1.25rem;
+            `}
+          >
             You need to sign in to join this session
           </Title>
           <br />
@@ -93,7 +97,11 @@ class LivePage extends React.Component {
             >
               Something went wrong
             </div>
-            <Title style={{ fontSize: '1.25rem' }}>
+            <Title
+              css={`
+                fontsize: 1.25rem;
+              `}
+            >
               It seems like this session doesn{"'"}t exist or has been closed
             </Title>
             <br />

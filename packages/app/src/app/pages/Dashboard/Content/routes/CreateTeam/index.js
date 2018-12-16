@@ -14,6 +14,7 @@ import {
   Overlay,
   PatronInfo,
   QuestionHeader,
+  Releases,
 } from './elements';
 import { CREATE_TEAM_MUTATION, TEAMS_QUERY } from '../../../queries';
 
@@ -42,7 +43,11 @@ export default class CreateTeam extends React.PureComponent {
 
   render() {
     return (
-      <Container style={{ width: 500 }}>
+      <Container
+        css={`
+          width: 500px;
+        `}
+      >
         <HeaderContainer>Create a Team</HeaderContainer>
 
         <Description>
@@ -105,13 +110,14 @@ export default class CreateTeam extends React.PureComponent {
                 <Label>Team Plan</Label>
                 <Plan selected points={FREE_POINTS} name="Free" />
 
-                <ComingSoon style={{ position: 'relative' }}>
+                <ComingSoon>
                   <PatronInfo>
                     <QuestionHeader>
                       What if I{"'"}m a{' '}
                       <a target="_blank" href="/patron">
                         Patron
-                      </a>?
+                      </a>
+                      ?
                     </QuestionHeader>
 
                     <Description>
@@ -127,24 +133,19 @@ export default class CreateTeam extends React.PureComponent {
 
                   <Overlay className="overlay">
                     Coming Soon
-                    <div style={{ fontSize: '1.125rem' }}>
-                      <Button
+                    <div
+                      css={`
+                        fontsize: 1.125rem;
+                      `}
+                    >
+                      <Releases
                         href="https://airtable.com/shrlgLSJWiX8rYqyG"
                         target="_blank"
                         rel="noreferrer noopener"
                         small
-                        style={{
-                          position: 'absolute',
-                          boxSizing: 'border-box',
-
-                          bottom: '2rem',
-                          left: '2rem',
-                          right: '2rem',
-                          width: 'calc(100% - 4rem)',
-                        }}
                       >
                         Let me know when this releases
-                      </Button>
+                      </Releases>
                     </div>
                   </Overlay>
                   <Plan points={PRO_POINTS} name="Pro" />
@@ -152,7 +153,10 @@ export default class CreateTeam extends React.PureComponent {
 
                 <Button
                   disabled={this.state.inputValue === ''}
-                  style={{ float: 'right', marginBottom: '1rem' }}
+                  css={`
+                    float: right;
+                    margin-bottom: 1rem;
+                  `}
                 >
                   Create Team!
                 </Button>

@@ -62,9 +62,17 @@ class Dashboard extends React.Component {
           <SidebarContents />
           <ShowSidebarButton onClick={this.toggleSidebar}>
             {showSidebar ? (
-              <LeftIcon style={{ color: 'white' }} />
+              <LeftIcon
+                css={`
+                  color: white;
+                `}
+              />
             ) : (
-              <RightIcon style={{ color: 'white' }} />
+              <RightIcon
+                css={`
+                  color: white;
+                `}
+              />
             )}
           </ShowSidebarButton>
         </Sidebar>

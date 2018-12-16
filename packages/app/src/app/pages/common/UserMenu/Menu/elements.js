@@ -1,5 +1,10 @@
 import styled from 'styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
+import { Link } from 'react-router-dom';
+
+export const Anchor = styled(Link)`
+  text-decoration: none;
+`;
 
 export const Container = styled.div`
   position: absolute;

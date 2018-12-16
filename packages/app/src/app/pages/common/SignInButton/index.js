@@ -17,7 +17,12 @@ function SignInButton(props) {
       {...props}
     >
       <Row>
-        <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
+        <GithubIcon
+          css={`
+            margin-right: 0.5rem;
+          `}
+        />{' '}
+        Sign in with GitHub
       </Row>
     </Button>
   );

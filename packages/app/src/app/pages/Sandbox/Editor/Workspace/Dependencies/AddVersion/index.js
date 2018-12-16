@@ -4,10 +4,11 @@ import { inject } from 'mobx-react';
 import Button from 'app/components/Button';
 
 import { ButtonContainer } from './elements';
+import Relative from 'common/components/Relative';
 
 function AddVersion({ signals, children }) {
   return (
-    <div style={{ position: 'relative' }}>
+    <Relative>
       <ButtonContainer>
         <Button
           block
@@ -21,7 +22,7 @@ function AddVersion({ signals, children }) {
           {children}
         </Button>
       </ButtonContainer>
-    </div>
+    </Relative>
   );
 }
 

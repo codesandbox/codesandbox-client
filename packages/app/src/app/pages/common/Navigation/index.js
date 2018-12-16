@@ -47,7 +47,12 @@ function Navigation({ signals, store, title, searchNoInput }) {
               {matches =>
                 matches || searchNoInput ? (
                   <Tooltip position="bottom" title="Search All Sandboxes">
-                    <Link style={{ color: 'white' }} to={searchUrl()}>
+                    <Link
+                      css={`
+                        color: white;
+                      `}
+                      to={searchUrl()}
+                    >
                       <SearchIcon height={35} />
                     </Link>
                   </Tooltip>
@@ -60,7 +65,12 @@ function Navigation({ signals, store, title, searchNoInput }) {
 
           <Action>
             <Tooltip position="bottom" title="Explore Sandboxes">
-              <a style={{ color: 'white' }} href={exploreUrl()}>
+              <a
+                css={`
+                  color: white;
+                `}
+                href={exploreUrl()}
+              >
                 <FlameIcon />
               </a>
             </Tooltip>
@@ -87,7 +97,10 @@ function Navigation({ signals, store, title, searchNoInput }) {
             >
               {open => (
                 <Action
-                  style={{ position: 'relative', fontSize: '1.25rem' }}
+                  css={`
+                    position: relative;
+                    font-size: 1.25rem;
+                  `}
                   onClick={open}
                 >
                   <BellIcon height={35} />

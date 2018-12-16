@@ -1,5 +1,11 @@
 import styled, { css } from 'styled-components';
 
+export const CheckBoxWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 0.25rem;
+`;
+
 export const Container = styled.div`
   transition: 0.3s ease border-color;
   border-radius: 4px;

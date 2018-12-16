@@ -203,7 +203,9 @@ const Header = ({ store, signals }) => {
 
         {store.isLoggedIn && (
           <Action
-            style={{ marginTop: 2 }}
+            css={`
+              margin-top: 2px;
+            `}
             href={dashboardUrl()}
             tooltip="Dashboard"
             Icon={InfoIcon}

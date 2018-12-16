@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Button from 'app/components/Button';
 
 export const Label = styled.label`
   display: block;
@@ -54,4 +55,13 @@ export const QuestionHeader = styled.h2`
   margin-top: 0.5rem;
   margin-bottom: 1rem;
   color: white;
+`;
+
+export const Releases = styled(Button)`
+  position: absolute;
+  box-sizing: border-box;
+  bottom: 2rem;
+  left: 2rem;
+  right: 2rem;
+  width: calc(100% - 4rem);
 `;

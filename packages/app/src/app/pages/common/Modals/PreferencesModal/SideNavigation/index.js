@@ -18,7 +18,11 @@ function SideNavigation({ menuItems, itemId, setItem }) {
   return (
     <Container>
       <Title>Preferences</Title>
-      <Relative style={{ height: menuItems.length * ITEM_HEIGHT }}>
+      <Relative
+        css={`
+          height: ${menuItems.length * ITEM_HEIGHT};
+        `}
+      >
         {menuItems.map((item, i) => (
           <Item
             onClick={() => setItem({ itemId: item.id })}
@@ -26,7 +30,12 @@ function SideNavigation({ menuItems, itemId, setItem }) {
             selected={itemId === item.id}
             top={i * ITEM_HEIGHT}
           >
-            <div style={{ height: ITEM_HEIGHT, marginRight: '0.5rem' }}>
+            <div
+              css={`
+                height: ${ITEM_HEIGHT};
+                margin-right: 0.5rem;
+              `}
+            >
               {item.icon}
             </div>
             {item.title}

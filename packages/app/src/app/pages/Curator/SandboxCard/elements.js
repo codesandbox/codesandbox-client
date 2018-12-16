@@ -92,3 +92,19 @@ export const FlexCenter = styled.section`
 export const Pick = styled(Button)`
   width: 100%;
 `;
+
+export const Wrapper = styled.div`
+  padding: 2px;
+  border-radius: 2px;
+  background-color: transparent;
+`;
+
+export const Line = styled.div`
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  width: 2px;
+  height: calc(100% + 34px);
+  background-color: ${props => props.color};
+`;

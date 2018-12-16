@@ -4,6 +4,7 @@ import Button from 'app/components/Button';
 import { WorkspaceInputContainer } from '../../elements';
 
 import { ButtonContainer } from './elements';
+import Relative from 'common/components/Relative';
 
 const initialState = {
   name: '',
@@ -35,7 +36,7 @@ export default class AddVersion extends React.PureComponent {
     const { name } = this.state;
     const isValid = name !== '';
     return (
-      <div style={{ position: 'relative' }}>
+      <Relative>
         <WorkspaceInputContainer>
           <input
             placeholder="https://cdn.com/bootstrap.css"
@@ -49,7 +50,7 @@ export default class AddVersion extends React.PureComponent {
             Add Resource
           </Button>
         </ButtonContainer>
-      </div>
+      </Relative>
     );
   }
 }

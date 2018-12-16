@@ -64,6 +64,11 @@ export const Templates = styled.div`
   display: flex;
   align-items: center;
 
+  ${props =>
+    props.small &&
+    css`
+      font-size: 0.8rem;
+    `};
   @media (max-width: 870px) {
     flex-wrap: wrap;
   }
@@ -71,6 +76,7 @@ export const Templates = styled.div`
 
 export const ImportChoices = styled(Templates)`
   justify-content: space-between;
+  margin-top: 1.5rem;
 `;
 
 export const ImportChoice = styled.a`

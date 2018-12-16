@@ -60,7 +60,11 @@ class User extends React.Component {
           alt={user.username}
           borderColor={`rgba(${r}, ${g}, ${b}, 0.7)`}
         />
-        <div style={{ flex: 1 }}>
+        <div
+          css={`
+            flex: 1;
+          `}
+        >
           <UserName>{user.username}</UserName>
           {type && (
             <Status>

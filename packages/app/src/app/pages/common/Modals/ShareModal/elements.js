@@ -15,6 +15,13 @@ export const PaddedPreference = styled(Preference)`
   }
 `;
 
+export const Container = styled.div`
+  position: relative;
+  height: 2rem;
+  width: 200px;
+  margin-left: -10px;
+`;
+
 export const ShareOptions = styled.div`
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.8);

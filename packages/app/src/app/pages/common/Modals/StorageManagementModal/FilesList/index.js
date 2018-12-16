@@ -4,51 +4,51 @@ import { sortBy } from 'lodash-es';
 import filesize from 'filesize';
 import DeleteFileButton from '../DeleteFileButton';
 import AddFileToSandboxButton from '../AddFileToSandboxButton';
-import { HeaderTitle, Table, StatBody, Body, FileRow } from './elements';
+import {
+  HeaderTitle,
+  Table,
+  StatBody,
+  Body,
+  FileRow,
+  TR,
+  Name,
+} from './elements';
 
 function FilesList({ files, deleteFile, addFileToSandbox }) {
   return (
-    <div css={{ margin: '0 2rem' }}>
+    <div
+      css={`
+        margin: 0 2rem;
+      `}
+    >
       <Table>
         <thead>
-          <tr style={{ height: '3rem' }}>
+          <TR>
             <HeaderTitle>File</HeaderTitle>
             <HeaderTitle>Created</HeaderTitle>
             <HeaderTitle>Size</HeaderTitle>
             <HeaderTitle />
             <HeaderTitle />
-          </tr>
+          </TR>
         </thead>
         <Body>
           {sortBy(files, 'name').map((f, i) => (
             <FileRow index={i} key={f.id}>
-              <td
-                style={{
-                  maxWidth: 100,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-                title={f.name}
-              >
+              <Name title={f.name}>
                 <a target="_blank" rel="noreferrer noopener" href={f.url}>
                   {f.name}
                 </a>
-              </td>
+              </Name>
               <td>{moment(f.insertedAt).format('ll')}</td>
               <td>{filesize(f.objectSize)}</td>
-              <StatBody
-                style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
-              >
+              <StatBody pointer>
                 <AddFileToSandboxButton
                   url={f.url}
                   name={f.name}
                   onAddFileToSandbox={addFileToSandbox}
                 />
               </StatBody>
-              <StatBody
-                style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
-              >
+              <StatBody pointer>
                 <DeleteFileButton id={f.id} onDelete={deleteFile} />
               </StatBody>
             </FileRow>

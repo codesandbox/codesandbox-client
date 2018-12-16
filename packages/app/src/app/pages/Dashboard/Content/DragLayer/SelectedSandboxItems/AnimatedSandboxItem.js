@@ -55,29 +55,28 @@ export default class AnimatedSandboxItem extends React.Component<Props> {
       >
         {({ x: newX, y: newY, scale: newScale, shadow: newShadow }) => (
           <animated.div
-            style={{
-              position: 'absolute',
-              willChange: 'transform',
-              boxShadow:
-                this.props.i === 0 || this.props.isLast
-                  ? newShadow.interpolate(
-                      s => `0 ${s}px ${s * 2}px rgba(0, 0, 0, 0.3)`
-                    )
-                  : 'inherit',
-              transform: interpolate(
+            css={`
+              position: absolute;
+              will-change: transform;
+              box-shadow: ${this.props.i === 0 || this.props.isLast
+                ? newShadow.interpolate(
+                    s => `0 ${s}px ${s * 2}px rgba(0, 0, 0, 0.3)`
+                  )
+                : 'inherit'};
+              transform: ${interpolate(
                 [newX, newY, newScale],
                 (xx, yy, zz) =>
                   `translate3d(${xx}px, ${yy}px, 0px) scale3d(${zz}, ${zz}, ${zz})`
-              ),
-              zIndex: i === 0 ? 20 : 10,
-            }}
+              )};
+              z-index: ${i === 0 ? 20 : 10};
+            `}
           >
             <Container i={i} isLast={isLast}>
               <SandboxImageContainer>
                 <SandboxImage
-                  style={{
-                    backgroundImage: `url(${`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`})`,
-                  }}
+                  css={`
+                    background-image: ${`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`})`};
+                  `}
                 />
               </SandboxImageContainer>
               <SandboxInfo>

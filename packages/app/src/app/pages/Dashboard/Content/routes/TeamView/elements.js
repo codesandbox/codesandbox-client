@@ -2,6 +2,13 @@ import styled from 'styled-components';
 import CrossIcon from 'react-icons/lib/md/clear';
 import EditIcon from 'react-icons/lib/go/pencil';
 
+export const Owner = styled.div`
+  float: right;
+  font-size: 0.875rem;
+  font-weight: 400;
+  font-style: italic;
+`;
+
 export const TeamContainer = styled.div`
   display: flex;
   width: 100%;

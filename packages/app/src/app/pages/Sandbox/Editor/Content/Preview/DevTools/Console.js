@@ -21,7 +21,11 @@ export default ({ alignRight, alignBottom }) => {
     },
   ];
   return (
-    <div style={{ height: '100%' }}>
+    <div
+      css={`
+        height: 100%;
+      `}
+    >
       <Navigator title="Console" actions={actions} />
       <Console.Content />
     </div>

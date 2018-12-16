@@ -19,10 +19,18 @@ export default ({ color, name, style, niceName, selected, toggleTemplate }) => {
       <label
         htmlFor={checkBoxName}
         type="checkbox"
-        style={{ display: 'none' }}
+        css={`
+          display: none;
+        `}
       />
       <CheckBox id={checkBoxName} color={color} selected={selected} />
-      <OptionName style={{ fontWeight: 500 }}>{niceName}</OptionName>
+      <OptionName
+        css={`
+          font-weight: 500;
+        `}
+      >
+        {niceName}
+      </OptionName>
     </Container>
   );
 };

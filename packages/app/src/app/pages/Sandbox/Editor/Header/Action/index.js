@@ -1,4 +1,5 @@
 import React from 'react';
+import { css } from 'styled-components';
 
 import MoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
 
@@ -10,6 +11,10 @@ import {
   ActionTooltip,
   IconContainer,
 } from './elements';
+
+const InfoStyle = css`
+  font-size: 1.1rem;
+`;
 
 function ActionComponent({
   onClick,
@@ -40,7 +45,13 @@ function ActionComponent({
           {title !== undefined && (
             <Title unresponsive={unresponsive}>{title}</Title>
           )}
-          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          {moreInfo && (
+            <MoreInfoIcon
+              css={`
+                ${InfoStyle};
+              `}
+            />
+          )}
         </IconContainer>
         {children}
       </ActionTooltip>
@@ -54,7 +65,13 @@ function ActionComponent({
           {title !== undefined && (
             <Title unresponsive={unresponsive}>{title}</Title>
           )}
-          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          {moreInfo && (
+            <MoreInfoIcon
+              css={`
+                ${InfoStyle};
+              `}
+            />
+          )}
         </IconContainer>
         {children}
       </Action>
@@ -70,7 +87,13 @@ function ActionComponent({
             {title !== undefined && (
               <Title unresponsive={unresponsive}>{title}</Title>
             )}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+            {moreInfo && (
+              <MoreInfoIcon
+                css={`
+                  ${InfoStyle};
+                `}
+              />
+            )}
           </IconContainer>
         </ActionTooltip>
         {children}
@@ -87,7 +110,13 @@ function ActionComponent({
             {title !== undefined && (
               <Title unresponsive={unresponsive}>{title}</Title>
             )}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+            {moreInfo && (
+              <MoreInfoIcon
+                css={`
+                  ${InfoStyle};
+                `}
+              />
+            )}
           </IconContainer>
         </ActionTooltip>
         {children}
@@ -102,7 +131,13 @@ function ActionComponent({
         {title !== undefined && (
           <Title unresponsive={unresponsive}>{title}</Title>
         )}
-        {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+        {moreInfo && (
+          <MoreInfoIcon
+            css={`
+              ${InfoStyle};
+            `}
+          />
+        )}
       </IconContainer>
       {children}
     </ActionLink>

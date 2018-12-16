@@ -50,12 +50,12 @@ const Server = ({ store }) => {
         <SubTitle>Run Scripts</SubTitle>
         <Margin top={0.5}>
           <WorkspaceInputContainer
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              pointerEvents: disconnected ? 'none' : 'initial',
-              opacity: disconnected ? 0.5 : 1,
-            }}
+            css={`
+              display: flex;
+              flex-direction: column;
+              pointer-events: ${disconnected ? 'none' : 'initial'};
+              opacity: ${disconnected ? 0.5 : 1};
+            `}
           >
             <Tasks package={parsed} />
           </WorkspaceInputContainer>
@@ -77,11 +77,11 @@ const Server = ({ store }) => {
         <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
         <WorkspaceInputContainer>
           <Button
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            css={`
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
             small
             block
             disabled={disconnected}
@@ -90,7 +90,10 @@ const Server = ({ store }) => {
             }
           >
             <PowerIcon
-              style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+              css={`
+                font-size: 1.125em;
+                margin-right: 0.25rem;
+              `}
             />{' '}
             Restart Sandbox
           </Button>

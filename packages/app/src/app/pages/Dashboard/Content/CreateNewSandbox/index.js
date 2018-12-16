@@ -14,6 +14,8 @@ import {
   AnimatedModalContainer,
   ContainerLink,
   DarkBG,
+  Create,
+  Ref,
 } from './elements';
 
 import Modal from './Modal';
@@ -202,29 +204,13 @@ class CreateNewSandbox extends React.PureComponent {
             {mostUsedSandboxComponent}
           </ButtonsContainer>
           <Portal>
-            <div
-              style={{
-                opacity: 0,
-                zIndex: 0,
-                pointerEvents: 'none',
-                position: 'fixed',
-                top: '25vh',
-                bottom: 0,
-                right: 0,
-                left: 0,
-
-                margin: '0 auto 20vh',
-                height: 'auto',
-                width: 950,
-              }}
-            >
-              <div
+            <Create>
+              <Ref
                 ref={node => {
                   this.toRef = node;
                 }}
-                style={{ width: '100%', height: '100%' }}
               />
-            </div>
+            </Create>
           </Portal>
         </div>
       </React.Fragment>

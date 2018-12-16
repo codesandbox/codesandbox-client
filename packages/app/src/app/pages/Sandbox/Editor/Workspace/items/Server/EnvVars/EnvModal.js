@@ -74,12 +74,20 @@ export default class EnvModal extends React.PureComponent {
             <Input
               placeholder="Value"
               onChange={this.onValueChange}
-              style={{ marginLeft: 0, marginRight: 0, width: '100%' }}
+              css={`
+                margin-left: 0px;
+                margin-right: 0px;
+                width: 100%;
+              `}
               value={this.state.value}
             />
           </InputContainer>
         </div>
-        <div style={{ display: 'flex' }}>
+        <div
+          css={`
+            display: 'flex';
+          `}
+        >
           {this.props.onCancel && (
             <Button
               onClick={this.onCancel}

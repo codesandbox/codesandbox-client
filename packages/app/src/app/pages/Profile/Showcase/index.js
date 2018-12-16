@@ -53,15 +53,28 @@ class Showcase extends React.Component {
             </Button>
           )}
         </Margin>
-        <Margin top={2} style={{ width: '100%' }}>
+        <Margin
+          top={2}
+          css={`
+            width: 100%;
+          `}
+        >
           <Column alignItems="initial">
-            <div style={{ flex: 2 }}>
+            <div
+              css={`
+                flex: 2;
+              `}
+            >
               <ShowcasePreview
                 sandbox={sandbox}
                 settings={this.props.store.preferences.settings}
               />
             </div>
-            <div style={{ flex: 1 }}>
+            <div
+              css={`
+                flex: 1;
+              `}
+            >
               <SandboxInfo sandbox={sandbox} />
             </div>
           </Column>

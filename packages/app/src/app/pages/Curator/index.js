@@ -14,10 +14,15 @@ import SubTitle from 'app/components/SubTitle';
 import Button from 'app/components/Button';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
-import DelayedAnimation from 'app/components/DelayedAnimation';
 import SandboxCard from './SandboxCard';
 
-import { Container, Buttons, Heading, PickerWrapper } from './elements';
+import {
+  Container,
+  Buttons,
+  Heading,
+  PickerWrapper,
+  Animation,
+} from './elements';
 
 class Curator extends React.Component {
   state = { showPicker: false, selectedDate: null };
@@ -115,16 +120,7 @@ class Curator extends React.Component {
               ))}
             </Container>
           ) : (
-            <DelayedAnimation
-              style={{
-                textAlign: 'center',
-                marginTop: '2rem',
-                fontWeight: 600,
-                color: 'rgba(255, 255, 255, 0.5)',
-              }}
-            >
-              Fetching Sandboxes...
-            </DelayedAnimation>
+            <Animation>Fetching Sandboxes...</Animation>
           )}
         </Margin>
       </MaxWidth>

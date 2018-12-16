@@ -7,6 +7,25 @@ const fadeIn = keyframes`
   100% { opacity: 0.5; }
 `;
 
+export const Ref = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+
+export const Create = styled.div`
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+  position: fixed;
+  top: 25vh;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  margin: 0 auto 20vh;
+  height: auto;
+  width: 950px;
+`;
+
 export const DarkBG = styled.div`
   transition: 0.3s ease opacity;
 

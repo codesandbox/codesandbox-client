@@ -10,6 +10,7 @@ import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
 import { EntryContainer, Overlay, Opener } from './elements';
+import Relative from 'common/components/Relative';
 
 const readDataURL = imageFile =>
   new Promise(resolve => {
@@ -224,7 +225,7 @@ class DirectoryEntry extends React.Component {
       : currentSandbox.directories.find(m => m.id === id).title;
 
     return connectDropTarget(
-      <div style={{ position: 'relative' }}>
+      <Relative>
         <Overlay isOver={isOver} />
         {!root && (
           <EntryContainer>
@@ -344,7 +345,7 @@ class DirectoryEntry extends React.Component {
             />
           )}
         </Opener>
-      </div>
+      </Relative>
     );
   }
 }

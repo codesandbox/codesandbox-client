@@ -7,6 +7,16 @@ import MoreInfoIcon from './KebabIcon';
 
 export const PADDING = 32;
 
+export const Line = styled.div`
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  width: 2px;
+  height: 100%;
+  background-color: ${props => props.color};
+`;
+
 export const Container = styled.div`
   ${fadeIn(0)};
   background-color: ${props => props.theme.background};

@@ -24,6 +24,7 @@ import {
   Column,
   ButtonContainer,
   ButtonName,
+  Container,
 } from './elements';
 
 const BUTTON_URL = `${
@@ -308,14 +309,7 @@ class ShareView extends React.Component {
             </Inputs>
             <div>
               <h4>Default view</h4>
-              <div
-                style={{
-                  position: 'relative',
-                  height: '2rem',
-                  width: '200px',
-                  marginLeft: '-10px',
-                }}
-              >
+              <Container>
                 <ModeIcons
                   showEditor={showEditor}
                   showPreview={showPreview}
@@ -323,7 +317,7 @@ class ShareView extends React.Component {
                   setPreviewView={this.setPreviewView}
                   setMixedView={this.setMixedView}
                 />
-              </div>
+              </Container>
             </div>
             <div>
               <h4>Default module to show</h4>
@@ -366,7 +360,9 @@ class ShareView extends React.Component {
                   <Button
                     onClick={this.toggleQRCode}
                     small
-                    style={{ width: '100%' }}
+                    css={`
+                      width: 100%;
+                    `}
                   >
                     {showQRCode ? 'Hide' : 'Show'} QR Code
                   </Button>

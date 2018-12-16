@@ -17,6 +17,10 @@ const ErrorMessage = styled.div`
   margin-bottom: 0.5rem;
 `;
 
+const Form = styled.form`
+  display: flex;
+`;
+
 const AddTeamMember = ({ teamId, signals }) => (
   <Mutation mutation={INVITE_TO_TEAM}>
     {(mutate, { loading, error }) => {
@@ -61,10 +65,7 @@ const AddTeamMember = ({ teamId, signals }) => (
       return (
         <React.Fragment>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-          <form
-            style={{ display: 'flex' }}
-            onSubmit={loading ? undefined : submit}
-          >
+          <Form onSubmit={loading ? undefined : submit}>
             <Input
               ref={node => {
                 input = node;
@@ -72,10 +73,16 @@ const AddTeamMember = ({ teamId, signals }) => (
               placeholder="Add member by username"
               block
             />
-            <Button disabled={loading} style={{ width: 200 }} small>
+            <Button
+              disabled={loading}
+              css={`
+                width: 200px;
+              `}
+              small
+            >
               {loading ? 'Adding Member...' : 'Add Member'}
             </Button>
-          </form>
+          </Form>
         </React.Fragment>
       );
     }}

@@ -80,7 +80,13 @@ class KeyMapping extends React.Component {
     return (
       <VSCodePlaceholder>
         <div>
-          <Title style={{ marginBottom: 1 }}>Key Bindings</Title>
+          <Title
+            css={`
+              margin-bottom: 1px;
+            `}
+          >
+            Key Bindings
+          </Title>
           <SubDescription>
             Record CodeSandbox specific keybindings here. You can cancel a
             recording by pressing ESCAPE, you can confirm by pressing ENTER and

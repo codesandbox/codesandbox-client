@@ -10,7 +10,11 @@ import { ProfileImage, Name, Username, IconWrapper } from './elements';
 
 function ProfileInfo({ username, subscriptionSince, name, avatarUrl }) {
   return (
-    <Row style={{ flex: 1 }}>
+    <Row
+      css={`
+        flex: 1;
+      `}
+    >
       <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
       <Margin bottom={3}>
         <Column justifyContent="space-between">

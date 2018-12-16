@@ -12,3 +12,8 @@ export const CenteredText = styled.div`
     margin-right: 0.25rem;
   }
 `;
+
+export const Count = styled.div`
+  margin-left: 0.5em;
+  font-weight: 300;
+`;

@@ -31,7 +31,13 @@ class PaymentInfo extends React.Component {
           brand={paymentDetails.brand}
         />
 
-        <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
+        <Subheading
+          css={`
+            margin-top: 2rem;
+          `}
+        >
+          Update card info
+        </Subheading>
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."

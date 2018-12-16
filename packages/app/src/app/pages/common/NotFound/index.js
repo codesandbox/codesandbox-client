@@ -15,10 +15,24 @@ function NotFound({ store }) {
       <Title>404</Title>
       <SubTitle>We could not find the page you{"'"}re looking for.</SubTitle>
       <Buttons>
-        <Button small block style={{ margin: '.5rem' }} to={newSandboxWizard()}>
+        <Button
+          small
+          block
+          css={`
+            margin: 0.5rem;
+          `}
+          to={newSandboxWizard()}
+        >
           Create Sandbox
         </Button>
-        <Button small block style={{ margin: '.5rem' }} href="/">
+        <Button
+          small
+          block
+          css={`
+            margin: 0.5rem;
+          `}
+          href="/"
+        >
           {hasLogIn ? 'Dashboard' : 'Homepage'}
         </Button>
       </Buttons>

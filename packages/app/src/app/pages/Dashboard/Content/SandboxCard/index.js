@@ -29,6 +29,7 @@ import {
   PrivacyIconContainer,
   SandboxTitle,
   KebabIcon,
+  Line,
 } from './elements';
 
 type Props = {
@@ -334,9 +335,9 @@ class SandboxItem extends React.PureComponent<Props> {
     if (this.props.removedAt) {
       return (
         <TrashIcon
-          style={{
-            fontSize: '3rem',
-          }}
+          css={`
+            font-size: 3rem;
+          `}
         />
       );
     }
@@ -344,9 +345,9 @@ class SandboxItem extends React.PureComponent<Props> {
     if (this.props.privacy === 2) {
       return (
         <Private
-          style={{
-            fontSize: '3rem',
-          }}
+          css={`
+            font-size: 3rem;
+          `}
         />
       );
     }
@@ -409,7 +410,9 @@ class SandboxItem extends React.PureComponent<Props> {
               }}
             >
               <Container
-                style={{ outline: 'none' }}
+                css={`
+                  outline: none;
+                `}
                 onMouseDown={this.handleMouseDown}
                 onContextMenu={e => {
                   onContextMenu(e);
@@ -430,25 +433,19 @@ class SandboxItem extends React.PureComponent<Props> {
 
                   {this.hasScreenshot() && (
                     <SandboxImage
-                      style={{
-                        backgroundImage: `url(${screenshotUrl})`,
-                      }}
+                      css={`
+                        background-image: ${`url(${screenshotUrl})`};
+                      `}
                     />
                   )}
                 </SandboxImageContainer>
                 <SandboxInfo>
+                  <Line color={templateInfo.color()} />
                   <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      bottom: 0,
-                      left: 0,
-                      width: 2,
-                      height: '100%',
-                      backgroundColor: templateInfo.color(),
-                    }}
-                  />
-                  <div style={{ flex: 1 }}>
+                    css={`
+                      flex: 1;
+                    `}
+                  >
                     <div>
                       {this.state.renamingSandbox ? (
                         <Mutation mutation={RENAME_SANDBOX_MUTATION}>

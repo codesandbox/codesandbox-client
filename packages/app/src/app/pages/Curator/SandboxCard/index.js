@@ -20,6 +20,8 @@ import {
   Details,
   FlexCenter,
   Pick,
+  Wrapper,
+  Line,
 } from './elements';
 
 type Props = {
@@ -115,14 +117,12 @@ class SandboxItem extends React.Component<Props> {
     const templateInfo = getTemplate(template);
 
     return (
-      <div
-        style={{
-          padding: 2,
-          borderRadius: 2,
-          backgroundColor: 'transparent',
-        }}
-      >
-        <Container style={{ outline: 'none' }}>
+      <Wrapper>
+        <Container
+          css={`
+            outline: none;
+          `}
+        >
           <SandboxImageContainer
             role="button"
             tabIndex={0}
@@ -132,25 +132,19 @@ class SandboxItem extends React.Component<Props> {
 
             {this.hasScreenshot() && (
               <SandboxImage
-                style={{
-                  backgroundImage: `url(${screenshotUrl})`,
-                }}
+                css={`
+                  background-image: url(${screenshotUrl});
+                `}
               />
             )}
           </SandboxImageContainer>
           <SandboxInfo>
+            <Line color={templateInfo.color()} />
             <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                left: 0,
-                width: 2,
-                height: 'calc(100% + 34px)',
-                backgroundColor: templateInfo.color(),
-              }}
-            />
-            <div style={{ flex: 1 }}>
+              css={`
+                flex: 1;
+              `}
+            >
               <div role="button" tabIndex={0} onClick={this.openSandbox}>
                 <SandboxTitle>{title || id}</SandboxTitle>
                 {description}
@@ -171,7 +165,11 @@ class SandboxItem extends React.Component<Props> {
                   tabIndex={0}
                   onClick={this.openSandbox}
                 >
-                  <EyeIcon style={{ marginRight: '0.5rem' }} />
+                  <EyeIcon
+                    css={`
+                      margin-right: 0.5rem;
+                    `}
+                  />
                   {viewCount}
                 </FlexCenter>
                 {git ? (
@@ -181,7 +179,11 @@ class SandboxItem extends React.Component<Props> {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <GithubIcon style={{ marginRight: '0.5rem' }} />
+                      <GithubIcon
+                        css={`
+                          margin-right: 0.5rem;
+                        `}
+                      />
                     </a>
                   </FlexCenter>
                 ) : null}
@@ -192,7 +194,7 @@ class SandboxItem extends React.Component<Props> {
             {!picks.length ? '✨ Pick Sandbox' : '✨ Pick Sandbox again'}
           </Pick>
         </Container>
-      </div>
+      </Wrapper>
     );
   }
 }

@@ -7,7 +7,7 @@ import { dashboardUrl } from 'common/utils/url-generator';
 
 import { REMOVE_FROM_TEAM, LEAVE_TEAM } from '../../../../queries';
 
-import { StyledCrossIcon } from '../elements';
+import { StyledCrossIcon, Owner } from '../elements';
 
 export default ({
   creatorId,
@@ -18,18 +18,7 @@ export default ({
   name,
 }) => {
   if (creatorId === userId && totalMemberSize > 1) {
-    return (
-      <div
-        style={{
-          float: 'right',
-          fontSize: '.875rem',
-          fontWeight: 400,
-          fontStyle: 'italic',
-        }}
-      >
-        Owner
-      </div>
-    );
+    return <Owner>Owner</Owner>;
   }
 
   const isCreator = currentUserId === creatorId;
@@ -39,9 +28,9 @@ export default ({
     return (
       <Tooltip
         title={isOwnUser ? 'Leave the team' : `Remove '${name}' from the team`}
-        style={{
-          fontSize: '1rem',
-        }}
+        css={`
+          font-size: 1rem;
+        `}
       >
         <Mutation
           variables={isOwnUser ? { teamId } : { teamId, userId }}
@@ -61,10 +50,10 @@ export default ({
         >
           {(mutate, { loading }) => (
             <StyledCrossIcon
-              style={{
-                opacity: loading ? 0.5 : 1,
-                userSelect: loading ? 'none' : 'initial',
-              }}
+              css={`
+                opacity: ${loading ? 0.5 : 1};
+                user-select: ${loading ? 'none' : 'initial'};
+              `}
               onClick={() => {
                 let confirmation = true;
                 if (isOwnUser && isCreator) {

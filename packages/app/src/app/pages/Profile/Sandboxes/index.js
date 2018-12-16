@@ -102,7 +102,9 @@ class Sandboxes extends React.Component {
           <div>
             {page > 1 && (
               <Button
-                style={{ margin: '0 0.5rem' }}
+                css={`
+                  margin: 0 0.5rem;
+                `}
                 small
                 to={`${baseUrl}/${page - 1}`}
               >
@@ -111,7 +113,9 @@ class Sandboxes extends React.Component {
             )}
             {this.getLastPage() !== page && (
               <Button
-                style={{ margin: '0 0.5rem' }}
+                css={`
+                  margin: 0 0.5rem;
+                `}
                 small
                 to={`${baseUrl}/${page + 1}`}
               >

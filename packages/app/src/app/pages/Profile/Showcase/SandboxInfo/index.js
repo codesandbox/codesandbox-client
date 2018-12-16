@@ -23,7 +23,11 @@ function SandboxInfo({ sandbox }) {
         </Title>
       </Row>
       <Row alignItems="flex-start">
-        <div style={{ flex: 6 }}>
+        <div
+          css={`
+            flex: 6;
+          `}
+        >
           <Description>{sandbox.description}</Description>
         </div>
         <Stats>
