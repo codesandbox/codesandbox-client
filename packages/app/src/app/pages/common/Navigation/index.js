@@ -58,13 +58,6 @@ function Navigation({ signals, store, title, searchNoInput }) {
               }
             </Media>
           </Action>
-          <Action>
-            <Tooltip position="bottom" title="Documentation">
-              <a style={{ color: 'white' }} href="/docs">
-                <BookIcon height={35} />
-              </a>
-            </Tooltip>
-          </Action>
           {!isPatron && (
             <Action>
               <Tooltip position="bottom" title="Support CodeSandbox">
@@ -87,16 +80,6 @@ function Navigation({ signals, store, title, searchNoInput }) {
               <PlusIcon height={35} />
             </Tooltip>
           </Action>
-
-          {user && (
-            <Action style={{ fontSize: '1.125rem' }}>
-              <Tooltip position="bottom" title="Dashboard">
-                <Link style={{ color: 'white' }} to={dashboardUrl()}>
-                  <InfoIcon height={35} />
-                </Link>
-              </Tooltip>
-            </Action>
-          )}
 
           {user && (
             <OverlayComponent
