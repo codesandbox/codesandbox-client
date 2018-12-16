@@ -3900,9 +3900,18 @@ babel-plugin-remove-graphql-queries@^2.5.2:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-remove-graphql-queries/-/babel-plugin-remove-graphql-queries-2.5.2.tgz#7e1c11f381c5c94ff3dec6ca42ee06d1df396175"
 
-"babel-plugin-styled-components@>= 1", babel-plugin-styled-components@^1.9.2:
+"babel-plugin-styled-components@>= 1":
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-styled-components/-/babel-plugin-styled-components-1.9.2.tgz#0e6a6587454dcb1c9a362a8fd31fc0b075ccd260"
+  dependencies:
+    "@babel/helper-annotate-as-pure" "^7.0.0"
+    babel-plugin-syntax-jsx "^6.18.0"
+    lodash "^4.17.10"
+
+babel-plugin-styled-components@^1.9.4:
+  version "1.9.4"
+  resolved "https://registry.yarnpkg.com/babel-plugin-styled-components/-/babel-plugin-styled-components-1.9.4.tgz#5f2c34d31237c6ee1e86453cc5fa488b97136669"
+  integrity sha512-FIACAvgJsUasYA+CdhPMWUIXWCdUUirz7fL9FGQYNNuOls+bs9OUWWHYVM2W9gjVoS2TXdEMqcOVVyG3Hagd/g==
   dependencies:
     "@babel/helper-annotate-as-pure" "^7.0.0"
     babel-plugin-syntax-jsx "^6.18.0"

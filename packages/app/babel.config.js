@@ -16,6 +16,7 @@ module.exports = {
         'babel-plugin-lodash',
         'babel-plugin-system-import-transformer',
         'babel-plugin-macros',
+        'babel-plugin-styled-components',
       ],
     },
   },

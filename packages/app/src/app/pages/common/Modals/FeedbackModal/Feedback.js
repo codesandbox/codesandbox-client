@@ -80,14 +80,22 @@ class Feedback extends React.Component {
     return (
       <form onSubmit={this.onSubmit}>
         <AutosizeTextArea
-          css={{ width: '100%' }}
+          css={`
+            width: 100%;
+          `}
           value={feedback}
           onChange={this.onChange}
           placeholder="What are your thoughts?"
           minRows={3}
         />
 
-        <Margin top={0.5} css={{ display: 'flex', alignItems: 'center' }}>
+        <Margin
+          top={0.5}
+          css={`
+            display: flex;
+            align-items: center;
+          `}
+        >
           <EmojiButton
             type="button"
             active={emoji === 'happy'}
@@ -108,11 +116,17 @@ class Feedback extends React.Component {
             </span>
           </EmojiButton>
 
-          <div css={{ flex: 1 }}>
+          <div
+            css={`
+              flex: 1;
+            `}
+          >
             <Button
               disabled={this.state.loading}
               small
-              css={{ float: 'right' }}
+              css={`
+                float: right;
+              `}
             >
               {this.state.loading ? 'Sending...' : 'Submit'}
             </Button>
