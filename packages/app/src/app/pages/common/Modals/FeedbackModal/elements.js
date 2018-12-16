@@ -17,6 +17,12 @@ export const EmojiButton = styled.button`
 
   cursor: pointer;
 
+  span {
+    display: inline;
+    line-height: initial;
+    width: 15px;
+  }
+
   &:hover {
     border: 2px solid rgba(255, 255, 255, 0.2);
     background-color: ${props => props.theme.secondary};
