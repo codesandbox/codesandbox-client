@@ -39,6 +39,8 @@ export const Item = styled.div`
 
 export const Icon = styled.span`
   margin-right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
 `;
 
 export const Separator = styled.hr`

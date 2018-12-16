@@ -5,16 +5,6 @@ import track, { identify } from 'common/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
-import pushToAirtable from './utils/pushToAirtable';
-
-export function sendFeedback({ state, path, props }) {
-  const { feedback, emoji, sandboxId } = props;
-  const { username, email } = state.get('user') || {};
-
-  return pushToAirtable({ feedback, emoji, sandboxId, username, email })
-    .then(() => path.success())
-    .catch(path.error());
-}
 
 export function getSandbox({ props, api, path }) {
   return api

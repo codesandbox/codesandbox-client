@@ -74,7 +74,6 @@ function Workspace({ store }) {
             <VersionContainer className="codesandbox-version">
               {VERSION}
             </VersionContainer>
-            <Feedback id={sandbox.id} />
           </ContactContainer>
           <SSEDownNotice />
           <ConnectionNotice />

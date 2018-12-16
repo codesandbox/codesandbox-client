@@ -16,12 +16,14 @@ import PatronBadge from 'common/utils/badges/PatronBadge';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 
 import { Container, Item, Icon, Separator } from './elements';
+import FeedbackIcon from './FeedbackIcon';
 
 function Menu({
   username,
   curator,
   openPreferences,
   openStorageManagement,
+  openFeedback,
   signOut,
 }) {
   return (
@@ -51,8 +53,8 @@ function Menu({
 
       {curator && (
         <Item as={Link} to={curatorUrl()}>
-          <Icon style={{ marginRight: 7 }}>
-            <span role="img" aria-label="Star">
+          <Icon>
+            <span css={{ width: 14 }} role="img" aria-label="Star">
               ✨
             </span>
           </Icon>
@@ -81,6 +83,15 @@ function Menu({
           <SettingsIcon />
         </Icon>
         Preferences
+      </Item>
+
+      <Separator />
+
+      <Item onClick={openFeedback}>
+        <Icon>
+          <FeedbackIcon />
+        </Icon>
+        Submit Feedback
       </Item>
 
       <Separator />

@@ -148,20 +148,6 @@ const setSandboxData = [
   },
 ];
 
-export const sendFeedback = sequence('sendFeedback', [
-  actions.sendFeedback,
-  {
-    success: factories.addNotification(
-      'Thank you for your feedback',
-      'success'
-    ),
-    error: factories.addNotification(
-      'There was an error sending your feedback',
-      'error'
-    ),
-  },
-]);
-
 export const forkSandbox = sequence('forkSandbox', [
   canForkServerSandbox,
   {
