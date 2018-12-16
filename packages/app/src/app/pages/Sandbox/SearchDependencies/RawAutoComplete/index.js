@@ -19,6 +19,7 @@ function RawAutoComplete({
       {({ getInputProps, getItemProps, highlightedIndex }) => (
         <div>
           <AutoCompleteInput
+            autoFocus
             {...getInputProps({
               innerRef(ref) {
                 if (ref) {
