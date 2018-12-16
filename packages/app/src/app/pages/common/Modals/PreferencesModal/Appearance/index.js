@@ -63,7 +63,9 @@ function EditorSettings({ store, signals }) {
             {fontOptions.indexOf(store.preferences.settings.fontFamily) ===
               -1 && (
               <PreferenceText
-                style={{ marginTop: '1rem' }}
+                css={`
+                  margin-top: 1rem%;
+                `}
                 placeholder="Enter your custom font"
                 block
                 {...bindValue('fontFamily')}
@@ -83,7 +85,8 @@ function EditorSettings({ store, signals }) {
                 rel="noopener noreferrer"
               >
                 font ligatures
-              </a>.
+              </a>
+              .
             </SubDescription>
             <Rule />
             <PaddedPreference
@@ -119,13 +122,20 @@ function EditorSettings({ store, signals }) {
             </SubDescription>
             <Rule />
 
-            <SubDescription style={{ marginBottom: '1rem' }}>
+            <SubDescription
+              css={`
+                margin-bottom: 1rem;
+              `}
+            >
               Custom VSCode Theme
             </SubDescription>
 
             <PreferenceText
               isTextArea
-              style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
+              css={`
+                font-family: 'Source Code Pro';
+                font-size: 0.8rem;
+              `}
               block
               rows={7}
               defaultValue={`You can use your own theme from VSCode directly:

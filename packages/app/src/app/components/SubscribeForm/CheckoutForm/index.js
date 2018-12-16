@@ -99,7 +99,10 @@ class CheckoutForm extends React.PureComponent {
         <Button
           type="submit"
           disabled={loading}
-          style={{ marginTop: '1rem', width: 300 }}
+          css={`
+            margin-top: 1rem;
+            width: 300px;
+          `}
         >
           {loading ? loadingText : buttonName}
         </Button>

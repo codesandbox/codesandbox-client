@@ -51,9 +51,9 @@ class PickSandboxModal extends Component {
           <Field>
             <Label htmlFor="title">Sandbox name</Label>
             <Input
-              style={{
-                width: '100%',
-              }}
+              css={`
+                width: 100%;
+              `}
               value={title}
               onChange={this.onChange}
               name="title"
@@ -64,9 +64,9 @@ class PickSandboxModal extends Component {
           <Field>
             <Label htmlFor="description">Sandbox Description</Label>
             <TextArea
-              style={{
-                width: '100%',
-              }}
+              css={`
+                width: 100%;
+              `}
               value={description}
               onChange={this.onChange}
               name="description"

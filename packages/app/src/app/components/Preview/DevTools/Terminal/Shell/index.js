@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
-import { withTheme } from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 import { Terminal } from 'xterm';
 import { debounce } from 'lodash';
 import * as fit from 'xterm/lib/addons/fit/fit';
@@ -19,6 +19,17 @@ type Props = {
   height: number,
   updateStatus?: (type: string, count?: number) => void,
 };
+
+const Container = styled.div`
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: ${props => props.height - 72};
+  padding: 0.5rem;
+  visibility: ${props => (props.hidden ? 'hidden' : 'visible')};
+`;
 
 Terminal.applyAddon(fit);
 class Shell extends React.PureComponent<Props> {
@@ -95,9 +106,12 @@ class Shell extends React.PureComponent<Props> {
     if (this.term) {
       if (prevProps.height !== this.props.height) {
         clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          this.term.fit();
-        }, this.props.hidden ? 1500 : 300);
+        this.timeout = setTimeout(
+          () => {
+            this.term.fit();
+          },
+          this.props.hidden ? 1500 : 300
+        );
       }
 
       if (prevProps.hidden !== this.props.hidden && !this.props.hidden) {
@@ -162,17 +176,9 @@ class Shell extends React.PureComponent<Props> {
     const { height, hidden } = this.props;
 
     return (
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: height - 72,
-          padding: '.5rem',
-          visibility: hidden ? 'hidden' : 'visible',
-        }}
+      <Container
+        hidden={hidden}
+        height={height}
         ref={node => {
           this.node = node;
         }}

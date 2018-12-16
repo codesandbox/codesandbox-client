@@ -6,7 +6,14 @@ import { LogoContainer } from './elements';
 
 function Loading() {
   return (
-    <Centered style={{ height: '100vh' }} vertical horizontal>
+    <Centered
+      css={`
+        height: 100vh;
+        align-items: center;
+      `}
+      vertical
+      horizontal
+    >
       <LogoContainer>
         <Logo width={200} height={200} />
       </LogoContainer>

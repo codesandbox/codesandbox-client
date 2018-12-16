@@ -12,8 +12,18 @@ function ZeitLogo({ className }) {
           y2="50%"
           id="l1"
         >
-          <stop style={{ stopColor: '#000' }} offset="0%" />
-          <stop style={{ stopColor: '#fff' }} offset="100%" />
+          <stop
+            css={`
+              stop-color: '#000';
+            `}
+            offset="0%"
+          />
+          <stop
+            css={`
+              stop-color: '#fff';
+            `}
+            offset="100%"
+          />
         </linearGradient>
       </defs>
       <g stroke="none" strokeWidth="1" fillRule="evenodd">

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { listen } from 'codesandbox-api';
-import { withTheme } from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import getTemplate, { type Template } from 'common/templates';
@@ -36,6 +36,17 @@ type Props = {
   openDevTools: () => void,
   selectCurrentPane: () => void,
 };
+
+const Container = styled.div`
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: ${props => props.height - 72};
+  padding: 1rem;
+  visibility: ${props => (props.hidden ? 'hidden' : 'visible')};
+`;
 
 // Incredibly hacky way of letting the StatusBar access the state of the component.
 // In the future we need to abstract this away to the global state and dispatch an event.
@@ -158,8 +169,8 @@ class TerminalComponent extends React.Component<Props, State> {
    */
   endShell = (shellId: string) => {
     this.setState(s => ({
-      shells: s.shells.map(
-        shell => (shell.id === shellId ? { ...shell, ended: true } : shell)
+      shells: s.shells.map(shell =>
+        shell.id === shellId ? { ...shell, ended: true } : shell
       ),
     }));
   };
@@ -169,31 +180,19 @@ class TerminalComponent extends React.Component<Props, State> {
 
     return (
       <div>
-        {!hidden &&
-          this.state.shells.length > 0 && (
-            <ShellTabs
-              selectedShell={this.state.selectedShell}
-              shells={this.state.shells}
-              selectShell={this.selectShell}
-              closeShell={this.closeShell}
-            />
-          )}
+        {!hidden && this.state.shells.length > 0 && (
+          <ShellTabs
+            selectedShell={this.state.selectedShell}
+            shells={this.state.shells}
+            selectShell={this.selectShell}
+            closeShell={this.closeShell}
+          />
+        )}
 
         <Relative>
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: height - 72,
-              padding: '1rem',
-              visibility:
-                hidden || this.state.selectedShell !== null
-                  ? 'hidden'
-                  : 'visible',
-            }}
+          <Container
+            hidden={hidden || this.state.selectedShell !== null}
+            height={height}
             ref={node => {
               this.node = node;
             }}

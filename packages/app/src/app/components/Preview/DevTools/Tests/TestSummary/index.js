@@ -69,7 +69,9 @@ export default ({
             <Total>{totalTestCount !== 0 && `${totalDuration}ms`}</Total>
             <Tooltip title="Toggle File Watching">
               <SyncIcon
-                style={{ color: watching ? 'white' : 'inherit' }}
+                css={`
+                  color: ${props => (props.watching ? 'white' : 'inherit')};
+                `}
                 onClick={toggleWatching}
               />
             </Tooltip>

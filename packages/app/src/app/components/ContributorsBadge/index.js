@@ -42,7 +42,9 @@ export default class ContributorsBadge extends React.Component {
         }
       >
         <Tooltip
-          style={{ display: 'flex' }}
+          css={`
+            display: flex;
+          `}
           title="Open Source Contributor to CodeSandbox"
         >
           <IconBase

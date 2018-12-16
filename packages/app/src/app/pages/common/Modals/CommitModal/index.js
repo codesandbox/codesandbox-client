@@ -16,7 +16,12 @@ function CommitModal({ store }) {
         <div>
           There was a merge conflict while committing, you can open a PR
           instead.
-          <div style={{ fontSize: '.875rem', marginTop: '1rem' }}>
+          <div
+            css={`
+              font-size: 0.875rem;
+              margin-top: 1rem;
+            `}
+          >
             <a href={newUrl} target="_blank" rel="noreferrer noopener">
               Click here to open a PR
             </a>

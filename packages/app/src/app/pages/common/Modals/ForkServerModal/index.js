@@ -22,7 +22,12 @@ class ForkServerModal extends React.Component {
 
     const templateDefinition = getTemplateDefinition(template);
     const niceName = (
-      <span style={{ color: templateDefinition.color(), fontWeight: 500 }}>
+      <span
+        css={`
+          color: ${templateDefinition.color()};
+          font-weight: 500;
+        `}
+      >
         {templateDefinition.niceName}
       </span>
     );
@@ -36,7 +41,11 @@ class ForkServerModal extends React.Component {
           sandbox.
         </Explanation>
 
-        <SignInButton style={{ marginTop: 12 }} />
+        <SignInButton
+          css={`
+            margin-top: 12px;
+          `}
+        />
       </Container>
     );
   }

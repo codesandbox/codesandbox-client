@@ -126,11 +126,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
       return (
         <Margin
-          style={{
-            overflow: 'auto',
-            height: props.height || '100%',
-            width: props.width || '100%',
-          }}
+          css={`
+            overflow: auto;
+            height: ${p => p.height || '100%'};
+            width: ${p => p.width || '100%'};
+          `}
           top={2}
         >
           <Centered horizontal vertical>
@@ -158,13 +158,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     return (
       <Conatiner>
-        {!isModuleSynced &&
-          module.title === 'index.html' && (
-            <Icons small>
-              You may have to save this file and refresh the preview to see
-              changes
-            </Icons>
-          )}
+        {!isModuleSynced && module.title === 'index.html' && (
+          <Icons small>
+            You may have to save this file and refresh the preview to see
+            changes
+          </Icons>
+        )}
         {config &&
           (getUI(config.type) ? (
             <Icons>
@@ -180,13 +179,17 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
                 <Tooltip
                   position="bottom"
                   title={config.partialSupportDisclaimer}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
+                  css={`
+                    display: flex;
+                    align-items: center;
+                  `}
                 >
                   Partially Supported Config{' '}
-                  <QuestionIcon style={{ marginLeft: '.5rem' }} />
+                  <QuestionIcon
+                    css={`
+                      margin-left: 0.5rem;
+                    `}
+                  />
                 </Tooltip>
               ) : (
                 <div>Supported Configuration</div>

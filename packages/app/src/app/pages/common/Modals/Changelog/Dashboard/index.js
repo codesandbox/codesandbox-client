@@ -41,18 +41,29 @@ const descriptionStyles = {
   marginBottom: 0,
 };
 
-const W = props => <span {...props} style={{ color: 'white' }} />;
+const W = props => (
+  <span
+    {...props}
+    css={`
+      color: white;
+    `}
+  />
+);
 
 function DashboardChangelog({ signals }) {
   return (
     <div
-      style={{
-        padding: '1.5rem',
-        backgroundColor: theme.background(),
-      }}
+      css={`
+        padding: 1.5rem;
+        background-color: ${theme.background()};
+      `}
     >
       <div
-        style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center' }}
+        css={`
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+        `}
       >
         <h1 style={titleStyles}>What{"'"}s New</h1>
         <div style={dateStyles}>July 2nd, 2018</div>
@@ -60,11 +71,11 @@ function DashboardChangelog({ signals }) {
 
       <img
         alt="CodeSandbox Announcement"
-        style={{
-          width: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          borderRadius: 2,
-        }}
+        css={`
+          width: 100%;
+          background-color: rgba(0, 0, 0, 0.3);
+          border-radius: 2;
+        `}
         src="https://cdn-images-1.medium.com/max/1600/1*wIMw31_Phf1WNEP6zjuTUw.png"
       />
 
@@ -95,7 +106,8 @@ function DashboardChangelog({ signals }) {
         have <W>real time collaboration</W> with{' '}
         <Link target="_blank" to="/docs/live">
           CodeSandbox Live
-        </Link>. Until now this was behind a{' '}
+        </Link>
+        . Until now this was behind a{' '}
         <Link target="_blank" to="/patron">
           Patron
         </Link>{' '}
@@ -109,9 +121,16 @@ function DashboardChangelog({ signals }) {
         the announcement post to find out more about this update.
       </p>
 
-      <div style={{ display: 'flex' }}>
+      <div
+        css={`
+          display: flex;
+        `}
+      >
         <Button
-          style={{ marginTop: '1rem', marginRight: '.25rem' }}
+          css={`
+            margin-top: 1rem;
+            margin-right: 0.25rem;
+          `}
           block
           small
           secondary
@@ -123,7 +142,10 @@ function DashboardChangelog({ signals }) {
         </Button>
         <Button
           href="https://medium.com/@compuives/announcing-codesandbox-dashboard-teams-876f5933160b"
-          style={{ marginTop: '1rem', marginLeft: '.25rem' }}
+          css={`
+            margin-top: 1rem;
+            margin-left: 0.25rem;
+          `}
           block
           small
           target="_blank"

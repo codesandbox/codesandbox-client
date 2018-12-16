@@ -25,13 +25,19 @@ function UserWithAvatar({
         </Names>
         {subscriptionSince && (
           <PatronStar
-            style={{ fontSize: '1.125em', marginBottom: '0.1em' }}
+            css={`
+              font-size: 1.125em;
+              margin-bottom: 0.1em;
+            `}
             subscriptionSince={subscriptionSince}
           />
         )}
         {!hideBadge && (
           <ContributorHelm
-            style={{ margin: '0 .5rem', fontSize: '1.25em' }}
+            css={`
+              margin: 0 0.5rem;
+              font-size: 1.25em;
+            `}
             width={24}
             username={username}
           />

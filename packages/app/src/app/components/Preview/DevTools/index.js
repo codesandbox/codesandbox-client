@@ -393,14 +393,17 @@ export default class DevTools extends React.PureComponent<Props, State> {
           <Actions>
             {actions.map(({ title, onClick, Icon }) => (
               <Tooltip
-                style={{ pointerEvents: hidden ? 'none' : 'initial' }}
+                css={`
+                  pointerevents: ${props =>
+                    props.hidden ? 'none' : 'initial'};
+                `}
                 title={title}
                 key={title}
               >
                 <Icon
-                  style={{
-                    opacity: hidden ? 0 : 1,
-                  }}
+                  css={`
+                    opacity: ${props => (props.hidden ? 0 : 1)};
+                  `}
                   onClick={onClick}
                   key={title}
                 />
@@ -409,9 +412,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
             <MinimizeIcon
               onMouseDown={hidden ? undefined : this.handleMinimizeClick}
-              style={{
-                transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
-              }}
+              css={`
+                transform: ${props =>
+                  props.hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`};
+              `}
             />
           </Actions>
         </Header>

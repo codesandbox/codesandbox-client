@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { css } from 'styled-components';
 import LeftIcon from 'react-icons/lib/fa/angle-left';
 import RightIcon from 'react-icons/lib/fa/angle-right';
 import RefreshIcon from 'react-icons/lib/md/refresh';
@@ -19,11 +20,11 @@ import {
   SwitchContainer,
 } from './elements';
 
-const IconStyles = {
-  fontSize: 18,
-  padding: 4,
-  marginRight: 4,
-};
+const IconStyles = css`
+  font-size: 18px;
+  padding: 4px;
+  margin-right: 4px;
+`;
 
 function Navigator({
   url,
@@ -63,7 +64,7 @@ function Navigator({
       </AddressBarContainer>
       {alignBottom && (
         <Icon
-          style={IconStyles}
+          css={IconStyles}
           selected={alignDirection === 'bottom'}
           onClick={alignBottom}
         >
@@ -74,7 +75,7 @@ function Navigator({
       )}
       {alignRight && (
         <Icon
-          style={IconStyles}
+          css={IconStyles}
           selected={alignDirection === 'right'}
           onClick={alignRight}
         >
@@ -85,7 +86,10 @@ function Navigator({
       )}
       {openNewWindow && (
         <Icon
-          style={{ ...IconStyles, marginRight: zenMode ? 8 : 16 }}
+          css={`
+            ${IconStyles};
+            margin-right: ${props => (props.zenMode ? 8 : 16)};
+          `}
           onClick={openNewWindow}
         >
           <Tooltip title="Open In New Window">

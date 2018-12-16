@@ -15,7 +15,11 @@ function CodeFormatting() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Question style={{ marginBottom: '3px' }} />
+          <Question
+            css={`
+              margin-bottom: 3px;
+            `}
+          />
         </a>
       </Title>
 
