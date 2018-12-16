@@ -18,6 +18,7 @@ import Node from 'common/components/logos/Node';
 import Apollo from 'common/components/logos/Apollo';
 import Nest from 'common/components/logos/Nest';
 import Static from 'common/components/logos/Static';
+import Styleguidist from 'common/components/logos/Styleguidist';
 
 import {
   react,
@@ -39,6 +40,7 @@ import {
   nest,
   sapper,
   staticTemplate,
+  styleguidist,
 } from './';
 
 import type { Template } from './';
@@ -83,6 +85,8 @@ export default function getIcon(theme: Template) {
       return Nest;
     case staticTemplate.name:
       return Static;
+    case styleguidist.name:
+      return Styleguidist;
     default:
       return React;
   }

@@ -17,7 +17,13 @@ export const Container = styled.div`
 
   @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {
     flex-direction: column;
-    height: 600px;
+    min-height: 800px;
+
+    font-size: 0.875rem;
+
+    h1 {
+      font-size: 1.25rem;
+    }
   }
 `;
 
@@ -41,10 +47,11 @@ export const SandboxContainer = styled.div`
   width: 100%;
   height: 100%;
 
-  @media screen and (max-width: 900px) {
+  @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {
     height: 230px;
     z-index: 11;
     background-color: ${props => props.theme.new.bg};
+    padding: 0.5rem;
   }
 `;
 

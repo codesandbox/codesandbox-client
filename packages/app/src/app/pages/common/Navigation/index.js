@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { patronUrl, dashboardUrl } from 'common/utils/url-generator';
+import Media from 'react-media';
+import { patronUrl, dashboardUrl, searchUrl } from 'common/utils/url-generator';
 
+import SearchIcon from 'react-icons/lib/go/search';
 import PlusIcon from 'react-icons/lib/go/plus';
 import BellIcon from 'react-icons/lib/md/notifications';
 import BookIcon from 'react-icons/lib/md/library-books';
@@ -27,7 +29,7 @@ import {
   Wrapper,
 } from './elements';
 
-function Navigation({ signals, store, title }) {
+function Navigation({ signals, store, title, searchNoInput }) {
   const { isLoggedIn, isPatron, user } = store;
 
   return (
@@ -42,7 +44,19 @@ function Navigation({ signals, store, title }) {
       <Wrapper>
         <Actions>
           <Action>
-            <HeaderSearchBar />
+            <Media query="(max-width: 920px)">
+              {matches =>
+                matches || searchNoInput ? (
+                  <Tooltip position="bottom" title="Search All Sandboxes">
+                    <Link style={{ color: 'white' }} to={searchUrl()}>
+                      <SearchIcon height={35} />
+                    </Link>
+                  </Tooltip>
+                ) : (
+                  <HeaderSearchBar />
+                )
+              }
+            </Media>
           </Action>
           <Action>
             <Tooltip position="bottom" title="Documentation">

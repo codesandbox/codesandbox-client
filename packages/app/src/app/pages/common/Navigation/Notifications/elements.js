@@ -2,11 +2,8 @@ import styled, { css } from 'styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
 
 export const Container = styled.div`
-  position: absolute;
-  top: calc(100% + 1rem);
   overflow: hidden;
   box-sizing: border-box;
-  right: 0;
   text-align: left;
   line-height: 1.6;
   width: 358px;
@@ -79,6 +76,8 @@ export const NotificationImage = styled.img`
   border-radius: 4px;
   width: 24px;
   height: 24px;
+  min-width: 24px;
+  min-height: 24px;
   margin-right: 1rem;
   margin-top: 0.25rem;
 `;

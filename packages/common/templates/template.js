@@ -123,7 +123,7 @@ export default class Template {
       ...parsedFile,
       devDependencies: {
         ...parsedFile.devDependencies,
-        serve: '^5.0.1',
+        serve: '^10.1.1',
       },
       scripts: {
         ...parsedFile.scripts,

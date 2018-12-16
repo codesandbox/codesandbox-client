@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import { identify } from 'common/utils/analytics';
+import track, { identify } from 'common/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
@@ -265,6 +265,7 @@ export function getAuthToken({ api, path }) {
 }
 
 export function setModal({ state, props }) {
+  track('Open Modal', { modal: props.modal });
   state.set('currentModal', props.modal);
 }
 

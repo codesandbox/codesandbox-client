@@ -126,6 +126,7 @@ class ContextMenu extends React.PureComponent {
           color={item.color}
           onMouseDown={e => {
             e.preventDefault();
+            e.stopPropagation();
           }}
           onMouseUp={e => {
             if (item.action()) {

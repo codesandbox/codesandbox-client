@@ -11,7 +11,7 @@ export function identify(key, value) {
     if (!DNT) {
       if (typeof window.amplitude !== 'undefined') {
         const identity = new window.amplitude.Identify();
-        identity.set('signed_in', value);
+        identity.set(key, value);
         window.amplitude.identify(identity);
       }
     }
