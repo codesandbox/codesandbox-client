@@ -30,6 +30,7 @@ const Content = styled.div`
   width: 1000px;
   margin-top: 5%;
   z-index: 20;
+  max-width: 90%;
 `;
 
 export default class Modal extends React.PureComponent {
