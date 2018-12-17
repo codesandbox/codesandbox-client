@@ -69,7 +69,7 @@ const GlobalStyle = createGlobalStyle`
 
 export default props => (
   <Fragment>
-    <GlobalStyle color={props.template.color()} />
+    <GlobalStyle color={props.template.color} />
     <TagsInput {...props} />
   </Fragment>
 );
