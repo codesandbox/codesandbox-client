@@ -13,7 +13,7 @@ import UserWithAvatar from 'app/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
 import GithubBadge from 'common/components/GithubBadge';
-import createEditableTags from 'app/components/EditableTags';
+import EditableTags from 'app/components/EditableTags';
 import Tags from 'common/components/Tags';
 import Switch from 'common/components/Switch';
 import Tooltip from 'common/components/Tooltip';
@@ -102,7 +102,6 @@ class Project extends React.Component {
 
     const template = getTemplateDefinition(sandbox.template);
 
-    const EditableTags = createEditableTags(template.color);
     return (
       <div style={{ marginBottom: '1rem' }}>
         <Item style={{ marginTop: '.5rem' }}>
@@ -217,10 +216,10 @@ class Project extends React.Component {
         <StatsContainer>
           <Stats sandbox={sandbox} />
         </StatsContainer>
-
         <Item>
           {editable ? (
             <EditableTags
+              template={template}
               value={sandbox.tags.toJS()}
               onChange={this.changeTags}
               onChangeInput={value => {
@@ -228,6 +227,7 @@ class Project extends React.Component {
                   tagName: value,
                 });
               }}
+              maxTags={5}
               inputValue={store.workspace.tags.tagName}
               renderInput={this.renderInput}
               onlyUnique
