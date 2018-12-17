@@ -2,8 +2,17 @@ import React, { Fragment } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import TagsInput from 'react-tagsinput';
 
+function hexToRgb(hex, a) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? `rgba(${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(
+        result[3],
+        16
+      )},${a})`
+    : null;
+}
+
 const GlobalStyle = createGlobalStyle`
-${console.log(props => props)}
   .react-tagsinput {
     display: flex;
     flex-wrap: row;
@@ -43,7 +52,7 @@ ${console.log(props => props)}
     width: 80px;
 
     &:focus {
-      border-color: ${props => props.color && props.color.clearer(0.3)};
+      border-color: ${props => hexToRgb(props.color, 0.3)};
     }
   }
 
