@@ -92,16 +92,6 @@ const Image = styled.img`
   margin-bottom: 0;
 `;
 
-const PageName = styled.h2`
-  margin: 0;
-  margin-bottom: 0;
-  color: ${props => props.theme.new.title};
-  font-weight: 400;
-
-  font-size: 1.125rem;
-  margin-left: 1rem;
-`;
-
 export default class Navigation extends React.PureComponent {
   state = {
     user: null,
@@ -111,7 +101,7 @@ export default class Navigation extends React.PureComponent {
     const jwt = JSON.parse(localStorage.getItem('jwt'));
 
     const BASE =
-      process.env.NODE_ENV === 'development' ? 'https://codesandbox.dev' : '';
+      process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
 
     window
       .fetch(BASE + '/api/v1/users/current', {
