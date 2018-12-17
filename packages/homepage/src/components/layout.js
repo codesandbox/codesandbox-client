@@ -11,12 +11,12 @@ import Footer from './Footer';
 // eslint-disable-next-line
 export default class TemplateWrapper extends React.Component {
   render() {
-    const { children } = this.props;
+    const { children, title } = this.props;
     return (
       <ThemeProvider theme={theme}>
         <div>
           <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 20 }}>
-            <Navigation />
+            <Navigation title={title} />
           </div>
           <main style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
             {children}

@@ -94,6 +94,16 @@ const Image = styled.img`
   margin-bottom: 0;
 `;
 
+const PageName = styled.h2`
+  margin: 0;
+  margin-bottom: 0;
+  color: ${props => props.theme.new.title};
+  font-weight: 400;
+
+  font-size: 1.125rem;
+  margin-left: 1rem;
+`;
+
 export default class Navigation extends React.PureComponent {
   state = {
     user: null,
@@ -124,6 +134,7 @@ export default class Navigation extends React.PureComponent {
 
   render() {
     const { user } = this.state;
+    const { title } = this.props;
     return (
       <MaxWidth width={1440}>
         <Container>
@@ -131,7 +142,10 @@ export default class Navigation extends React.PureComponent {
             <Link to="/?from-app=1">
               <StyledLogo title="CodeSandbox" width={50} height={50} />
             </Link>
+
+            {title && <PageName>{title}</PageName>}
           </Left>
+
           <Right>
             <Item
               href="https://medium.com/@compuives"

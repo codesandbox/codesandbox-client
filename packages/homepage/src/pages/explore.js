@@ -116,7 +116,7 @@ export default class Explore extends React.PureComponent {
     const currentIndex = this.getCurrentIndex();
 
     return (
-      <Layout>
+      <Layout title="Explore">
         <Container>
           <TitleAndMetaTags
             description="You can find the most interesting sandboxes created on CodeSandbox here. Explore examples of JavaScript and frameworks like React, Vue and Angular!"
@@ -143,7 +143,7 @@ export default class Explore extends React.PureComponent {
             />
           )}
 
-          <PageContainer as="main" width={1440}>
+          <PageContainer width={1440}>
             <FeaturedSandbox
               title={featuredSandboxInfo.title}
               description={featuredSandboxInfo.description}

@@ -216,7 +216,7 @@ export default class Docs extends React.Component {
     const { html, frontmatter, fields } = data.markdownRemark;
 
     return (
-      <Layout>
+      <Layout title="Documentation">
         <Container style={{ overflowX: 'auto' }}>
           <TitleAndMetaTags
             title={`${frontmatter.title} - CodeSandbox Documentation`}
