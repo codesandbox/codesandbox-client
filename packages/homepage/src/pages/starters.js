@@ -14,6 +14,7 @@ export default class extends React.PureComponent {
   state = {
     starters: this.props.data.allAirtable.edges.map(s => ({
       ...s.node.data,
+      title: s.node.data.title,
     })),
   };
 
@@ -28,7 +29,10 @@ export default class extends React.PureComponent {
 
     const results = start.map(async s => {
       const data = await this.loadSandboxes(s.node.data.id);
-      return data;
+      return {
+        ...data,
+        title: s.node.data.title || data.title,
+      };
     });
 
     Promise.all(results).then(a => this.setState({ starters: a }));
