@@ -83,6 +83,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
               onOpen={signals.userNotifications.notificationsOpened}
               onClose={signals.userNotifications.notificationsClosed}
               event="Notifications"
+              noHeightAnimation
             >
               {open => (
                 <Action

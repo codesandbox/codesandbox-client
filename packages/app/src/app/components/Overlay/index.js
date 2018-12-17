@@ -59,7 +59,7 @@ class OverlayComponent extends React.Component {
   };
 
   render() {
-    const { children, Overlay } = this.props;
+    const { children, Overlay, noHeightAnimation } = this.props;
 
     const isOpen = this.isOpen();
 
@@ -73,8 +73,8 @@ class OverlayComponent extends React.Component {
         <Transition
           items={isOpen}
           from={{
-            height: 0,
-            opacity: 1,
+            height: noHeightAnimation ? undefined : 0,
+            opacity: 0.6,
             position: 'absolute',
             top: 'calc(100% + 1rem)',
             right: 0,
@@ -82,8 +82,8 @@ class OverlayComponent extends React.Component {
             overflow: 'hidden',
             boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
           }}
-          enter={{ height: 'auto', opacity: 1 }}
-          leave={{ height: 0, opacity: 0 }}
+          enter={{ height: noHeightAnimation ? undefined : 'auto', opacity: 1 }}
+          leave={{ height: noHeightAnimation ? undefined : 0, opacity: 0 }}
           native
           config={config.fast}
         >

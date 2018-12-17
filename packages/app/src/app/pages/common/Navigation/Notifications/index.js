@@ -18,7 +18,7 @@ export const VIEW_QUERY = gql`
     me {
       notifications(
         limit: 20
-        orderBy: { field: "insertedAt", direction: DESC }
+        orderBy: { field: "insertedAt", direction: ASC }
       ) {
         id
         type
@@ -78,8 +78,7 @@ export default props => (
           if (data.me.notifications.length === 0) {
             return (
               <NoNotifications>
-                You don
-                {"'"}t have any notifications
+                You don{"'"}t have any notifications
               </NoNotifications>
             );
           }
