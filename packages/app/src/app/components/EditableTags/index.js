@@ -2,8 +2,7 @@ import React, { Fragment } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import TagsInput from 'react-tagsinput';
 
-export default function(color) {
-  const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle`
   .react-tagsinput {
     display: flex;
     flex-wrap: row;
@@ -19,7 +18,7 @@ export default function(color) {
     margin: 0.2rem;
     font-size: 13px;
     padding: 0.3em 0.5em;
-    background-color: ${color()};
+    background-color: ${props => props.color};
     color: white;
     font-weight: 500;
     border-radius: 4px;
@@ -43,7 +42,7 @@ export default function(color) {
     width: 80px;
 
     &:focus {
-      border-color: ${color.clearer(0.3)()};
+      border-color: ${props => props.color.clearer(0.3)};
     }
   }
 
@@ -58,10 +57,9 @@ export default function(color) {
   }
 `;
 
-  return props => (
-    <Fragment>
-      <GlobalStyle />
-      <TagsInput {...props} />
-    </Fragment>
-  );
-}
+export default props => (
+  <Fragment>
+    <GlobalStyle color={props.template.color} />
+    <TagsInput {...props} />
+  </Fragment>
+);
