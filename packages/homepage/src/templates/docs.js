@@ -219,7 +219,7 @@ export default class Docs extends React.Component {
       <Layout>
         <Container style={{ overflowX: 'auto' }}>
           <TitleAndMetaTags
-            title={`${frontmatter.title} - CodeSandbox`}
+            title={`${frontmatter.title} - CodeSandbox Documentation`}
             description={frontmatter.description}
           />
           <PageContainer>
