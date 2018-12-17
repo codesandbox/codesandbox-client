@@ -20,4 +20,4 @@ Sandboxes get picked based on their contents and their appearance. This can be e
 
 ## How can I get picked
 
-We have a dashboard with popular sandboxes to pick from, but we also pick based on what we happen to see. We generally scour Twitter for sandboxes too, if you want to be picked we recommend you to mention us in a tweet [@codesandboxapp](https://twitter.com/codesandboxapp) with your sandbox!
+We have a dashboard with popular sandboxes to pick from, but we also pick based on what we happen to see. We generally scour Twitter for sandboxes too, if you want to be picked we recommend you to mention us in a tweet [@codesandbox](https://twitter.com/codesandbox) with your sandbox!
