@@ -5,6 +5,7 @@ import Media from 'react-media';
 import Save from 'react-icons/lib/md/save';
 import SearchIcon from 'react-icons/lib/go/search';
 import Fork from 'react-icons/lib/go/repo-forked';
+import FlameIcon from 'react-icons/lib/go/flame';
 import Download from 'react-icons/lib/md/file-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
@@ -14,7 +15,12 @@ import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 
-import { patronUrl, dashboardUrl, searchUrl } from 'common/utils/url-generator';
+import {
+  patronUrl,
+  dashboardUrl,
+  searchUrl,
+  exploreUrl,
+} from 'common/utils/url-generator';
 
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
@@ -141,6 +147,13 @@ const Header = ({ store, signals }) => {
             )
           }
         </Media>
+
+        <Action
+          tooltip="Explore Sandboxes"
+          Icon={FlameIcon}
+          href={exploreUrl()}
+          a
+        />
 
         {store.updateStatus === 'available' && (
           <Action
