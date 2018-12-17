@@ -9,14 +9,14 @@ export const LogoWithBorder = styled(Logo)`
 
 export const Border = styled.hr`
   display: inline-block;
-  height: 28px;
+  height: 22px;
   border: none;
   border-right: 1px solid rgba(255, 255, 255, 0.4);
 `;
 
 export const Title = styled.h1`
   margin-left: 1rem;
-  font-size: 1.2rem;
+  font-size: 1.125rem;
   color: white;
   font-weight: 300;
 `;

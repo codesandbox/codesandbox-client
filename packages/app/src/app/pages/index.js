@@ -100,6 +100,7 @@ class Routes extends React.Component<Props> {
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
+            <Route path="/signin" component={Dashboard} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />

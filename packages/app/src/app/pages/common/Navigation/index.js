@@ -34,7 +34,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
     <Row justifyContent="space-between">
       <TitleWrapper>
         <a href="/?from-app=1">
-          <LogoWithBorder height={40} width={40} />
+          <LogoWithBorder height={35} width={35} />
         </a>
         <Border width={1} size={500} />
         <Title>{title}</Title>
@@ -66,19 +66,6 @@ function Navigation({ signals, store, title, searchNoInput }) {
             </Action>
           )}
 
-          <Action
-            style={{ fontSize: '1.125rem' }}
-            onClick={() =>
-              signals.modalOpened({
-                modal: 'newSandbox',
-              })
-            }
-          >
-            <Tooltip position="bottom" title="New Sandbox">
-              <PlusIcon height={35} />
-            </Tooltip>
-          </Action>
-
           {user && (
             <OverlayComponent
               isOpen={store.userNotifications.notificationsOpened}
@@ -100,6 +87,19 @@ function Navigation({ signals, store, title, searchNoInput }) {
               )}
             </OverlayComponent>
           )}
+
+          <Action
+            style={{ fontSize: '1.125rem' }}
+            onClick={() =>
+              signals.modalOpened({
+                modal: 'newSandbox',
+              })
+            }
+          >
+            <Tooltip position="bottom" title="New Sandbox">
+              <PlusIcon height={35} />
+            </Tooltip>
+          </Action>
         </Actions>
 
         {isLoggedIn ? <UserMenu /> : <SignInButton />}

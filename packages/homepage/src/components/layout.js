@@ -16,7 +16,7 @@ export default class TemplateWrapper extends React.Component {
       <ThemeProvider theme={theme}>
         <div>
           <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 20 }}>
-            <Navigation title={title} />
+            <Navigation />
           </div>
           <main style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
             {children}

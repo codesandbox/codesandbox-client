@@ -13,13 +13,14 @@ import SidebarContents from './Sidebar';
 import Content from './Content';
 import {
   Container,
+  Centered,
   Content as ContentContainer,
   LoggedInContainer,
   LoggedInTitle,
-  LoggedInSubTitle,
   Sidebar,
   NavigationContainer,
   ShowSidebarButton,
+  OffsettedLogo,
 } from './elements';
 
 class Dashboard extends React.Component {
@@ -77,13 +78,14 @@ class Dashboard extends React.Component {
     if (!hasLogIn) {
       DashboardContent = (
         <Container>
-          <LoggedInContainer>
-            <LoggedInTitle>Uh oh!</LoggedInTitle>
-            <LoggedInSubTitle>
-              You need to be signed in to access this page.
-            </LoggedInSubTitle>
-            <SignInButton style={{ fontSize: '1rem' }} />
-          </LoggedInContainer>
+          <Centered>
+            <LoggedInContainer>
+              <OffsettedLogo />
+              <LoggedInTitle>Sign in to CodeSandbox</LoggedInTitle>
+
+              <SignInButton big style={{ fontSize: '1rem' }} />
+            </LoggedInContainer>
+          </Centered>
         </Container>
       );
     }

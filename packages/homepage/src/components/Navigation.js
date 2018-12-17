@@ -50,18 +50,16 @@ const Item = styled.a`
     props.button &&
     css`
       transition: 0.3s ease all;
-      padding: 0.35rem 0.8rem;
+      padding: 0.2rem 0.8rem;
       border-radius: 4px;
-      box-shadow: 0 3px 4px rgba(0, 0, 0, 0.3);
-      background-image: linear-gradient(
-        45deg,
-        ${p => p.theme.secondary.darken(0.1)} 0%,
-        ${p => p.theme.secondary} 100%
-      );
+      font-weight: 600;
+      background-color: ${props.theme.secondary};
+      border: 2px solid rgba(255, 255, 255, 0.3);
 
       &:hover {
-        transform: translateY(-3px);
         color: white;
+        background-color: #7fc3f7;
+        border-color: transparent;
       }
     `};
 
@@ -134,19 +132,22 @@ export default class Navigation extends React.PureComponent {
 
   render() {
     const { user } = this.state;
-    const { title } = this.props;
     return (
       <MaxWidth width={1440}>
         <Container>
           <Left>
-            <Link to="/?from-app=1">
-              <StyledLogo title="CodeSandbox" width={50} height={50} />
-            </Link>
+            <a href="/">
+              <StyledLogo
+                title="CodeSandbox"
+                width={40}
+                height={40}
+                css={{ marginRight: '1rem' }}
+              />
+            </a>
 
-            {title && <PageName>{title}</PageName>}
-          </Left>
+            <ItemLink to="/explore">Explore</ItemLink>
+            <ItemLink to="/docs">Docs</ItemLink>
 
-          <Right>
             <Item
               href="https://medium.com/@compuives"
               target="_blank"
@@ -161,10 +162,19 @@ export default class Navigation extends React.PureComponent {
             >
               GitHub
             </Item>
-            <ItemLink to="/docs">Docs</ItemLink>
+          </Left>
+
+          <Right>
+            {!user && (
+              <Item hidePhone href="/signin">
+                Sign In
+              </Item>
+            )}
+
             <Item hidePhone href="/s" rel="noopener noreferrer" button={!user}>
               Create Sandbox
             </Item>
+
             {user && (
               <Item hidePhone href={`/dashboard`} rel="noopener noreferrer">
                 {user.username}
