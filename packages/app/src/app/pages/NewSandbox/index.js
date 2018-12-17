@@ -6,7 +6,6 @@ import Navigation from 'app/pages/common/Navigation';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
-import Title from 'app/components/Title';
 import history from 'app/utils/history';
 import { sandboxUrl } from 'common/utils/url-generator';
 
