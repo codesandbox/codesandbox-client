@@ -146,7 +146,7 @@ export default () => (
           <List>
             <li>
               <a
-                href="https://twitter.com/codesandboxapp"
+                href="https://twitter.com/codesandbox"
                 target="_blank"
                 rel="noopener noreferrer"
               >

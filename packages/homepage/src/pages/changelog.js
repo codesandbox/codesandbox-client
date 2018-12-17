@@ -141,8 +141,8 @@ export default class ChangelogPage extends React.Component {
                 GitHub repository
               </a>{' '}
               and the Twitter of{' '}
-              <a href="https://twitter.com/@codesandboxapp">@codesandboxapp</a>{' '}
-              and <a href="https://twitter.com/@CompuIves">@CompuIves</a>.
+              <a href="https://twitter.com/@codesandbox">@codesandbox</a> and{' '}
+              <a href="https://twitter.com/@CompuIves">@CompuIves</a>.
             </Description>
             <Changelogs>
               {posts.map(({ node: post }) => {
