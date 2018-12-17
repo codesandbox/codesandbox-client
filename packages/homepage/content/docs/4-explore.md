@@ -10,7 +10,7 @@ CodeSandbox features an [explore page](/explore). The explore page functions as 
 
 ## What is a curator
 
-A curator is someone in the community that can select sandboxes that end up on the explore page. You can get an invitation to become a "curator" from the staff or other curators. Everyone is applicable to become a curator, but we generally select people that are already active on CodeSandbox or are knowledgeable in a specific field (eg. animations).
+A curator is someone in the community who has the privilege to pick sandboxes for the explore page. You can get an invitation to become a "curator" from the staff or other curators. Everyone is applicable to become a curator, but we generally select people that are already active on CodeSandbox or are knowledgeable in a specific field (eg. animations).
 
 If you're interested in becoming a curator you can send us an e-mail at <mailto:curators@codesandbox.io>.
 
