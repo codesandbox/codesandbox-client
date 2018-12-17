@@ -63,6 +63,11 @@ const Item = styled.a`
       }
     `};
 
+  ${media.phone`
+    font-size: 1rem;
+    margin: 0 .5rem;
+  `};
+
   ${props =>
     props.hidePhone &&
     css`
@@ -71,10 +76,13 @@ const Item = styled.a`
     `};
     `};
 
-  ${media.phone`
-    font-size: 1rem;
-    margin: 0 .5rem;
-  `};
+  ${props =>
+    props.hideOn &&
+    css`
+      @media (max-width: ${props.hideOn}px) {
+        display: none;
+      }
+    `};
 `;
 
 const ItemLink = Item.withComponent(Link);
@@ -156,7 +164,7 @@ export default class Navigation extends React.PureComponent {
 
           <Right>
             {!user && (
-              <Item hidePhone href="/signin">
+              <Item hideOn={730} href="/signin">
                 Sign In
               </Item>
             )}
