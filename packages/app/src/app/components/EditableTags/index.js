@@ -52,7 +52,7 @@ const GlobalStyle = createGlobalStyle`
     width: 80px;
 
     &:focus {
-      border-color: ${props => hexToRgb(props.color, 0.3)};
+      border-color: ${props => props.color.clearer(0.3)};
     }
   }
 
