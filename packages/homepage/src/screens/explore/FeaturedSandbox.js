@@ -76,12 +76,21 @@ export default class FeaturedSandbox extends React.PureComponent {
     }
   }
 
+  toggleOpen = () => {
+    this.props.pickSandbox({
+      id: this.state.sandbox.id,
+      title: this.props.title,
+      description: this.props.description,
+      screenshotUrl: this.state.sandbox.screenshot_url,
+    });
+  };
+
   render() {
     const { sandbox } = this.state;
     const { title, description } = this.props;
     return (
       <Container>
-        <SandboxContainer>
+        <SandboxContainer role="button" onClick={this.toggleOpen}>
           <SandboxInfo>
             <Title>{title}</Title>
             <Description>{description}</Description>

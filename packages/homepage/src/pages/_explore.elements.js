@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { Link } from 'gatsby';
 import RightArrow from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftArrow from 'react-icons/lib/md/keyboard-arrow-left';
 
@@ -149,4 +150,15 @@ export const StyledLeftArrow = styled(LeftArrow)`
       pointer-events: none;
       cursor: auto;
     `};
+`;
+
+export const PickedQuestion = styled(Link)`
+  transition: 0.3s ease color;
+  font-family: Poppins;
+  color: ${props => props.theme.new.description};
+  text-decoration: none;
+
+  &:hover {
+    color: ${props => props.theme.new.title};
+  }
 `;

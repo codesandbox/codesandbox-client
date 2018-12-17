@@ -99,6 +99,7 @@ export const signInZeitUrl = () => '/auth/zeit';
 
 export const profileUrl = (username: string) => `/u/${username}`;
 export const dashboardUrl = () => `/dashboard`;
+export const exploreUrl = () => `/explore`;
 export const teamOverviewUrl = teamId => `/dashboard/teams/${teamId}`;
 export const profileSandboxesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/sandboxes${page ? `/${page}` : ''}`;

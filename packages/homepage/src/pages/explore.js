@@ -22,6 +22,7 @@ import {
   StyledRightArrow,
   StyledLeftArrow,
   Navigation,
+  PickedQuestion,
 } from './_explore.elements';
 
 export default class Explore extends React.PureComponent {
@@ -85,8 +86,10 @@ export default class Explore extends React.PureComponent {
     });
   };
 
-  selectSandbox = ({ id, title, description }) => {
-    this.setState({ selectedSandbox: { id, title, description } });
+  selectSandbox = ({ id, title, description, screenshotUrl }) => {
+    this.setState({
+      selectedSandbox: { id, title, description, screenshotUrl },
+    });
   };
 
   openPreviousSandbox = currentIndex => () => {
@@ -128,21 +131,25 @@ export default class Explore extends React.PureComponent {
               title={selectedSandbox && selectedSandbox.title}
               description={selectedSandbox && selectedSandbox.description}
               openPreviousSandbox={
-                currentIndex > 0 && this.openPreviousSandbox(currentIndex)
+                currentIndex > 0 &&
+                currentIndex !== -1 &&
+                this.openPreviousSandbox(currentIndex)
               }
               openNextSandbox={
                 currentIndex < this.state.sandboxes.length - 1 &&
+                currentIndex !== -1 &&
                 this.openNextSandbox(currentIndex)
               }
             />
           )}
 
-          <PageContainer as="main" width={1440}>
+          <PageContainer width={1440}>
             <FeaturedSandbox
               title={featuredSandboxInfo.title}
               description={featuredSandboxInfo.description}
               sandboxId={featuredSandboxInfo.sandboxId}
               featuredSandboxes={featuredSandboxes}
+              pickSandbox={this.selectSandbox}
             />
 
             <Navigation>
@@ -188,7 +195,14 @@ export default class Explore extends React.PureComponent {
               </Dots>
             </Navigation>
 
-            <Heading2 style={{ margin: '3rem 0' }}>Picked Sandboxes</Heading2>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Heading2 style={{ margin: '3rem 0', flex: 1, width: '100%' }}>
+                Picked Sandboxes
+              </Heading2>
+              <PickedQuestion to="/docs/explore">
+                How do I get picked?
+              </PickedQuestion>
+            </div>
             <Sandboxes>
               {this.state.sandboxes.length !== 0
                 ? this.state.sandboxes.map((sandbox, i) => (

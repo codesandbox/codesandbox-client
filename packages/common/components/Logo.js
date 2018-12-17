@@ -18,6 +18,7 @@ export default ({
     width={typeof width === 'number' ? `${width}px` : width}
     height={typeof height === 'number' ? `${height}px` : height}
     viewBox="0 0 1024 1024"
+    style={{ verticalAlign: 'middle' }}
   >
     <title>CodeSandbox</title>
     <g id="Layer_1">

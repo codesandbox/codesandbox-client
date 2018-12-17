@@ -42,7 +42,7 @@ class Sidebar extends React.Component {
             block
             value={store.dashboard.filters.search}
             onChange={this.handleSearchChange}
-            placeholder="Search Sandboxes"
+            placeholder="Search my sandboxes"
           />
         </InputWrapper>
 
