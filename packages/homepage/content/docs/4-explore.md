@@ -16,7 +16,7 @@ If you're interested in becoming a curator you can send us an e-mail at <mailto:
 
 ## Which sandboxes get picked
 
-We can pick sandboxes based on their contents and their appearance. This can be exclusive, meaning that we can pick sandboxes that are not visually appealing but show some really interesting logic or approach. We can also pick sandboxes that only show something really good visually. A nice visual is always a plus, but not a requirement.
+Sandboxes get picked based on their contents and their appearance. This can be exclusive, meaning that we can pick sandboxes that are not visually appealing but show some really interesting logic or approach. We can also pick sandboxes that only show something really good visually. A nice visual is always a plus, but not a requirement.
 
 ## How can I get picked
 
