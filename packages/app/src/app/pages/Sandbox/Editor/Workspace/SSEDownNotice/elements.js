@@ -8,3 +8,10 @@ export const Container = styled.div`
   font-weight: 500;
   line-height: 1.4;
 `;
+
+export const Trouble = styled.p`
+  font-weight: 700;
+  color: white;
+  font-size: 0.875rem;
+  margin-top: 0px;
+`;

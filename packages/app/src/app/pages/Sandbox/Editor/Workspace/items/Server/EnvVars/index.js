@@ -25,7 +25,13 @@ class EnvironmentVariables extends React.Component {
     if (!envVars) {
       return (
         <WorkspaceInputContainer>
-          <div style={{ fontStyle: 'italic' }}>Loading...</div>
+          <div
+            css={`
+              font-style: italic;
+            `}
+          >
+            Loading...
+          </div>
         </WorkspaceInputContainer>
       );
     }
@@ -42,7 +48,11 @@ class EnvironmentVariables extends React.Component {
           />
         ))}
 
-        <WorkspaceInputContainer style={{ flexDirection: 'column' }}>
+        <WorkspaceInputContainer
+          css={`
+            flex-direction: column;
+          `}
+        >
           <EnvModal onSubmit={this.createEnv} />
         </WorkspaceInputContainer>
       </div>

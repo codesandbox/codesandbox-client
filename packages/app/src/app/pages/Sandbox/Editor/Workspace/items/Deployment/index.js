@@ -46,7 +46,8 @@ class Deployment extends Component {
             rel="noreferrer noopener"
           >
             ZEIT Now
-          </a>.
+          </a>
+          .
           {!user.integrations.zeit &&
             ' You need to add ZEIT to your integrations to deploy.'}
         </Description>
@@ -97,7 +98,11 @@ class Deployment extends Component {
 
         {user.integrations.zeit ? (
           <Fragment>
-            <WorkspaceInputContainer style={{ marginTop: '1rem' }}>
+            <WorkspaceInputContainer
+              css={`
+                margin-top: 1rem;
+              `}
+            >
               <Button
                 block
                 onClick={() => signals.deployment.deploySandboxClicked()}
@@ -107,7 +112,11 @@ class Deployment extends Component {
             </WorkspaceInputContainer>
             {deployment.sandboxDeploys.length ? (
               <Fragment>
-                <WorkspaceSubtitle style={{ margin: '1rem 0' }}>
+                <WorkspaceSubtitle
+                  css={`
+                    margin: 1rem 0;
+                  `}
+                >
                   Sandbox Deploys
                 </WorkspaceSubtitle>
                 <WorkspaceInputContainer>
@@ -185,7 +194,11 @@ class Deployment extends Component {
             ) : null}
           </Fragment>
         ) : (
-          <div style={{ margin: '1rem' }}>
+          <div
+            css={`
+              margin: 1rem;
+            `}
+          >
             <ZeitIntegration small />
           </div>
         )}

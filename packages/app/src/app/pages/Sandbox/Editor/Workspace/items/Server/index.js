@@ -74,7 +74,13 @@ const Server = ({ store }) => {
       </Margin>
 
       <Margin top={1} bottom={0.5}>
-        <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
+        <SubTitle
+          css={`
+            margin-bottom: 0.5rem;
+          `}
+        >
+          Control Container
+        </SubTitle>
         <WorkspaceInputContainer>
           <Button
             css={`

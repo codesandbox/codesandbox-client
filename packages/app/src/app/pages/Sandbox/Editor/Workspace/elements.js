@@ -209,3 +209,8 @@ export const VersionContainer = styled.div`
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)'};
 `;
+
+export const Wrapper = styled.div`
+  flex: 1;
+  overflow-y: auto;
+`;

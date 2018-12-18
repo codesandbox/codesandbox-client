@@ -98,7 +98,9 @@ export default class LiveButton extends React.PureComponent {
       >
         {showIcon && (
           <AnimatedRecordIcon
-            style={{ opacity: this.state.showIcon ? 1 : 0 }}
+            css={`
+              opacity: ${this.state.showIcon ? 1 : 0};
+            `}
           />
         )}{' '}
         {message}

@@ -56,14 +56,20 @@ const FileConfig = ({
             target="_blank"
             rel="noreferrer noopener"
             title="Documentation"
-            style={{ marginLeft: '.25rem' }}
+            css={`
+              margin-left: 0.25rem;
+            `}
           >
             <BookIcon />
           </a>
         </Tooltip>
         {getUI(config.type) && (
           <Tooltip title="Editable with UI">
-            <UIIcon style={{ marginLeft: '.5rem' }} />
+            <UIIcon
+              css={`
+                margin-left: 0.5rem;
+              `}
+            />
           </Tooltip>
         )}
       </FileTitle>

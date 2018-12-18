@@ -20,13 +20,18 @@ function SandboxActions({ store, signals }) {
           Having private and unlisted Sandboxes is available as a{' '}
           <a href="/patron" target="_blank">
             Patron
-          </a>.
+          </a>
+          .
         </PatronMessage>
       )}
       {store.isPatron && (
         <React.Fragment>
           {isServer && (
-            <PatronMessage style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+            <PatronMessage
+              css={`
+                color: rgba(255, 255, 255, 0.5);
+              `}
+            >
               This is a server sandbox, we don{"'"}t support private server
               sandboxes yet.
             </PatronMessage>
@@ -48,15 +53,19 @@ function SandboxActions({ store, signals }) {
         </React.Fragment>
       )}
 
-      <WorkspaceInputContainer style={{ fontSize: '1rem' }}>
+      <WorkspaceInputContainer
+        css={`
+          font-size: 1rem;
+        `}
+      >
         <Button
           block
           small
           danger
-          style={{
-            margin: '0.75rem 0.25rem',
-            boxSizing: 'border-box',
-          }}
+          css={`
+            margin: 0.75rem 0.25rem;
+            box-sizing: border-box;
+          `}
           onClick={() =>
             signals.modalOpened({
               modal: 'deleteSandbox',

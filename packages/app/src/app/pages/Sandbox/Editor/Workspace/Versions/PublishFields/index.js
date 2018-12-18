@@ -110,7 +110,11 @@ export default class PublishFields extends React.PureComponent {
     return (
       <Inputs>
         <WorkspaceInputContainer>
-          <Relative style={{ flex: 1 }}>
+          <Relative
+            css={`
+              flex: 1;
+            `}
+          >
             <input
               placeholder="0"
               ref={e => {
@@ -122,7 +126,11 @@ export default class PublishFields extends React.PureComponent {
             />
             <Dot>.</Dot>
           </Relative>
-          <Relative style={{ flex: 1 }}>
+          <Relative
+            css={`
+              flex: 1;
+            `}
+          >
             <input
               placeholder="0"
               ref={e => {
@@ -134,7 +142,11 @@ export default class PublishFields extends React.PureComponent {
             />
             <Dot>.</Dot>
           </Relative>
-          <Relative style={{ flex: 1 }}>
+          <Relative
+            css={`
+              flex: 1;
+            `}
+          >
             <input
               placeholder="0"
               ref={e => {
@@ -147,7 +159,10 @@ export default class PublishFields extends React.PureComponent {
           </Relative>
           <Button
             small
-            style={{ flex: 4, marginLeft: '0.25rem' }}
+            css={`
+              flex: 4;
+              margin-left: 0.25rem;
+            `}
             disabled={!(major && minor && patch) || duplicateVersion}
             onClick={this.publishVersion}
           >

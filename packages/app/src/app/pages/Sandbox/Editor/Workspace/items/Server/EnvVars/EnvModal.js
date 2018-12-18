@@ -52,22 +52,27 @@ export default class EnvModal extends React.PureComponent {
   render() {
     const errorMessage = this.isValid();
     return (
-      <form style={{ width: '100%' }} onSubmit={this.onSubmit}>
+      <form
+        css={`
+          width: 100%;
+        `}
+        onSubmit={this.onSubmit}
+      >
         <div>
           <InputContainer
-            style={{
-              flexDirection: 'column',
-              marginBottom: '.5rem',
-            }}
+            css={`
+              flex-direction: column;
+              margin-bottom: 0.5rem;
+            `}
           >
             <Input
               placeholder="Name"
-              style={{
-                marginLeft: 0,
-                marginRight: 0,
-                marginBottom: '.25rem',
-                width: '100%',
-              }}
+              css={`
+                margin-left: 0px;
+                margin-right: 0px;
+                margin-bottom: 0.25rem;
+                width: 100%;
+              `}
               onChange={this.onNameChange}
               value={this.state.name}
             />
@@ -91,7 +96,10 @@ export default class EnvModal extends React.PureComponent {
           {this.props.onCancel && (
             <Button
               onClick={this.onCancel}
-              style={{ flex: 1, marginRight: '.25rem' }}
+              css={`
+                flex: 1;
+                margin-right: 0.25rem;
+              `}
               red
               small
             >
@@ -100,7 +108,10 @@ export default class EnvModal extends React.PureComponent {
           )}
 
           <Button
-            style={{ flex: 1, marginLeft: this.props.onCancel ? '.25rem' : 0 }}
+            css={`
+              flex: 1;
+              margin-left: ${this.props.onCancel ? '.25rem' : 0};
+            `}
             block
             disabled={!this.state.name || !this.state.value || errorMessage}
             small

@@ -15,6 +15,8 @@ import GithubIntegration from 'app/src/app/pages/common/GithubIntegration';
 
 import Editor from './Editor';
 
+import { Wrong, Buttons, Private, PrivateWrapper } from './elements';
+
 class SandboxPage extends React.Component {
   componentWillMount() {
     if (window.screen.availWidth < 800) {
@@ -68,51 +70,48 @@ class SandboxPage extends React.Component {
       const hasPrivateAccess = store.user && store.user.integrations.github;
       return (
         <React.Fragment>
-          <div
-            style={{
-              fontWeight: 300,
-              color: 'rgba(255, 255, 255, 0.5)',
-              marginBottom: '1rem',
-              fontSize: '1.5rem',
-            }}
+          <Wrong>Something went wrong</Wrong>
+          <Title
+            css={`
+              font-size: 1.25rem;
+              margin-bottom: 0px;
+            `}
           >
-            Something went wrong
-          </div>
-          <Title style={{ fontSize: '1.25rem', marginBottom: 0 }}>
             {store.editor.error}
           </Title>
           <br />
-          <div style={{ display: 'flex', maxWidth: 400, width: '100%' }}>
-            <Button block small style={{ margin: '.5rem' }} href="/s">
+          <Buttons>
+            <Button
+              block
+              small
+              css={`
+                margin: 0.5rem;
+              `}
+              href="/s"
+            >
               Create Sandbox
             </Button>
-            <Button block small style={{ margin: '.5rem' }} href="/">
+            <Button
+              block
+              small
+              css={`
+                margin: 0.5rem;
+              `}
+              href="/"
+            >
               {hasLogIn ? 'Dashboard' : 'Homepage'}
             </Button>
-          </div>
-          {hasLogIn &&
-            isGithub &&
-            !hasPrivateAccess && (
-              <div
-                style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
-              >
-                <div
-                  style={{
-                    fontWeight: 300,
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    marginBottom: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'center',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Did you try to open a private GitHub repository and are you a{' '}
-                  <Link to="/patron">patron</Link>? Then you might need to get
-                  private access:
-                </div>
-                <GithubIntegration small />
-              </div>
-            )}
+          </Buttons>
+          {hasLogIn && isGithub && !hasPrivateAccess && (
+            <PrivateWrapper>
+              <Private>
+                Did you try to open a private GitHub repository and are you a{' '}
+                <Link to="/patron">patron</Link>? Then you might need to get
+                private access:
+              </Private>
+              <GithubIntegration small />
+            </PrivateWrapper>
+          )}
         </React.Fragment>
       );
     }
@@ -152,17 +151,21 @@ class SandboxPage extends React.Component {
       return (
         <Fullscreen>
           <Padding
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100vw',
-              height: '100vh',
-            }}
+            css={`
+              display: flex;
+              flex-direction: column;
+              width: 100vw;
+              height: 100vh;
+            `}
             margin={1}
           >
             <Navigation title="Sandbox Editor" />
             <Centered
-              style={{ flex: 1, width: '100%', height: '100%' }}
+              css={`
+                flex: 1;
+                width: 100%;
+                height: 100%;
+              `}
               horizontal
               vertical
             >

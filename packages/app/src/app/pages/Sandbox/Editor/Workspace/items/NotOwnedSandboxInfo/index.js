@@ -6,7 +6,11 @@ import Dependencies from '../../Dependencies';
 import WorkspaceItem from '../../WorkspaceItem';
 
 export default () => (
-  <div style={{ marginTop: '1rem' }}>
+  <div
+    css={`
+      margin-top: 1rem;
+    `}
+  >
     <Project />
 
     <Files />

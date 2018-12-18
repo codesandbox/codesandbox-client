@@ -61,13 +61,18 @@ export default class VersionEntry extends React.PureComponent {
         onMouseLeave={this.onMouseLeave}
         onClick={this.enableEditing}
       >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+          `}
+        >
           <EnvIcon
-            style={{
-              marginRight: '0.6rem',
-              fontSize: '1rem',
-              marginLeft: 4,
-            }}
+            css={`
+              margin-right: 0.6rem;
+              font-size: 1rem;
+              margin-left: 4px;
+            `}
           />{' '}
           {this.props.name}
         </div>

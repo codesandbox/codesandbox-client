@@ -28,7 +28,11 @@ const GitHub = ({ store }) => {
         integrations.
       </Description>
 
-      <div style={{ margin: '1rem' }}>
+      <div
+        css={`
+          margin: 1rem;
+        `}
+      >
         <GithubIntegration small />
       </div>
     </div>

@@ -37,7 +37,11 @@ const Live = ({ signals, store }) => (
       />
     ) : (
       <React.Fragment>
-        <Description style={{ marginBottom: '1rem' }}>
+        <Description
+          css={`
+            margin-bottom: 1rem;
+          `}
+        >
           Invite others to live edit this sandbox with you. We{"'"}re doing it
           live!
         </Description>

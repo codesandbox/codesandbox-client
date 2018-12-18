@@ -27,6 +27,7 @@ import {
   ContactContainer,
   ItemTitle,
   VersionContainer,
+  Wrapper,
 } from './elements';
 
 const idToItem = {
@@ -56,20 +57,23 @@ function Workspace({ store }) {
   return (
     <Container>
       {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <Wrapper>
         <Component />
-      </div>
-      {store.live.isLive &&
-        store.live.roomInfo.chatEnabled && (
-          <WorkspaceItem defaultOpen title="Chat">
-            <Chat />
-          </WorkspaceItem>
-        )}
+      </Wrapper>
+      {store.live.isLive && store.live.roomInfo.chatEnabled && (
+        <WorkspaceItem defaultOpen title="Chat">
+          <Chat />
+        </WorkspaceItem>
+      )}
       {!preferences.settings.zenMode && (
         <div>
           {!store.isPatron && !sandbox.owned && <Advertisement />}
           <ContactContainer>
-            <SocialInfo style={{ display: 'inline-block' }} />
+            <SocialInfo
+              css={`
+                display: inline-block;
+              `}
+            />
             <VersionContainer className="codesandbox-version">
               {VERSION}
             </VersionContainer>
