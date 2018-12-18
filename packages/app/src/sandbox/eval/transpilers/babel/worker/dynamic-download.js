@@ -83,7 +83,34 @@ export async function downloadPath(absolutePath) {
 
   const fs = BrowserFS.BFSRequire('fs');
 
-  mkDirByPathSync(BrowserFS.BFSRequire('path').dirname(r.path));
+  let existingFile;
+
+  try {
+    existingFile = fs.readFileSync(r.path);
+  } catch (e) {}
+
+  if (existingFile) {
+    try {
+      // Maybe there was a redirect from package.json. Manager only returns the redirect,
+      // if the babel worker doesn't have the package.json it enters an infinite loop.
+      const r2 = await resolveAsyncModule(
+        path.join(absolutePath, 'package.json'),
+        {}
+      );
+      if (r2) {
+        mkDirByPathSync(path.dirname(r2.path));
+
+        fs.writeFileSync(r2.path, r2.code);
+      }
+    } catch (e) {}
+
+    return Promise.resolve({
+      code: existingFile,
+      path: r.path,
+    });
+  }
+
+  mkDirByPathSync(path.dirname(r.path));
 
   fs.writeFileSync(r.path, r.code);
 
