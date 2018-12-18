@@ -1060,7 +1060,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   hasNativeTypescript = () => {
     const sandbox = this.sandbox;
+
+    // Add a quick hack for CRA+TS that will be removed when we fully made the switch to
+    // VSCode
+
     const template = getTemplate(sandbox.template);
+    if (template.name === 'create-react-app') {
+      return sandbox.modules.some(m => m.title.endsWith('.tsx'));
+    }
     return template.isTypescript;
   };
 
