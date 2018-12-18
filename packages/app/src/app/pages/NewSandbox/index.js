@@ -23,12 +23,24 @@ class NewSandboxComponent extends React.PureComponent {
   render() {
     return (
       <MaxWidth>
-        <Margin style={{ height: '100%' }} vertical={1.5} horizontal={1.5}>
+        <Margin
+          css={`
+            height: 100%;
+          `}
+          vertical={1.5}
+          horizontal={1.5}
+        >
           <Navigation title="New Sandbox" />
 
           <Margin top={5}>
             <Centered horizontal vertical>
-              <Margin style={{ maxWidth: '100%', width: 900 }} top={2}>
+              <Margin
+                css={`
+                  max-width: 100%;
+                  width: 950px;
+                `}
+                top={2}
+              >
                 <NewSandboxModal
                   createSandbox={this.createSandbox}
                   width={950}

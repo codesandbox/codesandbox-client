@@ -63,7 +63,9 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
         selected={!allSelected}
         color="#374140"
         name="all"
-        style={{ marginTop: '1rem' }}
+        css={`
+          margin-top: 1rem;
+        `}
         niceName="Select All"
       />
     </OverlayContainer>

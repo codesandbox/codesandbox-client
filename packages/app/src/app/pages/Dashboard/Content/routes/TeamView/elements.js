@@ -66,3 +66,11 @@ export const StyledEditIcon = styled(EditIcon)`
     color: white;
   }
 `;
+
+export const UserContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+`;

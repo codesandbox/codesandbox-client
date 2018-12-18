@@ -83,13 +83,13 @@ class ContentSplit extends React.Component {
             {!hideNavigation && <Navigation />}
 
             <div
-              style={{
-                position: 'fixed',
-                left: hideNavigation ? 0 : 'calc(4rem + 1px)',
-                top: store.preferences.settings.zenMode ? 0 : '3rem',
-                right: 0,
-                bottom: 0,
-              }}
+              css={`
+                position: fixed;
+                left: ${hideNavigation ? 0 : 'calc(4rem + 1px)'};
+                top: ${store.preferences.settings.zenMode ? 0 : '3rem'};
+                right: 0px;
+                bottom: 0px;
+              `}
             >
               <SplitPane
                 split="vertical"

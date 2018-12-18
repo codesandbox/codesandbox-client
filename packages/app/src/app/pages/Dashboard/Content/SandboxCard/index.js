@@ -30,6 +30,7 @@ import {
   SandboxTitle,
   KebabIcon,
   Line,
+  Wrapper,
 } from './elements';
 
 type Props = {
@@ -402,13 +403,7 @@ class SandboxItem extends React.PureComponent<Props> {
       >
         {onContextMenu =>
           connectDragSource(
-            <div
-              style={{
-                padding: 2,
-                borderRadius: 2,
-                backgroundColor: selected ? theme.secondary() : 'transparent',
-              }}
-            >
+            <Wrapper selected={selected} secondary={theme.secondary()}>
               <Container
                 css={`
                   outline: none;
@@ -515,7 +510,7 @@ class SandboxItem extends React.PureComponent<Props> {
                   <KebabIcon onClick={onContextMenu} />
                 </SandboxInfo>
               </Container>
-            </div>
+            </Wrapper>
           )
         }
       </StyledContextMenu>

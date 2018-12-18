@@ -9,18 +9,26 @@ import { patronUrl } from 'common/utils/url-generator';
 
 function Badges({ badges, username }) {
   return (
-    <Margin style={{ display: 'flex', alignItems: 'center' }} right={2}>
+    <Margin
+      css={`
+        display: flex;
+        align-items: center;
+      `}
+      right={2}
+    >
       <Link to={patronUrl()}>
-        {badges.map(badge => <Badge key={badge.id} badge={badge} size={64} />)}
+        {badges.map(badge => (
+          <Badge key={badge.id} badge={badge} size={64} />
+        ))}
       </Link>
 
       <ContributorsBadge
         username={username}
-        style={{
-          marginLeft: '1rem',
-          fontSize: '3rem',
-          display: 'inline-block',
-        }}
+        css={`
+          margin-left: 1rem;
+          font-size: 3rem;
+          display: inline-block;
+        `}
       />
     </Margin>
   );

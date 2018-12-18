@@ -114,3 +114,10 @@ export const Content = styled.div`
   overflow-y: auto;
   width: 100%;
 `;
+
+export const Loading = styled.span`
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 0.5rem;
+`;

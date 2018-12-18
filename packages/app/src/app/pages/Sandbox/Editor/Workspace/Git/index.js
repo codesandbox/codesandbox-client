@@ -10,7 +10,7 @@ import Input, { TextArea } from 'common/components/Input';
 import TotalChanges from './TotalChanges';
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
 
-import { Container, Buttons, ErrorMessage, Notice } from './elements';
+import { Container, Buttons, ErrorMessage, Notice, Em } from './elements';
 
 function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
   return rights === 'write' || rights === 'admin';
@@ -80,11 +80,12 @@ class Git extends React.Component {
                     </ErrorMessage>
                   )}
                   <WorkspaceSubtitle
-                    style={{
-                      color:
-                        store.git.subject.length > 72 ? `#F27777` : `#556362`,
-                      textAlign: 'right',
-                    }}
+                    css={`
+                      color: ${store.git.subject.length > 72
+                        ? `#F27777`
+                        : `#556362`};
+                      text-align: right;
+                    `}
                   >
                     {`${store.git.subject.length}/72`}
                   </WorkspaceSubtitle>
@@ -127,14 +128,7 @@ class Git extends React.Component {
                 </Margin>
               ) : (
                 <Margin horizontal={1} bottom={1}>
-                  <em
-                    style={{
-                      fontSize: '.875rem',
-                      color: 'rgba(255, 255, 255, 0.6)',
-                    }}
-                  >
-                    There are no changes
-                  </em>
+                  <Em>There are no changes</Em>
                 </Margin>
               )}
             </Margin>

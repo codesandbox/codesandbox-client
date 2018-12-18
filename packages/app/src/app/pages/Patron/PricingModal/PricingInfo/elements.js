@@ -17,3 +17,7 @@ export const CenteredHeader = styled.th`
       background-color: rgba(0, 0, 0, 0.3);
     `};
 `;
+
+export const Table = styled.table`
+  border-collapse: collapse;
+`;

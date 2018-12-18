@@ -43,7 +43,12 @@ class GetIcon extends Component {
 
 function EntryIcon({ type, width = 16, height = 16, error }) {
   return (
-    <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    <div
+      css={`
+        display: inline-block;
+        vertical-align: middle;
+      `}
+    >
       <GetIcon type={type} error={error} width={width} height={height} />
     </div>
   );

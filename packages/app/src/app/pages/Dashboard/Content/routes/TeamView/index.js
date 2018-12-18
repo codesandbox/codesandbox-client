@@ -16,6 +16,7 @@ import {
   Members,
   MemberHeader,
   StyledEditIcon,
+  UserContainer,
 } from './elements';
 import {
   TEAM_QUERY,
@@ -27,16 +28,12 @@ import AddTeamMember from './AddTeamMember';
 import RemoveTeamMember from './RemoveTeamMember';
 
 const User = ({ user, rightElement }) => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      fontWeight: 600,
-      marginBottom: '.5rem',
-      color: 'rgba(255, 255, 255, 0.9)',
-    }}
-  >
-    <div style={{ width: '100%' }}>
+  <UserContainer>
+    <div
+      css={`
+        width: 100%;
+      `}
+    >
       <UserWithAvatar
         name={user.name}
         username={user.username}
@@ -47,7 +44,7 @@ const User = ({ user, rightElement }) => (
     </div>
 
     {rightElement}
-  </div>
+  </UserContainer>
 );
 
 class TeamView extends React.PureComponent {
@@ -105,35 +102,39 @@ class TeamView extends React.PureComponent {
                                   onSubmit={
                                     descriptionLoading ? undefined : submit
                                   }
-                                  style={{ width: '100%' }}
+                                  css={`
+                                    width: 100%;
+                                  `}
                                 >
                                   <div
-                                    style={{
-                                      width: '100%',
-                                      lineHeight: '1.6',
-                                    }}
+                                    css={`
+                                      width: 100%;
+                                      line-height: 1.6;
+                                    `}
                                   >
                                     <AutosizeTextArea
                                       inputRef={node => {
                                         input = node;
                                       }}
                                       multiline
-                                      style={{
-                                        padding: '.5em',
-                                        lineHeight: '1.6',
-                                      }}
+                                      css={`
+                                        padding: 0.5em;
+                                        lineheight: 1.6;
+                                      `}
                                       defaultValue={description}
                                     />
                                   </div>
                                   <div
-                                    style={{
-                                      display: 'flex',
-                                      width: 300,
-                                      float: 'right',
-                                    }}
+                                    css={`
+                                      display: flex;
+                                      width: 300;
+                                      float: right;
+                                    `}
                                   >
                                     <Button
-                                      style={{ marginRight: '.5rem' }}
+                                      css={`
+                                        margin-right: 0.5rem;
+                                      `}
                                       red
                                       small
                                       onClick={stopEditing}
@@ -143,7 +144,9 @@ class TeamView extends React.PureComponent {
                                       Cancel
                                     </Button>
                                     <Button
-                                      style={{ marginLeft: '.5rem' }}
+                                      css={`
+                                        margin-right: 0.5rem;
+                                      `}
                                       small
                                       type="submit"
                                       disabled={descriptionLoading}
@@ -173,7 +176,11 @@ class TeamView extends React.PureComponent {
                     <Section>
                       <HeaderContainer>Team Members</HeaderContainer>
 
-                      <Members style={{ fontSize: '1rem' }}>
+                      <Members
+                        css={`
+                          font-size: 1rem;
+                        `}
+                      >
                         {sortBy(
                           data.me.team.users,
                           u => u.name || u.username
@@ -218,15 +225,15 @@ class TeamView extends React.PureComponent {
                                     return (
                                       <User
                                         user={user}
-                                        style={{
-                                          opacity: revokeLoading ? 0.5 : 1,
-                                        }}
+                                        css={`
+                                          opacity: ${revokeLoading ? 0.5 : 1};
+                                        `}
                                         rightElement={
                                           <div
-                                            style={{
-                                              float: 'right',
-                                              fontSize: '.75rem',
-                                            }}
+                                            css={`
+                                              float: right;
+                                              fontsize: 0.75rem;
+                                            `}
                                           >
                                             <Button
                                               onClick={handleClick}

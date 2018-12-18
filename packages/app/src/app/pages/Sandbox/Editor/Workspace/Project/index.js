@@ -103,10 +103,22 @@ class Project extends React.Component {
     const template = getTemplateDefinition(sandbox.template);
 
     return (
-      <div style={{ marginBottom: '1rem' }}>
-        <Item style={{ marginTop: '.5rem' }}>
+      <div
+        css={`
+          margin-bottom: 1rem;
+        `}
+      >
+        <Item
+          css={`
+            margin-top: 0.5rem;
+          `}
+        >
           {this.state.editingTitle ? (
-            <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
+            <WorkspaceInputContainer
+              css={`
+                margin: 0 -0.25rem;
+              `}
+            >
               <input
                 value={workspace.project.title}
                 onChange={event => {

@@ -185,19 +185,7 @@ class Entry extends React.PureComponent {
             {isNotSynced && !state && <NotSyncedIconWithMargin />}
             {state === '' && (
               <Right>
-                {isMainModule && (
-                  <span
-                    style={{
-                      fontSize: '.75rem',
-                      fontWeight: 600,
-                      opacity: hovering ? 0.6 : 0,
-                      marginTop: 3,
-                      marginRight: 3,
-                    }}
-                  >
-                    entry
-                  </span>
-                )}
+                {isMainModule && <Entry hovering={hovering}>entry</Entry>}
                 <EditIcons
                   hovering={hovering}
                   onCreateFile={onCreateModuleClick}

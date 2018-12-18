@@ -299,7 +299,12 @@ class SandboxGrid extends React.Component<*, State> {
     });
 
     return (
-      <Content style={{ overflowX: 'hidden' }} onMouseDown={this.onMouseDown}>
+      <Content
+        css={`
+          overflow-x: hidden;
+        `}
+        onMouseDown={this.onMouseDown}
+      >
         <DragLayer />
         <AutoSizer>
           {({ width, height }) => {
@@ -318,7 +323,9 @@ class SandboxGrid extends React.Component<*, State> {
             if (IS_TABLE) {
               return (
                 <Table
-                  style={{ outline: 'none' }}
+                  css={`
+                    outline: none;
+                  `}
                   gridStyle={{ outline: 'none' }}
                   width={width - 32}
                   height={height}
@@ -375,7 +382,10 @@ class SandboxGrid extends React.Component<*, State> {
 
             return (
               <Grid
-                style={{ outline: 'none', overflowX: 'hidden' }}
+                css={`
+                  outline: none;
+                  overflow-x: hidden;
+                `}
                 cellCount={sandboxCount}
                 cellRenderer={this.cellRenderer}
                 width={width}

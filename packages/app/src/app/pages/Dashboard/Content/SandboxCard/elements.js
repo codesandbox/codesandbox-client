@@ -101,3 +101,10 @@ export const KebabIcon = styled(MoreInfoIcon)`
     color: rgba(255, 255, 255, 0.8);
   }
 `;
+
+export const Wrapper = styled.div`
+  padding: 2px;
+  border-radius: 2px;
+  background-color: ${props =>
+    props.selected ? props.secondary : 'transparent'};
+`;

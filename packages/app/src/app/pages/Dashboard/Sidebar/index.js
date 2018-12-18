@@ -63,7 +63,11 @@ class Sidebar extends React.Component {
 
             return (
               <React.Fragment>
-                <Items style={{ marginBottom: '1rem' }}>
+                <Items
+                  css={`
+                    margin-bottom: 1rem;
+                  `}
+                >
                   <Item
                     Icon={TimeIcon}
                     path="/dashboard/recent"
@@ -114,9 +118,16 @@ class Sidebar extends React.Component {
           }}
         </Route>
 
-        <div style={{ margin: '2rem', fontSize: '.875rem' }}>
+        <div
+          css={`
+            margin: 2rem;
+            font-size: 0.875rem;
+          `}
+        >
           <Button
-            style={{ display: 'block' }}
+            css={`
+              display: block;
+            `}
             to="/dashboard/teams/new"
             small
             block

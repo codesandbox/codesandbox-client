@@ -29,7 +29,12 @@ class TabContainer extends React.Component {
 
     return connectDropTarget(
       connectDragSource(
-        <span ref={innerRef} style={{ opacity: isDragging ? 0.8 : 1 }}>
+        <span
+          ref={innerRef}
+          css={`
+            opacity: ${isDragging ? 0.8 : 1};
+          `}
+        >
           <Tab
             items={items}
             active={active}

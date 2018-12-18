@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
@@ -45,6 +45,19 @@ type State = {
   width: ?number,
   height: ?number,
 };
+
+const MainContainer = styled.section`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const CodeEditorWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex: 1;
+`;
 
 class EditorPreview extends React.Component<Props, State> {
   state = { width: null, height: null };
@@ -406,15 +419,8 @@ class EditorPreview extends React.Component<Props, State> {
           templateBackgroundColor: template.backgroundColor,
         }}
       >
-        <div
+        <MainContainer
           id="workbench.main.container"
-          style={{
-            height: '100%',
-            width: '100%',
-
-            display: 'flex',
-            flexDirection: 'column',
-          }}
           ref={node => {
             if (node) {
               this.contentNode = node;
@@ -447,18 +453,14 @@ class EditorPreview extends React.Component<Props, State> {
             ) : (
               <Tabs />
             ))}
-          <div
+          <CodeEditorWrapper
             ref={this.getBounds}
-            style={{
-              position: 'relative',
-              display: 'flex',
-              flex: 1,
-              marginTop:
-                preferences.settings.experimentVSCode ||
-                preferences.settings.zenMode
-                  ? 0
-                  : '2.5rem',
-            }}
+            css={`
+              margin-top: ${preferences.settings.experimentVSCode ||
+              preferences.settings.zenMode
+                ? 0
+                : '2.5rem'};
+            `}
           >
             <CodeEditor
               onInitialized={this.onInitialized}
@@ -510,7 +512,7 @@ class EditorPreview extends React.Component<Props, State> {
               width={absoluteWidth}
               height={absoluteHeight}
             />
-          </div>
+          </CodeEditorWrapper>
 
           <DevTools
             ref={component => {
@@ -534,7 +536,7 @@ class EditorPreview extends React.Component<Props, State> {
             }
             owned={sandbox.owned}
           />
-        </div>
+        </MainContainer>
       </ThemeProvider>
     );
   }

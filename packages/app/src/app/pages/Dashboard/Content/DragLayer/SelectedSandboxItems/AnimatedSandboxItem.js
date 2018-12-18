@@ -75,7 +75,7 @@ export default class AnimatedSandboxItem extends React.Component<Props> {
               <SandboxImageContainer>
                 <SandboxImage
                   css={`
-                    background-image: ${`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`})`};
+                    background-image: ${`https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`};
                   `}
                 />
               </SandboxImageContainer>

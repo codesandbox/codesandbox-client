@@ -30,7 +30,11 @@ export default class BlinkingDot extends React.PureComponent {
   render() {
     return (
       <DotContainer>
-        <RecordIcon style={{ opacity: this.state.showing ? 1 : 0 }} />
+        <RecordIcon
+          css={`
+            opacity: ${this.state.showing ? 1 : 0};
+          `}
+        />
       </DotContainer>
     );
   }

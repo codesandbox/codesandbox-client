@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container } from './elements';
+import { Container, Maintenance, NoBottom } from './elements';
 
 const pad = t => {
   if (`${t}`.length === 1) {
@@ -74,13 +74,13 @@ class ConnectionNotice extends React.PureComponent {
     if (Date.now() > this.state.downtimeTime) {
       return (
         <Container>
-          <p style={{ fontWeight: 700, marginTop: 0 }}>MAINTENANCE NOTICE</p>
+          <Maintenance>MAINTENANCE NOTICE</Maintenance>
           We are migrating our servers to Google Cloud Platform. This will take
           between 5 and 15 minutes.
-          <p style={{ marginBottom: 0 }}>
+          <NoBottom>
             The editor will still work as usual, but we have disabled saving and
             forking during the migration.
-          </p>
+          </NoBottom>
         </Container>
       );
     }
@@ -92,14 +92,20 @@ class ConnectionNotice extends React.PureComponent {
 
     return (
       <Container>
-        <p style={{ fontWeight: 700, marginTop: 0 }}>MAINTENANCE NOTICE</p>
+        <Maintenance>MAINTENANCE NOTICE</Maintenance>
         We will migrate our servers to Google Cloud Platform in{' '}
-        <span style={{ fontWeight: 700 }}>{this.renderCountdown()}</span>
+        <span
+          css={`
+            font-weight: 700;
+          `}
+        >
+          {this.renderCountdown()}
+        </span>
         {this.state.niceTime ? ` ${this.state.niceTime}` : ''}.
-        <p style={{ marginBottom: 0 }}>
+        <NoBottom>
           The editor will still work as usual, but we have disabled saving and
           forking during the migration. Make sure to save your work beforehand.
-        </p>
+        </NoBottom>
       </Container>
     );
   }

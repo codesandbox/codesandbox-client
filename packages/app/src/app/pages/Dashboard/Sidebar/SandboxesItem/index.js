@@ -78,11 +78,11 @@ class SandboxesItem extends React.Component {
               if (loading) {
                 return (
                   <DelayedAnimation
-                    style={{
-                      margin: '1rem',
-                      fontWeight: 600,
-                      color: 'rgba(255, 255, 255, 0.6)',
-                    }}
+                    css={`
+                      margin: 1rem;
+                      font-weight: 600;
+                      color: rgba(255, 255, 255, 0.6);
+                    `}
                     delay={0.6}
                   >
                     Loading...

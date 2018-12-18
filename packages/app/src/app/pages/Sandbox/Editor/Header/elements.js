@@ -41,3 +41,8 @@ export const Centered = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const SearchWrapper = styled.div`
+  margin-right: 0.5rem;
+  font-size: 0.875rem;
+`;

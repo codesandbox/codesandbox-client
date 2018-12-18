@@ -68,7 +68,12 @@ function PricingChoice({ store, signals, badge }) {
               date={store.user.subscription.since}
             />
           ) : (
-            <Centered style={{ marginTop: '2rem' }} horizontal>
+            <Centered
+              css={`
+                margin-top: 2rem;
+              `}
+              horizontal
+            >
               <SubscribeForm
                 subscribe={token =>
                   signals.patron.createSubscriptionClicked({ token })
@@ -79,7 +84,11 @@ function PricingChoice({ store, signals, badge }) {
               />
               <Notice>
                 You will be billed now and on the{' '}
-                <strong style={{ color: 'white' }}>
+                <strong
+                  css={`
+                    color: white;
+                  `}
+                >
                   {moment().format('Do')}
                 </strong>{' '}
                 of each month thereafter. You can cancel or change your

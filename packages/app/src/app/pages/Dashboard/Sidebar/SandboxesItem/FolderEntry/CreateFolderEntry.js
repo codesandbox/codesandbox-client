@@ -68,14 +68,20 @@ export default ({ basePath, teamId, noFocus, close, depth }) => {
           }}
         >
           <CreateDirectoryContainer depth={depth + 1}>
-            <IconContainer style={{ marginRight: '0.25rem' }}>
+            <IconContainer
+              css={`
+                margin-right: 0.25rem;
+              `}
+            >
               <AnimatedChevron open={false} />
               <AddFolderIcon />
             </IconContainer>{' '}
             <Input
               small
               placeholder="Folder Name"
-              style={{ marginRight: '1rem' }}
+              css={`
+                margin-right: 1rem;
+              `}
               onBlur={close}
               onKeyDown={e => {
                 if (e.keyCode === 27) {

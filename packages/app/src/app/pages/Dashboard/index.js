@@ -104,7 +104,12 @@ class Dashboard extends React.Component {
           <Navigation searchNoInput title="Dashboard" />
         </NavigationContainer>
 
-        <div style={{ display: 'flex', overflow: 'hidden' }}>
+        <div
+          css={`
+            display: flex;
+            overflow: hidden;
+          `}
+        >
           {DashboardContent}
         </div>
       </Container>

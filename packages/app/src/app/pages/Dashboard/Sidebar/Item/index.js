@@ -78,7 +78,11 @@ export default class Item extends React.Component {
                   <AnimatedChevron onClick={this.toggleOpen} open={isOpen} />
                 ) : (
                   <div
-                    style={{ width: 16, height: 16, marginRight: '0.25rem' }}
+                    css={`
+                      width: 16px;
+                      height: 16px;
+                      margin-right: 0.25rem;
+                    `}
                   />
                 )}
                 <IconContainer>

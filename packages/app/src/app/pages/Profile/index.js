@@ -69,7 +69,12 @@ class Profile extends React.Component<Props> {
           </MaxWidth>
         </Content>
         <MaxWidth width={1024}>
-          <Margin horizontal={2} style={{ minHeight: '60vh' }}>
+          <Margin
+            horizontal={2}
+            css={`
+              min-height: 60vh;
+            `}
+          >
             <Switch>
               <Route path={match.url} exact render={() => <Showcase />} />
               <Route

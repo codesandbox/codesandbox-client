@@ -178,11 +178,13 @@ class FolderEntry extends React.Component {
             <Container
               as={onSelect ? 'div' : undefined}
               onClick={onSelect ? this.handleSelect : undefined}
+              css={`
+                color: ${isOver && canDrop ? theme.secondary() : undefined};
+                background-color: ${isOver && canDrop
+                  ? 'rgba(0, 0, 0, 0.3)'
+                  : undefined};
+              `}
               style={{
-                color: isOver && canDrop ? theme.secondary() : undefined,
-                backgroundColor:
-                  isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
-
                 ...(currentPath === path && currentTeamId === teamId
                   ? {
                       borderColor: theme.secondary(),

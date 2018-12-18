@@ -203,7 +203,10 @@ class EditorTabs extends React.Component {
 
         <IconContainer>
           <Tooltip
-            style={{ display: 'inline-flex', alignItems: 'center' }}
+            css={`
+              display: inline-flex;
+              align-items: center;
+            `}
             title="Prettify"
           >
             <StyledPrettierIcon

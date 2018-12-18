@@ -15,3 +15,11 @@ export const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
 
   margin-top: 1.5px;
 `;
+
+export const Entry = styled.span`
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: ${props => (props.hovering ? 0.6 : 0)};
+  margin-top: 3px;
+  margin-right: 3px;
+`;

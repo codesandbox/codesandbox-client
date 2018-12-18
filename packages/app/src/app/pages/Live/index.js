@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 import Navigation from 'app/pages/common/Navigation';
 import Fullscreen from 'common/components/flex/Fullscreen';
@@ -15,6 +16,20 @@ import SignInButton from 'app/pages/common/SignInButton';
 
 import Editor from '../Sandbox/Editor';
 import BlinkingDot from './BlinkingDot';
+
+const SignIn = styled.div`
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+`;
+
+export const Error = styled.div`
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+`;
 
 class LivePage extends React.Component {
   loggedIn = this.props.store.hasLogIn;
@@ -58,16 +73,7 @@ class LivePage extends React.Component {
     if (!store.hasLogIn) {
       return (
         <React.Fragment>
-          <div
-            style={{
-              fontWeight: 300,
-              color: 'rgba(255, 255, 255, 0.5)',
-              marginBottom: '1rem',
-              fontSize: '1.5rem',
-            }}
-          >
-            Sign in required
-          </div>
+          <SignIn>Sign in required</SignIn>
           <Title
             css={`
               fontsize: 1.25rem;
@@ -87,16 +93,7 @@ class LivePage extends React.Component {
       if (store.live.error === 'room not found') {
         return (
           <React.Fragment>
-            <div
-              style={{
-                fontWeight: 300,
-                color: 'rgba(255, 255, 255, 0.5)',
-                marginBottom: '1rem',
-                fontSize: '1.5rem',
-              }}
-            >
-              Something went wrong
-            </div>
+            <Error>Something went wrong</Error>
             <Title
               css={`
                 fontsize: 1.25rem;
@@ -155,17 +152,21 @@ class LivePage extends React.Component {
       return (
         <Fullscreen>
           <Padding
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100vw',
-              height: '100vh',
-            }}
+            css={`
+              display: flex;
+              flex-direction: column;
+              width: 100vw;
+              height: 100vh;
+            `}
             margin={1}
           >
             <Navigation title="Live Session" />
             <Centered
-              style={{ flex: 1, width: '100%', height: '100%' }}
+              css={`
+                flex: 1;
+                width: 100%;
+                height: 100%;
+              `}
               horizontal
               vertical
             >

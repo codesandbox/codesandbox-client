@@ -33,7 +33,7 @@ import Logo from './Logo';
 import Action from './Action';
 import CollectionInfo from './CollectionInfo';
 
-import { Container, Right, Left, Centered } from './elements';
+import { Container, Right, Left, Centered, SearchWrapper } from './elements';
 
 import UpdateFound from './UpdateFound';
 import FeedbackIcon from '../../../common/UserMenu/Menu/FeedbackIcon';
@@ -141,9 +141,9 @@ const Header = ({ store, signals }) => {
                 href={searchUrl()}
               />
             ) : (
-              <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+              <SearchWrapper>
                 <HeaderSearchBar />
-              </div>
+              </SearchWrapper>
             )
           }
         </Media>
@@ -159,10 +159,10 @@ const Header = ({ store, signals }) => {
           <Action
             onClick={() => document.location.reload()}
             Icon={UpdateFound}
-            style={{
-              color: theme.green(),
-              fontSize: '1rem',
-            }}
+            css={`
+              color: ${theme.green()};
+              font-size: 1rem;
+            `}
             tooltip="Update Available! Click to Refresh."
           />
         )}
@@ -225,14 +225,19 @@ const Header = ({ store, signals }) => {
         )}
 
         <Margin
-          style={{
-            zIndex: 20,
-            height: '100%',
-          }}
+          css={`
+            z-index: 20;
+            height: 100%;
+          `}
           left={1}
         >
           {store.isLoggedIn ? (
-            <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+            <div
+              css={`
+                font-size: 0.875rem;
+                margin: 6px 0.5rem;
+              `}
+            >
               <UserMenu small />
             </div>
           ) : (
