@@ -110,7 +110,7 @@ class ContextMenu extends React.PureComponent {
       isDraggingItem,
       ...props
     } = this.props;
-    const { show, x, y, down, left } = this.state;
+    const { show } = this.state;
 
     const mapFunction = (item, i) => {
       if (Array.isArray(item)) {

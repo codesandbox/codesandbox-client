@@ -157,13 +157,14 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     }
 
     return (
-      <Conatiner>
-        {!isModuleSynced && module.title === 'index.html' && (
-          <Icons small>
-            You may have to save this file and refresh the preview to see
-            changes
-          </Icons>
-        )}
+      <Container>
+        {!isModuleSynced &&
+          module.title === 'index.html' && (
+            <Icons small>
+              You may have to save this file and refresh the preview to see
+              changes
+            </Icons>
+          )}
         {config &&
           (getUI(config.type) ? (
             <Icons>
@@ -197,7 +198,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
             </Icons>
           ))}
         <Editor {...props} dependencies={dependencies} />
-      </Conatiner>
+      </Container>
     );
   }
 }

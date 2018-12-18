@@ -70,7 +70,7 @@ export default ({
             <Tooltip title="Toggle File Watching">
               <SyncIcon
                 css={`
-                  color: ${props => (props.watching ? 'white' : 'inherit')};
+                  color: ${watching ? 'white' : 'inherit'};
                 `}
                 onClick={toggleWatching}
               />

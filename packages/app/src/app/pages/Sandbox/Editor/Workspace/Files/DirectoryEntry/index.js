@@ -4,13 +4,13 @@ import { DropTarget } from 'react-dnd';
 import { reaction } from 'mobx';
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
+import Relative from 'common/components/Relative';
 import { NativeTypes } from 'react-dnd-html5-backend';
 
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
 import { EntryContainer, Overlay, Opener } from './elements';
-import Relative from 'common/components/Relative';
 
 const readDataURL = imageFile =>
   new Promise(resolve => {

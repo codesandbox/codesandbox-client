@@ -1,10 +1,10 @@
 import React from 'react';
 import { inject } from 'mobx-react';
 
+import Relative from 'common/components/Relative';
 import Button from 'app/components/Button';
 
 import { ButtonContainer } from './elements';
-import Relative from 'common/components/Relative';
 
 function AddVersion({ signals, children }) {
   return (

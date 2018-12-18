@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Button from 'app/components/Button';
-import { WorkspaceInputContainer } from '../../elements';
-
-import { ButtonContainer } from './elements';
 import Relative from 'common/components/Relative';
+import Button from 'app/components/Button';
+
+import { WorkspaceInputContainer } from '../../elements';
+import { ButtonContainer } from './elements';
 
 const initialState = {
   name: '',

@@ -36,3 +36,10 @@ export const HeaderTitle = styled.div`
   vertical-align: middle;
   align-items: center;
 `;
+
+export const Loading = styled.div`
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 0.5rem;
+`;
