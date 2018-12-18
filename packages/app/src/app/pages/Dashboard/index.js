@@ -104,4 +104,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(observer(withRouter(Dashboard)));
+export default inject('store', 'signals')(withRouter(observer(Dashboard)));
