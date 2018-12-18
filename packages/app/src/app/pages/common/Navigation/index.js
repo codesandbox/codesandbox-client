@@ -113,7 +113,9 @@ function Navigation({ signals, store, title, searchNoInput }) {
           )}
 
           <Action
-            style={{ fontSize: '1.125rem' }}
+            css={`
+              font-size: 1.125rem;
+            `}
             onClick={() =>
               signals.modalOpened({
                 modal: 'newSandbox',

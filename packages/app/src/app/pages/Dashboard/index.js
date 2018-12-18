@@ -91,7 +91,12 @@ class Dashboard extends React.Component {
               <OffsettedLogo />
               <LoggedInTitle>Sign in to CodeSandbox</LoggedInTitle>
 
-              <SignInButton big style={{ fontSize: '1rem' }} />
+              <SignInButton
+                big
+                css={`
+                  font-size: 1rem;
+                `}
+              />
             </LoggedInContainer>
           </Centered>
         </Container>
