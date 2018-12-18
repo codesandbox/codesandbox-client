@@ -47,3 +47,26 @@ export const Loading = styled.div`
 
   z-index: 10;
 `;
+
+export const Image = styled.div`
+  width: 100%;
+  height: 100%;
+  filter: blur(2px);
+  transform: scale(1.025, 1.025);
+  background-image: ${props => `url("${props.screenshotUrl}")`};
+  background-repeat: no-repeat;
+  background-position-x: center;
+`;
+
+export const ImageWrapper = styled.div`
+  overflow: hidden;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 40px;
+  z-index: 0;
+`;

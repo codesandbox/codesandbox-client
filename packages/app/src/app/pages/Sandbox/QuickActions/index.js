@@ -125,7 +125,11 @@ class QuickActions extends React.Component {
               onBlur: () => setTimeout(this.closeQuickActions, 100),
             });
             return (
-              <div style={{ width: '100%' }}>
+              <div
+                css={`
+                  width: 100%;
+                `}
+              >
                 <InputContainer>
                   <Input {...inputProps} value={inputProps.value || ''} />
                 </InputContainer>

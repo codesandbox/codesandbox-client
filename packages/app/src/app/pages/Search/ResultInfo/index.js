@@ -5,7 +5,12 @@ import { ClearAllContainer } from './elements';
 
 function ResultInfo() {
   return (
-    <div style={{ marginBottom: '1rem', fontSize: '.875rem' }}>
+    <div
+      css={`
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+      `}
+    >
       <Stats />
       <ClearAllContainer>
         <ClearRefinements />

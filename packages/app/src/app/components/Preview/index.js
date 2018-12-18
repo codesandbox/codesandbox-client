@@ -14,7 +14,13 @@ import { Spring } from 'react-spring';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import Navigator from './Navigator';
-import { Container, StyledFrame, Loading } from './elements';
+import {
+  Container,
+  StyledFrame,
+  Loading,
+  Image,
+  ImageWrapper,
+} from './elements';
 import type { Settings } from '../CodeEditor/types';
 
 type Props = {
@@ -804,38 +810,14 @@ class BasePreview extends React.Component<Props, State> {
                 }}
               />
 
-              {this.props.sandbox.screenshotUrl &&
-                style.opacity !== 1 && (
-                  <div
-                    style={{
-                      overflow: 'hidden',
-                      width: '100%',
-                      position: 'absolute',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      top: 40,
-                      zIndex: 0,
-                    }}
-                  >
-                    <div
-                      alt={this.props.sandbox.title}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        filter: `blur(2px)`,
-                        transform: 'scale(1.025, 1.025)',
-                        backgroundImage: `url("${
-                          this.props.sandbox.screenshotUrl
-                        }")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPositionX: 'center',
-                      }}
-                    />
-                  </div>
-                )}
+              {this.props.sandbox.screenshotUrl && (
+                <ImageWrapper>
+                  <Image
+                    screenshotUrl={this.props.sandbox.screenshotUrl}
+                    alt={this.props.sandbox.title}
+                  />
+                </ImageWrapper>
+              )}
             </React.Fragment>
           )}
         </Spring>

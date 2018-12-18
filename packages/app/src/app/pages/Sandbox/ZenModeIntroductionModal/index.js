@@ -19,7 +19,9 @@ function ZenModeIntroduction({ signals }) {
 
       <Row justifyContent="space-around">
         <Button
-          style={{ marginRight: '.5rem' }}
+          css={`
+            margin-right: 0.5rem;
+          `}
           onClick={() => {
             signals.modalClosed();
           }}

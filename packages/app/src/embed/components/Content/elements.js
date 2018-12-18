@@ -41,3 +41,15 @@ export const Split = styled.div`
 
   height: 100%;
 `;
+
+export const CodeEditorWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+export const PreviewWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;

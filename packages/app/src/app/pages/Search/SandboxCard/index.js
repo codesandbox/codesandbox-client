@@ -31,7 +31,10 @@ function SandboxCard({ hit }) {
           <TagContainer>
             <Tags
               align="right"
-              style={{ margin: 0, marginTop: -2 }}
+              css={`
+                margin: 0px;
+                margin-top: -2px;
+              `}
               tags={(hit.tags || []).filter(tag => tag.length < 20)}
             />
           </TagContainer>

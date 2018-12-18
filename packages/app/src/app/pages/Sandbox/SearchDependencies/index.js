@@ -60,10 +60,10 @@ export default class SearchDependencies extends React.PureComponent {
           onHitVersionChange={this.handleHitVersionChange}
         />
         <div
-          style={{
-            height: 40,
-            backgroundColor: theme.background2.darken(0.2)(),
-          }}
+          css={`
+            height: 40px;
+            background-color: ${theme.background2.darken(0.2)()};
+          `}
         >
           <PoweredBy />
         </div>

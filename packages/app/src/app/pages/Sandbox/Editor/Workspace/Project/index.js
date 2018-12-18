@@ -149,7 +149,11 @@ class Project extends React.Component {
             </Title>
           )}
           {this.state.editingDescription ? (
-            <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
+            <WorkspaceInputContainer
+              css={`
+                margin: 0 -0.25rem;
+              `}
+            >
               <textarea
                 value={workspace.project.description}
                 onChange={event => {
@@ -180,9 +184,9 @@ class Project extends React.Component {
             </WorkspaceInputContainer>
           ) : (
             <Description
-              style={{
-                fontStyle: sandbox.description ? 'normal' : 'italic',
-              }}
+              css={`
+                font-style: ${sandbox.description ? 'normal' : 'italic'};
+              `}
             >
               {sandbox.description ||
                 (editable ? 'No description, create one!' : '')}
@@ -209,8 +213,18 @@ class Project extends React.Component {
 
         {!!sandbox.team && (
           <Tooltip title="This sandbox is owned by this team">
-            <Item style={{ color: 'white', display: 'flex' }}>
-              <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
+            <Item
+              css={`
+                color: white;
+                display: flex;
+              `}
+            >
+              <TeamIcon
+                css={`
+                  font-size: 1.125em;
+                  margin-right: 0.5rem;
+                `}
+              />
               <div>{sandbox.team.name}</div>
             </Item>
           </Tooltip>
@@ -245,7 +259,12 @@ class Project extends React.Component {
               onlyUnique
             />
           ) : (
-            <Tags style={{ fontSize: 13 }} tags={sandbox.tags} />
+            <Tags
+              css={`
+                font-size: 13px;
+              `}
+              tags={sandbox.tags}
+            />
           )}
         </Item>
 
@@ -275,14 +294,21 @@ class Project extends React.Component {
               href={template.url}
               target="_blank"
               rel="noreferrer noopener"
-              style={{ color: template.color() }}
+              css={`
+                color: ${template.color()};
+              `}
             >
               {sandbox.template}
             </a>
           </PropertyValue>
         </Item>
         {sandbox.owned ? (
-          <Item style={{ marginTop: 5 }} flex>
+          <Item
+            css={`
+              margin-top: 5px;
+            `}
+            flex
+          >
             <PropertyName>
               Frozen
               <Tooltip title="When true this sandbox will fork on edit">

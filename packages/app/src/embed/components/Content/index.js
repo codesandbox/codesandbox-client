@@ -22,7 +22,13 @@ import DevTools from 'app/components/Preview/DevTools';
 import { resolveModule, findMainModule } from 'common/sandbox/modules';
 import RunOnClick from 'common/components/RunOnClick';
 
-import { Container, Tabs, Split } from './elements';
+import {
+  Container,
+  Tabs,
+  Split,
+  CodeEditorWrapper,
+  PreviewWrapper,
+} from './elements';
 
 type EmbedError = {
   column: number,
@@ -360,7 +366,11 @@ export default class Content extends React.PureComponent<Props, State> {
     }
 
     return (
-      <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
+      <Container
+        css={`
+          flex-direction: ${verticalMode ? 'column' : 'row'};
+        `}
+      >
         {showEditor && (
           <Split
             show={showEditor}
@@ -414,13 +424,7 @@ export default class Content extends React.PureComponent<Props, State> {
                 );
               })}
             </Tabs>
-            <div
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: '100%',
-              }}
-            >
+            <CodeEditorWrapper>
               <CodeEditor
                 onInitialized={this.onCodeEditorInitialized}
                 currentModule={currentModule || mainModule}
@@ -434,7 +438,7 @@ export default class Content extends React.PureComponent<Props, State> {
                 onUnMount={this.onCodeEditorUnMount}
                 highlightedLines={this.props.highlightedLines}
               />
-            </div>
+            </CodeEditorWrapper>
           </Split>
         )}
 
@@ -448,13 +452,7 @@ export default class Content extends React.PureComponent<Props, State> {
             {!this.state.running ? (
               <RunOnClick onClick={() => this.setState({ running: true })} />
             ) : (
-              <div
-                style={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
+              <PreviewWrapper>
                 <BasePreview
                   onInitialized={this.onPreviewInitialized}
                   sandbox={sandbox}
@@ -478,7 +476,7 @@ export default class Content extends React.PureComponent<Props, State> {
                   view={view}
                   owned={false}
                 />
-              </div>
+              </PreviewWrapper>
             )}
           </Split>
         )}
