@@ -5,7 +5,6 @@ import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-e
 
 import type { Module } from '../entities/module';
 import Manager from '../manager';
-import type { Manifest } from '../manager';
 
 import getDependencyName from '../utils/get-dependency-name';
 import { packageFilter } from '../utils/resolve-utils';
@@ -169,7 +168,7 @@ function resolvePath(
             currentTModule.dependencies.add(tModule);
             return callback(null, tModule.module.code);
           } catch (e) {
-            const depPath = p.replace('/node_modules/', '');
+            const depPath = p.replace(/.*\/node_modules\//, '');
             const depName = getDependencyName(depPath);
 
             // To prevent infinite loops we keep track of which dependencies have been requested before.
@@ -182,7 +181,7 @@ function resolvePath(
 
             // eslint-disable-next-line
             const subDepVersionVersionInfo = await findDependencyVersion(
-              currentPath,
+              currentTModule,
               manager,
               defaultExtensions,
               depName
