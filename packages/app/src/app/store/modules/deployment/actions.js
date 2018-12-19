@@ -44,20 +44,20 @@ export function getPeopleWhoWant2() {
 export function addPersonWhoWant2({ path, props }) {
   const base = Airtable.base('apppgSmcJWwuXac6t');
 
-  const getPeople = () =>
-    new Promise(res => {
-      base('zeit2').create({ username: props.username }, (err, record) => {
+  const AddPerson = () =>
+    new Promise((res, rej) => {
+      base('zeit2').create({ username: props.username }, err => {
         if (err) {
           console.error(err);
-          return;
+          rej();
         }
-        console.log(record.getId());
-
         res();
       });
     });
 
-  return getPeople().then(() => path.success());
+  return AddPerson()
+    .then(() => path.success())
+    .catch(() => path.error());
 }
 
 export async function createApiData({ props, state }) {
