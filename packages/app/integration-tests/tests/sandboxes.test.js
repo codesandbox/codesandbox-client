@@ -31,6 +31,7 @@ const SANDBOXES = [
   'github/algolia/doc-onboarding/tree/master/demos/angular/media', // algolia angular demo
   { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
   { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
+  'pm79km5lmj', // babel macros with styled components
 ];
 
 function pageLoaded(page) {

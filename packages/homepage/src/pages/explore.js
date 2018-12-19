@@ -119,6 +119,7 @@ export default class Explore extends React.PureComponent {
       <Layout>
         <Container>
           <TitleAndMetaTags
+            image="https://codesandbox.io/static/img/explore.png"
             description="You can find the most interesting sandboxes created on CodeSandbox here. Explore examples of JavaScript and frameworks like React, Vue and Angular!"
             title="Explore Sandboxes - CodeSandbox"
           />

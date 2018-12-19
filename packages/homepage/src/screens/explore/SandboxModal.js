@@ -11,6 +11,7 @@ import getTemplate from 'common/templates';
 import GithubBadge from 'common/components/GithubBadge';
 
 import Tags from 'common/components/Tags';
+import track from 'common/utils/analytics';
 
 import Modal from './Modal';
 import EmbedSkeleton from './EmbedSkeleton';
@@ -39,6 +40,8 @@ export default class SandboxModal extends React.PureComponent {
   loadedSandboxes = {};
 
   getSandbox = (sandboxId: string) => {
+    track('Explore Sandbox Open', { sandboxId });
+
     if (this.loadedSandboxes[sandboxId]) {
       return Promise.resolve(this.loadedSandboxes[sandboxId]);
     }

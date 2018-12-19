@@ -15,96 +15,103 @@ import {
 } from 'common/utils/url-generator';
 import PatronBadge from 'common/utils/badges/PatronBadge';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
+import track from 'common/utils/analytics';
 
 import { Container, Item, Icon, Separator } from './elements';
 import FeedbackIcon from './FeedbackIcon';
 
-function Menu({
-  username,
-  curator,
-  openPreferences,
-  openStorageManagement,
-  openFeedback,
-  signOut,
-}) {
-  return (
-    <Container>
-      <Item as={Link} to={profileUrl(username)}>
-        <Icon>
-          <UserIcon />
-        </Icon>
-        My Profile
-      </Item>
+export default class Menu extends React.PureComponent {
+  componentDidMount() {
+    track('User Menu Open');
+  }
 
-      <Separator />
+  render() {
+    const {
+      username,
+      curator,
+      openPreferences,
+      openStorageManagement,
+      openFeedback,
+      signOut,
+    } = this.props;
 
-      <Item as={Link} to={dashboardUrl()}>
-        <Icon>
-          <InfoIcon />
-        </Icon>
-        Dashboard
-      </Item>
-
-      <Item as="a" href="/docs">
-        <Icon>
-          <BookIcon />
-        </Icon>
-        Documentation
-      </Item>
-
-      {curator && (
-        <Item as={Link} to={curatorUrl()}>
+    return (
+      <Container>
+        <Item as={Link} to={profileUrl(username)}>
           <Icon>
-            <span css={{ width: 14 }} role="img" aria-label="Star">
-              ✨
-            </span>
+            <UserIcon />
           </Icon>
-          Curator Dashboard
+          My Profile
         </Item>
-      )}
 
-      <Item as={Link} to={patronUrl()}>
-        <Icon>
-          <PatronBadge style={{ width: 24, margin: '-6px -5px' }} size={24} />
-        </Icon>
-        Patron Page
-      </Item>
+        <Separator />
 
-      <Separator />
+        <Item as={Link} to={dashboardUrl()}>
+          <Icon>
+            <InfoIcon />
+          </Icon>
+          Dashboard
+        </Item>
 
-      <Item onClick={openStorageManagement}>
-        <Icon>
-          <FolderIcon />
-        </Icon>
-        Storage Management
-      </Item>
+        <Item as="a" href="/docs">
+          <Icon>
+            <BookIcon />
+          </Icon>
+          Documentation
+        </Item>
 
-      <Item onClick={openPreferences}>
-        <Icon>
-          <SettingsIcon />
-        </Icon>
-        Preferences
-      </Item>
+        {curator && (
+          <Item as={Link} to={curatorUrl()}>
+            <Icon>
+              <span css={{ width: 14 }} role="img" aria-label="Star">
+                ✨
+              </span>
+            </Icon>
+            Curator Dashboard
+          </Item>
+        )}
 
-      <Separator />
+        <Item as={Link} to={patronUrl()}>
+          <Icon>
+            <PatronBadge style={{ width: 24, margin: '-6px -5px' }} size={24} />
+          </Icon>
+          Patron Page
+        </Item>
 
-      <Item onClick={openFeedback}>
-        <Icon>
-          <FeedbackIcon />
-        </Icon>
-        Submit Feedback
-      </Item>
+        <Separator />
 
-      <Separator />
+        <Item onClick={openStorageManagement}>
+          <Icon>
+            <FolderIcon />
+          </Icon>
+          Storage Management
+        </Item>
 
-      <Item onClick={signOut}>
-        <Icon>
-          <ExitIcon />
-        </Icon>
-        Sign out
-      </Item>
-    </Container>
-  );
+        <Item onClick={openPreferences}>
+          <Icon>
+            <SettingsIcon />
+          </Icon>
+          Preferences
+        </Item>
+
+        <Separator />
+
+        <Item onClick={openFeedback}>
+          <Icon>
+            <FeedbackIcon />
+          </Icon>
+          Submit Feedback
+        </Item>
+
+        <Separator />
+
+        <Item onClick={signOut}>
+          <Icon>
+            <ExitIcon />
+          </Icon>
+          Sign out
+        </Item>
+      </Container>
+    );
+  }
 }
-
-export default Menu;
