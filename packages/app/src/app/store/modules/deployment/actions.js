@@ -1,6 +1,7 @@
 import { omit } from 'lodash-es';
 
 import getTemplate from 'common/templates';
+import Airtable from '../../utils/setAirtable';
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
@@ -12,6 +13,51 @@ export function loadZip({ props, jsZip }) {
   const { file } = props;
 
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
+}
+
+export function getPeopleWhoWant2() {
+  const base = Airtable.base('apppgSmcJWwuXac6t');
+  const params = base('zeit2').select({
+    view: 'Grid view',
+    maxRecords: 100000,
+  });
+  const people = [];
+
+  const getPeople = () =>
+    new Promise(res => {
+      params.eachPage(
+        (records, fetchNextPage) => {
+          records.forEach(record => {
+            people.push(record);
+          });
+          fetchNextPage();
+        },
+        () => res()
+      );
+    });
+
+  return getPeople().then(() => ({
+    people: people.map(a => a.fields),
+  }));
+}
+
+export function addPersonWhoWant2({ path, props }) {
+  const base = Airtable.base('apppgSmcJWwuXac6t');
+
+  const getPeople = () =>
+    new Promise(res => {
+      base('zeit2').create({ username: props.username }, (err, record) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(record.getId());
+
+        res();
+      });
+    });
+
+  return getPeople().then(() => path.success());
 }
 
 export async function createApiData({ props, state }) {

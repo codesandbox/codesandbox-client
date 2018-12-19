@@ -1,8 +1,6 @@
-import Airtable from 'airtable';
+import Airtable from './setAirtable';
 
-const base = new Airtable({ apiKey: 'keyJugfwdJzOyL7Aa' }).base(
-  'appzdQFPct2p9gFZi'
-);
+const base = Airtable.base('appzdQFPct2p9gFZi');
 
 export default ({ feedback, emoji, sandboxId, username, email }) =>
   new Promise((resolve, reject) => {
