@@ -1,10 +1,12 @@
 import VERSION from 'common/version';
 
-export const DNT = !!(
-  window.doNotTrack ||
-  window.navigator.doNotTrack ||
-  window.navigator.msDoNotTrack
-);
+export const DNT =
+  typeof window !== 'undefined' &&
+  !!(
+    window.doNotTrack ||
+    window.navigator.doNotTrack ||
+    window.navigator.msDoNotTrack
+  );
 
 export function identify(key, value) {
   try {

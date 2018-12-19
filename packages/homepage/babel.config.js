@@ -1,5 +1,6 @@
 module.exports = {
   presets: [
+    '@babel/preset-env',
     '@babel/preset-flow',
     [
       'babel-preset-gatsby',
@@ -9,5 +10,12 @@ module.exports = {
         },
       },
     ],
+  ],
+
+  overrides: [
+    {
+      test: '../common',
+      presets: ['@babel/preset-env'],
+    },
   ],
 };

@@ -179,7 +179,7 @@ exports.onCreateWebpackConfig = ({
 
       test: /\.jsx?$/,
 
-      // Exclude all node_modules from transpilation, except for 'swiper' and 'dom7'
+      // Exclude all node_modules from transpilation, except for 'common' and 'app'
       exclude: modulePath =>
         /node_modules/.test(modulePath) &&
         !/node_modules\/(common|app)/.test(modulePath),
