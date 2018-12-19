@@ -18,7 +18,8 @@ g.jsdom = {
     // IE11 support
     // eslint-disable-next-line object-shorthand
     fragment: function fragment(htmlString) {
-      const div = document.createElement('div');
+      // eslint-disable-next-line no-var
+      var div = document.createElement('div');
       div.innerHTML = htmlString.trim();
 
       // Change this to div.childNodes to support multiple top-level nodes
