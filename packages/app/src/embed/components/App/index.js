@@ -237,12 +237,18 @@ export default class App extends React.PureComponent<
     );
   };
 
-  jwt = () => JSON.parse(localStorage.getItem('jwt'));
+  jwt = () => {
+    try {
+      return JSON.parse(localStorage.getItem('jwt'));
+    } catch (e) {
+      return undefined;
+    }
+  };
 
   toggleLike = () => {
     const jwt = this.jwt();
 
-    if (this.state.sandbox.userLiked) {
+    if (this.state.sandbox.userLiked && jwt) {
       this.setState(s => ({
         sandbox: {
           ...s.sandbox,
