@@ -1,7 +1,6 @@
 import { omit } from 'lodash-es';
-
+import Loadable from 'app/utils/Loadable';
 import getTemplate from 'common/templates';
-import Airtable from '../../utils/setAirtable';
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
@@ -15,8 +14,10 @@ export function loadZip({ props, jsZip }) {
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
 }
 
-export function getPeopleWhoWant2() {
-  const base = Airtable.base('apppgSmcJWwuXac6t');
+export async function getPeopleWhoWant2() {
+  const Airtable = await import(/* webpackChunkName: 'airtable' */ '../../utils/setAirtable');
+
+  const base = await Airtable.default.base('apppgSmcJWwuXac6t');
   const params = base('zeit2').select({
     view: 'Grid view',
     maxRecords: 100000,
@@ -36,13 +37,17 @@ export function getPeopleWhoWant2() {
       );
     });
 
-  return getPeople().then(() => ({
+  await getPeople();
+
+  return {
     people: people.map(a => a.fields),
-  }));
+  };
 }
 
-export function addPersonWhoWant2({ path, props }) {
-  const base = Airtable.base('apppgSmcJWwuXac6t');
+export async function addPersonWhoWant2({ path, props }) {
+  const Airtable = await import(/* webpackChunkName: 'airtable' */ '../../utils/setAirtable');
+
+  const base = await Airtable.default.base('apppgSmcJWwuXac6t');
 
   const AddPerson = () =>
     new Promise((res, rej) => {
@@ -55,9 +60,13 @@ export function addPersonWhoWant2({ path, props }) {
       });
     });
 
-  return AddPerson()
-    .then(() => path.success())
-    .catch(() => path.error());
+  try {
+    await AddPerson();
+
+    return path.success();
+  } catch (e) {
+    return path.error();
+  }
 }
 
 export async function createApiData({ props, state }) {
