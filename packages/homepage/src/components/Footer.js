@@ -155,11 +155,11 @@ export default () => (
             </li>
             <li>
               <a
-                href="https://discord.gg/KE3TbEZ"
+                href="https://spectrum.chat/codesandbox"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Discord
+                Spectrum
               </a>
             </li>
           </List>

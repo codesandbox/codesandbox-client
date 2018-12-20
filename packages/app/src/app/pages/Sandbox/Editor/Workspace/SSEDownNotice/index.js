@@ -34,11 +34,11 @@ const ConnectionNotice = ({ store }) => {
         know on{' '}
         <a
           style={{ color: 'white' }}
-          href="https://discord.gg/FGeubVt"
+          href="https://spectrum.chat/codesandbox"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Discord
+          Spectrum
         </a>.
       </p>
     </Container>
