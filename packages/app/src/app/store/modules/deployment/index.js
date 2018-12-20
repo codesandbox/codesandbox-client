@@ -5,6 +5,7 @@ import * as sequences from './sequences';
 export default Module({
   model,
   state: {
+    peopleWant2: [],
     hasAlias: false,
     deployToDelete: null,
     deploying: false,
@@ -14,10 +15,12 @@ export default Module({
   },
   signals: {
     getDeploys: sequences.getDeploys,
+    addPersonFor2: sequences.addPersonFor2,
     deployClicked: sequences.deploy,
     deploySandboxClicked: sequences.openDeployModal,
     setDeploymentToDelete: sequences.deploymentToDelete,
     deleteDeployment: sequences.deleteDeployment,
     aliasDeployment: sequences.aliasDeployment,
+    getPeople: sequences.getPeopleWhoWant2,
   },
 });

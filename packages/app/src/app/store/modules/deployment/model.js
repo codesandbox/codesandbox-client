@@ -39,7 +39,12 @@ const Deploy = types.model('Deploy', {
   type: types.enumeration('types', ['NPM', 'DOCKER', 'STATIC']),
 });
 
+const People = types.model('Person', {
+  username: types.maybeNull(types.string),
+});
+
 export default {
+  peopleWant2: types.array(People),
   hasAlias: types.boolean,
   deployToDelete: types.maybeNull(types.string),
   deploying: types.boolean,
