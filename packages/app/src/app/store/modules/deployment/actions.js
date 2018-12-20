@@ -1,5 +1,4 @@
 import { omit } from 'lodash-es';
-import Loadable from 'app/utils/Loadable';
 import getTemplate from 'common/templates';
 
 export function createZip({ utils, state }) {
