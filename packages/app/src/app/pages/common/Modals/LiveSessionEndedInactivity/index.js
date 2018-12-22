@@ -10,11 +10,10 @@ import { Heading, Explanation } from '../elements';
 function LiveModeEnded({ signals }) {
   return (
     <Container>
-      <Heading>Owner left the session</Heading>
-      <Explanation>
-        The host left the live session, you can{"'"}t make any edits while there
-        is no owner. You can either fork the sandbox or wait for the owner to
-        come back.
+      <Heading>The Live session has ended</Heading>
+      <Explanation css={{ marginBottom: '1rem' }}>
+        The session has ended due to inactivity, you can continue working by
+        forking the sandbox or by creating a new sandbox.
       </Explanation>
 
       <Row justifyContent="space-around">

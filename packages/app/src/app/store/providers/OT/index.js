@@ -46,10 +46,8 @@ export default Provider({
 
     return data;
   },
-  consumeData(data) {
-    data.forEach(({ moduleShortid, revision }) => {
-      getClient(moduleShortid, this.context, revision);
-    });
+  initializeModule(moduleShortid, revision) {
+    getClient(moduleShortid, this.context, revision);
   },
   reset() {
     modules.clear();

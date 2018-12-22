@@ -386,8 +386,11 @@ class EditorPreview extends React.Component<Props, State> {
     const template = getTemplateDefinition(sandbox.template);
 
     const isReadOnly = () => {
-      if (store.live.isCurrentEditor) {
-        return false;
+      if (
+        !store.live.isCurrentEditor ||
+        (store.live.roomInfo && store.live.roomInfo.ownerIds.length === 0)
+      ) {
+        return true;
       }
 
       if (template.isServer) {

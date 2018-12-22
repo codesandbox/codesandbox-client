@@ -265,7 +265,6 @@ export const resetLive = [
   set(state`live.isLive`, false),
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
-  set(state`live.deviceId`, null),
   set(state`live.roomInfo`, undefined),
 ];
 

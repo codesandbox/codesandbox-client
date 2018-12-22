@@ -1,12 +1,4 @@
-import {
-  unset,
-  set,
-  concat,
-  push,
-  when,
-  equals,
-  toggle,
-} from 'cerebral/operators';
+import { set, concat, push, when, equals, toggle } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import VERSION from 'common/version';
 
@@ -19,7 +11,27 @@ import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
 import { initializeLive as commonInitializeLive } from './common-sequences';
 
-export const initializeLive = commonInitializeLive;
+export const initializeLive = [
+  commonInitializeLive,
+
+  // when(state`live.roomInfo.version`, v => v !== VERSION),
+  // {
+  //   true: [set(props`modal`, 'liveVersionMismatch'), openModal],
+  //   false: [],
+  // },
+  // Whether this is first load
+  equals(state`live.isLoading`),
+  {
+    true: [
+      set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+      setSandbox,
+
+      actions.initializeModuleState,
+      set(state`live.isLoading`, false),
+    ],
+    false: [],
+  },
+];
 
 const isOwnMessage = when(props`_isOwnMessage`);
 
@@ -66,38 +78,34 @@ export const handleMessage = [
       set(state`live.reconnecting`, false),
     ],
     'user:entered': [
-      actions.consumeUserState,
-      set(state`live.roomInfo.users`, props`users`),
-      set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
-      set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
-      set(
-        state`live.roomInfo.sourceOfTruthDeviceId`,
-        props`data.source_of_truth_device_id`
-      ),
-      set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
-      set(props`data.user_id`, props`data.joined_user_id`),
-      when(props`data.user_id`, state`user.id`, (a, b) => a === b),
+      when(state`live.isLoading`),
       {
+        true: [],
         false: [
-          equals(state`live.notificationsHidden`),
+          actions.consumeUserState,
+          set(state`live.roomInfo.users`, props`users`),
+          set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
+          set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
+          set(props`data.live_user_id`, props`data.joined_user_id`),
+          when(
+            props`data.live_user_id`,
+            state`live.liveUserId`,
+            (a, b) => a === b
+          ),
           {
             false: [
-              actions.getUserJoinedNotification,
-              factories.addNotification(props`message`, 'notice'),
+              equals(state`live.notificationsHidden`),
+              {
+                false: [
+                  actions.getUserJoinedNotification,
+                  factories.addNotification(props`message`, 'notice'),
+                ],
+                true: [],
+              },
             ],
             true: [],
           },
         ],
-        true: [],
-      },
-      when(state`live.isSourceOfTruth`),
-      {
-        true: [
-          actions.addUserMetadata,
-          actions.sendCurrentState,
-          set(state`live.isLoading`, false),
-        ],
-        false: [],
       },
     ],
     'user:left': [
@@ -109,60 +117,10 @@ export const handleMessage = [
           factories.addNotification(props`message`, 'notice'),
         ],
       },
-      set(props`data.user_id`, props`data.left_user_id`),
-      actions.clearUserSelections,
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
       set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
-      set(
-        state`live.roomInfo.sourceOfTruthDeviceId`,
-        props`data.source_of_truth_device_id`
-      ),
       set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
-      set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
-      when(props`data.multiple_connections`),
-      {
-        true: [],
-        false: unset(
-          state`live.roomInfo.usersMetadata.${props`data.left_user_id`}`
-        ),
-      },
-    ],
-    state: [
-      when(state`live.isSourceOfTruth`),
-      {
-        true: [],
-        false: [
-          actions.consumeState,
-          set(
-            state`editor.changedModuleShortids`,
-            props`changedModuleShortids`
-          ),
-          set(state`live.roomInfo`, props`roomInfo`),
-          when(state`live.roomInfo.version`, v => v !== VERSION),
-          {
-            true: [set(props`modal`, 'liveVersionMismatch'), openModal],
-            false: [],
-          },
-          // Whether this is first load
-          equals(state`live.isLoading`),
-          {
-            true: [
-              actions.consumeOTData,
-              set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-              setSandbox,
-              set(state`editor.tabs`, props`tabs`),
-              set(
-                state`editor.currentModuleShortid`,
-                props`currentModuleShortid`
-              ),
-              set(state`live.isLoading`, false),
-            ],
-            false: [],
-          },
-          applySelectionsForModule,
-        ],
-      },
     ],
     'module:saved': [
       isOwnMessage,
@@ -250,15 +208,12 @@ export const handleMessage = [
       {
         true: [],
         false: [
-          set(
-            state`live.roomInfo.usersMetadata.${props`data.user_id`}.currentModuleShortid`,
-            props`data.moduleShortid`
-          ),
+          actions.changeUserModule,
           actions.clearUserSelections,
 
           when(
             state`live.followingUserId`,
-            props`data.user_id`,
+            props`data.live_user_id`,
             props`data.moduleShortid`,
             state`editor.currentModuleShortid`,
             (followingId, userId, moduleShortid, currentModuleShortid) =>
@@ -338,15 +293,11 @@ export const handleMessage = [
     ],
     disconnect: [
       actions.disconnect,
-      set(props`modal`, 'liveSessionEnded'),
+      set(props`modal`, 'liveSessionEndedInactivity'),
       openModal,
-      when(state`live.isSourceOfTruth`),
-      {
-        true: [],
-        false: [set(state`editor.currentSandbox.owned`, false)],
-      },
       resetLive,
     ],
+    owner_left: [set(props`modal`, 'liveSessionEnded'), openModal],
     chat: [actions.receiveChat],
     notification: [
       factories.addNotification(props`data.message`, props`data.type`),
@@ -366,7 +317,9 @@ export const sendSelection = [
 export const createLive = [
   factories.track('Create Live Session', {}),
   actions.createRoom,
-  initializeLive,
+  commonInitializeLive,
+  actions.initializeModuleState,
+  set(state`live.isLoading`, false),
 ];
 
 export const sendTransform = [

@@ -60,8 +60,8 @@ class Chat extends React.Component {
   render() {
     const { store } = this.props;
     const { messages, users } = store.live.roomInfo.chat;
-    const currentUserId = store.user.id;
-    const usersMetadata = store.live.roomInfo.usersMetadata;
+    const currentUserId = store.live.liveUserId;
+    const roomInfoUsers = store.live.roomInfo.users;
 
     return (
       <Container
@@ -72,7 +72,7 @@ class Chat extends React.Component {
         <Messages>
           {messages.length > 0 ? (
             sortBy(takeRight(messages, 100), 'date').map((message, i) => {
-              const metadata = usersMetadata.get(message.userId);
+              const metadata = roomInfoUsers.find(u => u.id === message.userId);
               const color = metadata
                 ? `rgb(${metadata.color[0]}, ${metadata.color[1]}, ${
                     metadata.color[2]
