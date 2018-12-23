@@ -1,6 +1,5 @@
 import { set, concat, push, when, equals, toggle } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import VERSION from 'common/version';
 
 import * as factories from '../../factories';
 import { setSandbox, openModal, resetLive } from '../../sequences';
@@ -14,23 +13,15 @@ import { initializeLive as commonInitializeLive } from './common-sequences';
 export const initializeLive = [
   commonInitializeLive,
 
+  // TODO:  Add  version back
   // when(state`live.roomInfo.version`, v => v !== VERSION),
   // {
   //   true: [set(props`modal`, 'liveVersionMismatch'), openModal],
   //   false: [],
   // },
-  // Whether this is first load
-  equals(state`live.isLoading`),
-  {
-    true: [
-      set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-      setSandbox,
 
-      actions.initializeModuleState,
-      set(state`live.isLoading`, false),
-    ],
-    false: [],
-  },
+  setSandbox,
+  set(state`live.isLoading`, false),
 ];
 
 const isOwnMessage = when(props`_isOwnMessage`);
@@ -51,7 +42,7 @@ export const changeMode = [
 export const closeSession = [
   when(state`live.isOwner`),
   {
-    true: [actions.disconnect, resetLive],
+    true: [actions.sendCloseSession, actions.disconnect, resetLive],
     false: [actions.disconnect],
   },
 ];
@@ -325,9 +316,6 @@ export const createLive = [
   factories.track('Create Live Session', {}),
   actions.createRoom,
   commonInitializeLive,
-  actions.setReceivingStatus,
-  actions.initializeModuleState,
-  actions.unSetReceivingStatus,
   set(state`live.isLoading`, false),
 ];
 

@@ -1,7 +1,6 @@
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
 
-import VERSION from 'common/version';
 import { getTextOperation } from 'common/utils/diff';
 
 export function createRoom({ api, props }) {
@@ -191,7 +190,7 @@ function sendModuleInfo(
 export function changeUserModule({ props, state }) {
   const userIndex = state
     .get('live.roomInfo.users')
-    .findIndex(u => u.id === props.user_id);
+    .findIndex(u => u.id === props.data.live_user_id);
 
   if (userIndex > -1) {
     state.set(
@@ -199,6 +198,10 @@ export function changeUserModule({ props, state }) {
       props.data.moduleShortid
     );
   }
+}
+
+export function sendCloseSession({ live }) {
+  live.send('live:close', {});
 }
 
 export function sendModuleSaved(context) {
@@ -347,9 +350,11 @@ export function updateModule({ props, state }) {
 
 export function sendTransform({ ot, props }) {
   if (!props.operation) {
-    return;
+    return {};
   }
   ot.applyClient(props.moduleShortid, props.operation);
+
+  return {};
 }
 
 export function receiveTransformation({ ot, props }) {

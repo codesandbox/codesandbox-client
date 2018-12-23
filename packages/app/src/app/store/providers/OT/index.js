@@ -8,6 +8,7 @@ function getClient(moduleShortid, context, revision = 0, force = false) {
   let client = modules.get(moduleShortid);
 
   if (!client || force) {
+    console.log('Initializing', moduleShortid, revision);
     client = new CodeSandboxClient(revision, moduleShortid, context);
     modules.set(moduleShortid, client);
   }
@@ -33,18 +34,6 @@ export default Provider({
   },
   serverAck(moduleShortid: string) {
     getClient(moduleShortid, this.context).serverAck();
-  },
-  getData() {
-    const data = [];
-
-    modules.forEach(m => {
-      data.push({
-        moduleShortid: m.moduleShortid,
-        revision: m.revision,
-      });
-    });
-
-    return data;
   },
   initializeModule(moduleShortid, revision) {
     getClient(moduleShortid, this.context, revision, true);

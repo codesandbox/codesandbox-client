@@ -13,8 +13,8 @@ import Tooltip from 'common/components/Tooltip';
 
 import AddIcon from 'react-icons/lib/md/add';
 import RemoveIcon from 'react-icons/lib/md/remove';
-import FollowIcon from 'react-icons/lib/ti/user-add';
-import UnFollowIcon from 'react-icons/lib/ti/user-delete';
+import FollowIcon from 'react-icons/lib/io/eye';
+import UnFollowIcon from 'react-icons/lib/io/eye-disabled';
 
 import User from './User';
 import Countdown from './Countdown';

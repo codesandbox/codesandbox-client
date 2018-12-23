@@ -1,5 +1,5 @@
 // Little hack for circular dependency problem
-import { set } from 'cerebral/operators';
+import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
 import * as factories from '../../factories';
@@ -17,6 +17,17 @@ export const initializeLive = factories.withLoadApp([
 
       set(state`live.roomInfo`, props`roomInfo`),
       set(state`live.liveUserId`, props`liveUserId`),
+      set(state`editor.currentId`, props`sandbox.id`),
+      when(state`editor.currentSandbox`),
+      {
+        true: [],
+        false: [
+          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+        ],
+      },
+      actions.setReceivingStatus,
+      actions.initializeModuleState,
+      actions.unSetReceivingStatus,
       set(state`live.isLive`, true),
       set(state`live.error`, null),
     ],

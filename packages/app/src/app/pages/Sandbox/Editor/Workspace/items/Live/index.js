@@ -25,7 +25,7 @@ const Live = ({ signals, store }) => {
           isTeam={store.live.isTeam}
           roomInfo={store.live.roomInfo}
           ownerIds={store.live.roomInfo.ownerIds}
-          currentUserId={store.user.id}
+          currentUserId={store.live.liveUserId}
           reconnecting={store.live.reconnecting}
           onSessionCloseClicked={signals.live.onSessionCloseClicked}
           notificationsHidden={store.live.notificationsHidden}
