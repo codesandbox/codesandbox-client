@@ -41,7 +41,7 @@ usedDescribe('browser-tests', () => {
     async () => {
       // Input capabilities
       const capabilities = {
-        browser_name: 'IE',
+        browserName: 'IE',
         browser_version: '11.0',
         os: 'Windows',
         os_version: '10',
@@ -53,12 +53,12 @@ usedDescribe('browser-tests', () => {
     130000
   );
 
-  test(
+  test.skip(
     'ios',
     async () => {
       // Input capabilities
       const capabilities = {
-        browser_name: 'iPhone',
+        browserName: 'iPhone',
         device: 'iPhone X',
         real_mobile: 'true',
         os_version: '11.0',
@@ -91,8 +91,8 @@ usedDescribe('browser-tests', () => {
     async () => {
       // Input capabilities
       const capabilities = {
-        browser_name: 'Safari',
-        browser_version: '11.0',
+        browserName: 'Safari',
+        browser_version: '10.0',
         os: 'OS X',
         os_version: 'Sierra',
         resolution: '1024x768',
@@ -108,7 +108,7 @@ usedDescribe('browser-tests', () => {
     async () => {
       // Input capabilities
       const capabilities = {
-        browser_name: 'android',
+        browserName: 'android',
         device: 'Samsung Galaxy S8',
         real_mobile: 'true',
         os_version: '7.0',
