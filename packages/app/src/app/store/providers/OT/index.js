@@ -4,10 +4,10 @@ import CodeSandboxClient from './client';
 
 const modules = new Map();
 
-function getClient(moduleShortid, context, revision = 0) {
+function getClient(moduleShortid, context, revision = 0, force = false) {
   let client = modules.get(moduleShortid);
 
-  if (!client) {
+  if (!client || force) {
     client = new CodeSandboxClient(revision, moduleShortid, context);
     modules.set(moduleShortid, client);
   }
@@ -47,7 +47,7 @@ export default Provider({
     return data;
   },
   initializeModule(moduleShortid, revision) {
-    getClient(moduleShortid, this.context, revision);
+    getClient(moduleShortid, this.context, revision, true);
   },
   reset() {
     modules.clear();

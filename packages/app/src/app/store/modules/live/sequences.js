@@ -77,6 +77,13 @@ export const handleMessage = [
       },
       set(state`live.reconnecting`, false),
     ],
+    module_state: [
+      // We get this when we notice that there is an out of sync
+      actions.consumeModuleState,
+      actions.setReceivingStatus,
+      actions.initializeModuleState,
+      actions.unSetReceivingStatus,
+    ],
     'user:entered': [
       when(state`live.isLoading`),
       {
@@ -318,7 +325,9 @@ export const createLive = [
   factories.track('Create Live Session', {}),
   actions.createRoom,
   commonInitializeLive,
+  actions.setReceivingStatus,
   actions.initializeModuleState,
+  actions.unSetReceivingStatus,
   set(state`live.isLoading`, false),
 ];
 

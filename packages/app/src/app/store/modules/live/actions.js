@@ -30,44 +30,28 @@ export function listen({ props, live }) {
   live.listen(props.listenSignalPath);
 }
 
+export function consumeModuleState({ props }) {
+  return {
+    moduleState: camelizeKeys(props.data.module_state),
+  };
+}
+
 export function initializeModuleState({ props, state, ot }) {
   Object.keys(props.moduleState).forEach(moduleShortid => {
     const moduleInfo = props.moduleState[moduleShortid];
     ot.initializeModule(moduleShortid, moduleInfo.revision);
 
-    if (!moduleInfo.synced) {
-      // Module has not been saved, so is different
-      const index = state
-        .get(`editor.currentSandbox.modules`)
-        .findIndex(m => m.shortid === moduleShortid);
+    // Module has not been saved, so is different
+    const index = state
+      .get(`editor.currentSandbox.modules`)
+      .findIndex(m => m.shortid === moduleShortid);
+    if (index > -1) {
       state.set(`editor.currentSandbox.modules.${index}.code`, moduleInfo.code);
-      state.push(`editor.changedModuleShortids`, moduleShortid);
+      if (!moduleInfo.synced) {
+        state.push(`editor.changedModuleShortids`, moduleShortid);
+      }
     }
   });
-}
-
-export function sendCurrentState({ state, ot, live }) {
-  const liveSandboxId = state.get('live.roomInfo.sandboxId');
-  const sandbox = state.get(`editor.sandboxes.${liveSandboxId}`);
-  const changedModuleShortids = state.get(`editor.changedModuleShortids`);
-  const currentModuleShortid = state.get(`editor.currentModuleShortid`);
-  const tabs = state.get(`editor.tabs`);
-  const roomInfo = state.get(`live.roomInfo`);
-
-  const otData = ot.getData();
-
-  live.send('state', {
-    otData,
-    sandbox,
-    changedModuleShortids,
-    currentModuleShortid,
-    tabs,
-    roomInfo,
-  });
-}
-
-export function consumeOTData({ props, ot }) {
-  ot.consumeData(props.otData);
 }
 
 export function sendSelection({ props, state, live }) {
