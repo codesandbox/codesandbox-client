@@ -70,9 +70,11 @@ function normalizeJSDelivr(
 }
 
 const TEMP_USE_JSDELIVR = false;
+// Strips the version of a path, eg. test/1.3.0 -> test
+const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
 function getUnpkgUrl(name: string, version: string) {
-  const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
+  const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
   return TEMP_USE_JSDELIVR
     ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
@@ -80,7 +82,7 @@ function getUnpkgUrl(name: string, version: string) {
 }
 
 function getMeta(name: string, packageJSONPath: string, version: string) {
-  const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
+  const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
   const id = `${packageJSONPath}@${version}`;
   if (metas[id]) {
     return metas[id];
@@ -245,10 +247,10 @@ async function findDependencyVersion(
     const packageJSON =
       manager.transpiledModules[foundPackageJSONPath] &&
       manager.transpiledModules[foundPackageJSONPath].module.code;
-    const { version } = JSON.parse(packageJSON);
+    const { version, name } = JSON.parse(packageJSON);
 
     if (packageJSON !== '//empty.js') {
-      return { packageJSONPath: foundPackageJSONPath, version };
+      return { packageJSONPath: foundPackageJSONPath, version, name };
     }
   } catch (e) {
     /* do nothing */

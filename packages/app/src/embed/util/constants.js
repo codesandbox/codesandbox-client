@@ -1,2 +1,1 @@
-// export const SIDEBAR_SHOW_SCREEN_SIZE = 1280;
-export const SIDEBAR_SHOW_SCREEN_SIZE = 20000;
+export const SIDEBAR_SHOW_SCREEN_SIZE = 1280;
