@@ -92,7 +92,7 @@ usedDescribe('browser-tests', () => {
       // Input capabilities
       const capabilities = {
         browserName: 'Safari',
-        browser_version: '10.0',
+        browser_version: '11.0',
         os: 'OS X',
         os_version: 'Sierra',
         resolution: '1024x768',
