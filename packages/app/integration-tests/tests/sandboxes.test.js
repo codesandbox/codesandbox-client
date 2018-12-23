@@ -32,6 +32,7 @@ const SANDBOXES = [
   { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
   { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
   'pm79km5lmj', // babel macros with styled components
+  'j2wpjwqj93', // sandbox with need of transpiling in node_modules
 ];
 
 function pageLoaded(page) {
