@@ -651,7 +651,19 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     Object.keys(operationsJSON).forEach(moduleShortid => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
 
-      if (moduleShortid !== this.currentModule.shortid) {
+      const moduleId = this.sandbox.modules.find(
+        m => m.shortid === moduleShortid
+      ).id;
+
+      const modulePath =
+        '/sandbox' +
+        getModulePath(this.sandbox.modules, this.sandbox.directories, moduleId);
+
+      const modelEditor = this.editor.editorService.visibleEditors.find(
+        editor => editor.resource && editor.resource.path === modulePath
+      );
+
+      if (!modelEditor) {
         // Apply the code to the current module code itself
         const module = this.sandbox.modules.find(
           m => m.shortid === moduleShortid
@@ -669,7 +681,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       }
 
       this.liveOperationCode = '';
-      this.applyOperationToModel(operation);
+
+      modelEditor.textModelReference.then(model => {
+        this.applyOperationToModel(
+          operation,
+          false,
+          model.object.textEditorModel
+        );
+      });
     });
   };
 

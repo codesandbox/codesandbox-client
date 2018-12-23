@@ -8,7 +8,6 @@ function getClient(moduleShortid, context, revision = 0, force = false) {
   let client = modules.get(moduleShortid);
 
   if (!client || force) {
-    console.log('Initializing', moduleShortid, revision);
     client = new CodeSandboxClient(revision, moduleShortid, context);
     modules.set(moduleShortid, client);
   }
