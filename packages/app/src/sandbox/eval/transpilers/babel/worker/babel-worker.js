@@ -190,7 +190,6 @@ function normalizeV7Config(config) {
 }
 
 async function compile(code, customConfig, path) {
-  console.log(customConfig, path);
   try {
     let result;
     try {

@@ -36,7 +36,7 @@ function testPageWitCapabilities(capabilities) {
 
 const usedDescribe = process.env.BROWSER_STACK_KEY ? describe : describe.skip;
 usedDescribe('browser-tests', () => {
-  test(
+  test.skip(
     'ie11',
     async () => {
       // Input capabilities
@@ -53,13 +53,13 @@ usedDescribe('browser-tests', () => {
     130000
   );
 
-  test.skip(
+  test(
     'ios',
     async () => {
       // Input capabilities
       const capabilities = {
         browserName: 'iPhone',
-        device: 'iPhone SE',
+        device: 'iPhone X',
         realMobile: 'true',
         os_version: '11.2',
       };
@@ -92,7 +92,7 @@ usedDescribe('browser-tests', () => {
       // Input capabilities
       const capabilities = {
         browserName: 'Safari',
-        browser_version: '10.0',
+        browser_version: '11.0',
         os: 'OS X',
         os_version: 'Sierra',
         resolution: '1024x768',
