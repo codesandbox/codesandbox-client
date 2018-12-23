@@ -116,7 +116,6 @@ module.exports = {
           new RegExp(
             `${sepRe}node_modules${sepRe}babel-plugin-transform-vue-jsx`
           ),
-          new RegExp(`${sepRe}node_modules${sepRe}@babel/preset-env`),
         ],
         loader: 'babel-loader',
         query: {
