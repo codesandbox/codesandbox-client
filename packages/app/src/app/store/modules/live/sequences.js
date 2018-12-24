@@ -115,6 +115,8 @@ export const handleMessage = [
           factories.addNotification(props`message`, 'notice'),
         ],
       },
+      set(props`data.live_user_id`, props`data.left_user_id`),
+      actions.clearUserSelections,
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
       set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
