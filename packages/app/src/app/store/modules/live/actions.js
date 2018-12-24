@@ -45,7 +45,7 @@ export function initializeModuleState({ props, state, ot }) {
       .get(`editor.currentSandbox.modules`)
       .findIndex(m => m.shortid === moduleShortid);
     if (index > -1) {
-      if (module.code != null) {
+      if (moduleInfo.code != null) {
         state.set(
           `editor.currentSandbox.modules.${index}.code`,
           moduleInfo.code

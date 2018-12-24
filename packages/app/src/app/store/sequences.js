@@ -305,12 +305,11 @@ export const joinLiveSessionIfAvailable = [
         false: [],
       },
 
-      set(props`roomId`, props`sandbox.roomId`),
-      initializeLive,
-
       setSandboxData,
       set(state`live.isLoading`, true),
       setSandbox,
+      set(props`roomId`, props`sandbox.roomId`),
+      initializeLive,
       set(state`live.isLoading`, false),
     ],
     false: [

@@ -347,7 +347,7 @@ export const clearPendingUserSelections = [
 ];
 
 export const addEditor = [
-  push(state`live.roomInfo.editorIds`, props`userId`),
+  push(state`live.roomInfo.editorIds`, props`liveUserId`),
   actions.addEditor,
 ];
 
@@ -372,7 +372,7 @@ export const setChatEnabled = [
 
 export const setFollowing = [
   factories.track('Follow Along in Live', {}),
-  set(state`live.followingUserId`, props`userId`),
+  set(state`live.followingUserId`, props`liveUserId`),
   actions.getCurrentModuleIdOfUser,
   when(props`moduleShortid`),
   {
