@@ -1,6 +1,6 @@
 import isESModule from '../../utils/is-es-module';
 
-const JSXSyntax = /\n(.*?)<\w(.|\n)*?\/?>/;
+const JSXSyntax = /\n(.*?)<[A-z](.|\n)*?\/?>/;
 
 export function shouldTranspile(code: string, path: string) {
   if (isESModule(code)) {
