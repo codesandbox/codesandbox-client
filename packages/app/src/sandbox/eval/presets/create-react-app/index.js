@@ -38,9 +38,11 @@ export default function initialize() {
             isV7: true,
             config: {
               plugins: [
+                'transform-flow-strip-types',
+                'transform-destructuring',
                 'babel-plugin-macros',
-                'proposal-class-properties',
-                'proposal-object-rest-spread',
+                ['proposal-class-properties', { loose: true }],
+                ['proposal-object-rest-spread', { useBuiltIns: true }],
                 'transform-runtime',
                 'syntax-dynamic-import',
               ],
