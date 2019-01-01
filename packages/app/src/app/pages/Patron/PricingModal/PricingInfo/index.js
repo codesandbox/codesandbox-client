@@ -30,6 +30,11 @@ function PricingInfo() {
             free="20Mb"
             supporter="500Mb"
           />
+          <Feature
+            feature="GitHub Private Repositories"
+            free="No"
+            supporter="Yes"
+          />
         </tbody>
       </table>
     </Container>
