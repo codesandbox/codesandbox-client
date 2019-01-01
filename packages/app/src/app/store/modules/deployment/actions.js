@@ -13,61 +13,6 @@ export function loadZip({ props, jsZip }) {
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
 }
 
-export async function getPeopleWhoWant2() {
-  const Airtable = await import(/* webpackChunkName: 'airtable' */ '../../utils/setAirtable');
-
-  const base = await Airtable.default.base('apppgSmcJWwuXac6t');
-  const params = base('zeit2').select({
-    view: 'Grid view',
-    maxRecords: 100000,
-  });
-  const people = [];
-
-  const getPeople = () =>
-    new Promise(res => {
-      params.eachPage(
-        (records, fetchNextPage) => {
-          records.forEach(record => {
-            people.push(record);
-          });
-          fetchNextPage();
-        },
-        () => res()
-      );
-    });
-
-  await getPeople();
-
-  return {
-    people: people.map(a => a.fields),
-  };
-}
-
-export async function addPersonWhoWant2({ path, props }) {
-  const Airtable = await import(/* webpackChunkName: 'airtable' */ '../../utils/setAirtable');
-
-  const base = await Airtable.default.base('apppgSmcJWwuXac6t');
-
-  const AddPerson = () =>
-    new Promise((res, rej) => {
-      base('zeit2').create({ username: props.username }, err => {
-        if (err) {
-          console.error(err);
-          rej();
-        }
-        res();
-      });
-    });
-
-  try {
-    await AddPerson();
-
-    return path.success();
-  } catch (e) {
-    return path.error();
-  }
-}
-
 export async function createApiData({ props, state }) {
   const { contents } = props;
   const sandboxId = state.get('editor.currentId');
@@ -101,13 +46,12 @@ export async function createApiData({ props, state }) {
 
   const nowDefaults = {
     name: `csb-${sandbox.id}`,
-    type: 'NPM',
     public: true,
   };
 
   const filePaths = nowJSON.files || Object.keys(contents.files);
 
-  // We'll omit the homepage-value from package.json as it creates wrong assumptions over the now deployment evironment.
+  // We'll omit the homepage-value from package.json as it creates wrong assumptions over the now deployment environment.
   packageJSON = omit(packageJSON, 'homepage');
 
   // We force the sandbox id, so ZEIT will always group the deployments to a
@@ -117,8 +61,16 @@ export async function createApiData({ props, state }) {
   apiData.name = nowJSON.name || nowDefaults.name;
   apiData.deploymentType = nowJSON.type || nowDefaults.type;
   apiData.public = nowJSON.public || nowDefaults.public;
-  apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
-  apiData.forceNew = true;
+
+  // if now v2 we need to tell now the version, builds and routes
+  if (nowJSON.version === 2) {
+    apiData.version = 2;
+    apiData.builds = nowJSON.builds;
+    apiData.routes = nowJSON.routes;
+  } else {
+    apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
+    apiData.forceNew = true;
+  }
 
   if (!nowJSON.files) {
     apiData.files.push({
@@ -138,7 +90,9 @@ export async function createApiData({ props, state }) {
     }
   }
 
-  if (template.alterDeploymentData) {
+  // this adds unnecessary code for version 2
+  // packages/common/templates/template.js
+  if (template.alterDeploymentData && nowJSON.version !== 2) {
     apiData = template.alterDeploymentData(apiData);
   }
 
@@ -167,10 +121,11 @@ export async function aliasDeployment({ http, path, props, state }) {
 export async function postToZeit({ http, path, props, state }) {
   const { apiData } = props;
   const token = state.get('user.integrations.zeit.token');
+  const deploymentVersion = apiData.version === 2 ? 'v6' : 'v3';
 
   try {
     const deployment = await http.request({
-      url: 'https://api.zeit.co/v3/now/deployments',
+      url: `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
       body: apiData,
       method: 'POST',
       headers: { Authorization: `bearer ${token}` },

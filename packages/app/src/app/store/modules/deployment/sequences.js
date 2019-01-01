@@ -14,30 +14,6 @@ export const deploymentToDelete = [
   set(state`deployment.deployToDelete`, props`id`),
 ];
 
-export const getPeopleWhoWant2 = [
-  actions.getPeopleWhoWant2,
-  set(state`deployment.peopleWant2`, props`people`),
-];
-
-export const addPersonFor2 = [
-  actions.addPersonWhoWant2,
-  {
-    success: [
-      actions.getPeopleWhoWant2,
-      set(state`deployment.peopleWant2`, props`people`),
-      addNotification('Your feedback has been saved', 'success'),
-    ],
-    error: [
-      addNotification(
-        'An unknown error occurred when adding your vote',
-        'error'
-      ),
-    ],
-  },
-  actions.getPeopleWhoWant2,
-  set(state`deployment.peopleWant2`, props`people`),
-];
-
 export const getDeploys = [
   actions.getDeploymentData,
   actions.getDeploymentData,
