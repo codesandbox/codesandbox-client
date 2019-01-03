@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import * as templates from '@codesandbox/common/lib/templates';
-import { chunk, sortBy } from 'lodash-es';
+import { sortBy } from 'lodash-es';
 
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';
@@ -10,9 +10,11 @@ import {
   Container,
   InnerContainer,
   Templates,
-  Title,
   ImportChoice,
   ImportChoices,
+  Tab,
+  Button,
+  TabContainer,
 } from './elements';
 import Template from './Template';
 
@@ -24,24 +26,25 @@ const usedTemplates = sortBy(
   'niceName'
 );
 
-const TEMPLATE_BASE_WIDTH = 150;
-const MAIN_TEMPLATE_BASE_WIDTH = 190;
-
 export default class Modal extends React.PureComponent {
+  state = {
+    selectedTab: 0,
+  };
+
+  setTab = tab => this.setState({ selectedTab: tab });
+
   selectTemplate = template => {
     this.props.createSandbox(template);
   };
 
   render() {
-    const { width, forking = false, closing = false } = this.props;
+    const { forking = false, closing = false } = this.props;
 
-    const paddedWidth = width;
-    const mainTemplates = usedTemplates.filter(t => t.main && !t.isServer);
-    const otherTemplates = usedTemplates.filter(t => !t.main && !t.isServer);
-    const mainServerTemplates = usedTemplates.filter(t => t.main && t.isServer);
-    const otherServerTemplates = usedTemplates.filter(
-      t => !t.main && t.isServer
+    const popularTemplates = usedTemplates.filter(t => t.popular);
+    const clientTemplates = usedTemplates.filter(
+      t => !t.isServer && !t.popular
     );
+    const serverTemplates = usedTemplates.filter(t => t.isServer && !t.popular);
     const typescriptTemplates = [
       {
         ...templates.react,
@@ -56,122 +59,95 @@ export default class Modal extends React.PureComponent {
         shortid: 'vanilla-ts',
       },
     ];
-
-    const mainTemplatesPerRow = Math.max(
-      1,
-      paddedWidth / MAIN_TEMPLATE_BASE_WIDTH
-    );
-    const templatesPerRow = Math.max(1, paddedWidth / TEMPLATE_BASE_WIDTH);
-
-    const mainRows = chunk(mainTemplates, mainTemplatesPerRow);
-    const rows = chunk(otherTemplates, templatesPerRow);
-    const typescriptRows = chunk(typescriptTemplates, templatesPerRow);
-    const mainServerRows = chunk(mainServerTemplates, mainTemplatesPerRow);
-    const serverRows = chunk(otherServerTemplates, templatesPerRow);
-
+    const { selectedTab } = this.state;
     return (
-      <Container
-        closing={closing}
-        forking={forking}
-        onMouseDown={e => e.preventDefault()}
-      >
-        <InnerContainer forking={forking} closing={closing}>
-          <Title>Client Templates</Title>
-          {mainRows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates key={i}>
-              {ts.map(t => (
-                <Template
-                  width={Math.floor(paddedWidth / mainTemplatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                />
-              ))}
-            </Templates>
-          ))}
-
-          {rows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates style={{ fontSize: '.8rem' }} key={i}>
-              {ts.map(t => (
-                <Template
-                  small
-                  width={Math.floor(paddedWidth / templatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                />
-              ))}
-            </Templates>
-          ))}
-
-          <Title>Server Templates</Title>
-          {mainServerRows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates key={i}>
-              {ts.map(t => (
-                <Template
-                  width={Math.floor(paddedWidth / mainTemplatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                />
-              ))}
-            </Templates>
-          ))}
-
-          {serverRows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates style={{ fontSize: '.8rem' }} key={i}>
-              {ts.map(t => (
-                <Template
-                  small
-                  width={Math.floor(paddedWidth / templatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                />
-              ))}
-            </Templates>
-          ))}
-
-          <Title>Presets</Title>
-          {typescriptRows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates style={{ fontSize: '.8rem' }} key={i}>
-              {ts.map(t => (
-                <Template
-                  small
-                  width={Math.floor(paddedWidth / templatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                  subtitle={`Using ${t.variantName} template`}
-                />
-              ))}
-            </Templates>
-          ))}
-
-          <ImportChoices style={{ marginTop: '1.5rem' }}>
-            <ImportChoice
-              href="/docs/importing#import-from-github"
-              target="_blank"
-            >
-              <GithubLogo /> Import from GitHub
-            </ImportChoice>
-            <ImportChoice
-              href="/docs/importing#export-with-cli"
-              target="_blank"
-            >
-              <TerminalIcon /> Export with CLI
-            </ImportChoice>
-            <ImportChoice href="/docs/importing#define-api" target="_blank">
-              <UploadIcon /> Create with API
-            </ImportChoice>
-          </ImportChoices>
-        </InnerContainer>
-      </Container>
+      <Fragment>
+        <TabContainer>
+          <Button selected={selectedTab === 0} onClick={() => this.setTab(0)}>
+            Popular Templates
+          </Button>
+          <Button selected={selectedTab === 1} onClick={() => this.setTab(1)}>
+            Client Templates
+          </Button>
+          <Button selected={selectedTab === 2} onClick={() => this.setTab(2)}>
+            Server Templates
+          </Button>
+          <Button selected={selectedTab === 3} onClick={() => this.setTab(3)}>
+            Presets
+          </Button>
+        </TabContainer>
+        <Container
+          closing={closing}
+          forking={forking}
+          onMouseDown={e => e.preventDefault()}
+        >
+          <InnerContainer forking={forking} closing={closing}>
+            <Tab visible={selectedTab === 0}>
+              <Templates>
+                {popularTemplates.map(t => (
+                  <Template
+                    key={t.name}
+                    template={t}
+                    selectTemplate={this.selectTemplate}
+                  />
+                ))}
+              </Templates>
+            </Tab>
+            <Tab visible={selectedTab === 1}>
+              <Templates>
+                {clientTemplates.map(t => (
+                  <Template
+                    key={t.name}
+                    template={t}
+                    selectTemplate={this.selectTemplate}
+                  />
+                ))}
+              </Templates>
+            </Tab>
+            <Tab visible={selectedTab === 2}>
+              <Templates>
+                {serverTemplates.map(t => (
+                  <Template
+                    key={t.name}
+                    template={t}
+                    selectTemplate={this.selectTemplate}
+                  />
+                ))}
+              </Templates>
+            </Tab>
+            <Tab visible={selectedTab === 3}>
+              <Templates>
+                {typescriptTemplates.map(t => (
+                  <Template
+                    small
+                    key={t.name}
+                    template={t}
+                    selectTemplate={this.selectTemplate}
+                    subtitle={`Using ${t.variantName} template`}
+                  />
+                ))}
+              </Templates>
+            </Tab>
+            <ImportChoices>
+              <ImportChoice
+                href="/docs/importing#import-from-github"
+                target="_blank"
+              >
+                <GithubLogo /> Import from GitHub
+              </ImportChoice>
+              <ImportChoice
+                href="/docs/importing#export-with-cli"
+                target="_blank"
+              >
+                <TerminalIcon /> Export with CLI
+              </ImportChoice>
+              <ImportChoice href="/docs/importing#define-api" target="_blank">
+                <UploadIcon /> Create with API
+              </ImportChoice>
+            </ImportChoices>
+          </InnerContainer>
+        </Container>
+      </Fragment>
     );
   }
 }

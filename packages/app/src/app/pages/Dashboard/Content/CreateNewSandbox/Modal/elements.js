@@ -8,10 +8,11 @@ export const Container = styled.main`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
-  border-radius: 4px;
+  border-radius: 0 0 4px 4px;
   padding: 2rem;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
 
   ${props =>
     props.closing &&
@@ -35,9 +36,6 @@ export const Container = styled.main`
 `;
 
 export const InnerContainer = styled.div`
-  transition: 0.15s ease opacity;
-  ${delayEffect(0.3)};
-
   ${props =>
     (props.closing || props.forking) &&
     css`
@@ -47,30 +45,25 @@ export const InnerContainer = styled.div`
     `};
 `;
 
-export const Title = styled.h2`
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-
-  &:first-child {
-    margin-top: 0;
-  }
-`;
-
 export const Templates = styled.div`
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
 
-  @media (max-width: 870px) {
-    flex-wrap: wrap;
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
   }
 `;
 
 export const ImportChoices = styled(Templates)`
   justify-content: space-between;
+  margin-top: 2.5em;
+`;
+
+export const Tab = styled.section`
+  display: ${props => (props.visible ? 'block' : 'none')};
+  transition: 0.15s ease opacity;
+  ${delayEffect(0.1)};
 `;
 
 export const ImportChoice = styled.a`
@@ -91,4 +84,44 @@ export const ImportChoice = styled.a`
   &:hover {
     color: rgba(255, 255, 255, 1);
   }
+`;
+
+export const Button = styled.button`
+  background: transparent;
+  border: none;
+  margin: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 20px;
+  padding-bottom: ${props => (props.selected ? '16px' : '20px')};
+  border-bottom: ${props => (props.selected ? '4px solid #40a9f3' : 'none')};
+  transition: 0.15s ease opacity;
+  top: -10px;
+  position: relative;
+  cursor: pointer;
+  ${delayEffect(0.1)};
+
+  &:hover {
+    /* border-bottom: 4px solid #40a9f35c;
+    padding-bottom: 16px; */
+  }
+
+  &:focus {
+    outline: none;
+    border-bottom: 4px solid #40a9f3;
+    padding-bottom: 16px;
+  }
+`;
+
+export const TabContainer = styled.div`
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  background: #1b1d1f;
+  padding: 0;
+  box-sizing: border-box;
+  padding: 0 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;

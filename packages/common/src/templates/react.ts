@@ -10,6 +10,7 @@ export default new Template(
   decorateSelector(() => '#61DAFB'),
   {
     showOnHomePage: true,
+    popular: true,
     main: true,
     mainFile: ['/src/index.js', '/src/index.tsx', '/src/index.ts'],
   }

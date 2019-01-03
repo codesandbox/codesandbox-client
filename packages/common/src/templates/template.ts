@@ -70,6 +70,7 @@ export default class Template {
   color: () => string;
   backgroundColor: (() => string | undefined);
 
+  popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
   netlify: boolean;
@@ -94,6 +95,7 @@ export default class Template {
     this.shortid = shortid;
     this.color = color;
 
+    this.popular = options.popular || false;
     this.isServer = options.isServer || false;
     this.main = options.main || false;
     this.showOnHomePage = options.showOnHomePage || false;
