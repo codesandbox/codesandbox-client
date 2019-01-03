@@ -103,11 +103,6 @@ export const Button = styled.button`
   cursor: pointer;
   ${delayEffect(0.1)};
 
-  &:hover {
-    /* border-bottom: 4px solid #40a9f35c;
-    padding-bottom: 16px; */
-  }
-
   &:focus {
     outline: none;
     border-bottom: 4px solid #40a9f3;

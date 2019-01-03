@@ -26,6 +26,38 @@ const usedTemplates = sortBy(
   'niceName'
 );
 
+const availableTemplates = [
+  {
+    name: 'Popular Templates',
+    templates: usedTemplates.filter(t => t.popular),
+  },
+  {
+    name: 'Client Templates',
+    templates: usedTemplates.filter(t => !t.isServer && !t.popular),
+  },
+  {
+    name: 'Server Templates',
+    templates: usedTemplates.filter(t => t.isServer && !t.popular),
+  },
+  {
+    name: 'Presets',
+    templates: [
+      {
+        ...templates.react,
+        variantName: templates.react.niceName,
+        niceName: 'React + TS',
+        shortid: 'react-ts',
+      },
+      {
+        ...templates.parcel,
+        variantName: templates.parcel.niceName,
+        niceName: 'Vanilla + TS',
+        shortid: 'vanilla-ts',
+      },
+    ],
+  },
+];
+
 export default class Modal extends React.PureComponent {
   state = {
     selectedTab: 0,
@@ -40,41 +72,15 @@ export default class Modal extends React.PureComponent {
   render() {
     const { forking = false, closing = false } = this.props;
 
-    const popularTemplates = usedTemplates.filter(t => t.popular);
-    const clientTemplates = usedTemplates.filter(
-      t => !t.isServer && !t.popular
-    );
-    const serverTemplates = usedTemplates.filter(t => t.isServer && !t.popular);
-    const typescriptTemplates = [
-      {
-        ...templates.react,
-        variantName: templates.react.niceName,
-        niceName: 'React + TS',
-        shortid: 'react-ts',
-      },
-      {
-        ...templates.parcel,
-        variantName: templates.parcel.niceName,
-        niceName: 'Vanilla + TS',
-        shortid: 'vanilla-ts',
-      },
-    ];
     const { selectedTab } = this.state;
     return (
       <Fragment>
         <TabContainer>
-          <Button selected={selectedTab === 0} onClick={() => this.setTab(0)}>
-            Popular Templates
-          </Button>
-          <Button selected={selectedTab === 1} onClick={() => this.setTab(1)}>
-            Client Templates
-          </Button>
-          <Button selected={selectedTab === 2} onClick={() => this.setTab(2)}>
-            Server Templates
-          </Button>
-          <Button selected={selectedTab === 3} onClick={() => this.setTab(3)}>
-            Presets
-          </Button>
+          {availableTemplates.map((t, i) => (
+            <Button selected={selectedTab === i} onClick={() => this.setTab(i)}>
+              {t.name}
+            </Button>
+          ))}
         </TabContainer>
         <Container
           closing={closing}
@@ -82,52 +88,19 @@ export default class Modal extends React.PureComponent {
           onMouseDown={e => e.preventDefault()}
         >
           <InnerContainer forking={forking} closing={closing}>
-            <Tab visible={selectedTab === 0}>
-              <Templates>
-                {popularTemplates.map(t => (
-                  <Template
-                    key={t.name}
-                    template={t}
-                    selectTemplate={this.selectTemplate}
-                  />
-                ))}
-              </Templates>
-            </Tab>
-            <Tab visible={selectedTab === 1}>
-              <Templates>
-                {clientTemplates.map(t => (
-                  <Template
-                    key={t.name}
-                    template={t}
-                    selectTemplate={this.selectTemplate}
-                  />
-                ))}
-              </Templates>
-            </Tab>
-            <Tab visible={selectedTab === 2}>
-              <Templates>
-                {serverTemplates.map(t => (
-                  <Template
-                    key={t.name}
-                    template={t}
-                    selectTemplate={this.selectTemplate}
-                  />
-                ))}
-              </Templates>
-            </Tab>
-            <Tab visible={selectedTab === 3}>
-              <Templates>
-                {typescriptTemplates.map(t => (
-                  <Template
-                    small
-                    key={t.name}
-                    template={t}
-                    selectTemplate={this.selectTemplate}
-                    subtitle={`Using ${t.variantName} template`}
-                  />
-                ))}
-              </Templates>
-            </Tab>
+            {availableTemplates.map((tab, i) => (
+              <Tab visible={selectedTab === i}>
+                <Templates>
+                  {tab.templates.map(t => (
+                    <Template
+                      key={t.name}
+                      template={t}
+                      selectTemplate={this.selectTemplate}
+                    />
+                  ))}
+                </Templates>
+              </Tab>
+            ))}
             <ImportChoices>
               <ImportChoice
                 href="/docs/importing#import-from-github"
