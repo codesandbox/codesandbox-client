@@ -132,9 +132,9 @@ export async function createApiData({ props, state }) {
     const file = contents.files[filePath];
 
     if (!file.dir && filePath !== 'package.json') {
-      const data = await file.async('text'); // eslint-disable-line no-await-in-loop
+      const data = await file.async('base64'); // eslint-disable-line no-await-in-loop
 
-      apiData.files.push({ file: filePath, data });
+      apiData.files.push({ file: filePath, data, encoding: 'base64' });
     }
   }
 
