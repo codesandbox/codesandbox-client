@@ -45,7 +45,9 @@
     ],
     "nohoist": [
       "**/@types",
-      "**/@types/**"
+      "**/@types",
+      "**/react-codemirror2",
+      "**/react-codemirror2/**"
     ]
   },
   "resolutions": {
