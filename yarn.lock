@@ -2142,13 +2142,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-dom@^16.0.11":
-  version "16.0.11"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.11.tgz#bd10ccb0d9260343f4b9a49d4f7a8330a5c1f081"
-  integrity sha512-x6zUx9/42B5Kl2Vl9HlopV8JF64wLpX3c+Pst9kc1HgzrsH+mkehe/zmHMQTplIrR48H2gpU7ZqurQolYu8XBA==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react@*":
   version "16.3.16"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.3.16.tgz#78fc44a90b45701f50c8a7008f733680ba51fc86"
@@ -9544,6 +9537,13 @@ gatsby-plugin-page-creator@^2.0.5:
 gatsby-plugin-react-helmet@^3.0.3:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/gatsby-plugin-react-helmet/-/gatsby-plugin-react-helmet-3.0.4.tgz#07811c8ccc626ecfea40554ccc5f946db705409d"
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+
+gatsby-plugin-remove-trailing-slashes@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-remove-trailing-slashes/-/gatsby-plugin-remove-trailing-slashes-2.0.6.tgz#fd73291fc89aaecae97834269728d84699872867"
+  integrity sha512-q+bE/iPAD6uA8otMmIatKTs9xuH4Zu/LUX58h3z9duwNMVtjtPVi3q/HHL5kH4DLGdEUJBavfNIcZUE0ehM96w==
   dependencies:
     "@babel/runtime" "^7.0.0"
 
