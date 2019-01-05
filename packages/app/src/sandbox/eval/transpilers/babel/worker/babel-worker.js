@@ -189,6 +189,65 @@ function normalizeV7Config(config) {
   };
 }
 
+function getCustomConfig(
+  { config, codeSandboxPlugins },
+  version: number,
+  path: string,
+  options: Object
+) {
+  if (
+    /^\/node_modules/.test(path) &&
+    /\.js$/.test(path) &&
+    options.compileNodeModulesWithEnv
+  ) {
+    if (version === 7) {
+      return {
+        parserOpts: {
+          plugins: ['dynamicImport', 'objectRestSpread'],
+        },
+        presets: ['env', 'react'],
+        plugins: [
+          'transform-modules-commonjs',
+          'proposal-class-properties',
+          '@babel/plugin-transform-runtime',
+          ...codeSandboxPlugins,
+        ],
+      };
+    }
+
+    return {
+      presets: ['es2015', 'react', 'stage-0'],
+      plugins: [
+        'transform-es2015-modules-commonjs',
+        'transform-class-properties',
+        [
+          'transform-runtime',
+          {
+            helpers: false,
+            polyfill: false,
+            regenerator: true,
+          },
+        ],
+        [
+          'transform-regenerator',
+          {
+            // Async functions are converted to generators by babel-preset-env
+            async: false,
+          },
+        ],
+        ...codeSandboxPlugins,
+      ],
+    };
+  }
+
+  return {
+    ...config,
+    plugins: config.plugins
+      ? [...config.plugins, ...codeSandboxPlugins]
+      : codeSandboxPlugins,
+  };
+}
+
 async function compile(code, customConfig, path) {
   try {
     let result;
@@ -357,70 +416,31 @@ self.addEventListener('message', async event => {
     lastConfig = stringifiedConfig;
   }
 
-  const plugins = [...(config.plugins || [])];
+  const codeSandboxPlugins = [];
 
   if (!disableCodeSandboxPlugins) {
-    plugins.push('dynamic-import-node');
+    codeSandboxPlugins.push('dynamic-import-node');
 
     if (loaderOptions.dynamicCSSModules) {
-      plugins.push('dynamic-css-modules');
+      codeSandboxPlugins.push('dynamic-css-modules');
     }
 
     if (!sandboxOptions || sandboxOptions.infiniteLoopProtection) {
-      plugins.push('babel-plugin-transform-prevent-infinite-loops');
+      codeSandboxPlugins.push('babel-plugin-transform-prevent-infinite-loops');
     }
   }
 
-  plugins.push([
+  codeSandboxPlugins.push([
     'babel-plugin-detective',
     { source: true, nodes: true, generated: true },
   ]);
 
-  const customConfig =
-    /^\/node_modules/.test(path) && /\.js$/.test(path)
-      ? {
-          parserOpts: version === 7 && {
-            plugins: ['dynamicImport', 'objectRestSpread'],
-          },
-          presets:
-            version === 7 ? ['env', 'react'] : ['es2015', 'react', 'stage-0'],
-          plugins: [
-            version === 7
-              ? 'transform-modules-commonjs'
-              : 'transform-es2015-modules-commonjs',
-            version === 7
-              ? 'proposal-class-properties'
-              : 'transform-class-properties',
-            ...(version === 7
-              ? ['@babel/plugin-transform-runtime']
-              : [
-                  [
-                    'transform-runtime',
-                    {
-                      helpers: false,
-                      polyfill: false,
-                      regenerator: true,
-                    },
-                  ],
-                  [
-                    'transform-regenerator',
-                    {
-                      // Async functions are converted to generators by babel-preset-env
-                      async: false,
-                    },
-                  ],
-                ]),
-            'dynamic-import-node',
-            [
-              'babel-plugin-detective',
-              { source: true, nodes: true, generated: true },
-            ],
-          ].filter(Boolean),
-        }
-      : {
-          ...config,
-          plugins,
-        };
+  const customConfig = getCustomConfig(
+    { config, codeSandboxPlugins },
+    version,
+    path,
+    loaderOptions
+  );
 
   const flattenedPresets = flatten(customConfig.presets || []);
   const flattenedPlugins = flatten(customConfig.plugins || []);
