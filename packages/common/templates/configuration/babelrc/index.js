@@ -101,7 +101,7 @@ const config: ConfigurationFile = {
     if (template === 'parcel') {
       const presets = ['env'];
       const plugins = isV7
-        ? []
+        ? ['transform-runtime']
         : [
             [
               'transform-runtime',
