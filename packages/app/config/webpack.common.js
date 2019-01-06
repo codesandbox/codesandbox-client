@@ -399,7 +399,7 @@ module.exports = {
             filename: 'embed.html',
             template: path.join(paths.embedSrc, 'index.html'),
             minify: __PROD__ && {
-              removeComments: true,
+              removeComments: false,
               collapseWhitespace: true,
               removeRedundantAttributes: true,
               useShortDoctype: true,

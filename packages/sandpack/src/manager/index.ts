@@ -115,6 +115,10 @@ export default class PreviewManager {
       this.element = selector;
       this.iframe = selector;
     }
+    this.iframe.setAttribute(
+      'sandbox',
+      'allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation'
+    );
     this.iframe.src = this.bundlerURL;
 
     this.listener = listen((message: any) => {

@@ -273,6 +273,7 @@ export default class SandpackProvider extends React.PureComponent<
               position: 'absolute',
               visibility: 'hidden',
             }}
+            sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
             src={this.props.bundlerURL}
           />
           {children}

@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import Loadable from 'app/utils/Loadable';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
 import { DragDropContext } from 'react-dnd';
 
