@@ -3,9 +3,9 @@ import VERSION from 'common/version';
 export const DNT =
   typeof window !== 'undefined' &&
   !!(
-    window.doNotTrack ||
-    window.navigator.doNotTrack ||
-    window.navigator.msDoNotTrack
+    window.doNotTrack === '1' ||
+    window.navigator.doNotTrack === '1' ||
+    window.navigator.msDoNotTrack === '1'
   );
 
 export function identify(key, value) {
