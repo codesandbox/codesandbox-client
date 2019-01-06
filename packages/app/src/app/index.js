@@ -6,7 +6,7 @@ import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'mobx-react';
 
 import history from 'app/utils/history';
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 import { client } from 'app/graphql/client';
 import VERSION from 'common/version';
 import registerServiceWorker from 'common/registerServiceWorker';
