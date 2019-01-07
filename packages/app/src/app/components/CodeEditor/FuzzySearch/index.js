@@ -6,7 +6,7 @@ import { getModulePath } from 'common/sandbox/modules';
 import Input from 'common/components/Input';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
-
+import { ESC } from 'common/utils/keycodes';
 import {
   Container,
   InputContainer,
@@ -61,7 +61,7 @@ export default class FuzzySearch extends React.PureComponent {
   };
 
   handleKeyUp = e => {
-    if (e.keyCode === 27) {
+    if (e.keyCode === ESC) {
       this.props.closeFuzzySearch();
     }
   };

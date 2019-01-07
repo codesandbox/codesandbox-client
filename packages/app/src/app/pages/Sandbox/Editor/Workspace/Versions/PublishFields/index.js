@@ -3,6 +3,8 @@ import * as React from 'react';
 import Button from 'app/components/Button';
 import Relative from 'common/components/Relative';
 
+import { DOT, BACKSPACE } from 'common/utils/keycodes';
+
 import { WorkspaceInputContainer } from '../../elements';
 import { Inputs, Dot, ErrorMessage } from './elements';
 
@@ -33,17 +35,17 @@ export default class PublishFields extends React.PureComponent {
     !!this.props.versions.find(v => v.version === version);
 
   handleMajorKey = e => {
-    if (e.keyCode === 190) {
+    if (e.keyCode === DOT) {
       // dot
       if (this.minor != null) this.minor.focus();
     }
   };
 
   handleMinorKey = e => {
-    if (e.keyCode === 190) {
+    if (e.keyCode === DOT) {
       // dot
       if (this.patch != null) this.patch.focus();
-    } else if (e.keyCode === 8) {
+    } else if (e.keyCode === BACKSPACE) {
       // backspace
       const { minor } = this.state;
       if (minor === '' && this.major != null) {
@@ -55,7 +57,7 @@ export default class PublishFields extends React.PureComponent {
   };
 
   handlePatchKey = e => {
-    if (e.keyCode === 8) {
+    if (e.keyCode === BACKSPACE) {
       // backspace
       const { patch } = this.state;
       if (patch === '' && this.minor != null) {

@@ -41,9 +41,7 @@ class CollectionInfo extends React.Component {
   };
 
   handleKeyUp = e => {
-    if (e.keyCode === 27) {
-      // esc
-
+    if (e.keyCode === ESC) {
       this.updateSandboxInfo();
     }
   };

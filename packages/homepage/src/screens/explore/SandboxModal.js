@@ -12,6 +12,7 @@ import GithubBadge from 'common/components/GithubBadge';
 
 import Tags from 'common/components/Tags';
 import track from 'common/utils/analytics';
+import { ARROW_LEFT, ARROW_RIGHT } from 'common/utils/keycodes';
 
 import Modal from './Modal';
 import EmbedSkeleton from './EmbedSkeleton';
@@ -105,11 +106,9 @@ export default class SandboxModal extends React.PureComponent {
     if (!this.props.sandboxId) return;
     const code = e.which || e.keyCode;
 
-    // left arrow pressed
-    if (code === 37 && this.props.openPreviousSandbox) {
+    if (code === ARROW_LEFT && this.props.openPreviousSandbox) {
       this.props.openPreviousSandbox();
-      // right arrow pressed
-    } else if (code === 39 && this.props.openNextSandbox) {
+    } else if (code === ARROW_RIGHT && this.props.openNextSandbox) {
       this.props.openNextSandbox();
     }
   };

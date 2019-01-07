@@ -25,6 +25,8 @@ import { Container, AnimatedChevron, IconContainer } from './elements';
 import getDirectChildren from '../utils/get-direct-children';
 import { entryTarget, collectTarget } from '../folder-drop-target';
 
+import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/utils/keycodes';
+
 import CreateFolderEntry from './CreateFolderEntry';
 
 import {
@@ -75,13 +77,9 @@ class FolderEntry extends React.Component {
 
   handleKeyDown = e => {
     if (!this.state.renamingDirectory) {
-      if (e.keyCode === 39) {
-        // Right arrow
-
+      if (e.keyCode === ARROW_RIGHT) {
         this.setState({ open: true });
-      } else if (e.keyCode === 37) {
-        // Left arrow
-
+      } else if (e.keyCode === ARROW_LEFT) {
         this.setState({ open: false });
       }
     }
@@ -265,9 +263,7 @@ class FolderEntry extends React.Component {
                           defaultValue={name}
                           onBlur={this.handleBlur}
                           onKeyDown={e => {
-                            if (e.keyCode === 27) {
-                              // Escape
-
+                            if (e.keyCode === ESC) {
                               this.handleBlur();
                             }
                           }}

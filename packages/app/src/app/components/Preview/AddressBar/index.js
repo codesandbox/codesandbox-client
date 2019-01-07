@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, InputContainer } from './elements';
+import { ENTER } from 'common/utils/keycodes';
 
 export default class extends React.PureComponent {
   onChange = evt => {
@@ -11,8 +12,7 @@ export default class extends React.PureComponent {
   handleKeyDown = e => {
     const { onConfirm } = this.props;
 
-    if (e.keyCode === 13) {
-      // Enter
+    if (e.keyCode === ENTER) {
       onConfirm();
     }
   };

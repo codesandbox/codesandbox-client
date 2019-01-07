@@ -3,7 +3,7 @@ import { Spring } from 'react-spring';
 import { inject } from 'mobx-react';
 import { ThemeProvider } from 'styled-components';
 import history from 'app/utils/history';
-
+import { ESC, ENTER } from 'common/utils/keycodes';
 import theme from 'common/theme';
 import { sandboxUrl } from 'common/utils/url-generator';
 import Portal from 'common/components/Portal';
@@ -67,9 +67,7 @@ class CreateNewSandbox extends React.PureComponent {
   };
 
   keydownListener = e => {
-    if (e.keyCode === 27) {
-      // Escape
-
+    if (e.keyCode === ESC) {
       this.close();
     }
   };
@@ -192,7 +190,7 @@ class CreateNewSandbox extends React.PureComponent {
               role="button"
               hide={this.state.creating}
               onKeyDown={e => {
-                if (e.keyCode === 13) {
+                if (e.keyCode === ENTER) {
                   this.handleClick();
                 }
               }}

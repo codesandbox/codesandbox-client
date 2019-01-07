@@ -3,6 +3,7 @@ import React from 'react';
 import getIcon from 'common/templates/icons';
 import getTemplate from 'common/templates';
 import { profileUrl } from 'common/utils/url-generator';
+import { ENTER } from 'common/utils/keycodes';
 
 import {
   Container,
@@ -38,9 +39,7 @@ export default class WideSandbox extends React.PureComponent {
   };
 
   handleKeyUp = e => {
-    if (e.keyCode === 13) {
-      // Enter
-
+    if (e.keyCode === ENTER) {
       this.toggleOpen();
     }
   };

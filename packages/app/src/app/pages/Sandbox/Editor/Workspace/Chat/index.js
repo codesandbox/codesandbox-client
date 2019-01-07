@@ -4,6 +4,7 @@ import { sortBy, takeRight } from 'lodash-es';
 import { inject, observer } from 'mobx-react';
 
 import AutosizeTextArea from 'common/components/AutosizeTextArea';
+import { ENTER } from 'common/utils/keycodes';
 
 const Container = styled.div`
   min-height: 200px;
@@ -27,7 +28,7 @@ class Chat extends React.Component {
   };
 
   handleKeyDown = (e: KeyboardEvent) => {
-    if (e.keyCode === 13 && !e.shiftKey) {
+    if (e.keyCode === ENTER && !e.shiftKey) {
       e.preventDefault();
       e.stopPropagation();
       // Enter

@@ -6,6 +6,8 @@ import { Pagination } from 'react-instantsearch/dom';
 import DependencyHit from '../DependencyHit';
 import { AutoCompleteInput } from './elements';
 
+import { ENTER } from 'common/utils/keycodes';
+
 function RawAutoComplete({
   onSelect,
   onManualSelect,
@@ -38,7 +40,7 @@ function RawAutoComplete({
               },
               onKeyUp(e) {
                 // If enter with no selection
-                if (e.keyCode === 13) {
+                if (e.keyCode === ENTER) {
                   onManualSelect(e.target.value);
                 }
               },
