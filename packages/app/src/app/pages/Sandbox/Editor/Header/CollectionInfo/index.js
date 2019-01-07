@@ -6,6 +6,7 @@ import Media from 'react-media';
 import { Spring } from 'react-spring';
 
 import track from 'common/utils/analytics';
+import { ESC } from 'common/utils/keycodes';
 
 import { Container, SandboxName, SandboxInput, FolderName } from './elements';
 

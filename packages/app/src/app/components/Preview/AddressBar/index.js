@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, InputContainer } from './elements';
 import { ENTER } from 'common/utils/keycodes';
+import { Container, InputContainer } from './elements';
 
 export default class extends React.PureComponent {
   onChange = evt => {

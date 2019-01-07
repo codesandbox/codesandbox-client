@@ -3,10 +3,10 @@ import Downshift from 'downshift';
 
 import { Pagination } from 'react-instantsearch/dom';
 
+import { ENTER } from 'common/utils/keycodes';
+
 import DependencyHit from '../DependencyHit';
 import { AutoCompleteInput } from './elements';
-
-import { ENTER } from 'common/utils/keycodes';
 
 function RawAutoComplete({
   onSelect,

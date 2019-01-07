@@ -3,10 +3,10 @@ import { inject, observer } from 'mobx-react';
 import Downshift from 'downshift';
 import genie from 'geniejs';
 
+import { ESC } from 'common/utils/keycodes';
+
 import Input from 'common/components/Input';
 import Keys from './Keys';
-
-import { ESC } from 'common/utils/keycodes';
 
 import {
   Container,

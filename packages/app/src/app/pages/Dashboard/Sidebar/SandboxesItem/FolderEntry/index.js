@@ -19,13 +19,12 @@ import theme from 'common/theme';
 import ContextMenu from 'app/components/ContextMenu';
 
 import Input from 'common/components/Input';
+import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/utils/keycodes';
 
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
 import getDirectChildren from '../utils/get-direct-children';
 import { entryTarget, collectTarget } from '../folder-drop-target';
-
-import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/utils/keycodes';
 
 import CreateFolderEntry from './CreateFolderEntry';
 
