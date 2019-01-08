@@ -36,7 +36,7 @@ export function setUserId(userId: string) {
         debug('[Amplitude] Setting User ID', hashedId);
         identify('userId', hashedId);
 
-        window.amplitude.getInstance().setUserId();
+        window.amplitude.getInstance().setUserId(hashedId);
       }
     }
   } catch (e) {
