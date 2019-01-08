@@ -1,9 +1,8 @@
-import Airtable from './setAirtable';
+export default async ({ feedback, emoji, sandboxId, username, email }) => {
+  const Airtable = await import(/* webpackChunkName: 'airtable' */ './setAirtable');
+  const base = Airtable.default.base('appzdQFPct2p9gFZi');
 
-const base = Airtable.base('appzdQFPct2p9gFZi');
-
-export default ({ feedback, emoji, sandboxId, username, email }) =>
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     base('feedback').create(
       {
         feedback,
@@ -11,6 +10,7 @@ export default ({ feedback, emoji, sandboxId, username, email }) =>
         sandboxId,
         username,
         email,
+        url: window.location.pathname,
       },
       err => {
         if (err) {
@@ -22,3 +22,4 @@ export default ({ feedback, emoji, sandboxId, username, email }) =>
       }
     );
   });
+};

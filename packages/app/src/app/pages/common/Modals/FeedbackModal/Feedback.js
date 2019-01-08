@@ -4,39 +4,35 @@ import Margin from 'common/components/spacing/Margin';
 import Button from 'app/components/Button';
 
 import AutosizeTextArea from 'common/components/AutosizeTextArea';
+import Input from 'common/components/Input';
 import pushToAirtable from 'app/store/utils/pushToAirtable';
 
 import { EmojiButton } from './elements';
 
-function sendFeedback(props) {
-  const { feedback, emoji, sandboxId, user } = props;
-  const { username, email } = user || {};
-
-  return pushToAirtable({ feedback, emoji, sandboxId, username, email });
-}
-
 class Feedback extends React.Component {
   state = {
     feedback: '',
+    email: this.props.user,
     emoji: null,
     loading: false,
   };
 
   onChange = e => {
-    this.setState({ feedback: e.target.value });
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   onSubmit = evt => {
     const { id, user, signals } = this.props;
-    const { feedback, emoji } = this.state;
+    const { feedback, emoji, email } = this.state;
     evt.preventDefault();
 
     this.setState({ loading: true }, () => {
-      sendFeedback({
+      pushToAirtable({
         sandboxId: id,
         feedback,
         emoji,
-        user,
+        username: (user || {}).username,
+        email,
       })
         .then(() => {
           this.setState(
@@ -76,18 +72,34 @@ class Feedback extends React.Component {
   };
 
   render() {
-    const { feedback, emoji } = this.state;
+    const { feedback, emoji, email } = this.state;
     return (
       <form onSubmit={this.onSubmit}>
         <AutosizeTextArea
           css={`
             width: 100%;
           `}
+          name="feedback"
           value={feedback}
           onChange={this.onChange}
           placeholder="What are your thoughts?"
           minRows={3}
+          required
         />
+        {!this.props.user && (
+          <Margin top={0.5}>
+            <Input
+              css={`
+                width: 100%;
+              `}
+              type="email"
+              name="email"
+              value={email}
+              onChange={this.onChange}
+              placeholder="Email if you wish to be contacted"
+            />
+          </Margin>
+        )}
 
         <Margin
           top={0.5}
