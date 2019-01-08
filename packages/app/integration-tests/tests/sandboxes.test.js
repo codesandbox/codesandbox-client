@@ -33,6 +33,7 @@ const SANDBOXES = [
   { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
   'pm79km5lmj', // babel macros with styled components
   'j2wpjwqj93', // sandbox with need of transpiling in node_modules
+  '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
 ];
 
 function pageLoaded(page) {

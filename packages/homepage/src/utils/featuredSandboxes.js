@@ -1,5 +1,12 @@
 export default [
   {
+    title: 'React-Spring Flick Animation',
+    description:
+      'A playful flick animation for cards written with react-with-gesture.',
+    sandboxId: 'j0y0vpz59',
+    template: 'create-react-app',
+  },
+  {
     title: 'Tailwind Workflow Animation',
     description: 'An incredible animation showing the power of Tailwind.',
     sandboxId: 'nw10kz7m3j',
@@ -18,12 +25,5 @@ export default [
       'An example by Evan You on how you can potentionally use Hooks in Vue',
     sandboxId: 'jpqo566289',
     template: 'vue-cli',
-  },
-  {
-    title: 'Animation Using React Hooks',
-    description:
-      'This example shows how React Hooks can be used in combination with react-spring to create new type of animations.',
-    sandboxId: 'ppxnl191zx',
-    template: 'create-react-app',
   },
 ];

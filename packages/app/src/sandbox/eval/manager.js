@@ -5,7 +5,7 @@ import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
 import * as pathUtils from 'common/utils/path';
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 

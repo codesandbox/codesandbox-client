@@ -36,6 +36,7 @@ export default function initialize() {
         ) {
           const babelOptions = {
             isV7: true,
+            compileNodeModulesWithEnv: true,
             config: {
               plugins: [
                 'transform-flow-strip-types',

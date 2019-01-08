@@ -1,6 +1,6 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { Encode } from 'console-feed/lib/Transform';

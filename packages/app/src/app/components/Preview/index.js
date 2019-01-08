@@ -56,10 +56,10 @@ type State = {
   showScreenshot: boolean,
 };
 
-const getSSEUrl = (id?: string) =>
+const getSSEUrl = (id?: string, initialPath?: string = '') =>
   `https://${id ? id + '.' : ''}sse.${
     process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
-  }`;
+  }${initialPath}`;
 
 const getDiff = (a, b) => {
   const diff = {};
@@ -171,7 +171,7 @@ class BasePreview extends React.Component<Props, State> {
       history: [],
       historyPosition: -1,
       urlInAddressBar: this.serverPreview
-        ? getSSEUrl(props.sandbox.id)
+        ? getSSEUrl(props.sandbox.id, props.initialPath)
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
       overlayMessage: null,
@@ -435,7 +435,7 @@ class BasePreview extends React.Component<Props, State> {
     resetState();
 
     const url = this.serverPreview
-      ? getSSEUrl(newId)
+      ? getSSEUrl(newId, this.props.initialPath)
       : frameUrl(newId, this.props.initialPath || '');
 
     if (this.serverPreview) {
@@ -794,7 +794,7 @@ class BasePreview extends React.Component<Props, State> {
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
                 src={
                   this.serverPreview
-                    ? getSSEUrl(sandbox.id)
+                    ? getSSEUrl(sandbox.id, this.initialPath)
                     : frameUrl(sandbox.id, this.initialPath)
                 }
                 id="sandbox"
