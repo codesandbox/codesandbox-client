@@ -22,7 +22,7 @@ const results = [];
     const page = await browser.newPage();
     const waitFunction = pageLoaded(page);
 
-    page.goto('http://localhost:3002/#' + SANDBOX_ID);
+    page.goto('http://localhost:5500/#' + SANDBOX_ID);
     const a = Date.now();
     await waitFunction;
     const d = Date.now() - a;
