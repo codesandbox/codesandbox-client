@@ -74,8 +74,7 @@ export default class Explore extends React.PureComponent {
   openSandbox = index => {
     const sandbox = this.state.sandboxes[index];
     const { id, picks } = sandbox;
-    const title = picks[0].title;
-    const description = picks[0].description;
+    const { title, description } = picks[0];
     this.setState({
       selectedSandbox: {
         id,

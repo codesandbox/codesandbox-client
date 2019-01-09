@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import Portal from 'common/components/Portal';
+import { ESC } from 'common/utils/keycodes';
 
 import { Spring, animated } from 'react-spring';
 
@@ -47,9 +48,7 @@ export default class Modal extends React.PureComponent {
   }
 
   listenForEsc = e => {
-    if (e.keyCode === 27) {
-      // Esc
-
+    if (e.keyCode === ESC) {
       this.props.onClose();
     }
   };

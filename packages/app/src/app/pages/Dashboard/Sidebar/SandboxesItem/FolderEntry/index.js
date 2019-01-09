@@ -19,6 +19,7 @@ import theme from 'common/theme';
 import ContextMenu from 'app/components/ContextMenu';
 
 import Input from 'common/components/Input';
+import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/utils/keycodes';
 
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
@@ -75,13 +76,9 @@ class FolderEntry extends React.Component {
 
   handleKeyDown = e => {
     if (!this.state.renamingDirectory) {
-      if (e.keyCode === 39) {
-        // Right arrow
-
+      if (e.keyCode === ARROW_RIGHT) {
         this.setState({ open: true });
-      } else if (e.keyCode === 37) {
-        // Left arrow
-
+      } else if (e.keyCode === ARROW_LEFT) {
         this.setState({ open: false });
       }
     }
@@ -265,9 +262,7 @@ class FolderEntry extends React.Component {
                           defaultValue={name}
                           onBlur={this.handleBlur}
                           onKeyDown={e => {
-                            if (e.keyCode === 27) {
-                              // Escape
-
+                            if (e.keyCode === ESC) {
                               this.handleBlur();
                             }
                           }}

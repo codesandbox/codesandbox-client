@@ -1,6 +1,7 @@
 import React from 'react';
 import getIcon from 'common/templates/icons';
 
+import { ENTER } from 'common/utils/keycodes';
 import { Container, IconContainer, Title, SubTitle } from './elements';
 
 export default ({ template, subtitle, width, selectTemplate, small }) => {
@@ -16,7 +17,7 @@ export default ({ template, subtitle, width, selectTemplate, small }) => {
       color={template.color}
       width={width}
       onKeyDown={e => {
-        if (e.keyCode === 13) {
+        if (e.keyCode === ENTER) {
           select();
         }
       }}

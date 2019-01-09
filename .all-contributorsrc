@@ -670,6 +670,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "manniL",
+      "name": "Alexander Lichter",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/640208?v=4",
+      "profile": "https://blog.lichter.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"

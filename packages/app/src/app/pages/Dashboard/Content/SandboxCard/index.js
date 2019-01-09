@@ -16,6 +16,7 @@ import getTemplate from 'common/templates';
 import theme from 'common/theme';
 import track from 'common/utils/analytics';
 
+import { ESC, ENTER } from 'common/utils/keycodes';
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
 import {
@@ -304,7 +305,7 @@ class SandboxItem extends React.PureComponent<Props> {
   };
 
   handleKeyDown = (e: KeyboardEvent) => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === ENTER) {
       track('Dashboard - Sandbox Opened With Enter');
       // enter
       this.openSandbox();
@@ -485,14 +486,12 @@ class SandboxItem extends React.PureComponent<Props> {
                                   }
                                 }}
                                 onKeyDown={e => {
-                                  if (e.keyCode === 13) {
-                                    // Enter
+                                  if (e.keyCode === ENTER) {
                                     e.preventDefault();
                                     e.stopPropagation();
 
                                     saveName();
-                                  } else if (e.keyCode === 27) {
-                                    // Escape
+                                  } else if (e.keyCode === ESC) {
                                     e.preventDefault();
                                     e.stopPropagation();
 
