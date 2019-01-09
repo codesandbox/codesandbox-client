@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 const Cube = styled.div`
   width: ${props => props.size + 1}px;
@@ -28,7 +28,9 @@ const getAnimation = (offset: number = 0) => {
 const Sides = styled.div`
   ${({ noAnimation, offset, speed }) =>
     !noAnimation &&
-    `animation: ${getAnimation(offset)} ${speed}s linear infinite;`};
+    css`
+      animation: ${getAnimation(offset)} ${speed}s linear infinite;
+    `};
   transform-style: preserve-3d;
   will-change: transform;
 
@@ -72,7 +74,7 @@ export default class GlowCube extends React.PureComponent<Props> {
       id,
     } = this.props;
     return (
-      <Cube id={id} innerRef={ref} className={className} size={size}>
+      <Cube id={id} ref={ref} className={className} size={size}>
         <Sides
           color={color}
           offset={offset}

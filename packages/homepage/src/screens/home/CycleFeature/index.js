@@ -88,7 +88,7 @@ const CubeSteps = styled.div`
 const ImportContainer = styled.div`
   position: absolute;
   width: 100%;
-  background-color: ${({ theme }) => theme.background2};
+  background-color: ${({ theme }) => theme.background5};
   padding-top: 1rem;
 
   top: 0;
@@ -97,7 +97,7 @@ const ImportContainer = styled.div`
 const DeployContainer = styled.div`
   position: absolute;
   width: 100%;
-  background-color: ${({ theme }) => theme.background2};
+  background-color: ${({ theme }) => theme.background5};
 
   overflow: hidden;
 
@@ -413,7 +413,7 @@ export default class CycleFeatures extends React.PureComponent {
 
           <CubeSteps>
             <OffsettedCube
-              innerRef={el => {
+              ref={el => {
                 this.cube = el;
               }}
             >

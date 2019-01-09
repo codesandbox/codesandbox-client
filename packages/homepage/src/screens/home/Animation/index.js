@@ -10,13 +10,11 @@ import {
   angular,
   vue,
   react,
-  reactTs,
   preact,
   svelte,
   parcel,
   cxjs,
   dojo,
-  ember,
 } from 'common/templates';
 
 import Background from './Background';
@@ -28,7 +26,7 @@ import getScrollPos from '../../../utils/scroll';
 
 import media from '../../../utils/media';
 
-const Container = Centered.extend`
+const Container = styled(Centered)`
   position: relative;
   width: 100%;
   height: 100vh;
@@ -49,7 +47,7 @@ const Container = Centered.extend`
 `};
 `;
 
-const Message = styled.div`
+const Message = styled.h2`
   text-align: center;
   font-weight: 200;
 
@@ -67,7 +65,7 @@ const Message = styled.div`
 `};
 `;
 
-const TEMPLATES = [parcel, react, vue, angular, preact, svelte, cxjs, dojo, ember];
+const TEMPLATES = [parcel, react, vue, angular, preact, svelte, cxjs, dojo];
 
 export default class Animation extends React.PureComponent {
   state = {

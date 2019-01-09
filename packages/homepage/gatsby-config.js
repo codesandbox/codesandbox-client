@@ -70,6 +70,7 @@ module.exports = {
     },
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-remove-trailing-slashes`,
     `gatsby-plugin-sitemap`,
     {
       resolve: `gatsby-plugin-google-tagmanager`,
@@ -80,7 +81,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
-        fonts: [`source sans pro:300,400,600,700`],
+        fonts: [`Poppins:600,700,800`, `source sans pro:300,400,500,600,700`],
       },
     },
   ],

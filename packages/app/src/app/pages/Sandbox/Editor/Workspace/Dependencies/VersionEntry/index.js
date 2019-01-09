@@ -38,7 +38,11 @@ export default class VersionEntry extends React.PureComponent {
     fetch(`/api/v1/dependencies/${pkg}`)
       .then(response => response.json())
       .then(data => that.setState({ version: data.data.version }))
-      .catch(err => console.err(err)); // eslint-disable-line no-console
+      .catch(err => {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(err); // eslint-disable-line no-console
+        }
+      });
   }
 
   getSizeForPKG(pkg) {
@@ -49,18 +53,26 @@ export default class VersionEntry extends React.PureComponent {
           size,
         })
       )
-      .catch(err => console.err(err)); // eslint-disable-line no-console
+      .catch(err => {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(err); // eslint-disable-line no-console
+        }
+      });
   }
 
   componentWillMount() {
-    const versionRegex = /^\d{1,3}\.\d{1,3}.\d{1,3}$/;
-    const version = this.props.dependencies[this.props.dependency];
-    const cleanVersion = version.split('^');
-    this.getSizeForPKG(
-      `${this.props.dependency}@${cleanVersion[cleanVersion.length - 1]}`
-    );
-    if (!versionRegex.test(version)) {
-      this.setVersionsForLatestPkg(`${this.props.dependency}@${version}`);
+    try {
+      const versionRegex = /^\d{1,3}\.\d{1,3}.\d{1,3}$/;
+      const version = this.props.dependencies[this.props.dependency];
+      const cleanVersion = version.split('^');
+      this.getSizeForPKG(
+        `${this.props.dependency}@${cleanVersion[cleanVersion.length - 1]}`
+      );
+      if (!versionRegex.test(version)) {
+        this.setVersionsForLatestPkg(`${this.props.dependency}@${version}`);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 

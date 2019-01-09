@@ -1,4 +1,4 @@
-import semver from 'semver';
+import { isBabel7 } from 'common/utils/is-babel-7';
 
 import Preset from '../';
 
@@ -9,25 +9,11 @@ import rawTranspiler from '../../transpilers/raw';
 import svgrTranspiler from '../../transpilers/svgr';
 import sassTranspiler from '../../transpilers/sass';
 
-export function isVersion2(dependencies) {
-  const usedDeps = dependencies || {};
-  if (usedDeps['react-scripts']) {
-    const reactScriptsVersion = usedDeps['react-scripts'];
-
-    return (
-      /^[a-z]/.test(reactScriptsVersion) ||
-      semver.intersects(reactScriptsVersion, '^2.0.0')
-    );
-  }
-
-  return false;
-}
-
 export default function initialize() {
   let v2Initialized = false;
   const preset = new Preset(
     'create-react-app',
-    ['web.js', 'js', 'json', 'web.jsx', 'jsx'],
+    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
     { 'react-native': 'react-native-web' },
     {
       hasDotEnv: true,
@@ -35,21 +21,29 @@ export default function initialize() {
         const configurations = manager.configurations;
 
         if (
-          isVersion2(
+          isBabel7(
             configurations &&
               configurations.package &&
               configurations.package.parsed &&
-              configurations.package.parsed.dependencies
+              configurations.package.parsed.dependencies,
+
+            configurations &&
+              configurations.package &&
+              configurations.package.parsed &&
+              configurations.package.parsed.devDependencies
           ) &&
           !v2Initialized
         ) {
           const babelOptions = {
             isV7: true,
+            compileNodeModulesWithEnv: true,
             config: {
               plugins: [
+                'transform-flow-strip-types',
+                'transform-destructuring',
                 'babel-plugin-macros',
-                'proposal-class-properties',
-                'proposal-object-rest-spread',
+                ['proposal-class-properties', { loose: true }],
+                ['proposal-object-rest-spread', { useBuiltIns: true }],
                 'transform-runtime',
                 'syntax-dynamic-import',
               ],
@@ -73,11 +67,12 @@ export default function initialize() {
                   },
                 ],
                 'react',
+                'typescript',
               ],
             },
           };
           preset.registerTranspiler(
-            module => /\.jsx?$/.test(module.path),
+            module => /\.(t|j)sx?$/.test(module.path),
             [
               {
                 transpiler: babelTranspiler,

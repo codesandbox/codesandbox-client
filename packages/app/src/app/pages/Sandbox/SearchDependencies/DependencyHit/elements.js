@@ -35,7 +35,7 @@ export const Row = styled.div`
   }
 `;
 
-export const Description = Row.extend`
+export const Description = styled(Row)`
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.6);
 `;
@@ -60,7 +60,7 @@ export const IconLink = styled.a`
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 `;
 
-export const StyledSelect = Select.extend`
+export const StyledSelect = styled(Select)`
   font-size: 0.875rem;
 `;
 

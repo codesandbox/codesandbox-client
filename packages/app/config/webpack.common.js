@@ -7,8 +7,8 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
-const env = require('./env');
-const getHost = require('./host');
+const env = require('common/config/env');
+const getHost = require('common/utils/host');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
@@ -326,7 +326,7 @@ module.exports = {
       ? [
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'sandbox'],
+            chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
             minify: __PROD__ && {
@@ -399,7 +399,7 @@ module.exports = {
             filename: 'embed.html',
             template: path.join(paths.embedSrc, 'index.html'),
             minify: __PROD__ && {
-              removeComments: true,
+              removeComments: false,
               collapseWhitespace: true,
               removeRedundantAttributes: true,
               useShortDoctype: true,
@@ -445,7 +445,7 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode3/vs',
+          to: 'public/vscode9/vs',
           force: true,
         },
         {
@@ -455,6 +455,10 @@ module.exports = {
         {
           from: '../../node_modules/monaco-vue/release/min',
           to: 'public/13/vs/language/vue',
+        },
+        {
+          from: '../sse-hooks/dist',
+          to: 'public/sse-hooks',
         },
         {
           from: 'static',

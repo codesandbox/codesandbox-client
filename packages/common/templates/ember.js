@@ -25,7 +25,7 @@ export default new Template(
   decorateSelector(() => '#E04E39'),
   {
     isServer: true,
-    showOnHomePage: false,
+    showOnHomePage: true,
     main: false,
   }
 );

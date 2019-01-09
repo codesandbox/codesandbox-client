@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import theme from 'common/theme';
 
 export const Container = styled.div`
@@ -49,5 +49,11 @@ export const CodeContainer = styled.div`
   /* For retina screens we will not do subpixel anti-aliasing. That looks uglier. */
   @media (-webkit-min-device-pixel-ratio: 1.5) {
     -webkit-font-smoothing: auto;
+  }
+`;
+
+export const GlobalStyles = createGlobalStyle`
+  .monaco-quick-open-widget {
+    z-index: 50 !important;
   }
 `;

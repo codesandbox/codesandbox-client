@@ -7,6 +7,7 @@ import Parcel from 'common/components/logos/Parcel';
 import Preact from 'common/components/logos/Preact';
 import Vue from 'common/components/logos/Vue';
 import Svelte from 'common/components/logos/Svelte';
+import Sapper from 'common/components/logos/Sapper';
 import Dojo from 'common/components/logos/Dojo';
 import CxJS from 'common/components/logos/CxJS';
 import Reason from 'common/components/logos/Reason';
@@ -16,6 +17,8 @@ import Nuxt from 'common/components/logos/Nuxt';
 import Node from 'common/components/logos/Node';
 import Apollo from 'common/components/logos/Apollo';
 import Nest from 'common/components/logos/Nest';
+import Static from 'common/components/logos/Static';
+import Styleguidist from 'common/components/logos/Styleguidist';
 
 import {
   react,
@@ -35,6 +38,9 @@ import {
   node,
   apollo,
   nest,
+  sapper,
+  staticTemplate,
+  styleguidist,
 } from './';
 
 import type { Template } from './';
@@ -59,6 +65,8 @@ export default function getIcon(theme: Template) {
       return Dojo;
     case ember.name:
       return Ember;
+    case sapper.name:
+      return Sapper;
     case cxjs.name:
       return CxJS;
     case reason.name:
@@ -75,6 +83,10 @@ export default function getIcon(theme: Template) {
       return Apollo;
     case nest.name:
       return Nest;
+    case staticTemplate.name:
+      return Static;
+    case styleguidist.name:
+      return Styleguidist;
     default:
       return React;
   }

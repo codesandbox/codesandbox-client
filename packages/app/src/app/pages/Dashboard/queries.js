@@ -230,6 +230,28 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export function addSandboxesToFolder(selectedSandboxes, path, teamId) {
+  return client.mutate({
+    mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
+    variables: {
+      sandboxIds: selectedSandboxes,
+      teamId,
+      collectionPath: path,
+    },
+    optimisticResponse: {
+      __typename: 'Mutation',
+      addToCollection: {
+        __typename: 'Collection',
+        // We keep this empty, because it will be loaded later regardless. We
+        // just want the main directory to update immediately
+        sandboxes: [],
+      },
+    },
+
+    refetchQueries: ['PathedSandboxes'],
+  });
+}
+
 export function undeleteSandboxes(selectedSandboxes) {
   client.mutate({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,

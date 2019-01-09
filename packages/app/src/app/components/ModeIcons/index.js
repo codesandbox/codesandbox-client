@@ -1,5 +1,4 @@
 import React from 'react';
-import Tooltip from 'common/components/Tooltip';
 import {
   Tooltips,
   ViewIcon,
@@ -17,28 +16,22 @@ function getCurrentMode({
   setPreviewView,
 }) {
   const both = (
-    <Tooltip title="Show Split view">
-      <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
-        <EditorIcon half />
-        <PreviewIcon half />
-      </ViewIcon>
-    </Tooltip>
+    <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
+      <EditorIcon half />
+      <PreviewIcon half />
+    </ViewIcon>
   );
 
   const editor = (
-    <Tooltip title="Show Editor view">
-      <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
-        <EditorIcon />
-      </ViewIcon>
-    </Tooltip>
+    <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
+      <EditorIcon />
+    </ViewIcon>
   );
 
   const preview = (
-    <Tooltip title="Show Preview view">
-      <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
-        <PreviewIcon />
-      </ViewIcon>
-    </Tooltip>
+    <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
+      <PreviewIcon />
+    </ViewIcon>
   );
 
   if (showEditor && !showPreview)
@@ -147,25 +140,18 @@ export default class ModeIcons extends React.PureComponent {
 
     return (
       <Tooltips>
-        <Tooltip title="Show Editor view">
-          <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
-            <EditorIcon />
-          </ViewIcon>
-        </Tooltip>
-        <Tooltip title="Show Split view">
-          <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
-            <EditorIcon half />
-            <PreviewIcon half />
-          </ViewIcon>
-        </Tooltip>
-        <Tooltip title="Show Preview view">
-          <ViewIcon
-            onClick={setPreviewView}
-            active={!showEditor && showPreview}
-          >
-            <PreviewIcon />
-          </ViewIcon>
-        </Tooltip>
+        <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
+          <EditorIcon />
+        </ViewIcon>
+
+        <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
+          <EditorIcon half />
+          <PreviewIcon half />
+        </ViewIcon>
+
+        <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
+          <PreviewIcon />
+        </ViewIcon>
       </Tooltips>
     );
   }

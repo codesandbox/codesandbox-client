@@ -361,7 +361,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
     return (
       <Container
-        innerRef={el => {
+        ref={el => {
           this.node = el;
         }}
         style={{

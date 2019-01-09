@@ -25,10 +25,16 @@ function PricingInfo() {
           />
           <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
           <Feature feature="Sandbox Limit" free="50" supporter="Unlimited" />
+          <Feature feature="Server Sandbox Limit" free="5" supporter="20" />
           <Feature
             feature="Static File Hosting"
             free="20Mb"
             supporter="500Mb"
+          />
+          <Feature
+            feature="GitHub Private Repositories"
+            free="No"
+            supporter="Yes"
           />
         </tbody>
       </table>

@@ -1,4 +1,5 @@
 import { omit } from 'lodash-es';
+import getTemplate from 'common/templates';
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
@@ -12,11 +13,67 @@ export function loadZip({ props, jsZip }) {
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
 }
 
+export async function getPeopleWhoWant2() {
+  const Airtable = await import(/* webpackChunkName: 'airtable' */ '../../utils/setAirtable');
+
+  const base = await Airtable.default.base('apppgSmcJWwuXac6t');
+  const params = base('zeit2').select({
+    view: 'Grid view',
+    maxRecords: 100000,
+  });
+  const people = [];
+
+  const getPeople = () =>
+    new Promise(res => {
+      params.eachPage(
+        (records, fetchNextPage) => {
+          records.forEach(record => {
+            people.push(record);
+          });
+          fetchNextPage();
+        },
+        () => res()
+      );
+    });
+
+  await getPeople();
+
+  return {
+    people: people.map(a => a.fields),
+  };
+}
+
+export async function addPersonWhoWant2({ path, props }) {
+  const Airtable = await import(/* webpackChunkName: 'airtable' */ '../../utils/setAirtable');
+
+  const base = await Airtable.default.base('apppgSmcJWwuXac6t');
+
+  const AddPerson = () =>
+    new Promise((res, rej) => {
+      base('zeit2').create({ username: props.username }, err => {
+        if (err) {
+          console.error(err);
+          rej();
+        }
+        res();
+      });
+    });
+
+  try {
+    await AddPerson();
+
+    return path.success();
+  } catch (e) {
+    return path.error();
+  }
+}
+
 export async function createApiData({ props, state }) {
   const { contents } = props;
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
-  const apiData = {
+  const template = getTemplate(sandbox.template);
+  let apiData = {
     files: [],
   };
 
@@ -75,10 +132,14 @@ export async function createApiData({ props, state }) {
     const file = contents.files[filePath];
 
     if (!file.dir && filePath !== 'package.json') {
-      const data = await file.async('text'); // eslint-disable-line no-await-in-loop
+      const data = await file.async('base64'); // eslint-disable-line no-await-in-loop
 
-      apiData.files.push({ file: filePath, data });
+      apiData.files.push({ file: filePath, data, encoding: 'base64' });
     }
+  }
+
+  if (template.alterDeploymentData) {
+    apiData = template.alterDeploymentData(apiData);
   }
 
   return { apiData };

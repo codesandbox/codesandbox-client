@@ -13,7 +13,9 @@ import {
   ALGOLIA_DEFAULT_INDEX,
 } from 'common/utils/config';
 
+import 'instantsearch.css/themes/reset.css';
 import './search.css';
+
 import Results from './Results';
 import Filters from './Filters';
 import { Content, StyledTitle, Main } from './elements';
@@ -76,32 +78,30 @@ class Search extends React.PureComponent {
     document.title = 'Search - CodeSandbox';
     return (
       <MaxWidth>
-        <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="Search" />
+        <Margin vertical={1.5}>
+          <Navigation title="Search" searchNoInput />
           <Content>
-            <MaxWidth responsive width={1024}>
-              <InstantSearch
-                appId={ALGOLIA_APPLICATION_ID}
-                apiKey={ALGOLIA_API_KEY}
-                indexName={ALGOLIA_DEFAULT_INDEX}
-                searchState={this.state.searchState}
-                onSearchStateChange={this.onSearchStateChange}
-                createURL={createURL}
-              >
-                <StyledTitle>Sandbox Search</StyledTitle>
-                <PoweredBy />
-                <SearchBox
-                  autoFocus
-                  translations={{
-                    placeholder: `Search for a ${this.state.randomSearch}...`,
-                  }}
-                />
-                <Main alignItems="flex-start">
-                  <Results />
-                  <Filters />
-                </Main>
-              </InstantSearch>
-            </MaxWidth>
+            <InstantSearch
+              appId={ALGOLIA_APPLICATION_ID}
+              apiKey={ALGOLIA_API_KEY}
+              indexName={ALGOLIA_DEFAULT_INDEX}
+              searchState={this.state.searchState}
+              onSearchStateChange={this.onSearchStateChange}
+              createURL={createURL}
+            >
+              <StyledTitle>Sandbox Search</StyledTitle>
+              <PoweredBy />
+              <SearchBox
+                autoFocus
+                translations={{
+                  placeholder: `Search for a ${this.state.randomSearch}...`,
+                }}
+              />
+              <Main alignItems="flex-start">
+                <Results />
+                <Filters />
+              </Main>
+            </InstantSearch>
           </Content>
         </Margin>
       </MaxWidth>

@@ -66,7 +66,7 @@ const AddTeamMember = ({ teamId, signals }) => (
             onSubmit={loading ? undefined : submit}
           >
             <Input
-              innerRef={node => {
+              ref={node => {
                 input = node;
               }}
               placeholder="Add member by username"

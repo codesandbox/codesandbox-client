@@ -1,4 +1,5 @@
 import React from 'react';
+import getTemplate from 'common/templates';
 
 import Filter from './Filter';
 import { Container } from './elements';
@@ -10,7 +11,16 @@ function Filters() {
         title="Templates"
         operator="or"
         attributeName="template"
-        noSearch
+        transformItems={items =>
+          items.map(({ label, ...item }) => {
+            const template = getTemplate(label);
+
+            return {
+              ...item,
+              label: template.name === label ? template.niceName : label,
+            };
+          })
+        }
       />
       <Filter
         title="Dependencies"

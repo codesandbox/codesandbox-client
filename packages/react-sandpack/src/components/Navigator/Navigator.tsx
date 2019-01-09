@@ -6,6 +6,8 @@ import RefreshIcon from './RefreshIcon';
 import BackwardIcon from './BackwardIcon';
 import ForwardIcon from './ForwardIcon';
 
+import { ENTER } from 'common/utils/keycodes';
+
 import withSandpack from '../../utils/with-sandpack';
 import { ISandpackContext } from '../../types';
 import cn from '../../utils/cn';
@@ -115,8 +117,7 @@ class Navigator extends React.Component<Props, State> {
   };
 
   onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.keyCode === 13) {
-      // Enter
+    if (e.keyCode === ENTER) {
       e.preventDefault();
       e.stopPropagation();
 

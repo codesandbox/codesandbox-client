@@ -7,9 +7,15 @@ class SVGRTranspiler extends Transpiler {
     const { svgrTransform } = await import('./transpiler');
     // We follow CRA behaviour, so the code with the component is not the default
     // export, this forces that.
+
+    const codeIsHttp = loaderContext._module.module.code.startsWith('http');
     const state = {
       webpack: {
-        previousExport: `"${loaderContext._module.module.path}"`,
+        previousExport: `"${
+          codeIsHttp
+            ? loaderContext._module.module.code
+            : loaderContext._module.module.path
+        }"`,
       },
     };
 

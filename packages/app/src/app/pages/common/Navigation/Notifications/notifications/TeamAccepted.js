@@ -4,7 +4,7 @@ import { inject } from 'mobx-react';
 
 import { NotificationContainer, NotificationImage as Image } from '../elements';
 
-const Container = NotificationContainer.extend`
+const Container = styled(NotificationContainer)`
   display: flex;
 `;
 

@@ -40,7 +40,7 @@ export default class ImageViewer extends React.Component<Props>
 
         <MaxWidth onSubmit={this.onSubmit}>
           <Input
-            innerRef={el => {
+            ref={el => {
               this.input = el;
             }}
             onChange={this.doChangeCode}

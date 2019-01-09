@@ -54,6 +54,7 @@ type Props = {
   expandDevTools: boolean,
   runOnClick: boolean,
   verticalMode: boolean,
+  tabs?: Array<string>,
 };
 
 type State = {
@@ -67,17 +68,7 @@ export default class Content extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    let tabs = [];
-
-    const module = props.sandbox.modules.find(
-      m => m.id === props.currentModule.id
-    );
-    // Show all tabs if there are not many files
-    if (props.sandbox.modules.length <= 5 || !module) {
-      tabs = [...props.sandbox.modules];
-    } else {
-      tabs = [module];
-    }
+    const tabs = this.getInitTabs(props);
 
     this.state = {
       running: !props.runOnClick,
@@ -88,6 +79,35 @@ export default class Content extends React.PureComponent<Props, State> {
 
     this.errors = [];
   }
+
+  getInitTabs = (props: Props) => {
+    let tabs: Array<Module> = [];
+    const module = props.sandbox.modules.find(
+      m => m.id === props.currentModule.id
+    );
+    if (props.tabs) {
+      tabs = props.tabs
+        .map(modulePath => {
+          try {
+            return resolveModule(
+              modulePath,
+              props.sandbox.modules,
+              props.sandbox.directories
+            );
+          } catch (e) {
+            return undefined;
+          }
+        })
+        .filter(Boolean);
+    } else if (props.sandbox.modules.length <= 5 || !module) {
+      // Show all tabs if there are not many files
+      tabs = [...props.sandbox.modules];
+    } else {
+      tabs = [module];
+    }
+
+    return tabs;
+  };
 
   renderTabStatus = (hovering, closeTab) => {
     const { isNotSynced, tabCount } = this.props;
@@ -132,6 +152,12 @@ export default class Content extends React.PureComponent<Props, State> {
       if (this.editor && this.editor.changeModule) {
         this.editor.changeModule(nextProps.currentModule);
       }
+    }
+
+    if (this.props.sandbox.id !== nextProps.sandbox.id) {
+      this.setState({
+        tabs: this.getInitTabs(nextProps),
+      });
     }
   }
 
@@ -374,7 +400,12 @@ export default class Content extends React.PureComponent<Props, State> {
                       <React.Fragment>
                         <EntryIcons type={getType(module.title)} />
                         <TabTitle>{module.title}</TabTitle>
-                        {dirName && <TabDir>../{dirName}</TabDir>}
+                        {dirName && (
+                          <TabDir>
+                            ../
+                            {dirName}
+                          </TabDir>
+                        )}
 
                         {this.renderTabStatus(hovering, closeTab)}
                       </React.Fragment>

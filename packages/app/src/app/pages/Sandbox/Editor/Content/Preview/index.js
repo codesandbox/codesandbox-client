@@ -1,5 +1,5 @@
 // @flow
-import * as React from 'react';
+import React, { Component, Fragment } from 'react';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
@@ -23,7 +23,7 @@ type State = {
   aligned: ?'right' | 'bottom',
 };
 
-class Preview extends React.Component<Props, State> {
+class Preview extends Component<Props, State> {
   state = {
     aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
     running: !this.props.runOnClick,
@@ -65,10 +65,6 @@ class Preview extends React.Component<Props, State> {
       this.detectStructureChange,
       this.handleStructureChange.bind(this, preview)
     );
-    const disposeHandleSandboxChange = reaction(
-      () => this.props.store.editor.currentSandbox.id,
-      this.handleSandboxChange.bind(this, preview)
-    );
     const disposeDependenciesHandler = reaction(
       () =>
         this.props.store.editor.currentSandbox.npmDependencies.keys().length,
@@ -83,7 +79,6 @@ class Preview extends React.Component<Props, State> {
       disposeHandleModuleSyncedChange();
       disposeHandleCodeChange();
       disposeHandleStructureChange();
-      disposeHandleSandboxChange();
       disposeDependenciesHandler();
     };
   };
@@ -157,10 +152,6 @@ class Preview extends React.Component<Props, State> {
     }
   }
 
-  handleSandboxChange = (preview, newId) => {
-    preview.handleSandboxChange(newId);
-  };
-
   handleDependenciesChange = preview => {
     preview.handleDependenciesChange();
   };
@@ -196,7 +187,11 @@ class Preview extends React.Component<Props, State> {
       this.props.store.editor.currentSandbox.template
     ).isServer;
     if ((isServer || !settings.livePreviewEnabled) && change) {
-      preview.executeCodeImmediately();
+      if (this.props.store.editor.currentSandbox.template === 'static') {
+        preview.handleRefresh();
+      } else {
+        preview.executeCodeImmediately();
+      }
     }
   };
 
@@ -291,7 +286,7 @@ class Preview extends React.Component<Props, State> {
           };
 
           return (
-            <React.Fragment>
+            <Fragment>
               {content === 'tests' && (
                 <Tests alignRight={alignRight} alignBottom={alignBottom} />
               )}
@@ -330,6 +325,7 @@ class Preview extends React.Component<Props, State> {
                   setServerStatus={(status: string) => {
                     signals.server.statusChanged({ status });
                   }}
+                  syncSandbox={signals.files.syncSandbox}
                 />
               ) : (
                 <RunOnClick
@@ -338,7 +334,7 @@ class Preview extends React.Component<Props, State> {
                   }}
                 />
               )}
-            </React.Fragment>
+            </Fragment>
           );
         }}
       </FlyingContainer>

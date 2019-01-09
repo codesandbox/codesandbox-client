@@ -1,5 +1,5 @@
 import type BrowserFS from 'codesandbox-browserfs';
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 
 import Transpiler from './';
 import { parseWorkerError } from './utils/worker-error-handler';
@@ -156,6 +156,7 @@ export default class WorkerTranspiler extends Transpiler {
               id,
               found: true,
               path: tModule.module.path,
+              code: tModule.module.code,
             });
           } catch (e) {
             worker.postMessage({

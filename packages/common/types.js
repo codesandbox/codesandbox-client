@@ -57,6 +57,7 @@ export type CurrentUser = {
     since: string,
     amount: string,
   },
+  curatorAt: string,
   badges: Array<Badge>,
   integrations: {
     zeit?: {
@@ -154,6 +155,7 @@ export type Sandbox = {
     rights: 'none' | 'read' | 'write' | 'admin',
   },
   version: number,
+  screenshotUrl: ?string,
 };
 
 export type Preferences = {

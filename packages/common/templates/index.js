@@ -11,6 +11,8 @@ import vue from './vue';
 import ember from './ember';
 import cxjs from './cxjs';
 import dojo from './dojo';
+import custom from './custom';
+
 import gatsby from './gatsby';
 import nuxt from './nuxt';
 import next from './next';
@@ -18,9 +20,12 @@ import node from './node';
 import apollo from './apollo-server';
 import sapper from './sapper';
 import nest from './nest';
+import staticTemplate from './static';
+import styleguidist from './styleguidist';
 
 export {
   angular,
+  custom,
   apollo,
   gatsby,
   next,
@@ -39,6 +44,8 @@ export {
   sapper,
   nest,
   ember,
+  staticTemplate,
+  styleguidist,
 };
 
 export type Template =
@@ -57,7 +64,9 @@ export type Template =
   | 'reason'
   | 'apollo'
   | 'sapper'
-  | 'nest';
+  | 'nest'
+  | 'static'
+  | 'styleguidist';
 
 export default function getDefinition(theme: Template) {
   switch (theme) {
@@ -81,6 +90,8 @@ export default function getDefinition(theme: Template) {
       return cxjs;
     case dojo.name:
       return dojo;
+    case custom.name:
+      return custom;
     case gatsby.name:
       return gatsby;
     case nuxt.name:
@@ -97,6 +108,12 @@ export default function getDefinition(theme: Template) {
       return sapper;
     case nest.name:
       return nest;
+    case staticTemplate.name:
+      return staticTemplate;
+    case styleguidist.name:
+      return styleguidist;
+    case ember.name:
+      return ember;
     default:
       return react;
   }

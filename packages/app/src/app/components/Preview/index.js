@@ -9,6 +9,8 @@ import { frameUrl, host } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
 import getTemplate from 'common/templates';
 
+import { Spring } from 'react-spring';
+
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import Navigator from './Navigator';
@@ -39,6 +41,7 @@ type Props = {
   alignDirection?: 'right' | 'bottom',
   delay?: number,
   setServerStatus?: (status: string) => void,
+  syncSandbox?: (updates: any) => void,
 };
 
 type State = {
@@ -50,12 +53,13 @@ type State = {
   overlayMessage: ?string,
   hibernated: boolean,
   sseError: boolean,
+  showScreenshot: boolean,
 };
 
-const getSSEUrl = (id?: string) =>
+const getSSEUrl = (id?: string, initialPath?: string = '') =>
   `https://${id ? id + '.' : ''}sse.${
     process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
-  }`;
+  }${initialPath}`;
 
 const getDiff = (a, b) => {
   const diff = {};
@@ -76,6 +80,7 @@ const getDiff = (a, b) => {
       diff[p] = {
         code: b[p].code,
         path: p,
+        isBinary: b[p].isBinary,
       };
     });
 
@@ -147,9 +152,13 @@ class BasePreview extends React.Component<Props, State> {
     modules: {
       [path: string]: any,
     },
+    ignoreNextUpdate: boolean,
   };
   // TODO: Find typedefs for this
   $socket: ?any;
+  connectTimeout: ?number;
+  // indicates if the socket closing is initiated by us
+  localClose: boolean;
 
   constructor(props: Props) {
     super(props);
@@ -162,12 +171,13 @@ class BasePreview extends React.Component<Props, State> {
       history: [],
       historyPosition: -1,
       urlInAddressBar: this.serverPreview
-        ? getSSEUrl(props.sandbox.id)
+        ? getSSEUrl(props.sandbox.id, props.initialPath)
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
       overlayMessage: null,
       hibernated: false,
       sseError: false,
+      showScreenshot: true,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -175,13 +185,17 @@ class BasePreview extends React.Component<Props, State> {
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
 
-    this.lastSent = {
-      sandboxId: props.sandbox.id,
-      modules: this.getModulesToSend(),
-    };
+    this.initializeLastSent();
 
     if (this.serverPreview) {
+      this.connectTimeout = null;
+      this.localClose = false;
       this.setupSSESockets();
+
+      setTimeout(() => {
+        // Remove screenshot after specific time, so the loading container spinner can still show
+        this.setState({ showScreenshot: false });
+      }, 100);
     }
     this.listener = listen(this.handleMessage);
 
@@ -191,6 +205,14 @@ class BasePreview extends React.Component<Props, State> {
 
     window.openNewWindow = this.openNewWindow;
   }
+
+  initializeLastSent = () => {
+    this.lastSent = {
+      sandboxId: this.props.sandbox.id,
+      modules: this.getModulesToSend(),
+      ignoreNextUpdate: false,
+    };
+  };
 
   componentWillUpdate(nextProps: Props, nextState: State) {
     if (
@@ -203,12 +225,11 @@ class BasePreview extends React.Component<Props, State> {
 
   setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
-    let connectTimeout = null;
 
-    function onTimeout(setServerStatus) {
-      connectTimeout = null;
-      if (setServerStatus) {
-        setServerStatus('disconnected');
+    function onTimeout(comp) {
+      comp.connectTimeout = null;
+      if (comp.props.setServerStatus) {
+        comp.props.setServerStatus('disconnected');
       }
     }
 
@@ -217,20 +238,18 @@ class BasePreview extends React.Component<Props, State> {
         frameInitialized: false,
       });
       if (this.$socket) {
+        this.localClose = true;
         this.$socket.close();
+        // we need this setTimeout() for socket open() to work immediately after close()
         setTimeout(() => {
-          if (this.$socket) {
-            connectTimeout = setTimeout(
-              () => onTimeout(this.props.setServerStatus),
-              3000
-            );
-            this.$socket.open();
-          }
+          this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
+          this.$socket.open();
         }, 0);
       }
     } else {
       const socket = io(getSSEUrl(), {
         autoConnect: false,
+        transports: ['websocket', 'polling'],
       });
       this.$socket = socket;
       if (process.env.NODE_ENV === 'development') {
@@ -238,6 +257,11 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       socket.on('disconnect', () => {
+        if (this.localClose) {
+          this.localClose = false;
+          return;
+        }
+
         if (this.props.setServerStatus) {
           let status = 'disconnected';
           if (this.state.hibernated) {
@@ -251,9 +275,9 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('connect', async () => {
-        if (connectTimeout) {
-          clearTimeout(connectTimeout);
-          connectTimeout = null;
+        if (this.connectTimeout) {
+          clearTimeout(this.connectTimeout);
+          this.connectTimeout = null;
         }
 
         if (this.props.setServerStatus) {
@@ -285,6 +309,14 @@ class BasePreview extends React.Component<Props, State> {
           signal,
           id,
         });
+      });
+
+      socket.on('sandbox:update', message => {
+        this.lastSent.ignoreNextUpdate = true;
+
+        if (this.props.syncSandbox) {
+          this.props.syncSandbox({ updates: message.updates });
+        }
       });
 
       socket.on('sandbox:start', () => {
@@ -351,10 +383,7 @@ class BasePreview extends React.Component<Props, State> {
         }
       });
 
-      connectTimeout = setTimeout(
-        () => onTimeout(this.props.setServerStatus),
-        3000
-      );
+      this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
       socket.open();
     }
   };
@@ -377,7 +406,18 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     if (this.$socket) {
+      this.localClose = true;
       this.$socket.close();
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (
+      prevProps.sandbox &&
+      this.props.sandbox &&
+      prevProps.sandbox.id !== this.props.sandbox.id
+    ) {
+      this.handleSandboxChange(this.props.sandbox.id);
     }
   }
 
@@ -395,17 +435,26 @@ class BasePreview extends React.Component<Props, State> {
     resetState();
 
     const url = this.serverPreview
-      ? getSSEUrl(newId)
+      ? getSSEUrl(newId, this.props.initialPath)
       : frameUrl(newId, this.props.initialPath || '');
 
     if (this.serverPreview) {
+      this.initializeLastSent();
       this.setupSSESockets();
+
+      setTimeout(() => {
+        // Remove screenshot after specific time, so the loading container spinner can still show
+        this.setState({ showScreenshot: false });
+      }, 800);
     }
+
     this.setState(
       {
         history: [url],
         historyPosition: 0,
         urlInAddressBar: url,
+        showScreenshot: true,
+        overlayMessage: null,
       },
       () => this.handleRefresh()
     );
@@ -428,9 +477,13 @@ class BasePreview extends React.Component<Props, State> {
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
-        this.setState({
-          frameInitialized: true,
-        });
+
+        setTimeout(() => {
+          // We show a screenshot of the sandbox (if available) on top of the preview if the frame
+          // hasn't loaded yet
+          this.setState({ showScreenshot: false });
+        }, this.serverPreview ? 0 : 600);
+
         this.executeCodeImmediately(true);
       } else {
         const { type } = data;
@@ -468,6 +521,10 @@ class BasePreview extends React.Component<Props, State> {
 
             break;
           }
+          case 'done': {
+            this.setState({ showScreenshot: false });
+            break;
+          }
           default: {
             break;
           }
@@ -500,6 +557,7 @@ class BasePreview extends React.Component<Props, State> {
         modulesObject[path] = {
           path,
           code: m.code,
+          isBinary: m.isBinary,
         };
       }
     });
@@ -511,6 +569,7 @@ class BasePreview extends React.Component<Props, State> {
       modulesToSend['/package.json'] = {
         code: generateFileFromSandbox(sandbox),
         path: '/package.json',
+        isBinary: false,
       };
     }
 
@@ -545,9 +604,11 @@ class BasePreview extends React.Component<Props, State> {
 
         this.lastSent.modules = modulesToSend;
 
-        if (Object.keys(diff).length > 0 && this.$socket) {
+        const ignoreUpdate = this.lastSent.ignoreNextUpdate;
+        if (!ignoreUpdate && Object.keys(diff).length > 0 && this.$socket) {
           this.$socket.emit('sandbox:update', diff);
         }
+        this.lastSent.ignoreNextUpdate = false;
       } else {
         dispatch({
           type: 'compile',
@@ -669,6 +730,7 @@ class BasePreview extends React.Component<Props, State> {
       dragging,
       hide,
       noPreview,
+      className,
     } = this.props;
 
     const {
@@ -688,6 +750,7 @@ class BasePreview extends React.Component<Props, State> {
 
     return (
       <Container
+        className={className}
         style={{
           position: 'relative',
           flex: 1,
@@ -718,23 +781,71 @@ class BasePreview extends React.Component<Props, State> {
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
-        <StyledFrame
-          sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          src={
-            this.serverPreview
-              ? getSSEUrl(sandbox.id)
-              : frameUrl(sandbox.id, this.initialPath)
-          }
-          id="sandbox"
-          title={sandbox.id}
-          hideNavigation={!showNavigation}
-          style={{
-            pointerEvents:
-              dragging || inactive || this.props.isResizing
-                ? 'none'
-                : 'initial',
+
+        <Spring
+          from={{ opacity: 0 }}
+          to={{
+            opacity: this.state.showScreenshot ? 0 : 1,
           }}
-        />
+        >
+          {style => (
+            <React.Fragment>
+              <StyledFrame
+                sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
+                src={
+                  this.serverPreview
+                    ? getSSEUrl(sandbox.id, this.initialPath)
+                    : frameUrl(sandbox.id, this.initialPath)
+                }
+                id="sandbox"
+                title={sandbox.id}
+                hideNavigation={!showNavigation}
+                style={{
+                  ...style,
+                  zIndex: 1,
+                  backgroundColor: 'white',
+                  pointerEvents:
+                    dragging || inactive || this.props.isResizing
+                      ? 'none'
+                      : 'initial',
+                }}
+              />
+
+              {this.props.sandbox.screenshotUrl &&
+                style.opacity !== 1 && (
+                  <div
+                    style={{
+                      overflow: 'hidden',
+                      width: '100%',
+                      position: 'absolute',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      top: 40,
+                      zIndex: 0,
+                    }}
+                  >
+                    <div
+                      alt={this.props.sandbox.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        filter: `blur(2px)`,
+                        transform: 'scale(1.025, 1.025)',
+                        backgroundImage: `url("${
+                          this.props.sandbox.screenshotUrl
+                        }")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPositionX: 'center',
+                      }}
+                    />
+                  </div>
+                )}
+            </React.Fragment>
+          )}
+        </Spring>
       </Container>
     );
   }

@@ -1,6 +1,6 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 import type { default as Manager } from './manager';
 
 import { SCRIPT_VERSION } from '../';
@@ -46,6 +46,10 @@ export async function saveCache(
   changes: number,
   firstRun: boolean
 ) {
+  if (!sandboxId) {
+    return;
+  }
+
   const managerState = {
     ...manager.serialize(),
   };

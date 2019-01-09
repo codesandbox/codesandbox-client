@@ -1,4 +1,5 @@
 import React from 'react';
+import { ENTER } from 'common/utils/keycodes';
 import { Container, InputContainer } from './elements';
 
 export default class extends React.PureComponent {
@@ -11,8 +12,7 @@ export default class extends React.PureComponent {
   handleKeyDown = e => {
     const { onConfirm } = this.props;
 
-    if (e.keyCode === 13) {
-      // Enter
+    if (e.keyCode === ENTER) {
       onConfirm();
     }
   };
@@ -36,6 +36,7 @@ export default class extends React.PureComponent {
             onChange={this.onChange}
             onKeyDown={this.handleKeyDown}
             value={url}
+            aria-label="Address Bar Input"
           />
         </InputContainer>
       </Container>

@@ -18,7 +18,7 @@ export const VIEW_QUERY = gql`
     me {
       notifications(
         limit: 20
-        orderBy: { field: "insertedAt", direction: DESC }
+        orderBy: { field: "insertedAt", direction: ASC }
       ) {
         id
         type
@@ -57,8 +57,8 @@ const getNotificationComponent = (type, data, read) => {
   return <div />;
 };
 
-export default style => (
-  <Container style={style}>
+export default props => (
+  <Container {...props}>
     <Title>Notifications</Title>
     <NotificationsContainer>
       <Query fetchPolicy="cache-and-network" query={VIEW_QUERY}>

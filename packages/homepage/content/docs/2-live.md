@@ -39,7 +39,3 @@ You can make give someone editor rights by pressing the '+' icon next to their n
 And you can make someone a spectator by clicking the '-' icon next to their name.
 
 ![Going Live](./images/live-make-spectator.png)
-
-## Patron
-
-Creating a new Live Room is only available as a [Patron](/patron) currently. Everyone without Patron can always join a live session.

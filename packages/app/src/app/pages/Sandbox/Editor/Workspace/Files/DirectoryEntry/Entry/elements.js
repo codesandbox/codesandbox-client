@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
 export const Right = styled.div`
+  display: flex;
+  align-items: center;
   position: absolute;
   right: 1rem;
 `;

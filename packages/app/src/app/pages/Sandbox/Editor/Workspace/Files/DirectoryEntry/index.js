@@ -53,8 +53,12 @@ class DirectoryEntry extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.innerRef) {
-      this.props.innerRef(this);
+    if (this.props.initializeProperties) {
+      this.props.initializeProperties({
+        onCreateModuleClick: this.onCreateModuleClick,
+        onCreateDirectoryClick: this.onCreateDirectoryClick,
+        onUploadFileClick: this.onUploadFileClick,
+      });
     }
 
     this.openListener = reaction(

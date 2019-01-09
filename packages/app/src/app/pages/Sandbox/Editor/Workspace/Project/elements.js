@@ -20,7 +20,7 @@ export const UserLink = styled(Link)`
   font-size: 0.875rem;
 `;
 
-export const StatsContainer = Item.extend`
+export const StatsContainer = styled(Item)`
   height: 1.5rem;
   font-size: 0.875rem;
   box-sizing: border-box;

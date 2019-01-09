@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react';
 
 import Button from 'app/components/Button';
 import SandboxList from 'app/components/SandboxList';
+import { dashboardUrl } from 'common/utils/url-generator';
+import { Link } from 'react-router-dom';
 
 import { Navigation, Notice, NoSandboxes } from './elements';
 
@@ -87,7 +89,8 @@ class Sandboxes extends React.Component {
             re viewing your own profile, so you can see your private and
             unlisted sandboxes. Others can
             {"'"}
-            t.
+            t. To manage your sandboxes you can go to your dashboard{' '}
+            <Link to={dashboardUrl()}>here</Link>.
           </Notice>
         )}
         <SandboxList

@@ -28,6 +28,14 @@ export default function evaluate(
       return () => {};
     }
 
+    if (requirePath === 'stream') {
+      return {};
+    }
+
+    if (requirePath === 'constants') {
+      return {};
+    }
+
     if (requirePath === 'babel-register') {
       transpileBeforeExec = true;
       return () => {};
@@ -55,7 +63,7 @@ export default function evaluate(
       availablePlugins[requirePath] ||
       availablePlugins[requirePath.replace('babel-plugin-', '')] ||
       availablePlugins[requirePath.replace('@babel/plugin-', '')];
-    if (plugin) {
+    if (plugin && requirePath !== 'react') {
       return plugin;
     }
 
@@ -63,7 +71,7 @@ export default function evaluate(
       availablePresets[requirePath] ||
       availablePresets[requirePath.replace('babel-preset-', '')] ||
       availablePresets[requirePath.replace('@babel/preset-', '')];
-    if (preset) {
+    if (preset && requirePath !== 'react') {
       return preset;
     }
 
@@ -103,11 +111,6 @@ export default function evaluate(
   // we want to return a function for that, because our babelrc configs don't really understand
   // strings as plugins.
   require.resolve = requirePath => requirePath;
-  // resolve.sync(requirePath, {
-  //   filename: path,
-  //   extensions: ['.js', '.json'],
-  //   moduleDirectory: ['node_modules'],
-  // });
 
   const id = hashsum(code + path);
   cache[id] = {

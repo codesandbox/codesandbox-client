@@ -415,7 +415,7 @@ class EditorPreview extends React.Component<Props, State> {
             display: 'flex',
             flexDirection: 'column',
           }}
-          innerRef={node => {
+          ref={node => {
             if (node) {
               this.contentNode = node;
             }
