@@ -74,6 +74,11 @@ const SHIMMED_MODULE: Module = {
   code: `// empty`,
   requires: [],
 };
+
+const getShimmedModuleFromPath = (currentPath: string, path: string) => ({
+  ...SHIMMED_MODULE,
+  path: pathUtils.join(pathUtils.dirname(currentPath), path),
+});
 const debug = _debug('cs:compiler:manager');
 
 type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
@@ -568,7 +573,7 @@ export default class Manager {
 
         if (NODE_LIBS.includes(shimmedPath)) {
           this.cachedPaths[dirredPath][path] = shimmedPath;
-          return SHIMMED_MODULE;
+          return getShimmedModuleFromPath(currentPath, path);
         }
 
         try {
@@ -593,7 +598,8 @@ export default class Manager {
               this.cachedPaths[dirredPath][path] = foundPath;
 
               if (foundPath === '//empty.js') {
-                promiseResolve(SHIMMED_MODULE);
+                promiseResolve(getShimmedModuleFromPath(currentPath, path));
+                return;
               }
 
               if (!this.transpiledModules[foundPath]) {
@@ -641,6 +647,7 @@ export default class Manager {
           }
         }
       }
+      promiseResolve(this.transpiledModules[resolvedPath].module);
     });
   }
 
@@ -672,7 +679,7 @@ export default class Manager {
 
       if (NODE_LIBS.includes(shimmedPath)) {
         this.cachedPaths[dirredPath][path] = shimmedPath;
-        return SHIMMED_MODULE;
+        return getShimmedModuleFromPath(currentPath, path);
       }
 
       try {
@@ -690,7 +697,7 @@ export default class Manager {
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
         if (resolvedPath === '//empty.js') {
-          return SHIMMED_MODULE;
+          return getShimmedModuleFromPath(currentPath, path);
         }
 
         if (!this.transpiledModules[resolvedPath]) {
@@ -735,7 +742,7 @@ export default class Manager {
     }
 
     if (resolvedPath === '//empty.js') {
-      return SHIMMED_MODULE;
+      return getShimmedModuleFromPath(currentPath, path);
     }
 
     return this.transpiledModules[resolvedPath].module;
