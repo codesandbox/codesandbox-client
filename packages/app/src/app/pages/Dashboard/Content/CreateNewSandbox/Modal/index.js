@@ -76,9 +76,13 @@ export default class Modal extends React.PureComponent {
     return (
       <Fragment>
         <TabContainer>
-          {availableTemplates.map((t, i) => (
-            <Button key={i} selected={selectedTab === i} onClick={() => this.setTab(i)}>
-              {t.name}
+          {availableTemplates.map(({ name }, i) => (
+            <Button
+              key={name}
+              selected={selectedTab === i}
+              onClick={() => this.setTab(i)}
+            >
+              {name}
             </Button>
           ))}
         </TabContainer>
@@ -91,10 +95,10 @@ export default class Modal extends React.PureComponent {
             {availableTemplates.map((tab, i) => (
               <Tab visible={selectedTab === i}>
                 <Templates>
-                  {tab.templates.map(t => (
+                  {tab.templates.map(template => (
                     <Template
-                      key={t.name}
-                      template={t}
+                      key={template.name}
+                      template={template}
                       selectTemplate={this.selectTemplate}
                     />
                   ))}
