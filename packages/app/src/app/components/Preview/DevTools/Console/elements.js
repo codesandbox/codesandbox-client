@@ -35,6 +35,24 @@ export const IconContainer = styled.div`
   justify-content: center;
 `;
 
+export const FilterInput = styled.input`
+  transition: 0.4s ease all;
+  background-color: ${props =>
+    props.theme['input.background'] || 'rgba(255, 255, 255, 0.1)'};
+  border: 1px solid transparent;
+  outline: none;
+  border-radius: 4px;
+  width: 6em;
+  padding: 0.15em 0.5em;
+  margin-right: 8px;
+
+  color: ${props => props.theme['input.foreground'] || 'white'};
+
+  &:focus {
+    width: 8em;
+  }
+`;
+
 export const inspectorTheme = theme => ({
   PADDING: '0.4rem 1.5rem 0.4rem 0px',
 

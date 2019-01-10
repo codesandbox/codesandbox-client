@@ -7,9 +7,10 @@ import update from 'immutability-helper';
 import ClearIcon from 'react-icons/lib/md/clear-all';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
 
+import Select from 'common/components/Select';
 import Input from './Input';
 
-import { Container, Messages, inspectorTheme } from './elements';
+import { Container, Messages, inspectorTheme, FilterInput } from './elements';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return',
@@ -22,6 +23,8 @@ class Console extends React.Component {
     messages: [],
     scrollToBottom: true,
     initialClear: true,
+    filter: [],
+    searchKeywords: '',
   };
 
   listener;
@@ -102,6 +105,14 @@ class Console extends React.Component {
         } else {
           this.addMessage('error', [error]);
         }
+        break;
+      }
+      case 'search-log': {
+        this.setState({ searchKeywords: data.value });
+        break;
+      }
+      case 'filter-log': {
+        this.setState({ filter: data.filters });
         break;
       }
       default: {
@@ -193,6 +204,7 @@ class Console extends React.Component {
       return null;
     }
 
+    const { messages, filter, searchKeywords } = this.state;
     return (
       <Container>
         <Messages
@@ -201,9 +213,11 @@ class Console extends React.Component {
           }}
         >
           <ConsoleFeed
-            logs={this.state.messages}
+            logs={messages}
             variant={this.props.theme.light ? 'light' : 'dark'}
             styles={inspectorTheme(this.props.theme)}
+            filter={filter}
+            searchKeywords={searchKeywords}
           />
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />
@@ -211,6 +225,40 @@ class Console extends React.Component {
     );
   }
 }
+
+const ConsoleFilterInput = ({ style }) => (
+  <FilterInput
+    placeholder="Filter"
+    style={style}
+    onChange={({ target: { value } }) =>
+      dispatch({ type: 'search-log', value })
+    }
+  />
+);
+
+const ConsoleFilterSelect = props => {
+  const handleOnChange = ({ target: { value } }) => {
+    if (value === 'all') {
+      dispatch({ type: 'filter-log', filters: [] });
+    } else {
+      const filters = value === 'info' ? ['info', 'log'] : [value];
+      dispatch({ type: 'filter-log', filters });
+    }
+  };
+
+  return (
+    <Select
+      style={{ ...props.style, borderColor: '#2c2e30' }}
+      onChange={handleOnChange}
+    >
+      <option value="all">All</option>
+      <option value="info">Info</option>
+      <option value="warn">Warning</option>
+      <option value="error">Error</option>
+      <option value="debug">Debug</option>
+    </Select>
+  );
+};
 
 export default {
   title: 'Console',
@@ -222,6 +270,18 @@ export default {
         dispatch({ type: 'clear-console' });
       },
       Icon: ClearIcon,
+    },
+    {
+      title: 'Search',
+      onClick: () => {
+        dispatch({ type: 'Search Click' });
+      },
+      Icon: withTheme(ConsoleFilterInput),
+    },
+    {
+      title: 'Log Filter',
+      onClick: () => {},
+      Icon: withTheme(ConsoleFilterSelect),
     },
   ],
 };

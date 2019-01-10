@@ -73,6 +73,7 @@ export const Actions = styled.div`
   position: absolute;
   right: 1rem;
   font-size: 1.125rem;
+  display: inline-flex;
 
   svg {
     margin: 0 0.5rem;
