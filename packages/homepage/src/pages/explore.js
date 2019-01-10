@@ -2,6 +2,7 @@ import React from 'react';
 
 import getTemplate from 'common/templates';
 import { protocolAndHost } from 'common/utils/url-generator';
+import { ARROW_LEFT, ARROW_RIGHT } from 'common/utils/keycodes';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -44,6 +45,21 @@ export default class Explore extends React.PureComponent {
     // render and server render are not the same. So we force a rerender.
     // eslint-disable-next-line
     this.setState({ renderModal: true });
+
+    document.addEventListener('keyup', ({ keyCode }) => {
+      const { featuredSandboxIndex } = this.state;
+      switch (keyCode) {
+        case ARROW_LEFT:
+          if (featuredSandboxIndex === 0) return;
+          this.navigateToPreviousSandbox();
+          break;
+        case ARROW_RIGHT:
+          if (featuredSandboxIndex === featuredSandboxes.length - 1) return;
+          this.navigateToNextSandbox();
+          break;
+        default:
+      }
+    });
   }
 
   loadSandboxes = () => {
@@ -97,6 +113,18 @@ export default class Explore extends React.PureComponent {
 
   openNextSandbox = currentIndex => () => {
     this.openSandbox(currentIndex + 1);
+  };
+
+  navigateToNextSandbox = () => {
+    this.setState(state => ({
+      featuredSandboxIndex: state.featuredSandboxIndex + 1,
+    }));
+  };
+
+  navigateToPreviousSandbox = () => {
+    this.setState(state => ({
+      featuredSandboxIndex: state.featuredSandboxIndex - 1,
+    }));
   };
 
   getCurrentIndex = () =>
@@ -156,11 +184,7 @@ export default class Explore extends React.PureComponent {
               <Dots>
                 <StyledLeftArrow
                   disable={featuredSandboxIndex === 0}
-                  onClick={() =>
-                    this.setState(state => ({
-                      featuredSandboxIndex: state.featuredSandboxIndex - 1,
-                    }))
-                  }
+                  onClick={this.navigateToPreviousSandbox}
                 />
 
                 {featuredSandboxes.map((sandbox, i) => {
@@ -186,11 +210,7 @@ export default class Explore extends React.PureComponent {
                   disable={
                     featuredSandboxIndex === featuredSandboxes.length - 1
                   }
-                  onClick={() =>
-                    this.setState(state => ({
-                      featuredSandboxIndex: state.featuredSandboxIndex + 1,
-                    }))
-                  }
+                  onClick={this.navigateToNextSandbox}
                 />
               </Dots>
             </Navigation>
