@@ -77,7 +77,7 @@ export default class Modal extends React.PureComponent {
       <Fragment>
         <TabContainer>
           {availableTemplates.map((t, i) => (
-            <Button selected={selectedTab === i} onClick={() => this.setTab(i)}>
+            <Button key={i} selected={selectedTab === i} onClick={() => this.setTab(i)}>
               {t.name}
             </Button>
           ))}
