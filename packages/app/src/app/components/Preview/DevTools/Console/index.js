@@ -9,12 +9,7 @@ import { Decode, Console as ConsoleFeed } from 'console-feed';
 
 import Input from './Input';
 
-import {
-  Container,
-  Messages,
-  inspectorTheme,
-  Input as Input2,
-} from './elements';
+import { Container, Messages, inspectorTheme, FilterInput } from './elements';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return',
@@ -231,7 +226,7 @@ class Console extends React.Component {
 }
 
 const ConsoleFilterInput = ({ style }) => (
-  <Input2
+  <FilterInput
     placeholder="Filter"
     style={style}
     onChange={({ target: { value } }) =>

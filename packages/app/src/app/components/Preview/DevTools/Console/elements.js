@@ -35,7 +35,7 @@ export const IconContainer = styled.div`
   justify-content: center;
 `;
 
-export const Input = styled.input`
+export const FilterInput = styled.input`
   transition: 0.4s ease all;
   background-color: ${props =>
     props.theme['input.background'] || 'rgba(255, 255, 255, 0.1)'};
