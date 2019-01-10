@@ -12,7 +12,7 @@ import { EmojiButton } from './elements';
 class Feedback extends React.Component {
   state = {
     feedback: '',
-    email: this.props.user,
+    email: (this.props.user || {}).email,
     emoji: null,
     loading: false,
   };
