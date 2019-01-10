@@ -247,7 +247,10 @@ const ConsoleFilterSelect = props => {
   };
 
   return (
-    <Select style={props.style} onChange={handleOnChange}>
+    <Select
+      style={{ ...props.style, borderColor: '#2c2e30' }}
+      onChange={handleOnChange}
+    >
       <option value="all">All</option>
       <option value="info">Info</option>
       <option value="warn">Warning</option>
