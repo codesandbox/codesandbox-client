@@ -689,7 +689,16 @@
       "contributions": [
         "code"
       ]
-    }
+    },
+    {
+      "login": "chiamaka",
+      "name": "Chiamaka Nwolisa",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2737103?v=4",
+      "profile": "https://www.chiamaka.xyz/",
+      "contributions": [
+        "code"
+      ]
+    },
   ],
   "repoType": "github"
 }
