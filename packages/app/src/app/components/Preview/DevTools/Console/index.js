@@ -7,6 +7,7 @@ import update from 'immutability-helper';
 import ClearIcon from 'react-icons/lib/md/clear-all';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
 
+import Select from 'common/components/Select';
 import Input from './Input';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
@@ -246,13 +247,13 @@ const ConsoleFilterSelect = props => {
   };
 
   return (
-    <select style={props.style} onChange={handleOnChange}>
+    <Select style={props.style} onChange={handleOnChange}>
       <option value="all">All</option>
       <option value="info">Info</option>
       <option value="warn">Warning</option>
       <option value="error">Error</option>
       <option value="debug">Debug</option>
-    </select>
+    </Select>
   );
 };
 
