@@ -45,6 +45,9 @@ export const FilterInput = styled.input`
   width: 6em;
   padding: 0.15em 0.5em;
   margin-right: 8px;
+  font-family: 'Roboto';
+  font-weight: 600;
+  font-size: 0.875rem;
 
   color: ${props => props.theme['input.foreground'] || 'white'};
 

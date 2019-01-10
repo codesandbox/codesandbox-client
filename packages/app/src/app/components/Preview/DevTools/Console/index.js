@@ -248,7 +248,13 @@ const ConsoleFilterSelect = props => {
 
   return (
     <Select
-      style={{ ...props.style, borderColor: '#2c2e30' }}
+      css={`
+        font-family: 'Roboto';
+        font-weight: 600;
+        font-size: 0.875rem;
+        height: 22px;
+      `}
+      style={props.style}
       onChange={handleOnChange}
     >
       <option value="all">All</option>
