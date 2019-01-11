@@ -46,20 +46,11 @@ export default class Explore extends React.PureComponent {
     // eslint-disable-next-line
     this.setState({ renderModal: true });
 
-    document.addEventListener('keyup', ({ keyCode }) => {
-      const { featuredSandboxIndex } = this.state;
-      switch (keyCode) {
-        case ARROW_LEFT:
-          if (featuredSandboxIndex === 0) return;
-          this.navigateToPreviousSandbox();
-          break;
-        case ARROW_RIGHT:
-          if (featuredSandboxIndex === featuredSandboxes.length - 1) return;
-          this.navigateToNextSandbox();
-          break;
-        default:
-      }
-    });
+    document.addEventListener('keyup', this.handleKeyPress, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keyup', this.handleKeyPress, false);
   }
 
   loadSandboxes = () => {
@@ -125,6 +116,21 @@ export default class Explore extends React.PureComponent {
     this.setState(state => ({
       featuredSandboxIndex: state.featuredSandboxIndex - 1,
     }));
+  };
+
+  handleKeyPress = ({ keyCode }) => {
+    const { featuredSandboxIndex } = this.state;
+    switch (keyCode) {
+      case ARROW_LEFT:
+        if (featuredSandboxIndex === 0) return;
+        this.navigateToPreviousSandbox();
+        break;
+      case ARROW_RIGHT:
+        if (featuredSandboxIndex === featuredSandboxes.length - 1) return;
+        this.navigateToNextSandbox();
+        break;
+      default:
+    }
   };
 
   getCurrentIndex = () =>
