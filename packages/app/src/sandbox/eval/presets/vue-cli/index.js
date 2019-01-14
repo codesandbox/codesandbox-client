@@ -20,6 +20,7 @@ import vueStyleLoader from '../../transpilers/vue/style-loader';
 import cssLoader from '../../transpilers/vue/css-loader';
 import base64Transpiler from '../../transpilers/base64';
 import pugTranspiler from '../../transpilers/pug';
+import coffeeTranspiler from '../../transpilers/coffee';
 
 import Preset from '../';
 
@@ -150,6 +151,9 @@ export default function initialize() {
   vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
   vuePreset.registerTranspiler(m => m.path.endsWith('pug'), [
     { transpiler: pugTranspiler },
+  ]);
+  vuePreset.registerTranspiler(m => m.path.endsWith('coffee'), [
+    { transpiler: coffeeTranspiler },
   ]);
 
   return vuePreset;
