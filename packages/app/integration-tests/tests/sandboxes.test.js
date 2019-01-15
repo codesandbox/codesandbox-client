@@ -34,7 +34,7 @@ const SANDBOXES = [
   'pm79km5lmj', // babel macros with styled components
   'j2wpjwqj93', // sandbox with need of transpiling in node_modules
   '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
-  '42n5l3z3xw', // cxjs
+  '31kn7voz4q', // cxjs
 ];
 
 function pageLoaded(page) {
