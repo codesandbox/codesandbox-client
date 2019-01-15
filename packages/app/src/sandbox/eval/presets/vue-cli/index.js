@@ -149,10 +149,10 @@ export default function initialize() {
     { transpiler: noopTranspiler },
   ]);
   vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
-  vuePreset.registerTranspiler(m => m.path.endsWith('pug'), [
+  vuePreset.registerTranspiler(module => /\.pug$/.test(module.path), [
     { transpiler: pugTranspiler },
   ]);
-  vuePreset.registerTranspiler(m => m.path.endsWith('coffee'), [
+  vuePreset.registerTranspiler(module => /\.coffee$/.test(module.path), [
     { transpiler: coffeeTranspiler },
     { transpiler: babelTranspiler },
   ]);
