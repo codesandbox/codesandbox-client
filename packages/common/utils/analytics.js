@@ -51,8 +51,10 @@ export function resetUserId() {
         debug('[Amplitude] Resetting User ID');
         identify('userId', null);
 
-        window.amplitude.getInstance().setUserId(null);
-        window.amplitude.getInstance().regenerateDeviceId();
+        if (window.amplitude.getInstance().options.userId) {
+          window.amplitude.getInstance().setUserId(null);
+          window.amplitude.getInstance().regenerateDeviceId();
+        }
       }
     }
   } catch (e) {
