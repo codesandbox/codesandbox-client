@@ -126,8 +126,8 @@ export default class Template {
         serve: '^10.1.1',
       },
       scripts: {
-        ...parsedFile.scripts,
         'now-start': `cd ${this.distDir} && serve -s ./`,
+        ...parsedFile.scripts,
       },
     };
 

@@ -24,7 +24,6 @@ import {
 class Deployment extends Component {
   componentDidMount = () => {
     this.props.signals.deployment.getDeploys();
-    this.props.signals.deployment.getPeople();
   };
 
   render() {
@@ -33,9 +32,6 @@ class Deployment extends Component {
       store: { user, deployment },
     } = this.props;
 
-    const hasVoted = deployment.peopleWant2.find(
-      a => a.username === user.username
-    );
     return (
       <div>
         <Description>
@@ -49,50 +45,6 @@ class Deployment extends Component {
           </a>.
           {!user.integrations.zeit &&
             ' You need to add ZEIT to your integrations to deploy.'}
-        </Description>
-        <Description
-          css={`
-            margin: 0;
-            padding: 0.5rem 1rem;
-
-            background: #122d42;
-          `}
-        >
-          We currently only support Zeit v1.
-          {!hasVoted && deployment.peopleWant2.length ? (
-            <Fragment>
-              <br />
-              <br />
-              If you would like us to support version 2.0 too please add your
-              thumbs up
-            </Fragment>
-          ) : null}
-          <Button
-            css={`
-              padding: 5px 8px;
-              margin-top: 1rem;
-            `}
-            block
-            disabled={hasVoted || !deployment.peopleWant2.length}
-            onClick={() =>
-              signals.deployment.addPersonFor2({
-                username: user.username,
-              })
-            }
-          >
-            {deployment.peopleWant2.length > 0
-              ? `${deployment.peopleWant2.length} people want v2`
-              : null}{' '}
-            <span
-              css={`
-                margin-left: 5px;
-              `}
-              role="img"
-              aria-label="I want this"
-            >
-              👍
-            </span>
-          </Button>
         </Description>
 
         {user.integrations.zeit ? (

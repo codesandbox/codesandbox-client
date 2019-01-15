@@ -645,6 +645,16 @@
       ]
     },
     {
+      "login": "abdullahtariq1171",
+      "name": "Abdullah",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/5623766?v=4",
+      "profile": "https://github.com/abdullahtariq1171",
+      "contributions": [
+        "code",
+        "design"
+]
+}
+{
       "login": "dv297",
       "name": "Daniel Vu",
       "avatar_url": "https://avatars2.githubusercontent.com/u/5365325?v=4",
@@ -670,7 +680,25 @@
       "contributions": [
         "doc"
       ]
-    }
+    },
+    {
+      "login": "manniL",
+      "name": "Alexander Lichter",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/640208?v=4",
+      "profile": "https://blog.lichter.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "chiamaka",
+      "name": "Chiamaka Nwolisa",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2737103?v=4",
+      "profile": "https://www.chiamaka.xyz/",
+      "contributions": [
+        "code"
+      ]
+    },
   ],
   "repoType": "github"
 }

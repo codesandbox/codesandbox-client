@@ -3,6 +3,8 @@ import Downshift from 'downshift';
 
 import { Pagination } from 'react-instantsearch/dom';
 
+import { ENTER } from 'common/utils/keycodes';
+
 import DependencyHit from '../DependencyHit';
 import { AutoCompleteInput } from './elements';
 
@@ -38,7 +40,7 @@ function RawAutoComplete({
               },
               onKeyUp(e) {
                 // If enter with no selection
-                if (e.keyCode === 13) {
+                if (e.keyCode === ENTER) {
                   onManualSelect(e.target.value);
                 }
               },
