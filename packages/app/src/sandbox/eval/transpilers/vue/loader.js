@@ -122,12 +122,12 @@ export default function(content: string, loaderContext: LoaderContext) {
     ts: ['ts-loader'],
     typescript: ['ts-loader'],
     pug: ['pug-loader'],
-    coffee: ['coffee-loader'],
+    coffee: ['babel-loader', 'coffee-loader'],
   };
 
   const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);
   const preLoaders = {};
-  const postLoaders = { coffee: 'babel-loader' };
+  const postLoaders = {};
 
   const needsHotReload = parts.script || parts.template;
   if (needsHotReload) {
