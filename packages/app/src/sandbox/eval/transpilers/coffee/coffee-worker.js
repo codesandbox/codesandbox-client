@@ -9,7 +9,6 @@ self.addEventListener('message', event => {
   const { code, path } = event.data;
 
   try {
-    // TODO: Not sure which options to put here...
     const compiled = CoffeeScript.compile(code, {
       filename: path,
       sourceFiles: [path],
@@ -17,7 +16,6 @@ self.addEventListener('message', event => {
       literate: false,
       inlineMap: true,
       sourceMap: false,
-      transpile: false,
     });
     return self.postMessage({
       type: 'result',
