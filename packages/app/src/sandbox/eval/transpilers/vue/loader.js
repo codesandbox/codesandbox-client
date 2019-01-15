@@ -127,7 +127,7 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);
   const preLoaders = {};
-  const postLoaders = {};
+  const postLoaders = { coffee: 'babel-loader' };
 
   const needsHotReload = parts.script || parts.template;
   if (needsHotReload) {
