@@ -154,7 +154,6 @@ export default function initialize() {
   ]);
   vuePreset.registerTranspiler(module => /\.coffee$/.test(module.path), [
     { transpiler: coffeeTranspiler },
-    { transpiler: babelTranspiler },
   ]);
 
   return vuePreset;
