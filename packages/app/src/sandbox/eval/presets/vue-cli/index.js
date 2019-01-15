@@ -40,7 +40,7 @@ const getFileNameFromVm = vm => {
 export default function initialize() {
   const vuePreset = new Preset(
     'vue-cli',
-    ['vue', 'json', 'js', 'ts'],
+    ['vue', 'json', 'js', 'ts', 'coffee'],
     {
       '@': '{{sandboxRoot}}/src',
       vue$: 'vue/dist/vue.common.js',
@@ -128,6 +128,9 @@ export default function initialize() {
   vuePreset.registerTranspiler(module => /\.vue$/.test(module.path), [
     { transpiler: vueTranspiler },
   ]);
+  vuePreset.registerTranspiler(module => /\.coffee$/.test(module.path), [
+    { transpiler: coffeeTranspiler },
+  ]);
 
   registerStyleTranspilers();
 
@@ -151,9 +154,6 @@ export default function initialize() {
   vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
   vuePreset.registerTranspiler(module => /\.pug$/.test(module.path), [
     { transpiler: pugTranspiler },
-  ]);
-  vuePreset.registerTranspiler(module => /\.coffee$/.test(module.path), [
-    { transpiler: coffeeTranspiler },
   ]);
 
   return vuePreset;
