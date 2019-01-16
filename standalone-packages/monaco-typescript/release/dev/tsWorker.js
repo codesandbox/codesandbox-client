@@ -33,15 +33,15 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
-    'use strict';
+    "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Promise = monaco.Promise;
     var DEFAULT_LIB = {
-        NAME: 'defaultLib:lib.d.ts',
+        NAME: "defaultLib:lib.d.ts",
         CONTENTS: lib_1.lib_dts
     };
     var ES6_LIB = {
-        NAME: 'defaultLib:lib.es6.d.ts',
+        NAME: "defaultLib:lib.es6.d.ts",
         CONTENTS: lib_1.lib_es6_dts
     };
     var Priority;
@@ -56,8 +56,8 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
     self.importScripts("/static/browserfs2/browserfs.min.js");
     self.define.amd = oldamd;
     self.BrowserFS = BrowserFS;
-    self.process = BrowserFS.BFSRequire('process');
-    self.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+    self.process = BrowserFS.BFSRequire("process");
+    self.Buffer = BrowserFS.BFSRequire("buffer").Buffer;
     var getAllFiles = function (fs, dir, filelist) {
         if (!fs) {
             return [];
@@ -66,7 +66,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         filelist = filelist || [];
         files.forEach(function (file) {
             if (fs.statSync(dir + file).isDirectory()) {
-                filelist = getAllFiles(fs, dir + file + '/', filelist);
+                filelist = getAllFiles(fs, dir + file + "/", filelist);
             }
             else {
                 filelist.push(dir + file);
@@ -81,23 +81,26 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             this._languageService = ts.createLanguageService(this);
             this.files = new Map();
             this.typesLoaded = false;
+            this.fetchingTypes = false;
+            this.fetchedTypes = [];
             this._ctx = ctx;
             this._compilerOptions = createData.compilerOptions;
             this._extraLibs = createData.extraLibs;
             // @ts-ignore
             ctx.onModelRemoved(function (str) {
-                var p = str.indexOf('file://') === 0 ? monaco.Uri.parse(str).fsPath : str;
+                var p = str.indexOf("file://") === 0 ? monaco.Uri.parse(str).fsPath : str;
                 _this.syncFile(p);
             });
             self.BrowserFS.configure({
-                fs: 'WorkerFS', options: { worker: self },
+                fs: "WorkerFS",
+                options: { worker: self }
             }, function (e) {
                 if (e) {
                     console.error(e);
                     return;
                 }
-                _this.fs = BrowserFS.BFSRequire('fs');
-                _this.syncDirectory('/sandbox');
+                _this.fs = BrowserFS.BFSRequire("fs");
+                _this.syncDirectory("/sandbox");
                 _this.getTypings();
                 setInterval(function () { return _this.getTypings(); }, 5000);
                 // BrowserFS is initialized and ready-to-use!
@@ -105,8 +108,12 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         }
         TypeScriptWorker.prototype.getTypings = function () {
             var _this = this;
+            if (this.fetchingTypes) {
+                return;
+            }
+            this.fetchingTypes = true;
             var ensureDirectoryExistence = function (filePath, cb) {
-                var dirname = BrowserFS.BFSRequire('path').dirname(filePath);
+                var dirname = BrowserFS.BFSRequire("path").dirname(filePath);
                 _this.fs.stat(dirname, function (err, exists) {
                     if (!!exists) {
                         cb(true);
@@ -117,19 +124,28 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                     });
                 });
             };
-            this.fs.readFile('/sandbox/package.json', function (e, data) {
+            this.fs.readFile("/sandbox/package.json", function (e, data) {
                 if (e) {
                     return;
                 }
                 var code = data.toString();
                 try {
-                    var p_1 = JSON.parse(code);
-                    Promise.join(Object.keys(p_1.dependencies).map(function (depName) {
-                        var version = p_1.dependencies[depName];
-                        fetchTypings.fetchAndAddDependencies(depName, version, function (paths) {
+                    var p = JSON.parse(code);
+                    var dependencies_1 = p.dependencies || {};
+                    var devDependencies_1 = p.devDependencies || {};
+                    Promise.join(__spread(Object.keys(dependencies_1), Object.keys(devDependencies_1).filter(function (p) { return p.indexOf("@types/") === 0; })).map(function (depName) {
+                        var version = dependencies_1[depName] || devDependencies_1[depName];
+                        var key = depName + "@" + version;
+                        if (_this.fetchedTypes.indexOf(key) > -1) {
+                            return Promise.as(void 0);
+                        }
+                        _this.fetchedTypes.push(key);
+                        return fetchTypings
+                            .fetchAndAddDependencies(depName, version)
+                            .then(function (paths) {
                             var fileAmount = Object.keys(paths).length;
                             Object.keys(paths).forEach(function (p) {
-                                var pathToWrite = '/sandbox/' + p;
+                                var pathToWrite = "/sandbox/" + p;
                                 _this.files.set(pathToWrite, paths[p]);
                                 // Only sync with browsersfs if the file amount is not too high, otherwise we'll
                                 // clog all resources of browserfs
@@ -139,14 +155,19 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                                     });
                                 }
                             });
-                        }).catch(function (e) { });
+                        }).catch(function () { });
                     })).then(function () {
-                        _this.typesLoaded = true;
                         _this._languageService.cleanupSemanticCache();
+                        setTimeout(function () {
+                            _this.typesLoaded = true;
+                        });
                     });
                 }
                 catch (e) {
                     return;
+                }
+                finally {
+                    _this.fetchingTypes = false;
                 }
             });
         };
@@ -167,7 +188,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                     return;
                 }
                 entries.forEach(function (entry) {
-                    var fullEntry = path + '/' + entry;
+                    var fullEntry = path + "/" + entry;
                     _this.fs.stat(fullEntry, function (err, stat) {
                         if (err) {
                             _this.files.delete(path);
@@ -188,7 +209,9 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             return this._compilerOptions;
         };
         TypeScriptWorker.prototype.readFile = function (resource, encoding) {
-            var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+            var path = resource.indexOf("file://") === 0
+                ? monaco.Uri.parse(resource).fsPath
+                : resource;
             if (this.fs) {
                 return this.files.get(path);
             }
@@ -196,7 +219,9 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
         };
         TypeScriptWorker.prototype.getScriptFileNames = function () {
             var models = this._ctx.getMirrorModels().map(function (model) { return model.uri.toString(); });
-            return models.concat(Object.keys(this._extraLibs)).concat(__spread(this.files.keys()).map(function (p) { return "file://" + p; }));
+            return models
+                .concat(Object.keys(this._extraLibs))
+                .concat(__spread(this.files.keys()).map(function (p) { return "file://" + p; }));
         };
         TypeScriptWorker.prototype._getModel = function (fileName) {
             var models = this._ctx.getMirrorModels();
@@ -212,9 +237,10 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             if (model) {
                 return model.version.toString();
             }
-            else if (this.isDefaultLibFileName(fileName) || fileName in this._extraLibs) {
+            else if (this.isDefaultLibFileName(fileName) ||
+                fileName in this._extraLibs) {
                 // extra lib and default lib are static
-                return '1';
+                return "1";
             }
         };
         TypeScriptWorker.prototype.getScriptSnapshot = function (fileName) {
@@ -235,7 +261,9 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 text = ES6_LIB.CONTENTS;
             }
             else if (this.fs) {
-                var usedFilename = fileName.indexOf('file://') === 0 ? monaco.Uri.parse(fileName).fsPath : fileName;
+                var usedFilename = fileName.indexOf("file://") === 0
+                    ? monaco.Uri.parse(fileName).fsPath
+                    : fileName;
                 text = this.files.get(usedFilename);
             }
             else {
@@ -251,23 +279,30 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             };
         };
         TypeScriptWorker.prototype.getScriptKind = function (fileName) {
-            var suffix = fileName.substr(fileName.lastIndexOf('.') + 1);
+            var suffix = fileName.substr(fileName.lastIndexOf(".") + 1);
             switch (suffix) {
-                case 'ts': return ts.ScriptKind.TS;
-                case 'tsx': return ts.ScriptKind.TSX;
-                case 'js': return ts.ScriptKind.JS;
-                case 'jsx': return ts.ScriptKind.JSX;
-                default: return this.getCompilationSettings().allowJs
-                    ? ts.ScriptKind.JS
-                    : ts.ScriptKind.TS;
+                case "ts":
+                    return ts.ScriptKind.TS;
+                case "tsx":
+                    return ts.ScriptKind.TSX;
+                case "js":
+                    return ts.ScriptKind.JS;
+                case "jsx":
+                    return ts.ScriptKind.JSX;
+                default:
+                    return this.getCompilationSettings().allowJs
+                        ? ts.ScriptKind.JS
+                        : ts.ScriptKind.TS;
             }
         };
         TypeScriptWorker.prototype.getCurrentDirectory = function () {
-            return '/sandbox';
+            return "/sandbox";
         };
         TypeScriptWorker.prototype.getDefaultLibFileName = function (options) {
             // TODO@joh support lib.es7.d.ts
-            return options.target <= ts.ScriptTarget.ES5 ? DEFAULT_LIB.NAME : ES6_LIB.NAME;
+            return options.target <= ts.ScriptTarget.ES5
+                ? DEFAULT_LIB.NAME
+                : ES6_LIB.NAME;
         };
         TypeScriptWorker.prototype.isDefaultLibFileName = function (fileName) {
             return fileName === this.getDefaultLibFileName(this._compilerOptions);
@@ -276,24 +311,31 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             if (!this.fs) {
                 return false;
             }
-            var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+            var path = resource.indexOf("file://") === 0
+                ? monaco.Uri.parse(resource).fsPath
+                : resource;
             return this.files.has(path);
         };
         TypeScriptWorker.prototype.directoryExists = function (resource) {
             if (!this.fs) {
                 return false;
             }
-            var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
+            var path = resource.indexOf("file://") === 0
+                ? monaco.Uri.parse(resource).fsPath
+                : resource;
             return __spread(this.files.keys()).some(function (f) { return f.indexOf(path) === 0; });
         };
         TypeScriptWorker.prototype.getDirectories = function (resource) {
             if (!this.fs) {
                 return [];
             }
-            var path = resource.indexOf('file://') === 0 ? monaco.Uri.parse(resource).fsPath : resource;
-            var resourceSplits = path.split('/').length;
-            return __spread(this.files.keys()).filter(function (f) { return f.indexOf(path) === 0; }).map(function (p) {
-                var newP = p.split('/');
+            var path = resource.indexOf("file://") === 0
+                ? monaco.Uri.parse(resource).fsPath
+                : resource;
+            var resourceSplits = path.split("/").length;
+            return __spread(this.files.keys()).filter(function (f) { return f.indexOf(path) === 0; })
+                .map(function (p) {
+                var newP = p.split("/");
                 newP.length = resourceSplits;
                 return newP[newP.length - 1];
             });
@@ -305,7 +347,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 for (var models_1 = __values(models), models_1_1 = models_1.next(); !models_1_1.done; models_1_1 = models_1.next()) {
                     var model = models_1_1.value;
                     if (model.uri.toString() === uri) {
-                        return ls.TextDocument.create(uri, 'javascript', model.version, model.getValue());
+                        return ls.TextDocument.create(uri, "javascript", model.version, model.getValue());
                     }
                 }
             }
@@ -326,7 +368,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
                 diag.file = undefined;
                 var related = diag.relatedInformation;
                 if (related) {
-                    related.forEach(function (diag2) { return diag2.file = undefined; });
+                    related.forEach(function (diag2) { return (diag2.file = undefined); });
                 }
             });
         };
@@ -355,8 +397,8 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
             var document = this._getTextDocument(fileName);
             var position = document.positionAt(offset);
             var languageCompletions = this._languageService.getCompletionsAtPosition(fileName, offset, undefined);
-            var emmetCompletions = emmet.doComplete(document, position, 'jsx', {
-                showExpandedAbbreviation: 'always',
+            var emmetCompletions = emmet.doComplete(document, position, "jsx", {
+                showExpandedAbbreviation: "always",
                 showAbbreviationSuggestions: true,
                 syntaxProfiles: {},
                 variables: {},

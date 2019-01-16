@@ -1,6 +1,6 @@
 {
   "name": "react-smooshpack",
-  "version": "0.0.35",
+  "version": "0.0.53",
   "description": "",
   "keywords": [],
   "license": "SEE LICENSE.MD IN ROOT",
@@ -24,7 +24,7 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist && rimraf es",
-    "build": "tsc && rollup -c rollup.config.ts && yarn build:min && typedoc --out docs --target es6 --theme minimal --mode file src && gulp build",
+    "build": "tsc && rollup -c rollup.config.ts && yarn build:min && gulp build",
     "build:min": "cross-env BUILD_MINIFY=1 rollup -c rollup.config.ts",
     "start": "npm-run-all --parallel watch:**",
     "watch:rollup": "rollup -c rollup.config.ts -w",
@@ -37,7 +37,8 @@
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -80,14 +81,18 @@
     "mapCoverage": true
   },
   "dependencies": {
+    "@types/fs-extra": "^5.0.4",
+    "@types/glob": "^5.0.35",
+    "@types/react": "^16.4.11",
+    "@types/shelljs": "^0.8.0",
     "classnames": "^2.2.5",
     "codemirror": "^5.35.0",
-    "codesandbox-api": "^0.0.18",
+    "codesandbox-api": "^0.0.19",
     "codesandbox-import-utils": "^1.2.3",
     "react-broadcast": "^0.6.2",
     "react-codemirror2": "^4.0.1",
     "rollup-plugin-scss": "^0.4.0",
-    "smooshpack": "^0.0.35"
+    "smooshpack": "^0.0.53"
   },
   "peerDependencies": {
     "react": "^16.5.2"
@@ -95,11 +100,12 @@
   "devDependencies": {
     "@storybook/addon-knobs": "^3.3.14",
     "@storybook/react": "^3.3.14",
-    "@types/classnames": "^2.2.3",
-    "@types/codemirror": "^0.0.55",
+    "@types/classnames": "^2.2.6",
+    "@types/codemirror": "0.0.55",
     "@types/jest": "^22.0.0",
     "@types/node": "^9.4.6",
-    "@types/react-broadcast": "^0.6.0",
+    "@types/react": "16.5.2",
+    "@types/react-broadcast": "^0.6.1",
     "awesome-typescript-loader": "^3.5.0",
     "babel-core": "7.0.0-bridge.0",
     "colors": "^1.1.2",
@@ -123,7 +129,7 @@
     "react-dom": "^16.5.2",
     "replace-in-file": "^3.0.0-beta.2",
     "rimraf": "^2.6.1",
-    "rollup": "^0.55.4",
+    "rollup": "^0.67.1",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-sass": "^0.6.0",

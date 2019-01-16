@@ -79,7 +79,7 @@ export default class App extends React.PureComponent<{}, State> {
       forceRefresh,
       expandDevTools,
       runOnClick,
-      verticalMode,
+      verticalMode = window.innerWidth < window.innerHeight,
       tabs,
     } = getSandboxOptions(document.location.href);
 
@@ -143,14 +143,18 @@ export default class App extends React.PureComponent<{}, State> {
   };
 
   componentWillMount() {
-    const id = this.getId();
+    if (window.__SANDBOX_DATA__) {
+      this.setState({ sandbox: camelizeKeys(window.__SANDBOX_DATA__) });
+    } else {
+      const id = this.getId();
 
-    if (!id) {
-      this.setState({ notFound: true });
-      return;
+      if (!id) {
+        this.setState({ notFound: true });
+        return;
+      }
+
+      this.fetchSandbox(id);
     }
-
-    this.fetchSandbox(id);
   }
 
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
@@ -202,7 +206,9 @@ export default class App extends React.PureComponent<{}, State> {
         <Centered vertical horizontal>
           <Title delay={0.1}>Not Found</Title>
           <SubTitle delay={0.05}>
-            We could not find the sandbox you{"'"}re looking for.
+            We could not find the sandbox you
+            {"'"}
+            re looking for.
           </SubTitle>
         </Centered>
       );

@@ -270,31 +270,41 @@ const transformFiles = dir =>
 
 const getFileMetaData = (dependency, version, depPath) => {
   if (UNPKG) {
-    return doFetch(
-      `https://unpkg.com/${dependency}@${version}/${depPath}?meta`
-    )
-    .then(response => JSON.parse(response))
+    const usedDepPath = /\/$/.test(depPath) ? depPath : (depPath + '/');
+    return doFetch(`https://unpkg.com/${dependency}@${version}${usedDepPath}?meta`)
+      .then(response => JSON.parse(response))
+      .then(transformFiles);
   }
 
   return doFetch(
     `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`
   )
     .then(response => JSON.parse(response))
-    .then(response => response.files.filter(f => f.name.startsWith(depPath)))
+    .then(response =>
+      response.files.filter(f => f.name.startsWith("/" + depPath))
+    )
     .then(tempTransformFiles);
-}
-
-const resolveAppropiateFile = (fileMetaData, relativePath) => {
-  const absolutePath = `/${relativePath}`;
-
-  if (fileMetaData[`${absolutePath}.d.ts`]) return `${relativePath}.d.ts`;
-  if (fileMetaData[`${absolutePath}.ts`]) return `${relativePath}.ts`;
-  if (fileMetaData[absolutePath]) return relativePath;
-  if (fileMetaData[`${absolutePath}/index.d.ts`])
-    return `${relativePath}/index.d.ts`;
-
-  return relativePath;
 };
+
+const resolveAppropiateFile = (fileMetaData, absolutePath) => {
+  if (fileMetaData[`${absolutePath}.d.ts`]) return `${absolutePath}.d.ts`;
+  if (fileMetaData[`${absolutePath}.ts`]) return `${absolutePath}.ts`;
+  if (fileMetaData[absolutePath]) return absolutePath;
+  if (fileMetaData[`${absolutePath}/index.d.ts`])
+    return `${absolutePath}/index.d.ts`;
+
+  return absolutePath;
+};
+
+const getDependencyName = (depPath:string) => {
+  const parts= depPath.split('/');
+
+  if (depPath.indexOf('@') === 0) {
+    return parts[0] + '/' + parts[1];
+  }
+
+  return parts[0];
+}
 
 const getFileTypes = (
   depUrl,
@@ -318,89 +328,76 @@ const getFileTypes = (
 
     const dependencies = requireStatements.filter(x => !isNoDependency(x));
 
+    // console.log(fileMetaData, new Error().stack)
+
     // Now find all require statements, so we can download those types too
     return Promise.all(
-      dependencies.map(dep => {
-        fetchAndAddDependencies(dep, 'latest', () => {}, fetchedPaths).catch(
-          () => {
-            /* ignore */
-          }
+      dependencies
+        .map(depPath =>
+          fetchAndAddDependencies(getDependencyName(depPath), "latest", fetchedPaths).catch(
+            () => {
+              /* ignore */
+            }
+          )
         )
-      }).concat(
-        requireStatements
-          .filter(
-            // Don't add global deps, only if those are typing files as they are often relative
-            isNoDependency
-          )
-          .map(relativePath => join(dirname(depPath), relativePath))
-          .map(relativePath =>
-            resolveAppropiateFile(fileMetaData, relativePath)
-          )
-          .map(nextDepPath =>
-            getFileTypes(
-              depUrl,
-              dependency,
-              nextDepPath,
-              fetchedPaths,
-              fileMetaData
+        .concat(
+          requireStatements
+            .filter(
+              // Don't add global deps, only if those are typing files as they are often relative
+              isNoDependency
             )
-          )
-      )
+            .map(relativePath => join(dirname(depPath), relativePath))
+            .map(relativePath =>
+              resolveAppropiateFile(fileMetaData, relativePath)
+            )
+            .map(nextDepPath =>
+              getFileTypes(
+                depUrl,
+                dependency,
+                nextDepPath,
+                fetchedPaths,
+                fileMetaData
+              )
+            )
+        )
     );
   });
 };
 
 function fetchFromMeta(dependency, version, fetchedPaths) {
-  const depUrl = `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`;
-  return doFetch(depUrl)
-    .then(response => JSON.parse(response))
-    .then(meta => {
-      const filterAndFlatten = (files, filter) =>
-        files.reduce((paths, file) => {
-          if (filter.test(file.name)) {
-            paths.push(file.name);
-          }
-          return paths;
-        }, []);
+  return getFileMetaData(dependency, version, "/").then(meta => {
+    let dtsFiles = Object.keys(meta).filter(f => /\.d\.ts$/.test(f));
+    if (dtsFiles.length === 0) {
+      // if no .d.ts files found, fallback to .ts files
+      dtsFiles = Object.keys(meta).filter(f => /\.ts$/.test(f));
+    }
 
-      let dtsFiles = filterAndFlatten(meta.files, /\.d\.ts$/);
-      if (dtsFiles.length === 0) {
-        // if no .d.ts files found, fallback to .ts files
-        dtsFiles = filterAndFlatten(meta.files, /\.ts$/);
-      }
+    if (dtsFiles.length === 0) {
+      throw new Error("No inline typings found.");
+    }
 
-      if (dtsFiles.length === 0) {
-        throw new Error("No inline typings found.");
-      }
-
-      return Promise.all(
-        dtsFiles.map(file =>
-          doFetch(
-            `https://cdn.jsdelivr.net/npm/${dependency}@${version}${file}`
-          )
-            .then(dtsFile =>
-              addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
-            )
-            .catch(() => {})
-        )
-      );
-    });
+    return Promise.all(
+      dtsFiles.map(file =>
+        getFileTypes(`${ROOT_URL}${dependency}@${version}`, dependency, file, fetchedPaths, meta)
+      )
+    );
+  });
 }
 
 function fetchFromTypings(dependency, version, fetchedPaths) {
-  const depUrl = `${ROOT_URL}${dependency}@${version}/`;
-  return doFetch(`${depUrl}package.json`)
+  const depUrl = `${ROOT_URL}${dependency}@${version}`;
+  return doFetch(`${depUrl}/package.json`)
     .then(response => JSON.parse(response))
     .then(packageJSON => {
+      // Add package.json, since this defines where all types lie
+      addLib(
+        `node_modules/${dependency}/package.json`,
+        JSON.stringify(packageJSON),
+        fetchedPaths
+      );
+
       const types = packageJSON.typings || packageJSON.types;
       if (types) {
-        // Add package.json, since this defines where all types lie
-        addLib(
-          `node_modules/${dependency}/package.json`,
-          JSON.stringify(packageJSON),
-          fetchedPaths
-        );
-
         // get all files in the specified directory
         return getFileMetaData(
           dependency,
@@ -410,21 +407,20 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
           getFileTypes(
             depUrl,
             dependency,
-            resolveAppropiateFile(fileData, types),
+            resolveAppropiateFile(fileData, join("/", types)),
             fetchedPaths,
             fileData
           )
         );
       }
 
-      throw new Error("No typings field in package.json");
+      throw new Error("Could not find root typings file");
     });
 }
 
 export async function fetchAndAddDependencies(
   dep,
   version,
-  onDependencies,
   fetchedPaths = {}
 ) {
   try {
@@ -435,10 +431,10 @@ export async function fetchAndAddDependencies(
 
       try {
         await doFetch(`https://unpkg.com/${dep}@${version}/package.json`)
-        .then(x => JSON.parse(x))
-        .then(x => {
-          depVersion = x.version
-        });
+          .then(x => JSON.parse(x))
+          .then(x => {
+            depVersion = x.version;
+          });
       } catch (e) {}
       // eslint-disable-next-line no-await-in-loop
       await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
@@ -452,9 +448,9 @@ export async function fetchAndAddDependencies(
   } catch (e) {
     // // Don't show these cryptic messages to users, because this is not vital
     // if (process.env.NODE_ENV === 'development') {
-    //   console.error(`Couldn't find typings for ${dep}`, e);
+    // console.error(`Couldn't find typings for ${dep}`, e);
     // }
   }
 
-  onDependencies(fetchedPaths);
+  return fetchedPaths;
 }

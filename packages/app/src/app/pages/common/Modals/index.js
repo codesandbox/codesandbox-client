@@ -20,6 +20,7 @@ import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
 import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
+import PickSandboxModal from './PickSandboxModal';
 
 const modals = {
   preferences: {
@@ -50,13 +51,17 @@ const modals = {
     Component: PRModal,
     width: 400,
   },
+  deleteDeployment: {
+    Component: DeleteDeploymentModal,
+    width: 400,
+  },
   deleteSandbox: {
     Component: DeleteSandboxModal,
     width: 400,
   },
-  deleteDeployment: {
-    Component: DeleteDeploymentModal,
-    width: 400,
+  pickSandbox: {
+    Component: PickSandboxModal,
+    width: 600,
   },
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "typeRoots": ["types"],
+    "outDir": "dist",
+    "module": "commonjs",
+    "declaration": true,
+    "allowJs": true
+  },
+  "exclude": ["src/react-codesandboxer"]
+}

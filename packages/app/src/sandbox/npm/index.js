@@ -13,14 +13,14 @@ type NPMDependencies = {
   [dependency: string]: string,
 };
 
-const DISABLE_EXTERNAL_CONNECTION =
-  document.location.search.indexOf('disex') > -1;
-
 /**
  * This fetches the manifest and dependencies from the
  * @param {*} dependencies
  */
-export default async function loadDependencies(dependencies: NPMDependencies) {
+export default async function loadDependencies(
+  dependencies: NPMDependencies,
+  disableExternalConnection = false
+) {
   let isNewCombination = false;
   if (Object.keys(dependencies).length !== 0) {
     // We filter out all @types, as they are not of any worth to the bundler
@@ -34,7 +34,7 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
     if (loadedDependencyCombination !== depQuery) {
       isNewCombination = true;
 
-      const data = await (DISABLE_EXTERNAL_CONNECTION
+      const data = await (disableExternalConnection
         ? getDependencyVersions
         : fetchDependencies)(dependenciesWithoutTypings);
 

@@ -30,6 +30,7 @@ import editor from './modules/editor';
 import profile from './modules/profile';
 import server from './modules/server';
 import deployment from './modules/deployment';
+import explore from './modules/explore';
 import git from './modules/git';
 import preferences from './modules/preferences';
 import workspace from './modules/workspace';
@@ -41,6 +42,7 @@ import userNotifications from './modules/user-notifications';
 export default Module({
   model,
   state: {
+    popularSandboxes: null,
     hasLoadedApp: false,
     jwt: null,
     isAuthenticating: true,
@@ -114,6 +116,7 @@ export default Module({
     live,
     userNotifications,
     server,
+    explore,
   },
   providers: {
     api: ApiProvider,

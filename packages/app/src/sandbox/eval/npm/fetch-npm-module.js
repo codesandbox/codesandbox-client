@@ -334,6 +334,7 @@ export default async function fetchModule(
         : pathUtils.join(currentPath, path),
       code: 'module.exports = {};',
       requires: [],
+      stubbed: true,
     };
   }
 

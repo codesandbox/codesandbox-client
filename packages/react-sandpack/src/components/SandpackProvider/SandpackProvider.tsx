@@ -23,6 +23,7 @@ export interface State {
 }
 
 export interface Props {
+  showOpenInCodeSandbox?: boolean;
   className?: string;
   style?: Object;
   files: IFiles;
@@ -44,6 +45,10 @@ export interface Props {
     | 'preact-cli';
 
   onFileChange?: (files: IFiles, sandpack: ISandpackContext) => void;
+  fileResolver?: {
+    isFile: (path: string) => Promise<boolean>;
+    readFile: (path: string) => Promise<string>;
+  };
 }
 
 export default class SandpackProvider extends React.PureComponent<
@@ -133,6 +138,8 @@ export default class SandpackProvider extends React.PureComponent<
 
   getOptions = () => {
     return {
+      bundlerURL: this.props.bundlerURL,
+      fileResolver: this.props.fileResolver,
       skipEval: this.props.skipEval,
     };
   };
@@ -165,7 +172,11 @@ export default class SandpackProvider extends React.PureComponent<
       this.props.onFileChange(files, this._getSandpackState());
     }
     if (this.manager) {
-      this.manager.updatePreview({ files, template: this.props.template });
+      this.manager.updatePreview({
+        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
+        files,
+        template: this.props.template,
+      });
     }
   };
 

@@ -57,6 +57,25 @@ export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
 
+export const fetchEnvironmentVariables = [
+  actions.fetchEnvironmentVariables,
+  {
+    success: [],
+  },
+];
+export const updateEnvironmentVariables = [
+  actions.updateEnvironmentVariables,
+  {
+    success: [actions.restartSandbox],
+  },
+];
+export const deleteEnvironmentVariable = [
+  actions.deleteEnvironmentVariable,
+  {
+    success: [actions.restartSandbox],
+  },
+];
+
 export const clearCurrentModule = [
   set(state`editor.currentModuleShortid`, null),
 ];

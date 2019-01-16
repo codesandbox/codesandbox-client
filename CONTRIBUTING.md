@@ -10,7 +10,7 @@
 
 ## Code of Conduct
 
-We have a code of conduct you can find [here](https://github.com/CompuIves/codesandbox-client/blob/master/CODE_OF_CONDUCT.md) and every contributor is expect to obey the rules on it. Any issues or PR may be closes if not in terms with it.
+We have a code of conduct you can find [here](https://github.com/CompuIves/codesandbox-client/blob/master/CODE_OF_CONDUCT.md) and every contributor is expected to obey the rules therein. Any issues or PRs that don't abide by the code of conduct may be closed.
 
 ## Code Organization
 
@@ -56,7 +56,7 @@ To install the project you need to have `yarn` and `node`
 > ```
 >
 > This will add the original repository as a "remote" called "upstream,"
-> Then fetch the git information from that remote, then set your local `master`
+> then fetch the git information from that remote, then set your local `master`
 > branch to use the upstream master branch whenever you run `git pull`.
 > Then you can make all of your pull request branches based on this `master`
 > branch. Whenever you want to update your version of `master`, do a regular
