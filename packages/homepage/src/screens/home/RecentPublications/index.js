@@ -1,11 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { StaticQuery } from 'gatsby';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
-
-import firstImage from './unique.png';
-import dashboardImage from './dashboard.png';
-import secondImage from './containers3.png';
 
 import media from '../../../utils/media';
 
@@ -85,41 +82,57 @@ const PublicationItem = ({ title, image, url, description }) => (
 );
 
 export default () => (
-  <Container>
-    <MaxWidth width={1280}>
-      <Title>Recent Publications</Title>
-      <SubTitle>
-        You can follow{' '}
-        <a
-          href="https://medium.com/@compuives/"
-          target="_blank"
-          rel="noreferrer noopener"
-          style={{ textDecoration: 'none' }}
-        >
-          our blog
-        </a>{' '}
-        to stay up to date with new publications.
-      </SubTitle>
-      <Items style={{ marginBottom: '2rem' }}>
-        <PublicationItem
-          title="What's Unique About CodeSandbox"
-          description={`I often get asked: "What's the difference between CodeSandbox and <another online editor>". This is a list of unique features that distinguishes CodeSandbox.`}
-          url="https://medium.com/@compuives/whats-unique-about-codesandbox-f1791d867e48"
-          image={firstImage}
-        />
-        <PublicationItem
-          title="CodeSandbox Containers"
-          description="With Containers we execute the code on a server. This allows you to create Node servers and run any kind of web application like Nuxt, Next and Gatsby."
-          url="https://hackernoon.com/codesandbox-containers-5864a8f26715"
-          image={secondImage}
-        />
-        <PublicationItem
-          title="CodeSandbox Dashboard & Teams"
-          description="Announcing Dashboard & Teams, you now have a dashboard to manage your sandboxes. With that you can now also share your sandboxes with your team."
-          url="https://medium.com/@compuives/announcing-codesandbox-dashboard-teams-876f5933160b"
-          image={dashboardImage}
-        />
-      </Items>
-    </MaxWidth>
-  </Container>
+  <StaticQuery
+    query={graphql`
+      query {
+        allMediumPost(limit: 3, sort: { fields: [createdAt], order: DESC }) {
+          edges {
+            node {
+              id
+              title
+              uniqueSlug
+              virtuals {
+                subtitle
+                previewImage {
+                  imageId
+                }
+              }
+            }
+          }
+        }
+      }
+    `}
+    render={({ allMediumPost: { edges } }) => (
+      <Container>
+        <MaxWidth width={1280}>
+          <Title>Recent Publications</Title>
+          <SubTitle>
+            You can follow{' '}
+            <a
+              href="https://medium.com/@compuives/"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{ textDecoration: 'none' }}
+            >
+              our blog
+            </a>{' '}
+            to stay up to date with new publications.
+          </SubTitle>
+          <Items style={{ marginBottom: '2rem' }}>
+            {edges.map(post => (
+              <PublicationItem
+                key={post.node.id}
+                title={post.node.title}
+                description={post.node.virtuals.subtitle}
+                url={`https://medium.com/@compuives/${post.node.uniqueSlug}`}
+                image={`https://cdn-images-1.medium.com/max/2000/${
+                  post.node.virtuals.previewImage.imageId
+                }`}
+              />
+            ))}
+          </Items>
+        </MaxWidth>
+      </Container>
+    )}
+  />
 );
