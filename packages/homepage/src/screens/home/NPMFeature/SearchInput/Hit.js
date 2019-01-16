@@ -59,7 +59,7 @@ export default class Hit extends React.PureComponent {
   render() {
     return (
       <Container
-        innerRef={el => {
+        ref={el => {
           this.el = el;
         }}
         href={`https://codesandbox.io/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${

@@ -3,7 +3,7 @@ import delayEffect from 'common/utils/animation/delay-effect';
 
 export const Container = styled.div`
   position: absolute;
-  background-color: ${props => props.theme.background2.darken(0.5)};
+  background-color: ${props => props.theme.background4};
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.75);
 
   ${delayEffect(0)};
@@ -39,4 +39,16 @@ export const Item = styled.div`
 
 export const Icon = styled.span`
   margin-right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+`;
+
+export const Separator = styled.hr`
+  height: 1px;
+  width: 100%;
+  margin: 0.5rem 0;
+
+  background-color: ${props => props.theme.background};
+  border: 0;
+  outline: 0;
 `;

@@ -17,17 +17,6 @@ export const Container = styled.a`
   text-decoration: none;
 `;
 
-export const Title = styled.span`
-  font-size: 1rem;
-  font-weight: 400;
-  margin: 0;
-  margin-left: calc(1rem + 1px);
-  padding-left: 1rem;
-  border-left: 1px solid
-    ${props => props.theme['panel.border'] || 'rgba(255, 255, 255, 0.3)'};
-  color: ${props => props.theme['editor.foreground'] || 'white'};
-`;
-
 export const GithubContainer = styled.a`
   position: absolute;
   right: 1rem;

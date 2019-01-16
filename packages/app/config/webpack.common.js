@@ -9,8 +9,8 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
-const env = require('./env');
-const getHost = require('./host');
+const env = require('common/config/env');
+const getHost = require('common/utils/host');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
@@ -401,7 +401,7 @@ module.exports = {
             filename: 'embed.html',
             template: path.join(paths.embedSrc, 'index.html'),
             minify: __PROD__ && {
-              removeComments: true,
+              removeComments: false,
               collapseWhitespace: true,
               removeRedundantAttributes: true,
               useShortDoctype: true,

@@ -38,13 +38,13 @@ function Navigator({
   return (
     <Container className="flying-container-handler" style={{ cursor: 'move' }}>
       <Icons>
-        <Icon disabled={!onBack} onClick={onBack}>
+        <Icon aria-label="Go Back" disabled={!onBack} onClick={onBack}>
           <LeftIcon />
         </Icon>
-        <Icon disabled={!onForward} onClick={onForward}>
+        <Icon aria-label="Go Forward" disabled={!onForward} onClick={onForward}>
           <RightIcon />
         </Icon>
-        <Icon onClick={onRefresh}>
+        <Icon aria-label="Refresh" onClick={onRefresh}>
           <RefreshIcon />
         </Icon>
       </Icons>

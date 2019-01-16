@@ -155,6 +155,7 @@ export type Sandbox = {
     rights: 'none' | 'read' | 'write' | 'admin',
   },
   version: number,
+  screenshotUrl: ?string,
 };
 
 export type Preferences = {

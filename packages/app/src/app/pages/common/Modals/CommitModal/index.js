@@ -31,7 +31,7 @@ function CommitModal({ store }) {
         </div>
       );
     } else {
-      message = <div>Succesfully created commit!</div>;
+      message = <div>Successfully created commit!</div>;
     }
   }
 

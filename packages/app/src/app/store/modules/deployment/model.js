@@ -36,7 +36,7 @@ const Deploy = types.model('Deploy', {
   alias: types.maybeNull(types.array(Alias)),
   scale: types.maybeNull(Scale),
   creator: Creator,
-  type: types.enumeration('types', ['NPM', 'DOCKER', 'STATIC']),
+  type: types.enumeration('types', ['NPM', 'DOCKER', 'STATIC', 'LAMBDAS']),
 });
 
 export default {

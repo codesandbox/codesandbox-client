@@ -21,6 +21,7 @@ import apollo from './apollo-server';
 import sapper from './sapper';
 import nest from './nest';
 import staticTemplate from './static';
+import styleguidist from './styleguidist';
 
 export {
   angular,
@@ -44,6 +45,7 @@ export {
   nest,
   ember,
   staticTemplate,
+  styleguidist,
 };
 
 export type Template =
@@ -63,7 +65,8 @@ export type Template =
   | 'apollo'
   | 'sapper'
   | 'nest'
-  | 'static';
+  | 'static'
+  | 'styleguidist';
 
 export default function getDefinition(theme: Template) {
   switch (theme) {
@@ -107,6 +110,10 @@ export default function getDefinition(theme: Template) {
       return nest;
     case staticTemplate.name:
       return staticTemplate;
+    case styleguidist.name:
+      return styleguidist;
+    case ember.name:
+      return ember;
     default:
       return react;
   }

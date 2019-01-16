@@ -4,54 +4,53 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta property="og:type" content="website">
     <meta property="og:author" content='https://ivesvh.com'>
     <meta property="og:title" content="CodeSandbox">
-    <meta property="og:description" content="CodeSandbox is an online editor
-      tailored for web applications.">
-    <meta property="og:image"
-      content="https://codesandbox.io/static/img/banner.png">
+    <meta property="og:description" content="CodeSandbox is an online editor tailored for web applications.">
+    <meta property="og:image" content="https://codesandbox.io/static/img/banner.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:site" content="@CompuIves">
     <meta property="twitter:creator" content='@CompuIves'>
     <meta property="twitter:title" content="CodeSandbox Embed">
-    <meta property="twitter:description" content="An online editor tailored for
-      web application development.">
-    <meta property="twitter:image:src"
-      content="https://codesandbox.io/static/img/banner.png">
+    <meta property="twitter:description" content="An online editor tailored for web application development.">
+    <meta property="twitter:image:src" content="https://codesandbox.io/static/img/banner.png">
     <meta property="twitter:image:width" content="1200">
     <meta property="twitter:image:height" content="630">
     <meta name="theme-color" content="#40A9F3">
-    <meta name="description" content="CodeSandbox is an online editor tailored
-      for web applications.">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
-      rel="stylesheet">
+    <meta name="description" content="CodeSandbox is an online editor tailored for web applications.">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
     <link rel="shortcut icon" href="/favicon.ico">
     <title>Embed - CodeSandbox</title>
     <!-- Google Tag Manager -->
     <script>
-    (function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
-      }); var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-T3L6RFK');
-  </script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || []; w[l].push({
+          'gtm.start':
+            new Date().getTime(), event: 'gtm.js'
+        }); var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+            'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', 'GTM-T3L6RFK');
+    </script>
     <!-- End Google Tag Manager -->
 
     <!-- AMD Loader for Monaco -->
     <script src="/public/13/vs/loader.js"></script>
-    <script>window.require.config({url:"/public/13/vs/loader.js",paths:{vs:"/public/13/vs"}})</script>
+    <script>
+      window.require.config({
+        url:"/public/13/vs/loader.js",
+        paths:{vs:"/public/13/vs"}
+      });
+    </script>
+
+    <!-- {{SANDBOX_DATA}} -->
   </head>
 
-  <body style="margin: 0; padding: 0; background-color: #1C2022; overflow:
-    hidden;">
+  <body style="margin: 0; padding: 0; background-color: #1C2022; overflow: hidden;">
     <!-- Google Tag Manager (noscript) -->
     <noscript>
       <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T3L6RFK"

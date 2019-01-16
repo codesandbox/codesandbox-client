@@ -318,7 +318,7 @@ class FlyingContainer extends React.Component<Props, State> {
             flex: width ? `0 0 ${width}px` : undefined,
             height,
             boxShadow: hide ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.5)',
-            zIndex: 2,
+            zIndex: 31,
 
             visiblity: hide ? 'hidden' : undefined,
             pointerEvents: hide ? 'none' : undefined,

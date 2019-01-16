@@ -5,7 +5,6 @@ import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-e
 
 import type { Module } from '../entities/module';
 import Manager from '../manager';
-import type { Manifest } from '../manager';
 
 import getDependencyName from '../utils/get-dependency-name';
 import { packageFilter } from '../utils/resolve-utils';
@@ -71,9 +70,11 @@ function normalizeJSDelivr(
 }
 
 const TEMP_USE_JSDELIVR = false;
+// Strips the version of a path, eg. test/1.3.0 -> test
+const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
 function getUnpkgUrl(name: string, version: string) {
-  const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
+  const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
   return TEMP_USE_JSDELIVR
     ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
@@ -81,7 +82,7 @@ function getUnpkgUrl(name: string, version: string) {
 }
 
 function getMeta(name: string, packageJSONPath: string, version: string) {
-  const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
+  const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
   const id = `${packageJSONPath}@${version}`;
   if (metas[id]) {
     return metas[id];
@@ -169,7 +170,7 @@ function resolvePath(
             currentTModule.dependencies.add(tModule);
             return callback(null, tModule.module.code);
           } catch (e) {
-            const depPath = p.replace('/node_modules/', '');
+            const depPath = p.replace(/.*\/node_modules\//, '');
             const depName = getDependencyName(depPath);
 
             // To prevent infinite loops we keep track of which dependencies have been requested before.
@@ -182,7 +183,7 @@ function resolvePath(
 
             // eslint-disable-next-line
             const subDepVersionVersionInfo = await findDependencyVersion(
-              currentPath,
+              currentTModule,
               manager,
               defaultExtensions,
               depName
@@ -246,10 +247,10 @@ async function findDependencyVersion(
     const packageJSON =
       manager.transpiledModules[foundPackageJSONPath] &&
       manager.transpiledModules[foundPackageJSONPath].module.code;
-    const { version } = JSON.parse(packageJSON);
+    const { version, name } = JSON.parse(packageJSON);
 
     if (packageJSON !== '//empty.js') {
-      return { packageJSONPath: foundPackageJSONPath, version };
+      return { packageJSONPath: foundPackageJSONPath, version, name };
     }
   } catch (e) {
     /* do nothing */

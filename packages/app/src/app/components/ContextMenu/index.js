@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Spring } from 'react-spring';
+import Portal from 'common/components/Portal';
 
-import Portal from '../Portal';
 import { Container, Item, ItemContainer } from './elements';
 
 class ContextMenu extends React.PureComponent {
@@ -126,6 +126,7 @@ class ContextMenu extends React.PureComponent {
           color={item.color}
           onMouseDown={e => {
             e.preventDefault();
+            e.stopPropagation();
           }}
           onMouseUp={e => {
             if (item.action()) {

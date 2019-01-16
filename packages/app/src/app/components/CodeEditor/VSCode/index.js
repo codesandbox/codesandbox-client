@@ -27,7 +27,7 @@ import DependencyTypingsFetcher from 'worker-loader?publicPath=/&name=dependency
 import eventToTransform from '../Monaco/event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
 import type { EditorAPI } from './MonacoReactComponent';
-import { Container } from './elements';
+import { Container, GlobalStyles } from './elements';
 import defineTheme from '../Monaco/define-theme';
 import getSettings from '../Monaco/settings';
 
@@ -1221,6 +1221,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     return (
       <Container id="vscode-container">
+        <GlobalStyles />
         <MonacoEditorComponent
           id={this.props.sandbox.id}
           width={width}

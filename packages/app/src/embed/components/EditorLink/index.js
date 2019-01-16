@@ -17,7 +17,7 @@ function EditorLink({ sandbox, small }: { sandbox: Sandbox, small?: boolean }) {
       rel="noopener noreferrer"
       href={`${sandboxUrl(sandbox)}?from-embed`}
     >
-      <Text small={small}>Edit on CodeSandbox</Text>
+      <Text small={small}>Open In CodeSandbox</Text>
       <Logo />
     </EditText>
   );

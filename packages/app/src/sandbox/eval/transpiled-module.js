@@ -2,7 +2,7 @@
 import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 
 import hashsum from 'hash-sum';
 

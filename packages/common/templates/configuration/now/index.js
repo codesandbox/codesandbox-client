@@ -7,14 +7,7 @@ const config: ConfigurationFile = {
   description: 'Configuration for your deployments on now.',
   moreInfoUrl: 'https://zeit.co/docs/features/configuration',
 
-  getDefaultCode: () =>
-    JSON.stringify(
-      {
-        type: 'NPM',
-      },
-      null,
-      2
-    ),
+  getDefaultCode: () => JSON.stringify({}, null, 2),
 };
 
 export default config;

@@ -4,6 +4,7 @@ import { Mutation } from 'react-apollo';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import Input from 'common/components/Input';
 import track from 'common/utils/analytics';
+import { ESC } from 'common/utils/keycodes';
 
 import {
   CreateDirectoryContainer,
@@ -78,12 +79,12 @@ export default ({ basePath, teamId, noFocus, close, depth }) => {
               style={{ marginRight: '1rem' }}
               onBlur={close}
               onKeyDown={e => {
-                if (e.keyCode === 27) {
+                if (e.keyCode === ESC) {
                   e.preventDefault();
                   close();
                 }
               }}
-              innerRef={el => {
+              ref={el => {
                 if (el) {
                   if (!noFocus) {
                     el.focus();

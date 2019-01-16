@@ -8,6 +8,8 @@ import theme from 'common/theme';
 import MonacoEditor from 'app/components/CodeEditor/Monaco/MonacoReactComponent';
 import defineTheme from 'app/components/CodeEditor/Monaco/define-theme';
 
+import { ARROW_UP, ARROW_DOWN, ENTER } from 'common/utils/keycodes';
+
 import { IconContainer } from './elements';
 
 const CONSOLE_INPUT_TOP_PADDING = 6;
@@ -142,8 +144,7 @@ class ConsoleInput extends React.PureComponent<Props, State> {
       const e = event.browserEvent;
       const { evaluateConsole } = this.props;
 
-      if (e.keyCode === 13) {
-        // Enter
+      if (e.keyCode === ENTER) {
         if (e.shiftKey) {
           return;
         }
@@ -156,8 +157,7 @@ class ConsoleInput extends React.PureComponent<Props, State> {
           commandCursor: -1,
           commandHistory: [command, ...this.state.commandHistory],
         });
-      } else if (e.keyCode === 38) {
-        // Up arrow
+      } else if (e.keyCode === ARROW_UP) {
         const lineNumber = editor.getPosition().lineNumber;
         if (lineNumber !== 1) {
           return;
@@ -171,8 +171,7 @@ class ConsoleInput extends React.PureComponent<Props, State> {
         this.setState({
           commandCursor: newCursor,
         });
-      } else if (e.keyCode === 40) {
-        // Down arrow
+      } else if (e.keyCode === ARROW_DOWN) {
         const lineNumber = editor.getPosition().lineNumber;
         const lineCount = editor.getModel().getLineCount();
         if (lineNumber !== lineCount) {

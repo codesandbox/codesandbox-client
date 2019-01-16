@@ -1,7 +1,6 @@
-import styled, { injectGlobal } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
-// eslint-disable-next-line
-injectGlobal`
+export const GlobalStyle = createGlobalStyle`
   .notifications-leave {
     opacity: 1;
   }
@@ -10,6 +9,7 @@ injectGlobal`
     transition: all 300ms ease;
     opacity: 0.01;
   }
+
 `;
 
 export const NotificationContainer = styled.div`

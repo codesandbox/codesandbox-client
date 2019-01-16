@@ -9,6 +9,8 @@ import { frameUrl, host } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
 import getTemplate from 'common/templates';
 
+import { Spring } from 'react-spring';
+
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import Navigator from './Navigator';
@@ -51,12 +53,13 @@ type State = {
   overlayMessage: ?string,
   hibernated: boolean,
   sseError: boolean,
+  showScreenshot: boolean,
 };
 
-const getSSEUrl = (id?: string) =>
+const getSSEUrl = (id?: string, initialPath?: string = '') =>
   `https://${id ? id + '.' : ''}sse.${
-    process.env.NODE_ENV === 'development' ? 'codesandbox.stream' : host()
-  }`;
+    process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
+  }${initialPath}`;
 
 const getDiff = (a, b) => {
   const diff = {};
@@ -168,12 +171,13 @@ class BasePreview extends React.Component<Props, State> {
       history: [],
       historyPosition: -1,
       urlInAddressBar: this.serverPreview
-        ? getSSEUrl(props.sandbox.id)
+        ? getSSEUrl(props.sandbox.id, props.initialPath)
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
       overlayMessage: null,
       hibernated: false,
       sseError: false,
+      showScreenshot: true,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -187,6 +191,11 @@ class BasePreview extends React.Component<Props, State> {
       this.connectTimeout = null;
       this.localClose = false;
       this.setupSSESockets();
+
+      setTimeout(() => {
+        // Remove screenshot after specific time, so the loading container spinner can still show
+        this.setState({ showScreenshot: false });
+      }, 100);
     }
     this.listener = listen(this.handleMessage);
 
@@ -402,6 +411,16 @@ class BasePreview extends React.Component<Props, State> {
     }
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (
+      prevProps.sandbox &&
+      this.props.sandbox &&
+      prevProps.sandbox.id !== this.props.sandbox.id
+    ) {
+      this.handleSandboxChange(this.props.sandbox.id);
+    }
+  }
+
   openNewWindow = () => {
     if (this.props.onOpenNewWindow) {
       this.props.onOpenNewWindow();
@@ -416,18 +435,26 @@ class BasePreview extends React.Component<Props, State> {
     resetState();
 
     const url = this.serverPreview
-      ? getSSEUrl(newId)
+      ? getSSEUrl(newId, this.props.initialPath)
       : frameUrl(newId, this.props.initialPath || '');
 
     if (this.serverPreview) {
       this.initializeLastSent();
       this.setupSSESockets();
+
+      setTimeout(() => {
+        // Remove screenshot after specific time, so the loading container spinner can still show
+        this.setState({ showScreenshot: false });
+      }, 800);
     }
+
     this.setState(
       {
         history: [url],
         historyPosition: 0,
         urlInAddressBar: url,
+        showScreenshot: true,
+        overlayMessage: null,
       },
       () => this.handleRefresh()
     );
@@ -450,9 +477,13 @@ class BasePreview extends React.Component<Props, State> {
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
-        this.setState({
-          frameInitialized: true,
-        });
+
+        setTimeout(() => {
+          // We show a screenshot of the sandbox (if available) on top of the preview if the frame
+          // hasn't loaded yet
+          this.setState({ showScreenshot: false });
+        }, this.serverPreview ? 0 : 600);
+
         this.executeCodeImmediately(true);
       } else {
         const { type } = data;
@@ -488,6 +519,10 @@ class BasePreview extends React.Component<Props, State> {
               this.$socket.emit(channel, message);
             }
 
+            break;
+          }
+          case 'done': {
+            this.setState({ showScreenshot: false });
             break;
           }
           default: {
@@ -695,6 +730,7 @@ class BasePreview extends React.Component<Props, State> {
       dragging,
       hide,
       noPreview,
+      className,
     } = this.props;
 
     const {
@@ -714,6 +750,7 @@ class BasePreview extends React.Component<Props, State> {
 
     return (
       <Container
+        className={className}
         style={{
           position: 'relative',
           flex: 1,
@@ -744,23 +781,71 @@ class BasePreview extends React.Component<Props, State> {
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
-        <StyledFrame
-          sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          src={
-            this.serverPreview
-              ? getSSEUrl(sandbox.id)
-              : frameUrl(sandbox.id, this.initialPath)
-          }
-          id="sandbox"
-          title={sandbox.id}
-          hideNavigation={!showNavigation}
-          style={{
-            pointerEvents:
-              dragging || inactive || this.props.isResizing
-                ? 'none'
-                : 'initial',
+
+        <Spring
+          from={{ opacity: 0 }}
+          to={{
+            opacity: this.state.showScreenshot ? 0 : 1,
           }}
-        />
+        >
+          {style => (
+            <React.Fragment>
+              <StyledFrame
+                sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
+                src={
+                  this.serverPreview
+                    ? getSSEUrl(sandbox.id, this.initialPath)
+                    : frameUrl(sandbox.id, this.initialPath)
+                }
+                id="sandbox"
+                title={sandbox.id}
+                hideNavigation={!showNavigation}
+                style={{
+                  ...style,
+                  zIndex: 1,
+                  backgroundColor: 'white',
+                  pointerEvents:
+                    dragging || inactive || this.props.isResizing
+                      ? 'none'
+                      : 'initial',
+                }}
+              />
+
+              {this.props.sandbox.screenshotUrl &&
+                style.opacity !== 1 && (
+                  <div
+                    style={{
+                      overflow: 'hidden',
+                      width: '100%',
+                      position: 'absolute',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      top: 40,
+                      zIndex: 0,
+                    }}
+                  >
+                    <div
+                      alt={this.props.sandbox.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        filter: `blur(2px)`,
+                        transform: 'scale(1.025, 1.025)',
+                        backgroundImage: `url("${
+                          this.props.sandbox.screenshotUrl
+                        }")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPositionX: 'center',
+                      }}
+                    />
+                  </div>
+                )}
+            </React.Fragment>
+          )}
+        </Spring>
       </Container>
     );
   }

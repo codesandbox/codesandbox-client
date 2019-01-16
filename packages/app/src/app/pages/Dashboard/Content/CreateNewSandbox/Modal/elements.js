@@ -69,7 +69,7 @@ export const Templates = styled.div`
   }
 `;
 
-export const ImportChoices = Templates.extend`
+export const ImportChoices = styled(Templates)`
   justify-content: space-between;
 `;
 

@@ -113,7 +113,7 @@ class EditorTabs extends React.Component {
     return (
       <Container>
         <TabsContainer
-          innerRef={el => {
+          ref={el => {
             this.container = el;
           }}
         >
@@ -171,7 +171,7 @@ class EditorTabs extends React.Component {
                         tab.module.shortid
                       )
                     )}
-                    innerRef={el => {
+                    ref={el => {
                       this.tabEls[id] = el;
                     }}
                   />
@@ -189,7 +189,7 @@ class EditorTabs extends React.Component {
                     tabCount={store.editor.tabs.length}
                     position={i}
                     dirty={tab.dirty}
-                    innerRef={el => {
+                    ref={el => {
                       this.tabEls[tab.id] = el;
                     }}
                     title={`Diff: ${tab.titleA} - ${tab.titleB}`}

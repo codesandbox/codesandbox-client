@@ -361,7 +361,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
     return (
       <Container
-        innerRef={el => {
+        ref={el => {
           this.node = el;
         }}
         style={{
@@ -414,6 +414,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
             <MinimizeIcon
               onMouseDown={hidden ? undefined : this.handleMinimizeClick}
               style={{
+                marginTop: hidden ? 0 : 4,
                 transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
               }}
             />

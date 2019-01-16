@@ -19,6 +19,7 @@ class Filter extends Component {
           <Button onClick={this.toggle}>{open ? <Up /> : <Down />}</Button>
         </Title>
         <RefinementList
+          transformItems={this.props.transformItems}
           searchable={!noSearch}
           showMore={!noSearch}
           operator={operator}

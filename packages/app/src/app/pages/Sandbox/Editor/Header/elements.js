@@ -33,3 +33,11 @@ export const Left = styled.div`
   display: flex;
   height: 100%;
 `;
+
+export const Centered = styled.div`
+  position: absolute;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+`;

@@ -1,0 +1,1 @@
+export const SIDEBAR_SHOW_SCREEN_SIZE = 1280;

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "color": "0.11.4",
     "error-polyfill": "^0.1.1",
     "image-extensions": "^1.1.0",
     "jsonlint": "^1.6.3",
@@ -16,7 +17,7 @@
     "react-input-autosize": "^2.2.1",
     "react-textarea-autosize": "^6.1.0",
     "react-tippy": "^0.14.0",
-    "styled-components": "^3.2.1"
+    "styled-components": "^4.1.2"
   },
   "devDependencies": {
     "babel-jest": "^23.6.0",

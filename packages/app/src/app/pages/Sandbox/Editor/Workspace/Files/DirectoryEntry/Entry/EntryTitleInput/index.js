@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { ESC, ENTER } from 'common/utils/keycodes';
+
 import { InputContainer } from './elements';
 
 function select(el) {
@@ -23,11 +25,9 @@ export default class EntryTitleInput extends React.PureComponent {
   };
 
   handleKeyUp = (e: KeyboardEvent) => {
-    if (e.keyCode === 13) {
-      // Enter
+    if (e.keyCode === ENTER) {
       this.props.onCommit(this.state.currentValue);
-    } else if (e.keyCode === 27) {
-      // Escape
+    } else if (e.keyCode === ESC) {
       this.props.onCancel();
     }
   };

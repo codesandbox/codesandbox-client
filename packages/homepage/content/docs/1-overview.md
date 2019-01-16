@@ -35,9 +35,9 @@ learn React, and we found this a great idea.
 We shifted our focus to make it as easy as possible to start a project, and to
 make UI and UX very simple but useful.
 
-### Empower Sharability and Discoverability
+### Empower Shareability and Discoverability
 
-The initial reason Ives wanted to build CodeSandbox was because of sharability.
+The initial reason Ives wanted to build CodeSandbox was because of shareability.
 The JavaScript community is one of the most active communities out there;
 libraries and projects are shared everyday. Still, it was very hard to share a
 project you've built with, for example, Vue or React. With CodeSandbox you can

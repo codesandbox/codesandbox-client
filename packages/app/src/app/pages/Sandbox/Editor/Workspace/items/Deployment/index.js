@@ -31,6 +31,7 @@ class Deployment extends Component {
       signals,
       store: { user, deployment },
     } = this.props;
+
     return (
       <div>
         <Description>

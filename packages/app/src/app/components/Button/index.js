@@ -9,29 +9,17 @@ type Props = {
   style: ?any,
 };
 
-function ButtonComponent({ small = false, style = {}, ...props }: Props) {
-  const newStyle = {
-    ...(small
-      ? {
-          padding: '0.5em 0.7em',
-          fontSize: '0.875em',
-        }
-      : {
-          padding: '0.65em 2.25em',
-        }),
-    ...style,
-  };
-
+function ButtonComponent({ style = {}, ...props }: Props) {
   // Link
   if (props.to) {
-    return <LinkButton style={newStyle} {...props} />;
+    return <LinkButton style={style} {...props} />;
   }
 
   if (props.href) {
-    return <AButton style={newStyle} {...props} />;
+    return <AButton style={style} {...props} />;
   }
 
-  return <Button style={newStyle} {...props} />;
+  return <Button style={style} {...props} />;
 }
 
 export default ButtonComponent;
