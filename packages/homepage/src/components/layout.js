@@ -11,7 +11,7 @@ import Footer from './Footer';
 // eslint-disable-next-line
 export default class TemplateWrapper extends React.Component {
   render() {
-    const { children, title } = this.props;
+    const { children } = this.props;
     return (
       <ThemeProvider theme={theme}>
         <div>

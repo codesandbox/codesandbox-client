@@ -12,18 +12,16 @@ const Cube = styled.div`
   }
 `;
 
-const getAnimation = (offset: number = 0) => {
-  return keyframes`
+const getAnimation = (offset: number = 0) => keyframes`
   0% {
     transform: rotateY(${45 + offset}deg) rotateX(${-37.5 + offset}deg);
   }
   100% {
     transform: rotateY(${45 + offset + 360}deg) rotateX(${-37.5 +
-    offset +
-    360}deg);
+  offset +
+  360}deg);
   }
 `;
-};
 
 const Sides = styled.div`
   ${({ noAnimation, offset, speed }) =>

@@ -47,7 +47,9 @@ export default class SearchInput extends React.PureComponent {
           <div>Dependency</div>
           <div>Sandbox Count</div>
         </Legend>
-        {this.state.hits.map((hit, i) => <Hit key={i} hit={hit} />)}
+        {this.state.hits.map(hit => (
+          <Hit key={hit.value} hit={hit} />
+        ))}
         <a
           href="https://www.algolia.com/?utm_source=algoliaclient&utm_medium=website&utm_content=codesandbox.io&utm_campaign=poweredby"
           target="_blank"

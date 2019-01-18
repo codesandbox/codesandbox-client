@@ -54,7 +54,7 @@
     "build": "gatsby build",
     "build:clean": "rimraf public",
     "start": "gatsby develop",
-    "lint": "echo TODO && exit 0",
+    "lint": "eslint .",
     "format": "prettier --trailing-comma es5 --single-quote --write 'src/**/*.js'",
     "test": "echo \"Todo: no test specified\" && exit 0"
   },

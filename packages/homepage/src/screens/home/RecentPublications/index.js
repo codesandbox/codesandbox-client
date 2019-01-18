@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { StaticQuery } from 'gatsby';
+import { StaticQuery, graphql } from 'gatsby';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 
@@ -69,13 +69,17 @@ const PublicationDescription = styled.p`
   opacity: 0.6;
 `;
 
+const Image = styled.div`
+  height: 245px;
+  width: 100%;
+  background-image: url('${props => props.bg}');
+  background-size: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+`;
+
 const PublicationItem = ({ title, image, url, description }) => (
   <Item href={url} target="_blank" rel="noopener noreferrer">
-    <img
-      style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)' }}
-      src={image}
-      alt={title}
-    />
+    <Image bg={image} aria-label={title} />
     <PublicationTitle>{title}</PublicationTitle>
     <PublicationDescription>{description}</PublicationDescription>
   </Item>
