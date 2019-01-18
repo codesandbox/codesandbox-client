@@ -73,6 +73,7 @@ const Image = styled.div`
   height: 245px;
   width: 100%;
   background-image: url('${props => props.bg}');
+    background-position: center center;
   background-size: cover;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
