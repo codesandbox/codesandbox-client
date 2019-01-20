@@ -122,6 +122,7 @@ export default function(content: string, loaderContext: LoaderContext) {
     ts: ['ts-loader'],
     typescript: ['ts-loader'],
     pug: ['pug-loader'],
+    coffee: ['babel-loader', 'coffee-loader'],
   };
 
   const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);

@@ -24,6 +24,7 @@ import FileType, {
   image,
   html,
   pug,
+  coffee,
   cssGlobal,
   vue,
 } from './icons';
@@ -230,6 +231,7 @@ const TEMPLATE_SUPPORT = {
       less,
       stylus,
       pug,
+      coffee,
       cssGlobal,
       image,
     ],
