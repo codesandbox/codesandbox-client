@@ -22,7 +22,7 @@ const regexCasesMap = {
   react: /\.jsx$/,
   reason: /\.re$/,
   sass: /\.scss$/,
-  javascript: /\.js$/,
+  javascript: /\.m?js$/,
   typescript: /\.tsx?$/,
   console: /\.sh$/,
   // STARTS WITH
