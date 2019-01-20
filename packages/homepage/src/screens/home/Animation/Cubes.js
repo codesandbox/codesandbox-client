@@ -129,7 +129,7 @@ export default class Cubes extends React.Component {
   }
 
   updateCubePos = () => {
-    if (this.props.canvas) {
+    if (this.props.canvas && this.els[this.props.template.name]) {
       const pos = this.els[this.props.template.name].getBoundingClientRect();
       this.props.canvas.setCubePos(pos.x + 50, pos.y + 70 + getScrollPos().y);
     }
@@ -195,6 +195,8 @@ export default class Cubes extends React.Component {
 
       return this.shrinkTimelines[template.template.name].restart();
     }
+
+    return null;
   };
 
   hoverCube = template => {

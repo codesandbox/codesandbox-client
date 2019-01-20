@@ -1,11 +1,11 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { TimelineMax, Power2 } from 'gsap';
 
 import Centered from 'common/components/flex/Centered';
 import MaxWidth from 'common/components/flex/MaxWidth';
 
-import theme from 'common/theme';
+import Theme from 'common/theme';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import BuildIcon from 'react-icons/lib/go/tools';
@@ -208,9 +208,9 @@ export default class CycleFeatures extends React.PureComponent {
         position: 'absolute',
       })
       .set('#main-cube-side', {
-        backgroundColor: theme.secondary.clearer(0.2)(),
+        backgroundColor: Theme.secondary.clearer(0.2)(),
         zIndex: 1,
-        boxShadow: `0px 0px 150px ${theme.secondary()}`,
+        boxShadow: `0px 0px 150px ${Theme.secondary()}`,
       })
       .set('#progress-text', {
         autoAlpha: 0,
@@ -253,7 +253,7 @@ export default class CycleFeatures extends React.PureComponent {
         },
         'step1'
       )
-      .set('#main-cube-side', { backgroundColor: theme.primary.clearer(0.2)() })
+      .set('#main-cube-side', { backgroundColor: Theme.primary.clearer(0.2)() })
       .to('#addition-cube', 0.6, {
         ease: Power2.easeOut,
         y: -45,
@@ -271,7 +271,7 @@ export default class CycleFeatures extends React.PureComponent {
         '#main-cube-side',
         0.2,
         {
-          boxShadow: `0px 0px 150px ${theme.primary()}`,
+          boxShadow: `0px 0px 150px ${Theme.primary()}`,
         },
         '-=0.6'
       )
@@ -312,8 +312,8 @@ export default class CycleFeatures extends React.PureComponent {
         '-=0.2'
       )
       .to('#main-cube-side', 0.7, {
-        backgroundColor: theme.secondary.clearer(0.2)(),
-        boxShadow: `0px 0px 150px ${theme.secondary()}`,
+        backgroundColor: Theme.secondary.clearer(0.2)(),
+        boxShadow: `0px 0px 150px ${Theme.secondary()}`,
         ease: Power2.easeInOut,
       })
       .to(
@@ -407,7 +407,7 @@ export default class CycleFeatures extends React.PureComponent {
               getY={this.setY}
               Icon={RocketIcon}
               title="Deploy"
-              description="Deploy a production version of your sandbox using ZEIT Now."
+              description="Deploy a production version of your sandbox using ZEIT's Now."
             />
           </Steps>
 
@@ -422,7 +422,7 @@ export default class CycleFeatures extends React.PureComponent {
                 noAnimation
                 size={90}
                 offset={40}
-                color={theme.secondary}
+                color={Theme.secondary}
                 style={{ position: 'absolute', top: 0 }}
               />
               <Cube
@@ -430,7 +430,7 @@ export default class CycleFeatures extends React.PureComponent {
                 noAnimation
                 size={90}
                 offset={40}
-                color={theme.primary}
+                color={Theme.primary}
                 style={{ position: 'absolute', top: 0 }}
               />
             </OffsettedCube>
@@ -467,7 +467,7 @@ export default class CycleFeatures extends React.PureComponent {
                 <span id="progress-text" style={{ textAlign: 'center' }}>
                   Deploying...
                 </span>
-                <span style={{ color: theme.secondary() }} id="deploy-text">
+                <span style={{ color: Theme.secondary() }} id="deploy-text">
                   https://csb-921ywn9qrw-emlplxhibt.now.sh/
                 </span>
                 <Progress id="progress" />

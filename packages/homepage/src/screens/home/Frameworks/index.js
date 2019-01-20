@@ -35,7 +35,7 @@ const Container = styled.div`
   transition: 0.3s ease box-shadow;
   border-radius: 2px;
 
-  background-color: ${({ theme }) => theme.background};
+  background-color: ${props => props.theme.background};
 
   box-shadow: 0 3px 200px ${({ color }) => color.clearer(0.8)};
 
@@ -290,6 +290,7 @@ export default class Frameworks extends React.Component {
 
               return (
                 <IconContainer
+                  // eslint-disable-next-line
                   key={i}
                   selected={templates[i] === template}
                   template={templates[i]}
@@ -344,7 +345,8 @@ export default class Frameworks extends React.Component {
                   style={{ color: template.color() }}
                 >
                   {template.name}
-                </a>.
+                </a>
+                .
               </div>
 
               <HeaderTitle>Supported Loaders</HeaderTitle>

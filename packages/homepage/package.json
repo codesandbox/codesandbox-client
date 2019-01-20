@@ -40,6 +40,7 @@
     "react-typography": "^0.16.13",
     "slick-carousel": "^1.8.1",
     "styled-components": "^4.1.2",
+    "terser": "^3.14.1",
     "three": "^0.87.1",
     "typography": "^0.16.17",
     "typography-breakpoint-constants": "^0.15.10"
@@ -53,13 +54,14 @@
     "build": "gatsby build",
     "build:clean": "rimraf public",
     "start": "gatsby develop",
-    "lint": "echo TODO && exit 0",
+    "lint": "eslint .",
     "format": "prettier --trailing-comma es5 --single-quote --write 'src/**/*.js'",
     "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "devDependencies": {
     "extract-text-webpack-plugin": "1.0.1",
     "gatsby-plugin-remove-trailing-slashes": "^2.0.6",
+    "gatsby-source-medium": "^2.0.2",
     "prettier": "^1.8.2",
     "rimraf": "^2.6.2",
     "terser": "^3.10.13",

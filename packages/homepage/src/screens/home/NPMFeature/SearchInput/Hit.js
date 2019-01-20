@@ -21,11 +21,9 @@ const Container = styled.a`
     box-shadow: 0 8px 8px rgba(0, 0, 0, 0.3);
   }
 
-  ${props => {
-    return css`
-      background-color: ${props.theme.background()};
-    `;
-  }};
+  ${props => css`
+    background-color: ${props.theme.background()};
+  `};
 `;
 
 const Title = styled.div`
