@@ -6,6 +6,8 @@ import type { Sandbox, Module, Directory } from 'common/types';
 import { react, reactTs, vue, preact, svelte } from 'common/templates/index';
 import { resolveModule } from 'common/sandbox/modules';
 
+export const BLOB_ID = 'blob-url://';
+
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
 const JSTag = (resource: string) =>
@@ -135,18 +137,26 @@ export async function createFile(
   zip: JSZip,
   downloadBlobs: boolean = true
 ) {
-  if (module.isBinary && downloadBlobs) {
-    const code = await window.fetch(module.code).then(x => {
-      const contentType = x.headers['Content-Type'];
+  if (module.isBinary) {
+    if (downloadBlobs) {
+      const code = await window.fetch(module.code).then(x => {
+        const contentType = x.headers['Content-Type'];
 
-      if (contentType && contentType.startsWith('text/plain')) {
-        return x.text();
-      }
+        if (contentType && contentType.startsWith('text/plain')) {
+          return x.text();
+        }
 
-      return x.blob();
-    });
+        return x.blob();
+      });
 
-    return zip.file(module.title, code);
+      return zip.file(module.title, code);
+    }
+
+    // Mark that the module is a link to a blob
+    const code = `${BLOB_ID}${module.code}`;
+    const file = zip.file(module.title, code);
+
+    return file;
   }
 
   return zip.file(module.title, module.code);
