@@ -7,7 +7,8 @@ export default async function deploy(sandbox) {
   const zipFile = await createZip(
     sandbox,
     sandbox.modules,
-    sandbox.directories
+    sandbox.directories,
+    false
   );
 
   if (!zipFile) {
@@ -23,13 +24,16 @@ export default async function deploy(sandbox) {
     const file = contents.files[filePath];
 
     if (!file.dir) {
+      const text = await file.async('text'); // eslint-disable-line no-await-in-loop
+
       apiData.sandbox.push({
-        content: await file.async('text'), // eslint-disable-line no-await-in-loop
-        isBinary: false,
+        content: text,
+        isBinary: /^https?:\/\//.test(text),
         path: filePath,
       });
     }
   }
+  console.log(apiData);
 
   return apiData;
 }
