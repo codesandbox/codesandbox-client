@@ -42,8 +42,9 @@ const Live = ({ signals, store }) => {
       ) : (
         <React.Fragment>
           <Description style={{ marginBottom: '1rem' }}>
-            Invite others to live edit this sandbox with you. We{"'"}re doing it
-            live!
+            Invite others to live edit this sandbox with you. We
+            {"'"}
+            re doing it live!
           </Description>
 
           <React.Fragment>
@@ -54,7 +55,7 @@ const Live = ({ signals, store }) => {
 
             {hasUnsyncedModules && (
               <ErrorDescription>
-                Save all your modules before going live
+                Save all your files before going live
               </ErrorDescription>
             )}
             <WorkspaceInputContainer>

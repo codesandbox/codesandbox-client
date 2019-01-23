@@ -188,7 +188,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.currentDirectoryShortid = this.currentModule.directoryShortid;
 
       const editor = this.editor.getActiveCodeEditor();
-      if (editor && editor.getValue() === (this.currentModule.code || '')) {
+      if (editor && editor.getValue(1) === (this.currentModule.code || '')) {
         const model = editor.model;
         const newPath = getModulePath(
           this.sandbox.modules,
@@ -229,7 +229,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   provideDocumentFormattingEdits = (model, options, token) =>
     prettify(
       model.uri.fsPath,
-      () => model.getValue(),
+      () => model.getValue(1),
       this.getPrettierConfig(),
       () => false,
       token
@@ -663,12 +663,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         editor => editor.resource && editor.resource.path === modulePath
       );
 
-      if (!modelEditor) {
-        // Apply the code to the current module code itself
-        const module = this.sandbox.modules.find(
-          m => m.shortid === moduleShortid
-        );
+      // Apply the code to the current module code itself
+      const module = this.sandbox.modules.find(
+        m => m.shortid === moduleShortid
+      );
 
+      if (!modelEditor) {
         if (!module) {
           return;
         }
@@ -687,6 +687,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           operation,
           false,
           model.object.textEditorModel
+        );
+
+        this.props.onChange(
+          model.object.textEditorModel.getValue(1),
+          module.shortid
         );
       });
     });
@@ -1203,9 +1208,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const activeEditor = this.editor.getActiveCodeEditor();
     if (!activeEditor) return '';
 
-    return activeEditor.getValue({
-      lineEnding: '\n',
-    });
+    return activeEditor.getValue(1);
   };
 
   handleSaveCode = async () => {
