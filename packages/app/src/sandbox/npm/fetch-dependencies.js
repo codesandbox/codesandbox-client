@@ -1,5 +1,5 @@
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 
 import dependenciesToQuery from './dependencies-to-query';
 
@@ -30,14 +30,18 @@ function callApi(url: string, method = 'GET') {
   return fetch(url, {
     method,
   })
-    .then(response => {
-      if (response.status >= 200 && response.status < 300) {
-        return Promise.resolve(response);
+    .then(async response => {
+      if (!response.ok) {
+        const error = new Error(response.statusText || response.status);
+
+        const message = await response.json();
+
+        error.response = message;
+        error.statusCode = response.status;
+        return Promise.reject(error);
       }
 
-      const error = new Error(response.statusText || response.status);
-      error.response = response;
-      return Promise.reject(error);
+      return Promise.resolve(response);
     })
     .then(response => response.json());
 }
@@ -59,6 +63,9 @@ async function requestPackager(url, method = 'GET') {
 
       return manifest;
     } catch (e) {
+      if (e.response && e.statusCode !== 504) {
+        throw new Error(e.response.error);
+      }
       // 403 status code means the bundler is still bundling
       if (retries < RETRY_COUNT) {
         retries += 1;
@@ -98,7 +105,11 @@ async function getAbsoluteDependencies(dependencies: Object) {
     nonAbsoluteDependencies.map(async dep => {
       try {
         const data = await window
-          .fetch(`${host}/api/v1/dependencies/${dep}@${dependencies[dep]}`)
+          .fetch(
+            `${host}/api/v1/dependencies/${dep}@${encodeURIComponent(
+              dependencies[dep]
+            )}`
+          )
           .then(x => x.json())
           .then(x => x.data);
 
@@ -146,7 +157,9 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
 
       return result;
     } catch (e) {
-      e.message = `Could not fetch dependencies: ${e.message}`;
+      e.message = `Could not fetch dependencies, please try again in a couple seconds: ${
+        e.message
+      }`;
       dispatch(actions.notifications.show(e.message, 'error'));
 
       throw e;

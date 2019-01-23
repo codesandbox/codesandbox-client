@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Link from 'gatsby-link';
+import { Link } from 'gatsby';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 
@@ -64,7 +64,7 @@ const Background = styled.div`
   position: relative;
   background-color: ${props => props.theme.background2.darken(0.2)};
   padding: 1rem;
-  z-index: 100;
+  z-index: 5;
 `;
 
 const BasComponent = () => (
@@ -131,6 +131,11 @@ export default () => (
               </a>
             </li>
             <li>
+              <a href="/legal" target="_blank" rel="noopener noreferrer">
+                Legal
+              </a>
+            </li>
+            <li>
               <a href="mailto:hello@codesandbox.io">Contact Us</a>
             </li>
           </List>
@@ -141,7 +146,7 @@ export default () => (
           <List>
             <li>
               <a
-                href="https://twitter.com/codesandboxapp"
+                href="https://twitter.com/codesandbox"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -150,11 +155,11 @@ export default () => (
             </li>
             <li>
               <a
-                href="https://discord.gg/KE3TbEZ"
+                href="https://spectrum.chat/codesandbox"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Discord
+                Spectrum
               </a>
             </li>
           </List>

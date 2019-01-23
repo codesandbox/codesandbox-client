@@ -51,7 +51,7 @@ const SmallCube = styled(
 const OFFSETS = [84, 32, 54, 110];
 
 // eslint-disable-next-line react/no-multi-comp
-export default class Cubes extends React.PureComponent {
+export default class Cubes extends React.Component {
   els = {};
 
   constructor(props) {
@@ -59,7 +59,7 @@ export default class Cubes extends React.PureComponent {
 
     this.state = {
       templates: props.templates.map((tem, i) => {
-        const angle = Math.PI * 2 / props.templates.length * i;
+        const angle = ((Math.PI * 2) / props.templates.length) * i;
         const x = RADIUS * Math.cos(angle);
         const y = RADIUS * Math.sin(angle);
 
@@ -90,7 +90,8 @@ export default class Cubes extends React.PureComponent {
         return;
       }
 
-      const angle = Math.PI * 2 / this.state.templates.length * i + this.time;
+      const angle =
+        ((Math.PI * 2) / this.state.templates.length) * i + this.time;
       const x = RADIUS * Math.cos(angle);
       const y = RADIUS * Math.sin(angle);
 
@@ -128,7 +129,7 @@ export default class Cubes extends React.PureComponent {
   }
 
   updateCubePos = () => {
-    if (this.props.canvas) {
+    if (this.props.canvas && this.els[this.props.template.name]) {
       const pos = this.els[this.props.template.name].getBoundingClientRect();
       this.props.canvas.setCubePos(pos.x + 50, pos.y + 70 + getScrollPos().y);
     }
@@ -194,6 +195,8 @@ export default class Cubes extends React.PureComponent {
 
       return this.shrinkTimelines[template.template.name].restart();
     }
+
+    return null;
   };
 
   hoverCube = template => {

@@ -1,8 +1,9 @@
 // @flow
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import querystring from 'querystring';
 import type { Module } from '../entities/module';
 
+import type Manager from '../manager';
 import Transpiler from '../transpilers';
 
 export type TranspiledModule = Module & {
@@ -13,6 +14,8 @@ type TranspilerDefinition = {
   transpiler: Transpiler,
   options: ?Object,
 };
+
+type LifeCycleFunction = (manager: Manager) => void | Promise<*>;
 
 /**
  * This is essentially where it all comes together. The manager is responsible for
@@ -33,15 +36,43 @@ export default class Preset {
   transpilers: Set<Transpiler>;
   name: string;
   ignoredExtensions: Array<string>;
+  htmlDisabled: boolean;
+  defaultAliases: { [path: string]: string };
   alias: { [path: string]: string };
   // Whether this preset supports .env files
   hasDotEnv: boolean;
+
+  /**
+   * Code to run before evaluating and transpiling entry
+   */
+  setup: LifeCycleFunction;
+  /**
+   * Code to run after done
+   */
+  teardown: LifeCycleFunction;
+
+  /**
+   * Code to run before evaluation
+   */
+  preEvaluate: LifeCycleFunction;
 
   constructor(
     name: string,
     ignoredExtensions: ?Array<string>,
     alias: { [path: string]: string },
-    { hasDotEnv }: { hasDotEnv: boolean } = {}
+    {
+      hasDotEnv,
+      setup,
+      teardown,
+      htmlDisabled,
+      preEvaluate,
+    }: {
+      hasDotEnv?: boolean,
+      setup?: LifeCycleFunction,
+      preEvaluate?: LifeCycleFunction,
+      teardown?: LifeCycleFunction,
+      htmlDisabled?: boolean,
+    } = {}
   ) {
     this.loaders = [];
     this.transpilers = new Set();
@@ -49,14 +80,44 @@ export default class Preset {
 
     this.hasDotEnv = hasDotEnv || false;
     this.alias = alias || {};
+    this.aliasedPathCache = {};
+    this.defaultAliases = alias || {};
     this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
+
+    const noop = () => {};
+    this.setup = setup || noop;
+    this.teardown = teardown || noop;
+    this.preEvaluate = preEvaluate || noop;
+    this.htmlDisabled = htmlDisabled || false;
   }
+
+  setAdditionalAliases = (aliases: Object) => {
+    this.alias = { ...this.defaultAliases, ...aliases };
+    this.aliasedPathCache = {};
+  };
+
+  reset = () => {
+    this.loaders = [];
+  };
+
+  resetTranspilers = () => {
+    this.transpilers.clear();
+    this.loaders.length = 0;
+  };
+
+  aliasedPathCache = {};
 
   /**
    * Checks if there is an alias given for the path, if there is it will return
    * the altered path, otherwise it will just return the known path.
    */
   getAliasedPath(path: string): string {
+    if (this.aliasedPathCache[path] === null) {
+      return path;
+    } else if (this.aliasedPathCache[path]) {
+      return this.aliasedPathCache[path];
+    }
+
     const aliases = Object.keys(this.alias);
 
     const exactAliases = aliases.filter(a => a.endsWith('$'));
@@ -71,10 +132,11 @@ export default class Preset {
     });
 
     if (exactFoundAlias) {
+      this.aliasedPathCache[path] = this.alias[exactFoundAlias];
       return this.alias[exactFoundAlias];
     }
 
-    const pathParts = path.split('/'); // eslint-disable-line prefer-const
+    const pathParts = path.split('/');
 
     // Find matching aliases
     const foundAlias = orderBy(aliases, a => -a.split('/').length).find(a => {
@@ -83,21 +145,31 @@ export default class Preset {
     });
 
     if (foundAlias) {
+      const replacedPath = path.replace(foundAlias, this.alias[foundAlias]);
+      this.aliasedPathCache[path] = replacedPath;
       // if an alias is found we will replace the path with the alias
-      return path.replace(foundAlias, this.alias[foundAlias]);
+      return replacedPath;
     }
+
+    this.aliasedPathCache[path] = null;
 
     return path;
   }
 
   registerTranspiler(
     test: (module: Module) => boolean,
-    transpilers: Array<TranspilerDefinition>
+    transpilers: Array<TranspilerDefinition>,
+    prepend: boolean = false
   ) {
-    this.loaders.push({
+    const transpilerObject = {
       test,
       transpilers,
-    });
+    };
+    if (prepend) {
+      this.loaders.unshift(transpilerObject);
+    } else {
+      this.loaders.push(transpilerObject);
+    }
 
     transpilers.forEach(t => this.transpilers.add(t.transpiler));
 
@@ -108,13 +180,15 @@ export default class Preset {
    * Get transpilers from the given query, the query is webpack like:
    * eg. !babel-loader!./test.js
    */
-  getLoaders(module: Module, query: string = '') {
+  getLoaders(module: Module, query: string = ''): Array<TranspilerDefinition> {
     const loader = this.loaders.find(t => t.test(module));
 
     // Starting !, drop all transpilers
     const transpilers = query.startsWith('!') // eslint-disable-line no-nested-ternary
       ? []
-      : loader ? loader.transpilers : [];
+      : loader
+        ? loader.transpilers
+        : [];
 
     // Remove "" values
     const transpilerNames = query.split('!').filter(x => x);

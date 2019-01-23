@@ -1,0 +1,7 @@
+test
+coverage
+doc
+build
+typings
+.tscache
+.vscode

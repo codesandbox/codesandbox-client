@@ -1,131 +1,74 @@
-import ReactIcon from 'common/components/logos/React';
-import PreactIcon from 'common/components/logos/Preact';
-import VueIcon from 'common/components/logos/Vue';
-import SvelteIcon from 'common/components/logos/Svelte';
+// @flow
+import angular from './angular';
+import babel from './babel';
+import parcel from './parcel';
+import preact from './preact';
+import reason from './reason';
+import react from './react';
+import reactTs from './react-ts';
+import svelte from './svelte';
+import vue from './vue';
+import ember from './ember';
+import cxjs from './cxjs';
+import dojo from './dojo';
+import custom from './custom';
 
-import { decorateSelector } from '../theme';
+import gatsby from './gatsby';
+import nuxt from './nuxt';
+import next from './next';
+import node from './node';
+import apollo from './apollo-server';
+import sapper from './sapper';
+import nest from './nest';
+import staticTemplate from './static';
+import styleguidist from './styleguidist';
 
-export const react = {
-  name: 'create-react-app',
-  niceName: 'React',
-  url: 'https://github.com/facebookincubator/create-react-app',
-  shortid: 'new',
-  Icon: ReactIcon,
-  color: decorateSelector(() => '#6CAEDD'),
-
-  alterDeploymentData: apiData => ({
-    ...apiData,
-    package: {
-      ...apiData.package,
-      devDependencies: {
-        ...apiData.package.devDependencies,
-        serve: '^5.0.1',
-      },
-      scripts: {
-        ...apiData.package.scripts,
-        'now-start': 'cd build && serve -s ./',
-      },
-    },
-  }),
+export {
+  angular,
+  custom,
+  apollo,
+  gatsby,
+  next,
+  nuxt,
+  node,
+  babel,
+  cxjs,
+  dojo,
+  parcel,
+  preact,
+  react,
+  reactTs,
+  reason,
+  svelte,
+  vue,
+  sapper,
+  nest,
+  ember,
+  staticTemplate,
+  styleguidist,
 };
 
-export const reactTs = {
-  name: 'create-react-app-typescript',
-  niceName: 'React + TS',
-  url: 'https://github.com/wmonk/create-react-app-typescript',
-  shortid: 'react-ts',
-  color: decorateSelector(() => '#009fff'),
+export type Template =
+  | 'create-react-app'
+  | 'vue-cli'
+  | 'preact-cli'
+  | 'svelte'
+  | 'create-react-app-typescript'
+  | 'angular-cli'
+  | 'parcel'
+  | 'cxjs'
+  | '@dojo/cli-create-app'
+  | 'gatsby'
+  | 'nuxt'
+  | 'next'
+  | 'reason'
+  | 'apollo'
+  | 'sapper'
+  | 'nest'
+  | 'static'
+  | 'styleguidist';
 
-  sourceConfig: {
-    typescript: true,
-    entry: 'index.tsx',
-  },
-};
-
-export const vue = {
-  name: 'vue-cli',
-  niceName: 'Vue',
-  url: 'https://github.com/vuejs/vue-cli',
-  shortid: 'vue',
-  Icon: VueIcon,
-  color: decorateSelector(() => '#41B883'),
-
-  alterDeploymentData: apiData => ({
-    ...apiData,
-    package: {
-      ...apiData.package,
-      devDependencies: {
-        ...apiData.package.devDependencies,
-        serve: '^5.0.1',
-      },
-      scripts: {
-        ...apiData.package.scripts,
-        'now-start': 'cd dist && serve -s ./',
-      },
-    },
-  }),
-};
-
-export const preact = {
-  name: 'preact-cli',
-  niceName: 'Preact',
-  url: 'https://github.com/developit/preact-cli',
-  shortid: 'preact',
-  Icon: PreactIcon,
-  color: decorateSelector(() => '#AD78DC'),
-
-  alterDeploymentData: apiData => ({
-    ...apiData,
-    package: {
-      ...apiData.package,
-      devDependencies: {
-        ...apiData.package.devDependencies,
-        serve: '^5.0.1',
-      },
-      scripts: {
-        ...apiData.package.scripts,
-        'now-start': 'cd build && serve -s ./',
-      },
-    },
-  }),
-};
-
-export const svelte = {
-  name: 'svelte',
-  niceName: 'Svelte',
-  url: 'https://github.com/sveltejs/svelte',
-  shortid: 'svelte',
-  Icon: SvelteIcon,
-  color: decorateSelector(() => '#AA1E1E'),
-
-  alterDeploymentData: apiData => ({
-    ...apiData,
-    package: {
-      ...apiData.package,
-      devDependencies: {
-        ...apiData.package.devDependencies,
-        serve: '^5.0.1',
-      },
-      scripts: {
-        ...apiData.package.scripts,
-        'now-start': 'cd public && serve -s ./',
-      },
-    },
-  }),
-};
-
-export default function getDefinition(
-  theme:
-    | 'create-react-app'
-    | 'vue-cli'
-    | 'preact-cli'
-    | 'svelte'
-    | 'create-react-app-typescript'
-) {
-  if (!theme) {
-    return react;
-  }
-
+export default function getDefinition(theme: Template) {
   switch (theme) {
     case react.name:
       return react;
@@ -137,6 +80,40 @@ export default function getDefinition(
       return reactTs;
     case svelte.name:
       return svelte;
+    case angular.name:
+      return angular;
+    case parcel.name:
+      return parcel;
+    case babel.name:
+      return babel;
+    case cxjs.name:
+      return cxjs;
+    case dojo.name:
+      return dojo;
+    case custom.name:
+      return custom;
+    case gatsby.name:
+      return gatsby;
+    case nuxt.name:
+      return nuxt;
+    case next.name:
+      return next;
+    case reason.name:
+      return reason;
+    case node.name:
+      return node;
+    case apollo.name:
+      return apollo;
+    case sapper.name:
+      return sapper;
+    case nest.name:
+      return nest;
+    case staticTemplate.name:
+      return staticTemplate;
+    case styleguidist.name:
+      return styleguidist;
+    case ember.name:
+      return ember;
     default:
       return react;
   }

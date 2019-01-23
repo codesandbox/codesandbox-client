@@ -1,44 +1,101 @@
 // @flow
+import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index.js';
+import { isBabel7 } from 'common/utils/is-babel-7';
 
+import regexGetRequireStatements from './worker/simple-get-require-statements';
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
+import type { default as Manager } from '../../manager';
 
 import delay from '../../../utils/delay';
+import { shouldTranspile } from './check';
 
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
 // to support custom plugins
 class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
-  config: ?Object;
 
   constructor() {
-    super('babel-loader', null, 3);
+    super('babel-loader', BabelWorker, 3, { hasFS: true, preload: true });
   }
 
-  setBabelRc(config: Object) {
-    this.config = config;
-  }
+  startupWorkersInitialized = false;
 
   async getWorker() {
     while (typeof window.babelworkers === 'undefined') {
       await delay(50); // eslint-disable-line
     }
+
+    if (window.babelworkers.length === 0) {
+      return super.getWorker();
+    }
+
     // We set these up in startup.js.
-    const worker = window.babelworkers.pop();
-    return worker;
+    return window.babelworkers.pop();
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(
+    code: string,
+    loaderContext: LoaderContext
+  ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
-      // TODO get custom babel config back in
+      // When we find a node_module that already is commonjs we will just get the
+      // dependencies from the file and return the same code. We get the dependencies
+      // with a regex since commonjs modules just have `require` and regex is MUCH
+      // faster than generating an AST from the code.
+      if (
+        (loaderContext.options.simpleRequire ||
+          path.startsWith('/node_modules')) &&
+        !shouldTranspile(code, path)
+      ) {
+        regexGetRequireStatements(code).forEach(dependency => {
+          if (dependency.isGlob) {
+            loaderContext.addDependenciesInDirectory(dependency.path);
+          } else {
+            loaderContext.addDependency(dependency.path);
+          }
+        });
+
+        resolve({
+          transpiledCode: code,
+        });
+        return;
+      }
+
+      const configs = loaderContext.options.configurations;
+
+      const foundConfig = configs.babel && configs.babel.parsed;
+
+      const loaderOptions = loaderContext.options || {};
+
+      const dependencies =
+        (configs.package &&
+          configs.package.parsed &&
+          configs.package.parsed.dependencies) ||
+        {};
+
+      const devDependencies =
+        (configs.package &&
+          configs.package.parsed &&
+          configs.package.parsed.devDependencies) ||
+        {};
+
+      const isV7 =
+        loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
+
+      const hasMacros = Object.keys(dependencies).some(
+        d => d.indexOf('macro') > -1
+      );
+
       const babelConfig = getBabelConfig(
-        loaderContext.options,
+        foundConfig || loaderOptions.config,
+        loaderOptions,
         path,
-        this.config || {}
+        isV7
       );
 
       this.queueTask(
@@ -46,7 +103,16 @@ class BabelTranspiler extends WorkerTranspiler {
           code,
           config: babelConfig,
           path,
+          loaderOptions,
+          babelTranspilerOptions:
+            configs &&
+            configs.babelTranspiler &&
+            configs.babelTranspiler.parsed,
+          sandboxOptions: configs && configs.sandbox && configs.sandbox.parsed,
+          version: isV7 ? 7 : 6,
+          hasMacros,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {
@@ -56,6 +122,37 @@ class BabelTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
+        }
+      );
+    });
+  }
+
+  async getTranspilerContext(manager: Manager) {
+    return new Promise(async resolve => {
+      const baseConfig = await super.getTranspilerContext(manager);
+
+      const babelTranspilerOptions =
+        manager.configurations &&
+        manager.configurations.babelTranspiler &&
+        manager.configurations.babelTranspiler.parsed;
+
+      this.queueTask(
+        {
+          type: 'get-babel-context',
+          babelTranspilerOptions,
+        },
+        'babelContext',
+        {},
+        (err, data) => {
+          const { version, availablePlugins, availablePresets } = data;
+
+          resolve({
+            ...baseConfig,
+            babelVersion: version,
+            availablePlugins,
+            availablePresets,
+            babelTranspilerOptions,
+          });
         }
       );
     });

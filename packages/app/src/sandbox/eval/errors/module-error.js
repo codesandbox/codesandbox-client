@@ -1,8 +1,11 @@
+// Babel bug workaround (https://github.com/babel/babel/issues/8061)
+const ErrorClass = Error;
+
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
 */
-export default class ModuleError extends Error {
+export default class ModuleError extends ErrorClass {
   constructor(module, err) {
     super();
 
@@ -11,5 +14,6 @@ export default class ModuleError extends Error {
     this.message =
       err && typeof err === 'object' && err.message ? err.message : err;
     this.error = err;
+    this.stack = err.stack;
   }
 }

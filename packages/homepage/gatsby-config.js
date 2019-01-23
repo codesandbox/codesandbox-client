@@ -53,16 +53,24 @@ module.exports = {
           'gatsby-remark-autolink-headers',
           `gatsby-remark-prismjs`,
           {
-            resolve: 'gatsby-plugin-nprogress',
+            resolve: 'gatsby-remark-embed-youtube',
             options: {
-              color: '#6CAEDD',
+              width: 740,
+              height: 370,
             },
           },
         ],
       },
     },
+    {
+      resolve: 'gatsby-plugin-nprogress',
+      options: {
+        color: '#40A9F3',
+      },
+    },
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-remove-trailing-slashes`,
     `gatsby-plugin-sitemap`,
     {
       resolve: `gatsby-plugin-google-tagmanager`,
@@ -71,9 +79,16 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-source-medium`,
+      options: {
+        username: `@compuives`,
+        limit: 200,
+      },
+    },
+    {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
-        fonts: [`source sans pro:300,400,600,700`],
+        fonts: [`Poppins:600,700,800`, `source sans pro:300,400,500,600,700`],
       },
     },
   ],

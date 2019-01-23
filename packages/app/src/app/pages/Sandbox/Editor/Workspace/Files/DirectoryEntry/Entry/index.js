@@ -1,71 +1,25 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
+import ContextMenu from 'app/components/ContextMenu';
 
-import FileIcon from 'react-icons/lib/fa/file';
-import FolderIcon from 'react-icons/lib/fa/folder';
+import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
+import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
+import UploadFileIcon from 'react-icons/lib/md/file-upload';
 
 import theme from 'common/theme';
 
-import EntryContainer from '../../../EntryContainer';
+import { EntryContainer } from '../../../elements';
 import EntryTitle from './EntryTitle';
 import EntryTitleInput from './EntryTitleInput';
 import EntryIcons from './EntryIcons';
 import EditIcons from './EditIcons';
 
-type Props = {
-  id: string,
-  title: string,
-  depth: number,
-  active: boolean,
-  isNotSynced: boolean,
-  type: string,
-  onCreateModuleClick: ?() => any,
-  onCreateDirectoryClick: ?() => any,
-  renameValidator: (id: string, title: string) => boolean,
-  rename: ?(id: string, title: string) => any,
-  deleteEntry: ?(id: string) => any,
-  onRenameCancel: () => any,
-  state: ?'' | 'editing' | 'creating',
-  isOpen: ?boolean,
-  onClick: Function,
-  openMenu: Function,
-  hasChildren: ?boolean,
-  setCurrentModule: (id: string) => any,
-  root: ?boolean,
-  isMainModule: boolean,
-  isInProjectView: boolean, // eslint-disable-line
-  moduleHasError: boolean,
-  closeTree: ?() => void, // eslint-disable-line
-  markTabsNotDirty: Function,
-};
+import { Right, NotSyncedIconWithMargin } from './elements';
 
-type State = {
-  state: '' | 'editing' | 'creating',
-  error: boolean,
-  selected: boolean,
-  hovering: boolean,
-};
-
-const Right = styled.div`
-  position: absolute;
-  right: 1rem;
-`;
-
-const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
-  margin-left: 2px;
-  color: ${props => props.theme.templateColor || props.theme.secondary};
-  vertical-align: middle;
-
-  margin-top: 1.5px;
-`;
-
-class Entry extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
+class Entry extends React.PureComponent {
+  constructor(props) {
     super(props);
     this.state = {
       state: props.state || '',
@@ -82,24 +36,42 @@ class Entry extends React.PureComponent<Props, State> {
     this.setState({ state: '', error: false });
   };
 
-  handleValidateTitle = (title: string) => {
+  handleValidateTitle = title => {
     const isInvalidTitle = this.props.renameValidator(this.props.id, title);
     this.setState({ error: isInvalidTitle });
   };
 
-  handleRename = (title: string, force: ?boolean) => {
-    const { id } = this.props;
-    const canRename = !this.handleValidateTitle(title);
-    if (canRename && this.props.rename) {
-      this.props.rename(id, title);
+  handleRename = (newTitle, force) => {
+    const { shortid, title, rename } = this.props;
+
+    if (newTitle === title) {
       this.resetState();
-    } else if (force) this.resetState();
+      return;
+    }
+
+    const canRename = !this.handleValidateTitle(newTitle);
+
+    if (newTitle !== title && canRename && rename) {
+      rename(shortid, newTitle);
+      this.resetState();
+    } else if (force) {
+      this.resetState();
+    }
   };
 
   delete = () => {
-    const { id, deleteEntry } = this.props;
+    const { shortid, title, deleteEntry } = this.props;
     if (deleteEntry) {
-      return deleteEntry(id);
+      return deleteEntry(shortid, title);
+    }
+    return false;
+  };
+
+  discardModuleChanges = () => {
+    const { shortid, discardModuleChanges } = this.props;
+
+    if (discardModuleChanges) {
+      return discardModuleChanges(shortid);
     }
     return false;
   };
@@ -107,52 +79,6 @@ class Entry extends React.PureComponent<Props, State> {
   rename = () => {
     this.setState({ state: 'editing' });
     return true; // To close it
-  };
-
-  openContextMenu = (event: MouseEvent) => {
-    const {
-      isMainModule,
-      onCreateModuleClick,
-      onCreateDirectoryClick,
-      rename,
-      deleteEntry,
-    } = this.props;
-
-    if (isMainModule) {
-      return;
-    }
-
-    event.preventDefault();
-    this.setState({
-      selected: true,
-    });
-
-    const items = [
-      onCreateModuleClick && {
-        title: 'New Module',
-        action: onCreateModuleClick,
-        icon: FileIcon,
-      },
-      onCreateDirectoryClick && {
-        title: 'New Directory',
-        action: onCreateDirectoryClick,
-        icon: FolderIcon,
-      },
-      rename && {
-        title: 'Rename',
-        action: this.rename,
-        icon: EditIcon,
-      },
-      deleteEntry && {
-        title: 'Delete',
-        action: this.delete,
-        color: theme.red.darken(0.2)(),
-        icon: DeleteIcon,
-      },
-    ].filter(x => x);
-    this.props.openMenu(items, event.clientX, event.clientY, () => {
-      this.setState({ selected: false });
-    });
   };
 
   setCurrentModule = () => this.props.setCurrentModule(this.props.id);
@@ -169,10 +95,10 @@ class Entry extends React.PureComponent<Props, State> {
       type,
       active,
       setCurrentModule,
-      // $FlowIssue
       connectDragSource, // eslint-disable-line
       onCreateModuleClick,
       onCreateDirectoryClick,
+      onUploadFileClick,
       deleteEntry,
       onClick,
       markTabsNotDirty,
@@ -181,69 +107,129 @@ class Entry extends React.PureComponent<Props, State> {
       isMainModule,
       moduleHasError,
       root,
+      rightColors,
     } = this.props;
     const { state, error, selected, hovering } = this.state;
 
+    const items = [
+      [
+        isNotSynced && {
+          title: 'Discard Changes',
+          action: this.discardModuleChanges,
+        },
+      ].filter(Boolean),
+      [
+        onCreateModuleClick && {
+          title: 'Create File',
+          action: onCreateModuleClick,
+          icon: AddFileIcon,
+        },
+        onCreateDirectoryClick && {
+          title: 'Create Directory',
+          action: onCreateDirectoryClick,
+          icon: AddDirectoryIcon,
+        },
+        onUploadFileClick && {
+          title: 'Upload Files',
+          action: onUploadFileClick,
+          icon: UploadFileIcon,
+        },
+        rename && {
+          title: 'Rename',
+          action: this.rename,
+          icon: EditIcon,
+        },
+        deleteEntry && {
+          title: 'Delete',
+          action: this.delete,
+          color: theme.red.darken(0.2)(),
+          icon: DeleteIcon,
+        },
+      ].filter(Boolean),
+    ].filter(Boolean);
+
     return connectDragSource(
       <div>
-        <EntryContainer
-          onClick={setCurrentModule ? this.setCurrentModule : onClick}
-          onDoubleClick={markTabsNotDirty}
-          depth={depth}
-          nameValidationError={error}
-          active={active}
-          editing={state === 'editing' || selected}
-          onContextMenu={this.openContextMenu}
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
-          alternative={isMainModule}
-          noTransition
-        >
-          <EntryIcons
-            isNotSynced={isNotSynced}
-            hasChildren={hasChildren}
-            isOpen={isOpen}
-            type={type}
-            root={root}
-            error={moduleHasError}
-          />
-          {state === 'editing' ? (
-            <EntryTitleInput
-              title={title}
-              onChange={this.handleValidateTitle}
-              onCancel={this.resetState}
-              onCommit={this.handleRename}
+        <ContextMenu items={items}>
+          <EntryContainer
+            onClick={setCurrentModule ? this.setCurrentModule : onClick}
+            onDoubleClick={markTabsNotDirty}
+            depth={depth}
+            nameValidationError={error}
+            active={active}
+            editing={state === 'editing' || selected}
+            onMouseEnter={this.onMouseEnter}
+            onMouseLeave={this.onMouseLeave}
+            alternative={isMainModule}
+            rightColors={rightColors}
+            noTransition
+          >
+            <EntryIcons
+              isNotSynced={isNotSynced}
+              hasChildren={hasChildren}
+              isOpen={isOpen}
+              type={type}
+              root={root}
+              error={moduleHasError}
             />
-          ) : (
-            <EntryTitle title={title} />
-          )}
-          {isNotSynced && !state && <NotSyncedIconWithMargin />}
-          {state === '' && (
-            <Right>
-              {isMainModule ? (
-                <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
-              ) : (
+            {state === 'editing' ? (
+              <EntryTitleInput
+                title={title}
+                onChange={this.handleValidateTitle}
+                onCancel={this.resetState}
+                onCommit={this.handleRename}
+              />
+            ) : (
+              <EntryTitle title={title} />
+            )}
+            {isNotSynced && !state && <NotSyncedIconWithMargin />}
+            {state === '' && (
+              <Right>
+                {isMainModule && (
+                  <span
+                    style={{
+                      fontSize: '.75rem',
+                      fontWeight: 600,
+                      opacity: hovering ? 0.6 : 0,
+                      marginTop: 3,
+                      marginRight: 3,
+                    }}
+                  >
+                    entry
+                  </span>
+                )}
                 <EditIcons
                   hovering={hovering}
                   onCreateFile={onCreateModuleClick}
                   onCreateDirectory={onCreateDirectoryClick}
+                  onUploadFile={onUploadFileClick}
                   onDelete={deleteEntry && this.delete}
                   onEdit={rename && this.rename}
+                  active={active}
+                  forceShow={window.__isTouch && type === 'directory-open'}
                 />
-              )}
-            </Right>
-          )}
-        </EntryContainer>
+              </Right>
+            )}
+          </EntryContainer>
+        </ContextMenu>
       </div>
     );
   }
 }
 
 const entrySource = {
-  canDrag: (props: Props) => !!props.id && !props.isMainModule,
-  beginDrag: (props: Props) => {
+  canDrag: props => !!props.id,
+  beginDrag: props => {
     if (props.closeTree) props.closeTree();
-    return { id: props.id, directory: props.type === 'directory' };
+
+    const directory =
+      props.type === 'directory' || props.type === 'directory-open';
+    return {
+      id: props.id,
+      shortid: props.shortid,
+      directory,
+      path: !directory && props.getModulePath(props.id),
+    };
   },
 };
 

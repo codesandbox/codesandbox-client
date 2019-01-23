@@ -5,14 +5,18 @@ let core = null;
 
 export default async (code: string, loaderContext: LoaderContext) => {
   if (!core) {
-    const Core = await import(/* webpackChunkName: 'css-modules-loader-core' */ 'css-modules-loader-core');
+    const Core = await import(/* webpackChunkName: 'css-modules-loader-core' */ 'css-modules-loader-core').then(
+      x => x.default
+    );
 
     core = new Core();
   }
 
   return core
     .load(code, loaderContext.path, (dependencyPath: string) => {
-      const tModule = loaderContext.addDependency(dependencyPath);
+      loaderContext.addDependency(dependencyPath);
+
+      const tModule = loaderContext.resolveTranspiledModule(dependencyPath);
 
       return tModule.source ? tModule.source.compiledCode : tModule.module.code;
     })

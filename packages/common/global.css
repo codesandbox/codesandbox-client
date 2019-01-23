@@ -13,6 +13,7 @@ body {
   -webkit-text-size-adjust: 100%;
   height: 100%;
   background: #1c2022;
+  color: #cccccc;
 
   -ms-overflow-style: -ms-autohiding-scrollbar;
 }
@@ -30,15 +31,15 @@ input {
 }
 
 #root {
-  height: 100%;
 }
 
 a {
-  color: #6caedd;
+  color: #40a9f3;
 }
 
 ::-webkit-scrollbar {
   width: 0.5rem;
+  height: 0.5rem;
 }
 
 ::-webkit-scrollbar-thumb {

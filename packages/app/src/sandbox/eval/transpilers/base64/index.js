@@ -26,6 +26,7 @@ class Base64Transpiler extends Transpiler {
   doTranspilation(code: string) {
     return new Promise(resolve => {
       const reader = new FileReader();
+      // $FlowIssue
       reader.readAsDataURL(code);
 
       reader.onloadend = function() {

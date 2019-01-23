@@ -1,62 +1,131 @@
-/* @flow */
 import * as React from 'react';
 import SplitPane from 'react-split-pane';
-import type { Sandbox } from 'common/types';
+import { inject, observer } from 'mobx-react';
+import { ThemeProvider } from 'styled-components';
 
+import Fullscreen from 'common/components/flex/Fullscreen';
+import getTemplateDefinition from 'common/templates';
+import codesandbox from 'common/themes/codesandbox.json';
+
+import { Container } from './elements';
 import Workspace from './Workspace';
 import Content from './Content';
+import Header from './Header';
+import Navigation from './Navigation';
+import getVSCodeTheme from './utils/get-vscode-theme';
 
-type Props = {
-  sandbox: Sandbox,
-  match: Object,
-  zenMode: boolean,
-  workspaceHidden: boolean,
-  setWorkspaceHidden: (hidden: boolean) => void,
-};
-
-type State = {
-  resizing: boolean,
-};
-
-export default class ContentSplit extends React.PureComponent<Props, State> {
+class ContentSplit extends React.Component {
   state = {
-    resizing: false,
+    theme: {
+      colors: {},
+      vscodeTheme: codesandbox,
+    },
+    editorTheme: this.props.store.preferences.settings.editorTheme,
+    customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme,
   };
 
-  startResizing = () => this.setState({ resizing: true });
-  stopResizing = () => this.setState({ resizing: false });
+  componentDidMount() {
+    this.loadTheme();
+  }
 
-  toggleWorkspace = () =>
-    this.props.setWorkspaceHidden(!this.props.workspaceHidden);
+  componentDidUpdate() {
+    if (
+      this.props.store.preferences.settings.editorTheme !==
+        this.state.editorTheme ||
+      this.props.store.preferences.settings.customVSCodeTheme !==
+        this.state.customVSCodeTheme
+    ) {
+      this.loadTheme();
+    }
+  }
+
+  loadTheme = async () => {
+    const newThemeName = this.props.store.preferences.settings.editorTheme;
+    const customVSCodeTheme = this.props.store.preferences.settings
+      .customVSCodeTheme;
+
+    try {
+      const theme = await getVSCodeTheme(newThemeName, customVSCodeTheme);
+      this.setState({ theme, editorTheme: newThemeName, customVSCodeTheme });
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   render() {
-    const { sandbox, match, workspaceHidden } = this.props;
-    const { resizing } = this.state;
+    const { signals, store, match } = this.props;
+    const sandbox = store.editor.currentSandbox;
+    const sandboxOwned = sandbox.owned;
+
+    // Force MobX to update this component by observing the following value
+    this.props.store.preferences.settings.editorTheme; // eslint-disable-line
+    this.props.store.preferences.settings.customVSCodeTheme; // eslint-disable-line
+
+    const hideNavigation =
+      (store.preferences.settings.zenMode &&
+        !store.workspace.openedWorkspaceItem) ||
+      !sandboxOwned;
+
+    const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+
     return (
-      <SplitPane
-        split="vertical"
-        defaultSize={18 * 16}
-        minSize={14 * 16}
-        style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }}
-        onDragStarted={this.startResizing}
-        onDragFinished={this.stopResizing}
-        resizerStyle={{ visibility: workspaceHidden ? 'hidden' : 'visible' }}
-        pane1Style={{
-          visibility: workspaceHidden ? 'hidden' : 'visible',
-          maxWidth: workspaceHidden ? 0 : 'inherit',
+      <ThemeProvider
+        theme={{
+          templateColor: templateDef && templateDef.color,
+          templateBackgroundColor: templateDef && templateDef.backgroundColor,
+          ...this.state.theme,
         }}
       >
-        {!workspaceHidden && (
-          <Workspace zenMode={this.props.zenMode} sandbox={sandbox} />
-        )}
-        <Content
-          workspaceHidden={workspaceHidden}
-          toggleWorkspace={this.toggleWorkspace}
-          sandbox={sandbox}
-          resizing={resizing}
-          match={match}
-        />
-      </SplitPane>
+        <Container>
+          {!store.preferences.settings.zenMode && <Header />}
+
+          <Fullscreen>
+            {!hideNavigation && <Navigation />}
+
+            <div
+              style={{
+                position: 'fixed',
+                left: hideNavigation ? 0 : 'calc(4rem + 1px)',
+                top: store.preferences.settings.zenMode ? 0 : '3rem',
+                right: 0,
+                bottom: 0,
+              }}
+            >
+              <SplitPane
+                split="vertical"
+                defaultSize={sandboxOwned ? 17 * 16 : 18 * 16}
+                minSize={0}
+                onDragStarted={() => signals.editor.resizingStarted()}
+                onDragFinished={() => signals.editor.resizingStopped()}
+                onChange={size => {
+                  if (size > 0 && !store.workspace.openedWorkspaceItem) {
+                    signals.workspace.setWorkspaceItem({ item: 'files' });
+                  } else if (
+                    size === 0 &&
+                    store.workspace.openedWorkspaceItem
+                  ) {
+                    signals.workspace.setWorkspaceItem({ item: null });
+                  }
+                }}
+                pane1Style={{
+                  visibility: store.workspace.openedWorkspaceItem
+                    ? 'visible'
+                    : 'hidden',
+                  maxWidth: store.workspace.openedWorkspaceItem ? 'inherit' : 0,
+                }}
+                pane2Style={{
+                  height: '100%',
+                }}
+              >
+                {store.workspace.openedWorkspaceItem && <Workspace />}
+                <Content match={match} />
+              </SplitPane>
+            </div>
+          </Fullscreen>
+        </Container>
+      </ThemeProvider>
     );
   }
 }
+
+export default inject('signals', 'store')(observer(ContentSplit));

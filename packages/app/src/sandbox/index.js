@@ -1,16 +1,24 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
+import _debug from 'common/utils/debug';
+
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'common/sandbox/modules';
+import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import setupConsole from 'sandbox-hooks/console';
+import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
-import setupHistoryListeners from './url-listeners';
-import compile from './compile';
-import setupConsole from './console';
-import transformJSON from './console/transform-json';
+import compile, { getCurrentManager } from './compile';
 
 const host = process.env.CODESANDBOX_HOST;
+const debug = _debug('cs:sandbox');
+
+export const SCRIPT_VERSION =
+  document.currentScript && document.currentScript.src;
+
+debug('Booting sandbox');
 
 function getId() {
   if (process.env.LOCAL_SERVER) {
@@ -24,11 +32,13 @@ function getId() {
     return document.location.host.match(re)[1];
   }
 
-  return document.location.host.match(/(.*)\.codesandbox/)[1];
+  const hostRegex = host.replace(/https?:\/\//, '').replace(/\./g, '\\.');
+  const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
+  return document.location.host.match(sandboxRegex)[1];
 }
 
 requirePolyfills().then(() => {
-  registerServiceWorker('/sandbox-service-worker.js');
+  registerServiceWorker('/sandbox-service-worker.js', {});
 
   function sendReady() {
     dispatch({ type: 'initialized' });
@@ -37,50 +47,50 @@ requirePolyfills().then(() => {
   async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
-        if (data.version === 2) {
+        if (data.version === 3) {
           compile(data);
         } else {
           const compileOld = await import('./compile-old').then(x => x.default);
           compileOld(data);
         }
-      } else if (data.type === 'urlback') {
-        history.back();
-      } else if (data.type === 'urlforward') {
-        history.forward();
-      } else if (data.type === 'evaluate') {
-        let result = null;
-        let error = false;
-        try {
-          result = (0, eval)(data.command); // eslint-disable-line no-eval
-        } catch (e) {
-          result = e;
-          error = true;
-        }
+      } else if (data.type === 'get-transpiler-context') {
+        const manager = getCurrentManager();
 
-        try {
+        if (manager) {
+          const context = await manager.getTranspilerContext();
           dispatch({
-            type: 'eval-result',
-            error,
-            result: transformJSON(result),
+            type: 'transpiler-context',
+            data: context,
           });
-        } catch (e) {
-          console.error(e);
+        } else {
+          dispatch({
+            type: 'transpiler-context',
+            data: {},
+          });
         }
       }
     }
   }
 
-  listen(handleMessage);
+  if (!isStandalone) {
+    listen(handleMessage);
 
-  sendReady();
-  setupHistoryListeners();
-  setupConsole();
+    sendReady();
+
+    if (!window.opener) {
+      // Means we're in the editor
+      setupHistoryListeners();
+      setupConsole();
+    }
+  }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
     const id = getId();
     window
-      .fetch(host + `/api/v1/sandboxes/${id}`)
+      .fetch(host + `/api/v1/sandboxes/${id}`, {
+        credentials: 'include',
+      })
       .then(res => res.json())
       .then(res => {
         const camelized = camelizeKeys(res);
@@ -89,21 +99,33 @@ requirePolyfills().then(() => {
         return camelized;
       })
       .then(x => {
+        const moduleObject = {};
+
         // We convert the modules to a format the manager understands
-        const normalizedModules = x.data.modules.map(m => ({
-          path: getModulePath(x.data.modules, x.data.directories, m.id),
-          code: m.code,
-        }));
+        x.data.modules.forEach(m => {
+          const path = getModulePath(x.data.modules, x.data.directories, m.id);
+          moduleObject[path] = {
+            path,
+            code: m.code,
+          };
+        });
+
+        if (!moduleObject['/package.json']) {
+          moduleObject['/package.json'] = {
+            code: generateFileFromSandbox(x.data),
+            path: '/package.json',
+          };
+        }
 
         const data = {
           sandboxId: id,
-          modules: normalizedModules,
+          modules: moduleObject,
           entry: '/' + x.data.entry,
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
           hasActions: false,
           template: x.data.template,
-          version: 2,
+          version: 3,
         };
 
         compile(data);

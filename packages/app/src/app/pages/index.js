@@ -1,110 +1,73 @@
 // @flow
 import * as React from 'react';
-import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import Loadable from 'react-loadable';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { createSelector } from 'reselect';
+import { inject, observer } from 'mobx-react';
+import Loadable from 'app/utils/Loadable';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-import _debug from 'app/utils/debug';
-import Notifications from 'app/containers/Notifications';
-import ContextMenu from 'app/containers/ContextMenu';
-import Modal from 'app/containers/Modal';
-import Loading from 'app/components/Loading';
-import { loggedInSelector } from 'app/store/user/selectors';
-import userActionCreators from 'app/store/user/actions';
-import initializeConnectionManager from 'app/store/connection/actions';
+import _debug from 'common/utils/debug';
+import Notifications from 'app/pages/common/Notifications';
+import { DragDropContext } from 'react-dnd';
 
+import send, { DNT } from 'common/utils/analytics';
+
+import Modals from './common/Modals';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
+import Dashboard from './Dashboard';
+import { Container, Content } from './elements';
+
+import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 
 const routeDebugger = _debug('cs:app:router');
 
-const Container = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  margin: 0;
-`;
-
-const Content = styled.div`
-  flex: auto;
-  display: flex;
-  background-color: ${props => props.theme.background2};
-`;
-
-const SignIn = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-sign-in' */ './SignIn'),
-  LoadingComponent: Loading,
-});
-const ZeitSignIn = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-zeit' */ './auth/Zeit'),
-  LoadingComponent: Loading,
-});
-const NotFound = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-not-found' */ './NotFound'),
-  LoadingComponent: Loading,
-});
-const Profile = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-profile' */ './Profile'),
-  LoadingComponent: Loading,
-});
-const Search = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-search' */ './Search'),
-  LoadingComponent: Loading,
-});
-const CLI = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-cli' */ './CLI'),
-  LoadingComponent: Loading,
-});
-const GitHub = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-github' */ './GitHub'),
-  LoadingComponent: Loading,
-});
-const CliInstructions = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'),
-  LoadingComponent: Loading,
-});
-const Patron = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-patron' */ './Patron'),
-  LoadingComponent: Loading,
-});
-const Terms = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-terms' */ './Terms'),
-  LoadingComponent: Loading,
-});
+const SignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './common/SignIn')
+);
+const Live = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './Live')
+);
+const ZeitSignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-zeit' */ './common/ZeitAuth')
+);
+const NotFound = Loadable(() =>
+  import(/* webpackChunkName: 'page-not-found' */ './common/NotFound')
+);
+const Profile = Loadable(() =>
+  import(/* webpackChunkName: 'page-profile' */ './Profile')
+);
+const Search = Loadable(() =>
+  import(/* webpackChunkName: 'page-search' */ './Search')
+);
+const CLI = Loadable(() => import(/* webpackChunkName: 'page-cli' */ './CLI'));
+const GitHub = Loadable(() =>
+  import(/* webpackChunkName: 'page-github' */ './GitHub')
+);
+const CliInstructions = Loadable(() =>
+  import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions')
+);
+const Patron = Loadable(() =>
+  import(/* webpackChunkName: 'page-patron' */ './Patron')
+);
+const Terms = Loadable(() =>
+  import(/* webpackChunkName: 'page-terms' */ './Terms')
+);
+const Curator = Loadable(() =>
+  import(/* webpackChunkName: 'page-curator' */ './Curator')
+);
 
 type Props = {
-  hasLogin: boolean,
-  userActions: typeof userActionCreators,
-  initializeConnectionManager: typeof initializeConnectionManager,
+  signals: any,
 };
 
-const mapStateToProps = createSelector(loggedInSelector, loggedIn => ({
-  hasLogin: loggedIn,
-}));
-const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
-  initializeConnectionManager: bindActionCreators(
-    initializeConnectionManager,
-    dispatch
-  ),
-});
-class Routes extends React.PureComponent<Props> {
-  unlisten: () => void;
-
-  componentDidMount() {
-    this.unlisten = this.props.initializeConnectionManager();
-
-    if (this.props.hasLogin) {
-      this.props.userActions.getCurrentUser();
-    }
+class Routes extends React.Component<Props> {
+  componentWillUnmount() {
+    this.props.signals.appUnmounted();
   }
 
-  componentWillUnmount() {
-    if (this.unlisten) this.unlisten();
+  shouldComponentUpdate() {
+    // Without this the app won't update on route changes, we've tried using
+    // `withRouter`, but it caused the app to remount on every route change.
+    return true;
   }
 
   render() {
@@ -117,24 +80,27 @@ class Routes extends React.PureComponent<Props> {
               routeDebugger(
                 `Sending '${location.pathname + location.search}' to ga.`
               );
-              if (typeof window.ga === 'function') {
+              if (typeof window.ga === 'function' && !DNT) {
                 window.ga('set', 'page', location.pathname + location.search);
-                window.ga('send', 'pageview');
+
+                send('pageview', { path: location.pathname + location.search });
               }
             }
             return null;
           }}
         />
-        <Modal />
         <Notifications />
-        <ContextMenu />
         <Content>
           <Switch>
-            <Route exact path="/" render={() => <Redirect to="/s/new" />} />
+            <Route exact path="/" render={() => <Redirect to="/s" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
+            <Route path="/live/:id" component={Live} />
+            <Route path="/signin" exact component={Dashboard} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
@@ -145,9 +111,12 @@ class Routes extends React.PureComponent<Props> {
             <Route component={NotFound} />
           </Switch>
         </Content>
+        <Modals />
       </Container>
     );
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Routes));
+export default inject('signals', 'store')(
+  DragDropContext(HTML5Backend)(observer(Routes))
+);

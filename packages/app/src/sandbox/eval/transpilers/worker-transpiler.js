@@ -1,4 +1,5 @@
-import _debug from 'app/utils/debug';
+import type BrowserFS from 'codesandbox-browserfs';
+import _debug from 'common/utils/debug';
 
 import Transpiler from './';
 import { parseWorkerError } from './utils/worker-error-handler';
@@ -19,20 +20,22 @@ export default class WorkerTranspiler extends Transpiler {
   Worker: Worker;
   workers: Array<Worker>;
   idleWorkers: Array<Worker>;
+  loadingWorkers: number;
   workerCount: number;
   tasks: {
     [id: string]: Task,
   };
   initialized: boolean;
-
   runningTasks: {
     [id: string]: (error: Error, message: Object) => void,
   };
+  hasFS: boolean;
 
   constructor(
     name: string,
     Worker: Worker,
-    workerCount = navigator.hardwareConcurrency
+    workerCount = navigator.hardwareConcurrency,
+    options: { hasFS: boolean, preload: boolean } = {}
   ) {
     super(name);
 
@@ -42,6 +45,16 @@ export default class WorkerTranspiler extends Transpiler {
     this.idleWorkers = [];
     this.tasks = {};
     this.initialized = false;
+    this.hasFS = options.hasFS || false;
+    this.loadingWorkers = 0;
+
+    if (options.preload) {
+      if (this.workers.length === 0) {
+        Promise.all(
+          Array.from({ length: this.workerCount }, () => this.loadWorker())
+        );
+      }
+    }
   }
 
   getWorker() {
@@ -50,10 +63,23 @@ export default class WorkerTranspiler extends Transpiler {
 
   loadWorker() {
     return new Promise(async resolve => {
+      this.loadingWorkers++;
       const t = Date.now();
       const worker = await this.getWorker();
+      const readyListener = e => {
+        if (e.data === 'ready') {
+          debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
+          worker.removeEventListener('message', readyListener);
+        }
+      };
+      worker.addEventListener('message', readyListener);
 
-      debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
+      if (this.hasFS) {
+        // Register file system that syncs with filesystem in manager
+        BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
+        worker.postMessage({ type: 'initialize-fs', codesandbox: true });
+      }
+
       this.idleWorkers.push(worker);
 
       this.executeRemainingTasks();
@@ -75,7 +101,11 @@ export default class WorkerTranspiler extends Transpiler {
 
   dispose() {
     this.workers.forEach(w => w.terminate());
+    this.initialized = false;
+    this.tasks = {};
+    this.workers.length = 0;
     this.idleWorkers.length = 0;
+    this.loadingWorkers = 0;
   }
 
   executeRemainingTasks() {
@@ -96,7 +126,7 @@ export default class WorkerTranspiler extends Transpiler {
   }
 
   executeTask({ message, loaderContext, callbacks }: Task, worker: Worker) {
-    worker.onmessage = newMessage => {
+    worker.onmessage = async newMessage => {
       const { data } = newMessage;
 
       if (data) {
@@ -111,15 +141,43 @@ export default class WorkerTranspiler extends Transpiler {
           return;
         }
 
+        if (data.type === 'resolve-async-transpiled-module') {
+          // This one is to add an asynchronous transpiled module
+
+          const { id, path, options } = data;
+
+          try {
+            const tModule = await loaderContext.resolveTranspiledModuleAsync(
+              path,
+              options
+            );
+            worker.postMessage({
+              type: 'resolve-async-transpiled-module-response',
+              id,
+              found: true,
+              path: tModule.module.path,
+              code: tModule.module.code,
+            });
+          } catch (e) {
+            worker.postMessage({
+              type: 'resolve-async-transpiled-module-response',
+              id,
+              found: false,
+            });
+          }
+        }
+
         if (data.type === 'add-dependency') {
           // Dynamic import
           if (data.isGlob) {
             loaderContext.addDependenciesInDirectory(data.path, {
               isAbsolute: data.isAbsolute,
+              isEntry: data.isEntry,
             });
           } else {
             loaderContext.addDependency(data.path, {
               isAbsolute: data.isAbsolute,
+              isEntry: data.isEntry,
             });
           }
           return;
@@ -128,34 +186,42 @@ export default class WorkerTranspiler extends Transpiler {
         if (data.type === 'add-transpilation-dependency') {
           loaderContext.addTranspilationDependency(data.path, {
             isAbsolute: data.isAbsolute,
+            isEntry: data.isEntry,
           });
           return;
         }
 
         // Means the transpile task has been completed
-        if (data.type === 'compiled') {
+        if (data.type === 'result') {
           this.runCallbacks(callbacks, null, data);
         }
 
-        if (data.type === 'error' || data.type === 'compiled') {
-          this.idleWorkers.push(worker);
+        if (data.type === 'error' || data.type === 'result') {
+          // Unshift instead of push, we want to prepend the worker because
+          // this worker is warm now.
+          this.idleWorkers.unshift(worker);
           this.executeRemainingTasks();
         }
       }
     };
-    worker.postMessage(message);
+    worker.postMessage({ type: 'compile', codesandbox: true, ...message });
   }
 
   async queueTask(
     message: any,
+    id: string,
     loaderContext: LoaderContext,
     callback: (err: Error, message: Object) => void
   ) {
-    if (!this.initialized) {
-      await this.initialize();
+    this.initialized = true;
+    if (
+      this.idleWorkers.length === 0 &&
+      this.loadingWorkers < this.workerCount
+    ) {
+      // Load new worker if needed
+      await this.loadWorker();
     }
 
-    const id = loaderContext._module.getId();
     if (!this.tasks[id]) {
       this.tasks[id] = {
         message,
@@ -167,5 +233,15 @@ export default class WorkerTranspiler extends Transpiler {
     this.tasks[id].callbacks.push(callback);
 
     this.executeRemainingTasks();
+  }
+
+  async getTranspilerContext() {
+    return super.getTranspilerContext().then(x => ({
+      ...x,
+      worker: true,
+      hasFS: this.hasFS,
+      workerCount: this.workerCount,
+      initialized: !!this.initialized,
+    }));
   }
 }

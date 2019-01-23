@@ -1,7 +1,7 @@
 // @flow
 import type { Sandbox } from 'common/types';
 
-export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/\w+){2,}/;
+export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
 const dotGit = /(\.git)$/;
 
@@ -23,12 +23,19 @@ export const host = () => {
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
+export const newSandboxWizard = () => `/s`;
 export const newSandboxUrl = () => `/s/new`;
+export const parcelSandboxUrl = () => `/s/vanilla`;
 export const newReactTypeScriptSandboxUrl = () => `/s/react-ts`;
+export const newDojoSandboxUrl = () =>
+  `/s/github/dojo/dojo-codesandbox-template`;
 export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
 export const newSvelteSandboxUrl = () => `/s/svelte`;
+export const newAngularSandboxUrl = () => `/s/angular`;
+export const newCxJSSandboxUrl = () =>
+  `/s/github/codaxy/cxjs-codesandbox-template`;
 export const uploadFromCliUrl = () => `/s/cli`;
 
 const sandboxGitUrl = (git: {
@@ -58,19 +65,22 @@ export const embedUrl = (sandbox: Sandbox) => {
 };
 
 const stagingFrameUrl = (shortid: string, path: string) => {
-  const stagingHost = process.env.CODESANDBOX_HOST.split('//')[1];
+  const stagingHost = (process.env.CODESANDBOX_HOST
+    ? process.env.CODESANDBOX_HOST
+    : ''
+  ).split('//')[1];
   const segments = stagingHost.split('.');
   const first = segments.shift();
-  return `${location.protocol}//${first}-${shortid}.${segments.join('.')}/${
-    path
-  }`;
+  return `${location.protocol}//${first}-${shortid}.${segments.join(
+    '.'
+  )}/${path}`;
 };
 
 export const frameUrl = (shortid: string, append: string = '') => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   if (process.env.LOCAL_SERVER) {
-    return `http://localhost:3001/${path}`;
+    return `http://localhost:3002/${path}`;
   }
 
   if (process.env.STAGING) {
@@ -88,6 +98,9 @@ export const signInUrl = (extraScopes: boolean = false) =>
 export const signInZeitUrl = () => '/auth/zeit';
 
 export const profileUrl = (username: string) => `/u/${username}`;
+export const dashboardUrl = () => `/dashboard`;
+export const exploreUrl = () => `/explore`;
+export const teamOverviewUrl = teamId => `/dashboard/teams/${teamId}`;
 export const profileSandboxesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/sandboxes${page ? `/${page}` : ''}`;
 export const profileLikesUrl = (username: string, page?: number) =>
@@ -123,5 +136,6 @@ export const gitHubToSandboxUrl = (githubUrl: string) =>
 
 export const searchUrl = query => `/search${query ? `?query=${query}` : ''}`;
 export const patronUrl = () => `/patron`;
+export const curatorUrl = () => `/curator`;
 export const tosUrl = () => `/legal/terms`;
 export const privacyUrl = () => `/legal/privacy`;

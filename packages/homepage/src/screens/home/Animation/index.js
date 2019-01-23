@@ -6,7 +6,16 @@ import Fullscreen from 'common/components/flex/Fullscreen';
 import Centered from 'common/components/flex/Centered';
 import Relative from 'common/components/Relative';
 
-import * as templates from 'common/templates';
+import {
+  angular,
+  vue,
+  react,
+  preact,
+  svelte,
+  parcel,
+  cxjs,
+  dojo,
+} from 'common/templates';
 
 import Background from './Background';
 import HomeTitle from './Title';
@@ -17,7 +26,7 @@ import getScrollPos from '../../../utils/scroll';
 
 import media from '../../../utils/media';
 
-const Container = Centered.extend`
+const Container = styled(Centered)`
   position: relative;
   width: 100%;
   height: 100vh;
@@ -38,7 +47,7 @@ const Container = Centered.extend`
 `};
 `;
 
-const Message = styled.div`
+const Message = styled.h2`
   text-align: center;
   font-weight: 200;
 
@@ -56,12 +65,11 @@ const Message = styled.div`
 `};
 `;
 
+const TEMPLATES = [parcel, react, vue, angular, preact, svelte, cxjs, dojo];
+
 export default class Animation extends React.PureComponent {
   state = {
-    templates: Object.keys(templates)
-      .filter(k => k !== 'default' && k !== '__esModule')
-      .map(tem => templates[tem])
-      .filter(tem => tem.Icon),
+    templates: TEMPLATES.filter(tem => tem.showOnHomePage && tem.showCube),
     templateIndex: 0,
     templateSelected: false,
     canvas: null,
@@ -129,7 +137,7 @@ export default class Animation extends React.PureComponent {
             applications, from prototype to deployment.
           </Message>
         </Centered>
-        <Frameworks templates={this.state.templates} />
+        <Frameworks templates={TEMPLATES.filter(tem => tem.showOnHomePage)} />
       </Relative>
     );
   }

@@ -1,8 +1,8 @@
 // @flow
-import { flattenDeep } from 'lodash';
+import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'app/utils/debug';
+import _debug from 'common/utils/debug';
 
 import hashsum from 'hash-sum';
 
@@ -18,7 +18,7 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
-import Manager from './manager';
+import type { default as Manager } from './manager';
 import HMR from './hmr';
 
 const debug = _debug('cs:compiler:transpiled-module');
@@ -31,11 +31,18 @@ class ModuleSource {
   fileName: string;
   compiledCode: string;
   sourceMap: ?SourceMap;
+  sourceEqualsCompiled: boolean;
 
-  constructor(fileName: string, compiledCode: string, sourceMap: ?SourceMap) {
+  constructor(
+    fileName: string,
+    compiledCode: string,
+    sourceMap: ?SourceMap,
+    sourceEqualsCompiled = false
+  ) {
     this.fileName = fileName;
     this.compiledCode = compiledCode;
     this.sourceMap = sourceMap;
+    this.sourceEqualsCompiled = sourceEqualsCompiled;
   }
 }
 
@@ -43,10 +50,12 @@ export type SerializedTranspiledModule = {
   module: Module,
   query: string,
   source: ?ModuleSource,
+  sourceEqualsCompiled: boolean,
   assets: {
     [name: string]: ModuleSource,
   },
   isEntry: boolean,
+  isTestFile: boolean,
   childModules: Array<string>,
   /**
    * All extra modules emitted by the loader
@@ -59,6 +68,7 @@ export type SerializedTranspiledModule = {
   transpilationInitiators: Array<string>,
 };
 
+/* eslint-disable no-use-before-define */
 export type LoaderContext = {
   emitWarning: (warning: WarningStructure) => void,
   emitError: (error: Error) => void,
@@ -66,8 +76,9 @@ export type LoaderContext = {
     title: string,
     code: string,
     currentPath?: string,
-    overwrite?: boolean
-  ) => TranspiledModule, // eslint-disable-line no-use-before-define
+    overwrite?: boolean,
+    isChild?: boolean
+  ) => TranspiledModule,
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
     context: '/',
@@ -78,31 +89,64 @@ export type LoaderContext = {
   target: string,
   path: string,
   getModules: () => Array<Module>,
-  addDependency: (
+  addTranspilationDependency: (
     depPath: string,
     options: ?{
       isAbsolute: boolean,
     }
-  ) => ?TranspiledModule, // eslint-disable-line no-use-before-define
+  ) => void,
+  resolveTranspiledModule: (
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+      ignoredExtensions?: Array<string>,
+    }
+  ) => TranspiledModule,
+  resolveTranspiledModuleAsync: (
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+      ignoredExtensions?: Array<string>,
+    }
+  ) => Promise<TranspiledModule>,
+  addDependency: (
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+      isEntry: boolean,
+    }
+  ) => void,
   addDependenciesInDirectory: (
     depPath: string,
-    options: {
+    options: ?{
       isAbsolute: boolean,
+      isEntry: boolean,
     }
-  ) => Array<TranspiledModule>, // eslint-disable-line no-use-before-define
-  _module: TranspiledModule, // eslint-disable-line no-use-before-define
+  ) => void,
+  _module: TranspiledModule,
 
   // Remaining loaders after current loader
-  remainingRequest: string,
+  remainingRequests: string,
+  template: string,
 };
+/* eslint-enable */
 
 type Compilation = {
   exports: any,
+  hot: {
+    accept: Function,
+    accept: (string | Array<string>, cb: Function) => void,
+    decline: (path: string | Array<string>) => void,
+    dispose: (cb: Function) => void,
+    data: Object,
+    status: string,
+  },
 };
 
 export default class TranspiledModule {
   module: Module;
   query: string;
+  previousSource: ?ModuleSource;
   source: ?ModuleSource;
   assets: {
     [name: string]: ModuleSource,
@@ -133,6 +177,8 @@ export default class TranspiledModule {
    */
   hmrConfig: ?HMR;
 
+  hasMissingDependencies: boolean = false;
+
   /**
    * Create a new TranspiledModule, a transpiled module is a module that contains
    * all info for transpilation and compilation. Note that there can be multiple
@@ -153,6 +199,7 @@ export default class TranspiledModule {
     this.transpilationInitiators = new Set();
     this.initiators = new Set();
     this.isEntry = false;
+    this.isTestFile = false;
 
     this.hash = hashsum(`${this.module.path}:${this.query}`);
   }
@@ -169,11 +216,18 @@ export default class TranspiledModule {
 
     this.reset();
 
+    // Reset parents
+    this.initiators.forEach(tModule => {
+      tModule.resetTranspilation();
+    });
+
     // There are no other modules calling this module, so we run a function on
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
     manager.preset.getLoaders(this.module, this.query).forEach(t => {
-      t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+      if (t.transpiler.cleanModule) {
+        t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+      }
     });
     manager.removeTranspiledModule(this);
   }
@@ -222,12 +276,9 @@ export default class TranspiledModule {
       this.hmrConfig.setDirty(true);
     } else {
       if (this.compilation) {
-        try {
-          this.compilation = null;
-        } catch (e) {
-          console.error(e);
-        }
+        this.compilation = null;
       }
+
       Array.from(this.initiators)
         .filter(t => t.compilation)
         .forEach(dep => {
@@ -239,6 +290,115 @@ export default class TranspiledModule {
         .forEach(dep => {
           dep.resetCompilation();
         });
+
+      // If this is an entry we want all direct entries to be reset as well.
+      // Entries generally have side effects
+      if (this.isEntry) {
+        Array.from(this.dependencies)
+          .filter(t => t.compilation && t.isEntry)
+          .forEach(dep => {
+            dep.resetCompilation();
+          });
+      }
+    }
+  }
+
+  /**
+   * Determines if this is a module that should be transpiled if updated. If this
+   * is a transpilationDependency that's updated then it should not get transpiled, but the parent should.
+   */
+  shouldTranspile() {
+    return (
+      !this.source &&
+      !this.isTestFile &&
+      !(this.initiators.size === 0 && this.transpilationInitiators.size > 0)
+    );
+  }
+
+  addDependency(
+    manager: Manager,
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+      isEntry: boolean,
+    },
+    isTranspilationDep: boolean = false
+  ) {
+    if (depPath.startsWith('codesandbox-api')) {
+      return;
+    }
+
+    try {
+      const tModule = manager.resolveTranspiledModule(
+        depPath,
+        options && options.isAbsolute ? '/' : this.module.path
+      );
+
+      if (isTranspilationDep) {
+        this.transpilationDependencies.add(tModule);
+        tModule.transpilationInitiators.add(this);
+      } else {
+        this.dependencies.add(tModule);
+        tModule.initiators.add(this);
+      }
+
+      if (options.isEntry) {
+        tModule.setIsEntry(true);
+      }
+    } catch (e) {
+      if (e.type === 'module-not-found' && e.isDependency) {
+        this.asyncDependencies.push(manager.downloadDependency(e.path, this));
+      } else {
+        // When a custom file resolver is given to the manager we will try
+        // to resolve using this file resolver. If that fails we will still
+        // mark the dependency as having missing deps.
+        if (manager.fileResolver) {
+          this.asyncDependencies.push(
+            new Promise(async resolve => {
+              try {
+                const tModule = await manager.resolveTranspiledModule(
+                  depPath,
+                  options && options.isAbsolute ? '/' : this.module.path,
+                  undefined,
+                  true
+                );
+
+                if (isTranspilationDep) {
+                  this.transpilationDependencies.add(tModule);
+                  tModule.transpilationInitiators.add(this);
+                } else {
+                  this.dependencies.add(tModule);
+                  tModule.initiators.add(this);
+                }
+
+                if (options.isEntry) {
+                  tModule.setIsEntry(true);
+                }
+                resolve(tModule);
+              } catch (err) {
+                if (process.env.NODE_ENV === 'development') {
+                  console.error(
+                    'Problem while trying to fetch file from custom fileResolver'
+                  );
+                  console.error(err);
+                }
+
+                this.hasMissingDependencies = true;
+              }
+            })
+          );
+          return;
+        }
+
+        // Don't throw the error, we want to throw this error during evaluation
+        // so we get the correct line as error
+        // ... Thank you so much for this younger Ives, you saved me here.
+        if (process.env.NODE_ENV === 'development') {
+          console.error(e);
+        }
+
+        this.hasMissingDependencies = true;
+      }
     }
   }
 
@@ -272,7 +432,8 @@ export default class TranspiledModule {
         path: string,
         code: string,
         directoryPath: string = pathUtils.dirname(this.module.path),
-        overwrite?: boolean = true
+        overwrite?: boolean = true,
+        isChild?: boolean = true
       ) => {
         const queryPath = path.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
@@ -284,7 +445,8 @@ export default class TranspiledModule {
           code,
         };
 
-        let transpiledModule;
+        // $FlowIssue
+        let transpiledModule: TranspiledModule;
         if (!overwrite) {
           try {
             transpiledModule = manager.getTranspiledModule(
@@ -301,8 +463,10 @@ export default class TranspiledModule {
         transpiledModule =
           transpiledModule ||
           manager.addTranspiledModule(moduleCopy, queryPath.join('!'));
-        // this.childModules.push(transpiledModule);
 
+        if (isChild) {
+          this.childModules.push(transpiledModule);
+        }
         this.dependencies.add(transpiledModule);
         transpiledModule.initiators.add(this);
 
@@ -315,49 +479,12 @@ export default class TranspiledModule {
       // that include the source of another file by themselves, we need to
       // force transpilation to rebuild the file
       addTranspilationDependency: (depPath: string, options) => {
-        const tModule = manager.resolveTranspiledModule(
-          depPath,
-          options && options.isAbsolute ? '/' : this.module.path
-        );
-
-        this.transpilationDependencies.add(tModule);
-        tModule.transpilationInitiators.add(this);
-
-        return tModule;
+        this.addDependency(manager, depPath, options, true);
       },
-      addDependency: (depPath: string, options) => {
-        if (
-          depPath.startsWith('babel-runtime') ||
-          depPath.startsWith('codesandbox-api')
-        ) {
-          return null;
-        }
-
-        try {
-          const tModule = manager.resolveTranspiledModule(
-            depPath,
-            options && options.isAbsolute ? '/' : this.module.path
-          );
-
-          this.dependencies.add(tModule);
-          tModule.initiators.add(this);
-
-          return tModule;
-        } catch (e) {
-          if (e.type === 'module-not-found' && e.isDependency) {
-            this.asyncDependencies.push(
-              manager.downloadDependency(e.path, this.module.path)
-            );
-          } else {
-            // Don't throw the error, we want to throw this error during evaluation
-            // so we get the correct line as error
-            if (process.env.NODE_ENV === 'development') {
-              console.error(e);
-            }
-          }
-        }
+      addDependency: async (depPath: string, options = {}) => {
+        this.addDependency(manager, depPath, options);
       },
-      addDependenciesInDirectory: (folderPath: string, options) => {
+      addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
           folderPath,
           options && options.isAbsolute ? '/' : this.module.path
@@ -366,13 +493,28 @@ export default class TranspiledModule {
         tModules.forEach(tModule => {
           this.dependencies.add(tModule);
           tModule.initiators.add(this);
-        });
 
-        return tModules;
+          if (options.isEntry) {
+            tModule.setIsEntry(true);
+          }
+        });
       },
+      resolveTranspiledModule: (depPath: string, options = {}) =>
+        manager.resolveTranspiledModule(
+          depPath,
+          options.isAbsolute ? '/' : this.module.path,
+          options.ignoredExtensions
+        ),
+      resolveTranspiledModuleAsync: (depPath: string, options = {}) =>
+        manager.resolveTranspiledModuleAsync(
+          depPath,
+          options.isAbsolute ? null : this,
+          options.ignoredExtensions
+        ),
       getModules: (): Array<Module> => manager.getModules(),
       options: {
         context: pathUtils.dirname(this.module.path),
+        configurations: manager.configurations,
         ...transpilerOptions,
       },
       webpack: true,
@@ -380,6 +522,8 @@ export default class TranspiledModule {
       target: 'web',
       _module: this,
       path: this.module.path,
+      template: manager.preset.name,
+      remainingRequests: '', // will be filled during transpilation
     };
   }
 
@@ -409,16 +553,19 @@ export default class TranspiledModule {
    * @param {*} manager
    */
   async transpile(manager: Manager) {
+    if (this.source) {
+      return this;
+    }
+
     if (manager.transpileJobs[this.getId()]) {
       // Is already being transpiled
       return this;
     }
 
+    // eslint-disable-next-line
     manager.transpileJobs[this.getId()] = true;
 
-    if (this.source) {
-      return this;
-    }
+    this.hasMissingDependencies = false;
 
     // Remove this module from the initiators of old deps, so we can populate a
     // fresh cache
@@ -428,19 +575,24 @@ export default class TranspiledModule {
     this.transpilationDependencies.forEach(tModule => {
       tModule.transpilationInitiators.delete(this);
     });
+    this.childModules.forEach(tModule => {
+      tModule.dispose(manager);
+    });
     this.dependencies.clear();
     this.transpilationDependencies.clear();
+    this.childModules.length = 0;
     this.errors = [];
     this.warnings = [];
 
     let code = this.module.code || '';
     let finalSourceMap = null;
 
-    if (this.module.requires) {
+    const requires = this.module.requires;
+    if (requires != null) {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      this.module.requires.forEach(loaderContext.addDependency);
+      requires.forEach(r => loaderContext.addDependency(r));
 
       code = this.module.code;
     } else {
@@ -453,7 +605,7 @@ export default class TranspiledModule {
           manager,
           transpilerConfig.options || {}
         );
-        loaderContext.remainingRequest = transpilers
+        loaderContext.remainingRequests = transpilers
           .slice(i + 1)
           .map(transpiler => transpiler.transpiler.name)
           .concat([this.module.path])
@@ -490,26 +642,50 @@ export default class TranspiledModule {
           e.fileName = loaderContext.path;
           e.tModule = this;
           this.resetTranspilation();
+
+          // Compilation should also be reset, since the code will be different now
+          // we don't have a transpilation.
+          this.resetCompilation();
           manager.clearCache();
+
           throw e;
         }
         debug(`Transpiled '${this.getId()}' in ${Date.now() - t}ms`);
       }
     }
 
-    // Add the source of the file by default, this is important for source mapping
-    // errors back to their origin
-    code = `${code}\n//# sourceURL=${location.origin}${this.module.path}${
+    const sourceEqualsCompiled = code === this.module.code;
+    const sourceURL = `//# sourceURL=${location.origin}${this.module.path}${
       this.query ? `?${this.hash}` : ''
     }`;
 
-    this.source = new ModuleSource(this.module.path, code, finalSourceMap);
+    // Add the source of the file by default, this is important for source mapping
+    // errors back to their origin
+    code = `${code}\n${sourceURL}`;
+
+    this.source = new ModuleSource(
+      this.module.path,
+      code,
+      finalSourceMap,
+      sourceEqualsCompiled
+    );
 
     if (
       this.previousSource &&
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
-      this.resetCompilation();
+      const hasHMR = manager.preset
+        .getLoaders(this.module, this.query)
+        .some(
+          t =>
+            t.transpiler.HMREnabled == null ? true : t.transpiler.HMREnabled
+        );
+
+      if (!hasHMR) {
+        manager.markHardReload();
+      } else {
+        this.resetCompilation();
+      }
     }
 
     await Promise.all(
@@ -539,13 +715,50 @@ export default class TranspiledModule {
     return this;
   }
 
-  evaluate(manager: Manager) {
+  evaluate(
+    manager: Manager,
+    { asUMD = false }: { asUMD: boolean } = {},
+    initiator?: TranspiledModule
+  ) {
     if (this.source == null) {
-      // This scenario only happens when we are in an inconsistent state, the quickest way to solve
-      // this state is to just hard reload everything.
-      manager.clearCache();
+      if (this.module.path === '/node_modules/empty/index.js') {
+        return {};
+      }
 
-      throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+      if (this.module.path.startsWith('/node_modules')) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            `[WARN] Sandpack: loading an untranspiled module: ${
+              this.module.path
+            }`
+          );
+        }
+        // This code is probably required as a dynamic require. Since we can
+        // assume that node_modules dynamic requires are only done for node
+        // utilites we will just set the transpiled code according to how
+        // node handles that.
+
+        let code = this.module.path.endsWith('.json')
+          ? `module.exports = JSON.parse(${JSON.stringify(this.module.code)})`
+          : this.module.code;
+
+        code += `\n//# sourceURL=${location.origin}${this.module.path}${
+          this.query ? `?${this.hash}` : ''
+        }`;
+
+        this.source = new ModuleSource(this.module.path, code, null);
+
+        if (initiator) {
+          initiator.dependencies.add(this);
+          this.initiators.add(initiator);
+        }
+      } else {
+        // This scenario only happens when we are in an inconsistent state, the quickest way to solve
+        // this state is to just hard reload everything.
+        manager.clearCache();
+
+        throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+      }
     }
 
     const localModule = this.module;
@@ -557,18 +770,34 @@ export default class TranspiledModule {
           : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
+          if (manager.isFirstLoad) {
+            // We're in a reload loop! Ignore all caches!
+
+            manager.clearCache();
+            manager.deleteAPICache();
+          }
+
           location.reload();
           return {};
         }
-      } else if (!this.hmrConfig || !this.hmrConfig.isDirty()) {
+      } else if (
+        !this.isTestFile &&
+        (!this.hmrConfig || !this.hmrConfig.isDirty())
+      ) {
         return this.compilation.exports;
       }
+    } else if (this.compilation && this.compilation.exports && !this.isEntry) {
+      return this.compilation.exports;
     }
 
     if (this.hmrConfig) {
+      /* eslint-disable no-param-reassign */
+      manager.setHmrStatus('dispose');
       // Call module.hot.dispose handler
       // https://webpack.js.org/api/hot-module-replacement/#dispose-or-adddisposehandler-
       this.hmrConfig.callDisposeHandler();
+      manager.setHmrStatus('idle');
+      /* eslint-enable */
     }
 
     const hotData = this.hmrConfig ? this.hmrConfig.data : undefined;
@@ -578,11 +807,17 @@ export default class TranspiledModule {
       exports: {},
       hot: {
         accept: (path: string | Array<string>, cb) => {
-          if (typeof path === 'undefined') {
+          if (
+            typeof path === 'undefined' ||
+            (typeof path !== 'string' || !Array.isArray(path))
+          ) {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();
-            this.hmrConfig.setType('accept');
-            this.hmrConfig.setSelfAccepted(true);
+            if (this.hmrConfig) {
+              const hmrConfig = this.hmrConfig;
+              hmrConfig.setType('accept');
+              hmrConfig.setSelfAccepted(true);
+            }
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
@@ -593,8 +828,9 @@ export default class TranspiledModule {
               );
 
               tModule.hmrConfig = tModule.hmrConfig || new HMR();
-              tModule.hmrConfig.setType('accept');
-              tModule.hmrConfig.setAcceptCallback(cb);
+              const hmrConfig = tModule.hmrConfig;
+              hmrConfig.setType('accept');
+              hmrConfig.setAcceptCallback(cb);
             });
           }
           manager.enableWebpackHMR();
@@ -624,41 +860,64 @@ export default class TranspiledModule {
         },
         data: hotData,
         status: () => manager.hmrStatus,
+        addStatusHandler: manager.addStatusHandler,
+        removeStatusHandler: manager.removeStatusHandler,
       },
     };
     this.compilation.hot.data = hotData;
 
-    // Reset export object while keeping references
-    // Object.keys(this.compilation.exports).forEach(key => {
-    //   delete this.compilation.exports[key];
-    // });
     const transpiledModule = this;
 
     try {
       // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
-        // First check if there is an alias for the path, in that case
-        // we must alter the path to it
-        const aliasedPath = manager.preset.getAliasedPath(path);
+        if (path === '') {
+          throw new Error('Cannot import an empty path');
+        }
 
-        // eslint-disable-line no-unused-vars
-        if (/^(\w|@\w)/.test(aliasedPath) && !aliasedPath.includes('!')) {
-          // So it must be a dependency
-          if (
-            aliasedPath.startsWith('babel-runtime') ||
-            aliasedPath.startsWith('codesandbox-api')
-          )
-            return resolveDependency(aliasedPath, manager.externals);
+        const usedPath = manager.getPresetAliasedPath(path);
+        const bfsModule = BrowserFS.BFSRequire(usedPath);
+
+        if (path === 'os') {
+          const os = require('os-browserify');
+          os.homedir = () => '/home/sandbox';
+          return os;
+        }
+
+        if (bfsModule) {
+          return bfsModule;
+        }
+
+        if (path === 'module') {
+          return class NodeModule {
+            filename = undefined;
+            id = undefined;
+            loaded = false;
+
+            static _resolveFilename(toPath: string, module) {
+              if (module.filename == null) {
+                throw new Error('Module has no filename');
+              }
+
+              const m = manager.resolveModule(toPath, module.filename);
+              return m.path;
+            }
+
+            static _nodeModulePaths() {
+              return [];
+            }
+          };
+        }
+
+        // So it must be a dependency
+        if (path.startsWith('codesandbox-api')) {
+          return resolveDependency(path, manager.externals);
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
-          aliasedPath,
+          path,
           localModule.path
         );
-
-        if (transpiledModule === requiredTranspiledModule) {
-          throw new Error(`${localModule.path} is importing itself`);
-        }
 
         // Check if this module has been evaluated before, if so return the exports
         // of that compilation
@@ -666,26 +925,47 @@ export default class TranspiledModule {
 
         return cache
           ? cache.exports
-          : manager.evaluateTranspiledModule(requiredTranspiledModule);
+          : manager.evaluateTranspiledModule(
+              requiredTranspiledModule,
+              transpiledModule
+            );
       }
+
+      require.resolve = function resolve(path: string) {
+        const foundModule = manager.resolveModule(path, localModule.path);
+
+        return foundModule.path;
+      };
+
+      const globals = manager.testRunner.testGlobals(this.module);
+
+      globals.__dirname = pathUtils.dirname(this.module.path);
+      globals.__filename = this.module.path;
 
       const exports = evaluate(
         this.source.compiledCode,
         require,
         this.compilation,
         manager.envVariables,
-        manager.testRunner.testGlobals()
+        globals,
+        { asUMD }
       );
 
+      /* eslint-disable no-param-reassign */
+      manager.setHmrStatus('apply');
       const hmrConfig = this.hmrConfig;
       if (hmrConfig && hmrConfig.isHot()) {
         hmrConfig.setDirty(false);
         hmrConfig.callAcceptCallback();
       }
+      manager.setHmrStatus('idle');
+      /* eslint-enable */
 
       return exports;
     } catch (e) {
       e.tModule = e.tModule || transpiledModule;
+
+      this.resetCompilation();
 
       throw e;
     }
@@ -695,7 +975,11 @@ export default class TranspiledModule {
     if (
       this.initiators.size === 0 &&
       this.transpilationInitiators.size === 0 &&
-      !this.isEntry
+      !this.isEntry &&
+      !manager.isFirstLoad &&
+      // Don't delete stubbed modules, they are here for a reason, most probably
+      // because they are aliased with a browser field
+      !this.module.stubbed
     ) {
       // Remove the module from the transpiler if it's not used anymore
       debug(`Removing '${this.getId()}' from manager.`);
@@ -704,27 +988,37 @@ export default class TranspiledModule {
   }
 
   postEvaluate(manager: Manager) {
-    if (!manager.webpackHMR) {
-      // For non cacheable transpilers we remove the cached evaluation
-      if (
-        manager.preset
-          .getLoaders(this.module, this.query)
-          .some(t => !t.transpiler.cacheable)
-      ) {
-        this.compilation = null;
-      }
+    // Question: do we need to disable this for HMR projects?
+    // For non cacheable transpilers we remove the cached evaluation
+    if (
+      manager.preset
+        .getLoaders(this.module, this.query)
+        .some(
+          t =>
+            t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
+        )
+    ) {
+      debug(`Removing '${this.getId()}' cache as it's not cacheable.`);
+      this.compilation = null;
     }
   }
 
-  serialize(): SerializedTranspiledModule {
+  serialize(optimizeForSize: boolean = true): SerializedTranspiledModule {
     const serializableObject = {};
+
+    const sourceEqualsCompiled =
+      this.source && this.source.sourceEqualsCompiled;
 
     serializableObject.query = this.query;
     serializableObject.assets = this.assets;
     serializableObject.module = this.module;
     serializableObject.emittedAssets = this.emittedAssets;
     serializableObject.isEntry = this.isEntry;
-    serializableObject.source = this.source;
+    serializableObject.isTestFile = this.isTestFile;
+    if (!sourceEqualsCompiled || !optimizeForSize) {
+      serializableObject.source = this.source;
+    }
+    serializableObject.sourceEqualsCompiled = sourceEqualsCompiled;
     serializableObject.childModules = this.childModules.map(m => m.getId());
     serializableObject.dependencies = Array.from(this.dependencies).map(m =>
       m.getId()
@@ -753,33 +1047,81 @@ export default class TranspiledModule {
 
   async load(
     data: SerializedTranspiledModule,
-    state: { [id: string]: TranspiledModule }
+    state: { [id: string]: TranspiledModule },
+    manager: Manager
   ) {
     this.query = data.query;
     this.assets = data.assets;
     this.module = data.module;
     this.emittedAssets = data.emittedAssets;
     this.isEntry = data.isEntry;
-    this.source = data.source;
+    this.isTestFile = data.isTestFile;
+
+    if (data.sourceEqualsCompiled) {
+      this.source = new ModuleSource(
+        this.module.path,
+        this.module.code,
+        null,
+        true
+      );
+    } else {
+      this.source = data.source;
+    }
+
+    const getModule = (depId: string) => {
+      if (state[depId]) {
+        return state[depId];
+      }
+
+      const [path, ...queryParts] = depId.split(':');
+      const query = queryParts.join(':');
+
+      const module = manager.transpiledModules[path].module;
+      return manager.getTranspiledModule(module, query);
+    };
+
+    const loadModule = (
+      depId: string,
+      initiator = false,
+      transpilation = false
+    ) => {
+      const tModule = getModule(depId);
+
+      if (initiator) {
+        if (transpilation) {
+          tModule.transpilationDependencies.add(this);
+        } else {
+          tModule.dependencies.add(this);
+        }
+      } else {
+        if (transpilation) {
+          tModule.transpilationInitiators.add(this);
+        } else {
+          tModule.initiators.add(this);
+        }
+      }
+
+      return tModule;
+    };
 
     data.dependencies.forEach((depId: string) => {
-      this.dependencies.add(state[depId]);
+      this.dependencies.add(loadModule(depId));
     });
     data.childModules.forEach((depId: string) => {
-      this.childModules.push(state[depId]);
+      this.childModules.push(loadModule(depId));
     });
     data.initiators.forEach((depId: string) => {
-      this.initiators.add(state[depId]);
+      this.initiators.add(loadModule(depId, true));
     });
     data.transpilationDependencies.forEach((depId: string) => {
-      this.transpilationDependencies.add(state[depId]);
+      this.transpilationDependencies.add(loadModule(depId, false, true));
     });
     data.transpilationInitiators.forEach((depId: string) => {
-      this.transpilationInitiators.add(state[depId]);
+      this.transpilationInitiators.add(loadModule(depId, true, true));
     });
 
     data.asyncDependencies.forEach((depId: string) => {
-      this.asyncDependencies.push(Promise.resolve(state[depId]));
+      this.asyncDependencies.push(Promise.resolve(loadModule(depId)));
     });
   }
 }

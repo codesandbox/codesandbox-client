@@ -37,7 +37,13 @@ const rewriterInjectRE = /\b(css(?:-loader)?(?:\?[^!]+)?)(?:!|$)/;
 
 export default function(content: string, loaderContext: LoaderContext) {
   // Emit the vue-hot-reload-api so it's available in the sandbox
-  loaderContext.emitModule(hotReloadAPIPath, vueHotReloadAPIRaw, '/', false);
+  loaderContext.emitModule(
+    hotReloadAPIPath,
+    vueHotReloadAPIRaw,
+    '/',
+    false,
+    false
+  );
 
   const { path, _module } = loaderContext;
   const query = loaderContext.options;
@@ -115,6 +121,8 @@ export default function(content: string, loaderContext: LoaderContext) {
     stylus: ['vue-style-loader', 'css-loader', 'stylus-loader'],
     ts: ['ts-loader'],
     typescript: ['ts-loader'],
+    pug: ['pug-loader'],
+    coffee: ['babel-loader', 'coffee-loader'],
   };
 
   const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);
@@ -185,9 +193,7 @@ export default function(content: string, loaderContext: LoaderContext) {
               : getRequireString('styles', style, i, style.scoped);
 
             output +=
-              `module.hot && module.hot.accept([${
-                requirePath
-              }], function () {\n` +
+              `module.hot && module.hot.accept([${requirePath}], function () {\n` +
               // 1. check if style has been injected
               `  var oldLocals = cssModules["${moduleName}"]\n` +
               `  if (!oldLocals) return\n` +
@@ -214,6 +220,7 @@ export default function(content: string, loaderContext: LoaderContext) {
     '!noop-loader!/node_modules/component-normalizer.js',
     componentNormalizerRaw,
     '/',
+    false,
     false
   );
 
@@ -343,9 +350,9 @@ export default function(content: string, loaderContext: LoaderContext) {
           '      delete Component.options._Ctor\n' +
           '    }\n';
       }
-      output += `    hotAPI.${functionalTemplate ? 'rerender' : 'reload'}("${
-        moduleId
-      }", Component.options)\n  }\n`;
+      output += `    hotAPI.${
+        functionalTemplate ? 'rerender' : 'reload'
+      }("${moduleId}", Component.options)\n  }\n`;
       // dispose
       output +=
         '  module.hot.dispose(function (data) {\n' +
@@ -404,7 +411,7 @@ export default function(content: string, loaderContext: LoaderContext) {
       // getFileName(type, part, index);
       rawRequest;
 
-    // loaderContext.emitModule(rawPath, part.content, dirname(filePath), false);
+    // loaderContext.emitModule(rawPath, part.content, dirname(filePath), false, false);
 
     const depPath = loaderUtils.stringifyRequest(loaderContext, rawPath);
     loaderContext.addDependency(JSON.parse(depPath));
@@ -430,10 +437,14 @@ export default function(content: string, loaderContext: LoaderContext) {
   }
 
   function getRequireForImportString(type, impt, scoped) {
-    return loaderUtils.stringifyRequest(
+    const depPath = loaderUtils.stringifyRequest(
       loaderContext,
       '!!' + getLoaderString(type, impt, -1, scoped) + impt.src
     );
+
+    loaderContext.addDependency(JSON.parse(depPath));
+
+    return depPath;
   }
 
   function addCssModulesToLoader(loader, part, index) {

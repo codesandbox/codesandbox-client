@@ -1,32 +1,62 @@
 /* eslint-env worker */
 /* eslint no-var: off, strict: off */
 
-// "Polyfills" in order for all the code to run
-self.global = self;
-self.Buffer = {
-  isBuffer: function() {
-    return false;
-  },
+const parsersLoaded = {};
+
+const loadParser = parser => {
+  if (!parsersLoaded[parser]) {
+    if (parser === "vue") {
+      loadParser("typescript");
+      loadParser("babylon");
+      loadParser("postcss");
+    }
+
+    importScripts("/static/js/prettier/1.13.0/parser-" + parser + ".js");
+    parsersLoaded[parser] = true;
+  }
 };
-// eslint-disable-next-line
-fs = module$1 = module = path = os = crypto = {};
-self.process = { argv: [], env: { PRETTIER_DEBUG: true } };
-self.assert = { ok: function() {}, strictEqual: function() {} };
-self.require = function require(path) {
-  return self[path.replace(/.+-/, '')];
-};
 
-importScripts('/static/js/prettier/index.js');
-var prettier = index; // eslint-disable-line
+importScripts("/static/js/prettier/1.13.0/standalone.js");
+if (typeof prettier === "undefined") {
+  prettier = module.exports; // eslint-disable-line
+}
+if (typeof prettier === "undefined") {
+  prettier = index; // eslint-disable-line
+}
 
-var parsersLoaded = {};
-
-self.onmessage = function(message) {
-  var options = message.data.options || {};
-  options.parser = options.parser || 'babylon';
+function formatCode(text, options) {
   try {
-    var formatted = formatCode(message.data.text, options);
+    const useCursorOffset = options.cursorOffset !== undefined;
+
+    if (useCursorOffset) {
+      return self.prettier.formatWithCursor(text, options);
+    }
+
+    const formatted = self.prettier.format(text, options);
+    return { formatted };
   } catch (e) {
+    if (e.constructor && e.constructor.name === "SyntaxError") {
+      // Likely something wrong with the user's code
+      throw e;
+    }
+    // Likely a bug in Prettier
+    // Provide the whole stack for debugging
+    throw e;
+  }
+}
+
+self.onmessage = message => {
+  var options = message.data.options || {};
+  options.parser = options.parser || "babylon";
+
+  loadParser(options.parser);
+
+  let result;
+  options.plugins = self.prettierPlugins;
+  try {
+    result = formatCode(message.data.text, options);
+  } catch (e) {
+    console.error(e);
     self.postMessage({ error: e.message, text: message.data.text });
     return;
   }
@@ -46,11 +76,11 @@ self.onmessage = function(message) {
   }
 
   if (message.data.doc) {
-    lazyLoadParser('babylon');
+    lazyLoadParser("babylon");
     try {
       doc = prettier.__debug.formatDoc(
         prettier.__debug.printToDoc(message.data.text, options),
-        { parser: 'babylon' }
+        { parser: "babylon" }
       );
     } catch (e) {
       doc = e.toString();
@@ -58,35 +88,9 @@ self.onmessage = function(message) {
   }
 
   self.postMessage({
-    formatted: formatted,
+    result,
     text: message.data.text,
     doc: doc,
-    ast: ast,
+    ast: ast
   });
 };
-
-function formatCode(text, options) {
-  lazyLoadParser(options.parser);
-  try {
-    return prettier.format(text, options);
-  } catch (e) {
-    // Multiparser may throw if we haven't loaded the right parser
-    // Load it lazily and retry!
-    if (e.parser && !parsersLoaded[e.parser]) {
-      lazyLoadParser(e.parser);
-      return formatCode(text, options);
-    }
-
-    throw e;
-  }
-}
-
-function lazyLoadParser(parser) {
-  var script =
-    parser === 'json' ? 'parser-babylon.js' : 'parser-' + parser + '.js';
-
-  if (!parsersLoaded[parser]) {
-    importScripts('/static/js/prettier/' + script);
-    parsersLoaded[parser] = true;
-  }
-}

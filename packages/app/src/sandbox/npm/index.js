@@ -1,6 +1,7 @@
-import { pickBy } from 'lodash';
+import { pickBy } from 'lodash-es';
 
 import fetchDependencies from './fetch-dependencies';
+import { getDependencyVersions } from '../version-resolving';
 import dependenciesToQuery from './dependencies-to-query';
 
 import setScreen from '../status-screen';
@@ -16,26 +17,32 @@ type NPMDependencies = {
  * This fetches the manifest and dependencies from the
  * @param {*} dependencies
  */
-export default async function loadDependencies(dependencies: NPMDependencies) {
+export default async function loadDependencies(
+  dependencies: NPMDependencies,
+  disableExternalConnection = false
+) {
   let isNewCombination = false;
   if (Object.keys(dependencies).length !== 0) {
     // We filter out all @types, as they are not of any worth to the bundler
     const dependenciesWithoutTypings = pickBy(
       dependencies,
-      (val, key) => !key.includes('@types')
+      (val, key) => !(key.includes && key.includes('@types'))
     );
 
     const depQuery = dependenciesToQuery(dependenciesWithoutTypings);
 
     if (loadedDependencyCombination !== depQuery) {
       isNewCombination = true;
+
+      const data = await (disableExternalConnection
+        ? getDependencyVersions
+        : fetchDependencies)(dependenciesWithoutTypings);
+
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
-
-      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
-
-      const data = await fetchDependencies(dependenciesWithoutTypings);
       manifest = data;
+
+      setScreen({ type: 'loading', text: 'Transpiling Modules...' });
     }
   } else {
     manifest = null;

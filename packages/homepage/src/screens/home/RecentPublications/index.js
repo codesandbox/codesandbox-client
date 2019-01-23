@@ -1,11 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { StaticQuery, graphql } from 'gatsby';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
-
-import codesandbox2Image from './1-codesandbox2.png';
-import zeitTalkImage from './2-zeit-talk.jpg';
-import npmArticleImage from './3-npm-article.png';
 
 import media from '../../../utils/media';
 
@@ -19,8 +16,16 @@ const Title = styled.h3`
   font-weight: 200;
   font-size: 2rem;
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 0.5rem;
   color: white;
+`;
+
+const SubTitle = styled.h4`
+  font-weight: 200;
+  font-size: 1.25rem;
+  text-align: center;
+  margin-bottom: 3.5rem;
+  color: rgba(255, 255, 255, 0.8);
 `;
 
 const Items = styled.div`
@@ -61,45 +66,78 @@ const PublicationDescription = styled.p`
   font-weight: 400;
   font-size: 1rem;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  opacity: 0.6;
+`;
+
+const Image = styled.div`
+  height: 245px;
+  width: 100%;
+  background-image: url('${props => props.bg}');
+    background-position: center center;
+  background-size: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
 const PublicationItem = ({ title, image, url, description }) => (
   <Item href={url} target="_blank" rel="noopener noreferrer">
-    <img
-      style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)' }}
-      src={image}
-      alt={title}
-    />
+    <Image bg={image} aria-label={title} />
     <PublicationTitle>{title}</PublicationTitle>
     <PublicationDescription>{description}</PublicationDescription>
   </Item>
 );
 
 export default () => (
-  <Container>
-    <MaxWidth width={1280}>
-      <Title>Recent Publications</Title>
-
-      <Items>
-        <PublicationItem
-          title="CodeSandbox 2.0"
-          description="Announcing CodeSandbox 2.0. With GitHub commiting, a new homepage and support for static files."
-          url="https://medium.com/@compuives/announcing-codesandbox-2-0-938cff3a0fcb"
-          image={codesandbox2Image}
-        />
-        <PublicationItem
-          title="The Journey of CodeSandbox"
-          description="Ives explains how CodeSandbox came to be, how it works and what the future holds."
-          url="https://www.youtube.com/watch?v=5lR29NsJKW8"
-          image={zeitTalkImage}
-        />
-        <PublicationItem
-          title="NPM in the browser"
-          description="What we have done to make npm work in the browser, and what we will do in the future."
-          url="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
-          image={npmArticleImage}
-        />
-      </Items>
-    </MaxWidth>
-  </Container>
+  <StaticQuery
+    query={graphql`
+      query {
+        allMediumPost(limit: 3, sort: { fields: [createdAt], order: DESC }) {
+          edges {
+            node {
+              id
+              title
+              uniqueSlug
+              virtuals {
+                subtitle
+                previewImage {
+                  imageId
+                }
+              }
+            }
+          }
+        }
+      }
+    `}
+    render={({ allMediumPost: { edges } }) => (
+      <Container>
+        <MaxWidth width={1280}>
+          <Title>Recent Publications</Title>
+          <SubTitle>
+            You can follow{' '}
+            <a
+              href="https://medium.com/@compuives/"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{ textDecoration: 'none' }}
+            >
+              our blog
+            </a>{' '}
+            to stay up to date with new publications.
+          </SubTitle>
+          <Items style={{ marginBottom: '2rem' }}>
+            {edges.map(post => (
+              <PublicationItem
+                key={post.node.id}
+                title={post.node.title}
+                description={post.node.virtuals.subtitle}
+                url={`https://medium.com/@compuives/${post.node.uniqueSlug}`}
+                image={`https://cdn-images-1.medium.com/max/2000/${
+                  post.node.virtuals.previewImage.imageId
+                }`}
+              />
+            ))}
+          </Items>
+        </MaxWidth>
+      </Container>
+    )}
+  />
 );

@@ -26,4 +26,9 @@ export default {
     // Resolve source maps to the original source
     sourceMaps(),
   ],
+  onwarn: function(warning) {
+    if (warning.code !== 'THIS_IS_UNDEFINED') {
+      console.warn(warning);
+    }
+  },
 };

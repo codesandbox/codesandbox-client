@@ -6,7 +6,13 @@ export const getSandboxOptions = (url: string) => {
   };
   const moduleMatch = url.match(/(\?|&)(module)=([^&]+)/);
   if (moduleMatch) {
-    result.currentModule = moduleMatch[3];
+    if (moduleMatch[3].indexOf(',') > -1) {
+      const tabs = moduleMatch[3].split(',');
+      result.tabs = tabs;
+      result.currentModule = tabs[0];
+    } else {
+      result.currentModule = moduleMatch[3];
+    }
   }
 
   const initialPathMatch = url.match(/(\?|&)(initialpath)=([^&]+)/);
@@ -21,7 +27,9 @@ export const getSandboxOptions = (url: string) => {
 
   const highlightMatch = url.match(/(\?|&)(highlights)=([^&]+)/);
   if (highlightMatch && highlightMatch[3]) {
-    result.highlightedLines = highlightMatch[3].split(',');
+    result.highlightedLines = highlightMatch[3]
+      .split(',')
+      .map(number => Number(number));
   }
 
   const editorSizeMatch = url.match(/(\?|&)(editorsize)=([^&]+)/);
@@ -33,6 +41,16 @@ export const getSandboxOptions = (url: string) => {
   result.isEditorScreen = url.includes('view=editor');
   result.isSplitScreen = url.includes('view=split');
 
+  result.isTestPreviewWindow = url.includes('previewwindow=tests');
+  result.isConsolePreviewWindow = url.includes('previewwindow=console');
+
+  if (result.isTestPreviewWindow && !result.isConsolePreviewWindow) {
+    result.previewWindow = 'tests';
+  }
+
+  if (!result.isTestPreviewWindow && result.isConsolePreviewWindow) {
+    result.previewWindow = 'console';
+  }
   // If there is no view specified and the width of the window is <800 we want
   // to default to preview
   if (
@@ -41,8 +59,11 @@ export const getSandboxOptions = (url: string) => {
     !result.isSplitScreen
   ) {
     const windowWidth =
-      window.innerWidth || document.documentElement.clientWidth;
-    result.isPreviewScreen = windowWidth < 800;
+      window.innerWidth ||
+      (document.documentElement ? document.documentElement.clientWidth : 0);
+
+    result.isEditorScreen = windowWidth >= 800;
+    result.isPreviewScreen = true;
   }
 
   result.hideNavigation = url.includes('hidenavigation=1');
@@ -52,11 +73,15 @@ export const getSandboxOptions = (url: string) => {
   result.enableEslint = url.includes('eslint=1');
   result.forceRefresh = url.includes('forcerefresh=1');
   result.expandDevTools = url.includes('expanddevtools=1');
+  if (url.includes('verticallayout=')) {
+    result.verticalMode = url.includes('verticallayout=1');
+  }
+
   result.runOnClick = url.includes('runonclick=0')
     ? false
-    : url.includes('runonclick=1') ||
-      navigator.appVersion.indexOf('X11') !== -1 ||
-      navigator.appVersion.indexOf('Linux') !== -1;
+    : url.includes('runonclick=1')
+      ? true
+      : undefined;
 
   return result;
 };

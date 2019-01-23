@@ -1,45 +1,24 @@
 import React from 'react';
-import styled from 'styled-components';
+import { inject } from 'mobx-react';
 import { InstantSearch, SearchBox, PoweredBy } from 'react-instantsearch/dom';
 import qs from 'qs';
 
-import Title from 'app/components/text/Title';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
-import Row from 'common/components/flex/Row';
 
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
 } from 'common/utils/config';
 
-import './Search.css';
+import 'instantsearch.css/themes/reset.css';
+import './search.css';
+
 import Results from './Results';
 import Filters from './Filters';
-
-type Props = {
-  location: {
-    search: string,
-  },
-  history: {
-    listen: Function,
-    push: Function,
-  },
-};
-
-const Content = styled.div`
-  margin-top: 5%;
-  text-align: left;
-  color: white;
-`;
-
-const StyledTitle = styled(Title)`
-  display: inline-block;
-  text-align: left;
-  font-size: 2rem;
-`;
+import { Content, StyledTitle, Main } from './elements';
 
 const SEARCHABLE_THINGS = [
   'dependency',
@@ -59,13 +38,16 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (props, searchState) =>
   searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
 
-export default class Search extends React.PureComponent<Props> {
+class Search extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = { searchState: qs.parse(props.location.search.slice(1)) };
+    this.state = {
+      searchState: qs.parse(props.location.search.slice(1)),
+      randomSearch: getRandomSearch(),
+    };
 
     this.unlisten = this.props.history.listen((location, action) => {
-      if (action === 'PUSH') {
+      if (action === 'PUSH' || action === 'POP') {
         this.setState({
           searchState: qs.parse(location.search.slice(1)),
         });
@@ -75,6 +57,10 @@ export default class Search extends React.PureComponent<Props> {
 
   componentWillUnmount() {
     this.unlisten();
+  }
+
+  componentDidMount() {
+    this.props.signals.searchMounted();
   }
 
   onSearchStateChange = searchState => {
@@ -92,35 +78,35 @@ export default class Search extends React.PureComponent<Props> {
     document.title = 'Search - CodeSandbox';
     return (
       <MaxWidth>
-        <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="Search" />
+        <Margin vertical={1.5}>
+          <Navigation title="Search" searchNoInput />
           <Content>
-            <MaxWidth width={1024}>
-              <InstantSearch
-                appId={ALGOLIA_APPLICATION_ID}
-                apiKey={ALGOLIA_API_KEY}
-                indexName={ALGOLIA_DEFAULT_INDEX}
-                searchState={this.state.searchState}
-                onSearchStateChange={this.onSearchStateChange}
-                createURL={createURL}
-              >
-                <StyledTitle>Sandbox Search</StyledTitle>
-                <PoweredBy />
-                <SearchBox
-                  autoFocus
-                  translations={{
-                    placeholder: `Search for a ${getRandomSearch()}...`,
-                  }}
-                />
-                <Row alignItems="flex-start">
-                  <Results />
-                  <Filters />
-                </Row>
-              </InstantSearch>
-            </MaxWidth>
+            <InstantSearch
+              appId={ALGOLIA_APPLICATION_ID}
+              apiKey={ALGOLIA_API_KEY}
+              indexName={ALGOLIA_DEFAULT_INDEX}
+              searchState={this.state.searchState}
+              onSearchStateChange={this.onSearchStateChange}
+              createURL={createURL}
+            >
+              <StyledTitle>Sandbox Search</StyledTitle>
+              <PoweredBy />
+              <SearchBox
+                autoFocus
+                translations={{
+                  placeholder: `Search for a ${this.state.randomSearch}...`,
+                }}
+              />
+              <Main alignItems="flex-start">
+                <Results />
+                <Filters />
+              </Main>
+            </InstantSearch>
           </Content>
         </Margin>
       </MaxWidth>
     );
   }
 }
+
+export default inject('signals')(Search);

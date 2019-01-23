@@ -1,0 +1,28 @@
+node_modules
+doc
+*~
+*.DS_Store
+*.log
+*.json
+!tsconfig.json
+test/fixtures
+test/harness/load_fixtures.ts
+test/harness/factories/workerfs_worker.js*
+!test/fixtures/files
+!test/fixtures/README.md
+tscommand*
+tools/*.js*
+build
+src/ignoreBaseDirFile.ts
+src/.baseDir.ts
+# run.ts is auto-generated
+test/harness/run.ts
+# as is test.js
+test/harness/test.js*
+.tscache
+generated_node_tsconfig.json
+coverage
+/gulptasks.js*
+dist
+.vscode
+.tscache

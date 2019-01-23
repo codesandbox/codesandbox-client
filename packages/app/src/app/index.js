@@ -1,21 +1,38 @@
 import React from 'react';
-import { AppContainer } from 'react-hot-loader';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
-import { ConnectedRouter } from 'react-router-redux';
+import { Router } from 'react-router-dom';
+import { ApolloProvider } from 'react-apollo';
+import { Provider } from 'mobx-react';
+
+import history from 'app/utils/history';
+import _debug from 'common/utils/debug';
+import { client } from 'app/graphql/client';
+import VERSION from 'common/version';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
-import notificationActions from 'app/store/notifications/actions';
 import 'common/global.css';
 import theme from 'common/theme';
 
+import controller from './controller';
 import App from './pages/index';
 import './split-pane.css';
-import createStore from './store';
 import logError from './utils/error';
-import history from './utils/history';
+
+const debug = _debug('cs:app');
+
+window.setImmediate = setTimeout;
+
+// child_process.addForkHandler('bootstrap', ExtHostWorkerLoader);
+
+window.addEventListener('unhandledrejection', e => {
+  if (e && e.reason && e.reason.name === 'Canceled') {
+    // This is an error from vscode that vscode uses to cancel some actions
+    // We don't want to show this to the user
+    e.preventDefault();
+  }
+});
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -60,7 +77,7 @@ if (process.env.NODE_ENV === 'production') {
         /webappstoolbarba\.texthelp\.com\//i,
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
         // Monaco debuggers
-        'https://codesandbox.io/public/vs/language/typescript/lib/typescriptServices.js',
+        'https://codesandbox.io/public/13/vs/language/typescript/lib/typescriptServices.js',
       ],
     }).install();
   } catch (error) {
@@ -68,41 +85,98 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-requirePolyfills().then(() => {
-  const rootEl = document.getElementById('root');
+window.__isTouch = !matchMedia('(pointer:fine)').matches;
 
-  const store = createStore(history);
+function boot() {
+  requirePolyfills().then(() => {
+    if (process.env.NODE_ENV === 'development') {
+      window.controller = controller;
+    }
 
-  const showNotification = (message, type) =>
-    store.dispatch(notificationActions.addNotification(message, type));
+    const rootEl = document.getElementById('root');
 
-  registerServiceWorker('/service-worker.js', showNotification);
+    const showNotification = (message, type) =>
+      controller.getSignal('notificationAdded')({
+        type,
+        message,
+      });
 
-  const renderApp = RootComponent => {
+    window.showNotification = showNotification;
+
+    registerServiceWorker('/service-worker.js', {
+      onUpdated: () => {
+        debug('Updated SW');
+        controller.getSignal('setUpdateStatus')({ status: 'available' });
+      },
+      onInstalled: () => {
+        debug('Installed SW');
+        showNotification(
+          'CodeSandbox has been installed, it now works offline!',
+          'success'
+        );
+      },
+    });
+
     try {
       render(
-        <AppContainer>
-          <ThemeProvider theme={theme}>
-            <Provider store={store}>
-              <ConnectedRouter history={history}>
-                <RootComponent store={store} />
-              </ConnectedRouter>
-            </Provider>
-          </ThemeProvider>
-        </AppContainer>,
+        <Provider {...controller.provide()}>
+          <ApolloProvider client={client}>
+            <ThemeProvider theme={theme}>
+              <Router history={history}>
+                <App />
+              </Router>
+            </ThemeProvider>
+          </ApolloProvider>
+        </Provider>,
         rootEl
       );
     } catch (e) {
       logError(e);
     }
-  };
+  });
+}
 
-  renderApp(App);
+// Configures BrowserFS to use the LocalStorage file system.
+window.BrowserFS.configure(
+  {
+    fs: 'MountableFileSystem',
+    options: {
+      '/': { fs: 'InMemory', options: {} },
+      '/sandbox': {
+        fs: 'CodeSandboxEditorFS',
+        options: {
+          manager: controller,
+        },
+      },
+      '/sandbox/node_modules': {
+        fs: 'InMemory',
+      },
+      '/vscode': {
+        fs: 'LocalStorage',
+      },
+    },
+  },
+  e => {
+    if (e) {
+      console.error('Problems initializing FS', e);
+      // An error happened!
+      throw e;
+    }
 
-  if (module.hot) {
-    module.hot.accept('./pages/index', () => {
-      const NextApp = require('./pages/index').default; // eslint-disable-line global-require
-      renderApp(NextApp);
-    });
+    // eslint-disable-next-line global-require
+    require('app/vscode/dev-bootstrap').default(['vs/editor/editor.main'])(
+      () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Loaded Monaco'); // eslint-disable-line
+        }
+        if (localStorage.getItem('settings.experimentVSCode') === 'true') {
+          window.require(['vs/editor/codesandbox.editor.main'], () => {
+            boot();
+          });
+        } else {
+          boot();
+        }
+      }
+    );
   }
-});
+);

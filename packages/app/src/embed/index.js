@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
@@ -8,7 +9,7 @@ import 'app/split-pane.css';
 import theme from 'common/theme';
 import 'common/global.css';
 
-import App from './App';
+import App from './components/App';
 
 requirePolyfills().then(() => {
   function renderApp(Component) {
@@ -21,8 +22,9 @@ requirePolyfills().then(() => {
   }
 
   if (module.hot) {
-    module.hot.accept('./App', () => {
-      const NextApp = require('./App').default; // eslint-disable-line global-require
+    // $FlowIssue
+    module.hot.accept('./components/App', () => {
+      const NextApp = require('./components/App').default; // eslint-disable-line global-require
       renderApp(NextApp);
     });
   }

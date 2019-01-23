@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'gatsby';
 
 import { sandboxUrl } from 'common/utils/url-generator';
 
@@ -100,11 +101,10 @@ const Secondary = styled.div`
   ${fadeIn(0.2)};
 `;
 
-const isBot = () => {
-  return /google|baidu|bing|msn|duckduckgo|teoma|slurp|yandex/i.test(
+const isBot = () =>
+  /google|baidu|bing|msn|duckduckgo|teoma|slurp|yandex/i.test(
     navigator.userAgent
   );
-};
 
 export default ({ template }) => (
   <Container>
@@ -119,7 +119,9 @@ export default ({ template }) => (
         <span>
           The online code editor for{' '}
           <RollingText updateCheck={template.name} width="12rem">
-            <span style={{ color: template.color() }}>{template.niceName}</span>
+            <span style={{ color: template.color() }}>
+              {template.niceName === 'Vanilla' ? 'Web' : template.niceName}
+            </span>
           </RollingText>
         </span>
       )}
@@ -132,16 +134,10 @@ export default ({ template }) => (
           color={template.color}
           style={{ width: 220 }}
         >
-          Open {template.niceName}
+          Open {template.niceName === 'Vanilla' ? 'Editor' : template.niceName}
         </Button>
 
-        <Button
-          href={`https://codesandbox.io/search?refinementList%5Btemplate%5D%5B0%5D=${
-            template.name
-          }`}
-          color={template.color}
-          secondary
-        >
+        <Button as={Link} to={`/explore`} color={template.color} secondary>
           Explore Examples
         </Button>
       </Buttons>

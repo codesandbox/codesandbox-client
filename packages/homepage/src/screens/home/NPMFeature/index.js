@@ -10,6 +10,7 @@ import SearchIcon from 'react-icons/lib/md/search';
 import NPMIcon from './NPMIcon';
 import SearchInput from './SearchInput';
 import EmbedAnimation from './EmbedAnimation';
+import SandboxCount from './SandboxCount';
 import EmbedIcon from './EmbedIcon';
 
 import media from '../../../utils/media';
@@ -35,12 +36,8 @@ const FeatureDescription = styled.p`
 
 const FeatureContainer = styled.div`
   display: flex;
-  /* flex-direction: ${({ right }) => (right ? 'row-reverse' : 'row')}; */
 
   margin-bottom: 1rem;
-
-
-  /* text-align: ${({ right }) => (right ? 'right' : 'left')}; */
 
   svg {
     margin-right: 1rem;
@@ -150,7 +147,7 @@ export default () => (
                 Want to know how a library works? You can easily browse through
                 the{' '}
                 <Link href="https://codesandbox.io/search" target="_blank">
-                  80,000+ created sandboxes
+                  <SandboxCount />+ created sandboxes
                 </Link>{' '}
                 on CodeSandbox. We want this to be a platform where everyone can
                 easily learn and share.
