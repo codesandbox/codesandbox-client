@@ -5,7 +5,7 @@ import Button from 'app/components/Button';
 import Row from 'common/components/flex/Row';
 import Input, { TextArea } from 'common/components/Input';
 
-import { Container } from '../LiveSessionEndedModal/elements';
+import { Container } from '../LiveSessionEnded/elements';
 import { Heading, Explanation } from '../elements';
 
 import { Field, Label } from './elements';

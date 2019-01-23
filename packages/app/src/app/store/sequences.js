@@ -266,6 +266,10 @@ export const resetLive = [
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
   set(state`live.roomInfo`, undefined),
+
+  ({ ot }) => {
+    ot.reset();
+  },
 ];
 
 export const setSandbox = [

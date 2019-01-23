@@ -362,8 +362,14 @@ export function sendTransform({ ot, props }) {
   return {};
 }
 
-export function receiveTransformation({ ot, props }) {
-  ot.applyServer(props.data.module_shortid, props.data.operation);
+export function receiveTransformation({ ot, props, live }) {
+  try {
+    ot.applyServer(props.data.module_shortid, props.data.operation);
+  } catch (e) {
+    // Something went wrong, probably a sync mismatch. Request new version
+    console.error('Something went wrong with applying OT operation');
+    live.send('live:module_state', {});
+  }
 }
 
 export function applyTransformation({ props, state }) {
@@ -481,6 +487,10 @@ export function receiveChat({ props, state }) {
     message: props.data.message,
     date: props.data.date,
   });
+}
+
+export function setSandboxOwned({ state }) {
+  state.set('editor.currentSandbox.owned', state.get('live.isOwner'));
 }
 
 export function sendChat({ live, props }) {

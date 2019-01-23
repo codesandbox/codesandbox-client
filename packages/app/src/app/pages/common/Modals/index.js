@@ -16,8 +16,7 @@ import PRModal from './PRModal';
 import SelectSandboxModal from './SelectSandboxModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
-import LiveSessionEndedModal from './LiveSessionEndedModal';
-import LiveSessionEndedInactivity from './LiveSessionEndedInactivity';
+import LiveSessionEnded from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
@@ -84,11 +83,7 @@ const modals = {
     width: 600,
   },
   liveSessionEnded: {
-    Component: LiveSessionEndedModal,
-    width: 600,
-  },
-  liveSessionEndedInactivity: {
-    Component: LiveSessionEndedInactivity,
+    Component: LiveSessionEnded,
     width: 600,
   },
   liveVersionMismatch: {

@@ -39,13 +39,7 @@ export const changeMode = [
   },
 ];
 
-export const closeSession = [
-  when(state`live.isOwner`),
-  {
-    true: [actions.sendCloseSession, actions.disconnect, resetLive],
-    false: [actions.disconnect],
-  },
-];
+export const closeSession = [actions.disconnect, resetLive];
 
 export const toggleNotificationsHidden = [
   toggle(state`live.notificationsHidden`),
@@ -293,11 +287,27 @@ export const handleMessage = [
     ],
     disconnect: [
       actions.disconnect,
-      set(props`modal`, 'liveSessionEndedInactivity'),
+      equals(props`data.reason`),
+      {
+        inactivity: [
+          set(props`message`, 'The session has ended due to inactivity'),
+        ],
+        close: [set(props`message`, 'The owner ended the session')],
+        otherwise: [
+          set(props`message`, 'The session has ended due to inactivity'),
+        ],
+      },
+      set(props`modal`, 'liveSessionEnded'),
+      actions.setSandboxOwned,
+
       openModal,
       resetLive,
     ],
-    owner_left: [set(props`modal`, 'liveSessionEnded'), openModal],
+    owner_left: [
+      set(props`message`, 'The owner left the session'),
+      set(props`modal`, 'liveSessionEnded'),
+      openModal,
+    ],
     chat: [actions.receiveChat],
     notification: [
       factories.addNotification(props`data.message`, props`data.type`),
