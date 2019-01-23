@@ -422,8 +422,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const reactNamespace = existingConfig.reactNamespace || 'React';
 
     const compilerDefaults = {
-      jsxFactory: jsxFactory,
-      reactNamespace: reactNamespace,
+      jsxFactory,
+      reactNamespace,
       jsx: this.monaco.languages.typescript.JsxEmit.React,
       target: this.monaco.languages.typescript.ScriptTarget.ES2016,
       allowNonTsExtensions: !hasNativeTypescript,
