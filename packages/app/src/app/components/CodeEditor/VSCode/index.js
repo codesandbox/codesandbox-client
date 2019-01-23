@@ -327,7 +327,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               this.handleChange(module.shortid, module.title);
             } catch (err) {
               if (process.env.NODE_ENV === 'development') {
-                console.error('catched', err);
+                console.error('caught', err);
               }
             }
           }
@@ -559,12 +559,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     dependencies: $PropertyType<Props, 'dependencies'>
   ): Promise<null> =>
     new Promise(resolve => {
-      if (this.modelContentChangedListener) {
-        this.modelContentChangedListener.dispose();
-      }
-      if (this.modelSelectionListener) {
-        this.modelSelectionListener.dispose();
-      }
       this.sandbox = newSandbox;
       this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
@@ -659,7 +653,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         '/sandbox' +
         getModulePath(this.sandbox.modules, this.sandbox.directories, moduleId);
 
-      const modelEditor = this.editor.editorService.visibleEditors.find(
+      const modelEditor = this.editor.editorService.editors.find(
         editor => editor.resource && editor.resource.path === modulePath
       );
 
@@ -675,6 +669,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
         const code = operation.apply(module.code || '');
         if (this.props.onChange) {
+          console.log('Applying outside of editor', operation);
           this.props.onChange(code, module.shortid);
         }
         return;
@@ -689,6 +684,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           model.object.textEditorModel
         );
 
+        console.log('Applying on editor', operation);
         this.props.onChange(
           model.object.textEditorModel.getValue(1),
           module.shortid
