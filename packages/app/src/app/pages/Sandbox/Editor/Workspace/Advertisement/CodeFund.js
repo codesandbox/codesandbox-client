@@ -11,7 +11,7 @@ const Container = styled.div`
 `;
 
 const CODEFUND_LINK =
-  'https://codefund.io/scripts/1fc4e04d-9622-4844-81f9-7522c7d19ac7/embed.js?theme=codesandbox';
+  'https://codefund.app/properties/24/funder.js';
 let loaded = false;
 
 export default class CodeFund extends React.PureComponent {
@@ -30,7 +30,7 @@ export default class CodeFund extends React.PureComponent {
   render() {
     return (
       <Container>
-        <div id="codefund_ad" />
+        <div id="codefund" />
       </Container>
     );
   }

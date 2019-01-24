@@ -1,5 +1,5 @@
 import React from 'react';
 
-import CodeSponsor from './CodeSponsor';
+import CodeFund from './CodeFund';
 
-export default () => <CodeSponsor />;
+export default () => <CodeFund />;
