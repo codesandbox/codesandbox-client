@@ -1,9 +1,14 @@
 import isESModule from '../../utils/is-es-module';
 
 const JSXSyntax = /\n(.*?)<[A-z](.|\n)*?\/?>/;
+const regeneratorSyntax = /(\s|^)regeneratorRuntime\./;
 
 export function shouldTranspile(code: string, path: string) {
   if (isESModule(code)) {
+    return true;
+  }
+
+  if (regeneratorSyntax.test(code)) {
     return true;
   }
 
