@@ -1,19 +1,9 @@
-import { getParent } from 'mobx-state-tree';
-
 export function isCurrentEditor() {
-  const user = getParent(this).user;
-
-  return user && this.isEditor(user.id);
+  return this.isEditor(this.liveUserId);
 }
 
 export function isOwner() {
-  const user = getParent(this).user;
-
-  return this.isLive && user && this.roomInfo.ownerIds.indexOf(user.id) > -1;
-}
-
-export function isSourceOfTruth() {
-  return this.roomInfo && this.roomInfo.sourceOfTruthDeviceId === this.deviceId;
+  return this.isLive && this.roomInfo.ownerIds.indexOf(this.liveUserId) > -1;
 }
 
 export function liveUsersByModule() {
@@ -23,14 +13,11 @@ export function liveUsersByModule() {
     return {};
   }
 
-  const currentUser = getParent(this).user;
+  const liveUserId = this.liveUserId;
 
-  if (!currentUser) {
-    return {};
-  }
-
-  this.roomInfo.usersMetadata.forEach((user, userId) => {
-    if (currentUser && userId !== currentUser.id) {
+  this.roomInfo.users.forEach(user => {
+    const userId = user.id;
+    if (userId !== liveUserId) {
       usersByModule[user.currentModuleShortid] =
         usersByModule[user.currentModuleShortid] || [];
       usersByModule[user.currentModuleShortid].push(user.color);

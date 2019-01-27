@@ -266,6 +266,7 @@ export function getAuthToken({ api, path }) {
 
 export function setModal({ state, props }) {
   track('Open Modal', { modal: props.modal });
+  state.set('currentModalMessage', props.message);
   state.set('currentModal', props.modal);
 }
 

@@ -265,8 +265,11 @@ export const resetLive = [
   set(state`live.isLive`, false),
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
-  set(state`live.deviceId`, null),
   set(state`live.roomInfo`, undefined),
+
+  ({ ot }) => {
+    ot.reset();
+  },
 ];
 
 export const setSandbox = [
@@ -290,30 +293,28 @@ export const setSandbox = [
   actions.setWorkspace,
 ];
 
-export const joinLiveSessionIfTeam = [
+export const joinLiveSessionIfAvailable = [
   when(
-    props`sandbox.team`,
     props`sandbox.owned`,
-    (team, owned) => team && owned && team.roomId
+    props`sandbox.roomId`,
+    (owned, roomId) => owned && roomId
   ),
   {
     true: [
       set(props`sandboxId`, props`sandbox.id`),
-      set(state`live.isTeam`, true),
-      set(props`roomId`, props`sandbox.team.roomId`),
-      initializeLive,
 
-      when(state`live.isSourceOfTruth`),
+      when(props`sandbox.team`),
       {
-        true: [
-          setSandboxData,
-          set(state`live.isLoading`, true),
-          setSandbox,
-          set(state`live.isLoading`, false),
-          factories.track('Create Team Live Session', {}),
-        ],
-        false: [set(state`editor.currentId`, props`sandbox.id`)],
+        true: [set(state`live.isTeam`, true)],
+        false: [],
       },
+
+      setSandboxData,
+      set(state`live.isLoading`, true),
+      setSandbox,
+      set(props`roomId`, props`sandbox.roomId`),
+      initializeLive,
+      set(state`live.isLoading`, false),
     ],
     false: [
       setSandboxData,
@@ -343,6 +344,13 @@ export const refetchSandboxInfo = [
       {
         success: [
           setSandboxData,
+          // TODO: move this to a better place, this is duplicate logic with live
+          when(state`live.isLive`),
+          {
+            true: [disconnect],
+            false: [],
+          },
+
           teamChanged,
           {
             true: [
@@ -350,16 +358,11 @@ export const refetchSandboxInfo = [
                 state`editor.sandboxes.${props`sandbox.id`}.team`,
                 props`sandbox.team`
               ),
-              // TODO: move this to a better place, this is duplicate logic with live
-              when(state`live.isLive`),
-              {
-                true: disconnect,
-                false: [],
-              },
-              joinLiveSessionIfTeam,
             ],
             false: [],
           },
+
+          joinLiveSessionIfAvailable,
         ],
       },
     ],
@@ -458,7 +461,7 @@ export const loadSandbox = factories.withLoadApp([
 
       actions.getSandbox,
       {
-        success: [joinLiveSessionIfTeam, ensurePackageJSON],
+        success: [joinLiveSessionIfAvailable, ensurePackageJSON],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },

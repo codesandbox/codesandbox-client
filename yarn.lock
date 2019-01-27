@@ -2645,7 +2645,6 @@ airbnb-js-shims@^1.4.1:
 airtable@^0.5.8:
   version "0.5.8"
   resolved "https://registry.yarnpkg.com/airtable/-/airtable-0.5.8.tgz#85fafddf8492b6d6071bc0097c57898e2e6466b8"
-  integrity sha512-ftIqOYH8Abg5+d/NleTBnIqSdc8tAS2czRF7Z1sre1rpGsQKTKC50MsiEPqKig/H7m7nKqxbEtrPzSsneAuZRQ==
   dependencies:
     lodash "4.17.10"
     request "2.88.0"
@@ -3920,7 +3919,6 @@ babel-plugin-remove-graphql-queries@^2.5.2:
 babel-plugin-styled-components@^1.9.4:
   version "1.9.4"
   resolved "https://registry.yarnpkg.com/babel-plugin-styled-components/-/babel-plugin-styled-components-1.9.4.tgz#5f2c34d31237c6ee1e86453cc5fa488b97136669"
-  integrity sha512-FIACAvgJsUasYA+CdhPMWUIXWCdUUirz7fL9FGQYNNuOls+bs9OUWWHYVM2W9gjVoS2TXdEMqcOVVyG3Hagd/g==
   dependencies:
     "@babel/helper-annotate-as-pure" "^7.0.0"
     babel-plugin-syntax-jsx "^6.18.0"
@@ -14942,7 +14940,6 @@ napi-build-utils@^1.0.1:
 natives@^1.1.0:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/natives/-/natives-1.1.6.tgz#a603b4a498ab77173612b9ea1acdec4d980f00bb"
-  integrity sha512-6+TDFewD4yxY14ptjKaS63GVdtKiES1pTPyxn9Jb0rBqPMZ7VcCiooEhPNsr+mqHtMGxa/5c/HhcC4uPEUw/nA==
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -22690,7 +22687,6 @@ xdg-basedir@^3.0.0:
 xhr@2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/xhr/-/xhr-2.3.3.tgz#ad6b810e0917ce72b5ec704f5d41f1503b8e7524"
-  integrity sha1-rWuBDgkXznK17HBPXUHxUDuOdSQ=
   dependencies:
     global "~4.3.0"
     is-function "^1.0.1"

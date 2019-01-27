@@ -46,10 +46,8 @@ class User extends React.Component {
   render() {
     const { user, type, sideView, roomInfo, currentUserId } = this.props;
 
-    const metaData = roomInfo.usersMetadata.get(user.id);
-    const [r, g, b] = metaData
-      ? roomInfo.usersMetadata.get(user.id).color
-      : [0, 0, 0];
+    const metaData = roomInfo.users.find(u => u.id === user.id);
+    const [r, g, b] = metaData ? metaData.color : [0, 0, 0];
 
     const isCurrentUser = user.id === currentUserId;
 
