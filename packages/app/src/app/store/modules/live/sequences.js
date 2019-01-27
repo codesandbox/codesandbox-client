@@ -13,12 +13,11 @@ import { initializeLive as commonInitializeLive } from './common-sequences';
 export const initializeLive = [
   commonInitializeLive,
 
-  // TODO:  Add  version back
-  // when(state`live.roomInfo.version`, v => v !== VERSION),
-  // {
-  //   true: [set(props`modal`, 'liveVersionMismatch'), openModal],
-  //   false: [],
-  // },
+  when(state`updateStatus`, s => s === 'available'),
+  {
+    true: [set(props`modal`, 'liveVersionMismatch'), openModal],
+    false: [],
+  },
 
   setSandbox,
   set(state`live.isLoading`, false),
