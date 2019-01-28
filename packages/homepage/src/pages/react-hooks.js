@@ -1,8 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 
-import { ARROW_LEFT, ARROW_RIGHT } from 'common/utils/keycodes';
-
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
