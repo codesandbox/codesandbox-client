@@ -16,7 +16,7 @@ import {
   recoverFiles,
 } from './modules/files/actions';
 
-import { disconnect } from './modules/live/actions';
+import { disconnect, clearUserSelections } from './modules/live/actions';
 import { initializeLive } from './modules/live/common-sequences';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
@@ -266,6 +266,7 @@ export const resetLive = [
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
   set(state`live.roomInfo`, undefined),
+  clearUserSelections,
 
   ({ ot }) => {
     ot.reset();
