@@ -137,7 +137,7 @@ export default class extends React.PureComponent {
                 text-align: center;
               `}
             >
-              Introducing React Hooks
+              React Hooks Sandboxes
             </Heading2>
             <Words>
               import {'{ '}
