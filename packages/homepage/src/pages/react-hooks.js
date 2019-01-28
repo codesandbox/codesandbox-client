@@ -1,6 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 
+import { ARROW_LEFT, ARROW_RIGHT } from 'common/utils/keycodes';
+
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
@@ -61,6 +63,10 @@ export default class extends React.PureComponent {
           s => this.state.selectedSandbox.id === s.id
         )
       : -1;
+
+  closeModal = () => {
+    this.setState({ selectedSandbox: undefined });
+  };
 
   render() {
     const { sandboxes, selectedSandbox } = this.state;

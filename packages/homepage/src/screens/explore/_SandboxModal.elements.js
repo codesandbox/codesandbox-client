@@ -48,7 +48,7 @@ export const StyledLeftArrow = styled(LeftArrow)`
   }
 `;
 
-export const SandboxInfoContianer = styled.div`
+export const SandboxInfoContainer = styled.div`
   display: flex;
 
   @media screen and (max-width: 800px) {
