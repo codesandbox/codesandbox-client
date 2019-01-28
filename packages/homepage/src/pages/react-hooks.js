@@ -1,14 +1,46 @@
 import React from 'react';
 import { graphql } from 'gatsby';
+import TextLoop from 'react-text-loop';
+import styled from 'styled-components';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
+
 import Layout from '../components/layout';
 import SandboxModal from '../screens/explore/SandboxModal';
 
 import WideSandbox from '../screens/explore/WideSandbox';
 import { Container, Sandboxes } from './_explore.elements';
+
+const Words = styled.section`
+  background: #011627;
+  color: white;
+  font-size: 2em;
+  font-family: 'dank mono', 'dm', monospace;
+  text-align: center;
+  margin: 2rem;
+  margin-bottom: 6rem;
+`;
+
+const shuffle = a => {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+const words = [
+  'State',
+  'Effect',
+  'Ref',
+  'Context',
+  'LocalStorage',
+  'Memo',
+  'Media',
+  'Cookies',
+];
 
 export default class extends React.PureComponent {
   state = {
@@ -100,9 +132,21 @@ export default class extends React.PureComponent {
           )}
 
           <PageContainer as="main" width={1440}>
-            <Heading2 style={{ margin: '3rem 0' }}>
-              React Hooks Sandboxes
+            <Heading2
+              css={`
+                text-align: center;
+              `}
+            >
+              Introducing React Hooks
             </Heading2>
+            <Words>
+              import {'{ '}
+              use
+              <TextLoop interval={1500}>
+                {shuffle(words).map(word => word)}
+              </TextLoop>{' '}
+              {'  }'} from 'react'
+            </Words>
             <Sandboxes>
               {sandboxes.map(sandbox => (
                 <WideSandbox
