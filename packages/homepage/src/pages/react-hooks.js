@@ -43,11 +43,13 @@ export default class extends React.PureComponent {
       <Layout>
         <Container>
           <TitleAndMetaTags
-            description="You can find starters for all your projects here. Explore examples of JavaScript and frameworks like React, Vue and Angular!"
-            title="Starter Sandboxes - CodeSandbox"
+            description="A showcase of amazing uses for React Hooks!"
+            title="React Hooks- CodeSandbox"
           />
           <PageContainer as="main" width={1440}>
-            <Heading2 style={{ margin: '3rem 0' }}>Starter Sandboxes</Heading2>
+            <Heading2 style={{ margin: '3rem 0' }}>
+              React Hooks Sandboxes
+            </Heading2>
             <Sandboxes>
               {starters.map(sandbox => (
                 <WideSandbox
