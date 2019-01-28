@@ -14,7 +14,6 @@ import WideSandbox from '../screens/explore/WideSandbox';
 import { Container, Sandboxes } from './_explore.elements';
 
 const Words = styled.section`
-  background: #011627;
   color: white;
   font-size: 2em;
   font-family: 'dank mono', 'dm', monospace;
@@ -36,10 +35,12 @@ const words = [
   'Effect',
   'Ref',
   'Context',
-  'LocalStorage',
+  'Reducer',
   'Memo',
-  'Media',
-  'Cookies',
+  'Callback',
+  'ImperativeHandle',
+  'LayoutEffect',
+  'DebugValue',
 ];
 
 export default class extends React.PureComponent {
@@ -145,7 +146,9 @@ export default class extends React.PureComponent {
               <TextLoop interval={1500}>
                 {shuffle(words).map(word => word)}
               </TextLoop>{' '}
-              {'  }'} from 'react'
+              {'  }'} from {"'"}
+              react
+              {"'"}
             </Words>
             <Sandboxes>
               {sandboxes.map(sandbox => (
