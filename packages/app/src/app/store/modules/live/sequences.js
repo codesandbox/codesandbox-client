@@ -38,7 +38,9 @@ export const changeMode = [
   },
 ];
 
-export const closeSession = [actions.disconnect, resetLive];
+export const stopLive = [actions.disconnect, resetLive];
+
+export const closeSession = [actions.sendCloseSession, stopLive];
 
 export const toggleNotificationsHidden = [
   toggle(state`live.notificationsHidden`),
