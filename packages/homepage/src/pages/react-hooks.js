@@ -24,27 +24,15 @@ export default class extends React.PureComponent {
     return json.data;
   };
 
-  componentDidMount() {
-    const start = this.props.data.allAirtable.edges;
-
-    const results = start.map(async s => {
-      const data = await this.loadSandboxes(s.node.data.id);
-      return {
-        ...data,
-        title: s.node.data.title || data.title,
-      };
-    });
-
-    Promise.all(results).then(a => this.setState({ starters: a }));
-  }
   render() {
     const { starters } = this.state;
+
     return (
       <Layout>
         <Container>
           <TitleAndMetaTags
             description="A showcase of amazing uses for React Hooks!"
-            title="React Hooks- CodeSandbox"
+            title="React Hooks - CodeSandbox"
           />
           <PageContainer as="main" width={1440}>
             <Heading2 style={{ margin: '3rem 0' }}>
@@ -76,6 +64,7 @@ export const query = graphql`
           data {
             id
             title
+            description
             template
           }
         }
