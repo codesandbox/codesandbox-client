@@ -16,7 +16,16 @@ export default class extends React.PureComponent {
       ...s.node.data,
       title: s.node.data.title,
     })),
+    renderModal: false,
   };
+
+  componentDidMount() {
+    // We need to do this for SSR, the modal can't be rendered when using SSR,
+    // we cannot just put a check in `render` because that would mean that client
+    // render and server render are not the same. So we force a rerender.
+    // eslint-disable-next-line
+    this.setState({ renderModal: true });
+  }
 
   openSandbox = index => {
     const sandbox = this.state.sandboxes[index];
@@ -66,23 +75,25 @@ export default class extends React.PureComponent {
             title="React Hooks - CodeSandbox"
           />
 
-          <SandboxModal
-            onClose={this.closeModal}
-            sandboxId={selectedSandbox && selectedSandbox.id}
-            screenshotUrl={selectedSandbox && selectedSandbox.screenshotUrl}
-            title={selectedSandbox && selectedSandbox.title}
-            description={selectedSandbox && selectedSandbox.description}
-            openPreviousSandbox={
-              currentIndex > 0 &&
-              currentIndex !== -1 &&
-              this.openPreviousSandbox(currentIndex)
-            }
-            openNextSandbox={
-              currentIndex < this.state.sandboxes.length - 1 &&
-              currentIndex !== -1 &&
-              this.openNextSandbox(currentIndex)
-            }
-          />
+          {this.state.renderModal && (
+            <SandboxModal
+              onClose={this.closeModal}
+              sandboxId={selectedSandbox && selectedSandbox.id}
+              screenshotUrl={selectedSandbox && selectedSandbox.screenshotUrl}
+              title={selectedSandbox && selectedSandbox.title}
+              description={selectedSandbox && selectedSandbox.description}
+              openPreviousSandbox={
+                currentIndex > 0 &&
+                currentIndex !== -1 &&
+                this.openPreviousSandbox(currentIndex)
+              }
+              openNextSandbox={
+                currentIndex < this.state.sandboxes.length - 1 &&
+                currentIndex !== -1 &&
+                this.openNextSandbox(currentIndex)
+              }
+            />
+          )}
 
           <PageContainer as="main" width={1440}>
             <Heading2 style={{ margin: '3rem 0' }}>
