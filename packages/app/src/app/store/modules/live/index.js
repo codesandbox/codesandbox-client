@@ -38,7 +38,7 @@ export default Module({
     onAddEditorClicked: sequences.addEditor,
     onRemoveEditorClicked: sequences.removeEditor,
     onSessionCloseClicked: sequences.closeSession,
-    onNavigateAway: sequences.closeSession,
+    onNavigateAway: sequences.stopLive,
     onToggleNotificationsHidden: sequences.toggleNotificationsHidden,
     onSendChat: sequences.sendChat,
     onChatEnabledChange: sequences.setChatEnabled,
