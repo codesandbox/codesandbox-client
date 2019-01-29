@@ -438,6 +438,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         // Something went wrong while composing the operation, so we're opting for a full sync
 
         console.error(e);
+        // eslint-disable-next-line
         console.log('Got error, syncing state...');
         this.props.onModuleStateMismatch();
       }
