@@ -275,7 +275,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // have the correct cursor pos no matter what
       const { onSelectionChanged, isLive } = this.props;
       // Reason 3 is update by mouse or arrow keys
-      if (isLive) {
+      if (isLive && editor.getModel()) {
         const lines = editor.getModel().getLinesContent() || [];
         const data = {
           primary: getSelection(lines, selectionChange.selection),

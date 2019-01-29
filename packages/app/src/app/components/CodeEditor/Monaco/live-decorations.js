@@ -33,6 +33,10 @@ export function updateUserSelections(
       }
   >
 ) {
+  if (!editor.getModel()) {
+    return;
+  }
+
   const lines = editor.getModel().getLinesContent() || [];
 
   userSelections.forEach(data => {
