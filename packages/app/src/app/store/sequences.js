@@ -262,11 +262,11 @@ export const loadSandboxPage = factories.withLoadApp([]);
 export const loadGitHubPage = factories.withLoadApp([]);
 
 export const resetLive = [
+  clearUserSelections,
   set(state`live.isLive`, false),
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
   set(state`live.roomInfo`, undefined),
-  clearUserSelections,
 
   ({ ot }) => {
     ot.reset();

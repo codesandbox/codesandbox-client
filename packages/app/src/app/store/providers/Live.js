@@ -60,10 +60,14 @@ export default Provider({
     sentMessages.set(_messageId, payload);
 
     return new Promise((resolve, reject) => {
-      channel
-        .push(event, payload)
-        .receive('ok', resolve)
-        .receive('error', reject);
+      if (channel) {
+        channel
+          .push(event, payload)
+          .receive('ok', resolve)
+          .receive('error', reject);
+      } else {
+        reject('Channel is not defined');
+      }
     });
   },
 });

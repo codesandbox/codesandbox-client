@@ -30,6 +30,10 @@ export const initializeLive = factories.withLoadApp([
       actions.unSetReceivingStatus,
       set(state`live.isLive`, true),
       set(state`live.error`, null),
+
+      // We do an extra manual sync of modules because in the time that the user joined there is a chance
+      // that new messages came in
+      actions.syncModuleState,
     ],
     error: set(state`live.error`, props`reason`),
   },

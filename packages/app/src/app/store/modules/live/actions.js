@@ -310,18 +310,28 @@ export function sendChangeCurrentModule({ props, state, live }) {
 }
 
 export function clearUserSelections({ props, state }) {
-  const userIndex = state
-    .get('live.roomInfo.users')
-    .findIndex(u => u.id === props.data.live_user_id);
+  const clearSelections = userId => {
+    const userIndex = state
+      .get('live.roomInfo.users')
+      .findIndex(u => u.id === userId);
 
-  if (userIndex > -1) {
-    if (state.get(`live.roomInfo.users.${userIndex}`)) {
-      state.set(`live.roomInfo.users.${userIndex}.selection`, null);
-      state.push('editor.pendingUserSelections', {
-        userId: props.data.live_user_id,
-        selection: null,
-      });
+    if (userIndex > -1) {
+      if (state.get(`live.roomInfo.users.${userIndex}`)) {
+        state.set(`live.roomInfo.users.${userIndex}.selection`, null);
+        state.push('editor.pendingUserSelections', {
+          userId,
+          selection: null,
+        });
+      }
     }
+  };
+
+  if (!props.data) {
+    // All users
+
+    state.get('live.roomInfo.users').forEach(u => clearSelections(u.id));
+  } else {
+    clearSelections(props.data.live_user_id);
   }
 }
 
@@ -370,6 +380,10 @@ export function receiveTransformation({ ot, props, live }) {
     console.error('Something went wrong with applying OT operation');
     live.send('live:module_state', {});
   }
+}
+
+export function syncModuleState({ live }) {
+  live.send('live:module_state', {});
 }
 
 export function applyTransformation({ props, state }) {
