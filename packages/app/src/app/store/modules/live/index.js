@@ -43,5 +43,6 @@ export default Module({
     onSendChat: sequences.sendChat,
     onChatEnabledChange: sequences.setChatEnabled,
     onFollow: sequences.setFollowing,
+    onModuleStateMismatch: sequences.syncModuleState,
   },
 });

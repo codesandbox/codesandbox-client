@@ -89,4 +89,5 @@ export type Props = {
   receivingCode?: boolean,
   onCodeReceived?: () => void,
   onSelectionChanged: (d: { selection: any, moduleShortid: string }) => void,
+  onModuleStateMismatch?: () => void,
 };

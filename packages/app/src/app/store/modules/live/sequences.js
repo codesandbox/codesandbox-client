@@ -391,3 +391,5 @@ export const setFollowing = [
     false: [],
   },
 ];
+
+export const syncModuleState = [actions.syncModuleState];

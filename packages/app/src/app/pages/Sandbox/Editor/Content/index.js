@@ -483,6 +483,7 @@ class EditorPreview extends React.Component<Props, State> {
               isLive={store.live.isLive}
               onCodeReceived={signals.live.onCodeReceived}
               onSelectionChanged={signals.live.onSelectionChanged}
+              onModuleStateMismatch={signals.live.onModuleStateMismatch}
               onNpmDependencyAdded={name => {
                 if (sandbox.owned) {
                   signals.editor.addNpmDependency({ name, isDev: true });

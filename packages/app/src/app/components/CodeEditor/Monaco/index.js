@@ -425,14 +425,22 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (sendTransforms && changeEvent.changes) {
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
-      const { operation, newCode } = eventToTransform(
-        changeEvent,
-        this.liveOperationCode
-      );
+      try {
+        const { operation, newCode } = eventToTransform(
+          changeEvent,
+          this.liveOperationCode
+        );
 
-      this.liveOperationCode = newCode;
+        this.liveOperationCode = newCode;
 
-      sendTransforms(operation);
+        sendTransforms(operation);
+      } catch (e) {
+        // Something went wrong while composing the operation, so we're opting for a full sync
+
+        console.error(e);
+        console.log('Got error, syncing state...');
+        this.props.onModuleStateMismatch();
+      }
 
       requestAnimationFrame(() => {
         this.liveOperationCode = '';
