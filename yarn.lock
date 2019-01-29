@@ -2151,6 +2151,7 @@
 "@types/react@16.7.18":
   version "16.7.18"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.7.18.tgz#f4ce0d539a893dd61e36cd11ae3a5e54f5a48337"
+  integrity sha512-Tx4uu3ppK53/iHk6VpamMP3f3ahfDLEVt3ZQc8TFm30a1H3v9lMsCntBREswZIW/SKrvJjkb3Hq8UwO6GREBng==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -2641,7 +2642,7 @@ airbnb-js-shims@^1.4.1:
     string.prototype.padstart "^3.0.0"
     symbol.prototype.description "^1.0.0"
 
-airtable@^0.5.6, airtable@^0.5.8:
+airtable@^0.5.8:
   version "0.5.8"
   resolved "https://registry.yarnpkg.com/airtable/-/airtable-0.5.8.tgz#85fafddf8492b6d6071bc0097c57898e2e6466b8"
   dependencies:
@@ -3394,6 +3395,7 @@ axios@^0.16.2:
 axios@^0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
+  integrity sha1-MtU+SFHv3AoRmTts0AB4nXDAUQI=
   dependencies:
     follow-redirects "^1.3.0"
     is-buffer "^1.1.5"
@@ -6150,6 +6152,7 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
 console-feed@^2.8.5:
   version "2.8.5"
   resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.5.tgz#d91c360faf79c73fbc774fc5175b9ebbe6e1ebb4"
+  integrity sha512-cUClwZUScfP/7OwOxu/7f+AuVr8mCNquG5s0UPiLq1VHI+TBoIeYOM7sjsHthJfmBNbOWf/B5NNOqP43OrHMBw==
   dependencies:
     emotion "^9.1.1"
     emotion-theming "^9.0.0"
@@ -7669,10 +7672,6 @@ dotenv@^4.0.0:
 dotenv@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
-
-dotenv@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
 
 download@^4.0.0, download@^4.1.2:
   version "4.4.3"
@@ -9219,6 +9218,7 @@ follow-redirects@^1.0.0, follow-redirects@^1.2.3:
 follow-redirects@^1.3.0:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.6.1.tgz#514973c44b5757368bad8bddfe52f81f015c94cb"
+  integrity sha512-t2JCjbzxQpWvbhts3l6SH1DKzSrx8a+SsaVf4h6bG4kOXUuPYS/kg2Lr4gQSb7eemaHqJkOThF1BGyjlUkO1GQ==
   dependencies:
     debug "=3.1.0"
 
@@ -9547,6 +9547,7 @@ gatsby-plugin-react-helmet@^3.0.3:
 gatsby-plugin-remove-trailing-slashes@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/gatsby-plugin-remove-trailing-slashes/-/gatsby-plugin-remove-trailing-slashes-2.0.6.tgz#fd73291fc89aaecae97834269728d84699872867"
+  integrity sha512-q+bE/iPAD6uA8otMmIatKTs9xuH4Zu/LUX58h3z9duwNMVtjtPVi3q/HHL5kH4DLGdEUJBavfNIcZUE0ehM96w==
   dependencies:
     "@babel/runtime" "^7.0.0"
 
@@ -9632,12 +9633,6 @@ gatsby-remark-prismjs@^1.2.11:
     prismjs "^1.12.2"
     unist-util-visit "^1.3.0"
 
-gatsby-source-airtable@^2.0.2:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/gatsby-source-airtable/-/gatsby-source-airtable-2.0.3.tgz#e9b47c30eed16fd99e8539d32f0a95760f2b7dad"
-  dependencies:
-    airtable "^0.5.6"
-
 gatsby-source-filesystem@^2.0.10:
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/gatsby-source-filesystem/-/gatsby-source-filesystem-2.0.10.tgz#9571a8d94065e46cb306d8f53eb56dd8bcbd2948"
@@ -9660,6 +9655,7 @@ gatsby-source-filesystem@^2.0.10:
 gatsby-source-medium@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/gatsby-source-medium/-/gatsby-source-medium-2.0.2.tgz#d17c488c5525f1bfc5770d19380566f035f849a2"
+  integrity sha512-vIXNOAmxQd9Y6/n7a08ja7qfK8fFjsWIHAjo8S9hijy02C8XvYotvXkfc1S9GTFdudkrl409YFykMFFHKdodng==
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.18.0"
@@ -19459,6 +19455,7 @@ sha.js@^2.4.0, sha.js@^2.4.8:
 sha1@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/sha1/-/sha1-1.1.1.tgz#addaa7a93168f393f19eb2b15091618e2700f848"
+  integrity sha1-rdqnqTFo85PxnrKxUJFhjicA+Eg=
   dependencies:
     charenc ">= 0.0.1"
     crypt ">= 0.0.1"
@@ -20703,10 +20700,11 @@ terser-webpack-plugin@^1.0.2, terser-webpack-plugin@^1.1.0:
     webpack-sources "^1.1.0"
     worker-farm "^1.5.2"
 
-terser@^3.14.1, uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9, "uglify-es@npm:terser":
-  name uglify-es
+terser@^3.14.1, uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9:
+  name terser
   version "3.14.1"
   resolved "https://registry.yarnpkg.com/terser/-/terser-3.14.1.tgz#cc4764014af570bc79c79742358bd46926018a32"
+  integrity sha512-NSo3E99QDbYSMeJaEk9YW2lTg3qS9V0aKGlb+PlOrei1X02r1wSBHCNX/O+yeTRFSWPKPIGj6MqvvdqV4rnVGw==
   dependencies:
     commander "~2.17.1"
     source-map "~0.6.1"
