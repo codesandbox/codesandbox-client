@@ -383,7 +383,7 @@ export function receiveTransformation({ ot, props, live }) {
 }
 
 export function syncModuleState({ live }) {
-  live.send('live:module_state');
+  live.send('live:module_state', {});
 }
 
 export function applyTransformation({ props, state }) {

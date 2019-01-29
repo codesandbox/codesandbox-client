@@ -436,10 +436,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         sendTransforms(operation);
       } catch (e) {
         // Something went wrong while composing the operation, so we're opting for a full sync
-
         console.error(e);
-        // eslint-disable-next-line
-        console.log('Got error, syncing state...');
+
         this.props.onModuleStateMismatch();
       }
 
@@ -579,9 +577,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           return;
         }
 
-        const code = operation.apply(module.code || '');
-        if (this.props.onChange) {
-          this.props.onChange(code, module.shortid);
+        try {
+          const code = operation.apply(module.code || '');
+          if (this.props.onChange) {
+            this.props.onChange(code, module.shortid);
+          }
+        } catch (e) {
+          // Something went wrong while applying
+          this.props.onModuleStateMismatch();
         }
         return;
       }
