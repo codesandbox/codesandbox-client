@@ -92,18 +92,18 @@ export default class Explore extends React.PureComponent {
     });
   };
 
-  selectSandbox = ({ id, title, description, screenshotUrl }) => {
-    this.setState({
-      selectedSandbox: { id, title, description, screenshotUrl },
-    });
-  };
-
   openPreviousSandbox = currentIndex => () => {
     this.openSandbox(currentIndex - 1);
   };
 
   openNextSandbox = currentIndex => () => {
     this.openSandbox(currentIndex + 1);
+  };
+
+  selectSandbox = ({ id, title, description, screenshotUrl }) => {
+    this.setState({
+      selectedSandbox: { id, title, description, screenshotUrl },
+    });
   };
 
   navigateToNextSandbox = () => {
