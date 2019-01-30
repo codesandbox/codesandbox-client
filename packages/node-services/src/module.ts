@@ -1,4 +1,4 @@
-import resolve from 'resolve';
+import * as resolve from 'resolve';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -107,7 +107,7 @@ export default class Module {
 
   static evaluate(global: any, content: string) {
     // Don't let the module think that we're in an AMD env.
-    const oldamd = self.define;
+    const oldamd = (self as any).define;
     (self as any).define = null;
 
     const globalParams = Object.keys(global).join(', ');
@@ -118,7 +118,7 @@ export default class Module {
       Object.keys(global).map(m => global[m])
     );
 
-    self.define = oldamd;
+    (self as any).define = oldamd;
     return result;
   }
 
@@ -273,6 +273,7 @@ export default class Module {
     var module = new Module(filename, parent);
 
     if (isMain) {
+      // @ts-ignore
       process.mainModule = module;
       module.id = '.';
     }

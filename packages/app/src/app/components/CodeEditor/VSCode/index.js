@@ -313,7 +313,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               return;
             }
 
-            const path = activeEditor.model.uri.path;
+            const path = activeEditor._modelData.model.uri.path;
             try {
               const module = resolveModule(
                 path.replace(/^\/sandbox/, ''),

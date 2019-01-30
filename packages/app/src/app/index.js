@@ -147,7 +147,11 @@ window.BrowserFS.configure(
       '/sandbox': {
         fs: 'CodeSandboxEditorFS',
         options: {
-          manager: controller,
+          api: {
+            getState: () => ({
+              modulesByPath: controller.getState().editor.modulesByPath,
+            }),
+          },
         },
       },
       '/sandbox/node_modules': {
@@ -201,7 +205,6 @@ window.BrowserFS.configure(
       if (isVSCode) {
         import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker').then(
           ExtHostWorkerLoader => {
-            console.log(ExtHostWorkerLoader);
             child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
             // child_process.preloadWorker('/vs/bootstrap-fork');
           }
@@ -211,3 +214,11 @@ window.BrowserFS.configure(
     });
   }
 );
+
+setInterval(() => {
+  self.postMessage({
+    $broadcast: true,
+    $type: 'file-sync',
+    $data: controller.getState().editor.modulesByPath,
+  });
+}, 1000);

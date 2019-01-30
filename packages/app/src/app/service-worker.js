@@ -1,7 +1,7 @@
 /* eslint-env service-worker */
 /* global workbox, BrowserFS */
 
-console.log('Hello from new service worker v37!');
+console.log('Hello from new service worker v38!');
 
 self.importScripts(`/static/browserfs2/browserfs.min.js`);
 
@@ -120,10 +120,18 @@ self.addEventListener('fetch', event => {
     if (path.startsWith(ROOT_URL)) {
       const fpath = path.replace(ROOT_URL, '');
 
-      const clientId = event.clientId;
+      let clientId = event.clientId;
 
       return event.respondWith(
-        new Promise(resolve => {
+        new Promise(async (resolve, reject) => {
+          if (!clientId) {
+            const clients = await self.clients.matchAll();
+
+            if (clients.length === 1) {
+              clientId = clients[0].id;
+            }
+          }
+
           self.clients.get(clientId).then(client => {
             if (client) {
               const messageChannel = new MessageChannel();
@@ -136,6 +144,8 @@ self.addEventListener('fetch', event => {
               client.postMessage({ sw: true, path: fpath }, [
                 messageChannel.port2,
               ]);
+            } else {
+              reject(new Error('Client not found'));
             }
           });
         })

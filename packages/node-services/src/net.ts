@@ -4,10 +4,11 @@ const SOCKET_IDENTIFIER = 'node-socket';
 
 export class Socket extends EventEmitter {
   public destroyed = false;
+  // @ts-ignore
   private encoding: string;
 
   constructor(
-    private target: Window,
+    private target: Worker,
     private channel: string,
     private isWorker: boolean
   ) {
@@ -47,7 +48,7 @@ export class Socket extends EventEmitter {
     self.removeEventListener('message', this.defaultListener.bind(this));
     this.destroyed = true;
 
-    if (this.isWorker) {
+    if (typeof this.target.terminate !== 'undefined') {
       this.target.terminate();
     }
   }
@@ -62,7 +63,6 @@ export class Socket extends EventEmitter {
     const message = {
       $type: SOCKET_IDENTIFIER,
       $channel: this.channel,
-      $sing: true,
       data: JSON.stringify(buffer),
     };
 
@@ -95,13 +95,13 @@ export class Server extends EventEmitter {
       ) {
         this.connected = true;
 
-        this.socket = new Socket(e.source || self, listenPath);
+        this.socket = new Socket(e.source || self, listenPath, false);
         this.emit('connection', this.socket);
       }
     };
 
     this.listenerFunctions.push(listenerFunction);
-    self.addEventListener('message', listenerFunction);
+    self.addEventListener('message', listenerFunction as EventListener);
 
     if (listenCallback) {
       listenCallback();
@@ -228,6 +228,7 @@ function createServer(...args: any[]) {
 }
 
 function createConnection(pipeName: string, cb?: Function) {
+  // @ts-ignore
   self.postMessage({
     $type: 'node-server',
     $channel: pipeName,

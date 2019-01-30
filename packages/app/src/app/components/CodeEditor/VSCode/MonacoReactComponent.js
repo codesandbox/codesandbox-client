@@ -46,7 +46,7 @@ class MonacoEditor extends React.PureComponent {
   };
 
   afterViewInit = () => {
-    setSocketURL(`wss://${this.props.id}.sse.codesandbox.stream/cs-sse-ext`);
+    // setSocketURL(`wss://${this.props.id}.sse.codesandbox.stream/cs-sse-ext`);
     // setSocketURL(`ws://localhost:7070`);
 
     // eslint-disable-next-line global-require

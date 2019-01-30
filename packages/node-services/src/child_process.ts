@@ -166,10 +166,15 @@ function fork(path: string, argv: string[], processOpts: IProcessOpts) {
     return new NullChildProcess();
   }
 
-  self.addEventListener('message', e => {
+  self.addEventListener('message', ((e: MessageEvent) => {
     const { data } = e;
 
-    if (!data.$sang && data.$type !== 'message') {
+    if (data.$broadcast) {
+      worker.postMessage(data);
+      return;
+    }
+
+    if (!data.$sang && data.$type) {
       const newData = {
         $sang: true,
         $data: data,
@@ -177,17 +182,18 @@ function fork(path: string, argv: string[], processOpts: IProcessOpts) {
 
       worker.postMessage(newData);
     }
-  });
+  }) as EventListener);
 
   worker.addEventListener('message', e => {
     const { data } = e;
 
-    if (!data.$sang && data.$type !== 'message') {
+    if (!data.$sang && data.$type) {
       const newData = {
         $sang: true,
         $data: data,
       };
 
+      // @ts-ignore
       self.postMessage(newData);
     }
   });

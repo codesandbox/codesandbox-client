@@ -1,17 +1,18 @@
 import * as child_process from 'node-services/lib/child_process';
-import DefaultWorkLoader from 'worker-loader?publicPath=/&name=sub-dynamic-worker.[hash:8].worker.js!../sub-bootstrap';
+import SubWorkLoader from 'worker-loader?publicPath=/&name=sub-dynamic-worker.[hash:8].worker.js!../sub-bootstrap';
 
 require('core-js/fn/string/starts-with');
 require('core-js/fn/string/ends-with');
 require('core-js/fn/array/find');
 require('core-js/fn/promise');
 
-child_process.addDefaultForkHandler(false);
+child_process.addDefaultForkHandler(SubWorkLoader);
 
 self.importScripts(
   `${process.env.CODESANDBOX_HOST}/static/browserfs2/browserfs.js`
 );
 
+// We need to initialize some node environment stubs
 self.BrowserFS = BrowserFS;
 self.process = BrowserFS.BFSRequire('process');
 self.process.platform = 'linux';

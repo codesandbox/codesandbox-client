@@ -16,6 +16,8 @@ import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
 import Tabs from './Tabs';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
+import SplitPane from 'react-split-pane';
+import { ContentTab } from './elements';
 
 const settings = store =>
   ({
@@ -373,9 +375,7 @@ class EditorPreview extends React.Component<Props, State> {
       ? absoluteWidth / 4 > absoluteWidth - windowRightSize
       : false;
 
-    let editorWidth = isVerticalMode
-      ? absoluteWidth
-      : absoluteWidth - windowRightSize;
+    let editorWidth = isVerticalMode ? absoluteWidth : absoluteWidth;
     let editorHeight = isVerticalMode ? y + 16 : absoluteHeight;
 
     if (!windowVisible) {
@@ -427,113 +427,110 @@ class EditorPreview extends React.Component<Props, State> {
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          {!preferences.settings.experimentVSCode &&
-            (preferences.settings.zenMode ? (
-              <FilePath
-                modules={sandbox.modules}
-                directories={sandbox.directories}
+          <SplitPane
+            onDragFinished={() => {
+              this.props.signals.editor.resizingStopped();
+            }}
+            onDragStarted={() => {
+              this.props.signals.editor.resizingStarted();
+            }}
+            split="vertical"
+            defaultSize={'50%'}
+          >
+            <div
+              ref={this.getBounds}
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flex: 1,
+                height: '100%',
+                width: '100%',
+                marginTop: 0,
+              }}
+            >
+              <CodeEditor
+                onInitialized={this.onInitialized}
+                sandbox={sandbox}
+                currentTab={currentTab}
                 currentModule={currentModule}
-                workspaceHidden={!store.workspace.openedWorkspaceItem}
-                toggleWorkspace={() => {
-                  signals.workspace.toggleCurrentWorkspaceItem();
+                isModuleSynced={store.editor.isModuleSynced(
+                  currentModule.shortid
+                )}
+                width={editorWidth}
+                height={editorHeight}
+                absoluteWidth={absoluteWidth}
+                absoluteHeight={absoluteHeight}
+                settings={settings(store)}
+                sendTransforms={this.sendTransforms}
+                readOnly={isReadOnly()}
+                isLive={store.live.isLive}
+                onCodeReceived={signals.live.onCodeReceived}
+                onSelectionChanged={signals.live.onSelectionChanged}
+                onNpmDependencyAdded={name => {
+                  if (sandbox.owned) {
+                    signals.editor.addNpmDependency({ name, isDev: true });
+                  }
                 }}
-                exitZenMode={() =>
-                  this.props.signals.preferences.settingChanged({
-                    name: 'zenMode',
-                    value: false,
+                onChange={(code, moduleShortid) =>
+                  signals.editor.codeChanged({
+                    code,
+                    moduleShortid: moduleShortid || currentModule.shortid,
+                    noLive: true,
                   })
                 }
-              />
-            ) : (
-              <Tabs />
-            ))}
-          <div
-            ref={this.getBounds}
-            style={{
-              position: 'relative',
-              display: 'flex',
-              flex: 1,
-              marginTop:
-                preferences.settings.experimentVSCode ||
-                preferences.settings.zenMode
-                  ? 0
-                  : '2.5rem',
-            }}
-          >
-            <CodeEditor
-              onInitialized={this.onInitialized}
-              sandbox={sandbox}
-              currentTab={currentTab}
-              currentModule={currentModule}
-              isModuleSynced={store.editor.isModuleSynced(
-                currentModule.shortid
-              )}
-              width={editorWidth}
-              height={editorHeight}
-              absoluteWidth={absoluteWidth}
-              absoluteHeight={absoluteHeight}
-              settings={settings(store)}
-              sendTransforms={this.sendTransforms}
-              readOnly={isReadOnly()}
-              isLive={store.live.isLive}
-              onCodeReceived={signals.live.onCodeReceived}
-              onSelectionChanged={signals.live.onSelectionChanged}
-              onNpmDependencyAdded={name => {
-                if (sandbox.owned) {
-                  signals.editor.addNpmDependency({ name, isDev: true });
+                onModuleChange={moduleId =>
+                  signals.editor.moduleSelected({ id: moduleId })
                 }
+                onSave={code =>
+                  signals.editor.codeSaved({
+                    code,
+                    moduleShortid: currentModule.shortid,
+                  })
+                }
+                tsconfig={
+                  store.editor.parsedConfigurations.typescript &&
+                  store.editor.parsedConfigurations.typescript.parsed
+                }
+              />
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
               }}
-              onChange={(code, moduleShortid) =>
-                signals.editor.codeChanged({
-                  code,
-                  moduleShortid: moduleShortid || currentModule.shortid,
-                  noLive: true,
-                })
-              }
-              onModuleChange={moduleId =>
-                signals.editor.moduleSelected({ id: moduleId })
-              }
-              onSave={code =>
-                signals.editor.codeSaved({
-                  code,
-                  moduleShortid: currentModule.shortid,
-                })
-              }
-              tsconfig={
-                store.editor.parsedConfigurations.typescript &&
-                store.editor.parsedConfigurations.typescript.parsed
-              }
-            />
-
-            <Preview
-              runOnClick={this.props.store.preferences.runOnClick}
-              width={absoluteWidth}
-              height={absoluteHeight}
-            />
-          </div>
-
-          <DevTools
-            ref={component => {
-              if (component) {
-                this.devtools = component;
-              }
-            }}
-            setDragging={dragging => {
-              if (dragging) {
-                this.props.signals.editor.resizingStarted();
-              } else {
-                this.props.signals.editor.resizingStopped();
-              }
-            }}
-            sandboxId={sandbox.id}
-            template={sandbox.template}
-            shouldExpandDevTools={store.preferences.showDevtools}
-            zenMode={preferences.settings.zenMode}
-            setDevToolsOpen={open =>
-              this.props.signals.preferences.setDevtoolsOpen({ open })
-            }
-            owned={sandbox.owned}
-          />
+            >
+              <ContentTab>Browser</ContentTab>
+              <Preview
+                runOnClick={this.props.store.preferences.runOnClick}
+                width={absoluteWidth}
+                height={absoluteHeight}
+              />
+              <DevTools
+                ref={component => {
+                  if (component) {
+                    this.devtools = component;
+                  }
+                }}
+                setDragging={dragging => {
+                  if (dragging) {
+                    this.props.signals.editor.resizingStarted();
+                  } else {
+                    this.props.signals.editor.resizingStopped();
+                  }
+                }}
+                sandboxId={sandbox.id}
+                template={sandbox.template}
+                shouldExpandDevTools={store.preferences.showDevtools}
+                zenMode={preferences.settings.zenMode}
+                setDevToolsOpen={open =>
+                  this.props.signals.preferences.setDevtoolsOpen({ open })
+                }
+                owned={sandbox.owned}
+              />
+            </div>
+          </SplitPane>
         </div>
       </ThemeProvider>
     );

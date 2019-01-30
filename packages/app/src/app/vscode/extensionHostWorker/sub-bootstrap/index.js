@@ -11,6 +11,7 @@ self.importScripts(
   `${process.env.CODESANDBOX_HOST}/static/browserfs2/browserfs.min.js`
 );
 
+// We need to initialize some node environment stubs
 self.BrowserFS = BrowserFS;
 self.process = BrowserFS.BFSRequire('process');
 self.process.platform = 'linux';

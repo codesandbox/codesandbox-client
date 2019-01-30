@@ -256,88 +256,40 @@ class Preview extends Component<Props, State> {
     const hide = content !== 'browser';
     const completelyHidden = !content;
 
-    return (
-      <FlyingContainer
-        hide={completelyHidden}
-        onPositionChange={this.resetAlignment}
-      >
-        {({ resize }) => {
-          const alignRight = e => {
-            if (e) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
-            resize(this.getRightCoordinates());
-            this.setState({ aligned: 'right' });
-            this.props.signals.editor.editorSizeUpdated({
-              editorSize: 50,
-            });
-          };
-          const alignBottom = e => {
-            if (e) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
-            resize(this.getBottomCoordinates());
-            this.setState({ aligned: 'bottom' });
-            this.props.signals.editor.editorSizeUpdated({
-              editorSize: 50,
-            });
-          };
-
-          return (
-            <Fragment>
-              {content === 'tests' && (
-                <Tests alignRight={alignRight} alignBottom={alignBottom} />
-              )}
-              {content === 'console' && (
-                <Console alignRight={alignRight} alignBottom={alignBottom} />
-              )}
-              {this.state.running ? (
-                <BasePreview
-                  onInitialized={this.onPreviewInitialized}
-                  sandbox={store.editor.currentSandbox}
-                  extraModules={{ '/package.json': packageJSON }}
-                  currentModule={store.editor.currentModule}
-                  settings={store.preferences.settings}
-                  initialPath={store.editor.initialPath}
-                  isInProjectView={store.editor.isInProjectView}
-                  onClearErrors={() => signals.editor.errorsCleared()}
-                  onAction={action =>
-                    signals.editor.previewActionReceived({ action })
-                  }
-                  alignDirection={this.state.aligned}
-                  hide={hide}
-                  noPreview={completelyHidden}
-                  onOpenNewWindow={() =>
-                    signals.preferences.viewModeChanged({
-                      showEditor: true,
-                      showPreview: false,
-                    })
-                  }
-                  onToggleProjectView={() =>
-                    signals.editor.projectViewToggled()
-                  }
-                  showDevtools={store.preferences.showDevtools}
-                  isResizing={store.editor.isResizing}
-                  alignRight={alignRight}
-                  alignBottom={alignBottom}
-                  setServerStatus={(status: string) => {
-                    signals.server.statusChanged({ status });
-                  }}
-                  syncSandbox={signals.files.syncSandbox}
-                />
-              ) : (
-                <RunOnClick
-                  onClick={() => {
-                    this.setState({ running: true });
-                  }}
-                />
-              )}
-            </Fragment>
-          );
+    return this.state.running ? (
+      <BasePreview
+        onInitialized={this.onPreviewInitialized}
+        sandbox={store.editor.currentSandbox}
+        extraModules={{ '/package.json': packageJSON }}
+        currentModule={store.editor.currentModule}
+        settings={store.preferences.settings}
+        initialPath={store.editor.initialPath}
+        isInProjectView={store.editor.isInProjectView}
+        onClearErrors={() => signals.editor.errorsCleared()}
+        onAction={action => signals.editor.previewActionReceived({ action })}
+        alignDirection={this.state.aligned}
+        hide={hide}
+        noPreview={completelyHidden}
+        onOpenNewWindow={() =>
+          signals.preferences.viewModeChanged({
+            showEditor: true,
+            showPreview: false,
+          })
+        }
+        onToggleProjectView={() => signals.editor.projectViewToggled()}
+        showDevtools={store.preferences.showDevtools}
+        isResizing={store.editor.isResizing}
+        setServerStatus={(status: string) => {
+          signals.server.statusChanged({ status });
         }}
-      </FlyingContainer>
+        syncSandbox={signals.files.syncSandbox}
+      />
+    ) : (
+      <RunOnClick
+        onClick={() => {
+          this.setState({ running: true });
+        }}
+      />
     );
   }
 }

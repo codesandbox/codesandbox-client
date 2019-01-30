@@ -22,6 +22,4 @@ self.clearImmediate = id => self.clearTimeout(id);
 
 child_process.preloadWorker('/stub');
 
-console.log('pap');
-
 require('./worker');

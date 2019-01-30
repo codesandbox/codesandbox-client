@@ -46,15 +46,12 @@ BrowserFS.configure(
     fs = BrowserFS.BFSRequire('fs');
 
     self.addEventListener('message', e => {
-      console.log('HEY HO LETS GO');
       const { dependency, version } = e.data;
 
       fetchAndAddDependencies(dependency, version, paths => {
-        console.log('writing', paths);
         Object.keys(paths).forEach(p => {
           const pathToWrite = '/sandbox/' + p;
 
-          console.log('bliep', pathToWrite);
           // Only sync with browsersfs if the file amount is not too high, otherwise we'll
           // clog all resources of browserfs
 

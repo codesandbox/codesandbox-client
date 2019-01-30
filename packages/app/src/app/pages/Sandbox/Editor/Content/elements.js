@@ -12,3 +12,17 @@ export const FullSize = styled.div`
   background-color: ${props =>
     props.theme['editor.background'] || 'transparent'};
 `;
+
+export const ContentTab = styled.div`
+  height: 35px;
+  display: flex;
+  width: 100%;
+  background-color: ${props =>
+    props.theme['editorGroupHeader.tabsBackground'] ||
+    props.theme.background()};
+
+  align-items: center;
+  padding: 0 1rem;
+
+  color: white;
+`;
