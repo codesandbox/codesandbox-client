@@ -196,6 +196,7 @@ class MonacoEditor extends React.PureComponent {
           textFileService,
           editorPart: EditorPart,
           editorService,
+          codeEditorService,
         };
         if (process.env.NODE_ENV === 'development') {
           // eslint-disable-next-line

@@ -44,7 +44,14 @@ export default function initialize() {
                 'babel-plugin-macros',
                 ['proposal-class-properties', { loose: true }],
                 ['proposal-object-rest-spread', { useBuiltIns: true }],
-                'transform-runtime',
+                [
+                  'transform-runtime',
+                  {
+                    corejs: false,
+                    helpers: true,
+                    regenerator: true,
+                  },
+                ],
                 'syntax-dynamic-import',
               ],
               presets: [

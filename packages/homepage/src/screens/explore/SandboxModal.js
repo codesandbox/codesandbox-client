@@ -30,7 +30,7 @@ import {
   TemplateLogo,
   StyledRightArrow,
   StyledLeftArrow,
-  SandboxInfoContianer,
+  SandboxInfoContainer,
 } from './_SandboxModal.elements';
 
 export default class SandboxModal extends React.PureComponent {
@@ -123,6 +123,8 @@ export default class SandboxModal extends React.PureComponent {
   listenForInitialized = e => {
     if (e && e.data === 'ready') {
       this.resolveFrameInitializedPromise();
+
+      this.fetchSandbox();
     }
   };
 
@@ -191,7 +193,7 @@ export default class SandboxModal extends React.PureComponent {
             )}
           </Spring>
 
-          <SandboxInfoContianer>
+          <SandboxInfoContainer>
             <SandboxInfo>
               <SandboxTitle>{this.props.title}</SandboxTitle>
               <SandboxDescription>{this.props.description}</SandboxDescription>
@@ -218,7 +220,7 @@ export default class SandboxModal extends React.PureComponent {
                 </Spring>
               )}
             </StatsContainer>
-          </SandboxInfoContianer>
+          </SandboxInfoContainer>
           <Footer>
             {sandbox ? (
               <FooterInfo>

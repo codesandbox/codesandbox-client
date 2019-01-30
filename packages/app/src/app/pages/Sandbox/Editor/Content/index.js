@@ -386,8 +386,13 @@ class EditorPreview extends React.Component<Props, State> {
     const template = getTemplateDefinition(sandbox.template);
 
     const isReadOnly = () => {
-      if (store.live.isCurrentEditor) {
-        return false;
+      if (store.live.isLive) {
+        if (
+          !store.live.isCurrentEditor ||
+          (store.live.roomInfo && store.live.roomInfo.ownerIds.length === 0)
+        ) {
+          return true;
+        }
       }
 
       if (template.isServer) {
@@ -396,7 +401,7 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
 
-      return store.live.isLive;
+      return false;
     };
 
     return (
@@ -481,6 +486,7 @@ class EditorPreview extends React.Component<Props, State> {
                 onModuleChange={moduleId =>
                   signals.editor.moduleSelected({ id: moduleId })
                 }
+                onModuleStateMismatch={signals.live.onModuleStateMismatch}
                 onSave={code =>
                   signals.editor.codeSaved({
                     code,

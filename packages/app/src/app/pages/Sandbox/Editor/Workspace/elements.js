@@ -198,6 +198,10 @@ export const Description = styled.div`
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 `;
 
+export const ErrorDescription = styled(Description)`
+  color: ${props => props.theme.red};
+`;
+
 export const VersionContainer = styled.div`
   display: inline-flex;
   align-items: center;

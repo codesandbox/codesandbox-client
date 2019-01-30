@@ -64,6 +64,7 @@ export default {
     y: types.number,
   }),
   currentModal: types.maybeNull(types.string),
+  currentModalMessage: types.maybeNull(types.string),
   uploadedFiles: types.maybeNull(
     types.array(
       types.model({

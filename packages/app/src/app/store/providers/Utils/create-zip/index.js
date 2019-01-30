@@ -6,6 +6,8 @@ import type { Sandbox, Module, Directory } from 'common/types';
 import { react, reactTs, vue, preact, svelte } from 'common/templates/index';
 import { resolveModule } from 'common/sandbox/modules';
 
+export const BLOB_ID = 'blob-url://';
+
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
 const JSTag = (resource: string) =>
@@ -130,19 +132,31 @@ export function createPackageJSON(
   );
 }
 
-export async function createFile(module: Module, zip) {
+export async function createFile(
+  module: Module,
+  zip: JSZip,
+  downloadBlobs: boolean = true
+) {
   if (module.isBinary) {
-    const code = await window.fetch(module.code).then(x => {
-      const contentType = x.headers['Content-Type'];
+    if (downloadBlobs) {
+      const code = await window.fetch(module.code).then(x => {
+        const contentType = x.headers['Content-Type'];
 
-      if (contentType && contentType.startsWith('text/plain')) {
-        return x.text();
-      }
+        if (contentType && contentType.startsWith('text/plain')) {
+          return x.text();
+        }
 
-      return x.blob();
-    });
+        return x.blob();
+      });
 
-    return zip.file(module.title, code);
+      return zip.file(module.title, code);
+    }
+
+    // Mark that the module is a link to a blob
+    const code = `${BLOB_ID}${module.code}`;
+    const file = zip.file(module.title, code);
+
+    return file;
   }
 
   return zip.file(module.title, module.code);
@@ -152,27 +166,31 @@ export async function createDirectoryWithFiles(
   modules: Array<Module>,
   directories: Array<Directory>,
   directory: Directory,
-  zip
+  zip: JSZip,
+  downloadBlobs: boolean = true
 ) {
   const newZip = zip.folder(directory.title);
 
   await Promise.all(
     modules
       .filter(x => x.directoryShortid === directory.shortid)
-      .map(x => createFile(x, newZip))
+      .map(x => createFile(x, newZip, downloadBlobs))
   );
 
   await Promise.all(
     directories
       .filter(x => x.directoryShortid === directory.shortid)
-      .map(x => createDirectoryWithFiles(modules, directories, x, newZip))
+      .map(x =>
+        createDirectoryWithFiles(modules, directories, x, newZip, downloadBlobs)
+      )
   );
 }
 
 export async function createZip(
   sandbox: Sandbox,
   modules: Array<Module>,
-  directories: Array<Directory>
+  directories: Array<Directory>,
+  downloadBlobs: boolean = true
 ) {
   const zip = new JSZip();
 
@@ -186,32 +204,39 @@ export async function createZip(
     // This is a full project, with all files already in there. We need to create
     // a zip by just adding all existing files to it (downloading binaries too).
     promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+      generator =>
+        generator.default(zip, sandbox, modules, directories, downloadBlobs)
     );
   } else if (sandbox.template === react.name) {
     promise = import(/* webpackChunkName: 'create-react-app-zip' */ './create-react-app').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+      generator =>
+        generator.default(zip, sandbox, modules, directories, downloadBlobs)
     );
   } else if (sandbox.template === reactTs.name) {
     promise = import(/* webpackChunkName: 'create-react-app-typescript-zip' */ './create-react-app-typescript').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+      generator =>
+        generator.default(zip, sandbox, modules, directories, downloadBlobs)
     );
   } else if (sandbox.template === vue.name) {
     promise = import(/* webpackChunkName: 'vue-zip' */ './vue-cli').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+      generator =>
+        generator.default(zip, sandbox, modules, directories, downloadBlobs)
     );
   } else if (sandbox.template === preact.name) {
     promise = import(/* webpackChunkName: 'preact-zip' */ './preact-cli').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+      generator =>
+        generator.default(zip, sandbox, modules, directories, downloadBlobs)
     );
   } else if (sandbox.template === svelte.name) {
     promise = import(/* webpackChunkName: 'svelte-zip' */ './svelte').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+      generator =>
+        generator.default(zip, sandbox, modules, directories, downloadBlobs)
     );
   } else {
     // If no specific zip generator is found we will default to the full generator
     promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
-      generator => generator.default(zip, sandbox, modules, directories)
+      generator =>
+        generator.default(zip, sandbox, modules, directories, downloadBlobs)
     );
   }
 

@@ -196,7 +196,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.currentDirectoryShortid = this.currentModule.directoryShortid;
 
       const editor = this.editor.getActiveCodeEditor();
-      if (editor && editor.getValue() === (this.currentModule.code || '')) {
+      if (editor && editor.getValue(1) === (this.currentModule.code || '')) {
         const model = editor.model;
         const newPath = getModulePath(
           this.sandbox.modules,
@@ -237,7 +237,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   provideDocumentFormattingEdits = (model, options, token) =>
     prettify(
       model.uri.fsPath,
-      () => model.getValue(),
+      () => model.getValue(1),
       this.getPrettierConfig(),
       () => false,
       token
@@ -335,7 +335,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               this.handleChange(module.shortid, module.title);
             } catch (err) {
               if (process.env.NODE_ENV === 'development') {
-                console.error('catched', err);
+                console.error('caught', err);
               }
             }
           }
@@ -426,10 +426,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   setCompilerOptions = () => {
     const hasNativeTypescript = this.hasNativeTypescript();
     const existingConfig = this.tsconfig ? this.tsconfig.compilerOptions : {};
+    const jsxFactory = existingConfig.jsxFactory || 'React.createElement';
+    const reactNamespace = existingConfig.reactNamespace || 'React';
 
     const compilerDefaults = {
-      jsxFactory: 'React.createElement',
-      reactNamespace: 'React',
+      jsxFactory,
+      reactNamespace,
       jsx: this.monaco.languages.typescript.JsxEmit.React,
       target: this.monaco.languages.typescript.ScriptTarget.ES2016,
       allowNonTsExtensions: !hasNativeTypescript,
@@ -518,14 +520,21 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (sendTransforms && changeEvent.changes) {
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
-      const { operation, newCode } = eventToTransform(
-        changeEvent,
-        this.liveOperationCode
-      );
+      try {
+        const { operation, newCode } = eventToTransform(
+          changeEvent,
+          this.liveOperationCode
+        );
 
-      this.liveOperationCode = newCode;
+        this.liveOperationCode = newCode;
 
-      sendTransforms(operation);
+        sendTransforms(operation);
+      } catch (e) {
+        // Something went wrong while composing the operation, so we're opting for a full sync
+        console.error(e);
+
+        this.props.onModuleStateMismatch();
+      }
 
       requestAnimationFrame(() => {
         this.liveOperationCode = '';
@@ -567,12 +576,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     dependencies: $PropertyType<Props, 'dependencies'>
   ): Promise<null> =>
     new Promise(resolve => {
-      if (this.modelContentChangedListener) {
-        this.modelContentChangedListener.dispose();
-      }
-      if (this.modelSelectionListener) {
-        this.modelSelectionListener.dispose();
-      }
       this.sandbox = newSandbox;
       this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
@@ -658,25 +661,54 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     Object.keys(operationsJSON).forEach(moduleShortid => {
       const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
 
-      if (moduleShortid !== this.currentModule.shortid) {
-        // Apply the code to the current module code itself
-        const module = this.sandbox.modules.find(
-          m => m.shortid === moduleShortid
-        );
+      const moduleId = this.sandbox.modules.find(
+        m => m.shortid === moduleShortid
+      ).id;
 
+      const modulePath =
+        '/sandbox' +
+        getModulePath(this.sandbox.modules, this.sandbox.directories, moduleId);
+
+      const modelEditor = this.editor.editorService.editors.find(
+        editor => editor.resource && editor.resource.path === modulePath
+      );
+
+      // Apply the code to the current module code itself
+      const module = this.sandbox.modules.find(
+        m => m.shortid === moduleShortid
+      );
+
+      if (!modelEditor) {
         if (!module) {
           return;
         }
 
-        const code = operation.apply(module.code || '');
-        if (this.props.onChange) {
-          this.props.onChange(code, module.shortid);
+        try {
+          const code = operation.apply(module.code || '');
+          if (this.props.onChange) {
+            this.props.onChange(code, module.shortid);
+          }
+        } catch (e) {
+          // Something went wrong while applying
+          this.props.onModuleStateMismatch();
         }
         return;
       }
 
       this.liveOperationCode = '';
-      this.applyOperationToModel(operation);
+
+      modelEditor.textModelReference.then(model => {
+        this.applyOperationToModel(
+          operation,
+          false,
+          model.object.textEditorModel
+        );
+
+        this.props.onChange(
+          model.object.textEditorModel.getValue(1),
+          module.shortid
+        );
+      });
     });
   };
 
@@ -1191,9 +1223,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const activeEditor = this.editor.getActiveCodeEditor();
     if (!activeEditor) return '';
 
-    return activeEditor.getValue({
-      lineEnding: '\n',
-    });
+    return activeEditor.getValue(1);
   };
 
   handleSaveCode = async () => {

@@ -10,7 +10,10 @@ export const UserSelection = types.model({
   secondary: types.array(Selection),
 });
 
-const UserMetadata = types.model({
+const User = types.model({
+  id: types.string,
+  username: types.string,
+  avatarUrl: types.string,
   selection: types.maybeNull(UserSelection),
   currentModuleShortid: types.maybeNull(types.string),
   color: types.array(types.number),
@@ -25,27 +28,19 @@ export default {
   reconnecting: types.boolean,
   notificationsHidden: types.boolean,
   followingUserId: types.maybeNull(types.string),
-  deviceId: types.maybeNull(types.string),
+  liveUserId: types.maybeNull(types.string),
+
   roomInfo: types.maybeNull(
     types.model({
       startTime: types.maybeNull(types.number),
-      connectionCount: types.number,
       ownerIds: types.array(types.string),
       roomId: types.string,
       mode: types.string,
       chatEnabled: types.boolean,
       sandboxId: types.string,
       editorIds: types.array(types.string),
-      usersMetadata: types.map(UserMetadata),
-      version: types.string,
-      sourceOfTruthDeviceId: types.string,
-      users: types.array(
-        types.model({
-          id: types.string,
-          username: types.string,
-          avatarUrl: types.string,
-        })
-      ),
+      // version: types.string,
+      users: types.array(User),
       chat: types.model({
         messages: types.array(
           types.model({
@@ -54,7 +49,7 @@ export default {
             message: types.string,
           })
         ),
-        // We keep a separate map if user_id -> username for the case when
+        // We keep a separate map of user_id -> username for the case when
         // a user disconnects. We still need to keep track of the name.
         users: types.map(types.string),
       }),

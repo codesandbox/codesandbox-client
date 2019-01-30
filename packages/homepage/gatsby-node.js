@@ -186,13 +186,6 @@ exports.onCreateWebpackConfig = ({
     },
   ];
 
-  config.resolve.modules = [
-    ...config.resolve.modules,
-    'node_modules',
-    'src',
-    'standalone-packages',
-  ];
-
   // This will completely replace the webpack config with the modified object.
   actions.replaceWebpackConfig(config);
 };

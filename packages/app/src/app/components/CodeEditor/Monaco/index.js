@@ -275,7 +275,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // have the correct cursor pos no matter what
       const { onSelectionChanged, isLive } = this.props;
       // Reason 3 is update by mouse or arrow keys
-      if (isLive) {
+      if (isLive && editor.getModel()) {
         const lines = editor.getModel().getLinesContent() || [];
         const data = {
           primary: getSelection(lines, selectionChange.selection),
@@ -328,10 +328,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   setCompilerOptions = () => {
     const hasNativeTypescript = this.hasNativeTypescript();
     const existingConfig = this.tsconfig ? this.tsconfig.compilerOptions : {};
+    const jsxFactory = existingConfig.jsxFactory || 'React.createElement';
+    const reactNamespace = existingConfig.reactNamespace || 'React';
 
     const compilerDefaults = {
-      jsxFactory: 'React.createElement',
-      reactNamespace: 'React',
+      jsxFactory,
+      reactNamespace,
       jsx: this.monaco.languages.typescript.JsxEmit.React,
       target: this.monaco.languages.typescript.ScriptTarget.ES2016,
       allowNonTsExtensions: !hasNativeTypescript,
@@ -423,14 +425,21 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (sendTransforms && changeEvent.changes) {
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
-      const { operation, newCode } = eventToTransform(
-        changeEvent,
-        this.liveOperationCode
-      );
+      try {
+        const { operation, newCode } = eventToTransform(
+          changeEvent,
+          this.liveOperationCode
+        );
 
-      this.liveOperationCode = newCode;
+        this.liveOperationCode = newCode;
 
-      sendTransforms(operation);
+        sendTransforms(operation);
+      } catch (e) {
+        // Something went wrong while composing the operation, so we're opting for a full sync
+        console.error(e);
+
+        this.props.onModuleStateMismatch();
+      }
 
       requestAnimationFrame(() => {
         this.liveOperationCode = '';
@@ -568,9 +577,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           return;
         }
 
-        const code = operation.apply(module.code || '');
-        if (this.props.onChange) {
-          this.props.onChange(code, module.shortid);
+        try {
+          const code = operation.apply(module.code || '');
+          if (this.props.onChange) {
+            this.props.onChange(code, module.shortid);
+          }
+        } catch (e) {
+          // Something went wrong while applying
+          this.props.onModuleStateMismatch();
         }
         return;
       }

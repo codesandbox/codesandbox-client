@@ -63,6 +63,7 @@ export default Module({
       y: 0,
     },
     currentModal: undefined,
+    currentModalMessage: undefined,
     uploadedFiles: null,
     maxStorage: 0,
     usedStorage: 0,

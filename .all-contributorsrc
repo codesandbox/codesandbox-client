@@ -391,7 +391,7 @@
       "login": "coderberry",
       "name": "Eric Berry",
       "avatar_url": "https://avatars2.githubusercontent.com/u/12481?v=4",
-      "profile": "https://codesponsor.io",
+      "profile": "https://codefund.app",
       "contributions": [
         "code"
       ]
@@ -695,6 +695,15 @@
       "name": "Chiamaka Nwolisa",
       "avatar_url": "https://avatars3.githubusercontent.com/u/2737103?v=4",
       "profile": "https://www.chiamaka.xyz/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "shreeve",
+      "name": "Steve Shreeve",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/142875?s=460&v=4",
+      "profile": "https://github.com/shreeve",
       "contributions": [
         "code"
       ]

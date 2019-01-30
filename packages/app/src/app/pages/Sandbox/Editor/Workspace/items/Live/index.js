@@ -8,59 +8,72 @@ import {
   Description,
   WorkspaceInputContainer,
   WorkspaceSubtitle,
+  ErrorDescription,
 } from '../../elements';
 
-const Live = ({ signals, store }) => (
-  <div>
-    {store.live.isLive ? (
-      <LiveInfo
-        setMode={signals.live.onModeChanged}
-        addEditor={signals.live.onAddEditorClicked}
-        removeEditor={signals.live.onRemoveEditorClicked}
-        isOwner={store.live.isOwner}
-        isTeam={store.live.isTeam}
-        roomInfo={store.live.roomInfo}
-        ownerIds={store.live.roomInfo.ownerIds}
-        currentUserId={store.user.id}
-        reconnecting={store.live.reconnecting}
-        onSessionCloseClicked={signals.live.onSessionCloseClicked}
-        notificationsHidden={store.live.notificationsHidden}
-        toggleNotificationsHidden={signals.live.onToggleNotificationsHidden}
-        chatEnabled={store.live.roomInfo.chatEnabled}
-        toggleChatEnabled={() => {
-          signals.live.onChatEnabledChange({
-            enabled: !store.live.roomInfo.chatEnabled,
-          });
-        }}
-        setFollowing={signals.live.onFollow}
-        followingUserId={store.live.followingUserId}
-      />
-    ) : (
-      <React.Fragment>
-        <Description style={{ marginBottom: '1rem' }}>
-          Invite others to live edit this sandbox with you. We{"'"}re doing it
-          live!
-        </Description>
+const Live = ({ signals, store }) => {
+  const hasUnsyncedModules = !store.editor.isAllModulesSynced;
 
+  return (
+    <div>
+      {store.live.isLive ? (
+        <LiveInfo
+          setMode={signals.live.onModeChanged}
+          addEditor={signals.live.onAddEditorClicked}
+          removeEditor={signals.live.onRemoveEditorClicked}
+          isOwner={store.live.isOwner}
+          isTeam={store.live.isTeam}
+          roomInfo={store.live.roomInfo}
+          ownerIds={store.live.roomInfo.ownerIds}
+          currentUserId={store.live.liveUserId}
+          reconnecting={store.live.reconnecting}
+          onSessionCloseClicked={signals.live.onSessionCloseClicked}
+          notificationsHidden={store.live.notificationsHidden}
+          toggleNotificationsHidden={signals.live.onToggleNotificationsHidden}
+          chatEnabled={store.live.roomInfo.chatEnabled}
+          toggleChatEnabled={() => {
+            signals.live.onChatEnabledChange({
+              enabled: !store.live.roomInfo.chatEnabled,
+            });
+          }}
+          setFollowing={signals.live.onFollow}
+          followingUserId={store.live.followingUserId}
+        />
+      ) : (
         <React.Fragment>
-          <WorkspaceSubtitle>Create live room</WorkspaceSubtitle>
-          <Description>
-            To invite others you need to generate a URL that others can join.
+          <Description style={{ marginBottom: '1rem' }}>
+            Invite others to live edit this sandbox with you. We
+            {"'"}
+            re doing it live!
           </Description>
-          <WorkspaceInputContainer>
-            <LiveButton
-              onClick={() => {
-                signals.live.createLiveClicked({
-                  sandboxId: store.editor.currentId,
-                });
-              }}
-              isLoading={store.live.isLoading}
-            />
-          </WorkspaceInputContainer>
+
+          <React.Fragment>
+            <WorkspaceSubtitle>Create live room</WorkspaceSubtitle>
+            <Description>
+              To invite others you need to generate a URL that others can join.
+            </Description>
+
+            {hasUnsyncedModules && (
+              <ErrorDescription>
+                Save all your files before going live
+              </ErrorDescription>
+            )}
+            <WorkspaceInputContainer>
+              <LiveButton
+                onClick={() => {
+                  signals.live.createLiveClicked({
+                    sandboxId: store.editor.currentId,
+                  });
+                }}
+                isLoading={store.live.isLoading}
+                disable={hasUnsyncedModules}
+              />
+            </WorkspaceInputContainer>
+          </React.Fragment>
         </React.Fragment>
-      </React.Fragment>
-    )}
-  </div>
-);
+      )}
+    </div>
+  );
+};
 
 export default inject('signals', 'store')(observer(Live));
