@@ -290,7 +290,7 @@ module.exports = {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
     modules: ['node_modules', 'src', 'standalone-packages'],
 
-    extensions: ['.js', '.json'],
+    extensions: ['.js', '.json', '.ts', '.tsx'],
 
     alias: {
       moment: 'moment/moment.js',
