@@ -23,6 +23,8 @@ module.exports = {
     ],
     // JSX, Flow
     require.resolve('@babel/preset-react'),
+
+    require.resolve('@babel/preset-typescript'),
   ].filter(Boolean),
   plugins: [
     require.resolve('@babel/plugin-transform-template-literals'),
