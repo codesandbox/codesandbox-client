@@ -76,7 +76,7 @@ const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 function getUnpkgUrl(name: string, version: string) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
-  return TEMP_USE_JSDELIVR
+  return true // TODO: change to TEMP_USE_JSDELIVR
     ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
     : `https://unpkg.com/${nameWithoutAlias}@${version}`;
 }
