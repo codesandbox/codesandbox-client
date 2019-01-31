@@ -288,7 +288,11 @@ module.exports = {
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
-    modules: ['node_modules', 'src', 'standalone-packages'],
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, '../src'),
+      'standalone-packages',
+    ],
 
     extensions: ['.js', '.json', '.ts', '.tsx'],
 
