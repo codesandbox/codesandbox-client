@@ -184,8 +184,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.editor = editor;
     this.monaco = monaco;
 
-    this.editor.updateOptions(this.getEditorOptions());
-
     // eslint-disable-next-line no-underscore-dangle
     window.CSEditor = {
       editor: this.editor,
