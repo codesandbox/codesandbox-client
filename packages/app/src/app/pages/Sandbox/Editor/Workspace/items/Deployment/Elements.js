@@ -1,5 +1,18 @@
 import styled from 'styled-components';
 
+const mapColorToState = (state, theme) => {
+  const STARTING = ['DEPLOYING', 'BUILDING', 'INITIALIZING'];
+  const ERROR = ['DEPLOYMENT_ERROR', 'BUILD_ERROR', 'ERROR'];
+  const STARTED = ['BOOTED', 'READY'];
+
+  if (STARTING.includes(state)) return '#fccb7e';
+  if (ERROR.includes(state)) return theme.red;
+  if (STARTED.includes(state)) return theme.green;
+  if (state === 'FROZEN') return theme.blue;
+
+  return theme.gray;
+};
+
 export const Deploys = styled.ul`
   list-style: none;
   padding: 0;
@@ -28,25 +41,7 @@ export const State = styled.span`
     height: 10px;
     border-radius: 50%;
     margin-right: 0.5rem;
-    background: ${props => {
-      if (
-        props.state === 'DEPLOYING' ||
-        props.state === 'BUILDING' ||
-        props.state === 'INITIALIZING'
-      )
-        return '#fccb7e';
-      if (
-        props.state === 'DEPLOYMENT_ERROR' ||
-        props.state === 'BUILD_ERROR' ||
-        props.state === 'ERROR'
-      )
-        return props.theme.red;
-      if (props.state === 'BOOTED' || props.state === 'READY')
-        return props.theme.green;
-      if (props.state === 'FROZEN') return props.theme.blue;
-
-      return props.theme.gray;
-    }};
+    background: ${props => mapColorToState(props.state, props.theme)};
   }
 `;
 
@@ -92,4 +87,17 @@ export const ButtonContainer = styled.section`
   > *:not(:last-child) {
     margin-right: 0.5rem;
   }
+`;
+
+export const DeploysWrapper = styled.div`
+  background: rgb(0, 0, 0);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.75rem 1rem;
+  padding: 0.75rem 0rem;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  margin: 0.5rem 0.75rem;
+  margin-top: 0;
 `;
