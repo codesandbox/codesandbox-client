@@ -39,8 +39,18 @@ const Deploy = types.model('Deploy', {
   type: types.enumeration('types', ['NPM', 'DOCKER', 'STATIC', 'LAMBDAS']),
 });
 
+const NetlifySite = types.model('NetlifySite', {
+  id: types.string,
+  name: types.string,
+  url: types.string,
+  state: types.string,
+  screenshot_url: types.maybeNull(types.string),
+  sandboxId: types.string,
+});
+
 export default {
   hasAlias: types.boolean,
+  netlifySite: types.maybeNull(NetlifySite),
   deployToDelete: types.maybeNull(types.string),
   deploying: types.boolean,
   url: types.maybeNull(types.string),

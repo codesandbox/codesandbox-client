@@ -9,6 +9,7 @@ import ZeitIntegration from '../../../../../common/ZeitIntegration';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../elements';
 import {
   Deploys,
+  Wrapper,
   Deploy,
   State,
   Name,
@@ -19,7 +20,7 @@ import {
 } from './Elements';
 
 class ZeitDeployment extends Component {
-  state = { show: true };
+  state = { show: false };
 
   toggleZeit = () =>
     this.setState(state => ({
@@ -34,7 +35,7 @@ class ZeitDeployment extends Component {
 
     const { show } = this.state;
     return user.integrations.zeit ? (
-      <Fragment>
+      <Wrapper loading={deployment.deploying}>
         <WorkspaceInputContainer style={{ marginTop: '1rem', marginBottom: 0 }}>
           <DeploymentIntegration
             open={show}
@@ -55,7 +56,11 @@ class ZeitDeployment extends Component {
           </DeploymentIntegration>
         </WorkspaceInputContainer>
         {deployment.sandboxDeploys.length && show ? (
-          <DeploysWrapper>
+          <DeploysWrapper
+            css={`
+              margin-top: -4px;
+            `}
+          >
             <WorkspaceSubtitle>Sandbox Deploys</WorkspaceSubtitle>
             <WorkspaceInputContainer>
               <Deploys>
@@ -128,7 +133,7 @@ class ZeitDeployment extends Component {
             </WorkspaceInputContainer>
           </DeploysWrapper>
         ) : null}
-      </Fragment>
+      </Wrapper>
     ) : (
       <div style={{ margin: '1rem' }}>
         <ZeitIntegration small />

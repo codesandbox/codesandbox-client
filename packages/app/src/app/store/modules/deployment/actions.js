@@ -13,6 +13,65 @@ export function loadZip({ props, jsZip }) {
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
 }
 
+const NetlifyBaseURL = 'https://netlify-deploy.now.sh/site';
+
+export async function getNetlifyDeploys({ http, state, path }) {
+  const sandboxId = state.get('editor.currentId');
+
+  try {
+    const site = await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}`,
+    });
+
+    return path.success({
+      site: site.result,
+    });
+  } catch (error) {
+    return path.error({ error });
+  }
+}
+
+export async function deployToNetlify({ path, http, props, state }) {
+  const { file } = props;
+  const userId = state.get('user.id');
+  const sandboxId = state.get('editor.currentId');
+  const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
+  const template = getTemplate(sandbox.template);
+
+  try {
+    await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}`,
+    });
+  } catch (e) {
+    await http.request({
+      url: NetlifyBaseURL,
+      method: 'POST',
+      body: {
+        name: `csb-${sandboxId}`,
+        session_id: userId,
+        build_settings: {
+          dir: template.distDir,
+          cmd: 'yarn build',
+        },
+      },
+    });
+  }
+
+  try {
+    await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}/deploys`,
+      method: 'POST',
+      body: file,
+      headers: {
+        'Content-Type': 'application/zip',
+      },
+    });
+    return path.success();
+  } catch (e) {
+    return path.error();
+  }
+}
+
 export async function createApiData({ props, state }) {
   const { contents } = props;
   const sandboxId = state.get('editor.currentId');

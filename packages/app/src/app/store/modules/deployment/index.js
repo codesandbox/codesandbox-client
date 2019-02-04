@@ -13,6 +13,8 @@ export default Module({
     sandboxDeploys: [],
   },
   signals: {
+    deployWithNetlify: sequences.deployWithNetlify,
+    getNetlifyDeploys: sequences.getNetlifyDeploys,
     getDeploys: sequences.getDeploys,
     deployClicked: sequences.deploy,
     deploySandboxClicked: sequences.openDeployModal,
