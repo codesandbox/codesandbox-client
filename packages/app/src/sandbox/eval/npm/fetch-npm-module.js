@@ -73,10 +73,10 @@ const TEMP_USE_JSDELIVR = false;
 // Strips the version of a path, eg. test/1.3.0 -> test
 const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
-function getUnpkgUrl(name: string, version: string) {
+function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
-  return TEMP_USE_JSDELIVR // TODO: change to TEMP_USE_JSDELIVR
+  return TEMP_USE_JSDELIVR || forceJsDelivr
     ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
     : `https://unpkg.com/${nameWithoutAlias}@${version}`;
 }
@@ -123,6 +123,19 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
     .then(x => {
       if (x.ok) {
         return x.text();
+      }
+
+      if (isGitHub) {
+        // Fall back to jsdelivr
+        return fetch(
+          `${getUnpkgUrl(depName, depVersion, true)}${relativePath}`
+        ).then(x2 => {
+          if (x2.ok) {
+            return x2.text();
+          }
+
+          throw new Error(`Could not find module ${path}`);
+        });
       }
 
       throw new Error(`Could not find module ${path}`);
