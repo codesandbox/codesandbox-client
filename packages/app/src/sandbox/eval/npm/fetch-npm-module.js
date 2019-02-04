@@ -77,8 +77,8 @@ function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
   return TEMP_USE_JSDELIVR || forceJsDelivr
-    ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
-    : `https://unpkg.com/${nameWithoutAlias}@${version}`;
+    ? `https://unpkg.com/${nameWithoutAlias}@${version}`
+    : `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`;
 }
 
 function getMeta(name: string, packageJSONPath: string, version: string) {
@@ -125,8 +125,11 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
         return x.text();
       }
 
-      if (isGitHub) {
-        // Fall back to jsdelivr
+      throw new Error(`Could not find module ${path}`);
+    })
+    .catch(err => {
+      if (!isGitHub) {
+        // Fallback to jsdelivr
         return fetch(
           `${getUnpkgUrl(depName, depVersion, true)}${relativePath}`
         ).then(x2 => {
@@ -138,7 +141,7 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
         });
       }
 
-      throw new Error(`Could not find module ${path}`);
+      throw err;
     })
     .then(x => ({
       path,
