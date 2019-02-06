@@ -937,7 +937,9 @@ export default class TranspiledModule {
         return foundModule.path;
       };
 
-      const globals = manager.testRunner.testGlobals(this.module);
+      const globals = this.isTestFile
+        ? manager.testRunner.testGlobals(this.module)
+        : {};
 
       globals.__dirname = pathUtils.dirname(this.module.path);
       globals.__filename = this.module.path;
