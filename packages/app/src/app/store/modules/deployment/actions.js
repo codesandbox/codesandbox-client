@@ -48,7 +48,7 @@ export async function deployToNetlify({ path, http, props, state }) {
       method: 'POST',
       body: {
         name: `csb-${sandboxId}`,
-        session_id: userId,
+        session_id: `${userId}-${sandboxId}`,
         build_settings: {
           dir: template.distDir,
           cmd: 'yarn build',
