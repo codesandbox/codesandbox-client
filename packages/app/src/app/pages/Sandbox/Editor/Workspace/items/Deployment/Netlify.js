@@ -11,6 +11,7 @@ import {
   Link,
   DeploysWrapper,
   Wrapper,
+  ButtonContainer,
 } from './Elements';
 
 class NetlifyDeployment extends Component {
@@ -67,13 +68,24 @@ class NetlifyDeployment extends Component {
               <Deploys>
                 <Deploy key={deployment.netlifySite.uid}>
                   <Name light>{deployment.netlifySite.name}</Name>
-                  <Link
-                    href={deployment.netlifySite.url}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    <LinkIcon /> <span>Visit</span>
-                  </Link>
+                  <ButtonContainer>
+                    <Link
+                      href={deployment.netlifySite.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      <LinkIcon /> <span>Visit</span>
+                    </Link>
+                    {deployment.netlifyClaimUrl ? (
+                      <Link
+                        href={deployment.netlifyClaimUrl}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        <span>Claim Site</span>
+                      </Link>
+                    ) : null}
+                  </ButtonContainer>
                 </Deploy>
               </Deploys>
             </WorkspaceInputContainer>

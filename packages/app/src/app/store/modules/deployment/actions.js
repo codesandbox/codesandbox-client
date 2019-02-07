@@ -15,6 +15,20 @@ export function loadZip({ props, jsZip }) {
 
 const NetlifyBaseURL = 'https://netlify-deploy.now.sh/site';
 
+export async function claimNetlifyWebsite({ http, state, path }) {
+  const userId = state.get('user.id');
+  const sandboxId = state.get('editor.currentId');
+  const sessionId = `${userId}-${sandboxId}`;
+
+  const { result } = await http.request({
+    url: `${NetlifyBaseURL}-claim?sessionId=${sessionId}`,
+  });
+
+  return path.success({
+    claimURL: result.claim,
+  });
+}
+
 export async function getNetlifyDeploys({ http, state, path }) {
   const sandboxId = state.get('editor.currentId');
 

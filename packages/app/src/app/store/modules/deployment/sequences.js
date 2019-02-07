@@ -63,7 +63,15 @@ export const deleteDeployment = [
   },
 ];
 
+export const claimNetlifyWebsite = [
+  actions.claimNetlifyWebsite,
+  {
+    success: [set(state`deployment.netlifyClaimUrl`, props`claimURL`)],
+  },
+];
+
 export const getNetlifyDeploys = [
+  claimNetlifyWebsite,
   actions.getNetlifyDeploys,
   {
     success: [set(state`deployment.netlifySite`, props`site`)],

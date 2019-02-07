@@ -50,6 +50,7 @@ const NetlifySite = types.model('NetlifySite', {
 
 export default {
   hasAlias: types.boolean,
+  netlifyClaimUrl: types.maybeNull(types.string),
   netlifySite: types.maybeNull(NetlifySite),
   deployToDelete: types.maybeNull(types.string),
   deploying: types.boolean,
