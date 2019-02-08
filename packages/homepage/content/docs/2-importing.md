@@ -14,7 +14,7 @@ The Create Wizard shows you all public templates that are currently available, a
 
 ## Import from GitHub
 
-You can import a GitHub repository in CodeSandbox by going to the [import wizard](https://codesandbox.io/s/github) and giving the URL to your GitHub repository. Note that we just take the last part of the url (everything after github.com) and paste it after codesandbox.io/s/github/. We support custom branches and subdirectories as well. Here is an example URL: [https://codesandbox.io/s/github/reactjs/redux/tree/master/examples/todomvc](https://codesandbox.io/s/github/reactjs/redux/tree/master/examples/todomvc).
+You can import a GitHub repository in CodeSandbox by going to the [import wizard](https://codesandbox.io/s/github) and giving the URL to your GitHub repository. We support custom branches and subdirectories as well. Here is an example URL: [https://github.com/reduxjs/redux/tree/master/examples/todomvc](https://github.com/reduxjs/redux/tree/master/examples/todomvc).
 
 The imported repository will always stay up to date with your latest commits. This means that any change to the GitHub repository will be reflected immediately to the sandbox.
 
