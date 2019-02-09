@@ -16,7 +16,6 @@ export const deploymentToDelete = [
 
 export const getDeploys = [
   actions.getDeploymentData,
-  actions.getDeploymentData,
   set(state`deployment.gettingDeploys`, true),
   actions.getDeploys,
   {
@@ -67,7 +66,6 @@ export const deploy = [
   set(state`deployment.deploying`, true),
   actions.createZip,
   actions.loadZip,
-  actions.createApiData,
   actions.postToZeit,
   {
     success: [
