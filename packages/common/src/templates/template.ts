@@ -120,35 +120,4 @@ export default class Template {
   }): Array<string> {
     return ['/public/index.html', '/index.html'];
   }
-
-  /**
-   * Alter the apiData to ZEIT for making deployment work
-   */
-  alterDeploymentData = (apiData: any) => {
-    const packageJSONFile = apiData.files.find(x => x.file === 'package.json');
-    const parsedFile = JSON.parse(packageJSONFile.data);
-
-    const newParsedFile = {
-      ...parsedFile,
-      devDependencies: {
-        ...parsedFile.devDependencies,
-        serve: '^10.1.1',
-      },
-      scripts: {
-        'now-start': `cd ${this.distDir} && serve -s ./`,
-        ...parsedFile.scripts,
-      },
-    };
-
-    return {
-      ...apiData,
-      files: [
-        ...apiData.files.filter(x => x.file !== 'package.json'),
-        {
-          file: 'package.json',
-          data: JSON.stringify(newParsedFile, null, 2),
-        },
-      ],
-    };
-  };
 }

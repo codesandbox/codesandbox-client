@@ -65,7 +65,6 @@ export const deleteDeployment = [
 export const deploy = [
   set(state`deployment.deploying`, true),
   actions.createZip,
-  actions.loadZip,
   actions.postToZeit,
   {
     success: [
