@@ -116,7 +116,7 @@ class ShareView extends React.Component {
   render() {
     const sandbox = this.props.store.editor.currentSandbox;
     const mainModule = this.props.store.editor.mainModule;
-    console.log(sandbox);
+
     const {
       showEditor,
       showPreview,
