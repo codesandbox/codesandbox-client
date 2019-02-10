@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import Down from 'react-icons/lib/fa/angle-down';
 import Right from 'react-icons/lib/fa/angle-right';
 import Files from 'embed/components/Files';
-import ModeIcons from 'app/components/ModeIcons';
 import QRCode from 'qrcode.react';
 import track from 'common/utils/analytics';
 import { Spring, animated } from 'react-spring';
@@ -23,6 +22,7 @@ import {
 
 import {
   BUTTON_URL,
+  VIEW_OPTIONS,
   getIframeScript,
   getEditorUrl,
   getEmbedUrl,
@@ -32,8 +32,7 @@ import {
 
 class ShareView extends React.Component {
   state = {
-    showEditor: true,
-    showPreview: true,
+    view: VIEW_OPTIONS[0],
     testsView: false,
     defaultModule: null,
     autoResize: false,
@@ -105,6 +104,10 @@ class ShareView extends React.Component {
     this.setState({ initialPath });
   };
 
+  setView = (view: string) => {
+    this.setState({ view });
+  };
+
   select = function select(event) {
     event.target.select();
   };
@@ -118,8 +121,7 @@ class ShareView extends React.Component {
     const mainModule = this.props.store.editor.mainModule;
 
     const {
-      showEditor,
-      showPreview,
+      view,
       testsView,
       autoResize,
       hideNavigation,
@@ -158,34 +160,13 @@ class ShareView extends React.Component {
               >
                 {props => (
                   <animated.div style={props}>
-                    <Inputs
-                      css={`
-                        position: relative;
-                        padding-bottom: 1.25rem;
-                      `}
-                    >
-                      <span>Default View</span>
-                      <div
-                        css={`
-                          > div {
-                            left: auto;
-
-                            > div {
-                              height: 1rem;
-                              width: 1.25rem;
-                            }
-                          }
-                        `}
-                      >
-                        <ModeIcons
-                          showEditor={showEditor}
-                          showPreview={showPreview}
-                          setEditorView={this.setEditorView}
-                          setPreviewView={this.setPreviewView}
-                          setMixedView={this.setMixedView}
-                        />
-                      </div>
-                    </Inputs>
+                    <PaddedPreference
+                      title="Default View"
+                      type="dropdown"
+                      options={VIEW_OPTIONS}
+                      value={view}
+                      setValue={this.setView}
+                    />
                     <PaddedPreference
                       title="Auto resize"
                       type="boolean"

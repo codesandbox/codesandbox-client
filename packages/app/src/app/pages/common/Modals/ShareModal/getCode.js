@@ -10,11 +10,12 @@ export const BUTTON_URL = `${
   process.env.CODESANDBOX_HOST
 }/static/img/play-codesandbox.svg`;
 
+export const VIEW_OPTIONS = ['Editor + Preview', 'Preview', 'Editor'];
+
 const getOptionsUrl = (sandbox, mainModule, state) => {
   const {
     defaultModule,
-    showEditor,
-    showPreview,
+    view,
     testsView,
     autoResize,
     hideNavigation,
@@ -26,7 +27,18 @@ const getOptionsUrl = (sandbox, mainModule, state) => {
     expandDevTools,
   } = state;
 
-  const options = {};
+  const options = {
+    view: view !== VIEW_OPTIONS[0] ? view.toLowerCase() : null,
+    previewwindow: testsView ? 'tests' : null,
+    autoresize: autoResize ? 1 : null,
+    hidenavigation: hideNavigation ? 1 : null,
+    moduleview: isCurrentModuleView ? 1 : null,
+    eslint: enableEslint ? 1 : null,
+    codemirror: useCodeMirror ? 1 : null,
+    expanddevtools: expandDevTools ? 1 : null,
+    fontsize: fontSize !== 14 ? fontSize : 14,
+    initialpath: initialPath || null,
+  };
 
   const mainModuleId = mainModule.id;
   if (defaultModule && defaultModule !== mainModuleId) {
@@ -36,48 +48,6 @@ const getOptionsUrl = (sandbox, mainModule, state) => {
       defaultModule
     );
     options.module = modulePath;
-  }
-
-  if (showEditor && !showPreview) {
-    options.view = 'editor';
-  }
-  if (!showEditor && showPreview) {
-    options.view = 'preview';
-  }
-
-  if (testsView) {
-    options.previewwindow = 'tests';
-  }
-
-  if (autoResize) {
-    options.autoresize = 1;
-  }
-  if (hideNavigation) {
-    options.hidenavigation = 1;
-  }
-
-  if (isCurrentModuleView) {
-    options.moduleview = 1;
-  }
-
-  if (enableEslint) {
-    options.eslint = 1;
-  }
-
-  if (useCodeMirror) {
-    options.codemirror = 1;
-  }
-
-  if (fontSize !== 14) {
-    options.fontsize = fontSize;
-  }
-
-  if (initialPath) {
-    options.initialpath = initialPath;
-  }
-
-  if (expandDevTools) {
-    options.expanddevtools = 1;
   }
 
   return optionsToParameterizedUrl(options);
