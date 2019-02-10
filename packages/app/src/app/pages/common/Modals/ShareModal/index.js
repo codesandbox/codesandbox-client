@@ -1,34 +1,34 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
+import Down from 'react-icons/lib/fa/angle-down';
+import Right from 'react-icons/lib/fa/angle-right';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/ModeIcons';
-import { getModulePath } from 'common/sandbox/modules';
 import QRCode from 'qrcode.react';
-import Button from 'app/components/Button';
 import track from 'common/utils/analytics';
+import { Spring, animated } from 'react-spring';
+import { sandboxUrl } from 'common/utils/url-generator';
 
 import {
-  optionsToParameterizedUrl,
-  protocolAndHost,
-  sandboxUrl,
-  embedUrl,
-} from 'common/utils/url-generator';
-
-import {
+  Title,
   FilesContainer,
+  Wrapper,
   PaddedPreference,
   ShareOptions,
   Inputs,
   LinkName,
-  Divider,
-  Column,
+  SideTitle,
   ButtonContainer,
-  ButtonName,
 } from './elements';
 
-const BUTTON_URL = `${
-  process.env.CODESANDBOX_HOST
-}/static/img/play-codesandbox.svg`;
+import {
+  BUTTON_URL,
+  getIframeScript,
+  getEditorUrl,
+  getEmbedUrl,
+  getButtonMarkdown,
+  getButtonHTML,
+} from './getCode';
 
 class ShareView extends React.Component {
   state = {
@@ -44,7 +44,7 @@ class ShareView extends React.Component {
     useCodeMirror: false,
     enableEslint: false,
     expandDevTools: false,
-    showQRCode: false,
+    links: true,
   };
 
   componentDidMount() {
@@ -69,123 +69,6 @@ class ShareView extends React.Component {
   setDefaultModule = id => this.setState({ defaultModule: id });
 
   clearDefaultModule = () => this.setState({ defaultModule: null });
-
-  toggleQRCode = () => this.setState({ showQRCode: !this.state.showQRCode });
-
-  getOptionsUrl = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-    const mainModule = this.props.store.editor.mainModule;
-    const {
-      defaultModule,
-      showEditor,
-      showPreview,
-      testsView,
-      autoResize,
-      hideNavigation,
-      isCurrentModuleView,
-      fontSize,
-      initialPath,
-      enableEslint,
-      useCodeMirror,
-      expandDevTools,
-    } = this.state;
-
-    const options = {};
-
-    const mainModuleId = mainModule.id;
-    if (defaultModule && defaultModule !== mainModuleId) {
-      const modulePath = getModulePath(
-        sandbox.modules,
-        sandbox.directories,
-        defaultModule
-      );
-      options.module = modulePath;
-    }
-
-    if (showEditor && !showPreview) {
-      options.view = 'editor';
-    }
-    if (!showEditor && showPreview) {
-      options.view = 'preview';
-    }
-
-    if (testsView) {
-      options.previewwindow = 'tests';
-    }
-
-    if (autoResize) {
-      options.autoresize = 1;
-    }
-    if (hideNavigation) {
-      options.hidenavigation = 1;
-    }
-
-    if (isCurrentModuleView) {
-      options.moduleview = 1;
-    }
-
-    if (enableEslint) {
-      options.eslint = 1;
-    }
-
-    if (useCodeMirror) {
-      options.codemirror = 1;
-    }
-
-    if (fontSize !== 14) {
-      options.fontsize = fontSize;
-    }
-
-    if (initialPath) {
-      options.initialpath = initialPath;
-    }
-
-    if (expandDevTools) {
-      options.expanddevtools = 1;
-    }
-
-    return optionsToParameterizedUrl(options);
-  };
-
-  getEditorUrl = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-
-    return protocolAndHost() + sandboxUrl(sandbox) + this.getOptionsUrl();
-  };
-
-  getEmbedUrl = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-
-    return protocolAndHost() + embedUrl(sandbox) + this.getOptionsUrl();
-  };
-
-  setInitialPath = ({ target }) => {
-    const initialPath = target.value;
-    this.setState({ initialPath });
-  };
-
-  getIframeScript = () =>
-    `<iframe src="${this.getEmbedUrl()}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
-
-  select = function select(event) {
-    event.target.select();
-  };
-
-  // eslint-disable-next-line
-  getButtonMarkdown = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-    return `[![Edit ${sandbox.title ||
-      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
-  };
-
-  // eslint-disable-next-line
-  getButtonHTML = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-    return `<a href="${this.getEditorUrl()}">
-  <img alt="Edit ${sandbox.title || sandbox.id}" src="${BUTTON_URL}">
-</a>
-`;
-  };
 
   setAutoResize = (autoResize: boolean) => {
     this.setState({ autoResize });
@@ -217,10 +100,23 @@ class ShareView extends React.Component {
     this.setState({ testsView });
   };
 
+  setInitialPath = ({ target }) => {
+    const initialPath = target.value;
+    this.setState({ initialPath });
+  };
+
+  select = function select(event) {
+    event.target.select();
+  };
+
+  toggle = (key: string) => {
+    this.setState({ [key]: !this.state[key] });
+  };
+
   render() {
     const sandbox = this.props.store.editor.currentSandbox;
     const mainModule = this.props.store.editor.mainModule;
-
+    console.log(sandbox);
     const {
       showEditor,
       showPreview,
@@ -233,181 +129,283 @@ class ShareView extends React.Component {
       useCodeMirror,
       enableEslint,
       expandDevTools,
-      showQRCode,
     } = this.state;
 
     const defaultModule = this.state.defaultModule || mainModule.id;
 
     return (
-      <ShareOptions>
-        <h3>Share options</h3>
-        <Divider>
-          <Column>
-            <ButtonName>URL Options</ButtonName>
-            <div>
-              <h4>Embed specific options</h4>
-              <PaddedPreference
-                title="Auto resize"
-                type="boolean"
-                tooltip="Works only on Medium"
-                value={autoResize}
-                setValue={this.setAutoResize}
-              />
-              <PaddedPreference
-                title="Hide navigation bar"
-                type="boolean"
-                value={hideNavigation}
-                setValue={this.setHideNavigation}
-              />
-              <PaddedPreference
-                title="Expand console"
-                type="boolean"
-                value={expandDevTools}
-                setValue={this.setExpandDevTools}
-              />
-              <PaddedPreference
-                title="Use CodeMirror instead of Monaco editor"
-                type="boolean"
-                value={useCodeMirror}
-                setValue={this.setUseCodeMirror}
-              />
-              <PaddedPreference
-                title="Enable eslint (significantly higher bundle size)"
-                type="boolean"
-                value={enableEslint}
-                setValue={this.setEnableEslint}
-              />
-              <PaddedPreference
-                title="Show current module view"
-                type="boolean"
-                tooltip="Only show the module that's currently open"
-                value={isCurrentModuleView}
-                setValue={this.setIsCurrentModuleView}
-              />
-              <PaddedPreference
-                title="Show Tests (instead of browser preview)"
-                type="boolean"
-                value={testsView}
-                setValue={this.setTestsView}
-              />
-              <PaddedPreference
-                title="Font size"
-                type="number"
-                value={fontSize}
-                setValue={this.setFontSize}
-              />
-            </div>
-            <Inputs>
-              <LinkName>Project Initial Path</LinkName>
-              <input
-                onFocus={this.select}
-                placeholder="e.g: /home"
-                value={initialPath}
-                onChange={this.setInitialPath}
-              />
-            </Inputs>
-            <div>
-              <h4>Default view</h4>
-              <div
-                style={{
-                  position: 'relative',
-                  height: '2rem',
-                  width: '200px',
-                  marginLeft: '-10px',
+      <Fragment>
+        <header
+          // eslint-disable-next-line
+          dangerouslySetInnerHTML={{
+            __html: getIframeScript(sandbox, mainModule, this.state),
+          }}
+        />
+
+        <ShareOptions>
+          <Wrapper>
+            <section>
+              <SideTitle>Configure</SideTitle>
+              <Title onClick={() => this.toggle('appearance')}>
+                {this.state.appearance ? <Right /> : <Down />}Appearance
+              </Title>
+              <Spring
+                from={{ height: 'auto' }}
+                to={{
+                  height: this.state.appearance ? 'auto' : 0,
+                  overflow: 'hidden',
                 }}
               >
-                <ModeIcons
-                  showEditor={showEditor}
-                  showPreview={showPreview}
-                  setEditorView={this.setEditorView}
-                  setPreviewView={this.setPreviewView}
-                  setMixedView={this.setMixedView}
-                />
-              </div>
-            </div>
-            <div>
-              <h4>Default module to show</h4>
+                {props => (
+                  <animated.div style={props}>
+                    <Inputs
+                      css={`
+                        position: relative;
+                        padding-bottom: 1.25rem;
+                      `}
+                    >
+                      <span>Default View</span>
+                      <div
+                        css={`
+                          > div {
+                            left: auto;
 
-              <FilesContainer>
-                <Files
-                  modules={sandbox.modules}
-                  directoryId={null}
-                  directories={sandbox.directories}
-                  currentModule={defaultModule}
-                  setCurrentModule={this.setDefaultModule}
-                />
-              </FilesContainer>
-            </div>
-          </Column>
-          <Column>
-            <ButtonName>Links</ButtonName>
-            <Inputs>
-              <LinkName>Editor url (also works on Medium)</LinkName>
-              <input
-                onFocus={this.select}
-                value={this.getEditorUrl()}
-                readOnly
-              />
-              <LinkName>Embed url</LinkName>
-              <input
-                onFocus={this.select}
-                value={this.getEmbedUrl()}
-                readOnly
-              />
-              <LinkName>iframe</LinkName>
-              <textarea
-                onFocus={this.select}
-                value={this.getIframeScript()}
-                readOnly
-              />
-              <LinkName>QR Code</LinkName>
-              <Inputs>
-                <ButtonContainer>
-                  <Button
-                    onClick={this.toggleQRCode}
-                    small
-                    style={{ width: '100%' }}
-                  >
-                    {showQRCode ? 'Hide' : 'Show'} QR Code
-                  </Button>
-                  {showQRCode && (
+                            > div {
+                              height: 1rem;
+                              width: 1.25rem;
+                            }
+                          }
+                        `}
+                      >
+                        <ModeIcons
+                          showEditor={showEditor}
+                          showPreview={showPreview}
+                          setEditorView={this.setEditorView}
+                          setPreviewView={this.setPreviewView}
+                          setMixedView={this.setMixedView}
+                        />
+                      </div>
+                    </Inputs>
+                    <PaddedPreference
+                      title="Auto resize"
+                      type="boolean"
+                      tooltip="Works only on Medium"
+                      value={autoResize}
+                      setValue={this.setAutoResize}
+                    />
+                    <PaddedPreference
+                      title="Hide navigation bar"
+                      type="boolean"
+                      value={hideNavigation}
+                      setValue={this.setHideNavigation}
+                    />
+                    <PaddedPreference
+                      title="Expand console"
+                      type="boolean"
+                      value={expandDevTools}
+                      setValue={this.setExpandDevTools}
+                    />
+                    <PaddedPreference
+                      title="Show current module view"
+                      type="boolean"
+                      tooltip="Only show the module that's currently open"
+                      value={isCurrentModuleView}
+                      setValue={this.setIsCurrentModuleView}
+                    />
+                    <PaddedPreference
+                      title="Show Tests (instead of browser preview)"
+                      type="boolean"
+                      value={testsView}
+                      setValue={this.setTestsView}
+                    />
+                    <PaddedPreference
+                      title="Font size"
+                      type="number"
+                      value={fontSize}
+                      setValue={this.setFontSize}
+                    />
+                  </animated.div>
+                )}
+              </Spring>
+              <Title onClick={() => this.toggle('sandboxOptions')}>
+                {this.state.sandboxOptions ? <Right /> : <Down />}Sandbox
+                Options
+              </Title>
+              <Spring
+                from={{ height: 'auto' }}
+                to={{
+                  height: this.state.sandboxOptions ? 'auto' : 0,
+                  overflow: 'hidden',
+                }}
+              >
+                {props => (
+                  <animated.div style={props}>
+                    <PaddedPreference
+                      title="Use CodeMirror instead of Monaco editor"
+                      type="boolean"
+                      value={useCodeMirror}
+                      setValue={this.setUseCodeMirror}
+                    />
+                    <PaddedPreference
+                      title="Enable eslint (significantly higher bundle size)"
+                      type="boolean"
+                      value={enableEslint}
+                      setValue={this.setEnableEslint}
+                    />
+                    <div>
+                      <h4>Default module to show</h4>
+
+                      <FilesContainer>
+                        <Files
+                          modules={sandbox.modules}
+                          directoryId={null}
+                          directories={sandbox.directories}
+                          currentModule={defaultModule}
+                          setCurrentModule={this.setDefaultModule}
+                        />
+                      </FilesContainer>
+                    </div>
+                  </animated.div>
+                )}
+              </Spring>
+              <Title onClick={() => this.toggle('otherOptions')}>
+                {this.state.otherOptions ? <Right /> : <Down />}Other Options
+              </Title>
+              <Spring
+                from={{ height: 'auto' }}
+                to={{
+                  height: this.state.otherOptions ? 'auto' : 0,
+                  overflow: 'hidden',
+                }}
+              >
+                {props => (
+                  <animated.div style={props}>
+                    <Inputs>
+                      <LinkName>Project Initial Path</LinkName>
+                      <input
+                        onFocus={this.select}
+                        placeholder="e.g: /home"
+                        value={initialPath}
+                        onChange={this.setInitialPath}
+                      />
+                    </Inputs>
+                  </animated.div>
+                )}
+              </Spring>
+            </section>
+            <section>
+              <SideTitle>Share</SideTitle>
+              <Title onClick={() => this.toggle('links')}>
+                {this.state.links ? <Right /> : <Down />}Share embed
+              </Title>
+              <Spring
+                from={{ height: 'auto' }}
+                to={{
+                  height: this.state.links ? 'auto' : 0,
+                  overflow: 'hidden',
+                }}
+              >
+                {props => (
+                  <animated.div style={props}>
+                    <Inputs>
+                      <LinkName>Editor url (also works on Medium)</LinkName>
+                      <input
+                        onFocus={this.select}
+                        value={getEditorUrl(sandbox, mainModule, this.state)}
+                        readOnly
+                      />
+                    </Inputs>
+                    <Inputs>
+                      <LinkName>Embed url</LinkName>
+                      <input
+                        onFocus={this.select}
+                        value={getEmbedUrl(sandbox, mainModule, this.state)}
+                        readOnly
+                      />
+                    </Inputs>
+                    <Inputs>
+                      <LinkName>iframe</LinkName>
+                      <textarea
+                        onFocus={this.select}
+                        value={getIframeScript(sandbox, mainModule, this.state)}
+                        readOnly
+                      />
+                    </Inputs>
+                  </animated.div>
+                )}
+              </Spring>
+              <Title onClick={() => this.toggle('buttons')}>
+                {this.state.buttons ? <Right /> : <Down />}Share CodeSandbox
+                Button
+              </Title>
+              <Spring
+                from={{ height: 'auto' }}
+                to={{
+                  height: this.state.buttons ? 'auto' : 0,
+                  overflow: 'hidden',
+                }}
+              >
+                {props => (
+                  <animated.div style={props}>
+                    <Inputs>
+                      <ButtonContainer>
+                        <a href={sandboxUrl(sandbox)}>
+                          <img
+                            alt={sandbox.title || 'Untitled'}
+                            src={BUTTON_URL}
+                          />
+                        </a>
+                      </ButtonContainer>
+                    </Inputs>
+                    <Inputs>
+                      <LinkName>Markdown</LinkName>
+                      <textarea
+                        onFocus={this.select}
+                        value={getButtonMarkdown(
+                          sandbox,
+                          mainModule,
+                          this.state
+                        )}
+                        readOnly
+                      />
+                    </Inputs>
+                    <Inputs>
+                      <LinkName>HTML</LinkName>
+                      <textarea
+                        onFocus={this.select}
+                        value={getButtonHTML(sandbox, mainModule, this.state)}
+                        readOnly
+                      />
+                    </Inputs>
+                  </animated.div>
+                )}
+              </Spring>
+              <Title onClick={() => this.toggle('qr')}>
+                {this.state.qr ? <Right /> : <Down />}Share QR code
+              </Title>
+              <Spring
+                from={{ height: 'auto' }}
+                to={{
+                  height: this.state.qr ? 'auto' : 0,
+                  overflow: 'hidden',
+                }}
+              >
+                {props => (
+                  <animated.div style={props}>
                     <Inputs>
                       <QRCode
-                        value={this.getEmbedUrl()}
+                        value={getEmbedUrl(sandbox, mainModule, this.state)}
                         size={'100%'}
                         renderAs="svg"
                       />
                     </Inputs>
-                  )}
-                </ButtonContainer>
-              </Inputs>
-            </Inputs>
-          </Column>
-          <Column>
-            <ButtonName>Button</ButtonName>
-            <Inputs>
-              <ButtonContainer>
-                <a href={sandboxUrl(sandbox)}>
-                  <img alt={sandbox.title || 'Untitled'} src={BUTTON_URL} />
-                </a>
-              </ButtonContainer>
-              <LinkName>Markdown</LinkName>
-              <textarea
-                onFocus={this.select}
-                value={this.getButtonMarkdown()}
-                readOnly
-              />
-
-              <LinkName>HTML</LinkName>
-              <textarea
-                onFocus={this.select}
-                value={this.getButtonHTML()}
-                readOnly
-              />
-            </Inputs>
-          </Column>
-        </Divider>
-      </ShareOptions>
+                  </animated.div>
+                )}
+              </Spring>
+            </section>
+          </Wrapper>
+        </ShareOptions>
+      </Fragment>
     );
   }
 }
