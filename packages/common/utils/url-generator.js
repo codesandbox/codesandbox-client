@@ -123,6 +123,7 @@ export const githubRepoUrl = ({
 export const optionsToParameterizedUrl = (options: Object) => {
   const keyValues = Object.keys(options)
     .sort()
+    .filter(a => options[a])
     .map(
       key => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`
     )
