@@ -1,0 +1,47 @@
+// ./pages/_document.js
+import React from 'react';
+import Document, { Main, NextScript, Head } from 'next/document';
+
+export default class MyDocument extends Document {
+  render() {
+    const head = {
+      title:
+        'CodeSandbox: Online Code Editor Tailored for Web Application Development',
+      description:
+        'CodeSandbox is an online code editor with a focus on creating and sharing web application projects',
+      image: 'https://codesandbox.io/static/img/banner.png',
+    };
+    return (
+      <html lang="en">
+        <Head>
+          <title>{head.title}</title>
+          <meta name="og:title" content={head.title} />
+          <meta name="og:description" content={head.description} />
+          <meta name="twitter:description" content={head.description} />
+          <meta name="description" content={head.description} />
+          <meta name="og:image" content={head.image} />
+          <meta name="twitter:image:src" content={head.image} />
+          <meta
+            name="keywords"
+            content="react, codesandbox, editor, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end"
+          />
+          <meta name="referrer" content="origin" />
+          <meta name="theme-color" content="#6CAEDD" />
+          <meta property="og:type" content="website" />´
+          <meta property="og:author" content="https://codesandbox.io" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="twitter:image:width" content="1200" />
+          <meta property="twitter:image:height" content="630" />
+          <meta property="twitter:card" content="summary_large_image" />
+          <meta property="twitter:site" content="@codesandbox" />
+          <meta property="twitter:creator" content="@codesandbox" />
+        </Head>
+        <body className="custom_class">
+          <Main />
+          <NextScript />
+        </body>
+      </html>
+    );
+  }
+}
