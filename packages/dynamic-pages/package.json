@@ -7,7 +7,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "dependencies": {
     "next": "^8.0.0",
