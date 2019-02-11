@@ -41,7 +41,8 @@
       "packages/node-services",
       "packages/sandbox-hooks",
       "packages/sse-hooks",
-      "packages/react-embed"
+      "packages/react-embed",
+      "packages/dynamic-pages"
     ],
     "nohoist": [
       "**/@types",
