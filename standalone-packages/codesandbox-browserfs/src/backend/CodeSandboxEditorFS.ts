@@ -37,17 +37,25 @@ function blobToBuffer(blob: Blob, cb: (err: any | undefined | null, result?: Buf
 
 export interface IModule {
   path: string;
-  code: string | undefined;
-  savedCode: string | null;
   updatedAt: string;
   insertedAt: string;
+}
+
+export type IFile = IModule & {
+  code: string | undefined;
+  savedCode: string | null;
   isBinary: boolean;
+  type: 'file';
+}
+
+export type IDirectory = IModule & {
+  type: 'directory';
 }
 
 export interface IManager {
   getState: () => {
       modulesByPath: {
-        [path: string]: IModule;
+        [path: string]: IFile | IDirectory;
       }
   };
 }
@@ -183,16 +191,25 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
       }
     }
 
-    const stats = new Stats(
-      FileType.FILE,
-      (moduleInfo.savedCode || moduleInfo.code || '').length,
-      undefined,
-      +new Date(),
-      +new Date(moduleInfo.updatedAt),
-      +new Date(moduleInfo.insertedAt)
-    );
-
-    return stats;
+    if (moduleInfo.type === 'directory') {
+      return new Stats(
+        FileType.DIRECTORY,
+        4096,
+        undefined,
+        +new Date(),
+        +new Date(moduleInfo.updatedAt),
+        +new Date(moduleInfo.insertedAt)
+      )
+    } else {
+      return new Stats(
+        FileType.FILE,
+        (moduleInfo.savedCode || moduleInfo.code || '').length,
+        undefined,
+        +new Date(),
+        +new Date(moduleInfo.updatedAt),
+        +new Date(moduleInfo.insertedAt)
+      );
+    }
   }
 
   public createFileSync(p: string, flag: FileFlag, mode: number): File {
@@ -207,28 +224,33 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
       return;
     }
 
-    const { isBinary, savedCode, code = '' } = moduleInfo;
+    if (moduleInfo.type === 'directory') {
+      const stats = new Stats(FileType.DIRECTORY, 4096, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
+      cb(null, new CodeSandboxFile(this, p, flag, stats));
+    } else {
+      const { isBinary, savedCode, code = '' } = moduleInfo;
 
-    if (isBinary) {
-      fetch(savedCode || code).then(x => x.blob()).then(blob => {
-        const stats = new Stats(FileType.FILE, blob.size, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
+      if (isBinary) {
+        fetch(savedCode || code).then(x => x.blob()).then(blob => {
+          const stats = new Stats(FileType.FILE, blob.size, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
-        blobToBuffer(blob, (err, r) => {
-          if (err) {
-            cb(err);
-            return;
-          }
+          blobToBuffer(blob, (err, r) => {
+            if (err) {
+              cb(err);
+              return;
+            }
 
-          cb(undefined, new CodeSandboxFile(this, p, flag, stats, r))  ;
+            cb(undefined, new CodeSandboxFile(this, p, flag, stats, r))  ;
+          });
         });
-      });
-      return;
+        return;
+      }
+
+      const buffer = Buffer.from(savedCode || code || '');
+      const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
+
+      cb(null, new CodeSandboxFile(this, p, flag, stats, buffer));
     }
-
-    const buffer = Buffer.from(savedCode || code || '');
-    const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
-
-    cb(null, new CodeSandboxFile(this, p, flag, stats, buffer));
   }
 
   public openFileSync(p: string, flag: FileFlag, mode: number): File {
@@ -238,11 +260,17 @@ export default class CodeSandboxEditorFS extends SynchronousFileSystem
       throw ApiError.ENOENT(p);
     }
 
-    const { savedCode, code = '' } = moduleInfo;
-    const buffer = Buffer.from(savedCode || code || '');
-    const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
+    if (moduleInfo.type === 'directory') {
+      const stats = new Stats(FileType.DIRECTORY, 4096, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
 
-    return new CodeSandboxFile(this, p, flag, stats, buffer);
+      return new CodeSandboxFile(this, p, flag, stats);
+    } else {
+      const { savedCode, code = '' } = moduleInfo;
+      const buffer = Buffer.from(savedCode || code || '');
+      const stats = new Stats(FileType.FILE, buffer.length, undefined, +new Date(), +new Date(moduleInfo.updatedAt), +new Date(moduleInfo.insertedAt));
+
+      return new CodeSandboxFile(this, p, flag, stats, buffer);
+    }
   }
 
   public writeFileSync() {

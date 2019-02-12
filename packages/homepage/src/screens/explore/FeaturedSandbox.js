@@ -5,7 +5,7 @@ import { profileUrl, protocolAndHost } from 'common/utils/url-generator';
 
 import getIcon from 'common/templates/icons';
 
-import { Spring, animated, Transition } from 'react-spring';
+import { Spring, animated, Transition } from 'react-spring/renderprops';
 
 import {
   Container,

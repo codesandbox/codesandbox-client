@@ -5,8 +5,6 @@ const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('common/config/env');
@@ -147,13 +145,19 @@ module.exports = {
         },
       },
       {
-        test: /\.(j|t)sx?$/,
+        test: /\.js?$/,
         include: [paths.src, paths.common, /@emmetio/],
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
           /\.no-webpack\./,
         ],
+        loader: 'happypack/loader',
+      },
+
+      {
+        test: /\.tsx?$/,
+        exclude: [/node_modules/],
         loader: 'happypack/loader',
       },
 
@@ -290,7 +294,11 @@ module.exports = {
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
-    modules: ['node_modules', 'src', 'standalone-packages'],
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, '../src'),
+      'standalone-packages',
+    ],
 
     extensions: ['.js', '.json', '.ts', '.tsx'],
 
@@ -464,6 +472,10 @@ module.exports = {
           to: 'public/13/vs/language/vue',
         },
         {
+          from: '../../standalone-packages/vscode-editor/release/min/vs',
+          to: 'public/13/vs',
+        },
+        {
           from: '../sse-hooks/dist',
           to: 'public/sse-hooks',
         },
@@ -479,142 +491,5 @@ module.exports = {
         },
       ].filter(x => x)
     ),
-    new WorkboxPlugin.InjectManifest({
-      swSrc: './src/app/service-worker.js',
-    }),
-    // Generate a service worker script that will precache, and keep up to date,
-    // the HTML & assets that are part of the Webpack build.
-    // new SWPrecacheWebpackPlugin({
-    //   // By default, a cache-busting query parameter is appended to requests
-    //   // used to populate the caches, to ensure the responses are fresh.
-    //   // If a URL is already hashed by Webpack, then there is no concern
-    //   // about it being stale, and the cache-busting can be skipped.
-    //   dontCacheBustUrlsMatching: /\.\w{8}\./,
-    //   filename: 'sandbox-service-worker.js',
-    //   cacheId: 'code-sandbox-sandbox',
-    //   logger(message) {
-    //     if (message.indexOf('Total precache size is') === 0) {
-    //       // This message occurs for every build and is a bit too noisy.
-    //       return;
-    //     }
-    //     if (message.indexOf('Skipping static resource') === 0) {
-    //       // This message obscures real errors so we ignore it.
-    //       // https://github.com/facebookincubator/create-react-app/issues/2612
-    //       return;
-    //     }
-    //     console.log(message);
-    //   },
-    //   minify: !__DEV__,
-    //   // For unknown URLs, fallback to the index page
-    //   navigateFallback: 'https://new.codesandbox.io/frame.html',
-    //   staticFileGlobs: ['www/frame.html'],
-    //   stripPrefix: 'www/',
-    //   // Ignores URLs starting from /__ (useful for Firebase):
-    //   // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
-    //   navigateFallbackWhitelist: [/^(?!\/__).*/],
-    //   // Don't precache sourcemaps (they're large) and build asset manifest:
-    //   staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-    //   maximumFileSizeToCacheInBytes: 5242880,
-    //   runtimeCaching: [
-    //     {
-    //       urlPattern: /api\/v1\/sandboxes/,
-    //       handler: 'networkFirst',
-    //       options: {
-    //         cache: {
-    //           maxEntries: 50,
-    //           name: 'sandboxes-cache',
-    //         },
-    //       },
-    //     },
-    //     {
-    //       urlPattern: /api\/v1\/dependencies/,
-    //       handler: 'fastest',
-    //       options: {
-    //         cache: {
-    //           maxAgeSeconds: 60 * 60 * 24,
-    //           name: 'dependency-version-cache',
-    //         },
-    //       },
-    //     },
-    //     {
-    //       // These should be dynamic, since it's not loaded from this domain
-    //       // But from the root domain
-    //       urlPattern: /codesandbox\.io\/static\/js\//,
-    //       handler: 'fastest',
-    //       options: {
-    //         cache: {
-    //           // A day
-    //           maxAgeSeconds: 60 * 60 * 24,
-    //           name: 'static-root-cache',
-    //         },
-    //       },
-    //     },
-    //     {
-    //       urlPattern: /\.amazonaws\.com\/prod\/package/,
-    //       handler: 'fastest',
-    //       options: {
-    //         cache: {
-    //           // a week
-    //           maxAgeSeconds: 60 * 60 * 24 * 7,
-    //           name: 'dependency-url-generator-cache',
-    //         },
-    //       },
-    //     },
-    //     {
-    //       urlPattern: /https:\/\/d1jyvh0kxilfa7\.cloudfront\.net/,
-    //       handler: 'fastest',
-    //       options: {
-    //         cache: {
-    //           maxAgeSeconds: 60 * 60 * 24 * 7,
-    //           name: 'dependency-files-cache',
-    //         },
-    //       },
-    //     },
-    //     {
-    //       urlPattern: /^https:\/\/unpkg\.com/,
-    //       handler: 'cacheFirst',
-    //       options: {
-    //         cache: {
-    //           maxEntries: 300,
-    //           name: 'unpkg-dep-cache',
-    //           maxAgeSeconds: 60 * 60 * 24 * 7,
-    //         },
-    //       },
-    //     },
-    //     {
-    //       urlPattern: /^https:\/\/cdn\.rawgit\.com/,
-    //       handler: 'cacheFirst',
-    //       options: {
-    //         cache: {
-    //           maxEntries: 300,
-    //           name: 'rawgit-cache',
-    //           maxAgeSeconds: 60 * 60 * 24 * 7,
-    //         },
-    //       },
-    //     },
-    //     {
-    //       urlPattern: /jsdelivr\.(com|net)/,
-    //       handler: 'cacheFirst',
-    //       options: {
-    //         cache: {
-    //           maxEntries: 300,
-    //           name: 'jsdelivr-dep-cache',
-    //           maxAgeSeconds: 60 * 60 * 24 * 7,
-    //         },
-    //       },
-    //     },
-    //     {
-    //       urlPattern: /cloudflare\.com/,
-    //       handler: 'cacheFirst',
-    //       options: {
-    //         cache: {
-    //           maxEntries: 50,
-    //           name: 'cloudflare-cache',
-    //           maxAgeSeconds: 60 * 60 * 24 * 7,
-    //         },
-    //       },
-    //     },
-    //   ],
-    // }),
   ].filter(Boolean),
 };

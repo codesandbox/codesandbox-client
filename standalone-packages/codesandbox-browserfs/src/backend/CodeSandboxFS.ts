@@ -13,7 +13,7 @@ import PreloadFile from "../generic/preload_file";
 import { ErrorCode, ApiError } from "../core/api_error";
 
 export interface IModule {
-  path: string;
+  path?: string;
   code: string | undefined;
 }
 

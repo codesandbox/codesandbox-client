@@ -3,31 +3,25 @@ import * as child_process from 'node-services/lib/child_process';
 import * as net from 'node-services/lib/net';
 import { default as Module } from 'node-services/lib/module';
 import preval from 'preval.macro';
-
-import styled from 'styled-components';
-
-// TODO move this all to monaco-textmate
-import { loadWASM } from 'onigasm'; // peer dependency of 'monaco-textmate'
-
 import resolve from 'resolve';
 
 import { METADATA } from './metadata';
 
 const PREFIX = '/vs';
 
-const global = self || window;
+const global: any = self || window;
 global.global = typeof window === 'undefined' ? self : window;
 let requiresDefined = false;
 
 function initializeRequires() {
-  self.require.define('vs/platform/node/product', [], () => {
+  global.require.define('vs/platform/node/product', [], () => {
     return {
       default: preval`
       module.exports = require('../../../../../standalone-packages/vscode/product.json');
       `,
     };
   });
-  self.require.define('vs/platform/node/package', [], () => {
+  global.require.define('vs/platform/node/package', [], () => {
     return {
       default: preval`
       module.exports = require('../../../../../standalone-packages/vscode/package.json');
@@ -35,7 +29,7 @@ function initializeRequires() {
     };
   });
 
-  self.require.define('path', [], () => {
+  global.require.define('path', [], () => {
     const path = require('path');
     return {
       ...path,
@@ -43,33 +37,33 @@ function initializeRequires() {
     };
   });
 
-  self.require.define('util', [], () => {
+  global.require.define('util', [], () => {
     return require('util');
   });
 
-  self.require.define('string_decoder', [], () => {
+  global.require.define('string_decoder', [], () => {
     return require('string_decoder');
   });
 
-  self.require.define('crypto', [], () => {
+  global.require.define('crypto', [], () => {
     return {};
   });
 
-  self.require.define('node-pty', [], () => {
+  global.require.define('node-pty', [], () => {
     return {};
   });
 
-  self.require.define('vs/workbench/node/proxyResolver', [], () => {
+  global.require.define('vs/workbench/node/proxyResolver', [], () => {
     return {
       connectProxyResolver: () => Promise.resolve(undefined),
     };
   });
 
-  self.require.define('os', [], () => {
+  global.require.define('os', [], () => {
     return { tmpdir: () => '/tmp' };
   });
 
-  self.require.define('vs/base/node/encoding', [], () => {
+  global.require.define('vs/base/node/encoding', [], () => {
     return {
       UTF8: 'utf8',
       UTF8_with_bom: 'utf8bom',
@@ -78,60 +72,60 @@ function initializeRequires() {
     };
   });
 
-  self.require.define('child_process', [], () => {
+  global.require.define('child_process', [], () => {
     return child_process;
   });
 
-  self.require.define('electron', [], () => {
+  global.require.define('electron', [], () => {
     return {};
   });
 
-  self.require.define('net', [], () => {
+  global.require.define('net', [], () => {
     return net;
   });
 
-  self.require.define('fs', [], () => {
-    return BrowserFS.BFSRequire('fs');
+  global.require.define('fs', [], () => {
+    return global.BrowserFS.BFSRequire('fs');
   });
 
-  self.require.define('semver', [], () => {
+  global.require.define('semver', [], () => {
     return require('semver');
   });
 
-  self.require.define('assert', [], () => {
+  global.require.define('assert', [], () => {
     return require('assert');
   });
 
-  self.require.define('vs/base/common/amd', [], () => ({
+  global.require.define('vs/base/common/amd', [], () => ({
     getPathFromAmdModule: (_, relativePath) =>
       require('path').join('/vs', relativePath),
   }));
 
-  self.require.define('vs/platform/request/node/request', [], () => {
+  global.require.define('vs/platform/request/node/request', [], () => {
     // TODO
     return {};
   });
 
-  self.require.define('vs/base/node/request', [], () => {
+  global.require.define('vs/base/node/request', [], () => {
     // TODO
     return {};
   });
 
-  self.require.define('vs/base/node/proxy', [], () => {
+  global.require.define('vs/base/node/proxy', [], () => {
     // TODO
     return {};
   });
 
-  self.require.define('vscode-textmate', [], () => {
+  global.require.define('vscode-textmate', [], () => {
     return require('vscode-textmate/out/main');
   });
 
-  self.require.define('yauzl', [], () => {
+  global.require.define('yauzl', [], () => {
     // TODO: install yauzl
   });
 }
 
-export default function(requiredModule: string, isVSCode = false) {
+export default function(requiredModule?: string[], isVSCode = false) {
   var IS_FILE_PROTOCOL = global.location.protocol === 'file:';
   var DIRNAME = null;
   if (IS_FILE_PROTOCOL) {
@@ -192,7 +186,7 @@ export default function(requiredModule: string, isVSCode = false) {
     );
   }
 
-  function Component(name, modulePrefix, paths, contrib) {
+  function Component(name: string, modulePrefix: string, paths, contrib?: any) {
     this.name = name;
     this.modulePrefix = modulePrefix;
     this.paths = paths;
@@ -277,7 +271,7 @@ export default function(requiredModule: string, isVSCode = false) {
   };
 
   var RESOLVED_CORE = new Component('editor', 'vs', METADATA.CORE.paths);
-  self.RESOLVED_CORE_PATH = RESOLVED_CORE.getResolvedPath();
+  global.RESOLVED_CORE_PATH = RESOLVED_CORE.getResolvedPath();
   var RESOLVED_PLUGINS = METADATA.PLUGINS.map(function(plugin) {
     return new Component(
       plugin.name,
@@ -296,7 +290,7 @@ export default function(requiredModule: string, isVSCode = false) {
       script.src = path;
       document.head.appendChild(script);
     } else {
-      self.importScripts(path);
+      global.importScripts(path);
       callback();
     }
   }
@@ -310,8 +304,8 @@ export default function(requiredModule: string, isVSCode = false) {
 
       var div = document.createElement('div');
       div.style.position = 'fixed';
-      div.style.top = 0;
-      div.style.right = 0;
+      div.style.top = '0';
+      div.style.right = '0';
       div.style.background = 'lightgray';
       div.style.padding = '5px 20px 5px 5px';
       div.style.zIndex = '1000';
@@ -337,7 +331,7 @@ export default function(requiredModule: string, isVSCode = false) {
     }
   })();
 
-  return function(callback, PATH_PREFIX) {
+  return function(callback: () => void, PATH_PREFIX?: string) {
     PATH_PREFIX = PATH_PREFIX || '';
 
     global.nodeRequire = path => {
@@ -376,18 +370,18 @@ export default function(requiredModule: string, isVSCode = false) {
       }
 
       const requireToUrl = p => require('path').join('/vs', p);
-      self.require.toUrl = requireToUrl;
+      global.require.toUrl = requireToUrl;
 
-      if (!requiresDefined && self.require.define) {
+      if (!requiresDefined && global.require.define) {
         requiresDefined = true;
         initializeRequires();
 
         if (process.env.NODE_ENV === 'development') {
-          console.log('setting config', AMDLoader);
+          console.log('setting config', global.AMDLoader);
         }
 
-        // self.require.config({ requireToUrl, paths: { vs: '/public/vscode' } });
-        self.require.config({
+        // global.require.config({ requireToUrl, paths: { vs: '/public/vscode' } });
+        global.require.config({
           // isBuild: true,
           paths: loaderPathsConfig,
           requireToUrl,
@@ -397,10 +391,10 @@ export default function(requiredModule: string, isVSCode = false) {
       global.deps = new Set();
 
       if (requiredModule) {
-        self.require(requiredModule, function() {
+        global.require(requiredModule, function(a) {
           if (!isVSCode && !RESOLVED_CORE.isRelease()) {
             // At this point we've loaded the monaco-editor-core
-            self.require(
+            global.require(
               RESOLVED_PLUGINS.map(function(plugin) {
                 return plugin.contrib;
               }),

@@ -43,6 +43,9 @@ class DirectoryChildren extends React.Component {
       <div>
         {sortBy(directories, 'title')
           .filter(x => x.directoryShortid === parentShortid)
+          // .filter(
+          //   x => !(x.directoryShortid == null && x.title === '.codesandbox')
+          // )
           .map(dir => (
             <DirectoryEntry
               key={dir.id}

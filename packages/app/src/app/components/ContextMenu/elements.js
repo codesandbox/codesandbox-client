@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { animated } from 'react-spring';
+import { animated } from 'react-spring/renderprops';
 import theme from 'common/theme';
 
 export const Container = styled(animated.div)`

@@ -54,6 +54,10 @@ export default function getItems(store) {
     return [FILES, LIVE];
   }
 
+  if (!store.editor.currentSandbox.owned) {
+    return [PROJECT];
+  }
+
   const items = [PROJECT, FILES];
 
   if (store.isLoggedIn && store.editor.currentSandbox) {

@@ -7,17 +7,16 @@ import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import type { ModuleError } from 'common/types';
+import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
-import FilePath from 'app/components/CodeEditor/FilePath';
+import { getPreviewTabs } from 'common/templates/devtools';
 
-import Preview from './Preview';
-import Tabs from './Tabs';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
-import SplitPane from 'react-split-pane';
-import { ContentTab } from './elements';
+import Tabs from './Tabs';
+import Preview from './Preview';
 
 const settings = store =>
   ({
@@ -315,6 +314,14 @@ class EditorPreview extends React.Component<Props, State> {
         this.handleToggleDevtools(showDevtools);
       }
     );
+    const disposeTogglePreview = reaction(
+      () => this.props.store.editor.previewWindow.content,
+      () => {
+        requestAnimationFrame(() => {
+          this.getBounds();
+        });
+      }
+    );
 
     return () => {
       disposeErrorsHandler();
@@ -331,6 +338,7 @@ class EditorPreview extends React.Component<Props, State> {
       disposeLiveHandler();
       disposePendingOperationHandler();
       disposeLiveSelectionHandler();
+      disposeTogglePreview();
     };
   };
 
@@ -355,6 +363,50 @@ class EditorPreview extends React.Component<Props, State> {
       moduleShortid: currentModuleShortid,
       operation: operation.toJSON(),
     });
+  };
+
+  moveDevToolsTab = (prevPos, nextPos) => {
+    const { store, signals } = this.props;
+    const tabs = this.getPreviewTabs();
+
+    const prevDevTools = tabs[prevPos.devToolIndex];
+    const nextDevTools = tabs[nextPos.devToolIndex];
+    const prevTab = tabs[prevPos.devToolIndex].views[prevPos.tabPosition];
+
+    prevDevTools.views = prevDevTools.views.filter(
+      (_, i) => i !== prevPos.tabPosition
+    );
+
+    nextDevTools.views.splice(nextPos.tabPosition, 0, prevTab);
+
+    const newTabs = tabs.map((t, i) => {
+      if (i === prevPos.devToolIndex) {
+        return prevDevTools;
+      } else if (i === nextPos.devToolIndex) {
+        return nextDevTools;
+      }
+
+      return t;
+    });
+
+    const code = JSON.stringify({ preview: newTabs }, null, 2);
+    const previousFile =
+      store.editor.modulesByPath['/.codesandbox/workspace.json'];
+    if (previousFile) {
+      signals.editor.codeSaved({
+        code,
+        moduleShortid: previousFile.shortid,
+      });
+    } else {
+      signals.files.createModulesByPath({
+        files: {
+          '/.codesandbox/workspace.json': {
+            content: code,
+            isBinary: false,
+          },
+        },
+      });
+    }
   };
 
   render() {
@@ -404,6 +456,17 @@ class EditorPreview extends React.Component<Props, State> {
       return false;
     };
 
+    const views = getPreviewTabs(sandbox);
+
+    const browserConfig = {
+      id: 'codesandbox.browser',
+      title: 'Browser',
+      Content: ({ hidden }) => (
+        <Preview hidden={hidden} width={'100%'} height={'100%'} />
+      ),
+      actions: [],
+    };
+
     return (
       <ThemeProvider
         theme={{
@@ -439,8 +502,26 @@ class EditorPreview extends React.Component<Props, State> {
             onDragStarted={() => {
               this.props.signals.editor.resizingStarted();
             }}
+            onChange={() => {
+              requestAnimationFrame(() => {
+                this.getBounds();
+              });
+            }}
             split="vertical"
             defaultSize={'50%'}
+            pane1Style={
+              windowVisible
+                ? {}
+                : {
+                    width: '100%',
+                    minWidth: '100%',
+                  }
+            }
+            pane2Style={{
+              visibility: windowVisible ? 'visible' : 'hidden',
+              maxWidth: windowVisible ? 'inherit' : 0,
+              width: windowVisible ? 'inherit' : 0,
+            }}
           >
             <div
               ref={this.getBounds}
@@ -453,6 +534,7 @@ class EditorPreview extends React.Component<Props, State> {
                 marginTop: 0,
               }}
             >
+              {store.preferences.settings.codeMirror && <Tabs />}
               <CodeEditor
                 onInitialized={this.onInitialized}
                 sandbox={sandbox}
@@ -507,34 +589,33 @@ class EditorPreview extends React.Component<Props, State> {
                 height: '100%',
               }}
             >
-              <ContentTab>Browser</ContentTab>
-              <Preview
-                runOnClick={this.props.store.preferences.runOnClick}
-                width={absoluteWidth}
-                height={absoluteHeight}
-              />
-              <DevTools
-                ref={component => {
-                  if (component) {
-                    this.devtools = component;
+              {views.map((view, i) => (
+                <DevTools
+                  key={i} // eslint-disable-line react/no-array-index-key
+                  devToolIndex={i}
+                  addedViews={{
+                    'codesandbox.browser': browserConfig,
+                  }}
+                  setDragging={dragging => {
+                    if (dragging) {
+                      this.props.signals.editor.resizingStarted();
+                    } else {
+                      this.props.signals.editor.resizingStopped();
+                    }
+                  }}
+                  sandboxId={sandbox.id}
+                  template={sandbox.template}
+                  shouldExpandDevTools={store.preferences.showDevtools}
+                  zenMode={preferences.settings.zenMode}
+                  setDevToolsOpen={open =>
+                    this.props.signals.preferences.setDevtoolsOpen({ open })
                   }
-                }}
-                setDragging={dragging => {
-                  if (dragging) {
-                    this.props.signals.editor.resizingStarted();
-                  } else {
-                    this.props.signals.editor.resizingStopped();
-                  }
-                }}
-                sandboxId={sandbox.id}
-                template={sandbox.template}
-                shouldExpandDevTools={store.preferences.showDevtools}
-                zenMode={preferences.settings.zenMode}
-                setDevToolsOpen={open =>
-                  this.props.signals.preferences.setDevtoolsOpen({ open })
-                }
-                owned={sandbox.owned}
-              />
+                  owned={sandbox.owned}
+                  primary={i === 0}
+                  viewConfig={view}
+                  moveTab={this.moveDevToolsTab}
+                />
+              ))}
             </div>
           </SplitPane>
         </div>

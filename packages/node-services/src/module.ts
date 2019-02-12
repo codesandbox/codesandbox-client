@@ -167,15 +167,15 @@ export default class Module {
     }
 
     if (request === 'http') {
-      return {
-        Agent: class Agent {},
-      };
+      // @ts-ignore Trick the module in thinking that it's on window, it's an outdated check
+      self.window = self;
+      return require('http-browserify');
     }
 
     if (request === 'https') {
-      return {
-        Agent: class Agent {},
-      };
+      // @ts-ignore Trick the module in thinking that it's on window, it's an outdated check
+      self.window = self;
+      return require('https-browserify');
     }
 
     if (request === 'constants') {

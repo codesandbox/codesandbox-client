@@ -16,10 +16,10 @@ import UIIcon from 'react-icons/lib/md/dvr';
 import QuestionIcon from 'react-icons/lib/go/question';
 
 import type { Props } from './types';
-import Monaco from './Monaco';
-import VSCode from './VSCode';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
+import VSCode from './VSCode';
+import Monaco from './Monaco';
 import MonacoDiff from './MonacoDiff';
 import { Icons, Icon } from './elements';
 import { getCustomEditorAPI } from './VSCode/custom-code-editor';
@@ -165,10 +165,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       );
     }
 
-    let Editor =
-      (settings.vimMode || settings.codeMirror) && !props.isLive
-        ? CodeMirror
-        : Monaco;
+    const isCodeMirror = settings.vimMode || settings.codeMirror;
+    let Editor = isCodeMirror && !props.isLive ? CodeMirror : Monaco;
 
     if (settings.experimentVSCode) {
       Editor = VSCode;
@@ -180,7 +178,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           height: props.height || '100%',
           width: props.width || '100%',
           position: 'absolute',
-          top: 0,
+          top: isCodeMirror ? 35 : 0,
           left: 0,
           right: 0,
           bottom: 0,
@@ -194,7 +192,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
             </Icons>
           )}
         {config &&
-          (getUI(config.type) ? (
+          (getUI(config.type) && !settings.experimentVSCode ? (
             <Icons>
               <Tooltip title="Switch to UI Configuration">
                 <Icon onClick={this.toggleConfigUI}>
@@ -203,7 +201,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
               </Tooltip>
             </Icons>
           ) : (
-            <Icons style={{ fontSize: '.875rem' }}>
+            <Icons
+              style={{
+                fontSize: '.875rem',
+                marginTop: settings.experimentVSCode ? 35 : 0,
+              }}
+            >
               {config.partialSupportDisclaimer ? (
                 <Tooltip
                   position="bottom"

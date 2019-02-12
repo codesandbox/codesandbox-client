@@ -21,7 +21,6 @@ import { getTextOperation } from 'common/utils/diff';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
-import DependencyTypingsFetcher from 'worker-loader?publicPath=/&name=dependency-typings-fetcher.[hash:8].worker.js!./fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import eventToTransform from '../Monaco/event-to-transform';
@@ -121,17 +120,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     );
 
     this.transpilationListener = this.setupTranspilationListener();
-
-    this.fetcher = new DependencyTypingsFetcher();
-
-    setTimeout(() => {
-      Object.keys(this.dependencies).forEach(dep => {
-        this.fetcher.postMessage({
-          dependency: dep,
-          version: this.dependencies[dep],
-        });
-      });
-    }, 8000);
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -268,6 +256,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // getMode('stub.vue', monaco);
 
     monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
+    monaco.languages.registerDocumentFormattingEditProvider(
+      'typescriptreact',
+      this
+    );
     monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
     monaco.languages.registerDocumentFormattingEditProvider('css', this);
     monaco.languages.registerDocumentFormattingEditProvider('less', this);
@@ -389,11 +381,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.setupWorkers();
     });
 
-    // monaco.languages.typescript.typescriptDefaults.setMaximumWorkerIdleTime(-1);
-    // monaco.languages.typescript.javascriptDefaults.setMaximumWorkerIdleTime(-1);
-
-    // this.setCompilerOptions();
-
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(() => {
       if (this.props.width && this.props.height) {
@@ -421,61 +408,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // requestAnimationFrame(() => {
     //   liftOff(monaco);
     // });
-  };
-
-  setCompilerOptions = () => {
-    const hasNativeTypescript = this.hasNativeTypescript();
-    const existingConfig = this.tsconfig ? this.tsconfig.compilerOptions : {};
-    const jsxFactory = existingConfig.jsxFactory || 'React.createElement';
-    const reactNamespace = existingConfig.reactNamespace || 'React';
-
-    const compilerDefaults = {
-      jsxFactory,
-      reactNamespace,
-      jsx: this.monaco.languages.typescript.JsxEmit.React,
-      target: this.monaco.languages.typescript.ScriptTarget.ES2016,
-      allowNonTsExtensions: !hasNativeTypescript,
-      moduleResolution: this.monaco.languages.typescript.ModuleResolutionKind
-        .NodeJs,
-      module: hasNativeTypescript
-        ? this.monaco.languages.typescript.ModuleKind.ES2015
-        : this.monaco.languages.typescript.ModuleKind.System,
-      experimentalDecorators: true,
-      noEmit: true,
-      allowJs: true,
-      typeRoots: ['node_modules/@types'],
-
-      forceConsistentCasingInFileNames:
-        hasNativeTypescript && existingConfig.forceConsistentCasingInFileNames,
-      noImplicitReturns:
-        hasNativeTypescript && existingConfig.noImplicitReturns,
-      noImplicitThis: hasNativeTypescript && existingConfig.noImplicitThis,
-      noImplicitAny: hasNativeTypescript && existingConfig.noImplicitAny,
-      strictNullChecks: hasNativeTypescript && existingConfig.strictNullChecks,
-      suppressImplicitAnyIndexErrors:
-        hasNativeTypescript && existingConfig.suppressImplicitAnyIndexErrors,
-      noUnusedLocals: hasNativeTypescript && existingConfig.noUnusedLocals,
-
-      newLine: this.monaco.languages.typescript.NewLineKind.LineFeed,
-    };
-
-    // this.monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-    //   compilerDefaults
-    // );
-    // this.monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
-    //   compilerDefaults
-    // );
-
-    // this.monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-    //   noSemanticValidation: false,
-    //   noSyntaxValidation: !hasNativeTypescript,
-    // });
-  };
-
-  setTSConfig = (config: Object) => {
-    this.tsconfig = config;
-
-    this.setCompilerOptions();
   };
 
   changeModule = (

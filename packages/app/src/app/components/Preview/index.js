@@ -9,7 +9,7 @@ import { frameUrl, host } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
 import getTemplate from 'common/templates';
 
-import { Spring } from 'react-spring';
+import { Spring } from 'react-spring/renderprops';
 
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 

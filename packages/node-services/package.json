@@ -11,7 +11,7 @@
     "@types/events": "^1.2.0",
     "@types/resolve": "^0.0.8",
     "@types/ws": "^6.0.1",
-    "typescript": "^2.9.2"
+    "typescript": "^3.3.1"
   },
   "scripts": {
     "build": "tsc",

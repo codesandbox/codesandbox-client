@@ -3,7 +3,7 @@ import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
 import { chunk } from 'lodash-es';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
-import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
+import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 import track from 'common/utils/analytics';
 
 import {

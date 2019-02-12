@@ -267,6 +267,7 @@ const ConsoleFilterSelect = props => {
 };
 
 export default {
+  id: 'codesandbox.console',
   title: 'Console',
   Content: withTheme(Console),
   actions: [

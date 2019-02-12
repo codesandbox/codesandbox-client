@@ -63,7 +63,6 @@ class ContentSplit extends React.Component {
   render() {
     const { signals, store, match } = this.props;
     const sandbox = store.editor.currentSandbox;
-    const sandboxOwned = sandbox.owned;
 
     // Force MobX to update this component by observing the following value
     this.props.store.preferences.settings.editorTheme; // eslint-disable-line
@@ -72,9 +71,8 @@ class ContentSplit extends React.Component {
     const vscode = this.props.store.preferences.settings.experimentVSCode;
 
     const hideNavigation =
-      (store.preferences.settings.zenMode &&
-        !store.workspace.openedWorkspaceItem) ||
-      !sandboxOwned;
+      store.preferences.settings.zenMode &&
+      !store.workspace.openedWorkspaceItem;
 
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
 
@@ -89,13 +87,13 @@ class ContentSplit extends React.Component {
         <Container>
           {!store.preferences.settings.zenMode && <Header />}
 
-          <Fullscreen style={{ width: 'initial', height: 'initial' }}>
+          <Fullscreen style={{ width: 'initial' }}>
             {!hideNavigation && <Navigation />}
 
             <div
               style={{
                 position: 'fixed',
-                left: hideNavigation ? 0 : 'calc(4rem + 1px)',
+                left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',
                 top: store.preferences.settings.zenMode ? 0 : '3rem',
                 right: 0,
                 bottom: vscode ? STATUS_BAR_SIZE : 0,
@@ -103,7 +101,7 @@ class ContentSplit extends React.Component {
             >
               <SplitPane
                 split="vertical"
-                defaultSize={sandboxOwned ? 17 * 16 : 18 * 16}
+                defaultSize={17 * 16}
                 minSize={0}
                 onDragStarted={() => signals.editor.resizingStarted()}
                 onDragFinished={() => signals.editor.resizingStopped()}
@@ -127,7 +125,7 @@ class ContentSplit extends React.Component {
                   height: '100%',
                 }}
               >
-                {store.workspace.openedWorkspaceItem && <Workspace />}
+                {store.workspace.openedWorkspaceItem ? <Workspace /> : <div />}
                 <Content match={match} />
               </SplitPane>
 

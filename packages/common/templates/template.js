@@ -25,6 +25,30 @@ const defaultConfigurations = {
   '/now.json': configurations.nowConfig,
 };
 
+export type ViewConfig = {
+  open?: boolean,
+  views: Array<{ id: string, options?: any }>,
+};
+
+const CLIENT_VIEWS = [
+  {
+    views: [{ id: 'codesandbox.browser' }, { id: 'codesandbox.tests' }],
+  },
+  {
+    views: [{ id: 'codesandbox.console' }, { id: 'codesandbox.problems' }],
+  },
+];
+
+const SERVER_VIEWS = [
+  {
+    views: [{ id: 'codesandbox.browser' }],
+  },
+  {
+    open: true,
+    views: [{ id: 'codesandbox.terminal' }, { id: 'codesandbox.console' }],
+  },
+];
+
 export default class Template {
   name: string;
   niceName: string;
@@ -110,6 +134,17 @@ export default class Template {
     [type: string]: Object,
   }): Array<string> {
     return ['/public/index.html', '/index.html'];
+  }
+
+  /**
+   * Get the views that are tied to the template
+   */
+  getViews() {
+    if (this.isServer) {
+      return SERVER_VIEWS;
+    }
+
+    return CLIENT_VIEWS;
   }
 
   /**

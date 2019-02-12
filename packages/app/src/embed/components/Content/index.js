@@ -8,8 +8,6 @@ import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 
-import getTemplate from 'common/templates';
-
 import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
 import {
   TabTitle,
@@ -21,6 +19,8 @@ import DevTools from 'app/components/Preview/DevTools';
 
 import { resolveModule, findMainModule } from 'common/sandbox/modules';
 import RunOnClick from 'common/components/RunOnClick';
+import getTemplate from 'common/templates';
+import { getPreviewTabs } from 'common/templates/devtools';
 
 import { Container, Tabs, Split } from './elements';
 
@@ -343,6 +343,7 @@ export default class Content extends React.PureComponent<Props, State> {
     if (!mainModule) throw new Error('Cannot find main module');
 
     const templateDefinition = getTemplate(sandbox.template);
+    const views = getPreviewTabs(sandbox);
 
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'
@@ -358,6 +359,46 @@ export default class Content extends React.PureComponent<Props, State> {
         /* swallow */
       }
     }
+
+    if (view !== 'browser') {
+      // Backwards compatability for sandbox.config.json
+      if (view === 'console') {
+        views[0].views.unshift({ id: 'codesandbox.console' });
+      } else if (view === 'tests') {
+        console.log('unsgufting');
+        views[0].views.unshift({ id: 'codesandbox.tests' });
+      }
+    }
+
+    console.log(views);
+
+    if (expandDevTools) {
+      views[1].open = true;
+    }
+
+    const browserConfig = {
+      id: 'codesandbox.browser',
+      title: 'Browser',
+      Content: ({ hidden }) => (
+        <BasePreview
+          onInitialized={this.onPreviewInitialized}
+          sandbox={sandbox}
+          hide={hidden}
+          currentModule={mainModule}
+          settings={this.getPreferences()}
+          initialPath={this.props.initialPath}
+          isInProjectView={isInProjectView}
+          onClearErrors={this.clearErrors}
+          onAction={this.handleAction}
+          showNavigation={!hideNavigation}
+          onToggleProjectView={this.onToggleProjectView}
+          showDevtools={expandDevTools}
+          onResize={this.handleResize}
+          dragging={this.state.dragging}
+        />
+      ),
+      actions: [],
+    };
 
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
@@ -450,34 +491,26 @@ export default class Content extends React.PureComponent<Props, State> {
             ) : (
               <div
                 style={{
-                  height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
+                  height: '100%',
                 }}
               >
-                <BasePreview
-                  onInitialized={this.onPreviewInitialized}
-                  sandbox={sandbox}
-                  currentModule={mainModule}
-                  settings={this.getPreferences()}
-                  initialPath={this.props.initialPath}
-                  isInProjectView={isInProjectView}
-                  onClearErrors={this.clearErrors}
-                  onAction={this.handleAction}
-                  showNavigation={!hideNavigation}
-                  onToggleProjectView={this.onToggleProjectView}
-                  showDevtools={expandDevTools}
-                  onResize={this.handleResize}
-                  dragging={this.state.dragging}
-                />
-                <DevTools
-                  setDragging={this.setDragging}
-                  sandboxId={sandbox.id}
-                  template={sandbox.template}
-                  shouldExpandDevTools={this.props.expandDevTools}
-                  view={view}
-                  owned={false}
-                />
+                {views.map((devView, i) => (
+                  <DevTools
+                    key={i} // eslint-disable-line react/no-array-index-key
+                    devToolIndex={i}
+                    addedViews={{
+                      'codesandbox.browser': browserConfig,
+                    }}
+                    setDragging={this.setDragging}
+                    sandboxId={sandbox.id}
+                    template={sandbox.template}
+                    owned={false}
+                    primary={i === 0}
+                    viewConfig={devView}
+                  />
+                ))}
               </div>
             )}
           </Split>

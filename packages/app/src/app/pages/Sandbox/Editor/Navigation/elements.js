@@ -3,13 +3,13 @@ import styled, { css } from 'styled-components';
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 4rem;
-  flex: 0 0 4rem;
+  width: 3.5rem;
+  flex: 0 0 3.5rem;
   height: 100%;
   color: ${props =>
-    props.theme['activityBar.foreground'] || 'rgba(255, 255, 255, 0.6)'};
+    props.theme['activityBar.foreground'] || 'rgba(255, 255, 255, 0.5)'};
 
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   align-items: center;
 
   background-color: ${props =>
@@ -21,8 +21,8 @@ export const IconContainer = styled.div`
   justify-content: center;
   align-items: center;
   transition: 0.3s ease all;
-  height: 64px;
-  width: 64px;
+  height: 3.5rem;
+  width: 3.5rem;
   cursor: pointer;
 
   &:hover {
@@ -33,10 +33,5 @@ export const IconContainer = styled.div`
     props.selected &&
     css`
       color: white;
-      background-color: ${props.theme.templateColor
-        ? props.theme.templateBackgroundColor
-          ? props.theme.templateBackgroundColor()
-          : props.theme.templateColor()
-        : props.theme.secondary()};
     `};
 `;

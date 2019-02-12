@@ -9,7 +9,7 @@ export const Container = styled.a`
   height: 3rem;
   margin-right: 1rem;
 
-  padding: 0 calc(1rem + 1px);
+  padding: 0 calc(0.8rem + 1px);
 
   box-sizing: border-box;
 

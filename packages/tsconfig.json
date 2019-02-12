@@ -1,13 +1,13 @@
 {
+  "files": [],
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES6",
+    "lib": ["webworker", "es5", "dom"],
     "paths": {
       "sandbox/*": ["src/sandbox/*"],
       "app/*": ["src/app/*"],
       "embed/*": ["src/embed/*"]
     }
-  },
-  "files": ["src/**/*.js"],
-  "exclude": ["node_modules/**/*.*"]
+  }
 }

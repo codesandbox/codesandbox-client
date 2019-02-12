@@ -155,7 +155,42 @@ function getWorkerFromCache(path: string, isDefaultWorker: boolean) {
   return undefined;
 }
 
-function fork(path: string, argv: string[], processOpts: IProcessOpts) {
+let sentBroadcasts: Map<string, Array<number>> = new Map();
+/**
+ * Broadcasts a message if it hasn't been sent by this worker/window before
+ */
+function handleBroadcast(
+  path: string,
+  target: Worker | Window,
+  data: {
+    $id?: number;
+    $data: object;
+    $type: string;
+  }
+) {
+  const sentBroadcastsForPath = sentBroadcasts.get(path) || [];
+
+  if (data.$id && sentBroadcastsForPath.indexOf(data.$id) > -1) {
+    return;
+  }
+
+  data.$id = data.$id || Math.random() * 1000000;
+
+  if (sentBroadcastsForPath.length > 100) {
+    sentBroadcastsForPath.shift();
+  }
+  sentBroadcastsForPath.push(data.$id);
+  if (target instanceof Worker) {
+    target.postMessage(data);
+  } else {
+    // @ts-ignore I don't understand why this one is complaining, it breaks if I give it an extra argument
+    target.postMessage(data);
+  }
+
+  sentBroadcasts.set(path, sentBroadcastsForPath);
+}
+
+function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
   console.log('forking', path);
   const WorkerConstructor = workerMap.get(path);
   const isDefaultWorker = !WorkerConstructor;
@@ -170,7 +205,7 @@ function fork(path: string, argv: string[], processOpts: IProcessOpts) {
     const { data } = e;
 
     if (data.$broadcast) {
-      worker.postMessage(data);
+      handleBroadcast(path, worker, data);
       return;
     }
 
@@ -187,6 +222,11 @@ function fork(path: string, argv: string[], processOpts: IProcessOpts) {
   worker.addEventListener('message', e => {
     const { data } = e;
 
+    if (data.$broadcast) {
+      handleBroadcast(path, self, data);
+      return;
+    }
+
     if (!data.$sang && data.$type) {
       const newData = {
         $sang: true,
@@ -198,16 +238,21 @@ function fork(path: string, argv: string[], processOpts: IProcessOpts) {
     }
   });
 
+  const data: any = {
+    entry: isDefaultWorker ? path : undefined,
+    argv: argv || [],
+  };
+
+  if (processOpts) {
+    data.env = processOpts.env;
+    data.cwd = processOpts.cwd;
+    data.execArgv = processOpts.execArgv;
+  }
+
   worker.postMessage({
     $type: 'worker-manager',
     $event: 'init',
-    data: {
-      env: processOpts.env,
-      entry: isDefaultWorker ? path : undefined,
-      cwd: processOpts.cwd,
-      execArgv: processOpts.execArgv,
-      argv,
-    },
+    data,
   });
 
   return new ChildProcess(worker);
@@ -227,4 +272,23 @@ function preloadWorker(path: string) {
   }
 }
 
-export { addForkHandler, addDefaultForkHandler, preloadWorker, fork };
+function execFileSync(path: string) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('EXEC_FILE_SYNC', path);
+  }
+}
+
+function execSync(path: string) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('EXEC_SYNC', path);
+  }
+}
+
+export {
+  addForkHandler,
+  addDefaultForkHandler,
+  preloadWorker,
+  fork,
+  execSync,
+  execFileSync,
+};

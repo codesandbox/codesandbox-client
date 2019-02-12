@@ -1,15 +1,17 @@
-// This is the sub worker that runs code for the extension host
-// This means that all workers spawned by the worker will be done by the sub-worker
+// This is the default worker that will be called if no worker is specified.
+// It's function is to execute the code of the path that's given to it.
 
 import { default as Module } from 'node-services/lib/module';
 import resolve from 'resolve';
 import _debug from 'common/utils/debug';
 
-import { initializeBrowserFS } from './common/fs';
+import { initializeBrowserFS } from '../common/fs';
 
 const debug = _debug('cs:cp-bootstrap-worker');
 
 debug('Starting Worker');
+
+const ctx: Worker = self as any;
 
 const pendingMessages = [];
 let initialized = false;
@@ -19,7 +21,7 @@ function processMessage(data) {
   const { $data, $type } = data;
 
   if ($type === 'message') {
-    process.emit('message', JSON.parse($data));
+    process.emit('message', JSON.parse($data), undefined);
   } else if ($data && $data.$type) {
     process.stdin.emit('data', $data.$data);
   } else if ($type === 'input-write') {
@@ -38,7 +40,7 @@ const initializeProcess = (process, data) => {
       $data: JSON.stringify(message),
     };
 
-    self.postMessage(m);
+    ctx.postMessage(m);
 
     if (typeof _a === 'function') {
       _a(null);
@@ -56,8 +58,7 @@ const initializeProcess = (process, data) => {
         $data: message,
       };
 
-      // TODO look into wildcard
-      self.postMessage(m);
+      ctx.postMessage(m);
 
       if (callback) {
         callback(null, null);
@@ -77,10 +78,10 @@ self.addEventListener('message', async e => {
   if (data.$type === 'worker-manager') {
     if (data.$event === 'init') {
       debug('Initializing BrowserFS');
-      const process = BrowserFS.BFSRequire('process');
-      await initializeBrowserFS({ syncSandbox: true });
+      await initializeBrowserFS({ syncSandbox: true, syncTypes: true });
       debug('Initialized BrowserFS', data);
 
+      const process = BrowserFS.BFSRequire('process');
       initializeProcess(process, data);
 
       if (data.data.entry) {

@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { animated } from 'react-spring';
+import { animated } from 'react-spring/renderprops';
 
 const fadeIn = keyframes`
   0%   { opacity: 0; }

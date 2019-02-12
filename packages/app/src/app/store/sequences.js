@@ -463,7 +463,7 @@ export const loadSandbox = factories.withLoadApp([
 
       actions.getSandbox,
       {
-        success: [joinLiveSessionIfAvailable, ensurePackageJSON],
+        success: [joinLiveSessionIfAvailable, ensurePackageJSON, syncFilesToFS],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },

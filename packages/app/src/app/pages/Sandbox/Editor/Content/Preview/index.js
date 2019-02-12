@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
@@ -7,15 +7,10 @@ import BasePreview from 'app/components/Preview';
 import RunOnClick from 'common/components/RunOnClick';
 import getTemplate from 'common/templates';
 
-import FlyingContainer from './FlyingContainer';
-import Tests from './DevTools/Tests';
-import Console from './DevTools/Console';
-
 type Props = {
-  width: ?number,
-  height: ?number,
-  store: any,
-  signals: any,
+  width?: number | string,
+  height?: number | string,
+  hidden?: boolean,
   runOnClick?: boolean,
 };
 
@@ -253,7 +248,7 @@ class Preview extends Component<Props, State> {
       code: store.editor.currentPackageJSONCode,
     };
 
-    const hide = content !== 'browser';
+    const hide = content !== 'browser' || this.props.hidden;
     const completelyHidden = !content;
 
     return this.state.running ? (

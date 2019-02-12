@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Spring, animated } from 'react-spring';
+import { Spring, animated } from 'react-spring/renderprops';
 
 const Container = styled(animated.div)`
   position: fixed;

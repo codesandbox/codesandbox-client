@@ -5,7 +5,6 @@ import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
 
 import immer from 'immer';
-import getTemplate, { type Template } from 'common/templates';
 
 import { Container, TestDetails, TestContainer } from './elements';
 
@@ -433,7 +432,7 @@ class Tests extends React.Component<Props, State> {
 
     return (
       <Container>
-        <SplitPane split="vertical" defaultSize={450}>
+        <SplitPane split="horizontal" defaultSize={'50%'}>
           <TestContainer>
             <TestSummary
               running={this.state.running}
@@ -482,8 +481,8 @@ class Tests extends React.Component<Props, State> {
 }
 
 export default {
+  id: 'codesandbox.tests',
   title: 'Tests',
   Content: Tests,
   actions: [],
-  show: (template: Template) => !getTemplate(template).isServer,
 };

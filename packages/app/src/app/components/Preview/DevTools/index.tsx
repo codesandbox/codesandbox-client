@@ -1,20 +1,19 @@
-// @flow
 import React from 'react';
 
 import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
-import Tooltip from 'common/components/Tooltip';
-import type { Template } from 'common/templates';
+import { Template } from 'common/templates';
 
-import Unread from './Unread';
 import console from './Console';
 import tests from './Tests';
 import problems from './Problems';
 import terminal from './Terminal';
 
-import { Container, Header, Tab, Actions } from './elements';
+import { Container, Header } from './elements';
+import { ViewConfig } from 'common/templates/template';
+import Tabs, { ITabPosition } from './Tabs';
 
 function unFocus(document, window) {
   if (document.selection) {
@@ -29,7 +28,7 @@ function unFocus(document, window) {
 }
 
 function normalizeTouchEvent(event: TouchEvent): MouseEvent {
-  // $FlowIssue
+  // @ts-ignore
   return {
     ...event,
     clientX: event.touches[0].clientX,
@@ -37,75 +36,93 @@ function normalizeTouchEvent(event: TouchEvent): MouseEvent {
   };
 }
 
-const PANES = {
-  [console.title]: console,
-  [problems.title]: problems,
-  [tests.title]: tests,
-  [terminal.title]: terminal,
-};
+export interface IViews {
+  [id: string]: IViewType;
+}
+
+export interface IViewAction {
+  title: string;
+  onClick: () => void;
+  Icon: React.ComponentClass<any, any>;
+}
+
+export interface IViewType {
+  id: string;
+  title: string;
+  Content: React.ComponentClass<any, any>;
+  actions: IViewAction[] | ((owner: boolean) => IViewAction[]);
+}
+
+export type StatusType = 'info' | 'warning' | 'error' | 'success';
 
 export type Status = {
-  unread: number,
-  type: 'info' | 'warning' | 'error',
+  unread: number;
+  type: StatusType;
+};
+
+const VIEWS: IViews = {
+  [console.id]: console,
+  [problems.id]: problems,
+  [tests.id]: tests,
+  [terminal.id]: terminal,
 };
 
 type Props = {
-  sandboxId: string,
-  template: Template,
-  setDragging?: (dragging: boolean) => void,
-  zenMode?: boolean,
-  shouldExpandDevTools?: boolean,
-  devToolsOpen?: boolean,
-  setDevToolsOpen?: (open: boolean) => void,
-  view?: 'browser' | 'console' | 'tests',
-  owned: boolean,
+  sandboxId: string;
+  template: Template;
+  setDragging?: (dragging: boolean) => void;
+  zenMode?: boolean;
+  shouldExpandDevTools?: boolean;
+  devToolsOpen?: boolean;
+  setDevToolsOpen?: (open: boolean) => void;
+  view?: 'browser' | 'console' | 'tests';
+  owned: boolean;
+  primary: boolean;
+  viewConfig: ViewConfig;
+  devToolIndex: number;
+  moveTab?: (prevPos: ITabPosition, nextPos: ITabPosition) => void;
+  addedViews?: IViews;
 };
 type State = {
-  status: { [title: string]: ?Status },
-  height: number,
-  mouseDown: boolean,
-  hidden: boolean,
-  startY: number,
-  startHeight: number,
-  currentPane: string,
+  status: { [title: string]: Status | undefined };
+  height: number | string;
+  mouseDown: boolean;
+  hidden: boolean;
+  startY: number;
+  startHeight: number;
+  currentPaneIndex: number;
 };
 
 export default class DevTools extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const hasView = props.view && props.view !== 'browser';
+    const isOpen = !!props.viewConfig.open;
 
-    let currentPane = PANES[Object.keys(PANES)[0]].title;
-    if (hasView) {
-      if (props.view === 'tests') {
-        currentPane = tests.title;
-      } else if (props.view === 'console') {
-        currentPane = console.title;
-      }
-    }
+    this.allViews = props.addedViews
+      ? { ...VIEWS, ...props.addedViews }
+      : VIEWS;
 
     this.state = {
       status: {},
-      currentPane,
+      currentPaneIndex: 0,
 
       mouseDown: false,
       startY: 0,
       startHeight: 0,
+      height: isOpen ? '40%' : this.height(),
 
-      hidden: !hasView,
-
-      height: hasView ? 5000 : 2 * 16,
+      hidden: !props.primary && !isOpen,
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.sandboxId !== this.props.sandboxId) {
-      this.setState({
-        status: {},
-      });
+  normalizeHeight = (el: HTMLDivElement) => {
+    if (typeof this.state.height === 'string') {
+      const { height } = el.getBoundingClientRect();
+
+      this.setState({ height });
     }
-  }
+  };
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (
@@ -119,6 +136,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
       }
     }
   }
+
+  height = () => (this.props.primary ? 35 : 28);
 
   /**
    * This stops the propagation of the mousewheel event so the editor itself cannot
@@ -146,7 +165,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     // eslint-disable-next-line no-unused-vars
-    this.updateStatus = (title: string) => {};
+    this.updateStatus = (title: string) => (
+      type: StatusType,
+      count?: number
+    ) => {};
     document.removeEventListener('mouseup', this.handleMouseUp, false);
     document.removeEventListener('mousemove', this.handleMouseMove, false);
     document.removeEventListener('touchend', this.handleTouchEnd, false);
@@ -157,12 +179,20 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   }
 
+  static getDerivedStateFromProps(props: Props, state: State): State {
+    if (state.currentPaneIndex >= props.viewConfig.views.length) {
+      return { ...state, currentPaneIndex: props.viewConfig.views.length - 1 };
+    }
+
+    return state;
+  }
+
   setHidden = (hidden: boolean) => {
     if (!hidden) {
       return this.setState({
         status: {
           ...this.state.status,
-          [this.state.currentPane]: null,
+          [this.getCurrentPane().id]: null,
         },
         hidden: false,
       });
@@ -176,15 +206,19 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  updateStatus = (title: string) => (
+  getCurrentPane = () => {
+    return this.props.viewConfig.views[this.state.currentPaneIndex];
+  };
+
+  updateStatus = (id: string) => (
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
     count?: number
   ) => {
-    if (!this.state.hidden && this.state.currentPane === title) {
+    if (!this.state.hidden && this.getCurrentPane().id === id) {
       return;
     }
 
-    const currentStatus = (status !== 'clear' && this.state.status[title]) || {
+    const currentStatus = (status !== 'clear' && this.state.status[id]) || {
       unread: 0,
       type: 'info',
     };
@@ -210,7 +244,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     this.setState({
       status: {
         ...this.state.status,
-        [title]: {
+        [id]: {
           type: newStatus,
           unread,
         },
@@ -224,8 +258,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   };
 
-  handleMouseDown = (event: Event & { clientX: number, clientY: number }) => {
-    if (!this.state.mouseDown) {
+  handleMouseDown = (event: Event & { clientX: number; clientY: number }) => {
+    if (!this.state.mouseDown && typeof this.state.height === 'number') {
       unFocus(document, window);
       this.setState({
         startY: event.clientY,
@@ -250,6 +284,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
       }
 
       if (
+        typeof this.state.height === 'number' &&
         Math.abs(this.state.startHeight - this.state.height) < 30 &&
         this.state.hidden
       ) {
@@ -273,13 +308,13 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   };
 
-  handleMouseMove = (event: Event & { clientX: number, clientY: number }) => {
+  handleMouseMove = (event: Event & { clientX: number; clientY: number }) => {
     if (this.state.mouseDown) {
       const newHeight =
         this.state.startHeight - (event.clientY - this.state.startY);
 
       this.setState({
-        height: Math.max(32, newHeight),
+        height: Math.max(this.height() - 2, newHeight),
       });
       this.setHidden(newHeight < 64);
     }
@@ -321,7 +356,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
       this.props.setDevToolsOpen(false);
     }
     TweenMax.to(heightObject, 0.3, {
-      height: 32,
+      height: this.height(),
       onUpdate: () => {
         this.setState(heightObject);
       },
@@ -329,12 +364,15 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  setPane = (title: string) => {
+  setPane = (index: number) => {
+    if (this.state.hidden && !this.props.primary) {
+      this.openDevTools();
+    }
     this.setState({
-      currentPane: title,
+      currentPaneIndex: index,
       status: {
         ...this.state.status,
-        [title]: {
+        [this.props.viewConfig.views[index].id]: {
           type: 'info',
           unread: 0,
         },
@@ -342,101 +380,87 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
+  getViews = (): IViews => {
+    return this.allViews;
+  };
+
   node: HTMLElement;
+  allViews: IViews;
 
   render() {
-    const { sandboxId, template, zenMode, owned } = this.props;
+    const { sandboxId, owned, primary, viewConfig, devToolIndex } = this.props;
     const { hidden, height, status } = this.state;
 
-    const { actions: actionsOrFunction } = PANES[this.state.currentPane];
-    const actions =
-      typeof actionsOrFunction === 'function'
-        ? actionsOrFunction(owned)
-        : actionsOrFunction;
-
-    const PANES_TO_SHOW = Object.keys(PANES).filter(
-      paneName =>
-        PANES[paneName].show === undefined || PANES[paneName].show(template)
-    );
+    const panes = viewConfig.views;
 
     return (
       <Container
         ref={el => {
           this.node = el;
+          this.normalizeHeight(el);
         }}
         style={{
-          height,
+          height: primary ? '100%' : height,
+          minHeight: height,
           position: 'relative',
           display: 'flex',
         }}
       >
         <Header
-          onTouchStart={this.handleTouchStart}
-          onMouseDown={this.handleMouseDown}
+          onTouchStart={!primary && this.handleTouchStart}
+          onMouseDown={!primary && this.handleMouseDown}
+          primary={primary}
         >
-          {PANES_TO_SHOW.map(title => (
-            <Tab
-              active={title === this.state.currentPane}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.setPane(title);
-              }}
-              key={title}
-            >
-              {title}
-              {!zenMode && (
-                <Unread
-                  status={status[title] ? status[title].type : 'info'}
-                  unread={status[title] ? status[title].unread : 0}
-                />
-              )}
-            </Tab>
-          ))}
+          <Tabs
+            owned={owned}
+            panes={panes.map(p => this.getViews()[p.id])}
+            currentPaneIndex={this.state.currentPaneIndex}
+            hidden={hidden}
+            setPane={this.setPane}
+            devToolIndex={devToolIndex}
+            moveTab={(prevPos, nextPos) => {
+              if (this.props.moveTab) {
+                if (prevPos.devToolIndex === this.props.devToolIndex) {
+                  this.setState({
+                    currentPaneIndex: nextPos.tabPosition,
+                  });
+                }
 
-          <Actions>
-            {actions.map(({ title, onClick, Icon }) => (
-              <Tooltip
-                style={{ pointerEvents: hidden ? 'none' : 'initial' }}
-                title={title}
-                key={title}
-              >
-                <Icon
-                  style={{
-                    opacity: hidden ? 0 : 1,
-                  }}
-                  onClick={onClick}
-                  key={title}
-                />
-              </Tooltip>
-            ))}
+                this.props.moveTab(prevPos, nextPos);
+              }
+            }}
+          />
 
+          {!primary && (
             <MinimizeIcon
               onMouseDown={hidden ? undefined : this.handleMinimizeClick}
               style={{
                 marginTop: hidden ? 0 : 4,
                 transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
+                cursor: 'pointer',
               }}
             />
-          </Actions>
+          )}
         </Header>
-        {PANES_TO_SHOW.map(title => {
-          const { Content } = PANES[title];
-          return (
-            <Content
-              key={title}
-              hidden={hidden || title !== this.state.currentPane}
-              updateStatus={this.updateStatus(title)}
-              sandboxId={sandboxId}
-              height={this.state.height}
-              openDevTools={this.openDevTools}
-              hideDevTools={this.hideDevTools}
-              selectCurrentPane={() => {
-                this.setPane(title);
-              }}
-            />
-          );
-        })}
+        <div style={{ position: 'relative', height: '100%', width: '100%' }}>
+          {panes.map((view, i) => {
+            const { Content } = this.getViews()[view.id];
+            return (
+              <Content
+                key={view.id}
+                hidden={hidden || i !== this.state.currentPaneIndex}
+                updateStatus={this.updateStatus(view.id)}
+                sandboxId={sandboxId}
+                height={this.state.height}
+                openDevTools={this.openDevTools}
+                hideDevTools={this.hideDevTools}
+                selectCurrentPane={() => {
+                  this.setPane(i);
+                }}
+              />
+            );
+          })}
+        </div>
       </Container>
     );
   }

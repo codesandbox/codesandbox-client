@@ -126,7 +126,7 @@ const Header = ({ store, signals }) => {
       </Left>
 
       {sandbox.owned && (
-        <Centered>
+        <Centered css={{ margin: '0 3rem' }}>
           <CollectionInfo isLoggedIn={store.isLoggedIn} sandbox={sandbox} />
         </Centered>
       )}

@@ -1,6 +1,8 @@
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import { getModulePath } from 'common/sandbox/modules';
+import { getModulePath, getDirectoryPath } from 'common/sandbox/modules';
 import getTemplate from 'common/templates';
+
+import { dirname } from 'common/utils/path';
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 
@@ -30,7 +32,20 @@ export function modulesByPath() {
       m.id
     );
     if (path) {
-      modulesObject[path] = m;
+      modulesObject[path] = { ...m, type: 'file' };
+    }
+  });
+
+  this.currentSandbox.directories.forEach(d => {
+    const path = getDirectoryPath(
+      this.currentSandbox.modules,
+      this.currentSandbox.directories,
+      d.id
+    );
+
+    // If this is a single directory with no children
+    if (!Object.keys(modulesObject).some(p => dirname(p) === path)) {
+      modulesObject[path] = { ...d, type: 'directory' };
     }
   });
 
@@ -59,14 +74,13 @@ export function currentTab() {
  * only has added features, so it's a subset on top of the existing editor.
  */
 export function isAdvancedEditor() {
-  const currentSandbox = this.currentSandbox;
-  if (!currentSandbox) {
+  if (!this.currentSandbox) {
     return false;
   }
 
-  const isServer = getTemplate(currentSandbox.template).isServer;
+  const isServer = getTemplate(this.currentSandbox.template).isServer;
 
-  return isServer && currentSandbox.owned;
+  return isServer && this.currentSandbox.owned;
 }
 
 export function parsedConfigurations() {
