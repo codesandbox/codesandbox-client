@@ -17,7 +17,6 @@ const SANDBOXES = [
   'lp5rjr0z4z',
   'nOymMxyY',
   'y26rj99yov', // react transition
-  { id: 'X6npLXPRW', threshold: 0.05 }, // react-table
   '6w66jzw3mn', // material-design & preact
   '4j7m47vlm4', // material-ui
   'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
