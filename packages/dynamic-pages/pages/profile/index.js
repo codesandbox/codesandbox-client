@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-// import FeaturedSandbox from 'common/components/FeaturedSandbox';
+import FeaturedSandbox from 'common/components/FeaturedSandbox';
+import { sandboxUrl } from 'common/utils/url-generator';
+import WideSandbox from 'common/components/WideSandbox';
 import fetch from '../../utils/fetch';
 import PageContainer from '../../components/PageContainer';
 import { H3, H4 } from '../../components/Typography';
@@ -26,6 +28,13 @@ const Header = styled.div`
   margin-bottom: 32px;
 `;
 
+const Title = styled.h3`
+  font-family: Poppins;
+  font-weight: 300;
+  font-size: 24px;
+  color: #f2f2f2;
+`;
+
 const Aside = styled.aside`
   background: #1c2022;
   border-radius: 8px;
@@ -48,6 +57,23 @@ const Stat = styled.div`
   }
 `;
 
+const Sandboxes = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 2rem;
+
+  /* accomodate for the margin of the sandboxes */
+  margin: 0 -0.5rem;
+
+  @media screen and (max-width: 1100px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
 function kFormatter(num) {
   return num > 999 ? (num / 1000).toFixed(1) + 'k' : num;
 }
@@ -59,11 +85,22 @@ export default class extends React.Component {
       req,
       `/api/v1/users/${query.username}/sandboxes`
     );
-    return { profile: profile.data, sandboxes };
+
+    const { data } = await fetch(
+      req,
+      `/api/v1/users/sandboxes/${profile.showcased_sandbox_shortid}`
+    );
+    return { profile: profile.data, sandboxes, featured: data };
   }
 
+  openSandbox = id => {
+    const url = sandboxUrl({ id });
+    window.open(url, '_blank');
+  };
+
   render() {
-    const { profile } = this.props;
+    const { profile, featured } = this.props;
+
     return (
       <PageContainer>
         <Grid>
@@ -93,7 +130,22 @@ export default class extends React.Component {
               </Stat>
             </Stats>
           </Aside>
-          <main>sda</main>
+          <main>
+            <div style={{ marginBottom: 30 }}>
+              <FeaturedSandbox sandboxes={[featured]} />
+            </div>
+            <Title>User sandboxes</Title>
+            <Sandboxes>
+              {profile.top_sandboxes.map(sandbox => (
+                <WideSandbox
+                  small
+                  key={sandbox.id}
+                  pickSandbox={({ id }) => this.openSandbox(id)}
+                  sandbox={sandbox}
+                />
+              ))}
+            </Sandboxes>
+          </main>
         </Grid>
       </PageContainer>
     );

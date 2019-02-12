@@ -3,14 +3,19 @@ import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
 import Stats from 'common/components/Stats';
 
 const VERTICAL_BREAKPOINT = 900;
+const newColors = {
+  title: '#EEEEFF',
+  description: '#777788',
+  bg: '#2B2E41',
+};
 
 export const Container = styled.div`
   transition: 0.3s ease background-color;
 
   position: relative;
-  background-color: ${props => props.theme.new.bg};
+  background-color: ${newColors.bg};
   border-radius: 8px;
-  color: ${props => props.theme.new.title};
+  color: ${newColors.title};
   height: 500px;
   display: flex;
   box-shadow: 0 9px 14px rgba(0, 0, 0, 0.25);
@@ -20,7 +25,7 @@ export const Container = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: ${props => props.theme.new.bg.lighten(0.2)};
+    background-color: #4c5173;
   }
 
   @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {
@@ -58,7 +63,7 @@ export const SandboxContainer = styled.div`
   @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {
     height: 230px;
     z-index: 11;
-    background-color: ${props => props.theme.new.bg};
+    background-color: ${newColors.bg};
     padding: 0.5rem;
   }
 `;
@@ -75,7 +80,7 @@ export const Title = styled.h1`
 `;
 
 export const Description = styled.p`
-  color: ${props => props.theme.new.description};
+  color: ${newColors.description};
   font-family: 'Poppins';
   font-weight: 600;
   font-size: 1rem;
@@ -85,7 +90,7 @@ export const Author = styled(UserWithAvatar)`
   position: absolute;
   left: 1.5rem;
   bottom: 1.5rem;
-  color: ${props => props.theme.new.description};
+  color: ${newColors.description};
   font-weight: 600;
 `;
 
@@ -101,7 +106,7 @@ export const IconContainer = styled.div`
   }
 `;
 export const StyledStats = styled(Stats)`
-  color: ${props => props.theme.new.description};
+  color: ${newColors.description};
   font-weight: 600;
   margin-top: 1rem;
   display: flex;
