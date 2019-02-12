@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import moment from 'moment';
-import { uniq } from 'lodash-es';
+import { uniq } from 'lodash';
 import { basename } from 'path';
 
 import track from 'common/utils/analytics';

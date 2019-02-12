@@ -1,4 +1,4 @@
-import { pickBy } from 'lodash-es';
+import { pickBy } from 'lodash';
 
 import fetchDependencies from './fetch-dependencies';
 import { getDependencyVersions } from '../version-resolving';

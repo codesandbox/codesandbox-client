@@ -1,5 +1,5 @@
 import React from 'react';
-import { forEach } from 'lodash-es';
+import { forEach } from 'lodash';
 
 import badges from 'common/utils/badges/patron-info';
 import { Particle } from './elements';

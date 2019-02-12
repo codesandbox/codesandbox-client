@@ -1,5 +1,5 @@
 // @flow
-import { flatten } from 'lodash-es';
+import { flatten } from 'lodash';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
 

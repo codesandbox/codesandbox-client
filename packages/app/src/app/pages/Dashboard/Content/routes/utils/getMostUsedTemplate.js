@@ -1,4 +1,4 @@
-import { countBy } from 'lodash-es';
+import { countBy } from 'lodash';
 import getTemplate from 'common/templates';
 
 export default function getMostUsedTemplate(sandboxes) {

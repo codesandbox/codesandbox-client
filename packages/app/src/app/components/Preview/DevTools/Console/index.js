@@ -1,7 +1,7 @@
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
 import { withTheme } from 'styled-components';
-import { debounce } from 'lodash-es';
+import { debounce } from 'lodash';
 import update from 'immutability-helper';
 
 import ClearIcon from 'react-icons/lib/md/clear-all';

@@ -4620,11 +4620,6 @@ babel-plugin-transform-vue-jsx@^4.0.1:
   dependencies:
     esutils "^2.0.2"
 
-babel-plugin-use-lodash-es@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-use-lodash-es/-/babel-plugin-use-lodash-es-0.2.0.tgz#252ba9d68a6c1758be947e9a88b0064ecf8351d7"
-  integrity sha512-5A9p7y4Q/QuKfA8xmO8Di7N1avRzaiwGVRI/he0I6HZMKGzQXmTXrkxY8rZSDKCTUihyO0hgSLfGj8UIozMAVA==
-
 babel-polyfill@6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.23.0.tgz#8364ca62df8eafb830499f699177466c3b03499d"
@@ -14783,10 +14778,6 @@ lockfile@^1.0.4:
   resolved "https://registry.yarnpkg.com/lockfile/-/lockfile-1.0.4.tgz#07f819d25ae48f87e538e6578b6964a4981a5609"
   dependencies:
     signal-exit "^3.0.2"
-
-lodash-es@^4.17.2, lodash-es@^4.2.1:
-  version "4.17.10"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.10.tgz#62cd7104cdf5dd87f235a837f0ede0e8e5117e05"
 
 lodash._baseassign@^3.0.0:
   version "3.2.0"

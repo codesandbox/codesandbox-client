@@ -1,4 +1,4 @@
-import { values } from 'lodash-es';
+import { values } from 'lodash';
 
 import { camelizeKeys, decamelizeKeys } from 'humps';
 import { Provider } from 'cerebral';

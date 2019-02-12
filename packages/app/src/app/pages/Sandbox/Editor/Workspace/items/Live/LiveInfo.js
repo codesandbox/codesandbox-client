@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { sortBy } from 'lodash-es';
+import { sortBy } from 'lodash';
 
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 import Input from 'common/components/Input';

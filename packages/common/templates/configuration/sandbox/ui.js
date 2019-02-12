@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { sortBy } from 'lodash-es';
+import { sortBy } from 'lodash';
 
 import type { Sandbox } from 'common/types';
 

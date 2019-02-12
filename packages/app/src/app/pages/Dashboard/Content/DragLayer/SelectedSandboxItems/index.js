@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { memoize } from 'lodash-es';
+import { memoize } from 'lodash';
 
 import AnimatedSandboxItem from './AnimatedSandboxItem';
 

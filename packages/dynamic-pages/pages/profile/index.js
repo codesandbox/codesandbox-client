@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import FeaturedSandbox from 'common/components/FeaturedSandbox';
+// import FeaturedSandbox from 'common/components/FeaturedSandbox';
 import fetch from '../../utils/fetch';
 import PageContainer from '../../components/PageContainer';
 import { H3, H4 } from '../../components/Typography';
@@ -93,15 +93,7 @@ export default class extends React.Component {
               </Stat>
             </Stats>
           </Aside>
-          <main>
-            <FeaturedSandbox
-              // title={featuredSandboxInfo.title}
-              // description={featuredSandboxInfo.description}
-              // sandboxId={featuredSandboxInfo.sandboxId}
-              featuredSandboxes={profile.featured_sandboxes}
-              // pickSandbox={this.selectSandbox}
-            />
-          </main>
+          <main>sda</main>
         </Grid>
       </PageContainer>
     );

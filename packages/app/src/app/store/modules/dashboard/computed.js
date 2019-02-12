@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash-es';
+import { sortBy } from 'lodash';
 
 export function isTemplateSelected(templateName) {
   return this.filters.blacklistedTemplates.indexOf(templateName) === -1;

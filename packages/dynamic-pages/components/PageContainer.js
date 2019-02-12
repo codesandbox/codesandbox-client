@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import Padding from 'common/components/spacing/Padding';
-import MaxWidth from './MaxWidth';
+import MaxWidth from 'common/components/flex/MaxWidth';
 
 export default ({ children, ...props }: { children: React.Node }) => (
   <MaxWidth width={1440} {...props}>
