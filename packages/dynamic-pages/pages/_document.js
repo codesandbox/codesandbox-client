@@ -27,7 +27,7 @@ export default class MyDocument extends Document {
           />
           <meta name="referrer" content="origin" />
           <meta name="theme-color" content="#6CAEDD" />
-          <meta property="og:type" content="website" />´
+          <meta property="og:type" content="website" />
           <meta property="og:author" content="https://codesandbox.io" />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
@@ -36,8 +36,12 @@ export default class MyDocument extends Document {
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:site" content="@codesandbox" />
           <meta property="twitter:creator" content="@codesandbox" />
+          <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Poppins:400,700"
+            rel="stylesheet"
+          />
         </Head>
-        <body className="custom_class">
+        <body>
           <Main />
           <NextScript />
         </body>

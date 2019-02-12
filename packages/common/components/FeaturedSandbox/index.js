@@ -17,7 +17,7 @@ import {
   IconContainer,
   StyledStats,
   SandboxPreviewImage,
-} from './_FeaturedSandbox.elements';
+} from './elements';
 
 const SandboxIcon = ({ template }) => {
   const Icon = getIcon(template);
@@ -36,7 +36,7 @@ export default class FeaturedSandbox extends React.PureComponent {
   };
   fetchedSandboxes = {};
 
-  fetchSandbox = (id: string) => {
+  fetchSandbox = id => {
     if (this.fetchedSandboxes[id]) {
       return Promise.resolve(this.fetchedSandboxes[id]);
     }

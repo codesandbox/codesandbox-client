@@ -240,10 +240,11 @@ html {
 }
 
 body {
-  font-family: Source Sans Pro, Open Sans, Segoe UI, sans-serif;
+  font-family: Open Sans, Segoe UI, sans-serif;
   font-weight: normal;
   word-wrap: break-word;
-  font-kerning: normal;
+  font-size: 18px;
+  color: #f2f2f2;
   -moz-font-feature-settings: 'kern', 'liga', 'clig', 'calt';
   -ms-font-feature-settings: 'kern', 'liga', 'clig', 'calt';
   -webkit-font-feature-settings: 'kern', 'liga', 'clig', 'calt';

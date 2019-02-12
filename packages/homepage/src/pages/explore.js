@@ -3,6 +3,7 @@ import React from 'react';
 import getTemplate from 'common/templates';
 import { protocolAndHost } from 'common/utils/url-generator';
 import { ARROW_LEFT, ARROW_RIGHT } from 'common/utils/keycodes';
+import FeaturedSandbox from 'common/components/FeaturedSandbox';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -10,7 +11,6 @@ import { Heading2 } from '../components/headings';
 import Layout from '../components/layout';
 
 import WideSandbox from '../screens/explore/WideSandbox';
-import FeaturedSandbox from '../screens/explore/FeaturedSandbox';
 import SandboxModal from '../screens/explore/SandboxModal';
 import featuredSandboxes from '../utils/featuredSandboxes';
 import {

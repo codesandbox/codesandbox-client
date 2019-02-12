@@ -4,6 +4,6 @@ const withTM = require('next-plugin-transpile-modules');
 
 module.exports = withCSS(
   withTM({
-    transpileModules: ['common'],
+    transpileModules: ['common', 'app'],
   })
 );
