@@ -72,8 +72,9 @@ export async function deployToNetlify({ path, http, props, state }) {
   }
 
   try {
+    const siteId = state.get('deployment.netlifySite.site_id');
     await http.request({
-      url: `${NetlifyBaseURL}/${sandboxId}/deploys`,
+      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${siteId}`,
       method: 'POST',
       body: file,
       headers: {

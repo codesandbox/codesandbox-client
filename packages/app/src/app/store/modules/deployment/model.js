@@ -41,6 +41,7 @@ const Deploy = types.model('Deploy', {
 
 const NetlifySite = types.model('NetlifySite', {
   id: types.string,
+  site_id: types.string,
   name: types.string,
   url: types.string,
   state: types.string,
