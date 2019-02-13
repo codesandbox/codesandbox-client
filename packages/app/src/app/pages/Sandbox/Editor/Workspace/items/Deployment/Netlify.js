@@ -43,10 +43,10 @@ class NetlifyDeployment extends Component {
             color="#F7F8F8"
             light
             Icon={NetlifyLogo}
-            name="Netlify"
+            name="netlify"
             deploy={() => signals.deployment.deployWithNetlify()}
           >
-            Deploy your sandbox on{' '}
+            Deploy your sandbox site on{' '}
             <a
               href="https://netlify.com"
               target="_blank"
