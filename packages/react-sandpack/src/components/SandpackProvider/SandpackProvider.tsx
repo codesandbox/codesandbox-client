@@ -155,6 +155,7 @@ export default class SandpackProvider extends React.PureComponent<
             this.props.entry
           ),
           template: this.props.template,
+          showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
         },
         this.getOptions()
       );
