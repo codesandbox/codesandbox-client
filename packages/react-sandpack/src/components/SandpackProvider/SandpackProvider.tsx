@@ -4,7 +4,6 @@ import { Manager, generatePackageJSON } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 
 import {
-  IFile,
   IFiles,
   IManagerState,
   ISandpackContext,
