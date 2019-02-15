@@ -91,6 +91,12 @@ export async function createApiData({ props, state }) {
 
       apiData.files.push({ file: filePath, data, encoding: 'base64' });
     }
+    if (filePath === 'package.json') {
+      apiData.files.push({
+        file: 'package.json',
+        data: JSON.stringify(packageJSON, null, 2),
+      });
+    }
   }
 
   // this adds unnecessary code for version 2
