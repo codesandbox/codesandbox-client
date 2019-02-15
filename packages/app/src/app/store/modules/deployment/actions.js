@@ -67,6 +67,9 @@ export async function createApiData({ props, state }) {
     apiData.version = 2;
     apiData.builds = nowJSON.builds;
     apiData.routes = nowJSON.routes;
+    apiData.env = nowJSON.env;
+    apiData['build.env'] = nowJSON['build.env'];
+    apiData.regions = nowJSON.regions;
   } else {
     apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
     apiData.forceNew = true;
