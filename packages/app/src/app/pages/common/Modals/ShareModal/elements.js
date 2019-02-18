@@ -61,6 +61,8 @@ export const Title = styled.h4`
   margin: 0;
   padding-top: 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 
   svg {
     margin-right: 10px;
@@ -76,9 +78,9 @@ export const Wrapper = styled.section`
 export const SideTitle = styled.span`
   font-family: 'Poppins';
   font-weight: bold;
-  font-size: 24px;
-  margin-top: 30px;
-  margin-bottom: 10px;
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 0px;
   color: #e5e5e5;
   display: block;
 `;

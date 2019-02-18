@@ -1,15 +1,12 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import Down from 'react-icons/lib/fa/angle-down';
-import Right from 'react-icons/lib/fa/angle-right';
 import Files from 'embed/components/Files';
 import QRCode from 'qrcode.react';
 import track from 'common/utils/analytics';
-import { Spring, animated } from 'react-spring';
 import { sandboxUrl } from 'common/utils/url-generator';
+import Title from './Title';
 
 import {
-  Title,
   FilesContainer,
   Wrapper,
   PaddedPreference,
@@ -40,7 +37,7 @@ class ShareView extends React.Component {
     isCurrentModuleView: false,
     fontSize: 14,
     initialPath: '',
-    useCodeMirror: false,
+    useCodeMirror: true,
     enableEslint: false,
     expandDevTools: false,
     links: true,
@@ -148,241 +145,154 @@ class ShareView extends React.Component {
           <Wrapper>
             <section>
               <SideTitle>Configure</SideTitle>
-              <Title onClick={() => this.toggle('appearance')}>
-                {this.state.appearance ? <Right /> : <Down />}Appearance
+              <Title title="Appearance">
+                <PaddedPreference
+                  title="Default View"
+                  type="dropdown"
+                  options={VIEW_OPTIONS}
+                  value={view}
+                  setValue={this.setView}
+                />
+                <PaddedPreference
+                  title="Auto resize"
+                  type="boolean"
+                  tooltip="Works only on Medium"
+                  value={autoResize}
+                  setValue={this.setAutoResize}
+                />
+                <PaddedPreference
+                  title="Hide navigation bar"
+                  type="boolean"
+                  value={hideNavigation}
+                  setValue={this.setHideNavigation}
+                />
+                <PaddedPreference
+                  title="Expand console"
+                  type="boolean"
+                  value={expandDevTools}
+                  setValue={this.setExpandDevTools}
+                />
+                <PaddedPreference
+                  title="Show current module view"
+                  type="boolean"
+                  tooltip="Only show the module that's currently open"
+                  value={isCurrentModuleView}
+                  setValue={this.setIsCurrentModuleView}
+                />
+                <PaddedPreference
+                  title="Show Tests (instead of browser preview)"
+                  type="boolean"
+                  value={testsView}
+                  setValue={this.setTestsView}
+                />
+                <PaddedPreference
+                  title="Font size"
+                  type="number"
+                  value={fontSize}
+                  setValue={this.setFontSize}
+                />
               </Title>
-              <Spring
-                from={{ height: 'auto' }}
-                to={{
-                  height: this.state.appearance ? 'auto' : 0,
-                  overflow: 'hidden',
-                }}
-              >
-                {props => (
-                  <animated.div style={props}>
-                    <PaddedPreference
-                      title="Default View"
-                      type="dropdown"
-                      options={VIEW_OPTIONS}
-                      value={view}
-                      setValue={this.setView}
-                    />
-                    <PaddedPreference
-                      title="Auto resize"
-                      type="boolean"
-                      tooltip="Works only on Medium"
-                      value={autoResize}
-                      setValue={this.setAutoResize}
-                    />
-                    <PaddedPreference
-                      title="Hide navigation bar"
-                      type="boolean"
-                      value={hideNavigation}
-                      setValue={this.setHideNavigation}
-                    />
-                    <PaddedPreference
-                      title="Expand console"
-                      type="boolean"
-                      value={expandDevTools}
-                      setValue={this.setExpandDevTools}
-                    />
-                    <PaddedPreference
-                      title="Show current module view"
-                      type="boolean"
-                      tooltip="Only show the module that's currently open"
-                      value={isCurrentModuleView}
-                      setValue={this.setIsCurrentModuleView}
-                    />
-                    <PaddedPreference
-                      title="Show Tests (instead of browser preview)"
-                      type="boolean"
-                      value={testsView}
-                      setValue={this.setTestsView}
-                    />
-                    <PaddedPreference
-                      title="Font size"
-                      type="number"
-                      value={fontSize}
-                      setValue={this.setFontSize}
-                    />
-                  </animated.div>
-                )}
-              </Spring>
-              <Title onClick={() => this.toggle('sandboxOptions')}>
-                {this.state.sandboxOptions ? <Right /> : <Down />}Sandbox
-                Options
-              </Title>
-              <Spring
-                from={{ height: 'auto' }}
-                to={{
-                  height: this.state.sandboxOptions ? 'auto' : 0,
-                  overflow: 'hidden',
-                }}
-              >
-                {props => (
-                  <animated.div style={props}>
-                    <PaddedPreference
-                      title="Use CodeMirror instead of Monaco editor"
-                      type="boolean"
-                      value={useCodeMirror}
-                      setValue={this.setUseCodeMirror}
-                    />
-                    <PaddedPreference
-                      title="Enable eslint (significantly higher bundle size)"
-                      type="boolean"
-                      value={enableEslint}
-                      setValue={this.setEnableEslint}
-                    />
-                    <div>
-                      <h4>Default module to show</h4>
+              <Title title="Sandbox Options">
+                <PaddedPreference
+                  title="Use CodeMirror instead of Monaco editor"
+                  type="boolean"
+                  value={useCodeMirror}
+                  setValue={this.setUseCodeMirror}
+                />
+                <PaddedPreference
+                  title="Enable eslint (significantly higher bundle size)"
+                  type="boolean"
+                  value={enableEslint}
+                  setValue={this.setEnableEslint}
+                />
+                <div>
+                  <h4>Default module to show</h4>
 
-                      <FilesContainer>
-                        <Files
-                          modules={sandbox.modules}
-                          directoryId={null}
-                          directories={sandbox.directories}
-                          currentModule={defaultModule}
-                          setCurrentModule={this.setDefaultModule}
-                        />
-                      </FilesContainer>
-                    </div>
-                  </animated.div>
-                )}
-              </Spring>
-              <Title onClick={() => this.toggle('otherOptions')}>
-                {this.state.otherOptions ? <Right /> : <Down />}Other Options
+                  <FilesContainer>
+                    <Files
+                      modules={sandbox.modules}
+                      directoryId={null}
+                      directories={sandbox.directories}
+                      currentModule={defaultModule}
+                      setCurrentModule={this.setDefaultModule}
+                    />
+                  </FilesContainer>
+                </div>
               </Title>
-              <Spring
-                from={{ height: 'auto' }}
-                to={{
-                  height: this.state.otherOptions ? 'auto' : 0,
-                  overflow: 'hidden',
-                }}
-              >
-                {props => (
-                  <animated.div style={props}>
-                    <Inputs>
-                      <LinkName>Project Initial Path</LinkName>
-                      <input
-                        onFocus={this.select}
-                        placeholder="e.g: /home"
-                        value={initialPath}
-                        onChange={this.setInitialPath}
-                      />
-                    </Inputs>
-                  </animated.div>
-                )}
-              </Spring>
+              <Title title="Other Options">
+                <Inputs>
+                  <LinkName>Project Initial Path</LinkName>
+                  <input
+                    onFocus={this.select}
+                    placeholder="e.g: /home"
+                    value={initialPath}
+                    onChange={this.setInitialPath}
+                  />
+                </Inputs>
+              </Title>
             </section>
             <section>
               <SideTitle>Share</SideTitle>
-              <Title onClick={() => this.toggle('links')}>
-                {this.state.links ? <Right /> : <Down />}Share embed
+              <Title title="Share embed" open>
+                <Inputs>
+                  <LinkName>Editor url (also works on Medium)</LinkName>
+                  <input
+                    onFocus={this.select}
+                    value={getEditorUrl(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
+                <Inputs>
+                  <LinkName>Embed url</LinkName>
+                  <input
+                    onFocus={this.select}
+                    value={getEmbedUrl(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
+                <Inputs>
+                  <LinkName>iframe</LinkName>
+                  <textarea
+                    onFocus={this.select}
+                    value={getIframeScript(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
               </Title>
-              <Spring
-                from={{ height: 'auto' }}
-                to={{
-                  height: this.state.links ? 'auto' : 0,
-                  overflow: 'hidden',
-                }}
-              >
-                {props => (
-                  <animated.div style={props}>
-                    <Inputs>
-                      <LinkName>Editor url (also works on Medium)</LinkName>
-                      <input
-                        onFocus={this.select}
-                        value={getEditorUrl(sandbox, mainModule, this.state)}
-                        readOnly
-                      />
-                    </Inputs>
-                    <Inputs>
-                      <LinkName>Embed url</LinkName>
-                      <input
-                        onFocus={this.select}
-                        value={getEmbedUrl(sandbox, mainModule, this.state)}
-                        readOnly
-                      />
-                    </Inputs>
-                    <Inputs>
-                      <LinkName>iframe</LinkName>
-                      <textarea
-                        onFocus={this.select}
-                        value={getIframeScript(sandbox, mainModule, this.state)}
-                        readOnly
-                      />
-                    </Inputs>
-                  </animated.div>
-                )}
-              </Spring>
-              <Title onClick={() => this.toggle('buttons')}>
-                {this.state.buttons ? <Right /> : <Down />}Share CodeSandbox
-                Button
+              <Title title="Share CodeSandbox Button">
+                <Inputs>
+                  <ButtonContainer>
+                    <a href={sandboxUrl(sandbox)}>
+                      <img alt={sandbox.title || 'Untitled'} src={BUTTON_URL} />
+                    </a>
+                  </ButtonContainer>
+                </Inputs>
+                <Inputs>
+                  <LinkName>Markdown</LinkName>
+                  <textarea
+                    onFocus={this.select}
+                    value={getButtonMarkdown(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
+                <Inputs>
+                  <LinkName>HTML</LinkName>
+                  <textarea
+                    onFocus={this.select}
+                    value={getButtonHTML(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
               </Title>
-              <Spring
-                from={{ height: 'auto' }}
-                to={{
-                  height: this.state.buttons ? 'auto' : 0,
-                  overflow: 'hidden',
-                }}
-              >
-                {props => (
-                  <animated.div style={props}>
-                    <Inputs>
-                      <ButtonContainer>
-                        <a href={sandboxUrl(sandbox)}>
-                          <img
-                            alt={sandbox.title || 'Untitled'}
-                            src={BUTTON_URL}
-                          />
-                        </a>
-                      </ButtonContainer>
-                    </Inputs>
-                    <Inputs>
-                      <LinkName>Markdown</LinkName>
-                      <textarea
-                        onFocus={this.select}
-                        value={getButtonMarkdown(
-                          sandbox,
-                          mainModule,
-                          this.state
-                        )}
-                        readOnly
-                      />
-                    </Inputs>
-                    <Inputs>
-                      <LinkName>HTML</LinkName>
-                      <textarea
-                        onFocus={this.select}
-                        value={getButtonHTML(sandbox, mainModule, this.state)}
-                        readOnly
-                      />
-                    </Inputs>
-                  </animated.div>
-                )}
-              </Spring>
-              <Title onClick={() => this.toggle('qr')}>
-                {this.state.qr ? <Right /> : <Down />}Share QR code
+              <Title title="Share QR code">
+                <Inputs>
+                  <QRCode
+                    value={getEmbedUrl(sandbox, mainModule, this.state)}
+                    size={'100%'}
+                    renderAs="svg"
+                  />
+                </Inputs>
               </Title>
-              <Spring
-                from={{ height: 'auto' }}
-                to={{
-                  height: this.state.qr ? 'auto' : 0,
-                  overflow: 'hidden',
-                }}
-              >
-                {props => (
-                  <animated.div style={props}>
-                    <Inputs>
-                      <QRCode
-                        value={getEmbedUrl(sandbox, mainModule, this.state)}
-                        size={'100%'}
-                        renderAs="svg"
-                      />
-                    </Inputs>
-                  </animated.div>
-                )}
-              </Spring>
             </section>
           </Wrapper>
         </ShareOptions>
