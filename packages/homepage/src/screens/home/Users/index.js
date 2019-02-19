@@ -44,8 +44,6 @@ const Grid = styled.section`
 const Button = styled(Link)`
   transition: 0.3s ease all;
   color: white;
-
-  /* background-color: rgba(254, 143, 144, 1); */
   background-color: ${props => props.theme.secondary};
   text-decoration: none;
   padding: 0.5rem 12px;
@@ -83,7 +81,7 @@ export default () => (
     render={({ allUsersJson: { edges } }) => (
       <Container>
         <MaxWidth width={1280}>
-          <Title>Companies using CodeSandbox</Title>
+          <Title>Who's using CodeSandbox?</Title>
           <Grid>
             {shuffleArray(edges).map(({ node: company }) => (
               <div>
@@ -97,7 +95,7 @@ export default () => (
               </div>
             ))}
           </Grid>
-          <Button to="/users">More Companies</Button>
+          <Button to="/users">More Users</Button>
         </MaxWidth>
       </Container>
     )}

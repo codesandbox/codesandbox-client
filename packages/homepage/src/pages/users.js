@@ -30,6 +30,26 @@ const Grid = styled.section`
   }
 `;
 
+const Button = styled.a`
+  transition: 0.3s ease all;
+  color: white;
+  background-color: ${props => props.theme.secondary};
+  text-decoration: none;
+  padding: 0.5rem 12px;
+  text-align: center;
+  border-radius: 4px;
+  display: block;
+  width: 200px;
+
+  margin: auto;
+  margin-top: 1rem;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    box-shadow: 0 7px 12px rgba(0, 0, 0, 0.3);
+  }
+`;
+
 export default ({
   data: {
     allUsersJson: { edges },
@@ -47,7 +67,7 @@ export default ({
             text-align: center;
           `}
         >
-          Who is using CodeSandbox?
+          Who's using CodeSandbox?
         </Heading2>
         <p
           css={`
@@ -66,6 +86,23 @@ export default ({
             </div>
           ))}
         </Grid>
+        <p
+          css={`
+            margin-top: 4rem;
+            text-align: center;
+            color: white;
+          `}
+        >
+          Are you using CodeSandbox?
+        </p>
+        <Button
+          href="
+        https://github.com/CompuIves/codesandbox-client/blob/master/packages/homepage/content/users.json"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Add your company
+        </Button>
       </PageContainer>
     </Container>
   </Layout>
