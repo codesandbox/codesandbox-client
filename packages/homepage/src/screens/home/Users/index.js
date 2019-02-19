@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { StaticQuery, graphql, Link } from 'gatsby';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
-import shuffleArray from '../../../utils/shuffleArray';
+import Companies from '../../../components/Companies';
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.background2};
@@ -17,20 +17,6 @@ const Title = styled.h3`
   text-align: center;
   margin-bottom: 0.5rem;
   color: white;
-`;
-
-const Grid = styled.section`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  grid-gap: 30px;
-  align-items: center;
-  margin-top: 60px;
-
-  img {
-    display: block;
-    max-width: 80%;
-    margin: auto;
-  }
 `;
 
 const Button = styled(Link)`
@@ -74,20 +60,8 @@ export default () => (
       <Container>
         <MaxWidth width={1280}>
           <Title>Who's using CodeSandbox?</Title>
-          <Grid>
-            {shuffleArray(edges).map(({ node: company }) => (
-              <div>
-                <a
-                  href={company.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img height="150" src={company.logoURL} alt={company.name} />
-                </a>
-              </div>
-            ))}
-          </Grid>
-          <Button to="/users">More Users</Button>
+          <Companies companies={edges} />
+          <Button to="/who-uses-codesandbox">More Users</Button>
         </MaxWidth>
       </Container>
     )}

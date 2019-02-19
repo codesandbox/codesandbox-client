@@ -6,21 +6,8 @@ import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
 import Layout from '../components/layout';
 import { Container } from './_explore.elements';
-import shuffleArray from '../utils/shuffleArray';
 
-const Grid = styled.section`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  grid-gap: 30px;
-  align-items: center;
-  margin-top: 60px;
-
-  img {
-    display: block;
-    max-width: 80%;
-    margin: auto;
-  }
-`;
+import Companies from '../components/Companies';
 
 const Button = styled.a`
   transition: 0.3s ease all;
@@ -35,6 +22,7 @@ const Button = styled.a`
 
   margin: auto;
   margin-top: 1rem;
+  margin-bottom: 2rem;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
 
   &:hover {
@@ -69,15 +57,7 @@ export default ({
         >
           Some amazing companies and projects using CodeSandbox
         </p>
-        <Grid>
-          {shuffleArray(edges).map(({ node: company }) => (
-            <div>
-              <a href={company.link} target="_blank" rel="noopener noreferrer">
-                <img height="150" src={company.logoURL} alt={company.name} />
-              </a>
-            </div>
-          ))}
-        </Grid>
+        <Companies companies={edges} />
         <p
           css={`
             margin-top: 4rem;
