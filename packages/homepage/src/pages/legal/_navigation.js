@@ -4,11 +4,11 @@ import { NavigationLink, LegalNavigation } from './_elements';
 export default () => (
   <LegalNavigation>
     <NavigationLink to="/legal/terms" activeClassName="active">
-      TERMS AND CONDITIONS
+      Terms and Conditions
     </NavigationLink>
 
     <NavigationLink to="/legal/privacy" activeClassName="active">
-      PRIVACY POLICY
+      Privacy Policy
     </NavigationLink>
   </LegalNavigation>
 );

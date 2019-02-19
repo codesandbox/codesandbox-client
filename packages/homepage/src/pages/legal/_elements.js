@@ -24,7 +24,7 @@ export const NavigationLink = styled(Link)`
   font-size: 1.25rem;
   text-decoration: none;
   color: rgba(255, 255, 255, 0.5);
-  transition: all 200ms ease;
+  text-transform: uppercase;
 
   &:after {
     content: '';
