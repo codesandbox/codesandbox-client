@@ -14,13 +14,19 @@ export default () => (
       <StaticQuery
         query={graphql`
           query {
-            markdownRemark(id: { eq: "c591e19c-94a0-5b0b-be4a-b42142aeffe7" }) {
-              html
+            allMarkdownRemark(
+              filter: { id: { eq: "c591e19c-94a0-5b0b-be4a-b42142aeffe7" } }
+            ) {
+              edges {
+                node {
+                  html
+                }
+              }
             }
           }
         `}
-        render={({ markdownRemark }) => (
-          <Content dangerouslySetInnerHTML={{ __html: markdownRemark.html }} />
+        render={({ allMarkdownRemark: { edges } }) => (
+          <Content dangerouslySetInnerHTML={{ __html: edges[0].node.html }} />
         )}
       />
     </PageContainer>
