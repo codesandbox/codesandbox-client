@@ -24,6 +24,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   if (node.internal.type === `MarkdownRemark`) {
     const { url } = node.frontmatter;
     const { relativePath } = getNode(node.parent);
+    if (relativePath.includes('legal')) return;
 
     createNodeField({
       node,
@@ -86,7 +87,10 @@ exports.createPages = async ({ graphql, actions }) => {
   const allMarkdown = await graphql(
     `
       {
-        allMarkdownRemark(limit: 1000) {
+        allMarkdownRemark(
+          filter: { fileAbsolutePath: { regex: "/docs/" } }
+          limit: 1000
+        ) {
           edges {
             node {
               fields {

@@ -244,8 +244,6 @@ export const authorize = [
 
 export const loadSearch = factories.withLoadApp([]);
 
-export const loadTerms = factories.withLoadApp([]);
-
 export const loadCLI = [
   factories.withLoadApp([]),
   when(state`user`),
