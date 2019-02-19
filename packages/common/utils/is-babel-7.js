@@ -22,6 +22,10 @@ export function isBabel7(dependencies = {}, devDependencies = {}) {
     return true;
   }
 
+  if (devDependencies.typescript) {
+    return true;
+  }
+
   if (isCRAVersion2(dependencies, devDependencies)) {
     return true;
   }
