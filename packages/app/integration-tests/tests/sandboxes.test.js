@@ -34,6 +34,7 @@ const SANDBOXES = [
   'j2wpjwqj93', // sandbox with need of transpiling in node_modules
   '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
   '31kn7voz4q', // cxjs
+  'zw9zjy0683', // aurelia
 ];
 
 function pageLoaded(page) {
