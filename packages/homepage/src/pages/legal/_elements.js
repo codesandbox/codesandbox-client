@@ -6,8 +6,8 @@ export const Content = styled.div`
   text-align: left;
   max-width: 800px;
   line-height: 1.5;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+  margin-bottom: 4rem;
+  color: rgba(255, 255, 255, 0.7);
 
   h1,
   h2 {
