@@ -1,6 +1,36 @@
 import { omit } from 'lodash-es';
 import getTemplate from 'common/lib/templates';
 
+// function delay(t) {
+//   return new Promise(resolve => {
+//     setTimeout(resolve, t);
+//   });
+// }
+
+// // interval is how often to poll
+// // timeout is how long to poll waiting for a result (0 means try forever)
+// // url is the URL to request
+// function pollUntilDone(http, url, interval, timeout) {
+//   const start = Date.now();
+//   function run() {
+//     return http.request({ url }).then(dataResult => {
+//       console.log(dataResult, 'dataResult');
+//       if (dataResult.status === 'DONE') {
+//         // we know we're done here, return from here whatever you
+//         // want the final resolved value of the promise to be
+//         return dataResult;
+//       }
+//       if (timeout !== 0 && Date.now() - start > timeout) {
+//         throw new Error('timeout error on pollUntilDone');
+//       } else {
+//         // run again with a short delay
+//         return delay(interval).then(run);
+//       }
+//     });
+//   }
+//   return run();
+// }
+
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
@@ -51,13 +81,15 @@ export async function deployToNetlify({ path, http, props, state }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
   const template = getTemplate(sandbox.template);
-
+  let id = '';
   try {
-    await http.request({
+    const { result } = await http.request({
       url: `${NetlifyBaseURL}/${sandboxId}`,
     });
+
+    id = result.site_id;
   } catch (e) {
-    await http.request({
+    const { result } = await http.request({
       url: NetlifyBaseURL,
       method: 'POST',
       body: {
@@ -69,18 +101,34 @@ export async function deployToNetlify({ path, http, props, state }) {
         },
       },
     });
+    id = result.site_id;
   }
 
   try {
-    const siteId = state.get('deployment.netlifySite.site_id');
     await http.request({
-      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${siteId}`,
+      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}`,
       method: 'POST',
       body: file,
       headers: {
         'Content-Type': 'application/zip',
       },
     });
+
+    // sample usage
+    // polls every 4s for up to 1m seconds
+    // pollUntilDone(
+    //   http,
+    //   `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}`,
+    //   4000,
+    //   60 * 1000
+    // )
+    //   .then(result => {
+    //     console.log(result);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+
     return path.success();
   } catch (e) {
     return path.error();
