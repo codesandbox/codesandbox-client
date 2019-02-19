@@ -1,8 +1,21 @@
 import React from 'react';
-import { StaticQuery } from 'gatsby';
+import { StaticQuery, graphql } from 'gatsby';
 import { Content } from './_elements';
-import { PRIVACY } from './_queries';
 import Wrapper from './_wrapper';
+
+const PRIVACY = graphql`
+  {
+    allMarkdownRemark(
+      filter: { fileAbsolutePath: { regex: "/legal/policy.md/" } }
+    ) {
+      edges {
+        node {
+          html
+        }
+      }
+    }
+  }
+`;
 
 export default () => (
   <Wrapper>

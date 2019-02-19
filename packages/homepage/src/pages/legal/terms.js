@@ -1,8 +1,21 @@
 import React from 'react';
-import { StaticQuery } from 'gatsby';
+import { StaticQuery, graphql } from 'gatsby';
 import { Content } from './_elements';
 import Wrapper from './_wrapper';
-import { TERMS } from './_queries';
+
+const TERMS = graphql`
+  {
+    allMarkdownRemark(
+      filter: { fileAbsolutePath: { regex: "/legal/terms.md/" } }
+    ) {
+      edges {
+        node {
+          html
+        }
+      }
+    }
+  }
+`;
 
 export default () => (
   <Wrapper>
