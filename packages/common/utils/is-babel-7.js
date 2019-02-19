@@ -22,7 +22,7 @@ export function isBabel7(dependencies = {}, devDependencies = {}) {
     return true;
   }
 
-  if (devDependencies.typescript) {
+  if (devDependencies.typescript && !dependencies['@angular/core']) {
     return true;
   }
 
