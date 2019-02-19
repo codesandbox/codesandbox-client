@@ -96,9 +96,6 @@ export default () => (
               </a>
             </li>
             <li>
-              <Link to="/changelog">Recent Updates</Link>
-            </li>
-            <li>
               <Link to="/docs">Documentation</Link>
             </li>
             <li>

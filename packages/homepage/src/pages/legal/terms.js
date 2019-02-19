@@ -8,7 +8,7 @@ import PageContainer from '../../components/PageContainer';
 
 export default ({ data: { markdownRemark } }) => (
   <Layout>
-    <TitleAndMetaTags title="CodeSandbox - Recent Updates" />
+    <TitleAndMetaTags title="CodeSandbox - Terms and Conditions" />
     <PageContainer width={1024}>
       <Navigation />
       <Content dangerouslySetInnerHTML={{ __html: markdownRemark.html }} />
