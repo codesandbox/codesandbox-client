@@ -13,9 +13,9 @@ export default () => (
       <Navigation />
       <StaticQuery
         query={graphql`
-          query {
+          {
             allMarkdownRemark(
-              filter: { id: { eq: "c591e19c-94a0-5b0b-be4a-b42142aeffe7" } }
+              filter: { fileAbsolutePath: { regex: "/legal/terms.md/" } }
             ) {
               edges {
                 node {
