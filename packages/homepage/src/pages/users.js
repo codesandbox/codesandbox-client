@@ -6,15 +6,7 @@ import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
 import Layout from '../components/layout';
 import { Container } from './_explore.elements';
-
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-
-  return array;
-}
+import shuffleArray from '../utils/shuffleArray';
 
 const Grid = styled.section`
   display: grid;
