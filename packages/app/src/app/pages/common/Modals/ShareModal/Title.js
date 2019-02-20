@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Down from 'react-icons/lib/fa/angle-down';
-import Up from 'react-icons/lib/fa/angle-up';
+import Right from 'react-icons/lib/fa/angle-right';
 import { Spring, animated } from 'react-spring';
 import { Title } from './elements';
 
@@ -15,7 +15,7 @@ export default class extends Component {
     return (
       <Fragment>
         <Title onClick={() => this.toggleShow()}>
-          {open ? <Up /> : <Down />}
+          {open ? <Down /> : <Right />}
           {title}
         </Title>
         <Spring

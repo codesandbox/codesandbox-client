@@ -59,7 +59,7 @@ export const Title = styled.h4`
   font-size: 18px;
   padding-bottom: 20px;
   margin: 0;
-  padding-top: 20px;
+  padding-top: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -80,7 +80,7 @@ export const SideTitle = styled.span`
   font-weight: bold;
   font-size: 20px;
   margin-top: 20px;
-  margin-bottom: 0px;
+  margin-bottom: 15px;
   color: #e5e5e5;
   display: block;
 `;

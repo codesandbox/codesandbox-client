@@ -37,10 +37,9 @@ class ShareView extends React.Component {
     isCurrentModuleView: false,
     fontSize: 14,
     initialPath: '',
-    useCodeMirror: true,
+    useCodeMirror: false,
     enableEslint: false,
     expandDevTools: false,
-    links: true,
   };
 
   componentDidMount() {
