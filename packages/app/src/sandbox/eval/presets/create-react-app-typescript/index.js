@@ -38,6 +38,7 @@ export default function initialize() {
           },
         ],
         'syntax-dynamic-import',
+        ['proposal-decorators', { legacy: true }],
       ],
       presets: [
         [
