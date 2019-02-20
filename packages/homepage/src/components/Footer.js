@@ -96,9 +96,6 @@ export default () => (
               </a>
             </li>
             <li>
-              <Link to="/changelog">Recent Updates</Link>
-            </li>
-            <li>
               <Link to="/docs">Documentation</Link>
             </li>
             <li>
@@ -131,9 +128,7 @@ export default () => (
               </a>
             </li>
             <li>
-              <a href="/legal" target="_blank" rel="noopener noreferrer">
-                Legal
-              </a>
+              <Link to="/legal">Legal</Link>
             </li>
             <li>
               <a href="mailto:hello@codesandbox.io">Contact Us</a>
