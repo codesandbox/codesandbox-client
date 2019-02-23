@@ -18,11 +18,11 @@ const host = process.env.CODESANDBOX_HOST;
 const VERSION = 1;
 
 const BUCKET_URL =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
     ? 'https://d1jyvh0kxilfa7.cloudfront.net'
     : 'https://s3-eu-west-1.amazonaws.com/dev.packager.packages';
 const PACKAGER_URL =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
     ? 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages'
     : 'https://8o2xeuyo66.execute-api.eu-west-1.amazonaws.com/dev/packages';
 
