@@ -194,6 +194,11 @@ export async function createZip(
 ) {
   const zip = new JSZip();
 
+  const fullPromise = () =>
+    import(/* webpackChunkName: 'full-zip' */ './full').then(generator =>
+      generator.default(zip, sandbox, modules, directories, downloadBlobs)
+    );
+
   let promise = null;
 
   if (
@@ -203,10 +208,7 @@ export async function createZip(
   ) {
     // This is a full project, with all files already in there. We need to create
     // a zip by just adding all existing files to it (downloading binaries too).
-    promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
-      generator =>
-        generator.default(zip, sandbox, modules, directories, downloadBlobs)
-    );
+    promise = fullPromise();
   } else if (sandbox.template === react.name) {
     promise = import(/* webpackChunkName: 'create-react-app-zip' */ './create-react-app').then(
       generator =>
@@ -218,10 +220,27 @@ export async function createZip(
         generator.default(zip, sandbox, modules, directories, downloadBlobs)
     );
   } else if (sandbox.template === vue.name) {
-    promise = import(/* webpackChunkName: 'vue-zip' */ './vue-cli').then(
-      generator =>
-        generator.default(zip, sandbox, modules, directories, downloadBlobs)
-    );
+    try {
+      const packageJSONModule = sandbox.modules.find(
+        m => m.directoryShortid == null && m.title === 'package.json'
+      );
+
+      const pkgJSON = JSON.parse(packageJSONModule.code);
+      if (
+        pkgJSON.devDependencies &&
+        pkgJSON.devDependencies['@vue/cli-service']
+      ) {
+        // For the new vue cli we want to use the full promise
+        promise = fullPromise();
+      } else {
+        promise = import(/* webpackChunkName: 'vue-zip' */ './vue-cli').then(
+          generator =>
+            generator.default(zip, sandbox, modules, directories, downloadBlobs)
+        );
+      }
+    } catch (e) {
+      promise = fullPromise();
+    }
   } else if (sandbox.template === preact.name) {
     promise = import(/* webpackChunkName: 'preact-zip' */ './preact-cli').then(
       generator =>
