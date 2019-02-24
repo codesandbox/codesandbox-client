@@ -10,7 +10,7 @@ export default [
     name: 'Night Owl',
     id: 'nightOwl',
     url:
-      'https://cdn.jsdelivr.net/gh/sdras/night-owl-vscode-theme@ff58e0d3967ef968492ce8c9809239f0511b9b70/themes/Night%20Owl-color-theme.json',
+      'http://localhost:3033/gh/sdras/night-owl-vscode-theme@ff58e0d3967ef968492ce8c9809239f0511b9b70/themes/Night%20Owl-color-theme.json',
   },
   {
     name: 'Night Owl (No Italics)',

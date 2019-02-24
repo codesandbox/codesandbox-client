@@ -131,7 +131,7 @@ export function absolute(path: string) {
 
 const UNPKG = true;
 
-const ROOT_URL = UNPKG ? `https://unpkg.com/` : `https://cdn.jsdelivr.net/npm/`;
+const ROOT_URL = UNPKG ? `http://localhost:3033/` : `http://localhost:3033/npm/`;
 const loadedTypings = [];
 
 /**
@@ -271,13 +271,13 @@ const transformFiles = dir =>
 const getFileMetaData = (dependency, version, depPath) => {
   if (UNPKG) {
     const usedDepPath = /\/$/.test(depPath) ? depPath : (depPath + '/');
-    return doFetch(`https://unpkg.com/${dependency}@${version}${usedDepPath}?meta`)
+    return doFetch(`http://localhost:3033/${dependency}@${version}${usedDepPath}?meta`)
       .then(response => JSON.parse(response))
       .then(transformFiles);
   }
 
   return doFetch(
-    `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`
+    `http://localhost:3033/v1/package/npm/${dependency}@${version}/flat`
   )
     .then(response => JSON.parse(response))
     .then(response =>
@@ -430,7 +430,7 @@ export async function fetchAndAddDependencies(
       let depVersion = version;
 
       try {
-        await doFetch(`https://unpkg.com/${dep}@${version}/package.json`)
+        await doFetch(`http://localhost:3033/${dep}@${version}/package.json`)
           .then(x => JSON.parse(x))
           .then(x => {
             depVersion = x.version;

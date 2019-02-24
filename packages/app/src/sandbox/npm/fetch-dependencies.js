@@ -17,6 +17,7 @@ const host = process.env.CODESANDBOX_HOST;
 
 const VERSION = 1;
 
+// ВОТ ЭТО МЕСТО ОТКУДА ОН ПРОСИТ БАНДЛ С МОДУЛЯМИ
 const BUCKET_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
     ? 'https://d1jyvh0kxilfa7.cloudfront.net'

@@ -4,7 +4,7 @@ const packageJSONCache: Cache.Cache<string, Promise<any>> = new Cache({
   max: 100,
 });
 
-const ROOT_DOMAIN = 'https://unpkg.com';
+const ROOT_DOMAIN = 'http://localhost:3033';
 
 function getPackageJSON(dep: string, version: string) {
   const cachedPromise = packageJSONCache.get(dep + version);

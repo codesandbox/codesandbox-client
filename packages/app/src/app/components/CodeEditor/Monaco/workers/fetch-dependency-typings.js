@@ -5,7 +5,7 @@ self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.7.2/typescript.min.js',
 ]);
 
-const ROOT_URL = `https://cdn.jsdelivr.net/`;
+const ROOT_URL = `http://localhost:3033`;
 
 const loadedTypings = [];
 
@@ -111,9 +111,7 @@ const transformFiles = dir =>
     : {};
 
 const getFileMetaData = (dependency, version, depPath) =>
-  doFetch(
-    `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`
-  )
+  doFetch(`http://localhost:3033/v1/package/npm/${dependency}@${version}/flat`)
     .then(response => JSON.parse(response))
     .then(response => response.files.filter(f => f.name.startsWith(depPath)))
     .then(tempTransformFiles);
@@ -169,7 +167,7 @@ const getFileTypes = (
 };
 
 function fetchFromMeta(dependency, version, fetchedPaths) {
-  const depUrl = `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`;
+  const depUrl = `http://localhost:3033/v1/package/npm/${dependency}@${version}/flat`;
   return doFetch(depUrl)
     .then(response => JSON.parse(response))
     .then(meta => {
@@ -191,13 +189,15 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
         throw new Error('No inline typings found.');
       }
 
-      return Promise.all(dtsFiles.map(file =>
-        doFetch(`https://cdn.jsdelivr.net/npm/${dependency}@${version}${file}`)
-          .then(dtsFile =>
-            addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
-          )
-          .catch(() => {})
-      ));
+      return Promise.all(
+        dtsFiles.map(file =>
+          doFetch(`http://localhost:3033npm/${dependency}@${version}${file}`)
+            .then(dtsFile =>
+              addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
+            )
+            .catch(() => {})
+        )
+      );
     });
 }
 
@@ -247,7 +247,7 @@ async function fetchAndAddDependencies(dependencies) {
           loadedTypings.push(dep);
 
           const depVersion = await doFetch(
-            `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${
+            `http://localhost:3033/v1/package/resolve/npm/${dep}@${
               dependencies[dep]
             }`
           )

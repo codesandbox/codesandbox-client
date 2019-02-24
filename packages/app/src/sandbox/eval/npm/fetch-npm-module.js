@@ -77,8 +77,8 @@ function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
   return TEMP_USE_JSDELIVR || forceJsDelivr
-    ? `https://unpkg.com/${nameWithoutAlias}@${version}`
-    : `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`;
+    ? `http://localhost:3033/${nameWithoutAlias}@${version}`
+    : `http://localhost:3033/npm/${nameWithoutAlias}@${version}`;
 }
 
 function getMeta(name: string, packageJSONPath: string, version: string) {
@@ -91,8 +91,8 @@ function getMeta(name: string, packageJSONPath: string, version: string) {
   metas[id] = window
     .fetch(
       TEMP_USE_JSDELIVR
-        ? `https://data.jsdelivr.com/v1/package/npm/${nameWithoutAlias}@${version}/flat`
-        : `https://unpkg.com/${nameWithoutAlias}@${version}/?meta`
+        ? `http://localhost:3033/v1/package/npm/${nameWithoutAlias}@${version}/flat`
+        : `http://localhost:3033/${nameWithoutAlias}@${version}/?meta`
     )
     .then(x => x.json());
 
