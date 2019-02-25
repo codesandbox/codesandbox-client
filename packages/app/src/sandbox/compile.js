@@ -279,6 +279,9 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       returnedDependencies['babel-runtime'] || '6.26.0';
   }
 
+  // This is used for cache busting
+  returnedDependencies.csbbust = '1.0.0';
+
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
       delete returnedDependencies[dep];

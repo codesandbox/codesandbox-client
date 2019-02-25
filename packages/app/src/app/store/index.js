@@ -79,7 +79,6 @@ export default Module({
   signals: {
     appUnmounted: sequences.unloadApp,
     searchMounted: sequences.loadSearch,
-    termsMounted: sequences.loadTerms,
     sandboxPageMounted: sequences.loadSandboxPage,
     cliMounted: sequences.loadCLI,
     cliInstructionsMounted: sequences.loadCLIInstructions,

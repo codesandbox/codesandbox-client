@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ISandpackContext } from '../../types';
-import SandpackConsumer from '../SandpackConsumer';
 import withSandpack from '../../utils/with-sandpack';
 
 export interface PreviewProps {

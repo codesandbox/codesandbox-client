@@ -48,9 +48,6 @@ const CliInstructions = Loadable(() =>
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
-const Terms = Loadable(() =>
-  import(/* webpackChunkName: 'page-terms' */ './Terms')
-);
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator')
 );
@@ -106,7 +103,6 @@ class Routes extends React.Component<Props> {
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
-            <Route path="/legal" component={Terms} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
             <Route component={NotFound} />
           </Switch>
