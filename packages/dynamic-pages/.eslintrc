@@ -2,5 +2,5 @@
   "globals": {
     "graphql": true
   },
-  "rules": { "jsx-a11y/href-no-hash": 0 }
+  "rules": { "jsx-a11y/href-no-hash": 0, "camelcase": 0 }
 }
