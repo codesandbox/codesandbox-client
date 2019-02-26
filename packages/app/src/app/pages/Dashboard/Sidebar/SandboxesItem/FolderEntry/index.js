@@ -197,6 +197,7 @@ class FolderEntry extends React.Component {
                 <AnimatedChevron
                   onClick={this.toggleOpen}
                   open={this.state.open}
+                  style={{ opacity: children.size > 0 ? 1 : 0 }}
                 />
                 <FolderIcon />
               </IconContainer>{' '}
