@@ -959,6 +959,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "iamphill",
+      "name": "Phil Hughes",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/741068?v=4",
+      "profile": "https://iamphill.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
