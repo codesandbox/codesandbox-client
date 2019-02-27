@@ -950,6 +950,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "petetnt",
+      "name": "Pete Nykänen",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7641760?v=4",
+      "profile": "https://twitter.com/pete_tnt",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
