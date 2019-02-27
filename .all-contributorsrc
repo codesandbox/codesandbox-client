@@ -752,6 +752,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mike-north",
+      "name": "Mike North",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/558005?v=4",
+      "profile": "https://mike.works",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
