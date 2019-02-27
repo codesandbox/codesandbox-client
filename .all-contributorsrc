@@ -788,6 +788,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "sapegin",
+      "name": "Artem Sapegin",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/70067?v=4",
+      "profile": "http://sapegin.me",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
