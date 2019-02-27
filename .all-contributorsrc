@@ -716,6 +716,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Noviny",
+      "name": "Ben Conolly",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15622106?v=4",
+      "profile": "https://github.com/Noviny",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
