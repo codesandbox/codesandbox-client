@@ -1013,6 +1013,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "wwilsman",
+      "name": "Wil Wilsman",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5005153?v=4",
+      "profile": "http://wilwilsman.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
