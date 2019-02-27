@@ -734,6 +734,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "alexvcasillas",
+      "name": "Alex Casillas",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9496960?v=4",
+      "profile": "https://www.alexvcasillas.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
