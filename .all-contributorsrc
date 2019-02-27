@@ -1049,6 +1049,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jackdon",
+      "name": "Bruce Xu",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15030806?v=4",
+      "profile": "http://www.xulingming.cn",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
