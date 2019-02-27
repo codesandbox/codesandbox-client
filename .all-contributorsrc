@@ -824,6 +824,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "evgenyrodionov",
+      "name": "Evgeny Rodionov",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/775692?v=4",
+      "profile": "https://erodionov.ru",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
