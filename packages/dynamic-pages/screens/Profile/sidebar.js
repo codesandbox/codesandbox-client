@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Badge from 'common/utils/badges/Badge';
+import ContributorsBadge from 'common/components/ContributorsBadge';
 import { Forks, Likes, Views } from '../../components/Icons';
 import { H3, H4 } from '../../components/Typography';
 
@@ -18,7 +19,7 @@ const Header = styled.div`
   margin-bottom: 32px;
 `;
 
-const Aside = styled.aside`
+const Aside = styled.div`
   background: #1c2022;
   border-radius: 8px;
   padding: 32px;
@@ -29,6 +30,17 @@ const Stats = styled.div`
   display: grid;
   grid-template-columns: repeat(3, min-content);
   grid-gap: 35px;
+`;
+
+const Badges = styled.ul`
+  margin: 0;
+  padding: 0;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  > * {
+    margin-right: 10px;
+  }
 `;
 
 const Stat = styled.div`
@@ -50,28 +62,50 @@ export default ({
   received_like_count,
   forked_count,
   badges,
-  sandbox_count_per_template,
+  twitter,
+  profile_email,
+  // sandbox_count_per_template,
 }) => (
-  <Aside>
-    <Header>
-      <Avatar src={avatar_url} alt={name} width="96" height="96" />
-      <div>
-        <H3>{name}</H3>
-        <H4>{username}</H4>
-      </div>
-    </Header>
-    <p>{bio}This is a test bio</p>
-    <Stats>
-      <Stat>
-        <Views /> {kFormatter(view_count)}
-      </Stat>
-      <Stat>
-        <Likes /> {kFormatter(received_like_count)}
-      </Stat>
-      <Stat>
-        <Forks /> {kFormatter(forked_count)}
-      </Stat>
-    </Stats>
-    {badges.map(badge => <Badge key={badge.id} badge={badge} size={128} />)}
-  </Aside>
+  <aside>
+    <Aside>
+      <Header>
+        <Avatar src={avatar_url} alt={name} width="96" height="96" />
+        <div>
+          <H3>{name}</H3>
+          <H4>{username}</H4>
+        </div>
+      </Header>
+      <p>{bio}</p>
+      <p>{twitter}</p>
+      <p>{profile_email}</p>
+      <Stats>
+        <Stat>
+          <Views /> {kFormatter(view_count)}
+        </Stat>
+        <Stat>
+          <Likes /> {kFormatter(received_like_count)}
+        </Stat>
+        <Stat>
+          <Forks /> {kFormatter(forked_count)}
+        </Stat>
+      </Stats>
+    </Aside>
+    <Aside
+      css={`
+        margin-top: 50px;
+      `}
+    >
+      <H3>Achievement Badges</H3>
+      <Badges>
+        {badges.map(badge => <Badge key={badge.id} badge={badge} size={64} />)}
+        <ContributorsBadge
+          username={username}
+          style={{
+            width: 64,
+            height: 50,
+          }}
+        />
+      </Badges>
+    </Aside>
+  </aside>
 );

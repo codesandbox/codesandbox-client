@@ -14,18 +14,24 @@ app
       '/api',
       proxy({ target: 'https://codesandbox.io', changeOrigin: true })
     );
+    server.use('/static', express.static('.next'));
     server.get('/profile/:username', (req, res) => {
-      const actualPage = '/profile';
-      const queryParams = { username: req.params.username };
-      app.render(req, res, actualPage, queryParams);
+      app.render(req, res, '/profile', { username: req.params.username });
+    });
+
+    server.get('/profile/:username/:page', (req, res) => {
+      app.render(req, res, '/profile/sandboxes', {
+        username: req.params.username,
+        page: req.params.page,
+      });
     });
 
     server.get('*', (req, res) => handle(req, res));
 
-    server.listen(3000, err => {
+    server.listen(8080, err => {
       if (err) throw err;
       // eslint-disable-next-line
-      console.log('> Ready on http://localhost:3000');
+      console.log('> Ready on http://localhost:8080');
     });
   })
   .catch(ex => {

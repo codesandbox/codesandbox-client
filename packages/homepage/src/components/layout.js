@@ -2,11 +2,10 @@ import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import theme from 'common/theme';
+import Navigation from 'common/components/Navigation';
+import Footer from 'common/components/Footer';
 import '../css/typography.css';
 import '../css/global.css';
-
-import Navigation from './Navigation';
-import Footer from './Footer';
 
 // eslint-disable-next-line
 export default class TemplateWrapper extends React.Component {

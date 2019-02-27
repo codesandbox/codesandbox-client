@@ -14,8 +14,9 @@ module.exports = {
     'babel-plugin-lodash',
     'babel-plugin-system-import-transformer',
     'babel-plugin-macros',
-    'inline-react-svg',
-    'file-loader',
+    // 'inline-react-svg',
+    // 'file-loader',
     '@babel/plugin-transform-modules-commonjs',
+    ['styled-components', { ssr: true }],
   ],
 };

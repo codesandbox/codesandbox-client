@@ -1,12 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Link } from 'gatsby';
-
 import Logo from 'common/components/Logo';
 import MaxWidth from 'common/components/flex/MaxWidth';
 
-import media from '../utils/media';
+import media from '../../utils/media';
 
 const Container = styled.div`
   display: flex;
@@ -85,8 +83,6 @@ const Item = styled.a`
     `};
 `;
 
-const ItemLink = Item.withComponent(Link);
-
 const Right = styled.div`
   display: flex;
   align-items: center;
@@ -143,8 +139,8 @@ export default class Navigation extends React.PureComponent {
               />
             </a>
 
-            <ItemLink to="/explore">Explore</ItemLink>
-            <ItemLink to="/docs">Docs</ItemLink>
+            <Item href="/explore">Explore</Item>
+            <Item href="/docs">Docs</Item>
 
             <Item
               href="https://medium.com/@compuives"
