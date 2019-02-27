@@ -1031,6 +1031,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jerry-i",
+      "name": "cottom",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11937539?v=4",
+      "profile": "http://jerry-i.github.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
