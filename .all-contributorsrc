@@ -743,6 +743,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "existentialism",
+      "name": "Brian Ng",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/56288?v=4",
+      "profile": "https://brian.ng",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
