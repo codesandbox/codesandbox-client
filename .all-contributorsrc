@@ -851,6 +851,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "grant",
+      "name": "Grant Timmerman",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/744973?v=4",
+      "profile": "http://grant.cm",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
