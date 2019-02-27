@@ -806,6 +806,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "christianalfoni",
+      "name": "Christian Alfoni",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3956929?v=4",
+      "profile": "http://www.christianalfoni.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
