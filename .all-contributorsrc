@@ -761,6 +761,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "oroce",
+      "name": "Róbert Oroszi",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/462848?v=4",
+      "profile": "https://github.com/oroce",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
