@@ -815,6 +815,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "singingwolfboy",
+      "name": "David Baumgold",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/132355?v=4",
+      "profile": "http://davidbaumgold.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
