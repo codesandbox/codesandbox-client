@@ -995,6 +995,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "twhitbeck",
+      "name": "Tim Whitbeck",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/762471?v=4",
+      "profile": "https://github.com/twhitbeck",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
