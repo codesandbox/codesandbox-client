@@ -13,6 +13,7 @@
     "@zeit/next-css": "^1.0.1",
     "babel-plugin-file-loader": "^1.1.1",
     "babel-plugin-inline-react-svg": "^1.0.1",
+    "color": "^3.1.0",
     "express": "^4.16.4",
     "http-proxy-middleware": "^0.19.1",
     "isomorphic-unfetch": "^3.0.0",

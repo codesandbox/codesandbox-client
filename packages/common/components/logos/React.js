@@ -3,13 +3,16 @@ import React from 'react';
 export default ({
   width = 35,
   height = 35,
+  style,
   className,
 }: {
   width: number,
   height: number,
+  style: Object,
   className: ?string,
 }) => (
   <svg
+    style={style}
     className={className}
     width={`${width}px`}
     height={`${height}px`}
