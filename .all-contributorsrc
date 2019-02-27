@@ -1040,6 +1040,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "gitname",
+      "name": "gitname",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/7143133?v=4",
+      "profile": "https://github.com/gitname",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
