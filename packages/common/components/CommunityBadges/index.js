@@ -5,17 +5,17 @@ import getIcon from 'common/templates/icons';
 import getDefinition from 'common/templates/';
 import Color from 'color';
 
-export default ({ style, sandboxNumber, template }) => {
+export default ({ style, sandboxesNumber, template }) => {
   const templateInfo = getDefinition(template);
   const color = templateInfo.color();
   const lighter = Color(color)
     .lighten(0.2)
     .rgb();
 
-  return sandboxNumber >= 50 ? (
+  return sandboxesNumber >= 50 ? (
     <Tooltip
       style={{ display: 'flex', position: 'relative' }}
-      title={`${sandboxNumber < 100 ? 'Silver' : 'Gold'} medal for ${
+      title={`${sandboxesNumber < 100 ? 'Silver' : 'Gold'} medal for ${
         templateInfo.niceName
       }`}
     >
@@ -36,14 +36,14 @@ export default ({ style, sandboxNumber, template }) => {
           cy="102.355"
           r={102}
           transform="rotate(180 102 102.355)"
-          fill={sandboxNumber < 100 ? '#EBEBEB' : '#EAC17A'}
+          fill={sandboxesNumber < 100 ? '#EBEBEB' : '#EAC17A'}
         />
         <circle
           cx={102}
           cy="102.355"
           r="92.7273"
           transform="rotate(180 102 102.355)"
-          fill={sandboxNumber < 100 ? '#C8C8C8' : '#CFAE72'}
+          fill={sandboxesNumber < 100 ? '#C8C8C8' : '#CFAE72'}
         />
       </IconBase>
       <div

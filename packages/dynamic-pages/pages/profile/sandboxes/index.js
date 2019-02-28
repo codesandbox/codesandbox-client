@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import WideSandbox from 'common/components/WideSandbox';
-import styled from 'styled-components';
 import Button from 'common/components/Button';
 import { sandboxUrl } from 'common/utils/url-generator';
 import fetch from '../../../utils/fetch';
 import PageContainer from '../../../components/PageContainer';
 import Sidebar from '../../../screens/Profile/sidebar';
 import SandboxesWrapper from '../../../components/SandboxesWrapper';
-
-const Grid = styled.main`
-  display: grid;
-  grid-gap: 90px;
-  grid-template-columns: 480px 1fr;
-`;
+import { Grid } from '../_elements';
 
 const Sandboxes = ({ data, fetchUrl, profile }) => {
   const [page, setPage] = useState(1);
@@ -26,6 +20,7 @@ const Sandboxes = ({ data, fetchUrl, profile }) => {
     setLoading(true);
     const newSandboxes = await fetch(`${url}?page=${newPage}`);
     setLoading(false);
+
     if (newSandboxes[newPage].length > 0) {
       return setSandboxes(sandboxes.concat(newSandboxes[newPage]));
     }

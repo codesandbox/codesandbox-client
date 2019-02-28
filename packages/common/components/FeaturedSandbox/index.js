@@ -50,20 +50,27 @@ export default class FeaturedSandbox extends React.PureComponent {
       });
   };
 
-  componentDidMount() {
-    this.fetchSandbox(this.props.sandboxId).then(sandbox => {
-      this.setState({ sandbox });
+  setUpPreview = () => {
+    setTimeout(() => {
+      // Only load it later so everything else can initialize
+      this.setState({ showPreview: true });
+      this.fetchAllFeaturedSandboxes();
+    }, 1000);
+  };
 
-      setTimeout(() => {
-        // Only load it later so everything else can initialize
-        this.setState({ showPreview: true });
-        this.fetchAllFeaturedSandboxes();
-      }, 1000);
-    });
+  componentDidMount() {
+    if (this.props.sandboxId) {
+      this.fetchSandbox(this.props.sandboxId).then(sandbox => {
+        this.setState({ sandbox });
+        this.setUpPreview();
+      });
+    } else {
+      this.setUpPreview();
+    }
   }
 
   fetchAllFeaturedSandboxes = () => {
-    this.props.featuredSandboxes.forEach(s => {
+    (this.props.featuredSandboxes || []).forEach(s => {
       this.fetchSandbox(s.sandboxId);
     });
   };
@@ -86,14 +93,14 @@ export default class FeaturedSandbox extends React.PureComponent {
   };
 
   render() {
-    const { sandbox = {} } = this.state;
+    const { sandbox = this.props.sandbox || null } = this.state;
     const { title, description } = this.props;
     return (
       <Container>
         <SandboxContainer role="button" onClick={this.toggleOpen}>
           <SandboxInfo>
-            <Title>{title || sandbox.title}</Title>
-            <Description>{description || sandbox.description}</Description>
+            <Title>{title}</Title>
+            <Description>{description}</Description>
             {sandbox && (
               <Spring
                 from={{ height: 0, opacity: 0, overflow: 'hidden' }}
