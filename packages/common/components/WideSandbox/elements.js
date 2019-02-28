@@ -19,7 +19,6 @@ export const Container = styled.div`
   overflow: hidden;
   cursor: pointer;
 
-  margin-bottom: 2rem;
   margin-right: 0.5rem;
   margin-left: 0.5rem;
 
@@ -90,7 +89,7 @@ export const SandboxInfo = styled.div`
   left: -1px;
   right: -1px;
   padding: 0.75rem;
-  height: 130px;
+  min-height: 90px;
   z-index: 1;
 `;
 

@@ -66,6 +66,12 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Poppins:400,700|Source+Sans+Pro"
             rel="stylesheet"
           />
+          <link
+            rel="stylesheet"
+            type="text/css"
+            charSet="UTF-8"
+            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+          />
         </Head>
         <body>
           <Main />

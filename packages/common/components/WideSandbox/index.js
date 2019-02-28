@@ -60,7 +60,7 @@ export default class WideSandbox extends React.PureComponent {
     if (!sandbox) {
       return (
         <Container style={{}}>
-          <SandboxImage as="div" style={{ border: 0, height: 245 }} />
+          <SandboxImage as="div" style={{ border: 0, height: 150 }} />
           <SandboxInfo />
         </Container>
       );
@@ -81,14 +81,16 @@ export default class WideSandbox extends React.PureComponent {
           alt={this.getTitle()}
           src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
           color={template.color}
-          style={{ height: this.state.imageLoaded ? 'auto' : 245 }}
+          style={{ height: this.state.imageLoaded ? 'auto' : 150 }}
           onLoad={() => {
             this.setState({ imageLoaded: true });
           }}
         />
         <SandboxInfo>
           <SandboxTitle color={template.color}>{this.getTitle()}</SandboxTitle>
-          <SandboxDescription>{this.getDescription()}</SandboxDescription>
+          {this.getDescription() ? (
+            <SandboxDescription>{this.getDescription()}</SandboxDescription>
+          ) : null}
 
           {sandbox.author && (
             <a href={profileUrl(sandbox.author.username)}>
