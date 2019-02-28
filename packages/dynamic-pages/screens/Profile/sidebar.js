@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { format } from 'date-fns';
 import Badge from 'common/utils/badges/Badge';
@@ -95,86 +95,114 @@ export default ({
   profile_email,
   sandbox_count_per_template,
   inserted_at,
-}) => (
-  <aside>
-    <Aside>
-      <Header>
-        <Avatar src={avatar_url} alt={name} width="96" height="96" />
-        <div>
-          <H3>{name}</H3>
-          <H4>{username}</H4>
-        </div>
-      </Header>
-      <p>{bio}</p>
-      <Stats>
-        <Stat>
-          <Views /> {kFormatter(view_count)}
-        </Stat>
-        <Stat>
-          <Likes /> {kFormatter(received_like_count)}
-        </Stat>
-        <Stat>
-          <Forks /> {kFormatter(forked_count)}
-        </Stat>
-      </Stats>
-      <Social>
-        <img src={twitterLogo} alt="twitter logo" />
-        <a href={`https://twitter.com/${twitter}`} target="_blank">
-          @{twitter.toLowerCase()}
-        </a>
-      </Social>
-      <Social>
-        <img src={mail} alt="email" />
-        <a href={`mailto:${profile_email}`} target="_blank">
-          {profile_email.toLowerCase()}
-        </a>
-      </Social>
-      <Social>
-        <img src={calendar} alt="User Since" />
-        <span>Joined {format(inserted_at, 'MMMM YYYY')}</span>
-      </Social>
+}) => {
+  const [user, setUser] = useState({});
 
-      <Button
-        small
+  const fetchCurrentUser = () => {
+    const jwt = JSON.parse(localStorage.getItem('jwt'));
+    const BASE =
+      process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
+
+    window
+      .fetch(BASE + '/api/v1/users/current', {
+        headers: { Authorization: `Bearer ${jwt}` },
+      })
+      .then(x => x.json())
+      .then(({ data }) => setUser(data));
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem('jwt')) {
+      fetchCurrentUser();
+    }
+  }, []);
+  return (
+    <aside>
+      <Aside>
+        <Header>
+          <Avatar src={avatar_url} alt={name} width="96" height="96" />
+          <div>
+            <H3>{name}</H3>
+            <H4>{username}</H4>
+          </div>
+        </Header>
+        <p>{bio}</p>
+        <Stats>
+          <Stat>
+            <Views /> {kFormatter(view_count)}
+          </Stat>
+          <Stat>
+            <Likes /> {kFormatter(received_like_count)}
+          </Stat>
+          <Stat>
+            <Forks /> {kFormatter(forked_count)}
+          </Stat>
+        </Stats>
+        {twitter && (
+          <Social>
+            <img src={twitterLogo} alt="twitter logo" />
+            <a href={`https://twitter.com/${twitter}`} target="_blank">
+              @{twitter.toLowerCase()}
+            </a>
+          </Social>
+        )}
+        {profile_email && (
+          <Social>
+            <img src={mail} alt="email" />
+            <a href={`mailto:${profile_email}`} target="_blank">
+              {profile_email.toLowerCase()}
+            </a>
+          </Social>
+        )}
+        <Social>
+          <img src={calendar} alt="User Since" />
+          <span>Joined {format(inserted_at, 'MMMM YYYY')}</span>
+        </Social>
+
+        {username === user.username && (
+          <Button
+            small
+            css={`
+              width: 100%;
+              margin-top: 30px;
+            `}
+          >
+            Edit Profile
+          </Button>
+        )}
+      </Aside>
+      <Aside
         css={`
-          width: 100%;
-          margin-top: 30px;
+          margin-top: 50px;
         `}
       >
-        Edit Profile
-      </Button>
-    </Aside>
-    <Aside
-      css={`
-        margin-top: 50px;
-      `}
-    >
-      <H3>Achievement Badges</H3>
-      <Badges>
-        {badges.map(badge => (
-          <Badge key={badge.id} badge={badge} size={64} />
-        ))}
-        <ContributorsBadge
-          username={username}
-          style={{
-            width: 64,
-            height: 50,
-          }}
-        />
-        {Object.keys(sandbox_count_per_template).map(
-          key =>
-            sandbox_count_per_template[key] > 50 && (
-              <CommunityBadge
-                template={key}
-                sandboxNumber={sandbox_count_per_template[key]}
-                style={{
-                  width: 64,
-                  height: 50,
-                }}
-              />
-            )
-        )}
-      </Badges>
-    </Aside>
-  </aside>
-);
+        <H3>Achievement Badges</H3>
+        <Badges>
+          {badges.map(badge => (
+            <Badge key={badge.id} badge={badge} size={64} />
+          ))}
+          <ContributorsBadge
+            username={username}
+            style={{
+              width: 64,
+              height: 50,
+            }}
+          />
+          {Object.keys(sandbox_count_per_template).map(
+            key =>
+              sandbox_count_per_template[key] > 50 && (
+                <CommunityBadge
+                  template={key}
+                  sandboxNumber={sandbox_count_per_template[key]}
+                  style={{
+                    width: 64,
+                    height: 50,
+                  }}
+                />
+              )
+          )}
+        </Badges>
+      </Aside>
+    </aside>
+  );
+};

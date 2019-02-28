@@ -130,8 +130,8 @@ const Profile = ({ profile, liked }) => {
     const url = sandboxUrl({ id });
     window.open(url, '_blank');
   };
-
-  return (
+  console.log(profile);
+  return profile ? (
     <PageContainer>
       <Grid>
         <Sidebar {...profile} />
@@ -144,12 +144,15 @@ const Profile = ({ profile, liked }) => {
           `}
         >
           <div style={{ marginBottom: 30 }}>
-            <FeaturedSandbox sandboxId={profile.showcased_sandbox_shortid} />
+            <FeaturedSandbox
+              pickSandbox={({ id }) => openSandbox(id)}
+              sandboxId={(profile || {}).showcased_sandbox_shortid}
+            />
           </div>
           <SlideStyles />
           <Title>User sandboxes</Title>
           <Slider {...settings}>
-            {profile.top_sandboxes.map(sandbox => (
+            {(profile || {}).top_sandboxes.map(sandbox => (
               <WideSandbox
                 small
                 key={sandbox.id}
@@ -160,7 +163,7 @@ const Profile = ({ profile, liked }) => {
             <More>
               <Link
                 href={{
-                  pathname: `/profile/${profile.username}/sandboxes`,
+                  pathname: `/profile/${(profile || {}).username}/sandboxes`,
                 }}
               >
                 <a>See all sandboxes</a>
@@ -183,7 +186,7 @@ const Profile = ({ profile, liked }) => {
             <More>
               <Link
                 href={{
-                  pathname: `/profile/${profile.username}/liked`,
+                  pathname: `/profile/${(profile || {}).username}/liked`,
                 }}
               >
                 See all liked sandboxes
@@ -193,7 +196,7 @@ const Profile = ({ profile, liked }) => {
         </main>
       </Grid>
     </PageContainer>
-  );
+  ) : null;
 };
 
 Profile.getInitialProps = async ({ query: { username } }) => {

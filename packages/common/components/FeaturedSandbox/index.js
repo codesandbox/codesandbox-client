@@ -86,14 +86,14 @@ export default class FeaturedSandbox extends React.PureComponent {
   };
 
   render() {
-    const { sandbox } = this.state;
+    const { sandbox = {} } = this.state;
     const { title, description } = this.props;
     return (
       <Container>
         <SandboxContainer role="button" onClick={this.toggleOpen}>
           <SandboxInfo>
-            <Title>{title}</Title>
-            <Description>{description}</Description>
+            <Title>{title || sandbox.title}</Title>
+            <Description>{description || sandbox.description}</Description>
             {sandbox && (
               <Spring
                 from={{ height: 0, opacity: 0, overflow: 'hidden' }}
