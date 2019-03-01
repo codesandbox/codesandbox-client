@@ -1,0 +1,15 @@
+{
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "module": "commonjs",
+    "target": "ES6",
+    "lib": ["webworker", "es6", "dom", "es2017.object"],
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "allowJs": true,
+    "paths": {
+      "common/*": ["./src/common/*"]
+    }
+  }
+}
