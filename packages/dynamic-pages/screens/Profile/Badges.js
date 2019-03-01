@@ -26,6 +26,7 @@ export default ({ templateSandboxes, badges, username }) => (
           templateSandboxes[key] >= 50 && (
             <CommunityBadge
               template={key}
+              key={key}
               sandboxesNumber={templateSandboxes[key]}
               style={{
                 width: 64,

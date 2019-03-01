@@ -21,7 +21,8 @@
     "next-plugin-transpile-modules": "^2.0.0",
     "react": "16.8.1",
     "react-dom": "16.8.1",
-    "react-slick": "^0.23.2"
+    "react-slick": "^0.23.2",
+    "react-visibility-sensor": "^5.0.2"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",

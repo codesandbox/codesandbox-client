@@ -108,7 +108,7 @@ const Profile = ({ profile, liked, showcased }) => {
                   pathname: `/profile/${profile.username}/liked`,
                 }}
               >
-                See all liked sandboxes
+                <a>See all liked sandboxes</a>
               </Link>
             </More>
           </Slider>

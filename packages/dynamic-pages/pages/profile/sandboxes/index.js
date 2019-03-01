@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import WideSandbox from 'common/components/WideSandbox';
+import VisibilitySensor from 'react-visibility-sensor';
+import Link from 'next/link';
 import Button from 'common/components/Button';
 import { sandboxUrl } from 'common/utils/url-generator';
 import fetch from '../../../utils/fetch';
 import PageContainer from '../../../components/PageContainer';
 import Sidebar from '../../../screens/Profile/sidebar';
 import SandboxesWrapper from '../../../components/SandboxesWrapper';
-import { Grid } from '../_elements';
+import { Grid, Title, NavigationLink, TabNavigation } from '../_elements';
 
-const Sandboxes = ({ data, fetchUrl, profile }) => {
+const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
   const [page, setPage] = useState(1);
   const [sandboxes, setSandboxes] = useState(data[page]);
   const [more, setMore] = useState(true);
@@ -37,29 +39,69 @@ const Sandboxes = ({ data, fetchUrl, profile }) => {
     <PageContainer>
       <Grid>
         <Sidebar {...profile} />
-        <SandboxesWrapper>
-          {sandboxes.map(sandbox => (
-            <>
+        <main>
+          <TabNavigation>
+            <Link
+              href={{
+                pathname: `/profile/${profile.username}`,
+              }}
+            >
+              <NavigationLink>Profile</NavigationLink>
+            </Link>
+
+            <Link
+              href={{
+                pathname: `/profile/${profile.username}/sandboxes`,
+              }}
+            >
+              <NavigationLink active={currentTab === 'sandboxes'}>
+                Sandboxes
+              </NavigationLink>
+            </Link>
+            <Link
+              href={{
+                pathname: `/profile/${profile.username}/liked`,
+              }}
+            >
+              <NavigationLink active={currentTab === 'liked'}>
+                Liked
+              </NavigationLink>
+            </Link>
+          </TabNavigation>
+          <Title>{currentTab === 'liked' ? 'Liked' : ''} Sandboxes</Title>
+          <SandboxesWrapper
+            css={`
+              grid-row-gap: 40px;
+            `}
+          >
+            {sandboxes.map(sandbox => (
               <WideSandbox
                 small
                 key={sandbox.id}
                 pickSandbox={({ id }) => openSandbox(id)}
                 sandbox={sandbox}
               />
-            </>
-          ))}
-        </SandboxesWrapper>
-        {more ? (
-          <Button
-            css={`
-              width: 100%;
-            `}
-            disabled={loading}
-            onClick={() => loadMore(fetchUrl)}
-          >
-            Load More
-          </Button>
-        ) : null}
+            ))}
+          </SandboxesWrapper>
+          {more ? (
+            <VisibilitySensor
+              partialVisibility
+              offset={{ top: 100 }}
+              onChange={visible => visible && loadMore(fetchUrl)}
+            >
+              <Button
+                css={`
+                  width: 100%;
+                  margin-top: 60px;
+                `}
+                disabled={loading}
+                onClick={() => loadMore(fetchUrl)}
+              >
+                Load More
+              </Button>
+            </VisibilitySensor>
+          ) : null}
+        </main>
       </Grid>
     </PageContainer>
   );
@@ -71,6 +113,7 @@ Sandboxes.getInitialProps = async ({ query: { page, username } }) => {
   const data = await fetch(`/api/v1/users/${username}/sandboxes${url}`);
 
   return {
+    currentTab: page,
     data,
     fetchUrl: `/api/v1/users/${username}/sandboxes${url}`,
     profile: profile.data,
