@@ -2,6 +2,15 @@
 const withCSS = require('@zeit/next-css');
 const withTM = require('next-plugin-transpile-modules');
 
+const dotEnvResult = require('dotenv').config();
+
+const parsedVariables = dotEnvResult.parsed || {};
+const dotEnvVariables = {};
+// eslint-disable-next-line
+for (const key of Object.keys(parsedVariables)) {
+  dotEnvVariables[key] = process.env[key];
+}
+
 module.exports = withCSS(
   withTM({
     transpileModules: ['common', 'app'],
@@ -20,6 +29,9 @@ module.exports = withCSS(
       });
 
       return config;
+    },
+    env: {
+      ...dotEnvVariables,
     },
   })
 );
