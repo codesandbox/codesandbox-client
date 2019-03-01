@@ -97,7 +97,7 @@ export default ({
           <img src={calendar} alt="User Since" />
           <span>Joined {format(inserted_at, 'MMMM YYYY')}</span>
         </Social>
-
+        {/*
         {username === user.username && (
           <Button
             small
@@ -108,7 +108,7 @@ export default ({
           >
             Edit Profile
           </Button>
-        )}
+        )} */}
       </Aside>
       <Badges
         badges={badges}

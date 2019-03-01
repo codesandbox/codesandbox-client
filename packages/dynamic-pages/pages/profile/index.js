@@ -1,8 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import Slider from 'react-slick';
-import Right from 'react-icons/lib/fa/angle-right';
-import Left from 'react-icons/lib/fa/angle-left';
 import FeaturedSandbox from 'common/components/FeaturedSandbox';
 import { sandboxUrl } from 'common/utils/url-generator';
 import WideSandbox from 'common/components/WideSandbox';
@@ -11,30 +8,9 @@ import NotFound from '../../screens/Profile/NotFound';
 import Sidebar from '../../screens/Profile/sidebar';
 import fetch from '../../utils/fetch';
 import PageContainer from '../../components/PageContainer';
+import Slider from '../../components/Slider';
 
-import {
-  SlideStyles,
-  Grid,
-  Title,
-  More,
-  ArrowContainer,
-  ArrowButton,
-} from './_elements';
-
-const settings = {
-  slidesToShow: 3,
-  slidesToScroll: 3,
-  nextArrow: <Arrow next />,
-  prevArrow: <Arrow prev />,
-};
-
-function Arrow({ onClick, next }) {
-  return (
-    <ArrowContainer next={next}>
-      <ArrowButton onClick={onClick}>{next ? <Right /> : <Left />}</ArrowButton>
-    </ArrowContainer>
-  );
-}
+import { Grid, Title, More } from './_elements';
 
 const Profile = ({ profile, liked, showcased }) => {
   const openSandbox = id => {
@@ -68,9 +44,8 @@ const Profile = ({ profile, liked, showcased }) => {
               />
             </div>
           ) : null}
-          <SlideStyles />
           <Title>User sandboxes</Title>
-          <Slider {...settings}>
+          <Slider>
             {profile.top_sandboxes.map(sandbox => (
               <WideSandbox
                 small
@@ -91,7 +66,7 @@ const Profile = ({ profile, liked, showcased }) => {
           </Slider>
 
           <Title>Liked sandboxes</Title>
-          <Slider {...settings}>
+          <Slider>
             {liked[1]
               .slice(0, 5)
               .map(sandbox => (

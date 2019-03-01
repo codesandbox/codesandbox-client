@@ -1,27 +1,4 @@
-import styled, { createGlobalStyle, css } from 'styled-components';
-
-export const SlideStyles = createGlobalStyle`
-  .slick-slide {
-    padding-left: 12px;
-    padding-right: 12px;
-
-    &:first-child {
-         padding-left: 0;
-    }
-  }
-
-  .slick-track {
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
-
-    position: relative;
-  }
-
-  .slick-slider {
-    position: relative;
-        margin-bottom: 2rem;
-  }
-`;
+import styled, { css } from 'styled-components';
 
 export const Grid = styled.main`
   display: grid;
@@ -43,7 +20,8 @@ export const More = styled.div`
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
   display: flex !important;
   align-items: center;
-  justify-content: center;
+  position: absolute;
+  height: 100%;
 
   a {
     font-family: 'Poppins';
@@ -51,47 +29,17 @@ export const More = styled.div`
     font-weight: 600;
     color: white;
     text-decoration: none;
+    width: 300px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &:hover {
     background-color: #212629;
     transform: translateY(-5px);
     box-shadow: 0 8px 4px rgba(0, 0, 0, 0.3);
-  }
-`;
-
-export const ArrowContainer = styled.div`
-  background: #1c2022;
-  width: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: -15px;
-  z-index: 12;
-  padding: 10px 0;
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
-
-  ${props =>
-    props.next &&
-    css`
-      left: auto;
-      right: 0px;
-    `};
-`;
-
-export const ArrowButton = styled.button`
-  background: transparent;
-  border: none;
-  padding: 0;
-  appearance: none;
-
-  svg {
-    fill: #f2f2f2;
-    width: 28px;
-    height: auto;
   }
 `;
 
