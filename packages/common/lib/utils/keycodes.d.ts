@@ -1,9 +1,0 @@
-export declare const BACKSPACE = 8;
-export declare const TAB = 9;
-export declare const ENTER = 13;
-export declare const ESC = 27;
-export declare const ARROW_LEFT = 37;
-export declare const ARROW_UP = 38;
-export declare const ARROW_RIGHT = 39;
-export declare const ARROW_DOWN = 40;
-export declare const DOT = 190;
