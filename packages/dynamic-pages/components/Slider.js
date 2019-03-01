@@ -4,6 +4,8 @@ import styled, { createGlobalStyle, css } from 'styled-components';
 import Right from 'react-icons/lib/fa/angle-right';
 import Left from 'react-icons/lib/fa/angle-left';
 
+import useWindowSize from '../utils/useWindowSize';
+
 export const SlideStyles = createGlobalStyle`
   .slick-slide {
     padding-left: 12px;
@@ -62,14 +64,6 @@ export const ArrowButton = styled.button`
   }
 `;
 
-const settings = {
-  infinite: false,
-  slidesToShow: 3,
-  slidesToScroll: 3,
-  nextArrow: <Arrow next />,
-  prevArrow: <Arrow prev />,
-};
-
 function Arrow({ onClick, next }) {
   return (
     <ArrowContainer next={next}>
@@ -78,9 +72,20 @@ function Arrow({ onClick, next }) {
   );
 }
 
-export default ({ children }) => (
-  <>
-    <SlideStyles />
-    <Slider {...settings}>{children}</Slider>
-  </>
-);
+export default ({ children }) => {
+  const { width } = useWindowSize();
+  const settings = {
+    infinite: false,
+    slidesToShow: width < 769 ? 2 : 3,
+    slidesToScroll: width < 769 ? 2 : 3,
+    nextArrow: <Arrow next />,
+    prevArrow: <Arrow prev />,
+  };
+
+  return (
+    <>
+      <SlideStyles />
+      <Slider {...settings}>{children}</Slider>
+    </>
+  );
+};

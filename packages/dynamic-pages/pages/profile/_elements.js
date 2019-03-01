@@ -4,6 +4,10 @@ export const Grid = styled.main`
   display: grid;
   grid-gap: 60px;
   grid-template-columns: 400px 1fr;
+
+  @media screen and (max-width: 1100px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const Title = styled.h3`

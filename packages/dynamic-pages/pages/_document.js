@@ -62,6 +62,7 @@ export default class MyDocument extends Document {
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:site" content="@codesandbox" />
           <meta property="twitter:creator" content="@codesandbox" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link
             href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Poppins:400,700|Source+Sans+Pro"
             rel="stylesheet"

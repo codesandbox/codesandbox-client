@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { format } from 'date-fns';
-import Button from 'common/components/Button';
+// import Button from 'common/components/Button';
 import { Forks, Likes, Views } from '../../components/Icons';
 import { H3, H4 } from '../../components/Typography';
 import Badges from './Badges';
@@ -56,7 +56,18 @@ export default ({
   }, []);
 
   return (
-    <aside>
+    <aside
+      css={`
+        @media screen and (max-width: 1100px) {
+          display: grid;
+          grid-template-columns: 480px 1fr;
+          grid-gap: 60px;
+        }
+        @media screen and (max-width: 768px) {
+          grid-template-columns: 1fr;
+        }
+      `}
+    >
       <Aside>
         <Header>
           <Avatar src={avatar_url} alt={name} width="96" height="96" />
@@ -97,8 +108,8 @@ export default ({
           <img src={calendar} alt="User Since" />
           <span>Joined {format(inserted_at, 'MMMM YYYY')}</span>
         </Social>
-        {/*
-        {username === user.username && (
+
+        {/* {username === user.username && (
           <Button
             small
             css={`

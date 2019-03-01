@@ -9,6 +9,12 @@ export default ({ templateSandboxes, badges, username }) => (
   <Aside
     css={`
       margin-top: 50px;
+      @media screen and (max-width: 1100px) {
+        margin-top: 0px;
+      }
+      @media screen and (max-width: 767px) {
+        display: none;
+      }
     `}
   >
     <H3>Achievement Badges</H3>
