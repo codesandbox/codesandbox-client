@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import FeaturedSandbox from 'common/components/FeaturedSandbox';
-import { sandboxUrl } from 'common/utils/url-generator';
-import WideSandbox from 'common/components/WideSandbox';
+import FeaturedSandbox from 'common/lib/components/FeaturedSandbox';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
+import WideSandbox from 'common/lib/components/WideSandbox';
 
 import NotFound from '../../screens/Profile/NotFound';
 import Sidebar from '../../screens/Profile/sidebar';

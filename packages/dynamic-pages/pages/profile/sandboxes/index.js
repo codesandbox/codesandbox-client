@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import WideSandbox from 'common/components/WideSandbox';
+import WideSandbox from 'common/lib/components/WideSandbox';
 import VisibilitySensor from 'react-visibility-sensor';
 import Link from 'next/link';
-import Button from 'common/components/Button';
-import { sandboxUrl } from 'common/utils/url-generator';
+import Button from 'common/lib/components/Button';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
 import fetch from '../../../utils/fetch';
 import PageContainer from '../../../components/PageContainer';
 import Sidebar from '../../../screens/Profile/sidebar';

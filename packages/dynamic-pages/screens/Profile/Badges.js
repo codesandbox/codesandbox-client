@@ -1,7 +1,7 @@
 import React from 'react';
-import Badge from 'common/utils/badges/Badge';
-import ContributorsBadge from 'common/components/ContributorsBadge';
-import CommunityBadge from 'common/components/CommunityBadges';
+import Badge from 'common/lib/utils/badges/Badge';
+import ContributorsBadge from 'common/lib/components/ContributorsBadge';
+import CommunityBadge from 'common/lib/components/CommunityBadges';
 import { H3 } from '../../components/Typography';
 import { Aside, BadgeWrapper } from './_sidebar.elements';
 
