@@ -43,6 +43,9 @@
     ],
     "transform": {
       "^.+\\.(j|t)s$": "babel-jest"
-    }
+    },
+    "modulePathIgnorePatterns": [
+      "lib"
+    ]
   }
 }
