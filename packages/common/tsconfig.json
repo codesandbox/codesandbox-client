@@ -8,6 +8,7 @@
     "outDir": "lib",
     "declaration": true,
     "allowJs": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   }
 }

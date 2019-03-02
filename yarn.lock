@@ -2337,6 +2337,21 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-icon-base@*":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@types/react-icon-base/-/react-icon-base-2.1.3.tgz#0faf840b854a9dbc3fa6fe1935c7c40eb4153114"
+  integrity sha512-OtZn25vQn7A9sJIDE33iUMDTnK83mnzs9bxDUhZ7timyBPXbxMBOHx/L9rf2rOU3B1xavOjag4RWqX4wzZNriQ==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-icons@^2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@types/react-icons/-/react-icons-2.2.7.tgz#ed0a767293ba827f26552504714eebbd80403fc1"
+  integrity sha512-qxc8xtwgDG5Ub/WILU9tZa7zxz2UZqOU4yXbBa+Xg+0LbP031NB9gvf1d/ALvHLGCsCf3WEVttNoW/wc30jn1w==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-icon-base" "*"
+
 "@types/react-native@*":
   version "0.57.38"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.57.38.tgz#2ff6ed1a7cc207afbfd87bf496513d96931d1446"

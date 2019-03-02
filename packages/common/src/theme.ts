@@ -1,5 +1,5 @@
 import memoizeOne from 'memoize-one';
-import * as Color from 'color';
+import Color from 'color';
 import * as codesandbox from './themes/codesandbox.json';
 
 const colorMethods = [
