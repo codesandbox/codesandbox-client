@@ -1,6 +1,6 @@
 // @flow
-import type { Sandbox } from 'common/libtypes';
-import getDefinition from 'common/libtemplates';
+import type { Sandbox } from 'common/types';
+import getDefinition from 'common/templates';
 
 import { resolveModuleWrapped } from './resolve-module-wrapped';
 

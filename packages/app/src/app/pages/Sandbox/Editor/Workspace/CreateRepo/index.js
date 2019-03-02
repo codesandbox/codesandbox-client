@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Margin from 'common/libcomponents/spacing/Margin';
-import Input from 'common/libcomponents/Input';
+import Margin from 'common/components/spacing/Margin';
+import Input from 'common/components/Input';
 import Button from 'app/components/Button';
 
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';

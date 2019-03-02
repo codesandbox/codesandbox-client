@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Margin from 'common/libcomponents/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 
 import { Title, SubTitle } from './elements';
 

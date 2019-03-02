@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
-import Stats from 'common/libcomponents/Stats';
+import Stats from 'common/components/Stats';
 
 const VERTICAL_BREAKPOINT = 900;
 

@@ -1,4 +1,4 @@
-import { resolveModule, resolveDirectory } from 'common/libsandbox/modules';
+import { resolveModule, resolveDirectory } from 'common/sandbox/modules';
 
 export const resolveModuleWrapped = sandbox => (path: string) => {
   try {

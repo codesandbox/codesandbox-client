@@ -8,18 +8,18 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
 import { inject, observer } from 'mobx-react';
-import track from 'common/libutils/analytics';
+import track from 'common/utils/analytics';
 import { client } from 'app/graphql/client';
 
 import ReactShow from 'react-show';
 import { join, dirname } from 'path';
 
-import theme from 'common/libtheme';
+import theme from 'common/theme';
 
 import ContextMenu from 'app/components/ContextMenu';
 
-import Input from 'common/libcomponents/Input';
-import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/libutils/keycodes';
+import Input from 'common/components/Input';
+import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/utils/keycodes';
 
 import { Container, AnimatedChevron, IconContainer } from './elements';
 

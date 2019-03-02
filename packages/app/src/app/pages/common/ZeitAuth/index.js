@@ -1,13 +1,13 @@
 import React from 'react';
 
-import Centered from 'common/libcomponents/flex/Centered';
+import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/Title';
 
 import {
   protocolAndHost,
   signInUrl,
   newSandboxUrl,
-} from 'common/libutils/url-generator';
+} from 'common/utils/url-generator';
 
 export default class ZeitSignIn extends React.PureComponent {
   constructor(props) {

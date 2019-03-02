@@ -5,7 +5,7 @@ import type {
   Sandbox,
   ModuleError,
   ModuleCorrection,
-} from 'common/libtypes';
+} from 'common/types';
 
 export type Settings = {
   autoCompleteEnabled: boolean,

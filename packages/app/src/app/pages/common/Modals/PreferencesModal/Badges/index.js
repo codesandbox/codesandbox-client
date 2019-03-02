@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Margin from 'common/libcomponents/spacing/Margin';
-import Badge from 'common/libutils/badges/Badge';
+import Margin from 'common/components/spacing/Margin';
+import Badge from 'common/utils/badges/Badge';
 import { Title } from '../elements';
 
 function Badges({ store, signals }) {
@@ -12,9 +12,8 @@ function Badges({ store, signals }) {
     <div>
       <Title>Badges</Title>
       <strong>
-        You currently have {badgesCount} badge
-        {badgesCount === 1 ? '' : 's'}. You can click on the badges to toggle
-        visibility.
+        You currently have {badgesCount} badge{badgesCount === 1 ? '' : 's'}.
+        You can click on the badges to toggle visibility.
       </strong>
       <Margin top={2}>
         {store.user.badges.map(badge => (

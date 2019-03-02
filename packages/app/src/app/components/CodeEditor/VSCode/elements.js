@@ -1,5 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import theme from 'common/libtheme';
+import theme from 'common/theme';
 
 export const Container = styled.div`
   width: 100%;

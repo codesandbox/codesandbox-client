@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { TimelineMax, Power2 } from 'gsap';
 
-import Relative from 'common/libcomponents/Relative';
+import Relative from 'common/components/Relative';
 
 import browserSvg from './browser.svg';
 import codesandboxSvg from './codesandbox.svg';

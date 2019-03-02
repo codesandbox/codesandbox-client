@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Margin from 'common/libcomponents/spacing/Margin';
-import getDefinition from 'common/libtemplates';
+import Margin from 'common/components/spacing/Margin';
+import getDefinition from 'common/templates';
 import { WorkspaceSubtitle } from '../elements';
 
 import AddVersion from './AddVersion';
@@ -24,10 +24,7 @@ function Dependencies({ signals, store }) {
 
   if (error) {
     return (
-      <ErrorMessage>
-        We weren
-        {"'"}t able to parse the package.json
-      </ErrorMessage>
+      <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>
     );
   }
 

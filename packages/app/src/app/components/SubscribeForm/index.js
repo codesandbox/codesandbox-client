@@ -1,6 +1,6 @@
 import React from 'react';
 import { StripeProvider, Elements } from 'react-stripe-elements';
-import { STRIPE_API_KEY } from 'common/libutils/config';
+import { STRIPE_API_KEY } from 'common/utils/config';
 import CheckoutForm from './CheckoutForm';
 
 import { Container } from './elements';

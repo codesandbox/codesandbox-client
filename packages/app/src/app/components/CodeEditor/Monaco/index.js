@@ -4,20 +4,20 @@ import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
-import { getModulePath } from 'common/libsandbox/modules';
+import { getModulePath } from 'common/sandbox/modules';
 import { listen } from 'codesandbox-api';
 
-import getTemplate from 'common/libtemplates';
+import getTemplate from 'common/templates';
 import type {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
   Directory,
-} from 'common/libtypes';
-import { getTextOperation } from 'common/libutils/diff';
+} from 'common/types';
+import { getTextOperation } from 'common/utils/diff';
 
-import delay from 'common/libutils/delay';
+import delay from 'common/utils/delay';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';

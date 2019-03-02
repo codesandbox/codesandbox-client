@@ -3,12 +3,12 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Route, Switch } from 'react-router-dom';
 
-import MaxWidth from 'common/libcomponents/flex/MaxWidth';
-import Margin from 'common/libcomponents/spacing/Margin';
+import MaxWidth from 'common/components/flex/MaxWidth';
+import Margin from 'common/components/spacing/Margin';
 import {
   profileSandboxesUrl,
   profileLikesUrl,
-} from 'common/libutils/url-generator';
+} from 'common/utils/url-generator';
 
 import NotFound from 'app/pages/common/NotFound';
 

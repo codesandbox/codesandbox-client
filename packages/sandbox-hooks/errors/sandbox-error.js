@@ -1,5 +1,5 @@
 // @flow
-import type { Module } from 'common/libtypes';
+import type { Module } from 'common/types';
 
 type Suggestion = {
   title: string,

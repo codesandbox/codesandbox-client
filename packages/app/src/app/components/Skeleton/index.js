@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Fullscreen from 'common/libcomponents/flex/Fullscreen';
+import Fullscreen from 'common/components/flex/Fullscreen';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import Centered from 'common/libcomponents/flex/Centered';
+import Centered from 'common/components/flex/Centered';
 
 function Skeleton({ titles }) {
   return (

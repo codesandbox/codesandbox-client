@@ -1,6 +1,6 @@
 // @flow
-import _debug from 'common/libutils/debug';
-import type { CurrentUser } from 'common/libtypes';
+import _debug from 'common/utils/debug';
+import type { CurrentUser } from 'common/types';
 
 const debug = _debug('cs:analytics');
 

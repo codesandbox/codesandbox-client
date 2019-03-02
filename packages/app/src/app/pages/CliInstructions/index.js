@@ -5,8 +5,8 @@ import { inject } from 'mobx-react';
 import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import MaxWidth from 'common/libcomponents/flex/MaxWidth';
-import Margin from 'common/libcomponents/spacing/Margin';
+import MaxWidth from 'common/components/flex/MaxWidth';
+import Margin from 'common/components/spacing/Margin';
 
 import { Container, Content, Code } from './elements';
 

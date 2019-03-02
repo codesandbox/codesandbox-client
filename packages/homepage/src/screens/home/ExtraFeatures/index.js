@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import MaxWidth from 'common/libcomponents/flex/MaxWidth';
-import Centered from 'common/libcomponents/flex/Centered';
+import MaxWidth from 'common/components/flex/MaxWidth';
+import Centered from 'common/components/flex/Centered';
 
 import ExternalIcon from 'react-icons/lib/md/launch';
 import HotModuleReloading from 'react-icons/lib/md/autorenew';
@@ -42,10 +42,7 @@ export default () => (
   <Background>
     <MaxWidth width={1280}>
       <Centered horizontal>
-        <Heading>
-          There
-          {"'"}s more
-        </Heading>
+        <Heading>There{"'"}s more</Heading>
         <SubHeading>
           This is just the tip of the iceberg. There are many more things to
           explore, if you are missing anything you can always open an issue on{' '}
@@ -56,8 +53,7 @@ export default () => (
             href="https://github.com/CompuIves/codesandbox-client/issues"
           >
             GitHub
-          </a>
-          .
+          </a>.
         </SubHeading>
       </Centered>
 
@@ -150,8 +146,7 @@ export default () => (
                 target="_blank"
               >
                 ESLint
-              </a>
-              , with full ES6 support.
+              </a>, with full ES6 support.
             </span>
           }
         />
@@ -178,10 +173,8 @@ export default () => (
           title="Open Source"
           description={
             <span>
-              We
-              {"'"}
-              re almost fully open source! Our most active repository can be
-              found{' '}
+              We{"'"}re almost fully open source! Our most active repository can
+              be found{' '}
               <a
                 href="https://github.com/CompuIves/codesandbox-client"
                 target="_blank"
@@ -204,8 +197,7 @@ export default () => (
                 target="_blank"
               >
                 codesandbox-cli
-              </a>
-              .
+              </a>.
             </span>
           }
         />

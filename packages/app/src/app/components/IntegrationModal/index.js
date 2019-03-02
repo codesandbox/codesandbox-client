@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Centered from 'common/libcomponents/flex/Centered';
-import Margin from 'common/libcomponents/spacing/Margin';
-import Relative from 'common/libcomponents/Relative';
+import Centered from 'common/components/flex/Centered';
+import Margin from 'common/components/spacing/Margin';
+import Relative from 'common/components/Relative';
 
 import {
   Container,

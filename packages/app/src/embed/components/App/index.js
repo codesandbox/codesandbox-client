@@ -3,14 +3,14 @@ import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
 
-import getTemplateDefinition from 'common/libtemplates';
-import type { Module, Sandbox } from 'common/libtypes';
-import Centered from 'common/libcomponents/flex/Centered';
+import getTemplateDefinition from 'common/templates';
+import type { Module, Sandbox } from 'common/types';
+import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import { getSandboxOptions } from 'common/liburl';
+import { getSandboxOptions } from 'common/url';
 
-import { findCurrentModule, findMainModule } from 'common/libsandbox/modules';
+import { findCurrentModule, findMainModule } from 'common/sandbox/modules';
 
 import Header from '../Header';
 import Content from '../Content';
@@ -88,7 +88,8 @@ export default class App extends React.PureComponent<
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
-    } = props.embedOptions || getSandboxOptions(document.location.href);
+    } =
+      props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
       notFound: false,

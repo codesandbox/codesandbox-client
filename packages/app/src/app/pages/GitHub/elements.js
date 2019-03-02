@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Input from 'common/libcomponents/Input';
-import Centered from 'common/libcomponents/flex/Centered';
+import Input from 'common/components/Input';
+import Centered from 'common/components/flex/Centered';
 
 export const Container = styled.div`
   height: 100%;

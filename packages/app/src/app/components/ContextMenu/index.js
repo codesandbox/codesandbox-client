@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Spring } from 'react-spring';
-import Portal from 'common/libcomponents/Portal';
+import Portal from 'common/components/Portal';
 
 import { Container, Item, ItemContainer } from './elements';
 

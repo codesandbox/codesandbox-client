@@ -1,6 +1,6 @@
 import { actions, dispatch } from 'codesandbox-api';
 
-import { basename } from 'common/libutils/path';
+import { basename } from 'common/utils/path';
 
 function findRawModule(module) {
   const rawModule = Array.from(module.dependencies).find(

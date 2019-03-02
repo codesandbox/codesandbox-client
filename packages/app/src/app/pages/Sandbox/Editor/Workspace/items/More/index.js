@@ -1,7 +1,7 @@
 import React from 'react';
 import SignInButton from 'app/pages/common/SignInButton';
-import Margin from 'common/libcomponents/spacing/Margin';
-import track from 'common/libutils/analytics';
+import Margin from 'common/components/spacing/Margin';
+import track from 'common/utils/analytics';
 
 import { Description } from '../../elements';
 

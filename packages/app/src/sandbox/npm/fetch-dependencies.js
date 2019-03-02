@@ -1,5 +1,5 @@
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'common/libutils/debug';
+import _debug from 'common/utils/debug';
 
 import dependenciesToQuery from './dependencies-to-query';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import theme from 'common/libtheme';
+import theme from 'common/theme';
 import '../css/typography.css';
 import '../css/global.css';
 

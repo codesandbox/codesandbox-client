@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Select from 'common/libcomponents/Select';
+import Select from 'common/components/Select';
 import UserWithAvatar from 'app/components/UserWithAvatar';
 
 export const Container = styled.div`

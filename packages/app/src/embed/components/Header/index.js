@@ -1,11 +1,11 @@
 // @flow
 import * as React from 'react';
-import type { Sandbox } from 'common/libtypes';
+import type { Sandbox } from 'common/types';
 import ModeIcons from 'app/components/ModeIcons';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
-import Logo from 'common/libcomponents/Logo';
-import { sandboxUrl, embedUrl } from 'common/libutils/url-generator';
+import Logo from 'common/components/Logo';
+import { sandboxUrl, embedUrl } from 'common/utils/url-generator';
 
 import LinkIcon from './Link';
 

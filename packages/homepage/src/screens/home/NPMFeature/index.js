@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import MaxWidth from 'common/libcomponents/flex/MaxWidth';
-import Column from 'common/libcomponents/flex/Column';
-import Centered from 'common/libcomponents/flex/Centered';
+import MaxWidth from 'common/components/flex/MaxWidth';
+import Column from 'common/components/flex/Column';
+import Centered from 'common/components/flex/Centered';
 
 import SearchIcon from 'react-icons/lib/md/search';
 

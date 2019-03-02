@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Link } from 'gatsby';
 
-import MaxWidth from 'common/libcomponents/flex/MaxWidth';
+import MaxWidth from 'common/components/flex/MaxWidth';
 
 import media from '../utils/media';
 

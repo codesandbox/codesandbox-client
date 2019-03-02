@@ -1,11 +1,11 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
 
-import Input from 'common/libcomponents/Input';
+import Input from 'common/components/Input';
 import Button from 'app/components/Button';
-import track from 'common/libutils/analytics';
+import track from 'common/utils/analytics';
 import history from 'app/utils/history';
-import { teamOverviewUrl } from 'common/libutils/url-generator';
+import { teamOverviewUrl } from 'common/utils/url-generator';
 
 import { Container, Description, HeaderContainer } from '../../elements';
 import {
@@ -111,8 +111,7 @@ export default class CreateTeam extends React.PureComponent {
                       What if I{"'"}m a{' '}
                       <a target="_blank" href="/patron">
                         Patron
-                      </a>
-                      ?
+                      </a>?
                     </QuestionHeader>
 
                     <Description>

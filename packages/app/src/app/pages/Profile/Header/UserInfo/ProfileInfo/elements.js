@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import GithubIcon from 'react-icons/lib/go/mark-github';
-import delayEffect from 'common/libutils/animation/delay-effect';
+import delayEffect from 'common/utils/animation/delay-effect';
 
 export const ProfileImage = styled.img`
   border-radius: 2px;

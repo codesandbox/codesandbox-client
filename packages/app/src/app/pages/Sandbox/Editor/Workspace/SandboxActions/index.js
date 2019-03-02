@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import TrashIcon from 'react-icons/lib/fa/trash';
-import getTemplate from 'common/libtemplates';
+import getTemplate from 'common/templates';
 
 import Button from 'app/components/Button';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
@@ -20,16 +20,15 @@ function SandboxActions({ store, signals }) {
           Having private and unlisted Sandboxes is available as a{' '}
           <a href="/patron" target="_blank">
             Patron
-          </a>
-          .
+          </a>.
         </PatronMessage>
       )}
       {store.isPatron && (
         <React.Fragment>
           {isServer && (
             <PatronMessage style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
-              This is a server sandbox, we don
-              {"'"}t support private server sandboxes yet.
+              This is a server sandbox, we don{"'"}t support private server
+              sandboxes yet.
             </PatronMessage>
           )}
           <WorkspaceInputContainer>

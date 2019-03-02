@@ -1,13 +1,13 @@
 import React from 'react';
 
-import Centered from 'common/libcomponents/flex/Centered';
+import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/Title';
 
 import {
   protocolAndHost,
   signInUrl,
   newSandboxUrl,
-} from 'common/libutils/url-generator';
+} from 'common/utils/url-generator';
 
 // This route is supposed to be opened in a new window, after signing in with
 // Github. It should return a postMessage to the parent

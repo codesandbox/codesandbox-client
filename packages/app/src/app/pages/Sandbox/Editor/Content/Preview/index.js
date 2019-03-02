@@ -4,8 +4,8 @@ import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
 import BasePreview from 'app/components/Preview';
-import RunOnClick from 'common/libcomponents/RunOnClick';
-import getTemplate from 'common/libtemplates';
+import RunOnClick from 'common/components/RunOnClick';
+import getTemplate from 'common/templates';
 
 import FlyingContainer from './FlyingContainer';
 import Tests from './DevTools/Tests';

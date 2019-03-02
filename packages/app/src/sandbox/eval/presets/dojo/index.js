@@ -1,4 +1,4 @@
-import { join, absolute } from 'common/libutils/path';
+import { join, absolute } from 'common/utils/path';
 import Preset from '../';
 
 import typescriptTranspiler from '../../transpilers/typescript';

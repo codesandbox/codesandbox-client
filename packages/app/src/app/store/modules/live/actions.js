@@ -1,7 +1,7 @@
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
 
-import { getTextOperation } from 'common/libutils/diff';
+import { getTextOperation } from 'common/utils/diff';
 
 export function createRoom({ api, props }) {
   const id = props.sandboxId;

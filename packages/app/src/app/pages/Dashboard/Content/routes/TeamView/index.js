@@ -5,9 +5,9 @@ import { sortBy } from 'lodash-es';
 
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Button from 'app/components/Button';
-import AutosizeTextArea from 'common/libcomponents/AutosizeTextArea';
-import Margin from 'common/libcomponents/spacing/Margin';
-import track from 'common/libutils/analytics';
+import AutosizeTextArea from 'common/components/AutosizeTextArea';
+import Margin from 'common/components/spacing/Margin';
+import track from 'common/utils/analytics';
 
 import { Container, HeaderContainer, Description } from '../../elements';
 import {

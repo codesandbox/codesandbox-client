@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Input from 'common/libcomponents/Input';
+import Input from 'common/components/Input';
 import Button from 'app/components/Button';
 
 const InputContainer = styled.div`

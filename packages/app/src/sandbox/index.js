@@ -1,12 +1,12 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
-import _debug from 'common/libutils/debug';
+import _debug from 'common/utils/debug';
 
-import registerServiceWorker from 'common/libregisterServiceWorker';
-import requirePolyfills from 'common/libload-dynamic-polyfills';
-import { getModulePath } from 'common/libsandbox/modules';
-import { generateFileFromSandbox } from 'common/libtemplates/configuration/package-json';
+import registerServiceWorker from 'common/registerServiceWorker';
+import requirePolyfills from 'common/load-dynamic-polyfills';
+import { getModulePath } from 'common/sandbox/modules';
+import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 

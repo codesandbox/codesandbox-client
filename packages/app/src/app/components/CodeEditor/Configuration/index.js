@@ -1,11 +1,11 @@
 // @flow
 import React from 'react';
 import { TextOperation } from 'ot';
-import type { Module } from 'common/libtypes';
-import getUI from 'common/libtemplates/configuration/ui';
+import type { Module } from 'common/types';
+import getUI from 'common/templates/configuration/ui';
 import getType from 'app/utils/get-type';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import Tooltip from 'common/libcomponents/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 import CodeIcon from 'react-icons/lib/md/code';
 

@@ -5,20 +5,20 @@ import {
   sandboxUrl,
   githubRepoUrl,
   profileUrl,
-} from 'common/libutils/url-generator';
+} from 'common/utils/url-generator';
 
 import TeamIcon from 'react-icons/lib/md/people';
 
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
-import GithubBadge from 'common/libcomponents/GithubBadge';
+import GithubBadge from 'common/components/GithubBadge';
 import EditableTags from 'app/components/EditableTags';
-import Tags from 'common/libcomponents/Tags';
-import Switch from 'common/libcomponents/Switch';
-import Tooltip from 'common/libcomponents/Tooltip';
+import Tags from 'common/components/Tags';
+import Switch from 'common/components/Switch';
+import Tooltip from 'common/components/Tooltip';
 
-import getTemplateDefinition from 'common/libtemplates';
+import getTemplateDefinition from 'common/templates';
 import { WorkspaceInputContainer } from '../elements';
 
 import {

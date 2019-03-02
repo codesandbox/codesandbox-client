@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
-import delayEffect from 'common/libutils/animation/delay-effect';
-import delayOutEffect from 'common/libutils/animation/delay-out-effect';
+import delayEffect from 'common/utils/animation/delay-effect';
+import delayOutEffect from 'common/utils/animation/delay-out-effect';
 
 export const Container = styled.main`
   transition: 0.3s ease all;
