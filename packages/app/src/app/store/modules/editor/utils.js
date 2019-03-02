@@ -1,4 +1,4 @@
-import track from 'common/utils/analytics';
+import track from 'common/lib/utils/analytics';
 
 export function saveAllModules(store, signals) {
   const sandbox = store.editor.currentSandbox;

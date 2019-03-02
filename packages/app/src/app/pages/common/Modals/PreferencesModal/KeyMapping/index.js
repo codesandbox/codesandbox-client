@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { KEYBINDINGS } from 'common/utils/keybindings';
+import { KEYBINDINGS } from 'common/lib/utils/keybindings';
 import {
   Title,
   SubDescription,

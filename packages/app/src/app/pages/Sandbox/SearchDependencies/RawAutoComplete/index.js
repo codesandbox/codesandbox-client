@@ -3,7 +3,7 @@ import Downshift from 'downshift';
 
 import { Pagination } from 'react-instantsearch/dom';
 
-import { ENTER, ARROW_RIGHT } from 'common/utils/keycodes';
+import { ENTER, ARROW_RIGHT } from 'common/lib/utils/keycodes';
 
 import DependencyHit from '../DependencyHit';
 import { AutoCompleteInput, SuggestionInput } from './elements';

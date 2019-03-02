@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import Margin from 'common/components/spacing/Margin';
+import Margin from 'common/lib/components/spacing/Margin';
 import Button from 'app/components/Button';
 
-import AutosizeTextArea from 'common/components/AutosizeTextArea';
-import Input from 'common/components/Input';
+import AutosizeTextArea from 'common/lib/components/AutosizeTextArea';
+import Input from 'common/lib/components/Input';
 import pushToAirtable from 'app/store/utils/pushToAirtable';
 
 import { EmojiButton } from './elements';

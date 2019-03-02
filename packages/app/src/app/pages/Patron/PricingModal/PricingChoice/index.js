@@ -2,10 +2,10 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import moment from 'moment';
 
-import Centered from 'common/components/flex/Centered';
-import Relative from 'common/components/Relative';
+import Centered from 'common/lib/components/flex/Centered';
+import Relative from 'common/lib/components/Relative';
 import SubscribeForm from 'app/components/SubscribeForm';
-import badges from 'common/utils/badges/patron-info';
+import badges from 'common/lib/utils/badges/patron-info';
 
 import Range from './Range';
 import ChangeSubscription from './ChangeSubscription';

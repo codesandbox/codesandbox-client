@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import Button from 'app/components/Button';
-import Row from 'common/components/flex/Row';
+import Row from 'common/lib/components/flex/Row';
 
 import { Container, Heading, Explanation } from './elements';
 
@@ -14,7 +14,9 @@ function SignOutNotice({ signals }) {
         CodeSandbox has migrated to a system where authorization tokens can be
         managed and revoked, and we had to sign everyone out for this.
         <br />
-        <br />But don{"'"}t worry, you can sign in right again!
+        <br />
+        But don
+        {"'"}t worry, you can sign in right again!
       </Explanation>
 
       <Row justifyContent="space-around">

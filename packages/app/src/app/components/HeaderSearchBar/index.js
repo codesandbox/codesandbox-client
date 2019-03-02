@@ -1,6 +1,6 @@
 import React from 'react';
 import history from 'app/utils/history';
-import { searchUrl } from 'common/utils/url-generator';
+import { searchUrl } from 'common/lib/utils/url-generator';
 
 import {
   Container,

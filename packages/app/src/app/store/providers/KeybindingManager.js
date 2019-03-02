@@ -1,5 +1,5 @@
 import { Provider } from 'cerebral';
-import { KEYBINDINGS, normalizeKey } from 'common/utils/keybindings';
+import { KEYBINDINGS, normalizeKey } from 'common/lib/utils/keybindings';
 
 const isIOS =
   typeof navigator !== 'undefined' &&

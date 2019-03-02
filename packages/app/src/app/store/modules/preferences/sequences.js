@@ -1,7 +1,7 @@
 import { set, when, toggle, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import { getZeitUserDetails } from 'app/store/sequences';
-import track from 'common/utils/analytics';
+import track from 'common/lib/utils/analytics';
 import * as actions from './actions';
 import { setKeybindings, startKeybindings } from '../../actions';
 

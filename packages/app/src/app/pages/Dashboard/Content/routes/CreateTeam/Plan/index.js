@@ -1,5 +1,5 @@
 import React from 'react';
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 
 import { Container, Name, Points, CheckBox } from './elements';
 

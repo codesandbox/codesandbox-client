@@ -2,15 +2,19 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import Media from 'react-media';
-import { patronUrl, searchUrl, exploreUrl } from 'common/utils/url-generator';
+import {
+  patronUrl,
+  searchUrl,
+  exploreUrl,
+} from 'common/lib/utils/url-generator';
 
 import SearchIcon from 'react-icons/lib/go/search';
 import PlusIcon from 'react-icons/lib/go/plus';
 import BellIcon from 'react-icons/lib/md/notifications';
 import FlameIcon from 'react-icons/lib/go/flame';
-import Row from 'common/components/flex/Row';
-import Tooltip from 'common/components/Tooltip';
-import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import Row from 'common/lib/components/flex/Row';
+import Tooltip from 'common/lib/components/Tooltip';
+import PatronBadge from '-!svg-react-loader!common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import OverlayComponent from 'app/components/Overlay';
 import Notifications from './Notifications';

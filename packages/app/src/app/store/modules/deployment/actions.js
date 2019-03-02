@@ -1,5 +1,5 @@
 import { omit } from 'lodash-es';
-import getTemplate from 'common/templates';
+import getTemplate from 'common/lib/templates';
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');

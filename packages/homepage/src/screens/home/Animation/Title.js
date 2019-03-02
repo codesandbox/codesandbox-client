@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'gatsby';
 
-import { sandboxUrl } from 'common/utils/url-generator';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
 
 import media from '../../../utils/media';
 import { fadeIn } from '../../../utils/animation';

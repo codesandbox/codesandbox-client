@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import track, { identify, setUserId } from 'common/utils/analytics';
+import { generateFileFromSandbox } from 'common/lib/templates/configuration/package-json';
+import track, { identify, setUserId } from 'common/lib/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';

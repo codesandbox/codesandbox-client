@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Button from 'app/components/Button';
-import { ENTER } from 'common/utils/keycodes';
+import { ENTER } from 'common/lib/utils/keycodes';
 import { WorkspaceInputContainer } from '../../elements';
 import { ButtonContainer } from './elements';
 

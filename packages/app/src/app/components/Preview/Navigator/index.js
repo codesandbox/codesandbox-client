@@ -4,8 +4,8 @@ import LeftIcon from 'react-icons/lib/fa/angle-left';
 import RightIcon from 'react-icons/lib/fa/angle-right';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 
-import Switch from 'common/components/Switch';
-import Tooltip from 'common/components/Tooltip';
+import Switch from 'common/lib/components/Switch';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import HorizontalAlign from './HorizontalAlign';
 import VerticalAlign from './VerticalAlign';

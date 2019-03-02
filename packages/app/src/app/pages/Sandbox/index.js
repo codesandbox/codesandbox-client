@@ -7,9 +7,9 @@ import Button from 'app/components/Button';
 import NotFound from 'app/pages/common/NotFound';
 import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
-import Centered from 'common/components/flex/Centered';
-import Fullscreen from 'common/components/flex/Fullscreen';
-import Padding from 'common/components/spacing/Padding';
+import Centered from 'common/lib/components/flex/Centered';
+import Fullscreen from 'common/lib/components/flex/Fullscreen';
+import Padding from 'common/lib/components/spacing/Padding';
 import Skeleton from 'app/components/Skeleton';
 import GithubIntegration from 'app/src/app/pages/common/GithubIntegration';
 

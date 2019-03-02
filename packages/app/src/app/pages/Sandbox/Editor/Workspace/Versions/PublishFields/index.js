@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import Button from 'app/components/Button';
-import Relative from 'common/components/Relative';
+import Relative from 'common/lib/components/Relative';
 
-import { DOT, BACKSPACE } from 'common/utils/keycodes';
+import { DOT, BACKSPACE } from 'common/lib/utils/keycodes';
 
 import { WorkspaceInputContainer } from '../../elements';
 import { Inputs, Dot, ErrorMessage } from './elements';

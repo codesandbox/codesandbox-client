@@ -1,5 +1,5 @@
 import React from 'react';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import { StyledUnlisted, StyledPrivate, Icon } from './elements';
 

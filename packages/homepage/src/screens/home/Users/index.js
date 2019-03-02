@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { StaticQuery, graphql, Link } from 'gatsby';
 
-import MaxWidth from 'common/components/flex/MaxWidth';
+import MaxWidth from 'common/lib/components/flex/MaxWidth';
 import Companies from '../../../components/Companies';
 
 const Container = styled.div`

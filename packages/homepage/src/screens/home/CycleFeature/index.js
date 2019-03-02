@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { TimelineMax, Power2 } from 'gsap';
 
-import Centered from 'common/components/flex/Centered';
-import MaxWidth from 'common/components/flex/MaxWidth';
+import Centered from 'common/lib/components/flex/Centered';
+import MaxWidth from 'common/lib/components/flex/MaxWidth';
 
-import Theme from 'common/theme';
+import Theme from 'common/lib/theme';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import BuildIcon from 'react-icons/lib/go/tools';

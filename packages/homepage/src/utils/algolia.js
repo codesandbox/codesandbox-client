@@ -3,7 +3,7 @@ import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
-} from 'common/utils/config';
+} from 'common/lib/utils/config';
 
 const client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
 const index = client.initIndex(ALGOLIA_DEFAULT_INDEX);

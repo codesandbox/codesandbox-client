@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Navigation from 'app/pages/common/Navigation';
-import MaxWidth from 'common/components/flex/MaxWidth';
+import MaxWidth from 'common/lib/components/flex/MaxWidth';
 
 import UserInfo from './UserInfo';
 import { Top, FullWidthPadding, FullWidthMargin } from './elements';

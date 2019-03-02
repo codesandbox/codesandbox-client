@@ -1,18 +1,18 @@
 import React, { Fragment } from 'react';
 import { camelizeKeys } from 'humps';
 import { Spring } from 'react-spring';
-import getIcon from 'common/templates/icons';
+import getIcon from 'common/lib/templates/icons';
 import {
   profileUrl,
   githubRepoUrl,
   protocolAndHost,
-} from 'common/utils/url-generator';
-import getTemplate from 'common/templates';
-import GithubBadge from 'common/components/GithubBadge';
+} from 'common/lib/utils/url-generator';
+import getTemplate from 'common/lib/templates';
+import GithubBadge from 'common/lib/components/GithubBadge';
 
-import Tags from 'common/components/Tags';
-import track from 'common/utils/analytics';
-import { ARROW_LEFT, ARROW_RIGHT } from 'common/utils/keycodes';
+import Tags from 'common/lib/components/Tags';
+import track from 'common/lib/utils/analytics';
+import { ARROW_LEFT, ARROW_RIGHT } from 'common/lib/utils/keycodes';
 
 import Modal from './Modal';
 import EmbedSkeleton from './EmbedSkeleton';

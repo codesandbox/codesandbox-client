@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import fadeIn from 'common/utils/animation/fade-in';
+import fadeIn from 'common/lib/utils/animation/fade-in';
 
 const Resizer = styled.div`
   position: absolute;
