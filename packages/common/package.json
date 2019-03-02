@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react-native",
-    "start": "yarn clean && (yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{svg,png,jpg}\" lib --watch)",
-    "build:dev": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{svg,png,jpg}\" lib"
+    "start": "yarn clean && (yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
+    "build:dev": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib"
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",

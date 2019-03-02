@@ -7,7 +7,7 @@ import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import 'app/split-pane.css';
 import theme from 'common/lib/theme';
-import 'common/global.css';
+import 'common/lib/global.css';
 
 import App from './components/App';
 

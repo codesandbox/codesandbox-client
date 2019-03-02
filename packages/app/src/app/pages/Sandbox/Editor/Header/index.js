@@ -22,7 +22,7 @@ import {
   exploreUrl,
 } from 'common/lib/utils/url-generator';
 
-import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import PatronBadge from '-!svg-react-loader!common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/lib/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/pages/common/UserMenu';

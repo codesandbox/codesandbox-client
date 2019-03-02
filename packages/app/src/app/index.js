@@ -12,7 +12,7 @@ import VERSION from 'common/lib/version';
 import registerServiceWorker from 'common/lib/registerServiceWorker';
 import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 import 'normalize.css';
-import 'common/global.css';
+import 'common/lib/global.css';
 import theme from 'common/lib/theme';
 
 import controller from './controller';
