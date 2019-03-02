@@ -146,7 +146,7 @@ module.exports = {
       },
       {
         test: /\.(j|t)sx?$/,
-        include: [paths.src, paths.common, /@emmetio/],
+        include: [paths.src, /@emmetio/],
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,

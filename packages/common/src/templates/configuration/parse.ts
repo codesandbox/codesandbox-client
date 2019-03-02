@@ -44,7 +44,7 @@ export default function parseConfigurations(
   resolveModule: (path: string) => Module | undefined,
   sandbox?: Sandbox
 ): ParsedConfigurationFiles {
-  const configurations = {};
+  const configurations: ParsedConfigurationFiles = {};
 
   const paths = Object.keys(configurationFiles);
 
@@ -57,7 +57,7 @@ export default function parseConfigurations(
       path,
       ...getCode(template, module, sandbox, resolveModule, configurationFile),
     };
-    let code = null;
+    const code = baseObject.code;
 
     if (code) {
       try {

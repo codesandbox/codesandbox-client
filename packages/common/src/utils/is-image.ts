@@ -1,5 +1,5 @@
 import * as path from './path';
-import * as imageExtensions from 'image-extensions/image-extensions.json';
+import imageExtensions from 'image-extensions/image-extensions.json';
 
 const exts = new Set(imageExtensions);
 export default filepath =>

@@ -19,8 +19,8 @@ export type ConfigurationFile = {
 };
 
 export type ParsedConfigurationFile = {
-  parsed: any | undefined;
+  parsed?: any;
   code: string;
-  generated: string;
+  generated: boolean;
   error?: Error;
 };
