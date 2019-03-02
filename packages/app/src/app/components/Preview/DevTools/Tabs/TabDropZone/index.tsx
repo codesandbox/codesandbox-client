@@ -10,9 +10,11 @@ import {
 import { ITabPosition } from '..';
 import { PREVIEW_TAB_ID } from '../Tab';
 
-const DropZone = styled.div`
+const DropZone = styled.div<{ isOver: boolean }>`
   width: 100%;
   height: 100%;
+
+  cursor: grab;
 
   ${props =>
     props.isOver

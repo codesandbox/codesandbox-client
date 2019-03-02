@@ -1,5 +1,5 @@
 import React from 'react';
-import IconBase from 'react-icons/lib/IconBase';
+import { IconBase } from 'react-icons/lib';
 
 export default ({ ...props }) => (
   <IconBase {...props} width="40px" height="184px" viewBox="0 0 40 184">

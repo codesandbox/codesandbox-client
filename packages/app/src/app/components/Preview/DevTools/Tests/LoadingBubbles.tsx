@@ -1,5 +1,5 @@
 import * as React from 'react';
-import IconBase from 'react-icons/IconBase';
+import IconBase from 'react-icons/lib/IconBase';
 
 export default props => (
   <IconBase

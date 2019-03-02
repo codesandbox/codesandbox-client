@@ -4,7 +4,7 @@
 import { default as Module } from 'node-services/lib/module';
 import resolve from 'resolve';
 import { basename } from 'path';
-import _debug from 'common/utils/debug';
+import _debug from 'common/lib/utils/debug';
 
 import { initializeBrowserFS } from '../common/fs';
 
@@ -18,7 +18,7 @@ export function start({
 
   debug('Starting Worker');
 
-  const ctx: Worker = self as any;
+  const ctx = self as any;
 
   const pendingMessages = [];
   let initialized = false;
@@ -26,7 +26,7 @@ export function start({
   const log = console.log;
 
   function processMessage(data) {
-    const process = BrowserFS.BFSRequire('process');
+    const process = ctx.BrowserFS.BFSRequire('process');
     const { $data, $type } = data;
 
     if (!data.$broadcast) {
@@ -102,7 +102,7 @@ export function start({
         await initializeBrowserFS({ syncSandbox, syncTypes, extraMounts });
         debug('Initialized BrowserFS', data);
 
-        const process = BrowserFS.BFSRequire('process');
+        const process = ctx.BrowserFS.BFSRequire('process');
         initializeProcess(process, data);
 
         if (data.data.entry) {

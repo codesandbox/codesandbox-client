@@ -116,6 +116,17 @@ jobs:
           name: Lint
           command: yarn lint
 
+  typecheck:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v14-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Lint
+          command: yarn typecheck
+
   create-docker-image:
     machine: true
     working_directory: ~/codesandbox-client
@@ -139,6 +150,9 @@ workflows:
     jobs:
       - build-dependencies
       - test-integrations:
+          requires:
+            - build-dependencies
+      - typecheck:
           requires:
             - build-dependencies
       - test-jest:

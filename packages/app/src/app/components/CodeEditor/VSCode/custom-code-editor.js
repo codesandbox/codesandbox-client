@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
-import getUI from 'common/templates/configuration/ui';
-import { resolveModule } from 'common/sandbox/modules';
+import getUI from 'common/lib/templates/configuration/ui';
+import { resolveModule } from 'common/lib/sandbox/modules';
 import { ThemeProvider } from 'styled-components';
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 
 import Configuration from './Configuration';
 

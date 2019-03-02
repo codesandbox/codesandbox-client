@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Dashboard from '-!svg-react-loader!common/icons/dashboard.svg';
+import Dashboard from '-!svg-react-loader!common/lib/icons/dashboard.svg';
 
 export const Container = styled.div`
   display: ${props => (props.zenMode ? 'none' : 'flex')};

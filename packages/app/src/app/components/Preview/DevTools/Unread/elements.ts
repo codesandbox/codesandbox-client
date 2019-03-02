@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { Props } from '.';
 
-export const Container = styled.div`
+export const Container = styled.div<Props>`
   transition: 0.3s ease all;
   display: inline-flex;
   justify-content: center;

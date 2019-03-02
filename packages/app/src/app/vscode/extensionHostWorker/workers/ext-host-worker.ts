@@ -1,6 +1,6 @@
 // This is the base worker that launches the extension host
 
-import _debug from 'common/utils/debug';
+import _debug from 'common/lib/utils/debug';
 import loader from '../../dev-bootstrap';
 import { initializeBrowserFS } from '../common/fs';
 import { EXTENSIONS_LOCATION } from '../../constants';

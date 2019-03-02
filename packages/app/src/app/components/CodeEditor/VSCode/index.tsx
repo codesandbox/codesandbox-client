@@ -241,11 +241,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     // @ts-ignore
     return listen(({ type, code, path }) => {
       if (type === 'add-extra-lib') {
-        const dtsPath = `${path}.d.ts`;
-        this.monaco.languages.typescript.typescriptDefaults._extraLibs[
-          `file:///${dtsPath}`
-        ] = code;
-        this.commitLibChanges();
+        // TODO; bring this func back
+        // const dtsPath = `${path}.d.ts`;
+        // this.monaco.languages.typescript.typescriptDefaults._extraLibs[
+        //   `file:///${dtsPath}`
+        // ] = code;
+        // this.commitLibChanges();
       }
     });
   }
@@ -432,17 +433,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const { dependencies } = this;
     if (dependencies != null) {
       if (Object.keys(dependencies)) {
-        setTimeout(() => {
-          // this.getConfigSchemas();
-        }, this.hasNativeTypescript() ? 500 : 5000);
+        setTimeout(() => {}, this.hasNativeTypescript() ? 500 : 5000);
       }
     }
 
     if (this.props.onInitialized) {
       this.disposeInitializer = this.props.onInitialized(this);
     }
-
-    this.registerAutoCompletions();
   };
 
   changeModule = (
@@ -549,7 +546,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
-        this.getConfigSchemas();
         resolve(null);
       });
     });
@@ -826,105 +822,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  registerAutoCompletions = () => {
-    this.monaco.languages.registerCompletionItemProvider('typescript', {
-      triggerCharacters: ['"', "'", '.'],
-      provideCompletionItems: (model, position) => {
-        // Get editor content before the pointer
-        const textUntilPosition = model.getValueInRange(
-          {
-            startLineNumber: 1,
-            startColumn: 1,
-            endLineNumber: position.lineNumber,
-            endColumn: position.column,
-          },
-          1
-        );
-
-        if (
-          /(([\s|\n]from\s)|(\brequire\b\())["|']\.*$/.test(textUntilPosition)
-        ) {
-          // It's probably a `import` statement or `require` call
-          if (textUntilPosition.endsWith('.')) {
-            // User is trying to import a file
-            const prefix = textUntilPosition.match(/[./]+$/)[0];
-
-            const modulesByPath: WeakMap<Module, string> = new WeakMap();
-            this.sandbox.modules.forEach(module => {
-              const path =
-                '/sandbox' +
-                getModulePath(
-                  this.sandbox.modules,
-                  this.sandbox.directories,
-                  module.id
-                );
-
-              modulesByPath.set(
-                module,
-                path.indexOf('/') === -1 ? '/' + path : path
-              );
-            });
-
-            const currentModulePath = modulesByPath.get(this.currentModule);
-            if (!currentModulePath) {
-              return null;
-            }
-
-            const relativePath = join(dirname(currentModulePath), prefix);
-            return this.sandbox.modules
-              .filter(m => {
-                const path = modulesByPath.get(m);
-
-                return (
-                  path &&
-                  m.id !== this.currentModule.id &&
-                  path.startsWith(relativePath)
-                );
-              })
-              .map(module => {
-                let path = modulesByPath.get(module);
-
-                if (!path) return null;
-
-                // Don't keep extension for JS files
-                if (path.endsWith('.js')) {
-                  path = path.replace(/\.js$/, '');
-                }
-
-                // Don't keep extension for TS files
-                if (path.endsWith('.ts')) {
-                  path = path.replace(/\.ts$/, '');
-                }
-
-                return {
-                  label:
-                    prefix +
-                    path.replace(relativePath, relativePath === '/' ? '/' : ''),
-                  insertText: path.slice(
-                    relativePath === '/' ? 0 : relativePath.length
-                  ),
-                  kind: this.monaco.languages.CompletionItemKind.File,
-                };
-              })
-              .filter(Boolean);
-          }
-          const deps = this.dependencies;
-          if (deps) {
-            // User is trying to import a dependency
-            return Object.keys(deps).map(name => ({
-              label: name,
-              detail: deps[name],
-              kind: this.monaco.languages.CompletionItemKind.Module,
-            }));
-          }
-
-          return [];
-        }
-        return [];
-      },
-    });
-  };
-
   setupLintWorker = () => {
     if (!this.lintWorker) {
       this.lintWorker = new LinterWorker();
@@ -1126,56 +1023,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     return template.isTypescript;
   };
 
-  fetchedSchemas = {};
-  getConfigSchemas = async () => {
-    const sandbox = this.sandbox;
-    const template = getTemplate(sandbox.template);
-
-    const configurations = template.configurationFiles;
-    // $FlowIssue
-    const schemas: Array<{
-      fileName: string;
-      schema: Object;
-      uri: string;
-    }> = (await Promise.all(
-      Object.keys(configurations).map(async p => {
-        const config = configurations[p];
-
-        if (this.fetchedSchemas[config.title]) {
-          return null;
-        }
-
-        if (config.schema) {
-          try {
-            const schema = await fetch(config.schema).then(x => x.json());
-            return { fileName: config.title, schema, uri: config.schema };
-          } catch (e) {
-            return null;
-          }
-        }
-        return null;
-      })
-    )).filter(x => x);
-
-    const monacoSchemas = schemas.map(data => {
-      this.fetchedSchemas[data.fileName] = true;
-
-      return {
-        uri: data.uri,
-        fileMatch: [data.fileName],
-        schema: data.schema,
-      };
-    });
-
-    this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-      validate: true,
-      schemas: [
-        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions.schemas,
-        ...monacoSchemas,
-      ],
-    });
-  };
-
   resizeEditorInstantly = () => {
     this.forceUpdate(() => {
       if (this.editor) {
@@ -1185,25 +1032,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         });
       }
     });
-  };
-
-  addLib = (code: string, path: string) => {
-    const fullPath = `file://${path}`;
-
-    const existingLib = this.monaco.languages.typescript.javascriptDefaults.getExtraLibs()[
-      fullPath
-    ];
-    // Only add it if it has been added before, we don't care about the contents
-    // of the libs, only if they've been added.
-
-    if (!existingLib) {
-      // We add it manually, and commit the changes manually
-      // eslint-disable-next-line no-underscore-dangle
-      this.monaco.languages.typescript.javascriptDefaults._extraLibs[
-        fullPath
-      ] = code;
-      this.commitLibChanges();
-    }
   };
 
   /**

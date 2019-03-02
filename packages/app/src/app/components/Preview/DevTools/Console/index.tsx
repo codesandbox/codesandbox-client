@@ -11,14 +11,20 @@ import Select from 'common/lib/components/Select';
 import Input from './Input';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
+import { DevToolProps } from '..';
+import theme from 'common/lib/theme';
 
 export type IMessage = {
-  type: 'message' | 'command' | 'return',
-  logType: 'log' | 'warn' | 'info' | 'error',
-  arguments: any[],
+  type: 'message' | 'command' | 'return';
+  logType: 'log' | 'warn' | 'info' | 'error';
+  arguments: any[];
 };
 
-class Console extends React.Component {
+export type StyledProps = DevToolProps & {
+  theme: typeof theme & { light: boolean };
+};
+
+class Console extends React.Component<StyledProps> {
   state = {
     messages: [],
     scrollToBottom: true,
@@ -160,7 +166,7 @@ class Console extends React.Component {
     }
   }
 
-  clearConsole = (nothing: boolean) => {
+  clearConsole = (nothing?: boolean) => {
     if (this.props.updateStatus) {
       this.props.updateStatus('clear');
     }
@@ -248,13 +254,13 @@ const ConsoleFilterSelect = props => {
 
   return (
     <Select
-      css={`
-        font-family: 'Roboto';
-        font-weight: 600;
-        font-size: 0.875rem;
-        height: 22px;
-      `}
-      style={props.style}
+      style={{
+        fontFamily: 'Roboto',
+        fontWeight: 600,
+        fontSize: '0.875rem',
+        height: 22,
+        ...props.style,
+      }}
       onChange={handleOnChange}
     >
       <option value="all">All</option>
@@ -269,7 +275,8 @@ const ConsoleFilterSelect = props => {
 export default {
   id: 'codesandbox.console',
   title: 'Console',
-  Content: withTheme(Console),
+  // @ts-ignore  TODO: fix this
+  Content: withTheme<StyledProps>(Console),
   actions: [
     {
       title: 'Clear Console',
@@ -283,7 +290,8 @@ export default {
       onClick: () => {
         dispatch({ type: 'Search Click' });
       },
-      Icon: withTheme(ConsoleFilterInput),
+      // @ts-ignore  TODO: fix this
+      Icon: withTheme<StyledProps>(ConsoleFilterInput),
     },
     {
       title: 'Log Filter',

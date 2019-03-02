@@ -8,12 +8,12 @@ import { inject, observer } from 'mobx-react';
 
 import getTemplateDefinition from 'common/lib/templates';
 import type { ModuleError } from 'common/lib/types';
+import { getPreviewTabs } from 'common/lib/templates/devtools';
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
-import { getPreviewTabs } from 'common/templates/devtools';
 
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';

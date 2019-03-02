@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
-import type { Module } from 'common/types';
-import getUI from 'common/templates/configuration/ui';
+import type { Module } from 'common/lib/types';
+import getUI from 'common/lib/templates/configuration/ui';
 import getType from 'app/utils/get-type';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 
 import type { Props as EditorProps, Editor } from '../../types';
 import { Container, Title, Description } from './elements';

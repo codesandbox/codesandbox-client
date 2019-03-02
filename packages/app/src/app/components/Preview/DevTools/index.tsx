@@ -2,9 +2,8 @@ import * as React from 'react';
 
 import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
-import MinimizeIcon from 'react-icons/lib/fa/angle-up';
+import FaAngleUp from 'react-icons/lib/fa/angle-up';
 
-import Tooltip from 'common/lib/components/Tooltip';
 import { TemplateType } from 'common/lib/templates';
 
 import console from './Console';
@@ -28,7 +27,9 @@ function unFocus(document, window) {
   }
 }
 
-function normalizeTouchEvent(event: TouchEvent): MouseEvent {
+function normalizeTouchEvent(
+  event: React.TouchEvent | TouchEvent
+): React.MouseEvent & MouseEvent {
   // @ts-ignore
   return {
     ...event,
@@ -263,13 +264,15 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  handleTouchStart = (event: TouchEvent) => {
+  handleTouchStart = (event: React.TouchEvent) => {
     if (event.touches && event.touches.length) {
       this.handleMouseDown(normalizeTouchEvent(event));
     }
   };
 
-  handleMouseDown = (event: Event & { clientX: number; clientY: number }) => {
+  handleMouseDown = (
+    event: React.MouseEvent & { clientX: number; clientY: number }
+  ) => {
     if (!this.state.mouseDown && typeof this.state.height === 'number') {
       unFocus(document, window);
       this.setState({
@@ -319,7 +322,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   };
 
-  handleMouseMove = (event: Event & { clientX: number; clientY: number }) => {
+  handleMouseMove = (
+    event: MouseEvent & { clientX: number; clientY: number }
+  ) => {
     if (this.state.mouseDown) {
       const newHeight =
         this.state.startHeight - (event.clientY - this.state.startY);
@@ -335,7 +340,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     this.openDevTools();
   };
 
-  handleMinimizeClick = (e: MouseEvent) => {
+  handleMinimizeClick = (e: React.MouseEvent<React.ReactSVGElement>) => {
     if (!this.state.hidden) {
       e.preventDefault();
       e.stopPropagation();
@@ -446,7 +451,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
           />
 
           {!primary && (
-            <MinimizeIcon
+            <FaAngleUp
               onMouseDown={hidden ? undefined : this.handleMinimizeClick}
               style={{
                 marginTop: hidden ? 0 : 4,

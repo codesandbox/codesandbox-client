@@ -16,9 +16,7 @@
     "input.background": "#111518",
     "input.foreground": "#C0C0C0",
     "list.hoverBackground": "#37414050",
-    "menu.background": "#111518",
     "menu.selectionBackground": "#24282A",
-    "menu.selectionForeground": "#40A9F3",
     "scrollbarSlider.activeBackground": "#374140",
     "scrollbarSlider.background": "#37414050",
     "sideBar.background": "#191d1f",
@@ -35,7 +33,13 @@
     "editorHoverWidget.border": "#111518",
     "inputOption.activeBorder": "#66b9f4",
     "focusBorder": "#66b9f4",
-    "peekViewEditor.background": "#111518"
+    "peekViewEditor.background": "#111518",
+    "menu.background": "#1C2022",
+    "menu.foreground": "#C0C0C0",
+    "menu.selectionForeground": "#ffffff",
+    "menubar.selectionBackground": "#ffffff10",
+    "menubar.selectionForeground": "#ffffff",
+    "editorGroup.dropBackground": "#ffd3991f"
   },
   "tokenColors": [
     {

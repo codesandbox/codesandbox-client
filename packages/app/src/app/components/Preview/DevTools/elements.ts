@@ -10,7 +10,7 @@ export const Container = styled.div`
   z-index: 7;
 `;
 
-export const Header = styled.div`
+export const Header = styled.div<{ primary: boolean; open: boolean }>`
   position: relative;
   display: flex;
   align-items: center;

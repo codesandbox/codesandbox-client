@@ -21,7 +21,7 @@ export default ({ test, openFile }: Props) => (
       <Actions>
         {openFile && (
           <Tooltip title="Open File">
-            <FileIcon onClick={openFile} />
+            <FileIcon onClick={() => openFile(test.path)} />
           </Tooltip>
         )}
         <div>{test.duration != null ? `${test.duration}ms` : ''}</div>

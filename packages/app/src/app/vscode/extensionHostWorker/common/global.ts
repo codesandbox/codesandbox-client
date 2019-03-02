@@ -17,11 +17,11 @@ export const loadBrowserFS = () => {
 
 export const initializeGlobals = () => {
   // We need to initialize some node environment stubs
-  ctx.BrowserFS = BrowserFS;
-  ctx.process = BrowserFS.BFSRequire('process');
+  ctx.BrowserFS = ctx.BrowserFS;
+  ctx.process = ctx.BrowserFS.BFSRequire('process');
   ctx.process.platform = 'linux';
   ctx.process.stdin = new EventEmitter();
-  ctx.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+  ctx.Buffer = ctx.BrowserFS.BFSRequire('buffer').Buffer;
   ctx.setTimeout = setTimeout.bind(ctx);
   ctx.clearTimeout = clearTimeout.bind(ctx);
   ctx.setImmediate = (func, delay) => setTimeout(func, delay);

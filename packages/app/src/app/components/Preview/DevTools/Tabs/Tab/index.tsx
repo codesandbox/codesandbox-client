@@ -16,8 +16,8 @@ import { ITabPosition } from '..';
 export interface TabProps {
   active: boolean;
   pane: IViewType;
-  onClick: (e: Event) => void;
-  onMouseDown: (e: Event) => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
   moveTab: (currentPosition: ITabPosition, nextPosition: ITabPosition) => void;
   index: number;
   devToolIndex: number;

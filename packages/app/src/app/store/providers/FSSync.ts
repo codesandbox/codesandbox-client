@@ -1,14 +1,16 @@
 import { Provider } from 'cerebral';
-import { getAbsoluteDependencies } from 'common/utils/dependencies';
+import { getAbsoluteDependencies } from 'common/lib/utils/dependencies';
 
-const fs = BrowserFS.BFSRequire('fs');
+const global = window as any;
+
+const fs = global.BrowserFS.BFSRequire('fs');
 const SERVICE_URL = 'https://ata-fetcher.cloud/api/v4/typings';
 
 let fileInterval;
 let lastMTime = new Date(0);
 
 function sendTypes() {
-  self.postMessage({
+  global.postMessage({
     $broadcast: true,
     $type: 'typings-sync',
     $data: types,
@@ -96,7 +98,7 @@ export default Provider({
     const sendFiles = () => {
       const { modulesByPath } = this.context.controller.getState().editor;
 
-      self.postMessage({
+      global.postMessage({
         $broadcast: true,
         $type: 'file-sync',
         $data: modulesByPath,

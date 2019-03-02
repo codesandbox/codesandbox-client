@@ -3,6 +3,8 @@ import {
   IManager,
 } from '../../../../../../../standalone-packages/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
 
+const ctx = self as any;
+
 export function getTypeFetcher() {
   let types: {
     [path: string]: {
@@ -27,7 +29,7 @@ export function getTypeFetcher() {
     if (evt.data.$type === 'typings-sync') {
       types = evt.data.$data;
       // This forces the file watchers to emit, which causes typescript to reload
-      BrowserFS.BFSRequire('fs').rename(
+      ctx.BrowserFS.BFSRequire('fs').rename(
         '/sandbox/node_modules/@types',
         '/sandbox/node_modules/@types',
         () => {}

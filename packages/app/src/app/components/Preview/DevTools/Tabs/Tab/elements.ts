@@ -11,7 +11,7 @@ export const Tabs = styled.div`
   height: 100%;
 `;
 
-export const Tab = styled.div`
+export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
   position: relative;
   transition: 0.2s ease color;
   display: flex;

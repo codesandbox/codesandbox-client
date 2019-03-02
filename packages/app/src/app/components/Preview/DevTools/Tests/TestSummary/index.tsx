@@ -25,8 +25,8 @@ type Props = {
   fileStatuses: { [path: string]: Status };
   running: boolean;
   watching: boolean;
-  toggleWatching: Function;
-  runAllTests: Function;
+  toggleWatching: (e: React.MouseEvent<React.ReactSVGElement>) => void;
+  runAllTests: (e: React.MouseEvent<React.ReactSVGElement>) => void;
   tests: Array<Test>;
 };
 

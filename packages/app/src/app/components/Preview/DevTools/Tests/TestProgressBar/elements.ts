@@ -10,7 +10,7 @@ export const ProgressBar = styled.div`
   border-radius: 1px;
 `;
 
-const BaseBar = styled.div`
+const BaseBar = styled.div<{ count: number }>`
   transition: 0.3s ease all;
   border-radius: 1px;
   height: 3px;

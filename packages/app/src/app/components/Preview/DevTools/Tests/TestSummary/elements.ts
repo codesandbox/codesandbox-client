@@ -21,7 +21,7 @@ export const Progress = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
 `;
 
-const Bar = styled.div`
+const Bar = styled.div<{ count: number }>`
   transition: 0.3s ease all;
   flex: ${props => props.count};
   width: 100%;

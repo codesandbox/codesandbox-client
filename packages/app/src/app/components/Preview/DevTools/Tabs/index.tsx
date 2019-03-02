@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import { IViewType } from '..';
 import { Actions, Container, Tabs } from './elements';

@@ -1,4 +1,3 @@
-// @flow
 /* eslint-disable no-param-reassign */
 import * as React from 'react';
 import { actions, dispatch, listen } from 'codesandbox-api';

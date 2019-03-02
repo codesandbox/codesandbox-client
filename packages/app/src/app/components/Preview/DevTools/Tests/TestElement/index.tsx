@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import Tooltip from 'common/lib/components/Tooltip';
 
 import PlayIcon from 'react-icons/lib/go/playback-play';
@@ -44,12 +44,12 @@ class TestElement extends React.Component<Props> {
     this.props.onFileExpandToggle(this.props.file);
   };
 
-  runTests = (e: MouseEvent) => {
+  runTests = (e: React.MouseEvent<React.ReactSVGElement>) => {
     e.preventDefault();
     this.props.runTests(this.props.file);
   };
 
-  openFile = (e: MouseEvent) => {
+  openFile = (e: React.MouseEvent<React.ReactSVGElement>) => {
     e.preventDefault();
     e.stopPropagation();
     this.props.openFile(this.props.file.fileName);

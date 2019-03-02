@@ -22,7 +22,7 @@
     "lint:app": "eslint src/app",
     "lint:embed": "eslint src/embed",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
-    "typecheck": "flow check"
+    "typecheck": "tsc --noEmit -p tsconfig.check.json"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -39,11 +39,13 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.1.0",
+    "@types/codemirror": "^0.0.72",
     "@types/debug": "^4.1.1",
     "@types/gsap": "^1.20.1",
     "@types/lodash-es": "^4.17.2",
     "@types/react": "^16.8.3",
     "@types/react-dom": "^16.0.11",
+    "@types/react-icons": "2.2.7",
     "@types/resolve": "^0.0.8",
     "@types/styled-components": "^4.1.6",
     "autoprefixer": "8.5.0",

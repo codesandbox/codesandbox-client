@@ -1,4 +1,4 @@
-import CodeMirror from 'codemirror';
+import * as CodeMirror from 'codemirror';
 import emmet from '@emmetio/codemirror-plugin';
 
 import 'codemirror/lib/codemirror.css';
@@ -24,7 +24,7 @@ try {
 
 // eslint-disable-next-line
 export const getCodeMirror = (el, doc, options) => {
-  const cm = new CodeMirror(el, {
+  const cm: CodeMirror.Editor = new CodeMirror(el, {
     value: doc,
     theme: 'oceanic',
     keyMap: 'sublime',

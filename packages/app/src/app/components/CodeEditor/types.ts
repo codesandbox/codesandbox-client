@@ -1,6 +1,11 @@
 // @flow
 
-import { Module, Sandbox, ModuleError, ModuleCorrection } from 'common/types';
+import {
+  Module,
+  Sandbox,
+  ModuleError,
+  ModuleCorrection,
+} from 'common/lib/types';
 
 export type Settings = {
   autoCompleteEnabled: boolean;

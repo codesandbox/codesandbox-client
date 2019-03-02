@@ -27,13 +27,13 @@ const Container = styled.div`
 `;
 
 type Props = {
-  evaluateConsole: (command: string) => void,
+  evaluateConsole: (command: string) => void;
 };
 
 type State = {
-  editorHeight: number,
-  commandHistory: Array<string>,
-  commandCursor: number,
+  editorHeight: number;
+  commandHistory: Array<string>;
+  commandCursor: number;
 };
 
 const InputWrapper = styled.div`
@@ -56,6 +56,7 @@ class ConsoleInput extends React.PureComponent<Props, State> {
   };
 
   editor: any;
+  codemirror: CodeMirror.Editor;
 
   mountCodeMirror = el => {
     this.codemirror = getCodeMirror(el, new CodeMirror.Doc('', 'javascript'), {
@@ -64,53 +65,56 @@ class ConsoleInput extends React.PureComponent<Props, State> {
       styleActiveLine: false,
     });
 
-    this.codemirror.on('keydown', (codemirror, e) => {
-      const { evaluateConsole } = this.props;
-      if (e.keyCode === ENTER) {
-        if (e.shiftKey) {
-          return;
-        }
-        e.preventDefault();
-        e.stopPropagation();
-        const command = this.codemirror.getDoc().getValue();
-        evaluateConsole(command);
-        this.codemirror.getDoc().setValue('');
-        this.setState({
-          commandCursor: -1,
-          commandHistory: [command, ...this.state.commandHistory],
-        });
-      } else if (e.keyCode === ARROW_UP) {
-        const lineNumber = this.codemirror.getCursor().line;
-        if (lineNumber !== 0) {
-          return;
-        }
+    this.codemirror.on(
+      'keydown',
+      (codemirror: CodeMirror.Editor, e: KeyboardEvent) => {
+        const { evaluateConsole } = this.props;
+        if (e.keyCode === ENTER) {
+          if (e.shiftKey) {
+            return;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+          const command = this.codemirror.getDoc().getValue();
+          evaluateConsole(command);
+          this.codemirror.getDoc().setValue('');
+          this.setState({
+            commandCursor: -1,
+            commandHistory: [command, ...this.state.commandHistory],
+          });
+        } else if (e.keyCode === ARROW_UP) {
+          const lineNumber = this.codemirror.getDoc().getCursor().line;
+          if (lineNumber !== 0) {
+            return;
+          }
 
-        const newCursor = Math.min(
-          this.state.commandCursor + 1,
-          this.state.commandHistory.length - 1
-        );
-        this.codemirror
-          .getDoc()
-          .setValue(this.state.commandHistory[newCursor] || '');
-        this.setState({
-          commandCursor: newCursor,
-        });
-      } else if (e.keyCode === ARROW_DOWN) {
-        const lineNumber = this.codemirror.getCursor().line;
-        const lineCount = this.codemirror.getValue().split('\n').length;
-        if (lineNumber !== lineCount) {
-          return;
-        }
+          const newCursor = Math.min(
+            this.state.commandCursor + 1,
+            this.state.commandHistory.length - 1
+          );
+          this.codemirror
+            .getDoc()
+            .setValue(this.state.commandHistory[newCursor] || '');
+          this.setState({
+            commandCursor: newCursor,
+          });
+        } else if (e.keyCode === ARROW_DOWN) {
+          const lineNumber = this.codemirror.getDoc().getCursor().line;
+          const lineCount = this.codemirror.getValue().split('\n').length;
+          if (lineNumber !== lineCount) {
+            return;
+          }
 
-        const newCursor = Math.max(this.state.commandCursor - 1, -1);
-        this.codemirror
-          .getDoc()
-          .setValue(this.state.commandHistory[newCursor] || '');
-        this.setState({
-          commandCursor: newCursor,
-        });
+          const newCursor = Math.max(this.state.commandCursor - 1, -1);
+          this.codemirror
+            .getDoc()
+            .setValue(this.state.commandHistory[newCursor] || '');
+          this.setState({
+            commandCursor: newCursor,
+          });
+        }
       }
-    });
+    );
   };
 
   render() {

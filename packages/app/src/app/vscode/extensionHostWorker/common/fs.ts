@@ -2,6 +2,8 @@ import { FileSystemConfiguration } from '../../../../../../../standalone-package
 import { getTypeFetcher } from './type-downloader';
 import { EXTENSIONS_LOCATION } from '../../constants';
 
+const global = self as any;
+
 export const BROWSER_FS_CONFIG: FileSystemConfiguration = {
   fs: 'MountableFileSystem',
   options: {
@@ -73,7 +75,7 @@ export async function initializeBrowserFS({
 
     config.options = { ...config.options, ...extraMounts };
 
-    BrowserFS.configure(config, async e => {
+    global.BrowserFS.configure(config, async e => {
       if (e) {
         console.error(e);
         return;
