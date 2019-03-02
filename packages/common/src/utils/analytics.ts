@@ -5,7 +5,7 @@ import hash from './hash';
 
 const debug = _debug('cs:analytics');
 
-const global = window as any;
+const global = (typeof window !== 'undefined' ? window : {}) as any;
 
 export const DNT =
   typeof window !== 'undefined' &&
