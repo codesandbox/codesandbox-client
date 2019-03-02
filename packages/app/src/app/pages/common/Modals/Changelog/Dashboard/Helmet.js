@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconBase } from 'react-icons/lib';
+import IconBase from 'react-icons/lib/IconBase';
 
 export default () => (
   <IconBase width="284" height="192" viewBox="0 0 284 192" fill="none">
