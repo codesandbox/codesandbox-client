@@ -1,21 +1,17 @@
 import styled from 'styled-components';
 import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
+import theme from '../../theme';
 import Stats from '../Stats';
 
 const VERTICAL_BREAKPOINT = 900;
-const newColors = {
-  title: '#EEEEFF',
-  description: '#777788',
-  bg: '#2B2E41',
-};
 
 export const Container = styled.div`
   transition: 0.3s ease background-color;
 
   position: relative;
-  background-color: ${newColors.bg};
+  background-color: ${theme.new.bg};
   border-radius: 8px;
-  color: ${newColors.title};
+  color: ${theme.new.title};
   height: 500px;
   display: flex;
   box-shadow: 0 9px 14px rgba(0, 0, 0, 0.25);
@@ -63,7 +59,7 @@ export const SandboxContainer = styled.div`
   @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {
     height: 230px;
     z-index: 11;
-    background-color: ${newColors.bg};
+    background-color: ${theme.new.bg};
     padding: 0.5rem;
   }
 `;
@@ -80,7 +76,7 @@ export const Title = styled.h1`
 `;
 
 export const Description = styled.p`
-  color: ${newColors.description};
+  color: ${theme.new.description};
   font-family: 'Poppins';
   font-weight: 600;
   font-size: 1rem;
@@ -90,7 +86,7 @@ export const Author = styled(UserWithAvatar)`
   position: absolute;
   left: 1.5rem;
   bottom: 1.5rem;
-  color: ${newColors.description};
+  color: ${theme.new.description};
   font-weight: 600;
 `;
 
@@ -106,7 +102,7 @@ export const IconContainer = styled.div`
   }
 `;
 export const StyledStats = styled(Stats)`
-  color: ${newColors.description};
+  color: ${theme.new.description};
   font-weight: 600;
   margin-top: 1rem;
   display: flex;
