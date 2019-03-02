@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ESC, ENTER } from 'common/utils/keycodes';
+import { ESC, ENTER } from 'common/lib/utils/keycodes';
 
 import { InputContainer } from './elements';
 

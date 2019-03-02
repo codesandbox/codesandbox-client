@@ -5,8 +5,8 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
-import getTemplateDefinition from 'common/templates';
-import type { ModuleError } from 'common/types';
+import getTemplateDefinition from 'common/lib/templates';
+import type { ModuleError } from 'common/lib/types';
 
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';

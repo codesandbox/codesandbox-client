@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const env = require('common/config/env');
+const env = require('common/lib/config/env');
 
 // Parse date information out of post filename.
 
@@ -121,7 +121,7 @@ exports.onCreateWebpackConfig = ({
   }
 
   actions.setWebpackConfig({
-    plugins: [plugins.define(env)],
+    plugins: [plugins.define(env.default)],
   });
 
   const config = getConfig();

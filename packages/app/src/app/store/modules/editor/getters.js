@@ -1,5 +1,5 @@
-import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import { getModulePath } from 'common/sandbox/modules';
+import { generateFileFromSandbox } from 'common/lib/templates/configuration/package-json';
+import { getModulePath } from 'common/lib/sandbox/modules';
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 

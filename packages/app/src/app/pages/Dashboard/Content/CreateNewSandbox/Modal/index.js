@@ -1,6 +1,6 @@
 import React from 'react';
-import * as templates from 'common/templates';
-import { chunk, sortBy } from 'lodash';
+import * as templates from 'common/lib/templates';
+import { chunk, sortBy } from 'lodash-es';
 
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';

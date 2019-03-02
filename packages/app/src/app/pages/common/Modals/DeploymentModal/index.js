@@ -3,8 +3,8 @@ import { inject, observer } from 'mobx-react';
 
 import ZeitIntegration from 'app/pages/common/ZeitIntegration';
 import Button from 'app/components/Button';
-import Centered from 'common/components/flex/Centered';
-import Margin from 'common/components/spacing/Margin';
+import Centered from 'common/lib/components/flex/Centered';
+import Margin from 'common/lib/components/spacing/Margin';
 import IntegrationModal from 'app/components/IntegrationModal';
 
 import {
@@ -76,7 +76,8 @@ function DeploymentModal({ store, signals }) {
                   rel="noreferrer noopener"
                 >
                   here
-                </a>.
+                </a>
+                .
               </DeploymentManagementNotice>
             </Centered>
           </Margin>

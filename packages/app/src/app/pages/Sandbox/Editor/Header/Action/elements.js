@@ -1,6 +1,6 @@
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 const blink = keyframes`
 	0% {color: ${props =>

@@ -6,14 +6,14 @@ import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'mobx-react';
 
 import history from 'app/utils/history';
-import _debug from 'common/utils/debug';
+import _debug from 'common/lib/utils/debug';
 import { client } from 'app/graphql/client';
-import VERSION from 'common/version';
-import registerServiceWorker from 'common/registerServiceWorker';
-import requirePolyfills from 'common/load-dynamic-polyfills';
+import VERSION from 'common/lib/version';
+import registerServiceWorker from 'common/lib/registerServiceWorker';
+import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 import 'normalize.css';
-import 'common/global.css';
-import theme from 'common/theme';
+import 'common/lib/global.css';
+import theme from 'common/lib/theme';
 
 import controller from './controller';
 import App from './pages/index';

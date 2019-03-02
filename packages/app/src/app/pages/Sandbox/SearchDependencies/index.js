@@ -1,7 +1,7 @@
 import React from 'react';
 import { InstantSearch, Configure, PoweredBy } from 'react-instantsearch/dom';
 import { connectAutoComplete } from 'react-instantsearch/connectors';
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 
 import 'app/pages/Search/search.css';
 import './dependencies.css';

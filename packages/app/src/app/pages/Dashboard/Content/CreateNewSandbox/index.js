@@ -3,10 +3,10 @@ import { Spring } from 'react-spring';
 import { inject } from 'mobx-react';
 import { ThemeProvider } from 'styled-components';
 import history from 'app/utils/history';
-import { ESC, ENTER } from 'common/utils/keycodes';
-import theme from 'common/theme';
-import { sandboxUrl } from 'common/utils/url-generator';
-import Portal from 'common/components/Portal';
+import { ESC, ENTER } from 'common/lib/utils/keycodes';
+import theme from 'common/lib/theme';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
+import Portal from 'common/lib/components/Portal';
 
 import {
   ButtonsContainer,

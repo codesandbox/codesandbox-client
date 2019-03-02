@@ -1,9 +1,9 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 import history from 'app/utils/history';
-import { dashboardUrl } from 'common/utils/url-generator';
+import { dashboardUrl } from 'common/lib/utils/url-generator';
 
 import { REMOVE_FROM_TEAM, LEAVE_TEAM } from '../../../../queries';
 

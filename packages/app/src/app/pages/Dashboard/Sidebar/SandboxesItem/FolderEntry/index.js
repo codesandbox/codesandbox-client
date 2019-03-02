@@ -8,18 +8,18 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
 import { inject, observer } from 'mobx-react';
-import track from 'common/utils/analytics';
+import track from 'common/lib/utils/analytics';
 import { client } from 'app/graphql/client';
 
 import ReactShow from 'react-show';
 import { join, dirname } from 'path';
 
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 
 import ContextMenu from 'app/components/ContextMenu';
 
-import Input from 'common/components/Input';
-import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/utils/keycodes';
+import Input from 'common/lib/components/Input';
+import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/lib/utils/keycodes';
 
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
@@ -197,6 +197,7 @@ class FolderEntry extends React.Component {
                 <AnimatedChevron
                   onClick={this.toggleOpen}
                   open={this.state.open}
+                  style={{ opacity: children.size > 0 ? 1 : 0 }}
                 />
                 <FolderIcon />
               </IconContainer>{' '}

@@ -3,8 +3,8 @@ import React from 'react';
 import getTemplate from 'common/templates';
 import { protocolAndHost } from 'common/utils/url-generator';
 import { ARROW_LEFT, ARROW_RIGHT } from 'common/utils/keycodes';
-import FeaturedSandbox from 'common/components/FeaturedSandbox';
-import WideSandbox from 'common/components/WideSandbox';
+import FeaturedSandbox from 'common/lib/components/FeaturedSandbox';
+import WideSandbox from 'common/lib/components/WideSandbox';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';

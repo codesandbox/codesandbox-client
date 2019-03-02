@@ -12,7 +12,7 @@ import {
   dojo,
   custom,
   reason,
-} from 'common/templates';
+} from 'common/lib/templates';
 
 import reactPreset from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';

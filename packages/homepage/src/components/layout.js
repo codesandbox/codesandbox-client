@@ -1,9 +1,10 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import theme from 'common/theme';
-import Navigation from 'common/components/Navigation';
-import Footer from 'common/components/Footer';
+import theme from 'common/lib/theme';
+import Navigation from 'common/lib/components/Navigation';
+import Footer from 'common/lib/components/Footer';
+
 import '../css/typography.css';
 import '../css/global.css';
 

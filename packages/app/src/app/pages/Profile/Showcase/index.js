@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Column from 'common/components/flex/Column';
-import Centered from 'common/components/flex/Centered';
-import Margin from 'common/components/spacing/Margin';
+import Column from 'common/lib/components/flex/Column';
+import Centered from 'common/lib/components/flex/Centered';
+import Margin from 'common/lib/components/spacing/Margin';
 import Button from 'app/components/Button';
 
 import SandboxInfo from './SandboxInfo';

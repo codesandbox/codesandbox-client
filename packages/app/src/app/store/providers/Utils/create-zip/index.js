@@ -2,9 +2,15 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
-import type { Sandbox, Module, Directory } from 'common/types';
-import { react, reactTs, vue, preact, svelte } from 'common/templates/index';
-import { resolveModule } from 'common/sandbox/modules';
+import type { Sandbox, Module, Directory } from 'common/lib/types';
+import {
+  react,
+  reactTs,
+  vue,
+  preact,
+  svelte,
+} from 'common/lib/templates/index';
+import { resolveModule } from 'common/lib/sandbox/modules';
 
 export const BLOB_ID = 'blob-url://';
 

@@ -1,5 +1,5 @@
 /* @flow */
-import isImage from 'common/utils/is-image';
+import isImage from 'common/lib/utils/is-image';
 
 const svgRegex = /\.svg$/;
 

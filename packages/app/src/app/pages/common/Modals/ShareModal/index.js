@@ -2,8 +2,8 @@ import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import Files from 'embed/components/Files';
 import QRCode from 'qrcode.react';
-import track from 'common/utils/analytics';
-import { sandboxUrl } from 'common/utils/url-generator';
+import track from 'common/lib/utils/analytics';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
 import Title from './Title';
 
 import {

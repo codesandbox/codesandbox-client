@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import * as templates from 'common/templates';
-import { orderBy } from 'lodash';
+import * as templates from 'common/lib/templates';
+import { orderBy } from 'lodash-es';
 import OverlayComponent from 'app/components/Overlay';
 
 import { Container, TemplatesName, OverlayContainer } from './elements';

@@ -2,7 +2,7 @@ import React from 'react';
 import { inject } from 'mobx-react';
 
 import Button from 'app/components/Button';
-import Row from 'common/components/flex/Row';
+import Row from 'common/lib/components/flex/Row';
 
 import { Container } from './elements';
 import { Heading, Explanation } from '../elements';

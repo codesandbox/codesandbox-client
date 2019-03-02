@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import ExitZen from 'react-icons/lib/md/fullscreen-exit';
-import { withTooltip } from 'common/components/Tooltip';
+import { withTooltip } from 'common/lib/components/Tooltip';
 
 export const Container = styled.div`
   background-color: rgba(0, 0, 0, 0.3);

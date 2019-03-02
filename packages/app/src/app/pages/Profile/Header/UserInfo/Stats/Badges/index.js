@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import Margin from 'common/components/spacing/Margin';
-import Badge from 'common/utils/badges/Badge';
-import ContributorsBadge from 'common/components/ContributorsBadge';
+import Margin from 'common/lib/components/spacing/Margin';
+import Badge from 'common/lib/utils/badges/Badge';
+import ContributorsBadge from 'common/lib/components/ContributorsBadge';
 
-import { patronUrl } from 'common/utils/url-generator';
+import { patronUrl } from 'common/lib/utils/url-generator';
 
 function Badges({ badges, username }) {
   return (

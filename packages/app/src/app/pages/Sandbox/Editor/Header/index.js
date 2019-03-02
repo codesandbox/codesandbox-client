@@ -20,13 +20,13 @@ import {
   dashboardUrl,
   searchUrl,
   exploreUrl,
-} from 'common/utils/url-generator';
+} from 'common/lib/utils/url-generator';
 
-import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-import Margin from 'common/components/spacing/Margin';
+import PatronBadge from '-!svg-react-loader!common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import Margin from 'common/lib/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/pages/common/UserMenu';
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import Logo from './Logo';

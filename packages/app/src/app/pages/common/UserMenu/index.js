@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import HoverMenu from 'app/components/HoverMenu';
-import Relative from 'common/components/Relative';
+import Relative from 'common/lib/components/Relative';
 import ChevronDown from 'react-icons/lib/md/arrow-drop-down';
 
 import Menu from './Menu';

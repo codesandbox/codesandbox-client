@@ -3,9 +3,9 @@ import SplitPane from 'react-split-pane';
 import { inject, observer } from 'mobx-react';
 import { ThemeProvider } from 'styled-components';
 
-import Fullscreen from 'common/components/flex/Fullscreen';
-import getTemplateDefinition from 'common/templates';
-import codesandbox from 'common/themes/codesandbox.json';
+import Fullscreen from 'common/lib/components/flex/Fullscreen';
+import getTemplateDefinition from 'common/lib/templates';
+import codesandbox from 'common/lib/themes/codesandbox.json';
 
 import { Container } from './elements';
 import Workspace from './Workspace';

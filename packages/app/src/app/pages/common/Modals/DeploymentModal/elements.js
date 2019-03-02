@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
-import delayInEffect from 'common/utils/animation/delay-effect';
-import delayOutEffect from 'common/utils/animation/delay-out-effect';
+import delayInEffect from 'common/lib/utils/animation/delay-effect';
+import delayOutEffect from 'common/lib/utils/animation/delay-out-effect';
 import NowLogo from 'app/components/NowLogo';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 import Cube from './Cube';
@@ -27,7 +27,7 @@ export const ButtonContainer = styled.div`
   margin: 2rem 4rem;
   margin-bottom: 3rem;
   ${delayInEffect()} ${({ deploying }) =>
-      deploying && delayOutEffect(0, false)};
+    deploying && delayOutEffect(0, false)};
 `;
 
 export const DeployAnimationContainer = styled.div`

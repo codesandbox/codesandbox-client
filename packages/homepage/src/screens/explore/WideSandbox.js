@@ -1,9 +1,9 @@
 import React from 'react';
 
-import getIcon from 'common/templates/icons';
-import getTemplate from 'common/templates';
-import { profileUrl } from 'common/utils/url-generator';
-import { ENTER } from 'common/utils/keycodes';
+import getIcon from 'common/lib/templates/icons';
+import getTemplate from 'common/lib/templates';
+import { profileUrl } from 'common/lib/utils/url-generator';
+import { ENTER } from 'common/lib/utils/keycodes';
 
 import {
   Container,

@@ -3,7 +3,7 @@ import React from 'react';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import PlayIcon from 'react-icons/lib/go/playback-play';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 import type { File, Status } from '../';
 
 import {
