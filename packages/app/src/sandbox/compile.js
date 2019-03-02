@@ -5,6 +5,7 @@ import parseConfigurations from 'common/lib/templates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import { isBabel7 } from 'common/lib/utils/is-babel-7';
+import getDefinition from 'common/lib/templates/index';
 
 import getPreset from './eval';
 import Manager from './eval/manager';
@@ -24,7 +25,6 @@ import {
 
 import loadDependencies from './npm';
 import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
-import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
 
