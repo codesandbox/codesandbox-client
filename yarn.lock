@@ -6888,6 +6888,7 @@ coveralls@^3.0.0:
 cpx@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/cpx/-/cpx-1.5.0.tgz#185be018511d87270dedccc293171e37655ab88f"
+  integrity sha1-GFvgGFEdhycN7czCkxceN2VauI8=
   dependencies:
     babel-runtime "^6.9.2"
     chokidar "^1.6.0"

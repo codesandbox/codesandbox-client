@@ -1,11 +1,13 @@
 import * as React from 'react';
 import Select from '../Select';
 
+export type NameMapper = (param: string) => string;
+
 export type Props = {
   setValue: (value: string) => void;
   value: string;
   options: string[];
-  mapName?: (param: string) => string;
+  mapName?: NameMapper;
 };
 
 export default class PreferenceInput extends React.PureComponent<Props> {

@@ -1,5 +1,7 @@
 import preval from 'babel-plugin-preval/macro';
 
+// This is .js for preval
+
 const versionType = preval`module.exports = (() => {
   if (process.env.NODE_ENV === 'development') {
     return 'DEV';

@@ -2,7 +2,7 @@ import * as React from 'react';
 import Tooltip from '../../components/Tooltip';
 
 import PreferenceSwitch from './PreferenceSwitch';
-import PreferenceDropdown from './PreferenceDropdown';
+import PreferenceDropdown, { NameMapper } from './PreferenceDropdown';
 import PreferenceNumber from './PreferenceNumber';
 import PreferenceText from './PreferenceText';
 import PreferenceKeybinding from './PreferenceKeybinding';
@@ -36,13 +36,15 @@ export type StringPreference = {
   setValue: SetValueT<string>;
 };
 
+
+
 export type DropdownPreference = {
   type: 'dropdown';
   options: string[];
   value: string;
   defaultValue?: string;
   setValue: SetValueT<string>;
-  mapName?: (prev: string) => string;
+  mapName?: NameMapper;
 };
 
 export type KeybindingPreference = {
