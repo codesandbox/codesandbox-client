@@ -1,6 +1,6 @@
 import React from 'react';
 import IconBase from 'react-icons/lib/IconBase';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import { isContributor } from './is-contributor';
 

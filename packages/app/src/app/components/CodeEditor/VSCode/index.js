@@ -4,20 +4,20 @@ import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
-import { getModulePath, resolveModule } from 'common/sandbox/modules';
+import { getModulePath, resolveModule } from 'common/lib/sandbox/modules';
 import { listen } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
-import DEFAULT_PRETTIER_CONFIG from 'common/prettify-default-config';
+import DEFAULT_PRETTIER_CONFIG from 'common/lib/prettify-default-config';
 
-import getTemplate from 'common/templates';
+import getTemplate from 'common/lib/templates';
 import type {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
-} from 'common/types';
-import { getTextOperation } from 'common/utils/diff';
+} from 'common/lib/types';
+import { getTextOperation } from 'common/lib/utils/diff';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';

@@ -1,17 +1,17 @@
 // @flow
 import * as React from 'react';
-import type { Sandbox, Module } from 'common/types';
+import type { Sandbox, Module } from 'common/lib/types';
 import { listen, dispatch, registerFrame, resetState } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import io from 'socket.io-client';
 
-import { frameUrl, host } from 'common/utils/url-generator';
-import { getModulePath } from 'common/sandbox/modules';
-import getTemplate from 'common/templates';
+import { frameUrl, host } from 'common/lib/utils/url-generator';
+import { getModulePath } from 'common/lib/sandbox/modules';
+import getTemplate from 'common/lib/templates';
 
 import { Spring } from 'react-spring';
 
-import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import { generateFileFromSandbox } from 'common/lib/templates/configuration/package-json';
 
 import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';

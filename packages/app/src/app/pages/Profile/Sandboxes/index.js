@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import Button from 'app/components/Button';
 import SandboxList from 'app/components/SandboxList';
-import { dashboardUrl } from 'common/utils/url-generator';
+import { dashboardUrl } from 'common/lib/utils/url-generator';
 import { Link } from 'react-router-dom';
 
 import { Navigation, Notice, NoSandboxes } from './elements';

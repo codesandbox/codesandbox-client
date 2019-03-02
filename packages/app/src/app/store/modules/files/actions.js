@@ -1,10 +1,10 @@
 import { clone } from 'mobx-state-tree';
-import { getModulePath } from 'common/sandbox/modules';
-import getDefinition from 'common/templates';
+import { getModulePath } from 'common/lib/sandbox/modules';
+import getDefinition from 'common/lib/templates';
 import { chunk } from 'lodash-es';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
-import track from 'common/utils/analytics';
+import track from 'common/lib/utils/analytics';
 
 import {
   resolveModuleWrapped,

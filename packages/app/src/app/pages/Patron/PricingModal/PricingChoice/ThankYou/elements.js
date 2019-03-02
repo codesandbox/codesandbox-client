@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import delay from 'common/utils/animation/delay-effect';
+import delay from 'common/lib/utils/animation/delay-effect';
 
 export const Title = styled.div`
   ${delay(0)} transition: 0.3s ease all;

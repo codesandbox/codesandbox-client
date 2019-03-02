@@ -1,9 +1,9 @@
 import React from 'react';
 import { Highlight } from 'react-instantsearch/dom';
 
-import Tags from 'common/components/Tags';
+import Tags from 'common/lib/components/Tags';
 
-import { sandboxUrl } from 'common/utils/url-generator';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
 
 import SandboxInfo from './SandboxInfo';
 

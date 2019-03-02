@@ -1,6 +1,6 @@
 import React from 'react';
-import Logo from 'common/components/Logo';
-import Centered from 'common/components/flex/Centered';
+import Logo from 'common/lib/components/Logo';
+import Centered from 'common/lib/components/flex/Centered';
 
 import { LogoContainer } from './elements';
 

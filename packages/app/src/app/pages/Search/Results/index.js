@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Hits, Pagination } from 'react-instantsearch/dom';
-import Centered from 'common/components/flex/Centered';
+import Centered from 'common/lib/components/flex/Centered';
 
 import ResultInfo from '../ResultInfo';
 import SandboxCard from '../SandboxCard';

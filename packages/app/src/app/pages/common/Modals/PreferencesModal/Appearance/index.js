@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import themes from 'common/themes';
+import themes from 'common/lib/themes';
 
-import PreferenceText from 'common/components/Preference/PreferenceText';
+import PreferenceText from 'common/lib/components/Preference/PreferenceText';
 import {
   Title,
   SubContainer,
@@ -83,7 +83,8 @@ function EditorSettings({ store, signals }) {
                 rel="noopener noreferrer"
               >
                 font ligatures
-              </a>.
+              </a>
+              .
             </SubDescription>
             <Rule />
             <PaddedPreference

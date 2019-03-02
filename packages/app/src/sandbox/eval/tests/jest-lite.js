@@ -1,6 +1,6 @@
 // @flow
 import { dispatch, actions, listen } from 'codesandbox-api';
-import { react, reactTs } from 'common/templates';
+import { react, reactTs } from 'common/lib/templates';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';

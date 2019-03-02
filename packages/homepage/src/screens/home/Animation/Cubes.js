@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { TimelineMax, TweenMax, Power2, Power3, Elastic } from 'gsap';
-import fadeIn from 'common/utils/animation/fade-in';
+import fadeIn from 'common/lib/utils/animation/fade-in';
 
 import Cube from '../../../components/Cube';
 import media from '../../../utils/media';

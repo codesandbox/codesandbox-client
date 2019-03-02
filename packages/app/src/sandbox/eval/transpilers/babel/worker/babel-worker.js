@@ -3,7 +3,7 @@ import { flatten } from 'lodash-es';
 import codeFrame from 'babel-code-frame';
 import macrosPlugin from 'babel-plugin-macros';
 
-import delay from 'common/utils/delay';
+import delay from 'common/lib/utils/delay';
 
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';

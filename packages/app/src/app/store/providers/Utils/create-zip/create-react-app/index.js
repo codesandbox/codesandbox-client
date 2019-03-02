@@ -1,4 +1,4 @@
-import type { Sandbox, Module, Directory } from 'common/types';
+import type { Sandbox, Module, Directory } from 'common/lib/types';
 import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
 import {
   getResourceTag,

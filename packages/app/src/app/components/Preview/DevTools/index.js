@@ -5,8 +5,8 @@ import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
-import Tooltip from 'common/components/Tooltip';
-import type { Template } from 'common/templates';
+import Tooltip from 'common/lib/components/Tooltip';
+import type { Template } from 'common/lib/templates';
 
 import Unread from './Unread';
 import console from './Console';

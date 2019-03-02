@@ -2,7 +2,7 @@ import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
 import { dirname } from 'path';
 import type FSType from 'fs';
-import detectOldBrowser from 'common/detect-old-browser';
+import detectOldBrowser from 'common/lib/detect-old-browser';
 import evaluateCode from '../../../loaders/eval';
 
 let cache = {};

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ENTER } from 'common/utils/keycodes';
+import { ENTER } from 'common/lib/utils/keycodes';
 import { Container, InputContainer } from './elements';
 
 export default class extends React.PureComponent {

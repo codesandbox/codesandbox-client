@@ -5,7 +5,7 @@ import { dispatch } from 'codesandbox-api';
 import { inject, observer } from 'mobx-react';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
-import Margin from 'common/components/spacing/Margin';
+import Margin from 'common/lib/components/spacing/Margin';
 import Button from 'app/components/Button';
 
 import { Description, WorkspaceInputContainer } from '../../elements';

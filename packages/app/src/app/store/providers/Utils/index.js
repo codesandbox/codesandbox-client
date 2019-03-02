@@ -1,5 +1,5 @@
 import { Provider } from 'cerebral';
-import { resolveModule } from 'common/sandbox/modules';
+import { resolveModule } from 'common/lib/sandbox/modules';
 import { isEqual } from 'lodash-es';
 import prettify from 'app/utils/prettify';
 

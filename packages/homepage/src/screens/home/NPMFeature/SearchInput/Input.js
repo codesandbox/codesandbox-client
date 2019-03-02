@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Relative from 'common/components/Relative';
+import Relative from 'common/lib/components/Relative';
 
 import SearchIcon from 'react-icons/lib/md/search';
 

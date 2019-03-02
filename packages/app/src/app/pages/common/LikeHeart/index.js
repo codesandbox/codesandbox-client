@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import { Container } from './elements';
 

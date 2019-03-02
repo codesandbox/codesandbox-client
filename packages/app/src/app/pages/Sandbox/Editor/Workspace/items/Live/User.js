@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
 
-import delay from 'common/utils/animation/delay-effect';
+import delay from 'common/lib/utils/animation/delay-effect';
 
 const Status = styled.div`
   font-size: 0.75rem;

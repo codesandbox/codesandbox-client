@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Row from 'common/components/flex/Row';
+import Row from 'common/lib/components/flex/Row';
 
 import ProfileInfo from './ProfileInfo';
 import Stats from './Stats';

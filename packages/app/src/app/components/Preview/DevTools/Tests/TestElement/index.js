@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import PlayIcon from 'react-icons/lib/go/playback-play';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';

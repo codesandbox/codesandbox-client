@@ -1,6 +1,6 @@
 import { Provider } from 'cerebral';
 import { Socket } from 'phoenix';
-import _debug from 'common/utils/debug';
+import _debug from 'common/lib/utils/debug';
 
 let socket = null;
 const debug = _debug('cs:socket');

@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import Link from 'react-router-dom/Link';
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 
 const getBackgroundColor = ({
   theme: internalTheme,

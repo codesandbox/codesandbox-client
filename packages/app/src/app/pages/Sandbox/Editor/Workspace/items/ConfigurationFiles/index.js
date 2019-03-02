@@ -1,15 +1,15 @@
 import React from 'react';
-import getDefinition from 'common/templates';
-import getUI from 'common/templates/configuration/ui';
-import { Module, Configuration } from 'common/types';
-import { resolveModule } from 'common/sandbox/modules';
+import getDefinition from 'common/lib/templates';
+import getUI from 'common/lib/templates/configuration/ui';
+import { Module, Configuration } from 'common/lib/types';
+import { resolveModule } from 'common/lib/sandbox/modules';
 
 import { inject, observer } from 'mobx-react';
 
 import BookIcon from 'react-icons/lib/md/library-books';
 import UIIcon from 'react-icons/lib/md/dvr';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import { Description, WorkspaceSubtitle } from '../../elements';
 import {

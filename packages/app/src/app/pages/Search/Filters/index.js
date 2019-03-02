@@ -1,5 +1,5 @@
 import React from 'react';
-import getTemplate from 'common/templates';
+import getTemplate from 'common/lib/templates';
 
 import Filter from './Filter';
 import { Container } from './elements';

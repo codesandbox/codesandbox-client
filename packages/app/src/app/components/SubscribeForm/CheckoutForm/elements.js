@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Input from 'common/components/Input';
+import Input from 'common/lib/components/Input';
 
 export const CardContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.3);

@@ -1,4 +1,4 @@
-import loadPolyfills from 'common/load-dynamic-polyfills';
+import loadPolyfills from 'common/lib/load-dynamic-polyfills';
 
 require('app/config/polyfills');
 

@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react';
-import type { Sandbox } from 'common/types';
+import type { Sandbox } from 'common/lib/types';
 
-import Logo from 'common/components/Logo';
+import Logo from 'common/lib/components/Logo';
 
-import { sandboxUrl } from 'common/utils/url-generator';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
 
 import { Text, EditText } from './elements';
 

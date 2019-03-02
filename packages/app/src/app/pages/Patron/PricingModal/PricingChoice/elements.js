@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Input from 'common/components/Input';
+import Input from 'common/lib/components/Input';
 import SignInButton from 'app/pages/common/SignInButton';
 
 export const Container = styled.div`
