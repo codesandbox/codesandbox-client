@@ -1,11 +1,10 @@
 import React from 'react';
 import Preview from 'app/src/app/components/Preview';
 import { camelizeKeys } from 'humps';
-import { profileUrl, protocolAndHost } from 'common/lib/utils/url-generator';
-
-import getIcon from 'common/lib/templates/icons';
-
 import { Spring, animated, Transition } from 'react-spring';
+
+import { profileUrl, protocolAndHost } from '../../utils/url-generator';
+import getIcon from '../../templates/icons';
 
 import {
   Container,
