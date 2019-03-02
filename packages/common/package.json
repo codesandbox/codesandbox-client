@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "start": "rimraf lib && yarn rimraf node_modules/@types/react-native && yarn tsc --watch",
-    "build": "babel src --out-dir lib"
+    "build:dev": "rimraf lib && yarn rimraf node_modules/@types/react-native && yarn tsc"
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
