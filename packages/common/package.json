@@ -42,7 +42,7 @@
       "node_modules"
     ],
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.(j|t)s$": "babel-jest"
     }
   }
 }

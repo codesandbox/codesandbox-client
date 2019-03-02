@@ -1,4 +1,4 @@
-import { getSandboxOptions } from './url';
+import { getSandboxOptions } from './url.ts';
 
 function testSandboxOptions(url: string) {
   expect(getSandboxOptions(url)).toMatchSnapshot();

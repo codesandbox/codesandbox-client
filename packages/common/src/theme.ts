@@ -1,6 +1,6 @@
 import memoizeOne from 'memoize-one';
 import Color from 'color';
-import * as codesandbox from './themes/codesandbox.json';
+import codesandbox from './themes/codesandbox.json';
 
 const colorMethods = [
   'negate', // rgb(0, 100, 255) -> rgb(255, 155, 0)

@@ -1,4 +1,4 @@
-import * as codesandbox from './codesandbox.json';
+import codesandbox from './codesandbox.json';
 
 export default [
   {
