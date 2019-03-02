@@ -46,7 +46,9 @@ function initializeRequires() {
   });
 
   global.require.define('crypto', [], () => {
-    return {};
+    return {
+      createHash: () => require('crypto-browserify').createHash('sha1'),
+    };
   });
 
   global.require.define('node-pty', [], () => {

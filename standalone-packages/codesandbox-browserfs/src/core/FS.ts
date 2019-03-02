@@ -226,7 +226,14 @@ export default class FS {
     try {
       setImmediate(() => {
         this.fileWatcher.triggerWatch(oldPath, 'rename');
-        this.fileWatcher.triggerWatch(newPath, 'rename');
+
+        this.stat(newPath, (err, stat) => {
+          if (err) {
+            return;
+          }
+
+          this.fileWatcher.triggerWatch(newPath, 'rename', stat);
+        });
       });
       assertRoot(this.root).rename(normalizePath(oldPath), normalizePath(newPath), newCb);
     } catch (e) {

@@ -17,8 +17,6 @@ async function initialize() {
       const { $type, $data } = e.data.$data;
       if ($type === 'file-search') {
         const { query } = $data;
-
-        console.log(query);
       }
     }
   });

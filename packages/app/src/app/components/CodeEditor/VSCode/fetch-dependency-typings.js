@@ -7,7 +7,7 @@ function splitPath(filename: string) {
   return splitPathRe.exec(filename).slice(1);
 }
 
-self.importScripts(`/static/browserfs2/browserfs.min.js`);
+self.importScripts(`/static/browserfs3/browserfs.min.js`);
 
 let fs;
 

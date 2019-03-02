@@ -21,7 +21,7 @@ export const Item = styled.div`
   display: flex;
   align-items: center;
   font-size: 0.875rem;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem;
 
   text-decoration: none;
 

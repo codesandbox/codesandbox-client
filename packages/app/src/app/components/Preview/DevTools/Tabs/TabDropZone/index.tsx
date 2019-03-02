@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled, { css } from 'styled-components';
 import {
   DropTarget,
   ConnectDropTarget,
@@ -7,6 +8,20 @@ import {
 } from 'react-dnd';
 
 import { ITabPosition } from '..';
+import { PREVIEW_TAB_ID } from '../Tab';
+
+const DropZone = styled.div`
+  width: 100%;
+  height: 100%;
+
+  ${props =>
+    props.isOver
+      ? css`
+          background-color: ${props.theme['editorGroup.dropBackground'] ||
+            'rgba(0, 0, 0, 0.3)'};
+        `
+      : ''};
+`;
 
 export interface TabDropZoneProps {
   moveTab: (currentPosition: ITabPosition, nextPosition: ITabPosition) => void;
@@ -17,6 +32,7 @@ export interface TabDropZoneProps {
 interface DragProps {
   connectDropTarget: ConnectDropTarget;
   isOver: boolean;
+  itemType: string;
 }
 
 const TabDropZone = ({
@@ -28,9 +44,10 @@ const TabDropZone = ({
       style={{
         height: '100%',
         width: '100%',
-        backgroundColor: isOver ? 'rgba(0, 0, 0, 0.3)' : 'transparent',
       }}
-    />
+    >
+      <DropZone isOver={isOver} />
+    </div>
   );
 
 const entryTarget = {
@@ -81,6 +98,6 @@ const collectTarget = (
   };
 };
 
-export default DropTarget('PREVIEW_TAB', entryTarget, collectTarget)(
+export default DropTarget(PREVIEW_TAB_ID, entryTarget, collectTarget)(
   TabDropZone
 );

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+import Dashboard from '-!svg-react-loader!common/icons/dashboard.svg';
 
 export const Container = styled.div`
-  display: flex;
+  display: ${props => (props.zenMode ? 'none' : 'flex')};
   position: relative;
   justify-content: space-between;
   align-items: center;
@@ -40,4 +41,29 @@ export const Centered = styled.div`
   left: 0;
   display: flex;
   justify-content: center;
+  pointer-events: none;
+`;
+
+export const DashboardIcon = styled(Dashboard)`
+  transition: 0.3s ease color;
+  display: flex;
+  position: relative;
+  align-items: center;
+  vertical-align: middle;
+  height: 3rem;
+  margin-right: 1rem;
+
+  margin: 0 calc(0.8rem + 2px);
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+  text-decoration: none;
+
+  color: ${props => props.theme.gray};
+  font-size: 27px;
+
+  &:hover {
+    color: white;
+  }
 `;

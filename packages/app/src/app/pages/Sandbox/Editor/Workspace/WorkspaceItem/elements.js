@@ -34,14 +34,17 @@ export const ItemHeader = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  padding: 0.5rem 0.75rem;
+  padding: 0.25rem 0.75rem;
   box-sizing: border-box;
   vertical-align: middle;
-  height: 2.5rem;
+  height: 2rem;
   margin: 0;
   font-size: 0.875rem;
   color: ${props => (props.theme.light ? '#636363' : props.theme.white)};
   cursor: pointer;
+
+  /* background-color: ${props =>
+    props.theme['sideBarSectionHeader.background'] || 'transparent'}; */
 `;
 
 export const Title = styled.h3`

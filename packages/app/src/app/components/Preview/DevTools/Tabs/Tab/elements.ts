@@ -32,10 +32,10 @@ export const Tab = styled.div`
   ${props =>
     props.active
       ? css`
-          /* background-color: ${props =>
+          background-color: ${props =>
             props.theme['tab.activeBackground'] ||
             props.theme['editor.background'] ||
-            'transparent'}; */
+            'transparent'};
           color: ${() =>
             props.theme['tab.activeForeground'] ||
             (props.theme.light
@@ -51,6 +51,13 @@ export const Tab = styled.div`
                 : 'rgba(255, 255, 255, 1)')};
           }
         `};
+
+  ${props =>
+    props.isOver &&
+    css`
+      background-color: ${props.theme['editorGroup.dropBackground'] ||
+        'rgba(0, 0, 0, 0.3)'};
+    `};
 `;
 
 export const CloseTab = styled.button`

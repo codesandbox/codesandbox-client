@@ -24,7 +24,6 @@ import {
 
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
-import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/pages/common/UserMenu';
 import theme from 'common/theme';
 import { saveAllModules } from 'app/store/modules/editor/utils';
@@ -33,96 +32,21 @@ import Logo from './Logo';
 import Action from './Action';
 import CollectionInfo from './CollectionInfo';
 
-import { Container, Right, Left, Centered } from './elements';
+import { Container, Right, Left, Centered, DashboardIcon } from './elements';
 
 import UpdateFound from './UpdateFound';
 import FeedbackIcon from '../../../common/UserMenu/Menu/FeedbackIcon';
+import { MenuBarContainer } from './MenuBar';
 
-const Header = ({ store, signals }) => {
+const Header = ({ store, signals, zenMode }) => {
   const sandbox = store.editor.currentSandbox;
 
   return (
-    <Container>
+    <Container zenMode={zenMode}>
       <Left>
-        <Logo />
+        {store.hasLogIn ? <DashboardIcon /> : <Logo />}
 
-        <Action
-          onClick={() => signals.editor.forkSandboxClicked()}
-          title="Fork"
-          Icon={Fork}
-        />
-
-        <Action
-          title="Share"
-          Icon={ShareIcon}
-          onClick={() =>
-            signals.modalOpened({
-              modal: 'share',
-            })
-          }
-        />
-
-        {store.user && store.user.curatorAt ? (
-          <Action
-            title="Pick"
-            Icon={() => (
-              <span role="img" aria-label="star">
-                ✨
-              </span>
-            )}
-            onClick={() => {
-              signals.explore.pickSandboxModal({
-                details: {
-                  id: sandbox.id,
-                  title: sandbox.title,
-                  description: sandbox.description,
-                },
-              });
-            }}
-          />
-        ) : null}
-
-        {(sandbox.owned || !store.editor.isAllModulesSynced) && (
-          <Action
-            onClick={
-              store.editor.isAllModulesSynced
-                ? null
-                : () => saveAllModules(store, signals)
-            }
-            placeholder={
-              store.editor.isAllModulesSynced ? 'All modules are saved' : false
-            }
-            blink={store.editor.changedModuleShortids.length > 2}
-            title="Save"
-            tooltip="Save Modified Files"
-            Icon={Save}
-          />
-        )}
-
-        <Action
-          tooltip="Download"
-          Icon={Download}
-          onClick={() => signals.editor.createZipClicked()}
-        />
-
-        {store.isLoggedIn &&
-          (sandbox.userLiked ? (
-            <Action
-              tooltip="Undo like"
-              Icon={FullHeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ) : (
-            <Action
-              tooltip="Like"
-              Icon={HeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ))}
+        <MenuBarContainer />
       </Left>
 
       {sandbox.owned && (
@@ -132,21 +56,11 @@ const Header = ({ store, signals }) => {
       )}
 
       <Right>
-        <Media query="(max-width: 960px)">
-          {matches =>
-            matches ? (
-              <Action
-                tooltip="Search All Sandboxes"
-                Icon={SearchIcon}
-                href={searchUrl()}
-              />
-            ) : (
-              <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
-                <HeaderSearchBar />
-              </div>
-            )
-          }
-        </Media>
+        <Action
+          tooltip="Search All Sandboxes"
+          Icon={SearchIcon}
+          href={searchUrl()}
+        />
 
         <Action
           tooltip="Explore Sandboxes"
@@ -230,7 +144,7 @@ const Header = ({ store, signals }) => {
           left={1}
         >
           {store.isLoggedIn ? (
-            <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+            <div style={{ fontSize: '.875rem', margin: '9px 0.5rem' }}>
               <UserMenu small />
             </div>
           ) : (

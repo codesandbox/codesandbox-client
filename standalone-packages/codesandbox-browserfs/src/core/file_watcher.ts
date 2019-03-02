@@ -38,9 +38,12 @@ export class FileWatcher {
       if (entry.callback) {
         entry.callback(event, filename);
       }
-      if (newStats && entry.curr && entry.fileCallback) {
-        entry.fileCallback(newStats, entry.curr);
-        entry.curr = newStats;
+
+      const newStatsArg = newStats || entry.curr;
+      const oldStatsArg = entry.curr || newStats;
+      if (newStatsArg && oldStatsArg && entry.fileCallback) {
+        entry.fileCallback(newStatsArg, oldStatsArg);
+        entry.curr = newStatsArg;
       }
 
       entry.watcher.emit(event);
@@ -91,7 +94,6 @@ export class FileWatcher {
     watcher.close = () => {
       this.removeEntry(watchEntry);
     };
-
 
     if (typeof arg2 === 'object') {
       watchEntry.recursive = arg2.recursive;

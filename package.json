@@ -52,9 +52,10 @@
   },
   "resolutions": {
     "uglify-es": "npm:terser",
-    "react-split-pane/react-dom": "^16.8.1"
+    "react-split-pane/react-dom": "^16.8.3"
   },
   "devDependencies": {
+    "@types/react": "^16.8.6",
     "all-contributors-cli": "^5.4.0",
     "babel-eslint": "^8.2.1",
     "eslint": "CompuIves/eslint#add/define-parser",

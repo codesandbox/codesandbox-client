@@ -1,5 +1,12 @@
 {
   "extends": "../tsconfig.json",
-  "files": ["src/**/*.js"],
-  "exclude": ["node_modules/**/*.*"]
+  "include": ["./src/*"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "app/*": ["./src/app/*"],
+      "embed/*": ["./src/embed/*"],
+      "sandbox/*": ["./src/sandbox/*"]
+    }
+  }
 }

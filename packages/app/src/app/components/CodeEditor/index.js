@@ -184,7 +184,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           bottom: 0,
         }}
       >
-        {!isModuleSynced &&
+        {!isModuleSynced(module.shortid) &&
           module.title === 'index.html' && (
             <Icons style={{ fontSize: '.875rem' }}>
               You may have to save this file and refresh the preview to see

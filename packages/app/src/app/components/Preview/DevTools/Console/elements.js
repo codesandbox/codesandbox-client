@@ -11,7 +11,6 @@ export const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  max-height: calc(100% - 2rem);
   border-color: ${props => props.theme['statusBar.border'] || '#191C1D'};
 `;
 
@@ -82,7 +81,9 @@ export const inspectorTheme = theme => ({
   BASE_LINE_HEIGHT: '18px',
 
   BASE_BACKGROUND_COLOR: 'rgba(0, 0, 0, 0)',
-  LOG_COLOR: theme['terminal.foreground'] || 'rgb(213, 213, 213)',
+  LOG_COLOR:
+    theme['terminal.foreground'] ||
+    (theme.light ? 'rgb(52, 52, 52)' : 'rgb(213, 213, 213)'),
 
   OBJECT_NAME_COLOR: theme.secondary(),
   OBJECT_VALUE_NULL_COLOR: 'rgb(127, 127, 127)',

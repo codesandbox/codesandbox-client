@@ -9,13 +9,13 @@ const getBackgroundColor = ({
   secondary,
   danger,
 }) => {
-  if (disabled) return `background-color: ${theme.background2.darken(0.1)()}`;
-  if (internalTheme && internalTheme['button.background']) {
-    return `background-color: ${internalTheme['button.background']}`;
-  }
+  if (disabled) return `background-color: ${theme.background2.darken(0.2)()}`;
   if (danger) return `background-color: ${theme.dangerBackground()}`;
   if (secondary) return `background-color: transparent`;
   if (red) return `background-color: ${theme.red.darken(0.2)()}`;
+  if (internalTheme && internalTheme['button.background']) {
+    return `background-color: ${internalTheme['button.background']}`;
+  }
 
   return `background-color: #40A9F3;`;
 };
@@ -27,13 +27,13 @@ const getBackgroundHoverColor = ({
   secondary,
   danger,
 }) => {
-  if (disabled) return `background-color: ${theme.background2.darken(0.1)()}`;
-  if (internalTheme && internalTheme['button.hoverBackground']) {
-    return `background-color: ${internalTheme['button.hoverBackground']}`;
-  }
+  if (disabled) return `background-color: ${theme.background2.darken(0.2)()}`;
   if (danger) return `background-color: #E25D6A`;
   if (secondary) return `background-color: #66b9f4`;
   if (red) return `background-color: #F27777`;
+  if (internalTheme && internalTheme['button.hoverBackground']) {
+    return `background-color: ${internalTheme['button.hoverBackground']}`;
+  }
 
   return `background-color: #66b9f4;`;
 };
@@ -59,12 +59,12 @@ const getBorder = ({
   disabled,
 }) => {
   if (disabled) return '2px solid #161A1C';
-  if (internalTheme && internalTheme['button.hoverBackground']) {
-    return `2px solid ${internalTheme['button.hoverBackground']}`;
-  }
   if (secondary) return `2px solid #66B9F4`;
   if (red) return '2px solid #F27777';
   if (danger) return '2px solid #E25D6A';
+  if (internalTheme && internalTheme['button.hoverBackground']) {
+    return `2px solid ${internalTheme['button.hoverBackground']}`;
+  }
 
   return '2px solid #66B9F4';
 };

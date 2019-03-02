@@ -16,8 +16,8 @@ function UserMenu({ signals, store }) {
       <ClickableContainer onClick={() => signals.userMenuOpened()}>
         <ProfileImage
           alt={user.username}
-          width={35}
-          height={35}
+          width={28}
+          height={28}
           src={user.avatarUrl}
         />
 

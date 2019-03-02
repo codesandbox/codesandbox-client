@@ -2,11 +2,9 @@ import { Provider } from 'cerebral';
 import { getAbsoluteDependencies } from 'common/utils/dependencies';
 
 const fs = BrowserFS.BFSRequire('fs');
-const SERVICE_URL = 'https://ata-fetcher.cloud/api/v2/typings';
+const SERVICE_URL = 'https://ata-fetcher.cloud/api/v4/typings';
 
 let fileInterval;
-
-let types;
 let lastMTime = new Date(0);
 
 function sendTypes() {
@@ -15,6 +13,24 @@ function sendTypes() {
     $type: 'typings-sync',
     $data: types,
   });
+}
+
+let typeInfoPromise;
+let types;
+
+/**
+ * Gets all entries of dependencies -> @types/ version
+ */
+function getTypesInfo() {
+  if (typeInfoPromise) {
+    return typeInfoPromise;
+  }
+
+  typeInfoPromise = fetch('https://unpkg.com/types-registry@latest/index.json')
+    .then(x => x.json())
+    .then(x => x.entries);
+
+  return typeInfoPromise;
 }
 
 async function syncDependencyTypings(
@@ -30,13 +46,15 @@ async function syncDependencyTypings(
       ...devDependencies,
     };
 
-    // Add @types/... versions if they are not there
-    // TODO: apply this to /.cache/typescript/3.1
-
     if (autoInstallTypes) {
-      Object.keys(totalDependencies).forEach(dep => {
-        if (!dep.startsWith('@types/') && !totalDependencies[`@types/${dep}`]) {
-          totalDependencies[`@types/${dep}`] = 'latest';
+      const typeInfo = await getTypesInfo();
+      Object.keys(totalDependencies).forEach(async dep => {
+        if (
+          !dep.startsWith('@types/') &&
+          !totalDependencies[`@types/${dep}`] &&
+          typeInfo[dep]
+        ) {
+          totalDependencies[`@types/${dep}`] = typeInfo[dep].latest;
         }
       });
     }

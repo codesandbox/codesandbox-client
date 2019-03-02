@@ -1,9 +1,0 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-/* Activity Bar */
-.monaco-workbench > .activitybar .monaco-action-bar .action-label.search {
-	-webkit-mask: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjI4IiB2aWV3Qm94PSIwIDAgMjggMjgiIHdpZHRoPSIyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMTcuMTI0OSAyYy00LjkxMjcgMC04Ljg5NzAxIDMuOTg1MzMtOC44OTcwMSA4Ljg5OSAwIDEuODA3LjU0Njg2IDMuNDgwMSAxLjQ3MDE0IDQuODg1MyAwIDAtNS41NjIgNS41MzQ2LTcuMjA1NjQgNy4yMDU2LTEuNjQ0NjYyIDEuNjcwMSAxLjAxNTYgNC4xMzA0IDIuNjM5OTcgMi40NDQyIDEuNjI1MzgtMS42ODMyIDcuMTA4MjQtNy4xMDcyIDcuMTA4MjQtNy4xMDcyIDEuNDA0Mi45MjQzIDMuMDc5MyAxLjQ3MTEgNC44ODQzIDEuNDcxMSA0LjkxNTcgMCA4LjktMy45ODczIDguOS04Ljg5OS4wMDEtNC45MTQ2OS0zLjk4NDMtOC44OTktOC45LTguODk5em0wIDE1LjI1NDRjLTMuNTA5NSAwLTYuMzU2NS0yLjg0NDktNi4zNTY1LTYuMzU1NCAwLTMuNTEwNDkgMi44NDYtNi4zNTY0MyA2LjM1NjUtNi4zNTY0MyAzLjUxMjUgMCA2LjM1NzQgMi44NDQ5MyA2LjM1NzQgNi4zNTY0MyAwIDMuNTEwNS0yLjg0NDkgNi4zNTU0LTYuMzU3NCA2LjM1NTR6IiBmaWxsPSIjZmZmIi8+PC9zdmc+") no-repeat 50% 50%;
-}

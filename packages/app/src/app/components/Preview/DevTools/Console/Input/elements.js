@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { CodeContainer } from '../../../../CodeEditor/CodeMirror/elements';
 
 export const Container = styled.div`
   position: relative;
@@ -32,4 +33,20 @@ export const IconContainer = styled.div`
   width: 24px;
   align-items: center;
   justify-content: center;
+`;
+
+export const CodeMirrorContainer = styled(CodeContainer)`
+  display: flex;
+  align-items: center;
+  background-color: ${props =>
+    props.theme['input.background'] || props.theme.background.darken(0.3)};
+
+  > div {
+    width: 100%;
+  }
+
+  .CodeMirror {
+    background: ${props =>
+      props.theme['input.background'] || props.theme.background.darken(0.3)};
+  }
 `;

@@ -24,9 +24,26 @@ const context: any = window;
 class VSCodeManager {
   private serviceCache: IServiceCache;
   private controller: any;
+  private createMenubar: () => void;
 
-  public setController(controller: any) {
+  private statusbarPart: any;
+  private statusbarPartPromise: {
+    resolve?: (statusbarPart: any) => void;
+    promise?: Promise<any>;
+  } = {};
+
+  private menubarPart: any;
+  private menubarPartPromise: {
+    resolve?: (statusbarPart: any) => void;
+    promise?: Promise<any>;
+  } = {};
+
+  public acquireController(controller: any) {
     this.controller = controller;
+  }
+
+  public acquireMenuBarComponent(createMenuBar: () => void) {
+    this.createMenubar = createMenuBar;
   }
 
   public loadScript(scripts: string[], cb: () => void) {
@@ -46,18 +63,22 @@ class VSCodeManager {
       return;
     }
 
-    const [{ CodeSandboxService }, { CodeSandboxConfigurationUIService }] = [
+    const [
+      { CodeSandboxService },
+      { CodeSandboxConfigurationUIService },
+      { IStatusbarService },
+    ] = [
       context.require(
         'vs/codesandbox/services/codesandbox/browser/codesandboxService'
       ),
       context.require(
         'vs/codesandbox/services/codesandbox/configurationUIService'
       ),
+      context.require('vs/platform/statusbar/common/statusbar'),
     ];
 
     context.monaco.editor.create(
       container,
-      {},
       {
         codesandboxService: i =>
           i.createInstance(CodeSandboxService, this.controller),
@@ -66,12 +87,57 @@ class VSCodeManager {
       },
       returnedServices => {
         this.serviceCache = returnedServices;
+
+        // Initialize status bar
+        this.statusbarPart = returnedServices.get(IStatusbarService);
+        if (this.statusbarPartPromise.resolve) {
+          this.statusbarPartPromise.resolve(this.statusbarPart);
+        }
+
+        // Initialize menu bar
+        this.menubarPart = returnedServices.get('menubar');
+        if (this.menubarPartPromise.resolve) {
+          this.menubarPartPromise.resolve(this.menubarPart);
+        }
+
         cb(this.serviceCache);
       }
     );
   }
 
   public createSearchView() {}
+
+  public getStatusbarPart() {
+    if (this.statusbarPart) {
+      return Promise.resolve(this.statusbarPart);
+    }
+
+    if (this.statusbarPartPromise.promise) {
+      return this.statusbarPartPromise.promise;
+    }
+
+    this.statusbarPartPromise.promise = new Promise(resolve => {
+      this.statusbarPartPromise.resolve = resolve;
+    });
+
+    return this.statusbarPartPromise.promise;
+  }
+
+  public getMenubarPart() {
+    if (this.menubarPart) {
+      return Promise.resolve(this.menubarPart);
+    }
+
+    if (this.menubarPartPromise.promise) {
+      return this.menubarPartPromise.promise;
+    }
+
+    this.menubarPartPromise.promise = new Promise(resolve => {
+      this.menubarPartPromise.resolve = resolve;
+    });
+
+    return this.menubarPartPromise.promise;
+  }
 }
 
 export default new VSCodeManager();

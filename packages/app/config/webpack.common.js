@@ -98,6 +98,14 @@ module.exports = {
         loader: 'file-loader',
         type: 'javascript/auto',
       },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader', // creates style nodes from JS strings
+          'css-loader', // translates CSS into CommonJS
+          'sass-loader', // compiles Sass to CSS, using Node Sass by default
+        ],
+      },
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
         test: [
@@ -455,7 +463,12 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode9/vs',
+          to: 'public/vscode10/vs',
+          force: true,
+        },
+        {
+          from: '../../standalone-packages/vscode-extensions/out',
+          to: 'public/vscode-extensions/v1',
           force: true,
         },
         {
@@ -472,7 +485,7 @@ module.exports = {
           to: 'public/13/vs/language/vue',
         },
         {
-          from: '../../standalone-packages/vscode-editor/release/min/vs',
+          from: '../../standalone-packages/monaco-editor/release/min/vs',
           to: 'public/13/vs',
         },
         {
@@ -487,7 +500,7 @@ module.exports = {
           from: __DEV__
             ? '../../standalone-packages/codesandbox-browserfs/build'
             : '../../standalone-packages/codesandbox-browserfs/dist',
-          to: 'static/browserfs2',
+          to: 'static/browserfs3',
         },
       ].filter(x => x)
     ),

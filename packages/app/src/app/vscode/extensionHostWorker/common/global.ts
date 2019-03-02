@@ -11,7 +11,7 @@ export const initializePolyfills = () => {
 
 export const loadBrowserFS = () => {
   ctx.importScripts(
-    `${process.env.CODESANDBOX_HOST}/static/browserfs2/browserfs.js`
+    `${process.env.CODESANDBOX_HOST}/static/browserfs3/browserfs.js`
   );
 };
 
@@ -27,3 +27,12 @@ export const initializeGlobals = () => {
   ctx.setImmediate = (func, delay) => setTimeout(func, delay);
   ctx.clearImmediate = id => ctx.clearTimeout(id);
 };
+
+export function initializeAll() {
+  return new Promise(resolve => {
+    initializePolyfills();
+    loadBrowserFS();
+    initializeGlobals();
+    resolve();
+  });
+}

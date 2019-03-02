@@ -26,7 +26,6 @@ export function getTypeFetcher() {
   self.addEventListener('message', evt => {
     if (evt.data.$type === 'typings-sync') {
       types = evt.data.$data;
-
       // This forces the file watchers to emit, which causes typescript to reload
       BrowserFS.BFSRequire('fs').rename(
         '/sandbox/node_modules/@types',

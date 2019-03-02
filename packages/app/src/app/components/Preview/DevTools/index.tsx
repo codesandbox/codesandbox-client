@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
@@ -11,7 +11,7 @@ import tests from './Tests';
 import problems from './Problems';
 import terminal from './Terminal';
 
-import { Container, Header } from './elements';
+import { Container, Header, ContentContainer } from './elements';
 import { ViewConfig } from 'common/templates/template';
 import Tabs, { ITabPosition } from './Tabs';
 
@@ -53,11 +53,21 @@ export interface IViewType {
   actions: IViewAction[] | ((owner: boolean) => IViewAction[]);
 }
 
-export type StatusType = 'info' | 'warning' | 'error' | 'success';
+export type StatusType = 'info' | 'warning' | 'error' | 'success' | 'clear';
 
 export type Status = {
   unread: number;
   type: StatusType;
+};
+
+export type DevToolProps = {
+  hidden: boolean;
+  updateStatus: (type: StatusType, count?: number) => {};
+  sandboxId: string;
+  height: number;
+  openDevTools: () => void;
+  hideDevTools: () => void;
+  selectCurrentPane: () => void;
 };
 
 const VIEWS: IViews = {
@@ -389,7 +399,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
   render() {
     const { sandboxId, owned, primary, viewConfig, devToolIndex } = this.props;
-    const { hidden, height, status } = this.state;
+    const { hidden, height } = this.state;
 
     const panes = viewConfig.views;
 
@@ -410,6 +420,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
           onTouchStart={!primary && this.handleTouchStart}
           onMouseDown={!primary && this.handleMouseDown}
           primary={primary}
+          open={!this.state.hidden}
         >
           <Tabs
             owned={owned}
@@ -418,17 +429,19 @@ export default class DevTools extends React.PureComponent<Props, State> {
             hidden={hidden}
             setPane={this.setPane}
             devToolIndex={devToolIndex}
-            moveTab={(prevPos, nextPos) => {
-              if (this.props.moveTab) {
-                if (prevPos.devToolIndex === this.props.devToolIndex) {
-                  this.setState({
-                    currentPaneIndex: nextPos.tabPosition,
-                  });
-                }
+            moveTab={
+              this.props.moveTab
+                ? (prevPos, nextPos) => {
+                    if (prevPos.devToolIndex === this.props.devToolIndex) {
+                      this.setState({
+                        currentPaneIndex: nextPos.tabPosition,
+                      });
+                    }
 
-                this.props.moveTab(prevPos, nextPos);
-              }
-            }}
+                    this.props.moveTab(prevPos, nextPos);
+                  }
+                : undefined
+            }
           />
 
           {!primary && (
@@ -442,7 +455,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
             />
           )}
         </Header>
-        <div style={{ position: 'relative', height: '100%', width: '100%' }}>
+        <ContentContainer>
           {panes.map((view, i) => {
             const { Content } = this.getViews()[view.id];
             return (
@@ -460,7 +473,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
               />
             );
           })}
-        </div>
+        </ContentContainer>
       </Container>
     );
   }

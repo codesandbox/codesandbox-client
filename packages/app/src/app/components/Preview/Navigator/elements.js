@@ -3,8 +3,7 @@ import styled, { css } from 'styled-components';
 export const Container = styled.div`
   display: flex;
   background-color: ${props =>
-    props.theme['editorGroupHeader.tabsBackground'] ||
-    props.theme.background()};
+    props.theme['editor.background'] || props.theme.background()};
   padding: 0.5rem;
   align-items: center;
   line-height: 1;
@@ -24,7 +23,13 @@ export const Icon = styled.button`
   border: none;
   background-color: transparent;
   color: ${props =>
-    props.disabled ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)'};
+    props.disabled
+      ? props.theme.light
+        ? 'rgba(0, 0, 0, 0.3)'
+        : 'rgba(255, 255, 255, 0.3)'
+      : props.theme.light
+        ? 'rgba(0, 0, 0, 0.5)'
+        : 'rgba(255, 255, 255, 0.6)'};
   font-size: 1.5rem;
   line-height: 0.5;
   margin: 0 0.1rem;
@@ -38,7 +43,9 @@ export const Icon = styled.button`
     `
     &:hover {
       cursor: pointer;
-      color: rgba(255, 255, 255, 1);
+      color: ${
+        props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'
+      };
     }`};
 
   ${props =>

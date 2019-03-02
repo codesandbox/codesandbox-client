@@ -365,12 +365,9 @@ export default class Content extends React.PureComponent<Props, State> {
       if (view === 'console') {
         views[0].views.unshift({ id: 'codesandbox.console' });
       } else if (view === 'tests') {
-        console.log('unsgufting');
         views[0].views.unshift({ id: 'codesandbox.tests' });
       }
     }
-
-    console.log(views);
 
     if (expandDevTools) {
       views[1].open = true;
@@ -465,7 +462,7 @@ export default class Content extends React.PureComponent<Props, State> {
               <CodeEditor
                 onInitialized={this.onCodeEditorInitialized}
                 currentModule={currentModule || mainModule}
-                isModuleSynced
+                isModuleSynced={() => true}
                 sandbox={sandbox}
                 settings={this.getPreferences()}
                 canSave={false}

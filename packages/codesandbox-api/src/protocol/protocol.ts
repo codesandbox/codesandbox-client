@@ -83,6 +83,7 @@ export default class Protocol {
     };
 
     if (e.source) {
+      // @ts-ignore
       e.source.postMessage(returnMessage, '*');
     } else {
       this._postMessage(returnMessage);

@@ -9,7 +9,11 @@ function getConstants() {
   return constants;
 }
 
-function updateChildren(parent: Module, child: Module, scan: boolean) {
+function updateChildren(
+  parent: Module | undefined,
+  child: Module,
+  scan: boolean
+) {
   var children = parent && parent.children;
   if (children && !(scan && children.includes(child))) children.push(child);
 }
@@ -17,7 +21,7 @@ function updateChildren(parent: Module, child: Module, scan: boolean) {
 export default class Module {
   id: string;
   exports: any;
-  parent: Module;
+  parent: Module | undefined;
   children: Module[];
   filename: string | null;
   loaded: boolean;
@@ -26,10 +30,12 @@ export default class Module {
   } = {
     ['.js']: function(module: Module, filename: string) {
       var content = fs.readFileSync(filename, 'utf8');
+
       module._compile(content, filename);
     },
     ['.json']: function(module: Module, filename: string) {
       var content = fs.readFileSync(filename, 'utf8');
+
       try {
         module.exports = JSON.parse(content);
       } catch (err) {
@@ -45,7 +51,7 @@ export default class Module {
     [filename: string]: Module;
   } = {};
 
-  constructor(id: string, parent: Module) {
+  constructor(id: string, parent?: Module) {
     this.id = id;
     this.exports = {};
     this.parent = parent;
@@ -251,7 +257,10 @@ export default class Module {
       // VIM Mode needs this just to check if there are permissions, we know that all files can be accessed
       // so this way we force it to work.
       fs.accessSync = (_path: any, _type: any) => {
-        return true;
+        if (fs.existsSync(_path)) {
+          return true;
+        }
+        throw new Error('File not found');
       };
 
       return fs;
@@ -263,7 +272,6 @@ export default class Module {
     }
 
     var filename = Module._resolveFilename(request, parent);
-
     var cachedModule = Module._cache[filename];
     if (cachedModule) {
       updateChildren(parent, cachedModule, true);

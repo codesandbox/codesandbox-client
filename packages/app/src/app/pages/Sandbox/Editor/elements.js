@@ -10,8 +10,8 @@ export const Container = styled.div`
   bottom: 0;
 
   .Resizer {
-    background: ${props => props.theme['editorGroup.border'] || 'black'};
-    border-color: ${props => props.theme['editorGroup.border'] || 'black'};
+    background: ${props => props.theme['sideBar.border'] || 'black'};
+    border-color: ${props => props.theme['sideBar.border'] || 'black'};
     background-clip: padding-box;
   }
 `;

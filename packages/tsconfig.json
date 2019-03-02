@@ -1,13 +1,15 @@
 {
-  "files": [],
+  "exclude": ["./*"],
   "compilerOptions": {
+    "baseUrl": "./",
     "module": "commonjs",
     "target": "ES6",
-    "lib": ["webworker", "es5", "dom"],
+    "lib": ["webworker", "es6", "dom"],
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "allowJs": true,
     "paths": {
-      "sandbox/*": ["src/sandbox/*"],
-      "app/*": ["src/app/*"],
-      "embed/*": ["src/embed/*"]
+      "common/*": ["./src/common/*"]
     }
   }
 }

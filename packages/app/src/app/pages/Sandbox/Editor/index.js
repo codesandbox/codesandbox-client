@@ -84,8 +84,8 @@ class ContentSplit extends React.Component {
           ...this.state.theme,
         }}
       >
-        <Container>
-          {!store.preferences.settings.zenMode && <Header />}
+        <Container className="monaco-workbench">
+          <Header zenMode={store.preferences.settings.zenMode} />
 
           <Fullscreen style={{ width: 'initial' }}>
             {!hideNavigation && <Navigation />}
@@ -123,6 +123,9 @@ class ContentSplit extends React.Component {
                 }}
                 pane2Style={{
                   height: '100%',
+                }}
+                style={{
+                  overflow: 'visible', // For VSCode Context Menu
                 }}
               >
                 {store.workspace.openedWorkspaceItem ? <Workspace /> : <div />}

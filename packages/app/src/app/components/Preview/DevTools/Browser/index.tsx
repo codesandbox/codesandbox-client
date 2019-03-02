@@ -1,12 +1,9 @@
 import * as React from 'react';
 
 import Preview from '../../../../pages/Sandbox/Editor/Content/Preview';
+import { DevToolProps } from '..';
 
-interface Props {
-  hidden: boolean;
-}
-
-class Browser extends React.PureComponent<Props> {
+class Browser extends React.PureComponent<DevToolProps> {
   render() {
     return (
       <Preview hidden={this.props.hidden} width={'100%'} height={'100%'} />

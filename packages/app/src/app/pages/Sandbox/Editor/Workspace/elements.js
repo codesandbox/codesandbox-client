@@ -71,8 +71,7 @@ export const getContainerStyles = props => {
       color: ${theme['list.activeSelectionForeground'] ||
         theme.white()} !important;
       border-color: ${color()} !important;
-      background-color: ${theme['list.activeSelectionBackground'] ||
-        color.lighten(0.1).clearer(0.8)()} !important;
+      background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
     `;
   }
 
@@ -184,10 +183,12 @@ export const ItemTitle = styled.div`
   font-size: 1rem;
   font-weight: 400;
 
-  margin: 1rem;
-  margin-bottom: 0.5rem;
+  padding: 1rem;
+  padding-bottom: 0.5rem;
 
   color: ${props => props.theme.templateColor || props.theme.secondary};
+  /* background-color: ${props =>
+    props.theme['sideBarSectionHeader.background'] || 'transparent'}; */
 `;
 
 export const Description = styled.div`

@@ -31,6 +31,48 @@ interface DragProps {
   isOver: boolean;
 }
 
+/**
+ * Dims all other elements to make sure the user knows they can drag the tab to the right side
+ * only
+ */
+function useGlobalDim(isDragging: boolean) {
+  const blockerRef = React.useRef(null);
+  React.useEffect(
+    () => {
+      const devtools = document.getElementById('csb-devtools');
+      const container = document.getElementById('workbench.main.container');
+      if (devtools && container) {
+        if (isDragging) {
+          const blocker = document.createElement('div');
+          blocker.style.position = 'fixed';
+          blocker.style.top = '0';
+          blocker.style.right = '0';
+          blocker.style.left = '0';
+          blocker.style.bottom = '0';
+          blocker.style.zIndex = '1000';
+          devtools.parentElement.style.zIndex = '2000';
+          blocker.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+
+          container.appendChild(blocker);
+
+          blockerRef.current = blocker;
+        } else {
+          if (blockerRef.current) {
+            blockerRef.current.parentElement.removeChild(blockerRef.current);
+            blockerRef.current = null;
+          }
+          devtools.parentElement.style.zIndex = '0';
+        }
+      }
+
+      return () => {
+        document.body.style.opacity = '1';
+      };
+    },
+    [isDragging]
+  );
+}
+
 export const PaneTab = ({
   active,
   pane,
@@ -41,19 +83,16 @@ export const PaneTab = ({
   isOver,
   isDragging,
 }: TabProps & DragProps) => {
+  useGlobalDim(isDragging);
+
   const component = (
-    <div
-      style={{
-        height: '100%',
-        backgroundColor:
-          isOver && !isDragging ? 'rgba(0, 0, 0, 0.3)' : 'transparent',
-      }}
-    >
+    <div style={{ height: '100%' }}>
       <Tab
         active={active}
         onClick={onClick}
         onMouseDown={onMouseDown}
         key={pane.id}
+        isOver={isOver && !isDragging}
       >
         {pane.title}
         {false &&
@@ -134,6 +173,8 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-export default DropTarget('PREVIEW_TAB', entryTarget, collectTarget)(
-  DragSource('PREVIEW_TAB', entrySource, collectSource)(PaneTab)
+export const PREVIEW_TAB_ID = 'PREVIEW_TAB';
+
+export default DropTarget(PREVIEW_TAB_ID, entryTarget, collectTarget)(
+  DragSource(PREVIEW_TAB_ID, entrySource, collectSource)(PaneTab)
 );

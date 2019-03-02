@@ -11,7 +11,8 @@
     "Raven": true,
     "VERSION": true,
     "$PropertyType": true,
-    "TimeoutID": true
+    "TimeoutID": true,
+    "object": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,

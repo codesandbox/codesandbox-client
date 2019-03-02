@@ -67,23 +67,27 @@ class AngularTemplate extends Template {
   getEntries(configurationFiles: { [type: string]: Object }): Array<string> {
     let entries = [];
 
-    if (!configurationFiles['angular-config'].generated) {
-      const { parsed } = configurationFiles['angular-config'];
-      entries = entries.concat(getAngularJSONEntries(parsed));
-    } else {
-      const { parsed } = configurationFiles['angular-cli'];
-      entries = entries.concat(getAngularCLIEntries(parsed));
-    }
+    try {
+      if (!configurationFiles['angular-config'].generated) {
+        const { parsed } = configurationFiles['angular-config'];
+        entries = entries.concat(getAngularJSONEntries(parsed));
+      } else {
+        const { parsed } = configurationFiles['angular-cli'];
+        entries = entries.concat(getAngularCLIEntries(parsed));
+      }
 
-    if (
-      configurationFiles.package.parsed &&
-      configurationFiles.package.parsed.main
-    ) {
-      entries.push(absolute(configurationFiles.package.parsed.main));
-    }
+      if (
+        configurationFiles.package.parsed &&
+        configurationFiles.package.parsed.main
+      ) {
+        entries.push(absolute(configurationFiles.package.parsed.main));
+      }
 
-    entries.push('/src/main.ts');
-    entries.push('/main.ts');
+      entries.push('/src/main.ts');
+      entries.push('/main.ts');
+    } catch (e) {
+      console.error(e);
+    }
 
     return entries;
   }

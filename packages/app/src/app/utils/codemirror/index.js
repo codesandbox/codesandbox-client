@@ -23,7 +23,7 @@ try {
 }
 
 // eslint-disable-next-line
-export const getCodeMirror = (el, doc) => {
+export const getCodeMirror = (el, doc, options) => {
   const cm = new CodeMirror(el, {
     value: doc,
     theme: 'oceanic',
@@ -36,6 +36,8 @@ export const getCodeMirror = (el, doc) => {
     lineNumbers: true,
     lineWrapping: false,
     styleActiveLine: true,
+
+    ...(options || {}),
   });
 
   return cm;

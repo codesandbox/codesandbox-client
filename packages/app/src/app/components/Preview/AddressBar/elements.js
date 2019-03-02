@@ -16,8 +16,10 @@ export const InputContainer = styled.div`
     padding: 0.2rem 0.5rem;
     color: black;
     width: 100%;
-    color: rgba(255, 255, 255, 0.8);
+    color: ${props =>
+      props.theme['input.foreground'] || 'rgba(255, 255, 255, 0.8)'};
     box-sizing: border-box;
-    background-color: ${props => props.theme.background4};
+    background-color: ${props =>
+      props.theme['input.background'] || props.theme.background4};
   }
 `;

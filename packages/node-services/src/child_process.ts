@@ -191,7 +191,6 @@ function handleBroadcast(
 }
 
 function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
-  console.log('forking', path);
   const WorkerConstructor = workerMap.get(path);
   const isDefaultWorker = !WorkerConstructor;
 
@@ -201,11 +200,15 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
     return new NullChildProcess();
   }
 
+  console.log('forking', path);
+
+  const WORKER_ID = path + '-' + Math.floor(Math.random() * 100000);
+
   self.addEventListener('message', ((e: MessageEvent) => {
     const { data } = e;
 
     if (data.$broadcast) {
-      handleBroadcast(path, worker, data);
+      handleBroadcast(WORKER_ID, worker, data);
       return;
     }
 
@@ -223,7 +226,7 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
     const { data } = e;
 
     if (data.$broadcast) {
-      handleBroadcast(path, self, data);
+      handleBroadcast(WORKER_ID, self, data);
       return;
     }
 
@@ -239,7 +242,7 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
   });
 
   const data: any = {
-    entry: isDefaultWorker ? path : undefined,
+    entry: path,
     argv: argv || [],
   };
 

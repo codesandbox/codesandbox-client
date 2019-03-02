@@ -179,7 +179,6 @@ export const changeCode = [
 ];
 
 export const saveChangedModules = [
-  track('Save Modified Modules', {}),
   ensureOwnedEditable,
   actions.outputChangedModules,
   actions.saveChangedModules,

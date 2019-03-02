@@ -221,6 +221,15 @@ class EditorPreview extends React.Component<Props, State> {
       }
     );
 
+    const disposeModuleSyncedHandler = reaction(
+      () => store.editor.changedModuleShortids.map(shortid => shortid),
+      () => {
+        if (editor.moduleSyncedChanged) {
+          editor.moduleSyncedChanged();
+        }
+      }
+    );
+
     const disposePendingOperationHandler = reaction(
       () => store.editor.pendingOperations.toJSON(),
       () => {
@@ -339,6 +348,7 @@ class EditorPreview extends React.Component<Props, State> {
       disposePendingOperationHandler();
       disposeLiveSelectionHandler();
       disposeTogglePreview();
+      disposeModuleSyncedHandler();
     };
   };
 
@@ -367,7 +377,7 @@ class EditorPreview extends React.Component<Props, State> {
 
   moveDevToolsTab = (prevPos, nextPos) => {
     const { store, signals } = this.props;
-    const tabs = this.getPreviewTabs();
+    const tabs = getPreviewTabs(store.editor.currentSandbox);
 
     const prevDevTools = tabs[prevPos.devToolIndex];
     const nextDevTools = tabs[nextPos.devToolIndex];
@@ -479,7 +489,7 @@ class EditorPreview extends React.Component<Props, State> {
           style={{
             height: '100%',
             width: '100%',
-
+            overflow: 'visible', // For VSCode Context Menu
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -507,6 +517,9 @@ class EditorPreview extends React.Component<Props, State> {
                 this.getBounds();
               });
             }}
+            style={{
+              overflow: 'visible', // For VSCode Context Menu
+            }}
             split="vertical"
             defaultSize={'50%'}
             pane1Style={
@@ -521,6 +534,7 @@ class EditorPreview extends React.Component<Props, State> {
               visibility: windowVisible ? 'visible' : 'hidden',
               maxWidth: windowVisible ? 'inherit' : 0,
               width: windowVisible ? 'inherit' : 0,
+              zIndex: 0, // For VSCode hovers, beware this is also dynamically changed in PreviewTabs
             }}
           >
             <div
@@ -540,9 +554,7 @@ class EditorPreview extends React.Component<Props, State> {
                 sandbox={sandbox}
                 currentTab={currentTab}
                 currentModule={currentModule}
-                isModuleSynced={store.editor.isModuleSynced(
-                  currentModule.shortid
-                )}
+                isModuleSynced={store.editor.isModuleSynced}
                 width={editorWidth}
                 height={editorHeight}
                 absoluteWidth={absoluteWidth}
@@ -588,6 +600,7 @@ class EditorPreview extends React.Component<Props, State> {
                 flexDirection: 'column',
                 height: '100%',
               }}
+              id="csb-devtools" // used for tabs for highlighting
             >
               {views.map((view, i) => (
                 <DevTools

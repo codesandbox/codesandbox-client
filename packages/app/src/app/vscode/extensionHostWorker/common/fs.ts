@@ -1,5 +1,6 @@
 import { FileSystemConfiguration } from '../../../../../../../standalone-packages/codesandbox-browserfs';
 import { getTypeFetcher } from './type-downloader';
+import { EXTENSIONS_LOCATION } from '../../constants';
 
 export const BROWSER_FS_CONFIG: FileSystemConfiguration = {
   fs: 'MountableFileSystem',
@@ -14,17 +15,12 @@ export const BROWSER_FS_CONFIG: FileSystemConfiguration = {
       fs: 'InMemory',
       options: {},
     },
-    // '/extensions': {
-    //   fs: 'ZipFS',
-    //   options: {
-    //     zipData: extensionsBuffer,
-    //   },
-    // },
     '/extensions': {
-      fs: 'HTTPRequest',
+      fs: 'BundledHTTPRequest',
       options: {
-        index: '/vscode/extensions-bundle/extensions/index.json',
-        baseUrl: '/vscode/extensions-bundle/extensions',
+        index: EXTENSIONS_LOCATION + '/extensions/index.json',
+        baseUrl: EXTENSIONS_LOCATION + '/extensions',
+        logReads: process.env.NODE_ENV === 'development',
       },
     },
     // '/vscode': {
@@ -47,6 +43,7 @@ export const BROWSER_FS_CONFIG: FileSystemConfiguration = {
 export async function initializeBrowserFS({
   syncSandbox = false,
   syncTypes = false,
+  extraMounts = {},
 } = {}) {
   return new Promise(async resolve => {
     const config = { ...BROWSER_FS_CONFIG };
@@ -73,6 +70,8 @@ export async function initializeBrowserFS({
         },
       };
     }
+
+    config.options = { ...config.options, ...extraMounts };
 
     BrowserFS.configure(config, async e => {
       if (e) {

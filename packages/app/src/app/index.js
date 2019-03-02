@@ -24,8 +24,7 @@ import logError from './utils/error';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
 
 import vscode from './vscode';
-
-// import extensionsBuffer from 'buffer-loader!vscode/extensions-bundle/extensions/extensions.zip';
+import { EXTENSIONS_LOCATION } from './vscode/constants';
 
 const debug = _debug('cs:app');
 
@@ -168,18 +167,14 @@ window.BrowserFS.configure(
         fs: 'LocalStorage',
       },
       '/extensions': {
-        fs: 'HTTPRequest',
+        fs: 'BundledHTTPRequest',
         options: {
-          index: '/vscode/extensions-bundle/extensions/index.json',
-          baseUrl: '/vscode/extensions-bundle/extensions',
+          index: EXTENSIONS_LOCATION + '/extensions/index.json',
+          baseUrl: EXTENSIONS_LOCATION + '/extensions',
+          bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+          logReads: process.env.NODE_ENV === 'development',
         },
       },
-      // '/extensions': {
-      //   fs: 'ZipFS',
-      //   options: {
-      //     zipData: extensionsBuffer,
-      //   },
-      // },
     },
   },
   e => {
@@ -200,7 +195,7 @@ window.BrowserFS.configure(
           console.log('Loaded Monaco'); // eslint-disable-line
         }
         if (isVSCode) {
-          vscode.setController(controller);
+          vscode.acquireController(controller);
 
           import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host').then(
             ExtHostWorkerLoader => {

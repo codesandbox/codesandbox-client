@@ -7,7 +7,8 @@ export const Container = styled.div`
   flex: 0 0 3.5rem;
   height: 100%;
   color: ${props =>
-    props.theme['activityBar.foreground'] || 'rgba(255, 255, 255, 0.5)'};
+    props.theme['activityBar.inactiveForeground'] ||
+    'rgba(255, 255, 255, 0.5)'};
 
   font-size: 1.4rem;
   align-items: center;
@@ -32,6 +33,6 @@ export const IconContainer = styled.div`
   ${props =>
     props.selected &&
     css`
-      color: white;
+      color: ${props.theme['activityBar.foreground']};
     `};
 `;

@@ -18,6 +18,7 @@ export const Tabs = styled.div`
 export const Actions = styled.div`
   font-size: 1.125rem;
   display: inline-flex;
+  align-items: center;
 
   svg {
     margin: 0 0.5rem;
