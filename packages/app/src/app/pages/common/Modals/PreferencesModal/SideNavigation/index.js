@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Relative from 'common/components/Relative';
+import Relative from 'common/libcomponents/Relative';
 import SocialInfo from 'app/components/SocialInfo';
 
 import {

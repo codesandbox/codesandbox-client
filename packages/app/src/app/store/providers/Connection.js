@@ -1,5 +1,5 @@
 import { Provider } from 'cerebral';
-import addListener from 'common/connection-manager';
+import addListener from 'common/libconnection-manager';
 
 const listeners = {};
 

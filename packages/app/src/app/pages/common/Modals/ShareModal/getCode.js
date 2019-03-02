@@ -1,10 +1,10 @@
-import { getModulePath } from 'common/sandbox/modules';
+import { getModulePath } from 'common/libsandbox/modules';
 import {
   optionsToParameterizedUrl,
   protocolAndHost,
   sandboxUrl,
   embedUrl,
-} from 'common/utils/url-generator';
+} from 'common/libutils/url-generator';
 
 export const BUTTON_URL = `${
   process.env.CODESANDBOX_HOST

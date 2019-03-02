@@ -1,4 +1,4 @@
-import { isBabel7 } from 'common/utils/is-babel-7';
+import { isBabel7 } from 'common/libutils/is-babel-7';
 
 import Preset from '../';
 

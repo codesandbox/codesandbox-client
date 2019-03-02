@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Row from 'common/components/flex/Row';
-import getTemplateDefinition from 'common/templates';
+import Row from 'common/libcomponents/flex/Row';
+import getTemplateDefinition from 'common/libtemplates';
 
 export const Container = styled.div`
   transition: 0.3s ease all;

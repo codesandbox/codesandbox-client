@@ -1,7 +1,7 @@
 import React from 'react';
-import getIcon from 'common/templates/icons';
+import getIcon from 'common/libtemplates/icons';
 
-import { ENTER } from 'common/utils/keycodes';
+import { ENTER } from 'common/libutils/keycodes';
 import { Container, IconContainer, Title, SubTitle } from './elements';
 
 export default ({ template, subtitle, width, selectTemplate, small }) => {

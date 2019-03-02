@@ -1,10 +1,10 @@
 import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
-import { absolute } from 'common/utils/path';
-import _debug from 'common/utils/debug';
-import parseConfigurations from 'common/templates/configuration/parse';
+import { absolute } from 'common/libutils/path';
+import _debug from 'common/libutils/debug';
+import parseConfigurations from 'common/libtemplates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
-import { isBabel7 } from 'common/utils/is-babel-7';
+import { isBabel7 } from 'common/libutils/is-babel-7';
 
 import getPreset from './eval';
 import Manager from './eval/manager';

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import Portal from 'common/components/Portal';
-import { ESC } from 'common/utils/keycodes';
+import Portal from 'common/libcomponents/Portal';
+import { ESC } from 'common/libutils/keycodes';
 
 import { Spring, animated } from 'react-spring';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Relative from 'common/components/Relative';
-import badges from 'common/utils/badges/patron-info';
+import Relative from 'common/libcomponents/Relative';
+import badges from 'common/libutils/badges/patron-info';
 
 import './animations.css';
 import Particles from './Particles';

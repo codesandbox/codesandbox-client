@@ -1,10 +1,10 @@
-import folderSvg from 'common/components/icons/folder.svg';
-import folderOpenSvg from 'common/components/icons/folder-open.svg';
-import faviconSvg from 'common/components/icons/favicon.svg';
-import fileSvg from 'common/components/icons/file.svg';
-import imageSvg from 'common/components/icons/image.svg';
-import codesandboxSvg from 'common/components/icons/codesandbox.svg';
-import nowSvg from 'common/components/icons/now.svg';
+import folderSvg from 'common/libcomponents/icons/folder.svg';
+import folderOpenSvg from 'common/libcomponents/icons/folder-open.svg';
+import faviconSvg from 'common/libcomponents/icons/favicon.svg';
+import fileSvg from 'common/libcomponents/icons/file.svg';
+import imageSvg from 'common/libcomponents/icons/image.svg';
+import codesandboxSvg from 'common/libcomponents/icons/codesandbox.svg';
+import nowSvg from 'common/libcomponents/icons/now.svg';
 
 function imageExists(url) {
   return new Promise((resolve, reject) => {

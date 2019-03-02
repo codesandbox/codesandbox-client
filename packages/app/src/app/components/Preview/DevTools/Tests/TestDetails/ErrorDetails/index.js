@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import theme from 'common/theme';
+import theme from 'common/libtheme';
 import ansiHTML from 'ansi-html';
 
 import type { TestError } from '../../';

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import Centered from 'common/components/flex/Centered';
-import Margin from 'common/components/spacing/Margin';
+import Centered from 'common/libcomponents/flex/Centered';
+import Margin from 'common/libcomponents/spacing/Margin';
 
 export const Navigation = styled.div`
   width: 100%;

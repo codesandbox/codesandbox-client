@@ -2,7 +2,7 @@ import { sequence } from 'cerebral';
 import { when, push, unset, set, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
-import getTemplateDefinition from 'common/templates';
+import getTemplateDefinition from 'common/libtemplates';
 
 import * as actions from './actions';
 import * as factories from './factories';

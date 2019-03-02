@@ -3,11 +3,11 @@ import { inject } from 'mobx-react';
 
 import Navigation from 'app/pages/common/Navigation';
 
-import MaxWidth from 'common/components/flex/MaxWidth';
-import Centered from 'common/components/flex/Centered';
-import Margin from 'common/components/spacing/Margin';
+import MaxWidth from 'common/libcomponents/flex/MaxWidth';
+import Centered from 'common/libcomponents/flex/Centered';
+import Margin from 'common/libcomponents/spacing/Margin';
 import history from 'app/utils/history';
-import { sandboxUrl } from 'common/utils/url-generator';
+import { sandboxUrl } from 'common/libutils/url-generator';
 
 import NewSandboxModal from '../Dashboard/Content/CreateNewSandbox/Modal';
 

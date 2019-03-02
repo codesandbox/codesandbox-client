@@ -2,11 +2,11 @@
 import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'common/utils/debug';
+import _debug from 'common/libutils/debug';
 
 import hashsum from 'hash-sum';
 
-import * as pathUtils from 'common/utils/path';
+import * as pathUtils from 'common/libutils/path';
 
 import type { Module } from './entities/module';
 import type { SourceMap } from './transpilers/utils/get-source-map';

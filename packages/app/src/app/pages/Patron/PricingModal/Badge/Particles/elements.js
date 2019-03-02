@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from 'styled-components';
-import badges from 'common/utils/badges/patron-info';
+import badges from 'common/libutils/badges/patron-info';
 
 const particleAnimation = (deg: number) => keyframes`
   0% {

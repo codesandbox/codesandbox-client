@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import DEFAULT_PRETTIER_CONFIG from 'common/prettify-default-config';
+import DEFAULT_PRETTIER_CONFIG from 'common/libprettify-default-config';
 import {
   lineAndColumnToIndex,
   indexToLineAndColumn,

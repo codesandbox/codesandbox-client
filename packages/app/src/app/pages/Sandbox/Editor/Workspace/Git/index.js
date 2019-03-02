@@ -1,11 +1,11 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Margin from 'common/components/spacing/Margin';
-import GithubBadge from 'common/components/GithubBadge';
-import { githubRepoUrl } from 'common/utils/url-generator';
+import Margin from 'common/libcomponents/spacing/Margin';
+import GithubBadge from 'common/libcomponents/GithubBadge';
+import { githubRepoUrl } from 'common/libutils/url-generator';
 import Button from 'app/components/Button';
-import Input, { TextArea } from 'common/components/Input';
+import Input, { TextArea } from 'common/libcomponents/Input';
 
 import TotalChanges from './TotalChanges';
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';

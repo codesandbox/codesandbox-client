@@ -2,7 +2,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import history from 'app/utils/history';
-import { sandboxUrl } from 'common/utils/url-generator';
+import { sandboxUrl } from 'common/libutils/url-generator';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { Mutation } from 'react-apollo';
@@ -11,12 +11,12 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import Unlisted from 'react-icons/lib/md/insert-link';
 import Private from 'react-icons/lib/md/lock';
 
-import Input from 'common/components/Input';
-import getTemplate from 'common/templates';
-import theme from 'common/theme';
-import track from 'common/utils/analytics';
+import Input from 'common/libcomponents/Input';
+import getTemplate from 'common/libtemplates';
+import theme from 'common/libtheme';
+import track from 'common/libutils/analytics';
 
-import { ESC, ENTER } from 'common/utils/keycodes';
+import { ESC, ENTER } from 'common/libutils/keycodes';
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
 import {

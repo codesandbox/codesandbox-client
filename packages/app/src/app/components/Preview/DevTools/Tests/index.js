@@ -5,7 +5,7 @@ import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
 
 import immer from 'immer';
-import getTemplate, { type Template } from 'common/templates';
+import getTemplate, { type Template } from 'common/libtemplates';
 
 import { Container, TestDetails, TestContainer } from './elements';
 

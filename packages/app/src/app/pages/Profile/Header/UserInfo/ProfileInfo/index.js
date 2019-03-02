@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Row from 'common/components/flex/Row';
-import Column from 'common/components/flex/Column';
+import Row from 'common/libcomponents/flex/Row';
+import Column from 'common/libcomponents/flex/Column';
 
-import Margin from 'common/components/spacing/Margin';
+import Margin from 'common/libcomponents/spacing/Margin';
 import PatronStar from 'app/components/PatronStar';
 
 import { ProfileImage, Name, Username, IconWrapper } from './elements';

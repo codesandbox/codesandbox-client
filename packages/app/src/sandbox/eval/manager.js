@@ -4,8 +4,8 @@ import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
-import * as pathUtils from 'common/utils/path';
-import _debug from 'common/utils/debug';
+import * as pathUtils from 'common/libutils/path';
+import _debug from 'common/libutils/debug';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 

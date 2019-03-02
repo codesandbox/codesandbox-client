@@ -1,7 +1,7 @@
 import React from 'react';
 import { listen, dispatch, actions } from 'codesandbox-api';
-import Tooltip from 'common/components/Tooltip';
-import getTemplate, { type Template } from 'common/templates';
+import Tooltip from 'common/libcomponents/Tooltip';
+import getTemplate, { type Template } from 'common/libtemplates';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
 import { Console } from 'console-feed';
