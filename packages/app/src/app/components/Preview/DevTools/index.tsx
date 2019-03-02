@@ -4,7 +4,8 @@ import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
-import { Template } from 'common/templates';
+import Tooltip from 'common/lib/components/Tooltip';
+import { TemplateType } from 'common/lib/templates';
 
 import console from './Console';
 import tests from './Tests';
@@ -12,7 +13,7 @@ import problems from './Problems';
 import terminal from './Terminal';
 
 import { Container, Header, ContentContainer } from './elements';
-import { ViewConfig } from 'common/templates/template';
+import { ViewConfig } from 'common/lib/templates/template';
 import Tabs, { ITabPosition } from './Tabs';
 
 function unFocus(document, window) {
@@ -79,7 +80,7 @@ const VIEWS: IViews = {
 
 type Props = {
   sandboxId: string;
-  template: Template;
+  template: TemplateType;
   setDragging?: (dragging: boolean) => void;
   zenMode?: boolean;
   shouldExpandDevTools?: boolean;

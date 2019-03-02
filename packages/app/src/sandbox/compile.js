@@ -1,10 +1,11 @@
 import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
-import { absolute } from 'common/utils/path';
-import _debug from 'common/utils/debug';
-import parseConfigurations from 'common/templates/configuration/parse';
+import { absolute } from 'common/lib/utils/path';
+import _debug from 'common/lib/utils/debug';
+import parseConfigurations from 'common/lib/templates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
-import { isBabel7 } from 'common/utils/is-babel-7';
+import { isBabel7 } from 'common/lib/utils/is-babel-7';
+import getDefinition from 'common/lib/templates/index';
 
 import getPreset from './eval';
 import Manager from './eval/manager';
@@ -24,7 +25,6 @@ import {
 
 import loadDependencies from './npm';
 import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
-import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
 
@@ -273,11 +273,14 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
     returnedDependencies['@babel/runtime'] =
-      returnedDependencies['@babel/runtime'] || '7.1.2';
+      returnedDependencies['@babel/runtime'] || '7.3.1';
   } else {
     returnedDependencies['babel-runtime'] =
       returnedDependencies['babel-runtime'] || '6.26.0';
   }
+
+  // This is used for cache busting
+  returnedDependencies.csbbust = '1.0.0';
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {

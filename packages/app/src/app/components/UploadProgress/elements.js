@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 
-import delayInEffect from 'common/utils/animation/delay-effect';
+import delayInEffect from 'common/lib/utils/animation/delay-effect';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 import LocalLogo from 'react-icons/lib/md/laptop';
 import Cube from './Cube';

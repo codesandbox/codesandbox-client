@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { Status } from '..';
 
 export const Actions = styled.div`
   transition: 0.3s ease opacity;
@@ -29,7 +30,7 @@ export const TestName = styled.div`
   white-space: nowrap;
 `;
 
-export const Test = styled.div`
+export const Test = styled.div<{ status: Status }>`
   display: flex;
   align-items: center;
   padding-left: 1rem;
@@ -44,7 +45,7 @@ export const Test = styled.div`
     `};
 `;
 
-export const Block = styled.div`
+export const Block = styled.div<{ last: boolean }>`
   transition: 0.3s ease color;
   display: flex;
   padding: 0.25rem 0.4rem;
@@ -105,7 +106,7 @@ export const Tests = styled.div`
   }
 `;
 
-export const Container = styled.div`
+export const Container = styled.div<{ selected: boolean }>`
   transition: 0.3s ease all;
   font-weight: 500;
   font-size: 0.875rem;

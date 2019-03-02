@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import VERSION from 'common/version';
+import VERSION from 'common/lib/version';
 
 import getWorkspaceItems from 'app/store/modules/workspace/items';
 import SocialInfo from 'app/components/SocialInfo';

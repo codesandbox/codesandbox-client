@@ -1,7 +1,7 @@
 import { sequence, parallel } from 'cerebral';
 import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import trackAnalytics from 'common/utils/analytics';
+import trackAnalytics from 'common/lib/utils/analytics';
 import * as actions from './actions';
 import { initializeNotifications } from './modules/user-notifications/sequences';
 

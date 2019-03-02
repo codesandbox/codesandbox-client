@@ -1,6 +1,6 @@
 import React from 'react';
 import history from 'app/utils/history';
-import { sandboxUrl } from 'common/utils/url-generator';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
 
 import NewSandboxModal from '../../../Dashboard/Content/CreateNewSandbox/Modal';
 

@@ -3,9 +3,9 @@
 import * as React from 'react';
 import { sortBy } from 'lodash-es';
 
-import type { Module, Directory } from 'common/types';
+import type { Module, Directory } from 'common/lib/types';
 
-import { isMainModule } from 'common/sandbox/modules';
+import { isMainModule } from 'common/lib/sandbox/modules';
 import getType from 'app/utils/get-type';
 
 import File from '../File';

@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
-import { getModulePath } from 'common/sandbox/modules';
+import { getModulePath } from 'common/lib/sandbox/modules';
 import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import CrossIcon from 'react-icons/lib/md/clear';

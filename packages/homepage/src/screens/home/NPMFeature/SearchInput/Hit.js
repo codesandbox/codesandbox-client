@@ -67,7 +67,7 @@ export default class Hit extends React.PureComponent {
         rel="noreferrer noopener"
       >
         <Title>{this.props.hit.value}</Title>
-        <Count>{this.props.hit.count}</Count>
+        <Count>{this.props.hit.count.toLocaleString('en-US')}</Count>
       </Container>
     );
   }

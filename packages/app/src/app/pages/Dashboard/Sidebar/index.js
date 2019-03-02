@@ -3,12 +3,12 @@ import history from 'app/utils/history';
 import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router-dom';
 import { Query } from 'react-apollo';
-import Input from 'common/components/Input';
+import Input from 'common/lib/components/Input';
 import Button from 'app/components/Button';
 import TimeIcon from 'react-icons/lib/md/access-time';
 import PeopleIcon from 'react-icons/lib/md/people';
 
-import { teamOverviewUrl } from 'common/utils/url-generator';
+import { teamOverviewUrl } from 'common/lib/utils/url-generator';
 
 import Item from './Item';
 import SandboxesItem from './SandboxesItem';

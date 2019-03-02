@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import LogoIcon from 'common/components/Logo';
+import LogoIcon from 'common/lib/components/Logo';
 
 import { Container } from './elements';
 

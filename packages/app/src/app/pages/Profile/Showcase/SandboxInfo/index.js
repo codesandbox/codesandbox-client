@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { sandboxUrl } from 'common/utils/url-generator';
-import Row from 'common/components/flex/Row';
+import { sandboxUrl } from 'common/lib/utils/url-generator';
+import Row from 'common/lib/components/flex/Row';
 import Stat from 'app/components/Stat';
 
 import SvgButton from './play-button.svg';

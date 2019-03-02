@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 
 import { Link } from 'gatsby';
 
-import Logo from 'common/components/Logo';
-import MaxWidth from 'common/components/flex/MaxWidth';
+import Logo from 'common/lib/components/Logo';
+import MaxWidth from 'common/lib/components/flex/MaxWidth';
 
 import media from '../utils/media';
 

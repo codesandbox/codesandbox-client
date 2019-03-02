@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import fadeIn from 'common/utils/animation/fade-in';
+import fadeIn from 'common/lib/utils/animation/fade-in';
 
 import setupCanvas from './canvas';
 

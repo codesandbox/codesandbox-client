@@ -1,13 +1,13 @@
 // @ts-check
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import { sandboxUrl, profileUrl } from 'common/utils/url-generator';
+import { sandboxUrl, profileUrl } from 'common/lib/utils/url-generator';
 
 import { observer } from 'mobx-react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import GithubIcon from 'react-icons/lib/fa/github';
 
-import getTemplate from 'common/templates';
+import getTemplate from 'common/lib/templates';
 
 import {
   Container,

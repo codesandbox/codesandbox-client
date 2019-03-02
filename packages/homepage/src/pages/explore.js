@@ -1,8 +1,8 @@
 import React from 'react';
 
-import getTemplate from 'common/templates';
-import { protocolAndHost } from 'common/utils/url-generator';
-import { ARROW_LEFT, ARROW_RIGHT } from 'common/utils/keycodes';
+import getTemplate from 'common/lib/templates';
+import { protocolAndHost } from 'common/lib/utils/url-generator';
+import { ARROW_LEFT, ARROW_RIGHT } from 'common/lib/utils/keycodes';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';

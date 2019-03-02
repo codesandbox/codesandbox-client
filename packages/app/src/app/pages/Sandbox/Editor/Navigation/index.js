@@ -7,7 +7,7 @@ import PlusIcon from 'react-icons/lib/go/plus';
 import ServerIcon from 'react-icons/lib/go/server';
 
 import getWorkspaceItems from 'app/store/modules/workspace/items';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import InfoIcon from './InfoIcon';
 import FilesIcon from './FileIcon';

@@ -1,8 +1,7 @@
-import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import { getModulePath, getDirectoryPath } from 'common/sandbox/modules';
-import getTemplate from 'common/templates';
-
-import { dirname } from 'common/utils/path';
+import { dirname } from 'path';
+import { generateFileFromSandbox } from 'common/lib/templates/configuration/package-json';
+import getTemplate from 'common/lib/templates';
+import { getModulePath, getDirectoryPath } from 'common/lib/sandbox/modules';
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 

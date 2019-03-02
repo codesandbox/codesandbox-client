@@ -2,11 +2,11 @@ import * as React from 'react';
 import { sortBy, groupBy, flatten } from 'lodash-es';
 import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
-import { getModulePath } from 'common/sandbox/modules';
-import Input from 'common/components/Input';
+import { getModulePath } from 'common/lib/sandbox/modules';
+import Input from 'common/lib/components/Input';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
-import { ESC } from 'common/utils/keycodes';
+import { ESC } from 'common/lib/utils/keycodes';
 import {
   Container,
   InputContainer,

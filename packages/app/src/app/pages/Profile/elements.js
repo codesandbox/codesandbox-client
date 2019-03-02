@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Fullscreen from 'common/components/flex/Fullscreen';
+import Fullscreen from 'common/lib/components/flex/Fullscreen';
 
 export const Container = styled(Fullscreen)`
   color: white;

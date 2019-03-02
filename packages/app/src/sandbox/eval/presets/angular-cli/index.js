@@ -1,5 +1,5 @@
 // @flow
-import { join, absolute } from 'common/utils/path';
+import { join, absolute } from 'common/lib/utils/path';
 import Preset from '../';
 
 import angular2Transpiler from '../../transpilers/angular2-template';

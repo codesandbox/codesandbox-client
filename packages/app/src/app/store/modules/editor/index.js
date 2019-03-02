@@ -1,5 +1,5 @@
 import { Module } from 'cerebral';
-import themes from 'common/themes';
+import themes from 'common/lib/themes';
 import model from './model';
 import * as sequences from './sequences';
 import {

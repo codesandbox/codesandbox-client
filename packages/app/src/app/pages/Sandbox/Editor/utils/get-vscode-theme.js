@@ -1,8 +1,8 @@
 import JSON from 'json5';
 
-import codesandbox from 'common/themes/codesandbox.json';
+import codesandbox from 'common/lib/themes/codesandbox.json';
 
-import themes from 'common/themes';
+import themes from 'common/lib/themes';
 
 const editorBackground = 'editor.background';
 const editorForeground = 'editor.foreground';

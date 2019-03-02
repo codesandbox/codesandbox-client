@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 import { inject } from 'mobx-react';
 import { Mutation } from 'react-apollo';
 import history from 'app/utils/history';
-import { teamOverviewUrl } from 'common/utils/url-generator';
-import track from 'common/utils/analytics';
+import { teamOverviewUrl } from 'common/lib/utils/url-generator';
+import track from 'common/lib/utils/analytics';
 
 import { NotificationContainer, NotificationImage as Image } from '../elements';
 import {

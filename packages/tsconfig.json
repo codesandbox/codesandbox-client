@@ -1,10 +1,10 @@
 {
-  "exclude": ["./*"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "baseUrl": "./",
     "module": "commonjs",
     "target": "ES6",
-    "lib": ["webworker", "es6", "dom"],
+    "lib": ["webworker", "es6", "dom", "es2017.object"],
     "resolveJsonModule": true,
     "jsx": "react",
     "allowJs": true,

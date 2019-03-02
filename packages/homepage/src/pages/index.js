@@ -6,6 +6,7 @@ import CycleFeature from '../screens/home/CycleFeature';
 import ExtraFeatures from '../screens/home/ExtraFeatures';
 import RecentPublications from '../screens/home/RecentPublications';
 import Patron from '../screens/home/Patron';
+import Users from '../screens/home/Users';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 
@@ -42,6 +43,7 @@ export default class HomePage extends React.Component {
         <ExtraFeatures />
         <RecentPublications />
         <Patron />
+        <Users />
       </Layout>
     );
   }

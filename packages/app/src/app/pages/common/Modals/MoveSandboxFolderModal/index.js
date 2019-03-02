@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { basename } from 'path';
-import track from 'common/utils/analytics';
+import track from 'common/lib/utils/analytics';
 import Button from 'app/components/Button';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 

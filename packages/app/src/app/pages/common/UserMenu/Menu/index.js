@@ -12,10 +12,10 @@ import {
   patronUrl,
   curatorUrl,
   dashboardUrl,
-} from 'common/utils/url-generator';
-import PatronBadge from 'common/utils/badges/PatronBadge';
+} from 'common/lib/utils/url-generator';
+import PatronBadge from 'common/lib/utils/badges/PatronBadge';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
-import track from 'common/utils/analytics';
+import track from 'common/lib/utils/analytics';
 
 import { Container, Item, Icon, Separator } from './elements';
 import FeedbackIcon from './FeedbackIcon';

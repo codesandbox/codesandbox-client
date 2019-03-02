@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Block = styled.div`
+export const Block = styled.div<{ last: boolean }>`
   transition: 0.3s ease color;
   display: flex;
   padding: 0.5rem 0.4rem;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Padding from 'common/components/spacing/Padding';
-import Margin from 'common/components/spacing/Margin';
+import Padding from 'common/lib/components/spacing/Padding';
+import Margin from 'common/lib/components/spacing/Margin';
 
 export const Top = styled.div`
   display: flex;

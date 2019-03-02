@@ -1,5 +1,5 @@
 // @flow
-import * as pathUtils from 'common/utils/path';
+import * as pathUtils from 'common/lib/utils/path';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
@@ -73,12 +73,12 @@ const TEMP_USE_JSDELIVR = false;
 // Strips the version of a path, eg. test/1.3.0 -> test
 const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
-function getUnpkgUrl(name: string, version: string) {
+function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
-  return TEMP_USE_JSDELIVR // TODO: change to TEMP_USE_JSDELIVR
-    ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
-    : `https://unpkg.com/${nameWithoutAlias}@${version}`;
+  return TEMP_USE_JSDELIVR || forceJsDelivr
+    ? `https://unpkg.com/${nameWithoutAlias}@${version}`
+    : `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`;
 }
 
 function getMeta(name: string, packageJSONPath: string, version: string) {
@@ -126,6 +126,22 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
       }
 
       throw new Error(`Could not find module ${path}`);
+    })
+    .catch(err => {
+      if (!isGitHub) {
+        // Fallback to jsdelivr
+        return fetch(
+          `${getUnpkgUrl(depName, depVersion, true)}${relativePath}`
+        ).then(x2 => {
+          if (x2.ok) {
+            return x2.text();
+          }
+
+          throw new Error(`Could not find module ${path}`);
+        });
+      }
+
+      throw err;
     })
     .then(x => ({
       path,

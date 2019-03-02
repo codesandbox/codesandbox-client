@@ -5,7 +5,7 @@ import moment from 'moment';
 import { uniq } from 'lodash-es';
 import { basename } from 'path';
 
-import track from 'common/utils/analytics';
+import track from 'common/lib/utils/analytics';
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
 import Table from 'react-virtualized/dist/commonjs/Table';

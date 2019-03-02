@@ -8,7 +8,7 @@ import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
 
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 
 import { EntryContainer } from '../../../elements';
 import EntryTitle from './EntryTitle';

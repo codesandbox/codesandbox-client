@@ -20,6 +20,7 @@ module.exports = {
         path: `${__dirname}/content/`,
       },
     },
+    `gatsby-transformer-json`,
     {
       resolve: `gatsby-transformer-remark`,
       options: {

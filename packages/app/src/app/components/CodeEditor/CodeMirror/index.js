@@ -4,7 +4,7 @@ import * as React from 'react';
 import CodeMirror from 'codemirror';
 import { withTheme } from 'styled-components';
 
-import type { ModuleError, Module } from 'common/types';
+import type { ModuleError, Module } from 'common/lib/types';
 import { getCodeMirror } from 'app/utils/codemirror';
 
 import 'codemirror/addon/dialog/dialog';

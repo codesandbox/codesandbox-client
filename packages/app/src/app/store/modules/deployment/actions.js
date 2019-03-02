@@ -1,5 +1,5 @@
 import { omit } from 'lodash-es';
-import getTemplate from 'common/templates';
+import getTemplate from 'common/lib/templates';
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
@@ -67,6 +67,9 @@ export async function createApiData({ props, state }) {
     apiData.version = 2;
     apiData.builds = nowJSON.builds;
     apiData.routes = nowJSON.routes;
+    apiData.env = nowJSON.env;
+    apiData['build.env'] = nowJSON['build.env'];
+    apiData.regions = nowJSON.regions;
   } else {
     apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
     apiData.forceNew = true;
@@ -87,6 +90,12 @@ export async function createApiData({ props, state }) {
       const data = await file.async('base64'); // eslint-disable-line no-await-in-loop
 
       apiData.files.push({ file: filePath, data, encoding: 'base64' });
+    }
+    if (filePath === 'package.json') {
+      apiData.files.push({
+        file: 'package.json',
+        data: JSON.stringify(packageJSON, null, 2),
+      });
     }
   }
 

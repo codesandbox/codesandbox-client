@@ -6,7 +6,7 @@ import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import { Icon } from '../../../../elements';
 import { Container } from './elements';

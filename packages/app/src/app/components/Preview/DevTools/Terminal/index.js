@@ -4,6 +4,7 @@ import { listen } from 'codesandbox-api';
 import { withTheme } from 'styled-components';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
+
 import uuid from 'uuid';
 import PlusIcon from 'react-icons/lib/md/add';
 

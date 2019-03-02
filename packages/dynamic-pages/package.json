@@ -1,0 +1,28 @@
+{
+  "name": "dynamic-pages",
+  "version": "1.0.0",
+  "private": true,
+  "source": true,
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"Todo: no test specified\" && exit 0"
+  },
+  "dependencies": {
+    "next": "^8.0.0",
+    "react": "16.8.1",
+    "react-dom": "16.8.1"
+  },
+  "devDependencies": {
+    "jest": "^24.1.0"
+  },
+  "jest": {
+    "moduleDirectories": [
+      "node_modules"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
+  }
+}

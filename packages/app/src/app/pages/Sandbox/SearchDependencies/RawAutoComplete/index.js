@@ -3,7 +3,7 @@ import Downshift from 'downshift';
 
 import { Pagination } from 'react-instantsearch/dom';
 
-import { ENTER } from 'common/utils/keycodes';
+import { ENTER, ARROW_RIGHT } from 'common/lib/utils/keycodes';
 
 import DependencyHit from '../DependencyHit';
 import { AutoCompleteInput, SuggestionInput } from './elements';
@@ -62,6 +62,12 @@ class RawAutoComplete extends React.Component {
     const hit = getHit(currentRefinement, hits);
     const version = getVersion(this.state.value, hit);
     const isValid = getIsValid(this.state.value, hit, version);
+
+    const autoCompletedQuery = isExplicitVersion(this.state.value)
+      ? null
+      : hit && isValid
+        ? hit.name + '@' + hit.version
+        : null;
 
     return (
       <Downshift itemToString={h => (h ? h.name : h)} onSelect={onSelect}>
@@ -125,13 +131,9 @@ class RawAutoComplete extends React.Component {
                 onKeyUp: e => {
                   // If enter with no selection
                   if (e.keyCode === ENTER) {
-                    onManualSelect(
-                      isExplicitVersion(this.state.value)
-                        ? e.target.value
-                        : hit && isValid
-                          ? hit.name + '@' + hit.version
-                          : e.target.value
-                    );
+                    onManualSelect(autoCompletedQuery || e.target.value);
+                  } else if (autoCompletedQuery && e.keyCode === ARROW_RIGHT) {
+                    this.setState({ value: autoCompletedQuery });
                   }
                 },
               })}

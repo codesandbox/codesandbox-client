@@ -4,11 +4,11 @@ import { inject, observer } from 'mobx-react';
 import Loadable from 'app/utils/Loadable';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-import _debug from 'common/utils/debug';
+import _debug from 'common/lib/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
 import { DragDropContext } from 'react-dnd';
 
-import send, { DNT } from 'common/utils/analytics';
+import send, { DNT } from 'common/lib/utils/analytics';
 
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
@@ -47,9 +47,6 @@ const CliInstructions = Loadable(() =>
 );
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
-);
-const Terms = Loadable(() =>
-  import(/* webpackChunkName: 'page-terms' */ './Terms')
 );
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator')
@@ -106,7 +103,6 @@ class Routes extends React.Component<Props> {
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
-            <Route path="/legal" component={Terms} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
             <Route component={NotFound} />
           </Switch>

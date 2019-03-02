@@ -1,12 +1,12 @@
 import React from 'react';
 
-import theme from 'common/theme';
+import theme from 'common/lib/theme';
 
 import AddedIcon from 'react-icons/lib/go/diff-added';
 import ModifiedIcon from 'react-icons/lib/go/diff-modified';
 import RemovedIcon from 'react-icons/lib/go/diff-removed';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import { ChangeContainer, Entry } from './elements';
 

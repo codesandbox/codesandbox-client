@@ -1,6 +1,7 @@
 // @flow
-import * as React from 'react';
-import Tooltip from 'common/components/Tooltip';
+
+import React from 'react';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import PlayIcon from 'react-icons/lib/go/playback-play';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
@@ -69,7 +70,7 @@ class TestElement extends React.Component<Props> {
         onClick={this.selectFile}
         selected={file === this.props.selectedFile}
       >
-        <FileData selected={this.props.selectedFile === this.props.file}>
+        <FileData>
           <StatusElement />
           <Path>{splittedPath.join('/')}/</Path>
           <FileName>{fileName}</FileName>
@@ -102,7 +103,7 @@ class TestElement extends React.Component<Props> {
                 const testParts = [...test.testName];
                 const testName = testParts.pop();
                 return (
-                  <Test key={tName}>
+                  <Test status={test.status} key={tName}>
                     <TestStatusElement />
                     {testParts.map((part, i) => (
                       <Block last={i === testParts.length - 1} key={part}>

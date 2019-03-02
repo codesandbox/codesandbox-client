@@ -1,4 +1,4 @@
-import { isBabel7 } from 'common/utils/is-babel-7';
+import { isBabel7 } from 'common/lib/utils/is-babel-7';
 
 import Preset from '../';
 
@@ -79,7 +79,8 @@ export default function initialize() {
             },
           };
           preset.registerTranspiler(
-            module => /\.(t|j)sx?$/.test(module.path),
+            module =>
+              /\.(t|j)sx?$/.test(module.path) && !module.path.endsWith('.d.ts'),
             [
               {
                 transpiler: babelTranspiler,

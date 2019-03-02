@@ -77,7 +77,7 @@ export default class extends React.PureComponent {
         <Container>
           <TitleAndMetaTags
             description="A showcase of the amazing uses for React Hooks!"
-            title="React Hooks Examples - CodeSandbox"
+            title="React Hooks Community Examples - CodeSandbox"
           />
 
           {this.state.renderModal && (
@@ -106,7 +106,7 @@ export default class extends React.PureComponent {
                 text-align: center;
               `}
             >
-              React Hooks Examples
+              React Hooks Community Examples
             </Heading2>
             <ShuffleWords />
             <Sandboxes>

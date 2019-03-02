@@ -26,3 +26,5 @@ jest
 lerna-debug.log
 
 standalone-packages/monaco-editor-core
+
+.next

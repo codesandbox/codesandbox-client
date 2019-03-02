@@ -2,11 +2,11 @@
 import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'common/utils/debug';
+import _debug from 'common/lib/utils/debug';
 
 import hashsum from 'hash-sum';
 
-import * as pathUtils from 'common/utils/path';
+import * as pathUtils from 'common/lib/utils/path';
 
 import type { Module } from './entities/module';
 import type { SourceMap } from './transpilers/utils/get-source-map';
@@ -937,7 +937,9 @@ export default class TranspiledModule {
         return foundModule.path;
       };
 
-      const globals = manager.testRunner.testGlobals(this.module);
+      const globals = this.isTestFile
+        ? manager.testRunner.testGlobals(this.module)
+        : {};
 
       globals.__dirname = pathUtils.dirname(this.module.path);
       globals.__filename = this.module.path;

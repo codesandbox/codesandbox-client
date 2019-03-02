@@ -1,7 +1,8 @@
 // @flow
 import * as React from 'react';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
-import Tooltip from 'common/components/Tooltip';
+
+import Tooltip from 'common/lib/components/Tooltip';
 import { Test } from '../../';
 
 import { BlockHeader, Container, Actions } from './elements';
