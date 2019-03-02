@@ -45,7 +45,14 @@ import {
 
 import { TemplateType } from './';
 
-export default function getIcon(theme: TemplateType) {
+export type ReturnedIcon = React.SFC<{
+  width?: number;
+  height?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}>;
+
+export default function getIcon(theme: TemplateType): ReturnedIcon {
   switch (theme) {
     case react.name:
       return React;
