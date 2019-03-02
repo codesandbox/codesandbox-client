@@ -13,7 +13,7 @@ const getHost = require('common/lib/utils/host');
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
 
-const NODE_ENV = JSON.parse(env['process.env.NODE_ENV']);
+const NODE_ENV = JSON.parse(env.default['process.env.NODE_ENV']);
 const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
@@ -418,7 +418,7 @@ module.exports = {
         ]),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
-    new webpack.DefinePlugin(env),
+    new webpack.DefinePlugin(env.default),
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240

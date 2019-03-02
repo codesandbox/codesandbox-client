@@ -121,7 +121,7 @@ exports.onCreateWebpackConfig = ({
   }
 
   actions.setWebpackConfig({
-    plugins: [plugins.define(env)],
+    plugins: [plugins.define(env.default)],
   });
 
   const config = getConfig();
