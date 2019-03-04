@@ -58,7 +58,7 @@ export const ArrowButton = styled.button`
   appearance: none;
 
   svg {
-    fill: ${props => props.theme.new.title};
+    fill: #f2f2f2;
     width: 28px;
     height: auto;
   }
