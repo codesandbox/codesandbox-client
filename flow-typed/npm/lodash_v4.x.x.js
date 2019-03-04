@@ -1,7 +1,7 @@
 // flow-typed signature: 8cfd8555501c152cb770f913e5d69906
 // flow-typed version: a7fde2f5d1/lodash_v4.x.x/flow_>=v0.55.x <=v0.62.x
 
-declare module 'lodash-es' {
+declare module 'lodash' {
   declare type __CurriedFunction1<A, R, AA: A> = (...r: [AA]) => R;
   declare type CurriedFunction1<A, R> = __CurriedFunction1<A, R, *>;
 
@@ -3232,1251 +3232,1230 @@ declare module 'lodash/fp' {
 }
 
 declare module 'lodash/chunk' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'chunk'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'chunk'>;
 }
 
 declare module 'lodash/compact' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'compact'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'compact'>;
 }
 
 declare module 'lodash/concat' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'concat'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'concat'>;
 }
 
 declare module 'lodash/difference' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'difference'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'difference'>;
 }
 
 declare module 'lodash/differenceBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'differenceBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'differenceBy'>;
 }
 
 declare module 'lodash/differenceWith' {
-  declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
-    'differenceWith'
-  >;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'differenceWith'>;
 }
 
 declare module 'lodash/drop' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'drop'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'drop'>;
 }
 
 declare module 'lodash/dropRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'dropRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'dropRight'>;
 }
 
 declare module 'lodash/dropRightWhile' {
-  declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
-    'dropRightWhile'
-  >;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'dropRightWhile'>;
 }
 
 declare module 'lodash/dropWhile' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'dropWhile'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'dropWhile'>;
 }
 
 declare module 'lodash/fill' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'fill'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'fill'>;
 }
 
 declare module 'lodash/findIndex' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'findIndex'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'findIndex'>;
 }
 
 declare module 'lodash/findLastIndex' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'findLastIndex'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'findLastIndex'>;
 }
 
 declare module 'lodash/first' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'first'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'first'>;
 }
 
 declare module 'lodash/flatten' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flatten'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flatten'>;
 }
 
 declare module 'lodash/flattenDeep' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flattenDeep'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flattenDeep'>;
 }
 
 declare module 'lodash/flattenDepth' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flattenDepth'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flattenDepth'>;
 }
 
 declare module 'lodash/fromPairs' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'fromPairs'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'fromPairs'>;
 }
 
 declare module 'lodash/head' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'head'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'head'>;
 }
 
 declare module 'lodash/indexOf' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'indexOf'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'indexOf'>;
 }
 
 declare module 'lodash/initial' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'initial'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'initial'>;
 }
 
 declare module 'lodash/intersection' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'intersection'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'intersection'>;
 }
 
 declare module 'lodash/intersectionBy' {
-  declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
-    'intersectionBy'
-  >;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'intersectionBy'>;
 }
 
 declare module 'lodash/intersectionWith' {
-  declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
-    'intersectionWith'
-  >;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'intersectionWith'>;
 }
 
 declare module 'lodash/join' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'join'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'join'>;
 }
 
 declare module 'lodash/last' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'last'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'last'>;
 }
 
 declare module 'lodash/lastIndexOf' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'lastIndexOf'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'lastIndexOf'>;
 }
 
 declare module 'lodash/nth' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'nth'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'nth'>;
 }
 
 declare module 'lodash/pull' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'pull'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'pull'>;
 }
 
 declare module 'lodash/pullAll' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'pullAll'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'pullAll'>;
 }
 
 declare module 'lodash/pullAllBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'pullAllBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'pullAllBy'>;
 }
 
 declare module 'lodash/pullAllWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'pullAllWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'pullAllWith'>;
 }
 
 declare module 'lodash/pullAt' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'pullAt'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'pullAt'>;
 }
 
 declare module 'lodash/remove' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'remove'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'remove'>;
 }
 
 declare module 'lodash/reverse' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'reverse'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'reverse'>;
 }
 
 declare module 'lodash/slice' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'slice'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'slice'>;
 }
 
 declare module 'lodash/sortedIndex' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sortedIndex'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sortedIndex'>;
 }
 
 declare module 'lodash/sortedIndexBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sortedIndexBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sortedIndexBy'>;
 }
 
 declare module 'lodash/sortedIndexOf' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sortedIndexOf'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sortedIndexOf'>;
 }
 
 declare module 'lodash/sortedLastIndex' {
-  declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
-    'sortedLastIndex'
-  >;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sortedLastIndex'>;
 }
 
 declare module 'lodash/sortedLastIndexBy' {
   declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
+    $Exports<'lodash'>,
     'sortedLastIndexBy'
   >;
 }
 
 declare module 'lodash/sortedLastIndexOf' {
   declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
+    $Exports<'lodash'>,
     'sortedLastIndexOf'
   >;
 }
 
 declare module 'lodash/sortedUniq' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sortedUniq'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sortedUniq'>;
 }
 
 declare module 'lodash/sortedUniqBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sortedUniqBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sortedUniqBy'>;
 }
 
 declare module 'lodash/tail' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'tail'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'tail'>;
 }
 
 declare module 'lodash/take' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'take'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'take'>;
 }
 
 declare module 'lodash/takeRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'takeRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'takeRight'>;
 }
 
 declare module 'lodash/takeRightWhile' {
-  declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
-    'takeRightWhile'
-  >;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'takeRightWhile'>;
 }
 
 declare module 'lodash/takeWhile' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'takeWhile'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'takeWhile'>;
 }
 
 declare module 'lodash/union' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'union'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'union'>;
 }
 
 declare module 'lodash/unionBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'unionBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'unionBy'>;
 }
 
 declare module 'lodash/unionWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'unionWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'unionWith'>;
 }
 
 declare module 'lodash/uniq' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'uniq'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'uniq'>;
 }
 
 declare module 'lodash/uniqBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'uniqBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'uniqBy'>;
 }
 
 declare module 'lodash/uniqWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'uniqWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'uniqWith'>;
 }
 
 declare module 'lodash/unzip' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'unzip'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'unzip'>;
 }
 
 declare module 'lodash/unzipWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'unzipWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'unzipWith'>;
 }
 
 declare module 'lodash/without' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'without'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'without'>;
 }
 
 declare module 'lodash/xor' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'xor'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'xor'>;
 }
 
 declare module 'lodash/xorBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'xorBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'xorBy'>;
 }
 
 declare module 'lodash/xorWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'xorWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'xorWith'>;
 }
 
 declare module 'lodash/zip' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'zip'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'zip'>;
 }
 
 declare module 'lodash/zipObject' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'zipObject'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'zipObject'>;
 }
 
 declare module 'lodash/zipObjectDeep' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'zipObjectDeep'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'zipObjectDeep'>;
 }
 
 declare module 'lodash/zipWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'zipWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'zipWith'>;
 }
 
 declare module 'lodash/countBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'countBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'countBy'>;
 }
 
 declare module 'lodash/each' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'each'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'each'>;
 }
 
 declare module 'lodash/eachRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'eachRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'eachRight'>;
 }
 
 declare module 'lodash/every' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'every'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'every'>;
 }
 
 declare module 'lodash/filter' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'filter'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'filter'>;
 }
 
 declare module 'lodash/find' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'find'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'find'>;
 }
 
 declare module 'lodash/findLast' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'findLast'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'findLast'>;
 }
 
 declare module 'lodash/flatMap' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flatMap'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flatMap'>;
 }
 
 declare module 'lodash/flatMapDeep' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flatMapDeep'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flatMapDeep'>;
 }
 
 declare module 'lodash/flatMapDepth' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flatMapDepth'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flatMapDepth'>;
 }
 
 declare module 'lodash/forEach' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'forEach'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'forEach'>;
 }
 
 declare module 'lodash/forEachRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'forEachRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'forEachRight'>;
 }
 
 declare module 'lodash/groupBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'groupBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'groupBy'>;
 }
 
 declare module 'lodash/includes' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'includes'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'includes'>;
 }
 
 declare module 'lodash/invokeMap' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'invokeMap'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'invokeMap'>;
 }
 
 declare module 'lodash/keyBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'keyBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'keyBy'>;
 }
 
 declare module 'lodash/map' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'map'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'map'>;
 }
 
 declare module 'lodash/orderBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'orderBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'orderBy'>;
 }
 
 declare module 'lodash/partition' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'partition'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'partition'>;
 }
 
 declare module 'lodash/reduce' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'reduce'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'reduce'>;
 }
 
 declare module 'lodash/reduceRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'reduceRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'reduceRight'>;
 }
 
 declare module 'lodash/reject' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'reject'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'reject'>;
 }
 
 declare module 'lodash/sample' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sample'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sample'>;
 }
 
 declare module 'lodash/sampleSize' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sampleSize'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sampleSize'>;
 }
 
 declare module 'lodash/shuffle' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'shuffle'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'shuffle'>;
 }
 
 declare module 'lodash/size' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'size'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'size'>;
 }
 
 declare module 'lodash/some' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'some'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'some'>;
 }
 
 declare module 'lodash/sortBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sortBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sortBy'>;
 }
 
 declare module 'lodash/now' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'now'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'now'>;
 }
 
 declare module 'lodash/after' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'after'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'after'>;
 }
 
 declare module 'lodash/ary' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'ary'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'ary'>;
 }
 
 declare module 'lodash/before' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'before'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'before'>;
 }
 
 declare module 'lodash/bind' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'bind'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'bind'>;
 }
 
 declare module 'lodash/bindKey' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'bindKey'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'bindKey'>;
 }
 
 declare module 'lodash/curry' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'curry'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'curry'>;
 }
 
 declare module 'lodash/curryRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'curryRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'curryRight'>;
 }
 
 declare module 'lodash/debounce' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'debounce'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'debounce'>;
 }
 
 declare module 'lodash/defer' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'defer'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'defer'>;
 }
 
 declare module 'lodash/delay' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'delay'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'delay'>;
 }
 
 declare module 'lodash/flip' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flip'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flip'>;
 }
 
 declare module 'lodash/memoize' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'memoize'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'memoize'>;
 }
 
 declare module 'lodash/negate' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'negate'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'negate'>;
 }
 
 declare module 'lodash/once' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'once'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'once'>;
 }
 
 declare module 'lodash/overArgs' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'overArgs'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'overArgs'>;
 }
 
 declare module 'lodash/partial' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'partial'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'partial'>;
 }
 
 declare module 'lodash/partialRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'partialRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'partialRight'>;
 }
 
 declare module 'lodash/rearg' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'rearg'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'rearg'>;
 }
 
 declare module 'lodash/rest' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'rest'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'rest'>;
 }
 
 declare module 'lodash/spread' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'spread'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'spread'>;
 }
 
 declare module 'lodash/throttle' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'throttle'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'throttle'>;
 }
 
 declare module 'lodash/unary' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'unary'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'unary'>;
 }
 
 declare module 'lodash/wrap' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'wrap'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'wrap'>;
 }
 
 declare module 'lodash/castArray' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'castArray'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'castArray'>;
 }
 
 declare module 'lodash/clone' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'clone'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'clone'>;
 }
 
 declare module 'lodash/cloneDeep' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'cloneDeep'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'cloneDeep'>;
 }
 
 declare module 'lodash/cloneDeepWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'cloneDeepWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'cloneDeepWith'>;
 }
 
 declare module 'lodash/cloneWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'cloneWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'cloneWith'>;
 }
 
 declare module 'lodash/conformsTo' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'conformsTo'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'conformsTo'>;
 }
 
 declare module 'lodash/eq' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'eq'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'eq'>;
 }
 
 declare module 'lodash/gt' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'gt'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'gt'>;
 }
 
 declare module 'lodash/gte' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'gte'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'gte'>;
 }
 
 declare module 'lodash/isArguments' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isArguments'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isArguments'>;
 }
 
 declare module 'lodash/isArray' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isArray'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isArray'>;
 }
 
 declare module 'lodash/isArrayBuffer' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isArrayBuffer'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isArrayBuffer'>;
 }
 
 declare module 'lodash/isArrayLike' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isArrayLike'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isArrayLike'>;
 }
 
 declare module 'lodash/isArrayLikeObject' {
   declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
+    $Exports<'lodash'>,
     'isArrayLikeObject'
   >;
 }
 
 declare module 'lodash/isBoolean' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isBoolean'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isBoolean'>;
 }
 
 declare module 'lodash/isBuffer' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isBuffer'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isBuffer'>;
 }
 
 declare module 'lodash/isDate' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isDate'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isDate'>;
 }
 
 declare module 'lodash/isElement' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isElement'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isElement'>;
 }
 
 declare module 'lodash/isEmpty' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isEmpty'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isEmpty'>;
 }
 
 declare module 'lodash/isEqual' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isEqual'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isEqual'>;
 }
 
 declare module 'lodash/isEqualWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isEqualWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isEqualWith'>;
 }
 
 declare module 'lodash/isError' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isError'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isError'>;
 }
 
 declare module 'lodash/isFinite' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isFinite'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isFinite'>;
 }
 
 declare module 'lodash/isFunction' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isFunction'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isFunction'>;
 }
 
 declare module 'lodash/isInteger' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isInteger'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isInteger'>;
 }
 
 declare module 'lodash/isLength' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isLength'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isLength'>;
 }
 
 declare module 'lodash/isMap' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isMap'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isMap'>;
 }
 
 declare module 'lodash/isMatch' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isMatch'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isMatch'>;
 }
 
 declare module 'lodash/isMatchWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isMatchWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isMatchWith'>;
 }
 
 declare module 'lodash/isNaN' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isNaN'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isNaN'>;
 }
 
 declare module 'lodash/isNative' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isNative'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isNative'>;
 }
 
 declare module 'lodash/isNil' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isNil'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isNil'>;
 }
 
 declare module 'lodash/isNull' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isNull'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isNull'>;
 }
 
 declare module 'lodash/isNumber' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isNumber'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isNumber'>;
 }
 
 declare module 'lodash/isObject' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isObject'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isObject'>;
 }
 
 declare module 'lodash/isObjectLike' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isObjectLike'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isObjectLike'>;
 }
 
 declare module 'lodash/isPlainObject' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isPlainObject'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isPlainObject'>;
 }
 
 declare module 'lodash/isRegExp' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isRegExp'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isRegExp'>;
 }
 
 declare module 'lodash/isSafeInteger' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isSafeInteger'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isSafeInteger'>;
 }
 
 declare module 'lodash/isSet' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isSet'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isSet'>;
 }
 
 declare module 'lodash/isString' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isString'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isString'>;
 }
 
 declare module 'lodash/isSymbol' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isSymbol'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isSymbol'>;
 }
 
 declare module 'lodash/isTypedArray' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isTypedArray'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isTypedArray'>;
 }
 
 declare module 'lodash/isUndefined' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isUndefined'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isUndefined'>;
 }
 
 declare module 'lodash/isWeakMap' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isWeakMap'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isWeakMap'>;
 }
 
 declare module 'lodash/isWeakSet' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'isWeakSet'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'isWeakSet'>;
 }
 
 declare module 'lodash/lt' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'lt'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'lt'>;
 }
 
 declare module 'lodash/lte' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'lte'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'lte'>;
 }
 
 declare module 'lodash/toArray' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toArray'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toArray'>;
 }
 
 declare module 'lodash/toFinite' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toFinite'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toFinite'>;
 }
 
 declare module 'lodash/toInteger' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toInteger'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toInteger'>;
 }
 
 declare module 'lodash/toLength' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toLength'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toLength'>;
 }
 
 declare module 'lodash/toNumber' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toNumber'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toNumber'>;
 }
 
 declare module 'lodash/toPlainObject' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toPlainObject'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toPlainObject'>;
 }
 
 declare module 'lodash/toSafeInteger' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toSafeInteger'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toSafeInteger'>;
 }
 
 declare module 'lodash/toString' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toString'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toString'>;
 }
 
 declare module 'lodash/add' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'add'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'add'>;
 }
 
 declare module 'lodash/ceil' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'ceil'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'ceil'>;
 }
 
 declare module 'lodash/divide' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'divide'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'divide'>;
 }
 
 declare module 'lodash/floor' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'floor'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'floor'>;
 }
 
 declare module 'lodash/max' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'max'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'max'>;
 }
 
 declare module 'lodash/maxBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'maxBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'maxBy'>;
 }
 
 declare module 'lodash/mean' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'mean'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'mean'>;
 }
 
 declare module 'lodash/meanBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'meanBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'meanBy'>;
 }
 
 declare module 'lodash/min' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'min'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'min'>;
 }
 
 declare module 'lodash/minBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'minBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'minBy'>;
 }
 
 declare module 'lodash/multiply' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'multiply'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'multiply'>;
 }
 
 declare module 'lodash/round' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'round'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'round'>;
 }
 
 declare module 'lodash/subtract' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'subtract'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'subtract'>;
 }
 
 declare module 'lodash/sum' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sum'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sum'>;
 }
 
 declare module 'lodash/sumBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'sumBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'sumBy'>;
 }
 
 declare module 'lodash/clamp' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'clamp'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'clamp'>;
 }
 
 declare module 'lodash/inRange' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'inRange'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'inRange'>;
 }
 
 declare module 'lodash/random' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'random'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'random'>;
 }
 
 declare module 'lodash/assign' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'assign'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'assign'>;
 }
 
 declare module 'lodash/assignIn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'assignIn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'assignIn'>;
 }
 
 declare module 'lodash/assignInWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'assignInWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'assignInWith'>;
 }
 
 declare module 'lodash/assignWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'assignWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'assignWith'>;
 }
 
 declare module 'lodash/at' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'at'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'at'>;
 }
 
 declare module 'lodash/create' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'create'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'create'>;
 }
 
 declare module 'lodash/defaults' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'defaults'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'defaults'>;
 }
 
 declare module 'lodash/defaultsDeep' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'defaultsDeep'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'defaultsDeep'>;
 }
 
 declare module 'lodash/entries' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'entries'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'entries'>;
 }
 
 declare module 'lodash/entriesIn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'entriesIn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'entriesIn'>;
 }
 
 declare module 'lodash/extend' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'extend'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'extend'>;
 }
 
 declare module 'lodash/extendWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'extendWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'extendWith'>;
 }
 
 declare module 'lodash/findKey' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'findKey'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'findKey'>;
 }
 
 declare module 'lodash/findLastKey' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'findLastKey'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'findLastKey'>;
 }
 
 declare module 'lodash/forIn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'forIn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'forIn'>;
 }
 
 declare module 'lodash/forInRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'forInRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'forInRight'>;
 }
 
 declare module 'lodash/forOwn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'forOwn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'forOwn'>;
 }
 
 declare module 'lodash/forOwnRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'forOwnRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'forOwnRight'>;
 }
 
 declare module 'lodash/functions' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'functions'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'functions'>;
 }
 
 declare module 'lodash/functionsIn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'functionsIn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'functionsIn'>;
 }
 
 declare module 'lodash/get' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'get'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'get'>;
 }
 
 declare module 'lodash/has' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'has'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'has'>;
 }
 
 declare module 'lodash/hasIn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'hasIn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'hasIn'>;
 }
 
 declare module 'lodash/invert' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'invert'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'invert'>;
 }
 
 declare module 'lodash/invertBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'invertBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'invertBy'>;
 }
 
 declare module 'lodash/invoke' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'invoke'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'invoke'>;
 }
 
 declare module 'lodash/keys' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'keys'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'keys'>;
 }
 
 declare module 'lodash/keysIn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'keysIn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'keysIn'>;
 }
 
 declare module 'lodash/mapKeys' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'mapKeys'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'mapKeys'>;
 }
 
 declare module 'lodash/mapValues' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'mapValues'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'mapValues'>;
 }
 
 declare module 'lodash/merge' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'merge'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'merge'>;
 }
 
 declare module 'lodash/mergeWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'mergeWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'mergeWith'>;
 }
 
 declare module 'lodash/omit' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'omit'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'omit'>;
 }
 
 declare module 'lodash/omitBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'omitBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'omitBy'>;
 }
 
 declare module 'lodash/pick' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'pick'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'pick'>;
 }
 
 declare module 'lodash/pickBy' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'pickBy'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'pickBy'>;
 }
 
 declare module 'lodash/result' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'result'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'result'>;
 }
 
 declare module 'lodash/set' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'set'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'set'>;
 }
 
 declare module 'lodash/setWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'setWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'setWith'>;
 }
 
 declare module 'lodash/toPairs' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toPairs'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toPairs'>;
 }
 
 declare module 'lodash/toPairsIn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toPairsIn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toPairsIn'>;
 }
 
 declare module 'lodash/transform' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'transform'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'transform'>;
 }
 
 declare module 'lodash/unset' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'unset'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'unset'>;
 }
 
 declare module 'lodash/update' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'update'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'update'>;
 }
 
 declare module 'lodash/updateWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'updateWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'updateWith'>;
 }
 
 declare module 'lodash/values' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'values'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'values'>;
 }
 
 declare module 'lodash/valuesIn' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'valuesIn'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'valuesIn'>;
 }
 
 declare module 'lodash/chain' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'chain'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'chain'>;
 }
 
 declare module 'lodash/tap' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'tap'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'tap'>;
 }
 
 declare module 'lodash/thru' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'thru'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'thru'>;
 }
 
 declare module 'lodash/camelCase' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'camelCase'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'camelCase'>;
 }
 
 declare module 'lodash/capitalize' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'capitalize'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'capitalize'>;
 }
 
 declare module 'lodash/deburr' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'deburr'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'deburr'>;
 }
 
 declare module 'lodash/endsWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'endsWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'endsWith'>;
 }
 
 declare module 'lodash/escape' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'escape'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'escape'>;
 }
 
 declare module 'lodash/escapeRegExp' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'escapeRegExp'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'escapeRegExp'>;
 }
 
 declare module 'lodash/kebabCase' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'kebabCase'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'kebabCase'>;
 }
 
 declare module 'lodash/lowerCase' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'lowerCase'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'lowerCase'>;
 }
 
 declare module 'lodash/lowerFirst' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'lowerFirst'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'lowerFirst'>;
 }
 
 declare module 'lodash/pad' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'pad'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'pad'>;
 }
 
 declare module 'lodash/padEnd' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'padEnd'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'padEnd'>;
 }
 
 declare module 'lodash/padStart' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'padStart'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'padStart'>;
 }
 
 declare module 'lodash/parseInt' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'parseInt'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'parseInt'>;
 }
 
 declare module 'lodash/repeat' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'repeat'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'repeat'>;
 }
 
 declare module 'lodash/replace' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'replace'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'replace'>;
 }
 
 declare module 'lodash/snakeCase' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'snakeCase'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'snakeCase'>;
 }
 
 declare module 'lodash/split' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'split'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'split'>;
 }
 
 declare module 'lodash/startCase' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'startCase'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'startCase'>;
 }
 
 declare module 'lodash/startsWith' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'startsWith'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'startsWith'>;
 }
 
 declare module 'lodash/template' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'template'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'template'>;
 }
 
 declare module 'lodash/toLower' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toLower'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toLower'>;
 }
 
 declare module 'lodash/toUpper' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toUpper'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toUpper'>;
 }
 
 declare module 'lodash/trim' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'trim'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'trim'>;
 }
 
 declare module 'lodash/trimEnd' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'trimEnd'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'trimEnd'>;
 }
 
 declare module 'lodash/trimStart' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'trimStart'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'trimStart'>;
 }
 
 declare module 'lodash/truncate' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'truncate'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'truncate'>;
 }
 
 declare module 'lodash/unescape' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'unescape'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'unescape'>;
 }
 
 declare module 'lodash/upperCase' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'upperCase'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'upperCase'>;
 }
 
 declare module 'lodash/upperFirst' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'upperFirst'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'upperFirst'>;
 }
 
 declare module 'lodash/words' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'words'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'words'>;
 }
 
 declare module 'lodash/attempt' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'attempt'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'attempt'>;
 }
 
 declare module 'lodash/bindAll' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'bindAll'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'bindAll'>;
 }
 
 declare module 'lodash/cond' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'cond'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'cond'>;
 }
 
 declare module 'lodash/conforms' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'conforms'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'conforms'>;
 }
 
 declare module 'lodash/constant' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'constant'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'constant'>;
 }
 
 declare module 'lodash/defaultTo' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'defaultTo'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'defaultTo'>;
 }
 
 declare module 'lodash/flow' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flow'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flow'>;
 }
 
 declare module 'lodash/flowRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'flowRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'flowRight'>;
 }
 
 declare module 'lodash/identity' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'identity'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'identity'>;
 }
 
 declare module 'lodash/iteratee' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'iteratee'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'iteratee'>;
 }
 
 declare module 'lodash/matches' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'matches'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'matches'>;
 }
 
 declare module 'lodash/matchesProperty' {
-  declare module.exports: $PropertyType<
-    $Exports<'lodash-es'>,
-    'matchesProperty'
-  >;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'matchesProperty'>;
 }
 
 declare module 'lodash/method' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'method'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'method'>;
 }
 
 declare module 'lodash/methodOf' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'methodOf'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'methodOf'>;
 }
 
 declare module 'lodash/mixin' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'mixin'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'mixin'>;
 }
 
 declare module 'lodash/noConflict' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'noConflict'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'noConflict'>;
 }
 
 declare module 'lodash/noop' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'noop'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'noop'>;
 }
 
 declare module 'lodash/nthArg' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'nthArg'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'nthArg'>;
 }
 
 declare module 'lodash/over' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'over'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'over'>;
 }
 
 declare module 'lodash/overEvery' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'overEvery'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'overEvery'>;
 }
 
 declare module 'lodash/overSome' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'overSome'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'overSome'>;
 }
 
 declare module 'lodash/property' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'property'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'property'>;
 }
 
 declare module 'lodash/propertyOf' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'propertyOf'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'propertyOf'>;
 }
 
 declare module 'lodash/range' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'range'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'range'>;
 }
 
 declare module 'lodash/rangeRight' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'rangeRight'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'rangeRight'>;
 }
 
 declare module 'lodash/runInContext' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'runInContext'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'runInContext'>;
 }
 
 declare module 'lodash/stubArray' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'stubArray'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'stubArray'>;
 }
 
 declare module 'lodash/stubFalse' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'stubFalse'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'stubFalse'>;
 }
 
 declare module 'lodash/stubObject' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'stubObject'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'stubObject'>;
 }
 
 declare module 'lodash/stubString' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'stubString'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'stubString'>;
 }
 
 declare module 'lodash/stubTrue' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'stubTrue'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'stubTrue'>;
 }
 
 declare module 'lodash/times' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'times'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'times'>;
 }
 
 declare module 'lodash/toPath' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'toPath'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'toPath'>;
 }
 
 declare module 'lodash/uniqueId' {
-  declare module.exports: $PropertyType<$Exports<'lodash-es'>, 'uniqueId'>;
+  declare module.exports: $PropertyType<$Exports<'lodash'>, 'uniqueId'>;
 }

@@ -260,7 +260,7 @@
       "/create-zip\\/.*\\/files/"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(common|lodash|sandbox-hooks|react-icons)/.+\\.js$)"
+      "node_modules/(?!(common|lodash-es|sandbox-hooks|react-icons)/.+\\.js$)"
     ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",
