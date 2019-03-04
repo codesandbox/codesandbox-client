@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { sortBy, isEmpty } from 'lodash';
+import { sortBy, isEmpty } from 'lodash-es';
 import filesize from 'filesize';
 import Button from 'app/components/Button';
 import DeleteFileButton from '../DeleteFileButton';

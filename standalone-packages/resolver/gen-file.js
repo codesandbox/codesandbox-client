@@ -1,5 +1,5 @@
 const fs = require('fs');
-const _ = require('lodash');
+const _ = require('lodash-es');
 const deps = require('./deps.json');
 
 let st = '';

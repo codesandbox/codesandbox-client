@@ -1,5 +1,5 @@
 // @flow
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import querystring from 'querystring';
 import type { Module } from '../entities/module';
 

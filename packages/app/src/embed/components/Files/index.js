@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 
 import type { Module, Directory } from 'common/lib/types';
 

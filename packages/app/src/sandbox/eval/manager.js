@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep, uniq, values } from 'lodash';
+import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';

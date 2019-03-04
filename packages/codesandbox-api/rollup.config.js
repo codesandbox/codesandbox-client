@@ -13,7 +13,7 @@ export default {
     { dest: pkg.module, format: 'es' },
   ],
   sourceMap: true,
-  // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
+  // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash-es')
   external: [],
   plugins: [
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)

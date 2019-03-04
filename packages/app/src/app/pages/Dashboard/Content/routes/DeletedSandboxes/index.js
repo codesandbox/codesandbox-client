@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, Observer } from 'mobx-react';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
 
 import Sandboxes from '../../Sandboxes';

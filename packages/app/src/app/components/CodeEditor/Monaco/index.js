@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import { TextOperation } from 'ot';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
 import { getModulePath } from 'common/lib/sandbox/modules';

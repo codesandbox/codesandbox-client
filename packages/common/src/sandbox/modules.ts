@@ -1,6 +1,6 @@
 // @flow
 import { Module, Directory } from '../types';
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 
 const compareTitle = (
   original: string,

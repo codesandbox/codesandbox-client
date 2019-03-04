@@ -1,7 +1,7 @@
 import React from 'react';
 import { Query, Mutation } from 'react-apollo';
 import { inject, Observer } from 'mobx-react';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Button from 'app/components/Button';
