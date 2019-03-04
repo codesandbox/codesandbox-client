@@ -34,9 +34,11 @@ const Profile = ({ profile, liked, showcased }) => {
             <div
               css={`
                 margin-bottom: 30px;
+                font-size: 0.875rem;
               `}
             >
               <FeaturedSandbox
+                height={450}
                 pickSandbox={({ id }) => openSandbox(id)}
                 sandbox={showcased}
                 description={showcased.description}

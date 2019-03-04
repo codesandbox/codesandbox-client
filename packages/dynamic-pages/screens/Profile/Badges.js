@@ -8,7 +8,7 @@ import { Aside, BadgeWrapper } from './_sidebar.elements';
 export default ({ templateSandboxes, badges, username }) => (
   <Aside
     css={`
-      margin-top: 50px;
+      margin-top: 1rem;
       @media screen and (max-width: 1100px) {
         margin-top: 0px;
       }

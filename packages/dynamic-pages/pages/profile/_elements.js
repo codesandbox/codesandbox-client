@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const Grid = styled.main`
   display: grid;
-  grid-gap: 60px;
+  grid-gap: 2rem;
   grid-template-columns: 400px 1fr;
 
   @media screen and (max-width: 1100px) {
@@ -15,7 +15,7 @@ export const Title = styled.h3`
   font-weight: 300;
   font-size: 24px;
   margin-bottom: 30px;
-  color: #f2f2f2;
+  color: ${props => props.theme.new.title};
 `;
 
 export const More = styled.div`

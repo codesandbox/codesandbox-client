@@ -73,5 +73,5 @@ export const Title = styled.h3`
   font-weight: 300;
   font-size: 24px;
   margin-bottom: 30px;
-  color: #f2f2f2;
+  color: ${props => props.theme.new.title};
 `;
