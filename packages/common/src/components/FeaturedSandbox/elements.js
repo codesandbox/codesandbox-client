@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
 import theme from '../../theme';
-import Stats from '../Stats';
+import Stats from '../Stats/index';
 
 const VERTICAL_BREAKPOINT = 900;
 
@@ -12,7 +12,7 @@ export const Container = styled.div`
   background-color: ${theme.new.bg};
   border-radius: 8px;
   color: ${theme.new.title};
-  height: 500px;
+  height: ${props => props.height || 500}px;
   display: flex;
   box-shadow: 0 9px 14px rgba(0, 0, 0, 0.25);
   overflow: hidden;
@@ -21,17 +21,17 @@ export const Container = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #4c5173;
+    background-color: ${props => props.theme.new.bg.lighten(0.2)};
   }
 
   @media screen and (max-width: ${VERTICAL_BREAKPOINT}px) {
     flex-direction: column;
     min-height: 800px;
 
-    font-size: 0.875rem;
+    font-size: 0.875em;
 
     h1 {
-      font-size: 1.25rem;
+      font-size: 1.25em;
     }
   }
 `;
@@ -60,7 +60,7 @@ export const SandboxContainer = styled.div`
     height: 230px;
     z-index: 11;
     background-color: ${theme.new.bg};
-    padding: 0.5rem;
+    padding: 0.5em;
   }
 `;
 
@@ -70,22 +70,23 @@ export const SandboxInfo = styled.div`
 `;
 
 export const Title = styled.h1`
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5em;
   font-family: 'Poppins';
   font-weight: 600;
+  font-size: 2.125em;
 `;
 
 export const Description = styled.p`
   color: ${theme.new.description};
   font-family: 'Poppins';
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1em;
 `;
 
 export const Author = styled(UserWithAvatar)`
   position: absolute;
-  left: 1.5rem;
-  bottom: 1.5rem;
+  left: 1.5em;
+  bottom: 1.5em;
   color: ${theme.new.description};
   font-weight: 600;
 `;
@@ -93,8 +94,8 @@ export const Author = styled(UserWithAvatar)`
 export const IconContainer = styled.div`
   display: flex;
   position: absolute;
-  right: 1.5rem;
-  bottom: 1.5rem;
+  right: 1.5em;
+  bottom: 1.5em;
 
   img {
     width: 40px;
@@ -104,7 +105,7 @@ export const IconContainer = styled.div`
 export const StyledStats = styled(Stats)`
   color: ${theme.new.description};
   font-weight: 600;
-  margin-top: 1rem;
+  margin-top: 1em;
   display: flex;
   align-items: center;
   justify-content: center;

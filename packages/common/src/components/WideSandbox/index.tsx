@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import getIcon from '../../templates/icons';
 import getTemplate, { TemplateType } from '../../templates';
@@ -52,7 +52,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
       return this.props.sandbox.picks[0].title;
     }
 
-    return this.props.sandbox.title;
+    return this.props.sandbox.title || this.props.sandbox.id;
   };
 
   getDescription = () => {

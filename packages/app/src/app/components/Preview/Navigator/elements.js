@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  background-color: #f2f2f2;
+  background-color: ${props => props.theme.new.title};
   padding: 0.5rem;
   align-items: center;
   line-height: 1;

@@ -14,7 +14,7 @@ const H1 = styled.h1`
   font-weight: 500;
   font-size: 144px;
 
-  color: #f2f2f2;
+  color: ${props => props.theme.new.title};
 `;
 
 const H2 = styled.h2`
@@ -22,7 +22,7 @@ const H2 = styled.h2`
   font-weight: 500;
   font-size: 48px;
 
-  color: #f2f2f2;
+  color: ${props => props.theme.new.title};
 `;
 
 export default () => (

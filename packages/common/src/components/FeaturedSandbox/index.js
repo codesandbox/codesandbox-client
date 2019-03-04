@@ -93,9 +93,9 @@ export default class FeaturedSandbox extends React.PureComponent {
 
   render() {
     const { sandbox = this.props.sandbox || null } = this.state;
-    const { title, description } = this.props;
+    const { title, description, height } = this.props;
     return (
-      <Container>
+      <Container height={height}>
         <SandboxContainer role="button" onClick={this.toggleOpen}>
           <SandboxInfo>
             <Title>{title}</Title>
