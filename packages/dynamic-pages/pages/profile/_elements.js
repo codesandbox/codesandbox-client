@@ -19,12 +19,13 @@ export const Title = styled.h3`
 `;
 
 export const More = styled.div`
+  border-radius: 4px;
   transition: all 200ms ease;
   background-color: #1c2022;
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
-  display: flex !important;
+  display: flex;
   align-items: center;
-  position: absolute;
+  justify-content: center;
   height: 100%;
 
   a {
@@ -33,11 +34,6 @@ export const More = styled.div`
     font-weight: 600;
     color: white;
     text-decoration: none;
-    width: 300px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   &:hover {

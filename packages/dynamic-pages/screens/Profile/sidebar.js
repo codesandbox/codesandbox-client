@@ -95,7 +95,7 @@ export default ({
           `}
         >
           <Button small disabled={loading} onClick={() => setModal(false)}>
-            No, keep Account
+            No, Keep Account
           </Button>
           <Button
             small

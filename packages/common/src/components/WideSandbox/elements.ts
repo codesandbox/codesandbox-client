@@ -5,7 +5,7 @@ import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
 export const BG_COLOR = '#1C2022';
 export const BG_HOVER = '#212629';
 
-export const Container = styled.div<{ small?: boolean }>`
+export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
   transition: 0.3s ease all;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -29,6 +29,12 @@ export const Container = styled.div<{ small?: boolean }>`
     props.small &&
     css`
       min-width: auto;
+    `};
+
+  ${props =>
+    props.noMargin &&
+    css`
+      margin: 0;
     `};
 
   &:hover {

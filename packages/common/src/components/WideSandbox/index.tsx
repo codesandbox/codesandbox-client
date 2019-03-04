@@ -32,6 +32,7 @@ export type Props = {
     };
   };
   small?: boolean;
+  noMargin?: boolean;
   pickSandbox: (
     params: {
       id: string;
@@ -79,7 +80,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
   };
 
   render() {
-    const { sandbox, small } = this.props;
+    const { sandbox, small, noMargin } = this.props;
 
     if (!sandbox) {
       return (
@@ -94,6 +95,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
 
     return (
       <Container
+        noMargin={noMargin}
         small={small}
         style={{}}
         onClick={this.toggleOpen}

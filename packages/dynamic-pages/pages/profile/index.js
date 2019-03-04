@@ -8,7 +8,7 @@ import NotFound from '../../screens/Profile/NotFound';
 import Sidebar from '../../screens/Profile/sidebar';
 import fetch from '../../utils/fetch';
 import PageContainer from '../../components/PageContainer';
-import Slider from '../../components/Slider';
+import SandboxesWrapper from '../../components/SandboxesWrapper';
 
 import { Grid, Title, More } from './_elements';
 
@@ -45,9 +45,15 @@ const Profile = ({ profile, liked, showcased }) => {
             </div>
           ) : null}
           <Title>User sandboxes</Title>
-          <Slider>
+          <SandboxesWrapper
+            css={`
+              grid-gap: 24px;
+              margin-bottom: 48px;
+            `}
+          >
             {profile.top_sandboxes.map(sandbox => (
               <WideSandbox
+                noMargin
                 small
                 key={sandbox.id}
                 pickSandbox={({ id }) => openSandbox(id)}
@@ -63,14 +69,19 @@ const Profile = ({ profile, liked, showcased }) => {
                 <a>See all sandboxes</a>
               </Link>
             </More>
-          </Slider>
-
+          </SandboxesWrapper>
           <Title>Liked sandboxes</Title>
-          <Slider>
+          <SandboxesWrapper
+            css={`
+              grid-gap: 24px;
+              margin-bottom: 48px;
+            `}
+          >
             {liked[1]
               .slice(0, 5)
               .map(sandbox => (
                 <WideSandbox
+                  noMargin
                   small
                   key={sandbox.id}
                   pickSandbox={({ id }) => openSandbox(id)}
@@ -86,7 +97,7 @@ const Profile = ({ profile, liked, showcased }) => {
                 <a>See all liked sandboxes</a>
               </Link>
             </More>
-          </Slider>
+          </SandboxesWrapper>
         </main>
       </Grid>
     </PageContainer>
