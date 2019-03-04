@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { format } from 'date-fns';
 import Button from 'common/lib/components/Button';
 import { Forks, Likes, Views } from '../../components/Icons';
 import { H3, H4 } from '../../components/Typography';
@@ -11,16 +10,15 @@ import {
   Aside,
   Stats,
   Stat,
-  Social,
-  Title,
+  AsideWrapper,
+  Buttons,
 } from './_sidebar.elements';
 
 import deleteAccount from '../../utils/deleteAccount';
-import calendar from '../../assets/calendar.svg';
-import mail from '../../assets/mail.svg';
-import twitterLogo from '../../assets/twitter.svg';
-
-import Modal from '../../components/Modal';
+import fetchCurrentUser from '../../utils/fetchCurrentUser';
+import editCurrentUser from '../../utils/editProfile';
+import Editing from './Editing';
+import Modal from './Modal';
 
 const kFormatter = num => (num > 999 ? (num / 1000).toFixed(1) + 'k' : num);
 
@@ -42,23 +40,14 @@ export default ({
   const [user, setUser] = useState({});
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const fetchCurrentUser = () => {
-    const jwt = JSON.parse(localStorage.getItem('jwt'));
-    const BASE =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
-
-    window
-      .fetch(BASE + '/api/v1/users/current', {
-        headers: { Authorization: `Bearer ${jwt}` },
-      })
-      .then(x => x.json())
-      .then(({ data }) => setUser(data));
-  };
+  const [editing, setEditing] = useState(false);
+  const [changedBio, setBio] = useState(bio);
+  const [changedEmail, setEmail] = useState(profile_email);
+  const [changedTwitter, setTwitter] = useState(twitter);
 
   useEffect(() => {
     if (localStorage.getItem('jwt')) {
-      fetchCurrentUser();
+      fetchCurrentUser().then(d => setUser(d));
     }
   }, []);
 
@@ -73,52 +62,29 @@ export default ({
     // logout
     localStorage.removeItem('jwt');
     // redirect to homepage
-    window.location.href = 'http://codesabdox.io';
+    window.location.href = 'http://codesanbdox.io';
+  };
+
+  const editProfile = async () => {
+    const profile = await editCurrentUser(username, {
+      profile_email: changedEmail,
+      twitter: changedTwitter,
+      bio: changedBio,
+    });
+
+    console.log(profile);
+    setEditing(false);
   };
 
   return (
     <>
-      <Modal isOpen={modal} width={400}>
-        <Title>Are you sure?</Title>
-        <p>
-          You can email us in the next 24 hours at{' '}
-          <a href="mailto@codesandbox.io">hello@codesandbox.io</a> to revert the
-          deleting.
-        </p>
-        <footer
-          css={`
-            margin-top: 30px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            justify-content: center;
-            grid-column-gap: 40px;
-          `}
-        >
-          <Button small disabled={loading} onClick={() => setModal(false)}>
-            No, Keep Account
-          </Button>
-          <Button
-            small
-            disabled={loading}
-            danger
-            onClick={() => closeAccount()}
-          >
-            Close Account
-          </Button>
-        </footer>
-      </Modal>
-      <aside
-        css={`
-          @media screen and (max-width: 1100px) {
-            display: grid;
-            grid-template-columns: 480px 1fr;
-            grid-gap: 60px;
-          }
-          @media screen and (max-width: 768px) {
-            grid-template-columns: 1fr;
-          }
-        `}
-      >
+      <Modal
+        isOpen={modal}
+        onClose={() => setModal(false)}
+        onClick={() => closeAccount()}
+        loading={loading}
+      />
+      <AsideWrapper>
         <Aside>
           <Header>
             <Avatar src={avatar_url} alt={name} width="96" height="96" />
@@ -127,54 +93,43 @@ export default ({
               <H4>{username}</H4>
             </div>
           </Header>
-          <p>{bio}</p>
-          <Stats>
-            <Stat>
-              <Views /> {kFormatter(view_count)}
-            </Stat>
-            <Stat>
-              <Likes /> {kFormatter(received_like_count)}
-            </Stat>
-            <Stat>
-              <Forks /> {kFormatter(forked_count)}
-            </Stat>
-          </Stats>
-          {twitter && (
-            <Social>
-              <img src={twitterLogo} alt="twitter logo" />
-              <a href={`https://twitter.com/${twitter}`} target="_blank">
-                @{twitter.toLowerCase()}
-              </a>
-            </Social>
-          )}
-          {profile_email && (
-            <Social>
-              <img src={mail} alt="email" />
-              <a href={`mailto:${profile_email}`} target="_blank">
-                {profile_email.toLowerCase()}
-              </a>
-            </Social>
-          )}
-          <Social>
-            <img src={calendar} alt="User Since" />
-            <span>Joined {format(inserted_at, 'MMMM YYYY')}</span>
-          </Social>
-
+          <Editing
+            changeBio={setBio}
+            changeTwitter={setTwitter}
+            changeEmail={setEmail}
+            bio={bio}
+            twitter={twitter}
+            profile_email={profile_email}
+            inserted_at={inserted_at}
+            editing={editing}
+          >
+            <Stats>
+              <Stat>
+                <Views /> {kFormatter(view_count)}
+              </Stat>
+              <Stat>
+                <Likes /> {kFormatter(received_like_count)}
+              </Stat>
+              <Stat>
+                <Forks /> {kFormatter(forked_count)}
+              </Stat>
+            </Stats>
+          </Editing>
           {username === user.username && (
-            <section
-              css={`
-                margin-top: 30px;
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                justify-content: center;
-                grid-column-gap: 40px;
-              `}
-            >
-              <Button small>Edit Profile</Button>
+            <Buttons>
+              {editing ? (
+                <Button small onClick={() => editProfile()}>
+                  Save Profile
+                </Button>
+              ) : (
+                <Button small onClick={() => setEditing(true)}>
+                  Edit Profile
+                </Button>
+              )}
               <Button small danger onClick={() => setModal(true)}>
                 Delete Account
               </Button>
-            </section>
+            </Buttons>
           )}
         </Aside>
         <Badges
@@ -182,7 +137,7 @@ export default ({
           username={username}
           templateSandboxes={sandbox_count_per_template}
         />
-      </aside>
+      </AsideWrapper>
     </>
   );
 };

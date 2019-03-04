@@ -75,3 +75,22 @@ export const Title = styled.h3`
   margin-bottom: 30px;
   color: ${props => props.theme.new.title};
 `;
+
+export const AsideWrapper = styled.aside`
+  @media screen and (max-width: 1100px) {
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    grid-gap: 60px;
+  }
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const Buttons = styled.section`
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  grid-column-gap: 40px;
+`;
