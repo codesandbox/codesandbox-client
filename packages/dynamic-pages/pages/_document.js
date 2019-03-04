@@ -31,8 +31,6 @@ export default class MyDocument extends Document {
 
   render() {
     const head = {
-      title:
-        'CodeSandbox: Online Code Editor Tailored for Web Application Development',
       description:
         'CodeSandbox is an online code editor with a focus on creating and sharing web application projects',
       image: 'https://codesandbox.io/static/img/banner.png',
@@ -40,7 +38,6 @@ export default class MyDocument extends Document {
     return (
       <html lang="en">
         <Head>
-          <title>{head.title}</title>
           <meta name="og:title" content={head.title} />
           <meta name="og:description" content={head.description} />
           <meta name="twitter:description" content={head.description} />

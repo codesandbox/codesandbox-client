@@ -20,7 +20,7 @@ app
     });
 
     server.get('/profile/:username/:page', (req, res) => {
-      app.render(req, res, '/profile/sandboxes', {
+      app.render(req, res, '/user-sandboxes', {
         username: req.params.username,
         page: req.params.page,
       });

@@ -11,7 +11,7 @@ export default async ({ username, id }) =>
         username,
         id,
       },
-      (err, record) => {
+      err => {
         if (err) {
           console.error(err);
           reject();

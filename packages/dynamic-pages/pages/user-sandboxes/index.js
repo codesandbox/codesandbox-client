@@ -4,11 +4,16 @@ import VisibilitySensor from 'react-visibility-sensor';
 import Link from 'next/link';
 import Button from 'common/lib/components/Button';
 import { sandboxUrl } from 'common/lib/utils/url-generator';
-import fetch from '../../../utils/fetch';
-import PageContainer from '../../../components/PageContainer';
-import Sidebar from '../../../screens/Profile/sidebar';
-import SandboxesWrapper from '../../../components/SandboxesWrapper';
-import { Grid, Title, NavigationLink, TabNavigation } from '../_elements';
+import fetch from '../../utils/fetch';
+import PageContainer from '../../components/PageContainer';
+import Sidebar from '../../screens/Profile/sidebar';
+import SandboxesWrapper from '../../components/SandboxesWrapper';
+import {
+  Grid,
+  Title,
+  NavigationLink,
+  TabNavigation,
+} from '../profile/_elements';
 
 const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
   const [page, setPage] = useState(1);
@@ -42,26 +47,28 @@ const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
         <main>
           <TabNavigation>
             <Link
-              href={{
-                pathname: `/profile/${profile.username}`,
-              }}
+              prefetch
+              href={`/profile?username=${profile.username}`}
+              as={`/profile/${profile.username}`}
             >
               <NavigationLink>Profile</NavigationLink>
             </Link>
 
             <Link
-              href={{
-                pathname: `/profile/${profile.username}/sandboxes`,
-              }}
+              prefetch
+              href={`/user-sandboxes?username=${
+                profile.username
+              }&page=sandboxes`}
+              as={`/profile/${profile.username}/sandboxes`}
             >
               <NavigationLink active={currentTab === 'sandboxes'}>
                 Sandboxes
               </NavigationLink>
             </Link>
             <Link
-              href={{
-                pathname: `/profile/${profile.username}/liked`,
-              }}
+              prefetch
+              href={`/user-sandboxes?username=${profile.username}&page=liked`}
+              as={`/profile/${profile.username}/liked`}
             >
               <NavigationLink active={currentTab === 'liked'}>
                 Liked

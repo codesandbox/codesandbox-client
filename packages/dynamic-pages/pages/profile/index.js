@@ -64,11 +64,13 @@ const Profile = ({ profile, liked, showcased }) => {
             ))}
             <More>
               <Link
-                href={{
-                  pathname: `/profile/${profile.username}/sandboxes`,
-                }}
+                prefetch
+                href={`/user-sandboxes?username=${
+                  profile.username
+                }&page=sandboxes`}
+                as={`/profile/${profile.username}/sandboxes`}
               >
-                <a>See all sandboxes</a>
+                See all sandboxes
               </Link>
             </More>
           </SandboxesWrapper>
@@ -92,9 +94,9 @@ const Profile = ({ profile, liked, showcased }) => {
               ))}
             <More>
               <Link
-                href={{
-                  pathname: `/profile/${profile.username}/liked`,
-                }}
+                prefetch
+                href={`/user-sandboxes?username=${profile.username}&page=liked`}
+                as={`/profile/${profile.username}/liked`}
               >
                 <a>See all liked sandboxes</a>
               </Link>
