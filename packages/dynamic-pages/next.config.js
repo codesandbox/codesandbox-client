@@ -13,7 +13,7 @@ for (const key of Object.keys(parsedVariables)) {
 
 module.exports = withCSS(
   withTM({
-    transpileModules: ['common', 'app'],
+    transpileModules: ['common', 'app', 'lodash-es'],
     webpack(config) {
       // Further custom configuration here
       config.module.rules.unshift({
