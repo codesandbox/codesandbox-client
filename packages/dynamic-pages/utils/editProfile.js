@@ -4,7 +4,10 @@ const BASE =
 export default async (username, user) => {
   const jwt = JSON.parse(localStorage.getItem('jwt'));
   const data = await fetch(BASE + '/api/v1/users/' + username, {
-    headers: { Authorization: `Bearer ${jwt}` },
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
     method: 'PUT',
     body: JSON.stringify({
       user,

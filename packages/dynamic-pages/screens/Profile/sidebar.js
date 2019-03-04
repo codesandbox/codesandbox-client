@@ -66,15 +66,18 @@ export default ({
   };
 
   const editProfile = async () => {
+    setLoading(true);
     const profile = await editCurrentUser(username, {
       profile_email: changedEmail,
       twitter: changedTwitter,
       bio: changedBio,
     });
-
-    console.log(profile);
+    setLoading(false);
+    setUser(profile);
     setEditing(false);
   };
+
+  const loggedInUSer = username === user.username;
 
   return (
     <>
@@ -97,9 +100,9 @@ export default ({
             changeBio={setBio}
             changeTwitter={setTwitter}
             changeEmail={setEmail}
-            bio={bio}
-            twitter={twitter}
-            profile_email={profile_email}
+            bio={loggedInUSer ? changedBio : bio}
+            twitter={loggedInUSer ? changedTwitter : twitter}
+            profile_email={loggedInUSer ? changedEmail : profile_email}
             inserted_at={inserted_at}
             editing={editing}
           >
@@ -115,10 +118,10 @@ export default ({
               </Stat>
             </Stats>
           </Editing>
-          {username === user.username && (
+          {loggedInUSer && (
             <Buttons>
               {editing ? (
-                <Button small onClick={() => editProfile()}>
+                <Button disabled={loading} small onClick={() => editProfile()}>
                   Save Profile
                 </Button>
               ) : (
