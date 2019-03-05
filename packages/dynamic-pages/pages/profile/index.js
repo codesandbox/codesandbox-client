@@ -87,15 +87,19 @@ const Profile = ({ profile, liked, showcased }) =>
                   sandbox={sandbox}
                 />
               ))}
-            <More>
-              <Link
-                prefetch
-                href={`/user-sandboxes?username=${profile.username}&page=liked`}
-                as={`/profile/${profile.username}/liked`}
-              >
-                <a>See all liked sandboxes</a>
-              </Link>
-            </More>
+            {liked[1].length > 5 && (
+              <More>
+                <Link
+                  prefetch
+                  href={`/user-sandboxes?username=${
+                    profile.username
+                  }&page=liked`}
+                  as={`/profile/${profile.username}/liked`}
+                >
+                  <a>See all liked sandboxes</a>
+                </Link>
+              </More>
+            )}
           </SandboxesWrapper>
         </main>
       </Grid>
