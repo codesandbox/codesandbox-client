@@ -61,14 +61,8 @@ export default class MyDocument extends Document {
           <meta property="twitter:creator" content="@codesandbox" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link
-            href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Poppins:400,700|Source+Sans+Pro"
+            href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Poppins:400,700"
             rel="stylesheet"
-          />
-          <link
-            rel="stylesheet"
-            type="text/css"
-            charSet="UTF-8"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
           />
         </Head>
         <body>

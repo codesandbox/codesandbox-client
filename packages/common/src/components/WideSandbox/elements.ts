@@ -21,6 +21,7 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 
   margin-right: 0.5rem;
   margin-left: 0.5rem;
+  margin-bottom: 2rem;
 
   background-color: ${BG_COLOR};
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
@@ -97,6 +98,7 @@ export const SandboxInfo = styled.div`
   padding: 0.75rem;
   min-height: 90px;
   z-index: 1;
+  height: 130px;
 `;
 
 export const TemplateIcon = styled.div`
