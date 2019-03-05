@@ -1,9 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import FeaturedSandbox from 'common/lib/components/FeaturedSandbox';
-import { sandboxUrl } from 'common/lib/utils/url-generator';
 import WideSandbox from 'common/lib/components/WideSandbox';
 
+import openSandbox from '../../utils/openSandbox';
 import NotFound from '../../screens/Profile/NotFound';
 import Sidebar from '../../screens/Profile/sidebar';
 import fetch from '../../utils/fetch';
@@ -12,13 +12,8 @@ import SandboxesWrapper from '../../components/SandboxesWrapper';
 
 import { Grid, Title, More } from './_elements';
 
-const Profile = ({ profile, liked, showcased }) => {
-  const openSandbox = id => {
-    const url = sandboxUrl({ id });
-    window.open(url, '_blank');
-  };
-
-  return profile ? (
+const Profile = ({ profile, liked, showcased }) =>
+  profile ? (
     <PageContainer>
       <Grid>
         <Sidebar {...profile} />
@@ -108,7 +103,6 @@ const Profile = ({ profile, liked, showcased }) => {
   ) : (
     <NotFound />
   );
-};
 
 Profile.getInitialProps = async ({ query: { username } }) => {
   const profile = await fetch(`/api/v1/users/${username}`);

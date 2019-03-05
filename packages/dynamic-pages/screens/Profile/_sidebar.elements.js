@@ -56,18 +56,6 @@ export const Social = styled.li`
   }
 `;
 
-export const BadgeWrapper = styled.ul`
-  margin: 0;
-  padding: 0;
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  > * {
-    margin-right: 10px;
-  }
-`;
-
 export const Title = styled.h3`
   font-family: Poppins, arial;
   font-weight: 300;

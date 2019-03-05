@@ -11,11 +11,11 @@ export default styled.div`
 
   margin: 0 -0.5rem;
 
-  @media screen and (max-width: 1100px) {
+  @media screen and (max-width: 700px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 500px) {
     grid-template-columns: 1fr;
   }
 `;

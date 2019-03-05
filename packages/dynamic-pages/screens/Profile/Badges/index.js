@@ -2,21 +2,11 @@ import React from 'react';
 import Badge from 'common/lib/utils/badges/Badge';
 import ContributorsBadge from 'common/lib/components/ContributorsBadge';
 import CommunityBadge from 'common/lib/components/CommunityBadges';
-import { H3 } from '../../components/Typography';
-import { Aside, BadgeWrapper } from './_sidebar.elements';
+import { H3 } from '../../../components/Typography';
+import { BadgeWrapper, BadgeAside } from './elements';
 
 export default ({ templateSandboxes, badges, username }) => (
-  <Aside
-    css={`
-      margin-top: 1rem;
-      @media screen and (max-width: 1100px) {
-        margin-top: 0px;
-      }
-      @media screen and (max-width: 767px) {
-        display: none;
-      }
-    `}
-  >
+  <BadgeAside>
     <H3>Achievement Badges</H3>
     <BadgeWrapper>
       {badges.map(badge => <Badge key={badge.id} badge={badge} size={64} />)}
@@ -42,5 +32,5 @@ export default ({ templateSandboxes, badges, username }) => (
           )
       )}
     </BadgeWrapper>
-  </Aside>
+  </BadgeAside>
 );

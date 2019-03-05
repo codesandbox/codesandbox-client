@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import WideSandbox from 'common/lib/components/WideSandbox';
 import VisibilitySensor from 'react-visibility-sensor';
 import Link from 'next/link';
 import Button from 'common/lib/components/Button';
-import { sandboxUrl } from 'common/lib/utils/url-generator';
 import fetch from '../../utils/fetch';
+import openSandbox from '../../utils/openSandbox';
 import PageContainer from '../../components/PageContainer';
 import Sidebar from '../../screens/Profile/sidebar';
 import SandboxesWrapper from '../../components/SandboxesWrapper';
-import {
-  Grid,
-  Title,
-  NavigationLink,
-  TabNavigation,
-} from '../profile/_elements';
+import { Grid, Title } from '../profile/_elements';
+import { NavigationLink, TabNavigation } from './_elements';
 
 const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
   const [page, setPage] = useState(1);
@@ -35,10 +31,14 @@ const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
     return setMore(false);
   };
 
-  const openSandbox = id => {
-    const url = sandboxUrl({ id });
-    window.open(url, '_blank');
-  };
+  // reset everything when tab changes
+  useEffect(
+    () => {
+      setSandboxes(data[1]);
+      setPage(1);
+    },
+    [currentTab]
+  );
 
   return (
     <PageContainer>
