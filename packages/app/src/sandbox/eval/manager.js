@@ -783,7 +783,6 @@ export default class Manager {
         )
       );
     } catch (e) {
-      console.log(e.path);
       if (e.type === 'module-not-found' && e.isDependency) {
         return this.downloadDependency(e.path, tModule, ignoredExtensions);
       }
