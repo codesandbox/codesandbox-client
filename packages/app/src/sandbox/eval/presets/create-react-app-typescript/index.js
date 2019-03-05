@@ -27,6 +27,7 @@ export default function initialize() {
         'transform-flow-strip-types',
         'transform-destructuring',
         'babel-plugin-macros',
+        ['proposal-decorators', { legacy: true }],
         ['proposal-class-properties', { loose: true }],
         ['proposal-object-rest-spread', { useBuiltIns: true }],
         [
@@ -38,7 +39,6 @@ export default function initialize() {
           },
         ],
         'syntax-dynamic-import',
-        ['proposal-decorators', { legacy: true }],
       ],
       presets: [
         [
