@@ -8,7 +8,7 @@ import openSandbox from '../../utils/openSandbox';
 import PageContainer from '../../components/PageContainer';
 import Sidebar from '../../screens/Profile/sidebar';
 import SandboxesWrapper from '../../components/SandboxesWrapper';
-import { Grid, Title } from '../profile/_elements';
+import { Grid } from '../profile/_elements';
 import { NavigationLink, TabNavigation } from './_elements';
 
 const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
@@ -48,26 +48,54 @@ const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
           <TabNavigation>
             <Link
               prefetch
+              href={`/profile?username=${profile.username}`}
+              as={`/profile/${profile.username}`}
+            >
+              <div
+                css={`
+                  display: inline-flex;
+                  justify-content: center;
+                `}
+              >
+                <NavigationLink>Back to Profile</NavigationLink>
+              </div>
+            </Link>
+
+            <Link
+              prefetch
               href={`/user-sandboxes?username=${
                 profile.username
               }&page=sandboxes`}
               as={`/profile/${profile.username}/sandboxes`}
             >
-              <NavigationLink active={currentTab === 'sandboxes'}>
-                Sandboxes
-              </NavigationLink>
+              <div
+                css={`
+                  display: inline-flex;
+                  justify-content: center;
+                `}
+              >
+                <NavigationLink active={currentTab === 'sandboxes'}>
+                  Sandboxes
+                </NavigationLink>
+              </div>
             </Link>
             <Link
               prefetch
               href={`/user-sandboxes?username=${profile.username}&page=liked`}
               as={`/profile/${profile.username}/liked`}
             >
-              <NavigationLink active={currentTab === 'liked'}>
-                Liked
-              </NavigationLink>
+              <div
+                css={`
+                  display: inline-flex;
+                  justify-content: center;
+                `}
+              >
+                <NavigationLink active={currentTab === 'liked'}>
+                  Liked
+                </NavigationLink>
+              </div>
             </Link>
           </TabNavigation>
-          <Title>{currentTab === 'liked' ? 'Liked' : ''} Sandboxes</Title>
           <SandboxesWrapper
             css={`
               grid-row-gap: 40px;

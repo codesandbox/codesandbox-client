@@ -5,10 +5,6 @@ export default styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 24px;
 
-  img {
-    max-height: 160px;
-  }
-
   @media screen and (max-width: 700px) {
     grid-template-columns: repeat(2, 1fr);
   }

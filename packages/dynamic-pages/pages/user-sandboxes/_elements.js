@@ -14,8 +14,8 @@ const activeCSS = css`
 
 export const NavigationLink = styled.a`
   transition: 0.3s ease all;
-
-  display: block;
+  position: relative;
+  display: inline-block;
   margin: 1.5rem 0;
   font-size: 1.25rem;
   text-decoration: none;
@@ -51,13 +51,12 @@ export const NavigationLink = styled.a`
 `;
 
 export const TabNavigation = styled.div`
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   width: 100%;
   margin-bottom: 3rem;
 
-  @media screen and (max-width: 500px) {
-    display: block;
-    text-align: center;
+  @media screen and (max-width: 600px) {
+    grid-template-columns: 1fr;
   }
 `;

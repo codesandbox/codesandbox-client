@@ -1,5 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
+import WideSandbox from 'common/lib/components/WideSandbox';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -8,7 +9,7 @@ import { Heading2 } from '../components/headings';
 import Layout from '../components/layout';
 import SandboxModal from '../screens/explore/SandboxModal';
 import ShuffleWords from './_shuffleWords';
-import WideSandbox from '../screens/explore/WideSandbox';
+
 import { Container, Sandboxes } from './_explore.elements';
 
 export default class extends React.PureComponent {

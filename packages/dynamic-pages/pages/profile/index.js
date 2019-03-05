@@ -50,6 +50,7 @@ const Profile = ({ profile, liked, showcased }) =>
           >
             {profile.top_sandboxes.map(sandbox => (
               <WideSandbox
+                defaultHeight={170}
                 noMargin
                 small
                 key={sandbox.id}
@@ -81,6 +82,7 @@ const Profile = ({ profile, liked, showcased }) =>
               .map(sandbox => (
                 <WideSandbox
                   noMargin
+                  defaultHeight={170}
                   small
                   key={sandbox.id}
                   pickSandbox={({ id }) => openSandbox(id)}
