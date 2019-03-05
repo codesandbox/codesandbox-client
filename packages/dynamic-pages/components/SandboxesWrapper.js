@@ -9,8 +9,6 @@ export default styled.div`
     max-height: 160px;
   }
 
-  margin: 0 -0.5rem;
-
   @media screen and (max-width: 700px) {
     grid-template-columns: repeat(2, 1fr);
   }

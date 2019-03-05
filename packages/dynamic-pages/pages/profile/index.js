@@ -28,7 +28,7 @@ const Profile = ({ profile, liked, showcased }) =>
           {showcased ? (
             <div
               css={`
-                margin-bottom: 30px;
+                margin-bottom: 48px;
                 font-size: 0.875rem;
               `}
             >
