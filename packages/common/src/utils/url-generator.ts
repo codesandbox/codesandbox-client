@@ -21,7 +21,7 @@ export const host = () => {
   if (process.env.LOCAL_SERVER) {
     return 'localhost:3000';
   }
-  return 'codesandbox.io';
+  return 'codesandbox.dev';
 };
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;

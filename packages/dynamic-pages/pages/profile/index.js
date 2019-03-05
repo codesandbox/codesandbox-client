@@ -70,7 +70,7 @@ const Profile = ({ profile, liked, showcased }) => {
                 }&page=sandboxes`}
                 as={`/profile/${profile.username}/sandboxes`}
               >
-                See all sandboxes
+                <a>See all sandboxes</a>
               </Link>
             </More>
           </SandboxesWrapper>
