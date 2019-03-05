@@ -277,7 +277,7 @@ function getCustomConfig(
   };
 }
 
-async function compile(code, customConfig, path) {
+async function compile(code, customConfig, path, isV7) {
   try {
     let result;
     try {
@@ -303,7 +303,14 @@ async function compile(code, customConfig, path) {
     }
 
     const dependencies = getDependencies(detective.metadata(result));
-
+    if (isV7) {
+      // Force push this dependency, there are cases where it isn't included out of our control.
+      // https://twitter.com/vigs072/status/1103005932886343680
+      dependencies.push({
+        type: 'direct',
+        path: '@babel/runtime/helpers/interopRequireDefault',
+      });
+    }
     dependencies.forEach(dependency => {
       self.postMessage({
         type: 'add-dependency',
@@ -337,8 +344,8 @@ async function compile(code, customConfig, path) {
 try {
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.js`
-      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.js`
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
+      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
   );
 } catch (e) {
   console.error(e);
@@ -591,7 +598,8 @@ self.addEventListener('message', async event => {
     await compile(
       code,
       version === 7 ? normalizeV7Config(customConfig) : customConfig,
-      path
+      path,
+      version === 7
     );
   } catch (e) {
     console.error(e);
