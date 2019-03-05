@@ -24,7 +24,7 @@ export const More = styled.div`
   background-color: #1c2022;
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   height: 100%;
 
@@ -34,6 +34,10 @@ export const More = styled.div`
     font-weight: 600;
     color: white;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
   }
 
   &:hover {
