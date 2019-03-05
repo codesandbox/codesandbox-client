@@ -81,6 +81,7 @@ export async function deployToNetlify({ path, http, props, state }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
   const template = getTemplate(sandbox.template);
+  const buildCommand = template.name === 'nuxt' ? 'generate' : 'build';
   let id = '';
   try {
     const { result } = await http.request({
@@ -95,10 +96,6 @@ export async function deployToNetlify({ path, http, props, state }) {
       body: {
         name: `csb-${sandboxId}`,
         session_id: `${userId}-${sandboxId}`,
-        build_settings: {
-          dir: template.distDir,
-          cmd: 'yarn build',
-        },
       },
     });
     id = result.site_id;
@@ -106,7 +103,9 @@ export async function deployToNetlify({ path, http, props, state }) {
 
   try {
     await http.request({
-      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}`,
+      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${
+        template.distDir
+      }&buildCommand=${buildCommand}`,
       method: 'POST',
       body: file,
       headers: {

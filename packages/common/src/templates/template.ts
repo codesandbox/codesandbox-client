@@ -9,6 +9,7 @@ import configurations from './configuration';
 export type Options = {
   showOnHomePage?: boolean;
   distDir?: string;
+  netlify?: boolean;
   extraConfigurations?: {
     [path: string]: ConfigurationFile;
   };
@@ -71,6 +72,7 @@ export default class Template {
 
   showOnHomePage: boolean;
   distDir: string;
+  netlify: boolean;
   configurationFiles: ConfigurationFiles;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
@@ -107,6 +109,7 @@ export default class Template {
         : true;
 
     this.mainFile = options.mainFile;
+    this.netlify = options.netlify;
     this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;

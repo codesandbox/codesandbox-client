@@ -14,6 +14,8 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
+    distDir: 'out',
+    netlify: false,
     mainFile: ['/pages/index.js'],
     backgroundColor: decorateSelector(() => '#000000'),
     showOnHomePage: true,

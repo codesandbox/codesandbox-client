@@ -14,7 +14,8 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
-    mainFile: [], //'/src/components/Button.js'
+    netlify: false,
+    mainFile: [], // '/src/components/Button.js'
     showOnHomePage: true,
   }
 );

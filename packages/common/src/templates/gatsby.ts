@@ -13,6 +13,7 @@ export default new Template(
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
     },
+    distDir: 'public',
     isServer: true,
     mainFile: ['/src/pages/index.js'],
     showOnHomePage: true,
