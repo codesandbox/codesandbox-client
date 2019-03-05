@@ -24,7 +24,7 @@ let fsInitialized = false;
 let fsLoading = false;
 let lastConfig = null;
 
-const IGNORED_MODULES = ['assert', 'util', 'os'];
+const IGNORED_MODULES = ['util', 'os'];
 
 self.process = {
   env: { NODE_ENV: 'production' },
@@ -32,7 +32,7 @@ self.process = {
   argv: [],
   stderr: {},
 };
-// This one is called from babel-plugin-macros
+// This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
   const module = BrowserFS.BFSRequire(path);
   if (module) {
