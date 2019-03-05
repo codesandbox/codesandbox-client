@@ -136,7 +136,11 @@ class Tests extends React.Component<Props, State> {
   };
 
   handleMessage = (data: Object) => {
-    if (data.type === 'done' && (!this.props.hidden || this.props.standalone)) {
+    if (
+      data.type === 'done' &&
+      this.state.watching &&
+      (!this.props.hidden || this.props.standalone)
+    ) {
       this.runAllTests();
     } else if (data.type === 'test') {
       switch (data.event) {
