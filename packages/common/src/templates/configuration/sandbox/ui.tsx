@@ -23,9 +23,10 @@ type Props = {
 export class ConfigWizard extends React.Component<Props> {
   bindValue = (
     file: Object,
-    property: string
+    property: string,
+    defaultValue?: any
   ): { value: any; setValue: (p: any) => void } => ({
-    value: file[property],
+    value: file[property] || defaultValue,
     setValue: (value: any) => {
       const code = JSON.stringify(
         {
@@ -109,7 +110,7 @@ export class ConfigWizard extends React.Component<Props> {
           </ConfigDescription>
         </PaddedConfig>
 
-        <PaddedConfig>
+        {/* <PaddedConfig>
           <ConfigItem>
             <PaddedPreference
               title="Default View"
@@ -121,7 +122,7 @@ export class ConfigWizard extends React.Component<Props> {
           <ConfigDescription>
             Which view to show in the preview by default.
           </ConfigDescription>
-        </PaddedConfig>
+        </PaddedConfig> */}
 
         <PaddedConfig>
           <ConfigItem>
@@ -130,7 +131,7 @@ export class ConfigWizard extends React.Component<Props> {
               type="dropdown"
               options={templateOptions}
               mapName={name => templateNameMap[name]}
-              {...this.bindValue(parsedFile, 'template')}
+              {...this.bindValue(parsedFile, 'template', currentTemplate.name)}
             />
           </ConfigItem>
           <ConfigDescription>

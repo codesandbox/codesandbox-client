@@ -4,7 +4,7 @@ import CrossIconClean from 'react-icons/lib/md/clear';
 export const Container = styled.div`
   display: flex;
   background-color: ${props =>
-    props.theme['statusBar.background'] || props.theme.background4};
+    props.theme['editorGroupHeader.tabsBackground'] || props.theme.background4};
 
   width: 100%;
   align-items: center;
@@ -46,7 +46,7 @@ export const Tab = styled.div`
   ${props =>
     props.selected
       ? css`
-          background-color: ${props.theme['statusBar.background'] ||
+          background-color: ${props.theme['tab.activeBackground'] ||
             props.theme.background2};
           color: ${props.theme.light
             ? 'rgba(0, 0, 0, 0.8)'
@@ -57,7 +57,7 @@ export const Tab = styled.div`
           border-bottom: 1px solid
             ${props.theme.light ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.4)'};
           &:hover {
-            background-color: ${props.theme['statusBar.background'] ||
+            background-color: ${props.theme['tab.inactiveBackground'] ||
               props.theme.background2.darken(0.2)};
             color: ${props.theme.light
               ? 'rgba(0, 0, 0, 0.8)'

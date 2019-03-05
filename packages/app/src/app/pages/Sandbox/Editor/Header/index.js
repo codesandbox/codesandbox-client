@@ -14,6 +14,7 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
+import Button from 'app/components/Button';
 
 import {
   patronUrl,
@@ -36,8 +37,35 @@ import CollectionInfo from './CollectionInfo';
 import { Container, Right, Left, Centered, DashboardIcon } from './elements';
 
 import UpdateFound from './UpdateFound';
-import FeedbackIcon from '../../../common/UserMenu/Menu/FeedbackIcon';
 import { MenuBarContainer } from './MenuBar';
+
+const ForkButton = ({ signals, secondary, style }) => (
+  <Button
+    onClick={() => {
+      signals.editor.forkSandboxClicked();
+    }}
+    style={style}
+    secondary={secondary}
+    small
+  >
+    <Fork style={{ marginRight: '.5rem' }} />
+    Fork
+  </Button>
+);
+
+const ShareButton = ({ signals, secondary, style }) => (
+  <Button
+    onClick={() => {
+      signals.modalOpened({ modal: 'share' });
+    }}
+    secondary={secondary}
+    style={style}
+    small
+  >
+    <ShareIcon style={{ marginRight: '.5rem' }} />
+    Share
+  </Button>
+);
 
 const Header = ({ store, signals, zenMode }) => {
   const sandbox = store.editor.currentSandbox;
@@ -57,19 +85,6 @@ const Header = ({ store, signals, zenMode }) => {
       )}
 
       <Right>
-        <Action
-          tooltip="Search All Sandboxes"
-          Icon={SearchIcon}
-          href={searchUrl()}
-        />
-
-        <Action
-          tooltip="Explore Sandboxes"
-          Icon={FlameIcon}
-          href={exploreUrl()}
-          a
-        />
-
         {store.updateStatus === 'available' && (
           <Action
             onClick={() => document.location.reload()}
@@ -99,16 +114,6 @@ const Header = ({ store, signals, zenMode }) => {
         <Action
           onClick={() =>
             signals.modalOpened({
-              modal: 'preferences',
-            })
-          }
-          tooltip="Preferences"
-          Icon={SettingsIcon}
-        />
-
-        <Action
-          onClick={() =>
-            signals.modalOpened({
               modal: 'newSandbox',
             })
           }
@@ -116,25 +121,30 @@ const Header = ({ store, signals, zenMode }) => {
           Icon={PlusIcon}
         />
 
-        {store.isLoggedIn && (
-          <Action
-            style={{ marginTop: 2 }}
-            href={dashboardUrl()}
-            tooltip="Dashboard"
-            Icon={InfoIcon}
-          />
-        )}
-
-        {!store.isLoggedIn && (
-          <Action
-            onClick={() =>
-              signals.modalOpened({
-                modal: 'feedback',
-              })
-            }
-            tooltip="Submit Feedback"
-            Icon={FeedbackIcon}
-          />
+        {sandbox.owned ? (
+          <>
+            <ForkButton
+              style={{ fontSize: '.75rem' }}
+              signals={signals}
+              secondary
+            />
+            <ShareButton
+              style={{ fontSize: '.75rem', margin: '0 1rem' }}
+              signals={signals}
+            />
+          </>
+        ) : (
+          <>
+            <ShareButton
+              style={{ fontSize: '.75rem' }}
+              signals={signals}
+              secondary
+            />
+            <ForkButton
+              style={{ fontSize: '.75rem', margin: '0 1rem' }}
+              signals={signals}
+            />
+          </>
         )}
 
         <Margin
@@ -145,7 +155,13 @@ const Header = ({ store, signals, zenMode }) => {
           left={1}
         >
           {store.isLoggedIn ? (
-            <div style={{ fontSize: '.875rem', margin: '9px 0.5rem' }}>
+            <div
+              style={{
+                fontSize: '0.8rem',
+                margin: '5px 0',
+                marginRight: '1rem',
+              }}
+            >
               <UserMenu small />
             </div>
           ) : (

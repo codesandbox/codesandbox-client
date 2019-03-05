@@ -3,8 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { getModulePath } from 'common/lib/sandbox/modules';
 
 import DirectoryEntry from './DirectoryEntry/index';
-import WorkspaceItem from '../WorkspaceItem';
-
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
 
 class Files extends React.Component {
@@ -23,6 +21,10 @@ class Files extends React.Component {
     this._uploadFile();
   };
 
+  onDownload = () => {
+    this.props.signals.editor.createZipClicked();
+  };
+
   getModulePath = (moduleId: string) => {
     try {
       const sandbox = this.props.store.editor.currentSandbox;
@@ -37,42 +39,40 @@ class Files extends React.Component {
     const sandbox = store.editor.currentSandbox;
 
     return (
-      <WorkspaceItem
-        defaultOpen
-        keepState
-        title="Files"
-        actions={
-          <EditIcons
-            hovering
-            forceShow={window.__isTouch}
-            onCreateFile={this.createModule}
-            onCreateDirectory={this.createDirectory}
-            onUploadFile={
-              store.isLoggedIn && sandbox.privacy === 0
-                ? this.uploadFile
-                : undefined
-            }
-          />
-        }
-      >
-        <DirectoryEntry
-          root
-          getModulePath={this.getModulePath}
-          title={sandbox.title || 'Project'}
-          initializeProperties={({
-            onCreateModuleClick,
-            onCreateDirectoryClick,
-            onUploadFileClick,
-          }) => {
-            this._createModule = onCreateModuleClick;
-            this._createDirectory = onCreateDirectoryClick;
-            this._uploadFile = onUploadFileClick;
-          }}
-          depth={-1}
-          id={null}
-          shortid={null}
-        />
-      </WorkspaceItem>
+      <DirectoryEntry
+        root
+        getModulePath={this.getModulePath}
+        title={sandbox.title || 'Project'}
+        initializeProperties={({
+          onCreateModuleClick,
+          onCreateDirectoryClick,
+          onUploadFileClick,
+        }) => {
+          this._createModule = onCreateModuleClick;
+          this._createDirectory = onCreateDirectoryClick;
+          this._uploadFile = onUploadFileClick;
+
+          if (this.props.setEditActions) {
+            this.props.setEditActions(
+              <EditIcons
+                hovering
+                forceShow={window.__isTouch}
+                onCreateFile={this.createModule}
+                onCreateDirectory={this.createDirectory}
+                onDownload={this.onDownload}
+                onUploadFile={
+                  store.isLoggedIn && sandbox.privacy === 0
+                    ? this.uploadFile
+                    : undefined
+                }
+              />
+            );
+          }
+        }}
+        depth={-1}
+        id={null}
+        shortid={null}
+      />
     );
   }
 }

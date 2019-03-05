@@ -28,11 +28,13 @@ export const Right = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
+  z-index: 1;
 `;
 
 export const Left = styled.div`
   display: flex;
   height: 100%;
+  z-index: 1;
 `;
 
 export const Centered = styled.div`
@@ -41,7 +43,7 @@ export const Centered = styled.div`
   left: 0;
   display: flex;
   justify-content: center;
-  pointer-events: none;
+  z-index: 0; /* So pointer events on left and right continue */
 `;
 
 export const DashboardIcon = styled(Dashboard)`

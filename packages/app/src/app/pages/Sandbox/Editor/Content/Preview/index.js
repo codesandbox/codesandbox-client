@@ -92,61 +92,6 @@ class Preview extends Component<Props, State> {
     );
   };
 
-  componentWillReceiveProps(props: Props) {
-    const { width, height } = props;
-
-    if (this.state.aligned) {
-      if (width !== this.props.width || height !== this.props.height) {
-        if (this.state.aligned === 'bottom') {
-          this.props.signals.editor.setPreviewBounds(
-            this.getBottomCoordinates(
-              props,
-              1 - this.props.store.editor.previewWindow.editorSize / 100
-            )
-          );
-        } else {
-          this.props.signals.editor.setPreviewBounds(
-            this.getRightCoordinates(
-              props,
-              1 - this.props.store.editor.previewWindow.editorSize / 100
-            )
-          );
-        }
-      }
-    } else if (width && height) {
-      let newWidth = props.store.editor.previewWindow.width;
-      if (
-        width - 16 <
-        props.store.editor.previewWindow.width -
-          props.store.editor.previewWindow.x
-      ) {
-        newWidth = Math.max(
-          64,
-          width - 16 + props.store.editor.previewWindow.x
-        );
-      }
-
-      let newHeight = props.store.editor.previewWindow.height;
-      if (
-        height - 16 <
-        props.store.editor.previewWindow.height +
-          props.store.editor.previewWindow.y
-      ) {
-        newHeight = Math.max(
-          64,
-          height - 16 - props.store.editor.previewWindow.y
-        );
-      }
-
-      if (width !== this.props.width || height !== this.props.height) {
-        props.signals.editor.setPreviewBounds({
-          width: newWidth,
-          height: newHeight,
-        });
-      }
-    }
-  }
-
   handleDependenciesChange = preview => {
     preview.handleDependenciesChange();
   };
@@ -241,15 +186,13 @@ class Preview extends Component<Props, State> {
 
   render() {
     const { store, signals } = this.props;
-    const content = store.editor.previewWindow.content;
 
     const packageJSON = {
       path: '/package.json',
       code: store.editor.currentPackageJSONCode,
     };
 
-    const hide = content !== 'browser' || this.props.hidden;
-    const completelyHidden = !content;
+    const completelyHidden = !store.editor.previewWindowVisible;
 
     return this.state.running ? (
       <BasePreview
@@ -263,7 +206,7 @@ class Preview extends Component<Props, State> {
         onClearErrors={() => signals.editor.errorsCleared()}
         onAction={action => signals.editor.previewActionReceived({ action })}
         alignDirection={this.state.aligned}
-        hide={hide}
+        hide={this.props.hidden}
         noPreview={completelyHidden}
         onOpenNewWindow={() =>
           signals.preferences.viewModeChanged({

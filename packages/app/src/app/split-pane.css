@@ -3,7 +3,7 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   background: #000;
-  z-index: 6;
+  z-index: 1;
   -moz-background-clip: padding;
   -webkit-background-clip: padding;
   background-clip: padding-box;

@@ -39,10 +39,6 @@ import {
 } from '../Monaco/monaco-index-converter';
 import { updateUserSelections } from '../Monaco/live-decorations';
 
-type State = {
-  fuzzySearchEnabled: boolean;
-};
-
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
     lines,
@@ -66,7 +62,7 @@ function getSelection(lines, selection) {
   };
 }
 
-class MonacoEditor extends React.Component<Props, State> implements Editor {
+class MonacoEditor extends React.Component<Props> implements Editor {
   static defaultProps = {
     width: '100%',
     height: '100%',
@@ -326,6 +322,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this
     );
     monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
+    monaco.languages.registerDocumentFormattingEditProvider(
+      'javascriptreact',
+      this
+    );
     monaco.languages.registerDocumentFormattingEditProvider('css', this);
     monaco.languages.registerDocumentFormattingEditProvider('less', this);
     monaco.languages.registerDocumentFormattingEditProvider('sass', this);
@@ -359,6 +359,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
 
         if (
+          modulePath === this.getCurrentModuleVSCodePath() &&
           this.currentModule.code !== undefined &&
           activeEditor.getValue(1) !== this.currentModule.code
         ) {

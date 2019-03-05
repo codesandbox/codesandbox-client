@@ -323,19 +323,8 @@ export const handlePreviewAction = [
   },
 ];
 
-export const setPreviewBounds = [actions.setPreviewBounds];
-export const togglePreview = [
-  when(state`editor.previewWindow.content`),
-  {
-    true: [set(state`editor.previewWindow.content`, undefined)],
-    false: [set(state`editor.previewWindow.content`, 'browser')],
-  },
-];
+export const togglePreview = [toggle(state`editor.previewWindowVisible`)];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
-];
-
-export const updateEditorSize = [
-  set(state`editor.previewWindow.editorSize`, props`editorSize`),
 ];

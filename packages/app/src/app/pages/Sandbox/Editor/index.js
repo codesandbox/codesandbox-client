@@ -71,10 +71,12 @@ class ContentSplit extends React.Component {
     const vscode = this.props.store.preferences.settings.experimentVSCode;
 
     const hideNavigation =
-      store.preferences.settings.zenMode &&
-      !store.workspace.openedWorkspaceItem;
+      store.preferences.settings.zenMode && store.workspace.workspaceHidden;
 
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+
+    const topOffset = store.preferences.settings.zenMode ? 0 : 3 * 16;
+    const bottomOffset = vscode ? STATUS_BAR_SIZE : 0;
 
     return (
       <ThemeProvider
@@ -84,19 +86,24 @@ class ContentSplit extends React.Component {
           ...this.state.theme,
         }}
       >
-        <Container className="monaco-workbench">
+        <Container
+          style={{ lineHeight: 'initial' }}
+          className="monaco-workbench"
+        >
           <Header zenMode={store.preferences.settings.zenMode} />
 
           <Fullscreen style={{ width: 'initial' }}>
-            {!hideNavigation && <Navigation />}
+            {!hideNavigation && (
+              <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
+            )}
 
             <div
               style={{
                 position: 'fixed',
                 left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',
-                top: store.preferences.settings.zenMode ? 0 : '3rem',
+                top: topOffset,
                 right: 0,
-                bottom: vscode ? STATUS_BAR_SIZE : 0,
+                bottom: bottomOffset,
               }}
             >
               <SplitPane
@@ -106,20 +113,17 @@ class ContentSplit extends React.Component {
                 onDragStarted={() => signals.editor.resizingStarted()}
                 onDragFinished={() => signals.editor.resizingStopped()}
                 onChange={size => {
-                  if (size > 0 && !store.workspace.openedWorkspaceItem) {
-                    signals.workspace.setWorkspaceItem({ item: 'files' });
-                  } else if (
-                    size === 0 &&
-                    store.workspace.openedWorkspaceItem
-                  ) {
-                    signals.workspace.setWorkspaceItem({ item: null });
+                  if (size > 0 && store.workspace.workspaceHidden) {
+                    signals.workspace.setWorkspaceHidden({ hidden: false });
+                  } else if (size === 0 && !store.workspace.workspaceHidden) {
+                    signals.workspace.setWorkspaceHidden({ hidden: true });
                   }
                 }}
                 pane1Style={{
-                  visibility: store.workspace.openedWorkspaceItem
-                    ? 'visible'
-                    : 'hidden',
-                  maxWidth: store.workspace.openedWorkspaceItem ? 'inherit' : 0,
+                  visibility: store.workspace.workspaceHidden
+                    ? 'hidden'
+                    : 'visible',
+                  maxWidth: store.workspace.workspaceHidden ? 0 : 'inherit',
                 }}
                 pane2Style={{
                   height: '100%',
@@ -128,7 +132,7 @@ class ContentSplit extends React.Component {
                   overflow: 'visible', // For VSCode Context Menu
                 }}
               >
-                {store.workspace.openedWorkspaceItem ? <Workspace /> : <div />}
+                {store.workspace.workspaceHidden ? <div /> : <Workspace />}
                 <Content match={match} />
               </SplitPane>
 

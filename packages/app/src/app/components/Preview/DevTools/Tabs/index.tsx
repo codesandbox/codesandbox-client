@@ -72,7 +72,7 @@ const DevToolTabs = ({
           );
         })}
 
-        {owned && (
+        {moveTab && (
           <TypedTabDropZone
             index={panes.length}
             devToolIndex={devToolIndex}

@@ -16,6 +16,21 @@ interface ICustomEditorApi {
 const context: any = window;
 
 /**
+ * This is a waiting promise that only resolves when VSCode is done initializing
+ */
+function blocker() {
+  let resolve = null;
+  const promise = new Promise(r => {
+    resolve = r;
+  });
+
+  return {
+    promise,
+    resolve,
+  };
+}
+
+/**
  * Handles the VSCode instance for the whole app. The goal is to deprecate/remove this service at one point
  * and let the VSCode codebase handle the initialization of all elements. We are going for a gradual approach though,
  * that's why in the first phase we let the CodeSandbox application handle all the initialization of the VSCode
@@ -24,26 +39,16 @@ const context: any = window;
 class VSCodeManager {
   private serviceCache: IServiceCache;
   private controller: any;
-  private createMenubar: () => void;
 
-  private statusbarPart: any;
-  private statusbarPartPromise: {
-    resolve?: (statusbarPart: any) => void;
-    promise?: Promise<any>;
-  } = {};
+  private statusbarPart = blocker();
+  private menubarPart = blocker();
+  private commandService = blocker();
 
-  private menubarPart: any;
-  private menubarPartPromise: {
-    resolve?: (statusbarPart: any) => void;
-    promise?: Promise<any>;
-  } = {};
+  private keyCodes;
 
   public acquireController(controller: any) {
     this.controller = controller;
-  }
-
-  public acquireMenuBarComponent(createMenuBar: () => void) {
-    this.createMenubar = createMenuBar;
+    this.keyCodes = context.require('vs/base/common/keyCodes');
   }
 
   public loadScript(scripts: string[], cb: () => void) {
@@ -63,10 +68,23 @@ class VSCodeManager {
       return;
     }
 
+    this.addWorkbenchAction({
+      id: 'codesandbox.test',
+      label: 'Test Command',
+      category: 'Puk',
+      run: () => {
+        alert('HELLO!');
+      },
+      keybindings: {
+        primary: this.keyCodes.KeyMod.Shift | this.keyCodes.KeyCode.KEY_C,
+      },
+    });
+
     const [
       { CodeSandboxService },
       { CodeSandboxConfigurationUIService },
       { IStatusbarService },
+      { ICommandService },
     ] = [
       context.require(
         'vs/codesandbox/services/codesandbox/browser/codesandboxService'
@@ -75,6 +93,7 @@ class VSCodeManager {
         'vs/codesandbox/services/codesandbox/configurationUIService'
       ),
       context.require('vs/platform/statusbar/common/statusbar'),
+      context.require('vs/platform/commands/common/commands'),
     ];
 
     context.monaco.editor.create(
@@ -89,55 +108,69 @@ class VSCodeManager {
         this.serviceCache = returnedServices;
 
         // Initialize status bar
-        this.statusbarPart = returnedServices.get(IStatusbarService);
-        if (this.statusbarPartPromise.resolve) {
-          this.statusbarPartPromise.resolve(this.statusbarPart);
-        }
+        const statusbarPart = returnedServices.get(IStatusbarService);
+        this.statusbarPart.resolve(statusbarPart);
 
         // Initialize menu bar
-        this.menubarPart = returnedServices.get('menubar');
-        if (this.menubarPartPromise.resolve) {
-          this.menubarPartPromise.resolve(this.menubarPart);
-        }
+        const menubarPart = returnedServices.get('menubar');
+        this.menubarPart.resolve(menubarPart);
+
+        // Initialize command service
+        const commandService = returnedServices.get(ICommandService);
+        this.commandService.resolve(commandService);
 
         cb(this.serviceCache);
       }
     );
   }
 
-  public createSearchView() {}
-
-  public getStatusbarPart() {
-    if (this.statusbarPart) {
-      return Promise.resolve(this.statusbarPart);
-    }
-
-    if (this.statusbarPartPromise.promise) {
-      return this.statusbarPartPromise.promise;
-    }
-
-    this.statusbarPartPromise.promise = new Promise(resolve => {
-      this.statusbarPartPromise.resolve = resolve;
-    });
-
-    return this.statusbarPartPromise.promise;
+  public async getStatusbarPart(): Promise<any> {
+    return this.statusbarPart.promise;
   }
 
-  public getMenubarPart() {
-    if (this.menubarPart) {
-      return Promise.resolve(this.menubarPart);
-    }
-
-    if (this.menubarPartPromise.promise) {
-      return this.menubarPartPromise.promise;
-    }
-
-    this.menubarPartPromise.promise = new Promise(resolve => {
-      this.menubarPartPromise.resolve = resolve;
-    });
-
-    return this.menubarPartPromise.promise;
+  public async getMenubarPart(): Promise<any> {
+    return this.menubarPart.promise;
   }
+
+  public async getCommandService(): Promise<any> {
+    return this.commandService.promise;
+  }
+
+  /**
+   * Run a command registered in VSCode
+   *
+   * @param id VSCode ID of the command
+   * @param args Extra arguments
+   */
+  public async runCommand(id: string, ...args: any[]) {
+    const commandService = await this.getCommandService();
+
+    return commandService.executeCommand(id, ...args);
+  }
+
+  public addWorkbenchAction({
+    id,
+    label,
+    category = 'CodeSandbox',
+    run,
+    keybindings = { primary: 0 },
+  }: {
+    id: string;
+    label: string;
+    category?: string;
+    run: () => any | Promise<any>;
+    keybindings?: { primary: number };
+  }) {
+    context.monaco.editor.addWorkbenchActions({
+      id,
+      label,
+      run,
+      category,
+      keybindings,
+    });
+  }
+
+  public createMenubarMenu() {}
 }
 
 export default new VSCodeManager();

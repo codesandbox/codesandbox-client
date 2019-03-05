@@ -66,7 +66,11 @@ function useGlobalDim(isDragging: boolean) {
       }
 
       return () => {
-        document.body.style.opacity = '1';
+        if (blockerRef.current) {
+          blockerRef.current.parentElement.removeChild(blockerRef.current);
+          blockerRef.current = null;
+        }
+        devtools.parentElement.style.zIndex = '0';
       };
     },
     [isDragging]

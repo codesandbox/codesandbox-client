@@ -52,6 +52,8 @@ export const FilterInput = styled.input`
 
   &:focus {
     width: 8em;
+    border-color: ${props =>
+      props.theme['focusBorder'] || props.theme.secondary};
   }
 `;
 

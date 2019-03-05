@@ -288,7 +288,6 @@ export const setSandbox = [
   actions.setCurrentModuleShortid,
   actions.setMainModuleShortid,
   actions.setInitialTab,
-  actions.setSandboxConfigOptions,
   actions.setUrlOptions,
   actions.setWorkspace,
 ];

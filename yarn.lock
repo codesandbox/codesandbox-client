@@ -19191,9 +19191,10 @@ react-router@^4.3.1:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react-show@^2.0.0:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/react-show/-/react-show-2.0.4.tgz#11724797e6baebab76028e14f72c36379871c887"
+react-show@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-show/-/react-show-3.0.4.tgz#1a7b3bfe04c32c1815d415f509b252fcdfdcb118"
+  integrity sha512-lcghWNUnYSt4ataMeyIJxXC49oIymQXzofM1I0upQzmuPhul+n9+B1UZOLVKfzLRytoKIMzg6yv0m/dxhZAX6A==
   dependencies:
     raf "^3.4.0"
 
@@ -20060,6 +20061,11 @@ requires-port@^1.0.0:
 resize-observer-polyfill@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.0.tgz#660ff1d9712a2382baa2cad450a4716209f9ca69"
+
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

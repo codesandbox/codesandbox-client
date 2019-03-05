@@ -1,0 +1,17 @@
+query($teamName: String!) {
+	teamsJson(teamName: { eq: $teamName }) {
+		name
+		categories
+		user {
+			userName
+			displayName
+		}
+		facts {
+			statisticName
+			value
+		}
+		versions {
+			files
+		}
+	}
+}

@@ -184,14 +184,7 @@ export default {
   highlightedLines: types.array(types.number),
   isUpdatingPrivacy: types.boolean,
   quickActionsOpen: types.boolean,
-  previewWindow: types.model({
-    content: types.maybeNull(types.string),
-    editorSize: types.maybe(types.number),
-    width: types.maybeNull(types.number),
-    height: types.maybeNull(types.number),
-    x: types.maybeNull(types.number),
-    y: types.maybeNull(types.number),
-  }),
+  previewWindowVisible: types.boolean,
   themes: types.array(
     types.model({
       name: types.string,

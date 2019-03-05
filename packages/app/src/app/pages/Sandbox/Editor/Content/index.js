@@ -179,7 +179,7 @@ class EditorPreview extends React.Component<Props, State> {
     const disposeResizeHandler = reaction(
       () => [
         store.preferences.settings.zenMode,
-        store.workspace.openedWorkspaceItem,
+        store.workspace.workspaceHidden,
       ],
       () => {
         setTimeout(() => {
@@ -325,7 +325,7 @@ class EditorPreview extends React.Component<Props, State> {
       }
     );
     const disposeTogglePreview = reaction(
-      () => this.props.store.editor.previewWindow.content,
+      () => this.props.store.editor.previewWindowVisible,
       () => {
         requestAnimationFrame(() => {
           this.getBounds();
@@ -427,19 +427,13 @@ class EditorPreview extends React.Component<Props, State> {
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
     const currentTab = store.editor.currentTab;
-    const { x, y, width, content } = store.editor.previewWindow;
 
-    const windowVisible = !!content;
-
-    const windowRightSize = -x + width + 16;
+    const windowVisible = store.editor.previewWindowVisible;
 
     const { width: absoluteWidth, height: absoluteHeight } = this.state;
-    const isVerticalMode = absoluteWidth
-      ? absoluteWidth / 4 > absoluteWidth - windowRightSize
-      : false;
 
-    let editorWidth = isVerticalMode ? absoluteWidth : absoluteWidth;
-    let editorHeight = isVerticalMode ? y + 16 : absoluteHeight;
+    let editorWidth = absoluteWidth;
+    let editorHeight = absoluteHeight;
 
     if (!windowVisible) {
       editorWidth = absoluteWidth;
@@ -468,6 +462,28 @@ class EditorPreview extends React.Component<Props, State> {
     };
 
     const views = getPreviewTabs(sandbox);
+
+    const sandboxConfig = sandbox.modules.find(
+      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+    );
+
+    let view = 'browser';
+    if (sandboxConfig) {
+      try {
+        view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+      } catch (e) {
+        /* swallow */
+      }
+    }
+
+    if (view !== 'browser') {
+      // Backwards compatibility for sandbox.config.json
+      if (view === 'console') {
+        views[0].views.unshift({ id: 'codesandbox.console' });
+      } else if (view === 'tests') {
+        views[0].views.unshift({ id: 'codesandbox.tests' });
+      }
+    }
 
     const browserConfig = {
       id: 'codesandbox.browser',

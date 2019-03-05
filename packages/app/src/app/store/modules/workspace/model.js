@@ -10,4 +10,5 @@ export default {
   }),
 
   openedWorkspaceItem: types.maybeNull(types.string),
+  workspaceHidden: types.boolean,
 };

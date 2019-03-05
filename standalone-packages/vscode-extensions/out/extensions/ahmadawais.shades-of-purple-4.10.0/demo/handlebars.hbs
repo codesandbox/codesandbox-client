@@ -1,0 +1,39 @@
+{{!-- Handlebars.js Example --}}
+{{!-- Install handlebars extension --}}
+
+# CHANGELOG: Shades of Purple
+
+All notable changes are documented in this file.
+
+Become a VSCode Power User with me https://VSCode.pro →
+
+{{#each releases}}
+
+  ![hr](https://raw.githubusercontent.com/ahmadawais/shades-of-purple-vscode/master/images/hr.png)
+
+  <br>
+
+  {{#if href}}
+    ### RELEASE: [{{title}}]({{href}}){{#if tag}}{{/if}}
+  {{else}}
+    ### RELEASE: {{title}}{{#if tag}}{{/if}}
+  {{/if}}
+
+  {{#commit-list commits heading='![NEW](https://img.shields.io/badge/-NEW-gray.svg?colorB=3778FF)' message='NEW: '}}
+    > {{subject}} [`{{shorthash}}`]({{href}}) <br>
+  {{/commit-list}}
+
+  {{#commit-list commits heading='![IMPROVEMENT](https://img.shields.io/badge/-IMPROVEMENT-gray.svg?colorB=39AA54)' message='IMPROVE: '}}
+    > {{subject}} [`{{shorthash}}`]({{href}}) <br>
+  {{/commit-list}}
+
+  {{#commit-list commits heading='![FIX](https://img.shields.io/badge/-FIX-gray.svg?colorB=ff6347)' message='FIX: '}}
+    > {{subject}} [`{{shorthash}}`]({{href}}) <br>
+  {{/commit-list}}
+
+  {{#commit-list commits heading='![DOCS](https://img.shields.io/badge/-DOCS-gray.svg?colorB=978CD4)' message='DOC:'}}
+   > {{subject}} [`{{shorthash}}`]({{href}}) <br>
+  {{/commit-list}}
+
+    <br>
+{{/each}}

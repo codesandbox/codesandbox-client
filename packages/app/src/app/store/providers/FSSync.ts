@@ -44,6 +44,7 @@ async function syncDependencyTypings(
     const { dependencies = {}, devDependencies = {} } = JSON.parse(packageJSON);
 
     const totalDependencies = {
+      '@types/jest': 'latest',
       ...dependencies,
       ...devDependencies,
     };

@@ -1,6 +1,11 @@
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
+  position: fixed;
+  top: ${props => props.topOffset}px;
+  bottom: ${props => props.bottomOffset}px;
+  left: 0;
+
   display: flex;
   flex-direction: column;
   width: 3.5rem;
@@ -24,15 +29,19 @@ export const IconContainer = styled.div`
   transition: 0.3s ease all;
   height: 3.5rem;
   width: 3.5rem;
+  font-size: 1.875rem;
+  color: ${props =>
+    props.theme['activityBar.inactiveForeground'] ||
+    'rgba(255, 255, 255, 0.5)'};
   cursor: pointer;
 
   &:hover {
-    color: white;
+    color: ${props => props.theme['activityBar.foreground'] || 'white'};
   }
 
   ${props =>
     props.selected &&
     css`
-      color: ${props.theme['activityBar.foreground']};
+      color: ${props.theme['activityBar.foreground'] || 'white'};
     `};
 `;

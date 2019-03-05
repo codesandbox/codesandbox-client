@@ -3,10 +3,13 @@ import { LinkButton, AButton, Button } from './elements';
 
 type Props = {
   [key: any]: any,
-  to: ?string,
-  href: ?string,
-  small: ?boolean,
-  style: ?any,
+  to?: string,
+  href?: string,
+  small?: boolean,
+  style?: any,
+  block?: boolean,
+  onClick?: () => void,
+  children?: React.ReactChildren | string,
 };
 
 function ButtonComponent({ style = {}, ...props }: Props) {

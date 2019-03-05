@@ -31,6 +31,7 @@ import {
 
 const idToItem = {
   project: ProjectInfo,
+  'project-summary': NotOwnedSandboxInfo,
   files: Files,
   github: GitHub,
   deploy: Deployment,
@@ -50,12 +51,12 @@ function Workspace({ store }) {
     return null;
   }
 
-  const Component = sandbox.owned ? idToItem[currentItem] : NotOwnedSandboxInfo;
+  const Component = idToItem[currentItem];
 
   const item = getWorkspaceItems(store).find(i => i.id === currentItem);
   return (
     <Container>
-      {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
+      {item && !item.hasCustomHeader && <ItemTitle>{item.name}</ItemTitle>}
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <Component />
       </div>

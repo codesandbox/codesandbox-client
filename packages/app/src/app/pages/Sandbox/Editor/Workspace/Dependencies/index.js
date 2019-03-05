@@ -24,10 +24,7 @@ function Dependencies({ signals, store }) {
 
   if (error) {
     return (
-      <ErrorMessage>
-        We weren
-        {"'"}t able to parse the package.json
-      </ErrorMessage>
+      <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>
     );
   }
 
@@ -39,7 +36,6 @@ function Dependencies({ signals, store }) {
   return (
     <div>
       <Margin bottom={0}>
-        <WorkspaceSubtitle>Dependencies</WorkspaceSubtitle>
         {Object.keys(dependencies)
           .sort()
           .map(dep => (

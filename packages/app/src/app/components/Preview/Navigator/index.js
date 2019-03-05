@@ -82,7 +82,7 @@ function Navigator({
           style={{ fontSize: 18, padding: 4, marginRight: zenMode ? 8 : 16 }}
           onClick={openNewWindow}
         >
-          <Tooltip title="Open In New Window">
+          <Tooltip delay={0} title="Open In New Window">
             <ExternalIcon />
           </Tooltip>
         </Icon>
@@ -92,10 +92,17 @@ function Navigator({
         toggleProjectView && (
           <SwitchContainer>
             <Tooltip
+              delay={0}
               title={isProjectView ? 'Project View' : 'Current Module View'}
               position="left"
             >
-              <Switch right={isProjectView} onClick={toggleProjectView} />
+              <Switch
+                offMode
+                secondary
+                small
+                right={!isProjectView}
+                onClick={toggleProjectView}
+              />
             </Tooltip>
           </SwitchContainer>
         )}

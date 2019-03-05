@@ -10,17 +10,23 @@ import { Description } from '../../elements';
 const GitHub = ({ store }) => {
   const sandbox = store.editor.currentSandbox;
 
-  return store.user.integrations.github ? ( // eslint-disable-line
-    <React.Fragment>
-      {sandbox.originalGit && <Git />}
+  const hasOriginalGitSource = sandbox.originalGit;
 
-      <WorkspaceItem
-        defaultOpen={!sandbox.originalGit}
-        title="Export to GitHub"
-      >
+  return store.user.integrations.github ? ( // eslint-disable-line
+    hasOriginalGitSource ? (
+      <>
+        <Git />
+
+        <WorkspaceItem title="Export to GitHub">
+          <CreateRepo />
+        </WorkspaceItem>
+      </>
+    ) : (
+      <>
+        <Description>Export your sandbox to GitHub.</Description>
         <CreateRepo />
-      </WorkspaceItem>
-    </React.Fragment>
+      </>
+    )
   ) : (
     <div>
       <Description margin={1} top={0}>

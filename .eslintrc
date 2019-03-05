@@ -29,6 +29,7 @@
     "no-nested-ternary": "warn",
     "react/require-default-props": "off",
     "import/no-named-default": 0,
+    "import/no-webpack-loader-syntax": 0,
     "import/extensions": [
       "error",
       "always",
