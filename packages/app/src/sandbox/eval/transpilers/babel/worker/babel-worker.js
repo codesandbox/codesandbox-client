@@ -24,8 +24,37 @@ let fsInitialized = false;
 let fsLoading = false;
 let lastConfig = null;
 
+const IGNORED_MODULES = ['assert', 'util', 'os'];
+
+self.process = {
+  env: { NODE_ENV: 'production' },
+  platform: 'linux',
+  argv: [],
+  stderr: {},
+};
 // This one is called from babel-plugin-macros
 self.require = path => {
+  const module = BrowserFS.BFSRequire(path);
+  if (module) {
+    return module;
+  }
+
+  if (path === 'assert') {
+    return require('assert');
+  }
+
+  if (path === 'tty') {
+    return {
+      isatty() {
+        return false;
+      },
+    };
+  }
+
+  if (IGNORED_MODULES.indexOf(path) > -1) {
+    return {};
+  }
+
   const fs = BrowserFS.BFSRequire('fs');
   return evaluateFromPath(
     fs,
@@ -305,11 +334,15 @@ async function compile(code, customConfig, path) {
   }
 }
 
-self.importScripts(
-  process.env.NODE_ENV === 'development'
-    ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
-    : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
-);
+try {
+  self.importScripts(
+    process.env.NODE_ENV === 'development'
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.js`
+      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.js`
+  );
+} catch (e) {
+  console.error(e);
+}
 
 self.postMessage('ready');
 
