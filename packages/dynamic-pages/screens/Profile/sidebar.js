@@ -118,22 +118,28 @@ export default ({
               </Stat>
             </Stats>
           </Editing>
-          {loggedInUSer && (
-            <Buttons>
-              {editing ? (
+          {loggedInUSer &&
+            (editing ? (
+              <Buttons>
                 <Button disabled={loading} small onClick={() => editProfile()}>
                   Save Profile
                 </Button>
-              ) : (
-                <Button small onClick={() => setEditing(true)}>
-                  Edit Profile
+                <Button small danger onClick={() => setModal(true)}>
+                  Delete Account
                 </Button>
-              )}
-              <Button small danger onClick={() => setModal(true)}>
-                Delete Account
+              </Buttons>
+            ) : (
+              <Button
+                css={`
+                  width: 100%;
+                  margin-top: 30px;
+                `}
+                small
+                onClick={() => setEditing(true)}
+              >
+                Edit Profile
               </Button>
-            </Buttons>
-          )}
+            ))}
         </Aside>
         <Badges
           badges={badges}

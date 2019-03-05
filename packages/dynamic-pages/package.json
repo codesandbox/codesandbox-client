@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node server.js",
     "build": "next build",
-    "start": "next start -p 8080",
+    "start": "NODE_ENV=production node server.js",
     "lint": "eslint .",
     "format": "prettier --trailing-comma es5 --single-quote --write './**/*.js'"
   },
