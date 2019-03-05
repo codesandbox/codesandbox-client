@@ -61,7 +61,7 @@ export default class Modal extends React.PureComponent {
   }
 
   listenForEsc = e => {
-    if (e.keyCode === ESC) {
+    if (e.keyCode === ESC && this.props.isOpen) {
       this.props.onClose();
     }
   };

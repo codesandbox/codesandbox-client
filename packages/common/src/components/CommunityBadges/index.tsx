@@ -16,7 +16,7 @@ const IconContainer = styled.div`
   svg,
   img {
     max-width: 100%;
-    filter: grayscale(0.7);
+    filter: grayscale(0.4);
     height: auto;
   }
 `;

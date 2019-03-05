@@ -74,6 +74,11 @@ export const Title = styled.h1`
   font-family: 'Poppins';
   font-weight: 600;
   font-size: 2.125em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  max-height: 8rem;
+  overflow: hidden;
 `;
 
 export const Description = styled.p`

@@ -26,6 +26,8 @@ export default ({
     <>
       {editing ? (
         <TextArea
+          fullWidth
+          placeholder="This is where you tell us all about you"
           value={biography}
           onChange={e => {
             changeBio(e.target.value);
@@ -33,13 +35,25 @@ export default ({
           }}
         />
       ) : (
-        <p>{biography}</p>
+        <p
+          css={`
+            display: -webkit-box;
+            -webkit-line-clamp: 8;
+            -webkit-box-orient: vertical;
+            max-height: 12rem;
+            overflow: hidden;
+          `}
+        >
+          {biography}
+        </p>
       )}
       {children}
       {editing && (
         <Social>
           <img src={twitterLogo} alt="twitter logo" />
           <Input
+            placeholder="Your Twitter"
+            fullWidth
             value={tw}
             onChange={e => {
               changeTwitter(e.target.value);
@@ -61,6 +75,8 @@ export default ({
         <Social>
           <img src={mail} alt="email" />
           <Input
+            fullWidth
+            placeholder="Your Public Email"
             value={email}
             type="email"
             onChange={e => {

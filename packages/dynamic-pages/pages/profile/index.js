@@ -37,7 +37,7 @@ const Profile = ({ profile, liked, showcased }) =>
                 pickSandbox={({ id }) => openSandbox(id)}
                 sandbox={showcased}
                 description={showcased.description}
-                title={showcased.title}
+                title={showcased.title || showcased.id}
               />
             </div>
           ) : null}

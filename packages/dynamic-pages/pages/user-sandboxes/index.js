@@ -48,14 +48,6 @@ const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
           <TabNavigation>
             <Link
               prefetch
-              href={`/profile?username=${profile.username}`}
-              as={`/profile/${profile.username}`}
-            >
-              <NavigationLink>Profile</NavigationLink>
-            </Link>
-
-            <Link
-              prefetch
               href={`/user-sandboxes?username=${
                 profile.username
               }&page=sandboxes`}

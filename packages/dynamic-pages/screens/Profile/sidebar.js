@@ -17,6 +17,7 @@ import {
 import deleteAccount from '../../utils/deleteAccount';
 import fetchCurrentUser from '../../utils/fetchCurrentUser';
 import editCurrentUser from '../../utils/editProfile';
+import githubLogo from '../../assets/github.svg';
 import Editing from './Editing';
 import Modal from './Modal';
 
@@ -93,7 +94,25 @@ export default ({
             <Avatar src={avatar_url} alt={name} width="96" height="96" />
             <div>
               <H3>{name}</H3>
-              <H4>{username}</H4>
+              <H4
+                css={`
+                  display: flex;
+                  align-items: center;
+                `}
+              >
+                {username}{' '}
+                <a
+                  href={`https://github.com/${username}`}
+                  target="_blank"
+                  rel="noopener noreferer"
+                  css={`
+                    margin-left: 10px;
+                    display: inline-flex;
+                  `}
+                >
+                  <img src={githubLogo} alt="github logo" />
+                </a>
+              </H4>
             </div>
           </Header>
           <Editing
@@ -130,11 +149,11 @@ export default ({
               </Buttons>
             ) : (
               <Button
+                block
+                small
                 css={`
-                  width: 100%;
                   margin-top: 30px;
                 `}
-                small
                 onClick={() => setEditing(true)}
               >
                 Edit Profile
