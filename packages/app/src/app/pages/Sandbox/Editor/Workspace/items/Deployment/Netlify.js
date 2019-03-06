@@ -34,7 +34,6 @@ class NetlifyDeployment extends Component {
     } = this.props;
 
     const template = getTemplate(editor.currentSandbox.template);
-    console.log(template);
     const { show } = this.state;
     return (
       template.netlify !== false && (

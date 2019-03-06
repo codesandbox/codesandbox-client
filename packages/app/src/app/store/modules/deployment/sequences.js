@@ -83,6 +83,7 @@ export const deployWithNetlify = [
   set(state`deployment.deploying`, true),
   actions.createZip,
   actions.deployToNetlify,
+  actions.getStatus,
   {
     success: [
       addNotification('Sandbox Deployed', 'success'),

@@ -1,35 +1,6 @@
 import { omit } from 'lodash-es';
 import getTemplate from 'common/lib/templates';
-
-// function delay(t) {
-//   return new Promise(resolve => {
-//     setTimeout(resolve, t);
-//   });
-// }
-
-// // interval is how often to poll
-// // timeout is how long to poll waiting for a result (0 means try forever)
-// // url is the URL to request
-// function pollUntilDone(http, url, interval, timeout) {
-//   const start = Date.now();
-//   function run() {
-//     return http.request({ url }).then(dataResult => {
-//       console.log(dataResult, 'dataResult');
-//       if (dataResult.status === 'DONE') {
-//         // we know we're done here, return from here whatever you
-//         // want the final resolved value of the promise to be
-//         return dataResult;
-//       }
-//       if (timeout !== 0 && Date.now() - start > timeout) {
-//         throw new Error('timeout error on pollUntilDone');
-//       } else {
-//         // run again with a short delay
-//         return delay(interval).then(run);
-//       }
-//     });
-//   }
-//   return run();
-// }
+import pollUntilDone from '../../utils/pollUntilDone';
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
@@ -43,7 +14,8 @@ export function loadZip({ props, jsZip }) {
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
 }
 
-const NetlifyBaseURL = 'https://netlify-deploy.now.sh/site';
+// const NetlifyBaseURL = 'https://netlify-deploy.now.sh/site';
+const NetlifyBaseURL = 'http://localhost:8080/site';
 
 export async function claimNetlifyWebsite({ http, state, path }) {
   const userId = state.get('user.id');
@@ -113,25 +85,28 @@ export async function deployToNetlify({ path, http, props, state }) {
       },
     });
 
-    // sample usage
-    // polls every 4s for up to 1m seconds
-    // pollUntilDone(
-    //   http,
-    //   `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}`,
-    //   4000,
-    //   60 * 1000
-    // )
-    //   .then(result => {
-    //     console.log(result);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
-
-    return path.success();
+    return { id };
   } catch (e) {
+    return { error: true };
+  }
+}
+
+export async function getStatus({ props, path, http }) {
+  const url = `${NetlifyBaseURL}/${props.id}/status`;
+  if (props.error) {
     return path.error();
   }
+  const { result } = await http.request({
+    url,
+  });
+
+  if (result.status.status === 'IN_PROGRESS') {
+    // polls every 10s for up to 2m
+    await pollUntilDone(http, url, 10000, 60 * 2000);
+
+    return path.success();
+  }
+  return path.success();
 }
 
 export async function createApiData({ props, state }) {
