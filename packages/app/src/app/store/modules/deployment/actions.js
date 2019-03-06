@@ -14,8 +14,8 @@ export function loadZip({ props, jsZip }) {
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
 }
 
-// const NetlifyBaseURL = 'https://netlify-deploy.now.sh/site';
-const NetlifyBaseURL = 'http://localhost:8080/site';
+const NetlifyBaseURL = 'https://netlify-deploy.now.sh/site';
+// const NetlifyBaseURL = 'http://localhost:8080/site';
 
 export async function claimNetlifyWebsite({ http, state, path }) {
   const userId = state.get('user.id');
@@ -47,7 +47,7 @@ export async function getNetlifyDeploys({ http, state, path }) {
   }
 }
 
-export async function deployToNetlify({ path, http, props, state }) {
+export async function deployToNetlify({ http, props, state }) {
   const { file } = props;
   const userId = state.get('user.id');
   const sandboxId = state.get('editor.currentId');
