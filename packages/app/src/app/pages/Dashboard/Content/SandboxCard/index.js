@@ -67,13 +67,13 @@ class SandboxItem extends React.PureComponent<Props> {
   getPrivacyIcon = () => {
     if (this.props.privacy === 1) {
       return (
-        <PrivacyIconContainer title="Unlisted Sandbox">
+        <PrivacyIconContainer content="Unlisted Sandbox">
           <Unlisted />
         </PrivacyIconContainer>
       );
     } else if (this.props.privacy === 2) {
       return (
-        <PrivacyIconContainer title="Private Sandbox">
+        <PrivacyIconContainer content="Private Sandbox">
           <Private />
         </PrivacyIconContainer>
       );
