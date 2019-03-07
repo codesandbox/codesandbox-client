@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import LinkIcon from 'react-icons/lib/fa/external-link';
 import Cogs from 'react-icons/lib/fa/cogs';
@@ -16,11 +16,16 @@ import {
   ButtonContainer,
 } from './Elements';
 
-export interface State {
-  show: boolean;
+interface State {
+  show: number;
 }
 
-class NetlifyDeployment extends React.Component<Props> {
+interface Props {
+  sandpack: ISandpackContext;
+  className?: string;
+}
+
+class NetlifyDeployment extends React.Component<Props, State> {
   state = { show: false };
 
   toggleNetlify = () =>
