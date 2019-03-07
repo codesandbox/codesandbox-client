@@ -22530,7 +22530,7 @@ tinycolor2@^1.1.2, tinycolor2@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
 
-tippy.js@^4.0.3, tippy.js@^4.0.4:
+tippy.js@^4.0.3:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-4.0.4.tgz#1cfd83fc6cfd1c459bb7e08b5ad9bc97008f61bb"
   integrity sha512-VXwJ2PXUvSTqV0RA5n5jzAdXsXnhMNX/aBYhC2j2YLg1/gekFWqVffbUQMVvwrqT4zmpm4Bp7tO8MVkvaaZ5Pg==

@@ -18,13 +18,11 @@
     "jsonlint": "^1.6.3",
     "memoize-one": "^3.1.1",
     "ot": "^0.0.15",
-    "popper.js": "^1.14.7",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
     "react-spring": "^8.0.18",
     "react-textarea-autosize": "^6.1.0",
-    "styled-components": "^4.1.2",
-    "tippy.js": "^4.0.4"
+    "styled-components": "^4.1.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
