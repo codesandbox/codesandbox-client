@@ -712,7 +712,8 @@
       }
     },
     {
-      "name": "Keyword Operator Comparison, imports, returns and Keyword Operator Ruby",
+      "name":
+        "Keyword Operator Comparison, imports, returns and Keyword Operator Ruby",
       "scope": [
         "keyword.operator.comparison",
         "keyword.control.flow.js",
@@ -743,7 +744,8 @@
       }
     },
     {
-      "name": "Support Constant, `new` keyword, Special Method Keyword, `debugger`, other keywords",
+      "name":
+        "Support Constant, `new` keyword, Special Method Keyword, `debugger`, other keywords",
       "scope": [
         "support.constant",
         "keyword.other.special-method",
@@ -1221,7 +1223,8 @@
     },
     {
       "name": "Specific JSON Property values like null",
-      "scope": "meta.structure.dictionary.json meta.structure.dictionary.value constant.language",
+      "scope":
+        "meta.structure.dictionary.json meta.structure.dictionary.value constant.language",
       "settings": {
         "foreground": "#ff5874"
       }
@@ -1263,7 +1266,8 @@
     },
     {
       "name": "Attribute Name for LESS",
-      "scope": "meta.attribute-selector.less entity.other.attribute-name.attribute",
+      "scope":
+        "meta.attribute-selector.less entity.other.attribute-name.attribute",
       "settings": {
         "foreground": "#F78C6C"
       }

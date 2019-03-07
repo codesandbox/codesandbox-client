@@ -1,11 +1,20 @@
 import React from 'react';
 import IconBase from 'react-icons/lib/IconBase';
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '../../components/Tooltip';
 
 import { isContributor } from './is-contributor';
 
-export default class ContributorsBadge extends React.Component {
-  state = {
+type Props = {
+  username: string;
+  style?: React.CSSProperties;
+};
+
+type State = {
+  isContributor: boolean;
+};
+
+export default class ContributorsBadge extends React.Component<Props, State> {
+  state: State = {
     isContributor: false,
   };
 

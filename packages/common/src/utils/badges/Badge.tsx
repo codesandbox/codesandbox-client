@@ -60,6 +60,7 @@ export default class Badge extends React.Component<Props> {
         </Tooltip>
       );
     }
+
     return (
       <NameContainer>
         {innerContent}

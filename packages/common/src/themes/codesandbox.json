@@ -192,7 +192,8 @@
       }
     },
     {
-      "name": "Punctuation Definition Method Parameters,punctuation Definition Function Parameters,punctuation Definition Parameters,punctuation Definition Separator,punctuation Definition Seperator,punctuation Definition Array",
+      "name":
+        "Punctuation Definition Method Parameters,punctuation Definition Function Parameters,punctuation Definition Parameters,punctuation Definition Separator,punctuation Definition Seperator,punctuation Definition Array",
       "scope": [
         "punctuation.definition.method-parameters",
         "punctuation.definition.function-parameters",
@@ -239,7 +240,8 @@
       }
     },
     {
-      "name": "Punctuation Section Method,punctuation Section Class,punctuation Section Inner Class",
+      "name":
+        "Punctuation Section Method,punctuation Section Class,punctuation Section Inner Class",
       "scope": [
         "punctuation.section.method",
         "punctuation.section.class",
@@ -514,7 +516,8 @@
       }
     },
     {
-      "name": "Source Css Property Name Support,source Css Property Value Support",
+      "name":
+        "Source Css Property Name Support,source Css Property Value Support",
       "scope": [
         "source.css property-name.support",
         "source.css property-value.support"
@@ -594,7 +597,8 @@
       }
     },
     {
-      "name": "Source Js Keyword Operator Delete,source Js Keyword Operator In,source Js Keyword Operator Of,source Js Keyword Operator Instanceof,source Js Keyword Operator New,source Js Keyword Operator Typeof,source Js Keyword Operator Void",
+      "name":
+        "Source Js Keyword Operator Delete,source Js Keyword Operator In,source Js Keyword Operator Of,source Js Keyword Operator Instanceof,source Js Keyword Operator New,source Js Keyword Operator Typeof,source Js Keyword Operator Void",
       "scope": [
         "source.js keyword.operator.delete",
         "source.js keyword.operator.in",
@@ -618,7 +622,8 @@
       }
     },
     {
-      "name": "Source Json Meta Structure Dictionary Json > String Quoted Json > Punctuation String",
+      "name":
+        "Source Json Meta Structure Dictionary Json > String Quoted Json > Punctuation String",
       "scope": [
         "source.json meta.structure.dictionary.json > string.quoted.json > punctuation.string"
       ],
@@ -627,7 +632,8 @@
       }
     },
     {
-      "name": "Source Json Meta Structure Dictionary Json > Value Json > String Quoted Json,source Json Meta Structure Array Json > Value Json > String Quoted Json,source Json Meta Structure Dictionary Json > Value Json > String Quoted Json > Punctuation,source Json Meta Structure Array Json > Value Json > String Quoted Json > Punctuation",
+      "name":
+        "Source Json Meta Structure Dictionary Json > Value Json > String Quoted Json,source Json Meta Structure Array Json > Value Json > String Quoted Json,source Json Meta Structure Dictionary Json > Value Json > String Quoted Json > Punctuation,source Json Meta Structure Array Json > Value Json > String Quoted Json > Punctuation",
       "scope": [
         "source.json meta.structure.dictionary.json > value.json > string.quoted.json",
         "source.json meta.structure.array.json > value.json > string.quoted.json",
@@ -639,7 +645,8 @@
       }
     },
     {
-      "name": "Source Json Meta Structure Dictionary Json > Constant Language Json,source Json Meta Structure Array Json > Constant Language Json",
+      "name":
+        "Source Json Meta Structure Dictionary Json > Constant Language Json,source Json Meta Structure Array Json > Constant Language Json",
       "scope": [
         "source.json meta.structure.dictionary.json > constant.language.json",
         "source.json meta.structure.array.json > constant.language.json"
@@ -1060,7 +1067,8 @@
     },
     {
       "name": "[VSCODE-CUSTOM] JS/TS Type Module",
-      "scope": "entity.name.type.module.js,entity.name.type.module.ts,entity.name.type.module.jsx,entity.name.type.module.tsx",
+      "scope":
+        "entity.name.type.module.js,entity.name.type.module.ts,entity.name.type.module.jsx,entity.name.type.module.tsx",
       "settings": {
         "foreground": "#98C379"
       }

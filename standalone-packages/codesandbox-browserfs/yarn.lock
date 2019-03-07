@@ -411,7 +411,7 @@ async-es@^2.5.0:
   resolved "https://registry.yarnpkg.com/async-es/-/async-es-2.5.0.tgz#269414dc1704abedf72c9b7d9b1cba9218d11004"
   integrity sha512-VsoRiwAdrQ1aqzqMyVgBaMhX6PsXJFWekNtaXNYTEEd5f7b+/hI60VExTyWi0sekuWSpgPgFG9e+lN9AgDn3eQ==
   dependencies:
-    lodash-es "^4.14.0"
+    lodash "^4.14.0"
 
 async@1.x, async@^1.4.0, async@^1.5.2:
   version "1.5.2"
@@ -2822,9 +2822,9 @@ locate-path@^2.0.0:
     p-locate "^2.0.0"
     path-exists "^3.0.0"
 
-lodash-es@^4.14.0:
+lodash@^4.14.0:
   version "4.17.4"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.4.tgz#dcc1d7552e150a0640073ba9cb31d70f032950e7"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#dcc1d7552e150a0640073ba9cb31d70f032950e7"
   integrity sha1-3MHXVS4VCgZABzupyzHXDwMpUOc=
 
 lodash._baseassign@^3.0.0:

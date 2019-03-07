@@ -1,5 +1,5 @@
-let contributors;
-let fetchPromise;
+let contributors: string[];
+let fetchPromise: Promise<void>;
 
 export async function isContributor(username: string) {
   if (!contributors) {

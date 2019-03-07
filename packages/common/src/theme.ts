@@ -44,9 +44,10 @@ export const decorateSelector = (selector: any) => {
   return selector;
 };
 
-function createTheme<T>(
-  colors: T
-): { [P in keyof T]: typeof Color & (() => string) } {
+type NestedColor = { [P in keyof Color.Color]: (val: number) => NestedColor } &
+  (() => string);
+
+function createTheme<T>(colors: T): { [P in keyof T]: NestedColor } {
   const transformed = Object.keys(colors)
     .map(c => ({ key: c, value: colors[c] }))
     .map(({ key, value }) => ({ key, value: decorateSelector(() => value) }))

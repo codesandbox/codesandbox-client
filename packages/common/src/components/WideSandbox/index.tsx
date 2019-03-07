@@ -1,9 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 
-import getIcon from 'common/lib/templates/icons';
-import getTemplate from 'common/lib/templates';
-import { profileUrl } from 'common/lib/utils/url-generator';
-import { ENTER } from 'common/lib/utils/keycodes';
+import getIcon from '../../templates/icons';
+import getTemplate, { TemplateType } from '../../templates';
+import { profileUrl } from '../../utils/url-generator';
+import { ENTER } from '../../utils/keycodes';
 
 import {
   Container,
@@ -13,12 +13,38 @@ import {
   SandboxInfo,
   TemplateIcon,
   Author,
-} from './_WideSandbox.elements';
+} from './elements';
 
 const getScreenshot = id =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
-export default class WideSandbox extends React.PureComponent {
+export type Props = {
+  sandbox: {
+    picks?: Array<{ title: string; description: string }>;
+    title: string;
+    description: string;
+    id: string;
+    screenshot_url: string;
+    template: TemplateType;
+    author: {
+      username: string;
+      avatar_url: string;
+    };
+  };
+  small?: boolean;
+  defaultHeight?: number;
+  noMargin?: boolean;
+  pickSandbox: (
+    params: {
+      id: string;
+      title: string;
+      description: string;
+      screenshotUrl: string;
+    }
+  ) => void;
+};
+
+export default class WideSandbox extends React.PureComponent<Props> {
   state = {
     imageLoaded: false,
   };
@@ -28,7 +54,7 @@ export default class WideSandbox extends React.PureComponent {
       return this.props.sandbox.picks[0].title;
     }
 
-    return this.props.sandbox.title;
+    return this.props.sandbox.title || this.props.sandbox.id;
   };
 
   getDescription = () => {
@@ -55,12 +81,12 @@ export default class WideSandbox extends React.PureComponent {
   };
 
   render() {
-    const { sandbox } = this.props;
+    const { sandbox, small, noMargin, defaultHeight = 245 } = this.props;
 
     if (!sandbox) {
       return (
         <Container style={{}}>
-          <SandboxImage as="div" style={{ border: 0, height: 245 }} />
+          <SandboxImage as="div" style={{ border: 0, height: 150 }} />
           <SandboxInfo />
         </Container>
       );
@@ -70,6 +96,8 @@ export default class WideSandbox extends React.PureComponent {
 
     return (
       <Container
+        noMargin={noMargin}
+        small={small}
         style={{}}
         onClick={this.toggleOpen}
         role="button"
@@ -79,15 +107,24 @@ export default class WideSandbox extends React.PureComponent {
         <SandboxImage
           alt={this.getTitle()}
           src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
-          color={template.color}
-          style={{ height: this.state.imageLoaded ? 'auto' : 245 }}
+          color={template.color()}
+          style={{ height: this.state.imageLoaded ? 'auto' : defaultHeight }}
+          ref={img => {
+            if (img && img.complete) {
+              this.setState({ imageLoaded: true });
+            }
+          }}
           onLoad={() => {
             this.setState({ imageLoaded: true });
           }}
         />
         <SandboxInfo>
-          <SandboxTitle color={template.color}>{this.getTitle()}</SandboxTitle>
-          <SandboxDescription>{this.getDescription()}</SandboxDescription>
+          <SandboxTitle color={template.color()}>
+            {this.getTitle()}
+          </SandboxTitle>
+          {this.getDescription() ? (
+            <SandboxDescription>{this.getDescription()}</SandboxDescription>
+          ) : null}
 
           {sandbox.author && (
             <a href={profileUrl(sandbox.author.username)}>

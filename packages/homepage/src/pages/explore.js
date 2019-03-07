@@ -3,14 +3,14 @@ import React from 'react';
 import getTemplate from 'common/lib/templates';
 import { protocolAndHost } from 'common/lib/utils/url-generator';
 import { ARROW_LEFT, ARROW_RIGHT } from 'common/lib/utils/keycodes';
+import FeaturedSandbox from 'common/lib/components/FeaturedSandbox';
+import WideSandbox from 'common/lib/components/WideSandbox';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading2 } from '../components/headings';
 import Layout from '../components/layout';
 
-import WideSandbox from '../screens/explore/WideSandbox';
-import FeaturedSandbox from '../screens/explore/FeaturedSandbox';
 import SandboxModal from '../screens/explore/SandboxModal';
 import featuredSandboxes from '../utils/featuredSandboxes';
 import {

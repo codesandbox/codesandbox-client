@@ -1,11 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
 
 export const BG_COLOR = '#1C2022';
 export const BG_HOVER = '#212629';
 
-export const Container = styled.div`
+export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
   transition: 0.3s ease all;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -19,12 +19,24 @@ export const Container = styled.div`
   overflow: hidden;
   cursor: pointer;
 
-  margin-bottom: 2rem;
   margin-right: 0.5rem;
   margin-left: 0.5rem;
+  margin-bottom: 2rem;
 
   background-color: ${BG_COLOR};
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
+
+  ${props =>
+    props.small &&
+    css`
+      min-width: auto;
+    `};
+
+  ${props =>
+    props.noMargin &&
+    css`
+      margin: 0;
+    `};
 
   &:hover {
     background-color: ${BG_HOVER};
@@ -84,8 +96,9 @@ export const SandboxInfo = styled.div`
   left: -1px;
   right: -1px;
   padding: 0.75rem;
-  height: 130px;
+  min-height: 90px;
   z-index: 1;
+  height: 130px;
 `;
 
 export const TemplateIcon = styled.div`

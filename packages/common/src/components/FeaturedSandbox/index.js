@@ -1,11 +1,10 @@
 import React from 'react';
 import Preview from 'app/src/app/components/Preview';
 import { camelizeKeys } from 'humps';
-import { profileUrl, protocolAndHost } from 'common/lib/utils/url-generator';
-
-import getIcon from 'common/lib/templates/icons';
-
 import { Spring, animated, Transition } from 'react-spring';
+
+import { profileUrl, protocolAndHost } from '../../utils/url-generator';
+import getIcon from '../../templates/icons';
 
 import {
   Container,
@@ -17,7 +16,7 @@ import {
   IconContainer,
   StyledStats,
   SandboxPreviewImage,
-} from './_FeaturedSandbox.elements';
+} from './elements';
 
 const SandboxIcon = ({ template }) => {
   const Icon = getIcon(template);
@@ -36,7 +35,7 @@ export default class FeaturedSandbox extends React.PureComponent {
   };
   fetchedSandboxes = {};
 
-  fetchSandbox = (id: string) => {
+  fetchSandbox = id => {
     if (this.fetchedSandboxes[id]) {
       return Promise.resolve(this.fetchedSandboxes[id]);
     }
@@ -50,20 +49,27 @@ export default class FeaturedSandbox extends React.PureComponent {
       });
   };
 
-  componentDidMount() {
-    this.fetchSandbox(this.props.sandboxId).then(sandbox => {
-      this.setState({ sandbox });
+  setUpPreview = () => {
+    setTimeout(() => {
+      // Only load it later so everything else can initialize
+      this.setState({ showPreview: true });
+      this.fetchAllFeaturedSandboxes();
+    }, 1000);
+  };
 
-      setTimeout(() => {
-        // Only load it later so everything else can initialize
-        this.setState({ showPreview: true });
-        this.fetchAllFeaturedSandboxes();
-      }, 1000);
-    });
+  componentDidMount() {
+    if (this.props.sandboxId) {
+      this.fetchSandbox(this.props.sandboxId).then(sandbox => {
+        this.setState({ sandbox });
+        this.setUpPreview();
+      });
+    } else {
+      this.setUpPreview();
+    }
   }
 
   fetchAllFeaturedSandboxes = () => {
-    this.props.featuredSandboxes.forEach(s => {
+    (this.props.featuredSandboxes || []).forEach(s => {
       this.fetchSandbox(s.sandboxId);
     });
   };
@@ -86,10 +92,10 @@ export default class FeaturedSandbox extends React.PureComponent {
   };
 
   render() {
-    const { sandbox } = this.state;
-    const { title, description } = this.props;
+    const { sandbox = this.props.sandbox || null } = this.state;
+    const { title, description, height } = this.props;
     return (
-      <Container>
+      <Container height={height}>
         <SandboxContainer role="button" onClick={this.toggleOpen}>
           <SandboxInfo>
             <Title>{title}</Title>

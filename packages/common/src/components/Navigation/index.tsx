@@ -1,12 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Link } from 'gatsby';
+import Logo from '../Logo';
+import MaxWidth from '../flex/MaxWidth';
 
-import Logo from 'common/lib/components/Logo';
-import MaxWidth from 'common/lib/components/flex/MaxWidth';
-
-import media from '../utils/media';
+import media from '../../utils/media';
 
 const Container = styled.div`
   display: flex;
@@ -31,7 +29,11 @@ const StyledLogo = styled(Logo)`
   `};
 `;
 
-const Item = styled.a`
+const Item = styled.a<{
+  button?: boolean;
+  hidePhone?: boolean;
+  hideOn?: number;
+}>`
   display: inline-flex;
   align-items: center;
   transition: 0.2s ease color;
@@ -85,8 +87,6 @@ const Item = styled.a`
     `};
 `;
 
-const ItemLink = Item.withComponent(Link);
-
 const Right = styled.div`
   display: flex;
   align-items: center;
@@ -136,15 +136,14 @@ export default class Navigation extends React.PureComponent {
           <Left>
             <a href="/">
               <StyledLogo
-                title="CodeSandbox"
                 width={40}
                 height={40}
-                css={{ marginRight: '1rem' }}
+                style={{ marginRight: '1rem' }}
               />
             </a>
 
-            <ItemLink to="/explore">Explore</ItemLink>
-            <ItemLink to="/docs">Docs</ItemLink>
+            <Item href="/explore">Explore</Item>
+            <Item href="/docs">Docs</Item>
 
             <Item
               href="https://medium.com/@compuives"
