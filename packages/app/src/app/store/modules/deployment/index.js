@@ -8,6 +8,7 @@ export default Module({
     hasAlias: false,
     deployToDelete: null,
     deploying: false,
+    building: false,
     url: null,
     gettingDeploys: true,
     sandboxDeploys: [],

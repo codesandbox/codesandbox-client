@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { inject, observer } from 'mobx-react';
 import LinkIcon from 'react-icons/lib/fa/external-link';
+import Cogs from 'react-icons/lib/fa/cogs';
 import NetlifyLogo from 'app/components/NetlifyLogo';
 import DeploymentIntegration from 'app/components/DeploymentIntegration';
 import getTemplate from 'common/lib/templates';
@@ -15,7 +16,11 @@ import {
   ButtonContainer,
 } from './Elements';
 
-class NetlifyDeployment extends Component {
+export interface State {
+  show: boolean;
+}
+
+class NetlifyDeployment extends React.Component<Props> {
   state = { show: false };
 
   toggleNetlify = () =>
@@ -42,7 +47,7 @@ class NetlifyDeployment extends Component {
             style={{ marginTop: '1rem', marginBottom: 0 }}
           >
             <DeploymentIntegration
-              loading={deployment.deploying}
+              loading={deployment.deploying || deployment.building}
               open={show}
               toggle={() => this.toggleNetlify()}
               color="#F7F8F8"
@@ -73,16 +78,27 @@ class NetlifyDeployment extends Component {
                 <Deploys>
                   <Deploy key={deployment.netlifySite.uid}>
                     <Name light>{deployment.netlifySite.name}</Name>
+                    {!deployment.building && <div>Building</div>}
                     <ButtonContainer>
                       <Link
+                        disabled={deployment.building}
                         href={deployment.netlifySite.url}
                         target="_blank"
                         rel="noreferrer noopener"
                       >
-                        <LinkIcon /> <span>Visit</span>
+                        {deployment.building ? (
+                          <>
+                            <Cogs /> Building
+                          </>
+                        ) : (
+                          <>
+                            <LinkIcon /> Visit
+                          </>
+                        )}
                       </Link>
                       {deployment.netlifyClaimUrl ? (
                         <Link
+                          disabled={deployment.building}
                           href={deployment.netlifyClaimUrl}
                           target="_blank"
                           rel="noreferrer noopener"

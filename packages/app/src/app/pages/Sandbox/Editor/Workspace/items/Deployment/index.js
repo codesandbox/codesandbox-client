@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Description } from '../../elements';
 import ZeitDeployments from './Zeit';
-import NetlifyDeployments from './Netlify';
+import NetlifyDeployments from './Netlify.tsx';
 
 class Deployment extends Component {
   componentDidMount = () => {

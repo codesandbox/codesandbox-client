@@ -83,19 +83,21 @@ export const deployWithNetlify = [
   set(state`deployment.deploying`, true),
   actions.createZip,
   actions.deployToNetlify,
+  set(state`deployment.deploying`, false),
+  set(state`deployment.building`, true),
   actions.getStatus,
   {
     success: [
       addNotification('Sandbox Deployed', 'success'),
       getNetlifyDeploys,
-      set(state`deployment.deploying`, false),
+      set(state`deployment.building`, false),
     ],
     error: [
       addNotification(
         'An unknown error occurred when deploying your site',
         'error'
       ),
-      set(state`deployment.deploying`, false),
+      set(state`deployment.building`, false),
     ],
   },
 ];

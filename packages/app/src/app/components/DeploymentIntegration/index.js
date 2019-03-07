@@ -10,6 +10,7 @@ const Integration = ({
   name,
   deploy,
   children,
+  loading,
   color,
   open = true,
   toggle,
@@ -44,6 +45,7 @@ const Integration = ({
     </IntegrationBlock>
     {open ? (
       <DetailInfo
+        loading={loading}
         light={light}
         deploy={deploy}
         info={children}

@@ -13,21 +13,6 @@ const mapColorToState = (state, theme) => {
   return theme.gray;
 };
 
-export const Deploys = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin-top: 1rem;
-  flex-direction: column;
-  font-size: 0.875rem;
-  margin: 0 0.25rem;
-`;
-
-export const Deploy = styled.li`
-  display: flex;
-  margin-bottom: 1.5rem;
-  flex-direction: column;
-`;
-
 export const State = styled.span`
   align-items: center;
   display: flex;
@@ -43,6 +28,21 @@ export const State = styled.span`
     margin-right: 0.5rem;
     background: ${props => mapColorToState(props.state, props.theme)};
   }
+`;
+
+export const Deploys = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+  flex-direction: column;
+  font-size: 0.875rem;
+  margin: 0 0.25rem;
+`;
+
+export const Deploy = styled.li`
+  display: flex;
+  margin-bottom: 1.5rem;
+  flex-direction: column;
 `;
 
 export const Name = styled.span`
@@ -84,6 +84,13 @@ export const Link = styled.a`
   svg {
     margin-right: 10px;
   }
+
+  ${props =>
+    props.disabled &&
+    css`
+      background: ${props.theme.gray};
+      pointer-events: none;
+    `};
 
   &:disabled {
     background: ${props => props.theme.gray};
