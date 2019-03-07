@@ -32,7 +32,7 @@ export default class UpdateFound extends React.PureComponent {
               onClick={() => document.location.reload()}
             />
           }
-          open={this.state.showTooltipManually}
+          isVisible={this.state.showTooltipManually}
           trigger={
             this.state.showTooltipManually ? 'manual' : 'mouseenter focus'
           }
