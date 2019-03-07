@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import LinkIcon from 'react-icons/lib/fa/external-link';
 import Cogs from 'react-icons/lib/fa/cogs';
@@ -16,11 +16,7 @@ import {
   ButtonContainer,
 } from './Elements';
 
-interface State {
-  show: boolean;
-}
-
-class NetlifyDeployment extends React.Component<_, State> {
+class NetlifyDeployment extends Component {
   state = { show: false };
 
   toggleNetlify = () =>
