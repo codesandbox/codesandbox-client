@@ -16,7 +16,7 @@ function Changes({ changes, color, Icon, title, hideColor }) {
       {changes.sort().map(change => (
         <ChangeContainer key={change} color={color}>
           <Entry hideColor={hideColor} editing color={color}>
-            <Tooltip title={title}>
+            <Tooltip content={title}>
               <Icon />
             </Tooltip>
             {change}

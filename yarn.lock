@@ -2133,6 +2133,14 @@
     prettier "^1.14.2"
     svgo "^1.0.5"
 
+"@tippy.js/react@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@tippy.js/react/-/react-2.1.1.tgz#3d106963ec81d55098b6ac6f85c9f7b1a76b9fc0"
+  integrity sha512-rIM5nHuaTek5uEDDD+AjkUEtVCiU6m6Boc5F9bFMiUMp8zEaodZUG7kn/xCD3jR5SfFius3gCdYq0VOZpyypQQ==
+  dependencies:
+    prop-types "^15.6.2"
+    tippy.js "^4.0.3"
+
 "@types/async@2.0.49":
   version "2.0.49"
   resolved "https://registry.yarnpkg.com/@types/async/-/async-2.0.49.tgz#92e33d13f74c895cb9a7f38ba97db8431ed14bc0"
@@ -17700,9 +17708,10 @@ pngquant-bin@^3.0.0:
     bin-wrapper "^3.0.0"
     logalot "^2.0.0"
 
-popper.js@^1.5.1:
-  version "1.14.3"
-  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.3.tgz#1438f98d046acf7b4d78cd502bf418ac64d4f095"
+popper.js@^1.14.7:
+  version "1.14.7"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.7.tgz#e31ec06cfac6a97a53280c3e55e4e0c860e7738e"
+  integrity sha512-4q1hNvoUre/8srWsH7hnoSJ5xVmIL4qgz+s4qf2TnJIMyZFUFMGH+9vE7mXynAlHSZ/NdTmmow86muD0myUkVQ==
 
 portfinder@^1.0.9:
   version "1.0.13"
@@ -19459,12 +19468,6 @@ react-textarea-autosize@^6.1.0:
   resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-6.1.0.tgz#df91387f8a8f22020b77e3833c09829d706a09a5"
   dependencies:
     prop-types "^15.6.0"
-
-react-tippy@^0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/react-tippy/-/react-tippy-0.14.0.tgz#a83cc6fca5edc1dc2acfecc35cea331eb42c2daf"
-  dependencies:
-    popper.js "^1.5.1"
 
 react-transition-group@^1.2.0:
   version "1.2.1"
@@ -22526,6 +22529,13 @@ tiny-emitter@^2.0.0:
 tinycolor2@^1.1.2, tinycolor2@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
+
+tippy.js@^4.0.3, tippy.js@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-4.0.4.tgz#1cfd83fc6cfd1c459bb7e08b5ad9bc97008f61bb"
+  integrity sha512-VXwJ2PXUvSTqV0RA5n5jzAdXsXnhMNX/aBYhC2j2YLg1/gekFWqVffbUQMVvwrqT4zmpm4Bp7tO8MVkvaaZ5Pg==
+  dependencies:
+    popper.js "^1.14.7"
 
 tmp@0.0.30:
   version "0.0.30"

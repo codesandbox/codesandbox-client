@@ -11,18 +11,20 @@
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "@tippy.js/react": "^2.1.1",
     "color": "0.11.4",
     "error-polyfill": "^0.1.1",
     "image-extensions": "^1.1.0",
     "jsonlint": "^1.6.3",
     "memoize-one": "^3.1.1",
     "ot": "^0.0.15",
+    "popper.js": "^1.14.7",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
     "react-spring": "^8.0.18",
     "react-textarea-autosize": "^6.1.0",
-    "react-tippy": "^0.14.0",
-    "styled-components": "^4.1.2"
+    "styled-components": "^4.1.2",
+    "tippy.js": "^4.0.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

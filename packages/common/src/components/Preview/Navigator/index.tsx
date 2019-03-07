@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 import LeftIcon from 'react-icons/lib/fa/angle-left';
@@ -69,7 +70,7 @@ function Navigator({
           style={{ fontSize: 18, padding: 4, marginRight: zenMode ? 8 : 16 }}
           onClick={openNewWindow}
         >
-          <Tooltip delay={0} title="Open In New Window">
+          <Tooltip delay={0} content="Open In New Window">
             <ExternalIcon />
           </Tooltip>
         </Icon>
@@ -80,7 +81,7 @@ function Navigator({
           <SwitchContainer>
             <Tooltip
               delay={0}
-              title={isProjectView ? 'Project View' : 'Current Module View'}
+              content={isProjectView ? 'Project View' : 'Current Module View'}
               position="left"
             >
               <Switch
@@ -96,5 +97,3 @@ function Navigator({
     </Container>
   );
 }
-
-export default Navigator;

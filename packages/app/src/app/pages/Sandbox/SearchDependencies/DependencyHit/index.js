@@ -100,7 +100,7 @@ export default class DependencyHit extends React.PureComponent {
         <Right>
           <Row>
             {hit.githubRepo && (
-              <Tooltip title={`GitHub repository of ${hit.name}`}>
+              <Tooltip content={`GitHub repository of ${hit.name}`}>
                 <IconLink
                   href={this.makeGitHubRepoUrl(hit.githubRepo)}
                   target="_blank"
@@ -112,7 +112,7 @@ export default class DependencyHit extends React.PureComponent {
               </Tooltip>
             )}
             {hit.homepage && (
-              <Tooltip title={`Homepage of ${hit.name}`}>
+              <Tooltip content={`Homepage of ${hit.name}`}>
                 <IconLink
                   href={hit.homepage}
                   target="_blank"
@@ -123,7 +123,7 @@ export default class DependencyHit extends React.PureComponent {
                 </IconLink>
               </Tooltip>
             )}
-            <Tooltip title={`Search for sandboxes using ${hit.name}`}>
+            <Tooltip content={`Search for sandboxes using ${hit.name}`}>
               <IconLink
                 href={this.makeSearchUrl(hit.name)}
                 target="_blank"

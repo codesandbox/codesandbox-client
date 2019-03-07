@@ -75,14 +75,16 @@ class TestElement extends React.Component<Props> {
           <Path>{splittedPath.join('/')}/</Path>
           <FileName>{fileName}</FileName>
           <Actions>
-            <Tooltip title="Open File">
+            <Tooltip content="Open File">
               <FileIcon onClick={this.openFile} />
             </Tooltip>
-            <Tooltip title="Run Tests">
+            <Tooltip content="Run Tests">
               <PlayIcon onClick={this.runTests} />
             </Tooltip>
             <Tooltip
-              title={this.props.isExpanded ? 'Collapse Tests' : 'Expand Tests'}
+              content={
+                this.props.isExpanded ? 'Collapse Tests' : 'Expand Tests'
+              }
             >
               {this.props.isExpanded ? (
                 <CollapseTestsIcon onClick={this.toggleFileExpansion} />

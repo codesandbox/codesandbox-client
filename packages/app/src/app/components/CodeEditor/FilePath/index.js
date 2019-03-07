@@ -2,6 +2,7 @@ import * as React from 'react';
 import { getModulePath } from 'common/lib/sandbox/modules';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
+import Tooltip from 'common/lib/components/Tooltip';
 
 import { Container, Chevron, FileName, StyledExitZen } from './elements';
 
@@ -60,7 +61,9 @@ export default class FilePath extends React.Component {
           </span>
         </FileName>
 
-        <StyledExitZen onClick={exitZenMode} />
+        <Tooltip title="Close Zen Mode" style={{ zIndex: 10 }}>
+          <StyledExitZen onClick={exitZenMode} />
+        </Tooltip>
       </Container>
     );
   }

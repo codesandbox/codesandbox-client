@@ -100,7 +100,7 @@ export default class Configuration extends React.PureComponent<Props>
           />
           <Title>{config.title}</Title>
 
-          <Tooltip title="Show Code">
+          <Tooltip content="Show Code">
             <Icon onClick={this.props.toggleConfigUI}>
               <CodeIcon />
             </Icon>

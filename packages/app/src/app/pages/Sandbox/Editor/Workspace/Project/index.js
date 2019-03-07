@@ -196,7 +196,7 @@ class Project extends React.Component {
           )}
 
         {!!sandbox.team && (
-          <Tooltip title="This sandbox is owned by this team">
+          <Tooltip content="This sandbox is owned by this team">
             <Item style={{ color: 'white', display: 'flex' }}>
               <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
               <div>{sandbox.team.name}</div>
@@ -273,7 +273,7 @@ class Project extends React.Component {
           <Item style={{ marginTop: 5 }} flex>
             <PropertyName>
               Frozen
-              <Tooltip title="When true this sandbox will fork on edit">
+              <Tooltip content="When true this sandbox will fork on edit">
                 <Icon />
               </Tooltip>
             </PropertyName>

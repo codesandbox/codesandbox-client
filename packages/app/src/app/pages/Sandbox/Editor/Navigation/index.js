@@ -39,7 +39,7 @@ const Navigation = ({ store, signals, topOffset, bottomOffset }) => (
           !store.workspace.workspaceHidden &&
           id === store.workspace.openedWorkspaceItem;
         return (
-          <Tooltip key={id} position="right" title={name}>
+          <Tooltip key={id} placement="right" content={name}>
             <IconContainer
               selected={selected}
               onClick={() => {

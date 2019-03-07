@@ -4,7 +4,7 @@ import DeleteIcon from 'react-icons/lib/md/delete';
 import Tooltip from 'common/lib/components/Tooltip';
 
 export const DeleteSandboxButton = styled(props => (
-  <Tooltip title="Delete Sandbox">
+  <Tooltip content="Delete Sandbox">
     <button {...props}>
       <DeleteIcon />
     </button>

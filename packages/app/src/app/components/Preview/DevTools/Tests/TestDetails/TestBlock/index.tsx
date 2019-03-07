@@ -20,7 +20,7 @@ export default ({ test, openFile }: Props) => (
       <TestName test={test} />
       <Actions>
         {openFile && (
-          <Tooltip title="Open File">
+          <Tooltip content="Open File">
             <FileIcon onClick={() => openFile(test.path)} />
           </Tooltip>
         )}

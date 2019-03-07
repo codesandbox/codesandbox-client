@@ -50,7 +50,7 @@ const FileConfig = ({
     >
       <FileTitle>
         {config.title}{' '}
-        <Tooltip title="More Info">
+        <Tooltip content="More Info">
           <a
             href={config.moreInfoUrl}
             target="_blank"
@@ -62,7 +62,7 @@ const FileConfig = ({
           </a>
         </Tooltip>
         {getUI(config.type) && (
-          <Tooltip title="Editable with UI">
+          <Tooltip content="Editable with UI">
             <UIIcon style={{ marginLeft: '.5rem' }} />
           </Tooltip>
         )}

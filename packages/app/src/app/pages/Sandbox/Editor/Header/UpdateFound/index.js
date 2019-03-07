@@ -26,7 +26,7 @@ export default class UpdateFound extends React.PureComponent {
       <UpdateContainer {...this.props}>
         <Tooltip
           theme="update"
-          html={
+          content={
             <UpdateMessage
               id="update-message"
               onClick={() => document.location.reload()}

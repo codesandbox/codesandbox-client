@@ -200,7 +200,7 @@ class EditorTabs extends React.Component {
         <IconContainer>
           <Tooltip
             style={{ display: 'inline-flex', alignItems: 'center' }}
-            title="Prettify"
+            content="Prettify"
           >
             <StyledPrettierIcon
               disabled={!this.canPrettify(currentModule)}
@@ -209,7 +209,7 @@ class EditorTabs extends React.Component {
           </Tooltip>
           <Line />
 
-          <Tooltip title={previewVisible ? 'Hide Browser' : 'Show Browser'}>
+          <Tooltip content={previewVisible ? 'Hide Browser' : 'Show Browser'}>
             <IconWrapper active={previewVisible}>
               <PreviewIcon onClick={() => this.props.signals.editor.togglePreviewContent({})} />
             </IconWrapper>
@@ -219,5 +219,6 @@ class EditorTabs extends React.Component {
     );
   }
 }
+
 
 export default inject('signals', 'store')(observer(EditorTabs));
