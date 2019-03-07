@@ -27,6 +27,9 @@ const Tooltip = ({ children, ...props }) => (
       content={props.content}
       placement={props.placement || 'top'}
       isEnabled={props.isEnabled}
+      trigger={this.props.trigger}
+      arrow={this.props.arrow}
+      distance={this.props.distance}
     >
       <span {...props}>{children}</span>
     </Tippy>
