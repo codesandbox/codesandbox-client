@@ -220,5 +220,4 @@ class EditorTabs extends React.Component {
   }
 }
 
-
 export default inject('signals', 'store')(observer(EditorTabs));
