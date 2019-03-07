@@ -17,15 +17,10 @@ import {
 } from './Elements';
 
 interface State {
-  show: number;
+  show: boolean;
 }
 
-interface Props {
-  sandpack: ISandpackContext;
-  className?: string;
-}
-
-class NetlifyDeployment extends React.Component<Props, State> {
+class NetlifyDeployment extends React.Component<_, State> {
   state = { show: false };
 
   toggleNetlify = () =>
