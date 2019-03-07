@@ -55,9 +55,9 @@ export default class Badge extends React.Component<Props> {
     if (tooltip !== false) {
       return (
         <Tooltip
-          css={`
-            display: block;
-          `}
+          style={{
+            display: 'block',
+          }}
           content={tooltip || badge.name}
         >
           {/* Margin Bottom to compensate for the tooltip */}

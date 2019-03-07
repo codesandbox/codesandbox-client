@@ -212,10 +212,10 @@ export default class CodeEditor extends React.PureComponent<
                 <Tooltip
                   placement="bottom"
                   content={config.partialSupportDisclaimer}
-                  css={`
-                    display: flex;
-                    align-items: center;
-                  `}
+                  style={{
+                    display: 'flex',
+                    'align-items': 'center',
+                  }}
                 >
                   Partially Supported Config{' '}
                   <QuestionIcon style={{ marginLeft: '.5rem' }} />
