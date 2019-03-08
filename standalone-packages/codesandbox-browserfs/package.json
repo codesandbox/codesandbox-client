@@ -75,7 +75,7 @@
     "webpack-dev-server": "~3.1.5"
   },
   "scripts": {
-    "lint": "tslint -c src/tslint.json --project src/tsconfig.json",
+    "lint:old": "tslint -c src/tslint.json --project src/tsconfig.json",
     "build:tsc": "tsc -p src",
     "watch:tsc": "tsc -p src --watch",
     "build:scripts": "tsc -p scripts",
