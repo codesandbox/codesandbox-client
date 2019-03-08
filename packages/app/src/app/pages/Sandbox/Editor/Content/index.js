@@ -180,6 +180,7 @@ class EditorPreview extends React.Component<Props, State> {
       () => [
         store.preferences.settings.zenMode,
         store.workspace.workspaceHidden,
+        store.editor.previewWindowOrientation,
       ],
       () => {
         setTimeout(() => {
@@ -432,13 +433,8 @@ class EditorPreview extends React.Component<Props, State> {
 
     const { width: absoluteWidth, height: absoluteHeight } = this.state;
 
-    let editorWidth = absoluteWidth;
-    let editorHeight = absoluteHeight;
-
-    if (!windowVisible) {
-      editorWidth = absoluteWidth;
-      editorHeight = absoluteHeight;
-    }
+    const editorWidth = absoluteWidth;
+    const editorHeight = absoluteHeight;
 
     const template = getTemplateDefinition(sandbox.template);
 
@@ -537,7 +533,7 @@ class EditorPreview extends React.Component<Props, State> {
             style={{
               overflow: 'visible', // For VSCode Context Menu
             }}
-            split="vertical"
+            split={this.props.store.editor.previewWindowOrientation}
             defaultSize={'50%'}
             pane1Style={
               windowVisible

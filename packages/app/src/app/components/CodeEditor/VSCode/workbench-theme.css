@@ -83,7 +83,7 @@
 }
 
 .monaco-shell input {
-  color: inherit;
+  /* color: inherit; */
   font-family: inherit;
   /* font-size: 100%; */
 }
@@ -218,4 +218,9 @@
 .monaco-shell .monaco-tree.focused:focus,
 .monaco-shell .monaco-list:focus {
   outline: 0 !important; /* tree indicates focus not via outline but through the focused item */
+}
+
+/* CodeSandbox Change */
+.context-view.monaco-menu-container {
+  font-size: 0.75rem;
 }

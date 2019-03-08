@@ -8,8 +8,8 @@ export const Container = styled.div`
   align-items: center;
   line-height: 1;
   /* box-shadow: 0 1px 3px #ddd; */
-  height: 2.5rem;
-  min-height: 2.5rem;
+  height: 35px;
+  min-height: 35px;
   box-sizing: border-box;
   z-index: 2;
 `;

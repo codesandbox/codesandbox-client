@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Input from 'common/lib/components/Input';
-import Button from 'app/components/Button';
+import { Button } from 'app/components/Button';
 import { Container, Title, SubTitle, Image, MaxWidth } from './elements';
 
 import type { Props, Editor } from '../types';

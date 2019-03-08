@@ -28,7 +28,6 @@ class ContentSplit extends React.Component {
       colors: {},
       vscodeTheme: codesandbox,
     },
-    editorTheme: this.props.store.preferences.settings.editorTheme,
     customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme,
   };
 
@@ -38,23 +37,20 @@ class ContentSplit extends React.Component {
 
   componentDidUpdate() {
     if (
-      this.props.store.preferences.settings.editorTheme !==
-        this.state.editorTheme ||
       this.props.store.preferences.settings.customVSCodeTheme !==
-        this.state.customVSCodeTheme
+      this.state.customVSCodeTheme
     ) {
       this.loadTheme();
     }
   }
 
   loadTheme = async () => {
-    const newThemeName = this.props.store.preferences.settings.editorTheme;
     const customVSCodeTheme = this.props.store.preferences.settings
       .customVSCodeTheme;
 
     try {
-      const theme = await getVSCodeTheme(newThemeName, customVSCodeTheme);
-      this.setState({ theme, editorTheme: newThemeName, customVSCodeTheme });
+      const theme = await getVSCodeTheme('', customVSCodeTheme);
+      this.setState({ theme, customVSCodeTheme });
     } catch (e) {
       console.error(e);
     }
@@ -65,7 +61,6 @@ class ContentSplit extends React.Component {
     const sandbox = store.editor.currentSandbox;
 
     // Force MobX to update this component by observing the following value
-    this.props.store.preferences.settings.editorTheme; // eslint-disable-line
     this.props.store.preferences.settings.customVSCodeTheme; // eslint-disable-line
 
     const vscode = this.props.store.preferences.settings.experimentVSCode;

@@ -31,6 +31,7 @@ class LivePage extends React.Component {
 
   componentWillUnmount() {
     this.disconnectLive();
+    this.props.signals.editor.onNavigateAway({});
   }
 
   initializeLive = () => {

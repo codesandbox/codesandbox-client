@@ -1,34 +1,21 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import Media from 'react-media';
+import { Link } from 'react-router-dom';
 
-import Save from 'react-icons/lib/md/save';
-import SearchIcon from 'react-icons/lib/go/search';
 import Fork from 'react-icons/lib/go/repo-forked';
-import FlameIcon from 'react-icons/lib/go/flame';
-import Download from 'react-icons/lib/md/file-download';
 import PlusIcon from 'react-icons/lib/go/plus';
-import GithubIcon from 'react-icons/lib/go/mark-github';
-import HeartIcon from 'react-icons/lib/fa/heart-o';
-import FullHeartIcon from 'react-icons/lib/fa/heart';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
-import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
-import Button from 'app/components/Button';
+import { Button } from 'app/components/Button';
+import SignInButton from 'app/pages/common/SignInButton';
 
-import {
-  patronUrl,
-  dashboardUrl,
-  searchUrl,
-  exploreUrl,
-} from 'common/lib/utils/url-generator';
+import { patronUrl, dashboardUrl } from 'common/lib/utils/url-generator';
 
 import PatronBadge from '-!svg-react-loader!common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/lib/components/spacing/Margin';
 
 import UserMenu from 'app/pages/common/UserMenu';
 import theme from 'common/lib/theme';
-import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import Logo from './Logo';
 import Action from './Action';
@@ -73,7 +60,13 @@ const Header = ({ store, signals, zenMode }) => {
   return (
     <Container zenMode={zenMode}>
       <Left>
-        {store.hasLogIn ? <DashboardIcon /> : <Logo />}
+        {store.hasLogIn ? (
+          <Link to={dashboardUrl()}>
+            <DashboardIcon />
+          </Link>
+        ) : (
+          <Logo marginRight={0} />
+        )}
 
         <MenuBarContainer />
       </Left>
@@ -111,6 +104,18 @@ const Header = ({ store, signals, zenMode }) => {
             />
           ))}
 
+        {!store.isLoggedIn && (
+          <Action
+            onClick={() =>
+              signals.modalOpened({
+                modal: 'preferences',
+              })
+            }
+            tooltip="Preferences"
+            Icon={SettingsIcon}
+          />
+        )}
+
         <Action
           onClick={() =>
             signals.modalOpened({
@@ -121,57 +126,39 @@ const Header = ({ store, signals, zenMode }) => {
           Icon={PlusIcon}
         />
 
-        {sandbox.owned ? (
-          <>
-            <ForkButton
-              style={{ fontSize: '.75rem' }}
-              signals={signals}
-              secondary
-            />
-            <ShareButton
-              style={{ fontSize: '.75rem', margin: '0 1rem' }}
-              signals={signals}
-            />
-          </>
-        ) : (
-          <>
-            <ShareButton
-              style={{ fontSize: '.75rem' }}
-              signals={signals}
-              secondary
-            />
-            <ForkButton
-              style={{ fontSize: '.75rem', margin: '0 1rem' }}
-              signals={signals}
-            />
-          </>
-        )}
+        <ShareButton
+          style={{ fontSize: '.75rem', margin: '0 1rem' }}
+          signals={signals}
+          secondary={!sandbox.owned}
+        />
+        <ForkButton
+          secondary={sandbox.owned}
+          style={{ fontSize: '.75rem' }}
+          signals={signals}
+        />
 
         <Margin
           style={{
             zIndex: 20,
             height: '100%',
+            display: 'flex',
+            alignItems: 'center',
           }}
           left={1}
+          right={1}
         >
           {store.isLoggedIn ? (
             <div
               style={{
                 fontSize: '0.8rem',
                 margin: '5px 0',
-                marginRight: '1rem',
+                marginRight: 0,
               }}
             >
               <UserMenu small />
             </div>
           ) : (
-            <Action
-              onClick={() => signals.signInClicked()}
-              title="Sign in with GitHub"
-              Icon={GithubIcon}
-              highlight
-              unresponsive
-            />
+            <SignInButton style={{ fontSize: '.76rem' }} />
           )}
         </Margin>
       </Right>

@@ -24,17 +24,10 @@ function Experiments({ store, signals }) {
       <Title>Experiments</Title>
 
       <SubContainer>
-        <PreferenceContainer>
-          <PaddedPreference
-            title="Use VSCode in the browser"
-            type="boolean"
-            {...bindValue('experimentVSCode')}
-          />
-          <SubDescription>
-            Use the official VSCode editor directly in the browser. Note: we
-            will refresh the page.
-          </SubDescription>
-        </PreferenceContainer>
+        <SubDescription>
+          There are no experiments running at the moment. Stay tuned for new
+          experiments!
+        </SubDescription>
       </SubContainer>
     </div>
   );

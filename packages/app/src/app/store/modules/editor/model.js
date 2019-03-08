@@ -185,6 +185,10 @@ export default {
   isUpdatingPrivacy: types.boolean,
   quickActionsOpen: types.boolean,
   previewWindowVisible: types.boolean,
+  previewWindowOrientation: types.enumeration('orientation', [
+    'vertical',
+    'horizontal',
+  ]),
   themes: types.array(
     types.model({
       name: types.string,

@@ -3,7 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { Route } from 'react-router-dom';
 
 import vscode from 'app/vscode';
-import Button from 'app/components/Button';
+import { Button } from 'app/components/Button';
 import { editorUrl } from 'common/lib/utils/url-generator';
 
 const VSCodePlaceholder = ({ children, store, signals, hideTitle }) => {
@@ -26,7 +26,8 @@ const VSCodePlaceholder = ({ children, store, signals, hideTitle }) => {
         }}
       >
         Some options are disabled because they are handled by VSCode. You can
-        open the settings of VSCode by pressing {"'"}CTRL/CMD + ,{"'"}.
+        open the settings of VSCode by pressing {"'"}
+        CTRL/CMD + ,{"'"}.
         <Route path={editorUrl()}>
           {res =>
             res.match && (

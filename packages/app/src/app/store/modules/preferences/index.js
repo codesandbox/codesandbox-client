@@ -45,10 +45,10 @@ export default Module({
       // Menlo. So a temporary fix is to only enable this for Windows.
       enableLigatures: navigator.platform.indexOf('Win') > -1,
 
-      editorTheme: 'CodeSandbox',
       customVSCodeTheme: undefined,
+      manualCustomVSCodeTheme: undefined,
 
-      experimentVSCode: false,
+      experimentVSCode: true,
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,

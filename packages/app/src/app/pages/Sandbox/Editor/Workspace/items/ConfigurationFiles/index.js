@@ -9,9 +9,14 @@ import { inject, observer } from 'mobx-react';
 import BookIcon from 'react-icons/lib/md/library-books';
 import UIIcon from 'react-icons/lib/md/dvr';
 
+import { Button } from 'app/components/Button';
 import Tooltip from 'common/lib/components/Tooltip';
 
-import { Description, WorkspaceSubtitle } from '../../elements';
+import {
+  Description,
+  WorkspaceSubtitle,
+  WorkspaceInputContainer,
+} from '../../elements';
 import {
   FilesContainer,
   File,

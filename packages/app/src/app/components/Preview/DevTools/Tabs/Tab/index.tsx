@@ -39,6 +39,16 @@ function useGlobalDim(isDragging: boolean) {
   const blockerRef = React.useRef(null);
   React.useEffect(
     () => {
+      const clean = () => {
+        if (blockerRef.current) {
+          blockerRef.current.parentElement.removeChild(blockerRef.current);
+          blockerRef.current = null;
+        }
+        if (devtools && devtools.parentElement) {
+          devtools.parentElement.style.zIndex = '0';
+        }
+      };
+
       const devtools = document.getElementById('csb-devtools');
       const container = document.getElementById('workbench.main.container');
       if (devtools && container) {
@@ -57,20 +67,12 @@ function useGlobalDim(isDragging: boolean) {
 
           blockerRef.current = blocker;
         } else {
-          if (blockerRef.current) {
-            blockerRef.current.parentElement.removeChild(blockerRef.current);
-            blockerRef.current = null;
-          }
-          devtools.parentElement.style.zIndex = '0';
+          clean();
         }
       }
 
       return () => {
-        if (blockerRef.current) {
-          blockerRef.current.parentElement.removeChild(blockerRef.current);
-          blockerRef.current = null;
-        }
-        devtools.parentElement.style.zIndex = '0';
+        clean();
       };
     },
     [isDragging]

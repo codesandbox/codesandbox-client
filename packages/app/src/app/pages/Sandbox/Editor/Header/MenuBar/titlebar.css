@@ -205,6 +205,7 @@
     'Segoe UI', 'HelveticaNeue-Light', 'Ubuntu', 'Droid Sans', sans-serif;
   outline: 0;
   border: none;
+  font-size: 0.75rem;
 }
 
 .monaco-workbench

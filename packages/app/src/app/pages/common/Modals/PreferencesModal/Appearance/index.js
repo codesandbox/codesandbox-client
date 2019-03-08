@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import themes from 'common/lib/themes';
 
 import PreferenceText from 'common/lib/components/Preference/PreferenceText';
 import {
@@ -27,7 +26,6 @@ function EditorSettings({ store, signals }) {
   });
 
   const fontOptions = ['Menlo', 'Dank Mono', 'Source Code Pro'];
-  const themeOptions = themes.map(t => t.name);
 
   return (
     <div>
@@ -108,20 +106,22 @@ function EditorSettings({ store, signals }) {
 
           <div>
             <BigTitle>Editor Theme</BigTitle>
-
-            <PaddedPreference
-              title="VSCode Theme"
-              type="dropdown"
-              options={themeOptions}
-              {...bindValue('editorTheme')}
-            />
             <SubDescription>
-              This will be overwritten if you enter a custom theme.
+              You can select your editor theme by selecting File {'->'}{' '}
+              Preferences {'->'} Color Theme in the menu bar.
             </SubDescription>
             <Rule />
 
             <SubDescription style={{ marginBottom: '1rem' }}>
               Custom VSCode Theme
+            </SubDescription>
+
+            <SubDescription style={{ marginBottom: '1rem' }}>
+              After changing this setting you
+              {"'"}
+              ll have to reload the browser and select {'"'}
+              Custom
+              {'"'} as your color theme.
             </SubDescription>
 
             <PreferenceText
@@ -135,7 +135,7 @@ function EditorSettings({ store, signals }) {
 2. Press (CMD or CTRL) + SHIFT + P
 3. Enter: '> Developer: Generate Color Scheme From Current Settings'
 4. Copy the contents and paste them here!`}
-              {...bindValue('customVSCodeTheme', true)}
+              {...bindValue('manualCustomVSCodeTheme', true)}
             />
           </div>
         </PreferenceContainer>

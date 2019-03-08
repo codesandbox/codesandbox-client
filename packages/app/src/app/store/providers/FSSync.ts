@@ -97,13 +97,15 @@ export default Provider({
     }
 
     const sendFiles = () => {
-      const { modulesByPath } = this.context.controller.getState().editor;
+      if (this.context.controller.getState().editor.currentId) {
+        const { modulesByPath } = this.context.controller.getState().editor;
 
-      global.postMessage({
-        $broadcast: true,
-        $type: 'file-sync',
-        $data: modulesByPath,
-      });
+        global.postMessage({
+          $broadcast: true,
+          $type: 'file-sync',
+          $data: modulesByPath,
+        });
+      }
     };
 
     fileInterval = setInterval(() => {

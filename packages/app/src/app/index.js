@@ -24,6 +24,12 @@ import logError from './utils/error';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
 
 import vscode from './vscode';
+import {
+  initializeThemeCache,
+  initializeSettings,
+  initializeExtensionsFolder,
+  initializeCustomTheme,
+} from './vscode/initializers';
 import { EXTENSIONS_LOCATION } from './vscode/constants';
 
 const debug = _debug('cs:app');
@@ -177,6 +183,9 @@ window.BrowserFS.configure(
           logReads: process.env.NODE_ENV === 'development',
         },
       },
+      '/extensions/custom-theme': {
+        fs: 'InMemory',
+      },
     },
   },
   e => {
@@ -186,8 +195,13 @@ window.BrowserFS.configure(
       throw e;
     }
 
-    const isVSCode =
-      localStorage.getItem('settings.experimentVSCode') === 'true';
+    const isVSCode = true;
+
+    // For first-timers initialize a theme in the cache so it doesn't jump colors
+    initializeExtensionsFolder();
+    initializeCustomTheme();
+    initializeThemeCache();
+    initializeSettings();
 
     // eslint-disable-next-line global-require
     vscode.loadScript(
@@ -206,14 +220,14 @@ window.BrowserFS.configure(
             }
           );
 
-          import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
-            SearchServiceWorker => {
-              child_process.addForkHandler(
-                'csb:search-service',
-                SearchServiceWorker.default
-              );
-            }
-          );
+          // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
+          //   SearchServiceWorker => {
+          //     child_process.addForkHandler(
+          //       'csb:search-service',
+          //       SearchServiceWorker.default
+          //     );
+          //   }
+          // );
         }
         boot();
       }

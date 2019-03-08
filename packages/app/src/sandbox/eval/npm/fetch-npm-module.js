@@ -25,6 +25,7 @@ type MetaFiles = Array<{ path: string, files?: MetaFiles }>;
 
 const metas: Metas = {};
 let combinedMetas: Meta = {};
+const normalizedMetas: { [key: string]: Meta } = {};
 const packages: Packages = {};
 
 export function getCombinedMetas() {
@@ -43,7 +44,7 @@ function normalize(
 ) {
   for (let i = 0; i < files.length; i += 1) {
     if (files[i].type === 'file') {
-      const absolutePath = pathUtils.join(rootPath, files[i].path);
+      const absolutePath = rootPath + files[i].path;
       fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
     }
 
@@ -161,6 +162,12 @@ function resolvePath(
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
+  const isFile = (p, c, cb) => {
+    const callback = cb || c;
+
+    callback(null, !!manager.transpiledModules[p] || !!meta[p]);
+  };
+
   return new Promise((res, reject) => {
     resolve(
       path,
@@ -172,11 +179,7 @@ function resolvePath(
           'node_modules',
           manager.envVariables.NODE_PATH,
         ].filter(Boolean),
-        isFile: (p, c, cb) => {
-          const callback = cb || c;
-
-          callback(null, !!manager.transpiledModules[p] || !!meta[p]);
-        },
+        isFile,
         readFile: async (p, c, cb) => {
           const callback = cb || c;
 
@@ -321,14 +324,14 @@ export default async function fetchModule(
   const meta = await getMeta(dependencyName, packageJSONPath, version);
 
   const normalizeFunction = TEMP_USE_JSDELIVR ? normalizeJSDelivr : normalize;
-  const normalizedMeta = normalizeFunction(
-    dependencyName,
-    meta.files,
-    {},
-    packageJSONPath
-      ? pathUtils.dirname(packageJSONPath)
-      : pathUtils.join('/node_modules', dependencyName)
-  );
+  const rootPath = packageJSONPath
+    ? pathUtils.dirname(packageJSONPath)
+    : pathUtils.join('/node_modules', dependencyName);
+  const normalizedCacheKey = dependencyName + rootPath;
+  const normalizedMeta =
+    normalizedMetas[normalizedCacheKey] ||
+    normalizeFunction(dependencyName, meta.files, {}, rootPath);
+  normalizedMetas[normalizedCacheKey] = normalizedMeta;
   combinedMetas = { ...combinedMetas, ...normalizedMeta };
 
   const foundPath = await resolvePath(

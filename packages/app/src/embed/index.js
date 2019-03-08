@@ -9,12 +9,14 @@ import 'app/split-pane.css';
 import theme from 'common/lib/theme';
 import 'common/lib/global.css';
 
+import codesandbox from 'common/lib/themes/codesandbox.json';
+
 import App from './components/App';
 
 requirePolyfills().then(() => {
   function renderApp(Component) {
     render(
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={{ ...theme, ...codesandbox.colors }}>
         <Component />
       </ThemeProvider>,
       document.getElementById('root')

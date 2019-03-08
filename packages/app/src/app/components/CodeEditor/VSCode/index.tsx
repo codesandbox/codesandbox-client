@@ -250,6 +250,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   modelListeners = {};
   modelRemovedListener: { dispose: () => void };
   modelAddedListener: { dispose: () => void };
+  activeEditorListener: { dispose: () => void };
 
   listenForFileChanges = () => {
     this.modelAddedListener = this.editor.textFileService.modelService.onModelAdded(
@@ -307,6 +308,9 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     if (this.modelRemovedListener) {
       this.modelRemovedListener.dispose();
     }
+    if (this.activeEditorListener) {
+      this.activeEditorListener.dispose();
+    }
     Object.keys(this.modelListeners).forEach(p => {
       this.modelListeners[p].dispose();
     });
@@ -342,78 +346,80 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     };
 
     this.listenForFileChanges();
-    editor.editorService.onDidActiveEditorChange(() => {
-      if (this.modelSelectionListener) {
-        this.modelSelectionListener.dispose();
-      }
-
-      const activeEditor = editor.getActiveCodeEditor();
-
-      if (activeEditor) {
-        const modulePath = activeEditor._modelData.model.uri.path;
-
-        activeEditor.updateOptions({ readOnly: this.props.readOnly });
-
-        if (!modulePath.startsWith('/sandbox')) {
-          return;
+    this.activeEditorListener = editor.editorService.onDidActiveEditorChange(
+      () => {
+        if (this.modelSelectionListener) {
+          this.modelSelectionListener.dispose();
         }
 
-        if (
-          modulePath === this.getCurrentModuleVSCodePath() &&
-          this.currentModule.code !== undefined &&
-          activeEditor.getValue(1) !== this.currentModule.code
-        ) {
-          // This means that the file in Cerebral is dirty and has changed,
-          // VSCode only gets saved contents. In this case we manually set the value correctly.
-          const model = activeEditor.getModel();
-          model.applyEdits([
-            {
-              text: this.currentModule.code,
-              range: model.getFullModelRange(),
-            },
-          ]);
-        }
+        const activeEditor = editor.getActiveCodeEditor();
 
-        this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
-          selectionChange => {
-            // TODO: add another debounced action to send the current data. So we can
-            // have the correct cursor pos no matter what
-            const { onSelectionChanged, isLive } = this.props;
-            // Reason 3 is update by mouse or arrow keys
-            if (isLive) {
-              const lines = activeEditor.getModel().getLinesContent() || [];
-              const data = {
-                primary: getSelection(lines, selectionChange.selection),
-                secondary: selectionChange.secondarySelections.map(s =>
-                  getSelection(lines, s)
-                ),
-              };
-              if (
-                (selectionChange.reason === 3 ||
-                  /* alt + shift + arrow keys */ selectionChange.source ===
-                    'moveWordCommand' ||
-                  /* click inside a selection */ selectionChange.source ===
-                    'api') &&
-                onSelectionChanged
-              ) {
-                this.onSelectionChangedDebounced.cancel();
-                onSelectionChanged({
-                  selection: data,
-                  moduleShortid: this.currentModule.shortid,
-                });
-              } else {
-                // This is just on typing, we send a debounced selection update as a
-                // safeguard to make sure we are in sync
-                this.onSelectionChangedDebounced({
-                  selection: data,
-                  moduleShortid: this.currentModule.shortid,
-                });
+        if (activeEditor) {
+          const modulePath = activeEditor._modelData.model.uri.path;
+
+          activeEditor.updateOptions({ readOnly: this.props.readOnly });
+
+          if (!modulePath.startsWith('/sandbox')) {
+            return;
+          }
+
+          if (
+            modulePath === this.getCurrentModuleVSCodePath() &&
+            this.currentModule.code !== undefined &&
+            activeEditor.getValue(1) !== this.currentModule.code
+          ) {
+            // This means that the file in Cerebral is dirty and has changed,
+            // VSCode only gets saved contents. In this case we manually set the value correctly.
+            const model = activeEditor.getModel();
+            model.applyEdits([
+              {
+                text: this.currentModule.code,
+                range: model.getFullModelRange(),
+              },
+            ]);
+          }
+
+          this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
+            selectionChange => {
+              // TODO: add another debounced action to send the current data. So we can
+              // have the correct cursor pos no matter what
+              const { onSelectionChanged, isLive } = this.props;
+              // Reason 3 is update by mouse or arrow keys
+              if (isLive) {
+                const lines = activeEditor.getModel().getLinesContent() || [];
+                const data = {
+                  primary: getSelection(lines, selectionChange.selection),
+                  secondary: selectionChange.secondarySelections.map(s =>
+                    getSelection(lines, s)
+                  ),
+                };
+                if (
+                  (selectionChange.reason === 3 ||
+                    /* alt + shift + arrow keys */ selectionChange.source ===
+                      'moveWordCommand' ||
+                    /* click inside a selection */ selectionChange.source ===
+                      'api') &&
+                  onSelectionChanged
+                ) {
+                  this.onSelectionChangedDebounced.cancel();
+                  onSelectionChanged({
+                    selection: data,
+                    moduleShortid: this.currentModule.shortid,
+                  });
+                } else {
+                  // This is just on typing, we send a debounced selection update as a
+                  // safeguard to make sure we are in sync
+                  this.onSelectionChangedDebounced({
+                    selection: data,
+                    moduleShortid: this.currentModule.shortid,
+                  });
+                }
               }
             }
-          }
-        );
+          );
+        }
       }
-    });
+    );
 
     requestAnimationFrame(() => {
       if (this.editor && !this.editor.getActiveCodeEditor()) {

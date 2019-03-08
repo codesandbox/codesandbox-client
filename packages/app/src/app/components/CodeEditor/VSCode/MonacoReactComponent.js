@@ -191,7 +191,6 @@ class MonacoEditor extends React.PureComponent {
           console.log('Calling shutdown');
           this.lifecycleService.shutdown();
         }
-        // this.editor.editorPart.shutdown();
       });
   };
 

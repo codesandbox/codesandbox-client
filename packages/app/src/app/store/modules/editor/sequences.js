@@ -328,3 +328,13 @@ export const togglePreview = [toggle(state`editor.previewWindowVisible`)];
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
 ];
+
+export const toggleEditorPreviewLayout = [
+  equals(state`editor.previewWindowOrientation`),
+  {
+    horizontal: [set(state`editor.previewWindowOrientation`, 'vertical')],
+    vertical: [set(state`editor.previewWindowOrientation`, 'horizontal')],
+  },
+];
+
+export const onNavigateAway = [];

@@ -1,6 +1,6 @@
 import React from 'react';
 import Margin from 'common/lib/components/spacing/Margin';
-import Button from '../../Button';
+import { Button } from '../../Button';
 
 import { Details, Info } from './elements';
 

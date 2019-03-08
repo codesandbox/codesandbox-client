@@ -25,4 +25,4 @@ function ButtonComponent({ style = {}, ...props }: Props) {
   return <Button style={style} {...props} />;
 }
 
-export default ButtonComponent;
+export { ButtonComponent as Button };

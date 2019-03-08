@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectStripe, CardElement } from 'react-stripe-elements';
 import reportError from 'app/utils/error';
-import Button from 'app/components/Button';
+import { Button } from 'app/components/Button';
 
 import { CardContainer, NameInput, ErrorText, Label } from './elements';
 

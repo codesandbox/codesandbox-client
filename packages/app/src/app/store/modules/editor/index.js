@@ -44,6 +44,8 @@ export default Module({
     isUpdatingPrivacy: false,
     quickActionsOpen: false,
     previewWindowVisible: true,
+    previewWindowOrientation:
+      window.innerHeight / window.innerWidth > 0.9 ? 'horizontal' : 'vertical',
     themes,
   },
   getters: {
@@ -95,5 +97,7 @@ export default Module({
     fetchEnvironmentVariables: sequences.fetchEnvironmentVariables,
     updateEnvironmentVariables: sequences.updateEnvironmentVariables,
     deleteEnvironmentVariable: sequences.deleteEnvironmentVariable,
+    toggleEditorPreviewLayout: sequences.toggleEditorPreviewLayout,
+    onNavigateAway: sequences.onNavigateAway,
   },
 });
