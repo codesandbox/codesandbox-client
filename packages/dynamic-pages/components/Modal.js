@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { ESC } from 'common/lib/utils/keycodes';
 
-import { Spring, animated } from 'react-spring';
+import { Spring, animated } from 'react-spring/renderprops';
 
 const NoScroll = createGlobalStyle`
   html {
