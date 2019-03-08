@@ -15,6 +15,7 @@ import 'normalize.css';
 import 'common/lib/global.css';
 import theme from 'common/lib/theme';
 
+// eslint-disable-next-line
 import * as child_process from 'node-services/lib/child_process';
 
 import controller from './controller';

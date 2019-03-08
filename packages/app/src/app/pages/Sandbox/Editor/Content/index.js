@@ -615,7 +615,7 @@ class EditorPreview extends React.Component<Props, State> {
               }}
               id="csb-devtools" // used for tabs for highlighting
             >
-              {views.map((view, i) => (
+              {views.map((v, i) => (
                 <DevTools
                   key={i} // eslint-disable-line react/no-array-index-key
                   devToolIndex={i}
@@ -638,7 +638,7 @@ class EditorPreview extends React.Component<Props, State> {
                   }
                   owned={sandbox.owned}
                   primary={i === 0}
-                  viewConfig={view}
+                  viewConfig={v}
                   moveTab={this.moveDevToolsTab}
                 />
               ))}
