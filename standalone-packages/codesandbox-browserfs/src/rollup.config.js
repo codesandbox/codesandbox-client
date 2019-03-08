@@ -5,7 +5,7 @@ import buble from 'rollup-plugin-buble';
 import {join} from 'path';
 
 const outBase = join(__dirname, '..', 'build', 'temp', 'library');
-console.log(require.resolve('async-es'))
+
 export default {
   input: join(outBase, 'ts', 'index.js'),
   output: {

@@ -8,7 +8,7 @@ export class Socket extends EventEmitter {
   private encoding: string;
 
   constructor(
-    private target: Worker,
+    private target: Window | MessageEventSource,
     private channel: string,
     private isWorker: boolean
   ) {
@@ -48,7 +48,9 @@ export class Socket extends EventEmitter {
     self.removeEventListener('message', this.defaultListener.bind(this));
     this.destroyed = true;
 
+    // @ts-ignore
     if (typeof this.target.terminate !== 'undefined') {
+      // @ts-ignore
       this.target.terminate();
     }
   }
@@ -67,8 +69,10 @@ export class Socket extends EventEmitter {
     };
 
     if (this.isWorker) {
+      // @ts-ignore
       this.target.postMessage(message);
     } else {
+      // @ts-ignore
       this.target.postMessage(message, '*');
     }
   }
@@ -221,9 +225,9 @@ function createServerLocal() {
 
 function createServer(...args: any[]) {
   if (socketUrl) {
-    return createServerWS.apply(undefined, args);
+    return createServerWS();
   } else {
-    return createServerLocal.apply(undefined, args);
+    return createServerLocal();
   }
 }
 

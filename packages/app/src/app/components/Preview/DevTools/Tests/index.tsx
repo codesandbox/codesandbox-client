@@ -497,9 +497,11 @@ class Tests extends React.Component<DevToolProps, State> {
       });
     });
 
+    // Types for split-pane don't work because they're in root.
+    const TSplitPane = SplitPane as any;
     return (
       <Container>
-        <SplitPane split="horizontal" defaultSize={'50%'}>
+        <TSplitPane split="horizontal" defaultSize={'50%'}>
           <TestContainer>
             <TestSummary
               running={this.state.running}
@@ -541,7 +543,7 @@ class Tests extends React.Component<DevToolProps, State> {
               <TestOverview tests={tests} openFile={this.openFile} />
             )}
           </TestDetails>
-        </SplitPane>
+        </TSplitPane>
       </Container>
     );
   }
