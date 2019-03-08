@@ -19,7 +19,7 @@
     "watch": "tsc -watch",
     "compile": "tsc",
     "build:dev": "tsc",
-    "test": "npm run compile && mocha out/tests/*.test.js",
+    "test:old": "npm run compile && mocha out/tests/*.test.js",
     "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec out/tests/",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node scripts/inspect.js",
