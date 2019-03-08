@@ -1,5 +1,4 @@
 import * as resolve from 'resolve';
-import * as fs from 'fs';
 import * as path from 'path';
 
 function getConstants() {
@@ -29,11 +28,13 @@ export default class Module {
     [ext: string]: Function;
   } = {
     ['.js']: function(module: Module, filename: string) {
+      const fs = BrowserFS.BFSRequire('fs');
       var content = fs.readFileSync(filename, 'utf8');
 
       module._compile(content, filename);
     },
     ['.json']: function(module: Module, filename: string) {
+      const fs = BrowserFS.BFSRequire('fs');
       var content = fs.readFileSync(filename, 'utf8');
 
       try {

@@ -24,7 +24,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf packages/app/node_modules/styled-components node_modules/react-split-pane/node_modules/react* && cp -R node_modules/uglify-es node_modules/terser && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
+    "postinstall": "rimraf node_modules/@types packages/app/node_modules/styled-components node_modules/react-split-pane/node_modules/react* && cp -R node_modules/uglify-es node_modules/terser && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
     "typecheck": "lerna run typecheck --scope app"
   },
   "lint-staged": {
