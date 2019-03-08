@@ -1,0 +1,2550 @@
+{
+	"abyss": [
+		{
+			"content": "CREATE",
+			"color": "#225588",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#225588",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#DDBB88",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.function rgb(221, 187, 136)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "AS",
+			"color": "#225588",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#225588",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ID,",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "-",
+			"color": "#225588",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "32",
+			"color": "#F280D0",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.constant.numeric rgb(242, 128, 208)"
+		},
+		{
+			"content": ") ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "*",
+			"color": "#225588",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "5",
+			"color": "#F280D0",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.constant.numeric rgb(242, 128, 208)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "/",
+			"color": "#225588",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": "9",
+			"color": "#F280D0",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.constant.numeric rgb(242, 128, 208)"
+		},
+		{
+			"content": ",",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "*",
+			"color": "#225588",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "0",
+			"color": "#F280D0",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.constant.numeric rgb(242, 128, 208)"
+		},
+		{
+			"content": ".",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "3937",
+			"color": "#F280D0",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.constant.numeric rgb(242, 128, 208)"
+		},
+		{
+			"content": "FROM",
+			"color": "#225588",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		}
+	],
+	"dark_vs": [
+		{
+			"content": "CREATE",
+			"color": "#569CD6",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#569CD6",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#D4D4D4",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "AS",
+			"color": "#569CD6",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#569CD6",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ID,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-",
+			"color": "#D4D4D4",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "32",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ") ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "*",
+			"color": "#D4D4D4",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "5",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "/",
+			"color": "#D4D4D4",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": "9",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ",",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "*",
+			"color": "#D4D4D4",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "0",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ".",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "3937",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": "FROM",
+			"color": "#569CD6",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": "CREATE",
+			"color": "#0000FF",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "create.meta.sql",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#0000FF",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "create.meta.sql",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#000000",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "AS",
+			"color": "#0000FF",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#0000FF",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": " ID,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-",
+			"color": "#000000",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "32",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": ") ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "*",
+			"color": "#000000",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "5",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "/",
+			"color": "#000000",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": "9",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": ",",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "*",
+			"color": "#000000",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "0",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": ".",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "3937",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": "FROM",
+			"color": "#0000FF",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": "CREATE",
+			"color": "#569CD6",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "create.meta.sql",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#569CD6",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "create.meta.sql",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#FFFFFF",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "AS",
+			"color": "#569CD6",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#569CD6",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ID,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "-",
+			"color": "#D4D4D4",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "32",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ") ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "*",
+			"color": "#D4D4D4",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "5",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "/",
+			"color": "#D4D4D4",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": "9",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ",",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "*",
+			"color": "#D4D4D4",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "0",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ".",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "3937",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": "FROM",
+			"color": "#569CD6",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": "CREATE",
+			"color": "#569CD6",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#569CD6",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#DCDCAA",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "AS",
+			"color": "#569CD6",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#569CD6",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " ID,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-",
+			"color": "#D4D4D4",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "32",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ") ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "*",
+			"color": "#D4D4D4",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "5",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "/",
+			"color": "#D4D4D4",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": "9",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ",",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "*",
+			"color": "#D4D4D4",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "0",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": ".",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "3937",
+			"color": "#B5CEA8",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.numeric rgb(181, 206, 168)"
+		},
+		{
+			"content": "FROM",
+			"color": "#569CD6",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": "CREATE",
+			"color": "#0000FF",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "create.meta.sql",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#0000FF",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "create.meta.sql",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#795E26",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "AS",
+			"color": "#0000FF",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#0000FF",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": " ID,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-",
+			"color": "#000000",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "32",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": ") ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "*",
+			"color": "#000000",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "5",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "/",
+			"color": "#000000",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": "9",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": ",",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "*",
+			"color": "#000000",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "0",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": ".",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "3937",
+			"color": "#09885A",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.numeric rgb(9, 136, 90)"
+		},
+		{
+			"content": "FROM",
+			"color": "#0000FF",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		}
+	],
+	"kimbie_dark": [
+		{
+			"content": "CREATE",
+			"color": "#98676A",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#98676A",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#8AB1B0",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.function rgb(138, 177, 176)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "AS",
+			"color": "#98676A",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#98676A",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+		},
+		{
+			"content": " ID,",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "-",
+			"color": "#D3AF86",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "32",
+			"color": "#F79A32",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant.numeric rgb(247, 154, 50)"
+		},
+		{
+			"content": ") ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "*",
+			"color": "#D3AF86",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "5",
+			"color": "#F79A32",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant.numeric rgb(247, 154, 50)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "/",
+			"color": "#D3AF86",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+		},
+		{
+			"content": "9",
+			"color": "#F79A32",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant.numeric rgb(247, 154, 50)"
+		},
+		{
+			"content": ",",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "*",
+			"color": "#D3AF86",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "0",
+			"color": "#F79A32",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant.numeric rgb(247, 154, 50)"
+		},
+		{
+			"content": ".",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "3937",
+			"color": "#F79A32",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant.numeric rgb(247, 154, 50)"
+		},
+		{
+			"content": "FROM",
+			"color": "#98676A",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		}
+	],
+	"monokai": [
+		{
+			"content": "CREATE",
+			"color": "#F92672",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#F92672",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#A6E22E",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.function rgb(166, 226, 46)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "AS",
+			"color": "#F92672",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#F92672",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ID,",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "-",
+			"color": "#F92672",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "32",
+			"color": "#AE81FF",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.constant.numeric rgb(174, 129, 255)"
+		},
+		{
+			"content": ") ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "*",
+			"color": "#F92672",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "5",
+			"color": "#AE81FF",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.constant.numeric rgb(174, 129, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "/",
+			"color": "#F92672",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": "9",
+			"color": "#AE81FF",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.constant.numeric rgb(174, 129, 255)"
+		},
+		{
+			"content": ",",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "*",
+			"color": "#F92672",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "0",
+			"color": "#AE81FF",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.constant.numeric rgb(174, 129, 255)"
+		},
+		{
+			"content": ".",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "3937",
+			"color": "#AE81FF",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.constant.numeric rgb(174, 129, 255)"
+		},
+		{
+			"content": "FROM",
+			"color": "#F92672",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"content": "CREATE",
+			"color": "#676867",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#676867",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#CE6700",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.function rgb(206, 103, 0)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "AS",
+			"color": "#676867",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#D0B344",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword.other.DML.sql rgb(208, 179, 68)"
+		},
+		{
+			"content": " ID,",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "-",
+			"color": "#676867",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "32",
+			"color": "#6089B4",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.constant.numeric rgb(96, 137, 180)"
+		},
+		{
+			"content": ") ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "*",
+			"color": "#676867",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "5",
+			"color": "#6089B4",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.constant.numeric rgb(96, 137, 180)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "/",
+			"color": "#676867",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": "9",
+			"color": "#6089B4",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.constant.numeric rgb(96, 137, 180)"
+		},
+		{
+			"content": ",",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "*",
+			"color": "#676867",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "0",
+			"color": "#6089B4",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.constant.numeric rgb(96, 137, 180)"
+		},
+		{
+			"content": ".",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "3937",
+			"color": "#6089B4",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.constant.numeric rgb(96, 137, 180)"
+		},
+		{
+			"content": "FROM",
+			"color": "#D0B344",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword.other.DML.sql rgb(208, 179, 68)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		}
+	],
+	"quietlight": [
+		{
+			"content": "CREATE",
+			"color": "#4B83CD",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "create.meta.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#4B83CD",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "create.meta.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#AA3731",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.function rgb(170, 55, 49)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "AS",
+			"color": "#4B83CD",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#4B83CD",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+		},
+		{
+			"content": " ID,",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "-",
+			"color": "#777777",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "32",
+			"color": "#AB6526",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant.numeric rgb(171, 101, 38)"
+		},
+		{
+			"content": ") ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "*",
+			"color": "#777777",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "5",
+			"color": "#AB6526",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant.numeric rgb(171, 101, 38)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "/",
+			"color": "#777777",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+		},
+		{
+			"content": "9",
+			"color": "#AB6526",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant.numeric rgb(171, 101, 38)"
+		},
+		{
+			"content": ",",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "*",
+			"color": "#777777",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "0",
+			"color": "#AB6526",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant.numeric rgb(171, 101, 38)"
+		},
+		{
+			"content": ".",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "3937",
+			"color": "#AB6526",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant.numeric rgb(171, 101, 38)"
+		},
+		{
+			"content": "FROM",
+			"color": "#4B83CD",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		}
+	],
+	"red": [
+		{
+			"content": "CREATE",
+			"color": "#F12727",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#F12727",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#FEC758",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "AS",
+			"color": "#F12727",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#F12727",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ID,",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "-",
+			"color": "#F12727",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "32",
+			"color": "#994646",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": ") ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "*",
+			"color": "#F12727",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "5",
+			"color": "#994646",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "/",
+			"color": "#F12727",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": "9",
+			"color": "#994646",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": ",",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "*",
+			"color": "#F12727",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "0",
+			"color": "#994646",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": ".",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "3937",
+			"color": "#994646",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": "FROM",
+			"color": "#F12727",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		}
+	],
+	"solarized_dark": [
+		{
+			"content": "CREATE",
+			"color": "#859900",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#859900",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#268BD2",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "AS",
+			"color": "#859900",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#859900",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ID,",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "-",
+			"color": "#859900",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "32",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": ") ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "*",
+			"color": "#859900",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "5",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "/",
+			"color": "#859900",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": "9",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": ",",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "*",
+			"color": "#859900",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "0",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": ".",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "3937",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": "FROM",
+			"color": "#859900",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		}
+	],
+	"solarized_light": [
+		{
+			"content": "CREATE",
+			"color": "#859900",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "create.meta.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#859900",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "create.meta.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#268BD2",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "AS",
+			"color": "#859900",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#859900",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ID,",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "-",
+			"color": "#859900",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "32",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": ") ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "*",
+			"color": "#859900",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "5",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "/",
+			"color": "#859900",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": "9",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": ",",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "*",
+			"color": "#859900",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "0",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": ".",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "3937",
+			"color": "#D33682",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.constant.numeric rgb(211, 54, 130)"
+		},
+		{
+			"content": "FROM",
+			"color": "#859900",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"content": "CREATE",
+			"color": "#EBBBFF",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "VIEW",
+			"color": "#EBBBFF",
+			"_t": "create.keyword.meta.other.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "create.meta.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "METRIC_STATS",
+			"color": "#BBDAFF",
+			"_t": "create.entity.function.meta.name.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.function rgb(187, 218, 255)"
+		},
+		{
+			"content": " (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "AS",
+			"color": "#EBBBFF",
+			"_t": "alias.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+		},
+		{
+			"content": "SELECT",
+			"color": "#EBBBFF",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+		},
+		{
+			"content": " ID,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "(TEMP_F ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "-",
+			"color": "#99FFFF",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "32",
+			"color": "#FFC58F",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.constant.numeric rgb(255, 197, 143)"
+		},
+		{
+			"content": ") ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "*",
+			"color": "#99FFFF",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "5",
+			"color": "#FFC58F",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.constant.numeric rgb(255, 197, 143)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "/",
+			"color": "#99FFFF",
+			"_t": "keyword.math.operator.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+		},
+		{
+			"content": "9",
+			"color": "#FFC58F",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.constant.numeric rgb(255, 197, 143)"
+		},
+		{
+			"content": ",",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "RAIN_I ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "*",
+			"color": "#99FFFF",
+			"_t": "keyword.operator.sql.star",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "0",
+			"color": "#FFC58F",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.constant.numeric rgb(255, 197, 143)"
+		},
+		{
+			"content": ".",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "3937",
+			"color": "#FFC58F",
+			"_t": "constant.numeric.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.constant.numeric rgb(255, 197, 143)"
+		},
+		{
+			"content": "FROM",
+			"color": "#EBBBFF",
+			"_t": "DML.keyword.other.sql",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+		},
+		{
+			"content": " STATS;",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		}
+	]
+}

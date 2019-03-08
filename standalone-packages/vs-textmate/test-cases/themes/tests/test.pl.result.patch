@@ -1,0 +1,158 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [
+		{
+			"index": 79,
+			"content": "fn",
+			"color": "#889B4A",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 82,
+			"content": ".",
+			"color": "#889B4A",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 85,
+			"content": "line",
+			"color": "#889B4A",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 129,
+			"content": "fn",
+			"color": "#889B4A",
+			"newColor": "#DC3958"
+		}
+	],
+	"monokai": [],
+	"monokai_dimmed": [],
+	"quietlight": [
+		{
+			"index": 33,
+			"content": "/",
+			"color": "#4B83CD",
+			"newColor": "#777777"
+		},
+		{
+			"index": 45,
+			"content": "/",
+			"color": "#4B83CD",
+			"newColor": "#777777"
+		},
+		{
+			"index": 79,
+			"content": "fn",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 82,
+			"content": ".",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 85,
+			"content": "line",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 129,
+			"content": "fn",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		}
+	],
+	"red": [
+		{
+			"index": 35,
+			"content": "\\s",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 37,
+			"content": "\\s",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 39,
+			"content": "\\(",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 41,
+			"content": "\\)",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 43,
+			"content": "\\)",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		}
+	],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": [
+		{
+			"index": 78,
+			"content": "$",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 79,
+			"content": "fn",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 81,
+			"content": "$",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 82,
+			"content": ".",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 84,
+			"content": "$",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 85,
+			"content": "line",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 128,
+			"content": "$",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 129,
+			"content": "fn",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		}
+	]
+}

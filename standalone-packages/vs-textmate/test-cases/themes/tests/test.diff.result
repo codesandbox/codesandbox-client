@@ -1,0 +1,3054 @@
+{
+	"abyss": [
+		{
+			"content": "---",
+			"color": "#6688CC",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#6688CC",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "+++",
+			"color": "#6688CC",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#6688CC",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "@@",
+			"color": "#6688CC",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#6688CC",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "@@",
+			"color": "#6688CC",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "-",
+			"color": "#6688CC",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#6688CC",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "-",
+			"color": "#6688CC",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#6688CC",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "-",
+			"color": "#6688CC",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#6688CC",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "+",
+			"color": "#6688CC",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#6688CC",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "+",
+			"color": "#6688CC",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "@@",
+			"color": "#6688CC",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#6688CC",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "@@",
+			"color": "#6688CC",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "+",
+			"color": "#6688CC",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#6688CC",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "+",
+			"color": "#6688CC",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#6688CC",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "+",
+			"color": "#6688CC",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#6688CC",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		}
+	],
+	"dark_vs": [
+		{
+			"content": "---",
+			"color": "#569CD6",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.meta.header.diff rgb(86, 156, 214)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#569CD6",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.meta.header.diff rgb(86, 156, 214)"
+		},
+		{
+			"content": "+++",
+			"color": "#569CD6",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.meta.header.diff rgb(86, 156, 214)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#569CD6",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.meta.header.diff rgb(86, 156, 214)"
+		},
+		{
+			"content": "@@",
+			"color": "#D4D4D4",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#D4D4D4",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "@@",
+			"color": "#D4D4D4",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "@@",
+			"color": "#D4D4D4",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#D4D4D4",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "@@",
+			"color": "#D4D4D4",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": "---",
+			"color": "#000080",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#000080",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": "+++",
+			"color": "#000080",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#000080",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": "@@",
+			"color": "#000000",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#000000",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "@@",
+			"color": "#000000",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-",
+			"color": "#A31515",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#A31515",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "-",
+			"color": "#A31515",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#A31515",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-",
+			"color": "#A31515",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#A31515",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#09885A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "@@",
+			"color": "#000000",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#000000",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "@@",
+			"color": "#000000",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#09885A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#09885A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#09885A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": "---",
+			"color": "#000080",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#000080",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": "+++",
+			"color": "#000080",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#000080",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": "@@",
+			"color": "#FFFFFF",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "diff.meta.range.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#FFFFFF",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "diff.meta.range.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "@@",
+			"color": "#FFFFFF",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "@@",
+			"color": "#FFFFFF",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "diff.meta.range.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#FFFFFF",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "diff.meta.range.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "@@",
+			"color": "#FFFFFF",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": "---",
+			"color": "#569CD6",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.meta.header.diff rgb(86, 156, 214)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#569CD6",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.meta.header.diff rgb(86, 156, 214)"
+		},
+		{
+			"content": "+++",
+			"color": "#569CD6",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.meta.header.diff rgb(86, 156, 214)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#569CD6",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.meta.header.diff rgb(86, 156, 214)"
+		},
+		{
+			"content": "@@",
+			"color": "#D4D4D4",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#D4D4D4",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "@@",
+			"color": "#D4D4D4",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-",
+			"color": "#CE9178",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#CE9178",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "@@",
+			"color": "#D4D4D4",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#D4D4D4",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "@@",
+			"color": "#D4D4D4",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "+",
+			"color": "#B5CEA8",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#B5CEA8",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": "---",
+			"color": "#000080",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#000080",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": "+++",
+			"color": "#000080",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#000080",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.header rgb(0, 0, 128)"
+		},
+		{
+			"content": "@@",
+			"color": "#000000",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#000000",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "@@",
+			"color": "#000000",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-",
+			"color": "#A31515",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#A31515",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "-",
+			"color": "#A31515",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#A31515",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-",
+			"color": "#A31515",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#A31515",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#09885A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "@@",
+			"color": "#000000",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#000000",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "@@",
+			"color": "#000000",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#09885A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#09885A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "+",
+			"color": "#09885A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#09885A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		}
+	],
+	"kimbie_dark": [
+		{
+			"content": "---",
+			"color": "#D3AF86",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#D3AF86",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "+++",
+			"color": "#D3AF86",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#D3AF86",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "@@",
+			"color": "#D3AF86",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#D3AF86",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "@@",
+			"color": "#D3AF86",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "-",
+			"color": "#DC3958",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.deleted rgb(220, 57, 88)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#DC3958",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.deleted rgb(220, 57, 88)"
+		},
+		{
+			"content": "-",
+			"color": "#DC3958",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.deleted rgb(220, 57, 88)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#DC3958",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.deleted rgb(220, 57, 88)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "-",
+			"color": "#DC3958",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.deleted rgb(220, 57, 88)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#DC3958",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.deleted rgb(220, 57, 88)"
+		},
+		{
+			"content": "+",
+			"color": "#889B4A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#889B4A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": "+",
+			"color": "#889B4A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "@@",
+			"color": "#D3AF86",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#D3AF86",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "@@",
+			"color": "#D3AF86",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "+",
+			"color": "#889B4A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#889B4A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": "+",
+			"color": "#889B4A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#889B4A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": "+",
+			"color": "#889B4A",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#889B4A",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		}
+	],
+	"monokai": [
+		{
+			"content": "---",
+			"color": "#75715E",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff.header rgb(117, 113, 94)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#75715E",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff.header rgb(117, 113, 94)"
+		},
+		{
+			"content": "+++",
+			"color": "#75715E",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff.header rgb(117, 113, 94)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#75715E",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff.header rgb(117, 113, 94)"
+		},
+		{
+			"content": "@@",
+			"color": "#75715E",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": " ",
+			"color": "#75715E",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#75715E",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": " ",
+			"color": "#75715E",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": "@@",
+			"color": "#75715E",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": "-",
+			"color": "#A6E22E",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#F92672",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.deleted rgb(249, 38, 114)"
+		},
+		{
+			"content": "-",
+			"color": "#A6E22E",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#F92672",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.deleted rgb(249, 38, 114)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "-",
+			"color": "#A6E22E",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#F92672",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.deleted rgb(249, 38, 114)"
+		},
+		{
+			"content": "+",
+			"color": "#A6E22E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#A6E22E",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "+",
+			"color": "#A6E22E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "@@",
+			"color": "#75715E",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": " ",
+			"color": "#75715E",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#75715E",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": " ",
+			"color": "#75715E",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": "@@",
+			"color": "#75715E",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.meta.diff rgb(117, 113, 94)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "+",
+			"color": "#A6E22E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#A6E22E",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "+",
+			"color": "#A6E22E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#A6E22E",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "+",
+			"color": "#A6E22E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#A6E22E",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"content": "---",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#C5C8C6",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "+++",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#C5C8C6",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "@@",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#C5C8C6",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "@@",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "-",
+			"color": "#C5C8C6",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#C5C8C6",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "-",
+			"color": "#C5C8C6",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#C5C8C6",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "-",
+			"color": "#C5C8C6",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#C5C8C6",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "+",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#C5C8C6",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "+",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "@@",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#C5C8C6",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "@@",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "+",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#C5C8C6",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "+",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#C5C8C6",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "+",
+			"color": "#C5C8C6",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#C5C8C6",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		}
+	],
+	"quietlight": [
+		{
+			"content": "---",
+			"color": "#434343",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.header.from-file rgb(67, 67, 67)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#434343",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.header.from-file rgb(67, 67, 67)"
+		},
+		{
+			"content": "+++",
+			"color": "#434343",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.header.to-file rgb(67, 67, 67)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#434343",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.header.to-file rgb(67, 67, 67)"
+		},
+		{
+			"content": "@@",
+			"color": "#434343",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": " ",
+			"color": "#434343",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#434343",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": " ",
+			"color": "#434343",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": "@@",
+			"color": "#434343",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": "-",
+			"color": "#000000",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#000000",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.deleted rgb(0, 0, 0)"
+		},
+		{
+			"content": "-",
+			"color": "#000000",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#000000",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.deleted rgb(0, 0, 0)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "-",
+			"color": "#000000",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#000000",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.deleted rgb(0, 0, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#000000",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#000000",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#000000",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "@@",
+			"color": "#434343",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": " ",
+			"color": "#434343",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#434343",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": " ",
+			"color": "#434343",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": "@@",
+			"color": "#434343",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.diff.range rgb(67, 67, 67)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "+",
+			"color": "#000000",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#000000",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#000000",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#000000",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#000000",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#000000",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		}
+	],
+	"red": [
+		{
+			"content": "---",
+			"color": "#F8F8F8",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff.header rgb(248, 248, 248)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#F8F8F8",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff.header rgb(248, 248, 248)"
+		},
+		{
+			"content": "+++",
+			"color": "#F8F8F8",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff.header rgb(248, 248, 248)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#F8F8F8",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff.header rgb(248, 248, 248)"
+		},
+		{
+			"content": "@@",
+			"color": "#F8F8F8",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#F8F8F8",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": "@@",
+			"color": "#F8F8F8",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": "-",
+			"color": "#41A83E",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#EC9799",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.deleted rgb(236, 151, 153)"
+		},
+		{
+			"content": "-",
+			"color": "#41A83E",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#EC9799",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.deleted rgb(236, 151, 153)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "-",
+			"color": "#41A83E",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#EC9799",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.deleted rgb(236, 151, 153)"
+		},
+		{
+			"content": "+",
+			"color": "#41A83E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#41A83E",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "+",
+			"color": "#41A83E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "@@",
+			"color": "#F8F8F8",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#F8F8F8",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": "@@",
+			"color": "#F8F8F8",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.diff rgb(248, 248, 248)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "+",
+			"color": "#41A83E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#41A83E",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "+",
+			"color": "#41A83E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#41A83E",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "+",
+			"color": "#41A83E",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#41A83E",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		}
+	],
+	"solarized_dark": [
+		{
+			"content": "---",
+			"color": "#93A1A1",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#93A1A1",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "+++",
+			"color": "#93A1A1",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#93A1A1",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "@@",
+			"color": "#93A1A1",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#93A1A1",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "@@",
+			"color": "#93A1A1",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "-",
+			"color": "#93A1A1",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#93A1A1",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "-",
+			"color": "#93A1A1",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#93A1A1",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "-",
+			"color": "#93A1A1",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#93A1A1",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "+",
+			"color": "#93A1A1",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#93A1A1",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "+",
+			"color": "#93A1A1",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "@@",
+			"color": "#93A1A1",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#93A1A1",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "@@",
+			"color": "#93A1A1",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "+",
+			"color": "#93A1A1",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#93A1A1",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "+",
+			"color": "#93A1A1",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#93A1A1",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "+",
+			"color": "#93A1A1",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#93A1A1",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		}
+	],
+	"solarized_light": [
+		{
+			"content": "---",
+			"color": "#586E75",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#586E75",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "+++",
+			"color": "#586E75",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#586E75",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "@@",
+			"color": "#586E75",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#586E75",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "@@",
+			"color": "#586E75",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "-",
+			"color": "#586E75",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#586E75",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "-",
+			"color": "#586E75",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#586E75",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "-",
+			"color": "#586E75",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#586E75",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "+",
+			"color": "#586E75",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#586E75",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "+",
+			"color": "#586E75",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "@@",
+			"color": "#586E75",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#586E75",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "@@",
+			"color": "#586E75",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "+",
+			"color": "#586E75",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#586E75",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "+",
+			"color": "#586E75",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#586E75",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "+",
+			"color": "#586E75",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#586E75",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"content": "---",
+			"color": "#FFFFFF",
+			"_t": "definition.diff.from-file.header.meta.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.header.from-file rgb(255, 255, 255)"
+		},
+		{
+			"content": " lao\tSat Jan 26 23:30:39 1991",
+			"color": "#FFFFFF",
+			"_t": "diff.from-file.header.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.header.from-file rgb(255, 255, 255)"
+		},
+		{
+			"content": "+++",
+			"color": "#FFFFFF",
+			"_t": "definition.diff.header.meta.punctuation.to-file",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.header.to-file rgb(255, 255, 255)"
+		},
+		{
+			"content": " tzu\tSat Jan 26 23:30:50 1991",
+			"color": "#FFFFFF",
+			"_t": "diff.header.meta.to-file",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.header.to-file rgb(255, 255, 255)"
+		},
+		{
+			"content": "@@",
+			"color": "#3E999F",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": " ",
+			"color": "#3E999F",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": "-1,7 +1,6",
+			"color": "#3E999F",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": " ",
+			"color": "#3E999F",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": "@@",
+			"color": "#3E999F",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": "-",
+			"color": "#C82829",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.deleted.diff rgb(200, 40, 41)"
+		},
+		{
+			"content": "The Way that can be told of is not the eternal Way;",
+			"color": "#C82829",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.deleted.diff rgb(200, 40, 41)"
+		},
+		{
+			"content": "-",
+			"color": "#C82829",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.deleted.diff rgb(200, 40, 41)"
+		},
+		{
+			"content": "The name that can be named is not the eternal name.",
+			"color": "#C82829",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.deleted.diff rgb(200, 40, 41)"
+		},
+		{
+			"content": " The Nameless is the origin of Heaven and Earth;",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "-",
+			"color": "#C82829",
+			"_t": "definition.deleted.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.deleted.diff rgb(200, 40, 41)"
+		},
+		{
+			"content": "The Named is the mother of all things.",
+			"color": "#C82829",
+			"_t": "deleted.diff.markup",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.deleted.diff rgb(200, 40, 41)"
+		},
+		{
+			"content": "+",
+			"color": "#718C00",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		},
+		{
+			"content": "The named is the mother of all things.",
+			"color": "#718C00",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#718C00",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		},
+		{
+			"content": " Therefore let there always be non-being,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "   so we may see their subtlety,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " And let there always be being,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "@@",
+			"color": "#3E999F",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": " ",
+			"color": "#3E999F",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": "-9,3 +8,6",
+			"color": "#3E999F",
+			"_t": "diff.line-number.meta.range.toc-list.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": " ",
+			"color": "#3E999F",
+			"_t": "diff.meta.range.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": "@@",
+			"color": "#3E999F",
+			"_t": "definition.diff.meta.punctuation.range.unified",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.diff.range rgb(62, 153, 159)"
+		},
+		{
+			"content": " The two are the same,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " But after they are produced,",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "   they have different names.",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "+",
+			"color": "#718C00",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		},
+		{
+			"content": "They both may be called deep and profound.",
+			"color": "#718C00",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#718C00",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		},
+		{
+			"content": "Deeper and more profound,",
+			"color": "#718C00",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		},
+		{
+			"content": "+",
+			"color": "#718C00",
+			"_t": "definition.diff.inserted.markup.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		},
+		{
+			"content": "The door of all subtleties!",
+			"color": "#718C00",
+			"_t": "diff.inserted.markup",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.markup.inserted.diff rgb(113, 140, 0)"
+		}
+	]
+}

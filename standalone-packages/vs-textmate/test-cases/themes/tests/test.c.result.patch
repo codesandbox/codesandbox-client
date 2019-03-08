@@ -1,0 +1,205 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [],
+	"monokai": [],
+	"monokai_dimmed": [],
+	"quietlight": [
+		{
+			"index": 42,
+			"content": "%f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 42,
+			"content": "%f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 42,
+			"content": "%f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 101,
+			"content": "%.2f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 103,
+			"content": "%.2f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 135,
+			"content": "%.2f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 137,
+			"content": "%.2f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 173,
+			"content": "%.2f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 175,
+			"content": "%.2f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 177,
+			"content": "%.2f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 179,
+			"content": "%.2f",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		}
+	],
+	"red": [],
+	"solarized_dark": [
+		{
+			"index": 6,
+			"content": "#",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 7,
+			"content": "include",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 9,
+			"content": "<",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 10,
+			"content": "stdio.h",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 11,
+			"content": ">",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 12,
+			"content": "#",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 13,
+			"content": "include",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 15,
+			"content": "<",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 16,
+			"content": "math.h",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 17,
+			"content": ">",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		}
+	],
+	"solarized_light": [
+		{
+			"index": 6,
+			"content": "#",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 7,
+			"content": "include",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 9,
+			"content": "<",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 10,
+			"content": "stdio.h",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 11,
+			"content": ">",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 12,
+			"content": "#",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 13,
+			"content": "include",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 15,
+			"content": "<",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 16,
+			"content": "math.h",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		},
+		{
+			"index": 17,
+			"content": ">",
+			"color": "#B58900",
+			"newColor": "#2AA198"
+		}
+	],
+	"tomorrow_night_blue": []
+}

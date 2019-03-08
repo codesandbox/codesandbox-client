@@ -1,0 +1,30 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [
+		{
+			"index": 26,
+			"content": "number",
+			"color": "#F06431",
+			"newColor": "#D3AF86"
+		}
+	],
+	"monokai": [],
+	"monokai_dimmed": [],
+	"quietlight": [],
+	"red": [],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": [
+		{
+			"index": 22,
+			"content": ":",
+			"color": "#FFFFFF",
+			"newColor": "#99FFFF"
+		}
+	]
+}

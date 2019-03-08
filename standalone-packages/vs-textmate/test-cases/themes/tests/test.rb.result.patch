@@ -1,0 +1,499 @@
+{
+	"abyss": [
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#6688CC",
+			"newColor": "#FFEEBB"
+		},
+		{
+			"index": 39,
+			"content": "Models",
+			"color": "#F280D0",
+			"newColor": "#6688CC"
+		},
+		{
+			"index": 43,
+			"content": "MsRestAzure",
+			"color": "#F280D0",
+			"newColor": "#6688CC"
+		},
+		{
+			"index": 108,
+			"content": "ArgumentError",
+			"color": "#F280D0",
+			"newColor": "#6688CC"
+		},
+		{
+			"index": 122,
+			"content": "ArgumentError",
+			"color": "#F280D0",
+			"newColor": "#6688CC"
+		},
+		{
+			"index": 136,
+			"content": "ServiceClientCredentials",
+			"color": "#F280D0",
+			"newColor": "#6688CC"
+		},
+		{
+			"index": 206,
+			"content": "MAVERICKS_PKG_PATH",
+			"color": "#F280D0",
+			"newColor": "#22AA44"
+		}
+	],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#D3AF86",
+			"newColor": "#F06431"
+		},
+		{
+			"index": 39,
+			"content": "Models",
+			"color": "#F79A32",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 43,
+			"content": "MsRestAzure",
+			"color": "#F79A32",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 108,
+			"content": "ArgumentError",
+			"color": "#F79A32",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 122,
+			"content": "ArgumentError",
+			"color": "#F79A32",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 136,
+			"content": "ServiceClientCredentials",
+			"color": "#F79A32",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 206,
+			"content": "MAVERICKS_PKG_PATH",
+			"color": "#F79A32",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 226,
+			"content": "(",
+			"color": "#D3AF86",
+			"newColor": "#7E602C"
+		},
+		{
+			"index": 233,
+			"content": "(",
+			"color": "#D3AF86",
+			"newColor": "#7E602C"
+		},
+		{
+			"index": 236,
+			"content": ")",
+			"color": "#D3AF86",
+			"newColor": "#7E602C"
+		},
+		{
+			"index": 238,
+			"content": ")",
+			"color": "#D3AF86",
+			"newColor": "#7E602C"
+		}
+	],
+	"monokai": [
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#F8F8F2",
+			"newColor": "#A6E22E"
+		},
+		{
+			"index": 39,
+			"content": "Models",
+			"color": "#AE81FF",
+			"newColor": "#F8F8F2"
+		},
+		{
+			"index": 43,
+			"content": "MsRestAzure",
+			"color": "#AE81FF",
+			"newColor": "#F8F8F2"
+		},
+		{
+			"index": 108,
+			"content": "ArgumentError",
+			"color": "#AE81FF",
+			"newColor": "#F8F8F2"
+		},
+		{
+			"index": 122,
+			"content": "ArgumentError",
+			"color": "#AE81FF",
+			"newColor": "#F8F8F2"
+		},
+		{
+			"index": 136,
+			"content": "ServiceClientCredentials",
+			"color": "#AE81FF",
+			"newColor": "#F8F8F2"
+		},
+		{
+			"index": 206,
+			"content": "MAVERICKS_PKG_PATH",
+			"color": "#AE81FF",
+			"newColor": "#E6DB74"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"index": 10,
+			"content": "Azure",
+			"color": "#9B0000",
+			"newColor": "#C7444A"
+		},
+		{
+			"index": 11,
+			"content": "::",
+			"color": "#9B0000",
+			"newColor": "#C7444A"
+		},
+		{
+			"index": 12,
+			"content": "ARM",
+			"color": "#9B0000",
+			"newColor": "#C7444A"
+		},
+		{
+			"index": 13,
+			"content": "::",
+			"color": "#9B0000",
+			"newColor": "#C7444A"
+		},
+		{
+			"index": 206,
+			"content": "MAVERICKS_PKG_PATH",
+			"color": "#D08442",
+			"newColor": "#6089B4"
+		}
+	],
+	"quietlight": [
+		{
+			"index": 11,
+			"content": "::",
+			"color": "#7A3E9D",
+			"newColor": "#777777"
+		},
+		{
+			"index": 13,
+			"content": "::",
+			"color": "#7A3E9D",
+			"newColor": "#777777"
+		},
+		{
+			"index": 39,
+			"content": "Models",
+			"color": "#AB6526",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 43,
+			"content": "MsRestAzure",
+			"color": "#AB6526",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 50,
+			"content": ":",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 108,
+			"content": "ArgumentError",
+			"color": "#AB6526",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 122,
+			"content": "ArgumentError",
+			"color": "#AB6526",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 136,
+			"content": "ServiceClientCredentials",
+			"color": "#AB6526",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 199,
+			"content": ":",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 206,
+			"content": "MAVERICKS_PKG_PATH",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 224,
+			"content": "/",
+			"color": "#4B83CD",
+			"newColor": "#777777"
+		},
+		{
+			"index": 226,
+			"content": "(",
+			"color": "#4B83CD",
+			"newColor": "#777777"
+		},
+		{
+			"index": 233,
+			"content": "(",
+			"color": "#4B83CD",
+			"newColor": "#777777"
+		},
+		{
+			"index": 236,
+			"content": ")",
+			"color": "#4B83CD",
+			"newColor": "#777777"
+		},
+		{
+			"index": 238,
+			"content": ")",
+			"color": "#4B83CD",
+			"newColor": "#777777"
+		},
+		{
+			"index": 239,
+			"content": "/",
+			"color": "#4B83CD",
+			"newColor": "#777777"
+		}
+	],
+	"red": [
+		{
+			"index": 227,
+			"content": "\\d",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 229,
+			"content": "\\.",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 229,
+			"content": "\\d",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 231,
+			"content": "\\.",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 231,
+			"content": "\\d",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 234,
+			"content": "\\.",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		},
+		{
+			"index": 234,
+			"content": "\\d",
+			"color": "#FFB454",
+			"newColor": "#FFE862"
+		}
+	],
+	"solarized_dark": [
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#93A1A1",
+			"newColor": "#CB4B16"
+		},
+		{
+			"index": 39,
+			"content": "Models",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 43,
+			"content": "MsRestAzure",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 108,
+			"content": "ArgumentError",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 122,
+			"content": "ArgumentError",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 136,
+			"content": "ServiceClientCredentials",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 206,
+			"content": "MAVERICKS_PKG_PATH",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		}
+	],
+	"solarized_light": [
+		{
+			"index": 10,
+			"content": "Azure",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 11,
+			"content": "::",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 12,
+			"content": "ARM",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 13,
+			"content": "::",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 39,
+			"content": "Models",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 43,
+			"content": "MsRestAzure",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 108,
+			"content": "ArgumentError",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 122,
+			"content": "ArgumentError",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 136,
+			"content": "ServiceClientCredentials",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 206,
+			"content": "MAVERICKS_PKG_PATH",
+			"color": "#CB4B16",
+			"newColor": "#268BD2"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#FFFFFF",
+			"newColor": "#FFEEAD"
+		},
+		{
+			"index": 27,
+			"content": "<",
+			"color": "#FFFFFF",
+			"newColor": "#99FFFF"
+		},
+		{
+			"index": 39,
+			"content": "Models",
+			"color": "#FFFFFF",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 43,
+			"content": "MsRestAzure",
+			"color": "#FFFFFF",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 108,
+			"content": "ArgumentError",
+			"color": "#FFFFFF",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 122,
+			"content": "ArgumentError",
+			"color": "#FFFFFF",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 136,
+			"content": "ServiceClientCredentials",
+			"color": "#FFFFFF",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 206,
+			"content": "MAVERICKS_PKG_PATH",
+			"color": "#FFFFFF",
+			"newColor": "#FF9DA4"
+		}
+	]
+}

@@ -1,0 +1,54 @@
+.diff {
+	background: white !important;
+	color: #555 !important;
+	width: 100%;
+}
+.diff.collapsed {
+	display: none;
+}
+.actual-line, .expected-line, .diff {
+	white-space: pre;
+}
+.actual-line::before, .expected-line::before {
+	cursor: text;
+	content: '✓BOTH';
+	color: green;
+	width: 70px;
+	display: inline-block;
+}
+.actual-line.with-diff::before, .expected-line.with-diff::before {
+	color: orange;
+}
+.actual-line.with-diff::before {
+	content: '⚠ NEW'
+}
+.expected-line.with-diff::before {
+	content: '⚠ OLD'
+}
+.actual-line.with-diff, .expected-line.with-diff {
+	cursor: pointer;
+}
+.actual-line.the-same {
+	display:none;
+}
+.diff td {
+	vertical-align: top;
+}
+.title {
+	cursor: pointer;
+}
+.title.with-diff::before {
+	color: orange;
+	content: '⚠';
+	width: 30px;
+	display: inline-block;
+}
+.title.the-same::before {
+	color: green;
+	content: '✓';
+	width: 30px;
+	display: inline-block;
+}
+.collapsed {
+	display:none;
+}

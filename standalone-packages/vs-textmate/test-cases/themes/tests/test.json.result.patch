@@ -1,0 +1,252 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [],
+	"monokai": [
+		{
+			"index": 35,
+			"content": "\\u0056",
+			"color": "#CFCFC2",
+			"newColor": "#AE81FF"
+		}
+	],
+	"monokai_dimmed": [],
+	"quietlight": [
+		{
+			"index": 5,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 7,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 8,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 12,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 14,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 15,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 18,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 20,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 22,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 23,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 26,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 28,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 30,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 31,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 37,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 39,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 41,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 42,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 45,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 47,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 49,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 50,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 53,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 55,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 57,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 58,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 63,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 68,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 71,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 74,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 78,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 82,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 84,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 86,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 88,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 92,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 94,
+			"content": "\"",
+			"color": "#AB6526",
+			"newColor": "#777777"
+		},
+		{
+			"index": 95,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		}
+	],
+	"red": [],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": []
+}
