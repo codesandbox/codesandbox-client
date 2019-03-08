@@ -283,7 +283,8 @@ class VSCodeManager {
     const { MenuId } = context.require('vs/platform/actions/common/actions');
     this.menuBarIds = MenuId;
 
-    this.addWorkbenchActions();
+    console.log(this.keyCodes);
+    // this.addWorkbenchActions();
   }
 
   public loadScript(scripts: string[], cb: () => void) {
@@ -365,7 +366,7 @@ class VSCodeManager {
       order: 1,
       command: {
         id: 'codesandbox.sandbox.fork',
-        title: 'Fork Sandbox',
+        title: '&&Fork Sandbox',
       },
     });
 

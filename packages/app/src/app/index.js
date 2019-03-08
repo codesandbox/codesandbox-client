@@ -204,33 +204,30 @@ window.BrowserFS.configure(
     initializeSettings();
 
     // eslint-disable-next-line global-require
-    vscode.loadScript(
-      ['vs/editor/editor.main', 'vs/editor/codesandbox.editor.main'],
-      () => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Loaded Monaco'); // eslint-disable-line
-        }
-        if (isVSCode) {
-          vscode.acquireController(controller);
-
-          import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host').then(
-            ExtHostWorkerLoader => {
-              child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
-              // child_process.preloadWorker('/vs/bootstrap-fork');
-            }
-          );
-
-          // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
-          //   SearchServiceWorker => {
-          //     child_process.addForkHandler(
-          //       'csb:search-service',
-          //       SearchServiceWorker.default
-          //     );
-          //   }
-          // );
-        }
-        boot();
+    vscode.loadScript(['vs/editor/codesandbox.editor.main'], () => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Loaded Monaco'); // eslint-disable-line
       }
-    );
+      if (isVSCode) {
+        vscode.acquireController(controller);
+
+        import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host').then(
+          ExtHostWorkerLoader => {
+            child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
+            // child_process.preloadWorker('/vs/bootstrap-fork');
+          }
+        );
+
+        // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
+        //   SearchServiceWorker => {
+        //     child_process.addForkHandler(
+        //       'csb:search-service',
+        //       SearchServiceWorker.default
+        //     );
+        //   }
+        // );
+      }
+      boot();
+    });
   }
 );

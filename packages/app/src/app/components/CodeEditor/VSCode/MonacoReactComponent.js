@@ -70,6 +70,7 @@ class MonacoEditor extends React.PureComponent {
         { IStatusbarService },
         { IExtensionService },
         { IContextViewService },
+        { IQuickOpenService },
       ] = [
         r('vs/workbench/services/editor/common/editorService'),
         r('vs/editor/browser/services/codeEditorService'),
@@ -79,6 +80,7 @@ class MonacoEditor extends React.PureComponent {
         r('vs/platform/statusbar/common/statusbar'),
         r('vs/workbench/services/extensions/common/extensions'),
         r('vs/platform/contextview/browser/contextView'),
+        r('vs/platform/quickOpen/common/quickOpen'),
       ];
 
       document.getElementById('root').className += ' monaco-shell vs-dark';
@@ -125,6 +127,7 @@ class MonacoEditor extends React.PureComponent {
           const textFileService = services.get(ITextFileService);
           const editorService = services.get(IEditorService);
           this.lifecycleService = services.get(ILifecycleService);
+          this.quickopenService = services.get(IQuickOpenService);
 
           if (this.lifecycleService.phase !== 3) {
             this.lifecycleService.phase = 2; // Restoring
@@ -188,8 +191,12 @@ class MonacoEditor extends React.PureComponent {
       })
       .then(() => {
         if (this.lifecycleService) {
-          console.log('Calling shutdown');
           this.lifecycleService.shutdown();
+        }
+        if (this.quickopenService) {
+          // Make sure that the quickopenWidget is gone, it's attached to an old dom node
+          this.quickopenService.quickOpenWidget.dispose();
+          this.quickopenService.quickOpenWidget = undefined;
         }
       });
   };

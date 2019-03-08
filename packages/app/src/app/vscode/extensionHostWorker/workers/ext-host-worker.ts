@@ -26,6 +26,7 @@ self.addEventListener('message', async e => {
               index: EXTENSIONS_LOCATION + '/extensions/index.json',
               baseUrl: EXTENSIONS_LOCATION + '/extensions',
               bundle: EXTENSIONS_LOCATION + '/bundles/ext-host.min.json',
+              logReads: true,
             },
           },
         },
@@ -36,8 +37,11 @@ self.addEventListener('message', async e => {
       process.env = data.data.env || {};
       process.env.HOME = '/home';
 
+      console.log('YELLOWFROG');
       loader()(() => {
-        ctx.require(['vs/workbench/node/extensionHostProcess'], () => {
+        console.log('REDFROG');
+        ctx.require(['vs/workbench/node/extensionHostProcess'], a => {
+          console.log('GREENFROG', a);
           ctx.postMessage({
             $type: 'worker-client',
             $event: 'initialized',
