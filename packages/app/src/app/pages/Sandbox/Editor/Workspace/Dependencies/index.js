@@ -24,7 +24,10 @@ function Dependencies({ signals, store }) {
 
   if (error) {
     return (
-      <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>
+      <ErrorMessage>
+        We weren
+        {"'"}t able to parse the package.json
+      </ErrorMessage>
     );
   }
 

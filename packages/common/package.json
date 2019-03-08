@@ -19,6 +19,7 @@
     "ot": "^0.0.15",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
+    "react-spring": "^8.0.4",
     "react-textarea-autosize": "^6.1.0",
     "react-tippy": "^0.14.0",
     "styled-components": "^4.1.2"

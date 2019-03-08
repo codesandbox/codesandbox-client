@@ -4,17 +4,29 @@
   "private": true,
   "source": true,
   "scripts": {
-    "dev": "next",
+    "dev": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node server.js",
     "build": "next build",
-    "start": "next start",
-    "test": "echo \"Todo: no test specified\" && exit 0"
+    "start": "NODE_ENV=production node server.js",
+    "lint": "eslint .",
+    "format": "prettier --trailing-comma es5 --single-quote --write './**/*.js'"
   },
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
+    "airtable": "^0.5.9",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "http-proxy-middleware": "^0.19.1",
+    "isomorphic-unfetch": "^3.0.0",
+    "lodash.throttle": "^4.1.1",
     "next": "^8.0.0",
+    "next-plugin-transpile-modules": "^2.0.0",
     "react": "16.8.1",
-    "react-dom": "16.8.1"
+    "react-dom": "16.8.1",
+    "react-visibility-sensor": "^5.0.2"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+    "babel-plugin-styled-components": "^1.10.0",
     "jest": "^24.1.0"
   },
   "jest": {

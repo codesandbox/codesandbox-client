@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ContributorHelm from '../ContributorsBadge';
+import ContributorHelm from 'common/lib/components/ContributorsBadge';
 import PatronStar from '../PatronStar';
 import { CenteredText, AuthorName, Image, Names, Username } from './elements';
 

@@ -30,10 +30,10 @@ export default ({
   className,
   responsive = false,
 }: {
-  children: React.Component;
-  width: number;
-  className: string;
-  responsive: boolean;
+  children: React.CElement<any, any>;
+  width?: number;
+  className?: string;
+  responsive?: boolean;
 }) => (
   <Container responsive={responsive}>
     <InnerContainer className={className} width={width}>

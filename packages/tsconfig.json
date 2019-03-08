@@ -4,12 +4,10 @@
     "baseUrl": "./",
     "module": "commonjs",
     "target": "ES6",
-    "lib": ["es6", "dom", "es2017.object", "es2017.sharedmemory"],
-
+    "lib": ["webworker", "es6", "dom", "es2017.object"],
     "resolveJsonModule": true,
     "jsx": "react",
     "allowJs": true,
-    "esModuleInterop": true,
     "paths": {
       "common/*": ["./src/common/*"]
     }

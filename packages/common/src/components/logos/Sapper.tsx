@@ -5,8 +5,8 @@ export default ({
   height = 35,
   className,
 }: {
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   className?: string;
 }) => (
   <svg

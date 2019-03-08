@@ -199,7 +199,7 @@ class Tests extends React.Component<DevToolProps, State> {
   };
 
   handleMessage = (data: SandboxMessage) => {
-    if (data.type === 'done' && !this.props.hidden) {
+    if (data.type === 'done' && this.state.watching && !this.props.hidden) {
       this.runAllTests();
     } else if (data.type === 'test') {
       switch (data.event) {

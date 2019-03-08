@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import Margin from 'common/lib/components/spacing/Margin';
 import Badge from 'common/lib/utils/badges/Badge';
-import ContributorsBadge from 'app/components/ContributorsBadge';
+import ContributorsBadge from 'common/lib/components/ContributorsBadge';
 
 import { patronUrl } from 'common/lib/utils/url-generator';
 

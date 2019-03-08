@@ -4,10 +4,12 @@ export default ({
   width = 35,
   height = 35,
   className,
+  style,
 }: {
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   className?: string;
+  style?: React.CSSProperties;
 }) => (
   <svg
     aria-label="CodeSandbox"
@@ -18,7 +20,7 @@ export default ({
     width={typeof width === 'number' ? `${width}px` : width}
     height={typeof height === 'number' ? `${height}px` : height}
     viewBox="0 0 1024 1024"
-    style={{ verticalAlign: 'middle' }}
+    style={{ verticalAlign: 'middle', ...style }}
   >
     <title>CodeSandbox</title>
     <g id="Layer_1">
