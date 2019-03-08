@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:dev": "yarn build",
     "start": "tsc --watch -p ./tsconfig.json"
   }
 }
