@@ -49,11 +49,6 @@ export const setSetting = [
   ({ props: p }) => {
     track('Change Settings', { name: p.name, value: p.value });
   },
-  when(props`name`, n => n === 'experimentVSCode'),
-  {
-    true: [() => window.location.reload()],
-    false: [],
-  },
 ];
 
 export const setBadgeVisibility = [
