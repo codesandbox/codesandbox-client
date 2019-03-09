@@ -7,7 +7,6 @@ export const Container = styled.a`
   color: ${props => props.theme.white};
   vertical-align: middle;
   height: 3rem;
-  margin-right: 1rem;
 
   padding: 0 calc(0.8rem + 1px);
 
