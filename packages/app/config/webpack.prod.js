@@ -109,7 +109,7 @@ module.exports = merge(commonConfig, {
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [
         /\.map$/,
-        /\/vscode-extensions\//,
+        /vscode-extensions\//,
         /asset-manifest\.json$/,
       ],
       maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
