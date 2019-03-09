@@ -4,11 +4,10 @@ import Input from 'common/lib/components/Input';
 import { Button } from 'app/components/Button';
 import { Container, Title, SubTitle, Image, MaxWidth } from './elements';
 
-import type { Props, Editor } from '../types';
+import { Props } from '../types';
 
-export default class ImageViewer extends React.Component<Props>
-  implements Editor {
-  onSubmit = (e: Event) => {
+export default class ImageViewer extends React.Component<Props> {
+  onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (this.props.onSave) {
@@ -18,7 +17,7 @@ export default class ImageViewer extends React.Component<Props>
 
   input: HTMLInputElement;
 
-  doChangeCode = (e: Event & { target: { value: string } }) => {
+  doChangeCode = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.onChange(e.target.value);
   };
 

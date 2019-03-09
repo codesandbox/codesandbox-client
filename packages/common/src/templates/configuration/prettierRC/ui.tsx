@@ -7,13 +7,9 @@ import {
   ConfigItem,
   PaddedPreference,
 } from '../elements';
+import { ConfigurationUIProps } from '../types';
 
-type Props = {
-  file: string;
-  updateFile: (code: string) => void;
-};
-
-export class ConfigWizard extends React.Component<Props> {
+export class ConfigWizard extends React.Component<ConfigurationUIProps> {
   bindValue = (file: Object, property: string) => ({
     value: file[property],
     setValue: (value: any) => {

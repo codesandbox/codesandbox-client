@@ -10,6 +10,8 @@ type Props = {
   block?: boolean,
   onClick?: () => void,
   children?: React.ReactChildren | string,
+  disabled?: boolean,
+  type?: string,
 };
 
 function ButtonComponent({ style = {}, ...props }: Props) {

@@ -13,14 +13,9 @@ import {
   ConfigDescription,
   PaddedConfig,
 } from '../elements';
+import { ConfigurationUIProps } from '../types';
 
-type Props = {
-  file: string;
-  updateFile: (code: string) => void;
-  sandbox: Sandbox;
-};
-
-export class ConfigWizard extends React.Component<Props> {
+export class ConfigWizard extends React.Component<ConfigurationUIProps> {
   bindValue = (
     file: Object,
     property: string,

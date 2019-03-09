@@ -1,33 +1,58 @@
 // @flow
 import React from 'react';
 import { TextOperation } from 'ot';
-import type { Module } from 'common/lib/types';
+import { Module } from 'common/lib/types';
 import getUI from 'common/lib/templates/configuration/ui';
 import getType from 'app/utils/get-type';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import Tooltip from 'common/lib/components/Tooltip';
+import theme from 'common/lib/theme';
 
-import CodeIcon from 'react-icons/lib/md/code';
+import { Props as EditorProps, Editor } from '../../types';
+import { Container, Title, Description } from './elements';
+import { ConfigurationFile } from 'common/lib/templates/configuration/types';
 
-import type { Props as EditorProps, Editor } from '../types';
-import { Container, Icon, Title, Description } from './elements';
+type Disposable = {
+  dispose: () => void;
+};
 
 type Props = EditorProps & {
-  config: Object,
-  toggleConfigUI: () => void,
+  config: ConfigurationFile;
+  toggleConfigUI: () => void;
+  onDidChangeDirty: (cb: () => void) => Disposable;
+  getCode: () => string;
+  onChangeVSCode: (val: string) => void;
+  onDispose: (cb: () => void) => void;
+  openText: () => void;
 };
 
 export default class Configuration extends React.PureComponent<Props>
   implements Editor {
-  disposeInitializer: ?() => void;
+  disposeInitializer: Function;
 
   currentModule: Module;
-  receivingCode: ?boolean = false;
+  dirtyChangeListener: Disposable;
+  receivingCode: boolean = false;
 
   constructor(props: Props) {
     super(props);
 
-    this.currentModule = props.currentModule;
+    this.registerListeners();
+  }
+
+  registerListeners() {
+    if (this.props.onDidChangeDirty) {
+      this.dirtyChangeListener = this.props.onDidChangeDirty(() => {
+        this.forceUpdate();
+        this.props.onChange(
+          this.props.getCode(),
+          this.props.currentModule.shortid
+        );
+      });
+    }
+
+    this.props.onDispose(() => {
+      this.dirtyChangeListener.dispose();
+    });
   }
 
   componentDidMount() {
@@ -36,20 +61,19 @@ export default class Configuration extends React.PureComponent<Props>
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentModule.id !== this.props.currentModule.id) {
+      this.dirtyChangeListener.dispose();
+
+      this.registerListeners();
+    }
+  }
+
   componentWillUnmount() {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
   }
-
-  // eslint-disable-next-line
-  changeCode = (code: string) => {
-    this.forceUpdate();
-  };
-
-  setReceivingCode = (receiving: boolean) => {
-    this.receivingCode = receiving;
-  };
 
   sendLiveChanges = (code: string) => {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
@@ -70,10 +94,6 @@ export default class Configuration extends React.PureComponent<Props>
     }
   };
 
-  changeModule = (newModule: Module) => {
-    this.currentModule = newModule;
-  };
-
   updateFile = (code: string) => {
     const { isLive, sendTransforms } = this.props;
 
@@ -81,12 +101,12 @@ export default class Configuration extends React.PureComponent<Props>
       this.sendLiveChanges(code);
     }
 
-    this.props.onChange(code);
+    this.props.onChangeVSCode(code);
   };
 
   render() {
     const { config, width, height, sandbox } = this.props;
-    const currentModule = this.currentModule;
+    const currentModule = this.props.currentModule;
 
     const { ConfigWizard } = getUI(config.type);
 
@@ -99,13 +119,24 @@ export default class Configuration extends React.PureComponent<Props>
             type={getType(currentModule.title)}
           />
           <Title>{config.title}</Title>
-
-          <Tooltip title="Show Code">
-            <Icon onClick={this.props.toggleConfigUI}>
-              <CodeIcon />
-            </Icon>
-          </Tooltip>
         </div>
+        <button
+          style={{
+            outline: 0,
+            border: 0,
+            backgroundColor: 'transparent',
+            color: theme.secondary(),
+            textDecoration: 'underline',
+            margin: 0,
+            padding: 0,
+            marginTop: '1rem',
+            cursor: 'pointer',
+          }}
+          tabIndex={-1}
+          onClick={() => this.props.openText()}
+        >
+          Open file in editor
+        </button>
         <Description>
           {config.description}{' '}
           <a
@@ -120,7 +151,7 @@ export default class Configuration extends React.PureComponent<Props>
         <ConfigWizard
           sandbox={sandbox}
           updateFile={this.updateFile}
-          file={currentModule.code}
+          file={this.props.getCode()}
         />
       </Container>
     );

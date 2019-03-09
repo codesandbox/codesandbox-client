@@ -1,7 +1,4 @@
-// @flow
-
 import React from 'react';
-import Loadable from 'app/utils/Loadable';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
 import getUI from 'common/lib/templates/configuration/ui';
@@ -9,26 +6,21 @@ import Centered from 'common/lib/components/flex/Centered';
 import Margin from 'common/lib/components/spacing/Margin';
 import isImage from 'common/lib/utils/is-image';
 import getDefinition from 'common/lib/templates';
-import type { Sandbox } from 'common/lib/types';
+import { Sandbox } from 'common/lib/types';
 import { getModulePath } from 'common/lib/sandbox/modules';
 import Tooltip from 'common/lib/components/Tooltip';
 import UIIcon from 'react-icons/lib/md/dvr';
 import QuestionIcon from 'react-icons/lib/go/question';
 
-import type { Props } from './types';
+import { Props } from './types';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
 import VSCode from './VSCode';
-import Monaco from './Monaco';
 import MonacoDiff from './MonacoDiff';
 import { Icons, Icon } from './elements';
 import { getCustomEditorAPI } from './VSCode/custom-code-editor';
 
-const CodeMirror = Loadable(() =>
-  import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
-);
-
-const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
+const getDependencies = (sandbox: Sandbox): { [key: string]: string } => {
   const packageJSON = sandbox.modules.find(
     m => m.title === 'package.json' && m.directoryShortid == null
   );
@@ -53,13 +45,13 @@ const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
     }
   } else {
     return typeof sandbox.npmDependencies.toJS === 'function'
-      ? sandbox.npmDependencies.toJS()
+      ? (sandbox.npmDependencies as any).toJS()
       : sandbox.npmDependencies;
   }
 };
 
 type State = {
-  showConfigUI: boolean,
+  showConfigUI: boolean;
 };
 
 export default class CodeEditor extends React.PureComponent<Props, State> {
@@ -165,12 +157,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       );
     }
 
-    const isCodeMirror = settings.vimMode || settings.codeMirror;
-    let Editor = isCodeMirror && !props.isLive ? CodeMirror : Monaco;
-
-    if (settings.experimentVSCode) {
-      Editor = VSCode;
-    }
+    const Editor = VSCode;
 
     return (
       <div
@@ -178,7 +165,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           height: props.height || '100%',
           width: props.width || '100%',
           position: 'absolute',
-          top: isCodeMirror ? 35 : 0,
+          top: 0,
           left: 0,
           right: 0,
           bottom: 0,
