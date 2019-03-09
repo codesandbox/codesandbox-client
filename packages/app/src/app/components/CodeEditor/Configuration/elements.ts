@@ -28,7 +28,7 @@ export const Description = styled.p`
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 `;
 
-export const Icon = styled.div`
+export const Icon = styled.div<{ disabled?: boolean }>`
   transition: 0.3s ease color;
   margin: 0.5rem;
 
