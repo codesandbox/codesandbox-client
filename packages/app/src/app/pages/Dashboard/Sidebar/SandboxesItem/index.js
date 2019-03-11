@@ -16,7 +16,7 @@ import CreateFolderEntry from './FolderEntry/CreateFolderEntry';
 
 import { entryTarget, collectTarget } from './folder-drop-target';
 
-import getDirectChildren from './utils/get-direct-children';
+import getChildCollections from '../../utils/getChildCollections';
 
 import { PATHED_SANDBOXES_FOLDER_QUERY } from '../../queries';
 
@@ -93,14 +93,9 @@ class SandboxesItem extends React.Component {
               if (error) {
                 return <div>Error!</div>;
               }
-
-              const folders = data.me.collections;
-              const foldersByPath = {};
-
-              folders.forEach(collection => {
-                foldersByPath[collection.path] = collection;
-              });
-              const children = getDirectChildren('/', folders);
+              const { children, folders, foldersByPath } = getChildCollections(
+                data.me.collections
+              );
 
               return (
                 <Container>

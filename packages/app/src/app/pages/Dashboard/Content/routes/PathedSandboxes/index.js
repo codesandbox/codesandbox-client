@@ -8,7 +8,8 @@ import { basename } from 'path';
 import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
 import CreateNewSandbox from '../../CreateNewSandbox';
-import getMostUsedTemplate from '../utils/getMostUsedTemplate';
+import getMostUsedTemplate from '../../../utils/getMostUsedTemplate';
+import getChildCollections from '../../../utils/getChildCollections';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
@@ -43,6 +44,13 @@ const PathedSandboxes = props => {
 
             let mostUsedTemplate = null;
             if (!loading) {
+              const { children, folders, foldersByPath } = getChildCollections(
+                data.me.collections,
+                data.me.collection.path
+              );
+
+              console.log(children, folders, foldersByPath);
+
               try {
                 mostUsedTemplate = getMostUsedTemplate(sandboxes);
               } catch (e) {
@@ -51,24 +59,26 @@ const PathedSandboxes = props => {
             }
 
             return (
-              <Sandboxes
-                ExtraElement={({ style }) => (
-                  <CreateNewSandbox
-                    collectionId={
-                      data &&
-                      data.me &&
-                      data.me.collection &&
-                      data.me.collection.id
-                    }
-                    mostUsedSandboxTemplate={mostUsedTemplate}
-                    style={style}
-                  />
-                )}
-                isLoading={loading}
-                possibleTemplates={possibleTemplates}
-                Header={<Navigation teamId={teamId} path={path} />}
-                sandboxes={orderedSandboxes}
-              />
+              <>
+                <Sandboxes
+                  ExtraElement={({ style }) => (
+                    <CreateNewSandbox
+                      collectionId={
+                        data &&
+                        data.me &&
+                        data.me.collection &&
+                        data.me.collection.id
+                      }
+                      mostUsedSandboxTemplate={mostUsedTemplate}
+                      style={style}
+                    />
+                  )}
+                  isLoading={loading}
+                  possibleTemplates={possibleTemplates}
+                  Header={<Navigation teamId={teamId} path={path} />}
+                  sandboxes={orderedSandboxes}
+                />
+              </>
             );
           }}
         </Observer>

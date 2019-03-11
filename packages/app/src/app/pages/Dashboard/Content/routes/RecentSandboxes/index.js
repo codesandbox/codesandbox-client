@@ -3,7 +3,7 @@ import { observer, inject } from 'mobx-react';
 
 import { Query } from 'react-apollo';
 
-import getMostUsedTemplate from '../utils/getMostUsedTemplate';
+import getMostUsedTemplate from '../../../utils/getMostUsedTemplate';
 
 import Sandboxes from '../../Sandboxes';
 

@@ -23,7 +23,7 @@ import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/lib/utils/keycodes';
 
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
-import getDirectChildren from '../utils/get-direct-children';
+import getDirectChildren from '../../../utils/get-direct-children';
 import { entryTarget, collectTarget } from '../folder-drop-target';
 
 import CreateFolderEntry from './CreateFolderEntry';
