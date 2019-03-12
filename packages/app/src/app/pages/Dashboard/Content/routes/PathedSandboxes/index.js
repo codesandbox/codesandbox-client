@@ -49,29 +49,27 @@ const PathedSandboxes = props => {
             }
 
             return (
-              <>
-                <Sandboxes
-                  ExtraElement={({ style }) => (
-                    <CreateNewSandbox
-                      collectionId={
-                        data &&
-                        data.me &&
-                        data.me.collection &&
-                        data.me.collection.id
-                      }
-                      mostUsedSandboxTemplate={mostUsedTemplate}
-                      style={style}
-                    />
-                  )}
-                  isLoading={loading}
-                  possibleTemplates={possibleTemplates}
-                  Header={<Navigation teamId={teamId} path={path} />}
-                  Folders={
-                    <Folders me={data.me} loading={loading} teamId={teamId} />
-                  }
-                  sandboxes={orderedSandboxes}
-                />
-              </>
+              <Sandboxes
+                ExtraElement={({ style }) => (
+                  <CreateNewSandbox
+                    collectionId={
+                      data &&
+                      data.me &&
+                      data.me.collection &&
+                      data.me.collection.id
+                    }
+                    mostUsedSandboxTemplate={mostUsedTemplate}
+                    style={style}
+                  />
+                )}
+                isLoading={loading}
+                possibleTemplates={possibleTemplates}
+                Header={<Navigation teamId={teamId} path={path} />}
+                Folders={
+                  <Folders me={data.me} loading={loading} teamId={teamId} />
+                }
+                sandboxes={orderedSandboxes}
+              />
             );
           }}
         </Observer>
