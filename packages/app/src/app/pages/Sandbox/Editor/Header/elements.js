@@ -3,7 +3,8 @@ import Dashboard from '-!svg-react-loader!common/lib/icons/dashboard.svg';
 
 export const Container = styled.div`
   display: ${props => (props.zenMode ? 'none' : 'flex')};
-  position: relative;
+  position: fixed;
+  z-index: 5;
   justify-content: space-between;
   align-items: center;
   background-color: ${props =>
