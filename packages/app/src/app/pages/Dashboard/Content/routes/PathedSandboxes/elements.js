@@ -11,3 +11,8 @@ export const Folder = styled.div`
   background: #25282a;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
+
+export const FoldersWrapper = styled.section`
+  display: flex;
+  margin-top: 40px;
+`;
