@@ -182,7 +182,14 @@ function handleBroadcast(
     sentBroadcastsForPath.shift();
   }
   sentBroadcastsForPath.push(data.$id);
-  if (target instanceof Worker) {
+  if (
+    target instanceof Worker ||
+    // @ts-ignore Unknown to TS
+    (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
+      // @ts-ignore Unknown to TS
+      target instanceof DedicatedWorkerGlobalScope)
+  ) {
+    // @ts-ignore
     target.postMessage(data);
   } else {
     target.postMessage(data, protocolAndHost());

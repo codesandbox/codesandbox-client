@@ -107,7 +107,9 @@ export function start({
         initializeProcess(process, data);
 
         if (data.data.entry) {
-          const resolvedPath = resolve.sync(data.data.entry);
+          const resolvedPath = resolve.sync(data.data.entry, {
+            basedir: '/',
+          });
 
           try {
             debug('Loading module...', resolvedPath);

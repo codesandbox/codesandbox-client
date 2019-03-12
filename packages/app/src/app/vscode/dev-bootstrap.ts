@@ -16,189 +16,191 @@ let requiresDefined = false;
 function initializeRequires() {
   global.require.define('vs/platform/product/node/product', [], () => ({
     default: {
-      "nameShort": "Code - OSS",
-      "nameLong": "Code - OSS",
-      "applicationName": "code-oss",
-      "dataFolderName": ".vscode-oss",
-      "win32MutexName": "vscodeoss",
-      "licenseName": "MIT",
-      "licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
-      "win32DirName": "Microsoft Code OSS",
-      "win32NameVersion": "Microsoft Code OSS",
-      "win32RegValueName": "CodeOSS",
-      "win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
-      "win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
-      "win32UserAppId": "{{C6065F05-9603-4FC4-8101-B9781A25D88E}",
-      "win32x64UserAppId": "{{C6065F05-9603-4FC4-8101-B9781A25D88E}",
-      "win32AppUserModelId": "Microsoft.CodeOSS",
-      "win32ShellNameShort": "C&ode - OSS",
-      "darwinBundleIdentifier": "com.visualstudio.code.oss",
-      "reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
-      "urlProtocol": "code-oss",
-      "extensionAllowedProposedApi": [
-        "ms-vscode.references-view"
-      ]
+      nameShort: 'Code - OSS',
+      nameLong: 'Code - OSS',
+      applicationName: 'code-oss',
+      dataFolderName: '.vscode-oss',
+      win32MutexName: 'vscodeoss',
+      licenseName: 'MIT',
+      licenseUrl: 'https://github.com/Microsoft/vscode/blob/master/LICENSE.txt',
+      win32DirName: 'Microsoft Code OSS',
+      win32NameVersion: 'Microsoft Code OSS',
+      win32RegValueName: 'CodeOSS',
+      win32AppId: '{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}',
+      win32x64AppId: '{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}',
+      win32UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
+      win32x64UserAppId: '{{C6065F05-9603-4FC4-8101-B9781A25D88E}',
+      win32AppUserModelId: 'Microsoft.CodeOSS',
+      win32ShellNameShort: 'C&ode - OSS',
+      darwinBundleIdentifier: 'com.visualstudio.code.oss',
+      reportIssueUrl: 'https://github.com/Microsoft/vscode/issues/new',
+      urlProtocol: 'code-oss',
+      extensionAllowedProposedApi: ['ms-vscode.references-view'],
     },
   }));
   global.require.define('vs/platform/product/node/package', [], () => ({
     default: {
-      "name": "code-oss-dev",
-      "version": "1.33.0",
-      "distro": "533c92fa5e71d449c33c99a6d7c0fbc9a12ea537",
-      "author": {
-        "name": "Microsoft Corporation"
+      name: 'code-oss-dev',
+      version: '1.33.0',
+      distro: '533c92fa5e71d449c33c99a6d7c0fbc9a12ea537',
+      author: {
+        name: 'Microsoft Corporation',
       },
-      "main": "./out/main",
-      "private": true,
-      "scripts": {
-        "test": "mocha",
-        "preinstall": "node build/npm/preinstall.js",
-        "postinstall": "node build/npm/postinstall.js",
-        "compile": "gulp compile --max_old_space_size=4095",
-        "watch": "gulp watch --max_old_space_size=4095",
-        "watch-client": "gulp watch-client --max_old_space_size=4095",
-        "monaco-editor-test": "mocha --only-monaco-editor",
-        "precommit": "node build/gulpfile.hygiene.js",
-        "gulp": "gulp --max_old_space_size=4095",
-        "7z": "7z",
-        "update-grammars": "node build/npm/update-all-grammars.js",
-        "update-localization-extension": "node build/npm/update-localization-extension.js",
-        "smoketest": "cd test/smoke && node test/index.js",
-        "monaco-compile-check": "tsc -p src/tsconfig.monaco.json --noEmit",
-        "download-builtin-extensions": "node build/lib/builtInExtensions.js",
-        "strict-null-check": "tsc -p src/tsconfig.strictNullChecks.json",
-        "strict-null-check-watch": "tsc -p src/tsconfig.strictNullChecks.json --watch",
-        "prepare:container": "rm -rf out-container && mkdir out-container && mkdir out-container/vscode && cp -R out-editor-build out-container/vscode/out && cp start-ext-host.js out-container/vscode && cp out/bootstrap* out-container/vscode/out && cp -R extensions-bundle/extensions out-container/extensions && mkdir out-container/vscode/node_modules.asar && mkdir out-container/vscode/node_modules && cp -R node_modules/async-limiter out-container/vscode/node_modules/async-limiter && cp -R node_modules/ws out-container/vscode/node_modules/ws && cp -R node_modules/vscode-textmate out-container/vscode/node_modules.asar/vscode-textmate"
+      main: './out/main',
+      private: true,
+      scripts: {
+        test: 'mocha',
+        preinstall: 'node build/npm/preinstall.js',
+        postinstall: 'node build/npm/postinstall.js',
+        compile: 'gulp compile --max_old_space_size=4095',
+        watch: 'gulp watch --max_old_space_size=4095',
+        'watch-client': 'gulp watch-client --max_old_space_size=4095',
+        'monaco-editor-test': 'mocha --only-monaco-editor',
+        precommit: 'node build/gulpfile.hygiene.js',
+        gulp: 'gulp --max_old_space_size=4095',
+        '7z': '7z',
+        'update-grammars': 'node build/npm/update-all-grammars.js',
+        'update-localization-extension':
+          'node build/npm/update-localization-extension.js',
+        smoketest: 'cd test/smoke && node test/index.js',
+        'monaco-compile-check': 'tsc -p src/tsconfig.monaco.json --noEmit',
+        'download-builtin-extensions': 'node build/lib/builtInExtensions.js',
+        'strict-null-check': 'tsc -p src/tsconfig.strictNullChecks.json',
+        'strict-null-check-watch':
+          'tsc -p src/tsconfig.strictNullChecks.json --watch',
+        'prepare:container':
+          'rm -rf out-container && mkdir out-container && mkdir out-container/vscode && cp -R out-editor-build out-container/vscode/out && cp start-ext-host.js out-container/vscode && cp out/bootstrap* out-container/vscode/out && cp -R extensions-bundle/extensions out-container/extensions && mkdir out-container/vscode/node_modules.asar && mkdir out-container/vscode/node_modules && cp -R node_modules/async-limiter out-container/vscode/node_modules/async-limiter && cp -R node_modules/ws out-container/vscode/node_modules/ws && cp -R node_modules/vscode-textmate out-container/vscode/node_modules.asar/vscode-textmate',
       },
-      "dependencies": {
-        "applicationinsights": "1.0.8",
-        "gc-signals": "^0.0.2",
-        "getmac": "1.4.1",
-        "graceful-fs": "4.1.11",
-        "http-proxy-agent": "^2.1.0",
-        "https-proxy-agent": "^2.2.1",
-        "iconv-lite": "0.4.23",
-        "jschardet": "1.6.0",
-        "keytar": "4.2.1",
-        "minimist": "1.2.0",
-        "native-is-elevated": "^0.2.1",
-        "native-keymap": "1.2.5",
-        "native-watchdog": "1.0.0",
-        "node-pty": "0.8.1",
-        "semver": "^5.5.0",
-        "spdlog": "0.7.2",
-        "sudo-prompt": "8.2.0",
-        "v8-inspect-profiler": "^0.0.20",
-        "vscode-chokidar": "1.6.5",
-        "vscode-debugprotocol": "1.34.0",
-        "vscode-nsfw": "1.1.1",
-        "vscode-proxy-agent": "0.4.0",
-        "vscode-ripgrep": "^1.2.5",
-        "vscode-sqlite3": "4.0.7",
-        "vscode-textmate": "^4.0.1",
-        "vscode-xterm": "3.13.0-beta1",
-        "winreg": "^1.2.4",
-        "ws": "^6.1.0",
-        "yauzl": "^2.9.1",
-        "yazl": "^2.4.3"
+      dependencies: {
+        applicationinsights: '1.0.8',
+        'gc-signals': '^0.0.2',
+        getmac: '1.4.1',
+        'graceful-fs': '4.1.11',
+        'http-proxy-agent': '^2.1.0',
+        'https-proxy-agent': '^2.2.1',
+        'iconv-lite': '0.4.23',
+        jschardet: '1.6.0',
+        keytar: '4.2.1',
+        minimist: '1.2.0',
+        'native-is-elevated': '^0.2.1',
+        'native-keymap': '1.2.5',
+        'native-watchdog': '1.0.0',
+        'node-pty': '0.8.1',
+        semver: '^5.5.0',
+        spdlog: '0.7.2',
+        'sudo-prompt': '8.2.0',
+        'v8-inspect-profiler': '^0.0.20',
+        'vscode-chokidar': '1.6.5',
+        'vscode-debugprotocol': '1.34.0',
+        'vscode-nsfw': '1.1.1',
+        'vscode-proxy-agent': '0.4.0',
+        'vscode-ripgrep': '^1.2.5',
+        'vscode-sqlite3': '4.0.7',
+        'vscode-textmate': '^4.0.1',
+        'vscode-xterm': '3.13.0-beta1',
+        winreg: '^1.2.4',
+        ws: '^6.1.0',
+        yauzl: '^2.9.1',
+        yazl: '^2.4.3',
       },
-      "devDependencies": {
-        "7zip": "0.0.6",
-        "@types/keytar": "^4.0.1",
-        "@types/minimist": "^1.2.0",
-        "@types/mocha": "2.2.39",
-        "@types/node": "^10.12.12",
-        "@types/semver": "^5.5.0",
-        "@types/sinon": "^1.16.36",
-        "@types/webpack": "^4.4.10",
-        "@types/winreg": "^1.2.30",
-        "@types/ws": "^6.0.1",
-        "ansi-colors": "^3.2.3",
-        "asar": "^0.14.0",
-        "chromium-pickle-js": "^0.2.0",
-        "clean-css": "3.4.6",
-        "copy-webpack-plugin": "^4.5.2",
-        "coveralls": "^2.11.11",
-        "cson-parser": "^1.3.3",
-        "debounce": "^1.0.0",
-        "documentdb": "^1.5.1",
-        "electron-mksnapshot": "~2.0.0",
-        "eslint": "^3.4.0",
-        "event-stream": "3.3.4",
-        "express": "^4.13.1",
-        "fancy-log": "^1.3.3",
-        "fast-plist": "0.1.2",
-        "glob": "^5.0.13",
-        "gulp": "^4.0.0",
-        "gulp-atom-electron": "^1.20.0",
-        "gulp-azure-storage": "^0.10.0",
-        "gulp-buffer": "0.0.2",
-        "gulp-concat": "^2.6.1",
-        "gulp-cssnano": "^2.1.3",
-        "gulp-eslint": "^5.0.0",
-        "gulp-filter": "^5.1.0",
-        "gulp-flatmap": "^1.0.2",
-        "gulp-json-editor": "^2.5.0",
-        "gulp-plumber": "^1.2.0",
-        "gulp-remote-src": "^0.4.4",
-        "gulp-rename": "^1.2.0",
-        "gulp-replace": "^0.5.4",
-        "gulp-shell": "^0.6.5",
-        "gulp-tsb": "2.0.7",
-        "gulp-tslint": "^8.1.3",
-        "gulp-uglify": "^3.0.0",
-        "gulp-vinyl-zip": "^2.1.2",
-        "husky": "^0.13.1",
-        "innosetup-compiler": "^5.5.60",
-        "is": "^3.1.0",
-        "istanbul": "^0.3.17",
-        "jsdom-no-contextify": "^3.1.0",
-        "lazy.js": "^0.4.2",
-        "merge-options": "^1.0.1",
-        "mime": "^1.4.1",
-        "minimatch": "^3.0.4",
-        "mkdirp": "^0.5.0",
-        "mocha": "^2.2.5",
-        "mocha-junit-reporter": "^1.17.0",
-        "optimist": "0.3.5",
-        "p-all": "^1.0.0",
-        "pump": "^1.0.1",
-        "queue": "3.0.6",
-        "rcedit": "^1.1.0",
-        "remap-istanbul": "^0.13.0",
-        "rimraf": "^2.2.8",
-        "sinon": "^1.17.2",
-        "source-map": "^0.4.4",
-        "ts-loader": "^4.4.2",
-        "tslint": "^5.11.0",
-        "typescript": "3.3.1",
-        "typescript-formatter": "7.1.0",
-        "typescript-tslint-plugin": "^0.0.7",
-        "uglify-es": "^3.0.18",
-        "underscore": "^1.8.2",
-        "vinyl": "^2.0.0",
-        "vinyl-fs": "^3.0.0",
-        "vsce": "1.48.0",
-        "vscode-nls-dev": "3.2.5",
-        "webpack": "^4.16.5",
-        "webpack-cli": "^3.1.0",
-        "webpack-stream": "^5.1.1"
+      devDependencies: {
+        '7zip': '0.0.6',
+        '@types/keytar': '^4.0.1',
+        '@types/minimist': '^1.2.0',
+        '@types/mocha': '2.2.39',
+        '@types/node': '^10.12.12',
+        '@types/semver': '^5.5.0',
+        '@types/sinon': '^1.16.36',
+        '@types/webpack': '^4.4.10',
+        '@types/winreg': '^1.2.30',
+        '@types/ws': '^6.0.1',
+        'ansi-colors': '^3.2.3',
+        asar: '^0.14.0',
+        'chromium-pickle-js': '^0.2.0',
+        'clean-css': '3.4.6',
+        'copy-webpack-plugin': '^4.5.2',
+        coveralls: '^2.11.11',
+        'cson-parser': '^1.3.3',
+        debounce: '^1.0.0',
+        documentdb: '^1.5.1',
+        'electron-mksnapshot': '~2.0.0',
+        eslint: '^3.4.0',
+        'event-stream': '3.3.4',
+        express: '^4.13.1',
+        'fancy-log': '^1.3.3',
+        'fast-plist': '0.1.2',
+        glob: '^5.0.13',
+        gulp: '^4.0.0',
+        'gulp-atom-electron': '^1.20.0',
+        'gulp-azure-storage': '^0.10.0',
+        'gulp-buffer': '0.0.2',
+        'gulp-concat': '^2.6.1',
+        'gulp-cssnano': '^2.1.3',
+        'gulp-eslint': '^5.0.0',
+        'gulp-filter': '^5.1.0',
+        'gulp-flatmap': '^1.0.2',
+        'gulp-json-editor': '^2.5.0',
+        'gulp-plumber': '^1.2.0',
+        'gulp-remote-src': '^0.4.4',
+        'gulp-rename': '^1.2.0',
+        'gulp-replace': '^0.5.4',
+        'gulp-shell': '^0.6.5',
+        'gulp-tsb': '2.0.7',
+        'gulp-tslint': '^8.1.3',
+        'gulp-uglify': '^3.0.0',
+        'gulp-vinyl-zip': '^2.1.2',
+        husky: '^0.13.1',
+        'innosetup-compiler': '^5.5.60',
+        is: '^3.1.0',
+        istanbul: '^0.3.17',
+        'jsdom-no-contextify': '^3.1.0',
+        'lazy.js': '^0.4.2',
+        'merge-options': '^1.0.1',
+        mime: '^1.4.1',
+        minimatch: '^3.0.4',
+        mkdirp: '^0.5.0',
+        mocha: '^2.2.5',
+        'mocha-junit-reporter': '^1.17.0',
+        optimist: '0.3.5',
+        'p-all': '^1.0.0',
+        pump: '^1.0.1',
+        queue: '3.0.6',
+        rcedit: '^1.1.0',
+        'remap-istanbul': '^0.13.0',
+        rimraf: '^2.2.8',
+        sinon: '^1.17.2',
+        'source-map': '^0.4.4',
+        'ts-loader': '^4.4.2',
+        tslint: '^5.11.0',
+        typescript: '3.3.1',
+        'typescript-formatter': '7.1.0',
+        'typescript-tslint-plugin': '^0.0.7',
+        'uglify-es': '^3.0.18',
+        underscore: '^1.8.2',
+        vinyl: '^2.0.0',
+        'vinyl-fs': '^3.0.0',
+        vsce: '1.48.0',
+        'vscode-nls-dev': '3.2.5',
+        webpack: '^4.16.5',
+        'webpack-cli': '^3.1.0',
+        'webpack-stream': '^5.1.1',
       },
-      "repository": {
-        "type": "git",
-        "url": "https://github.com/Microsoft/vscode.git"
+      repository: {
+        type: 'git',
+        url: 'https://github.com/Microsoft/vscode.git',
       },
-      "bugs": {
-        "url": "https://github.com/Microsoft/vscode/issues"
+      bugs: {
+        url: 'https://github.com/Microsoft/vscode/issues',
       },
-      "optionalDependencies": {
-        "vscode-windows-registry": "1.0.1",
-        "win-ca-lib": "https://github.com/chrmarti/win-ca/releases/download/v2.4.1-lib-test/win-ca-lib-2.4.1.tgz",
-        "windows-foreground-love": "0.1.0",
-        "windows-mutex": "0.2.1",
-        "windows-process-tree": "0.2.3"
-      }
-    }
+      optionalDependencies: {
+        'vscode-windows-registry': '1.0.1',
+        'win-ca-lib':
+          'https://github.com/chrmarti/win-ca/releases/download/v2.4.1-lib-test/win-ca-lib-2.4.1.tgz',
+        'windows-foreground-love': '0.1.0',
+        'windows-mutex': '0.2.1',
+        'windows-process-tree': '0.2.3',
+      },
+    },
   }));
 
   global.require.define('path', [], () => {
@@ -251,11 +253,15 @@ function initializeRequires() {
     return {};
   });
 
-  global.require.define('vs/workbench/services/extensions/node/proxyResolver', [], () => {
-    return {
-      connectProxyResolver: () => Promise.resolve(undefined),
-    };
-  });
+  global.require.define(
+    'vs/workbench/services/extensions/node/proxyResolver',
+    [],
+    () => {
+      return {
+        connectProxyResolver: () => Promise.resolve(undefined),
+      };
+    }
+  );
 
   global.require.define('os', [], () => {
     return { tmpdir: () => '/tmp', release: () => '16' };
@@ -267,7 +273,7 @@ function initializeRequires() {
       UTF8_with_bom: 'utf8bom',
       UTF16be: 'utf16be',
       UTF16le: 'utf16le',
-    }
+    };
   });
 
   global.require.define('child_process', [], () => {
@@ -279,8 +285,8 @@ function initializeRequires() {
       webFrame: {
         getZoomFactor() {
           return 1;
-        }
-      }
+        },
+      },
     };
   });
 
@@ -325,7 +331,6 @@ function initializeRequires() {
     return require('stream');
   });
 
-
   global.require.define('vscode-textmate', [], () => {
     return require('vscode-textmate/out/main');
   });
@@ -345,8 +350,8 @@ function initializeRequires() {
 
       getKeyMap(): undefined[] {
         return [];
-      }
-    }
+      },
+    };
   });
 }
 
@@ -561,7 +566,9 @@ export default function(requiredModule?: string[], isVSCode = false) {
 
     global.nodeRequire = path => {
       if (path.indexOf('/extensions/') === 0) {
-        const resolvedPath = resolve.sync(path);
+        const resolvedPath = resolve.sync(path, {
+          basedir: '/',
+        });
 
         const module = new Module(path);
         module.load(resolvedPath);
@@ -574,13 +581,13 @@ export default function(requiredModule?: string[], isVSCode = false) {
       }
 
       if (path === 'native-watchdog') {
-        return { start: () => { } };
+        return { start: () => {} };
       }
     };
 
     function loadFiles() {
       var loaderPathsConfig = {
-        'vs/language/vue': '/public/13/vs/language/vue'
+        'vs/language/vue': '/public/13/vs/language/vue',
       };
       if (!RESOLVED_CORE.isRelease()) {
         RESOLVED_PLUGINS.forEach(function(plugin) {

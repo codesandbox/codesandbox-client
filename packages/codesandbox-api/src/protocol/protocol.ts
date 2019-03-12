@@ -91,7 +91,14 @@ export default class Protocol {
   };
 
   private _postMessage(m: any) {
-    if (this.target instanceof Worker) {
+    if (
+      this.target instanceof Worker ||
+      // @ts-ignore Unknown to TS
+      (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
+        // @ts-ignore Unknown to TS
+        target instanceof DedicatedWorkerGlobalScope)
+    ) {
+      // @ts-ignore
       this.target.postMessage(m);
     } else {
       this.target.postMessage(m, '*');

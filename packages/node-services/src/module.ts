@@ -1,5 +1,6 @@
 import * as resolve from 'resolve';
 import * as path from 'path';
+import { getCaller, getCallSites } from './stubs/resolve-caller';
 
 function getConstants() {
   const constants = require('constants-browserify');
@@ -277,6 +278,14 @@ export default class Module {
     if (cachedModule) {
       updateChildren(parent, cachedModule, true);
       return cachedModule.exports;
+    }
+
+    if (filename === 'callsites') {
+      return getCallSites;
+    }
+
+    if (filename.endsWith('resolve/lib/caller.js')) {
+      return getCaller;
     }
 
     var module = new Module(filename, parent);

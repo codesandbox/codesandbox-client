@@ -8,11 +8,11 @@ export default function requirePolyfills() {
     );
   }
 
-  // if (typeof Error['captureStackTrace'] === 'undefined') {
-  //   promises.push(
-  //     import(/* webpackChunkName: 'error-polyfill' */ 'error-polyfill')
-  //   );
-  // }
+  if (typeof Error['captureStackTrace'] === 'undefined') {
+    promises.push(
+      import(/* webpackChunkName: 'error-polyfill' */ 'error-polyfill')
+    );
+  }
 
   return Promise.all(promises);
 }
