@@ -1,4 +1,5 @@
 const getDebugger = () => {
+  console.log('Got env', process.env);
   if (
     process.env.NODE_ENV === 'production' &&
     typeof document !== 'undefined' &&
