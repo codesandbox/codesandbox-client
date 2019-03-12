@@ -1,9 +1,10 @@
 const getDebugger = () => {
-  console.log('Got env', process.env);
   if (
-    process.env.NODE_ENV === 'production' &&
     typeof document !== 'undefined' &&
-    document.location.search.indexOf('debug') === -1
+    ((typeof __DEV__ === 'undefined' ||
+      !__DEV__ ||
+      process.env.NODE_ENV === 'production') &&
+      document.location.search.indexOf('debug') === -1)
   ) {
     const global = window as any;
     // Return a debugger that will log to sentry
