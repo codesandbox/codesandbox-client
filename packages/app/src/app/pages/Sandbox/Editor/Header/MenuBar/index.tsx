@@ -13,9 +13,10 @@ export function MenuBarContainer() {
     });
 
     return () => {
-      vscode.getMenubarPart().then(part => {
-        part.dispose();
-      });
+      // Don't dispose, it kills listeners that are not remounted
+      // vscode.getMenubarPart().then(part => {
+      //   part.dispose();
+      // });
     };
   }, []);
 

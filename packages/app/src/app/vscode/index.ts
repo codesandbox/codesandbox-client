@@ -310,15 +310,19 @@ class VSCodeManager {
     cb: (services: IServiceCache) => void
   ) {
     if (this.serviceCache) {
-      const [{ IConfigurationService }] = [
+      const [{ IConfigurationService }, { IInstantiationService },] = [
         context.require('vs/platform/configuration/common/configuration'),
+        context.require('vs/platform/instantiation/common/instantiation'),
       ];
 
-      const workspaceService = this.serviceCache.get(IConfigurationService);
+      const instantiationService = this.serviceCache.get(IInstantiationService);
+      instantiationService.invokeFunction(accessor => {
+        const workspaceService = accessor.get(IConfigurationService);
 
-      workspaceService.initialize(context.monaco.editor.getDefaultWorkspace());
+        workspaceService.initialize(context.monaco.editor.getDefaultWorkspace());
 
-      cb(this.serviceCache);
+        cb(accessor);
+      })
       return;
     }
 
@@ -356,7 +360,7 @@ class VSCodeManager {
 
         const instantiationService = serviceCollection.get(IInstantiationService);
         instantiationService.invokeFunction(accessor => {
-          this.serviceCache = accessor;
+          this.serviceCache = serviceCollection;
 
           // Initialize status bar
           const statusbarPart = accessor.get(IStatusbarService);
@@ -374,7 +378,7 @@ class VSCodeManager {
           accessor.get(CodeSandboxConfigurationUIService);
           accessor.get(ICodeSandboxEditorConnectorService);
 
-          cb(this.serviceCache);
+          cb(accessor);
         })
       }
     );

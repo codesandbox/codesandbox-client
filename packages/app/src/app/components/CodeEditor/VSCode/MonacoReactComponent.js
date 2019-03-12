@@ -143,6 +143,9 @@ class MonacoEditor extends React.PureComponent {
               // It was killed in the last quit
               extensionService.startExtensionHost();
               contextViewService.setContainer(rootEl);
+
+              // We force this to recreate, otherwise it's bound to an element that's disposed
+              this.quickopenService.quickOpenWidget = undefined;
             }
 
             const editorApi = {

@@ -110,6 +110,7 @@ module.exports = merge(commonConfig, {
       staticFileGlobsIgnorePatterns: [
         /\.map$/,
         /vscode/,
+        /\/vs/,
         /asset-manifest\.json$/,
       ],
       maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb

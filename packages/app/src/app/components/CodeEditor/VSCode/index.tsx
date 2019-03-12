@@ -175,7 +175,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
       const editor = this.editor.getActiveCodeEditor();
       if (editor && editor.getValue(1) === (this.currentModule.code || '')) {
-        const model = editor.model;
+        const model = editor.getModel();
         const newPath = getModulePath(
           this.sandbox.modules,
           this.sandbox.directories,
@@ -355,7 +355,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         const activeEditor = editor.getActiveCodeEditor();
 
         if (activeEditor) {
-          const modulePath = activeEditor._modelData.model.uri.path;
+          const modulePath = activeEditor.getModel().uri.path;
 
           activeEditor.updateOptions({ readOnly: this.props.readOnly });
 

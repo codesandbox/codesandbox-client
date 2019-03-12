@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf out",
-    "copy": "yarn clean && mkdir out && cp -R ../vscode/extensions-bundle/ ./out/"
+    "copy": "yarn clean && mkdir out && cp -R ../vscode/extensions-bundle/ ./out/ && yarn rimraf out/draft"
   },
   "dependencies": {
     "rimraf": "^2.6.3"
