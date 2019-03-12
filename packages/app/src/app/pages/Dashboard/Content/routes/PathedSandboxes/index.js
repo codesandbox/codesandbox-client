@@ -10,7 +10,7 @@ import CreateNewSandbox from '../../CreateNewSandbox';
 import getMostUsedTemplate from '../../../utils/getMostUsedTemplate';
 import getChildCollections from '../../../utils/getChildCollections';
 import FolderEntry from '../../../Sidebar/SandboxesItem/FolderEntry';
-import { Create, Folder } from './elements';
+import { Folder } from './elements';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
@@ -98,7 +98,6 @@ const PathedSandboxes = props => {
                     >
                       {!loading && (
                         <>
-                          <Create>Create Folder</Create>
                           {Array.from(children)
                             .sort()
                             .map(name => (
