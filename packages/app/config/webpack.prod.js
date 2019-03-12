@@ -109,7 +109,7 @@ module.exports = merge(commonConfig, {
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [
         /\.map$/,
-        /vscode-extensions\//,
+        /vscode/,
         /asset-manifest\.json$/,
       ],
       maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
@@ -145,6 +145,16 @@ module.exports = merge(commonConfig, {
             cache: {
               maxEntries: 20,
               name: 'cloudflare-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /\/vscode10/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maximumFileSizeToCacheInBytes: 1024 * 1024 * 100, // 100mb
+              name: 'vscode',
             },
           },
         },
