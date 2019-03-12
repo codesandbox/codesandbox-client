@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 
 const ctx: any = self as any;
 declare var __DEV__: boolean;
@@ -8,6 +9,8 @@ export const initializePolyfills = () => {
   require('core-js/fn/string/ends-with');
   require('core-js/fn/array/find');
   require('core-js/fn/promise');
+
+  return requirePolyfills();
 };
 
 export const loadBrowserFS = () => {
@@ -31,10 +34,11 @@ export const initializeGlobals = () => {
 };
 
 export function initializeAll() {
-  return new Promise(resolve => {
-    initializePolyfills();
+  return new Promise(async resolve => {
+    await initializePolyfills();
     loadBrowserFS();
     initializeGlobals();
+
     resolve();
   });
 }
