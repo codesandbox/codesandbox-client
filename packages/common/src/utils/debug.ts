@@ -1,3 +1,5 @@
+declare var __DEV__: boolean | undefined;
+
 const getDebugger = () => {
   if (
     typeof document !== 'undefined' &&
