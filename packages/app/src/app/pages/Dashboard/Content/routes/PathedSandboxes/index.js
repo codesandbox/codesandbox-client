@@ -14,6 +14,12 @@ import { Create, Folder } from './elements';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
+const getPath = name => {
+  const slicedPath = window.location.pathname.split('sandboxes');
+  const last = slicedPath[slicedPath.length - 1];
+  return last && !last.includes('sandboxes') ? `${last}/${name}` : '/' + name;
+};
+
 const PathedSandboxes = props => {
   const path = '/' + (props.match.params.path || '');
   const teamId = props.match.params.teamId;
@@ -103,7 +109,7 @@ const PathedSandboxes = props => {
                                   allowCreate={false}
                                   basePath={window.location.pathname}
                                   teamId={teamId}
-                                  path={'/' + name}
+                                  path={getPath(name)}
                                   folders={folders}
                                   foldersByPath={foldersByPath}
                                   name={name}
