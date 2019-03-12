@@ -1,15 +1,16 @@
 import React from 'react';
 import { uniq } from 'lodash-es';
+import { withRouter } from 'react-router-dom';
 import { inject, observer, Observer } from 'mobx-react';
 import { Query } from 'react-apollo';
-
 import { basename } from 'path';
-
 import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
 import CreateNewSandbox from '../../CreateNewSandbox';
 import getMostUsedTemplate from '../../../utils/getMostUsedTemplate';
 import getChildCollections from '../../../utils/getChildCollections';
+import FolderEntry from '../../../Sidebar/SandboxesItem/FolderEntry';
+import { Create, Folder } from './elements';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
@@ -18,7 +19,10 @@ const PathedSandboxes = props => {
   const teamId = props.match.params.teamId;
 
   document.title = `${basename(path) || 'Dashboard'} - CodeSandbox`;
-
+  // {/* <Folder
+  //                                 name={name}
+  //                                 path={window.location.pathname + '/' + name}
+  //                               /> */}
   return (
     <Query query={PATHED_SANDBOXES_CONTENT_QUERY} variables={{ path, teamId }}>
       {({ loading, error, data }) => (
@@ -44,19 +48,22 @@ const PathedSandboxes = props => {
 
             let mostUsedTemplate = null;
             if (!loading) {
-              const { children, folders, foldersByPath } = getChildCollections(
-                data.me.collections,
-                data.me.collection.path
-              );
-
-              console.log(children, folders, foldersByPath);
-
               try {
                 mostUsedTemplate = getMostUsedTemplate(sandboxes);
               } catch (e) {
                 // Not critical
               }
             }
+
+            let folderInfo = {};
+            if (!loading) {
+              folderInfo = getChildCollections(
+                data.me.collections,
+                (data.me.collection || {}).path
+              );
+            }
+
+            const { children, foldersByPath, folders } = folderInfo;
 
             return (
               <>
@@ -76,6 +83,45 @@ const PathedSandboxes = props => {
                   isLoading={loading}
                   possibleTemplates={possibleTemplates}
                   Header={<Navigation teamId={teamId} path={path} />}
+                  Folders={
+                    <div
+                      css={`
+                        display: flex;
+                        margin-top: 40px;
+                      `}
+                    >
+                      {!loading && (
+                        <>
+                          <Create>Create Folder</Create>
+                          {Array.from(children)
+                            .sort()
+                            .map(name => (
+                              <Folder>
+                                <FolderEntry
+                                  key={name}
+                                  toToggle={false}
+                                  allowCreate={false}
+                                  basePath={window.location.pathname}
+                                  teamId={teamId}
+                                  path={'/' + name}
+                                  folders={folders}
+                                  foldersByPath={foldersByPath}
+                                  name={name}
+                                  open={false}
+                                  onSelect={() => {
+                                    props.history.push(
+                                      window.location.pathname + '/' + name
+                                    );
+                                  }}
+                                  currentPath={window.location.pathname}
+                                  currentTeamId={teamId}
+                                />
+                              </Folder>
+                            ))}
+                        </>
+                      )}
+                    </div>
+                  }
                   sandboxes={orderedSandboxes}
                 />
               </>
@@ -87,4 +133,6 @@ const PathedSandboxes = props => {
   );
 };
 
-export default inject('store', 'signals')(observer(PathedSandboxes));
+export default inject('store', 'signals')(
+  observer(withRouter(PathedSandboxes))
+);
