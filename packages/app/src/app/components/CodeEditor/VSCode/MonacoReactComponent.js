@@ -72,7 +72,6 @@ class MonacoEditor extends React.PureComponent {
         { IContextViewService },
         { IQuickOpenService },
         { IInstantiationService },
-        { IWorkbenchLayoutService },
       ] = [
         r('vs/workbench/services/editor/common/editorService'),
         r('vs/editor/browser/services/codeEditorService'),
@@ -84,7 +83,6 @@ class MonacoEditor extends React.PureComponent {
         r('vs/platform/contextview/browser/contextView'),
         r('vs/platform/quickOpen/common/quickOpen'),
         r('vs/platform/instantiation/common/instantiation'),
-        r('vs/workbench/services/layout/browser/layoutService'),
       ];
 
       document.getElementById('root').className += ' monaco-shell vs-dark';
