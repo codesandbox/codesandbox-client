@@ -25,11 +25,17 @@ jobs:
           paths:
             - node_modules
             - packages/app/node_modules
+            - packages/chrome-extension/node_modules
             - packages/codesandbox-api/node_modules
             - packages/common/node_modules
+            - packages/dynamic-pages/node_modules
             - packages/homepage/node_modules
+            - packages/node-services/node_modules
+            - packages/react-embed/node_modules
             - packages/react-sandpack/node_modules
+            - packages/sandbox-hooks/node_modules
             - packages/sandpack/node_modules
+            - packages/sse-hooks/node_modules
       - save_cache:
           key: v16-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
           paths:
