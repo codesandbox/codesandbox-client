@@ -62,7 +62,8 @@ export const DashboardIcon = styled(Dashboard)`
   overflow: hidden;
   text-decoration: none;
 
-  color: ${props => props.theme.gray};
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : props.theme.gray};
   font-size: 27px;
 
   &:hover {

@@ -9,7 +9,12 @@ const getBackgroundColor = ({
   secondary,
   danger,
 }) => {
-  if (disabled) return `background-color: ${theme.background2.darken(0.3)()}`;
+  if (disabled)
+    return `background-color: ${
+      internalTheme.light
+        ? 'rgba(0, 0, 0, 0.4)'
+        : theme.background2.darken(0.3)()
+    }`;
   if (danger) return `background-color: ${theme.dangerBackground()}`;
   if (secondary) return `background-color: transparent`;
   if (red) return `background-color: ${theme.red.darken(0.2)()}`;
@@ -27,7 +32,12 @@ const getBackgroundHoverColor = ({
   secondary,
   danger,
 }) => {
-  if (disabled) return `background-color: ${theme.background2.darken(0.3)()}`;
+  if (disabled)
+    return `background-color: ${
+      internalTheme.light
+        ? 'rgba(0, 0, 0, 0.4)'
+        : theme.background2.darken(0.3)()
+    }`;
   if (danger) return `background-color: #E25D6A`;
   if (secondary) return `background-color: #66b9f4`;
   if (red) return `background-color: #F27777`;
@@ -38,9 +48,12 @@ const getBackgroundHoverColor = ({
   return `background-color: #66b9f4;`;
 };
 
-const getColor = ({ disabled, secondary }) => {
+const getColor = ({ disabled, secondary, theme: internalTheme }) => {
   if (disabled) return theme.background2.lighten(1.5)();
-  if (secondary) return 'rgba(255, 255, 255, 0.75)';
+  if (secondary)
+    return internalTheme.light
+      ? 'rgba(0, 0, 0, 0.75)'
+      : 'rgba(255, 255, 255, 0.75)';
 
   return 'white';
 };
@@ -58,7 +71,10 @@ const getBorder = ({
   red,
   disabled,
 }) => {
-  if (disabled) return '2px solid #161A1C';
+  if (disabled)
+    return internalTheme.light
+      ? '2px solid rgba(0, 0, 0, 0.3)'
+      : '2px solid #161A1C';
   if (secondary) return `2px solid #66B9F4`;
   if (red) return '2px solid #F27777';
   if (danger) return '2px solid #E25D6A';

@@ -18,6 +18,7 @@ initializeAll().then(() => {
           index: EXTENSIONS_LOCATION + '/extensions/index.json',
           baseUrl: EXTENSIONS_LOCATION + '/extensions',
           bundle: EXTENSIONS_LOCATION + '/bundles/ts.min.json',
+          logReads: process.env.NODE_ENV === 'development'
         },
       },
     },

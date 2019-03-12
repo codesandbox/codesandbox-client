@@ -8,9 +8,7 @@
   "engines": {
     "vscode": "*"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "scripts": {
     "compile": "gulp compile-extension:grunt",
     "watch": "gulp watch-extension:grunt"
@@ -19,12 +17,10 @@
     "vscode-nls": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^8.10.25"
+    "@types/node": "^10.12.21"
   },
   "main": "./dist/main",
-  "activationEvents": [
-    "onCommand:workbench.action.tasks.runTask"
-  ],
+  "activationEvents": ["onCommand:workbench.action.tasks.runTask"],
   "contributes": {
     "configuration": {
       "id": "grunt",
@@ -34,10 +30,7 @@
         "grunt.autoDetect": {
           "scope": "resource",
           "type": "string",
-          "enum": [
-            "off",
-            "on"
-          ],
+          "enum": ["off", "on"],
           "default": "on",
           "description": "%config.grunt.autoDetect%"
         }
@@ -45,9 +38,7 @@
     },
     "taskDefinitions": [{
       "type": "grunt",
-      "required": [
-        "task"
-      ],
+      "required": ["task"],
       "properties": {
         "task": {
           "type": "string",

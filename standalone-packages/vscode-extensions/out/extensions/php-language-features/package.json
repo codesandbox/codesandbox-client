@@ -8,13 +8,9 @@
 	"engines": {
 		"vscode": "0.10.x"
 	},
-	"activationEvents": [
-		"onLanguage:php"
-	],
+	"activationEvents": ["onLanguage:php"],
 	"main": "./dist/phpMain",
-	"categories": [
-		"Programming Languages"
-	],
+	"categories": ["Programming Languages"],
 	"contributes": {
 		"configuration": {
 			"title": "%configuration.title%",
@@ -32,19 +28,13 @@
 					"description": "%configuration.validate.enable%"
 				},
 				"php.validate.executablePath": {
-					"type": [
-						"string",
-						"null"
-					],
+					"type": ["string", "null"],
 					"default": null,
 					"description": "%configuration.validate.executablePath%"
 				},
 				"php.validate.run": {
 					"type": "string",
-					"enum": [
-						"onSave",
-						"onType"
-					],
+					"enum": ["onSave", "onType"],
 					"default": "onSave",
 					"description": "%configuration.validate.run%"
 				}
@@ -74,6 +64,6 @@
 		"vscode-nls": "^4.0.0"
 	},
 	"devDependencies": {
-		"@types/node": "^8.10.25"
+		"@types/node": "^10.12.21"
 	}
 }

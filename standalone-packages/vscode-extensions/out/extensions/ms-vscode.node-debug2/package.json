@@ -1,0 +1,457 @@
+{
+  "name": "node-debug2",
+  "displayName": "Node Debug",
+  "version": "1.32.0",
+  "publisher": "ms-vscode",
+  "description": "%extension.description%",
+  "icon": "images/node-debug-icon.png",
+  "categories": ["Debuggers"],
+  "author": {
+    "name": "Microsoft Corporation"
+  },
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "vscode-chrome-debug-core": "^6.7.43",
+    "vscode-debugadapter": "^1.33.0-pre.2",
+    "vscode-nls": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.47",
+    "@types/node": "^8.0.58",
+    "del": "^2.2.2",
+    "event-stream": "^3.3.4",
+    "find-free-port": "^1.0.2",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-tslint": "^8.1.2",
+    "gulp-typescript": "^3.1.3",
+    "gulp-util": "^3.0.5",
+    "minimist": "^1.2.0",
+    "mocha": "^5.0.0",
+    "run-sequence": "^1.2.2",
+    "tslint": "^5.7.0",
+    "typescript": "^2.6.2",
+    "vsce": "^1.47.0",
+    "vscode": "^1.1.21",
+    "vscode-chrome-debug-core-testsupport": "^4.0.0",
+    "vscode-debugadapter-testsupport": "^1.25.0",
+    "vscode-debugprotocol": "^1.32.0-pre.0",
+    "vscode-nls-dev": "^3.2.3"
+  },
+  "main": "./out/src/extension",
+  "activationEvents": ["onCommand:extension.node-debug2.toggleSkippingFile"],
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "build": "gulp build",
+    "watch": "gulp watch",
+    "test": "mocha --timeout 20000 -s 2000 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/",
+    "vscode:prepublish": "gulp verify-no-linked-modules && gulp build",
+    "tslint": "gulp tslint",
+    "publish": "gulp publish",
+    "patch": "npm version patch -m '%s'",
+    "minor": "npm version minor -m '%s'",
+    "package": "gulp package"
+  },
+  "engines": {
+    "vscode": "^1.31.0",
+    "node": ">=6.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/vscode-node-debug2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Microsoft/vscode-node-debug2/issues"
+  },
+  "contributes": {
+    "breakpoints": [{
+      "language": "javascript"
+    }, {
+      "language": "javascriptreact"
+    }],
+    "debuggers": [{
+      "type": "extensionHost",
+      "label": "VS Code Extension Development",
+      "program": "./out/src/nodeDebug.js",
+      "runtime": "node",
+      "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
+      "configurationSnippets": [{
+        "label": "%extensionHost.snippet.launch.label%",
+        "description": "%extensionHost.snippet.launch.description%",
+        "body": {
+          "type": "extensionHost",
+          "request": "launch",
+          "name": "%extensionHost.launch.config.name%",
+          "runtimeExecutable": "^\"\\${execPath}\"",
+          "args": ["^\"--extensionDevelopmentPath=\\${workspaceFolder}\""],
+          "outFiles": ["^\"\\${workspaceFolder}/out/**/*.js\""],
+          "preLaunchTask": "npm"
+        }
+      }],
+      "configurationAttributes": {
+        "launch": {
+          "required": ["args"],
+          "properties": {
+            "runtimeExecutable": {
+              "type": ["string", "null"],
+              "markdownDescription": "%extensionHost.launch.runtimeExecutable.description%",
+              "default": "${execPath}"
+            },
+            "args": {
+              "type": "array",
+              "description": "%node.launch.args.description%",
+              "items": {
+                "type": "string"
+              },
+              "default": ["--extensionDevelopmentPath=${workspaceFolder}"]
+            },
+            "env": {
+              "type": "object",
+              "additionalProperties": {
+                "type": ["string", "null"]
+              },
+              "markdownDescription": "%extensionHost.launch.env.description%",
+              "default": {}
+            },
+            "stopOnEntry": {
+              "type": "boolean",
+              "description": "%extensionHost.launch.stopOnEntry.description%",
+              "default": true
+            },
+            "sourceMaps": {
+              "type": "boolean",
+              "description": "%node.sourceMaps.description%",
+              "default": true
+            },
+            "outDir": {
+              "type": ["string", "null"],
+              "deprecationMessage": "%outDir.deprecationMessage%",
+              "default": "${workspaceFolder}/out"
+            },
+            "outFiles": {
+              "type": "array",
+              "markdownDescription": "%node.outFiles.description%",
+              "items": {
+                "type": "string"
+              },
+              "default": ["${workspaceFolder}/out/**/*.js"]
+            },
+            "smartStep": {
+              "type": "boolean",
+              "description": "%node.smartStep.description%",
+              "default": true
+            },
+            "skipFiles": {
+              "type": "array",
+              "description": "%node.skipFiles.description%",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "trace": {
+              "type": ["boolean", "string"],
+              "description": "%node.trace.description%",
+              "default": true
+            },
+            "enableSourceMapCaching": {
+              "type": "boolean",
+              "description": "%node.enableSourceMapCaching.description%",
+              "default": true
+            }
+          }
+        }
+      }
+    }, {
+      "type": "node2",
+      "label": "Node.js v6.3+",
+      "program": "./out/src/nodeDebug.js",
+      "runtime": "node",
+      "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
+      "configurationAttributes": {
+        "launch": {
+          "required": ["cwd"],
+          "properties": {
+            "program": {
+              "type": "string",
+              "description": "%node.launch.program.description%"
+            },
+            "stopOnEntry": {
+              "type": "boolean",
+              "description": "%node.stopOnEntry.description%",
+              "default": true
+            },
+            "console": {
+              "enum": ["internalConsole", "integratedTerminal", "externalTerminal"],
+              "description": "%node.launch.console.description%",
+              "default": "internalConsole"
+            },
+            "args": {
+              "type": "array",
+              "description": "%node.launch.args.description%",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "restart": {
+              "type": "boolean",
+              "description": "%node.restart.description%",
+              "default": true
+            },
+            "cwd": {
+              "type": "string",
+              "description": "%node.launch.cwd.description%",
+              "default": "${workspaceFolder}"
+            },
+            "runtimeExecutable": {
+              "type": ["string", "null"],
+              "markdownDescription": "%node.launch.runtimeExecutable.description%",
+              "default": null
+            },
+            "runtimeArgs": {
+              "type": "array",
+              "description": "%node.launch.runtimeArgs.description%",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "env": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "%node.launch.env.description%",
+              "default": {}
+            },
+            "sourceMaps": {
+              "type": "boolean",
+              "description": "%node.sourceMaps.description%",
+              "default": true
+            },
+            "outDir": {
+              "type": ["string", "null"],
+              "deprecationMessage": "%outDir.deprecationMessage%",
+              "default": null
+            },
+            "outFiles": {
+              "type": "array",
+              "description": "%node.outFiles.description%",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "port": {
+              "type": "number",
+              "description": "%node.port.description%",
+              "default": 9229
+            },
+            "address": {
+              "type": "string",
+              "description": "%node.address.description%",
+              "default": "localhost"
+            },
+            "timeout": {
+              "type": "number",
+              "description": "%node.timeout.description%",
+              "default": 10000
+            },
+            "smartStep": {
+              "type": "boolean",
+              "description": "%node.smartStep.description%",
+              "default": true
+            },
+            "diagnosticLogging": {
+              "type": "boolean",
+              "description": "%node.diagnosticLogging.description%",
+              "default": true,
+              "deprecationMessage": "%node.diagnosticLogging.deprecationMessage%"
+            },
+            "verboseDiagnosticLogging": {
+              "type": "boolean",
+              "description": "%node.verboseDiagnosticLogging.description%",
+              "default": true,
+              "deprecationMessage": "%node.verboseDiagnosticLogging.deprecationMessage%"
+            },
+            "trace": {
+              "type": ["boolean", "string"],
+              "enum": ["verbose", true],
+              "default": true,
+              "description": "%node.trace.description%"
+            },
+            "sourceMapPathOverrides": {
+              "type": "object",
+              "description": "%node.sourceMapPathOverrides.description%",
+              "default": {}
+            },
+            "skipFiles": {
+              "type": "array",
+              "description": "%node.skipFiles.description%",
+              "default": []
+            },
+            "envFile": {
+              "type": "string",
+              "description": "%node.launch.envFile.description%",
+              "default": "${workspaceFolder}/.env"
+            },
+            "showAsyncStacks": {
+              "type": "boolean",
+              "description": "%node.showAsyncStacks.description%",
+              "default": true
+            },
+            "outputCapture": {
+              "enum": ["console", "std"],
+              "description": "%node.launch.outputCapture.description%",
+              "default": "console"
+            },
+            "enableSourceMapCaching": {
+              "type": "boolean",
+              "description": "%node.enableSourceMapCaching.description%",
+              "default": true
+            },
+            "disableOptimisticBPs": {
+              "type": "boolean",
+              "description": "%node.disableOptimisticBPs.description%",
+              "default": true
+            }
+          }
+        },
+        "attach": {
+          "properties": {
+            "port": {
+              "type": "number",
+              "description": "%node.port.description%",
+              "default": 9229
+            },
+            "address": {
+              "type": "string",
+              "description": "%node.address.description%",
+              "default": "localhost"
+            },
+            "timeout": {
+              "type": "number",
+              "description": "%node.timeout.description%",
+              "default": 10000
+            },
+            "restart": {
+              "type": "boolean",
+              "description": "%node.restart.description%",
+              "default": true
+            },
+            "sourceMaps": {
+              "type": "boolean",
+              "description": "%node.sourceMaps.description%",
+              "default": true
+            },
+            "outDir": {
+              "type": ["string", "null"],
+              "deprecationMessage": "%outDir.deprecationMessage%",
+              "default": null
+            },
+            "outFiles": {
+              "type": "array",
+              "description": "%node.outFiles.description%",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "stopOnEntry": {
+              "type": "boolean",
+              "description": "%node.stopOnEntry.description%",
+              "default": true
+            },
+            "localRoot": {
+              "type": ["string", "null"],
+              "description": "%node.attach.localRoot.description%",
+              "default": null
+            },
+            "remoteRoot": {
+              "type": ["string", "null"],
+              "description": "%node.attach.remoteRoot.description%",
+              "default": null
+            },
+            "smartStep": {
+              "type": "boolean",
+              "description": "%node.smartStep.description%",
+              "default": true
+            },
+            "diagnosticLogging": {
+              "type": "boolean",
+              "description": "%node.diagnosticLogging.description%",
+              "default": true,
+              "deprecationMessage": "%node.diagnosticLogging.deprecationMessage%"
+            },
+            "verboseDiagnosticLogging": {
+              "type": "boolean",
+              "description": "%node.verboseDiagnosticLogging.description%",
+              "default": true,
+              "deprecationMessage": "%node.verboseDiagnosticLogging.deprecationMessage%"
+            },
+            "trace": {
+              "type": ["boolean", "string"],
+              "enum": ["verbose", true],
+              "default": true,
+              "description": "%node.trace.description%"
+            },
+            "sourceMapPathOverrides": {
+              "type": "object",
+              "description": "%node.sourceMapPathOverrides.description%",
+              "default": {}
+            },
+            "skipFiles": {
+              "type": "array",
+              "description": "%node.skipFiles.description%",
+              "default": []
+            },
+            "showAsyncStacks": {
+              "type": "boolean",
+              "description": "%node.showAsyncStacks.description%",
+              "default": true
+            },
+            "enableSourceMapCaching": {
+              "type": "boolean",
+              "description": "%node.enableSourceMapCaching.description%",
+              "default": true
+            },
+            "disableOptimisticBPs": {
+              "type": "boolean",
+              "description": "%node.disableOptimisticBPs.description%",
+              "default": true
+            }
+          }
+        }
+      }
+    }],
+    "menus": {
+      "debug/callstack/context": [{
+        "command": "extension.node-debug2.toggleSkippingFile",
+        "group": "navigation",
+        "when": "inDebugMode && debugType == 'node2' && callStackItemType == 'stackFrame'"
+      }]
+    },
+    "commands": [{
+      "command": "extension.node-debug2.toggleSkippingFile",
+      "title": "%toggle.skipping.this.file%"
+    }],
+    "keybindings": [{
+      "command": "extension.node-debug.pickLoadedScript",
+      "key": "ctrl+f4",
+      "mac": "cmd+f4",
+      "when": "debugType == 'node2'"
+    }]
+  },
+  "__metadata": {
+    "id": "36d19e17-7569-4841-a001-947eb18602b2",
+    "publisherId": {
+      "publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
+      "publisherName": "ms-vscode",
+      "displayName": "Microsoft",
+      "flags": "verified"
+    },
+    "publisherDisplayName": "Microsoft"
+  }
+}

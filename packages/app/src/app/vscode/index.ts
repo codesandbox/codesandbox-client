@@ -325,43 +325,57 @@ class VSCodeManager {
     const [
       { CodeSandboxService },
       { CodeSandboxConfigurationUIService },
+      { ICodeSandboxEditorConnectorService },
       { IStatusbarService },
       { ICommandService },
+      { SyncDescriptor },
+      { IInstantiationService },
     ] = [
-      context.require(
-        'vs/codesandbox/services/codesandbox/browser/codesandboxService'
-      ),
-      context.require(
-        'vs/codesandbox/services/codesandbox/configurationUIService'
-      ),
-      context.require('vs/platform/statusbar/common/statusbar'),
-      context.require('vs/platform/commands/common/commands'),
-    ];
+        context.require(
+          'vs/codesandbox/services/codesandbox/browser/codesandboxService'
+        ),
+        context.require(
+          'vs/codesandbox/services/codesandbox/configurationUIService'
+        ),
+        context.require('vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector'),
+        context.require('vs/platform/statusbar/common/statusbar'),
+        context.require('vs/platform/commands/common/commands'),
+        context.require('vs/platform/instantiation/common/descriptors'),
+        context.require('vs/platform/instantiation/common/instantiation'),
+      ];
 
     context.monaco.editor.create(
       container,
       {
         codesandboxService: i =>
-          i.createInstance(CodeSandboxService, this.controller),
+          new SyncDescriptor(CodeSandboxService, [this.controller]),
         codesandboxConfigurationUIService: i =>
-          i.createInstance(CodeSandboxConfigurationUIService, customEditorAPI),
+          new SyncDescriptor(CodeSandboxConfigurationUIService, [customEditorAPI]),
       },
       ({ serviceCollection, dispose }) => {
-        this.serviceCache = serviceCollection;
 
-        // Initialize status bar
-        const statusbarPart = serviceCollection.get(IStatusbarService);
-        this.statusbarPart.resolve(statusbarPart);
+        const instantiationService = serviceCollection.get(IInstantiationService);
+        instantiationService.invokeFunction(accessor => {
+          this.serviceCache = accessor;
 
-        // Initialize menu bar
-        const menubarPart = serviceCollection.get('menubar');
-        this.menubarPart.resolve(menubarPart);
+          // Initialize status bar
+          const statusbarPart = accessor.get(IStatusbarService);
+          this.statusbarPart.resolve(statusbarPart);
 
-        // Initialize command service
-        const commandService = serviceCollection.get(ICommandService);
-        this.commandService.resolve(commandService);
+          // Initialize menu bar
+          const menubarPart = accessor.get('menubar');
+          this.menubarPart.resolve(menubarPart);
 
-        cb(this.serviceCache);
+          // Initialize command service
+          const commandService = accessor.get(ICommandService);
+          this.commandService.resolve(commandService);
+
+          // Initialize these services
+          accessor.get(CodeSandboxConfigurationUIService);
+          accessor.get(ICodeSandboxEditorConnectorService);
+
+          cb(this.serviceCache);
+        })
       }
     );
   }

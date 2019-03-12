@@ -7,6 +7,7 @@ export enum MenuId {
   DebugConsoleContext,
   DebugVariablesContext,
   DebugWatchContext,
+  DebugToolbar,
   EditorContext,
   EditorTitle,
   EditorTitleContext,

@@ -71,16 +71,20 @@ class MonacoEditor extends React.PureComponent {
         { IExtensionService },
         { IContextViewService },
         { IQuickOpenService },
+        { IInstantiationService },
+        { IWorkbenchLayoutService },
       ] = [
         r('vs/workbench/services/editor/common/editorService'),
         r('vs/editor/browser/services/codeEditorService'),
         r('vs/workbench/services/textfile/common/textfiles'),
         r('vs/platform/lifecycle/common/lifecycle'),
-        r('vs/workbench/services/group/common/editorGroupsService'),
+        r('vs/workbench/services/editor/common/editorGroupsService'),
         r('vs/platform/statusbar/common/statusbar'),
         r('vs/workbench/services/extensions/common/extensions'),
         r('vs/platform/contextview/browser/contextView'),
         r('vs/platform/quickOpen/common/quickOpen'),
+        r('vs/platform/instantiation/common/instantiation'),
+        r('vs/workbench/services/layout/browser/layoutService'),
       ];
 
       document.getElementById('root').className += ' monaco-shell vs-dark';
@@ -104,71 +108,71 @@ class MonacoEditor extends React.PureComponent {
           part.className = 'part editor has-watermark';
           editorElement.className += ' monaco-workbench mac nopanel';
 
-          const EditorPart = services.get(IEditorGroupsService);
+          const instantiationService = services.get(IInstantiationService);
+          instantiationService.invokeFunction(accessor => {
+            const EditorPart = accessor.get(IEditorGroupsService);
 
-          if (editorPart) {
-            editorPart.parent = part;
-            editorPart = EditorPart;
-          } else {
-            EditorPart.create(part);
-          }
+            if (editorPart) {
+              editorPart.parent = part;
+              editorPart = EditorPart;
+            } else {
+              EditorPart.create(part);
+            }
 
-          const statusBarPart = services.get(IStatusbarService);
-          statusBarPart.create(
-            document.getElementById('workbench.parts.statusbar')
-          );
+            const statusBarPart = accessor.get(IStatusbarService);
+            statusBarPart.create(
+              document.getElementById('workbench.parts.statusbar')
+            );
 
-          EditorPart.layout({
-            width: this.props.width,
-            height: this.props.height,
-          });
+            EditorPart.layout(this.props.width, this.props.height);
 
-          const codeEditorService = services.get(ICodeEditorService);
-          const textFileService = services.get(ITextFileService);
-          const editorService = services.get(IEditorService);
-          this.lifecycleService = services.get(ILifecycleService);
-          this.quickopenService = services.get(IQuickOpenService);
+            const codeEditorService = accessor.get(ICodeEditorService);
+            const textFileService = accessor.get(ITextFileService);
+            const editorService = accessor.get(IEditorService);
+            this.lifecycleService = accessor.get(ILifecycleService);
+            this.quickopenService = accessor.get(IQuickOpenService);
 
-          if (this.lifecycleService.phase !== 3) {
-            this.lifecycleService.phase = 2; // Restoring
-            requestAnimationFrame(() => {
-              this.lifecycleService.phase = 3; // Running
-            });
-          } else {
-            // It seems like the VSCode instance has been started before
-            const extensionService = services.get(IExtensionService);
-            const contextViewService = services.get(IContextViewService);
-
-            // It was killed in the last quit
-            extensionService.startExtensionHost();
-            contextViewService.setContainer(rootEl);
-          }
-
-          const editorApi = {
-            openFile(path: string) {
-              fontPromise.then(() => {
-                codeEditorService.openCodeEditor({
-                  resource: context.monaco.Uri.file('/sandbox' + path),
-                });
+            if (this.lifecycleService.phase !== 3) {
+              this.lifecycleService.phase = 2; // Restoring
+              requestAnimationFrame(() => {
+                this.lifecycleService.phase = 3; // Running
               });
-            },
-            getActiveCodeEditor() {
-              return codeEditorService.getActiveCodeEditor();
-            },
-            textFileService,
-            editorPart: EditorPart,
-            editorService,
-            codeEditorService,
-          };
-          if (process.env.NODE_ENV === 'development') {
-            // eslint-disable-next-line
-            console.log(services);
-          }
+            } else {
+              // It seems like the VSCode instance has been started before
+              const extensionService = accessor.get(IExtensionService);
+              const contextViewService = accessor.get(IContextViewService);
 
-          this.editor = editorApi;
+              // It was killed in the last quit
+              extensionService.startExtensionHost();
+              contextViewService.setContainer(rootEl);
+            }
 
-          // After initializing monaco editor
-          this.editorDidMount(editorApi, context.monaco);
+            const editorApi = {
+              openFile(path: string) {
+                fontPromise.then(() => {
+                  codeEditorService.openCodeEditor({
+                    resource: context.monaco.Uri.file('/sandbox' + path),
+                  });
+                });
+              },
+              getActiveCodeEditor() {
+                return codeEditorService.getActiveCodeEditor();
+              },
+              textFileService,
+              editorPart: EditorPart,
+              editorService,
+              codeEditorService,
+            };
+            if (process.env.NODE_ENV === 'development') {
+              // eslint-disable-next-line
+              console.log(accessor);
+            }
+
+            this.editor = editorApi;
+
+            // After initializing monaco editor
+            this.editorDidMount(editorApi, context.monaco);
+          });
         }
       );
     }

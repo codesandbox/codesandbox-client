@@ -1,0 +1,81 @@
+{
+	"extension.description": "Node.js debugging support (versions < 8.0)",
+
+	"node.label": "Node.js",
+
+	"open.loaded.script": "Open Loaded Script",
+	"attach.node.process": "Attach to Node Process",
+	"toggle.skipping.this.file": "Toggle Skipping this File",
+	"start.with.stop.on.entry": "Start Debugging and Stop on Entry",
+
+	"smartStep.description": "Automatically step through generated code that cannot be mapped back to the original source.",
+	"skipFiles.description": "An array of glob patterns for files to skip when debugging. The pattern `<node_internals>/**` matches all internal Node.js modules.",
+	"outFiles.description": "If source maps are enabled, these glob patterns specify the generated JavaScript files. If a pattern starts with `!` the files are excluded. If not specified, the generated code is expected in the same directory as its source.",
+	"outDir.deprecationMessage": "Attribute 'outDir' is deprecated, use 'outFiles' instead.",
+	"trace.description": "Produce diagnostic output. Instead of setting this to true you can list one or more selectors separated with commas. The 'verbose' selector enables very detailed output.",
+
+	"launch.args.description": "Command line arguments passed to the program.",
+
+	"node.protocol.description": "Node.js debug protocol to use.",
+		"node.protocol.auto.description": "Try to detect the best protocol automatically, selecting 'inspector' for launching Node 8.0+",
+		"node.protocol.inspector.description": "New protocol supported by Node.js versions >= 6.3",
+		"node.protocol.legacy.description": "Old protocol supported by Node.js versions < 8.0",
+
+	"node.sourceMaps.description": "Use JavaScript source maps (if they exist).",
+	"node.stopOnEntry.description": "Automatically stop program after launch.",
+	"node.port.description": "Debug port to attach to. Default is 5858.",
+	"node.address.description": "TCP/IP address of process to be debugged (for Node.js >= 5.0 only). Default is 'localhost'.",
+	"node.timeout.description": "Retry for this number of milliseconds to connect to Node.js. Default is 10000 ms.",
+	"node.restart.description": "Restart session after Node.js has terminated.",
+	"node.localRoot.description": "Path to the local directory containing the program.",
+	"node.remoteRoot.description": "Absolute path to the remote directory containing the program.",
+	"node.showAsyncStacks.description": "Show the async calls that led to the current call stack. 'inspector' protocol only.",
+	"node.sourceMapPathOverrides.description": "A set of mappings for rewriting the locations of source files from what the sourcemap says, to their locations on disk.",
+	"node.disableOptimisticBPs.description": "Don't set breakpoints in any file until a sourcemap has been loaded for that file.",
+
+	"node.launch.program.description": "Absolute path to the program. Generated value is guessed by looking at package.json and opened files. Edit this attribute.",
+	"node.launch.externalConsole.deprecationMessage": "Attribute 'externalConsole' is deprecated, use 'console' instead.",
+	"node.launch.console.description": "Where to launch the debug target.",
+		"node.launch.console.internalConsole.description": "VS Code Debug Console (which doesn't support to read input from a program)",
+		"node.launch.console.integratedTerminal.description": "VS Code's integrated terminal",
+		"node.launch.console.externalTerminal.description": "External terminal that can be configured via user settings",
+
+	"node.launch.cwd.description": "Absolute path to the working directory of the program being debugged.",
+	"node.launch.runtimeExecutable.description": "Runtime to use. Either an absolute path or the name of a runtime available on the PATH. If omitted `node` is assumed.",
+	"node.launch.runtimeArgs.description": "Optional arguments passed to the runtime executable.",
+	"node.launch.runtimeVersion.description": "Version of `node` runtime to use. Requires `nvm`.",
+	"node.launch.env.description": "Environment variables passed to the program. The value `null` removes the variable from the environment.",
+	"node.launch.envFile.description": "Absolute path to a file containing environment variable definitions.",
+	"node.launch.useWSL.description": "Use Windows Subsystem for Linux.",
+	"node.launch.outputCapture.description": "From where to capture output messages: The debug API, or stdout/stderr streams.",
+	"node.launch.autoAttachChildProcesses.description": "Attach debugger to new child processes automatically.",
+
+	"node.launch.config.name": "Launch",
+
+	"node.attach.processId.description": "ID of process to attach to.",
+
+	"node.attach.config.name": "Attach",
+
+	"node.processattach.config.name": "Attach to Process",
+
+	"node.snippet.launch.label": "Node.js: Launch Program",
+	"node.snippet.launch.description": "Launch a node program in debug mode",
+	"node.snippet.npm.label": "Node.js: Launch via NPM",
+	"node.snippet.npm.description": "Launch a node program through an npm `debug` script",
+	"node.snippet.attach.label": "Node.js: Attach",
+	"node.snippet.attach.description": "Attach to a running node program",
+	"node.snippet.remoteattach.label": "Node.js: Attach to Remote Program",
+	"node.snippet.remoteattach.description": "Attach to the debug port of a remote node program",
+	"node.snippet.attachProcess.label": "Node.js: Attach to Process",
+	"node.snippet.attachProcess.description": "Open process picker to select node process to attach to",
+	"node.snippet.nodemon.label": "Node.js: Nodemon Setup",
+	"node.snippet.nodemon.description": "Use nodemon to relaunch a debug session on source changes",
+	"node.snippet.mocha.label": "Node.js: Mocha Tests",
+	"node.snippet.mocha.description": "Debug mocha tests",
+	"node.snippet.yo.label": "Node.js: Yeoman generator",
+	"node.snippet.yo.description": "Debug yeoman generator (install by running `npm link` in project folder)",
+	"node.snippet.gulp.label": "Node.js: Gulp task",
+	"node.snippet.gulp.description": "Debug gulp task (make sure to have a local gulp installed in your project)",
+	"node.snippet.electron.label": "Node.js: Electron Main",
+	"node.snippet.electron.description": "Debug the Electron main process"
+}

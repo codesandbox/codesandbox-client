@@ -8,21 +8,12 @@
         "vscode": "^1.13.0"
     },
     "icon": "images/icon.png",
-    "categories": [
-        "Other"
-    ],
+    "categories": ["Other"],
     "repository": {
         "type": "git",
         "url": "https://github.com/Microsoft/vscode-emmet"
     },
-    "activationEvents": [
-        "*",
-        "onCommand:emmet.expandAbbreviation",
-        "onLanguage:html",
-        "onLanguage:css",
-        "onLanguage:scss",
-        "onLanguage:less"
-    ],
+    "activationEvents": ["*", "onCommand:emmet.expandAbbreviation", "onLanguage:html", "onLanguage:css", "onLanguage:scss", "onLanguage:less"],
     "main": "./dist/extension",
     "contributes": {
         "configuration": {
@@ -30,14 +21,8 @@
             "title": "Emmet",
             "properties": {
                 "emmet.showExpandedAbbreviation": {
-                    "type": [
-                        "string"
-                    ],
-                    "enum": [
-                        "never",
-                        "always",
-                        "inMarkupAndStylesheetFilesOnly"
-                    ],
+                    "type": ["string"],
+                    "enum": ["never", "always", "inMarkupAndStylesheetFilesOnly"],
                     "default": "always",
                     "markdownDescription": "%emmetShowExpandedAbbreviation%"
                 },
@@ -73,9 +58,7 @@
                 },
                 "emmet.excludeLanguages": {
                     "type": "array",
-                    "default": [
-                        "markdown"
-                    ],
+                    "default": ["markdown"],
                     "description": "%emmetExclude%"
                 },
                 "emmet.extensionsPath": {
@@ -155,24 +138,17 @@
                         },
                         "filter.commentTrigger": {
                             "type": "array",
-                            "default": [
-                                "id",
-                                "class"
-                            ],
+                            "default": ["id", "class"],
                             "description": "%emmetPreferencesFilterCommentTrigger%"
                         },
                         "format.noIndentTags": {
                             "type": "array",
-                            "default": [
-                                "html"
-                            ],
+                            "default": ["html"],
                             "description": "%emmetPreferencesFormatNoIndentTags%"
                         },
                         "format.forceIndentationForTags": {
                             "type": "array",
-                            "default": [
-                                "body"
-                            ],
+                            "default": ["body"],
                             "description": "%emmetPreferencesFormatForceIndentTags%"
                         },
                         "profile.allowCompactBoolean": {
@@ -386,7 +362,9 @@
         }
     },
     "scripts": {
-        "compile": "gulp compile-extension:emmet"
+        "watch": "gulp watch-extension:emmet",
+        "compile": "gulp compile-extension:emmet",
+        "deps": "yarn add vscode-emmet-helper"
     },
     "devDependencies": {
         "@types/node": "8.0.33",
@@ -399,6 +377,6 @@
         "@emmetio/html-matcher": "^0.3.3",
         "@emmetio/math-expression": "^0.1.1",
         "image-size": "^0.5.2",
-        "vscode-emmet-helper": "^1.2.12"
+        "vscode-emmet-helper": "^1.2.15"
     }
 }

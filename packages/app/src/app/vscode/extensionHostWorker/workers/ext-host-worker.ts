@@ -26,7 +26,6 @@ self.addEventListener('message', async e => {
               index: EXTENSIONS_LOCATION + '/extensions/index.json',
               baseUrl: EXTENSIONS_LOCATION + '/extensions',
               bundle: EXTENSIONS_LOCATION + '/bundles/ext-host.min.json',
-              logReads: true,
             },
           },
         },
@@ -34,14 +33,12 @@ self.addEventListener('message', async e => {
       debug('Initialized BrowserFS', data.data.env);
 
       const process = ctx.BrowserFS.BFSRequire('process');
+      process.cwd = () => data.data.cwd || '/sandbox';
       process.env = data.data.env || {};
       process.env.HOME = '/home';
 
-      console.log('YELLOWFROG');
       loader()(() => {
-        console.log('REDFROG');
-        ctx.require(['vs/workbench/node/extensionHostProcess'], a => {
-          console.log('GREENFROG', a);
+        ctx.require(['vs/workbench/services/extensions/node/extensionHostProcess'], a => {
           ctx.postMessage({
             $type: 'worker-client',
             $event: 'initialized',

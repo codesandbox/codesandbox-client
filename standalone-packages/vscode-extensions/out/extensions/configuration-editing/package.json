@@ -7,10 +7,7 @@
   "engines": {
     "vscode": "^1.0.0"
   },
-  "activationEvents": [
-    "onLanguage:json",
-    "onLanguage:jsonc"
-  ],
+  "activationEvents": ["onLanguage:json", "onLanguage:jsonc"],
   "main": "./dist/extension",
   "scripts": {
     "compile": "gulp compile-extension:configuration-editing",
@@ -23,20 +20,8 @@
   "contributes": {
     "languages": [{
       "id": "jsonc",
-      "extensions": [
-        ".code-workspace",
-        "language-configuration.json",
-        "icon-theme.json",
-        "color-theme.json",
-        ".code-snippets"
-      ],
-      "filenames": [
-        "settings.json",
-        "launch.json",
-        "tasks.json",
-        "keybindings.json",
-        "extensions.json"
-      ]
+      "extensions": [".code-workspace", "language-configuration.json", "icon-theme.json", "color-theme.json", ".code-snippets"],
+      "filenames": ["settings.json", "launch.json", "tasks.json", "keybindings.json", "extensions.json"]
     }],
     "jsonValidation": [{
       "fileMatch": "vscode://defaultsettings/keybindings.json",
@@ -80,6 +65,6 @@
     }]
   },
   "devDependencies": {
-    "@types/node": "^8.10.25"
+    "@types/node": "^10.12.21"
   }
 }

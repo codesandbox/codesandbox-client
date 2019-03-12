@@ -10,15 +10,13 @@
   "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
   "enableProposedApi": true,
   "engines": {
-    "vscode": "*"
+    "vscode": "^1.30.0"
   },
-  "categories": [
-    "Programming Languages"
-  ],
+  "categories": ["Programming Languages"],
   "dependencies": {
     "jsonc-parser": "^2.0.1",
     "semver": "5.5.1",
-    "vscode-extension-telemetry": "0.1.0",
+    "vscode-extension-telemetry": "0.1.1",
     "vscode-nls": "^4.0.0"
   },
   "devDependencies": {
@@ -29,22 +27,7 @@
   "scripts": {
     "vscode:prepublish": "node ../../node_modules/gulp/bin/gulp.js --gulpfile ../../build/gulpfile.extensions.js compile-extension:typescript ./tsconfig.json"
   },
-  "activationEvents": [
-    "onLanguage:javascript",
-    "onLanguage:javascriptreact",
-    "onLanguage:typescript",
-    "onLanguage:typescriptreact",
-    "onLanguage:jsx-tags",
-    "onCommand:typescript.reloadProjects",
-    "onCommand:javascript.reloadProjects",
-    "onCommand:typescript.selectTypeScriptVersion",
-    "onCommand:javascript.goToProjectConfig",
-    "onCommand:typescript.goToProjectConfig",
-    "onCommand:typescript.openTsServerLog",
-    "onCommand:workbench.action.tasks.runTask",
-    "onCommand:_typescript.configurePlugin",
-    "onLanguage:jsonc"
-  ],
+  "activationEvents": ["onLanguage:javascript", "onLanguage:javascriptreact", "onLanguage:typescript", "onLanguage:typescriptreact", "onLanguage:jsx-tags", "onCommand:typescript.reloadProjects", "onCommand:javascript.reloadProjects", "onCommand:typescript.selectTypeScriptVersion", "onCommand:javascript.goToProjectConfig", "onCommand:typescript.goToProjectConfig", "onCommand:typescript.openTsServerLog", "onCommand:workbench.action.tasks.runTask", "onCommand:_typescript.configurePlugin", "onLanguage:jsonc"],
   "main": "./dist/extension",
   "contributes": {
     "jsonValidation": [{
@@ -57,10 +40,7 @@
       "order": 20,
       "properties": {
         "typescript.tsdk": {
-          "type": [
-            "string",
-            "null"
-          ],
+          "type": ["string", "null"],
           "default": null,
           "description": "%typescript.tsdk.desc%",
           "scope": "window"
@@ -70,15 +50,10 @@
           "default": false,
           "description": "%typescript.disableAutomaticTypeAcquisition%",
           "scope": "window",
-          "tags": [
-            "usesOnlineServices"
-          ]
+          "tags": ["usesOnlineServices"]
         },
         "typescript.npm": {
-          "type": [
-            "string",
-            "null"
-          ],
+          "type": ["string", "null"],
           "default": null,
           "description": "%typescript.npm%",
           "scope": "application"
@@ -109,12 +84,7 @@
         },
         "typescript.tsserver.log": {
           "type": "string",
-          "enum": [
-            "off",
-            "terse",
-            "normal",
-            "verbose"
-          ],
+          "enum": ["off", "terse", "normal", "verbose"],
           "default": "off",
           "description": "%typescript.tsserver.log%",
           "scope": "window"
@@ -131,11 +101,7 @@
         },
         "typescript.tsserver.trace": {
           "type": "string",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
+          "enum": ["off", "messages", "verbose"],
           "default": "off",
           "description": "%typescript.tsserver.trace%",
           "scope": "window"
@@ -356,12 +322,6 @@
           "description": "%format.placeOpenBraceOnNewLineForControlBlocks%",
           "scope": "resource"
         },
-        "jsDocCompletion.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "%jsDocCompletion.enabled%",
-          "scope": "resource"
-        },
         "javascript.implicitProjectConfig.checkJs": {
           "type": "boolean",
           "default": false,
@@ -383,18 +343,8 @@
         "typescript.tsc.autoDetect": {
           "type": "string",
           "default": "on",
-          "enum": [
-            "on",
-            "off",
-            "build",
-            "watch"
-          ],
-          "markdownEnumDescriptions": [
-            "%typescript.tsc.autoDetect.on%",
-            "%typescript.tsc.autoDetect.off%",
-            "%typescript.tsc.autoDetect.build%",
-            "%typescript.tsc.autoDetect.watch%"
-          ],
+          "enum": ["on", "off", "build", "watch"],
+          "markdownEnumDescriptions": ["%typescript.tsc.autoDetect.on%", "%typescript.tsc.autoDetect.off%", "%typescript.tsc.autoDetect.build%", "%typescript.tsc.autoDetect.watch%"],
           "description": "%typescript.tsc.autoDetect%",
           "scope": "window"
         },
@@ -422,24 +372,21 @@
           "description": "%configuration.suggest.autoImports%",
           "scope": "resource"
         },
+        "javascript.suggest.completeJSDocs": {
+          "type": "boolean",
+          "default": true,
+          "description": "%configuration.suggest.completeJSDocs%",
+          "scope": "resource"
+        },
+        "typescript.suggest.completeJSDocs": {
+          "type": "boolean",
+          "default": true,
+          "description": "%configuration.suggest.completeJSDocs%",
+          "scope": "resource"
+        },
         "typescript.locale": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "enum": [
-            "de",
-            "es",
-            "en",
-            "fr",
-            "it",
-            "ja",
-            "ko",
-            "ru",
-            "zh-CN",
-            "zh-TW",
-            null
-          ],
+          "type": ["string", "null"],
+          "enum": ["de", "es", "en", "fr", "it", "ja", "ko", "ru", "zh-CN", "zh-TW", null],
           "default": null,
           "markdownDescription": "%typescript.locale%",
           "scope": "window"
@@ -458,86 +405,58 @@
         },
         "javascript.preferences.quoteStyle": {
           "type": "string",
-          "enum": [
-            "auto",
-            "single",
-            "double"
-          ],
+          "enum": ["auto", "single", "double"],
           "default": "auto",
           "markdownDescription": "%typescript.preferences.quoteStyle%",
           "scope": "resource"
         },
         "typescript.preferences.quoteStyle": {
           "type": "string",
-          "enum": [
-            "auto",
-            "single",
-            "double"
-          ],
+          "enum": ["auto", "single", "double"],
           "default": "auto",
           "markdownDescription": "%typescript.preferences.quoteStyle%",
           "scope": "resource"
         },
         "javascript.preferences.importModuleSpecifier": {
           "type": "string",
-          "enum": [
-            "auto",
-            "relative",
-            "non-relative"
-          ],
-          "markdownEnumDescriptions": [
-            "%typescript.preferences.importModuleSpecifier.auto%",
-            "%typescript.preferences.importModuleSpecifier.relative%",
-            "%typescript.preferences.importModuleSpecifier.nonRelative%"
-          ],
+          "enum": ["auto", "relative", "non-relative"],
+          "markdownEnumDescriptions": ["%typescript.preferences.importModuleSpecifier.auto%", "%typescript.preferences.importModuleSpecifier.relative%", "%typescript.preferences.importModuleSpecifier.nonRelative%"],
           "default": "auto",
           "description": "%typescript.preferences.importModuleSpecifier%",
           "scope": "resource"
         },
         "typescript.preferences.importModuleSpecifier": {
           "type": "string",
-          "enum": [
-            "auto",
-            "relative",
-            "non-relative"
-          ],
-          "markdownEnumDescriptions": [
-            "%typescript.preferences.importModuleSpecifier.auto%",
-            "%typescript.preferences.importModuleSpecifier.relative%",
-            "%typescript.preferences.importModuleSpecifier.nonRelative%"
-          ],
+          "enum": ["auto", "relative", "non-relative"],
+          "markdownEnumDescriptions": ["%typescript.preferences.importModuleSpecifier.auto%", "%typescript.preferences.importModuleSpecifier.relative%", "%typescript.preferences.importModuleSpecifier.nonRelative%"],
           "default": "auto",
           "description": "%typescript.preferences.importModuleSpecifier%",
           "scope": "resource"
         },
+        "javascript.preferences.renameShorthandProperties": {
+          "type": "boolean",
+          "default": true,
+          "description": "%typescript.preferences.renameShorthandProperties%",
+          "scope": "resource"
+        },
+        "typescript.preferences.renameShorthandProperties": {
+          "type": "boolean",
+          "default": true,
+          "description": "%typescript.preferences.renameShorthandProperties%",
+          "scope": "resource"
+        },
         "typescript.updateImportsOnFileMove.enabled": {
           "type": "string",
-          "enum": [
-            "prompt",
-            "always",
-            "never"
-          ],
-          "markdownEnumDescriptions": [
-            "%typescript.updateImportsOnFileMove.enabled.prompt%",
-            "%typescript.updateImportsOnFileMove.enabled.always%",
-            "%typescript.updateImportsOnFileMove.enabled.never%"
-          ],
+          "enum": ["prompt", "always", "never"],
+          "markdownEnumDescriptions": ["%typescript.updateImportsOnFileMove.enabled.prompt%", "%typescript.updateImportsOnFileMove.enabled.always%", "%typescript.updateImportsOnFileMove.enabled.never%"],
           "default": "prompt",
           "description": "%typescript.updateImportsOnFileMove.enabled%",
           "scope": "resource"
         },
         "javascript.updateImportsOnFileMove.enabled": {
           "type": "string",
-          "enum": [
-            "prompt",
-            "always",
-            "never"
-          ],
-          "markdownEnumDescriptions": [
-            "%typescript.updateImportsOnFileMove.enabled.prompt%",
-            "%typescript.updateImportsOnFileMove.enabled.always%",
-            "%typescript.updateImportsOnFileMove.enabled.never%"
-          ],
+          "enum": ["prompt", "always", "never"],
+          "markdownEnumDescriptions": ["%typescript.updateImportsOnFileMove.enabled.prompt%", "%typescript.updateImportsOnFileMove.enabled.always%", "%typescript.updateImportsOnFileMove.enabled.never%"],
           "default": "prompt",
           "description": "%typescript.updateImportsOnFileMove.enabled%",
           "scope": "resource"
@@ -644,9 +563,7 @@
     }],
     "taskDefinitions": [{
       "type": "typescript",
-      "required": [
-        "tsconfig"
-      ],
+      "required": ["tsconfig"],
       "properties": {
         "tsconfig": {
           "type": "string",
@@ -673,10 +590,7 @@
       "owner": "typescript",
       "source": "ts",
       "applyTo": "closedDocuments",
-      "fileLocation": [
-        "relative",
-        "${cwd}"
-      ],
+      "fileLocation": ["relative", "${cwd}"],
       "pattern": "$tsc"
     }, {
       "name": "tsc-watch",
@@ -684,10 +598,7 @@
       "owner": "typescript",
       "source": "ts",
       "applyTo": "closedDocuments",
-      "fileLocation": [
-        "relative",
-        "${cwd}"
-      ],
+      "fileLocation": ["relative", "${cwd}"],
       "pattern": "$tsc",
       "background": {
         "activeOnStart": true,

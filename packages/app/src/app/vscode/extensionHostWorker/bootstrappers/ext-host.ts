@@ -13,7 +13,7 @@ child_process.addForkHandler(
   TSWorker
 );
 child_process.addForkHandler(
-  '/extensions/octref.vetur/server/dist/vueServerMain.js',
+  '/extensions/octref.vetur.0.16.2/server/dist/vueServerMain.js',
   VueWorker
 );
 

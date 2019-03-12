@@ -9,20 +9,16 @@
     "vscode": "0.10.x"
   },
   "icon": "icons/json.png",
-  "activationEvents": [
-    "onLanguage:json",
-    "onLanguage:jsonc"
-  ],
+  "activationEvents": ["onLanguage:json", "onLanguage:jsonc"],
   "main": "./client/dist/jsonMain",
+  "enableProposedApi": true,
   "scripts": {
     "compile": "gulp compile-extension:json-language-features-client compile-extension:json-language-features-server",
     "watch": "gulp watch-extension:json-language-features-client watch-extension:json-language-features-server",
     "postinstall": "cd server && yarn install",
     "install-client-next": "yarn add vscode-languageclient@next"
   },
-  "categories": [
-    "Programming Languages"
-  ],
+  "categories": ["Programming Languages"],
   "contributes": {
     "configuration": {
       "id": "json",
@@ -37,9 +33,7 @@
           "items": {
             "type": "object",
             "default": {
-              "fileMatch": [
-                "/myfile"
-              ],
+              "fileMatch": ["/myfile"],
               "url": "schemaURL"
             },
             "properties": {
@@ -74,11 +68,7 @@
         "json.trace.server": {
           "type": "string",
           "scope": "window",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
+          "enum": ["off", "messages", "verbose"],
           "default": "off",
           "description": "%json.tracing.desc%"
         },
@@ -100,11 +90,11 @@
     }
   },
   "dependencies": {
-    "vscode-extension-telemetry": "0.1.0",
+    "vscode-extension-telemetry": "0.1.1",
     "vscode-languageclient": "^5.1.0",
     "vscode-nls": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^8.10.25"
+    "@types/node": "^10.12.21"
   }
 }

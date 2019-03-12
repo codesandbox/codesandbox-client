@@ -9,12 +9,8 @@
   "engines": {
     "vscode": "^1.5.0"
   },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "*"
-  ],
+  "categories": ["Other"],
+  "activationEvents": ["*"],
   "main": "./dist/extension",
   "scripts": {
     "compile": "gulp compile-extension:merge-conflict",

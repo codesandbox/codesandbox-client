@@ -88,7 +88,7 @@ export function start({
 
     process.env = data.data.env || {};
     process.env.HOME = '/home';
-    process.cwd = () => data.data.cwd || '/';
+    process.cwd = () => data.data.cwd || '/sandbox';
     process.argv = ['node', data.data.entry, ...data.data.argv] || [];
   };
 
