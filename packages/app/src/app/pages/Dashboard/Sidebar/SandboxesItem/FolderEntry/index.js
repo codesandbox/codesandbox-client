@@ -218,6 +218,12 @@ class FolderEntry extends React.Component {
                       if (e) {
                         e.preventDefault();
                       }
+                      console.log({
+                        path,
+                        newPath: join(dirname(path), input.value),
+                        teamId,
+                        newTeamId: teamId,
+                      });
                       mutate({
                         variables: {
                           path,
