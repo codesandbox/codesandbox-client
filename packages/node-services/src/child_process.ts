@@ -1,4 +1,6 @@
 import { EventEmitter } from 'events';
+import { protocolAndHost } from 'common/lib/utils/url-generator';
+import { commonPostMessage } from 'common/lib/utils/global';
 
 let DefaultWorker: false | (() => Worker);
 let workerMap: Map<string, false | (() => Worker)> = new Map();
@@ -183,8 +185,7 @@ function handleBroadcast(
   if (target instanceof Worker) {
     target.postMessage(data);
   } else {
-    // @ts-ignore I don't understand why this one is complaining, it breaks if I give it an extra argument
-    target.postMessage(data);
+    target.postMessage(data, protocolAndHost());
   }
 
   sentBroadcasts.set(path, sentBroadcastsForPath);
@@ -236,8 +237,7 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
         $data: data,
       };
 
-      // @ts-ignore
-      self.postMessage(newData);
+      commonPostMessage(newData);
     }
   });
 

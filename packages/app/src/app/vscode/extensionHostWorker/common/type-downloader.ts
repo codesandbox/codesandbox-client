@@ -1,9 +1,10 @@
+import { getGlobal, commonPostMessage } from 'common/lib/utils/global';
 import {
   IModule,
   IManager,
 } from '../../../../../../../standalone-packages/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
 
-const ctx = self as any;
+const ctx = getGlobal();
 
 export function getTypeFetcher() {
   let types: {
@@ -18,10 +19,10 @@ export function getTypeFetcher() {
     manager: {
       getTranspiledModules: () => types,
 
-      addModule(module: IModule) {},
-      removeModule(module: IModule) {},
-      moveModule(module: IModule, newPath) {},
-      updateModule(module: IModule) {},
+      addModule(module: IModule) { },
+      removeModule(module: IModule) { },
+      moveModule(module: IModule, newPath) { },
+      updateModule(module: IModule) { },
     },
   };
 
@@ -32,13 +33,13 @@ export function getTypeFetcher() {
       ctx.BrowserFS.BFSRequire('fs').rename(
         '/sandbox/node_modules/@types',
         '/sandbox/node_modules/@types',
-        () => {}
+        () => { }
       );
     }
   });
 
-  // @ts-ignore
-  self.postMessage({
+
+  commonPostMessage({
     $broadcast: true,
     $type: 'request-data',
     $data: {},

@@ -1,7 +1,10 @@
 import { Provider } from 'cerebral';
 import { getAbsoluteDependencies } from 'common/lib/utils/dependencies';
+import { protocolAndHost } from 'common/lib/utils/url-generator';
 
-const global = window as any;
+import { getGlobal } from 'common/lib/utils/global'
+
+const global = getGlobal() as Window & { BrowserFS: any };
 
 const fs = global.BrowserFS.BFSRequire('fs');
 const SERVICE_URL = 'https://ata-fetcher.cloud/api/v4/typings';
@@ -14,7 +17,7 @@ function sendTypes() {
     $broadcast: true,
     $type: 'typings-sync',
     $data: types,
-  });
+  }, protocolAndHost());
 }
 
 let typeInfoPromise;
@@ -104,7 +107,7 @@ export default Provider({
           $broadcast: true,
           $type: 'file-sync',
           $data: modulesByPath,
-        });
+        }, protocolAndHost());
       }
     };
 
@@ -133,7 +136,7 @@ export default Provider({
             });
           }
         });
-      } catch (e) {}
+      } catch (e) { }
     }, 1000);
 
     self.addEventListener('message', evt => {

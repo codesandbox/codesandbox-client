@@ -1,4 +1,6 @@
 import { EventEmitter } from 'events';
+import { commonPostMessage } from 'common/lib/utils/global';
+import { protocolAndHost } from 'common/lib/utils/url-generator';
 
 const SOCKET_IDENTIFIER = 'node-socket';
 
@@ -69,11 +71,9 @@ export class Socket extends EventEmitter {
     };
 
     if (this.isWorker) {
-      // @ts-ignore
-      this.target.postMessage(message);
+      ((this.target as unknown) as Worker).postMessage(message);
     } else {
-      // @ts-ignore
-      this.target.postMessage(message, '*');
+      (this.target as Window).postMessage(message, protocolAndHost());
     }
   }
 }
@@ -232,8 +232,7 @@ function createServer(...args: any[]) {
 }
 
 function createConnection(pipeName: string, cb?: Function) {
-  // @ts-ignore
-  self.postMessage({
+  commonPostMessage({
     $type: 'node-server',
     $channel: pipeName,
     $event: 'init',

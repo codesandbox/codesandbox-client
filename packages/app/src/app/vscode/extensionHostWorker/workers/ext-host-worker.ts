@@ -4,6 +4,7 @@ import _debug from 'common/lib/utils/debug';
 import loader from '../../dev-bootstrap';
 import { initializeBrowserFS } from '../common/fs';
 import { EXTENSIONS_LOCATION } from '../../constants';
+import { commonPostMessage } from 'common/lib/utils/global';
 
 const debug = _debug('cs:cp-worker');
 
@@ -39,7 +40,7 @@ self.addEventListener('message', async e => {
 
       loader()(() => {
         ctx.require(['vs/workbench/services/extensions/node/extensionHostProcess'], a => {
-          ctx.postMessage({
+          commonPostMessage({
             $type: 'worker-client',
             $event: 'initialized',
           });
