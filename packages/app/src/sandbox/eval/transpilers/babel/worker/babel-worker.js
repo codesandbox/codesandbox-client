@@ -24,8 +24,37 @@ let fsInitialized = false;
 let fsLoading = false;
 let lastConfig = null;
 
-// This one is called from babel-plugin-macros
+const IGNORED_MODULES = ['util', 'os'];
+
+self.process = {
+  env: { NODE_ENV: 'production' },
+  platform: 'linux',
+  argv: [],
+  stderr: {},
+};
+// This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
+  const module = BrowserFS.BFSRequire(path);
+  if (module) {
+    return module;
+  }
+
+  if (path === 'assert') {
+    return require('assert');
+  }
+
+  if (path === 'tty') {
+    return {
+      isatty() {
+        return false;
+      },
+    };
+  }
+
+  if (IGNORED_MODULES.indexOf(path) > -1) {
+    return {};
+  }
+
   const fs = BrowserFS.BFSRequire('fs');
   return evaluateFromPath(
     fs,
@@ -248,7 +277,7 @@ function getCustomConfig(
   };
 }
 
-async function compile(code, customConfig, path) {
+async function compile(code, customConfig, path, isV7) {
   try {
     let result;
     try {
@@ -274,7 +303,14 @@ async function compile(code, customConfig, path) {
     }
 
     const dependencies = getDependencies(detective.metadata(result));
-
+    if (isV7) {
+      // Force push this dependency, there are cases where it isn't included out of our control.
+      // https://twitter.com/vigs072/status/1103005932886343680
+      dependencies.push({
+        type: 'direct',
+        path: '@babel/runtime/helpers/interopRequireDefault',
+      });
+    }
     dependencies.forEach(dependency => {
       self.postMessage({
         type: 'add-dependency',
@@ -305,11 +341,15 @@ async function compile(code, customConfig, path) {
   }
 }
 
-self.importScripts(
-  process.env.NODE_ENV === 'development'
-    ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
-    : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-1.min.js`
-);
+try {
+  self.importScripts(
+    process.env.NODE_ENV === 'development'
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
+      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
+  );
+} catch (e) {
+  console.error(e);
+}
 
 self.postMessage('ready');
 
@@ -558,7 +598,8 @@ self.addEventListener('message', async event => {
     await compile(
       code,
       version === 7 ? normalizeV7Config(customConfig) : customConfig,
-      path
+      path,
+      version === 7
     );
   } catch (e) {
     console.error(e);

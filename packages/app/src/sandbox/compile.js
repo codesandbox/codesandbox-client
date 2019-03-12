@@ -109,7 +109,7 @@ const BABEL_DEPENDENCIES = [
 // Dependencies that we actually don't need, we will replace this by a dynamic
 // system in the future
 const PREINSTALLED_DEPENDENCIES = [
-  'node-lib-browser',
+  'node-libs-browser',
   'react-scripts',
   'react-scripts-ts',
   'parcel-bundler',
