@@ -17,30 +17,14 @@ const host = process.env.CODESANDBOX_HOST;
 
 const VERSION = 1;
 
-/**
- * Warm the cache of our new API
- */
-const warmNewPackagerAPI = (url: string, method: string = 'GET') => {
-  try {
-    fetch(url, { method })
-      .then(() => {})
-      .catch(() => {});
-  } catch (e) {
-    /* ignore */
-  }
-};
-
 const BUCKET_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://d1jyvh0kxilfa7.cloudfront.net'
+    ? 'https://prod-packager-packages.csb.dev'
     : 'https://s3-eu-west-1.amazonaws.com/dev.packager.packages';
-
-const NEW_PACKAGER_URL =
-  'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages';
 
 const PACKAGER_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages'
+    ? 'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages'
     : 'https://8o2xeuyo66.execute-api.eu-west-1.amazonaws.com/dev/packages';
 
 function callApi(url: string, method = 'GET') {
@@ -162,7 +146,6 @@ async function getDependencies(dependencies: Object) {
 
   setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
   try {
-    warmNewPackagerAPI(`${NEW_PACKAGER_URL}/${dependencyUrl}`, 'POST');
     const bucketManifest = await callApi(
       `${BUCKET_URL}/${bucketDependencyUrl}`
     );
