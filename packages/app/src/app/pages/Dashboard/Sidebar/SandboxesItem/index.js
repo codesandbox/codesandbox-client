@@ -16,7 +16,7 @@ import CreateFolderEntry from './FolderEntry/CreateFolderEntry';
 
 import { entryTarget, collectTarget } from './folder-drop-target';
 
-import getChildCollections from '../../utils/getChildCollections';
+import getChildCollections from '../../utils/get-child-collections';
 
 import { PATHED_SANDBOXES_FOLDER_QUERY } from '../../queries';
 

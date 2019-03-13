@@ -1,6 +1,6 @@
 import getDirectChildren from './get-direct-children';
 
-export default (folders, path = '/') => {
+export default function getChildCollections(folders, path = '/') {
   const foldersByPath = {};
 
   folders.forEach(collection => {
@@ -12,4 +12,4 @@ export default (folders, path = '/') => {
     folders,
     foldersByPath,
   };
-};
+}

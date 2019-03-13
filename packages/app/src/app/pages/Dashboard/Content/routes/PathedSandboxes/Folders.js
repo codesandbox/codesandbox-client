@@ -1,29 +1,29 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import FolderEntry from '../../../Sidebar/SandboxesItem/FolderEntry';
-import getChildCollections from '../../../utils/getChildCollections';
+import getChildCollections from '../../../utils/get-child-collections';
 
 import { Folder, FoldersWrapper } from './elements';
 
-const getPath = name => {
-  const slicedPath = window.location.pathname.split('sandboxes');
-  const last = slicedPath[slicedPath.length - 1];
-  return last && !last.includes('sandboxes')
-    ? `${decodeURIComponent(last)}/${name}`
-    : '/' + name;
-};
-
 const Folders = ({ loading, me, history, teamId }) => {
-  let folderInfo = {};
-  if (!loading) {
-    folderInfo = getChildCollections(
-      me.collections,
-      (me.collection || {}).path
-    );
-  }
+  const getPath = name => {
+    const slicedPath = window.location.pathname.split('sandboxes');
+    const last = slicedPath[slicedPath.length - 1];
+    return last && !last.includes('sandboxes')
+      ? `${decodeURIComponent(last)}/${name}`
+      : '/' + name;
+  };
 
-  const { children, foldersByPath, folders } = folderInfo;
-  return !loading && (children || []).size ? (
+  if (loading) return null;
+
+  const { children, foldersByPath, folders } = getChildCollections(
+    me.collections,
+    (me.collection || {}).path
+  );
+
+  if (children.size === 0) return null;
+
+  return (
     <FoldersWrapper>
       {Array.from(children)
         .sort()
@@ -49,7 +49,7 @@ const Folders = ({ loading, me, history, teamId }) => {
           </Folder>
         ))}
     </FoldersWrapper>
-  ) : null;
+  );
 };
 
 export default withRouter(Folders);

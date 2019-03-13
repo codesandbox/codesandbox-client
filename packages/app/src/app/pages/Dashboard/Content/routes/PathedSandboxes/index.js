@@ -7,7 +7,7 @@ import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
 import Folders from './Folders';
 import CreateNewSandbox from '../../CreateNewSandbox';
-import getMostUsedTemplate from '../../../utils/getMostUsedTemplate';
+import getMostUsedTemplate from '../../../utils/get-most-used-template';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
