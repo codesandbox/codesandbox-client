@@ -1,4 +1,4 @@
-import { isMac, isIOS } from 'common/lib/utils/platform';
+import { isMac, isIOS } from './platform';
 
 const metaKey = isMac ? (isIOS ? 'Alt' : 'Meta') : 'Alt';
 const metaOrCtrlKey = isMac ? (isIOS ? 'Alt' : 'Meta') : 'Control';
