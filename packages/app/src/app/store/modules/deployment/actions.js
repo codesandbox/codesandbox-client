@@ -49,6 +49,7 @@ export async function getNetlifyDeploys({ http, state, path }) {
 
 export async function deployToNetlify({ http, props, state }) {
   const { file } = props;
+  state.set('deployment.netlifyLogs', null);
   const userId = state.get('user.id');
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
@@ -91,7 +92,7 @@ export async function deployToNetlify({ http, props, state }) {
   }
 }
 
-export async function getStatus({ props, path, http }) {
+export async function getStatus({ props, path, http, state }) {
   const url = `${NetlifyBaseURL}/${props.id}/status`;
   if (props.error) {
     return path.error();
@@ -102,8 +103,7 @@ export async function getStatus({ props, path, http }) {
 
   if (result.status.status === 'IN_PROGRESS') {
     // polls every 10s for up to 2m
-    await pollUntilDone(http, url, 10000, 60 * 2000);
-
+    await pollUntilDone(http, url, 10000, 60 * 2000, state);
     return path.success();
   }
   return path.success();

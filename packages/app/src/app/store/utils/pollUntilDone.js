@@ -4,7 +4,7 @@ function delay(t) {
   });
 }
 
-function pollUntilDone(http, url, interval, timeout) {
+function pollUntilDone(http, url, interval, timeout, state) {
   const start = Date.now();
   function run() {
     return http
@@ -16,6 +16,10 @@ function pollUntilDone(http, url, interval, timeout) {
         }
         if (timeout !== 0 && Date.now() - start > timeout) {
           return result;
+        }
+
+        if (result.status.logUrl && !state.get('deployment.netlifyLogs')) {
+          state.set('deployment.netlifyLogs', result.status.logUrl);
         }
         // run again with a short delay
         return delay(interval).then(run);

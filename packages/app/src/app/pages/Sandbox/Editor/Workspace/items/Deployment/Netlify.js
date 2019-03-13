@@ -5,6 +5,7 @@ import Cogs from 'react-icons/lib/fa/cogs';
 import NetlifyLogo from 'app/components/NetlifyLogo';
 import DeploymentIntegration from 'app/components/DeploymentIntegration';
 import getTemplate from 'common/lib/templates';
+import Button from 'common/lib/components/Button';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../elements';
 import {
   Deploys,
@@ -92,6 +93,7 @@ class NetlifyDeployment extends Component {
                           </>
                         )}
                       </Link>
+
                       {deployment.netlifyClaimUrl ? (
                         <Link
                           disabled={deployment.building}
@@ -103,6 +105,21 @@ class NetlifyDeployment extends Component {
                         </Link>
                       ) : null}
                     </ButtonContainer>
+                    {deployment.netlifyLogs ? (
+                      <Button
+                        css={`
+                          margin-top: 20px;
+                        `}
+                        small
+                        onClick={() =>
+                          signals.modalOpened({
+                            modal: 'netlifyLogs',
+                          })
+                        }
+                      >
+                        <span>View Logs</span>
+                      </Button>
+                    ) : null}
                   </Deploy>
                 </Deploys>
               </WorkspaceInputContainer>

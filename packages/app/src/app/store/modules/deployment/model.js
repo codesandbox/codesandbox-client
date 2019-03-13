@@ -53,6 +53,7 @@ export default {
   hasAlias: types.boolean,
   building: types.boolean,
   netlifyClaimUrl: types.maybeNull(types.string),
+  netlifyLogs: types.maybeNull(types.string),
   netlifySite: types.maybeNull(NetlifySite),
   deployToDelete: types.maybeNull(types.string),
   deploying: types.boolean,

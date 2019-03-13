@@ -12,6 +12,7 @@ export default Module({
     url: null,
     gettingDeploys: true,
     sandboxDeploys: [],
+    netlifyLogs: null,
   },
   signals: {
     deployWithNetlify: sequences.deployWithNetlify,

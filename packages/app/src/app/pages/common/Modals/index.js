@@ -24,6 +24,7 @@ import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
 import FeedbackModal from './FeedbackModal';
+import NetlifyLogs from './NetlifyLogs';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import('./MoveSandboxFolderModal')
@@ -57,6 +58,10 @@ const modals = {
   pr: {
     Component: PRModal,
     width: 400,
+  },
+  netlifyLogs: {
+    Component: NetlifyLogs,
+    width: 750,
   },
   deleteDeployment: {
     Component: DeleteDeploymentModal,
