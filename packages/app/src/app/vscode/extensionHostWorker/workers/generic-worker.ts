@@ -140,3 +140,5 @@ export function start({
     }
   });
 }
+
+commonPostMessage({ $type: 'ready' });

@@ -541,6 +541,8 @@ class EditorPreview extends React.Component<Props, State> {
                 : {
                     width: '100%',
                     minWidth: '100%',
+                    height: '100%',
+                    minHeight: '100%',
                   }
             }
             pane2Style={{
@@ -561,8 +563,11 @@ class EditorPreview extends React.Component<Props, State> {
                 marginTop: 0,
               }}
             >
-              {store.preferences.settings.codeMirror && <Tabs />}
+              {!store.preferences.settings.experimentVSCode && <Tabs />}
               <CodeEditor
+                style={{
+                  top: store.preferences.settings.experimentVSCode ? 0 : 35,
+                }}
                 onInitialized={this.onInitialized}
                 sandbox={sandbox}
                 currentTab={currentTab}

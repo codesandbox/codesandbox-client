@@ -1,10 +1,10 @@
 // This is the base worker that launches the extension host
 
 import _debug from 'common/lib/utils/debug';
+import { commonPostMessage } from 'common/lib/utils/global';
 import loader from '../../dev-bootstrap';
 import { initializeBrowserFS } from '../common/fs';
 import { EXTENSIONS_LOCATION } from '../../constants';
-import { commonPostMessage } from 'common/lib/utils/global';
 
 const debug = _debug('cs:cp-worker');
 
@@ -39,13 +39,18 @@ self.addEventListener('message', async e => {
       process.env.HOME = '/home';
 
       loader()(() => {
-        ctx.require(['vs/workbench/services/extensions/node/extensionHostProcess'], a => {
-          commonPostMessage({
-            $type: 'worker-client',
-            $event: 'initialized',
-          });
-        });
+        ctx.require(
+          ['vs/workbench/services/extensions/node/extensionHostProcess'],
+          () => {
+            commonPostMessage({
+              $type: 'worker-client',
+              $event: 'initialized',
+            });
+          }
+        );
       });
     }
   }
 });
+
+commonPostMessage({ $type: 'ready' });

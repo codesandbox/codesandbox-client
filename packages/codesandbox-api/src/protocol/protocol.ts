@@ -92,7 +92,7 @@ export default class Protocol {
 
   private _postMessage(m: any) {
     if (
-      this.target instanceof Worker ||
+      this.target.constructor.name === 'Worker' ||
       // @ts-ignore Unknown to TS
       (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
         // @ts-ignore Unknown to TS
@@ -101,7 +101,7 @@ export default class Protocol {
       // @ts-ignore
       this.target.postMessage(m);
     } else {
-      this.target.postMessage(m, '*');
+      (this.target as Window).postMessage(m, '*');
     }
   }
 }

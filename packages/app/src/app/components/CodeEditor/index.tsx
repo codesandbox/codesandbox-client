@@ -1,6 +1,7 @@
 import React from 'react';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
+import Loadable from 'app/utils/Loadable';
 import getUI from 'common/lib/templates/configuration/ui';
 import Centered from 'common/lib/components/flex/Centered';
 import Margin from 'common/lib/components/spacing/Margin';
@@ -19,6 +20,14 @@ import VSCode from './VSCode';
 import MonacoDiff from './MonacoDiff';
 import { Icons, Icon } from './elements';
 import { getCustomEditorAPI } from './VSCode/custom-code-editor';
+
+const CodeMirror = Loadable(() =>
+  import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
+);
+
+const Monaco = Loadable(() =>
+  import(/* webpackChunkName: 'codemirror-editor' */ './Monaco')
+);
 
 const getDependencies = (sandbox: Sandbox): { [key: string]: string } => {
   const packageJSON = sandbox.modules.find(
@@ -54,7 +63,13 @@ type State = {
   showConfigUI: boolean;
 };
 
-export default class CodeEditor extends React.PureComponent<Props, State> {
+export default class CodeEditor extends React.PureComponent<
+  Props & {
+    editor?: 'vscode' | 'monaco' | 'codemirror';
+    style: React.CSSProperties;
+  },
+  State
+> {
   state = {
     showConfigUI: true,
   };
@@ -157,7 +172,14 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       );
     }
 
-    const Editor = VSCode;
+    let Editor: React.ComponentClass<Props> =
+      (settings.vimMode || settings.codeMirror) && !props.isLive
+        ? CodeMirror
+        : Monaco;
+
+    if (settings.experimentVSCode) {
+      Editor = VSCode;
+    }
 
     return (
       <div
@@ -169,6 +191,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           left: 0,
           right: 0,
           bottom: 0,
+          ...props.style,
         }}
       >
         {!isModuleSynced(module.shortid) &&

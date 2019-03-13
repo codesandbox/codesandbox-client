@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Link } from 'react-router-dom';
 
 import Fork from 'react-icons/lib/go/repo-forked';
 import PlusIcon from 'react-icons/lib/go/plus';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
+import SaveIcon from 'react-icons/lib/md/save';
 import { Button } from 'app/components/Button';
 import SignInButton from 'app/pages/common/SignInButton';
+
+import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import { patronUrl, dashboardUrl } from 'common/lib/utils/url-generator';
 
@@ -21,7 +23,14 @@ import Logo from './Logo';
 import Action from './Action';
 import CollectionInfo from './CollectionInfo';
 
-import { Container, Right, Left, Centered, DashboardIcon } from './elements';
+import {
+  Container,
+  Right,
+  Left,
+  Centered,
+  DashboardIcon,
+  DashboardLink,
+} from './elements';
 
 import UpdateFound from './UpdateFound';
 import { MenuBarContainer } from './MenuBar';
@@ -56,19 +65,42 @@ const ShareButton = ({ signals, secondary, style }) => (
 
 const Header = ({ store, signals, zenMode }) => {
   const sandbox = store.editor.currentSandbox;
+  const vscode = store.preferences.settings.experimentVSCode;
 
   return (
     <Container zenMode={zenMode}>
       <Left>
         {store.hasLogIn ? (
-          <Link to={dashboardUrl()}>
+          <DashboardLink to={dashboardUrl()}>
             <DashboardIcon />
-          </Link>
+          </DashboardLink>
         ) : (
           <Logo marginRight={0} />
         )}
 
-        <MenuBarContainer />
+        {vscode ? (
+          <MenuBarContainer />
+        ) : (
+          <>
+            {
+              <Action
+                onClick={
+                  store.editor.isAllModulesSynced
+                    ? null
+                    : () => saveAllModules(store, signals)
+                }
+                placeholder={
+                  store.editor.isAllModulesSynced
+                    ? 'All modules are saved'
+                    : false
+                }
+                blink={store.editor.changedModuleShortids.length > 2}
+                title="Save"
+                Icon={SaveIcon}
+              />
+            }
+          </>
+        )}
       </Left>
 
       {sandbox.owned && (

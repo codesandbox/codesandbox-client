@@ -5,7 +5,6 @@ import DefaultWorkLoader from 'worker-loader?publicPath=/&name=dynamic-worker.[h
 import TSWorker from 'worker-loader?publicPath=/&name=typescript-worker.[hash:8].worker.js!./ts-extension';
 // @ts-ignore
 import VueWorker from 'worker-loader?publicPath=/&name=vue-worker.[hash:8].worker.js!./vue-worker';
-import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 import { initializeAll } from '../common/global';
 
 child_process.addDefaultForkHandler(DefaultWorkLoader);

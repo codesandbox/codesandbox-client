@@ -2,8 +2,6 @@
 import * as React from 'react';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
-import { join, dirname } from 'path';
-import { withTheme } from 'styled-components';
 import { getModulePath, resolveModule } from 'common/lib/sandbox/modules';
 import { listen } from 'codesandbox-api';
 
@@ -396,9 +394,9 @@ class MonacoEditor extends React.Component<Props> implements Editor {
                 if (
                   (selectionChange.reason === 3 ||
                     /* alt + shift + arrow keys */ selectionChange.source ===
-                    'moveWordCommand' ||
+                      'moveWordCommand' ||
                     /* click inside a selection */ selectionChange.source ===
-                    'api') &&
+                      'api') &&
                   onSelectionChanged
                 ) {
                   this.onSelectionChangedDebounced.cancel();
@@ -440,7 +438,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     const { dependencies } = this;
     if (dependencies != null) {
       if (Object.keys(dependencies)) {
-        setTimeout(() => { }, this.hasNativeTypescript() ? 500 : 5000);
+        setTimeout(() => {}, this.hasNativeTypescript() ? 500 : 5000);
       }
     }
 
@@ -520,15 +518,15 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   updateUserSelections = (
     userSelections: Array<
       | {
-        userId: string;
-        selection: null;
-      }
+          userId: string;
+          selection: null;
+        }
       | {
-        userId: string;
-        name: string;
-        selection: any;
-        color: Array<number>;
-      }
+          userId: string;
+          name: string;
+          selection: any;
+          color: Array<number>;
+        }
     >
   ) => {
     if (this.editor.getActiveCodeEditor()) {
@@ -895,8 +893,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       options: {
         inlineClassName: classification.type
           ? `${classification.kind} ${classification.type}-of-${
-          classification.parentKind
-          }`
+              classification.parentKind
+            }`
           : classification.kind,
       },
     }));
@@ -1033,7 +1031,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   resizeEditorInstantly = () => {
     this.forceUpdate(() => {
       if (this.editor) {
-        this.editor.editorPart.layout(this.props.width, this.props.height)
+        this.editor.editorPart.layout(this.props.width, this.props.height);
       }
     });
   };
@@ -1088,9 +1086,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           theme="CodeSandbox"
           options={options}
           editorDidMount={this.configureEditor}
-          editorWillMount={monaco =>
-            defineTheme(monaco, this.props.theme.vscodeTheme)
-          }
+          editorWillMount={monaco => {}}
           getEditorOptions={this.getEditorOptions}
           customEditorAPI={this.props.customEditorAPI}
         />
@@ -1099,4 +1095,4 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   }
 }
 
-export default withTheme(MonacoEditor);
+export default MonacoEditor;

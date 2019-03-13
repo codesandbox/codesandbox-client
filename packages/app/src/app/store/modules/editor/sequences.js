@@ -326,7 +326,7 @@ export const handlePreviewAction = [
 export const togglePreview = [toggle(state`editor.previewWindowVisible`)];
 
 export const setPreviewContent = [
-  set(state`editor.previewWindow.content`, props`content`),
+  //empty
 ];
 
 export const toggleEditorPreviewLayout = [

@@ -183,7 +183,7 @@ function handleBroadcast(
   }
   sentBroadcastsForPath.push(data.$id);
   if (
-    target instanceof Worker ||
+    target.constructor.name === 'Worker' ||
     // @ts-ignore Unknown to TS
     (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
       // @ts-ignore Unknown to TS
@@ -192,7 +192,7 @@ function handleBroadcast(
     // @ts-ignore
     target.postMessage(data);
   } else {
-    target.postMessage(data, protocolAndHost());
+    (target as Window).postMessage(data, protocolAndHost());
   }
 
   sentBroadcasts.set(path, sentBroadcastsForPath);

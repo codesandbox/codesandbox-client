@@ -14,6 +14,7 @@ import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import 'common/lib/global.css';
 import theme from 'common/lib/theme';
+import 'subworkers';
 
 // eslint-disable-next-line
 import * as child_process from 'node-services/lib/child_process';
@@ -189,14 +190,15 @@ window.BrowserFS.configure(
       },
     },
   },
-  e => {
+  async e => {
     if (e) {
       console.error('Problems initializing FS', e);
       // An error happened!
       throw e;
     }
 
-    const isVSCode = true;
+    const isVSCode = controller.getState().preferences.settings
+      .experimentVSCode;
 
     // For first-timers initialize a theme in the cache so it doesn't jump colors
     initializeExtensionsFolder();
@@ -205,30 +207,38 @@ window.BrowserFS.configure(
     initializeSettings();
 
     // eslint-disable-next-line global-require
-    vscode.loadScript(['vs/editor/codesandbox.editor.main'], () => {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Loaded Monaco'); // eslint-disable-line
-      }
-      if (isVSCode) {
-        vscode.acquireController(controller);
+    vscode.loadScript(
+      [
+        isVSCode
+          ? 'vs/editor/codesandbox.editor.main'
+          : 'vs/editor/editor.main',
+      ],
+      isVSCode,
+      () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Loaded Monaco'); // eslint-disable-line
+        }
+        if (isVSCode) {
+          vscode.acquireController(controller);
 
-        import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host').then(
-          ExtHostWorkerLoader => {
-            child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
-            // child_process.preloadWorker('/vs/bootstrap-fork');
-          }
-        );
+          import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host').then(
+            ExtHostWorkerLoader => {
+              child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
+              // child_process.preloadWorker('/vs/bootstrap-fork');
+            }
+          );
 
-        // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
-        //   SearchServiceWorker => {
-        //     child_process.addForkHandler(
-        //       'csb:search-service',
-        //       SearchServiceWorker.default
-        //     );
-        //   }
-        // );
+          // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
+          //   SearchServiceWorker => {
+          //     child_process.addForkHandler(
+          //       'csb:search-service',
+          //       SearchServiceWorker.default
+          //     );
+          //   }
+          // );
+        }
+        boot();
       }
-      boot();
-    });
+    );
   }
 );

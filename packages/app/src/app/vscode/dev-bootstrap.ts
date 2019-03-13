@@ -2,10 +2,9 @@
 import * as child_process from 'node-services/lib/child_process';
 import * as net from 'node-services/lib/net';
 import { default as Module } from 'node-services/lib/module';
-import preval from 'preval.macro';
 import resolve from 'resolve';
 
-import { METADATA } from './metadata';
+const { VSCODE_METADATA, MONACO_METADATA } = require('./metadata');
 
 const PREFIX = '/vs';
 
@@ -355,7 +354,8 @@ function initializeRequires() {
   });
 }
 
-export default function(requiredModule?: string[], isVSCode = false) {
+export default function(requiredModule?: string[], isVSCode = true) {
+  var METADATA = isVSCode ? VSCODE_METADATA : MONACO_METADATA;
   var IS_FILE_PROTOCOL = global.location.protocol === 'file:';
   var DIRNAME = null;
   if (IS_FILE_PROTOCOL) {
@@ -607,18 +607,16 @@ export default function(requiredModule?: string[], isVSCode = false) {
       if (!requiresDefined && global.require.define) {
         requiresDefined = true;
         initializeRequires();
-
-        if (process.env.NODE_ENV === 'development') {
-          console.log('setting config', global.AMDLoader);
-        }
-
-        // global.require.config({ requireToUrl, paths: { vs: '/public/vscode' } });
-        global.require.config({
-          // isBuild: true,
-          paths: loaderPathsConfig,
-          requireToUrl,
-        });
       }
+      if (process.env.NODE_ENV === 'development') {
+        console.log('setting config', global.AMDLoader);
+      }
+      // global.require.config({ requireToUrl, paths: { vs: '/public/vscode' } });
+      global.require.config({
+        // isBuild: true,
+        paths: loaderPathsConfig,
+        requireToUrl,
+      });
 
       global.deps = new Set();
 

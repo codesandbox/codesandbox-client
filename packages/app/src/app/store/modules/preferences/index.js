@@ -1,4 +1,6 @@
 import { Module } from 'cerebral';
+import { isMac, isIOS } from 'common/lib/utils/platform';
+
 import model from './model';
 import * as sequences from './sequences';
 import { keybindings } from './getters';
@@ -18,7 +20,7 @@ export default Module({
       lineHeight: 1.5,
       clearConsoleEnabled: true,
       autoDownloadTypes: true,
-      codeMirror: false,
+      codeMirror: isIOS,
       keybindings: [],
       newPackagerExperiment: false,
       prettierConfig: {
@@ -47,8 +49,7 @@ export default Module({
 
       customVSCodeTheme: undefined,
       manualCustomVSCodeTheme: undefined,
-
-      experimentVSCode: true,
+      experimentVSCode: !isIOS,
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,

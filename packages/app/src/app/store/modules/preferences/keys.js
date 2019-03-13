@@ -17,4 +17,4 @@ export const keybindings = 'settings.keybindings';
 export const enableLigatures = 'settings.enableLigatures';
 export const customVSCodeTheme = 'settings.customVSCodeTheme';
 export const manualCustomVSCodeTheme = 'settings.manualCustomVSCodeTheme';
-export const experimentVSCode = 'settings.experimentVSCodeOld';
+// export const experimentVSCode = 'settings.experimentVSCodeOld';

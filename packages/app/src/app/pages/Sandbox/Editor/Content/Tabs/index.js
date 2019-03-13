@@ -3,10 +3,8 @@ import { inject, observer } from 'mobx-react';
 
 import { canPrettify } from 'app/utils/prettify';
 import Tooltip from 'common/lib/components/Tooltip';
-import TestsIcon from 'react-icons/lib/md/subtitles';
 
 import TabContainer from './TabContainer';
-import ConsoleIcon from './ConsoleIcon';
 import PreviewIcon from './PreviewIcon';
 
 import {
@@ -106,9 +104,7 @@ class EditorTabs extends React.Component {
     const currentTab = store.editor.currentTab;
     const currentModule = store.editor.currentModule;
 
-    const previewVisible = store.editor.previewWindow.content === 'browser';
-    const consoleVisible = store.editor.previewWindow.content === 'console';
-    const testsVisible = store.editor.previewWindow.content === 'tests';
+    const previewVisible = store.editor.previewWindowVisible;
 
     return (
       <Container>
@@ -215,47 +211,7 @@ class EditorTabs extends React.Component {
 
           <Tooltip title={previewVisible ? 'Hide Browser' : 'Show Browser'}>
             <IconWrapper active={previewVisible}>
-              <PreviewIcon
-                onClick={() =>
-                  previewVisible
-                    ? this.props.signals.editor.setPreviewContent({
-                        content: undefined,
-                      })
-                    : this.props.signals.editor.setPreviewContent({
-                        content: 'browser',
-                      })
-                }
-              />
-            </IconWrapper>
-          </Tooltip>
-          <Tooltip title={consoleVisible ? 'Hide Console' : 'Show Console'}>
-            <IconWrapper active={consoleVisible}>
-              <ConsoleIcon
-                onClick={() =>
-                  consoleVisible
-                    ? this.props.signals.editor.setPreviewContent({
-                        content: undefined,
-                      })
-                    : this.props.signals.editor.setPreviewContent({
-                        content: 'console',
-                      })
-                }
-              />
-            </IconWrapper>
-          </Tooltip>
-          <Tooltip title={testsVisible ? 'Hide Tests' : 'Show Tests'}>
-            <IconWrapper active={testsVisible}>
-              <TestsIcon
-                onClick={() =>
-                  testsVisible
-                    ? this.props.signals.editor.setPreviewContent({
-                        content: undefined,
-                      })
-                    : this.props.signals.editor.setPreviewContent({
-                        content: 'tests',
-                      })
-                }
-              />
+              <PreviewIcon onClick={() => this.props.signals.editor.togglePreviewContent({})} />
             </IconWrapper>
           </Tooltip>
         </IconContainer>

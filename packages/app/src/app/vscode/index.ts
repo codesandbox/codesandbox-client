@@ -52,8 +52,8 @@ class VSCodeManager {
     this.addWorkbenchActions();
   }
 
-  public loadScript(scripts: string[], cb: () => void) {
-    bootstrap(scripts, true)(cb);
+  public loadScript(scripts: string[], isVSCode = true, cb: () => void) {
+    bootstrap(scripts, isVSCode)(cb);
   }
 
   private addWorkbenchActions() {
@@ -310,7 +310,7 @@ class VSCodeManager {
     cb: (services: IServiceCache) => void
   ) {
     if (this.serviceCache) {
-      const [{ IConfigurationService }, { IInstantiationService },] = [
+      const [{ IConfigurationService }, { IInstantiationService }] = [
         context.require('vs/platform/configuration/common/configuration'),
         context.require('vs/platform/instantiation/common/instantiation'),
       ];
@@ -319,10 +319,12 @@ class VSCodeManager {
       instantiationService.invokeFunction(accessor => {
         const workspaceService = accessor.get(IConfigurationService);
 
-        workspaceService.initialize(context.monaco.editor.getDefaultWorkspace());
+        workspaceService.initialize(
+          context.monaco.editor.getDefaultWorkspace()
+        );
 
         cb(accessor);
-      })
+      });
       return;
     }
 
@@ -335,18 +337,20 @@ class VSCodeManager {
       { SyncDescriptor },
       { IInstantiationService },
     ] = [
-        context.require(
-          'vs/codesandbox/services/codesandbox/browser/codesandboxService'
-        ),
-        context.require(
-          'vs/codesandbox/services/codesandbox/configurationUIService'
-        ),
-        context.require('vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector'),
-        context.require('vs/platform/statusbar/common/statusbar'),
-        context.require('vs/platform/commands/common/commands'),
-        context.require('vs/platform/instantiation/common/descriptors'),
-        context.require('vs/platform/instantiation/common/instantiation'),
-      ];
+      context.require(
+        'vs/codesandbox/services/codesandbox/browser/codesandboxService'
+      ),
+      context.require(
+        'vs/codesandbox/services/codesandbox/configurationUIService'
+      ),
+      context.require(
+        'vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector'
+      ),
+      context.require('vs/platform/statusbar/common/statusbar'),
+      context.require('vs/platform/commands/common/commands'),
+      context.require('vs/platform/instantiation/common/descriptors'),
+      context.require('vs/platform/instantiation/common/instantiation'),
+    ];
 
     context.monaco.editor.create(
       container,
@@ -354,11 +358,14 @@ class VSCodeManager {
         codesandboxService: i =>
           new SyncDescriptor(CodeSandboxService, [this.controller]),
         codesandboxConfigurationUIService: i =>
-          new SyncDescriptor(CodeSandboxConfigurationUIService, [customEditorAPI]),
+          new SyncDescriptor(CodeSandboxConfigurationUIService, [
+            customEditorAPI,
+          ]),
       },
       ({ serviceCollection, dispose }) => {
-
-        const instantiationService = serviceCollection.get(IInstantiationService);
+        const instantiationService = serviceCollection.get(
+          IInstantiationService
+        );
         instantiationService.invokeFunction(accessor => {
           this.serviceCache = serviceCollection;
 
@@ -379,7 +386,7 @@ class VSCodeManager {
           accessor.get(ICodeSandboxEditorConnectorService);
 
           cb(accessor);
-        })
+        });
       }
     );
   }

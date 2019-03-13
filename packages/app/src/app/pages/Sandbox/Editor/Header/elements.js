@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Dashboard from '-!svg-react-loader!common/lib/icons/dashboard.svg';
+import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
   display: ${props => (props.zenMode ? 'none' : 'flex')};
@@ -47,15 +48,25 @@ export const Centered = styled.div`
   z-index: 0; /* So pointer events on left and right continue */
 `;
 
-export const DashboardIcon = styled(Dashboard)`
+export const DashboardLink = styled(Link)`
   transition: 0.3s ease color;
+  cursor: pointer;
+
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : props.theme.gray};
+
+  &:hover {
+    color: white;
+  }
+`;
+
+export const DashboardIcon = styled(Dashboard)`
   display: flex;
   position: relative;
   align-items: center;
   vertical-align: middle;
   height: 3rem;
   margin-right: 1rem;
-
   margin: 0 calc(0.8rem + 2px);
 
   box-sizing: border-box;
@@ -63,11 +74,5 @@ export const DashboardIcon = styled(Dashboard)`
   overflow: hidden;
   text-decoration: none;
 
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : props.theme.gray};
   font-size: 27px;
-
-  &:hover {
-    color: white;
-  }
 `;
