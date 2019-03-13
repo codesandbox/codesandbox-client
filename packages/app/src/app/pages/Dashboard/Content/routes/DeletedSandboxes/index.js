@@ -38,27 +38,30 @@ const DeletedSandboxes = ({ store, signals }) => {
               sandboxIds: orderedSandboxes.map(i => i.id),
             });
 
+            const DeleteButton = () =>
+              orderedSandboxes.length ? (
+                <Button
+                  css={`
+                    width: 200px;
+                    margin: 20px 0;
+                  `}
+                  small
+                  danger
+                  onClick={() => {
+                    signals.modalOpened({
+                      modal: 'emptyTrash',
+                    });
+                  }}
+                >
+                  Empty Trash
+                </Button>
+              ) : null;
+
             return (
               <Sandboxes
                 isLoading={loading}
                 Header="Deleted Sandboxes"
-                SubHeader={
-                  <Button
-                    css={`
-                      width: 200px;
-                      margin: 20px 0;
-                    `}
-                    small
-                    danger
-                    onClick={() => {
-                      signals.modalOpened({
-                        modal: 'emptyTrash',
-                      });
-                    }}
-                  >
-                    Empty Trash
-                  </Button>
-                }
+                SubHeader={<DeleteButton />}
                 sandboxes={orderedSandboxes}
                 possibleTemplates={possibleTemplates}
               />
