@@ -159,6 +159,8 @@ async function getDependencies(dependencies: Object) {
       'POST'
     );
 
+    setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+
     return requestPackager(`${BUCKET_URL}/${url}`);
   }
 }

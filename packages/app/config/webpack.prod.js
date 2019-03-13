@@ -225,7 +225,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /https:\/\/d1jyvh0kxilfa7\.cloudfront\.net/,
+          urlPattern: /prod-packager-packages\.csb\.dev/,
           handler: 'fastest',
           options: {
             cache: {
