@@ -2307,6 +2307,11 @@
   version "10.3.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.0.tgz#078516315a84d56216b5d4fed8f75d59d3b16cac"
 
+"@types/node@^11.11.3":
+  version "11.11.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.3.tgz#7c6b0f8eaf16ae530795de2ad1b85d34bf2f5c58"
+  integrity sha512-wp6IOGu1lxsfnrD+5mX6qwSwWuqsdkKKxTN4aQc4wByHAKZJf9/D4KXPQ1POUjEbnCP5LMggB0OEFNY9OTsMqg==
+
 "@types/node@^7.0.11":
   version "7.0.66"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.66.tgz#3d1dc4d6f52e484e843806ff456379f7e6ad5553"
@@ -4076,26 +4081,6 @@ babel-plugin-emotion@^9.1.2:
     source-map "^0.5.7"
     touch "^2.0.1"
 
-babel-plugin-file-loader@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-file-loader/-/babel-plugin-file-loader-1.1.1.tgz#22c6fdd5829ac4653d92cf5bd4d8bc87521523f2"
-  integrity sha512-ORBZGJHxXv2Pd+lFsVqu4gwraBTTo32ue17MzdbWduT65k3rws9AlVWWmgDP59nFLJCfVkEcLLIbuR2C4lKVjw==
-  dependencies:
-    big.js "^5.0.3"
-    fs-extra "^4.0.2"
-    mime "^2.0.3"
-
-babel-plugin-inline-react-svg@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-inline-react-svg/-/babel-plugin-inline-react-svg-1.0.1.tgz#1457edae1035a12b3c5026ef28a1239edc71d2a2"
-  integrity sha512-vTsG/L2cUN4XRJdJ1scYXMSBlgAxkZm/tgo1Lo/FulbPADztEtVOPUNuNDeEoRHZCz9RC0ZHXdVSJ/GaqahF/Q==
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.0.0"
-    "@babel/parser" "^7.0.0"
-    lodash.isplainobject "^4.0.6"
-    resolve "^1.8.1"
-    svgo "^0.7.2"
-
 babel-plugin-istanbul@^4.0.0, babel-plugin-istanbul@^4.1.4, babel-plugin-istanbul@^4.1.5, babel-plugin-istanbul@^4.1.6:
   version "4.1.6"
   resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-4.1.6.tgz#36c59b2192efce81c5b378321b74175add1c9a45"
@@ -5130,7 +5115,7 @@ big.js@^3.1.3:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-3.2.0.tgz#a5fc298b81b9e0dca2e458824784b65c52ba588e"
 
-big.js@^5.0.3, big.js@^5.2.2:
+big.js@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
@@ -22176,7 +22161,7 @@ terser-webpack-plugin@^1.0.2, terser-webpack-plugin@^1.1.0:
     webpack-sources "^1.1.0"
     worker-farm "^1.5.2"
 
-terser@3.16.1, uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9, "uglify-es@npm:terser":
+terser@3.16.1, uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9:
   name uglify-es
   version "3.16.1"
   resolved "https://registry.yarnpkg.com/terser/-/terser-3.16.1.tgz#5b0dd4fa1ffd0b0b43c2493b2c364fd179160493"

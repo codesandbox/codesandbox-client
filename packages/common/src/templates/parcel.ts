@@ -18,9 +18,9 @@ export class ParcelTemplate extends Template {
 
     entries.push(
       configurationFiles.package &&
-        configurationFiles.package.parsed &&
-        configurationFiles.package.parsed.main &&
-        absolute(configurationFiles.package.parsed.main)
+      configurationFiles.package.parsed &&
+      configurationFiles.package.parsed.main &&
+      absolute(configurationFiles.package.parsed.main)
     );
     entries.push('/index.html');
     entries.push('/src/index.html');

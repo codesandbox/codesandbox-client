@@ -1,5 +1,6 @@
 // @flow
 import { absolute } from '../utils/path';
+
 import {
   ConfigurationFile,
   ParsedConfigurationFile,
@@ -94,9 +95,9 @@ export default class Template {
   getEntries(configurationFiles: ParsedConfigurationFiles): Array<string> {
     return [
       configurationFiles.package &&
-        configurationFiles.package.parsed &&
-        configurationFiles.package.parsed.main &&
-        absolute(configurationFiles.package.parsed.main),
+      configurationFiles.package.parsed &&
+      configurationFiles.package.parsed.main &&
+      absolute(configurationFiles.package.parsed.main),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.ts',

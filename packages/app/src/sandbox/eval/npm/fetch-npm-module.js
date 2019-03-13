@@ -1,5 +1,6 @@
 // @flow
-import * as pathUtils from 'common/lib/utils/path';
+// @ts-check
+import * as pathUtils from 'path';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
@@ -25,7 +26,33 @@ type MetaFiles = Array<{ path: string, files?: MetaFiles }>;
 
 const metas: Metas = {};
 let combinedMetas: Meta = {};
+const normalizedMetas: { [key: string]: Meta } = {};
 const packages: Packages = {};
+
+async function fetchWithRetries(url: string, retries = 3): Promise<string> {
+  const doFetch = () =>
+    window.fetch(url).then(x => {
+      if (x.ok) {
+        return x.text();
+      }
+
+      throw new Error(`Could not fetch ${url}`);
+    });
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      // eslint-disable-next-line
+      return await doFetch();
+    } catch (e) {
+      console.error(e);
+      if (i === retries - 1) {
+        throw e;
+      }
+    }
+  }
+
+  throw new Error('Could not fetch');
+}
 
 export function getCombinedMetas() {
   return combinedMetas;
@@ -43,7 +70,7 @@ function normalize(
 ) {
   for (let i = 0; i < files.length; i += 1) {
     if (files[i].type === 'file') {
-      const absolutePath = pathUtils.join(rootPath, files[i].path);
+      const absolutePath = rootPath + files[i].path;
       fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
     }
 
@@ -77,8 +104,8 @@ function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
   return TEMP_USE_JSDELIVR || forceJsDelivr
-    ? `https://unpkg.com/${nameWithoutAlias}@${version}`
-    : `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`;
+    ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
+    : `https://unpkg.com/${nameWithoutAlias}@${version}`;
 }
 
 function getMeta(name: string, packageJSONPath: string, version: string) {
@@ -118,27 +145,13 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
     ? `https://cdn.jsdelivr.net/gh/${depVersion}${relativePath}`
     : `${getUnpkgUrl(depName, depVersion)}${relativePath}`;
 
-  packages[path] = window
-    .fetch(url)
-    .then(x => {
-      if (x.ok) {
-        return x.text();
-      }
-
-      throw new Error(`Could not find module ${path}`);
-    })
+  packages[path] = fetchWithRetries(url)
     .catch(err => {
       if (!isGitHub) {
         // Fallback to jsdelivr
-        return fetch(
+        return fetchWithRetries(url)(
           `${getUnpkgUrl(depName, depVersion, true)}${relativePath}`
-        ).then(x2 => {
-          if (x2.ok) {
-            return x2.text();
-          }
-
-          throw new Error(`Could not find module ${path}`);
-        });
+        );
       }
 
       throw err;
@@ -161,6 +174,12 @@ function resolvePath(
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
+  const isFile = (p, c, cb) => {
+    const callback = cb || c;
+
+    callback(null, !!manager.transpiledModules[p] || !!meta[p]);
+  };
+
   return new Promise((res, reject) => {
     resolve(
       path,
@@ -172,11 +191,7 @@ function resolvePath(
           'node_modules',
           manager.envVariables.NODE_PATH,
         ].filter(Boolean),
-        isFile: (p, c, cb) => {
-          const callback = cb || c;
-
-          callback(null, !!manager.transpiledModules[p] || !!meta[p]);
-        },
+        isFile,
         readFile: async (p, c, cb) => {
           const callback = cb || c;
 
@@ -321,14 +336,14 @@ export default async function fetchModule(
   const meta = await getMeta(dependencyName, packageJSONPath, version);
 
   const normalizeFunction = TEMP_USE_JSDELIVR ? normalizeJSDelivr : normalize;
-  const normalizedMeta = normalizeFunction(
-    dependencyName,
-    meta.files,
-    {},
-    packageJSONPath
-      ? pathUtils.dirname(packageJSONPath)
-      : pathUtils.join('/node_modules', dependencyName)
-  );
+  const rootPath = packageJSONPath
+    ? pathUtils.dirname(packageJSONPath)
+    : pathUtils.join('/node_modules', dependencyName);
+  const normalizedCacheKey = dependencyName + rootPath;
+  const normalizedMeta =
+    normalizedMetas[normalizedCacheKey] ||
+    normalizeFunction(dependencyName, meta.files, {}, rootPath);
+  normalizedMetas[normalizedCacheKey] = normalizedMeta;
   combinedMetas = { ...combinedMetas, ...normalizedMeta };
 
   const foundPath = await resolvePath(

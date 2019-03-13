@@ -1,6 +1,7 @@
 // @flow
 
-import { absolute, join } from '../utils/path';
+import { join } from 'path';
+import { absolute } from '../utils/path'
 
 import Template, { ParsedConfigurationFiles } from './template';
 import configurations from './configuration';

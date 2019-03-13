@@ -6,7 +6,7 @@ import _debug from 'common/lib/utils/debug';
 
 import hashsum from 'hash-sum';
 
-import * as pathUtils from 'common/lib/utils/path';
+import * as pathUtils from 'path';
 
 import type { Module } from './entities/module';
 import type { SourceMap } from './transpilers/utils/get-source-map';
@@ -598,7 +598,6 @@ export default class TranspiledModule {
     } else {
       const transpilers = manager.preset.getLoaders(this.module, this.query);
 
-      const t = Date.now();
       for (let i = 0; i < transpilers.length; i += 1) {
         const transpilerConfig = transpilers[i];
         const loaderContext = this.getLoaderContext(
@@ -612,10 +611,12 @@ export default class TranspiledModule {
           .join('!');
 
         try {
+          const t = Date.now();
           const {
             transpiledCode,
             sourceMap,
           } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
+          debug(`Transpiled '${this.getId()}' in ${Date.now() - t}ms`);
 
           if (this.warnings.length) {
             this.warnings.forEach(warning => {
@@ -650,7 +651,6 @@ export default class TranspiledModule {
 
           throw e;
         }
-        debug(`Transpiled '${this.getId()}' in ${Date.now() - t}ms`);
       }
     }
 
