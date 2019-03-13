@@ -12,6 +12,10 @@ export const selectSandboxes = [
   set(state`dashboard.selectedSandboxes`, props`sandboxIds`),
 ];
 
+export const setTrashSandboxes = [
+  set(state`dashboard.trashSandboxIds`, props`sandboxIds`),
+];
+
 export const setDragging = [
   set(state`dashboard.isDragging`, props`isDragging`),
 ];

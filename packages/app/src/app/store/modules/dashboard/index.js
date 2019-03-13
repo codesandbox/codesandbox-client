@@ -7,6 +7,7 @@ export default Module({
   model,
   computed,
   state: {
+    trashSandboxIds: [],
     selectedSandboxes: [],
     orderBy: {
       field: 'updatedAt',
@@ -22,6 +23,7 @@ export default Module({
   signals: {
     dashboardMounted: sequences.loadDashboard,
     sandboxesSelected: sequences.selectSandboxes,
+    setTrashSandboxes: sequences.setTrashSandboxes,
     dragChanged: sequences.setDragging,
     orderByChanged: sequences.setOrderBy,
     blacklistedTemplateAdded: sequences.addBlacklistedTemplate,
