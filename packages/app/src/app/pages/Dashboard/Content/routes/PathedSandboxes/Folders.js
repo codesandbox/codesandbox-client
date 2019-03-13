@@ -5,14 +5,8 @@ import getChildCollections from '../../../utils/get-child-collections';
 
 import { Folder, FoldersWrapper } from './elements';
 
-const Folders = ({ loading, me, history, teamId }) => {
-  const getPath = name => {
-    const slicedPath = window.location.pathname.split('sandboxes');
-    const last = slicedPath[slicedPath.length - 1];
-    return last && !last.includes('sandboxes')
-      ? `${decodeURIComponent(last)}/${name}`
-      : '/' + name;
-  };
+const Folders = ({ loading, me, history, match: { params }, teamId }) => {
+  const getPath = name => (params.path ? `${params.path}/${name}` : '/' + name);
 
   if (loading) return null;
 

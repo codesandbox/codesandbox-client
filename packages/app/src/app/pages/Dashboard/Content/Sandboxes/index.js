@@ -12,7 +12,7 @@ class Content extends React.Component {
     const {
       sandboxes,
       Header,
-      Folders,
+      SubHeader,
       isLoading,
       ExtraElement,
       hideOrder,
@@ -46,7 +46,7 @@ class Content extends React.Component {
             possibleTemplates={possibleTemplates}
           />
         </HeaderContainer>
-        {Folders}
+        {SubHeader}
         {isLoading ? (
           <DelayedAnimation
             delay={0.6}

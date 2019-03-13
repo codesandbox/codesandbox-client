@@ -65,7 +65,7 @@ const PathedSandboxes = props => {
                 isLoading={loading}
                 possibleTemplates={possibleTemplates}
                 Header={<Navigation teamId={teamId} path={path} />}
-                Folders={
+                SubHeader={
                   <Folders me={data.me} loading={loading} teamId={teamId} />
                 }
                 sandboxes={orderedSandboxes}
