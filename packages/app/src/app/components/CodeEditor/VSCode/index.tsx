@@ -160,46 +160,39 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   }
 
   updateModules = () => {
-    if (
-      this.currentTitle !== this.currentModule.title ||
-      this.currentDirectoryShortid !== this.currentModule.directoryShortid
-    ) {
-      const id = this.currentModule.id;
-      const title = this.currentModule.title;
-      const directoryShortid = this.currentModule.directoryShortid;
-      // Rename of current file.
-      this.currentTitle = this.currentModule.title;
-      this.currentDirectoryShortid = this.currentModule.directoryShortid;
+    Object.keys(this.modelListeners).forEach(path => {
+      const shortid = this.modelListeners[path].moduleShortid;
+      const model = this.modelListeners[path].model;
+      const module = this.sandbox.modules.find(m => m.shortid === shortid);
+      const modulePath = this.getVSCodePath(module.id);
 
-      const editor = this.editor.getActiveCodeEditor();
-      if (editor && editor.getValue(1) === (this.currentModule.code || '')) {
-        const model = editor.getModel();
-        const newPath = getModulePath(
-          this.sandbox.modules,
-          this.sandbox.directories,
-          this.currentModule.id
-        );
+      if (modulePath !== model.uri.path) {
         this.editor.textFileService
-          .move(model.uri, this.monaco.Uri.file(newPath))
+          .move(model.uri, this.monaco.Uri.file(modulePath))
           .then(() => {
-            if (
-              this.currentModule.id === id &&
-              this.currentModule.title === title &&
-              this.currentModule.directoryShortid === directoryShortid
-            ) {
-              this.editor.openFile(newPath);
+            const editor = this.editor.getActiveCodeEditor();
+            const currentModel = editor && editor.getModel();
+            const isCurrentFile =
+              currentModel && currentModel.uri.path === path;
+            if (isCurrentFile) {
+              this.editor.openFile(modulePath.replace('/sandbox', ''));
             }
+
+            // Don't move the listener from old path to new path, that's handled by the model
+            // logic
           });
       }
-    }
+    });
   };
 
-  getCurrentModuleVSCodePath = () =>
+  getVSCodePath = (moduleId: string) =>
     `/sandbox${getModulePath(
       this.sandbox.modules,
       this.sandbox.directories,
-      this.currentModule.id
+      moduleId
     )}`;
+
+  getCurrentModuleVSCodePath = () => this.getVSCodePath(this.currentModule.id);
 
   getPrettierConfig = () => {
     try {
@@ -245,7 +238,13 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     });
   }
 
-  modelListeners = {};
+  modelListeners: {
+    [path: string]: {
+      listener: { dispose: () => void };
+      moduleShortid: string;
+      model: any;
+    };
+  } = {};
   modelRemovedListener: { dispose: () => void };
   modelAddedListener: { dispose: () => void };
   activeEditorListener: { dispose: () => void };
@@ -254,7 +253,13 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.modelAddedListener = this.editor.textFileService.modelService.onModelAdded(
       model => {
         if (this.modelListeners[model.uri.path] === undefined) {
-          this.modelListeners[model.uri.path] = model.onDidChangeContent(e => {
+          const module = resolveModule(
+            model.uri.path.replace(/^\/sandbox/, ''),
+            this.sandbox.modules,
+            this.sandbox.directories
+          );
+
+          const listener = model.onDidChangeContent(e => {
             const path = model.uri.path;
             try {
               const module = resolveModule(
@@ -285,6 +290,11 @@ class MonacoEditor extends React.Component<Props> implements Editor {
               }
             }
           });
+          this.modelListeners[model.uri.path] = {
+            moduleShortid: module.shortid,
+            model,
+            listener,
+          };
         }
       }
     );
@@ -292,7 +302,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.modelRemovedListener = this.editor.textFileService.modelService.onModelRemoved(
       model => {
         if (this.modelListeners[model.uri.path]) {
-          this.modelListeners[model.uri.path].dispose();
+          this.modelListeners[model.uri.path].listener.dispose();
           delete this.modelListeners[model.uri.path];
         }
       }
@@ -310,7 +320,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       this.activeEditorListener.dispose();
     }
     Object.keys(this.modelListeners).forEach(p => {
-      this.modelListeners[p].dispose();
+      this.modelListeners[p].listener.dispose();
     });
   };
 
