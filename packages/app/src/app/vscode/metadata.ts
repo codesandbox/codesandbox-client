@@ -15,7 +15,7 @@ const VSCODE_METADATA = {
 const MONACO_METADATA = {
   CORE: {
     paths: {
-      src: '/public/13/vs',
+      src: '/public/14/vs',
       'npm/dev': 'node_modules/monaco-editor-core/dev/vs',
       'npm/min': 'node_modules/monaco-editor-core/min/vs',
       built: '/vscode/out-monaco-editor-core/min/vs',
@@ -30,7 +30,7 @@ const MONACO_METADATA = {
       modulePrefix: 'vs/language/typescript',
       thirdPartyNotices: 'node_modules/monaco-typescript/ThirdPartyNotices.txt',
       paths: {
-        src: '/public/13/vs/language/typescript',
+        src: '/public/14/vs/language/typescript',
         'npm/dev': '../monaco-typescript/release/dev',
         'npm/min': '/public/vscode11/vs/language/typescript',
         esm: '../monaco-typescript/release/esm',
@@ -41,7 +41,7 @@ const MONACO_METADATA = {
       contrib: 'vs/language/css/monaco.contribution',
       modulePrefix: 'vs/language/css',
       paths: {
-        src: '/public/13/vs/language/css',
+        src: '/public/14/vs/language/css',
         'npm/dev': '../monaco-css/release/dev',
         'npm/min': '/public/vscode11/vs/language/css',
         esm: 'node_modules/monaco-css/release/esm',
@@ -52,7 +52,7 @@ const MONACO_METADATA = {
       contrib: 'vs/language/json/monaco.contribution',
       modulePrefix: 'vs/language/json',
       paths: {
-        src: '/public/13/vs/language/json',
+        src: '/public/14/vs/language/json',
         'npm/dev': 'node_modules/monaco-json/release/dev',
         'npm/min': '/public/vscode11/vs/language/json',
         esm: 'node_modules/monaco-json/release/esm',
@@ -64,7 +64,7 @@ const MONACO_METADATA = {
       modulePrefix: 'vs/language/html',
       thirdPartyNotices: 'node_modules/monaco-html/ThirdPartyNotices.txt',
       paths: {
-        src: '/public/13/vs/language/html',
+        src: '/public/14/vs/language/html',
         'npm/dev': 'node_modules/monaco-html/release/dev',
         'npm/min': '/public/vscode11/vs/language/html',
         esm: 'node_modules/monaco-html/release/esm',
@@ -76,7 +76,7 @@ const MONACO_METADATA = {
       modulePrefix: 'vs/basic-languages',
       thirdPartyNotices: 'node_modules/monaco-languages/ThirdPartyNotices.txt',
       paths: {
-        src: '/public/13/vs/basic-languages',
+        src: '/public/14/vs/basic-languages',
         'npm/dev': '../monaco-languages/release/dev',
         'npm/min': '/public/vscode11/vs/basic-languages',
         esm: 'node_modules/monaco-languages/release/esm',

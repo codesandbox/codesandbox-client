@@ -32,7 +32,7 @@ gulp.task('homepage', () =>
 gulp.task('monaco', () =>
   gulp
     .src('standalone-packages/monaco-editor/release/min/vs/**/*')
-    .pipe(gulp.dest('www/public/13/vs'))
+    .pipe(gulp.dest('www/public/14/vs'))
 );
 
 // Used for cases where HTML is cached

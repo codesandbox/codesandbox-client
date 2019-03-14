@@ -587,7 +587,7 @@ export default function(requiredModule?: string[], isVSCode = true) {
 
     function loadFiles() {
       var loaderPathsConfig = {
-        'vs/language/vue': '/public/13/vs/language/vue',
+        'vs/language/vue': '/public/14/vs/language/vue',
       };
       if (!RESOLVED_CORE.isRelease()) {
         RESOLVED_PLUGINS.forEach(function(plugin) {

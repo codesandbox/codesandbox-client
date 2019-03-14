@@ -484,11 +484,11 @@ module.exports = {
         },
         {
           from: '../../node_modules/monaco-vue/release/min',
-          to: 'public/13/vs/language/vue',
+          to: 'public/14/vs/language/vue',
         },
         {
           from: '../../standalone-packages/monaco-editor/release/min/vs',
-          to: 'public/13/vs',
+          to: 'public/14/vs',
         },
         {
           from: '../sse-hooks/dist',

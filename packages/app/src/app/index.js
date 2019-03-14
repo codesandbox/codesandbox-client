@@ -89,7 +89,7 @@ if (process.env.NODE_ENV === 'production') {
         /webappstoolbarba\.texthelp\.com\//i,
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
         // Monaco debuggers
-        'https://codesandbox.io/public/13/vs/language/typescript/lib/typescriptServices.js',
+        'https://codesandbox.io/public/14/vs/language/typescript/lib/typescriptServices.js',
       ],
     }).install();
   } catch (error) {
