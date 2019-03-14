@@ -68,17 +68,19 @@ function EditorSettings({ store, signals }) {
               </SubDescription>
               <Rule />
             </VSCodePlaceholder>
-            <PaddedPreference
-              title="VIM Mode"
-              type="boolean"
-              {...bindValue('vimMode')}
-            />
-            <SubDescription>
-              This will override Use CodeMirror setting as Monaco doesn{"'"}t
-              have a VIM mode yet.
-            </SubDescription>
           </PreferenceContainer>
         </VSCodePlaceholder>
+        <PreferenceContainer>
+          <PaddedPreference
+            title="VIM Mode"
+            type="boolean"
+            {...bindValue('vimMode')}
+          />
+          <SubDescription>
+            This will enable the VSCodeVim extension, you need to reload the
+            page to see the effects
+          </SubDescription>
+        </PreferenceContainer>
       </SubContainer>
     </div>
   );

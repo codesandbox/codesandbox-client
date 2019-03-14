@@ -31,6 +31,7 @@ import {
   initializeSettings,
   initializeExtensionsFolder,
   initializeCustomTheme,
+  setVimExtensionEnabled,
 } from './vscode/initializers';
 import { EXTENSIONS_LOCATION } from './vscode/constants';
 
@@ -200,11 +201,16 @@ window.BrowserFS.configure(
     const isVSCode = controller.getState().preferences.settings
       .experimentVSCode;
 
-    // For first-timers initialize a theme in the cache so it doesn't jump colors
-    initializeExtensionsFolder();
-    initializeCustomTheme();
-    initializeThemeCache();
-    initializeSettings();
+    if (isVSCode) {
+      // For first-timers initialize a theme in the cache so it doesn't jump colors
+      initializeExtensionsFolder();
+      initializeCustomTheme();
+      initializeThemeCache();
+      initializeSettings();
+      setVimExtensionEnabled(
+        localStorage.getItem('settings.vimmode') === 'true'
+      );
+    }
 
     // eslint-disable-next-line global-require
     vscode.loadScript(

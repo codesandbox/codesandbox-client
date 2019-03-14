@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from 'common/lib/components/Button';
+import { Button } from 'common/lib/components/Button';
 import PageContainer from '../../components/PageContainer';
 
 const FourOfFourContainer = styled.main`

@@ -6,7 +6,7 @@ import Margin from 'common/lib/components/spacing/Margin';
 import track from 'common/lib/utils/analytics';
 
 import { Description } from '../../elements';
-import { Button } from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 type Props = {
   store: any;

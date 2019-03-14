@@ -11,9 +11,33 @@ import {
   IconContainer,
 } from './elements';
 
+interface UrlProps {
+  href?: string;
+  a?: boolean;
+}
+
+interface ClickProps {
+  onClick?: () => void;
+}
+
+type Props = (UrlProps & ClickProps) & {
+  moreInfo?: boolean;
+  unresponsive?: boolean;
+  iconProps?: object;
+  iconContainerProps?: object;
+  title?: string;
+  tooltip?: string;
+  highlight?: boolean;
+  placeholder?: string | false;
+  blink?: boolean;
+  children?: React.ReactChildren;
+  Icon: React.ComponentType;
+};
+
 function ActionComponent({
   onClick,
   href,
+  a,
   Icon,
   title,
   tooltip,
@@ -21,12 +45,11 @@ function ActionComponent({
   placeholder,
   moreInfo,
   unresponsive,
-  a,
   iconProps = {},
   iconContainerProps = {},
   children,
   ...props
-}) {
+}: Props) {
   if (!href && (placeholder || tooltip)) {
     return (
       <ActionTooltip
@@ -37,9 +60,7 @@ function ActionComponent({
       >
         <IconContainer onClick={onClick} {...iconContainerProps}>
           <Icon {...iconProps} />
-          {title !== undefined && (
-            <Title unresponsive={unresponsive}>{title}</Title>
-          )}
+          {title !== undefined && <Title>{title}</Title>}
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
         {children}
@@ -48,12 +69,10 @@ function ActionComponent({
   }
   if (onClick) {
     return (
-      <Action disabledAction={!onClick} highlight={highlight} {...props}>
+      <Action highlight={highlight} {...props}>
         <IconContainer onClick={onClick} {...iconContainerProps}>
           <Icon {...iconProps} />
-          {title !== undefined && (
-            <Title unresponsive={unresponsive}>{title}</Title>
-          )}
+          {title !== undefined && <Title>{title}</Title>}
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
         {children}
@@ -67,9 +86,7 @@ function ActionComponent({
         <ActionTooltip title={placeholder || tooltip}>
           <IconContainer {...iconContainerProps}>
             <Icon {...iconProps} />
-            {title !== undefined && (
-              <Title unresponsive={unresponsive}>{title}</Title>
-            )}
+            {title !== undefined && <Title>{title}</Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </ActionTooltip>
@@ -84,9 +101,7 @@ function ActionComponent({
         <ActionTooltip title={placeholder || tooltip}>
           <IconContainer>
             <Icon {...iconProps} />
-            {title !== undefined && (
-              <Title unresponsive={unresponsive}>{title}</Title>
-            )}
+            {title !== undefined && <Title>{title}</Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </ActionTooltip>
@@ -99,9 +114,7 @@ function ActionComponent({
     <ActionLink to={href} {...props}>
       <IconContainer {...iconContainerProps}>
         <Icon {...iconProps} />
-        {title !== undefined && (
-          <Title unresponsive={unresponsive}>{title}</Title>
-        )}
+        {title !== undefined && <Title>{title}</Title>}
         {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
       </IconContainer>
       {children}

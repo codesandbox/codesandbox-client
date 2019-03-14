@@ -6,18 +6,19 @@ import PlusIcon from 'react-icons/lib/go/plus';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import SaveIcon from 'react-icons/lib/md/save';
-import { Button } from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import SignInButton from 'app/pages/common/SignInButton';
 
 import { saveAllModules } from 'app/store/modules/editor/utils';
 
 import { patronUrl, dashboardUrl } from 'common/lib/utils/url-generator';
 
+// @ts-ignore
 import PatronBadge from '-!svg-react-loader!common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/lib/components/spacing/Margin';
 
+import LikeHeart from 'app/pages/common/LikeHeart';
 import UserMenu from 'app/pages/common/UserMenu';
-import theme from 'common/lib/theme';
 
 import Logo from './Logo';
 import Action from './Action';
@@ -35,7 +36,32 @@ import {
 import UpdateFound from './UpdateFound';
 import { MenuBarContainer } from './MenuBar';
 
-const ForkButton = ({ signals, secondary, style }) => (
+type ButtonProps = {
+  store: any;
+  signals: any;
+  style: React.CSSProperties;
+  secondary?: boolean;
+};
+
+const LikeButton = ({
+  store,
+  signals,
+  style,
+  likeCount,
+}: ButtonProps & { likeCount: string }) => (
+  <LikeHeart
+    colorless
+    style={style}
+    text={likeCount}
+    sandbox={store.editor.currentSandbox}
+    store={store}
+    signals={signals}
+    disableTooltip
+    highlightHover
+  />
+);
+
+const ForkButton = ({ signals, secondary, style }: ButtonProps) => (
   <Button
     onClick={() => {
       signals.editor.forkSandboxClicked();
@@ -44,12 +70,14 @@ const ForkButton = ({ signals, secondary, style }) => (
     secondary={secondary}
     small
   >
-    <Fork style={{ marginRight: '.5rem' }} />
-    Fork
+    <>
+      <Fork style={{ marginRight: '.5rem' }} />
+      Fork
+    </>
   </Button>
 );
 
-const ShareButton = ({ signals, secondary, style }) => (
+const ShareButton = ({ signals, secondary, style }: ButtonProps) => (
   <Button
     onClick={() => {
       signals.modalOpened({ modal: 'share' });
@@ -58,12 +86,20 @@ const ShareButton = ({ signals, secondary, style }) => (
     style={style}
     small
   >
-    <ShareIcon style={{ marginRight: '.5rem' }} />
-    Share
+    <>
+      <ShareIcon style={{ marginRight: '.5rem' }} />
+      Share
+    </>
   </Button>
 );
 
-const Header = ({ store, signals, zenMode }) => {
+interface Props {
+  store: any;
+  signals: any;
+  zenMode: boolean;
+}
+
+const Header = ({ store, signals, zenMode }: Props) => {
   const sandbox = store.editor.currentSandbox;
   const vscode = store.preferences.settings.experimentVSCode;
 
@@ -75,7 +111,7 @@ const Header = ({ store, signals, zenMode }) => {
             <DashboardIcon />
           </DashboardLink>
         ) : (
-          <Logo marginRight={0} />
+          <Logo />
         )}
 
         {vscode ? (
@@ -104,7 +140,7 @@ const Header = ({ store, signals, zenMode }) => {
       </Left>
 
       {sandbox.owned && (
-        <Centered css={{ margin: '0 3rem' }}>
+        <Centered style={{ margin: '0 3rem' }}>
           <CollectionInfo isLoggedIn={store.isLoggedIn} sandbox={sandbox} />
         </Centered>
       )}
@@ -114,10 +150,6 @@ const Header = ({ store, signals, zenMode }) => {
           <Action
             onClick={() => document.location.reload()}
             Icon={UpdateFound}
-            style={{
-              color: theme.green(),
-              fontSize: '1rem',
-            }}
             tooltip="Update Available! Click to Refresh."
           />
         )}
@@ -158,15 +190,26 @@ const Header = ({ store, signals, zenMode }) => {
           Icon={PlusIcon}
         />
 
+        {store.isLoggedIn && (
+          <LikeButton
+            style={{ fontSize: '.75rem', margin: '0 0.5rem' }}
+            signals={signals}
+            secondary={!sandbox.owned}
+            store={store}
+            likeCount={store.editor.currentSandbox.likeCount}
+          />
+        )}
         <ShareButton
           style={{ fontSize: '.75rem', margin: '0 1rem' }}
           signals={signals}
           secondary={!sandbox.owned}
+          store={store}
         />
         <ForkButton
           secondary={sandbox.owned}
           style={{ fontSize: '.75rem' }}
           signals={signals}
+          store={store}
         />
 
         <Margin
@@ -187,7 +230,7 @@ const Header = ({ store, signals, zenMode }) => {
                 marginRight: 0,
               }}
             >
-              <UserMenu small />
+              <UserMenu store={store} signals={signals} />
             </div>
           ) : (
             <SignInButton style={{ fontSize: '.76rem' }} />

@@ -4,9 +4,9 @@ import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 const ctx: any = self as any;
 declare var __DEV__: boolean;
 
-// if (typeof Worker === 'undefined') {
-ctx.importScripts('https://unpkg.com/subworkers@1.0.1/subworkers.js');
-// }
+if (typeof Worker === 'undefined') {
+  ctx.importScripts('https://unpkg.com/subworkers@1.0.1/subworkers.js');
+}
 
 export const initializePolyfills = () => {
   require('core-js/fn/string/starts-with');

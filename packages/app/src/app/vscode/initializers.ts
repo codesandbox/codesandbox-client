@@ -1,3 +1,5 @@
+import vscode from 'app/vscode';
+
 export function initializeThemeCache() {
   if (!localStorage.getItem('vs-global://colorThemeData')) {
     import('./theme-cache').then(rawTheme => {
@@ -88,5 +90,14 @@ export function initializeCustomTheme() {
       '/extensions/custom-theme/themes/custom-color-theme.json',
       JSON.parse(customTheme)
     );
+  }
+}
+
+const VIM_EXTENSION_ID = 'vscodevim.vim';
+export function setVimExtensionEnabled(vimEnabled: boolean) {
+  if (vimEnabled) {
+    vscode.enableExtension(VIM_EXTENSION_ID);
+  } else {
+    vscode.disableExtension(VIM_EXTENSION_ID);
   }
 }

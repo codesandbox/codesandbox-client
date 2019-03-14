@@ -16057,14 +16057,6 @@ monaco-editor-textmate@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/monaco-editor-textmate/-/monaco-editor-textmate-2.0.0.tgz#f24ace7e37b6169d910b329e20d1ae2b244ba55e"
 
-monaco-editor-webpack-plugin@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.4.0.tgz#7324258ab3695464cfe3bc12edb2e8c55b80d92f"
-
-monaco-editor@^0.13.1:
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.13.1.tgz#6b9ce20e4d1c945042d256825eb133cb23315a52"
-
 monaco-textmate@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/monaco-textmate/-/monaco-textmate-3.0.0.tgz#abfbce7d7ff000954ae3206e512f325db6e7b8a8"
@@ -22378,7 +22370,7 @@ terser-webpack-plugin@^1.0.2, terser-webpack-plugin@^1.1.0:
     webpack-sources "^1.1.0"
     worker-farm "^1.5.2"
 
-terser@3.16.1, uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9, "uglify-es@npm:terser":
+terser@3.16.1, uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9:
   name uglify-es
   version "3.16.1"
   resolved "https://registry.yarnpkg.com/terser/-/terser-3.16.1.tgz#5b0dd4fa1ffd0b0b43c2493b2c364fd179160493"
@@ -23505,6 +23497,13 @@ util@0.10.3:
   resolved "https://registry.yarnpkg.com/util/-/util-0.10.3.tgz#7afb1afe50805246489e3db7fe0ed379336ac0f9"
   dependencies:
     inherits "2.0.1"
+
+util@0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/util/-/util-0.11.1.tgz#3236733720ec64bb27f6e26f421aaa2e1b588d61"
+  integrity sha512-HShAsny+zS2TZfaXxD9tYj4HQGlBezXZMZuM/S5PKLLoZkShZiGk9o5CzukI1LVHZvjdvZ2Sj1aW/Ndn2NB/HQ==
+  dependencies:
+    inherits "2.0.3"
 
 util@^0.10.3:
   version "0.10.4"

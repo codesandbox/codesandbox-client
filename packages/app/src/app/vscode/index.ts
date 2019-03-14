@@ -22,7 +22,7 @@ const context: any = window;
  */
 function blocker() {
   let resolve = null;
-  const promise = new Promise(r => {
+  const promise = new Promise<any>(r => {
     resolve = r;
   });
 
@@ -45,6 +45,8 @@ class VSCodeManager {
   private statusbarPart = blocker();
   private menubarPart = blocker();
   private commandService = blocker();
+  private extensionService = blocker();
+  private extensionEnablementService = blocker();
 
   public acquireController(controller: any) {
     this.controller = controller;
@@ -336,6 +338,8 @@ class VSCodeManager {
       { ICommandService },
       { SyncDescriptor },
       { IInstantiationService },
+      { IExtensionService },
+      { IExtensionEnablementService },
     ] = [
       context.require(
         'vs/codesandbox/services/codesandbox/browser/codesandboxService'
@@ -350,6 +354,10 @@ class VSCodeManager {
       context.require('vs/platform/commands/common/commands'),
       context.require('vs/platform/instantiation/common/descriptors'),
       context.require('vs/platform/instantiation/common/instantiation'),
+      context.require('vs/workbench/services/extensions/common/extensions'),
+      context.require(
+        'vs/platform/extensionManagement/common/extensionManagement'
+      ),
     ];
 
     context.monaco.editor.create(
@@ -380,6 +388,14 @@ class VSCodeManager {
           // Initialize command service
           const commandService = accessor.get(ICommandService);
           this.commandService.resolve(commandService);
+
+          const extensionService = accessor.get(IExtensionService);
+          this.extensionService.resolve(extensionService);
+
+          const extensionEnablementService = accessor.get(
+            IExtensionEnablementService
+          );
+          this.extensionEnablementService.resolve(extensionEnablementService);
 
           // Initialize these services
           accessor.get(CodeSandboxConfigurationUIService);
@@ -454,6 +470,38 @@ class VSCodeManager {
       keybindings,
     });
   }
+
+  public async disableExtension(id: string) {
+    const extensionService = await this.extensionService.promise;
+    const extensionEnablementService = await this.extensionEnablementService
+      .promise;
+
+    const extensionDescription = await extensionService.getExtension(id);
+
+    if (extensionDescription) {
+      const { toExtension } = context.require(
+        'vs/workbench/services/extensions/common/extensions'
+      );
+      const extension = toExtension(extensionDescription);
+      extensionEnablementService.setEnablement([extension], 0);
+    }
+  }
+
+  public async enableExtension(id: string) {
+    const extensionEnablementService = await this.extensionEnablementService
+      .promise;
+    const extensionIdentifier = (await extensionEnablementService.getDisabledExtensions()).find(
+      ext => ext.id === id
+    );
+
+    if (extensionIdentifier) {
+      // Sadly we have to call a private api for this. Might change this once we have extension management
+      // built in.
+      extensionEnablementService._enableExtension(extensionIdentifier);
+    }
+  }
 }
 
-export default new VSCodeManager();
+const vscode = new VSCodeManager();
+
+export default vscode;

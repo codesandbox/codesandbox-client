@@ -221,7 +221,8 @@ export default class Module {
     }
 
     if (request === 'util') {
-      return require('util');
+      // Direct import to get the right version
+      return require('../node_modules/util');
     }
 
     if (request === 'os') {
@@ -263,6 +264,14 @@ export default class Module {
           return true;
         }
         throw new Error('File not found');
+      };
+      fs.access = (_path: any, cb1: any, cb: (err?: Error) => void) => {
+        const callback = cb || cb1;
+        // TODO: make this async
+        if (fs.existsSync(_path)) {
+          return callback;
+        }
+        callback(new Error('File not found'));
       };
 
       return fs;

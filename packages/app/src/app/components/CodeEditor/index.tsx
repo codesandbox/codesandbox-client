@@ -173,9 +173,7 @@ export default class CodeEditor extends React.PureComponent<
     }
 
     let Editor: React.ComponentClass<Props> =
-      (settings.vimMode || settings.codeMirror) && !props.isLive
-        ? CodeMirror
-        : Monaco;
+      settings.codeMirror && !props.isLive ? CodeMirror : Monaco;
 
     if (settings.experimentVSCode) {
       Editor = VSCode;

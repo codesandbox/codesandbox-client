@@ -3,14 +3,29 @@ import { Link } from 'react-router-dom';
 import Tooltip from 'common/lib/components/Tooltip';
 
 const blink = keyframes`
-	0% {color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};}
-	50%{color: rgba(255, 255, 255, 1);}
-	100% {color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};}
+  // @ts-ignore;
+  0% {color: ${(props: { theme: { light: boolean } }) =>
+    props.theme.light
+      ? css`rgba(0, 0, 0, 0.7)`
+      : css`rgba(255, 255, 255, 0.7)`}};
+
+	50% {color: rgba(255, 255, 255, 1);}
+
+	100% {color: ${(props: { theme: { light: boolean } }) =>
+    props.theme.light
+      ? css`rgba(0, 0, 0, 0.7)`
+      : css`rgba(255, 255, 255, 0.7)`}};
+
 `;
 
-const styles = props =>
+type OptionProps = {
+  blink?: boolean;
+  highlight?: boolean;
+  hideBottomHighlight?: boolean;
+  theme: any;
+};
+
+const styles = (props: OptionProps) =>
   css`
     ${props.blink &&
       css`
@@ -55,21 +70,23 @@ export const Title = styled.span`
   padding-left: 0.5rem;
 `;
 
-export const Action = styled.div`
+export const Action = styled.div<OptionProps>`
   ${styles};
 `;
 
-export const ActionLink = styled(Link)`
-  ${styles};
-  text-decoration: none;
-`;
-
-export const ActionA = styled.a`
+export const ActionLink = styled(Link)<OptionProps>`
   ${styles};
   text-decoration: none;
 `;
 
-export const ActionTooltip = styled(Tooltip)`
+export const ActionA = styled.a<OptionProps>`
+  ${styles};
+  text-decoration: none;
+`;
+
+export const ActionTooltip = styled(Tooltip)<
+  OptionProps & { disabledAction?: boolean }
+>`
   ${styles};
   ${props =>
     props.disabledAction &&
@@ -89,5 +106,5 @@ export const IconContainer = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0 0.75rem;
+  padding: 0 0.5rem;
 `;
