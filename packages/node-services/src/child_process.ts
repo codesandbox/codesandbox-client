@@ -1,6 +1,9 @@
 import { EventEmitter } from 'events';
 import { protocolAndHost } from 'common/lib/utils/url-generator';
 import { commonPostMessage } from 'common/lib/utils/global';
+import _debug from 'common/lib/utils/debug';
+
+const debug = _debug('cs:node:child_process');
 
 let DefaultWorker: false | (() => Worker);
 let workerMap: Map<string, false | (() => Worker)> = new Map();
@@ -208,7 +211,7 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
     return new NullChildProcess();
   }
 
-  console.log('forking', path);
+  debug('Forking', path);
 
   const WORKER_ID = path + '-' + Math.floor(Math.random() * 100000);
 
@@ -284,13 +287,13 @@ function preloadWorker(path: string) {
 
 function execFileSync(path: string) {
   if (process.env.NODE_ENV === 'development') {
-    console.log('EXEC_FILE_SYNC', path);
+    debug('EXEC_FILE_SYNC', path);
   }
 }
 
 function execSync(path: string) {
   if (process.env.NODE_ENV === 'development') {
-    console.log('EXEC_SYNC', path);
+    debug('EXEC_SYNC', path);
   }
 }
 
