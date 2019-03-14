@@ -65,9 +65,10 @@ const PathedSandboxes = props => {
                 isLoading={loading}
                 possibleTemplates={possibleTemplates}
                 Header={<Navigation teamId={teamId} path={path} />}
-                SubHeader={
-                  <Folders me={data.me} loading={loading} teamId={teamId} />
-                }
+                // Fix React Virtualized First
+                // SubHeader={
+                //   <Folders me={data.me} loading={loading} teamId={teamId} />
+                // }
                 sandboxes={orderedSandboxes}
               />
             );
