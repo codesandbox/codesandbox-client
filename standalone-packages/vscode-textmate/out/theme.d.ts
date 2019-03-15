@@ -4,7 +4,7 @@ export declare const enum FontStyle {
     None = 0,
     Italic = 1,
     Bold = 2,
-    Underline = 4,
+    Underline = 4
 }
 export declare class ParsedThemeRule {
     _parsedThemeRuleBrand: void;
@@ -66,9 +66,9 @@ export declare class ThemeTrieElement {
     private readonly _rulesWithParentScopes;
     private readonly _children;
     constructor(mainRule: ThemeTrieElementRule, rulesWithParentScopes?: ThemeTrieElementRule[], children?: ITrieChildrenMap);
-    private static _sortBySpecificity(arr);
-    private static _cmpBySpecificity(a, b);
+    private static _sortBySpecificity;
+    private static _cmpBySpecificity;
     match(scope: string): ThemeTrieElementRule[];
     insert(scopeDepth: number, scope: string, parentScopes: string[], fontStyle: number, foreground: number, background: number): void;
-    private _doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background);
+    private _doInsertHere;
 }

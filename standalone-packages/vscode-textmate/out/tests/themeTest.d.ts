@@ -7,14 +7,14 @@ export interface IExpectedTokenization {
     _t: string;
 }
 export declare class ThemeTest {
-    private static _readFile(filename);
-    private static _readJSONFile<T>(filename);
+    private static _readFile;
+    private static _readJSONFile;
     private readonly tests;
     private readonly THEMES_TEST_PATH;
     readonly testName: string;
     constructor(THEMES_TEST_PATH: string, testFile: string, resolver: Resolver);
     evaluate(themeDatas: ThemeData[]): Promise<any>;
-    private _getDiffPageData();
+    private _getDiffPageData;
     hasDiff(): boolean;
     writeDiffPage(): void;
 }

@@ -1,1 +1,2 @@
-declare module 'durations';export {};
+declare module 'durations';
+export {};

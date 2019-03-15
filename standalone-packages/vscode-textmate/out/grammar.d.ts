@@ -8,7 +8,7 @@ export declare const enum TemporaryStandardTokenType {
     Comment = 1,
     String = 2,
     RegEx = 4,
-    MetaEmbedded = 8,
+    MetaEmbedded = 8
 }
 export declare function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar;
 export interface IThemeProvider {
@@ -61,7 +61,7 @@ export declare class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
     getExternalGrammar(scopeName: string, repository?: IRawRepository): IRawGrammar;
     tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult;
     tokenizeLine2(lineText: string, prevState: StackElement): ITokenizeLineResult2;
-    private _tokenize(lineText, prevState, emitBinaryTokens);
+    private _tokenize;
 }
 export declare class StackElementMetadata {
     static toBinaryStr(metadata: number): string;
@@ -79,14 +79,14 @@ export declare class ScopeListElement {
     readonly scope: string;
     readonly metadata: number;
     constructor(parent: ScopeListElement, scope: string, metadata: number);
-    private static _equals(a, b);
+    private static _equals;
     equals(other: ScopeListElement): boolean;
-    private static _matchesScope(scope, selector, selectorWithDot);
-    private static _matches(target, parentScopes);
+    private static _matchesScope;
+    private static _matches;
     static mergeMetadata(metadata: number, scopesList: ScopeListElement, source: ScopeMetadata): number;
-    private static _push(target, grammar, scopes);
+    private static _push;
     push(grammar: Grammar, scope: string): ScopeListElement;
-    private static _generateScopes(scopesList);
+    private static _generateScopes;
     generateScopes(): string[];
 }
 /**
@@ -130,18 +130,18 @@ export declare class StackElement implements StackElementDef {
     /**
      * A structural equals check. Does not take into account `scopes`.
      */
-    private static _structuralEquals(a, b);
-    private static _equals(a, b);
+    private static _structuralEquals;
+    private static _equals;
     clone(): StackElement;
     equals(other: StackElement): boolean;
-    private static _reset(el);
+    private static _reset;
     reset(): void;
     pop(): StackElement;
     safePop(): StackElement;
     push(ruleId: number, enterPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement;
     getEnterPos(): number;
     getRule(grammar: IRuleRegistry): Rule;
-    private _writeString(res, outIndex);
+    private _writeString;
     toString(): string;
     setContentNameScopesList(contentNameScopesList: ScopeListElement): StackElement;
     setEndRule(endRule: string): StackElement;

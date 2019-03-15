@@ -45,9 +45,9 @@ export declare class RegExpSource {
     constructor(regExpSource: string, ruleId: number, handleAnchors?: boolean);
     clone(): RegExpSource;
     setSource(newSource: string): void;
-    private _handleAnchors(regExpSource);
+    private _handleAnchors;
     resolveBackReferences(lineText: string, captureIndices: IOnigCaptureIndex[]): string;
-    private _buildAnchorCache();
+    private _buildAnchorCache;
     resolveAnchors(allowA: boolean, allowG: boolean): string;
 }
 export declare class RegExpSourceList {
@@ -62,7 +62,7 @@ export declare class RegExpSourceList {
     length(): number;
     setSource(index: number, newSource: string): void;
     compile(onigLib: IOnigLib, allowA: boolean, allowG: boolean): ICompiledRule;
-    private _resolveAnchors(onigLib, allowA, allowG);
+    private _resolveAnchors;
 }
 export declare class MatchRule extends Rule {
     private readonly _match;
@@ -97,7 +97,7 @@ export declare class BeginEndRule extends Rule {
     getEndWithResolvedBackReferences(lineText: string, captureIndices: IOnigCaptureIndex[]): string;
     collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean): void;
     compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule;
-    private _precompile(grammar);
+    private _precompile;
 }
 export declare class BeginWhileRule extends Rule {
     private readonly _begin;
@@ -113,13 +113,13 @@ export declare class BeginWhileRule extends Rule {
     getWhileWithResolvedBackReferences(lineText: string, captureIndices: IOnigCaptureIndex[]): string;
     collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean): void;
     compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule;
-    private _precompile(grammar);
+    private _precompile;
     compileWhile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule;
-    private _precompileWhile(grammar);
+    private _precompileWhile;
 }
 export declare class RuleFactory {
     static createCaptureRule(helper: IRuleFactoryHelper, $location: ILocation, name: string, contentName: string, retokenizeCapturedWithRuleId: number): CaptureRule;
     static getCompiledRuleId(desc: IRawRule, helper: IRuleFactoryHelper, repository: IRawRepository): number;
-    private static _compileCaptures(captures, helper, repository);
-    private static _compilePatterns(patterns, helper, repository);
+    private static _compileCaptures;
+    private static _compilePatterns;
 }

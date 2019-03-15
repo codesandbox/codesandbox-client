@@ -46,13 +46,13 @@ export declare const enum StandardTokenType {
     Other = 0,
     Comment = 1,
     String = 2,
-    RegEx = 4,
+    RegEx = 4
 }
 export declare enum StandardTokenType {
     Other = 0,
     Comment = 1,
     String = 2,
-    RegEx = 4,
+    RegEx = 4
 }
 export interface IGrammarConfiguration {
     embeddedLanguages?: IEmbeddedLanguagesMap;
@@ -87,7 +87,7 @@ export declare class Registry {
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      */
     loadGrammar(initialScopeName: string): Thenable<IGrammar>;
-    private _loadGrammar(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes);
+    private _loadGrammar;
     /**
      * Adds a rawGrammar.
      */
@@ -154,7 +154,7 @@ export declare const enum MetadataConsts {
     TOKEN_TYPE_OFFSET = 8,
     FONT_STYLE_OFFSET = 11,
     FOREGROUND_OFFSET = 14,
-    BACKGROUND_OFFSET = 23,
+    BACKGROUND_OFFSET = 23
 }
 export interface ITokenizeLineResult2 {
     /**
