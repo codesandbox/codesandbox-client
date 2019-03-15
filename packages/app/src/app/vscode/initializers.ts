@@ -30,6 +30,7 @@ export function initializeSettings() {
           'editor.fontFamily': "dm, Menlo, Monaco, 'Courier New', monospace",
           'editor.tabSize': 2,
           'editor.minimap.enabled': false,
+          'workbench.editor.openSideBySideDirection': 'down',
         },
         null,
         2

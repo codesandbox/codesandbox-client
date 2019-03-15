@@ -1,14 +1,29 @@
+import { getGlobal } from './global';
+
 declare var __DEV__: boolean | undefined;
 
-const getDebugger = () => {
+const shouldShowDebugger = () => {
+  if (typeof __DEV__ !== 'undefined' && __DEV__) {
+    return true;
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    return true;
+  }
+
   if (
     typeof document !== 'undefined' &&
-    ((typeof __DEV__ === 'undefined' ||
-      !__DEV__ ||
-      process.env.NODE_ENV === 'production') &&
-      document.location.search.indexOf('debug') === -1)
+    document.location.search.includes('debug')
   ) {
-    const global = window as any;
+    return true;
+  }
+
+  return false;
+};
+
+const getDebugger: () => (key: string) => (...message: any[]) => void = () => {
+  if (shouldShowDebugger()) {
+    const global = getGlobal() as any;
     // Return a debugger that will log to sentry
     return (key: string) => (message: string) => {
       if (typeof global.Raven === 'object') {
