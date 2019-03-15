@@ -10,7 +10,7 @@ export function getGlobal() {
     return returnedGlobal as Worker & { BrowserFS: any };
   }
 
-  return self;
+  return global;
 }
 
 const global = getGlobal();
