@@ -26,7 +26,7 @@
     "version": "npm run test && node scripts/release.js",
     "postversion": "git push && git push --tags",
     "prepublishOnly": "node scripts/release.js",
-    "install-dependencies": "yarn install"
+    "install-dependencies": "npm install"
   },
   "dependencies": {
     "oniguruma": "^7.0.0"
