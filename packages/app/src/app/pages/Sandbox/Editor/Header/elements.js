@@ -35,7 +35,6 @@ export const Left = styled.div`
 `;
 
 export const Centered = styled.div`
-  position: absolute;
   right: 0;
   left: 0;
   display: flex;
