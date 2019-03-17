@@ -290,6 +290,7 @@ export const setSandbox = [
   actions.setInitialTab,
   actions.setUrlOptions,
   actions.setWorkspace,
+  syncFilesToFS,
 ];
 
 export const joinLiveSessionIfAvailable = [
@@ -460,7 +461,7 @@ export const loadSandbox = factories.withLoadApp([
 
       actions.getSandbox,
       {
-        success: [joinLiveSessionIfAvailable, ensurePackageJSON, syncFilesToFS],
+        success: [joinLiveSessionIfAvailable, ensurePackageJSON],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },
