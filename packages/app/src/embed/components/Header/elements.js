@@ -9,7 +9,7 @@ export const CodeSandboxButton = styled(RealButton)`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 138px;
+  width: 147px;
   padding: 0.4em 0.7em;
 
   @media (max-width: 510px) {

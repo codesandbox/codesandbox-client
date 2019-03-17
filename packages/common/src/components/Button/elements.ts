@@ -136,9 +136,9 @@ const styles = css<{
           padding: 0.65em 2.25em;
         `};
 
-  svg {
-    font-size: 1.125em;
-  }
+  /* svg {
+     font-size: 1.125em;
+  } */
 
   ${props =>
     !props.disabled &&

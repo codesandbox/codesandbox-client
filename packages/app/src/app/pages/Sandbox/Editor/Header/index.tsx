@@ -233,7 +233,7 @@ const Header = ({ store, signals, zenMode }: Props) => {
               <UserMenu store={store} signals={signals} />
             </div>
           ) : (
-            <SignInButton style={{ fontSize: '.76rem' }} />
+            <SignInButton style={{ fontSize: '.75rem' }} />
           )}
         </Margin>
       </Right>
