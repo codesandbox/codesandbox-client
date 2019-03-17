@@ -99,6 +99,17 @@ export function setVimExtensionEnabled(vimEnabled: boolean) {
   if (vimEnabled) {
     vscode.enableExtension(VIM_EXTENSION_ID);
   } else {
+    // Auto disable vim extension
+    if (
+      localStorage.getItem('vs-global://extensionsIdentifiers/disabled') ==
+      undefined
+    ) {
+      localStorage.setItem(
+        'vs-global://extensionsIdentifiers/disabled',
+        '[{"id":"vscodevim.vim"}]'
+      );
+    }
+
     vscode.disableExtension(VIM_EXTENSION_ID);
   }
 }
