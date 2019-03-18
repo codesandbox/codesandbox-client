@@ -145,11 +145,7 @@ export default class Navigation extends React.PureComponent {
             <Item href="/explore">Explore</Item>
             <Item href="/docs">Docs</Item>
 
-            <Item
-              href="https://medium.com/@compuives"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Item href="/blog" rel="noopener noreferrer">
               Blog
             </Item>
             <Item

@@ -26,6 +26,7 @@
     "gatsby-remark-prismjs": "^1.2.11",
     "gatsby-source-airtable": "^2.0.2",
     "gatsby-source-filesystem": "^2.0.10",
+    "gatsby-source-rss-feed": "^1.1.1",
     "gatsby-transformer-json": "^2.1.8",
     "gatsby-transformer-remark": "^2.1.15",
     "gatsby-transformer-sharp": "^2.1.9",

@@ -41,12 +41,42 @@ exports.createPages = async ({ graphql, actions }) => {
   const { createPage, createRedirect } = actions;
 
   const docsTemplate = resolve(__dirname, './src/templates/docs.js');
+  const blogTemplate = resolve(__dirname, './src/templates/post.js');
 
   // Redirect /index.html to root.
   createRedirect({
     fromPath: '/index.html',
     redirectInBrowser: true,
     toPath: '/',
+  });
+
+  const blogsFromMedium = await graphql(`
+    {
+      allFeedMediumBlog {
+        edges {
+          node {
+            id
+            title
+          }
+        }
+      }
+    }
+  `);
+
+  blogsFromMedium.data.allFeedMediumBlog.edges.forEach(edge => {
+    const slug = edge.node.title
+      .toLowerCase()
+      .replace(/[^\w ]+/g, '')
+      .replace(/ +/g, '-');
+    const id = edge.node.id;
+
+    createPage({
+      path: 'post/' + slug,
+      component: blogTemplate,
+      context: {
+        id,
+      },
+    });
   });
 
   const allMarkdown = await graphql(
