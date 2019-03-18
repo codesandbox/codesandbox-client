@@ -472,3 +472,8 @@ export const loadSandbox = factories.withLoadApp([
 ]);
 
 export const setUpdateStatus = [set(state`updateStatus`, props`status`)];
+
+export const track = [
+  ({ props: givenProps }) =>
+    factories.track(givenProps.name, givenProps.data)(),
+];

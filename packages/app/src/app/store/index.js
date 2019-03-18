@@ -102,6 +102,7 @@ export default Module({
     signOutGithubIntegration: sequences.signOutGithubIntegration,
     setUpdateStatus: sequences.setUpdateStatus,
     refetchSandboxInfo: sequences.refetchSandboxInfo,
+    track: sequences.track,
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {
