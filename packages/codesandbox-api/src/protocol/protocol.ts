@@ -28,7 +28,7 @@ export default class Protocol {
     self.removeEventListener('message', this._messageListener);
   }
 
-  sendMessage(data: any): Promise<any> {
+  sendMessage<PromiseType>(data: any): Promise<PromiseType> {
     return new Promise(resolve => {
       const messageId = generateId();
 

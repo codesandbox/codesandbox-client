@@ -1,7 +1,7 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
 import _debug from 'common/lib/utils/debug';
-import type { default as Manager } from './manager';
+import Manager from './manager';
 
 import { SCRIPT_VERSION } from '../';
 
@@ -32,7 +32,7 @@ function shouldSaveOnlineCache(firstRun: boolean, changes: number) {
     return false;
   }
 
-  if (!window.__SANDBOX_DATA__) {
+  if (!(window as any).__SANDBOX_DATA__) {
     return true;
   }
 
@@ -51,11 +51,13 @@ export async function saveCache(
   }
 
   const managerState = {
-    ...manager.serialize(),
+    ...(await manager.serialize({
+      entryPath: managerModuleToTranspile
+        ? managerModuleToTranspile.path
+        : null,
+      optimizeForSize: true,
+    })),
   };
-  managerState.entry = managerModuleToTranspile
-    ? managerModuleToTranspile.path
-    : null;
 
   try {
     if (process.env.NODE_ENV === 'development') {
@@ -165,7 +167,7 @@ export async function consumeCache(manager: Manager) {
       return false;
     }
 
-    const cacheData = window.__SANDBOX_DATA__;
+    const cacheData = (window as any).__SANDBOX_DATA__;
     const localData = await localforage.getItem(manager.id);
 
     const cache = findCacheToUse(cacheData && cacheData.data, localData);

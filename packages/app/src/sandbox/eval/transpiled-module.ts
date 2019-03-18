@@ -8,35 +8,37 @@ import hashsum from 'hash-sum';
 
 import * as pathUtils from 'common/lib/utils/path';
 
-import type { Module } from './entities/module';
-import type { SourceMap } from './transpilers/utils/get-source-map';
+import { Module } from './entities/module';
+import { SourceMap } from './transpilers/utils/get-source-map';
 import ModuleError from './errors/module-error';
 import ModuleWarning from './errors/module-warning';
 
-import type { WarningStructure } from './transpilers/utils/worker-warning-handler';
+import { WarningStructure } from './transpilers/utils/worker-warning-handler';
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
-import type { default as Manager } from './manager';
+import Manager, { HMRStatus } from './manager';
 import HMR from './hmr';
+
+declare var BrowserFS: any;
 
 const debug = _debug('cs:compiler:transpiled-module');
 
-type ChildModule = Module & {
-  parent: Module,
+export type ChildModule = Module & {
+  parent: Module;
 };
 
 class ModuleSource {
   fileName: string;
   compiledCode: string;
-  sourceMap: ?SourceMap;
+  sourceMap: SourceMap | undefined;
   sourceEqualsCompiled: boolean;
 
   constructor(
     fileName: string,
     compiledCode: string,
-    sourceMap: ?SourceMap,
+    sourceMap: SourceMap | undefined,
     sourceEqualsCompiled = false
   ) {
     this.fileName = fileName;
@@ -47,109 +49,111 @@ class ModuleSource {
 }
 
 export type SerializedTranspiledModule = {
-  module: Module,
-  query: string,
-  source: ?ModuleSource,
-  sourceEqualsCompiled: boolean,
+  module: Module;
+  query: string;
+  source?: ModuleSource;
+  sourceEqualsCompiled: boolean;
   assets: {
-    [name: string]: ModuleSource,
-  },
-  isEntry: boolean,
-  isTestFile: boolean,
-  childModules: Array<string>,
+    [name: string]: ModuleSource;
+  };
+  isEntry: boolean;
+  isTestFile: boolean;
+  childModules: Array<string>;
   /**
    * All extra modules emitted by the loader
    */
-  emittedAssets: Array<ModuleSource>,
-  initiators: Array<string>,
-  dependencies: Array<string>,
-  asyncDependencies: Array<string>,
-  transpilationDependencies: Array<string>,
-  transpilationInitiators: Array<string>,
+  emittedAssets: Array<ModuleSource>;
+  initiators: Array<string>;
+  dependencies: Array<string>;
+  asyncDependencies: Array<string>;
+  transpilationDependencies: Array<string>;
+  transpilationInitiators: Array<string>;
 };
 
 /* eslint-disable no-use-before-define */
 export type LoaderContext = {
-  emitWarning: (warning: WarningStructure) => void,
-  emitError: (error: Error) => void,
+  emitWarning: (warning: WarningStructure) => void;
+  emitError: (error: Error) => void;
   emitModule: (
     title: string,
     code: string,
     currentPath?: string,
     overwrite?: boolean,
     isChild?: boolean
-  ) => TranspiledModule,
-  emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
+  ) => TranspiledModule;
+  emitFile: (name: string, content: string, sourceMap: SourceMap) => void;
   options: {
-    context: '/',
-    [key: string]: any,
-  },
-  webpack: boolean,
-  sourceMap: boolean,
-  target: string,
-  path: string,
-  getModules: () => Array<Module>,
+    context: string;
+    [key: string]: any;
+  };
+  webpack: boolean;
+  sourceMap: boolean;
+  target: string;
+  path: string;
+  getModules: () => Array<Module>;
   addTranspilationDependency: (
     depPath: string,
-    options: ?{
-      isAbsolute: boolean,
+    options?: {
+      isAbsolute?: boolean;
     }
-  ) => void,
+  ) => void;
   resolveTranspiledModule: (
     depPath: string,
-    options: ?{
-      isAbsolute: boolean,
-      ignoredExtensions?: Array<string>,
+    options?: {
+      isAbsolute?: boolean;
+      ignoredExtensions?: Array<string>;
     }
-  ) => TranspiledModule,
+  ) => TranspiledModule;
   resolveTranspiledModuleAsync: (
     depPath: string,
-    options: ?{
-      isAbsolute: boolean,
-      ignoredExtensions?: Array<string>,
+    options?: {
+      isAbsolute?: boolean;
+      ignoredExtensions?: Array<string>;
     }
-  ) => Promise<TranspiledModule>,
+  ) => Promise<TranspiledModule>;
   addDependency: (
     depPath: string,
-    options: ?{
-      isAbsolute: boolean,
-      isEntry: boolean,
+    options?: {
+      isAbsolute?: boolean;
+      isEntry?: boolean;
     }
-  ) => void,
+  ) => void;
   addDependenciesInDirectory: (
     depPath: string,
-    options: ?{
-      isAbsolute: boolean,
-      isEntry: boolean,
+    options?: {
+      isAbsolute?: boolean;
+      isEntry?: boolean;
     }
-  ) => void,
-  _module: TranspiledModule,
+  ) => void;
+  _module: TranspiledModule;
 
   // Remaining loaders after current loader
-  remainingRequests: string,
-  template: string,
+  remainingRequests: string;
+  template: string;
 };
 /* eslint-enable */
 
 type Compilation = {
-  exports: any,
+  id: string;
+  exports: any;
   hot: {
-    accept: Function,
-    accept: (string | Array<string>, cb: Function) => void,
-    decline: (path: string | Array<string>) => void,
-    dispose: (cb: Function) => void,
-    data: Object,
-    status: string,
-  },
+    accept: Function | ((arg: string | string[], cb: Function) => void);
+    decline: (path: string | Array<string>) => void;
+    dispose: (cb: Function) => void;
+    data: Object;
+    status: () => HMRStatus;
+    addStatusHandler: (cb: (status: HMRStatus) => void) => void;
+    removeStatusHandler: (cb: (status: HMRStatus) => void) => void;
+  };
 };
 
 export default class TranspiledModule {
   module: Module;
   query: string;
-  previousSource: ?ModuleSource;
-  source: ?ModuleSource;
+  previousSource: ModuleSource | undefined;
+  source: ModuleSource | undefined;
   assets: {
-    [name: string]: ModuleSource,
+    [name: string]: ModuleSource;
   };
   isEntry: boolean;
   childModules: Array<TranspiledModule>;
@@ -159,7 +163,7 @@ export default class TranspiledModule {
    * All extra modules emitted by the loader
    */
   emittedAssets: Array<ModuleSource>;
-  compilation: ?Compilation;
+  compilation: Compilation | undefined;
   initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   asyncDependencies: Array<Promise<TranspiledModule>>; // eslint-disable-line no-use-before-define
@@ -175,7 +179,7 @@ export default class TranspiledModule {
    * Set how this module handles HMR. The default is undefined, which means
    * that we handle the HMR like CodeSandbox does.
    */
-  hmrConfig: ?HMR;
+  hmrConfig: HMR | undefined;
 
   hasMissingDependencies: boolean = false;
 
@@ -204,7 +208,7 @@ export default class TranspiledModule {
     this.hash = hashsum(`${this.module.path}:${this.query}`);
   }
 
-  getId() {
+  getId(): string {
     return `${this.module.path}:${this.query}`;
   }
 
@@ -307,7 +311,7 @@ export default class TranspiledModule {
    * Determines if this is a module that should be transpiled if updated. If this
    * is a transpilationDependency that's updated then it should not get transpiled, but the parent should.
    */
-  shouldTranspile() {
+  shouldTranspile(): boolean {
     return (
       !this.source &&
       !this.isTestFile &&
@@ -318,10 +322,10 @@ export default class TranspiledModule {
   addDependency(
     manager: Manager,
     depPath: string,
-    options: ?{
-      isAbsolute: boolean,
-      isEntry: boolean,
-    },
+    options: {
+      isAbsolute?: boolean;
+      isEntry?: boolean;
+    } = {},
     isTranspilationDep: boolean = false
   ) {
     if (depPath.startsWith('codesandbox-api')) {
@@ -419,7 +423,7 @@ export default class TranspiledModule {
 
   getLoaderContext(
     manager: Manager,
-    transpilerOptions: ?Object = {}
+    transpilerOptions: Object = {}
   ): LoaderContext {
     return {
       emitWarning: warning => {
@@ -432,8 +436,8 @@ export default class TranspiledModule {
         path: string,
         code: string,
         directoryPath: string = pathUtils.dirname(this.module.path),
-        overwrite?: boolean = true,
-        isChild?: boolean = true
+        overwrite = true,
+        isChild = true
       ) => {
         const queryPath = path.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
@@ -717,7 +721,11 @@ export default class TranspiledModule {
 
   evaluate(
     manager: Manager,
-    { asUMD = false }: { asUMD: boolean } = {},
+    {
+      asUMD = false,
+      force = false,
+      testGlobals = false,
+    }: { asUMD?: boolean; force?: boolean; testGlobals?: boolean } = {},
     initiator?: TranspiledModule
   ) {
     if (this.source == null) {
@@ -911,7 +919,7 @@ export default class TranspiledModule {
 
         // So it must be a dependency
         if (path.startsWith('codesandbox-api')) {
-          return resolveDependency(path, manager.externals);
+          return resolveDependency(path);
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
@@ -927,19 +935,22 @@ export default class TranspiledModule {
           ? cache.exports
           : manager.evaluateTranspiledModule(
               requiredTranspiledModule,
-              transpiledModule
+              transpiledModule,
+              { force, testGlobals }
             );
       }
 
+      // @ts-ignore
       require.resolve = function resolve(path: string) {
         const foundModule = manager.resolveModule(path, localModule.path);
 
         return foundModule.path;
       };
 
-      const globals = this.isTestFile
-        ? manager.testRunner.testGlobals(this.module)
-        : {};
+      const globals =
+        this.isTestFile || testGlobals
+          ? manager.testRunner.testGlobals(this.module)
+          : {};
 
       globals.__dirname = pathUtils.dirname(this.module.path);
       globals.__filename = this.module.path;
@@ -1005,46 +1016,39 @@ export default class TranspiledModule {
     }
   }
 
-  serialize(optimizeForSize: boolean = true): SerializedTranspiledModule {
-    const serializableObject = {};
-
+  async serialize(
+    optimizeForSize: boolean = true
+  ): Promise<SerializedTranspiledModule> {
     const sourceEqualsCompiled =
       this.source && this.source.sourceEqualsCompiled;
+    const serializableObject: SerializedTranspiledModule = {
+      query: this.query,
+      assets: this.assets,
+      module: this.module,
+      emittedAssets: this.emittedAssets,
+      isEntry: this.isEntry,
+      isTestFile: this.isTestFile,
 
-    serializableObject.query = this.query;
-    serializableObject.assets = this.assets;
-    serializableObject.module = this.module;
-    serializableObject.emittedAssets = this.emittedAssets;
-    serializableObject.isEntry = this.isEntry;
-    serializableObject.isTestFile = this.isTestFile;
+      sourceEqualsCompiled: sourceEqualsCompiled,
+      childModules: this.childModules.map(m => m.getId()),
+      dependencies: Array.from(this.dependencies).map(m => m.getId()),
+      initiators: Array.from(this.initiators).map(m => m.getId()),
+      transpilationDependencies: Array.from(this.transpilationDependencies).map(
+        m => m.getId()
+      ),
+      transpilationInitiators: Array.from(this.transpilationInitiators).map(m =>
+        m.getId()
+      ),
+      asyncDependencies: await Promise.all(
+        Array.from(this.asyncDependencies).map(m => m.then(x => x.getId()))
+      ),
+    };
+
     if (!sourceEqualsCompiled || !optimizeForSize) {
       serializableObject.source = this.source;
     }
-    serializableObject.sourceEqualsCompiled = sourceEqualsCompiled;
-    serializableObject.childModules = this.childModules.map(m => m.getId());
-    serializableObject.dependencies = Array.from(this.dependencies).map(m =>
-      m.getId()
-    );
-    serializableObject.initiators = Array.from(this.initiators).map(m =>
-      m.getId()
-    );
-    serializableObject.transpilationDependencies = Array.from(
-      this.transpilationDependencies
-    ).map(m => m.getId());
-    serializableObject.transpilationInitiators = Array.from(
-      this.transpilationInitiators
-    ).map(m => m.getId());
 
-    serializableObject.asyncDependencies = [];
-    // At this stage we know that all modules are already resolved and the promises
-    // are downloaded. So we can just handle this synchronously.
-    Array.from(this.asyncDependencies).forEach(m => {
-      m.then(x => {
-        serializableObject.asyncDependencies.push(x.getId());
-      });
-    });
-
-    return (serializableObject: SerializedTranspiledModule);
+    return serializableObject;
   }
 
   async load(

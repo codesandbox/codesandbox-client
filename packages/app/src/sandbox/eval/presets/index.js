@@ -15,7 +15,12 @@ type TranspilerDefinition = {
   options: ?Object,
 };
 
-type LifeCycleFunction = (manager: Manager) => void | Promise<*>;
+type SetupFunction = (manager: Manager) => void | Promise<*>;
+
+type LifeCycleFunction = (
+  manager: Manager,
+  updatedModules: TranspiledModule[]
+) => void | Promise<*>;
 
 /**
  * This is essentially where it all comes together. The manager is responsible for
@@ -45,7 +50,7 @@ export default class Preset {
   /**
    * Code to run before evaluating and transpiling entry
    */
-  setup: LifeCycleFunction;
+  setup: SetupFunction;
   /**
    * Code to run after done
    */

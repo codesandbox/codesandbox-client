@@ -5,10 +5,10 @@ import parseConfigurations from 'common/lib/templates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import { isBabel7 } from 'common/lib/utils/is-babel-7';
-import getDefinition from 'common/lib/templates/index';
+import getDefinition, { TemplateType } from 'common/lib/templates/index';
 
 import getPreset from './eval';
-import Manager from './eval/manager';
+import Manager, { Manifest } from './eval/manager';
 
 import { resetScreen } from './status-screen';
 
@@ -27,9 +27,12 @@ import loadDependencies from './npm';
 import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 
 import { showRunOnClick } from './status-screen/run-on-click';
+import { Module } from './eval/entities/module';
+import { ParsedConfigurationFiles } from 'common/lib/templates/template';
+import TranspiledModule from './eval/transpiled-module';
 
 let initializedResizeListener = false;
-let manager: ?Manager = null;
+let manager: Manager | null = null;
 let actionsEnabled = false;
 
 const debug = _debug('cs:compiler');
@@ -38,7 +41,7 @@ export function areActionsEnabled() {
   return actionsEnabled;
 }
 
-export function getCurrentManager(): ?Manager {
+export function getCurrentManager(): Manager | null {
   return manager;
 }
 
@@ -292,14 +295,14 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
 }
 
 async function updateManager(
-  sandboxId,
-  template,
+  sandboxId: string,
+  template: TemplateType,
   managerModules,
-  manifest,
-  configurations,
-  isNewCombination,
-  hasFileResolver
-) {
+  manifest: Manifest,
+  configurations: ParsedConfigurationFiles,
+  isNewCombination: boolean,
+  hasFileResolver: boolean
+): Promise<TranspiledModule[]> {
   let newManager = false;
   if (!manager || manager.id !== sandboxId) {
     newManager = true;
@@ -322,6 +325,7 @@ async function updateManager(
   await manager.preset.setup(manager);
   return manager.updateData(managerModules).then(x => {
     changedModuleCount = x.length;
+    return x;
   });
 }
 
@@ -336,8 +340,6 @@ function getDocumentHeight() {
     html.scrollHeight,
     html.offsetHeight
   );
-
-  return height;
 }
 
 function sendResize() {
@@ -431,6 +433,7 @@ async function compile({
         }`
       );
 
+      // @ts-ignore
       e.fileName = errors[0].path;
 
       throw e;
@@ -493,7 +496,8 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
-    await manager.preset.setup(manager, updatedModules);
+    // TODO: make this a separate lifecycle
+    // await manager.preset.setup(manager);
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
@@ -516,19 +520,19 @@ async function compile({
         if (
           firstLoad &&
           localStorage.getItem('running') &&
-          Date.now() - localStorage.getItem('running') > 8000
+          Date.now() - +localStorage.getItem('running') > 8000
         ) {
           localStorage.removeItem('running');
           showRunOnClick();
           return;
         }
 
-        localStorage.setItem('running', Date.now());
+        localStorage.setItem('running', '' + Date.now());
       } catch (e) {
         /* no */
       }
 
-      manager.preset.preEvaluate(manager);
+      manager.preset.preEvaluate(manager, updatedModules);
 
       if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
         const htmlModulePath = templateDefinition
@@ -563,10 +567,9 @@ async function compile({
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;
-      const evalled = manager.evaluateModule(
-        managerModuleToTranspile,
-        isModuleView
-      );
+      const evalled = manager.evaluateModule(managerModuleToTranspile, {
+        force: isModuleView,
+      });
       debug(`Evaluation time: ${Date.now() - tt}ms`);
       const domChanged =
         !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
@@ -603,7 +606,7 @@ async function compile({
       }
     }
 
-    await manager.preset.teardown(manager);
+    await manager.preset.teardown(manager, updatedModules);
 
     if (!initializedResizeListener && !manager.preset.htmlDisabled) {
       initializeResizeListener();
@@ -653,6 +656,7 @@ async function compile({
     }
 
     const event = new Event('error');
+    // @ts-ignore
     event.error = e;
 
     window.dispatchEvent(event);
@@ -670,7 +674,7 @@ async function compile({
 
     if (manager) {
       const managerState = {
-        ...manager.serialize(false),
+        ...(await manager.serialize({ optimizeForSize: false })),
       };
       delete managerState.cachedPaths;
       managerState.entry = managerModuleToTranspile
@@ -688,23 +692,23 @@ async function compile({
   dispatch({ type: 'status', status: 'idle' });
   dispatch({ type: 'done' });
 
-  if (typeof window.__puppeteer__ === 'function') {
-    window.__puppeteer__('done');
+  if (typeof (window as any).__puppeteer__ === 'function') {
+    (window as any).__puppeteer__('done');
   }
 }
 
 type Arguments = {
-  sandboxId: string,
+  sandboxId: string;
   modules: Array<{
-    code: string,
-    path: string,
-  }>,
-  entry: ?string,
-  externalResources: Array<string>,
-  hasActions: boolean,
-  template: string,
-  showOpenInCodeSandbox?: boolean,
-  skipEval?: boolean,
+    code: string;
+    path: string;
+  }>;
+  entry: string | undefined;
+  externalResources: Array<string>;
+  hasActions: boolean;
+  template: string;
+  showOpenInCodeSandbox?: boolean;
+  skipEval?: boolean;
 };
 
 const tasks: Array<Arguments> = [];

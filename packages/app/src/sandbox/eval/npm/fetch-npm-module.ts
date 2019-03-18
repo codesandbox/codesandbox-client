@@ -3,25 +3,29 @@ import * as pathUtils from 'common/lib/utils/path';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
-import type { Module } from '../entities/module';
+import { Module } from '../entities/module';
 import Manager from '../manager';
 
 import getDependencyName from '../utils/get-dependency-name';
 import { packageFilter } from '../utils/resolve-utils';
-import type { default as TranspiledModule } from '../transpiled-module';
+import TranspiledModule from '../transpiled-module';
 
 type Meta = {
-  [path: string]: any,
+  [path: string]: any;
 };
 type Metas = {
-  [dependencyAndVersion: string]: Meta,
+  [dependencyAndVersion: string]: Meta;
 };
 
 type Packages = {
-  [path: string]: Object,
+  [path: string]: Promise<Module>;
 };
 
-type MetaFiles = Array<{ path: string, files?: MetaFiles }>;
+type MetaFiles = Array<{
+  path: string;
+  type: 'file' | 'directory';
+  files?: MetaFiles;
+}>;
 
 const metas: Metas = {};
 let combinedMetas: Meta = {};
@@ -100,7 +104,11 @@ function getMeta(name: string, packageJSONPath: string, version: string) {
   return metas[id];
 }
 
-function downloadDependency(depName: string, depVersion: string, path: string) {
+function downloadDependency(
+  depName: string,
+  depVersion: string,
+  path: string
+): Promise<Module> {
   if (packages[path]) {
     return packages[path];
   }
@@ -195,6 +203,7 @@ function resolvePath(
             // To prevent infinite loops we keep track of which dependencies have been requested before.
             if (!manager.transpiledModules[p] && !meta[p]) {
               const err = new Error('Could not find ' + p);
+              // @ts-ignore
               err.code = 'ENOENT';
 
               return callback(err);
