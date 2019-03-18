@@ -94,6 +94,7 @@ type Props = {
   devToolIndex: number;
   moveTab?: (prevPos: ITabPosition, nextPos: ITabPosition) => void;
   addedViews?: IViews;
+  hideTabs?: boolean;
 };
 type State = {
   status: { [title: string]: Status | undefined };
@@ -404,7 +405,14 @@ export default class DevTools extends React.PureComponent<Props, State> {
   allViews: IViews;
 
   render() {
-    const { sandboxId, owned, primary, viewConfig, devToolIndex } = this.props;
+    const {
+      hideTabs,
+      sandboxId,
+      owned,
+      primary,
+      viewConfig,
+      devToolIndex,
+    } = this.props;
     const { hidden, height } = this.state;
 
     const panes = viewConfig.views;
@@ -422,45 +430,47 @@ export default class DevTools extends React.PureComponent<Props, State> {
           display: 'flex',
         }}
       >
-        <Header
-          onTouchStart={!primary && this.handleTouchStart}
-          onMouseDown={!primary && this.handleMouseDown}
-          primary={primary}
-          open={!this.state.hidden}
-        >
-          <Tabs
-            owned={owned}
-            panes={panes.map(p => this.getViews()[p.id])}
-            currentPaneIndex={this.state.currentPaneIndex}
-            hidden={hidden}
-            setPane={this.setPane}
-            devToolIndex={devToolIndex}
-            moveTab={
-              this.props.moveTab
-                ? (prevPos, nextPos) => {
-                    if (prevPos.devToolIndex === this.props.devToolIndex) {
-                      this.setState({
-                        currentPaneIndex: nextPos.tabPosition,
-                      });
+        {!hideTabs && (
+          <Header
+            onTouchStart={!primary && this.handleTouchStart}
+            onMouseDown={!primary && this.handleMouseDown}
+            primary={primary}
+            open={!this.state.hidden}
+          >
+            <Tabs
+              owned={owned}
+              panes={panes.map(p => this.getViews()[p.id])}
+              currentPaneIndex={this.state.currentPaneIndex}
+              hidden={hidden}
+              setPane={this.setPane}
+              devToolIndex={devToolIndex}
+              moveTab={
+                this.props.moveTab
+                  ? (prevPos, nextPos) => {
+                      if (prevPos.devToolIndex === this.props.devToolIndex) {
+                        this.setState({
+                          currentPaneIndex: nextPos.tabPosition,
+                        });
+                      }
+
+                      this.props.moveTab(prevPos, nextPos);
                     }
-
-                    this.props.moveTab(prevPos, nextPos);
-                  }
-                : undefined
-            }
-          />
-
-          {!primary && (
-            <FaAngleUp
-              onMouseDown={hidden ? undefined : this.handleMinimizeClick}
-              style={{
-                marginTop: hidden ? 0 : 4,
-                transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
-                cursor: 'pointer',
-              }}
+                  : undefined
+              }
             />
-          )}
-        </Header>
+
+            {!primary && (
+              <FaAngleUp
+                onMouseDown={hidden ? undefined : this.handleMinimizeClick}
+                style={{
+                  marginTop: hidden ? 0 : 4,
+                  transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
+                  cursor: 'pointer',
+                }}
+              />
+            )}
+          </Header>
+        )}
         <ContentContainer>
           {panes.map((view, i) => {
             const { Content } = this.getViews()[view.id];

@@ -506,6 +506,7 @@ export default class Content extends React.PureComponent<Props, State> {
                     template={sandbox.template}
                     owned={false}
                     primary={i === 0}
+                    hideTabs={i === 0}
                     viewConfig={devView}
                   />
                 ))}
