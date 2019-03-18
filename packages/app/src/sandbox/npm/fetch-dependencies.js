@@ -16,19 +16,6 @@ const debug = _debug('cs:sandbox:packager');
 
 const VERSION = 1;
 
-/**
- * Warm the cache of our new API
- */
-const warmNewPackagerAPI = (url: string, method: string = 'GET') => {
-  try {
-    fetch(url, { method })
-      .then(() => {})
-      .catch(() => {});
-  } catch (e) {
-    /* ignore */
-  }
-};
-
 const BUCKET_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
     ? 'https://d1jyvh0kxilfa7.cloudfront.net'
@@ -128,7 +115,6 @@ async function getDependencies(dependencies: Object) {
 
   setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
   try {
-    warmNewPackagerAPI(`${NEW_PACKAGER_URL}/${dependencyUrl}`, 'POST');
     const bucketManifest = await callApi(
       `${BUCKET_URL}/${bucketDependencyUrl}`
     );
@@ -141,6 +127,8 @@ async function getDependencies(dependencies: Object) {
       `${PACKAGER_URL}/${dependencyUrl}`,
       'POST'
     );
+
+    setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
 
     return requestPackager(`${BUCKET_URL}/${url}`);
   }

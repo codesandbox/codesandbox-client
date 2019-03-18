@@ -798,7 +798,7 @@ class BasePreview extends React.Component<Props, State> {
                     : frameUrl(sandbox.id, this.initialPath)
                 }
                 id="sandbox"
-                title={sandbox.id}
+                title={sandbox.title || sandbox.id}
                 hideNavigation={!showNavigation}
                 style={{
                   ...style,
