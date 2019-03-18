@@ -129,7 +129,7 @@ function EditorSettings({ store, signals }) {
               style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
               block
               rows={7}
-              defaultValue={`You can use your own theme from VSCode directly:
+              placeholder={`You can use your own theme from VSCode directly:
 
 1. Open VSCode
 2. Press (CMD or CTRL) + SHIFT + P
