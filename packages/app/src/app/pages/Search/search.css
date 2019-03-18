@@ -17,7 +17,6 @@
   box-sizing: border-box;
   font-size: 1.125em;
   font-weight: 500;
-
   width: 100%;
 }
 
@@ -47,6 +46,7 @@
   padding-left: 4px;
   padding-bottom: 2px;
 }
+
 .ais-SearchBox-submit::before {
   display: inline-block;
   margin-right: -4px;
@@ -54,13 +54,16 @@
   vertical-align: middle;
   content: '' 2;
 }
+
 .ais-SearchBox-submit:hover,
 .ais-SearchBox-submit:active {
   cursor: pointer;
 }
+
 .ais-SearchBox-submit:focus {
   outline: 0;
 }
+
 .ais-SearchBox-submit svg {
   margin: 6px;
   width: 14px;
@@ -86,9 +89,11 @@
   user-select: none;
   fill: rgba(255, 255, 255, 0.5);
 }
+
 .ais-SearchBox-reset:focus {
   outline: 0;
 }
+
 .ais-SearchBox-reset svg {
   display: block;
   margin: 6px;
@@ -131,6 +136,7 @@
   color: rgba(255, 255, 255, 0.8);
   margin-top: 6px;
 }
+
 .ais-RefinementList-item .ais-RefinementList-checkbox {
   display: inline-block;
   border-radius: 3.5px;
@@ -145,6 +151,7 @@
   -webkit-transition: all 0.15s ease;
   transition: all 0.15s ease;
 }
+
 .ais-RefinementList-item input[type='checkbox']:checked {
   background: #40a9f3
     url("data:image/svg+xml;utf8,<svg viewBox='0 0 10 9' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.88l2.378 2.435L9.046 1.6' stroke-width='1.6' stroke='%23FFF' fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'/></svg>")
@@ -152,6 +159,7 @@
   border-color: #40a9f3;
   box-shadow: none;
 }
+
 .ais-RefinementList-item:hover .ais-RefinementList-checkbox {
   box-shadow: inset 0 0 0 1px rgba(108, 174, 221, 0.3);
 }
@@ -192,7 +200,6 @@
   padding: 0;
   margin: 0;
   color: rgba(255, 255, 255, 0.8);
-
   margin-top: 1rem;
 }
 
@@ -263,6 +270,7 @@
   text-align: center;
   font-size: 14px;
 }
+
 .ais-Pagination-item:hover {
   background: rgba(108, 174, 221, 0.2);
 }
@@ -284,6 +292,7 @@
   color: #fff;
   background: rgba(108, 174, 221, 1);
 }
+
 .ais-Pagination-item--selected .ais-Pagination-link {
   color: currentColor;
   font-weight: normal;
@@ -293,6 +302,7 @@
   visibility: visible;
   color: #bbbbbb;
 }
+
 .ais-Pagination-item--disabled[disabled],
 .ais-Pagination-item--disabled:disabled {
   opacity: 0.5;
@@ -320,4 +330,23 @@
 [type='radio'] {
   -webkit-appearance: none;
   outline-offset: -2px;
+}
+
+.ais-SortBy-select {
+  transition: 0.3s ease border-color;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciICB2aWV3Qm94PSIwIDAgNC45NSAxMCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xLjQxIDQuNjdsMS4wNy0xLjQ5IDEuMDYgMS40OUgxLjQxek0zLjU0IDUuMzNMMi40OCA2LjgyIDEuNDEgNS4zM2gyLjEzeiI+PC9wYXRoPjwvc3ZnPg==);
+  background-color: rgba(0, 0, 0, 0.3);
+  background-position: right;
+  background-repeat: no-repeat;
+  width: 100%;
+  color: white;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  padding: 0.2em 1em 0.2em 0.2em;
+  box-sizing: border-box;
+  font-weight: 400;
+  height: 1.75em;
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }

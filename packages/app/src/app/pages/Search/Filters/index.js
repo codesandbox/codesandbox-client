@@ -1,12 +1,23 @@
 import React from 'react';
 import getTemplate from '@codesandbox/common/lib/templates';
+import { ALGOLIA_DEFAULT_INDEX } from '@codesandbox/common/lib/utils/config';
 
 import Filter from './Filter';
+import Sort from './Filter/Sort';
 import { Container } from './elements';
 
 function Filters() {
   return (
     <Container>
+      <Sort
+        title="Sort By"
+        items={[
+          { value: ALGOLIA_DEFAULT_INDEX, label: 'Relevance' },
+          { value: `${ALGOLIA_DEFAULT_INDEX}_views`, label: 'Views' },
+          { value: `${ALGOLIA_DEFAULT_INDEX}_likes`, label: 'Likes' },
+        ]}
+        defaultRefinement={ALGOLIA_DEFAULT_INDEX}
+      />
       <Filter
         title="Templates"
         operator="or"
