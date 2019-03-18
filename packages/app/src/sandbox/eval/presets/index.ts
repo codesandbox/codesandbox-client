@@ -1,26 +1,23 @@
 // @flow
 import { orderBy } from 'lodash-es';
 import querystring from 'querystring';
-import type { Module } from '../entities/module';
+import { Module } from '../entities/module';
 
-import type Manager from '../manager';
+import Manager from '../manager';
 import Transpiler from '../transpilers';
-
-export type TranspiledModule = Module & {
-  transpiledCode: string,
-};
+import TranspiledModule from '../transpiled-module';
 
 type TranspilerDefinition = {
-  transpiler: Transpiler,
-  options: ?Object,
+  transpiler: Transpiler;
+  options?: Object;
 };
 
-type SetupFunction = (manager: Manager) => void | Promise<*>;
+type SetupFunction = (manager: Manager) => void | Promise<any>;
 
 type LifeCycleFunction = (
   manager: Manager,
   updatedModules: TranspiledModule[]
-) => void | Promise<*>;
+) => void | Promise<any>;
 
 /**
  * This is essentially where it all comes together. The manager is responsible for
@@ -35,8 +32,8 @@ type LifeCycleFunction = (
  */
 export default class Preset {
   loaders: Array<{
-    test: (module: Module) => boolean,
-    transpilers: Array<TranspilerDefinition>,
+    test: (module: Module) => boolean;
+    transpilers: Array<TranspilerDefinition>;
   }>;
   transpilers: Set<Transpiler>;
   name: string;
@@ -63,8 +60,8 @@ export default class Preset {
 
   constructor(
     name: string,
-    ignoredExtensions: ?Array<string>,
-    alias: { [path: string]: string },
+    ignoredExtensions?: Array<string>,
+    alias?: { [path: string]: string },
     {
       hasDotEnv,
       setup,
@@ -72,11 +69,11 @@ export default class Preset {
       htmlDisabled,
       preEvaluate,
     }: {
-      hasDotEnv?: boolean,
-      setup?: LifeCycleFunction,
-      preEvaluate?: LifeCycleFunction,
-      teardown?: LifeCycleFunction,
-      htmlDisabled?: boolean,
+      hasDotEnv?: boolean;
+      setup?: SetupFunction;
+      preEvaluate?: LifeCycleFunction;
+      teardown?: LifeCycleFunction;
+      htmlDisabled?: boolean;
     } = {}
   ) {
     this.loaders = [];
@@ -96,7 +93,7 @@ export default class Preset {
     this.htmlDisabled = htmlDisabled || false;
   }
 
-  setAdditionalAliases = (aliases: Object) => {
+  setAdditionalAliases = (aliases: { [path: string]: string }) => {
     this.alias = { ...this.defaultAliases, ...aliases };
     this.aliasedPathCache = {};
   };
@@ -130,7 +127,7 @@ export default class Preset {
       const alias = a.slice(0, -1);
 
       if (path === alias) {
-        return alias;
+        return true;
       }
 
       return false;
@@ -221,7 +218,7 @@ export default class Preset {
     return finalTranspilers;
   }
 
-  parseOptions = (options: ?string) => {
+  parseOptions = (options?: string) => {
     if (options == null) {
       return {};
     }
