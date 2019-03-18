@@ -55,7 +55,7 @@ class VSCodeManager {
   }
 
   public loadScript(scripts: string[], isVSCode = true, cb: () => void) {
-    bootstrap(scripts, isVSCode)(cb);
+    bootstrap(isVSCode, scripts)(cb);
   }
 
   private addWorkbenchActions() {

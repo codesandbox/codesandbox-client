@@ -22,7 +22,7 @@ const shouldShowDebugger = () => {
 };
 
 const getDebugger: () => (key: string) => (...message: any[]) => void = () => {
-  if (shouldShowDebugger()) {
+  if (!shouldShowDebugger()) {
     const global = getGlobal() as any;
     // Return a debugger that will log to sentry
     return (key: string) => (message: string) => {
