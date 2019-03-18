@@ -53,7 +53,7 @@ define(["require", "exports", "./lib/typescriptServices", "./lib/lib", "./fetchD
     // @ts-ignore
     var oldamd = self.define.amd;
     self.define.amd = null;
-    self.importScripts("/static/browserfs2/browserfs.min.js");
+    self.importScripts("/static/browserfs3/browserfs.min.js");
     self.define.amd = oldamd;
     self.BrowserFS = BrowserFS;
     self.process = BrowserFS.BFSRequire("process");

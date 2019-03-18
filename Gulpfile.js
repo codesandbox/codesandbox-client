@@ -39,7 +39,7 @@ gulp.task('monaco', () =>
 gulp.task('old-browserfs', () =>
   gulp
     .src('standalone-packages/codesandbox-browserfs/dist/**/*')
-    .pipe(gulp.dest('www/static/browserfs'))
+    .pipe(gulp.dest('www/static/browserfs2'))
 );
 
 gulp.task('old-vscode', () =>
