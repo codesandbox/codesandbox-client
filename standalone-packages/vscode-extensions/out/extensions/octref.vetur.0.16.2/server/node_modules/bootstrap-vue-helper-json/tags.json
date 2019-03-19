@@ -1,0 +1,1265 @@
+{
+  "b-alert": {
+    "attributes": [
+      "variant",
+      "dismissible",
+      "dismiss-label",
+      "show"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-alert>"
+  },
+  "b-badge": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to",
+      "tag",
+      "variant",
+      "pill"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-badge>"
+  },
+  "b-breadcrumb": {
+    "attributes": [
+      "items"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-breadcrumb>"
+  },
+  "b-breadcrumb-item": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to",
+      "text",
+      "aria-current"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-breadcrumb-item>"
+  },
+  "b-breadcrumb-link": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to",
+      "text",
+      "aria-current"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-breadcrumb-link>"
+  },
+  "b-button": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to",
+      "block",
+      "size",
+      "variant",
+      "type",
+      "pressed"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-button>"
+  },
+  "b-btn": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to",
+      "block",
+      "size",
+      "variant",
+      "type",
+      "pressed"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-btn>"
+  },
+  "b-button-close": {
+    "attributes": [
+      "disabled",
+      "aria-label",
+      "text-variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-button-close>"
+  },
+  "b-btn-close": {
+    "attributes": [
+      "disabled",
+      "aria-label",
+      "text-variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-btn-close>"
+  },
+  "b-button-toolbar": {
+    "attributes": [
+      "justify",
+      "key-nav"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-button-toolbar>"
+  },
+  "b-btn-toolbar": {
+    "attributes": [
+      "justify",
+      "key-nav"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-btn-toolbar>"
+  },
+  "b-button-group": {
+    "attributes": [
+      "vertical",
+      "size",
+      "tag",
+      "aria-role"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-button-group>"
+  },
+  "b-btn-group": {
+    "attributes": [
+      "vertical",
+      "size",
+      "tag",
+      "aria-role"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-btn-group>"
+  },
+  "b-card": {
+    "attributes": [
+      "body-tag",
+      "body-bg-variant",
+      "body-border-variant",
+      "body-text-variant",
+      "body-class",
+      "title",
+      "title-tag",
+      "sub-title",
+      "sub-title-tag",
+      "overlay",
+      "header-tag",
+      "header-bg-variant",
+      "header-border-variant",
+      "header-text-variant",
+      "header",
+      "header-class",
+      "footer-tag",
+      "footer-bg-variant",
+      "footer-border-variant",
+      "footer-text-variant",
+      "footer",
+      "footer-class",
+      "img-src",
+      "img-alt",
+      "img-top",
+      "img-bottom",
+      "img-fluid",
+      "tag",
+      "bg-variant",
+      "border-variant",
+      "text-variant",
+      "align",
+      "no-body"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-card>"
+  },
+  "b-card-header": {
+    "attributes": [
+      "header-tag",
+      "header-bg-variant",
+      "header-border-variant",
+      "header-text-variant",
+      "header",
+      "header-class"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-card-header>"
+  },
+  "b-card-body": {
+    "attributes": [
+      "body-tag",
+      "body-bg-variant",
+      "body-border-variant",
+      "body-text-variant",
+      "body-class",
+      "title",
+      "title-tag",
+      "sub-title",
+      "sub-title-tag",
+      "overlay"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-card-body>"
+  },
+  "b-card-footer": {
+    "attributes": [
+      "footer-tag",
+      "footer-bg-variant",
+      "footer-border-variant",
+      "footer-text-variant",
+      "footer",
+      "footer-class"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-card-footer>"
+  },
+  "b-card-img": {
+    "attributes": [
+      "src",
+      "alt",
+      "top",
+      "bottom",
+      "fluid"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-card-img>"
+  },
+  "b-card-group": {
+    "attributes": [
+      "tag",
+      "deck",
+      "columns"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-card-group>"
+  },
+  "b-carousel": {
+    "attributes": [
+      "label-prev",
+      "label-next",
+      "label-goto-slide",
+      "label-indicators",
+      "interval",
+      "indicators",
+      "controls",
+      "img-width",
+      "img-height",
+      "background",
+      "value"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-carousel>"
+  },
+  "b-carousel-slide": {
+    "attributes": [
+      "img-src",
+      "src",
+      "img-alt",
+      "img-width",
+      "img-height",
+      "img-blank",
+      "img-blank-color",
+      "content-visible-up",
+      "content-tag",
+      "caption",
+      "caption-tag",
+      "text",
+      "text-tag",
+      "background"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-carousel-slide>"
+  },
+  "b-collapse": {
+    "attributes": [
+      "id",
+      "is-nav",
+      "accordion",
+      "visible",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-collapse>"
+  },
+  "b-dropdown": {
+    "attributes": [
+      "split",
+      "toggle-text",
+      "size",
+      "variant",
+      "no-caret",
+      "role"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dropdown>"
+  },
+  "b-dd": {
+    "attributes": [
+      "split",
+      "toggle-text",
+      "size",
+      "variant",
+      "no-caret",
+      "role"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dd>"
+  },
+  "b-dropdown-item": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dropdown-item>"
+  },
+  "b-dd-item": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dd-item>"
+  },
+  "b-dropdown-item-button": {
+    "attributes": [
+      "disabled"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dropdown-item-button>"
+  },
+  "b-dropdown-item-btn": {
+    "attributes": [
+      "disabled"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dropdown-item-btn>"
+  },
+  "b-dd-item-button": {
+    "attributes": [
+      "disabled"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dd-item-button>"
+  },
+  "b-dd-item-btn": {
+    "attributes": [
+      "disabled"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dd-item-btn>"
+  },
+  "b-dropdown-header": {
+    "attributes": [
+      "id",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dropdown-header>"
+  },
+  "b-dd-header": {
+    "attributes": [
+      "id",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dd-header>"
+  },
+  "b-dropdown-divider": {
+    "attributes": [
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dropdown-divider>"
+  },
+  "b-dd-divider": {
+    "attributes": [
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-dd-divider>"
+  },
+  "b-embed": {
+    "attributes": [
+      "type",
+      "tag",
+      "aspect"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-embed>"
+  },
+  "b-form": {
+    "attributes": [
+      "id",
+      "inline",
+      "novalidate",
+      "validated"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form>"
+  },
+  "b-form-row": {
+    "attributes": [
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-row>"
+  },
+  "b-form-text": {
+    "attributes": [
+      "id",
+      "tag",
+      "text-variant",
+      "inline"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-text>"
+  },
+  "b-form-feedback": {
+    "attributes": [
+      "id",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-feedback>"
+  },
+  "b-form-group": {
+    "attributes": [
+      "horizontal",
+      "label-cols",
+      "breakpoint",
+      "label-text-align",
+      "label",
+      "label-sr-only",
+      "description",
+      "feedback",
+      "validated"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-group>"
+  },
+  "b-form-fieldset": {
+    "attributes": [
+      "horizontal",
+      "label-cols",
+      "breakpoint",
+      "label-text-align",
+      "label",
+      "label-sr-only",
+      "description",
+      "feedback",
+      "validated"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-fieldset>"
+  },
+  "b-form-input": {
+    "attributes": [
+      "value",
+      "type",
+      "aria-invalid",
+      "readonly",
+      "plaintext",
+      "autocomplete",
+      "placeholder",
+      "formatter",
+      "lazy-formatter"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-input>"
+  },
+  "b-input": {
+    "attributes": [
+      "value",
+      "type",
+      "aria-invalid",
+      "readonly",
+      "plaintext",
+      "autocomplete",
+      "placeholder",
+      "formatter",
+      "lazy-formatter"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-input>"
+  },
+  "b-form-textarea": {
+    "attributes": [
+      "value",
+      "aria-invalid",
+      "readonly",
+      "plaintext",
+      "autocomplete",
+      "placeholder",
+      "rows",
+      "max-rows",
+      "wrap",
+      "no-resize"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-textarea>"
+  },
+  "b-textarea": {
+    "attributes": [
+      "value",
+      "aria-invalid",
+      "readonly",
+      "plaintext",
+      "autocomplete",
+      "placeholder",
+      "rows",
+      "max-rows",
+      "wrap",
+      "no-resize"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-textarea>"
+  },
+  "b-form-file": {
+    "attributes": [
+      "accept",
+      "capture",
+      "placeholder",
+      "choose-label",
+      "multiple",
+      "directory",
+      "no-traverse",
+      "selected-format",
+      "no-drop",
+      "drop-label"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-file>"
+  },
+  "b-file": {
+    "attributes": [
+      "accept",
+      "capture",
+      "placeholder",
+      "choose-label",
+      "multiple",
+      "directory",
+      "no-traverse",
+      "selected-format",
+      "no-drop",
+      "drop-label"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-file>"
+  },
+  "b-form-checkbox": {
+    "attributes": [
+      "value",
+      "unchecked-value",
+      "indeterminate"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-checkbox>"
+  },
+  "b-checkbox": {
+    "attributes": [
+      "value",
+      "unchecked-value",
+      "indeterminate"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-checkbox>"
+  },
+  "b-check": {
+    "attributes": [
+      "value",
+      "unchecked-value",
+      "indeterminate"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-check>"
+  },
+  "b-form-checkbox-group": {
+    "attributes": [
+      "checked",
+      "validated",
+      "aria-invalid",
+      "stacked",
+      "buttons",
+      "button-variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-checkbox-group>"
+  },
+  "b-checkbox-group": {
+    "attributes": [
+      "checked",
+      "validated",
+      "aria-invalid",
+      "stacked",
+      "buttons",
+      "button-variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-checkbox-group>"
+  },
+  "b-check-group": {
+    "attributes": [
+      "checked",
+      "validated",
+      "aria-invalid",
+      "stacked",
+      "buttons",
+      "button-variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-check-group>"
+  },
+  "b-form-radio": {
+    "attributes": [],
+    "subtags": [],
+    "description": ""
+  },
+  "b-radio": {
+    "attributes": [],
+    "subtags": [],
+    "description": ""
+  },
+  "b-form-radio-group": {
+    "attributes": [
+      "checked",
+      "validated",
+      "aria-invalid",
+      "stacked",
+      "buttons",
+      "button-variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-radio-group>"
+  },
+  "b-radio-group": {
+    "attributes": [
+      "checked",
+      "validated",
+      "aria-invalid",
+      "stacked",
+      "buttons",
+      "button-variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-radio-group>"
+  },
+  "b-form-select": {
+    "attributes": [
+      "value",
+      "multiple",
+      "select-size",
+      "aria-invalid"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-form-select>"
+  },
+  "b-select": {
+    "attributes": [
+      "value",
+      "multiple",
+      "select-size",
+      "aria-invalid"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-select>"
+  },
+  "b-img": {
+    "attributes": [
+      "src",
+      "alt",
+      "width",
+      "height",
+      "block",
+      "fluid",
+      "fluid-grow",
+      "rounded",
+      "thumbnail",
+      "left",
+      "right",
+      "center",
+      "blank",
+      "blank-color"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-img>"
+  },
+  "b-img-lazy": {
+    "attributes": [
+      "src",
+      "alt",
+      "width",
+      "height",
+      "blank-src",
+      "blank-color",
+      "blank-width",
+      "blank-height",
+      "fluid",
+      "fluid-grow",
+      "block",
+      "thumbnail",
+      "rounded",
+      "left",
+      "right",
+      "center",
+      "offset",
+      "throttle"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-img-lazy>"
+  },
+  "b-input-group": {
+    "attributes": [
+      "id",
+      "size",
+      "left",
+      "right",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-input-group>"
+  },
+  "b-input-group-addon": {
+    "attributes": [
+      "id",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-input-group-addon>"
+  },
+  "b-input-group-button": {
+    "attributes": [
+      "id",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-input-group-button>"
+  },
+  "b-input-group-btn": {
+    "attributes": [
+      "id",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-input-group-btn>"
+  },
+  "b-jumbotron": {
+    "attributes": [
+      "fluid",
+      "container-fluid",
+      "header",
+      "header-tag",
+      "header-level",
+      "lead",
+      "lead-tag",
+      "tag",
+      "bg-variant",
+      "border-variant",
+      "text-variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-jumbotron>"
+  },
+  "b-container": {
+    "attributes": [
+      "tag",
+      "fluid"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-container>"
+  },
+  "b-row": {
+    "attributes": [
+      "tag",
+      "no-gutters",
+      "align-v",
+      "align-h",
+      "align-content"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-row>"
+  },
+  "b-col": {
+    "attributes": [
+      "sm",
+      "md",
+      "lg",
+      "xl",
+      "offset-sm",
+      "offset-md",
+      "offset-lg",
+      "offset-xl",
+      "order-sm",
+      "order-md",
+      "order-lg",
+      "order-xl",
+      "tag",
+      "col",
+      "cols",
+      "offset",
+      "order",
+      "align-self"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-col>"
+  },
+  "b-link": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-link>"
+  },
+  "b-list-group": {
+    "attributes": [
+      "tag",
+      "flush"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-list-group>"
+  },
+  "b-list-group-item": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to",
+      "tag",
+      "action",
+      "variant"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-list-group-item>"
+  },
+  "b-media": {
+    "attributes": [
+      "tag",
+      "right-align",
+      "vertical-align",
+      "no-body"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-media>"
+  },
+  "b-media-aside": {
+    "attributes": [
+      "tag",
+      "vertical-align"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-media-aside>"
+  },
+  "b-media-body": {
+    "attributes": [
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-media-body>"
+  },
+  "b-modal": {
+    "attributes": [
+      "title",
+      "title-tag",
+      "size",
+      "centered",
+      "button-size",
+      "no-fade",
+      "no-close-on-backdrop",
+      "no-close-on-esc",
+      "no-enforce-focus",
+      "header-bg-variant",
+      "header-border-variant",
+      "header-text-variant",
+      "body-bg-variant",
+      "body-text-variant",
+      "footer-bg-variant",
+      "footer-border-variant",
+      "footer-text-variant",
+      "hide-header",
+      "hide-footer",
+      "hide-header-close",
+      "hide-backdrop",
+      "ok-only",
+      "ok-disabled",
+      "cancel-disabled",
+      "visible",
+      "return-focus",
+      "header-close-label",
+      "cancel-title",
+      "ok-title",
+      "cancel-variant",
+      "ok-variant",
+      "lazy",
+      "busy"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-modal>"
+  },
+  "b-nav": {
+    "attributes": [
+      "tag",
+      "fill",
+      "justified",
+      "tabs",
+      "pills",
+      "vertical",
+      "is-nav-bar"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav>"
+  },
+  "b-nav-item": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav-item>"
+  },
+  "b-nav-text": {
+    "attributes": [
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav-text>"
+  },
+  "b-nav-form": {
+    "attributes": [
+      "id"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav-form>"
+  },
+  "b-nav-item-dropdown": {
+    "attributes": [
+      "no-caret",
+      "role"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav-item-dropdown>"
+  },
+  "b-nav-item-dd": {
+    "attributes": [
+      "no-caret",
+      "role"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav-item-dd>"
+  },
+  "b-nav-dropdown": {
+    "attributes": [
+      "no-caret",
+      "role"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav-dropdown>"
+  },
+  "b-nav-dd": {
+    "attributes": [
+      "no-caret",
+      "role"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav-dd>"
+  },
+  "b-navbar": {
+    "attributes": [
+      "tag",
+      "type",
+      "variant",
+      "toggleable",
+      "toggle-breakpoint",
+      "fixed",
+      "sticky"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-navbar>"
+  },
+  "b-navbar-nav": {
+    "attributes": [
+      "tag",
+      "fill",
+      "justified"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-navbar-nav>"
+  },
+  "b-navbar-brand": {
+    "attributes": [
+      "href",
+      "rel",
+      "target",
+      "active",
+      "active-class",
+      "append",
+      "disabled",
+      "event",
+      "exact",
+      "exact-active-class",
+      "replace",
+      "router-tag",
+      "to",
+      "tag"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-navbar-brand>"
+  },
+  "b-navbar-toggle": {
+    "attributes": [
+      "label",
+      "position",
+      "target"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-navbar-toggle>"
+  },
+  "b-nav-toggle": {
+    "attributes": [
+      "label",
+      "position",
+      "target"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-nav-toggle>"
+  },
+  "b-pagination": {
+    "attributes": [
+      "per-page",
+      "total-rows",
+      "aria-controls"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-pagination>"
+  },
+  "b-pagination-nav": {
+    "attributes": [
+      "number-of-pages",
+      "base-url",
+      "use-router",
+      "link-gen",
+      "page-gen",
+      "active-class"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-pagination-nav>"
+  },
+  "b-popover": {
+    "attributes": [
+      "title",
+      "content",
+      "triggers",
+      "placement"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-popover>"
+  },
+  "b-progress": {
+    "attributes": [
+      "variant",
+      "striped",
+      "animated",
+      "height",
+      "precision",
+      "show-progress",
+      "show-value",
+      "max",
+      "value"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-progress>"
+  },
+  "b-progress-bar": {
+    "attributes": [
+      "value",
+      "label",
+      "max",
+      "precision",
+      "variant",
+      "striped",
+      "animated",
+      "show-progress",
+      "show-value"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-progress-bar>"
+  },
+  "b-table": {
+    "attributes": [
+      "id",
+      "caption",
+      "items",
+      "sort-by",
+      "sort-desc",
+      "api-url",
+      "fields",
+      "striped",
+      "bordered",
+      "dark",
+      "inverse",
+      "hover",
+      "small",
+      "responsive",
+      "fixed",
+      "head-variant",
+      "foot-variant",
+      "per-page",
+      "current-page",
+      "filter",
+      "sort-compare",
+      "no-local-sorting",
+      "no-provider-paging",
+      "no-provider-sorting",
+      "no-provider-filtering",
+      "busy",
+      "value",
+      "foot-clone",
+      "label-sort-asc",
+      "label-sort-desc",
+      "show-empty",
+      "empty-text",
+      "empty-filtered-text"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-table>"
+  },
+  "b-tabs": {
+    "attributes": [
+      "tag",
+      "card",
+      "small",
+      "value",
+      "pills",
+      "bottom",
+      "no-fade",
+      "lazy"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-tabs>"
+  },
+  "b-tab": {
+    "attributes": [
+      "active",
+      "tag",
+      "button-id",
+      "title",
+      "title-item-class",
+      "title-link-class",
+      "head-html",
+      "disabled",
+      "href"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-tab>"
+  },
+  "b-tooltip": {
+    "attributes": [
+      "title",
+      "triggers",
+      "placement"
+    ],
+    "subtags": [],
+    "description": "Bootstrap-Vue component: <b-tooltip>"
+  }
+}

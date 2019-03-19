@@ -1,0 +1,28 @@
+{
+  "name": "acorn-jsx",
+  "description": "Alternative, faster React.js JSX parser",
+  "homepage": "https://github.com/RReverser/acorn-jsx",
+  "version": "4.1.1",
+  "maintainers": [
+    {
+      "name": "Ingvar Stepanyan",
+      "email": "me@rreverser.com",
+      "web": "http://rreverser.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RReverser/acorn-jsx"
+  },
+  "license": "MIT",
+  "scripts": {
+    "test": "node test/run.js"
+  },
+  "dependencies": {
+    "acorn": "^5.0.3"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "mocha": "^3.3.0"
+  }
+}

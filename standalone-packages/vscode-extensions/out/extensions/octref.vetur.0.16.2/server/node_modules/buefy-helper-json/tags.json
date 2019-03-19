@@ -1,0 +1,459 @@
+{
+    "b-autocomplete": {
+        "attributes": [
+            "value",
+            "data",
+            "field",
+            "clear-on-select",
+            "open-on-focus",
+            "keep-first",
+            "size",
+            "expanded",
+            "loading",
+            "icon",
+            "icon-pack",
+            "maxlength"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-autocomplete>"
+    },
+    "b-checkbox": {
+        "attributes": [
+            "value",
+            "native-value",
+            "true-value",
+            "false-value",
+            "disabled",
+            "required",
+            "name",
+            "size",
+            "type"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-checkbox>"
+    },
+    "b-checkbox-button": {
+        "attributes": [
+            "value",
+            "native-value",
+            "type",
+            "disabled",
+            "name",
+            "size"
+        ],
+        "subtags": "checkbox-button",
+        "description": "Buefy component <b-checkbox-button>"
+    },
+    "b-collapse": {
+        "attributes": [
+            "open",
+            "animation"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-collapse>"
+    },
+    "b-datepicker": {
+        "attributes": [
+            "value",
+            "date-formatter",
+            "date-parser",
+            "min-date",
+            "max-date",
+            "events",
+            "indicators",
+            "focused-date",
+            "size",
+            "inline",
+            "readonly",
+            "loading",
+            "icon",
+            "icon-pack",
+            "unselectable-dates",
+            "unselectable-days-of-week",
+            "selectable-dates",
+            "month-names",
+            "day-names",
+            "first-day-of-week",
+            "mobile-native",
+            "position"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-datepicker>"
+    },
+    "b-dropdown": {
+        "attributes": [
+            "value",
+            "hoverable",
+            "position",
+            "disabled",
+            "inline",
+            "mobile-modal"
+        ],
+        "subtags": ["b-dropdown-item"],
+        "description": "Buefy component <b-dropdown>"
+    },
+    "b-dropdown-item": {
+        "attributes": [
+            "value",
+            "separator",
+            "disabled",
+            "custom",
+            "has-link",
+            "paddingless"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-dropdown-item>"
+    },
+    "b-field": {
+        "attributes": [
+            "type",
+            "label",
+            "label-for",
+            "custom-class",
+            "message",
+            "grouped",
+            "group-multiline",
+            "position",
+            "addons",
+            "horizontal"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-field>"
+    },
+    "b-icon": {
+        "attributes": [
+            "type",
+            "pack",
+            "icon",
+            "size",
+            "custom-size",
+            "custom-class"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-icon>"
+    },
+    "b-input": {
+        "attributes": [
+            "value",
+            "type",
+            "size",
+            "expanded",
+            "password-reveal",
+            "loading",
+            "icon",
+            "icon-pack",
+            "maxlength",
+            "has-counter"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-input>"
+    },
+    "b-loading": {
+        "attributes": [
+            "active",
+            "animation",
+            "is-full-page",
+            "canCancel",
+            "onCancel"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-loading>"
+    },
+    "b-message": {
+        "attributes": [
+            "type",
+            "active",
+            "closable",
+            "auto-close",
+            "duration",
+            "icon-pack",
+            "has-icon",
+            "size",
+            "icon-size",
+            "title"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-message>"
+    },
+    "b-modal": {
+        "attributes": [
+            "active",
+            "component",
+            "parent",
+            "props",
+            "events",
+            "content",
+            "width",
+            "has-modal-card",
+            "animation",
+            "canCancel",
+            "onCancel",
+            "scroll"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-modal>"
+    },
+    "b-notification": {
+        "attributes": [
+            "type",
+            "active",
+            "closable",
+            "auto-close",
+            "duration",
+            "icon-pack",
+            "has-icon"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-notification>"
+    },
+    "b-pagination": {
+        "attributes": [
+            "total",
+            "per-page",
+            "current",
+            "order",
+            "size",
+            "simple",
+            "icon-pack"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-pagination>"
+    },
+    "b-panel": {
+        "attributes": [
+            "collapsible",
+            "open",
+            "has-custom-template",
+            "header",
+            "content",
+            "animation",
+            "icon-pack"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-panel>"
+    },
+    "b-radio": {
+        "attributes": [
+            "value",
+            "native-value",
+            "disabled",
+            "required",
+            "name",
+            "size",
+            "type"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-radio>"
+    },
+    "b-radio-button": {
+        "attributes": [
+            "value",
+            "native-value",
+            "type",
+            "disabled",
+            "name",
+            "size"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-radio-button>"
+    },
+    "b-select": {
+        "attributes": [
+            "value",
+            "size",
+            "placeholder",
+            "loading",
+            "expanded",
+            "icon",
+            "icon-pack",
+            "native-size"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-select>"
+    },
+    "b-switch": {
+        "attributes": [
+            "type",
+            "value",
+            "native-value",
+            "true-value",
+            "false-value",
+            "disabled",
+            "name",
+            "size"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-switch>"
+    },
+    "b-table": {
+        "attributes": [
+            "data",
+            "columns",
+            "default-sort",
+            "default-sort-direction",
+            "bordered",
+            "narrowed",
+            "selected",
+            "focusable",
+            "hoverable",
+            "checkable",
+            "checked-rows",
+            "mobile-cards",
+            "backend-sorting",
+            "backend-pagination",
+            "total",
+            "current-page",
+            "loading",
+            "paginated",
+            "pagination-simple",
+            "pagination-size",
+            "per-page",
+            "row-class",
+            "detailed",
+            "opened-detailed",
+            "has-detailed-visible",
+            "detail-key",
+            "custom-is-checked",
+            "is-row-checkable",
+            "icon-pack"
+        ],
+        "subtags": ["b-table-column"],
+        "description": "Buefy component <b-table>"
+    },
+    "b-table-column": {
+        "attributes": [
+            "label",
+            "custom-key",
+            "field",
+            "meta",
+            "width",
+            "numeric",
+            "centered",
+            "sortable",
+            "visible",
+            "custom-sort"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-table-column>"
+    },
+    "b-tabs": {
+        "attributes": [
+            "value",
+            "expanded",
+            "animated",
+            "type",
+            "size",
+            "position"
+        ],
+        "subtags": ["b-tab-item"],
+        "description": "Buefy component <b-tabs>"
+    },
+    "b-tab-item": {
+        "attributes": [
+            "label",
+            "icon",
+            "icon-pack",
+            "disabled",
+            "visible"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-tab-item>"
+    },
+    "b-tag": {
+        "attributes": [
+            "type",
+            "size",
+            "rounded",
+            "closable",
+            "attached",
+            "ellipsis",
+            "tabstop",
+            "disabled"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-tag>"
+    },
+    "b-taglist": {
+        "attributes": [
+            "attached"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-taglist>"
+    },
+    "b-taginput": {
+        "attributes": [
+            "value",
+            "maxlength",
+            "maxtags",
+            "type",
+            "size",
+            "rounded",
+            "attached",
+            "ellipsis",
+            "field",
+            "autocomplete",
+            "allow-new",
+            "remove-on-keys",
+            "confirm-key-codes",
+            "on-paste-separators",
+            "before-adding",
+            "allow-duplicates"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-taginput>"
+    },
+    "b-timepicker": {
+        "attributes": [
+            "value",
+            "hour-format",
+            "increment-minutes",
+            "time-formatter",
+            "time-parser",
+            "min-time",
+            "max-time",
+            "size",
+            "inline",
+            "readonly",
+            "loading",
+            "icon",
+            "icon-pack",
+            "unselectable-times",
+            "mobile-native",
+            "position"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-timepicker>"
+    },
+    "b-tooltip": {
+        "attributes": [
+            "type",
+            "active",
+            "label",
+            "position",
+            "always",
+            "animated",
+            "square",
+            "dashed",
+            "multilined",
+            "size"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-tooltip>"
+    },
+    "b-upload": {
+        "attributes": [
+            "value",
+            "drag-drop",
+            "type",
+            "disabled",
+            "name",
+            "required",
+            "accept",
+            "loading",
+            "multiple",
+            "native"
+        ],
+        "subtags": [],
+        "description": "Buefy component <b-upload>"
+    }
+}

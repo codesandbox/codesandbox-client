@@ -1,0 +1,24 @@
+{
+  "name": "html-whitespace-sensitive-tag-names",
+  "version": "1.0.0",
+  "description": "List of whitespace sensitive HTML tag names",
+  "license": "MIT",
+  "keywords": [
+    "whitespace",
+    "white",
+    "space",
+    "sensitive",
+    "tagname",
+    "tag",
+    "name"
+  ],
+  "repository": "https://github.com/wooorm/rehype-minify/tree/master/packages/html-whitespace-sensitive-tag-names",
+  "bugs": "https://github.com/wooorm/rehype-minify/issues",
+  "author": "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)",
+  "contributors": [
+    "Titus Wormer <tituswormer@gmail.com>"
+  ],
+  "files": [
+    "index.json"
+  ]
+}
