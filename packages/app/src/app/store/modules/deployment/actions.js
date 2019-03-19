@@ -1,6 +1,6 @@
 import getTemplate from 'common/lib/templates';
 
-const nowURL = 'https://now.deploy.codesandbox.io/';
+const nowURL = 'https://now.deploy.codesandbox.io';
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
@@ -27,6 +27,7 @@ export async function aliasDeployment({ http, path, props, state }) {
 
 export async function postToZeit({ http, path, props, state }) {
   const { file } = props;
+  console.log('way');
   const token = state.get('user.integrations.zeit.token');
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
