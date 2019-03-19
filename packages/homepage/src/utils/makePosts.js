@@ -1,6 +1,22 @@
-// Im sorry about this whole file
+// Im so sorry about this whole file
 
 const ives = 'https://avatars2.githubusercontent.com/u/587016?s=60&v=4';
+export const makePost = (markdown, medium) => {
+  if (medium) {
+    return {
+      ...medium,
+      photo: ives,
+      content: medium.content.encoded,
+      date: medium.isoDate,
+    };
+  }
+
+  return {
+    ...markdown.frontmatter,
+    content: markdown.html,
+    creator: markdown.frontmatter.authors[0],
+  };
+};
 
 const getContents = str => {
   const elem = document.createElement('div');
@@ -45,21 +61,4 @@ export const makeFeed = (mediumPosts, markdownPosts) => {
   return [...medium, ...markdown].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
-};
-
-export const makePost = (markdown, medium) => {
-  if (medium) {
-    return {
-      ...medium,
-      photo: ives,
-      content: medium.content.encoded,
-      date: medium.isoDate,
-    };
-  }
-
-  return {
-    ...markdown.frontmatter,
-    content: markdown.html,
-    creator: markdown.frontmatter.authors[0],
-  };
 };

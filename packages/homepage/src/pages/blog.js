@@ -11,10 +11,20 @@ import {
   Author,
 } from '../components/PostElements';
 
-import { Posts, Subtitle, Thumbnail, Wrapper } from './_blog.elements';
+import { Posts, Subtitle, Thumbnail, Wrapper, Aside } from './_blog.elements';
 
 import Layout from '../components/layout';
 import { makeFeed } from '../utils/makePosts';
+
+const Info = ({ post, mobile, ...props }) => (
+  <Aside mobile={mobile} {...props}>
+    <PostDate>{format(post.date, 'MMM DD,YYYY')}</PostDate>
+    <section>
+      <AuthorImage src={post.photo} alt={post.creator} />
+      <Author>{post.creator}</Author>
+    </section>
+  </Aside>
+);
 
 const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
   const posts = makeFeed(allFeedMediumBlog, allMarkdownRemark);
@@ -27,18 +37,7 @@ const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
         />
         {posts.map(post => (
           <Wrapper key={post.id}>
-            <aside>
-              <PostDate>{format(post.date, 'MMM DD,YYYY')}</PostDate>
-              <div
-                css={`
-                  display: flex;
-                  align-items: center;
-                `}
-              >
-                <AuthorImage src={post.photo} alt={post.creator} />
-                <Author>{post.creator}</Author>
-              </div>
-            </aside>
+            <Info post={post} />
             <Posts key={post.id}>
               <Thumbnail src={post.src} width="340" alt={post.title} />
               <div>
@@ -52,6 +51,7 @@ const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
                 </Link>
                 <Subtitle>{post.subtitle}</Subtitle>
               </div>
+              <Info post={post} mobile />
             </Posts>
           </Wrapper>
         ))};
