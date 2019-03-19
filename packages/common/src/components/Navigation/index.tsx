@@ -145,9 +145,7 @@ export default class Navigation extends React.PureComponent {
             <Item href="/explore">Explore</Item>
             <Item href="/docs">Docs</Item>
 
-            <Item href="/blog" rel="noopener noreferrer">
-              Blog
-            </Item>
+            <Item href="/blog">Blog</Item>
             <Item
               href="https://github.com/CompuIves/codesandbox-client"
               target="_blank"
