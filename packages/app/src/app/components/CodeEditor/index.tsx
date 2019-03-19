@@ -19,7 +19,6 @@ import Configuration from './Configuration';
 import VSCode from './VSCode';
 import MonacoDiff from './MonacoDiff';
 import { Icons, Icon } from './elements';
-import { getCustomEditorAPI } from './VSCode/custom-code-editor';
 
 const CodeMirror = Loadable(() =>
   import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
@@ -121,12 +120,6 @@ export default class CodeEditor extends React.PureComponent<
       module.id
     );
     const config = template.configurationFiles[modulePath];
-    const customEditorAPI = getCustomEditorAPI(template, sandbox, {
-      ...props,
-      dependencies,
-      config,
-      toggleConfigUI: this.toggleConfigUI,
-    });
 
     if (
       !settings.experimentVSCode &&
@@ -232,11 +225,7 @@ export default class CodeEditor extends React.PureComponent<
               )}
             </Icons>
           ))}
-        <Editor
-          {...props}
-          dependencies={dependencies}
-          customEditorAPI={customEditorAPI}
-        />
+        <Editor {...props} dependencies={dependencies} />
       </div>
     );
   }

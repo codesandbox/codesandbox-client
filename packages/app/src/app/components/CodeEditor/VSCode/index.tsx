@@ -1,5 +1,7 @@
 // @flow
 import * as React from 'react';
+import { render } from 'react-dom';
+import { ThemeProvider } from 'styled-components';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
 import { getModulePath, resolveModule } from 'common/lib/sandbox/modules';
@@ -7,8 +9,10 @@ import { listen } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
 import DEFAULT_PRETTIER_CONFIG from 'common/lib/prettify-default-config';
+import getUI from 'common/lib/templates/configuration/ui';
 
 import getTemplate from 'common/lib/templates';
+import theme from 'common/lib/theme';
 import {
   Module,
   Sandbox,
@@ -26,7 +30,6 @@ import eventToTransform from '../Monaco/event-to-transform';
 import MonacoEditorComponent from './MonacoReactComponent';
 import { EditorAPI } from './MonacoReactComponent';
 import { Container, GlobalStyles } from './elements';
-import defineTheme from '../Monaco/define-theme';
 import getSettings from '../Monaco/settings';
 
 import { Props, Editor } from '../types';
@@ -36,6 +39,8 @@ import {
   indexToLineAndColumn,
 } from '../Monaco/monaco-index-converter';
 import { updateUserSelections } from '../Monaco/live-decorations';
+
+import Configuration from './Configuration';
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
@@ -164,6 +169,11 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       const shortid = this.modelListeners[path].moduleShortid;
       const model = this.modelListeners[path].model;
       const module = this.sandbox.modules.find(m => m.shortid === shortid);
+      if (!module) {
+        // Deleted
+        return;
+      }
+
       const modulePath = this.getVSCodePath(module.id);
 
       if (modulePath !== model.uri.path) {
@@ -1081,6 +1091,38 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     };
   };
 
+  getCustomEditor = (modulePath: string) => {
+    const template = getTemplate(this.sandbox.template);
+    const config = template.configurationFiles[modulePath];
+
+    const ui = config && getUI(config.type);
+    return (
+      ui &&
+      ui.ConfigWizard &&
+      ((container, extraProps) => {
+        const currentModule = resolveModule(
+          modulePath,
+          this.sandbox.modules,
+          this.sandbox.directories
+        );
+        return render(
+          <ThemeProvider theme={theme}>
+            <Configuration
+              onChange={this.props.onChange}
+              // Copy the object, we don't want mutations in the component
+              // @ts-ignore
+              currentModule={currentModule.toJSON()}
+              config={config}
+              sandbox={this.sandbox}
+              {...extraProps}
+            />
+          </ThemeProvider>,
+          container
+        );
+      })
+    );
+  };
+
   render() {
     const { width, height } = this.props;
 
@@ -1098,7 +1140,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           editorDidMount={this.configureEditor}
           editorWillMount={monaco => {}}
           getEditorOptions={this.getEditorOptions}
-          customEditorAPI={this.props.customEditorAPI}
+          customEditorAPI={{ getCustomEditor: this.getCustomEditor }}
         />
       </Container>
     );
