@@ -36,8 +36,6 @@ export type StringPreference = {
   setValue: SetValueT<string>;
 };
 
-
-
 export type DropdownPreference = {
   type: 'dropdown';
   options: string[];

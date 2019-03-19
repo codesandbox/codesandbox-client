@@ -1,0 +1,34 @@
+{
+  "plugins": [
+    "@semantic-release/changelog",
+    ["@semantic-release/commit-analyzer", {
+      "preset": "angular",
+      "releaseRules": [
+        {"type": "docs", "scope":"readme", "release": "patch"},
+        {"type": "refactor", "release": "patch"}
+      ],
+      "parserOpts": {
+        "noteKeywords": ["BREAKING CHANGE:"]
+      }
+    }],
+    ["@semantic-release/release-notes-generator", {
+      "preset": "angular",
+      "parserOpts": {
+        "noteKeywords": ["BREAKING CHANGE:"]
+      },
+      "writerOpts": {
+        "commitsSort": ["subject", "scope"]
+      }
+    }],
+    ["@semantic-release/git", {
+      "assets": ["CHANGELOG.md"],
+      "message": "ci(release): update changelog [skip ci]"
+    }],
+    ["semantic-release-vsce", {
+      "assets": "graphql-for-vscode.vsix"
+    }],
+    ["@semantic-release/github", {
+      "assets": "graphql-for-vscode.vsix"
+    }]
+  ]
+}

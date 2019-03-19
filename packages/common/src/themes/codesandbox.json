@@ -3,9 +3,39 @@
   "isCodeSandbox": true,
   "type": "dark",
   "colors": {
+    "activityBar.background": "#1C2022",
+    "badge.background": "#374140",
+    "button.background": "#40A9F3",
+    "button.hoverBackground": "#66B9F4",
     "editor.background": "#1C2022",
-    "editor.foreground": "#E0E0E0",
-    "editor.selectionBackground": "#ADD6FF26"
+    "editor.selectionBackground": "#40a8f348",
+    "editorCursor.foreground": "#66b9f4",
+    "editorGroup.border": "#111518",
+    "editorGroupHeader.tabsBackground": "#111518",
+    "editorHoverWidget.background": "#1C2022",
+    "input.background": "#111518",
+    "input.foreground": "#C0C0C0",
+    "list.hoverBackground": "#37414050",
+    "menu.background": "#111518",
+    "menu.selectionBackground": "#24282A",
+    "menu.selectionForeground": "#40A9F3",
+    "scrollbarSlider.activeBackground": "#374140",
+    "scrollbarSlider.background": "#37414050",
+    "sideBar.background": "#191d1f",
+    "sideBar.border": "#111518",
+    "statusBar.background": "#40A9F3",
+    "tab.activeBackground": "#1C2022",
+    "tab.border": "#111518",
+    "tab.inactiveBackground": "#111518",
+    "titleBar.activeBackground": "#1C2022",
+    "titleBar.border": "#111518",
+    "editorSuggestWidget.background": "#111518",
+    "editorSuggestWidget.selectedBackground": "#24282A",
+    "editorSuggestWidget.border": "#111518",
+    "editorHoverWidget.border": "#111518",
+    "inputOption.activeBorder": "#66b9f4",
+    "focusBorder": "#66b9f4",
+    "peekViewEditor.background": "#111518"
   },
   "tokenColors": [
     {
@@ -27,7 +57,7 @@
       "name": "Entity Name Type",
       "scope": ["entity.name.type"],
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
@@ -41,14 +71,14 @@
       "name": "Keyword",
       "scope": ["keyword"],
       "settings": {
-        "foreground": "#66b9f4"
+        "foreground": "#C678DD"
       }
     },
     {
       "name": "Keyword Control",
       "scope": ["keyword.control"],
       "settings": {
-        "foreground": "#66b9f4"
+        "foreground": "#C678DD"
       }
     },
     {
@@ -174,7 +204,7 @@
       "name": "String Regexp Source Ruby Embedded",
       "scope": ["string.regexp source.ruby.embedded"],
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
@@ -220,7 +250,7 @@
       "name": "Punctuation Definition Bold",
       "scope": ["punctuation.definition.bold"],
       "settings": {
-        "foreground": "#ffd399",
+        "foreground": "#E5C07B",
         "fontStyle": "bold"
       }
     },
@@ -255,7 +285,7 @@
       "name": "Support Class",
       "scope": ["support.class"],
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
@@ -290,7 +320,7 @@
       "name": "Entity Name Class,entity Name Type Class",
       "scope": ["entity.name.class", "entity.name.type.class"],
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
@@ -325,7 +355,7 @@
       "name": "Meta Class",
       "scope": ["meta.class"],
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
@@ -558,14 +588,14 @@
       "name": "Source Java Storage Modifier Import",
       "scope": ["source.java storage.modifier.import"],
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
       "name": "Source Java Storage Type",
       "scope": ["source.java storage.type"],
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
@@ -1137,7 +1167,7 @@
         "meta.array.literal.tsx variable"
       ],
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
@@ -1314,7 +1344,7 @@
       "name": "[VSCODE-CUSTOM] CSharp Storage Type",
       "scope": "storage.type.cs",
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {
@@ -1377,7 +1407,7 @@
       "name": "[VSCODE-CUSTOM] Java Storage Type Primitive Array",
       "scope": "storage.type.primitive.array.java",
       "settings": {
-        "foreground": "#ffd399"
+        "foreground": "#E5C07B"
       }
     },
     {

@@ -213,14 +213,14 @@ function addMiddleware(devServer, index) {
       })
     );
 
-    devServer.use(
-      '/socket.io',
-      proxy({
-        target: 'https://sse.codesandbox.io',
-        changeOrigin: true,
-        secure: false,
-      })
-    );
+    // devServer.use(
+    //   '/socket.io',
+    //   proxy({
+    //     target: 'https://sse.codesandbox.io',
+    //     changeOrigin: true,
+    //     secure: false,
+    //   })
+    // );
   }
   if (process.env.VSCODE) {
     devServer.use(
@@ -263,6 +263,19 @@ function runDevServer(port, protocol, index) {
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
+    proxy: {
+      '/public/vscode-extensions/**': {
+        target: `${protocol}://${
+          process.env.LOCAL_SERVER ? 'localhost:3000' : 'codesandbox.dev'
+        }`,
+        bypass: req => {
+          if (req.method === 'HEAD') {
+            // A hack to support HEAD calls for BrowserFS
+            req.method = 'GET';
+          }
+        },
+      },
+    },
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.

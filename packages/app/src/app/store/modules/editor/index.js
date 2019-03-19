@@ -12,6 +12,7 @@ import {
   parsedConfigurations,
   currentTab,
   modulesByPath,
+  isAdvancedEditor,
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -42,14 +43,9 @@ export default Module({
     highlightedLines: [],
     isUpdatingPrivacy: false,
     quickActionsOpen: false,
-    previewWindow: {
-      height: undefined,
-      width: undefined,
-      editorSize: 50,
-      x: 0,
-      y: 0,
-      content: 'browser',
-    },
+    previewWindowVisible: true,
+    previewWindowOrientation:
+      window.innerHeight / window.innerWidth > 0.9 ? 'horizontal' : 'vertical',
     themes,
   },
   getters: {
@@ -62,6 +58,7 @@ export default Module({
     parsedConfigurations,
     currentTab,
     modulesByPath,
+    isAdvancedEditor,
   },
   computed: {
     isModuleSynced,
@@ -93,14 +90,14 @@ export default Module({
     frozenUpdated: sequences.updateFrozen,
     quickActionsOpened: sequences.openQuickActions,
     quickActionsClosed: sequences.closeQuickActions,
-    setPreviewBounds: sequences.setPreviewBounds,
     setPreviewContent: sequences.setPreviewContent,
     togglePreviewContent: sequences.togglePreview,
     currentTabChanged: sequences.changeCurrentTab,
     discardModuleChanges: sequences.discardModuleChanges,
-    editorSizeUpdated: sequences.updateEditorSize,
     fetchEnvironmentVariables: sequences.fetchEnvironmentVariables,
     updateEnvironmentVariables: sequences.updateEnvironmentVariables,
     deleteEnvironmentVariable: sequences.deleteEnvironmentVariable,
+    toggleEditorPreviewLayout: sequences.toggleEditorPreviewLayout,
+    onNavigateAway: sequences.onNavigateAway,
   },
 });

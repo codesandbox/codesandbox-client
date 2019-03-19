@@ -2,14 +2,22 @@
   "name": "node-services",
   "version": "0.0.0",
   "dependencies": {
-    "events": "^3.0.0"
+    "constants-browserify": "^1.0.0",
+    "events": "^3.0.0",
+    "resolve": "^1.10.0",
+    "util": "0.11.1",
+    "ws": "^6.1.0"
   },
   "devDependencies": {
     "@types/events": "^1.2.0",
-    "typescript": "^2.9.2"
+    "@types/node": "^11.10.5",
+    "@types/resolve": "^0.0.8",
+    "@types/ws": "^6.0.1",
+    "typescript": "^3.3.1"
   },
   "scripts": {
     "build": "tsc",
+    "build:dev": "yarn build",
     "start": "tsc --watch -p ./tsconfig.json"
   }
 }

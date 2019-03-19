@@ -1,0 +1,265 @@
+[
+	{
+		"language": "bat",
+		"scopeName": "source.dosbatch",
+		"path": "./syntaxes/Batch File.tmLanguage"
+	},
+	{
+		"language": "clojure",
+		"scopeName": "source.clojure",
+		"path": "./syntaxes/Clojure.tmLanguage"
+	},
+	{
+		"language": "coffeescript",
+		"scopeName": "source.coffee",
+		"path": "./syntaxes/coffeescript.json"
+	},
+	{
+		"language": "c",
+		"scopeName": "source.c",
+		"path": "./syntaxes/c.json"
+	},
+	{
+		"language": "cpp",
+		"scopeName": "source.cpp",
+		"path": "./syntaxes/c++.json"
+	},
+	{
+		"scopeName": "source.c.platform",
+		"path": "./syntaxes/Platform.tmLanguage"
+	},
+	{
+		"language": "css",
+		"scopeName": "source.css",
+		"path": "./syntaxes/css.plist"
+	},
+	{
+		"language": "diff",
+		"scopeName": "source.diff",
+		"path": "./syntaxes/diff.tmLanguage"
+	},
+	{
+		"language": "dockerfile",
+		"scopeName": "source.dockerfile",
+		"path": "./syntaxes/Dockerfile.tmLanguage"
+	},
+	{
+		"language": "fsharp",
+		"scopeName": "source.fsharp",
+		"path": "./syntaxes/fsharp.json"
+	},
+	{
+		"language": "git-commit",
+		"scopeName": "text.git-commit",
+		"path": "./syntaxes/git-commit.tmLanguage"
+	},
+	{
+		"language": "git-rebase",
+		"scopeName": "text.git-rebase",
+		"path": "./syntaxes/git-rebase.tmLanguage"
+	},
+	{
+		"language": "go",
+		"scopeName": "source.go",
+		"path": "./syntaxes/go.json"
+	},
+	{
+		"language": "groovy",
+		"scopeName": "source.groovy",
+		"path": "./syntaxes/Groovy.tmLanguage"
+	},
+	{
+		"language": "handlebars",
+		"scopeName": "text.html.handlebars",
+		"path": "./syntaxes/Handlebars.json"
+	},
+	{
+		"language": "html",
+		"scopeName": "text.html.basic",
+		"path": "./syntaxes/html.json",
+		"embeddedLanguages": {
+			"text.html": "html",
+			"source.css": "css",
+			"source.js": "javascript",
+			"source.python": "python",
+			"source.smarty": "smarty"
+		}
+	},
+	{
+		"language": "ini",
+		"scopeName": "source.properties",
+		"path": "./syntaxes/properties.plist"
+	},
+	{
+		"language": "properties",
+		"scopeName": "source.properties",
+		"path": "./syntaxes/properties.plist"
+	},
+	{
+		"language": "jade",
+		"scopeName": "text.jade",
+		"path": "./syntaxes/Jade.json"
+	},
+	{
+		"language": "java",
+		"scopeName": "source.java",
+		"path": "./syntaxes/java.json"
+	},
+	{
+		"language": "javascriptreact",
+		"scopeName": "source.js",
+		"path": "./syntaxes/JavaScript.tmLanguage.json"
+	},
+	{
+		"language": "javascript",
+		"scopeName": "source.js",
+		"path": "./syntaxes/JavaScript.tmLanguage.json"
+	},
+	{
+		"scopeName": "source.js.regexp",
+		"path": "./syntaxes/Regular Expressions (JavaScript).tmLanguage"
+	},
+	{
+		"language": "json",
+		"scopeName": "source.json",
+		"path": "./syntaxes/JSON.tmLanguage"
+	},
+	{
+		"language": "less",
+		"scopeName": "source.css.less",
+		"path": "./syntaxes/less.tmLanguage.json"
+	},
+	{
+		"language": "lua",
+		"scopeName": "source.lua",
+		"path": "./syntaxes/lua.json"
+	},
+	{
+		"language": "makefile",
+		"scopeName": "source.makefile",
+		"path": "./syntaxes/Makefile.json"
+	},
+	{
+		"language": "markdown",
+		"scopeName": "text.html.markdown",
+		"path": "./syntaxes/markdown.tmLanguage"
+	},
+	{
+		"language": "objective-c",
+		"scopeName": "source.objc",
+		"path": "./syntaxes/Objective-C.tmLanguage"
+	},
+	{
+		"language": "perl",
+		"scopeName": "source.perl",
+		"path": "./syntaxes/Perl.plist"
+	},
+	{
+		"language": "perl6",
+		"scopeName": "source.perl.6",
+		"path": "./syntaxes/Perl 6.tmLanguage"
+	},
+	{
+		"language": "php",
+		"scopeName": "text.html.php",
+		"path": "./syntaxes/php.json",
+		"embeddedLanguages": {
+			"text.html": "html",
+			"source.php": "php",
+			"source.sql": "sql",
+			"text.xml": "xml",
+			"source.js": "javascript",
+			"source.json": "json",
+			"source.css": "css"
+		}
+	},
+	{
+		"language": "powershell",
+		"scopeName": "source.powershell",
+		"path": "./syntaxes/PowershellSyntax.tmLanguage"
+	},
+	{
+		"language": "python",
+		"scopeName": "source.python",
+		"path": "./syntaxes/MagicPython.tmLanguage.json"
+	},
+	{
+		"scopeName": "source.regexp.python",
+		"path": "./syntaxes/MagicRegExp.tmLanguage.json"
+	},
+	{
+		"language": "r",
+		"scopeName": "source.r",
+		"path": "./syntaxes/R.plist"
+	},
+	{
+		"language": "razor",
+		"scopeName": "text.html.cshtml",
+		"path": "./syntaxes/cshtml.json"
+	},
+	{
+		"language": "ruby",
+		"scopeName": "source.ruby",
+		"path": "./syntaxes/Ruby.plist"
+	},
+	{
+		"language": "rust",
+		"path": "./syntaxes/rust.json",
+		"scopeName": "source.rust"
+	},
+	{
+		"language": "scss",
+		"scopeName": "source.css.scss",
+		"path": "./syntaxes/scss.json"
+	},
+	{
+		"language": "shaderlab",
+		"path": "./syntaxes/shaderlab.json",
+		"scopeName": "source.shaderlab"
+	},
+	{
+		"language": "shellscript",
+		"scopeName": "source.shell",
+		"path": "./syntaxes/Shell-Unix-Bash.tmLanguage.json"
+	},
+	{
+		"language": "sql",
+		"scopeName": "source.sql",
+		"path": "./syntaxes/SQL.plist"
+	},
+	{
+		"language": "swift",
+		"scopeName": "source.swift",
+		"path": "./syntaxes/swift.json"
+	},
+	{
+		"language": "typescript",
+		"scopeName": "source.ts",
+		"path": "./syntaxes/TypeScript.tmLanguage.json"
+	},
+	{
+		"language": "typescriptreact",
+		"scopeName": "source.tsx",
+		"path": "./syntaxes/TypeScriptReact.tmLanguage.json"
+	},
+	{
+		"language": "vb",
+		"scopeName": "source.asp.vb.net",
+		"path": "./syntaxes/ASPVBnet.plist"
+	},
+	{
+		"language": "xml",
+		"scopeName": "text.xml",
+		"path": "./syntaxes/xml.json"
+	},
+	{
+		"language": "xsl",
+		"scopeName": "text.xml.xsl",
+		"path": "./syntaxes/xsl.json"
+	},
+	{
+		"language": "yaml",
+		"scopeName": "source.yaml",
+		"path": "./syntaxes/yaml.json"
+	}
+]

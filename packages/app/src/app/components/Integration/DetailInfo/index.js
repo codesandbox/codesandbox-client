@@ -2,7 +2,7 @@ import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import Margin from 'common/lib/components/spacing/Margin';
 import Tooltip from 'common/lib/components/Tooltip';
-import Button from '../../Button';
+import { Button } from 'common/lib/components/Button';
 
 import { Details, Heading, Info, Action } from './elements';
 

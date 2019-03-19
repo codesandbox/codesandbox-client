@@ -33,7 +33,7 @@ const GlobalStyle = createGlobalStyle`
 export default props => (
   <React.Fragment>
     <GlobalStyle />
-    <Tooltip {...props} />
+    <Tooltip delay={1000} {...props} />
   </React.Fragment>
 );
 export { withTooltip };

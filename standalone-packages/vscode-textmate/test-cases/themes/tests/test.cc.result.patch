@@ -1,0 +1,104 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [],
+	"monokai": [],
+	"monokai_dimmed": [
+		{
+			"index": 56,
+			"content": "LOG_INFO",
+			"color": "#0080FF",
+			"newColor": "#9872A2"
+		},
+		{
+			"index": 63,
+			"content": "LOG_INFO",
+			"color": "#0080FF",
+			"newColor": "#9872A2"
+		},
+		{
+			"index": 92,
+			"content": "o",
+			"color": "#0080FF",
+			"newColor": "#9872A2"
+		},
+		{
+			"index": 125,
+			"content": "asm",
+			"color": "#0080FF",
+			"newColor": "#9872A2"
+		},
+		{
+			"index": 132,
+			"content": "fn",
+			"color": "#0080FF",
+			"newColor": "#9872A2"
+		}
+	],
+	"quietlight": [
+		{
+			"index": 74,
+			"content": ".",
+			"color": "#434343",
+			"newColor": "#777777"
+		}
+	],
+	"red": [],
+	"solarized_dark": [
+		{
+			"index": 0,
+			"content": "#",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 1,
+			"content": "if",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 44,
+			"content": "#",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 45,
+			"content": "endif",
+			"color": "#B58900",
+			"newColor": "#859900"
+		}
+	],
+	"solarized_light": [
+		{
+			"index": 0,
+			"content": "#",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 1,
+			"content": "if",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 44,
+			"content": "#",
+			"color": "#B58900",
+			"newColor": "#859900"
+		},
+		{
+			"index": 45,
+			"content": "endif",
+			"color": "#B58900",
+			"newColor": "#859900"
+		}
+	],
+	"tomorrow_night_blue": []
+}

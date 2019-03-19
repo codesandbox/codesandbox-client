@@ -1,0 +1,177 @@
+{
+	"abyss": [],
+	"dark_vs": [
+		{
+			"index": 20,
+			"content": "var",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		},
+		{
+			"index": 26,
+			"content": "body",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		},
+		{
+			"index": 39,
+			"content": "var",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		}
+	],
+	"light_vs": [],
+	"hc_black": [
+		{
+			"index": 20,
+			"content": "var",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		},
+		{
+			"index": 26,
+			"content": "body",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		},
+		{
+			"index": 39,
+			"content": "var",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		}
+	],
+	"dark_plus": [
+		{
+			"index": 20,
+			"content": "var",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		},
+		{
+			"index": 26,
+			"content": "body",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		},
+		{
+			"index": 39,
+			"content": "var",
+			"color": "#569CD6",
+			"newColor": "#D7BA7D"
+		}
+	],
+	"light_plus": [],
+	"kimbie_dark": [],
+	"monokai": [],
+	"monokai_dimmed": [],
+	"quietlight": [
+		{
+			"index": 6,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 8,
+			"content": "6",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 9,
+			"content": "px",
+			"color": "#448C27",
+			"newColor": "#4B83CD"
+		},
+		{
+			"index": 13,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 16,
+			"content": "4",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 18,
+			"content": "*",
+			"color": "#448C27",
+			"newColor": "#777777"
+		},
+		{
+			"index": 22,
+			"content": "--spacing-unit",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 31,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 33,
+			"content": "calc",
+			"color": "#448C27",
+			"newColor": "#AA3731"
+		},
+		{
+			"index": 35,
+			"content": "4",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 37,
+			"content": "*",
+			"color": "#448C27",
+			"newColor": "#777777"
+		},
+		{
+			"index": 41,
+			"content": "--spacing-unit",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 42,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 44,
+			"content": "5",
+			"color": "#448C27",
+			"newColor": "#AB6526"
+		},
+		{
+			"index": 45,
+			"content": "px",
+			"color": "#448C27",
+			"newColor": "#4B83CD"
+		}
+	],
+	"red": [
+		{
+			"index": 20,
+			"content": "var",
+			"color": "#EC0D1E",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 39,
+			"content": "var",
+			"color": "#EC0D1E",
+			"newColor": "#FEC758"
+		}
+	],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": []
+}

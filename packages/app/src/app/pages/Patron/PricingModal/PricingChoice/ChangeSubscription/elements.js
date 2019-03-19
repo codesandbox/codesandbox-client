@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 export const SmallText = styled.div`
   text-align: center;

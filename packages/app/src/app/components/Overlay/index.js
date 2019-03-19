@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import { Transition, animated, config } from 'react-spring';
+import { Transition, animated, config } from 'react-spring/renderprops';
 import track from 'common/lib/utils/analytics';
 
 class OverlayComponent extends React.Component {

@@ -30,6 +30,11 @@ input {
   -webkit-touch-callout: none;
 }
 
+input:focus {
+  outline: -webkit-focus-ring-color auto 0px;
+  outline-offset: 0;
+}
+
 #root {
 }
 

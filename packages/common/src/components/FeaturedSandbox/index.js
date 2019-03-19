@@ -1,7 +1,7 @@
 import React from 'react';
 import Preview from 'app/src/app/components/Preview';
+import { Spring, animated, Transition } from 'react-spring/renderprops';
 import { camelizeKeys } from 'humps';
-import { Spring, animated, Transition } from 'react-spring';
 
 import { profileUrl, protocolAndHost } from '../../utils/url-generator';
 import getIcon from '../../templates/icons';

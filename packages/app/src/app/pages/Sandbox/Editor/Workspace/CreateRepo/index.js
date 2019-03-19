@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import Margin from 'common/lib/components/spacing/Margin';
 import Input from 'common/lib/components/Input';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
 

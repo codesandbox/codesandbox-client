@@ -1,0 +1,3390 @@
+{
+	"abyss": [
+		{
+			"content": "let",
+			"color": "#9966B8",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.storage.type rgb(153, 102, 184)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "a",
+			"color": "#6688CC",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "=",
+			"color": "#225588",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "Array",
+			"color": "#9966B8",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.class rgb(153, 102, 184)"
+		},
+		{
+			"content": "<",
+			"color": "#6688CC",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "number",
+			"color": "#9966B8",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.type rgb(153, 102, 184)"
+		},
+		{
+			"content": ">",
+			"color": "#6688CC",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "()",
+			"color": "#6688CC",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": ";",
+			"color": "#6688CC",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "   ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "//",
+			"color": "#223355",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#223355",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "interface",
+			"color": "#9966B8",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.storage.type rgb(153, 102, 184)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#FFEEBB",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.type.class rgb(255, 238, 187)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "{",
+			"color": "#6688CC",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "   ",
+			"color": "#6688CC",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "a",
+			"color": "#6688CC",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": ":",
+			"color": "#225588",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "Array",
+			"color": "#FFEEBB",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.type.class rgb(255, 238, 187)"
+		},
+		{
+			"content": "<",
+			"color": "#6688CC",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "number",
+			"color": "#9966B8",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.class rgb(153, 102, 184)"
+		},
+		{
+			"content": ">",
+			"color": "#6688CC",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": ";",
+			"color": "#6688CC",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "}",
+			"color": "#6688CC",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "let",
+			"color": "#9966B8",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.storage.type rgb(153, 102, 184)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "s",
+			"color": "#6688CC",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "=",
+			"color": "#225588",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "\"",
+			"color": "#22AA44",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#22AA44",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "\"",
+			"color": "#22AA44",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": ";",
+			"color": "#6688CC",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		}
+	],
+	"dark_vs": [
+		{
+			"content": "let",
+			"color": "#569CD6",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "a",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Array",
+			"color": "#D4D4D4",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "<",
+			"color": "#D4D4D4",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "number",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ">",
+			"color": "#D4D4D4",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "()",
+			"color": "#D4D4D4",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ";",
+			"color": "#D4D4D4",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "   ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "//",
+			"color": "#608B4E",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#608B4E",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "interface",
+			"color": "#569CD6",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#D4D4D4",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "{",
+			"color": "#D4D4D4",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "   ",
+			"color": "#D4D4D4",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "a",
+			"color": "#D4D4D4",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Array",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "<",
+			"color": "#D4D4D4",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "number",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ">",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ";",
+			"color": "#D4D4D4",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "}",
+			"color": "#D4D4D4",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "let",
+			"color": "#569CD6",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "s",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#CE9178",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ";",
+			"color": "#D4D4D4",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": "let",
+			"color": "#0000FF",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.storage.type rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "a",
+			"color": "#000000",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Array",
+			"color": "#000000",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "<",
+			"color": "#000000",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "number",
+			"color": "#000000",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ">",
+			"color": "#000000",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "()",
+			"color": "#000000",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ";",
+			"color": "#000000",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "   ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "//",
+			"color": "#008000",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#008000",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "interface",
+			"color": "#0000FF",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.storage.type rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "class.meta.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#000000",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "class.meta.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "{",
+			"color": "#000000",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "   ",
+			"color": "#000000",
+			"_t": "class.meta.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "a",
+			"color": "#000000",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Array",
+			"color": "#000000",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "<",
+			"color": "#000000",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "number",
+			"color": "#000000",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ">",
+			"color": "#000000",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ";",
+			"color": "#000000",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "}",
+			"color": "#000000",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.storage.type rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "s",
+			"color": "#000000",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#A31515",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ";",
+			"color": "#000000",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": "let",
+			"color": "#569CD6",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "a",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Array",
+			"color": "#FFFFFF",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "<",
+			"color": "#FFFFFF",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "number",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ">",
+			"color": "#FFFFFF",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "()",
+			"color": "#FFFFFF",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ";",
+			"color": "#FFFFFF",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "   ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "//",
+			"color": "#7CA668",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#7CA668",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "interface",
+			"color": "#569CD6",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "class.meta.tsx",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#FFFFFF",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "class.meta.tsx",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "{",
+			"color": "#FFFFFF",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "   ",
+			"color": "#FFFFFF",
+			"_t": "class.meta.tsx",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "a",
+			"color": "#FFFFFF",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Array",
+			"color": "#FFFFFF",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "<",
+			"color": "#FFFFFF",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "number",
+			"color": "#FFFFFF",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ">",
+			"color": "#FFFFFF",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ";",
+			"color": "#FFFFFF",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "}",
+			"color": "#FFFFFF",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "let",
+			"color": "#569CD6",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "s",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#CE9178",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ";",
+			"color": "#FFFFFF",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": "let",
+			"color": "#569CD6",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "a",
+			"color": "#9CDCFE",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Array",
+			"color": "#4EC9B0",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.class rgb(78, 201, 176)"
+		},
+		{
+			"content": "<",
+			"color": "#D4D4D4",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "number",
+			"color": "#4EC9B0",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.type rgb(78, 201, 176)"
+		},
+		{
+			"content": ">",
+			"color": "#D4D4D4",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "()",
+			"color": "#D4D4D4",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ";",
+			"color": "#D4D4D4",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "   ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "//",
+			"color": "#608B4E",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#608B4E",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "interface",
+			"color": "#569CD6",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#4EC9B0",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.type rgb(78, 201, 176)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "{",
+			"color": "#D4D4D4",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "   ",
+			"color": "#D4D4D4",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "a",
+			"color": "#9CDCFE",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Array",
+			"color": "#4EC9B0",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.type rgb(78, 201, 176)"
+		},
+		{
+			"content": "<",
+			"color": "#D4D4D4",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "number",
+			"color": "#4EC9B0",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.type rgb(78, 201, 176)"
+		},
+		{
+			"content": ">",
+			"color": "#D4D4D4",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ";",
+			"color": "#D4D4D4",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "}",
+			"color": "#D4D4D4",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "let",
+			"color": "#569CD6",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.storage.type rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "s",
+			"color": "#9CDCFE",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#CE9178",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ";",
+			"color": "#D4D4D4",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": "let",
+			"color": "#0000FF",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.storage.type rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "a",
+			"color": "#001080",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Array",
+			"color": "#267F99",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.class rgb(38, 127, 153)"
+		},
+		{
+			"content": "<",
+			"color": "#000000",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "number",
+			"color": "#267F99",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.type rgb(38, 127, 153)"
+		},
+		{
+			"content": ">",
+			"color": "#000000",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "()",
+			"color": "#000000",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ";",
+			"color": "#000000",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "   ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "//",
+			"color": "#008000",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#008000",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "interface",
+			"color": "#0000FF",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.storage.type rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "class.meta.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#267F99",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.type rgb(38, 127, 153)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "class.meta.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "{",
+			"color": "#000000",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "   ",
+			"color": "#000000",
+			"_t": "class.meta.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "a",
+			"color": "#001080",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Array",
+			"color": "#267F99",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.type rgb(38, 127, 153)"
+		},
+		{
+			"content": "<",
+			"color": "#000000",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "number",
+			"color": "#267F99",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.type rgb(38, 127, 153)"
+		},
+		{
+			"content": ">",
+			"color": "#000000",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ";",
+			"color": "#000000",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "}",
+			"color": "#000000",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.storage.type rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "s",
+			"color": "#001080",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#A31515",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ";",
+			"color": "#000000",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		}
+	],
+	"kimbie_dark": [
+		{
+			"content": "let",
+			"color": "#98676A",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.storage rgb(152, 103, 106)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "a",
+			"color": "#DC3958",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.variable rgb(220, 57, 88)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "=",
+			"color": "#D3AF86",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "Array",
+			"color": "#F06431",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.class rgb(240, 100, 49)"
+		},
+		{
+			"content": "<",
+			"color": "#D3AF86",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.parameters rgb(211, 175, 134)"
+		},
+		{
+			"content": "number",
+			"color": "#D3AF86",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": ">",
+			"color": "#D3AF86",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.parameters rgb(211, 175, 134)"
+		},
+		{
+			"content": "()",
+			"color": "#D3AF86",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": ";",
+			"color": "#D3AF86",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "   ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "//",
+			"color": "#A57A4C",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#A57A4C",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "interface",
+			"color": "#98676A",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.storage rgb(152, 103, 106)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#F06431",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.type.class rgb(240, 100, 49)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "{",
+			"color": "#D3AF86",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "   ",
+			"color": "#D3AF86",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "a",
+			"color": "#DC3958",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.variable rgb(220, 57, 88)"
+		},
+		{
+			"content": ":",
+			"color": "#D3AF86",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "Array",
+			"color": "#F06431",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.type.class rgb(240, 100, 49)"
+		},
+		{
+			"content": "<",
+			"color": "#D3AF86",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.parameters rgb(211, 175, 134)"
+		},
+		{
+			"content": "number",
+			"color": "#F06431",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.class rgb(240, 100, 49)"
+		},
+		{
+			"content": ">",
+			"color": "#D3AF86",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.parameters rgb(211, 175, 134)"
+		},
+		{
+			"content": ";",
+			"color": "#D3AF86",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "}",
+			"color": "#D3AF86",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "let",
+			"color": "#98676A",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.storage rgb(152, 103, 106)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "s",
+			"color": "#DC3958",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.variable rgb(220, 57, 88)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "=",
+			"color": "#D3AF86",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "\"",
+			"color": "#D3AF86",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#889B4A",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		},
+		{
+			"content": "\"",
+			"color": "#D3AF86",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": ";",
+			"color": "#D3AF86",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		}
+	],
+	"monokai": [
+		{
+			"content": "let",
+			"color": "#66D9EF",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.storage.type rgb(102, 217, 239)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "a",
+			"color": "#F8F8F2",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "=",
+			"color": "#F92672",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "Array",
+			"color": "#66D9EF",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.class rgb(102, 217, 239)"
+		},
+		{
+			"content": "<",
+			"color": "#F8F8F2",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "number",
+			"color": "#66D9EF",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.type rgb(102, 217, 239)"
+		},
+		{
+			"content": ">",
+			"color": "#F8F8F2",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "()",
+			"color": "#F8F8F2",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": ";",
+			"color": "#F8F8F2",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "   ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "//",
+			"color": "#75715E",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#75715E",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "interface",
+			"color": "#66D9EF",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.storage.type rgb(102, 217, 239)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#A6E22E",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.type.class rgb(166, 226, 46)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "{",
+			"color": "#F8F8F2",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "   ",
+			"color": "#F8F8F2",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "a",
+			"color": "#F8F8F2",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": ":",
+			"color": "#F92672",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "Array",
+			"color": "#A6E22E",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.type.class rgb(166, 226, 46)"
+		},
+		{
+			"content": "<",
+			"color": "#F8F8F2",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "number",
+			"color": "#66D9EF",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.class rgb(102, 217, 239)"
+		},
+		{
+			"content": ">",
+			"color": "#F8F8F2",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": ";",
+			"color": "#F8F8F2",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "}",
+			"color": "#F8F8F2",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "let",
+			"color": "#66D9EF",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.storage.type rgb(102, 217, 239)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "s",
+			"color": "#F8F8F2",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "=",
+			"color": "#F92672",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "\"",
+			"color": "#E6DB74",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#E6DB74",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "\"",
+			"color": "#E6DB74",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": ";",
+			"color": "#F8F8F2",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"content": "let",
+			"color": "#9872A2",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.storage rgb(152, 114, 162)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "a",
+			"color": "#6089B4",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.variable.other rgb(96, 137, 180)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "=",
+			"color": "#676867",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "Array",
+			"color": "#C7444A",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support rgb(199, 68, 74)"
+		},
+		{
+			"content": "<",
+			"color": "#C5C8C6",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "number",
+			"color": "#C7444A",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support rgb(199, 68, 74)"
+		},
+		{
+			"content": ">",
+			"color": "#C5C8C6",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "()",
+			"color": "#C5C8C6",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": ";",
+			"color": "#C5C8C6",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "   ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "//",
+			"color": "#9A9B99",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#9A9B99",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "interface",
+			"color": "#9872A2",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.storage rgb(152, 114, 162)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#9B0000",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.type.class rgb(155, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "{",
+			"color": "#C5C8C6",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "   ",
+			"color": "#C5C8C6",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "a",
+			"color": "#C5C8C6",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": ":",
+			"color": "#676867",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "Array",
+			"color": "#9B0000",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.type.class rgb(155, 0, 0)"
+		},
+		{
+			"content": "<",
+			"color": "#C5C8C6",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "number",
+			"color": "#C7444A",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support rgb(199, 68, 74)"
+		},
+		{
+			"content": ">",
+			"color": "#C5C8C6",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": ";",
+			"color": "#C5C8C6",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "}",
+			"color": "#C5C8C6",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "let",
+			"color": "#9872A2",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.storage rgb(152, 114, 162)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "s",
+			"color": "#6089B4",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.variable.other rgb(96, 137, 180)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "=",
+			"color": "#676867",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "\"",
+			"color": "#9AA83A",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#9AA83A",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "\"",
+			"color": "#9AA83A",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": ";",
+			"color": "#C5C8C6",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		}
+	],
+	"quietlight": [
+		{
+			"content": "let",
+			"color": "#7A3E9D",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.storage.type rgb(122, 62, 157)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "a",
+			"color": "#7A3E9D",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.variable rgb(122, 62, 157)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "=",
+			"color": "#777777",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "Array",
+			"color": "#7A3E9D",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.class rgb(122, 62, 157)"
+		},
+		{
+			"content": "<",
+			"color": "#777777",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "number",
+			"color": "#7A3E9D",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.type rgb(122, 62, 157)"
+		},
+		{
+			"content": ">",
+			"color": "#777777",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "()",
+			"color": "#333333",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": ";",
+			"color": "#777777",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "   ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "//",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#AAAAAA",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "interface",
+			"color": "#7A3E9D",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.storage.type rgb(122, 62, 157)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "class.meta.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#7A3E9D",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.type rgb(122, 62, 157)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "class.meta.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "{",
+			"color": "#777777",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "   ",
+			"color": "#333333",
+			"_t": "class.meta.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "a",
+			"color": "#7A3E9D",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.variable rgb(122, 62, 157)"
+		},
+		{
+			"content": ":",
+			"color": "#777777",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "Array",
+			"color": "#7A3E9D",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.type rgb(122, 62, 157)"
+		},
+		{
+			"content": "<",
+			"color": "#777777",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "number",
+			"color": "#7A3E9D",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.class rgb(122, 62, 157)"
+		},
+		{
+			"content": ">",
+			"color": "#777777",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": ";",
+			"color": "#777777",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "}",
+			"color": "#777777",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "let",
+			"color": "#7A3E9D",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.storage.type rgb(122, 62, 157)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "s",
+			"color": "#7A3E9D",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.variable rgb(122, 62, 157)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "=",
+			"color": "#777777",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "\"",
+			"color": "#777777",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#448C27",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		},
+		{
+			"content": "\"",
+			"color": "#777777",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": ";",
+			"color": "#777777",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		}
+	],
+	"red": [
+		{
+			"content": "let",
+			"color": "#FF6262",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.storage rgb(255, 98, 98)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "a",
+			"color": "#FB9A4B",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.variable rgb(251, 154, 75)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "=",
+			"color": "#F12727",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "Array",
+			"color": "#9DF39F",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support rgb(157, 243, 159)"
+		},
+		{
+			"content": "<",
+			"color": "#F8F8F8",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "number",
+			"color": "#9DF39F",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support rgb(157, 243, 159)"
+		},
+		{
+			"content": ">",
+			"color": "#F8F8F8",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "()",
+			"color": "#F8F8F8",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": ";",
+			"color": "#F8F8F8",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "   ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "//",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#E7C0C0",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "interface",
+			"color": "#FF6262",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.storage rgb(255, 98, 98)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#FEC758",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "{",
+			"color": "#F8F8F8",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "   ",
+			"color": "#F8F8F8",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "a",
+			"color": "#FB9A4B",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.variable rgb(251, 154, 75)"
+		},
+		{
+			"content": ":",
+			"color": "#F12727",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "Array",
+			"color": "#FEC758",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+		},
+		{
+			"content": "<",
+			"color": "#F8F8F8",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "number",
+			"color": "#9DF39F",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support rgb(157, 243, 159)"
+		},
+		{
+			"content": ">",
+			"color": "#F8F8F8",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": ";",
+			"color": "#F8F8F8",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "}",
+			"color": "#F8F8F8",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "let",
+			"color": "#FF6262",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.storage rgb(255, 98, 98)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "s",
+			"color": "#FB9A4B",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.variable rgb(251, 154, 75)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "=",
+			"color": "#F12727",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "\"",
+			"color": "#CD8D8D",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#CD8D8D",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "\"",
+			"color": "#CD8D8D",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": ";",
+			"color": "#F8F8F8",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		}
+	],
+	"solarized_dark": [
+		{
+			"content": "let",
+			"color": "#93A1A1",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.storage rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "a",
+			"color": "#268BD2",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.variable.other rgb(38, 139, 210)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "=",
+			"color": "#859900",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "Array",
+			"color": "#859900",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.class rgb(133, 153, 0)"
+		},
+		{
+			"content": "<",
+			"color": "#93A1A1",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "number",
+			"color": "#859900",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.type rgb(133, 153, 0)"
+		},
+		{
+			"content": ">",
+			"color": "#93A1A1",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "()",
+			"color": "#93A1A1",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": ";",
+			"color": "#93A1A1",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "   ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "//",
+			"color": "#657B83",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#657B83",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "interface",
+			"color": "#93A1A1",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.storage rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#CB4B16",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.type.class rgb(203, 75, 22)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "{",
+			"color": "#93A1A1",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "   ",
+			"color": "#93A1A1",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "a",
+			"color": "#93A1A1",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": ":",
+			"color": "#859900",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "Array",
+			"color": "#CB4B16",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.type.class rgb(203, 75, 22)"
+		},
+		{
+			"content": "<",
+			"color": "#93A1A1",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "number",
+			"color": "#859900",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.class rgb(133, 153, 0)"
+		},
+		{
+			"content": ">",
+			"color": "#93A1A1",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": ";",
+			"color": "#93A1A1",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "}",
+			"color": "#93A1A1",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "let",
+			"color": "#93A1A1",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.storage rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "s",
+			"color": "#268BD2",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.variable.other rgb(38, 139, 210)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "=",
+			"color": "#859900",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#2AA198",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": ";",
+			"color": "#93A1A1",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		}
+	],
+	"solarized_light": [
+		{
+			"content": "let",
+			"color": "#073642",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.storage rgb(7, 54, 66)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "a",
+			"color": "#268BD2",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.variable.other rgb(38, 139, 210)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "=",
+			"color": "#859900",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "Array",
+			"color": "#859900",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.class rgb(133, 153, 0)"
+		},
+		{
+			"content": "<",
+			"color": "#586E75",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "number",
+			"color": "#859900",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.type rgb(133, 153, 0)"
+		},
+		{
+			"content": ">",
+			"color": "#586E75",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "()",
+			"color": "#586E75",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": ";",
+			"color": "#586E75",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "   ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "//",
+			"color": "#93A1A1",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#93A1A1",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "interface",
+			"color": "#073642",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.storage rgb(7, 54, 66)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "class.meta.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#268BD2",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.type.class rgb(38, 139, 210)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "class.meta.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "{",
+			"color": "#586E75",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "   ",
+			"color": "#586E75",
+			"_t": "class.meta.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "a",
+			"color": "#586E75",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": ":",
+			"color": "#859900",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "Array",
+			"color": "#268BD2",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.type.class rgb(38, 139, 210)"
+		},
+		{
+			"content": "<",
+			"color": "#586E75",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "number",
+			"color": "#859900",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.class rgb(133, 153, 0)"
+		},
+		{
+			"content": ">",
+			"color": "#586E75",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": ";",
+			"color": "#586E75",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "}",
+			"color": "#586E75",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "let",
+			"color": "#073642",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.storage rgb(7, 54, 66)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "s",
+			"color": "#268BD2",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.variable.other rgb(38, 139, 210)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "=",
+			"color": "#859900",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#2AA198",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": ";",
+			"color": "#586E75",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"content": "let",
+			"color": "#EBBBFF",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.storage.type rgb(235, 187, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "a",
+			"color": "#FF9DA4",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.variable rgb(255, 157, 164)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#99FFFF",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Array",
+			"color": "#FFEEAD",
+			"_t": "builtin.class.expr.meta.support.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.class rgb(255, 238, 173)"
+		},
+		{
+			"content": "<",
+			"color": "#FFFFFF",
+			"_t": "begin.definition.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "number",
+			"color": "#FFEEAD",
+			"_t": "expr.meta.parameters.primitive.support.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.type rgb(255, 238, 173)"
+		},
+		{
+			"content": ">",
+			"color": "#FFFFFF",
+			"_t": "definition.end.expr.meta.parameters.punctuation.tsx.type.typeparameters.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "()",
+			"color": "#FFFFFF",
+			"_t": "brace.expr.meta.round.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ";",
+			"color": "#FFFFFF",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "   ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "//",
+			"color": "#7285B7",
+			"_t": "comment.definition.double-slash.line.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": " Highlight ok here",
+			"color": "#7285B7",
+			"_t": "comment.double-slash.line.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "interface",
+			"color": "#EBBBFF",
+			"_t": "class.interface.meta.storage.tsx.type",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.storage.type rgb(235, 187, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "egGenericsInArray",
+			"color": "#FFEEAD",
+			"_t": "class.entity.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.type.class rgb(255, 238, 173)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "{",
+			"color": "#FFFFFF",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "   ",
+			"color": "#FFFFFF",
+			"_t": "class.meta.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "a",
+			"color": "#FF9DA4",
+			"_t": "class.declaration.field.meta.object.property.tsx.variable",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.variable rgb(255, 157, 164)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "annotation.class.declaration.field.keyword.meta.operator.tsx.type",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator.class rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "annotation.class.declaration.field.meta.tsx.type",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Array",
+			"color": "#FFEEAD",
+			"_t": "annotation.class.declaration.entity.field.meta.name.tsx.type",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.type.class rgb(255, 238, 173)"
+		},
+		{
+			"content": "<",
+			"color": "#FFFFFF",
+			"_t": "annotation.begin.class.declaration.definition.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "number",
+			"color": "#FFEEAD",
+			"_t": "annotation.class.declaration.field.meta.parameters.primitive.support.tsx.type",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.class rgb(255, 238, 173)"
+		},
+		{
+			"content": ">",
+			"color": "#FFFFFF",
+			"_t": "annotation.class.declaration.definition.end.field.meta.parameters.punctuation.tsx.type.typeparameters",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ";",
+			"color": "#FFFFFF",
+			"_t": "class.meta.punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "}",
+			"color": "#FFFFFF",
+			"_t": "block.class.definition.meta.punctuation.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "let",
+			"color": "#EBBBFF",
+			"_t": "expr.meta.storage.tsx.type.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.storage.type rgb(235, 187, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "s",
+			"color": "#FF9DA4",
+			"_t": "expr.meta.other.readwrite.tsx.var.var-single-variable.variable",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.variable rgb(255, 157, 164)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var.var-single-variable",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#99FFFF",
+			"_t": "assignment.expr.keyword.meta.operator.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "expr.meta.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "\"",
+			"color": "#D1F1A9",
+			"_t": "begin.definition.double.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "nothing should fail here...",
+			"color": "#D1F1A9",
+			"_t": "double.expr.meta.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "\"",
+			"color": "#D1F1A9",
+			"_t": "definition.double.end.expr.meta.punctuation.quoted.string.tsx.var",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": ";",
+			"color": "#FFFFFF",
+			"_t": "punctuation.statement.terminator.tsx",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		}
+	]
+}

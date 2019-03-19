@@ -1,9 +1,5 @@
-const isIOS =
-  typeof navigator !== 'undefined' &&
-  !!navigator.platform.match(/(iPhone|iPod|iPad)/i);
-const isMac =
-  typeof navigator !== 'undefined' &&
-  (isIOS || !!navigator.platform.match(/Mac/i));
+import { isMac, isIOS } from './platform';
+
 const metaKey = isMac ? (isIOS ? 'Alt' : 'Meta') : 'Alt';
 const metaOrCtrlKey = isMac ? (isIOS ? 'Alt' : 'Meta') : 'Control';
 const ctrlOrAltKey = isIOS ? 'Alt' : 'Control';
@@ -75,7 +71,7 @@ export const KEYBINDINGS = {
   workspace: {
     title: 'Toggle Sidebar',
     type: 'View',
-    bindings: [],
+    bindings: [[metaOrCtrlKey, 'B']],
     signal: 'workspace.toggleCurrentWorkspaceItem',
   },
 

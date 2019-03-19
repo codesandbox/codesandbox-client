@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spring } from 'react-spring';
+import { Spring } from 'react-spring/renderprops';
 import { inject } from 'mobx-react';
 import { ThemeProvider } from 'styled-components';
 import history from 'app/utils/history';

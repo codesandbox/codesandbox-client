@@ -33,7 +33,7 @@ const vsDark = {
 // parses theme, uncommenting commented colors
 // and using json5 to strip comments
 function parseTheme(theme) {
-  return JSON.parse(theme.replace('/^s*//"', '"'));
+  return JSON.parse(theme.replace(/^\s*\/\/"/gm, '"'));
 }
 
 function fetchTheme(foundTheme) {
@@ -99,7 +99,6 @@ const findTheme = async (themeName, customTheme) => {
 
 export default async function getTheme(themeName, customTheme) {
   const foundTheme = await findTheme(themeName, customTheme);
-
   // Explicitly check for dark as that is the default
   const isLight = foundTheme.type !== 'dark' && foundTheme.type !== 'hc';
 

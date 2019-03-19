@@ -41,7 +41,17 @@ class GetIcon extends Component {
   }
 }
 
-function EntryIcon({ type, width = 16, height = 16, error }) {
+function EntryIcon({
+  type,
+  width = 16,
+  height = 16,
+  error,
+}: {
+  type: string,
+  width?: number,
+  height?: number,
+  error?: boolean,
+}) {
   return (
     <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
       <GetIcon type={type} error={error} width={width} height={height} />

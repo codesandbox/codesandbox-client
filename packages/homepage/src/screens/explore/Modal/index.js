@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import Portal from 'common/lib/components/Portal';
 import { ESC } from 'common/lib/utils/keycodes';
 
-import { Spring, animated } from 'react-spring';
+import { Spring, animated } from 'react-spring/renderprops';
 
 const NoScroll = createGlobalStyle`
   html {

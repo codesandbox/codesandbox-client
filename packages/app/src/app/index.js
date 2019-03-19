@@ -14,17 +14,30 @@ import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import 'common/lib/global.css';
 import theme from 'common/lib/theme';
+import 'subworkers';
+
+// eslint-disable-next-line
+import * as child_process from 'node-services/lib/child_process';
 
 import controller from './controller';
 import App from './pages/index';
 import './split-pane.css';
 import logError from './utils/error';
+import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
+
+import vscode from './vscode';
+import {
+  initializeThemeCache,
+  initializeSettings,
+  initializeExtensionsFolder,
+  initializeCustomTheme,
+  setVimExtensionEnabled,
+} from './vscode/initializers';
+import { EXTENSIONS_LOCATION } from './vscode/constants';
 
 const debug = _debug('cs:app');
 
-window.setImmediate = setTimeout;
-
-// child_process.addForkHandler('bootstrap', ExtHostWorkerLoader);
+window.setImmediate = (func, delay) => setTimeout(func, delay);
 
 window.addEventListener('unhandledrejection', e => {
   if (e && e.reason && e.reason.name === 'Canceled') {
@@ -77,7 +90,7 @@ if (process.env.NODE_ENV === 'production') {
         /webappstoolbarba\.texthelp\.com\//i,
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
         // Monaco debuggers
-        'https://codesandbox.io/public/13/vs/language/typescript/lib/typescriptServices.js',
+        'https://codesandbox.io/public/14/vs/language/typescript/lib/typescriptServices.js',
       ],
     }).install();
   } catch (error) {
@@ -145,37 +158,92 @@ window.BrowserFS.configure(
       '/sandbox': {
         fs: 'CodeSandboxEditorFS',
         options: {
-          manager: controller,
+          api: {
+            getState: () => ({
+              modulesByPath: controller.getState().editor.currentSandbox
+                ? controller.getState().editor.modulesByPath
+                : {},
+            }),
+          },
         },
       },
       '/sandbox/node_modules': {
-        fs: 'InMemory',
+        fs: 'CodeSandboxFS',
+        options: getTypeFetcher().options,
       },
       '/vscode': {
         fs: 'LocalStorage',
       },
+      '/home': {
+        fs: 'LocalStorage',
+      },
+      '/extensions': {
+        fs: 'BundledHTTPRequest',
+        options: {
+          index: EXTENSIONS_LOCATION + '/extensions/index.json',
+          baseUrl: EXTENSIONS_LOCATION + '/extensions',
+          bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+          logReads: process.env.NODE_ENV === 'development',
+        },
+      },
+      '/extensions/custom-theme': {
+        fs: 'InMemory',
+      },
     },
   },
-  e => {
+  async e => {
     if (e) {
       console.error('Problems initializing FS', e);
       // An error happened!
       throw e;
     }
 
+    const isVSCode = controller.getState().preferences.settings
+      .experimentVSCode;
+
+    if (isVSCode) {
+      // For first-timers initialize a theme in the cache so it doesn't jump colors
+      initializeExtensionsFolder();
+      initializeCustomTheme();
+      initializeThemeCache();
+      initializeSettings();
+      setVimExtensionEnabled(
+        localStorage.getItem('settings.vimmode') === 'true'
+      );
+    }
+
     // eslint-disable-next-line global-require
-    require('app/vscode/dev-bootstrap').default(['vs/editor/editor.main'])(
+    vscode.loadScript(
+      [
+        isVSCode
+          ? 'vs/editor/codesandbox.editor.main'
+          : 'vs/editor/editor.main',
+      ],
+      isVSCode,
       () => {
         if (process.env.NODE_ENV === 'development') {
           console.log('Loaded Monaco'); // eslint-disable-line
         }
-        if (localStorage.getItem('settings.experimentVSCode') === 'true') {
-          window.require(['vs/editor/codesandbox.editor.main'], () => {
-            boot();
-          });
-        } else {
-          boot();
+        if (isVSCode) {
+          vscode.acquireController(controller);
+
+          import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host').then(
+            ExtHostWorkerLoader => {
+              child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
+              // child_process.preloadWorker('/vs/bootstrap-fork');
+            }
+          );
+
+          // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
+          //   SearchServiceWorker => {
+          //     child_process.addForkHandler(
+          //       'csb:search-service',
+          //       SearchServiceWorker.default
+          //     );
+          //   }
+          // );
         }
+        boot();
       }
     );
   }

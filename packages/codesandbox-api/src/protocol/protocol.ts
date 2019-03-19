@@ -28,7 +28,7 @@ export default class Protocol {
     self.removeEventListener('message', this._messageListener);
   }
 
-  sendMessage(data: any): Promise<any> {
+  sendMessage<PromiseType>(data: any): Promise<PromiseType> {
     return new Promise(resolve => {
       const messageId = generateId();
 
@@ -83,6 +83,7 @@ export default class Protocol {
     };
 
     if (e.source) {
+      // @ts-ignore
       e.source.postMessage(returnMessage, '*');
     } else {
       this._postMessage(returnMessage);
@@ -90,10 +91,17 @@ export default class Protocol {
   };
 
   private _postMessage(m: any) {
-    if (this.target instanceof Worker) {
+    if (
+      this.target.constructor.name === 'Worker' ||
+      // @ts-ignore Unknown to TS
+      (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
+        // @ts-ignore Unknown to TS
+        target instanceof DedicatedWorkerGlobalScope)
+    ) {
+      // @ts-ignore
       this.target.postMessage(m);
     } else {
-      this.target.postMessage(m, '*');
+      (this.target as Window).postMessage(m, '*');
     }
   }
 }

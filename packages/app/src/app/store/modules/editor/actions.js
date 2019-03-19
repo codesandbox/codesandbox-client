@@ -653,21 +653,6 @@ export function setCode({ props, state, recover }) {
   }
 }
 
-export function setPreviewBounds({ props, state }) {
-  if (props.x != null) {
-    state.set(`editor.previewWindow.x`, props.x);
-  }
-  if (props.y != null) {
-    state.set(`editor.previewWindow.y`, props.y);
-  }
-  if (props.width != null) {
-    state.set(`editor.previewWindow.width`, props.width);
-  }
-  if (props.height != null) {
-    state.set(`editor.previewWindow.height`, props.height);
-  }
-}
-
 export function getSavedCode({ props, state }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleIndex = sandbox.modules.findIndex(

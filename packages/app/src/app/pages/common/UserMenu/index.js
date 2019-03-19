@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 
 import HoverMenu from 'app/components/HoverMenu';
 import Relative from 'common/lib/components/Relative';
-import ChevronDown from 'react-icons/lib/md/arrow-drop-down';
 
 import Menu from './Menu';
 import { ClickableContainer, ProfileImage } from './elements';
@@ -16,12 +15,10 @@ function UserMenu({ signals, store }) {
       <ClickableContainer onClick={() => signals.userMenuOpened()}>
         <ProfileImage
           alt={user.username}
-          width={35}
-          height={35}
+          width={30}
+          height={30}
           src={user.avatarUrl}
         />
-
-        <ChevronDown css={{ marginLeft: '0.25rem', fontSize: '1.25rem' }} />
       </ClickableContainer>
       {userMenuOpen && (
         <HoverMenu onClose={() => signals.userMenuClosed()}>

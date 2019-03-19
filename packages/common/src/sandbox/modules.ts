@@ -185,38 +185,53 @@ function findByShortid(
   return entities.find(e => e.shortid === shortid);
 }
 
-export const getModulePath = memoize(
-  (modules: Array<Module>, directories: Array<Directory>, id: string) => {
-    const module = findById(modules, id);
+const getPath = (
+  arrayToLookIn: Array<Module> | Array<Directory>,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string
+) => {
+  const module = findById(arrayToLookIn, id);
 
-    if (!module) return '';
+  if (!module) return '';
 
-    let directory = findByShortid(directories, module.directoryShortid);
-    let path = '/';
+  let directory = findByShortid(directories, module.directoryShortid);
+  let path = '/';
 
-    if (directory == null && module.directoryShortid) {
-      // Parent got deleted, return '';
+  if (directory == null && module.directoryShortid) {
+    // Parent got deleted, return '';
 
+    return '';
+  }
+
+  while (directory != null) {
+    path = `/${directory.title}${path}`;
+    const lastDirectoryShortid = directory.directoryShortid;
+    directory = findByShortid(directories, directory.directoryShortid);
+
+    // In this case it couldn't find the parent directory of this dir, so probably
+    // deleted. we just return '' in that case
+    if (!directory && lastDirectoryShortid) {
       return '';
     }
+  }
+  return `${path}${module.title}`;
+};
 
-    while (directory != null) {
-      path = `/${directory.title}${path}`;
-      const lastDirectoryShortid = directory.directoryShortid;
-      directory = findByShortid(directories, directory.directoryShortid);
+const memoizeFunction = (modules, directories, id) =>
+  id +
+  modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
+  directories.map(d => d.id + d.title + d.directoryShortid).join(',');
 
-      // In this case it couldn't find the parent directory of this dir, so probably
-      // deleted. we just return '' in that case
-      if (!directory && lastDirectoryShortid) {
-        return '';
-      }
-    }
-    return `${path}${module.title}`;
-  },
-  (modules, directories, id) =>
-    id +
-    modules.map(m => m.id + m.title + m.directoryShortid).join(',') +
-    directories.map(d => d.id + d.title + d.directoryShortid).join(',')
+export const getModulePath = memoize(
+  (modules: Array<Module>, directories: Array<Directory>, id: string) =>
+    getPath(modules, modules, directories, id),
+  memoizeFunction
+);
+export const getDirectoryPath = memoize(
+  (modules: Array<Module>, directories: Array<Directory>, id: string) =>
+    getPath(directories, modules, directories, id),
+  memoizeFunction
 );
 
 export const isMainModule = (

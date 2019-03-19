@@ -1,7 +1,7 @@
 // @flow
 import styled, { css } from 'styled-components';
 import MenuIconSVG from 'react-icons/lib/md/menu';
-import RealButton from 'app/components/Button';
+import { Button as RealButton } from 'common/lib/components/Button';
 
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 
@@ -9,7 +9,7 @@ export const CodeSandboxButton = styled(RealButton)`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 138px;
+  width: 147px;
   padding: 0.4em 0.7em;
 
   @media (max-width: 510px) {

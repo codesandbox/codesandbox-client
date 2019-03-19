@@ -106,38 +106,74 @@ function EditorSettings({ store, signals }) {
             </SubDescription>
           </VSCodePlaceholder>
 
-          <div>
-            <BigTitle>Editor Theme</BigTitle>
+          {store.preferences.settings.experimentVSCode ? (
+            <div>
+              <BigTitle>Editor Theme</BigTitle>
+              <SubDescription>
+                You can select your editor theme by selecting File {'->'}{' '}
+                Preferences {'->'} Color Theme in the menu bar.
+              </SubDescription>
+              <Rule />
 
-            <PaddedPreference
-              title="VSCode Theme"
-              type="dropdown"
-              options={themeOptions}
-              {...bindValue('editorTheme')}
-            />
-            <SubDescription>
-              This will be overwritten if you enter a custom theme.
-            </SubDescription>
-            <Rule />
+              <SubDescription style={{ marginBottom: '1rem' }}>
+                Custom VSCode Theme
+              </SubDescription>
 
-            <SubDescription style={{ marginBottom: '1rem' }}>
-              Custom VSCode Theme
-            </SubDescription>
+              <SubDescription style={{ marginBottom: '1rem' }}>
+                After changing this setting you
+                {"'"}
+                ll have to reload the browser and select {'"'}
+                Custom
+                {'"'} as your color theme.
+              </SubDescription>
 
-            <PreferenceText
-              isTextArea
-              style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
-              block
-              rows={7}
-              defaultValue={`You can use your own theme from VSCode directly:
+              <PreferenceText
+                isTextArea
+                style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
+                block
+                rows={7}
+                defaultValue={`You can use your own theme from VSCode directly:
 
 1. Open VSCode
 2. Press (CMD or CTRL) + SHIFT + P
 3. Enter: '> Developer: Generate Color Scheme From Current Settings'
 4. Copy the contents and paste them here!`}
-              {...bindValue('customVSCodeTheme', true)}
-            />
-          </div>
+                {...bindValue('manualCustomVSCodeTheme', true)}
+              />
+            </div>
+          ) : (
+            <div>
+              <BigTitle>Editor Theme</BigTitle>
+
+              <PaddedPreference
+                title="VSCode Theme"
+                type="dropdown"
+                options={themeOptions}
+                {...bindValue('editorTheme')}
+              />
+              <SubDescription>
+                This will be overwritten if you enter a custom theme.
+              </SubDescription>
+              <Rule />
+
+              <SubDescription style={{ marginBottom: '1rem' }}>
+                Custom VSCode Theme
+              </SubDescription>
+
+              <PreferenceText
+                isTextArea
+                style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
+                block
+                rows={7}
+                defaultValue={`You can use your own theme from VSCode directly:
+1. Open VSCode
+2. Press (CMD or CTRL) + SHIFT + P
+3. Enter: '> Developer: Generate Color Scheme From Current Settings'
+4. Copy the contents and paste them here!`}
+                {...bindValue('customVSCodeTheme', true)}
+              />
+            </div>
+          )}
         </PreferenceContainer>
       </SubContainer>
     </div>

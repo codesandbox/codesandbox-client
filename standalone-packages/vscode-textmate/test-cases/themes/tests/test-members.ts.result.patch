@@ -1,0 +1,48 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [
+		{
+			"index": 11,
+			"content": "number",
+			"color": "#F06431",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 20,
+			"content": "resolveNextGeneration",
+			"color": "#F06431",
+			"newColor": "#8AB1B0"
+		}
+	],
+	"monokai": [],
+	"monokai_dimmed": [],
+	"quietlight": [],
+	"red": [],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": [
+		{
+			"index": 9,
+			"content": ":",
+			"color": "#FFFFFF",
+			"newColor": "#99FFFF"
+		},
+		{
+			"index": 13,
+			"content": "=",
+			"color": "#FFFFFF",
+			"newColor": "#99FFFF"
+		},
+		{
+			"index": 24,
+			"content": ":",
+			"color": "#FFFFFF",
+			"newColor": "#99FFFF"
+		}
+	]
+}

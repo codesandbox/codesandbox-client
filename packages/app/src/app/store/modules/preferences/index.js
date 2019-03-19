@@ -1,4 +1,6 @@
 import { Module } from 'cerebral';
+import { isIOS } from 'common/lib/utils/platform';
+
 import model from './model';
 import * as sequences from './sequences';
 import { keybindings } from './getters';
@@ -18,7 +20,7 @@ export default Module({
       lineHeight: 1.5,
       clearConsoleEnabled: true,
       autoDownloadTypes: true,
-      codeMirror: false,
+      codeMirror: isIOS,
       keybindings: [],
       newPackagerExperiment: false,
       prettierConfig: {
@@ -45,10 +47,9 @@ export default Module({
       // Menlo. So a temporary fix is to only enable this for Windows.
       enableLigatures: navigator.platform.indexOf('Win') > -1,
 
-      editorTheme: 'CodeSandbox',
       customVSCodeTheme: undefined,
-
-      experimentVSCode: false,
+      manualCustomVSCodeTheme: undefined,
+      experimentVSCode: !isIOS,
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,

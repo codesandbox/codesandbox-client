@@ -121,7 +121,7 @@ export class HTML5FSFile extends PreloadFile<HTML5FS> implements IFile {
 
     this._entry.createWriter((writer) => {
       const buffer = this.getBuffer();
-      const blob = new Blob([buffer2ArrayBuffer(buffer)]);
+      const blob = new Blob([buffer2ArrayBuffer(buffer) as ArrayBuffer]);
       const length = blob.size;
       writer.onwriteend = (err?: any) => {
         writer.onwriteend = <any> null;

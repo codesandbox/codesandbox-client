@@ -6,7 +6,7 @@ import { inject, observer } from 'mobx-react';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
 import Margin from 'common/lib/components/spacing/Margin';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 import { Description, WorkspaceInputContainer } from '../../elements';
 

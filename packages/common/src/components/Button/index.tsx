@@ -2,11 +2,16 @@ import React from 'react';
 import { LinkButton, AButton, Button } from './elements';
 
 type Props = {
-  [key: string]: any;
   to?: string;
   href?: string;
   small?: boolean;
-  style?: any;
+  style?: React.CSSProperties;
+  block?: boolean;
+  onClick?: () => void;
+  children?: React.ReactElement | string;
+  disabled?: boolean;
+  type?: string;
+  secondary?: boolean;
 };
 
 function ButtonComponent({ style = {}, ...props }: Props) {
@@ -22,4 +27,4 @@ function ButtonComponent({ style = {}, ...props }: Props) {
   return <Button style={style} {...props} />;
 }
 
-export default ButtonComponent;
+export { ButtonComponent as Button };

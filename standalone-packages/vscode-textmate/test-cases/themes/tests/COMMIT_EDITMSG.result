@@ -1,0 +1,1962 @@
+{
+	"abyss": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#6688CC",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#6688CC",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#223355",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#223355",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#223355",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#223355",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#223355",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "\t",
+			"color": "#223355",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#223355",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "\t",
+			"color": "#223355",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#223355",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "\t",
+			"color": "#223355",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#223355",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		}
+	],
+	"dark_vs": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#D4D4D4",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#D4D4D4",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "\t",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#CE9178",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "\t",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#569CD6",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.changed rgb(86, 156, 214)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "\t",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#B5CEA8",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#000000",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#000000",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "\t",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#A31515",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "\t",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#0451A5",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.changed rgb(4, 81, 165)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "\t",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#09885A",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#FFFFFF",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#FFFFFF",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#7CA668",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#7CA668",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#7CA668",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#7CA668",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#7CA668",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "\t",
+			"color": "#7CA668",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#CE9178",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "\t",
+			"color": "#7CA668",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#569CD6",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.changed rgb(86, 156, 214)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "\t",
+			"color": "#7CA668",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#B5CEA8",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#D4D4D4",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#D4D4D4",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "\t",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#CE9178",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.deleted rgb(206, 145, 120)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "\t",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#569CD6",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.changed rgb(86, 156, 214)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "\t",
+			"color": "#608B4E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#B5CEA8",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.markup.inserted rgb(181, 206, 168)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#000000",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#000000",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "\t",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#A31515",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.deleted rgb(163, 21, 21)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "\t",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#0451A5",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.changed rgb(4, 81, 165)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "\t",
+			"color": "#008000",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#09885A",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.markup.inserted rgb(9, 136, 90)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		}
+	],
+	"kimbie_dark": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#D3AF86",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#D3AF86",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#A57A4C",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#A57A4C",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#A57A4C",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#A57A4C",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#A57A4C",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "\t",
+			"color": "#A57A4C",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#DC3958",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.deleted rgb(220, 57, 88)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "\t",
+			"color": "#A57A4C",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#98676A",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.changed rgb(152, 103, 106)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "\t",
+			"color": "#A57A4C",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#889B4A",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.markup.inserted rgb(136, 155, 74)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		}
+	],
+	"monokai": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#F8F8F2",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#F8F8F2",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#75715E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#75715E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#75715E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#75715E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#75715E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "\t",
+			"color": "#75715E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#F92672",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.deleted rgb(249, 38, 114)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "\t",
+			"color": "#75715E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#E6DB74",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.changed rgb(230, 219, 116)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "\t",
+			"color": "#75715E",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#A6E22E",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.markup.inserted rgb(166, 226, 46)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#C5C8C6",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#C5C8C6",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "\t",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#9A9B99",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "\t",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#9A9B99",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "\t",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#9A9B99",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		}
+	],
+	"quietlight": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#333333",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#333333",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#AAAAAA",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#AAAAAA",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#AAAAAA",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#AAAAAA",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#AAAAAA",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "\t",
+			"color": "#AAAAAA",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#000000",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.deleted rgb(0, 0, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "\t",
+			"color": "#AAAAAA",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#000000",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.changed rgb(0, 0, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "\t",
+			"color": "#AAAAAA",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#000000",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.markup.inserted rgb(0, 0, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		}
+	],
+	"red": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#F8F8F8",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#F8F8F8",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#E7C0C0",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#E7C0C0",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#E7C0C0",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#E7C0C0",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#E7C0C0",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "\t",
+			"color": "#E7C0C0",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#EC9799",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.deleted rgb(236, 151, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "\t",
+			"color": "#E7C0C0",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#F8F8F8",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.changed rgb(248, 248, 248)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "\t",
+			"color": "#E7C0C0",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#41A83E",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.markup.inserted rgb(65, 168, 62)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		}
+	],
+	"solarized_dark": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#93A1A1",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#93A1A1",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#657B83",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#657B83",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#657B83",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#657B83",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#657B83",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "\t",
+			"color": "#657B83",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#657B83",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "\t",
+			"color": "#657B83",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#657B83",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "\t",
+			"color": "#657B83",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#657B83",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		}
+	],
+	"solarized_light": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#586E75",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#586E75",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "\t",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#93A1A1",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "\t",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#93A1A1",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "\t",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#93A1A1",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#FFFFFF",
+			"_t": "git-commit.message.meta.scope.subject",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#FFFFFF",
+			"_t": "git-commit.message.meta.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": " Please enter the commit message for your changes. Lines starting",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": " with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": " On branch master",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": " Your branch is up-to-date with 'origin/master'.",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": " Changes to be committed:",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "\t",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#7285B7",
+			"_t": "comment.deleted.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "\t",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#7285B7",
+			"_t": "changed.comment.git-commit.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "\t",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.line.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#7285B7",
+			"_t": "comment.git-commit.inserted.line.markup.meta.metadata.number-sign.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-commit.line.meta.metadata.number-sign.punctuation.scope",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		}
+	]
+}

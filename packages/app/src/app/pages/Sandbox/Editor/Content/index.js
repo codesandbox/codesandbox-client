@@ -5,17 +5,19 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
+
 import getTemplateDefinition from 'common/lib/templates';
 import type { ModuleError } from 'common/lib/types';
+import { getPreviewTabs } from 'common/lib/templates/devtools';
+import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
-import FilePath from 'app/components/CodeEditor/FilePath';
 
-import Preview from './Preview';
-import Tabs from './Tabs';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
+import Tabs from './Tabs';
+import Preview from './Preview';
 
 const settings = store =>
   ({
@@ -177,7 +179,8 @@ class EditorPreview extends React.Component<Props, State> {
     const disposeResizeHandler = reaction(
       () => [
         store.preferences.settings.zenMode,
-        store.workspace.openedWorkspaceItem,
+        store.workspace.workspaceHidden,
+        store.editor.previewWindowOrientation,
       ],
       () => {
         setTimeout(() => {
@@ -216,6 +219,15 @@ class EditorPreview extends React.Component<Props, State> {
       () => {
         if (editor.setReceivingCode) {
           editor.setReceivingCode(store.live.receivingCode);
+        }
+      }
+    );
+
+    const disposeModuleSyncedHandler = reaction(
+      () => store.editor.changedModuleShortids.map(shortid => shortid),
+      () => {
+        if (editor.moduleSyncedChanged) {
+          editor.moduleSyncedChanged();
         }
       }
     );
@@ -313,6 +325,14 @@ class EditorPreview extends React.Component<Props, State> {
         this.handleToggleDevtools(showDevtools);
       }
     );
+    const disposeTogglePreview = reaction(
+      () => this.props.store.editor.previewWindowVisible,
+      () => {
+        requestAnimationFrame(() => {
+          this.getBounds();
+        });
+      }
+    );
 
     return () => {
       disposeErrorsHandler();
@@ -329,6 +349,8 @@ class EditorPreview extends React.Component<Props, State> {
       disposeLiveHandler();
       disposePendingOperationHandler();
       disposeLiveSelectionHandler();
+      disposeTogglePreview();
+      disposeModuleSyncedHandler();
     };
   };
 
@@ -355,6 +377,50 @@ class EditorPreview extends React.Component<Props, State> {
     });
   };
 
+  moveDevToolsTab = (prevPos, nextPos) => {
+    const { store, signals } = this.props;
+    const tabs = getPreviewTabs(store.editor.currentSandbox);
+
+    const prevDevTools = tabs[prevPos.devToolIndex];
+    const nextDevTools = tabs[nextPos.devToolIndex];
+    const prevTab = tabs[prevPos.devToolIndex].views[prevPos.tabPosition];
+
+    prevDevTools.views = prevDevTools.views.filter(
+      (_, i) => i !== prevPos.tabPosition
+    );
+
+    nextDevTools.views.splice(nextPos.tabPosition, 0, prevTab);
+
+    const newTabs = tabs.map((t, i) => {
+      if (i === prevPos.devToolIndex) {
+        return prevDevTools;
+      } else if (i === nextPos.devToolIndex) {
+        return nextDevTools;
+      }
+
+      return t;
+    });
+
+    const code = JSON.stringify({ preview: newTabs }, null, 2);
+    const previousFile =
+      store.editor.modulesByPath['/.codesandbox/workspace.json'];
+    if (previousFile) {
+      signals.editor.codeSaved({
+        code,
+        moduleShortid: previousFile.shortid,
+      });
+    } else {
+      signals.files.createModulesByPath({
+        files: {
+          '/.codesandbox/workspace.json': {
+            content: code,
+            isBinary: false,
+          },
+        },
+      });
+    }
+  };
+
   render() {
     const { signals, store } = this.props;
     const currentModule = store.editor.currentModule;
@@ -362,26 +428,13 @@ class EditorPreview extends React.Component<Props, State> {
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
     const currentTab = store.editor.currentTab;
-    const { x, y, width, content } = store.editor.previewWindow;
 
-    const windowVisible = !!content;
-
-    const windowRightSize = -x + width + 16;
+    const windowVisible = store.editor.previewWindowVisible;
 
     const { width: absoluteWidth, height: absoluteHeight } = this.state;
-    const isVerticalMode = absoluteWidth
-      ? absoluteWidth / 4 > absoluteWidth - windowRightSize
-      : false;
 
-    let editorWidth = isVerticalMode
-      ? absoluteWidth
-      : absoluteWidth - windowRightSize;
-    let editorHeight = isVerticalMode ? y + 16 : absoluteHeight;
-
-    if (!windowVisible) {
-      editorWidth = absoluteWidth;
-      editorHeight = absoluteHeight;
-    }
+    const editorWidth = absoluteWidth;
+    const editorHeight = absoluteHeight;
 
     const template = getTemplateDefinition(sandbox.template);
 
@@ -404,6 +457,39 @@ class EditorPreview extends React.Component<Props, State> {
       return false;
     };
 
+    const views = getPreviewTabs(sandbox);
+
+    const sandboxConfig = sandbox.modules.find(
+      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+    );
+
+    let view = 'browser';
+    if (sandboxConfig) {
+      try {
+        view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+      } catch (e) {
+        /* swallow */
+      }
+    }
+
+    if (view !== 'browser') {
+      // Backwards compatibility for sandbox.config.json
+      if (view === 'console') {
+        views[0].views.unshift({ id: 'codesandbox.console' });
+      } else if (view === 'tests') {
+        views[0].views.unshift({ id: 'codesandbox.tests' });
+      }
+    }
+
+    const browserConfig = {
+      id: 'codesandbox.browser',
+      title: 'Browser',
+      Content: ({ hidden }) => (
+        <Preview hidden={hidden} width={'100%'} height={'100%'} />
+      ),
+      actions: [],
+    };
+
     return (
       <ThemeProvider
         theme={{
@@ -416,7 +502,7 @@ class EditorPreview extends React.Component<Props, State> {
           style={{
             height: '100%',
             width: '100%',
-
+            overflow: 'visible', // For VSCode Context Menu
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -432,114 +518,137 @@ class EditorPreview extends React.Component<Props, State> {
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          {!preferences.settings.experimentVSCode &&
-            (preferences.settings.zenMode ? (
-              <FilePath
-                modules={sandbox.modules}
-                directories={sandbox.directories}
-                currentModule={currentModule}
-                workspaceHidden={!store.workspace.openedWorkspaceItem}
-                toggleWorkspace={() => {
-                  signals.workspace.toggleCurrentWorkspaceItem();
-                }}
-                exitZenMode={() =>
-                  this.props.signals.preferences.settingChanged({
-                    name: 'zenMode',
-                    value: false,
-                  })
-                }
-              />
-            ) : (
-              <Tabs />
-            ))}
-          <div
-            ref={this.getBounds}
+          <SplitPane
+            onDragFinished={() => {
+              this.props.signals.editor.resizingStopped();
+            }}
+            onDragStarted={() => {
+              this.props.signals.editor.resizingStarted();
+            }}
+            onChange={() => {
+              requestAnimationFrame(() => {
+                this.getBounds();
+              });
+            }}
             style={{
-              position: 'relative',
-              display: 'flex',
-              flex: 1,
-              marginTop:
-                preferences.settings.experimentVSCode ||
-                preferences.settings.zenMode
-                  ? 0
-                  : '2.5rem',
+              overflow: 'visible', // For VSCode Context Menu
+            }}
+            split={this.props.store.editor.previewWindowOrientation}
+            defaultSize={'50%'}
+            pane1Style={
+              windowVisible
+                ? {}
+                : {
+                    width: '100%',
+                    minWidth: '100%',
+                    height: '100%',
+                    minHeight: '100%',
+                  }
+            }
+            pane2Style={{
+              visibility: windowVisible ? 'visible' : 'hidden',
+              maxWidth: windowVisible ? 'inherit' : 0,
+              width: windowVisible ? 'inherit' : 0,
+              zIndex: 0, // For VSCode hovers, beware this is also dynamically changed in PreviewTabs
             }}
           >
-            <CodeEditor
-              onInitialized={this.onInitialized}
-              sandbox={sandbox}
-              currentTab={currentTab}
-              currentModule={currentModule}
-              isModuleSynced={store.editor.isModuleSynced(
-                currentModule.shortid
-              )}
-              width={editorWidth}
-              height={editorHeight}
-              absoluteWidth={absoluteWidth}
-              absoluteHeight={absoluteHeight}
-              settings={settings(store)}
-              sendTransforms={this.sendTransforms}
-              readOnly={isReadOnly()}
-              isLive={store.live.isLive}
-              onCodeReceived={signals.live.onCodeReceived}
-              onSelectionChanged={signals.live.onSelectionChanged}
-              onModuleStateMismatch={signals.live.onModuleStateMismatch}
-              onNpmDependencyAdded={name => {
-                if (sandbox.owned) {
-                  signals.editor.addNpmDependency({ name, isDev: true });
-                }
+            <div
+              ref={this.getBounds}
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flex: 1,
+                height: '100%',
+                width: '100%',
+                marginTop: 0,
               }}
-              onChange={(code, moduleShortid) =>
-                signals.editor.codeChanged({
-                  code,
-                  moduleShortid: moduleShortid || currentModule.shortid,
-                  noLive: true,
-                })
-              }
-              onModuleChange={moduleId =>
-                signals.editor.moduleSelected({ id: moduleId })
-              }
-              onSave={code =>
-                signals.editor.codeSaved({
-                  code,
-                  moduleShortid: currentModule.shortid,
-                })
-              }
-              tsconfig={
-                store.editor.parsedConfigurations.typescript &&
-                store.editor.parsedConfigurations.typescript.parsed
-              }
-            />
+            >
+              {!store.preferences.settings.experimentVSCode && <Tabs />}
+              <CodeEditor
+                style={{
+                  top: store.preferences.settings.experimentVSCode ? 0 : 35,
+                }}
+                onInitialized={this.onInitialized}
+                sandbox={sandbox}
+                currentTab={currentTab}
+                currentModule={currentModule}
+                isModuleSynced={store.editor.isModuleSynced}
+                width={editorWidth}
+                height={editorHeight}
+                absoluteWidth={absoluteWidth}
+                absoluteHeight={absoluteHeight}
+                settings={settings(store)}
+                sendTransforms={this.sendTransforms}
+                readOnly={isReadOnly()}
+                isLive={store.live.isLive}
+                onCodeReceived={signals.live.onCodeReceived}
+                onSelectionChanged={signals.live.onSelectionChanged}
+                onNpmDependencyAdded={name => {
+                  if (sandbox.owned) {
+                    signals.editor.addNpmDependency({ name, isDev: true });
+                  }
+                }}
+                onChange={(code, moduleShortid) =>
+                  signals.editor.codeChanged({
+                    code,
+                    moduleShortid: moduleShortid || currentModule.shortid,
+                    noLive: true,
+                  })
+                }
+                onModuleChange={moduleId =>
+                  signals.editor.moduleSelected({ id: moduleId })
+                }
+                onModuleStateMismatch={signals.live.onModuleStateMismatch}
+                onSave={code =>
+                  signals.editor.codeSaved({
+                    code,
+                    moduleShortid: currentModule.shortid,
+                  })
+                }
+                tsconfig={
+                  store.editor.parsedConfigurations.typescript &&
+                  store.editor.parsedConfigurations.typescript.parsed
+                }
+              />
+            </div>
 
-            <Preview
-              runOnClick={this.props.store.preferences.runOnClick}
-              width={absoluteWidth}
-              height={absoluteHeight}
-            />
-          </div>
-
-          <DevTools
-            ref={component => {
-              if (component) {
-                this.devtools = component;
-              }
-            }}
-            setDragging={dragging => {
-              if (dragging) {
-                this.props.signals.editor.resizingStarted();
-              } else {
-                this.props.signals.editor.resizingStopped();
-              }
-            }}
-            sandboxId={sandbox.id}
-            template={sandbox.template}
-            shouldExpandDevTools={store.preferences.showDevtools}
-            zenMode={preferences.settings.zenMode}
-            setDevToolsOpen={open =>
-              this.props.signals.preferences.setDevtoolsOpen({ open })
-            }
-            owned={sandbox.owned}
-          />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+              }}
+              id="csb-devtools" // used for tabs for highlighting
+            >
+              {views.map((v, i) => (
+                <DevTools
+                  key={i} // eslint-disable-line react/no-array-index-key
+                  devToolIndex={i}
+                  addedViews={{
+                    'codesandbox.browser': browserConfig,
+                  }}
+                  setDragging={dragging => {
+                    if (dragging) {
+                      this.props.signals.editor.resizingStarted();
+                    } else {
+                      this.props.signals.editor.resizingStopped();
+                    }
+                  }}
+                  sandboxId={sandbox.id}
+                  template={sandbox.template}
+                  shouldExpandDevTools={store.preferences.showDevtools}
+                  zenMode={preferences.settings.zenMode}
+                  setDevToolsOpen={open =>
+                    this.props.signals.preferences.setDevtoolsOpen({ open })
+                  }
+                  owned={sandbox.owned}
+                  primary={i === 0}
+                  viewConfig={v}
+                  moveTab={this.moveDevToolsTab}
+                />
+              ))}
+            </div>
+          </SplitPane>
         </div>
       </ThemeProvider>
     );

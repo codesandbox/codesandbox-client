@@ -1,5 +1,5 @@
 import React from 'react';
-import IconBase from 'react-icons/IconBase';
+import IconBase from 'react-icons/lib/IconBase';
 
 function TypescriptIcon() {
   return (

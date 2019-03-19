@@ -104,16 +104,6 @@ export function updateSandboxUrl(sandbox) {
   };
 }
 
-const shouldShowVSCodeOption = when(state`isLoggedIn`, () => {
-  if (document.cookie.includes('vscode-seen=1')) {
-    return false;
-  }
-
-  document.cookie = 'vscode-seen=1; Path=/;';
-
-  return true;
-});
-
 export function withLoadApp(continueSequence) {
   return sequence('loadApp', [
     when(state`hasLoadedApp`),
@@ -126,18 +116,6 @@ export function withLoadApp(continueSequence) {
         actions.setStoredSettings,
         actions.setKeybindings,
         actions.startKeybindings,
-
-        shouldShowVSCodeOption,
-        {
-          true: [
-            addNotification(
-              'You can now open VSCode directly in CodeSandbox, enable it in Preferences under experiments!',
-              'notice',
-              60 // a minute
-            ),
-          ],
-          false: [],
-        },
 
         when(state`jwt`),
         {

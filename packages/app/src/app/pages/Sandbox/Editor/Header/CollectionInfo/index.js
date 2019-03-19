@@ -3,7 +3,7 @@ import { basename } from 'path';
 import { inject, observer } from 'mobx-react';
 import Media from 'react-media';
 
-import { Spring } from 'react-spring';
+import { Spring } from 'react-spring/renderprops';
 
 import track from 'common/lib/utils/analytics';
 import { ESC } from 'common/lib/utils/keycodes';

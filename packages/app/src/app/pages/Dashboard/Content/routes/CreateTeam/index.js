@@ -2,7 +2,7 @@ import React from 'react';
 import { Mutation } from 'react-apollo';
 
 import Input from 'common/lib/components/Input';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import track from 'common/lib/utils/analytics';
 import history from 'app/utils/history';
 import { teamOverviewUrl } from 'common/lib/utils/url-generator';

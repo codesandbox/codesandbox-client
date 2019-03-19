@@ -124,8 +124,8 @@
     "npm-run-all": "^4.1.2",
     "prettier": "^1.4.4",
     "prompt": "^1.0.0",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
     "replace-in-file": "^3.0.0-beta.2",
     "rimraf": "^2.6.1",
     "rollup": "^0.67.1",
@@ -143,7 +143,7 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.10.0",
-    "typescript": "^2.6.2",
+    "typescript": "^3.3.1",
     "validate-commit-msg": "^2.12.2"
   }
 }
