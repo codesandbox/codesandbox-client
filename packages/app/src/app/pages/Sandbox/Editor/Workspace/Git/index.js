@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import Margin from 'common/lib/components/spacing/Margin';
 import GithubBadge from 'common/lib/components/GithubBadge';
 import { githubRepoUrl } from 'common/lib/utils/url-generator';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import Input, { TextArea } from 'common/lib/components/Input';
 
 import TotalChanges from './TotalChanges';

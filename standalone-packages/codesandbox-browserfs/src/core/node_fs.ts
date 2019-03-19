@@ -35,5 +35,11 @@ _fsMock['getFSModule'] = function(): FS {
   return fs;
 };
 _fsMock['FS'] = FS;
+_fsMock['Stats'] = FS.Stats;
+
+_fsMock['F_OK'] = 0;
+_fsMock['R_OK'] = 4;
+_fsMock['W_OK'] = 2;
+_fsMock['X_OK'] = 1;
 
 export default _fsMock;

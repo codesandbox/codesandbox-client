@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 import fadeIn from 'common/lib/utils/animation/fade-in';
 import Tooltip from 'common/lib/components/Tooltip';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 export const PADDING = 32;
 

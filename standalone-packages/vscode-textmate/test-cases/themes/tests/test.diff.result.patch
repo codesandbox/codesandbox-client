@@ -1,0 +1,139 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [],
+	"monokai": [
+		{
+			"index": 9,
+			"content": "-",
+			"color": "#A6E22E",
+			"newColor": "#F92672"
+		},
+		{
+			"index": 11,
+			"content": "-",
+			"color": "#A6E22E",
+			"newColor": "#F92672"
+		},
+		{
+			"index": 14,
+			"content": "-",
+			"color": "#A6E22E",
+			"newColor": "#F92672"
+		}
+	],
+	"monokai_dimmed": [],
+	"quietlight": [
+		{
+			"index": 0,
+			"content": "---",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 2,
+			"content": "+++",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 4,
+			"content": "@@",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 8,
+			"content": "@@",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 9,
+			"content": "-",
+			"color": "#000000",
+			"newColor": "#777777"
+		},
+		{
+			"index": 11,
+			"content": "-",
+			"color": "#000000",
+			"newColor": "#777777"
+		},
+		{
+			"index": 14,
+			"content": "-",
+			"color": "#000000",
+			"newColor": "#777777"
+		},
+		{
+			"index": 16,
+			"content": "+",
+			"color": "#000000",
+			"newColor": "#777777"
+		},
+		{
+			"index": 18,
+			"content": "+",
+			"color": "#000000",
+			"newColor": "#777777"
+		},
+		{
+			"index": 22,
+			"content": "@@",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 26,
+			"content": "@@",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 30,
+			"content": "+",
+			"color": "#000000",
+			"newColor": "#777777"
+		},
+		{
+			"index": 32,
+			"content": "+",
+			"color": "#000000",
+			"newColor": "#777777"
+		},
+		{
+			"index": 34,
+			"content": "+",
+			"color": "#000000",
+			"newColor": "#777777"
+		}
+	],
+	"red": [
+		{
+			"index": 9,
+			"content": "-",
+			"color": "#41A83E",
+			"newColor": "#EC9799"
+		},
+		{
+			"index": 11,
+			"content": "-",
+			"color": "#41A83E",
+			"newColor": "#EC9799"
+		},
+		{
+			"index": 14,
+			"content": "-",
+			"color": "#41A83E",
+			"newColor": "#EC9799"
+		}
+	],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": []
+}

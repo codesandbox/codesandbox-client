@@ -11,7 +11,7 @@ export const Container = styled.div`
 `;
 
 export const SandboxName = styled.span`
-  color: white;
+  color: ${props => (props.theme.light ? 'black' : 'white')};
   margin-left: 0.25rem;
 
   cursor: pointer;

@@ -1,0 +1,17 @@
+{
+	"name": "infinite-loop-grammar",
+	"scopeName": "source.infinite-loop",
+	"patterns": [
+		{
+			"name": "start",
+			"begin": "^",
+			"end": "$",
+			"patterns": [
+				{
+					"name": "negative-look-ahead",
+					"match": "(?!a)"
+				}
+			]
+		}
+	]
+}

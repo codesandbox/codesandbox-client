@@ -418,7 +418,7 @@ export class CentralDirectory {
     return this.getFileData().getRawData();
   }
   public getStats(): Stats {
-    return new Stats(FileType.FILE, this.uncompressedSize(), 0x16D, new Date(), this.lastModFileTime());
+    return new Stats(FileType.FILE, this.uncompressedSize(), 0x16D, Date.now(), this.lastModFileTime().getTime());
   }
 }
 

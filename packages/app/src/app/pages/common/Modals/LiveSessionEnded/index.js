@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject } from 'mobx-react';
 
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import Row from 'common/lib/components/flex/Row';
 
 import { Container } from './elements';

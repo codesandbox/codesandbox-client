@@ -1,0 +1,23 @@
+{
+	"name": "vscode-languageserver-types",
+	"description": "Types used by the Language server for node",
+	"version": "3.5.0",
+	"author": "Microsoft Corporation",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Microsoft/vscode-languageserver-node.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Microsoft/vscode-languageserver-node/issues"
+	},
+	"main": "./lib/main.js",
+	"typings": "./lib/main",
+	"scripts": {
+		"prepublish": "npm run compile && npm test",
+		"postpublish": "node ../build/npm/post-publish.js",
+		"compile": "node ../build/bin/tsc -p ./tsconfig.json",
+		"watch": "node ../build/bin/tsc -w -p ./tsconfig.json",
+		"test": "node ../node_modules/mocha/bin/_mocha"
+	}
+}

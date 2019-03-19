@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Input from 'common/lib/components/Input';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 const InputContainer = styled.div`
   display: flex;

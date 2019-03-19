@@ -76,7 +76,10 @@ export const massCreateModules = [
       sendMassModuleCreated,
       callVSCodeCallback,
     ],
-    error: [callVSCodeCallbackError],
+    error: [
+      callVSCodeCallbackError,
+      addNotification('Unable to create new files', 'error'),
+    ],
   },
 ];
 

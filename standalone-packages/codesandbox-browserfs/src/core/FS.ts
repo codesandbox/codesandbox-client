@@ -3,18 +3,54 @@ import {ApiError, ErrorCode} from './api_error';
 import {FileSystem, BFSOneArgCallback, BFSCallback, BFSThreeArgCallback} from './file_system';
 import {FileFlag} from './file_flag';
 import * as path from 'path';
-import Stats from './node_fs_stats';
+import Stats, { FileType } from './node_fs_stats';
+import setImmediate from '../generic/setImmediate';
 
 // Typing info only.
 import * as _fs from 'fs';
+import { FileWatcher } from './file_watcher';
 
-/**
- * Wraps a callback function. Used for unit testing. Defaults to a NOP.
- * @hidden
- */
-let wrapCb = function<T>(cb: T, numArgs: number): T {
+/** Used for unit testing. Defaults to a NOP. */
+let wrapCbHook = function<T>(cb: T, numArgs: number): T {
   return cb;
 };
+
+/**
+ * Wraps a callback function, ensuring it is invoked through setImmediate.
+ * @hidden
+ */
+function wrapCb<T extends Function>(cb: T, numArgs: number): T {
+  if (typeof cb !== 'function') {
+    throw new Error('Callback must be a function.');
+  }
+
+  const hookedCb = wrapCbHook(cb, numArgs);
+
+  // We could use `arguments`, but Function.call/apply is expensive. And we only
+  // need to handle 1-3 arguments
+  switch (numArgs) {
+    case 1:
+      return <any> function(arg1: any) {
+        setImmediate(function() {
+          return hookedCb(arg1);
+        });
+      };
+    case 2:
+      return <any> function(arg1: any, arg2: any) {
+        setImmediate(function() {
+          return hookedCb(arg1, arg2);
+        });
+      };
+    case 3:
+      return <any> function(arg1: any, arg2: any, arg3: any) {
+        setImmediate(function() {
+          return hookedCb(arg1, arg2, arg3);
+        });
+      };
+    default:
+      throw new Error('Invalid invocation of wrapCb.');
+  }
+}
 
 /**
  * @hidden
@@ -77,7 +113,8 @@ function normalizePath(p: string): string {
  * @hidden
  */
 function normalizeOptions(options: any, defEnc: string | null, defFlag: string, defMode: number | null): {encoding: string; flag: string; mode: number} {
-  switch (typeof options) {
+  // typeof null === 'object' so special-case handing is needed.
+  switch (options === null ? 'null' : typeof options) {
     case 'object':
       return {
         encoding: typeof options['encoding'] !== 'undefined' ? options['encoding'] : defEnc,
@@ -90,12 +127,16 @@ function normalizeOptions(options: any, defEnc: string | null, defFlag: string, 
         flag: defFlag,
         mode: defMode!
       };
-    default:
+    case 'null':
+    case 'undefined':
+    case 'function':
       return {
         encoding: defEnc!,
         flag: defFlag,
         mode: defMode!
       };
+    default:
+      throw new TypeError(`"options" must be a string or an object, got ${typeof options} instead.`);
   }
 }
 
@@ -127,14 +168,16 @@ export default class FS {
   public static Stats = Stats;
   /* tslint:enable:variable-name */
 
-  public F_OK: number = 0;
-  public R_OK: number = 4;
-  public W_OK: number = 2;
-  public X_OK: number = 1;
+  public static F_OK: number = 0;
+  public static R_OK: number = 4;
+  public static W_OK: number = 2;
+  public static X_OK: number = 1;
 
   private root: FileSystem | null = null;
   private fdMap: {[fd: number]: File} = {};
   private nextFd = 100;
+
+  private fileWatcher: FileWatcher = new FileWatcher();
 
   public initialize(rootFS: FileSystem): FileSystem {
     if (!(<any> rootFS).constructor.isAvailable()) {
@@ -181,6 +224,17 @@ export default class FS {
   public rename(oldPath: string, newPath: string, cb: BFSOneArgCallback = nopCb): void {
     const newCb = wrapCb(cb, 1);
     try {
+      setImmediate(() => {
+        this.fileWatcher.triggerWatch(oldPath, 'rename');
+
+        this.stat(newPath, (err, stat) => {
+          if (err) {
+            return;
+          }
+
+          this.fileWatcher.triggerWatch(newPath, 'rename', stat);
+        });
+      });
       assertRoot(this.root).rename(normalizePath(oldPath), normalizePath(newPath), newCb);
     } catch (e) {
       newCb(e);
@@ -193,6 +247,10 @@ export default class FS {
    * @param newPath
    */
   public renameSync(oldPath: string, newPath: string): void {
+    setImmediate(() => {
+      this.fileWatcher.triggerWatch(oldPath, 'rename');
+      this.fileWatcher.triggerWatch(newPath, 'rename');
+    });
     assertRoot(this.root).renameSync(normalizePath(oldPath), normalizePath(newPath));
   }
 
@@ -305,6 +363,11 @@ export default class FS {
       if (len < 0) {
         throw new ApiError(ErrorCode.EINVAL);
       }
+      setImmediate(() => {
+        this.stat(path, (err, stat) => {
+          this.fileWatcher.triggerWatch(path, 'change', stat);
+        });
+      });
       return assertRoot(this.root).truncate(normalizePath(path), len, newCb);
     } catch (e) {
       return newCb(e);
@@ -320,6 +383,11 @@ export default class FS {
     if (len < 0) {
       throw new ApiError(ErrorCode.EINVAL);
     }
+    setImmediate(() => {
+      this.stat(path, (err, stat) => {
+        this.fileWatcher.triggerWatch(path, 'change', stat);
+      });
+    });
     return assertRoot(this.root).truncateSync(normalizePath(path), len);
   }
 
@@ -331,6 +399,9 @@ export default class FS {
   public unlink(path: string, cb: BFSOneArgCallback = nopCb): void {
     const newCb = wrapCb(cb, 1);
     try {
+      setImmediate(() => {
+        this.fileWatcher.triggerWatch(path, 'rename', new Stats(FileType.FILE, 0, undefined, 0, 0, 0, 0));
+      });
       return assertRoot(this.root).unlink(normalizePath(path), newCb);
     } catch (e) {
       return newCb(e);
@@ -342,6 +413,9 @@ export default class FS {
    * @param path
    */
   public unlinkSync(path: string): void {
+    setImmediate(() => {
+      this.fileWatcher.triggerWatch(path, 'rename', new Stats(FileType.FILE, 0, undefined, 0, 0, 0, 0));
+    });
     return assertRoot(this.root).unlinkSync(normalizePath(path));
   }
 
@@ -419,7 +493,7 @@ export default class FS {
   public readFile(filename: string, options: { flag?: string; }, callback?: BFSCallback<Buffer>): void;
   public readFile(filename: string, options: { encoding: string; flag?: string; }, callback?: BFSCallback<string>): void;
   public readFile(filename: string, encoding: string, cb: BFSCallback<string>): void;
-  public readFile(filename: string, arg2: any = {}, cb: BFSCallback<any> = nopCb ) {
+  public readFile(filename: string, arg2: any = {}, cb: BFSCallback<any> = nopCb) {
     const options = normalizeOptions(arg2, null, 'r', null);
     cb = typeof arg2 === 'function' ? arg2 : cb;
     const newCb = wrapCb(cb, 2);
@@ -485,6 +559,12 @@ export default class FS {
       if (!flag.isWriteable()) {
         return newCb(new ApiError(ErrorCode.EINVAL, 'Flag passed to writeFile must allow for writing.'));
       }
+
+      setImmediate(() => {
+        this.stat(filename, (err, stat) => {
+          this.fileWatcher.triggerWatch(filename, 'change', stat);
+        });
+      });
       return assertRoot(this.root).writeFile(normalizePath(filename), data, options.encoding, flag, options.mode, newCb);
     } catch (e) {
       return newCb(e);
@@ -511,6 +591,11 @@ export default class FS {
     if (!flag.isWriteable()) {
       throw new ApiError(ErrorCode.EINVAL, 'Flag passed to writeFile must allow for writing.');
     }
+    setImmediate(() => {
+      this.stat(filename, (err, stat) => {
+        this.fileWatcher.triggerWatch(filename, 'change', stat);
+      });
+    });
     return assertRoot(this.root).writeFileSync(normalizePath(filename), data, options.encoding, flag, options.mode);
   }
 
@@ -543,6 +628,11 @@ export default class FS {
       if (!flag.isAppendable()) {
         return newCb(new ApiError(ErrorCode.EINVAL, 'Flag passed to appendFile must allow for appending.'));
       }
+      setImmediate(() => {
+        this.stat(filename, (err, stat) => {
+          this.fileWatcher.triggerWatch(filename, 'change', stat);
+        });
+      });
       assertRoot(this.root).appendFile(normalizePath(filename), data, options.encoding, flag, options.mode, newCb);
     } catch (e) {
       newCb(e);
@@ -573,6 +663,11 @@ export default class FS {
     if (!flag.isAppendable()) {
       throw new ApiError(ErrorCode.EINVAL, 'Flag passed to appendFile must allow for appending.');
     }
+    setImmediate(() => {
+      this.stat(filename, (err, stat) => {
+        this.fileWatcher.triggerWatch(filename, 'change', stat);
+      });
+    });
     return assertRoot(this.root).appendFileSync(normalizePath(filename), data, options.encoding, flag, options.mode);
   }
 
@@ -1012,6 +1107,10 @@ export default class FS {
     const newCb = wrapCb(cb, 1);
     try {
       path = normalizePath(path);
+
+      setImmediate(() => {
+        this.fileWatcher.triggerWatch(path, 'rename');
+      });
       assertRoot(this.root).rmdir(path, newCb);
     } catch (e) {
       newCb(e);
@@ -1024,6 +1123,10 @@ export default class FS {
    */
   public rmdirSync(path: string): void {
     path = normalizePath(path);
+
+    setImmediate(() => {
+      this.fileWatcher.triggerWatch(path, 'rename');
+    });
     return assertRoot(this.root).rmdirSync(path);
   }
 
@@ -1041,6 +1144,9 @@ export default class FS {
     const newCb = wrapCb(cb, 1);
     try {
       path = normalizePath(path);
+      setImmediate(() => {
+        this.fileWatcher.triggerWatch(path, 'rename');
+      });
       assertRoot(this.root).mkdir(path, mode, newCb);
     } catch (e) {
       newCb(e);
@@ -1053,6 +1159,9 @@ export default class FS {
    * @param mode defaults to `0777`
    */
   public mkdirSync(path: string, mode?: number | string): void {
+    setImmediate(() => {
+      this.fileWatcher.triggerWatch(path, 'rename');
+    });
     assertRoot(this.root).mkdirSync(normalizePath(path), normalizeMode(mode, 0x1ff));
   }
 
@@ -1376,17 +1485,24 @@ export default class FS {
   public watchFile(filename: string, listener: (curr: Stats, prev: Stats) => void): void;
   public watchFile(filename: string, options: { persistent?: boolean; interval?: number; }, listener: (curr: Stats, prev: Stats) => void): void;
   public watchFile(filename: string, arg2: any, listener: (curr: Stats, prev: Stats) => void = nopCb): void {
-    throw new ApiError(ErrorCode.ENOTSUP);
+    this.stat(filename, (err, stat) => {
+      let usedStat = stat;
+      if (err) {
+        usedStat = new Stats(FileType.FILE, 0, undefined, 0,  0, 0, 0)
+      }
+
+      this.fileWatcher.watchFile(usedStat!, filename, arg2, listener);
+    });
   }
 
   public unwatchFile(filename: string, listener: (curr: Stats, prev: Stats) => void = nopCb): void {
-    throw new ApiError(ErrorCode.ENOTSUP);
+    this.fileWatcher.unwatchFile(filename, listener);
   }
 
   public watch(filename: string, listener?: (event: string, filename: string) => any): _fs.FSWatcher;
   public watch(filename: string, options: { persistent?: boolean; }, listener?: (event: string, filename: string) => any): _fs.FSWatcher;
   public watch(filename: string, arg2: any, listener: (event: string, filename: string) => any = nopCb): _fs.FSWatcher {
-    throw new ApiError(ErrorCode.ENOTSUP);
+    return this.fileWatcher.watch(filename, arg2, listener);
   }
 
   public access(path: string, callback: (err: ApiError) => void): void;
@@ -1422,7 +1538,7 @@ export default class FS {
    * For unit testing. Passes all incoming callbacks to cbWrapper for wrapping.
    */
   public wrapCallbacks(cbWrapper: (cb: Function, args: number) => Function) {
-    wrapCb = <any> cbWrapper;
+    wrapCbHook = <any> cbWrapper;
   }
 
   private getFdForFile(file: File): number {
@@ -1449,6 +1565,10 @@ export interface FSModule extends FS {
    */
   FS: typeof FS;
   /**
+   * The FS.Stats constructor.
+   */
+  Stats: typeof Stats;
+  /**
    * Retrieve the FS object backing the fs module.
    */
   getFSModule(): FS;
@@ -1456,4 +1576,12 @@ export interface FSModule extends FS {
    * Set the FS object backing the fs module.
    */
   changeFSModule(newFs: FS): void;
+
+  /**
+   * Accessors
+   */
+  F_OK: number;
+  R_OK: number;
+  W_OK: number;
+  X_OK: number;
 }

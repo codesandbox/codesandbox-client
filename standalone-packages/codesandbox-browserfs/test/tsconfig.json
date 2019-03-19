@@ -14,7 +14,11 @@
     "noImplicitThis": true,
     "noImplicitUseStrict": true,
     "noUnusedLocals": true,
-    "typeRoots": ["../node_modules/@types"]
+    "typeRoots": [
+      "../node_modules/@types"
+    ]
   },
-  "include": ["**/*", "../src/**/*.d.ts", "../src/generic/dropbox_bridge*.ts"]
+  "include": [
+    "**/*", "../src/**/*.d.ts", "../src/generic/dropbox_bridge*.ts"
+  ]
 }

@@ -36,6 +36,30 @@ const defaultConfigurations = {
   '/now.json': configurations.nowConfig,
 };
 
+export type ViewConfig = {
+  open?: boolean;
+  views: Array<{ id: string; options?: any }>;
+};
+
+const CLIENT_VIEWS: ViewConfig[] = [
+  {
+    views: [{ id: 'codesandbox.browser' }, { id: 'codesandbox.tests' }],
+  },
+  {
+    views: [{ id: 'codesandbox.console' }, { id: 'codesandbox.problems' }],
+  },
+];
+
+const SERVER_VIEWS: ViewConfig[] = [
+  {
+    views: [{ id: 'codesandbox.browser' }],
+  },
+  {
+    open: true,
+    views: [{ id: 'codesandbox.terminal' }, { id: 'codesandbox.console' }],
+  },
+];
+
 export default class Template {
   name: string;
   niceName: string;
@@ -112,6 +136,17 @@ export default class Template {
     configurationFiles: ParsedConfigurationFiles
   ): Array<string> {
     return this.getEntries(configurationFiles);
+  }
+
+  /**
+   * Get the views that are tied to the template
+   */
+  getViews(): ViewConfig[] {
+    if (this.isServer) {
+      return SERVER_VIEWS;
+    }
+
+    return CLIENT_VIEWS;
   }
 
   // eslint-disable-next-line no-unused-vars

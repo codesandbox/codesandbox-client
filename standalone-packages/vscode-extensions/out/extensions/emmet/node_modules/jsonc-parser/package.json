@@ -1,0 +1,28 @@
+{
+  "name": "jsonc-parser",
+  "version": "1.0.0",
+  "description": "Scanner and parser for JSON with comments.",
+  "main": "./lib/main.js",
+  "typings": "./lib/main",
+  "author": "Microsoft Corporation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/node-jsonc-parser"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Microsoft/node-jsonc-parser/issues"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "typescript": "^2.1.5",
+    "@types/node": "^6.0.46",
+    "@types/mocha": "^2.2.32"
+  },
+  "scripts": {
+    "prepublish": "tsc -p ./src",
+    "compile": "tsc -p ./src",
+    "watch": "tsc -w -p ./src",
+    "test": "tsc -p ./src && mocha"
+  }
+}

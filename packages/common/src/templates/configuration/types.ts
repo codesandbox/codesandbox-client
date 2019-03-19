@@ -23,4 +23,11 @@ export type ParsedConfigurationFile = {
   code: string;
   generated: boolean;
   error?: Error;
+  path: string;
+};
+
+export type ConfigurationUIProps = {
+  file: string;
+  updateFile: (code: string) => void;
+  sandbox: Sandbox;
 };

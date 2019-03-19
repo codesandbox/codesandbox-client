@@ -1,0 +1,65 @@
+{
+	"name": "vscode-theme-onedark",
+	"displayName": "Atom One Dark Theme",
+	"description": "One Dark Theme based on Atom",
+	"version": "2.1.0",
+	"publisher": "akamud",
+	"license": "MIT",
+	"galleryBanner": {
+		"color": "#282C34",
+		"theme": "dark"
+	},
+	"engines": {
+		"vscode": "^1.12.0"
+	},
+	"categories": [
+		"Themes"
+	],
+	"keywords": [
+		"atom",
+		"theme",
+		"dark",
+		"one dark"
+	],
+	"icon": "icon.png",
+	"contributes": {
+		"themes": [
+			{
+				"label": "Atom One Dark",
+				"uiTheme": "vs-dark",
+				"path": "./themes/OneDark.json"
+			}
+		]
+	},
+	"bugs": {
+		"url": "https://github.com/akamud/vscode-theme-onedark/issues",
+		"email": "muddibr@gmail.com"
+	},
+	"homepage": "https://github.com/akamud/vscode-theme-onedark",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/akamud/vscode-theme-onedark"
+	},
+	"badges": [
+		{
+			"url": "https://vsmarketplacebadge.apphb.com/version/akamud.vscode-theme-onedark.svg",
+			"href": "https://marketplace.visualstudio.com/items/akamud.vscode-theme-onedark",
+			"description": "Extension version"
+		},
+		{
+			"url": "https://vsmarketplacebadge.apphb.com/installs/akamud.vscode-theme-onedark.svg",
+			"href": "https://marketplace.visualstudio.com/items/akamud.vscode-theme-onedark",
+			"description": "Extension installs"
+		},
+		{
+			"url": "https://vsmarketplacebadge.apphb.com/rating/akamud.vscode-theme-onedark.svg",
+			"href": "https://marketplace.visualstudio.com/items/akamud.vscode-theme-onedark",
+			"description": "Extension Rating"
+		}
+	],
+	"__metadata": {
+		"id": "9b2c953d-6ad4-46d1-b18e-7e5992d1d8a6",
+		"publisherId": "1a680e61-b64e-4eff-bbbb-2085b0618f52",
+		"publisherDisplayName": "Mahmoud Ali"
+	}
+}

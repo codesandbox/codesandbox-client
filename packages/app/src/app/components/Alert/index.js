@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Button from '../Button';
+import { Button } from 'common/lib/components/Button';
 import { Container, Title, Text, Buttons } from './elements';
 
 function Alert({ title, body, onCancel, onDelete }) {

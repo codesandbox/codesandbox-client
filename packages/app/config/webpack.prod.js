@@ -107,8 +107,13 @@ module.exports = merge(commonConfig, {
       navigateFallback: publicPath + 'app.html',
       navigateFallbackWhitelist: [/\/s\//],
       // Don't precache sourcemaps (they're large) and build asset manifest:
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-      maximumFileSizeToCacheInBytes: 5242880,
+      staticFileGlobsIgnorePatterns: [
+        /\.map$/,
+        /vscode/,
+        /\/vs/,
+        /asset-manifest\.json$/,
+      ],
+      maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
 
       runtimeCaching: [
         // Don't add this runtime cache as this causes us to give back *old*
@@ -141,6 +146,26 @@ module.exports = merge(commonConfig, {
             cache: {
               maxEntries: 20,
               name: 'cloudflare-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /\/vscode11/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maximumFileSizeToCacheInBytes: 1024 * 1024 * 100, // 100mb
+              name: 'vscode',
+            },
+          },
+        },
+        {
+          urlPattern: /vscode-extensions\//,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maximumFileSizeToCacheInBytes: 1024 * 1024 * 100, // 100mb
+              name: 'vscode-extensions',
             },
           },
         },
@@ -178,7 +203,7 @@ module.exports = merge(commonConfig, {
       navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-      maximumFileSizeToCacheInBytes: 5242880,
+      maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
       runtimeCaching: [
         {
           urlPattern: /api\/v1\/sandboxes/,
@@ -225,7 +250,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /https:\/\/d1jyvh0kxilfa7\.cloudfront\.net/,
+          urlPattern: /prod-packager-packages\.csb\.dev/,
           handler: 'fastest',
           options: {
             cache: {

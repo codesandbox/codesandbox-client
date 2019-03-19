@@ -14,6 +14,7 @@ import {
   updateOptimisticModule,
   removeModule,
   recoverFiles,
+  syncFilesToFS,
 } from './modules/files/actions';
 
 import { disconnect, clearUserSelections } from './modules/live/actions';
@@ -287,9 +288,9 @@ export const setSandbox = [
   actions.setCurrentModuleShortid,
   actions.setMainModuleShortid,
   actions.setInitialTab,
-  actions.setSandboxConfigOptions,
   actions.setUrlOptions,
   actions.setWorkspace,
+  syncFilesToFS,
 ];
 
 export const joinLiveSessionIfAvailable = [
@@ -471,3 +472,8 @@ export const loadSandbox = factories.withLoadApp([
 ]);
 
 export const setUpdateStatus = [set(state`updateStatus`, props`status`)];
+
+export const track = [
+  ({ props: givenProps }) =>
+    factories.track(givenProps.name, givenProps.data)(),
+];

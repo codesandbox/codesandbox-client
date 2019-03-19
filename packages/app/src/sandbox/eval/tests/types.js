@@ -7,14 +7,16 @@
  * @flow
  */
 
+/* eslint-disable no-use-before-define */
+
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
 export type BlockName = string | Function;
 export type BlockMode = void | 'skip' | 'only';
 export type TestMode = BlockMode;
 export type TestName = string;
-export type TestFn = (done?: DoneFn) => ?Promise<any>;
-export type HookFn = (done?: DoneFn) => ?Promise<any>;
+export type TestFn = (done?: DoneFn) => Promise<any> | undefined;
+export type HookFn = (done?: DoneFn) => Promise<any> | undefined;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
@@ -92,7 +94,7 @@ export type Event =
 
 export type TestStatus = 'pass' | 'fail' | 'skip';
 export type TestResult = {|
-  duration: ?number,
+  duration: number | undefined,
   errors: Array<FormattedError>,
   status: TestStatus,
   testPath: Array<BlockName | TestName>,
@@ -113,17 +115,17 @@ export type DescribeBlock = {|
   hooks: Array<Hook>,
   mode: BlockMode,
   name: BlockName,
-  parent: ?DescribeBlock,
+  parent: DescribeBlock | undefined,
   tests: Array<TestEntry>,
 |};
 
 export type TestEntry = {|
   errors: Array<Exception>,
-  fn: ?TestFn,
+  fn: TestFn | undefined,
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,
-  startedAt: ?number,
-  duration: ?number,
-  status: ?TestStatus,
+  startedAt: number | undefined,
+  duration: number | undefined,
+  status: TestStatus | undefined,
 |};

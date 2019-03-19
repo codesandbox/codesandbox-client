@@ -212,7 +212,10 @@ export default class TestRunner {
 
     if (testModule) {
       await this.manager.transpileModules(testModule, true);
-      this.manager.evaluateModule(testModule, true);
+      this.manager.evaluateModule(testModule, {
+        force: true,
+        testGlobals: true,
+      });
     }
 
     if (this.manager.modules) {
@@ -227,7 +230,10 @@ export default class TestRunner {
     await Promise.all(
       tests.map(async t => {
         try {
-          this.manager.evaluateModule(t, true);
+          this.manager.evaluateModule(t, {
+            force: true,
+            testGlobals: true,
+          });
           this.ranTests.add(t.path);
         } catch (e) {
           this.ranTests.delete(t.path);

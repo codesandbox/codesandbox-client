@@ -26,7 +26,7 @@
     <script>
       WebFont.load({
         google: {
-          families: ['Source Code Pro:500', 'Roboto:300,400,500,700', 'Poppins:300,400,500,700']
+          families: ['Source Code Pro:500', 'Roboto:300,400,500,700', 'Poppins:300,400,600,700']
         }
       });
     </script>
@@ -49,23 +49,30 @@
     <!-- End Google Tag Manager -->
     <!-- <script async src="//cdn.headwayapp.co/widget.js"></script> -->
     <script async rel="prefetch" src="https://js.stripe.com/v3/"></script>
-    <script src="<%= webpackConfig.output.publicPath %>static/browserfs2/browserfs<%=process.env.NODE_ENV
+    <script src="<%= webpackConfig.output.publicPath %>static/browserfs3/browserfs<%=process.env.NODE_ENV
       === 'development' ? '' : '.min'%>.js"
       type="text/javascript"></script>
 
     <script>
       if (BrowserFS) {
-        window.process = { nextTick: requestAnimationFrame };
+        window.process = {
+          env: {
+            VSCODE_DEV: false
+          },
+          nextTick: (cb) => requestAnimationFrame(cb),
+          once: BrowserFS.BFSRequire('process').once,
+          removeListener: () => {}
+        };
         window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
       }
     </script>
 
-    <link data-name="/public/vscode9/vs/editor/editor.main"
+    <link data-name="/public/vscode11/vs/editor/editor.main"
       rel="preload"
       as="style"
-      href="/public/vscode9/vs/editor/editor.main.css">
+      href="/public/vscode11/vs/editor/codesandbox.editor.main.css">
     </link>
-    <link rel="preload" as="script" href="/public/vscode9/vs/editor/editor.main.js"></link>
+    <link rel="preload" as="script" href="/public/vscode11/vs/editor/codesandbox.editor.main.js"></link>
   </head>
   <body style="margin: 0; padding: 0;">
     <!-- Google Tag Manager (noscript) -->

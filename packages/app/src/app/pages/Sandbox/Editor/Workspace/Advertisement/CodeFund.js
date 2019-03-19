@@ -10,8 +10,7 @@ const Container = styled.div`
   }
 `;
 
-const CODEFUND_LINK =
-  'https://codefund.app/properties/24/funder.js';
+const CODEFUND_LINK = 'https://codefund.app/properties/24/funder.js';
 let loaded = false;
 
 export default class CodeFund extends React.PureComponent {

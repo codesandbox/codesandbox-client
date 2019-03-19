@@ -227,10 +227,10 @@ export default class HTTPRequest extends BaseFileSystem implements FileSystem {
             return cb(e);
           }
           stats.size = size!;
-          cb(null, stats.clone());
+          cb(null, Stats.clone(stats));
         });
       } else {
-        cb(null, stats.clone());
+        cb(null, Stats.clone(stats));
       }
     } else if (isDirInode(inode)) {
       stats = inode.getStats();
@@ -281,7 +281,7 @@ export default class HTTPRequest extends BaseFileSystem implements FileSystem {
           // Use existing file contents.
           // XXX: Uh, this maintains the previously-used flag.
           if (stats.fileData) {
-            return cb(null, new NoSyncFile(self, path, flags, stats.clone(), stats.fileData));
+            return cb(null, new NoSyncFile(self, path, flags, Stats.clone(stats), stats.fileData));
           }
           // @todo be lazier about actually requesting the file
           this._requestFileAsync(path, 'buffer', function(err: ApiError, buffer?: Buffer) {
@@ -291,7 +291,7 @@ export default class HTTPRequest extends BaseFileSystem implements FileSystem {
             // we don't initially have file sizes
             stats.size = buffer!.length;
             stats.fileData = buffer!;
-            return cb(null, new NoSyncFile(self, path, flags, stats.clone(), buffer));
+            return cb(null, new NoSyncFile(self, path, flags, Stats.clone(stats), buffer));
           });
           break;
         default:
@@ -322,14 +322,14 @@ export default class HTTPRequest extends BaseFileSystem implements FileSystem {
           // Use existing file contents.
           // XXX: Uh, this maintains the previously-used flag.
           if (stats.fileData) {
-            return new NoSyncFile(this, path, flags, stats.clone(), stats.fileData);
+            return new NoSyncFile(this, path, flags, Stats.clone(stats), stats.fileData);
           }
           // @todo be lazier about actually requesting the file
           const buffer = this._requestFileSync(path, 'buffer');
           // we don't initially have file sizes
           stats.size = buffer.length;
           stats.fileData = buffer;
-          return new NoSyncFile(this, path, flags, stats.clone(), buffer);
+          return new NoSyncFile(this, path, flags, Stats.clone(stats), buffer);
         default:
           throw new ApiError(ErrorCode.EINVAL, 'Invalid FileMode object.');
       }

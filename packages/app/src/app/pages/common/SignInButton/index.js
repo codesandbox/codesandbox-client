@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import Row from 'common/lib/components/flex/Row';
 
 function SignInButton(props) {

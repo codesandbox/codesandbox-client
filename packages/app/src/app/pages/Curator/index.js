@@ -11,7 +11,7 @@ import 'react-day-picker/lib/style.css';
 
 import Navigation from 'app/pages/common/Navigation';
 import SubTitle from 'app/components/SubTitle';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import MaxWidth from 'common/lib/components/flex/MaxWidth';
 import Margin from 'common/lib/components/spacing/Margin';
 import DelayedAnimation from 'app/components/DelayedAnimation';

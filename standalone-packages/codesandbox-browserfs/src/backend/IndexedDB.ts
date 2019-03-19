@@ -192,6 +192,8 @@ export interface IndexedDBFileSystemOptions {
   // The name of this file system. You can have multiple IndexedDB file systems operating
   // at once, but each must have a different name.
   storeName?: string;
+  // The size of the inode cache. Defaults to 100. A size of 0 or below disables caching.
+  cacheSize?: number;
 }
 
 /**
@@ -205,6 +207,11 @@ export default class IndexedDBFileSystem extends AsyncKeyValueFileSystem {
       type: "string",
       optional: true,
       description: "The name of this file system. You can have multiple IndexedDB file systems operating at once, but each must have a different name."
+    },
+    cacheSize: {
+      type: "number",
+      optional: true,
+      description: "The size of the inode cache. Defaults to 100. A size of 0 or below disables caching."
     }
   };
 
@@ -214,7 +221,14 @@ export default class IndexedDBFileSystem extends AsyncKeyValueFileSystem {
   public static Create(opts: IndexedDBFileSystemOptions, cb: BFSCallback<IndexedDBFileSystem>): void {
     IndexedDBStore.Create(opts.storeName ? opts.storeName : 'browserfs', (e, store?) => {
       if (store) {
-        cb(null, new IndexedDBFileSystem(store));
+        const idbfs = new IndexedDBFileSystem(typeof(opts.cacheSize) === 'number' ? opts.cacheSize : 100);
+        idbfs.init(store, (e) => {
+          if (e) {
+            cb(e);
+          } else {
+            cb(null, idbfs);
+          }
+        });
       } else {
         cb(e);
       }
@@ -231,8 +245,7 @@ export default class IndexedDBFileSystem extends AsyncKeyValueFileSystem {
       return false;
     }
   }
-  private constructor(store: IndexedDBStore) {
-    super();
-    this.store = store;
+  private constructor(cacheSize: number) {
+    super(cacheSize);
   }
 }

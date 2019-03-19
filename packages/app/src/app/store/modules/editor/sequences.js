@@ -179,7 +179,6 @@ export const changeCode = [
 ];
 
 export const saveChangedModules = [
-  track('Save Modified Modules', {}),
   ensureOwnedEditable,
   actions.outputChangedModules,
   actions.saveChangedModules,
@@ -324,19 +323,18 @@ export const handlePreviewAction = [
   },
 ];
 
-export const setPreviewBounds = [actions.setPreviewBounds];
-export const togglePreview = [
-  when(state`editor.previewWindow.content`),
+export const togglePreview = [toggle(state`editor.previewWindowVisible`)];
+
+export const setPreviewContent = [
+  // empty
+];
+
+export const toggleEditorPreviewLayout = [
+  equals(state`editor.previewWindowOrientation`),
   {
-    true: [set(state`editor.previewWindow.content`, undefined)],
-    false: [set(state`editor.previewWindow.content`, 'browser')],
+    horizontal: [set(state`editor.previewWindowOrientation`, 'vertical')],
+    vertical: [set(state`editor.previewWindowOrientation`, 'horizontal')],
   },
 ];
 
-export const setPreviewContent = [
-  set(state`editor.previewWindow.content`, props`content`),
-];
-
-export const updateEditorSize = [
-  set(state`editor.previewWindow.editorSize`, props`editorSize`),
-];
+export const onNavigateAway = [];

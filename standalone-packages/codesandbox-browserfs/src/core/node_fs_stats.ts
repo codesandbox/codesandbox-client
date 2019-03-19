@@ -24,7 +24,14 @@ export default class Stats implements fs.Stats {
       mtime = buffer.readDoubleLE(16),
       ctime = buffer.readDoubleLE(24);
 
-    return new Stats(mode & 0xF000, size, mode & 0xFFF, new Date(atime), new Date(mtime), new Date(ctime));
+    return new Stats(mode & 0xF000, size, mode & 0xFFF, atime, mtime, ctime);
+  }
+
+  /**
+   * Clones the stats object.
+   */
+  public static clone(s: Stats): Stats {
+    return new Stats(s.mode & 0xF000, s.size, s.mode & 0xFFF, s.atimeMs, s.mtimeMs, s.ctimeMs, s.birthtimeMs);
   }
 
   public blocks: number;
@@ -49,28 +56,78 @@ export default class Stats implements fs.Stats {
   public uid: number = 0;
   // group ID of owner
   public gid: number = 0;
-  // time file was created (currently unsupported)
-  public birthtime: Date = new Date(0);
   // XXX: Some file systems stash data on stats objects.
-  public fileData: Buffer | null= null;
+  public fileData: Buffer | null = null;
+  public atimeMs: number;
+  public mtimeMs: number;
+  public ctimeMs: number;
+  public birthtimeMs: number;
+  public size: number;
+
+  public get atime(): Date {
+    return new Date(this.atimeMs);
+  }
+
+  public get mtime(): Date {
+    return new Date(this.mtimeMs);
+  }
+
+  public get ctime(): Date {
+    return new Date(this.ctimeMs);
+  }
+
+  public get birthtime(): Date {
+    return new Date(this.birthtimeMs);
+  }
 
   /**
    * Provides information about a particular entry in the file system.
-   * @param [Number] item_type type of the item (FILE, DIRECTORY, SYMLINK, or SOCKET)
-   * @param [Number] size Size of the item in bytes. For directories/symlinks,
+   * @param itemType Type of the item (FILE, DIRECTORY, SYMLINK, or SOCKET)
+   * @param size Size of the item in bytes. For directories/symlinks,
    *   this is normally the size of the struct that represents the item.
-   * @param [Number] mode Unix-style file mode (e.g. 0o644)
-   * @param [Date?] atime time of last access
-   * @param [Date?] mtime time of last modification
-   * @param [Date?] ctime time of creation
+   * @param mode Unix-style file mode (e.g. 0o644)
+   * @param atimeMs time of last access, in milliseconds since epoch
+   * @param mtimeMs time of last modification, in milliseconds since epoch
+   * @param ctimeMs time of last time file status was changed, in milliseconds since epoch
+   * @param birthtimeMs time of file creation, in milliseconds since epoch
    */
   constructor(
     itemType: FileType,
-    public size: number,
+    size: number,
     mode?: number,
-    public atime: Date = new Date(),
-    public mtime: Date = new Date(),
-    public ctime: Date = new Date()) {
+    atimeMs?: number,
+    mtimeMs?: number,
+    ctimeMs?: number,
+    birthtimeMs?: number) {
+    this.size = size;
+    let currentTime = 0;
+    if (typeof(atimeMs) !== 'number') {
+      currentTime = Date.now();
+      atimeMs = currentTime;
+    }
+    if (typeof(mtimeMs) !== 'number') {
+      if (!currentTime) {
+        currentTime = Date.now();
+      }
+      mtimeMs = currentTime;
+    }
+    if (typeof(ctimeMs) !== 'number') {
+      if (!currentTime) {
+        currentTime = Date.now();
+      }
+      ctimeMs = currentTime;
+    }
+    if (typeof(birthtimeMs) !== 'number') {
+      if (!currentTime) {
+        currentTime = Date.now();
+      }
+      birthtimeMs = currentTime;
+    }
+    this.atimeMs = atimeMs;
+    this.ctimeMs = ctimeMs;
+    this.mtimeMs = mtimeMs;
+    this.birthtimeMs = birthtimeMs;
+
     if (!mode) {
       switch (itemType) {
         case FileType.FILE:
@@ -100,14 +157,6 @@ export default class Stats implements fs.Stats {
     buffer.writeDoubleLE(this.mtime.getTime(), 16);
     buffer.writeDoubleLE(this.ctime.getTime(), 24);
     return buffer;
-  }
-
-  /**
-   * **Nonstandard**: Clone the stats object.
-   * @return [BrowserFS.node.fs.Stats]
-   */
-  public clone(): Stats {
-    return new Stats(this.mode & 0xF000, this.size, this.mode & 0xFFF, this.atime, this.mtime, this.ctime);
   }
 
   /**

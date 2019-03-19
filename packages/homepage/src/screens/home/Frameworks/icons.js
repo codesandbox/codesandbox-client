@@ -42,6 +42,10 @@ export const stylus = { svg: stylusSvg, title: 'stylus', extension: 'styl' };
 export const image = { svg: imageSvg, title: 'image', extension: 'png' };
 export const html = { svg: htmlSvg, title: 'html', extension: 'html' };
 export const pug = { svg: pugSvg, title: 'pug', extension: 'pug' };
-export const coffee = { svg: coffeescriptSvg, title: 'coffeescript', extension: 'coffee' };
+export const coffee = {
+  svg: coffeescriptSvg,
+  title: 'coffeescript',
+  extension: 'coffee',
+};
 export const cssGlobal = { svg: cssSvg, title: 'css', extension: 'css' };
 export const vue = { svg: vueSvg, title: 'vue', extension: 'vue' };

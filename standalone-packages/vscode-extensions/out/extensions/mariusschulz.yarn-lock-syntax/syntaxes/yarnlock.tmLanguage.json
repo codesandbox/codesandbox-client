@@ -1,0 +1,84 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "yarn.lock",
+    "patterns": [
+        { "include": "#comments" },
+        { "include": "#resolved-url" },
+        { "include": "#integrity-hashes" },
+        { "include": "#package-version" },
+        { "include": "#keywords" }
+    ],
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "begin": "^\\s*#",
+                    "captures": {
+                        "0": {
+                            "name": "punctuation.definition.comment"
+                        }
+                    },
+                    "end": "$",
+                    "name": "comment.line"
+                }
+            ]
+        },
+        "integrity-hashes": {
+            "patterns": [
+                {
+                    "begin": "(integrity)\\s+",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "keyword"
+                        }
+                    },
+                    "end": "\\n",
+                    "patterns": [
+                        {
+                            "name": "constant.character",
+                            "match": "\\S+"
+                        }
+                    ]
+                }
+            ]
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword",
+                    "match": "\\b(dependencies|integrity|name|optionalDependencies|resolved|version)\\b"
+                }
+            ]
+        },
+        "package-version": {
+            "patterns": [
+                {
+                    "name": "entity.name.function",
+                    "match": "\"(?:\\*|[^\"a-zA-Z]*\\d[^\"a-zA-Z]*)\""
+                },
+                {
+                    "begin": "(version)\\s+",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "keyword"
+                        }
+                    },
+                    "end": "\\n",
+                    "patterns": [
+                        {
+                            "name": "entity.name.function",
+                            "match": "\"?[^\"]+\"?"
+                        }
+                    ]
+                }
+            ]
+        },
+        "resolved-url": {
+            "name": "string.quoted.double",
+            "begin": "\"(?=https?:)",
+            "end": "\"",
+            "patterns": []
+        }
+    },
+    "scopeName": "text.yarnlock"
+}

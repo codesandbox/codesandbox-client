@@ -98,6 +98,14 @@ module.exports = {
         loader: 'file-loader',
         type: 'javascript/auto',
       },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader', // creates style nodes from JS strings
+          'css-loader', // translates CSS into CommonJS
+          'sass-loader', // compiles Sass to CSS, using Node Sass by default
+        ],
+      },
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
         test: [
@@ -152,6 +160,12 @@ module.exports = {
           /typescriptServices\.js$/,
           /\.no-webpack\./,
         ],
+        loader: 'happypack/loader',
+      },
+
+      {
+        test: /\.tsx?$/,
+        exclude: [/node_modules/],
         loader: 'happypack/loader',
       },
 
@@ -419,6 +433,8 @@ module.exports = {
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env.default),
+
+    new webpack.DefinePlugin({ __DEV__ }),
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
@@ -449,7 +465,12 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode9/vs',
+          to: 'public/vscode11/vs',
+          force: true,
+        },
+        {
+          from: '../../standalone-packages/vscode-extensions/out',
+          to: 'public/vscode-extensions/v1',
           force: true,
         },
         {
@@ -457,8 +478,17 @@ module.exports = {
           to: 'public/onigasm/2.2.1/onigasm.wasm',
         },
         {
+          from:
+            '../../standalone-packages/vscode-textmate/node_modules/onigasm/lib/onigasm.wasm',
+          to: 'public/onigasm/2.1.0/onigasm.wasm',
+        },
+        {
           from: '../../node_modules/monaco-vue/release/min',
-          to: 'public/13/vs/language/vue',
+          to: 'public/14/vs/language/vue',
+        },
+        {
+          from: '../../standalone-packages/monaco-editor/release/min/vs',
+          to: 'public/14/vs',
         },
         {
           from: '../sse-hooks/dist',
@@ -469,8 +499,10 @@ module.exports = {
           to: 'static',
         },
         {
-          from: '../../standalone-packages/codesandbox-browserfs/dist',
-          to: 'static/browserfs2',
+          from: __DEV__
+            ? '../../standalone-packages/codesandbox-browserfs/build'
+            : '../../standalone-packages/codesandbox-browserfs/dist',
+          to: 'static/browserfs3',
         },
       ].filter(x => x)
     ),

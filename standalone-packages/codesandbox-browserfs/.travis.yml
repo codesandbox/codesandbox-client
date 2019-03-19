@@ -1,23 +1,28 @@
+dist: trusty
+sudo: false
 language: node_js
 node_js:
-  - "4"
-
-sudo: false
+  - "8"
+  - "10"
 
 cache:
   yarn: true
-  directories:
-    - node_modules
 
 before_install:
-  - "node --version"
-  - "npm --version"
-  - "nvm --version"
-  - "firefox --version"
+  - node --version
+  - yarn --version
+  - nvm --version
+  - firefox --version
 
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 
+install:
+  - yarn install
+
 script:
-  - "npm test"
+  - yarn test
+
+git:
+  depth: 5

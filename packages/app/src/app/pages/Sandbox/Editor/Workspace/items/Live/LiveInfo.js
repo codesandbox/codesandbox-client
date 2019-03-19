@@ -79,6 +79,7 @@ const Mode = styled.button`
   color: white;
   border-radius: 4px;
   width: 100%;
+  font-size: 1rem;
 
   font-weight: 600;
   border: none;
@@ -206,7 +207,14 @@ class LiveInfo extends React.Component {
     return (
       <Container>
         <Title>
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+          <div
+            style={{
+              fontSize: '1rem',
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             {reconnecting ? (
               'Reconnecting...'
             ) : (

@@ -1,19 +1,19 @@
-import * as path from 'path';
+import * as path from "path";
 import {
   SynchronousFileSystem,
   FileSystem,
   BFSOneArgCallback,
   BFSCallback,
-  FileSystemOptions,
-} from '../core/file_system';
-import { File } from '../core/file';
-import { FileFlag } from '../core/file_flag';
-import { default as Stats, FileType } from '../core/node_fs_stats';
-import PreloadFile from '../generic/preload_file';
-import { ErrorCode, ApiError } from '../core/api_error';
+  FileSystemOptions
+} from "../core/file_system";
+import { File } from "../core/file";
+import { FileFlag } from "../core/file_flag";
+import { default as Stats, FileType } from "../core/node_fs_stats";
+import PreloadFile from "../generic/preload_file";
+import { ErrorCode, ApiError } from "../core/api_error";
 
 export interface IModule {
-  path: string;
+  path?: string;
   code: string | undefined;
 }
 
@@ -82,19 +82,19 @@ export interface ICodeSandboxFileSystemOptions {
 
 export default class CodeSandboxFS extends SynchronousFileSystem
   implements FileSystem {
-  public static readonly Name = 'CodeSandboxFS';
+  public static readonly Name = "CodeSandboxFS";
   public static readonly Options: FileSystemOptions = {
     manager: {
-      type: 'object',
-      description: 'The CodeSandbox Manager',
+      type: "object",
+      description: "The CodeSandbox Manager",
       validator: (opt: IManager, cb: BFSOneArgCallback): void => {
         if (opt) {
           cb();
         } else {
           cb(new ApiError(ErrorCode.EINVAL, `Manager is invalid`));
         }
-      },
-    },
+      }
+    }
   };
 
   /**
@@ -120,7 +120,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
   }
 
   public getName(): string {
-    return 'CodeSandboxFS';
+    return "CodeSandboxFS";
   }
 
   public isReadOnly(): boolean {
@@ -146,17 +146,19 @@ export default class CodeSandboxFS extends SynchronousFileSystem
   public renameSync(oldPath: string, newPath: string) {
     const tModules = this.manager.getTranspiledModules();
     const modulesWithPath = Object.keys(tModules).filter(
-      (p: string) => p.startsWith(oldPath) + '/' || p === oldPath
+      (p: string) => p.startsWith(oldPath) + "/" || p === oldPath
     );
 
     if (modulesWithPath.length === 0) {
       throw ApiError.FileError(ErrorCode.ENOENT, oldPath);
     }
 
-    modulesWithPath.map((p: string) => tModules[p]).forEach(moduleInfo => {
-      const { module } = moduleInfo;
-      this.manager.moveModule(module, module.path.replace(oldPath, newPath));
-    });
+    modulesWithPath
+      .map((p: string) => ({ path: p, moduleInfo: tModules[p] }))
+      .forEach(({ path, moduleInfo }) => {
+        const { module } = moduleInfo;
+        this.manager.moveModule(module, path.replace(oldPath, newPath));
+      });
   }
 
   public statSync(p: string, isLstate: boolean): Stats {
@@ -165,7 +167,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
     if (!moduleInfo) {
       const modulesStartingWithPath = Object.keys(tModules).filter(
-        (pa: string) => pa.startsWith(p.endsWith('/') ? p : p + '/') || pa === p
+        (pa: string) => pa.startsWith(p.endsWith("/") ? p : p + "/") || pa === p
       );
 
       if (modulesStartingWithPath.length > 0) {
@@ -177,14 +179,14 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
     const stats = new Stats(
       FileType.FILE,
-      (moduleInfo.module.code || '').length
+      (moduleInfo.module.code || "").length
     );
 
     return stats;
   }
 
   public createFileSync(p: string, flag: FileFlag, mode: number): File {
-    if (p === '/') {
+    if (p === "/") {
       throw ApiError.EEXIST(p);
     }
 
@@ -194,11 +196,11 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
     const module = {
       path: p,
-      code: '',
+      code: ""
     };
     this.manager.addModule(module);
 
-    const buffer = Buffer.from(module.code || '');
+    const buffer = Buffer.from(module.code || "");
     const stats = new Stats(FileType.FILE, buffer.length);
 
     return new CodeSandboxFile(this, p, flag, stats, buffer);
@@ -211,8 +213,8 @@ export default class CodeSandboxFS extends SynchronousFileSystem
       throw ApiError.ENOENT(p);
     }
 
-    const { code = '' } = moduleInfo.module;
-    const buffer = Buffer.from(code || '');
+    const { code = "" } = moduleInfo.module;
+    const buffer = Buffer.from(code || "");
     const stats = new Stats(FileType.FILE, buffer.length);
 
     return new CodeSandboxFile(this, p, flag, stats, buffer);
@@ -221,7 +223,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
   public rmdirSync(p: string) {
     const tModules = this.manager.getTranspiledModules();
     Object.keys(tModules)
-      .filter((pa: string) => pa.startsWith(p + '/') || p === pa)
+      .filter((pa: string) => pa.startsWith(p + "/") || p === pa)
       .forEach((pa: string) => {
         const { module } = tModules[pa];
 
@@ -237,7 +239,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
   public readdirSync(path: string): string[] {
     const paths = Object.keys(this.manager.getTranspiledModules());
 
-    const p = path.endsWith('/') ? path : path + '/';
+    const p = path.endsWith("/") ? path : path + "/";
 
     const pathsInDir = paths.filter((secondP: string) => secondP.startsWith(p));
 
@@ -246,18 +248,18 @@ export default class CodeSandboxFS extends SynchronousFileSystem
     }
 
     const directChildren: Set<string> = new Set();
-    const currentPathLength = p.split('/').length;
+    const currentPathLength = p.split("/").length;
 
     pathsInDir
-      .filter((np: string) => np.split('/').length >= currentPathLength)
+      .filter((np: string) => np.split("/").length >= currentPathLength)
       .forEach((np: string) => {
-        const parts = np.split('/');
+        const parts = np.split("/");
 
         parts.length = currentPathLength;
-        directChildren.add(parts.join('/'));
+        directChildren.add(parts.join("/"));
       });
 
-    const pathArray = Array.from(directChildren).map(pa => pa.replace(p, ''));
+    const pathArray = Array.from(directChildren).map(pa => pa.replace(p, ""));
 
     return pathArray;
   }

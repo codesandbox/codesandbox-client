@@ -46,7 +46,8 @@ function errorMessageAssert(expectedMsgs: string[], unexpectedMsgs: string[] = [
 }
 
 export default function() {
-
+  // HACK around TypeScript bug.
+  if (__numWaiting) {}
   const emptyOptionsFS = getFileSystem({});
   checkOptions(emptyOptionsFS, {}, noErrorAssert);
   // Tolerates unrecognized options.

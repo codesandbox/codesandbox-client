@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import NotFound from 'app/pages/common/NotFound';
 import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
@@ -40,6 +40,7 @@ class SandboxPage extends React.Component {
 
   componentWillUnmount() {
     this.disconnectLive();
+    this.props.signals.editor.onNavigateAway({});
   }
 
   fetchSandbox = () => {
