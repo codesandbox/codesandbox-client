@@ -134,6 +134,8 @@ export const pageQuery = graphql`
         authors
         photo
         title
+        description
+        date
       }
     }
   }

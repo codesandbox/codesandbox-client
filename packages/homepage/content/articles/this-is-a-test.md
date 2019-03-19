@@ -3,6 +3,7 @@ title: "This is a test"
 authors: ["SaraVieira"]
 photo: "https://avatars0.githubusercontent.com/u/1051509?s=460&v=4"
 slug: "this-is-a-test"
+date: "19/03/2019"
 description: "Welcome to CodeSandbox! This documentation serves as a way for you to learn what CodeSandbox is, how to use it and what its APIs are."
 ---
 

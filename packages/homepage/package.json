@@ -28,7 +28,7 @@
     "gatsby-source-filesystem": "^2.0.10",
     "gatsby-source-rss-feed": "^1.1.1",
     "gatsby-transformer-json": "^2.1.8",
-    "gatsby-transformer-remark": "^2.1.15",
+    "gatsby-transformer-remark": "^2.3.5",
     "gatsby-transformer-sharp": "^2.1.9",
     "gsap": "^1.20.3",
     "node-vibrant": "^3.0.0",
@@ -44,7 +44,7 @@
     "react-typography": "^0.16.13",
     "slick-carousel": "^1.8.1",
     "styled-components": "^4.1.2",
-    "terser": "^3.14.1",
+    "terser": "^3.17.0",
     "three": "^0.87.1",
     "typography": "^0.16.17",
     "typography-breakpoint-constants": "^0.15.10"
