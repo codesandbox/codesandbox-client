@@ -1,0 +1,28 @@
+{
+  ".source.graphql": {
+    "Interface definition": {
+      "prefix": "inter",
+      "body": [
+        "interface ${1:IName} {",
+        "\t$2",
+        "}"
+      ]
+    },
+    "Type definition": {
+      "prefix": "type",
+      "body": [
+        "type ${1:TypeName} ${2:implements ${3:IName} }{",
+        "\t$4",
+        "}"
+      ]
+    },
+    "Input Field definition": {
+      "prefix": "input",
+      "body": [
+        "input ${1:TypeInput} {",
+        "\t$2",
+        "}"
+      ]
+    }
+  }
+}

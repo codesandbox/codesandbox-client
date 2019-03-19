@@ -163,7 +163,7 @@ export default class Module {
     }
 
     if (request === 'zlib') {
-      return {};
+      return require('browserify-zlib');
     }
 
     if (request === 'execa') {
