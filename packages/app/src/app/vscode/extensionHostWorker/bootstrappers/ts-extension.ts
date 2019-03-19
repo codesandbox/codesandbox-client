@@ -4,6 +4,7 @@ import SubWorkLoader from 'worker-loader?publicPath=/&name=sub-dynamic-worker.[h
 import { initializeAll } from '../common/global';
 import { EXTENSIONS_LOCATION } from '../../constants';
 
+declare var __DEV__: boolean;
 child_process.addDefaultForkHandler(SubWorkLoader);
 
 initializeAll().then(() => {
@@ -18,7 +19,7 @@ initializeAll().then(() => {
           index: EXTENSIONS_LOCATION + '/extensions/index.json',
           baseUrl: EXTENSIONS_LOCATION + '/extensions',
           bundle: EXTENSIONS_LOCATION + '/bundles/ts.min.json',
-          logReads: process.env.NODE_ENV === 'development'
+          logReads: __DEV__,
         },
       },
     },

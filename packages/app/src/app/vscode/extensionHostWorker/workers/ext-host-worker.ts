@@ -10,6 +10,8 @@ const debug = _debug('cs:cp-worker');
 
 debug('Starting Extension Host Worker');
 
+declare var __DEV__: boolean;
+
 const ctx: any = self;
 
 self.addEventListener('message', async e => {
@@ -27,6 +29,7 @@ self.addEventListener('message', async e => {
               index: EXTENSIONS_LOCATION + '/extensions/index.json',
               baseUrl: EXTENSIONS_LOCATION + '/extensions',
               bundle: EXTENSIONS_LOCATION + '/bundles/ext-host.min.json',
+              logReads: __DEV__,
             },
           },
         },

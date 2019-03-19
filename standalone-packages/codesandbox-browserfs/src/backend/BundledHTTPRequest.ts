@@ -170,7 +170,7 @@ export default class BundledHTTPRequest extends BaseFileSystem implements FileSy
   private _requestFileSyncInternal: SyncDownloadFileMethod;
   private _requestFileSizeSyncInternal: (p: string) => number;
 
-  private constructor(index: object, bundle: {[p: string]: string} = {}, prefixUrl: string = '', preferXHR: boolean = false, logReads: boolean = false) {
+  private constructor(index: object, bundle: {[p: string]: string | number} = {}, prefixUrl: string = '', preferXHR: boolean = false, logReads: boolean = false) {
     super();
     // prefix_url must end in a directory separator.
     if (prefixUrl.length > 0 && prefixUrl.charAt(prefixUrl.length - 1) !== '/') {
@@ -181,12 +181,17 @@ export default class BundledHTTPRequest extends BaseFileSystem implements FileSy
     this._index = FileIndex.fromListing(index);
 
     this._index.fileIterator((file: Stats, path: string) => {
-      if (!file.fileData && bundle[path]) {
-        const buffer = new Buffer(bundle[path]);
-        file.size = buffer.length;
-        file.fileData = buffer;
+      const bundleInfo = bundle[path];
+      if (bundleInfo !== undefined) {
+        if (typeof bundleInfo === 'number') {
+          file.size = bundleInfo;
+        } else if (!file.fileData) {
+          const buffer = new Buffer(bundleInfo);
+          file.size = buffer.length;
+          file.fileData = buffer;
+        }
       }
-    })
+    });
 
     if (fetchIsAvailable && (!preferXHR || !xhrIsAvailable)) {
       this._requestFileAsyncInternal = fetchFileAsync;
@@ -238,10 +243,15 @@ export default class BundledHTTPRequest extends BaseFileSystem implements FileSy
     return xhrIsAvailable;
   }
 
-  private logRead(path: string, content: string) {
+  private logRead(path: string, size: number): void;
+  private logRead(path: string, content: string): void;
+  private logRead(path: string, content: string | number) {
     const ctx = (self || global) as any;
     ctx.fileReads = ctx.fileReads || {};
-    ctx.fileReads[path] = content;
+
+    if (!ctx.fileReads[path] || typeof ctx.fileReads[path] === 'number') {
+      ctx.fileReads[path] = content;
+    }
   }
 
   /**
@@ -273,9 +283,13 @@ export default class BundledHTTPRequest extends BaseFileSystem implements FileSy
       stats = inode.getData();
       // At this point, a non-opened file will still have default stats from the listing.
       if (stats.size < 0) {
-        this._requestFileSizeAsync(path, function(e: ApiError, size?: number) {
+        this._requestFileSizeAsync(path, (e: ApiError, size?: number) => {
           if (e) {
             return cb(e);
+          }
+          if (this._logReads) {
+            // Log the read
+            this.logRead(path, size!);
           }
           stats.size = size!;
           cb(null, Stats.clone(stats));
@@ -301,7 +315,12 @@ export default class BundledHTTPRequest extends BaseFileSystem implements FileSy
       stats = inode.getData();
       // At this point, a non-opened file will still have default stats from the listing.
       if (stats.size < 0) {
-        stats.size = this._requestFileSizeSync(path);
+        const size = this._requestFileSizeSync(path);
+        if (this._logReads) {
+          // Log the read
+          this.logRead(path, size);
+        }
+        stats.size = size;
       }
     } else if (isDirInode(inode)) {
       stats = inode.getStats();
