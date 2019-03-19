@@ -32,6 +32,7 @@ const getContents = str => {
 };
 
 export const makeFeed = (mediumPosts, markdownPosts) => {
+  let markdown = [];
   const medium = mediumPosts.edges
     .filter(post => post.node.categories)
     .map(post => {
@@ -48,16 +49,16 @@ export const makeFeed = (mediumPosts, markdownPosts) => {
         date: new Date(post.node.isoDate),
       };
     });
-
-  const markdown = markdownPosts.edges.map(post => ({
-    ...post.node.frontmatter,
-    src: post.node.frontmatter.featuredImage,
-    subtitle: post.node.frontmatter.description,
-    content: post.node.html,
-    date: new Date(post.node.frontmatter.date),
-    creator: post.node.frontmatter.authors[0],
-  }));
-
+  if (markdownPosts) {
+    markdown = markdownPosts.edges.map(post => ({
+      ...post.node.frontmatter,
+      src: post.node.frontmatter.featuredImage,
+      subtitle: post.node.frontmatter.description,
+      content: post.node.html,
+      date: new Date(post.node.frontmatter.date),
+      creator: post.node.frontmatter.authors[0],
+    }));
+  }
   return [...medium, ...markdown].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
