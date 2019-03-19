@@ -1,12 +1,12 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
+import { Button } from 'common/lib/components/Button';
 import SignInButton from 'app/pages/common/SignInButton';
 import Margin from 'common/lib/components/spacing/Margin';
 import track from 'common/lib/utils/analytics';
 
 import { Description } from '../../elements';
-import { Button } from 'common/lib/components/Button';
 
 type Props = {
   store: any;
