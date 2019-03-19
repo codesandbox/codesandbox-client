@@ -11,7 +11,7 @@ class NetlifyLogs extends Component {
   state = { logs: [] };
 
   componentDidMount() {
-    this.interval = setInterval(this.getLogs, 1000);
+    this.interval = setInterval(this.getLogs, 2000);
   }
   componentWillUnmount() {
     clearInterval(this.interval);
