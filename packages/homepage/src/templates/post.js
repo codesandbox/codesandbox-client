@@ -14,26 +14,10 @@ import {
   mainStyle,
   Image,
 } from './_post.elements';
-
-const makeContent = (markdown, medium) => {
-  if (medium) {
-    return {
-      ...medium,
-      photo: 'https://avatars2.githubusercontent.com/u/587016?s=60&v=4',
-      content: medium.content.encoded,
-      date: medium.isoDate,
-    };
-  }
-
-  return {
-    ...markdown.frontmatter,
-    content: markdown.html,
-    creator: markdown.frontmatter.authors[0],
-  };
-};
+import { makePost } from '../utils/makePosts';
 
 export default ({ data: { feedMediumBlog, markdownRemark } }) => {
-  const { creator, title, content, date, photo, featuredImage } = makeContent(
+  const { creator, title, content, date, photo, featuredImage } = makePost(
     markdownRemark,
     feedMediumBlog
   );

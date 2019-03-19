@@ -37,7 +37,7 @@ export const Wrapper = styled.main`
   grid-gap: 90px;
 `;
 
-export const Date = styled.span`
+export const PostDate = styled.span`
   font-family: 'Poppins';
   font-weight: 500;
   font-size: 14px;

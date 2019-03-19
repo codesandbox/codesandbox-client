@@ -6,7 +6,7 @@ import PageContainer from '../components/PageContainer';
 
 import {
   Posts,
-  Date,
+  PostDate,
   Subtitle,
   Title,
   Thumbnail,
@@ -15,22 +15,10 @@ import {
   AuthorImage,
 } from './_blog.elements';
 import Layout from '../components/layout';
+import { makeFeed } from '../utils/makePosts';
 
-const getContents = str => {
-  const elem = document.createElement('div');
-  elem.style.display = 'none';
-  document.body.appendChild(elem);
-  elem.innerHTML = str;
-  const data = {
-    src: elem.querySelector('img').src,
-    subtitle: elem.querySelector('p').innerText,
-  };
-  elem.remove();
-  return data;
-};
-
-const Blog = ({ data: { allFeedMediumBlog } }) => {
-  const posts = allFeedMediumBlog.edges.filter(post => post.node.categories);
+const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
+  const posts = makeFeed(allFeedMediumBlog, allMarkdownRemark);
   return (
     <Layout>
       <PageContainer width={1440}>
@@ -38,45 +26,36 @@ const Blog = ({ data: { allFeedMediumBlog } }) => {
           description="Here you can find articles written by the team and external contributors"
           title="Blog - CodeSandbox"
         />
-        {posts.map(post => {
-          const { src, subtitle } = getContents(post.node.content.encoded);
-          const ives =
-            'https://avatars2.githubusercontent.com/u/587016?s=60&v=4';
-          const slug = post.node.title
-            .toLowerCase()
-            .replace(/[^\w ]+/g, '')
-            .replace(/ +/g, '-');
-          return (
-            <Wrapper>
-              <aside>
-                <Date>{format(post.node.isoDate, 'MMM DD,YYYY')}</Date>
-                <div
+        {posts.map(post => (
+          <Wrapper key={post.id}>
+            <aside>
+              <PostDate>{format(post.date, 'MMM DD,YYYY')}</PostDate>
+              <div
+                css={`
+                  display: flex;
+                  align-items: center;
+                `}
+              >
+                <AuthorImage src={post.photo} alt={post.creator} />
+                <Author>{post.creator}</Author>
+              </div>
+            </aside>
+            <Posts key={post.id}>
+              <Thumbnail src={post.src} width="340" alt={post.title} />
+              <div>
+                <Link
                   css={`
-                    display: flex;
-                    align-items: center;
+                    text-decoration: none;
                   `}
+                  to={`post/${post.slug}`}
                 >
-                  <AuthorImage src={ives} alt={post.node.creator} />
-                  <Author>{post.node.creator}</Author>
-                </div>
-              </aside>
-              <Posts key={post.node.id}>
-                <Thumbnail src={src} width="340" alt={post.node.title} />
-                <div>
-                  <Link
-                    css={`
-                      text-decoration: none;
-                    `}
-                    to={`post/${slug}`}
-                  >
-                    <Title>{post.node.title}</Title>
-                  </Link>
-                  <Subtitle>{subtitle}</Subtitle>
-                </div>
-              </Posts>
-            </Wrapper>
-          );
-        })};
+                  <Title>{post.title}</Title>
+                </Link>
+                <Subtitle>{post.subtitle}</Subtitle>
+              </div>
+            </Posts>
+          </Wrapper>
+        ))};
       </PageContainer>
     </Layout>
   );
@@ -84,6 +63,26 @@ const Blog = ({ data: { allFeedMediumBlog } }) => {
 
 export const query = graphql`
   {
+    allMarkdownRemark(
+      filter: { fileAbsolutePath: { regex: "/articles/" } }
+      limit: 1000
+    ) {
+      edges {
+        node {
+          id
+          html
+          frontmatter {
+            featuredImage
+            slug
+            authors
+            photo
+            title
+            description
+            date
+          }
+        }
+      }
+    }
     allFeedMediumBlog {
       edges {
         node {
