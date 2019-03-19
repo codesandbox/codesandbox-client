@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { graphql } from 'gatsby';
 import { format } from 'date-fns';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
@@ -45,78 +45,76 @@ export const Author = styled.h4`
   color: #f2f2f2;
 `;
 
-// eslint-disable-next-line
-export default class Post extends React.Component {
-  render() {
-    const { data } = this.props;
-    const ives = 'https://avatars2.githubusercontent.com/u/587016?s=60&v=4';
-    const { creator, title, content, isoDate } = data.feedMediumBlog;
+const mainStyle = css`
+  margin: auto;
+  color: white;
+  overflow: hidden;
+  line-height: 1.5;
 
-    return (
-      <Layout>
-        <Container style={{ overflowX: 'auto' }}>
-          <TitleAndMetaTags
-            title={`${title} - CodeSandbox Documentation`}
-            // description={frontmatter.description}
-          />
-          <PageContainer width={800}>
-            <Title>{title}</Title>
-            <aside>
-              <Date>{format(isoDate, 'MMM DD,YYYY')}</Date>
-              <div
-                css={`
-                  display: flex;
-                  align-items: center;
-                `}
-              >
-                <AuthorImage src={ives} alt={creator} />
-                <Author>{creator}</Author>
-              </div>
-            </aside>
+  font-weight: 500;
+  font-size: 18px;
+
+  color: #fff;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Poppins';
+  }
+
+  p,
+  li {
+    font-family: 'Open Sans';
+  }
+
+  img {
+    display: block;
+    margin: 20px auto;
+  }
+`;
+
+export default ({ data: { feedMediumBlog, markdownRemark } }) => {
+  const ives = 'https://avatars2.githubusercontent.com/u/587016?s=60&v=4';
+  const { creator, title, content, isoDate } = feedMediumBlog || {};
+  console.log(markdownRemark, feedMediumBlog);
+  return (
+    <Layout>
+      <Container style={{ overflowX: 'auto' }}>
+        <TitleAndMetaTags
+          title={`${title} - CodeSandbox Documentation`}
+          // description={frontmatter.description}
+        />
+        <PageContainer width={800}>
+          <Title>{title}</Title>
+          <aside>
+            <Date>{format(isoDate, 'MMM DD,YYYY')}</Date>
             <div
               css={`
-                margin: auto;
-                color: white;
-                overflow: hidden;
-                line-height: 1.5;
-
-                font-weight: 500;
-                font-size: 18px;
-
-                color: #fff;
-
-                h1,
-                h2,
-                h3,
-                h4,
-                h5,
-                h6 {
-                  font-family: 'Poppins';
-                }
-
-                p,
-                li {
-                  font-family: 'Open Sans';
-                }
-
-                img {
-                  display: block;
-                  margin: 20px auto;
-                }
+                display: flex;
+                align-items: center;
               `}
-              dangerouslySetInnerHTML={{
-                __html: content.encoded,
-              }}
-            />
-          </PageContainer>
-        </Container>
-      </Layout>
-    );
-  }
-}
+            >
+              <AuthorImage src={ives} alt={creator} />
+              <Author>{creator}</Author>
+            </div>
+          </aside>
+          <div
+            css={mainStyle}
+            dangerouslySetInnerHTML={{
+              __html: content.encoded,
+            }}
+          />
+        </PageContainer>
+      </Container>
+    </Layout>
+  );
+};
 
 export const pageQuery = graphql`
-  query Post($id: String!) {
+  query Post($id: String) {
     feedMediumBlog(id: { eq: $id }) {
       id
       categories
@@ -127,6 +125,15 @@ export const pageQuery = graphql`
       isoDate
       content {
         encoded
+      }
+    }
+    markdownRemark(id: { eq: $id }) {
+      html
+      frontmatter {
+        slug
+        authors
+        photo
+        title
       }
     }
   }

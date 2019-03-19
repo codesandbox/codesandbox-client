@@ -57,6 +57,7 @@ exports.createPages = async ({ graphql, actions }) => {
           node {
             id
             title
+            categories
           }
         }
       }
@@ -68,6 +69,39 @@ exports.createPages = async ({ graphql, actions }) => {
       .toLowerCase()
       .replace(/[^\w ]+/g, '')
       .replace(/ +/g, '-');
+    const id = edge.node.id;
+    if (edge.node.categories) {
+      createPage({
+        path: 'post/' + slug,
+        component: blogTemplate,
+        context: {
+          id,
+        },
+      });
+    }
+  });
+  const allMarkdownArticles = await graphql(
+    `
+      {
+        allMarkdownRemark(
+          filter: { fileAbsolutePath: { regex: "/articles/" } }
+          limit: 1000
+        ) {
+          edges {
+            node {
+              id
+              frontmatter {
+                slug
+              }
+            }
+          }
+        }
+      }
+    `
+  );
+
+  allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
+    const slug = edge.node.frontmatter.slug;
     const id = edge.node.id;
 
     createPage({
