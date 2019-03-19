@@ -5,15 +5,15 @@ import { format } from 'date-fns';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
+import { mainStyle, Image } from './_post.elements';
+
 import {
   Container,
   Title,
-  Date,
+  PostDate,
   AuthorImage,
   Author,
-  mainStyle,
-  Image,
-} from './_post.elements';
+} from '../components/PostElements';
 import { makePost } from '../utils/makePosts';
 
 export default ({ data: { feedMediumBlog, markdownRemark } }) => {
@@ -28,7 +28,7 @@ export default ({ data: { feedMediumBlog, markdownRemark } }) => {
         <PageContainer width={800}>
           <Title>{title}</Title>
           <aside>
-            <Date>{format(date, 'MMM DD,YYYY')}</Date>
+            <PostDate>{format(date, 'MMM DD,YYYY')}</PostDate>
             <div
               css={`
                 display: flex;

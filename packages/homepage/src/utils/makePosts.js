@@ -1,3 +1,5 @@
+// Im sorry about this whole file
+
 const ives = 'https://avatars2.githubusercontent.com/u/587016?s=60&v=4';
 
 const getContents = str => {

@@ -5,15 +5,14 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 
 import {
-  Posts,
-  PostDate,
-  Subtitle,
   Title,
-  Thumbnail,
-  Wrapper,
-  Author,
+  PostDate,
   AuthorImage,
-} from './_blog.elements';
+  Author,
+} from '../components/PostElements';
+
+import { Posts, Subtitle, Thumbnail, Wrapper } from './_blog.elements';
+
 import Layout from '../components/layout';
 import { makeFeed } from '../utils/makePosts';
 
