@@ -26,6 +26,9 @@ let lastConfig = null;
 
 const IGNORED_MODULES = ['util', 'os'];
 
+// Default in memory
+BrowserFS.configure({ fs: 'InMemory' }, () => {});
+
 self.process = {
   env: { NODE_ENV: 'production' },
   platform: 'linux',
@@ -34,11 +37,6 @@ self.process = {
 };
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
-  const module = BrowserFS.BFSRequire(path);
-  if (module) {
-    return module;
-  }
-
   if (path === 'assert') {
     return require('assert');
   }
@@ -49,6 +47,21 @@ self.require = path => {
         return false;
       },
     };
+  }
+
+  if (path === 'util') {
+    return require('util');
+  }
+
+  if (path === 'os') {
+    const os = require('os-browserify');
+    os.homedir = () => '/home/sandbox';
+    return os;
+  }
+
+  const module = BrowserFS.BFSRequire(path);
+  if (module) {
+    return module;
   }
 
   if (IGNORED_MODULES.indexOf(path) > -1) {
