@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "module": "commonjs",
-    "target": "ES6",
+    "target": "ES5",
     "lib": ["es6", "dom", "es2017.object", "es2017.sharedmemory"],
     "resolveJsonModule": true,
     "jsx": "react",
