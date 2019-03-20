@@ -14,7 +14,7 @@ import requirePolyfills from 'common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import 'common/lib/global.css';
 import theme from 'common/lib/theme';
-import 'subworkers';
+import { isSafari } from 'common/lib/utils/platform';
 
 // eslint-disable-next-line
 import * as child_process from 'node-services/lib/child_process';
@@ -104,6 +104,10 @@ function boot() {
   requirePolyfills().then(() => {
     if (process.env.NODE_ENV === 'development') {
       window.controller = controller;
+    }
+
+    if (isSafari) {
+      import('subworkers');
     }
 
     const rootEl = document.getElementById('root');
