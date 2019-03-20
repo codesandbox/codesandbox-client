@@ -5,7 +5,7 @@ import Cogs from 'react-icons/lib/fa/cogs';
 import NetlifyLogo from 'app/components/NetlifyLogo';
 import DeploymentIntegration from 'app/components/DeploymentIntegration';
 import getTemplate from 'common/lib/templates';
-import Button from 'common/lib/components/Button';
+import { Button } from 'common/lib/components/Button';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../elements';
 import {
   Deploys,
