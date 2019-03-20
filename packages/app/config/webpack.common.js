@@ -124,6 +124,8 @@ module.exports = {
           new RegExp(
             `${sepRe}node_modules${sepRe}babel-plugin-transform-vue-jsx`
           ),
+          new RegExp(`${sepRe}node_modules${sepRe}.*debug`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*yallist`),
         ],
         loader: 'babel-loader',
         query: {
