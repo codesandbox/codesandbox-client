@@ -1,7 +1,7 @@
 const VSCODE_METADATA = {
   CORE: {
     paths: {
-      src: process.env.VSCODE ? '/vscode/out/vs' : '/public/vscode12/vs',
+      src: process.env.VSCODE ? '/vscode/out/vs' : '/public/vscode13/vs',
       'npm/dev': 'node_modules/monaco-editor-core/dev/vs',
       'npm/min': 'node_modules/monaco-editor-core/min/vs',
       built: '/vscode/out-monaco-editor-core/min/vs',
@@ -32,7 +32,7 @@ const MONACO_METADATA = {
       paths: {
         src: '/public/14/vs/language/typescript',
         'npm/dev': '../monaco-typescript/release/dev',
-        'npm/min': '/public/vscode12/vs/language/typescript',
+        'npm/min': '/public/vscode13/vs/language/typescript',
         esm: '../monaco-typescript/release/esm',
       },
     },
@@ -43,7 +43,7 @@ const MONACO_METADATA = {
       paths: {
         src: '/public/14/vs/language/css',
         'npm/dev': '../monaco-css/release/dev',
-        'npm/min': '/public/vscode12/vs/language/css',
+        'npm/min': '/public/vscode13/vs/language/css',
         esm: 'node_modules/monaco-css/release/esm',
       },
     },
@@ -54,7 +54,7 @@ const MONACO_METADATA = {
       paths: {
         src: '/public/14/vs/language/json',
         'npm/dev': 'node_modules/monaco-json/release/dev',
-        'npm/min': '/public/vscode12/vs/language/json',
+        'npm/min': '/public/vscode13/vs/language/json',
         esm: 'node_modules/monaco-json/release/esm',
       },
     },
@@ -66,7 +66,7 @@ const MONACO_METADATA = {
       paths: {
         src: '/public/14/vs/language/html',
         'npm/dev': 'node_modules/monaco-html/release/dev',
-        'npm/min': '/public/vscode12/vs/language/html',
+        'npm/min': '/public/vscode13/vs/language/html',
         esm: 'node_modules/monaco-html/release/esm',
       },
     },
@@ -78,7 +78,7 @@ const MONACO_METADATA = {
       paths: {
         src: '/public/14/vs/basic-languages',
         'npm/dev': '../monaco-languages/release/dev',
-        'npm/min': '/public/vscode12/vs/basic-languages',
+        'npm/min': '/public/vscode13/vs/basic-languages',
         esm: 'node_modules/monaco-languages/release/esm',
       },
     },
