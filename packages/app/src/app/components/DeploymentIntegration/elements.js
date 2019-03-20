@@ -22,6 +22,7 @@ export const Container = styled.div`
 export const IntegrationBlock = styled.div`
   display: inline-flex;
   align-items: center;
+  cursor: pointer;
   box-sizing: border-box;
   background-color: ${props => props.bgColor};
   flex: 1;

@@ -7,13 +7,6 @@ import { Heading, Explanation } from '../elements';
 
 import { List, Item } from './elements';
 
-const counter = 0;
-function dotdotdot(cursor, times, string) {
-  return Array(times - Math.abs((cursor % (times * 2)) - times) + 1).join(
-    string
-  );
-}
-
 class NetlifyLogs extends Component {
   state = { logs: ['Contacting Netlify'] };
 
@@ -41,9 +34,7 @@ class NetlifyLogs extends Component {
         <Explanation>
           Builds typically take a minute or two to complete
         </Explanation>
-        <List>
-          {this.state.logs.map((log, i) => <Item key={`log-${i}`}>{log}</Item>)}
-        </List>
+        <List>{this.state.logs.map(log => <Item key={log}>{log}</Item>)}</List>
         <Button onClick={() => signals.modalClosed()}>Close</Button>
       </Container>
     );

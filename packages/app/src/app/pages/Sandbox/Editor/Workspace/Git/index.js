@@ -5,12 +5,13 @@ import Margin from 'common/lib/components/spacing/Margin';
 import GithubBadge from 'common/lib/components/GithubBadge';
 import { githubRepoUrl } from 'common/lib/utils/url-generator';
 import { Button } from 'common/lib/components/Button';
+import Notice from 'common/lib/components/Notice';
 import Input, { TextArea } from 'common/lib/components/Input';
 
 import TotalChanges from './TotalChanges';
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
 
-import { Container, Buttons, ErrorMessage, Notice } from './elements';
+import { Container, Buttons, ErrorMessage } from './elements';
 
 function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
   return rights === 'write' || rights === 'admin';

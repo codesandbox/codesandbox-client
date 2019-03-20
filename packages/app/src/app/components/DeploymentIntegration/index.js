@@ -1,6 +1,7 @@
 import React from 'react';
 import Down from 'react-icons/lib/fa/angle-down';
 import Up from 'react-icons/lib/fa/angle-up';
+import Notice from 'common/lib/components/Notice';
 import DetailInfo from './DetailInfo';
 import { Container, IntegrationBlock, Name } from './elements';
 
@@ -11,15 +12,25 @@ const Integration = ({
   deploy,
   children,
   loading,
+  beta,
   color,
   open = true,
   toggle,
 }) => (
   <Container>
-    <IntegrationBlock bgColor={color}>
+    <IntegrationBlock bgColor={color} onClick={toggle}>
       <div>
         <Icon />
         <Name light={light}>{name}</Name>
+        {beta && (
+          <Notice
+            css={`
+              margin-left: 0.7rem;
+            `}
+          >
+            Beta
+          </Notice>
+        )}
       </div>
       {open ? (
         <Up

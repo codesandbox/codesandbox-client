@@ -47,10 +47,11 @@ class NetlifyDeployment extends Component {
               loading={deployment.deploying || deployment.building}
               open={show}
               toggle={() => this.toggleNetlify()}
-              color="#F7F8F8"
+              color="#fff"
               light
               Icon={NetlifyLogo}
               name="netlify"
+              beta
               deploy={() => signals.deployment.deployWithNetlify()}
             >
               Deploy your sandbox site on{' '}
@@ -66,7 +67,7 @@ class NetlifyDeployment extends Component {
           {deployment.netlifySite && show ? (
             <DeploysWrapper
               css={`
-                background: #f7f8f8;
+                background: #fff;
                 margin-top: -4px;
               `}
             >
