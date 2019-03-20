@@ -53,7 +53,13 @@ export async function deployToNetlify({ http, props, state }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
   const template = getTemplate(sandbox.template);
-  const buildCommand = template.name === 'nuxt' ? 'generate' : 'build';
+  const buildCommand = name => {
+    if (name === 'styleguidist') return 'styleguide:build';
+    if (name === 'nuxt') return 'generate';
+
+    return 'build';
+  };
+
   let id = '';
   try {
     const { result } = await http.request({
@@ -77,7 +83,7 @@ export async function deployToNetlify({ http, props, state }) {
     await http.request({
       url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${
         template.distDir
-      }&buildCommand=${buildCommand}`,
+      }&buildCommand=${buildCommand(template.name)}`,
       method: 'POST',
       body: file,
       headers: {

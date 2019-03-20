@@ -14,7 +14,7 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
-    netlify: false,
+    distDir: 'styleguide',
     mainFile: [], // '/src/components/Button.js'
     showOnHomePage: true,
   }
