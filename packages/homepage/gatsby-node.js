@@ -100,20 +100,22 @@ exports.createPages = async ({ graphql, actions }) => {
     `
   );
 
-  allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
-    const slug = edge.node.frontmatter.slug;
-    const id = edge.node.id;
+  if (allMarkdownArticles.data) {
+    allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
+      const slug = edge.node.frontmatter.slug;
+      const id = edge.node.id;
 
-    createPage({
-      path: 'post/' + slug,
-      component: blogTemplate,
-      context: {
-        id,
-      },
+      createPage({
+        path: 'post/' + slug,
+        component: blogTemplate,
+        context: {
+          id,
+        },
+      });
     });
-  });
+  }
 
-  const allMarkdown = await graphql(
+  const allDocs = await graphql(
     `
       {
         allMarkdownRemark(
@@ -133,13 +135,13 @@ exports.createPages = async ({ graphql, actions }) => {
     `
   );
 
-  if (allMarkdown.errors) {
-    console.error(allMarkdown.errors);
+  if (allDocs.errors) {
+    console.error(allDocs.errors);
 
-    throw Error(allMarkdown.errors);
+    throw Error(allDocs.errors);
   }
 
-  allMarkdown.data.allMarkdownRemark.edges.forEach(edge => {
+  allDocs.data.allMarkdownRemark.edges.forEach(edge => {
     const slug = edge.node.fields.slug;
     const url = edge.node.fields.url;
 

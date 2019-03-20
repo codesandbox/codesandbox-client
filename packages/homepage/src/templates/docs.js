@@ -274,7 +274,6 @@ export const pageQuery = graphql`
             title
           }
           fields {
-            slug
             url
           }
         }
@@ -283,12 +282,10 @@ export const pageQuery = graphql`
     markdownRemark(fields: { slug: { eq: $slug } }) {
       html
       frontmatter {
-        slug
         title
         description
       }
       fields {
-        slug
         path
       }
     }

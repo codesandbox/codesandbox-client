@@ -16,6 +16,9 @@ import { Posts, Subtitle, Thumbnail, Wrapper, Aside } from './_blog.elements';
 import Layout from '../components/layout';
 import { makeFeed } from '../utils/makePosts';
 
+// UNCOMMENT AT THE BOTTOM IF IT BREAKS
+// GATSBY DOES NOT LET YOU HAVE FIELDS THAT DON'T EXIST YET
+
 const Info = ({ post, mobile, ...props }) => (
   <Aside mobile={mobile} {...props}>
     <PostDate>{format(post.date, 'MMM DD,YYYY')}</PostDate>
@@ -70,15 +73,16 @@ export const query = graphql`
         node {
           id
           html
-          frontmatter {
-            featuredImage
-            slug
-            authors
-            photo
-            title
-            description
-            date
-          }
+          # UNCOMMENT ME
+          # frontmatter {
+          #   featuredImage
+          #   slug
+          #   authors
+          #   photo
+          #   title
+          #   description
+          #   date
+          # }
         }
       }
     }

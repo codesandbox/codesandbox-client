@@ -16,6 +16,9 @@ import {
 } from '../components/PostElements';
 import { makePost } from '../utils/makePosts';
 
+// UNCOMMENT AT THE BOTTOM IF IT BREAKS
+// GATSBY DOES NOT LET YOU HAVE FIELDS THAT DON'T EXIST YET
+
 export default ({ data: { feedMediumBlog, markdownRemark } }) => {
   const { creator, title, content, date, photo, featuredImage } = makePost(
     markdownRemark,
@@ -66,17 +69,18 @@ export const pageQuery = graphql`
         encoded
       }
     }
-    markdownRemark(id: { eq: $id }) {
-      html
-      frontmatter {
-        featuredImage
-        slug
-        authors
-        photo
-        title
-        description
-        date
-      }
-    }
+    # UNCOMMENT ME
+    # markdownRemark(id: { eq: $id }) {
+    #   html
+    # frontmatter {
+    #   featuredImage
+    #   slug
+    #   authors
+    #   photo
+    #   title
+    #   description
+    #   date
+    # }
+    # }
   }
 `;

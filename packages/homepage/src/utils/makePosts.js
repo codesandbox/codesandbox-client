@@ -19,16 +19,22 @@ export const makePost = (markdown, medium) => {
 };
 
 const getContents = str => {
-  const elem = document.createElement('div');
-  elem.style.display = 'none';
-  document.body.appendChild(elem);
-  elem.innerHTML = str;
-  const data = {
-    src: elem.querySelector('img').src,
-    subtitle: elem.querySelector('p').innerText,
+  if (typeof document !== 'undefined') {
+    const elem = document.createElement('div');
+    elem.style.display = 'none';
+    document.body.appendChild(elem);
+    elem.innerHTML = str;
+    const data = {
+      src: elem.querySelector('img').src,
+      subtitle: elem.querySelector('p').innerText,
+    };
+    elem.remove();
+    return data;
+  }
+  return {
+    src: '',
+    subtitle: '',
   };
-  elem.remove();
-  return data;
 };
 
 export const makeFeed = (mediumPosts, markdownPosts) => {
