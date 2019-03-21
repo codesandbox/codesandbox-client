@@ -11,7 +11,16 @@ import {
   Author,
 } from '../components/PostElements';
 
-import { Posts, Subtitle, Thumbnail, Wrapper, Aside } from './_blog.elements';
+import {
+  Posts,
+  Subtitle,
+  Thumbnail,
+  Wrapper,
+  Aside,
+  Header,
+  PageTitle,
+  PageSubtitle,
+} from './_blog.elements';
 
 import Layout from '../components/layout';
 import { makeFeed } from '../utils/makePosts';
@@ -38,6 +47,13 @@ const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
           description="Here you can find articles written by the team and external contributors"
           title="Blog - CodeSandbox"
         />
+        <Header>
+          <PageTitle>Blog</PageTitle>
+          <PageSubtitle>
+            Welcome to the CodeSandbox blog. Here you can find posts about new
+            releases, tips and tricks and how we made CodeSandbox.
+          </PageSubtitle>
+        </Header>
         {posts.map(post => (
           <Wrapper key={post.id}>
             <Info post={post} />

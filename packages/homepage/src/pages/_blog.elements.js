@@ -59,7 +59,7 @@ export const Aside = styled.aside`
     `};
 `;
 
-export const Wrapper = styled.main`
+export const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 250px 1fr;
   grid-gap: 90px;
@@ -67,4 +67,39 @@ export const Wrapper = styled.main`
   @media screen and (max-width: 850px) {
     grid-template-columns: 1fr;
   }
+`;
+
+export const Header = styled.section`
+  background: linear-gradient(
+    279.97deg,
+    rgba(64, 169, 243, 0.9) 0%,
+    rgba(13, 123, 201, 0.9) 100%
+  );
+  border-radius: 4px;
+  padding: 30px;
+  color: #f2f2f2;
+
+  margin-bottom: 30px;
+
+  width: calc(100% - 340px);
+  margin-left: 340px;
+
+  @media screen and (max-width: 850px) {
+    width: 100%;
+    margin-left: 0;
+  }
+`;
+
+export const PageTitle = styled.h1`
+  font-weight: 600;
+  font-family: 'Poppins';
+  font-size: 36px;
+  letter-spacing: -0.04em;
+`;
+
+export const PageSubtitle = styled.h2`
+  font-family: 'Poppins';
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.5;
 `;
