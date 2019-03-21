@@ -6,7 +6,11 @@ import { ClearAllContainer } from './elements';
 function ResultInfo() {
   return (
     <div style={{ marginBottom: '1rem', fontSize: '.875rem' }}>
-      <Stats />
+      <Stats
+        translations={{
+          stats: nbHits => `${nbHits.toLocaleString()} results found`,
+        }}
+      />
       <ClearAllContainer>
         <ClearRefinements />
       </ClearAllContainer>

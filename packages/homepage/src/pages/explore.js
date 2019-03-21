@@ -242,7 +242,7 @@ export default class Explore extends React.PureComponent {
                       // We force i here so we reuse the existing components
                       // eslint-disable-next-line react/no-array-index-key,no-console
                       key={i}
-                      pickSandbox={this.selectSandbox}
+                      selectSandbox={this.selectSandbox}
                       sandbox={sandbox}
                     />
                   ))

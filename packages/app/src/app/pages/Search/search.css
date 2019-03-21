@@ -350,3 +350,16 @@
   appearance: none;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
+
+.ais-Hits .ais-Hits-list {
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: 400px 1fr;
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 1100px) {
+  .ais-Hits-list {
+    grid-template-columns: 1fr;
+  }
+}

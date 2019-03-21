@@ -34,7 +34,7 @@ export type Props = {
   small?: boolean;
   defaultHeight?: number;
   noMargin?: boolean;
-  pickSandbox: (
+  selectSandbox: (
     params: {
       id: string;
       title: string;
@@ -66,7 +66,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
   };
 
   toggleOpen = () => {
-    this.props.pickSandbox({
+    this.props.selectSandbox({
       id: this.props.sandbox.id,
       title: this.getTitle(),
       description: this.getDescription(),
