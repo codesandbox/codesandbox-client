@@ -433,10 +433,7 @@ class EditorPreview extends React.Component<Props, State> {
 
     const windowVisible = store.editor.previewWindowVisible;
 
-    const { width: absoluteWidth, height: absoluteHeight } = this.state;
-
-    const editorWidth = absoluteWidth;
-    const editorHeight = absoluteHeight;
+    const { width: editorWidth, height: editorHeight } = this.state;
 
     const template = getTemplateDefinition(sandbox.template);
 

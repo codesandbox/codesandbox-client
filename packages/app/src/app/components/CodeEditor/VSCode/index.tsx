@@ -122,6 +122,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       this.props.height !== nextProps.height
     ) {
       this.resizeEditorInstantly();
+
+      return true;
     }
 
     if (
@@ -131,6 +133,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         this.props.height !== nextProps.height)
     ) {
       this.resizeEditorInstantly();
+
+      return true;
     }
 
     const activeEditor = this.editor && this.editor.getActiveCodeEditor();
@@ -1049,9 +1053,11 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   };
 
   resizeEditorInstantly = () => {
-    if (this.editor) {
-      this.editor.editorPart.layout(this.props.width, this.props.height);
-    }
+    this.forceUpdate(() => {
+      if (this.editor) {
+        this.editor.editorPart.layout(this.props.width, this.props.height);
+      }
+    });
   };
 
   /**
