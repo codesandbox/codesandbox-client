@@ -1049,11 +1049,9 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   };
 
   resizeEditorInstantly = () => {
-    this.forceUpdate(() => {
-      if (this.editor) {
-        this.editor.editorPart.layout(this.props.width, this.props.height);
-      }
-    });
+    if (this.editor) {
+      this.editor.editorPart.layout(this.props.width, this.props.height);
+    }
   };
 
   /**

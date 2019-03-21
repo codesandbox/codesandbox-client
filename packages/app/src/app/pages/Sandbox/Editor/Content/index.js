@@ -5,6 +5,7 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
+import { debounce } from 'lodash-es';
 
 import getTemplateDefinition from 'common/lib/templates';
 import type { ModuleError } from 'common/lib/types';
@@ -63,6 +64,8 @@ class EditorPreview extends React.Component<Props, State> {
       () => this.forceUpdate()
     );
 
+    this.getBounds = debounce(this.getBoundsInstantly, 100);
+
     window.addEventListener('resize', this.getBounds);
 
     this.interval = setInterval(() => {
@@ -84,13 +87,12 @@ class EditorPreview extends React.Component<Props, State> {
     }
   }
 
-  getBounds = el => {
+  getBoundsInstantly = el => {
     if (el) {
       this.el = this.el || el;
     }
     if (this.el) {
       const { width, height } = this.el.getBoundingClientRect();
-
       if (width !== this.state.width || height !== this.state.height) {
         this.setState({ width, height });
       }
@@ -329,7 +331,7 @@ class EditorPreview extends React.Component<Props, State> {
       () => this.props.store.editor.previewWindowVisible,
       () => {
         requestAnimationFrame(() => {
-          this.getBounds();
+          this.getBoundsInstantly();
         });
       }
     );
@@ -553,7 +555,7 @@ class EditorPreview extends React.Component<Props, State> {
             }}
           >
             <div
-              ref={this.getBounds}
+              ref={this.getBoundsInstantly}
               style={{
                 position: 'relative',
                 display: 'flex',
@@ -575,8 +577,6 @@ class EditorPreview extends React.Component<Props, State> {
                 isModuleSynced={store.editor.isModuleSynced}
                 width={editorWidth}
                 height={editorHeight}
-                absoluteWidth={absoluteWidth}
-                absoluteHeight={absoluteHeight}
                 settings={settings(store)}
                 sendTransforms={this.sendTransforms}
                 readOnly={isReadOnly()}
