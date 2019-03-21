@@ -5,7 +5,6 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
-import { debounce } from 'lodash-es';
 
 import getTemplateDefinition from 'common/lib/templates';
 import type { ModuleError } from 'common/lib/types';
@@ -64,8 +63,6 @@ class EditorPreview extends React.Component<Props, State> {
       () => this.forceUpdate()
     );
 
-    this.getBounds = debounce(this.getBoundsInstantly, 100);
-
     window.addEventListener('resize', this.getBounds);
 
     this.interval = setInterval(() => {
@@ -87,7 +84,7 @@ class EditorPreview extends React.Component<Props, State> {
     }
   }
 
-  getBoundsInstantly = el => {
+  getBounds = el => {
     if (el) {
       this.el = this.el || el;
     }
@@ -331,7 +328,7 @@ class EditorPreview extends React.Component<Props, State> {
       () => this.props.store.editor.previewWindowVisible,
       () => {
         requestAnimationFrame(() => {
-          this.getBoundsInstantly();
+          this.getBounds();
         });
       }
     );
@@ -552,7 +549,7 @@ class EditorPreview extends React.Component<Props, State> {
             }}
           >
             <div
-              ref={this.getBoundsInstantly}
+              ref={this.getBounds}
               style={{
                 position: 'relative',
                 display: 'flex',
