@@ -12,8 +12,7 @@ function Filters() {
       <Sort
         title="Sort By"
         items={[
-          { value: ALGOLIA_DEFAULT_INDEX, label: 'Relevance' },
-          { value: `${ALGOLIA_DEFAULT_INDEX}_views`, label: 'Views' },
+          { value: ALGOLIA_DEFAULT_INDEX, label: 'Views' },
           { value: `${ALGOLIA_DEFAULT_INDEX}_likes`, label: 'Likes' },
         ]}
         defaultRefinement={ALGOLIA_DEFAULT_INDEX}

@@ -22,7 +22,6 @@ import { Content, StyledTitle, Main } from './elements';
 
 const SEARCHABLE_THINGS = [
   'dependency',
-  'user',
   'sandbox title',
   'sandbox tag',
   'github repository',
