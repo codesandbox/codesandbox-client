@@ -20,6 +20,9 @@ import {
 } from './elements';
 import { Sandbox } from '../../types';
 
+const Springg = Spring as any;
+const Transitionn = Transition as any;
+
 const SandboxIcon = ({ template }) => {
   const Icon = getIcon(template);
 
@@ -145,7 +148,7 @@ export default class FeaturedSandbox extends React.PureComponent<
             <Title>{title}</Title>
             <Description>{description}</Description>
             {sandbox && (
-              <Spring
+              <Springg
                 from={{ height: 0, opacity: 0, overflow: 'hidden' }}
                 to={{ height: 28, opacity: 1 }}
               >
@@ -157,12 +160,12 @@ export default class FeaturedSandbox extends React.PureComponent<
                     forkCount={sandbox.forkCount}
                   />
                 )}
-              </Spring>
+              </Springg>
             )}
           </SandboxInfo>
 
           {sandbox && (
-            <Spring
+            <Springg
               native
               from={{ height: 0, opacity: 0, overflow: 'hidden' }}
               to={{ height: 28, opacity: 1 }}
@@ -180,7 +183,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                   <SandboxIcon template={sandbox.template} />
                 </animated.div>
               )}
-            </Spring>
+            </Springg>
           )}
         </SandboxContainer>
 
@@ -211,7 +214,7 @@ export default class FeaturedSandbox extends React.PureComponent<
             </SandboxPreviewImage>
           </div>
         ) : (
-          <Transition
+          <Transitionn
             items={this.state.showPreview as any}
             from={{ flex: 1, opacity: 1 }}
             enter={{ opacity: 1, flex: 1 }}
@@ -281,7 +284,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                     </animated.div>
                   )
             }
-          </Transition>
+          </Transitionn>
         )}
       </Container>
     );
