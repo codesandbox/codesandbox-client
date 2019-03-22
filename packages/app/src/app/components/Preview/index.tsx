@@ -754,6 +754,9 @@ class BasePreview extends React.Component<Props, State> {
       return null;
     }
 
+    // Weird TS typing bug
+    const AnySpring = Spring as any;
+
     return (
       <Container
         className={className}
@@ -787,13 +790,13 @@ class BasePreview extends React.Component<Props, State> {
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
 
-        <Spring
+        <AnySpring
           from={{ opacity: 0 }}
           to={{
             opacity: this.state.showScreenshot ? 0 : 1,
           }}
         >
-          {style => (
+          {(style: { opacity: number }) => (
             <React.Fragment>
               <StyledFrame
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
@@ -848,7 +851,7 @@ class BasePreview extends React.Component<Props, State> {
                 )}
             </React.Fragment>
           )}
-        </Spring>
+        </AnySpring>
       </Container>
     );
   }
