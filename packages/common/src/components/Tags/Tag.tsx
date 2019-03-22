@@ -4,7 +4,7 @@ import { Container, DeleteIcon } from './elements';
 
 export type Props = {
   tag: string;
-  removeTag?: () => void;
+  removeTag?: ({ tag }: { tag: string }) => void;
 };
 
 export default function Tag({ tag, removeTag }: Props) {
