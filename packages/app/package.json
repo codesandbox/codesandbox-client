@@ -47,6 +47,7 @@
     "@types/react-dom": "^16.0.11",
     "@types/react-icons": "2.2.7",
     "@types/resolve": "^0.0.8",
+    "@types/socket.io-client": "^1.4.32",
     "@types/styled-components": "^4.1.6",
     "autoprefixer": "8.5.0",
     "babel-core": "7.0.0-bridge.0",

@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import type { Sandbox, Module } from 'common/lib/types';
+import { Sandbox, Module } from 'common/lib/types';
 import { listen, dispatch, registerFrame, resetState } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import io from 'socket.io-client';
@@ -15,54 +15,59 @@ import { generateFileFromSandbox } from 'common/lib/templates/configuration/pack
 
 import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
-import type { Settings } from '../CodeEditor/types';
+import { Settings } from '../CodeEditor/types';
 
 type Props = {
-  onInitialized: (preview: BasePreview) => void, // eslint-disable-line no-use-before-define
-  sandbox: Sandbox,
-  extraModules: { [path: string]: { code: string, path: string } },
-  currentModule: Module,
-  settings: Settings,
-  initialPath: string,
-  isInProjectView: boolean,
-  onClearErrors: () => void,
-  onAction: (action: Object) => void,
-  onOpenNewWindow: () => void,
-  onToggleProjectView: () => void,
-  isResizing: boolean,
-  alignRight: () => void,
-  alignBottom: () => void,
-  onResize?: (height: number) => void,
-  showNavigation?: boolean,
-  inactive?: boolean,
-  dragging?: boolean,
-  hide: boolean,
-  noPreview: boolean,
-  alignDirection?: 'right' | 'bottom',
-  delay?: number,
-  setServerStatus?: (status: string) => void,
-  syncSandbox?: (updates: any) => void,
+  onInitialized: (preview: BasePreview) => (() => void); // eslint-disable-line no-use-before-define
+  sandbox: Sandbox;
+  extraModules: { [path: string]: { code: string; path: string } };
+  currentModule: Module;
+  settings: Settings;
+  initialPath: string;
+  isInProjectView: boolean;
+  onClearErrors: () => void;
+  onAction: (action: Object) => void;
+  onOpenNewWindow: () => void;
+  onToggleProjectView: () => void;
+  isResizing: boolean;
+  alignRight: () => void;
+  alignBottom: () => void;
+  onResize?: (height: number) => void;
+  showNavigation?: boolean;
+  inactive?: boolean;
+  dragging?: boolean;
+  hide: boolean;
+  noPreview: boolean;
+  alignDirection?: 'right' | 'bottom';
+  delay?: number;
+  setServerStatus?: (status: string) => void;
+  syncSandbox?: (updates: any) => void;
+  className?: string;
 };
 
 type State = {
-  frameInitialized: boolean,
-  history: Array<string>,
-  historyPosition: number,
-  urlInAddressBar: string,
-  url: ?string,
-  overlayMessage: ?string,
-  hibernated: boolean,
-  sseError: boolean,
-  showScreenshot: boolean,
+  frameInitialized: boolean;
+  history: Array<string>;
+  historyPosition: number;
+  urlInAddressBar: string;
+  url: string | undefined;
+  overlayMessage: string | undefined;
+  hibernated: boolean;
+  sseError: boolean;
+  showScreenshot: boolean;
 };
 
-const getSSEUrl = (id?: string, initialPath?: string = '') =>
+const getSSEUrl = (id?: string, initialPath: string = '') =>
   `https://${id ? id + '.' : ''}sse.${
     process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
   }${initialPath}`;
 
-const getDiff = (a, b) => {
-  const diff = {};
+interface IModulesByPath {
+  [path: string]: { path: string; code: null | string; isBinary?: boolean };
+}
+
+const getDiff = (a: IModulesByPath, b: IModulesByPath) => {
+  const diff: IModulesByPath = {};
 
   Object.keys(b)
     .filter(p => {
@@ -148,15 +153,13 @@ function sseTerminalMessage(msg) {
 class BasePreview extends React.Component<Props, State> {
   serverPreview: boolean;
   lastSent: {
-    sandboxId: string,
-    modules: {
-      [path: string]: any,
-    },
-    ignoreNextUpdate: boolean,
+    sandboxId: string;
+    modules: IModulesByPath;
+    ignoreNextUpdate: boolean;
   };
-  // TODO: Find typedefs for this
-  $socket: ?any;
-  connectTimeout: ?number;
+
+  $socket: SocketIOClient.Socket;
+  connectTimeout: number | undefined;
   // indicates if the socket closing is initiated by us
   localClose: boolean;
 
@@ -203,7 +206,7 @@ class BasePreview extends React.Component<Props, State> {
       this.executeCode = debounce(this.executeCode, 800);
     }
 
-    window.openNewWindow = this.openNewWindow;
+    (window as any).openNewWindow = this.openNewWindow;
   }
 
   initializeLastSent = () => {
@@ -242,7 +245,7 @@ class BasePreview extends React.Component<Props, State> {
         this.$socket.close();
         // we need this setTimeout() for socket open() to work immediately after close()
         setTimeout(() => {
-          this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
+          this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
           this.$socket.open();
         }, 0);
       }
@@ -253,7 +256,7 @@ class BasePreview extends React.Component<Props, State> {
       });
       this.$socket = socket;
       if (process.env.NODE_ENV === 'development') {
-        window.$socket = socket;
+        (window as any).$socket = socket;
       }
 
       socket.on('disconnect', () => {
@@ -379,11 +382,14 @@ class BasePreview extends React.Component<Props, State> {
             () => this.$socket.close()
           );
         } else {
-          window.showNotification(`Sandbox Container: ${message}`, 'error');
+          (window as any).showNotification(
+            `Sandbox Container: ${message}`,
+            'error'
+          );
         }
       });
 
-      this.connectTimeout = setTimeout(() => onTimeout(this), 3000);
+      this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
       socket.open();
     }
   };
@@ -393,8 +399,8 @@ class BasePreview extends React.Component<Props, State> {
     delay: true,
   };
 
-  listener: ?Function;
-  disposeInitializer: ?Function;
+  listener: () => void;
+  disposeInitializer: () => void;
   initialPath: string;
 
   componentWillUnmount() {
@@ -464,7 +470,7 @@ class BasePreview extends React.Component<Props, State> {
     this.handleRefresh();
   };
 
-  handleMessage = (data: Object, source: any) => {
+  handleMessage = (data: any, source: any) => {
     if (data && data.codesandbox) {
       if (data.type === 'initialized' && source) {
         registerFrame(
@@ -547,8 +553,8 @@ class BasePreview extends React.Component<Props, State> {
       : getModulePath(sandbox.modules, sandbox.directories, currentModule.id);
   };
 
-  getModulesToSend = () => {
-    const modulesObject = {};
+  getModulesToSend = (): IModulesByPath => {
+    const modulesObject: IModulesByPath = {};
     const sandbox = this.props.sandbox;
 
     sandbox.modules.forEach(m => {
@@ -581,7 +587,7 @@ class BasePreview extends React.Component<Props, State> {
     const sandbox = this.props.sandbox;
 
     if (settings.clearConsoleEnabled && !this.serverPreview) {
-      // $FlowIssue: Chrome behaviour
+      // @ts-ignore Chrome behaviour
       console.clear('__internal__'); // eslint-disable-line no-console
       dispatch({ type: 'clear-console' });
     }
@@ -638,9 +644,9 @@ class BasePreview extends React.Component<Props, State> {
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
-    if (document.getElementById('sandbox')) {
-      // $FlowIssue
-      document.getElementById('sandbox').src = urlInAddressBar;
+    const el = document.getElementById('sandbox');
+    if (el) {
+      (el as HTMLIFrameElement).src = urlInAddressBar;
 
       this.setState({
         history: [urlInAddressBar],
@@ -654,9 +660,9 @@ class BasePreview extends React.Component<Props, State> {
     const { history, historyPosition, urlInAddressBar } = this.state;
     const url = history[historyPosition] || urlInAddressBar;
 
-    if (document.getElementById('sandbox')) {
-      // $FlowIssue
-      document.getElementById('sandbox').src =
+    const el = document.getElementById('sandbox');
+    if (el) {
+      (el as HTMLIFrameElement).src =
         url ||
         (this.serverPreview
           ? getSSEUrl(this.props.sandbox.id)
@@ -777,7 +783,6 @@ class BasePreview extends React.Component<Props, State> {
             alignBottom={this.props.alignBottom}
             alignDirection={this.props.alignDirection}
             isServer={this.serverPreview}
-            owned={sandbox.owned}
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
@@ -799,7 +804,6 @@ class BasePreview extends React.Component<Props, State> {
                 }
                 id="sandbox"
                 title={sandbox.title || sandbox.id}
-                hideNavigation={!showNavigation}
                 style={{
                   ...style,
                   zIndex: 1,
@@ -828,7 +832,6 @@ class BasePreview extends React.Component<Props, State> {
                     }}
                   >
                     <div
-                      alt={this.props.sandbox.title}
                       style={{
                         width: '100%',
                         height: '100%',
