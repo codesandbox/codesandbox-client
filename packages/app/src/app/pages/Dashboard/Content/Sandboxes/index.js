@@ -5,6 +5,7 @@ import SandboxGrid from '../SandboxGrid';
 import Filters from './Filters';
 
 import { Container, HeaderContainer, HeaderTitle } from '../elements';
+import { DashboardActions } from './Actions';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Content extends React.Component {
@@ -19,6 +20,7 @@ class Content extends React.Component {
       hideFilters,
       possibleTemplates = [],
       page,
+      actions = [],
     } = this.props;
 
     return (
@@ -40,6 +42,7 @@ class Content extends React.Component {
                 </span>
               )}
           </HeaderTitle>
+          <DashboardActions actions={actions} />
           <Filters
             hideOrder={hideOrder}
             hideFilters={hideFilters}

@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, Observer } from 'mobx-react';
 import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
-import { Button } from 'common/lib/components/Button';
+import RemoveIcon from 'react-icons/lib/md/highlight-remove';
 
 import Sandboxes from '../../Sandboxes';
 
@@ -38,32 +38,27 @@ const DeletedSandboxes = ({ store, signals }) => {
               sandboxIds: orderedSandboxes.map(i => i.id),
             });
 
-            const DeleteButton = () =>
-              orderedSandboxes.length ? (
-                <Button
-                  css={`
-                    width: 200px;
-                    margin: 20px 0;
-                  `}
-                  small
-                  danger
-                  onClick={() => {
-                    signals.modalOpened({
-                      modal: 'emptyTrash',
-                    });
-                  }}
-                >
-                  Empty Trash
-                </Button>
-              ) : null;
-
             return (
               <Sandboxes
                 isLoading={loading}
                 Header="Deleted Sandboxes"
-                SubHeader={<DeleteButton />}
                 sandboxes={orderedSandboxes}
                 possibleTemplates={possibleTemplates}
+                actions={
+                  orderedSandboxes.length
+                    ? [
+                        {
+                          name: 'Empty Trash',
+                          Icon: <RemoveIcon />,
+                          run: () => {
+                            signals.modalOpened({
+                              modal: 'emptyTrash',
+                            });
+                          },
+                        },
+                      ]
+                    : []
+                }
               />
             );
           }}
