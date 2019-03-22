@@ -280,9 +280,9 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
           $event: 'init',
           data,
         });
+        sentReady = true;
       }
-      sentReady = true;
-    }, 1000);
+    }, 1500);
 
     worker.addEventListener('message', e => {
       if (!sentReady && e.data && e.data.$type === 'ready') {
