@@ -16,7 +16,7 @@
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:home": "lerna run start --scope homepage --stream",
     "start:test": "lerna run start:test --scope app --stream",
-    "start:dev_api": "lerna run start --parallel --scope codesandbox-api & lerna run start:dev_api --scope app --stream",
+    "start:dev_api": "yarn build:deps && (lerna run start --parallel --scope codesandbox-api & lerna run start:dev_api --scope app --stream)",
     "test": "lerna run test --ignore codesandbox-browserfs",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
