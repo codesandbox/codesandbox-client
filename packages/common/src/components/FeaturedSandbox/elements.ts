@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
+import { UserWithAvatar } from '../UserWithAvatar';
 import theme from '../../theme';
 import Stats from '../Stats/index';
 

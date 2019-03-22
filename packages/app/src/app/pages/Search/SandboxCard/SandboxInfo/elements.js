@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import UserWithAvatar from 'app/components/UserWithAvatar';
+import { UserWithAvatar } from 'common/lib/components/UserWithAvatar';
 
 export const CenteredText = styled.div`
   display: inline-flex;

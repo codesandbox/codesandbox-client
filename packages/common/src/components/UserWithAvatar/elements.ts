@@ -7,7 +7,7 @@ export const CenteredText = styled.div`
   flex-direction: row;
 `;
 
-export const AuthorName = styled.span`
+export const AuthorName = styled.span<{ useBigName?: boolean }>`
   display: inline-flex;
   align-items: center;
   margin: 0 0.75em;
@@ -26,7 +26,7 @@ export const Names = styled.div`
   flex-direction: column;
 `;
 
-export const Username = styled.div`
+export const Username = styled.div<{ hasTwoNames?: boolean }>`
   ${props =>
     props.hasTwoNames &&
     css`

@@ -2,14 +2,14 @@
 import * as React from 'react';
 import { Sandbox, Module } from '../../types';
 import { listen, dispatch, registerFrame, resetState } from 'codesandbox-api';
-import { debounce } from 'lodash-es';
+import debounce from 'lodash/debounce';
 import io from 'socket.io-client';
 
 import { frameUrl, host } from '../../utils/url-generator';
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
 
-import { Spring } from 'react-spring/renderprops';
+import { Spring } from 'react-spring/renderprops.cjs';
 
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 

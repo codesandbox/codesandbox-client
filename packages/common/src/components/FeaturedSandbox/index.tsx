@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spring, animated, Transition } from 'react-spring/renderprops';
+import { Spring, animated, Transition } from 'react-spring/renderprops.cjs';
 import { camelizeKeys } from 'humps';
 
 import Preview from '../Preview';
