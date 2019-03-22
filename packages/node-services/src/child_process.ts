@@ -5,6 +5,10 @@ import _debug from 'common/lib/utils/debug';
 
 const debug = _debug('cs:node:child_process');
 
+const isSafari =
+  typeof navigator !== 'undefined' &&
+  /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 let DefaultWorker: false | (() => Worker);
 let workerMap: Map<string, false | (() => Worker)> = new Map();
 
@@ -186,6 +190,8 @@ function handleBroadcast(
   }
   sentBroadcastsForPath.push(data.$id);
   if (
+    // @ts-ignore This check is for the subworker polyfill, if it has an id it's polyfilled by subworkers and indeed a worker
+    target.id ||
     target.constructor.name === 'Worker' ||
     // @ts-ignore Unknown to TS
     (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
@@ -262,11 +268,21 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
     data.execArgv = processOpts.execArgv;
   }
 
-  worker.postMessage({
-    $type: 'worker-manager',
-    $event: 'init',
-    data,
-  });
+  if (isSafari) {
+    setTimeout(() => {
+      worker.postMessage({
+        $type: 'worker-manager',
+        $event: 'init',
+        data,
+      });
+    }, 500);
+  } else {
+    worker.postMessage({
+      $type: 'worker-manager',
+      $event: 'init',
+      data,
+    });
+  }
 
   return new ChildProcess(worker);
 }
