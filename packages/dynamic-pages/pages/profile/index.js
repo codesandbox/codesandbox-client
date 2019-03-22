@@ -42,7 +42,7 @@ const Profile = ({ profile, liked, showcased }) =>
               />
             </div>
           ) : null}
-          <Title>User sandboxes</Title>
+          <Title>User Sandboxes</Title>
           <SandboxesWrapper
             css={`
               grid-gap: 24px;
@@ -78,16 +78,18 @@ const Profile = ({ profile, liked, showcased }) =>
               margin-bottom: 48px;
             `}
           >
-            {liked[1].slice(0, 5).map(sandbox => (
-              <WideSandbox
-                noMargin
-                defaultHeight={170}
-                small
-                key={sandbox.id}
-                pickSandbox={({ id }) => openSandbox(id)}
-                sandbox={sandbox}
-              />
-            ))}
+            {liked[1]
+              .slice(0, 5)
+              .map(sandbox => (
+                <WideSandbox
+                  noMargin
+                  defaultHeight={170}
+                  small
+                  key={sandbox.id}
+                  pickSandbox={({ id }) => openSandbox(id)}
+                  sandbox={sandbox}
+                />
+              ))}
             {liked[1].length > 5 && (
               <More>
                 <Link
