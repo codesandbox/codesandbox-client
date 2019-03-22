@@ -1,43 +1,41 @@
 // @flow
 import * as React from 'react';
-import { Sandbox, Module } from 'common/lib/types';
+import { Sandbox, Module } from '../../types';
 import { listen, dispatch, registerFrame, resetState } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import io from 'socket.io-client';
 
-import { frameUrl, host } from 'common/lib/utils/url-generator';
-import { getModulePath } from 'common/lib/sandbox/modules';
-import getTemplate from 'common/lib/templates';
+import { frameUrl, host } from '../../utils/url-generator';
+import { getModulePath } from '../../sandbox/modules';
+import getTemplate from '../../templates';
 
 import { Spring } from 'react-spring/renderprops';
 
-import { generateFileFromSandbox } from 'common/lib/templates/configuration/package-json';
+import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 
 import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
-import { Settings } from '../CodeEditor/types';
+import { Settings } from './types';
 
-type Props = {
-  onInitialized: (preview: BasePreview) => (() => void); // eslint-disable-line no-use-before-define
+export type Props = {
   sandbox: Sandbox;
-  extraModules: { [path: string]: { code: string; path: string } };
-  currentModule: Module;
   settings: Settings;
-  initialPath: string;
-  isInProjectView: boolean;
-  onClearErrors: () => void;
-  onAction: (action: Object) => void;
-  onOpenNewWindow: () => void;
-  onToggleProjectView: () => void;
-  isResizing: boolean;
-  alignRight: () => void;
-  alignBottom: () => void;
+  onInitialized?: (preview: BasePreview) => (() => void); // eslint-disable-line no-use-before-define
+  extraModules?: { [path: string]: { code: string; path: string } };
+  currentModule?: Module;
+  initialPath?: string;
+  isInProjectView?: boolean;
+  onClearErrors?: () => void;
+  onAction?: (action: Object) => void;
+  onOpenNewWindow?: () => void;
+  onToggleProjectView?: () => void;
+  isResizing?: boolean;
   onResize?: (height: number) => void;
   showNavigation?: boolean;
   inactive?: boolean;
   dragging?: boolean;
-  hide: boolean;
-  noPreview: boolean;
+  hide?: boolean;
+  noPreview?: boolean;
   alignDirection?: 'right' | 'bottom';
   delay?: number;
   setServerStatus?: (status: string) => void;
@@ -47,7 +45,7 @@ type Props = {
 
 type State = {
   frameInitialized: boolean;
-  history: Array<string>;
+  history: string[];
   historyPosition: number;
   urlInAddressBar: string;
   url: string | undefined;
@@ -782,9 +780,6 @@ class BasePreview extends React.Component<Props, State> {
             }
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
-            alignRight={this.props.alignRight}
-            alignBottom={this.props.alignBottom}
-            alignDirection={this.props.alignDirection}
             isServer={this.serverPreview}
           />
         )}

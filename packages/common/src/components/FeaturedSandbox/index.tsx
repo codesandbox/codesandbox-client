@@ -1,10 +1,11 @@
 import React from 'react';
-import Preview from 'app/src/app/components/Preview';
 import { Spring, animated, Transition } from 'react-spring/renderprops';
 import { camelizeKeys } from 'humps';
 
+import Preview from '../Preview';
 import { profileUrl, protocolAndHost } from '../../utils/url-generator';
 import getIcon from '../../templates/icons';
+import { TemplateType } from '../../templates';
 
 import {
   Container,
@@ -17,6 +18,7 @@ import {
   StyledStats,
   SandboxPreviewImage,
 } from './elements';
+import { Sandbox } from '../../types';
 
 const SandboxIcon = ({ template }) => {
   const Icon = getIcon(template);
@@ -28,14 +30,55 @@ const SandboxIcon = ({ template }) => {
   );
 };
 
-export default class FeaturedSandbox extends React.PureComponent {
-  state = {
+export type SandboxType = {
+  id: string;
+};
+
+export type SingleSandboxProps = {
+  sandbox: Sandbox;
+};
+
+export type MultipleSandboxProps = {
+  featuredSandboxes: {
+    title: string;
+    description: string;
+    sandboxId: string;
+    template: TemplateType;
+  }[];
+  sandboxId: string;
+};
+
+export type FeaturedSandboxProps = (SingleSandboxProps &
+  MultipleSandboxProps) & {
+  title: string;
+  description: string;
+  height?: number;
+  pickSandbox: (
+    args: {
+      id: string;
+      title: string;
+      description: string;
+      screenshotUrl: string;
+    }
+  ) => void;
+};
+
+export type FeaturedSandboxState = {
+  sandbox: Sandbox | undefined;
+  showPreview: boolean;
+};
+
+export default class FeaturedSandbox extends React.PureComponent<
+  FeaturedSandboxProps,
+  FeaturedSandboxState
+> {
+  state: FeaturedSandboxState = {
     sandbox: undefined,
     showPreview: false,
   };
   fetchedSandboxes = {};
 
-  fetchSandbox = id => {
+  fetchSandbox = (id: string) => {
     if (this.fetchedSandboxes[id]) {
       return Promise.resolve(this.fetchedSandboxes[id]);
     }
@@ -60,7 +103,7 @@ export default class FeaturedSandbox extends React.PureComponent {
   componentDidMount() {
     if (this.props.sandboxId) {
       this.fetchSandbox(this.props.sandboxId).then(sandbox => {
-        this.setState({ sandbox });
+        this.setState({ sandbox: camelizeKeys(sandbox) as Sandbox });
         this.setUpPreview();
       });
     } else {
@@ -74,7 +117,7 @@ export default class FeaturedSandbox extends React.PureComponent {
     });
   };
 
-  async componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps: FeaturedSandboxProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.fetchSandbox(nextProps.sandboxId).then(sandbox => {
         this.setState({ sandbox });
@@ -87,13 +130,14 @@ export default class FeaturedSandbox extends React.PureComponent {
       id: this.state.sandbox.id,
       title: this.props.title,
       description: this.props.description,
-      screenshotUrl: this.state.sandbox.screenshot_url,
+      screenshotUrl: this.state.sandbox.screenshotUrl,
     });
   };
 
   render() {
-    const { sandbox = this.props.sandbox || null } = this.state;
+    const { sandbox = this.props.sandbox } = this.state;
     const { title, description, height } = this.props;
+
     return (
       <Container height={height}>
         <SandboxContainer role="button" onClick={this.toggleOpen}>
@@ -108,9 +152,9 @@ export default class FeaturedSandbox extends React.PureComponent {
                 {style => (
                   <StyledStats
                     style={style}
-                    viewCount={sandbox.view_count}
-                    likeCount={sandbox.like_count}
-                    forkCount={sandbox.fork_count}
+                    viewCount={sandbox.viewCount}
+                    likeCount={sandbox.likeCount}
+                    forkCount={sandbox.forkCount}
                   />
                 )}
               </Spring>
@@ -129,7 +173,7 @@ export default class FeaturedSandbox extends React.PureComponent {
                     <a href={profileUrl(sandbox.author.username)}>
                       <Author
                         username={sandbox.author.username}
-                        avatarUrl={sandbox.author.avatar_url}
+                        avatarUrl={sandbox.author.avatarUrl}
                       />
                     </a>
                   )}
@@ -156,7 +200,7 @@ export default class FeaturedSandbox extends React.PureComponent {
                   height: '100%',
                   width: '100%',
                   backgroundColor: 'white',
-                  backgroundImage: `url(${sandbox && sandbox.screenshot_url})`,
+                  backgroundImage: `url(${sandbox && sandbox.screenshotUrl})`,
                   backgroundRepeat: 'no-repeat',
                   backgroundPositionX: 'center',
                   transform: 'scale(1.025, 1.025)',
@@ -168,7 +212,7 @@ export default class FeaturedSandbox extends React.PureComponent {
           </div>
         ) : (
           <Transition
-            items={this.state.showPreview}
+            items={this.state.showPreview as any}
             from={{ flex: 1, opacity: 1 }}
             enter={{ opacity: 1, flex: 1 }}
             leave={{
@@ -187,11 +231,24 @@ export default class FeaturedSandbox extends React.PureComponent {
                 ? style => (
                     <animated.div style={style}>
                       <Preview
-                        sandbox={camelizeKeys(sandbox)}
-                        settings={{}}
-                        template={sandbox.template}
+                        sandbox={sandbox}
+                        settings={{
+                          autoCompleteEnabled: true,
+                          autoDownloadTypes: false,
+                          codeMirror: false,
+                          clearConsoleEnabled: true,
+                          fontSize: 15,
+                          lineHeight: 1.4,
+                          lintEnabled: false,
+                          vimMode: false,
+                          tabWidth: 2,
+                          enableLigatures: true,
+                          forceRefresh: false,
+                          experimentVSCode: true,
+                          prettierConfig: false,
+                          zenMode: true,
+                        }}
                         isInProjectView
-                        noDelay
                       />
                     </animated.div>
                   )
@@ -212,7 +269,7 @@ export default class FeaturedSandbox extends React.PureComponent {
                             width: '100%',
                             backgroundColor: 'white',
                             backgroundImage: `url(${sandbox &&
-                              sandbox.screenshot_url})`,
+                              sandbox.screenshotUrl})`,
                             backgroundRepeat: 'no-repeat',
                             backgroundPositionX: 'center',
                             transform: 'scale(1.025, 1.025)',

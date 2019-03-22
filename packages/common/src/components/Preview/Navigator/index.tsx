@@ -4,11 +4,9 @@ import LeftIcon from 'react-icons/lib/fa/angle-left';
 import RightIcon from 'react-icons/lib/fa/angle-right';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 
-import Switch from 'common/lib/components/Switch';
-import Tooltip from 'common/lib/components/Tooltip';
+import Switch from '../../Switch';
+import Tooltip from '../../Tooltip';
 
-import HorizontalAlign from './HorizontalAlign';
-import VerticalAlign from './VerticalAlign';
 import AddressBar from '../AddressBar';
 import ExternalIcon from './ExternalOpen';
 import {
@@ -18,6 +16,20 @@ import {
   AddressBarContainer,
   SwitchContainer,
 } from './elements';
+
+export interface NavigatorProps {
+  url: string;
+  onChange: (val: string) => void;
+  onConfirm: () => void;
+  isProjectView: boolean;
+  onRefresh: () => void;
+  toggleProjectView?: () => void;
+  onBack?: () => void;
+  onForward?: () => void;
+  openNewWindow?: () => void;
+  zenMode?: boolean;
+  isServer?: boolean;
+}
 
 function Navigator({
   url,
@@ -30,11 +42,8 @@ function Navigator({
   toggleProjectView,
   openNewWindow,
   zenMode,
-  alignRight,
-  alignBottom,
-  alignDirection,
   isServer,
-}) {
+}: NavigatorProps) {
   return (
     <Container className="flying-container-handler" style={{ cursor: 'move' }}>
       <Icons>
@@ -55,28 +64,6 @@ function Navigator({
       >
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
-      {alignBottom && (
-        <Icon
-          style={{ fontSize: 18, padding: 4, marginRight: 4 }}
-          selected={alignDirection === 'bottom'}
-          onClick={alignBottom}
-        >
-          <Tooltip title="Dock to Bottom">
-            <HorizontalAlign />
-          </Tooltip>
-        </Icon>
-      )}
-      {alignRight && (
-        <Icon
-          style={{ fontSize: 18, padding: 4, marginRight: 4 }}
-          selected={alignDirection === 'right'}
-          onClick={alignRight}
-        >
-          <Tooltip title="Dock to Right">
-            <VerticalAlign />
-          </Tooltip>
-        </Icon>
-      )}
       {openNewWindow && (
         <Icon
           style={{ fontSize: 18, padding: 4, marginRight: zenMode ? 8 : 16 }}

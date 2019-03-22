@@ -15,9 +15,9 @@ import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 
+import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
-import Preview from './Preview';
 
 const settings = store =>
   ({

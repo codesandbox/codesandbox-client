@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { Sandbox, Module, ModuleError } from 'common/lib/types';
-import BasePreview from 'app/components/Preview';
+import BasePreview from 'common/lib/components/Preview';
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';

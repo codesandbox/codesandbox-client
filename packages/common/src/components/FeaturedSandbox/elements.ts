@@ -5,7 +5,7 @@ import Stats from '../Stats/index';
 
 const VERTICAL_BREAKPOINT = 900;
 
-export const Container = styled.div`
+export const Container = styled.div<{ height?: number }>`
   transition: 0.3s ease background-color;
 
   position: relative;

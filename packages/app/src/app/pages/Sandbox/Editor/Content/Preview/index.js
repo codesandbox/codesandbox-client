@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
-import BasePreview from 'app/components/Preview';
+import BasePreview from 'common/lib/components/Preview';
 import RunOnClick from 'common/lib/components/RunOnClick';
 import getTemplate from 'common/lib/templates';
 

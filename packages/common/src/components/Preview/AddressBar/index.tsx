@@ -1,15 +1,22 @@
 import React from 'react';
-import { ENTER } from 'common/lib/utils/keycodes';
+import { ENTER } from '../../../utils/keycodes';
 import { Container, InputContainer } from './elements';
 
-export default class extends React.PureComponent {
-  onChange = evt => {
+export interface Props {
+  onChange: (value: string) => void;
+  onConfirm: () => void;
+  url?: string;
+}
+
+export default class extends React.PureComponent<Props> {
+  input: HTMLInputElement | undefined;
+  onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { onChange } = this.props;
 
     onChange(evt.target.value);
   };
 
-  handleKeyDown = e => {
+  handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onConfirm } = this.props;
 
     if (e.keyCode === ENTER) {

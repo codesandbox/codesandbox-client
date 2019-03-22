@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import FeaturedSandbox from 'common/lib/components/FeaturedSandbox';
 import WideSandbox from 'common/lib/components/WideSandbox';
+import { camelizeKeys } from 'humps';
 
 import openSandbox from '../../utils/openSandbox';
 import NotFound from '../../screens/Profile/NotFound';
@@ -77,18 +78,16 @@ const Profile = ({ profile, liked, showcased }) =>
               margin-bottom: 48px;
             `}
           >
-            {liked[1]
-              .slice(0, 5)
-              .map(sandbox => (
-                <WideSandbox
-                  noMargin
-                  defaultHeight={170}
-                  small
-                  key={sandbox.id}
-                  pickSandbox={({ id }) => openSandbox(id)}
-                  sandbox={sandbox}
-                />
-              ))}
+            {liked[1].slice(0, 5).map(sandbox => (
+              <WideSandbox
+                noMargin
+                defaultHeight={170}
+                small
+                key={sandbox.id}
+                pickSandbox={({ id }) => openSandbox(id)}
+                sandbox={sandbox}
+              />
+            ))}
             {liked[1].length > 5 && (
               <More>
                 <Link
@@ -120,7 +119,12 @@ Profile.getInitialProps = async ({ query: { username } }) => {
       `/api/v1/sandboxes/${profile.data.showcased_sandbox_shortid}`
     );
   }
-  return { profile: profile.data, sandboxes, liked, showcased: showcased.data };
+  return {
+    profile: profile.data,
+    sandboxes,
+    liked,
+    showcased: camelizeKeys(showcased.data),
+  };
 };
 
 export default Profile;
