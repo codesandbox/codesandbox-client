@@ -465,7 +465,7 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode14/vs',
+          to: 'public/vscode15/vs',
           force: true,
         },
         {
