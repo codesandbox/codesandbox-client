@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, Observer } from 'mobx-react';
 import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
-import Button from 'common/lib/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 import Sandboxes from '../../Sandboxes';
 
