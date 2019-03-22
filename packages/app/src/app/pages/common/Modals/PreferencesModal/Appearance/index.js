@@ -127,13 +127,12 @@ function EditorSettings({ store, signals }) {
                 {'"'} as your color theme.
               </SubDescription>
 
-              <PreferenceText
-                isTextArea
-                style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
-                block
-                rows={7}
-                defaultValue={`You can use your own theme from VSCode directly:
-
+            <PreferenceText
+              isTextArea
+              style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
+              block
+              rows={7}
+              placeholder={`You can use your own theme from VSCode directly:
 1. Open VSCode
 2. Press (CMD or CTRL) + SHIFT + P
 3. Enter: '> Developer: Generate Color Scheme From Current Settings'
@@ -165,7 +164,7 @@ function EditorSettings({ store, signals }) {
                 style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
                 block
                 rows={7}
-                defaultValue={`You can use your own theme from VSCode directly:
+                placeholder={`You can use your own theme from VSCode directly:
 1. Open VSCode
 2. Press (CMD or CTRL) + SHIFT + P
 3. Enter: '> Developer: Generate Color Scheme From Current Settings'
