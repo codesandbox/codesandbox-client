@@ -269,13 +269,32 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
   }
 
   if (isSafari) {
-    setTimeout(() => {
-      worker.postMessage({
-        $type: 'worker-manager',
-        $event: 'init',
-        data,
-      });
-    }, 500);
+    // For Safari it takes a while until the worker started, so we listen for ready message
+    // and send a message anyway if a second passes
+
+    let sentReady = false;
+    const timeout = setTimeout(() => {
+      if (!sentReady) {
+        worker.postMessage({
+          $type: 'worker-manager',
+          $event: 'init',
+          data,
+        });
+      }
+      sentReady = true;
+    }, 1000);
+
+    worker.addEventListener('message', e => {
+      if (!sentReady && e.data && e.data.$type === 'ready') {
+        worker.postMessage({
+          $type: 'worker-manager',
+          $event: 'init',
+          data,
+        });
+        clearTimeout(timeout);
+        sentReady = true;
+      }
+    });
   } else {
     worker.postMessage({
       $type: 'worker-manager',
