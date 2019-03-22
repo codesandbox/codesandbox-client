@@ -11,7 +11,7 @@
     "start": "yarn clean && (yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
     "build:dev": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
     "storybook": "start-storybook -p 6006",
-    "now-build": "build-storybook"
+    "storybook:build": "build-storybook"
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
