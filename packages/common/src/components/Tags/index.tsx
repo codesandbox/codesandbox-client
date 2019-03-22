@@ -11,9 +11,9 @@ type Props = {
   align?: 'right' | 'left';
 };
 
-function Tags({ tags, align, ...props }: Props) {
+function Tags({ tags, align = 'left', ...props }: Props) {
   return (
-    <TagContainer align={align || 'left'} {...props}>
+    <TagContainer align={align} {...props}>
       {tags.sort().map(tag => (
         <Margin key={tag} vertical={0.5} horizontal={0.2}>
           <Tag tag={tag} />

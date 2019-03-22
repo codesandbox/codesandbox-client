@@ -8,10 +8,10 @@
   "scripts": {
     "test": "jest",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react-native",
-    "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
-    "build": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
-    "build:dev": "yarn build",
-    "prepublish": "yarn build"
+    "start": "yarn clean && (yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
+    "build:dev": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
+    "storybook": "start-storybook -p 6006",
+    "now-build": "build-storybook"
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
