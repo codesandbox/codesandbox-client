@@ -6,6 +6,7 @@ import { withA11y } from '@storybook/addon-a11y';
 import { ThemeProvider } from 'styled-components';
 import theme from '../src/theme.ts';
 import storybookTheme from './theme';
+import '../src/global.css';
 
 addParameters({
   options: {

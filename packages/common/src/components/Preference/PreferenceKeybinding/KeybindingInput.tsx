@@ -116,7 +116,7 @@ export default class KeybindingInput extends React.Component<Props, State> {
     const { value, placeholder = 'Enter Keystroke' } = this.props;
 
     const keys = recording ? recordedKeys : value || [];
-
+    console.log(this.props);
     return (
       <Input
         style={{ width: '6rem', ...this.props.style }}
