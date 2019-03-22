@@ -3,8 +3,7 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   background: #000;
-  opacity: 0.4;
-  z-index: 30;
+  z-index: 1;
   -moz-background-clip: padding;
   -webkit-background-clip: padding;
   background-clip: padding-box;
@@ -13,6 +12,8 @@
 .Resizer:hover {
   -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
+
+  opacity: 0.4;
 }
 
 .Resizer.horizontal {

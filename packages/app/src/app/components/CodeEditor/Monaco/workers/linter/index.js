@@ -42,6 +42,9 @@ const allRules = {
   'react-hooks/rules-of-hooks': require('eslint-plugin-react-hooks').rules[
     'rules-of-hooks'
   ],
+  'react-hooks/exhaustive-deps': require('eslint-plugin-react-hooks').rules[
+    'exhaustive-deps'
+  ],
 };
 /* eslint-enable global-require */
 
@@ -286,6 +289,7 @@ const defaultConfig = {
     'react/require-render-return': 'error',
     'react/style-prop-object': 'warn',
     'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
 
     // https://github.com/evcohen/eslint-plugin-jsx-a11y/tree/master/docs/rules
     'jsx-a11y/accessible-emoji': 'warn',

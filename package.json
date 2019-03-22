@@ -8,7 +8,7 @@
     "build:prod": "lerna run build  --scope homepage --stream && lerna run build --scope app --stream && gulp",
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
-    "build:deps": "lerna run build:dev --scope codesandbox-api --scope codesandbox-browserfs --scope node-services --scope common && lerna run build:dev --scope sse-hooks",
+    "build:deps": "lerna run build:dev --scope common && lerna run build:dev --scope vscode-textmate --scope codesandbox-api --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks",
     "build:dynamic": "lerna run build --scope dynamic-pages --stream",
     "start": "yarn build:deps && lerna run start --scope app --stream",
     "start:fast": "lerna run start --scope app --stream",
@@ -24,7 +24,8 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf packages/app/node_modules/styled-components node_modules/react-split-pane/node_modules/react* && cp -R node_modules/uglify-es node_modules/terser && yarn lerna run install-dependencies --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall"
+    "postinstall": "rimraf node_modules/@types packages/app/node_modules/styled-components node_modules/react-split-pane/node_modules/react* && cp -R node_modules/uglify-es node_modules/terser && yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
+    "typecheck": "lerna run typecheck --scope app"
   },
   "lint-staged": {
     "*.{js,css,json}": [
@@ -55,9 +56,10 @@
   },
   "resolutions": {
     "uglify-es": "npm:terser",
-    "react-split-pane/react-dom": "16.8.1"
+    "react-split-pane/react-dom": "^16.8.3"
   },
   "devDependencies": {
+    "@types/react": "^16.8.6",
     "all-contributors-cli": "^5.4.0",
     "babel-eslint": "^8.2.1",
     "eslint": "CompuIves/eslint#add/define-parser",

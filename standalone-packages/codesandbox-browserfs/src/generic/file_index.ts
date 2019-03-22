@@ -63,7 +63,7 @@ export class FileIndex<T> {
   /**
    * Runs the given function over all files in the index.
    */
-  public fileIterator<T>(cb: (file: T | null) => void): void {
+  public fileIterator<T>(cb: (file: T | null, path?: string) => void): void {
     for (const path in this._index) {
       if (this._index.hasOwnProperty(path)) {
         const dir = this._index[path];
@@ -71,7 +71,7 @@ export class FileIndex<T> {
         for (const file of files) {
           const item = dir.getItem(file);
           if (isFileInode<T>(item)) {
-            cb(item.getData());
+            cb(item.getData(), path + '/' + file);
           }
         }
       }
@@ -303,7 +303,8 @@ export class DirInode<T> implements Inode {
    */
   public getItem(p: string): Inode | null {
     const item = this._ls[p];
-    return item ? item : null;
+
+    return item && this._ls.hasOwnProperty(p) ? item : null;
   }
   /**
    * Add the given item to the directory listing. Note that the given inode is

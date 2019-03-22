@@ -1,0 +1,47 @@
+{
+  "name": "vscode-textmate",
+  "version": "4.0.1",
+  "description": "VSCode TextMate grammar helpers",
+  "author": {
+    "name": "Microsoft Corporation"
+  },
+  "main": "./release/main.js",
+  "typings": "./release/main.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/vscode-textmate"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Microsoft/vscode-textmate/issues"
+  },
+  "scripts": {
+    "watch": "tsc -watch",
+    "compile": "tsc",
+    "build:dev": "tsc",
+    "test:old": "npm run compile && mocha out/tests/*.test.js",
+    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec out/tests/",
+    "benchmark": "node benchmark/benchmark.js",
+    "inspect": "node scripts/inspect.js",
+    "version": "npm run test && node scripts/release.js",
+    "postversion": "git push && git push --tags",
+    "prepublishOnly": "node scripts/release.js",
+    "install-dependencies": "npm install"
+  },
+  "dependencies": {
+    "oniguruma": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "2.2.39",
+    "@types/node": "^7.0.43",
+    "coveralls": "^3.0.2",
+    "durations": "^3.4.1",
+    "istanbul": "^0.4.4",
+    "mocha": "^5.2.0",
+    "onigasm": "^2.1.0",
+    "remap-istanbul": "^0.6.4",
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.8",
+    "typings": "^1.3.2"
+  }
+}

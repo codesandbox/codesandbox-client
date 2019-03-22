@@ -1,0 +1,98 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [
+		{
+			"index": 24,
+			"content": "COLOR",
+			"color": "#DC3958",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 35,
+			"content": "SurfaceOutput",
+			"color": "#DC3958",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 38,
+			"content": "Albedo",
+			"color": "#DC3958",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 47,
+			"content": "Fallback",
+			"color": "#DC3958",
+			"newColor": "#D3AF86"
+		}
+	],
+	"monokai": [],
+	"monokai_dimmed": [
+		{
+			"index": 30,
+			"content": "surf",
+			"color": "#0080FF",
+			"newColor": "#9872A2"
+		}
+	],
+	"quietlight": [],
+	"red": [
+		{
+			"index": 24,
+			"content": "COLOR",
+			"color": "#FB9A4B",
+			"newColor": "#9DF39F"
+		},
+		{
+			"index": 35,
+			"content": "SurfaceOutput",
+			"color": "#FB9A4B",
+			"newColor": "#9DF39F"
+		},
+		{
+			"index": 38,
+			"content": "Albedo",
+			"color": "#FB9A4B",
+			"newColor": "#9DF39F"
+		},
+		{
+			"index": 47,
+			"content": "Fallback",
+			"color": "#FB9A4B",
+			"newColor": "#9DF39F"
+		}
+	],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": [
+		{
+			"index": 24,
+			"content": "COLOR",
+			"color": "#FF9DA4",
+			"newColor": "#FFFFFF"
+		},
+		{
+			"index": 35,
+			"content": "SurfaceOutput",
+			"color": "#FF9DA4",
+			"newColor": "#FFFFFF"
+		},
+		{
+			"index": 38,
+			"content": "Albedo",
+			"color": "#FF9DA4",
+			"newColor": "#FFFFFF"
+		},
+		{
+			"index": 47,
+			"content": "Fallback",
+			"color": "#FF9DA4",
+			"newColor": "#FFFFFF"
+		}
+	]
+}

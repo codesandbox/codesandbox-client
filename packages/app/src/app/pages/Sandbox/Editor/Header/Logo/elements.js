@@ -4,12 +4,12 @@ export const Container = styled.a`
   display: flex;
   position: relative;
   align-items: center;
-  color: ${props => props.theme.white};
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : props.theme.white};
   vertical-align: middle;
   height: 3rem;
-  margin-right: 1rem;
 
-  padding: 0 calc(1rem + 1px);
+  padding: 0 calc(0.8rem + 1px);
 
   box-sizing: border-box;
 

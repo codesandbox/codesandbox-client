@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spring, animated, interpolate } from 'react-spring';
+import { Spring, animated, interpolate } from 'react-spring/renderprops';
 
 import {
   Container,

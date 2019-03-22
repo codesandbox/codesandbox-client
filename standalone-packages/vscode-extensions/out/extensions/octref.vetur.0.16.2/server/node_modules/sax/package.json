@@ -1,0 +1,12 @@
+{
+  "name": "sax",
+  "description": "An evented streaming XML parser in JavaScript",
+  "author": "Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)",
+  "version": "0.5.8",
+  "main": "lib/sax.js",
+  "license": "BSD",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": "git://github.com/isaacs/sax-js.git"
+}

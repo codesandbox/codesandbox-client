@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Spring } from 'react-spring';
+import { Spring } from 'react-spring/renderprops';
 import Portal from 'common/lib/components/Portal';
 
 import { Container, Item, ItemContainer } from './elements';

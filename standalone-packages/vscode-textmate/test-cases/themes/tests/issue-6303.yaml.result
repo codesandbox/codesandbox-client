@@ -1,0 +1,2382 @@
+{
+	"abyss": [
+		{
+			"content": "swagger",
+			"color": "#225588",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.tag rgb(34, 85, 136)"
+		},
+		{
+			"content": ":",
+			"color": "#6688CC",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "'",
+			"color": "#22AA44",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "2.0",
+			"color": "#22AA44",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "'",
+			"color": "#22AA44",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "info",
+			"color": "#225588",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.tag rgb(34, 85, 136)"
+		},
+		{
+			"content": ":",
+			"color": "#6688CC",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "description",
+			"color": "#225588",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.tag rgb(34, 85, 136)"
+		},
+		{
+			"content": ":",
+			"color": "#6688CC",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "'",
+			"color": "#22AA44",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#22AA44",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#22AA44",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#22AA44",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "    ",
+			"color": "#22AA44",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "'",
+			"color": "#22AA44",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "title",
+			"color": "#225588",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.tag rgb(34, 85, 136)"
+		},
+		{
+			"content": ":",
+			"color": "#6688CC",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#22AA44",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "version",
+			"color": "#225588",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.tag rgb(34, 85, 136)"
+		},
+		{
+			"content": ":",
+			"color": "#6688CC",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "initial",
+			"color": "#22AA44",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		}
+	],
+	"dark_vs": [
+		{
+			"content": "swagger",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "2.0",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "info",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "description",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    ",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "title",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#CE9178",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "version",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "initial",
+			"color": "#CE9178",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": "swagger",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "'",
+			"color": "#0000FF",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "2.0",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "'",
+			"color": "#0000FF",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "info",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "description",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "'",
+			"color": "#0000FF",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "    ",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "'",
+			"color": "#0000FF",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "title",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#0000FF",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "version",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "initial",
+			"color": "#0000FF",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string.yaml rgb(0, 0, 255)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": "swagger",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "2.0",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "info",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "description",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    ",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "title",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#CE9178",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "version",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "initial",
+			"color": "#CE9178",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": "swagger",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "2.0",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "info",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "description",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "    ",
+			"color": "#CE9178",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "'",
+			"color": "#CE9178",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "title",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#CE9178",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "version",
+			"color": "#569CD6",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.tag rgb(86, 156, 214)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "initial",
+			"color": "#CE9178",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": "swagger",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "'",
+			"color": "#0000FF",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "2.0",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "'",
+			"color": "#0000FF",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "info",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "description",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "'",
+			"color": "#0000FF",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "    ",
+			"color": "#0000FF",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "'",
+			"color": "#0000FF",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "title",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#0000FF",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "version",
+			"color": "#800000",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.tag rgb(128, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "initial",
+			"color": "#0000FF",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string.yaml rgb(0, 0, 255)"
+		}
+	],
+	"kimbie_dark": [
+		{
+			"content": "swagger",
+			"color": "#DC3958",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.tag rgb(220, 57, 88)"
+		},
+		{
+			"content": ":",
+			"color": "#D3AF86",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "'",
+			"color": "#D3AF86",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": "2.0",
+			"color": "#889B4A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		},
+		{
+			"content": "'",
+			"color": "#D3AF86",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": "info",
+			"color": "#DC3958",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.tag rgb(220, 57, 88)"
+		},
+		{
+			"content": ":",
+			"color": "#D3AF86",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "description",
+			"color": "#DC3958",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.tag rgb(220, 57, 88)"
+		},
+		{
+			"content": ":",
+			"color": "#D3AF86",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "'",
+			"color": "#D3AF86",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#889B4A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#889B4A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#889B4A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		},
+		{
+			"content": "    ",
+			"color": "#889B4A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		},
+		{
+			"content": "'",
+			"color": "#D3AF86",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "title",
+			"color": "#DC3958",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.tag rgb(220, 57, 88)"
+		},
+		{
+			"content": ":",
+			"color": "#D3AF86",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#889B4A",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "version",
+			"color": "#DC3958",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.tag rgb(220, 57, 88)"
+		},
+		{
+			"content": ":",
+			"color": "#D3AF86",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "initial",
+			"color": "#889B4A",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		}
+	],
+	"monokai": [
+		{
+			"content": "swagger",
+			"color": "#F92672",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.tag rgb(249, 38, 114)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F2",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "'",
+			"color": "#E6DB74",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "2.0",
+			"color": "#E6DB74",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "'",
+			"color": "#E6DB74",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "info",
+			"color": "#F92672",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.tag rgb(249, 38, 114)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F2",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "description",
+			"color": "#F92672",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.tag rgb(249, 38, 114)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F2",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "'",
+			"color": "#E6DB74",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#E6DB74",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#E6DB74",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#E6DB74",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "    ",
+			"color": "#E6DB74",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "'",
+			"color": "#E6DB74",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "title",
+			"color": "#F92672",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.tag rgb(249, 38, 114)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F2",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#E6DB74",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "version",
+			"color": "#F92672",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.tag rgb(249, 38, 114)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F2",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "initial",
+			"color": "#E6DB74",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"content": "swagger",
+			"color": "#6089B4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.tag rgb(96, 137, 180)"
+		},
+		{
+			"content": ":",
+			"color": "#C5C8C6",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "'",
+			"color": "#9AA83A",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "2.0",
+			"color": "#9AA83A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "'",
+			"color": "#9AA83A",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "info",
+			"color": "#6089B4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.tag rgb(96, 137, 180)"
+		},
+		{
+			"content": ":",
+			"color": "#C5C8C6",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "description",
+			"color": "#6089B4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.tag rgb(96, 137, 180)"
+		},
+		{
+			"content": ":",
+			"color": "#C5C8C6",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "'",
+			"color": "#9AA83A",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#9AA83A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#9AA83A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#9AA83A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "    ",
+			"color": "#9AA83A",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "'",
+			"color": "#9AA83A",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "title",
+			"color": "#6089B4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.tag rgb(96, 137, 180)"
+		},
+		{
+			"content": ":",
+			"color": "#C5C8C6",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#9AA83A",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "version",
+			"color": "#6089B4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.tag rgb(96, 137, 180)"
+		},
+		{
+			"content": ":",
+			"color": "#C5C8C6",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "initial",
+			"color": "#9AA83A",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		}
+	],
+	"quietlight": [
+		{
+			"content": "swagger",
+			"color": "#4B83CD",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.tag rgb(75, 131, 205)"
+		},
+		{
+			"content": ":",
+			"color": "#777777",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "'",
+			"color": "#777777",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "2.0",
+			"color": "#448C27",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		},
+		{
+			"content": "'",
+			"color": "#777777",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "info",
+			"color": "#4B83CD",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.tag rgb(75, 131, 205)"
+		},
+		{
+			"content": ":",
+			"color": "#777777",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "description",
+			"color": "#4B83CD",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.tag rgb(75, 131, 205)"
+		},
+		{
+			"content": ":",
+			"color": "#777777",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "'",
+			"color": "#777777",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#448C27",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#448C27",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#448C27",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		},
+		{
+			"content": "    ",
+			"color": "#448C27",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		},
+		{
+			"content": "'",
+			"color": "#777777",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "title",
+			"color": "#4B83CD",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.tag rgb(75, 131, 205)"
+		},
+		{
+			"content": ":",
+			"color": "#777777",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#448C27",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "version",
+			"color": "#4B83CD",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.tag rgb(75, 131, 205)"
+		},
+		{
+			"content": ":",
+			"color": "#777777",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "initial",
+			"color": "#448C27",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		}
+	],
+	"red": [
+		{
+			"content": "swagger",
+			"color": "#CD8D8D",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F8",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "'",
+			"color": "#CD8D8D",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "2.0",
+			"color": "#CD8D8D",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "'",
+			"color": "#CD8D8D",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "info",
+			"color": "#CD8D8D",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F8",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "description",
+			"color": "#CD8D8D",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F8",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "'",
+			"color": "#CD8D8D",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#CD8D8D",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#CD8D8D",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#CD8D8D",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "    ",
+			"color": "#CD8D8D",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "'",
+			"color": "#CD8D8D",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "title",
+			"color": "#CD8D8D",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F8",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#CD8D8D",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "version",
+			"color": "#CD8D8D",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F8",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "initial",
+			"color": "#CD8D8D",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		}
+	],
+	"solarized_dark": [
+		{
+			"content": "swagger",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#93A1A1",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "'",
+			"color": "#2AA198",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "2.0",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "'",
+			"color": "#2AA198",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "info",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#93A1A1",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "description",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#93A1A1",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "'",
+			"color": "#2AA198",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "    ",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "'",
+			"color": "#2AA198",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "title",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#93A1A1",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#2AA198",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "version",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#93A1A1",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "initial",
+			"color": "#2AA198",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		}
+	],
+	"solarized_light": [
+		{
+			"content": "swagger",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#586E75",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "'",
+			"color": "#2AA198",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "2.0",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "'",
+			"color": "#2AA198",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "info",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#586E75",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "description",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#586E75",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "'",
+			"color": "#2AA198",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "    ",
+			"color": "#2AA198",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "'",
+			"color": "#2AA198",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "title",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#586E75",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#2AA198",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "version",
+			"color": "#268BD2",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.tag rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#586E75",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "initial",
+			"color": "#2AA198",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"content": "swagger",
+			"color": "#FF9DA4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.tag rgb(255, 157, 164)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "'",
+			"color": "#D1F1A9",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "2.0",
+			"color": "#D1F1A9",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "'",
+			"color": "#D1F1A9",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "info",
+			"color": "#FF9DA4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.tag rgb(255, 157, 164)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "description",
+			"color": "#FF9DA4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.tag rgb(255, 157, 164)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "'",
+			"color": "#D1F1A9",
+			"_t": "begin.definition.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "The API Management Service API defines an updated and refined version",
+			"color": "#D1F1A9",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#D1F1A9",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#D1F1A9",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "    ",
+			"color": "#D1F1A9",
+			"_t": "quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "'",
+			"color": "#D1F1A9",
+			"_t": "definition.end.punctuation.quoted.single.string.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "title",
+			"color": "#FF9DA4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.tag rgb(255, 157, 164)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#D1F1A9",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "version",
+			"color": "#FF9DA4",
+			"_t": "entity.name.out.plain.string.tag.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.tag rgb(255, 157, 164)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.mapping.punctuation.separator.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "initial",
+			"color": "#D1F1A9",
+			"_t": "out.plain.string.unquoted.yaml",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		}
+	]
+}

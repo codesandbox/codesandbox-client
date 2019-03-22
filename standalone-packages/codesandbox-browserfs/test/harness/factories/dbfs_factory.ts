@@ -3,7 +3,6 @@ import {FileSystem} from '../../../src/core/file_system';
 import {Dropbox} from 'dropbox_bridge';
 import {ApiError} from '../../../src/core/api_error';
 
-declare const Dropbox: typeof DropboxTypes.Dropbox;
 export default function DBFSFactory(cb: (name: string, obj: FileSystem[]) => void): void {
   function login(creds: DropboxTypes.DropboxOptions) {
     const client = new Dropbox(creds);

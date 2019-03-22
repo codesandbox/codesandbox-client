@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ZeitIntegration from 'app/pages/common/ZeitIntegration';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import Centered from 'common/lib/components/flex/Centered';
 import Margin from 'common/lib/components/spacing/Margin';
 import IntegrationModal from 'app/components/IntegrationModal';
@@ -49,7 +49,9 @@ function DeploymentModal({ store, signals }) {
             <DeployText>Deploying sandbox...</DeployText>
             <DeployAnimationContainer deploying={store.deployment.deploying}>
               <StyledLogo width={70} height={70} />
-              {[0, 1, 2, 3].map(i => <StyledCube key={i} i={i} size={20} />)}
+              {[0, 1, 2, 3].map(i => (
+                <StyledCube key={i} i={i} size={20} />
+              ))}
               <StyledNowLogo backgroundColor="#24282A" />
             </DeployAnimationContainer>
           </Margin>

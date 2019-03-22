@@ -1,0 +1,5 @@
+{
+  "name": "stampit",
+  "version": "1.1.0",
+  "main": "./dist/stampit.js"
+}

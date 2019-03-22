@@ -1,0 +1,16 @@
+/.vscode/
+/benchmark/
+/coverage/
+/out/
+/scripts/
+/src/
+/test-cases/
+/typings/
+/.npmignore
+/.travis.yml
+/gulpfile.js
+/npm-debug.log
+/ThirdPartyNotices.txt
+/tsconfig.json
+/typings.json
+/tslint.json

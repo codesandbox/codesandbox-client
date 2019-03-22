@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { camelizeKeys } from 'humps';
-import { Spring } from 'react-spring';
+import { Spring } from 'react-spring/renderprops';
 import getIcon from 'common/lib/templates/icons';
 import {
   profileUrl,

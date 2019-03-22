@@ -25,7 +25,7 @@ function PricingInfo() {
           />
           <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
           <Feature feature="Sandbox Limit" free="50" supporter="Unlimited" />
-          <Feature feature="Server Sandbox Limit" free="5" supporter="20" />
+          <Feature feature="Server Sandbox Limit" free="15" supporter="30" />
           <Feature
             feature="Static File Hosting"
             free="20Mb"

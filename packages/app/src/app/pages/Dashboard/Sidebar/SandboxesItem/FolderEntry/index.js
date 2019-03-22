@@ -11,7 +11,7 @@ import { inject, observer } from 'mobx-react';
 import track from 'common/lib/utils/analytics';
 import { client } from 'app/graphql/client';
 
-import ReactShow from 'react-show';
+import { Animate as ReactShow } from 'react-show';
 import { join, dirname } from 'path';
 
 import theme from 'common/lib/theme';
@@ -281,6 +281,16 @@ class FolderEntry extends React.Component {
           <ReactShow
             show={children.size > 0 && !isDragging && this.state.open}
             duration={250}
+            stayMounted={false}
+            style={{
+              height: 'auto',
+              overflow: 'hidden',
+            }}
+            transitionOnMount
+            start={{
+              height: 0, // The starting style for the component.
+              // If the 'leave' prop isn't defined, 'start' is reused!
+            }}
           >
             {Array.from(children)
               .sort()

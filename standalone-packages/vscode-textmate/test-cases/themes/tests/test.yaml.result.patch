@@ -1,0 +1,259 @@
+{
+	"abyss": [
+		{
+			"index": 8,
+			"content": "id001",
+			"color": "#6688CC",
+			"newColor": "#FFEEBB"
+		}
+	],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [
+		{
+			"index": 8,
+			"content": "id001",
+			"color": "#D3AF86",
+			"newColor": "#F06431"
+		}
+	],
+	"monokai": [
+		{
+			"index": 8,
+			"content": "id001",
+			"color": "#F8F8F2",
+			"newColor": "#A6E22E"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"index": 8,
+			"content": "id001",
+			"color": "#C5C8C6",
+			"newColor": "#9B0000"
+		}
+	],
+	"quietlight": [
+		{
+			"index": 57,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 60,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 63,
+			"content": ":",
+			"color": "#434343",
+			"newColor": "#777777"
+		},
+		{
+			"index": 83,
+			"content": ",",
+			"color": "#434343",
+			"newColor": "#777777"
+		}
+	],
+	"red": [
+		{
+			"index": 4,
+			"content": "s",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 4,
+			"content": "tep",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 13,
+			"content": "i",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 13,
+			"content": "nstrument",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 18,
+			"content": "p",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 18,
+			"content": "ulseEnergy",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 23,
+			"content": "s",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 23,
+			"content": "potSize",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 28,
+			"content": "s",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 28,
+			"content": "tep",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 37,
+			"content": "s",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 37,
+			"content": "tep",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 43,
+			"content": "s",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 43,
+			"content": "potSize",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 49,
+			"content": "s",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 49,
+			"content": "tep",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 56,
+			"content": "n",
+			"color": "#EC0D1E",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 56,
+			"content": "ame",
+			"color": "#EC0D1E",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 62,
+			"content": "a",
+			"color": "#EC0D1E",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 62,
+			"content": "ge",
+			"color": "#EC0D1E",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 68,
+			"content": "n",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 68,
+			"content": "ame",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 73,
+			"content": "a",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 73,
+			"content": "ge",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 78,
+			"content": "m",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 78,
+			"content": "en",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 87,
+			"content": "w",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 87,
+			"content": "omen",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		}
+	],
+	"solarized_dark": [
+		{
+			"index": 8,
+			"content": "id001",
+			"color": "#93A1A1",
+			"newColor": "#CB4B16"
+		}
+	],
+	"solarized_light": [
+		{
+			"index": 8,
+			"content": "id001",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"index": 8,
+			"content": "id001",
+			"color": "#FFFFFF",
+			"newColor": "#FFEEAD"
+		}
+	]
+}

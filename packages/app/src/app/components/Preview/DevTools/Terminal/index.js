@@ -4,7 +4,8 @@ import { listen } from 'codesandbox-api';
 import { withTheme } from 'styled-components';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
-import getTemplate, { type Template } from 'common/lib/templates';
+import ResizeObserver from 'resize-observer-polyfill';
+
 import uuid from 'uuid';
 import PlusIcon from 'react-icons/lib/md/add';
 
@@ -69,15 +70,23 @@ class TerminalComponent extends React.Component<Props, State> {
     this.listener = listen(this.handleMessage);
   }
 
-  componentWillUpdate(nextProps: Props) {
-    if (nextProps.height !== this.props.height) {
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        this.term.fit();
-      }, 300);
-    }
+  observer: ResizeObserver;
 
-    if (nextProps.theme !== this.props.theme) {
+  setupResizeObserver = el => {
+    if (el) {
+      this.observer = new ResizeObserver(() => {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.term.fit();
+        }, 300);
+      });
+
+      this.observer.observe(el);
+    }
+  };
+
+  componentWillUpdate(nextProps: Props) {
+    if (JSON.stringify(nextProps.theme) !== JSON.stringify(this.props.theme)) {
       this.term.setOption('theme', getTerminalTheme(nextProps.theme));
     }
   }
@@ -100,6 +109,7 @@ class TerminalComponent extends React.Component<Props, State> {
   componentWillUnmount() {
     createShell = undefined;
     this.listener();
+    this.observer.disconnect();
 
     if (this.term) {
       this.term.dispose();
@@ -167,7 +177,7 @@ class TerminalComponent extends React.Component<Props, State> {
     const { height, hidden } = this.props;
 
     return (
-      <div>
+      <div ref={this.setupResizeObserver}>
         {!hidden &&
           this.state.shells.length > 0 && (
             <ShellTabs
@@ -216,6 +226,7 @@ class TerminalComponent extends React.Component<Props, State> {
 }
 
 export default {
+  id: 'codesandbox.terminal',
   title: 'Terminal',
   Content: withTheme(TerminalComponent),
   actions: (owner: boolean) =>
@@ -230,5 +241,4 @@ export default {
         Icon: PlusIcon,
       },
     ].filter(Boolean),
-  show: (template: Template) => getTemplate(template).isServer,
 };

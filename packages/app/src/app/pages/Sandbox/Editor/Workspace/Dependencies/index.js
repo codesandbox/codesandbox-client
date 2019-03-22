@@ -39,7 +39,6 @@ function Dependencies({ signals, store }) {
   return (
     <div>
       <Margin bottom={0}>
-        <WorkspaceSubtitle>Dependencies</WorkspaceSubtitle>
         {Object.keys(dependencies)
           .sort()
           .map(dep => (

@@ -79,7 +79,7 @@ const getBase = type => {
 };
 
 const defineTheme = (monaco, theme) => {
-  if (theme) {
+  if (theme && monaco.editor.defineTheme) {
     const transformedTheme = getTheme(theme);
 
     try {

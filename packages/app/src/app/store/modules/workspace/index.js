@@ -13,7 +13,8 @@ export default Module({
       tag: '',
       tagName: '',
     },
-    openedWorkspaceItem: 'files',
+    openedWorkspaceItem: null,
+    workspaceHidden: false,
   },
   signals: {
     valueChanged: sequences.changeValue,
@@ -28,5 +29,6 @@ export default Module({
     sandboxPrivacyChanged: sequences.changeSandboxPrivacy,
     setWorkspaceItem: sequences.setWorkspaceItem,
     toggleCurrentWorkspaceItem: sequences.toggleCurrentWorkspaceItem,
+    setWorkspaceHidden: sequences.setWorkspaceHidden,
   },
 });

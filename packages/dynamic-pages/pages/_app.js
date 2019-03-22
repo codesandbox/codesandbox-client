@@ -6,8 +6,8 @@ import { ThemeProvider } from 'styled-components';
 import theme from 'common/lib/theme';
 import Navigation from 'common/lib/components/Navigation';
 import Footer from 'common/lib/components/Footer';
-import '../css/global.css';
 import '../css/typography.css';
+import '../css/global.css';
 
 export default class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {

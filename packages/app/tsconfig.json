@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./src/**/*.*"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "app/*": ["./src/app/*"],
+      "embed/*": ["./src/embed/*"],
+      "sandbox/*": ["./src/sandbox/*"]
+    }
+  }
+}

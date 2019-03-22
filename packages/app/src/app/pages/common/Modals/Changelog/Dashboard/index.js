@@ -3,7 +3,7 @@ import { inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import theme from 'common/lib/theme';
 
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 // Inline styles because styled-components didn't load the styles
 const titleStyles = {

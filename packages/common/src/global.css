@@ -14,6 +14,7 @@ body {
   height: 100%;
   background: #1c2022;
   color: #cccccc;
+  font-size: 16px !important;
 
   -ms-overflow-style: -ms-autohiding-scrollbar;
 }
@@ -28,6 +29,11 @@ input {
   font-smooth: always;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
+}
+
+input:focus {
+  outline: -webkit-focus-ring-color auto 0px;
+  outline-offset: 0;
 }
 
 #root {

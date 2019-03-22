@@ -136,9 +136,13 @@ export const setWorkspaceItem = [
 ];
 
 export const toggleCurrentWorkspaceItem = [
-  when(state`workspace.openedWorkspaceItem`),
+  when(state`workspace.workspaceHidden`),
   {
-    false: set(state`workspace.openedWorkspaceItem`, 'files'),
-    true: set(state`workspace.openedWorkspaceItem`, null),
+    false: set(state`workspace.workspaceHidden`, true),
+    true: set(state`workspace.workspaceHidden`, false),
   },
+];
+
+export const setWorkspaceHidden = [
+  set(state`workspace.workspaceHidden`, props`hidden`),
 ];

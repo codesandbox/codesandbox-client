@@ -29,9 +29,39 @@ Object {
   "vscodeTheme": Object {
     "$schema": "vscode://schemas/color-theme",
     "colors": Object {
+      "activityBar.background": "#1C2022",
+      "badge.background": "#374140",
+      "button.background": "#40A9F3",
+      "button.hoverBackground": "#66B9F4",
       "editor.background": "#1C2022",
-      "editor.foreground": "#E0E0E0",
-      "editor.selectionBackground": "#ADD6FF26",
+      "editor.selectionBackground": "#40a8f348",
+      "editorCursor.foreground": "#66b9f4",
+      "editorGroup.border": "#111518",
+      "editorGroupHeader.tabsBackground": "#111518",
+      "editorHoverWidget.background": "#1C2022",
+      "editorHoverWidget.border": "#111518",
+      "editorSuggestWidget.background": "#111518",
+      "editorSuggestWidget.border": "#111518",
+      "editorSuggestWidget.selectedBackground": "#24282A",
+      "focusBorder": "#66b9f4",
+      "input.background": "#111518",
+      "input.foreground": "#C0C0C0",
+      "inputOption.activeBorder": "#66b9f4",
+      "list.hoverBackground": "#37414050",
+      "menu.background": "#111518",
+      "menu.selectionBackground": "#24282A",
+      "menu.selectionForeground": "#40A9F3",
+      "peekViewEditor.background": "#111518",
+      "scrollbarSlider.activeBackground": "#374140",
+      "scrollbarSlider.background": "#37414050",
+      "sideBar.background": "#191d1f",
+      "sideBar.border": "#111518",
+      "statusBar.background": "#40A9F3",
+      "tab.activeBackground": "#1C2022",
+      "tab.border": "#111518",
+      "tab.inactiveBackground": "#111518",
+      "titleBar.activeBackground": "#1C2022",
+      "titleBar.border": "#111518",
     },
     "isCodeSandbox": true,
     "tokenColors": Array [
@@ -60,7 +90,7 @@ Object {
           "entity.name.type",
         ],
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -78,7 +108,7 @@ Object {
           "keyword",
         ],
         "settings": Object {
-          "foreground": "#66b9f4",
+          "foreground": "#C678DD",
         },
       },
       Object {
@@ -87,7 +117,7 @@ Object {
           "keyword.control",
         ],
         "settings": Object {
-          "foreground": "#66b9f4",
+          "foreground": "#C678DD",
         },
       },
       Object {
@@ -251,7 +281,7 @@ Object {
           "string.regexp source.ruby.embedded",
         ],
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -303,7 +333,7 @@ Object {
         ],
         "settings": Object {
           "fontStyle": "bold",
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -342,7 +372,7 @@ Object {
           "support.class",
         ],
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -388,7 +418,7 @@ Object {
           "entity.name.type.class",
         ],
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -433,7 +463,7 @@ Object {
           "meta.class",
         ],
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -729,7 +759,7 @@ Object {
           "source.java storage.modifier.import",
         ],
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -738,7 +768,7 @@ Object {
           "source.java storage.type",
         ],
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -1332,7 +1362,7 @@ Object {
           "meta.array.literal.tsx variable",
         ],
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -1511,7 +1541,7 @@ Object {
         "name": "[VSCODE-CUSTOM] CSharp Storage Type",
         "scope": "storage.type.cs",
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {
@@ -1574,7 +1604,7 @@ Object {
         "name": "[VSCODE-CUSTOM] Java Storage Type Primitive Array",
         "scope": "storage.type.primitive.array.java",
         "settings": Object {
-          "foreground": "#ffd399",
+          "foreground": "#E5C07B",
         },
       },
       Object {

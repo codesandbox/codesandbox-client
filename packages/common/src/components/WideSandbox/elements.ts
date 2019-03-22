@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
+import { UserWithAvatar } from '../UserWithAvatar';
 
 export const BG_COLOR = '#1C2022';
 export const BG_HOVER = '#212629';

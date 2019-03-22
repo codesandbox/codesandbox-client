@@ -1,0 +1,393 @@
+{
+  "v-ons-action-sheet-button": {
+    "attributes": [
+      "icon",
+      "modifier"
+    ],
+    "description": "Component that represent each button of the action sheet."
+  },
+  "v-ons-action-sheet": {
+    "attributes": [
+      "title",
+      "modifier",
+      "cancelable",
+      "disabled",
+      "mask-color",
+      "options"
+    ],
+    "description": "Action/bottom sheet that is displayed on top of current screen.\n  This element can either be attached directly to the `<body>` or dynamically created from a template using the `ons.createElement(template, { append: true })` utility function and the `<ons-template>` tag.\n  The action sheet is useful for displaying a list of options and asking the user to make a decision. A `ons-action-sheet-button` is provided for this purpose, although it can contain any type of content.\n  It will automatically be displayed as Material Design (bottom sheet) when running on an Android device.\n"
+  },
+  "v-ons-alert-dialog-button": {
+    "attributes": [
+      "modifier",
+      "disabled"
+    ],
+    "description": ""
+  },
+  "v-ons-alert-dialog": {
+    "attributes": [
+      "modifier",
+      "cancelable",
+      "disabled",
+      "mask-color",
+      "title",
+      "footer",
+      "visible",
+      "options"
+    ],
+    "description": "Alert dialog that is displayed on top of the current screen. Useful for displaying questions, warnings or error messages to the user. The title, content and buttons can be easily customized and it will automatically switch style based on the platform.\n  To use the element it can either be attached directly to the `<body>` element or dynamically created from a template using the `ons.createAlertDialog(template)` utility function and the `<ons-template>` tag.\n"
+  },
+  "v-ons-back-button": {
+    "attributes": [
+      "modifier"
+    ],
+    "description": "Back button component for `<ons-toolbar>`. Put it in the left part of the `<ons-toolbar>`.\n  It will find the parent `<ons-navigator>` element and pop a page when clicked. This behavior can be overriden by specifying the `onClick` property.\n"
+  },
+  "v-ons-bottom-toolbar": {
+    "attributes": [
+      "modifier"
+    ],
+    "description": "Toolbar component that is positioned at the bottom of the page."
+  },
+  "v-ons-button": {
+    "attributes": [
+      "modifier",
+      "ripple",
+      "disabled"
+    ],
+    "description": "Button component. If you want to place a button in a toolbar, use `<ons-toolbar-button>` or `<ons-back-button>` instead.\n  Will automatically display as a Material Design button with a ripple effect on Android.\n"
+  },
+  "v-ons-card": {
+    "attributes": [
+      "modifier"
+    ],
+    "description": "Component to create a card that displays some information.\n The card may be composed by divs with specially prepared classes `title` and/or `content`. You can also add your own content as you please."
+  },
+  "v-ons-carousel-item": {
+    "attributes": [],
+    "description": "Carousel item component. Used as a child of the `<ons-carousel>` element.\n"
+  },
+  "v-ons-carousel": {
+    "attributes": [
+      "direction",
+      "fullscreen",
+      "overscrollable",
+      "centered",
+      "item-width",
+      "item-height",
+      "auto-scroll",
+      "auto-scroll-ratio",
+      "swipeable",
+      "disabled",
+      "auto-refresh",
+      "index",
+      "on-swipe",
+      "options"
+    ],
+    "description": "Carousel component. A carousel can be used to display several items in the same space.\n  The component supports displaying content both horizontally and vertically. The user can scroll through the items by dragging and it can also be controller programmatically.\n"
+  },
+  "v-ons-checkbox": {
+    "attributes": [
+      "input-id"
+    ],
+    "description": "A checkbox element. The component will automatically render as a Material Design checkbox on Android devices.\n  Most attributes that can be used for a normal `<input type=\"checkbox\">` element can also be used on the `<ons-checkbox>` element.\n"
+  },
+  "v-ons-col": {
+    "attributes": [
+      "vertical-align",
+      "width"
+    ],
+    "description": "Represents a column in the grid system. Use with `<ons-row>` to layout components."
+  },
+  "v-ons-dialog": {
+    "attributes": [
+      "modifier",
+      "cancelable",
+      "disabled",
+      "mask-color",
+      "visible",
+      "options"
+    ],
+    "description": "Dialog that is displayed on top of current screen. As opposed to the `<ons-alert-dialog>` element, this component can contain any kind of content.\n  To use the element it can either be attached directly to the `<body>` element or dynamically created from a template using the `ons.createDialog(template)` utility function and the `<ons-template>` tag.\n  The dialog is useful for displaying menus, additional information or to ask the user to make a decision.\n  It will automatically be displayed as Material Design when running on an Android device.\n"
+  },
+  "v-ons-fab": {
+    "attributes": [
+      "modifier",
+      "ripple",
+      "position",
+      "disabled"
+    ],
+    "description": "The Floating action button is a circular button defined in the [Material Design specification](https://www.google.com/design/spec/components/buttons-floating-action-button.html). They are often used to promote the primary action of the app.\n  It can be displayed either as an inline element or in one of the corners. Normally it will be positioned in the lower right corner of the screen.\n"
+  },
+  "v-ons-icon": {
+    "attributes": [
+      "icon",
+      "size",
+      "rotate",
+      "fixed-width",
+      "spin"
+    ],
+    "description": "Displays an icon. The following icon suites are available:\n  * [Font Awesome](https://fortawesome.github.io/Font-Awesome/)\n  * [Ionicons](http://ionicons.com/)\n  * [Material Design Iconic Font](http://zavoloklom.github.io/material-design-iconic-font/)\n"
+  },
+  "v-ons-input": {
+    "attributes": [
+      "placeholder",
+      "float",
+      "type",
+      "input-id"
+    ],
+    "description": "An input element. The `type` attribute can be used to change the input type. All text input types are supported.\n  The component will automatically render as a Material Design input on Android devices.\n  Most attributes that can be used for a normal `<input>` element can also be used on the `<ons-input>` element.\n"
+  },
+  "v-ons-lazy-repeat": {
+    "attributes": [
+      "render-item",
+      "length",
+      "calculate-item-height"
+    ],
+    "description": "Using this component a list with millions of items can be rendered without a drop in performance.\n  It does that by \"lazily\" loading elements into the DOM when they come into view and\n  removing items from the DOM when they are not visible.\n"
+  },
+  "v-ons-list-header": {
+    "attributes": [
+      "modifier"
+    ],
+    "description": "Header element for list items. Must be put inside the `<ons-list>` component."
+  },
+  "v-ons-list-item": {
+    "attributes": [
+      "modifier",
+      "lock-on-drag",
+      "tappable",
+      "tap-background-color"
+    ],
+    "description": "Component that represents each item in a list. The list item is composed of three parts that are represented with the `left`, `center` and `right` classes. These classes can be used to ensure that the content of the list items is properly aligned.\n  ```\n  <ons-list-item>\n    <div class=\"left\">Left</div>\n    <div class=\"center\">Center</div>\n    <div class=\"right\">Right</div>\n  </ons-list-item>\n  ```\n  There is also a number of classes (prefixed with `list-item__*`) that help when putting things like icons and thumbnails into the list items.\n"
+  },
+  "v-ons-list-title": {
+    "attributes": [],
+    "description": "Represents a list title."
+  },
+  "v-ons-list": {
+    "attributes": [
+      "modifier"
+    ],
+    "description": "Component to define a list, and the container for ons-list-item(s)."
+  },
+  "v-ons-modal": {
+    "attributes": [
+      "visible",
+      "options"
+    ],
+    "description": "Modal component that masks current screen. Underlying components are not subject to any events while the modal component is shown.\n  This component can be used to block user input while some operation is running or to show some information to the user.\n"
+  },
+  "v-ons-navigator": {
+    "attributes": [
+      "swipeable",
+      "swipe-target-width",
+      "swipe-threshold",
+      "page-stack",
+      "options"
+    ],
+    "description": "A component that provides page stack management and navigation. Stack navigation is the most common navigation pattern for mobile apps.\n  When a page is pushed on top of the stack it is displayed with a transition animation. When the user returns to the previous page the top page will be popped from the top of the stack and hidden with an opposite transition animation.\n"
+  },
+  "v-ons-page": {
+    "attributes": [
+      "modifier",
+      "infinite-scroll"
+    ],
+    "description": "This component defines the root of each page. If the content is large it will become scrollable.\n  A navigation bar can be added to the top of the page using the `<ons-toolbar>` element.\n"
+  },
+  "v-ons-popover": {
+    "attributes": [
+      "modifier",
+      "direction",
+      "cancelable",
+      "cover-target",
+      "mask-color",
+      "target",
+      "visible",
+      "options"
+    ],
+    "description": "A component that displays a popover next to an element. The popover can be used to display extra information about a component or a tooltip.\n  To use the element it can either be attached directly to the `<body>` element or dynamically created from a template using the `ons.createPopover(template)` utility function and the `<ons-template>` tag.\n  Another common way to use the popover is to display a menu when a button on the screen is tapped. For Material Design, popover looks exactly as a dropdown menu.\n"
+  },
+  "v-ons-progress-bar": {
+    "attributes": [
+      "modifier",
+      "value",
+      "secondary-value",
+      "indeterminate"
+    ],
+    "description": "The component is used to display a linear progress bar. It can either display a progress bar that shows the user how much of a task has been completed. In the case where the percentage is not known it can be used to display an animated progress bar so the user can see that an operation is in progress.\n"
+  },
+  "v-ons-progress-circular": {
+    "attributes": [
+      "modifier",
+      "value",
+      "secondary-value",
+      "indeterminate"
+    ],
+    "description": "This component displays a circular progress indicator. It can either be used to show how much of a task has been completed or to show a looping animation to indicate that an operation is currently running.\n"
+  },
+  "v-ons-pull-hook": {
+    "attributes": [
+      "disabled",
+      "height",
+      "threshold-height",
+      "fixed-content",
+      "action",
+      "on-pull"
+    ],
+    "description": "Component that adds **Pull to refresh** functionality to an `<ons-page>` element.\n  It can be used to perform a task when the user pulls down at the top of the page. A common usage is to refresh the data displayed in a page.\n"
+  },
+  "v-ons-radio": {
+    "attributes": [
+      "input-id"
+    ],
+    "description": "A radio button element. The component will automatically render as a Material Design radio button on Android devices.\n  Most attributes that can be used for a normal `<input type=\"radio\">` element can also be used on the `<ons-radio>` element.\n"
+  },
+  "v-ons-range": {
+    "attributes": [
+      "disabled"
+    ],
+    "description": "Range input component. Used to display a draggable slider.\n  Works very similar to the `<input type=\"range\">` element.\n"
+  },
+  "v-ons-ripple": {
+    "attributes": [
+      "color",
+      "modifier",
+      "background",
+      "size",
+      "center",
+      "disabled"
+    ],
+    "description": "Adds a Material Design \"ripple\" effect to an element. The ripple effect will spread from the position where the user taps.\n  Some elements such as `<ons-button>` and `<ons-fab>`  support a `ripple` attribute.\n"
+  },
+  "v-ons-row": {
+    "attributes": [
+      "vertical-align"
+    ],
+    "description": "Represents a row in the grid system. Use with `<ons-col>` to layout components."
+  },
+  "v-ons-search-input": {
+    "attributes": [
+      "input-id"
+    ],
+    "description": "A search input element. The component will automatically render as a Material Design search input on Android devices.\n  Most attributes that can be used for a normal `<input>` element can also be used on the `<ons-search-input>` element.\n"
+  },
+  "v-ons-segment": {
+    "attributes": [
+      "modifier",
+      "tabbar-id",
+      "disabled",
+      "index"
+    ],
+    "description": "Segment component. Use this component to have a button bar with automatic styles that switch on click of another button.\n  Will automatically display as a Material Design segment on Android.\n"
+  },
+  "v-ons-select": {
+    "attributes": [
+      "autofocus",
+      "disabled",
+      "form",
+      "multiple",
+      "name",
+      "required",
+      "select-id",
+      "size"
+    ],
+    "description": "Select component. If you want to place a select with an ID of `my-id` on a page, use `<ons-select select-id=\"my-id\">`.\n  The component will automatically display as a Material Design select on Android.\n  Most attributes that can be used for a normal `<select>` element can also be used on the `<ons-select>` element.\n"
+  },
+  "v-ons-speed-dial-item": {
+    "attributes": [
+      "modifier",
+      "ripple"
+    ],
+    "description": "This component displays the child elements of the Material Design Speed dial component.\n"
+  },
+  "v-ons-speed-dial": {
+    "attributes": [
+      "modifier",
+      "ripple",
+      "position",
+      "direction",
+      "disabled",
+      "visible",
+      "open"
+    ],
+    "description": "Element that displays a Material Design Speed Dialog component. It is useful when there are more than one primary action that can be performed in a page.\n  The Speed dial looks like a `<ons-fab>` element but will expand a menu when tapped.\n"
+  },
+  "v-ons-splitter-content": {
+    "attributes": [],
+    "description": "The `<ons-splitter-content>` element is used as a child element of `<ons-splitter>`.\n  It contains the main content of the page while `<ons-splitter-side>` contains the list.\n"
+  },
+  "v-ons-splitter-side": {
+    "attributes": [
+      "open-threshold",
+      "collapse",
+      "swipe-target-width",
+      "width",
+      "side",
+      "mode",
+      "swipeable",
+      "open",
+      "options"
+    ],
+    "description": "The `<ons-splitter-side>` element is used as a child element of `<ons-splitter>`.\n  It will be displayed on either the left or right side of the `<ons-splitter-content>` element.\n  It supports two modes: collapsed and split. When it's in collapsed mode it will be hidden from view and can be displayed when the user swipes the screen or taps a button. In split mode the element is always shown. It can be configured to automatically switch between the two modes depending on the screen size.\n"
+  },
+  "v-ons-splitter": {
+    "attributes": [],
+    "description": "A component that enables responsive layout by implementing both a two-column layout and a sliding menu layout.\n  It can be configured to automatically expand into a column layout on large screens and collapse the menu on smaller screens. When the menu is collapsed the user can open it by swiping.\n"
+  },
+  "v-ons-switch": {
+    "attributes": [
+      "modifier",
+      "disabled",
+      "checked",
+      "input-id"
+    ],
+    "description": "Switch component. The switch can be toggled both by dragging and tapping.\n  Will automatically displays a Material Design switch on Android devices.\n"
+  },
+  "v-ons-tab": {
+    "attributes": [
+      "icon",
+      "active-icon",
+      "label",
+      "badge",
+      "active"
+    ],
+    "description": "Represents a tab inside tab bar. Each `<ons-tab>` represents a page."
+  },
+  "v-ons-tabbar": {
+    "attributes": [
+      "position",
+      "swipeable",
+      "ignore-edge-width",
+      "hide-tabs",
+      "tab-border",
+      "modifier",
+      "tabs",
+      "index",
+      "on-swipe",
+      "tabbar-style",
+      "options"
+    ],
+    "description": "A component to display a tab bar on the bottom of a page. Used with `<ons-tab>` to manage pages using tabs."
+  },
+  "v-ons-toast": {
+    "attributes": [
+      "options"
+    ],
+    "description": "The Toast or Snackbar component is useful for displaying dismissable information or simple actions at (normally) the bottom of the page.\n  This component does not block user input, allowing the app to continue its flow. For simple toasts, consider `ons.notification.toast` instead.\n"
+  },
+  "v-ons-toolbar-button": {
+    "attributes": [
+      "modifier",
+      "disabled"
+    ],
+    "description": "Button component for ons-toolbar and ons-bottom-toolbar."
+  },
+  "v-ons-toolbar": {
+    "attributes": [
+      "inline",
+      "modifier"
+    ],
+    "description": "Toolbar component that can be used with navigation.\n  Left, center and right container can be specified by class names.\n  This component will automatically displays as a Material Design toolbar when running on Android devices.\n"
+  }
+}

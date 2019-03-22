@@ -11,7 +11,9 @@
     "Raven": true,
     "VERSION": true,
     "$PropertyType": true,
-    "TimeoutID": true
+    "TimeoutID": true,
+    "object": true,
+    "__DEV__": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,
@@ -28,6 +30,17 @@
     "no-nested-ternary": "warn",
     "react/require-default-props": "off",
     "import/no-named-default": 0,
-    "no-param-reassign": ["error", { "props": false }]
+    "import/no-webpack-loader-syntax": 0,
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "ts": "never",
+        "tsx": "never",
+        "js": "never"
+      }
+    ],
+    "no-param-reassign": ["error", { "props": false }],
+    "camelcase": "error"
   }
 }

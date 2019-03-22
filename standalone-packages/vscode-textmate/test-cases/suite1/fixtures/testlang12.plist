@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>fileTypes</key>
+    <array>
+        <string>testlang</string>
+    </array>
+    <key>name</key>
+    <string>testlang</string>
+    <key>patterns</key>
+    <array>
+        <dict>
+            <key>include</key>
+            <string>#indentedVerbatimOp</string>
+        </dict>
+    </array>
+    <key>repository</key>
+    <dict>
+        <key>indentedVerbatimOp</key>
+        <dict>
+            <key>begin</key>
+            <string>^([ \t]*)(?=(.*?)\|$)</string>
+            <key>end</key>
+            <string>^(?!\1[ \t])(?=[ \t]*\S)</string>
+            <key>name</key>
+            <string>string.unquoted.verbatim.youki</string>
+        </dict>
+    </dict>
+    <key>scopeName</key>
+    <string>text.testlang</string>
+    <key>uuid</key>
+    <string>159375af-d9b4-448c-a9da-d235eadf3556</string>
+</dict>
+</plist>

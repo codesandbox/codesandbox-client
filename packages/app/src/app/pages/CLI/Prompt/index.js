@@ -2,7 +2,7 @@ import React from 'react';
 
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 import { Container, Buttons, TokenContainer } from './elements';
 
@@ -48,7 +48,8 @@ function Prompt({ error, token, loading, username, signIn }) {
       <Title>Hello {username}!</Title>
       <SubTitle>
         The CLI needs authorization to work.
-        <br />Please paste the following code in the CLI:
+        <br />
+        Please paste the following code in the CLI:
       </SubTitle>
       <TokenContainer onClick={select} value={token} />
     </Container>

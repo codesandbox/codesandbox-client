@@ -1,5 +1,7 @@
+import { dirname } from 'path';
 import { generateFileFromSandbox } from 'common/lib/templates/configuration/package-json';
-import { getModulePath } from 'common/lib/sandbox/modules';
+import getTemplate from 'common/lib/templates';
+import { getModulePath, getDirectoryPath } from 'common/lib/sandbox/modules';
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 
@@ -29,7 +31,20 @@ export function modulesByPath() {
       m.id
     );
     if (path) {
-      modulesObject[path] = m;
+      modulesObject[path] = { ...m, type: 'file' };
+    }
+  });
+
+  this.currentSandbox.directories.forEach(d => {
+    const path = getDirectoryPath(
+      this.currentSandbox.modules,
+      this.currentSandbox.directories,
+      d.id
+    );
+
+    // If this is a single directory with no children
+    if (!Object.keys(modulesObject).some(p => dirname(p) === path)) {
+      modulesObject[path] = { ...d, type: 'directory' };
     }
   });
 
@@ -52,22 +67,20 @@ export function currentTab() {
   return tabs.find(tab => tab.moduleShortid === currentModuleShortid);
 }
 
-// Will be used in the future
-// export function normalizedModules() {
-//   const sandbox = this.currentSandbox;
+/**
+ * We have two types of editors in CodeSandbox: an editor focused on smaller projects and
+ * an editor that works with bigger projects that run on a container. The advanced editor
+ * only has added features, so it's a subset on top of the existing editor.
+ */
+export function isAdvancedEditor() {
+  if (!this.currentSandbox) {
+    return false;
+  }
 
-//   const modulesObject = {};
+  const isServer = getTemplate(this.currentSandbox.template).isServer;
 
-//   sandbox.modules.forEach(m => {
-//     const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
-//     modulesObject[path] = {
-//       path,
-//       code: m.code,
-//     };
-//   });
-
-//   return modulesObject;
-// }
+  return isServer && this.currentSandbox.owned;
+}
 
 export function parsedConfigurations() {
   return parseConfigurations(this.currentSandbox);

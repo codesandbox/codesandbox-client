@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { Route } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from 'common/lib/components/Input';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import TimeIcon from 'react-icons/lib/md/access-time';
 import PeopleIcon from 'react-icons/lib/md/people';
 

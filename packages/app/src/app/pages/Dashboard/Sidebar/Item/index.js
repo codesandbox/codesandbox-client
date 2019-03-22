@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Route } from 'react-router-dom';
-import ReactShow from 'react-show';
+import { Animate } from 'react-show';
 import ContextMenu from 'app/components/ContextMenu';
 import {
   AnimatedChevron,
@@ -88,9 +88,22 @@ export default class Item extends React.Component {
               </UsedContainer>
 
               {children && (
-                <ReactShow show={isOpen} duration={250} unmountOnHide>
+                <Animate
+                  transitionOnMount
+                  style={{
+                    height: 'auto',
+                    overflow: 'hidden',
+                  }}
+                  start={{
+                    height: 0, // The starting style for the component.
+                    // If the 'leave' prop isn't defined, 'start' is reused!
+                  }}
+                  show={isOpen}
+                  duration={250}
+                  stayMounted={false}
+                >
                   {children}
-                </ReactShow>
+                </Animate>
               )}
             </Fragment>
           );

@@ -50,13 +50,15 @@ const sandboxGitUrl = (git: {
   buildEncodedUri`github/${git.username}/${git.repo}/tree/${git.branch}/` +
   git.path;
 
+export const editorUrl = () => `/s/`;
+
 export const sandboxUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
-    return `/s/${sandboxGitUrl(git)}`;
+    return `${editorUrl()}${sandboxGitUrl(git)}`;
   }
 
-  return `/s/${sandbox.id}`;
+  return `${editorUrl()}${sandbox.id}`;
 };
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { sortBy, isEmpty } from 'lodash-es';
 import filesize from 'filesize';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 import DeleteFileButton from '../DeleteFileButton';
 import AddFileToSandboxButton from '../AddFileToSandboxButton';
 import {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import Margin from 'common/lib/components/spacing/Margin';
-import Button from 'app/components/Button';
+import { Button } from 'common/lib/components/Button';
 
 import AutosizeTextArea from 'common/lib/components/AutosizeTextArea';
 import Input from 'common/lib/components/Input';

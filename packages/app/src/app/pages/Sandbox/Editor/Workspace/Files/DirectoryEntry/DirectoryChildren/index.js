@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { sortBy } from 'lodash-es';
+import { HIDDEN_DIRECTORIES } from 'common/lib/templates/constants/files';
 import validateTitle from '../validateTitle';
 import ModuleEntry from './ModuleEntry';
 import DirectoryEntry from '../';
@@ -43,6 +44,13 @@ class DirectoryChildren extends React.Component {
       <div>
         {sortBy(directories, 'title')
           .filter(x => x.directoryShortid === parentShortid)
+          .filter(
+            x =>
+              !(
+                x.directoryShortid == null &&
+                HIDDEN_DIRECTORIES.indexOf(x.title) > -1
+              )
+          )
           .map(dir => (
             <DirectoryEntry
               key={dir.id}

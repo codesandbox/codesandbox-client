@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import Button from 'common/lib/components/Button';
+import { Button } from 'common/lib/components/Button';
 import { Forks, Likes, Views } from '../../components/Icons';
 import { H3, H4 } from '../../components/Typography';
 import Badges from './Badges';

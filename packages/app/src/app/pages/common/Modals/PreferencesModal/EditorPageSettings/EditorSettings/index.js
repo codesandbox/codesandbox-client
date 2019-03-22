@@ -26,55 +26,59 @@ function EditorSettings({ store, signals }) {
       <Title>Editor</Title>
 
       <SubContainer>
-        <PreferenceContainer>
-          <PaddedPreference
-            title="Use CodeMirror"
-            type="boolean"
-            {...bindValue('codeMirror')}
-          />
-          <SubDescription>
-            Use CodeMirror instead of Monaco editor.
-          </SubDescription>
-          <Rule />
-          <PaddedPreference
-            title="Automatic Type Acquisition"
-            type="boolean"
-            {...bindValue('autoDownloadTypes')}
-          />
-          <SubDescription>
-            Automatically download type definitions for dependencies.
-          </SubDescription>
-          <Rule />
-          <PaddedPreference
-            title="ESLint"
-            type="boolean"
-            tooltip="Made possible by ESLint"
-            {...bindValue('lintEnabled')}
-          />
-          <SubDescription>
-            Whether linting as you type should be enabled.
-          </SubDescription>
-          <Rule />
-          <VSCodePlaceholder hideTitle>
+        <VSCodePlaceholder>
+          <PreferenceContainer>
             <PaddedPreference
-              title="Prettify On Save"
+              title="Use CodeMirror"
               type="boolean"
-              tooltip="Made possible by Prettier"
-              {...bindValue('prettifyOnSaveEnabled')}
+              {...bindValue('codeMirror')}
             />
             <SubDescription>
-              Format all code on save with prettier.
+              Use CodeMirror instead of Monaco editor.
             </SubDescription>
             <Rule />
-          </VSCodePlaceholder>
+            <PaddedPreference
+              title="Automatic Type Acquisition"
+              type="boolean"
+              {...bindValue('autoDownloadTypes')}
+            />
+            <SubDescription>
+              Automatically download type definitions for dependencies.
+            </SubDescription>
+            <Rule />
+            <PaddedPreference
+              title="ESLint"
+              type="boolean"
+              tooltip="Made possible by ESLint"
+              {...bindValue('lintEnabled')}
+            />
+            <SubDescription>
+              Whether linting as you type should be enabled.
+            </SubDescription>
+            <Rule />
+            <VSCodePlaceholder hideTitle>
+              <PaddedPreference
+                title="Prettify On Save"
+                type="boolean"
+                tooltip="Made possible by Prettier"
+                {...bindValue('prettifyOnSaveEnabled')}
+              />
+              <SubDescription>
+                Format all code on save with prettier.
+              </SubDescription>
+              <Rule />
+            </VSCodePlaceholder>
+          </PreferenceContainer>
+        </VSCodePlaceholder>
+        <PreferenceContainer>
           <PaddedPreference
             title="VIM Mode"
             type="boolean"
             {...bindValue('vimMode')}
           />
           <SubDescription>
-            This will override Use CodeMirror setting as Monaco doesn{"'"}t have
-            a VIM mode yet.
+            This will enable the VSCodeVim extension, you need to reload the
+            page to see the effects
           </SubDescription>
         </PreferenceContainer>
       </SubContainer>

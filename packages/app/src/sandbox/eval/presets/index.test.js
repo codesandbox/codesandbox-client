@@ -1,4 +1,4 @@
-import Preset from './';
+import Preset from './index.ts';
 
 import Transpiler from '../transpilers';
 

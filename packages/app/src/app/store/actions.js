@@ -5,6 +5,7 @@ import track, { identify, setUserId } from 'common/lib/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
+import getItems from './modules/workspace/items';
 
 export function getSandbox({ props, api, path }) {
   return api
@@ -45,10 +46,13 @@ export function callVSCodeCallbackError({ props }) {
   }
 }
 
-export function setWorkspace({ state, props }) {
+export function setWorkspace({ controller, state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');
-  state.set(`workspace.openedWorkspaceItem`, 'files');
+
+  const items = getItems(controller.getState());
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+  state.set(`workspace.openedWorkspaceItem`, defaultItem.id);
 }
 
 export function setUrlOptions({ state, router, utils }) {
@@ -101,8 +105,6 @@ export function setUrlOptions({ state, router, utils }) {
     state.set('preferences.settings.fontSize', options.fontSize);
   if (options.highlightedLines)
     state.set('editor.highlightedLines', options.highlightedLines);
-  if (options.editorSize)
-    state.set('editor.previewWindow.editorSize', options.editorSize);
   if (options.hideNavigation)
     state.set('preferences.hideNavigation', options.hideNavigation);
   if (options.isInProjectView)
@@ -119,22 +121,7 @@ export function setUrlOptions({ state, router, utils }) {
     state.set('preferences.showDevtools', options.expandDevTools);
   if (options.runOnClick)
     state.set(`preferences.runOnClick`, options.runOnClick);
-  if (options.previewWindow) {
-    state.set('editor.previewWindow.content', options.previewWindow);
-  }
 }
-
-export const setSandboxConfigOptions = ({ state }) => {
-  const config = state.get('editor.parsedConfigurations.sandbox');
-
-  if (config && config.parsed) {
-    const view = config.parsed.view;
-
-    if (view) {
-      state.set('editor.previewWindow.content', view);
-    }
-  }
-};
 
 export function setCurrentModuleShortid({ props, state }) {
   const currentModuleShortid = state.get('editor.currentModuleShortid');

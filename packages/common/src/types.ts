@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { TemplateType } from './templates';
 
 export type ModuleError = {
   message: string;
@@ -139,14 +140,7 @@ export type Sandbox = {
    * @type {string}
    */
   sourceId: string;
-  template:
-    | 'create-react-app'
-    | 'create-react-app-typescript'
-    | 'angular-cli'
-    | '@dojo/cli-create-app'
-    | 'vue-cli'
-    | 'preact-cli'
-    | 'svelte';
+  template: TemplateType;
   entry: string;
   originalGit: GitInfo | undefined;
   originalGitCommitSha: string | undefined;
