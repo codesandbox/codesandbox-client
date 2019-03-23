@@ -6670,8 +6670,9 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
 console-feed@^2.8.5:
-  version "2.8.5"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.5.tgz#d91c360faf79c73fbc774fc5175b9ebbe6e1ebb4"
+  version "2.8.6"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.6.tgz#f9a3506c10ba236022bc5a3fb440eac354e8faa1"
+  integrity sha512-dRuCCXhLGlZb6aQsRZPOodHTs1/dMPk0JMGdvu36GldtB4IwqQaqipd2YypQ3kMnaq5l6Y4NXBavicm4tkazCg==
   dependencies:
     emotion "^9.1.1"
     emotion-theming "^9.0.0"
