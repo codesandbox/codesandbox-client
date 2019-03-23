@@ -88,5 +88,12 @@
     "link": "http://shippr.be/",
     "logoURL":
       "https://pbs.twimg.com/profile_images/840144326592155648/lTex6aF7_400x400.jpg"
+  },
+  {
+    "name": “Biwabit”,
+    "link": "https://biwabit.com/“,
+    "logoURL":
+      "https://camo.githubusercontent.com/6189e097cc3051cee0bba10b909d9d8e1c9ae6d2/68747470733a2f2f626977616269742e636f6d2f6c6f676f2f6f6666696369616c2d6c6f676f2d77686974652e737667"
   }
+
 ]
