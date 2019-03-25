@@ -1,9 +1,9 @@
 import { fromPairs, toPairs, sortBy, mapValues } from 'lodash-es';
-import slugify from 'common/lib/utils/slugify';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 import { clone } from 'mobx-state-tree';
 import { dispatch } from 'codesandbox-api';
 
-import getTemplate from 'common/lib/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
 function sortObjectByKeys(object) {

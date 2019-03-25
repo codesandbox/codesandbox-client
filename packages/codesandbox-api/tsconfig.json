@@ -14,5 +14,6 @@
     "outDir": "compiled",
     "typeRoots": ["node_modules/@types", "../../node_modules/@types"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["__tests__"]
 }

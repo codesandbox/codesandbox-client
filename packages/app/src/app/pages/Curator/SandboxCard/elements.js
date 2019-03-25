@@ -1,8 +1,7 @@
 // @ts-check
 import styled from 'styled-components';
-import fadeIn from 'common/lib/utils/animation/fade-in';
-import Tooltip from 'common/lib/components/Tooltip';
-import { Button } from 'common/lib/components/Button';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 export const PADDING = 32;
 
@@ -48,12 +47,6 @@ export const SandboxTitle = styled.div`
   align-items: center;
   font-weight: bold;
   margin-bottom: 1rem;
-`;
-
-export const PrivacyIconContainer = styled(Tooltip)`
-  display: flex;
-  margin-left: 0.5rem;
-  color: rgba(255, 255, 255, 0.4);
 `;
 
 export const ImageMessage = styled.div`

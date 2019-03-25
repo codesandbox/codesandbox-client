@@ -1,10 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 import { Link } from 'gatsby';
 import { Router } from '@reach/router';
-import slugify from 'common/lib/utils/slugify';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 
 import media from '../utils/media';
 import getScrollPos from '../utils/scroll';

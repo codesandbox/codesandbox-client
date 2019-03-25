@@ -2,7 +2,7 @@ import React from 'react';
 
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 import { Container, Buttons, TokenContainer } from './elements';
 

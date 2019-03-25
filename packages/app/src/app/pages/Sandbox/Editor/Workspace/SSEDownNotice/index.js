@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import getTemplate from 'common/lib/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 import { Container } from './elements';
 

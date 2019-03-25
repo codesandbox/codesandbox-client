@@ -1,9 +1,9 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import TrashIcon from 'react-icons/lib/fa/trash';
-import getTemplate from 'common/lib/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 
 import { PrivacySelect, PatronMessage, CenteredText } from './elements';

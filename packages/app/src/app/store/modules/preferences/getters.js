@@ -1,4 +1,4 @@
-import { KEYBINDINGS } from 'common/lib/utils/keybindings';
+import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 
 export function keybindings() {
   const userBindings = this.settings.keybindings;

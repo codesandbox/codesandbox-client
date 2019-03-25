@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import HoverMenu from 'app/components/HoverMenu';
-import Relative from 'common/lib/components/Relative';
+import Relative from '@codesandbox/common/lib/components/Relative';
 
 import Menu from './Menu';
 import { ClickableContainer, ProfileImage } from './elements';

@@ -4,22 +4,22 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
-import { getModulePath, resolveModule } from 'common/lib/sandbox/modules';
+import { getModulePath, resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import { listen } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
-import DEFAULT_PRETTIER_CONFIG from 'common/lib/prettify-default-config';
-import getUI from 'common/lib/templates/configuration/ui';
+import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
+import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 
-import getTemplate from 'common/lib/templates';
-import theme from 'common/lib/theme';
+import getTemplate from '@codesandbox/common/lib/templates';
+import theme from '@codesandbox/common/lib/theme';
 import {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
-} from 'common/lib/types';
-import { getTextOperation } from 'common/lib/utils/diff';
+} from '@codesandbox/common/lib/types';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 // @ts-ignore

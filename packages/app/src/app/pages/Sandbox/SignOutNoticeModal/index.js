@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { Button } from 'common/lib/components/Button';
-import Row from 'common/lib/components/flex/Row';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import Row from '@codesandbox/common/lib/components/flex/Row';
 
 import { Container, Heading, Explanation } from './elements';
 

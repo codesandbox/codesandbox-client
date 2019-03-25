@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const env = require('common/lib/config/env');
+const env = require('@codesandbox/common/lib/config/env');
 
 // Parse date information out of post filename.
 

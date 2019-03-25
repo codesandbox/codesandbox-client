@@ -1,10 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import SignInButton from 'app/pages/common/SignInButton';
-import Margin from 'common/lib/components/spacing/Margin';
-import track from 'common/lib/utils/analytics';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Description } from '../../elements';
 

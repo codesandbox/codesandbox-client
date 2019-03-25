@@ -2,8 +2,8 @@ import React from 'react';
 
 import { inject } from 'mobx-react';
 
-import { Button } from 'common/lib/components/Button';
-import { newSandboxWizard } from 'common/lib/utils/url-generator';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import { newSandboxWizard } from '@codesandbox/common/lib/utils/url-generator';
 
 import { Container, Title, SubTitle, Buttons } from './elements';
 

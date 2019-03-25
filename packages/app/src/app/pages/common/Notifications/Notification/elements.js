@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 export const Container = styled.div`
   position: relative;

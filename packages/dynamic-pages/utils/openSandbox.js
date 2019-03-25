@@ -1,4 +1,4 @@
-import { sandboxUrl } from 'common/lib/utils/url-generator';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 const openSandbox = id => {
   const url = sandboxUrl({ id });

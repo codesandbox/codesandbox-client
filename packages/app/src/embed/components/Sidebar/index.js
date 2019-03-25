@@ -1,9 +1,9 @@
 // @flow
 import * as React from 'react';
 
-import type { Sandbox } from 'common/lib/types';
+import type { Sandbox } from '@codesandbox/common/lib/types';
 
-import Padding from 'common/lib/components/spacing/Padding';
+import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import { EntryContainer } from 'app/pages/Sandbox/Editor/Workspace/elements';
 
 import EditorLink from '../EditorLink';

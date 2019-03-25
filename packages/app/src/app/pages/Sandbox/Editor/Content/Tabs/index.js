@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import { canPrettify } from 'app/utils/prettify';
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import TabContainer from './TabContainer';
 import PreviewIcon from './PreviewIcon';
@@ -200,7 +200,7 @@ class EditorTabs extends React.Component {
         <IconContainer>
           <Tooltip
             style={{ display: 'inline-flex', alignItems: 'center' }}
-            title="Prettify"
+            content="Prettify"
           >
             <StyledPrettierIcon
               disabled={!this.canPrettify(currentModule)}
@@ -209,9 +209,13 @@ class EditorTabs extends React.Component {
           </Tooltip>
           <Line />
 
-          <Tooltip title={previewVisible ? 'Hide Browser' : 'Show Browser'}>
+          <Tooltip content={previewVisible ? 'Hide Browser' : 'Show Browser'}>
             <IconWrapper active={previewVisible}>
-              <PreviewIcon onClick={() => this.props.signals.editor.togglePreviewContent({})} />
+              <PreviewIcon
+                onClick={() =>
+                  this.props.signals.editor.togglePreviewContent({})
+                }
+              />
             </IconWrapper>
           </Tooltip>
         </IconContainer>

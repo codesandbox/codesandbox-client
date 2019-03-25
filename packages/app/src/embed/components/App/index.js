@@ -3,14 +3,17 @@ import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
 
-import getTemplateDefinition from 'common/lib/templates';
-import type { Module, Sandbox } from 'common/lib/types';
-import Centered from 'common/lib/components/flex/Centered';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import type { Module, Sandbox } from '@codesandbox/common/lib/types';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import { getSandboxOptions } from 'common/lib/url';
+import { getSandboxOptions } from '@codesandbox/common/lib/url';
 
-import { findCurrentModule, findMainModule } from 'common/lib/sandbox/modules';
+import {
+  findCurrentModule,
+  findMainModule,
+} from '@codesandbox/common/lib/sandbox/modules';
 
 import Header from '../Header';
 import Content from '../Content';

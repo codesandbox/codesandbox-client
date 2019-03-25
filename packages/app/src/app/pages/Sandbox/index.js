@@ -3,13 +3,13 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import NotFound from 'app/pages/common/NotFound';
 import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
-import Centered from 'common/lib/components/flex/Centered';
-import Fullscreen from 'common/lib/components/flex/Fullscreen';
-import Padding from 'common/lib/components/spacing/Padding';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
+import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import Skeleton from 'app/components/Skeleton';
 import GithubIntegration from 'app/src/app/pages/common/GithubIntegration';
 

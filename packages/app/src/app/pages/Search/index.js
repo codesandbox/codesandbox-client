@@ -3,15 +3,15 @@ import { inject } from 'mobx-react';
 import { InstantSearch, SearchBox, PoweredBy } from 'react-instantsearch/dom';
 import qs from 'qs';
 
-import MaxWidth from 'common/lib/components/flex/MaxWidth';
-import Margin from 'common/lib/components/spacing/Margin';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import Navigation from 'app/pages/common/Navigation';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
-} from 'common/lib/utils/config';
+} from '@codesandbox/common/lib/utils/config';
 
 import 'instantsearch.css/themes/reset.css';
 import './search.css';
