@@ -92,6 +92,10 @@ export const frameUrl = (shortid: string, append: string = '') => {
     return stagingFrameUrl(shortid, path);
   }
 
+  if (host().endsWith('.stream')) {
+    return `${location.protocol}//${shortid}.csb-sandbox.stream/${path}`;
+  }
+
   return `${location.protocol}//${shortid}.${host()}/${path}`;
 };
 
