@@ -23,16 +23,15 @@ const Tooltip = ({ children, style = {}, ...props }) => (
   <React.Fragment>
     <GlobalStyle />
     <Tippy {...props}>
-      <div
+      <span
         style={{
-          height: '100%',
-          width: '100%',
           ...style,
         }}
       >
         {children}
-      </div>
+      </span>
     </Tippy>
   </React.Fragment>
 );
+
 export default Tooltip;

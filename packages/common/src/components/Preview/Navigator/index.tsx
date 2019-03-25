@@ -97,3 +97,5 @@ function Navigator({
     </Container>
   );
 }
+
+export default Navigator

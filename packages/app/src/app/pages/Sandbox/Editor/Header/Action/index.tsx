@@ -53,7 +53,6 @@ function ActionComponent({
   if (!href && (placeholder || tooltip)) {
     return (
       <ActionTooltip
-        disabledAction={!onClick}
         content={placeholder || tooltip}
         hideOnClick={false}
         {...props}

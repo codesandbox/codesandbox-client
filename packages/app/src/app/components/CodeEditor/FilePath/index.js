@@ -61,7 +61,7 @@ export default class FilePath extends React.Component {
           </span>
         </FileName>
 
-        <Tooltip title="Close Zen Mode" style={{ zIndex: 10 }}>
+        <Tooltip content="Close Zen Mode" style={{ zIndex: 10 }}>
           <StyledExitZen onClick={exitZenMode} />
         </Tooltip>
       </Container>

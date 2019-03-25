@@ -85,7 +85,7 @@ const DevToolTabs = ({
         {actions.map(({ title, onClick, Icon }) => (
           <Tooltip
             style={{ pointerEvents: hidden ? 'none' : 'initial' }}
-            title={title}
+            content={title}
             key={title}
           >
             <Icon

@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import StarIcon from 'react-icons/lib/go/star';
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '../Tooltip';
 
 import { Container } from './elements';
 

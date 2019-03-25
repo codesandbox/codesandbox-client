@@ -75,7 +75,8 @@
     "gulp": "^3.9.1",
     "lerna": "^2.5.1",
     "lint-staged": "^5.0.0",
-    "prettier": "^1.8.2"
+    "prettier": "^1.8.2",
+        "typescript": "^3.3.1"
   },
   "dependencies": {
     "opencollective": "^1.0.3"
