@@ -2,9 +2,9 @@ import React from 'react';
 import { Mutation } from 'react-apollo';
 
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
-import Input from 'common/lib/components/Input';
-import track from 'common/lib/utils/analytics';
-import { ESC } from 'common/lib/utils/keycodes';
+import Input from '@codesandbox/common/lib/components/Input';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 
 import {
   CreateDirectoryContainer,

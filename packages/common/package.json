@@ -1,27 +1,40 @@
 {
-  "name": "common",
-  "version": "1.0.0",
-  "private": true,
+  "name": "@codesandbox/common",
+  "version": "1.0.4",
   "source": true,
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "jest",
     "clean": "rimraf lib && yarn rimraf node_modules/@types/react-native",
-    "start": "yarn clean && (yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
-    "build:dev": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib"
+    "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib --watch)",
+    "build": "yarn clean && yarn tsc && yarn babel src --out-dir lib && yarn cpx \"src/**/*.{css,svg,png,jpg}\" lib",
+    "build:dev": "yarn build",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@tippy.js/react": "^2.1.1",
+    "babel-plugin-preval": "^3.0.1",
+    "codesandbox-api": "^0.0.22",
     "color": "0.11.4",
     "error-polyfill": "^0.1.1",
+    "humps": "CompuIves/humps",
     "image-extensions": "^1.1.0",
     "jsonlint": "^1.6.3",
+    "lodash": "^4.17.11",
     "memoize-one": "^3.1.1",
+    "moment": "^2.18.1",
     "ot": "^0.0.15",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
+    "react-router-dom": "^4.3.1",
     "react-spring": "^8.0.18",
     "react-textarea-autosize": "^6.1.0",
+    "semver": "^5.6.0",
+    "sha1": "^1.1.1",
+    "socket.io-client": "^2.1.1",
     "styled-components": "^4.1.2"
   },
   "devDependencies": {

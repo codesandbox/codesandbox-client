@@ -4,12 +4,12 @@ import { inject, observer } from 'mobx-react';
 import { sortBy } from 'lodash-es';
 
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
-import Input from 'common/lib/components/Input';
-import Margin from 'common/lib/components/spacing/Margin';
-import delay from 'common/lib/utils/animation/delay-effect';
-import Switch from 'common/lib/components/Switch';
+import Input from '@codesandbox/common/lib/components/Input';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import delay from '@codesandbox/common/lib/utils/animation/delay-effect';
+import Switch from '@codesandbox/common/lib/components/Switch';
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import AddIcon from 'react-icons/lib/md/add';
 import RemoveIcon from 'react-icons/lib/md/remove';

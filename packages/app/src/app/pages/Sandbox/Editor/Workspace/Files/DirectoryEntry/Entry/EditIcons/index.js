@@ -7,7 +7,7 @@ import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
 import DownloadIcon from 'react-icons/lib/md/file-download';
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { Icon } from '../../../../elements';
 import { Container } from './elements';

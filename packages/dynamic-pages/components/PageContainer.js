@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import Padding from 'common/lib/components/spacing/Padding';
-import MaxWidth from 'common/lib/components/flex/MaxWidth';
+import Padding from '@codesandbox/common/lib/components/spacing/Padding';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 
 export default ({ children, ...props }) => (
   <MaxWidth width={1440} {...props}>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import WideSandbox from 'common/lib/components/WideSandbox';
+import WideSandbox from '@codesandbox/common/lib/components/WideSandbox';
 import VisibilitySensor from 'react-visibility-sensor';
 import Link from 'next/link';
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import fetch from '../../utils/fetch';
 import openSandbox from '../../utils/openSandbox';
 import PageContainer from '../../components/PageContainer';

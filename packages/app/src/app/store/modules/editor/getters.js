@@ -1,7 +1,10 @@
 import { dirname } from 'path';
-import { generateFileFromSandbox } from 'common/lib/templates/configuration/package-json';
-import getTemplate from 'common/lib/templates';
-import { getModulePath, getDirectoryPath } from 'common/lib/sandbox/modules';
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import getTemplate from '@codesandbox/common/lib/templates';
+import {
+  getModulePath,
+  getDirectoryPath,
+} from '@codesandbox/common/lib/sandbox/modules';
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 

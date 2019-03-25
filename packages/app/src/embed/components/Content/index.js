@@ -1,14 +1,18 @@
 // @flow
 import * as React from 'react';
-import type { Sandbox, Module, ModuleError } from 'common/lib/types';
-import BasePreview from 'common/lib/components/Preview';
+import type {
+  Sandbox,
+  Module,
+  ModuleError,
+} from '@codesandbox/common/lib/types';
+import BasePreview from '@codesandbox/common/lib/components/Preview';
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 
-import getTemplate from 'common/lib/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
 import {
@@ -19,9 +23,12 @@ import {
 
 import DevTools from 'app/components/Preview/DevTools';
 
-import { resolveModule, findMainModule } from 'common/lib/sandbox/modules';
-import RunOnClick from 'common/lib/components/RunOnClick';
-import { getPreviewTabs } from 'common/lib/templates/devtools';
+import {
+  resolveModule,
+  findMainModule,
+} from '@codesandbox/common/lib/sandbox/modules';
+import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 
 import { Container, Tabs, Split } from './elements';
 

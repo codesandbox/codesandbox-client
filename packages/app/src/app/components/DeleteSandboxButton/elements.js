@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import DeleteIcon from 'react-icons/lib/md/delete';
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 export const DeleteSandboxButton = styled(props => (
   <Tooltip content="Delete Sandbox">

@@ -1,7 +1,7 @@
 // @ts-check
 import styled from 'styled-components';
-import fadeIn from 'common/lib/utils/animation/fade-in';
-import { Button } from 'common/lib/components/Button';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 export const PADDING = 32;
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import getIcon from 'common/lib/templates/icons';
+import getIcon from '@codesandbox/common/lib/templates/icons';
 
-import { ENTER } from 'common/lib/utils/keycodes';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { Container, IconContainer, Title, SubTitle } from './elements';
 
 export default ({ template, subtitle, width, selectTemplate, small }) => {

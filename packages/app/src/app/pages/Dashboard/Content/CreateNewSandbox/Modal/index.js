@@ -1,5 +1,5 @@
 import React from 'react';
-import * as templates from 'common/lib/templates';
+import * as templates from '@codesandbox/common/lib/templates';
 import { chunk, sortBy } from 'lodash-es';
 
 import GithubLogo from 'react-icons/lib/go/mark-github';

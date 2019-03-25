@@ -3,7 +3,7 @@ import * as React from 'react';
 import PlayIcon from 'react-icons/lib/go/playback-play';
 import SyncIcon from 'react-icons/lib/go/sync';
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { File, Test, Status } from '../';
 

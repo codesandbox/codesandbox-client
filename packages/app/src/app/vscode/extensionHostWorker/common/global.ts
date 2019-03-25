@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import requirePolyfills from 'common/lib/load-dynamic-polyfills';
+import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 
 const ctx: any = self as any;
 declare var __DEV__: boolean;

@@ -5,7 +5,7 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 
-import GithubBadge from 'common/lib/components/GithubBadge';
+import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 
 import Stat from './Stat';
 import { CenteredText, UpdatedAt, Stats, StyledUser } from './elements';

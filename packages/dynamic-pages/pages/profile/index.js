@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import FeaturedSandbox from 'common/lib/components/FeaturedSandbox';
-import WideSandbox from 'common/lib/components/WideSandbox';
+import FeaturedSandbox from '@codesandbox/common/lib/components/FeaturedSandbox';
+import WideSandbox from '@codesandbox/common/lib/components/WideSandbox';
 import { camelizeKeys } from 'humps';
 
 import openSandbox from '../../utils/openSandbox';

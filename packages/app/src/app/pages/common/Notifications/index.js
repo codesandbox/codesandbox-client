@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { inject, observer } from 'mobx-react';
 import { Transition } from 'react-spring/renderprops';
-import Portal from 'common/lib/components/Portal';
+import Portal from '@codesandbox/common/lib/components/Portal';
 
 import Notification from './Notification';
 
