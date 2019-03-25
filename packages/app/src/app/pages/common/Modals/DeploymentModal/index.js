@@ -49,9 +49,7 @@ function DeploymentModal({ store, signals }) {
             <DeployText>Deploying sandbox...</DeployText>
             <DeployAnimationContainer deploying={store.deployment.deploying}>
               <StyledLogo width={70} height={70} />
-              {[0, 1, 2, 3].map(i => (
-                <StyledCube key={i} i={i} size={20} />
-              ))}
+              {[0, 1, 2, 3].map(i => <StyledCube key={i} i={i} size={20} />)}
               <StyledNowLogo backgroundColor="#24282A" />
             </DeployAnimationContainer>
           </Margin>

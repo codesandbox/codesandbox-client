@@ -72,7 +72,7 @@ export const Sandboxes = styled.div`
 
 export const ShowMore = styled.button`
   transition: 0.3s ease all;
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
 
   width: 100%;
   background-color: rgba(255, 255, 255, 0.1);

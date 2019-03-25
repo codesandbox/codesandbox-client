@@ -57,7 +57,7 @@ export const SandboxInfoContainer = styled.div`
 `;
 
 export const StatsContainer = styled.div`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
 
   flex: 1;
   padding: 1.5rem;
@@ -71,7 +71,7 @@ export const StyledStats = styled(Stats)`
 `;
 
 export const StatsHeader = styled.h2`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: ${props => props.theme.new.title};
   font-size: 1.25rem;
   margin-top: 0 !important;
@@ -89,14 +89,14 @@ export const Author = styled(UserWithAvatar)`
 
 export const SandboxInfo = styled.div`
   padding: 1.5rem;
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: ${props => props.theme.new.title};
   flex: 2;
   min-height: 200px;
 `;
 
 export const Footer = styled.footer`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   padding: 1rem 1.5rem;
   padding-top: 10px;
 `;
@@ -110,14 +110,14 @@ export const FooterInfo = styled.div`
 
 export const SandboxTitle = styled.h1`
   font-size: 1.5rem;
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: ${props => props.theme.new.title};
   font-weight: 800;
   margin-bottom: 0.5rem;
 `;
 
 export const SandboxDescription = styled.p`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: ${props => props.theme.new.title};
   color: ${props => props.theme.new.description};
 `;
