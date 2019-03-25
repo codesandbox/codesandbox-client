@@ -337,7 +337,10 @@ async function compile(code, customConfig, path, isV7) {
       transpiledCode: result.code,
     });
   } catch (e) {
-    if (e.code === 'EIO') {
+    if (
+      !fsInitialized &&
+      (e.message.indexOf('Cannot find module') > -1 || e.code === 'EIO')
+    ) {
       // BrowserFS was needed but wasn't initialized
       await waitForFs();
 

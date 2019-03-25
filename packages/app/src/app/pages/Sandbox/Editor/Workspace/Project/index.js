@@ -9,7 +9,7 @@ import {
 
 import TeamIcon from 'react-icons/lib/md/people';
 
-import UserWithAvatar from 'app/components/UserWithAvatar';
+import { UserWithAvatar } from 'common/lib/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
 import GithubBadge from 'common/lib/components/GithubBadge';

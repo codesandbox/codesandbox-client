@@ -16,6 +16,7 @@ import PRModal from './PRModal';
 import SelectSandboxModal from './SelectSandboxModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
+import EmptyTrash from './EmptyTrash';
 import LiveSessionEnded from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import UploadModal from './UploadModal';
@@ -72,6 +73,10 @@ const modals = {
   },
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,
+    width: 400,
+  },
+  emptyTrash: {
+    Component: EmptyTrash,
     width: 400,
   },
   selectSandbox: {

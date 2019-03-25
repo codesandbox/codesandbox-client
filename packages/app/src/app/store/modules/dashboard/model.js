@@ -2,6 +2,7 @@ import { types } from 'mobx-state-tree';
 
 export default {
   selectedSandboxes: types.array(types.string),
+  trashSandboxIds: types.array(types.string),
   isDragging: types.boolean,
   orderBy: types.model({
     order: types.enumeration('order', ['desc', 'asc']),

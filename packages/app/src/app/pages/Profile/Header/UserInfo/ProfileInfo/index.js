@@ -4,7 +4,7 @@ import Row from 'common/lib/components/flex/Row';
 import Column from 'common/lib/components/flex/Column';
 
 import Margin from 'common/lib/components/spacing/Margin';
-import PatronStar from 'app/components/PatronStar';
+import { PatronStar } from 'common/lib/components/PatronStar';
 
 import { ProfileImage, Name, Username, IconWrapper } from './elements';
 

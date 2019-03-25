@@ -178,6 +178,9 @@ export const PERMANENTLY_DELETE_SANDBOXES_MUTATION = gql`
 export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
   query PathedSandboxes($path: String!, $teamId: ID) {
     me {
+      collections(teamId: $teamId) {
+        ...SidebarCollection
+      }
       collection(path: $path, teamId: $teamId) {
         id
         path
@@ -188,6 +191,7 @@ export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
     }
   }
   ${SANDBOX_FRAGMENT}
+  ${SIDEBAR_COLLECTION_FRAGMENT}
 `;
 
 export const RECENT_SANDBOXES_CONTENT_QUERY = gql`

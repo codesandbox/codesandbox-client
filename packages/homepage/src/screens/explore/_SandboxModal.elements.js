@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
+import { UserWithAvatar } from 'common/lib/components/UserWithAvatar';
 
 import RightArrow from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftArrow from 'react-icons/lib/md/keyboard-arrow-left';

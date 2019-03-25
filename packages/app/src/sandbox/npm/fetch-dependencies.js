@@ -18,15 +18,12 @@ const VERSION = 1;
 
 const BUCKET_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://d1jyvh0kxilfa7.cloudfront.net'
-    : 'https://dev-packager-packages.csb.dev';
-
-const NEW_PACKAGER_URL =
-  'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages';
+    ? 'https://prod-packager-packages.codesandbox.io'
+    : 'https://dev-packager-packages.codesandbox.io';
 
 const PACKAGER_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages'
+    ? 'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages'
     : 'https://xi5p9f7czk.execute-api.eu-west-1.amazonaws.com/dev/packages';
 
 function callApi(url: string, method = 'GET') {

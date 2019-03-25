@@ -23,7 +23,7 @@ import { ARROW_LEFT, ARROW_RIGHT, ESC } from 'common/lib/utils/keycodes';
 
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
-import getDirectChildren from '../utils/get-direct-children';
+import getDirectChildren from '../../../utils/get-direct-children';
 import { entryTarget, collectTarget } from '../folder-drop-target';
 
 import CreateFolderEntry from './CreateFolderEntry';
@@ -92,6 +92,8 @@ class FolderEntry extends React.Component {
       foldersByPath,
       depth,
       isOver,
+      toToggle = true,
+      allowCreate = true,
       canDrop,
       connectDropTarget,
       connectDragSource,
@@ -106,72 +108,75 @@ class FolderEntry extends React.Component {
     const url = `${basePath}${path}`;
     const children = getDirectChildren(path, folders);
 
+    const menuItems = [
+      {
+        title: 'Rename Folder',
+        icon: RenameIcon,
+        action: () => {
+          this.setState({ renamingDirectory: true });
+          return true;
+        },
+      },
+      {
+        title: 'Delete Folder',
+        icon: TrashIcon,
+        color: theme.red.darken(0.2)(),
+        action: () => {
+          track('Dashboard - Folder Deleted');
+          client.mutate({
+            mutation: DELETE_FOLDER_MUTATION,
+            variables: { path, teamId },
+
+            refetchQueries: [
+              {
+                query: PATHED_SANDBOXES_CONTENT_QUERY,
+                variables: { path: '/', teamId },
+              },
+            ],
+            update: (cache, { data: { deleteCollection } }) => {
+              const variables = {};
+              if (teamId) {
+                variables.teamId = teamId;
+              }
+
+              const cacheData = cache.readQuery({
+                query: PATHED_SANDBOXES_FOLDER_QUERY,
+                variables,
+              });
+
+              cache.writeQuery({
+                query: PATHED_SANDBOXES_FOLDER_QUERY,
+                variables,
+                data: {
+                  ...cacheData,
+                  me: {
+                    ...cacheData.me,
+                    collections: deleteCollection,
+                  },
+                },
+              });
+            },
+          });
+          return true;
+        },
+      },
+    ];
+
+    if (allowCreate) {
+      menuItems.unshift({
+        title: 'Create Folder',
+        icon: AddFolderIcon,
+        action: () => {
+          this.setState({ creatingDirectory: true, open: true });
+          return true;
+        },
+      });
+    }
+
     return connectDropTarget(
       connectDragSource(
         <div>
-          <ContextMenu
-            items={[
-              {
-                title: 'Create Folder',
-                icon: AddFolderIcon,
-                action: () => {
-                  this.setState({ creatingDirectory: true, open: true });
-                  return true;
-                },
-              },
-              {
-                title: 'Rename Folder',
-                icon: RenameIcon,
-                action: () => {
-                  this.setState({ renamingDirectory: true });
-                  return true;
-                },
-              },
-              {
-                title: 'Delete Folder',
-                icon: TrashIcon,
-                color: theme.red.darken(0.2)(),
-                action: () => {
-                  track('Dashboard - Folder Deleted');
-                  client.mutate({
-                    mutation: DELETE_FOLDER_MUTATION,
-                    variables: { path, teamId },
-
-                    refetchQueries: [
-                      {
-                        query: PATHED_SANDBOXES_CONTENT_QUERY,
-                        variables: { path: '/', teamId },
-                      },
-                    ],
-                    update: (cache, { data: { deleteCollection } }) => {
-                      const variables = {};
-                      if (teamId) {
-                        variables.teamId = teamId;
-                      }
-
-                      const cacheData = cache.readQuery({
-                        query: PATHED_SANDBOXES_FOLDER_QUERY,
-                        variables,
-                      });
-
-                      cache.writeQuery({
-                        query: PATHED_SANDBOXES_FOLDER_QUERY,
-                        variables,
-                        data: {
-                          ...cacheData,
-                          me: {
-                            ...cacheData.me,
-                            collections: deleteCollection,
-                          },
-                        },
-                      });
-                    },
-                  });
-                  return true;
-                },
-              },
-            ]}
-          >
+          <ContextMenu items={menuItems}>
             <Container
               as={onSelect ? 'div' : undefined}
               onClick={onSelect ? this.handleSelect : undefined}
@@ -194,11 +199,13 @@ class FolderEntry extends React.Component {
               tabIndex={0}
             >
               <IconContainer>
-                <AnimatedChevron
-                  onClick={this.toggleOpen}
-                  open={this.state.open}
-                  style={{ opacity: children.size > 0 ? 1 : 0 }}
-                />
+                {toToggle ? (
+                  <AnimatedChevron
+                    onClick={this.toggleOpen}
+                    open={this.state.open}
+                    style={{ opacity: children.size > 0 ? 1 : 0 }}
+                  />
+                ) : null}
                 <FolderIcon />
               </IconContainer>{' '}
               {this.state.renamingDirectory ? (
@@ -211,7 +218,6 @@ class FolderEntry extends React.Component {
                       if (e) {
                         e.preventDefault();
                       }
-
                       mutate({
                         variables: {
                           path,
@@ -279,7 +285,9 @@ class FolderEntry extends React.Component {
           </ContextMenu>
 
           <ReactShow
-            show={children.size > 0 && !isDragging && this.state.open}
+            show={
+              children.size > 0 && !isDragging && this.state.open && toToggle
+            }
             duration={250}
             stayMounted={false}
             style={{

@@ -2,13 +2,15 @@ import React from 'react';
 import { inject, Observer } from 'mobx-react';
 import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
+import RemoveIcon from 'react-icons/lib/md/highlight-remove';
 
 import Sandboxes from '../../Sandboxes';
 
 import { DELETED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
-const DeletedSandboxes = ({ store }) => {
+const DeletedSandboxes = ({ store, signals }) => {
   document.title = 'Deleted Sandboxes - CodeSandbox';
+
   return (
     <Query
       fetchPolicy="cache-and-network"
@@ -32,6 +34,9 @@ const DeletedSandboxes = ({ store }) => {
             const orderedSandboxes = store.dashboard.getFilteredSandboxes(
               sandboxes
             );
+            signals.dashboard.setTrashSandboxes({
+              sandboxIds: orderedSandboxes.map(i => i.id),
+            });
 
             return (
               <Sandboxes
@@ -39,6 +44,21 @@ const DeletedSandboxes = ({ store }) => {
                 Header="Deleted Sandboxes"
                 sandboxes={orderedSandboxes}
                 possibleTemplates={possibleTemplates}
+                actions={
+                  orderedSandboxes.length
+                    ? [
+                        {
+                          name: 'Empty Trash',
+                          Icon: <RemoveIcon />,
+                          run: () => {
+                            signals.modalOpened({
+                              modal: 'emptyTrash',
+                            });
+                          },
+                        },
+                      ]
+                    : []
+                }
               />
             );
           }}

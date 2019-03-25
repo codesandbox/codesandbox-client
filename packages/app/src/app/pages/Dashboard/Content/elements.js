@@ -9,6 +9,7 @@ export const Container = styled.div`
 
 export const HeaderContainer = styled.div`
   position: relative;
+  display: flex;
   font-size: 1.25rem;
   color: white;
 
@@ -33,6 +34,8 @@ export const Description = styled.p`
 
 export const HeaderTitle = styled.div`
   display: flex;
+  flex: 1;
+  width: 100%;
   vertical-align: middle;
   align-items: center;
 `;

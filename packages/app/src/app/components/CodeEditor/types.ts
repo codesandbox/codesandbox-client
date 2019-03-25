@@ -11,6 +11,7 @@ export type Settings = {
   autoCompleteEnabled: boolean;
   autoDownloadTypes: boolean;
   codeMirror: boolean;
+  clearConsoleEnabled: boolean;
   fontFamily?: string;
   fontSize: number;
   lineHeight: number;
@@ -21,6 +22,7 @@ export type Settings = {
   forceRefresh: boolean;
   experimentVSCode: boolean;
   prettierConfig: Object;
+  zenMode: boolean;
 };
 
 type ModuleTab = {

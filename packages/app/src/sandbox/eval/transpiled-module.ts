@@ -596,7 +596,14 @@ export default class TranspiledModule {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      requires.forEach(r => loaderContext.addDependency(r));
+      requires.forEach(r => {
+        if (r.indexOf('glob:') === 0) {
+          const reGlob = r.replace('glob:', '');
+          loaderContext.addDependenciesInDirectory(reGlob);
+        } else {
+          loaderContext.addDependency(r);
+        }
+      });
 
       code = this.module.code;
     } else {
