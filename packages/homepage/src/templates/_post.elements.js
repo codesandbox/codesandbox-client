@@ -46,7 +46,7 @@ export const mainStyle = css`
 
   p,
   li {
-    font-family: 'Open Sans';
+    font-family: 'Open Sans', sans-serif;
   }
 
   img {
