@@ -7,12 +7,12 @@ import ServerIcon from 'react-icons/lib/go/server';
 import getWorkspaceItems from 'app/store/modules/workspace/items';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
-import InfoIcon from '-!svg-react-loader!common/lib/icons/sandbox.svg';
-import GitHubIcon from '-!svg-react-loader!common/lib/icons/github.svg';
-import LiveIcon from '-!svg-react-loader!common/lib/icons/live.svg';
-import FilesIcon from '-!svg-react-loader!common/lib/icons/file.svg';
-import RocketIcon from '-!svg-react-loader!common/lib/icons/rocket.svg';
-import ConfigurationIcon from '-!svg-react-loader!common/lib/icons/cog.svg';
+import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
+import GitHubIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/github.svg';
+import LiveIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/live.svg';
+import FilesIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/file.svg';
+import RocketIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/rocket.svg';
+import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/cog.svg';
 
 import { Container, IconContainer } from './elements';
 

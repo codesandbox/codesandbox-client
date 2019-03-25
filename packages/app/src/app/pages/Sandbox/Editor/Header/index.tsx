@@ -11,10 +11,13 @@ import SignInButton from 'app/pages/common/SignInButton';
 
 import { saveAllModules } from 'app/store/modules/editor/utils';
 
-import { patronUrl, dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  patronUrl,
+  dashboardUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 
 // @ts-ignore
-import PatronBadge from '-!svg-react-loader!common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import LikeHeart from 'app/pages/common/LikeHeart';
