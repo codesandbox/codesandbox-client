@@ -2,9 +2,9 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ZeitIntegration from 'app/pages/common/ZeitIntegration';
-import { Button } from 'common/lib/components/Button';
-import Centered from 'common/lib/components/flex/Centered';
-import Margin from 'common/lib/components/spacing/Margin';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import IntegrationModal from 'app/components/IntegrationModal';
 
 import {

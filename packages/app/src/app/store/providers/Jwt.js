@@ -1,6 +1,6 @@
 import { Provider } from 'cerebral';
 import store from 'store/dist/store.modern';
-import { identify, resetUserId } from 'common/lib/utils/analytics';
+import { identify, resetUserId } from '@codesandbox/common/lib/utils/analytics';
 
 export default Provider({
   get() {

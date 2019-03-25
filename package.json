@@ -8,7 +8,7 @@
     "build:prod": "lerna run build  --scope homepage --stream && lerna run build --scope app --stream && gulp",
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
-    "build:deps": "lerna run build:dev --scope codesandbox-api && lerna run build:dev --scope common && lerna run build:dev --scope vscode-textmate --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks",
+    "build:deps": "lerna run build:dev --scope codesandbox-api && lerna run build:dev --scope @codesandbox/common && lerna run build:dev --scope vscode-textmate --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks",
     "build:dynamic": "lerna run build --scope dynamic-pages --stream",
     "start": "yarn build:deps && lerna run start --scope app --stream",
     "start:fast": "lerna run start --scope app --stream",

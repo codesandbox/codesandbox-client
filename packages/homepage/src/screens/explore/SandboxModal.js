@@ -1,18 +1,21 @@
 import React, { Fragment } from 'react';
 import { camelizeKeys } from 'humps';
 import { Spring } from 'react-spring/renderprops';
-import getIcon from 'common/lib/templates/icons';
+import getIcon from '@codesandbox/common/lib/templates/icons';
 import {
   profileUrl,
   githubRepoUrl,
   protocolAndHost,
-} from 'common/lib/utils/url-generator';
-import getTemplate from 'common/lib/templates';
-import GithubBadge from 'common/lib/components/GithubBadge';
+} from '@codesandbox/common/lib/utils/url-generator';
+import getTemplate from '@codesandbox/common/lib/templates';
+import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 
-import Tags from 'common/lib/components/Tags';
-import track from 'common/lib/utils/analytics';
-import { ARROW_LEFT, ARROW_RIGHT } from 'common/lib/utils/keycodes';
+import Tags from '@codesandbox/common/lib/components/Tags';
+import track from '@codesandbox/common/lib/utils/analytics';
+import {
+  ARROW_LEFT,
+  ARROW_RIGHT,
+} from '@codesandbox/common/lib/utils/keycodes';
 
 import Modal from './Modal';
 import EmbedSkeleton from './EmbedSkeleton';

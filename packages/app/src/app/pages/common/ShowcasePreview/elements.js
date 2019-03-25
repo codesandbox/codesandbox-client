@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import delayEffect from 'common/lib/utils/animation/delay-effect';
+import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 export const Container = styled.div`
   position: relative;

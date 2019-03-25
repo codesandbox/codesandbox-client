@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import Input, { TextArea } from 'common/lib/components/Input';
+import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
 import calendar from '../../assets/calendar.svg';
 import mail from '../../assets/mail.svg';
 import twitterLogo from '../../assets/twitter.svg';

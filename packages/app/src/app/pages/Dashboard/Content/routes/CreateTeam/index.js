@@ -1,11 +1,11 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
 
-import Input from 'common/lib/components/Input';
-import { Button } from 'common/lib/components/Button';
-import track from 'common/lib/utils/analytics';
+import Input from '@codesandbox/common/lib/components/Input';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import track from '@codesandbox/common/lib/utils/analytics';
 import history from 'app/utils/history';
-import { teamOverviewUrl } from 'common/lib/utils/url-generator';
+import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { Container, Description, HeaderContainer } from '../../elements';
 import {

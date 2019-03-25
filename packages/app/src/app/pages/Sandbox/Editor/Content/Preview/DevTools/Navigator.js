@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 const Container = styled.div`
   display: flex;

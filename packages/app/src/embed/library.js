@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 import App from './components/App';
 
 export default (props: any) => (

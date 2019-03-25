@@ -1,6 +1,6 @@
 import { Provider } from 'cerebral';
-import { sandboxUrl } from 'common/lib/utils/url-generator';
-import { getSandboxOptions } from 'common/lib/url';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import history from '../../utils/history';
 
 export default Provider({

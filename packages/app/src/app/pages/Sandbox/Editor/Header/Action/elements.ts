@@ -1,6 +1,6 @@
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 const blink = keyframes`
   // @ts-ignore;

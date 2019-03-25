@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Media from 'react-media';
 
-import Fullscreen from 'common/lib/components/flex/Fullscreen';
-import Centered from 'common/lib/components/flex/Centered';
-import Relative from 'common/lib/components/Relative';
+import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Relative from '@codesandbox/common/lib/components/Relative';
 
 import {
   angular,
@@ -15,7 +15,7 @@ import {
   parcel,
   cxjs,
   dojo,
-} from 'common/lib/templates';
+} from '@codesandbox/common/lib/templates';
 
 import Background from './Background';
 import HomeTitle from './Title';

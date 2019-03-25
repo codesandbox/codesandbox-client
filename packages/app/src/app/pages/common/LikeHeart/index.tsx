@@ -2,14 +2,14 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 // @ts-ignore
-import HeartIcon from '-!svg-react-loader!common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 // @ts-ignore
-import FullHeartIcon from '-!svg-react-loader!common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { Container } from './elements';
-import { Sandbox } from 'common/lib/types';
+import { Sandbox } from '@codesandbox/common/lib/types';
 
 const MaybeTooltip = ({ loggedIn, disableTooltip, title, children }) =>
   loggedIn && !disableTooltip ? (

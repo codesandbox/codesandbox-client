@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { basename } from 'path';
-import track from 'common/lib/utils/analytics';
-import { Button } from 'common/lib/components/Button';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 import DirectoryPicker from './DirectoryPicker';
