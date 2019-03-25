@@ -21,6 +21,7 @@ import sapper from './sapper';
 import nest from './nest';
 import staticTemplate from './static';
 import styleguidist from './styleguidist';
+import vuepress from './vuepress';
 
 export {
   angular,
@@ -45,6 +46,7 @@ export {
   ember,
   staticTemplate,
   styleguidist,
+  vuepress,
 };
 
 export type TemplateType =
@@ -65,7 +67,8 @@ export type TemplateType =
   | 'sapper'
   | 'nest'
   | 'static'
-  | 'styleguidist';
+  | 'styleguidist'
+  | 'vuepress';
 
 export default function getDefinition(theme: TemplateType) {
   switch (theme) {
@@ -113,6 +116,8 @@ export default function getDefinition(theme: TemplateType) {
       return styleguidist;
     case ember.name:
       return ember;
+    case vuepress.name:
+      return vuepress;
     default:
       return react;
   }
