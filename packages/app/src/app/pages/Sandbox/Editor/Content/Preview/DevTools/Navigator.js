@@ -42,7 +42,7 @@ export default ({ title, actions }) => (
     <Title>{title}</Title>
     <Actions>
       {actions.map(({ title: actionTitle, onClick, Icon }) => (
-        <Tooltip title={actionTitle} key={actionTitle}>
+        <Tooltip content={actionTitle} key={actionTitle}>
           <Icon onClick={onClick} key={actionTitle} />
         </Tooltip>
       ))}

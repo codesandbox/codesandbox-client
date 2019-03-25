@@ -32,7 +32,7 @@ const Container = styled.div`
 
 export default ({ onClick, disabled }) => (
   <Container disabled={disabled} onClick={disabled ? undefined : onClick}>
-    <Tooltip title={disabled ? 'Everything is saved' : 'Save All Modules'}>
+    <Tooltip content={disabled ? 'Everything is saved' : 'Save All Modules'}>
       <Save />
     </Tooltip>
   </Container>

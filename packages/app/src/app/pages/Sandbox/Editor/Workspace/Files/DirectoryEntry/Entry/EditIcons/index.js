@@ -41,42 +41,42 @@ function EditIcons({
       {(hovering || (window.__isTouch && active) || forceShow) && (
         <Container>
           {onDownload && (
-            <Tooltip title="Export to ZIP">
+            <Tooltip content="Export to ZIP">
               <Icon onClick={handleClick(onDownload)}>
                 <DownloadIcon />
               </Icon>
             </Tooltip>
           )}
           {onUploadFile && (
-            <Tooltip title="Upload Files">
+            <Tooltip content="Upload Files">
               <Icon onClick={handleClick(onUploadFile)}>
                 <UploadFileIcon />
               </Icon>
             </Tooltip>
           )}
           {onEdit && (
-            <Tooltip title="Rename">
+            <Tooltip content="Rename">
               <Icon onClick={handleClick(onEdit)}>
                 <EditIcon />
               </Icon>
             </Tooltip>
           )}
           {onCreateFile && (
-            <Tooltip title="New File">
+            <Tooltip content="New File">
               <Icon onClick={handleClick(onCreateFile)}>
                 <AddFileIcon />
               </Icon>
             </Tooltip>
           )}
           {onCreateDirectory && (
-            <Tooltip title="New Directory">
+            <Tooltip content="New Directory">
               <Icon onClick={handleClick(onCreateDirectory)}>
                 <AddDirectoryIcon />
               </Icon>
             </Tooltip>
           )}
           {onDelete && (
-            <Tooltip title="Delete">
+            <Tooltip content="Delete">
               <Icon onClick={handleClick(onDelete)}>
                 <CrossIcon />
               </Icon>

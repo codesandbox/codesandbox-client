@@ -1,39 +1,37 @@
 import * as React from 'react';
 import { createGlobalStyle } from 'styled-components';
-import 'react-tippy/dist/tippy.css';
-import { Tooltip, withTooltip } from 'react-tippy';
+import Tippy from '@tippy.js/react';
 import theme from '../theme';
 
-// eslint-disable-next-line
 const GlobalStyle = createGlobalStyle`
-  .tippy-popper {
-    position: absolute;
-  }
-
-  .tippy-popper,
-  .tippy-popper * {
-    pointer-events: none;
-  }
-
-  .tippy-tooltip [x-circle] {
-    background-color: rgb(21, 24, 25) !important;
+  .tippy-backdrop {
+    background-color: rgb(21, 24, 25);
   }
 
   .tippy-tooltip.update-theme {
-    .arrow-regular {
-      border-bottom: 7px solid ${theme.green()} !important;
-    }
-
     background-color: ${theme.green()};
     border-radius: 2px;
-    padding: 0 !important;
+    padding: 0;
+
+    .tippy-arrow {
+      border-bottom-color: ${theme.green()};
+    }
   }
 `;
 
-export default props => (
+const Tooltip = ({ children, style = {}, ...props }) => (
   <React.Fragment>
     <GlobalStyle />
-    <Tooltip delay={1000} {...props} />
+    <Tippy {...props}>
+      <span
+        style={{
+          ...style,
+        }}
+      >
+        {children}
+      </span>
+    </Tippy>
   </React.Fragment>
 );
-export { withTooltip };
+
+export default Tooltip;

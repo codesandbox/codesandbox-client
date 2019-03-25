@@ -69,12 +69,12 @@ export default ({ file, status, openFile, runTests }: Props) => {
           />
         )}
         <Action>
-          <Tooltip title="Open File">
+          <Tooltip content="Open File">
             <FileIcon onClick={() => openFile(file.fileName)} />
           </Tooltip>
         </Action>
         <Action>
-          <Tooltip title="Run Tests">
+          <Tooltip content="Run Tests">
             <PlayIcon onClick={() => runTests(file)} />
           </Tooltip>
         </Action>

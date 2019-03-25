@@ -24,14 +24,14 @@ function PrivacyStatus({ privacy, asIcon }) {
 
   if (asIcon) {
     return (
-      <Tooltip title={PRIVACY_MESSAGES[privacy].tooltip}>
+      <Tooltip content={PRIVACY_MESSAGES[privacy].tooltip}>
         {PRIVACY_MESSAGES[privacy].icon}
       </Tooltip>
     );
   }
 
   return (
-    <Tooltip title={PRIVACY_MESSAGES[privacy].tooltip}>
+    <Tooltip content={PRIVACY_MESSAGES[privacy].tooltip}>
       {PRIVACY_MESSAGES[privacy].title}
       <Icon />
     </Tooltip>

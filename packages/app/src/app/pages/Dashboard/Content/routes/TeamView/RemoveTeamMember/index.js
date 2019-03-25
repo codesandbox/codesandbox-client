@@ -38,7 +38,9 @@ export default ({
   if (isCreator || isOwnUser) {
     return (
       <Tooltip
-        title={isOwnUser ? 'Leave the team' : `Remove '${name}' from the team`}
+        content={
+          isOwnUser ? 'Leave the team' : `Remove '${name}' from the team`
+        }
         style={{
           fontSize: '1rem',
         }}

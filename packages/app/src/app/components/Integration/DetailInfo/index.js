@@ -15,7 +15,7 @@ function DetailInfo({ heading, info, signOut, signIn }) {
       </Margin>
 
       {signOut ? (
-        <Tooltip title="Sign out">
+        <Tooltip content="Sign out">
           <Action onClick={signOut} red>
             <CrossIcon />
           </Action>
