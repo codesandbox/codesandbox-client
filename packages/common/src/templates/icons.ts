@@ -19,6 +19,7 @@ import Apollo from '../components/logos/Apollo';
 import Nest from '../components/logos/Nest';
 import Static from '../components/logos/Static';
 import Styleguidist from '../components/logos/Styleguidist';
+import VuePress from '../components/logos/VuePress';
 
 import {
   react,
@@ -41,6 +42,7 @@ import {
   sapper,
   staticTemplate,
   styleguidist,
+  vuepress
 } from './';
 
 import { TemplateType } from './';
@@ -94,6 +96,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return Static;
     case styleguidist.name:
       return Styleguidist;
+    case vuepress.name:
+      return VuePress;
     default:
       return React;
   }
