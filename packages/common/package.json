@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/common",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "source": true,
   "files": [
     "lib"
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "codesandbox-api": "^0.0.20",
     "color": "0.11.4",
     "error-polyfill": "^0.1.1",
     "image-extensions": "^1.1.0",
