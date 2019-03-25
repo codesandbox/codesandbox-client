@@ -6,7 +6,7 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 30px;
   line-height: 1.5;
@@ -15,7 +15,7 @@ export const Title = styled.h2`
 `;
 
 export const PostDate = styled.span`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 12px;
@@ -30,7 +30,7 @@ export const AuthorImage = styled.img`
 `;
 
 export const Author = styled.h4`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-size: 18px;
   margin: 0;

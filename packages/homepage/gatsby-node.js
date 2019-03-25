@@ -70,6 +70,8 @@ exports.createPages = async ({ graphql, actions }) => {
       .replace(/[^\w ]+/g, '')
       .replace(/ +/g, '-');
     const id = edge.node.id;
+
+    // If there are no categories it's a comment
     if (edge.node.categories) {
       createPage({
         path: 'post/' + slug,
@@ -106,7 +108,7 @@ exports.createPages = async ({ graphql, actions }) => {
       const id = edge.node.id;
 
       createPage({
-        path: 'post/' + slug,
+        path: 'blog/' + slug,
         component: blogTemplate,
         context: {
           id,

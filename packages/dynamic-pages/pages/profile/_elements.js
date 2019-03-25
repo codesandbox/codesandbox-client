@@ -30,7 +30,7 @@ export const More = styled.div`
   height: 100%;
 
   a {
-    font-family: 'Poppins';
+    font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     color: white;

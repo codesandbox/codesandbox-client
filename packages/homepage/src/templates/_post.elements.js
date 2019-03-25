@@ -17,7 +17,7 @@ export const mainStyle = css`
   h4,
   h5,
   h6 {
-    font-family: 'Poppins';
+    font-family: 'Poppins', sans-serif;
   }
 
   p,

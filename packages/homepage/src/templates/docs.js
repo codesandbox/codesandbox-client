@@ -53,7 +53,7 @@ const DocumentationContent = styled.div`
   }
 
   h2 {
-    font-family: 'Poppins';
+    font-family: 'Poppins', sans-serif;
     margin: 1.5rem 0;
     font-weight: 400;
     color: white;
@@ -195,7 +195,7 @@ const Heading = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   font-size: 2rem;
   font-weight: 500;
 `;

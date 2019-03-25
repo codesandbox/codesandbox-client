@@ -76,7 +76,7 @@ export const Wrapper = styled.section`
 `;
 
 export const SideTitle = styled.span`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   font-weight: bold;
   font-size: 20px;
   margin-top: 20px;
