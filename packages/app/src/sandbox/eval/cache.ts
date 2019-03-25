@@ -1,6 +1,6 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
-import _debug from 'common/lib/utils/debug';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import Manager from './manager';
 
 import { SCRIPT_VERSION } from '../';

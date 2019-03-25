@@ -7,8 +7,8 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
-const env = require('common/lib/config/env');
-const getHost = require('common/lib/utils/host');
+const env = require('@codesandbox/common/lib/config/env');
+const getHost = require('@codesandbox/common/lib/utils/host');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');

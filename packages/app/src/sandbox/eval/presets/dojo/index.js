@@ -1,4 +1,4 @@
-import { join, absolute } from 'common/lib/utils/path';
+import { join, absolute } from '@codesandbox/common/lib/utils/path';
 import Preset from '../';
 
 import typescriptTranspiler from '../../transpilers/typescript';

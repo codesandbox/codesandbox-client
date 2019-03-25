@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Margin from 'common/lib/components/spacing/Margin';
-import Badge from 'common/lib/utils/badges/Badge';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import Badge from '@codesandbox/common/lib/utils/badges/Badge';
 import { Title } from '../elements';
 
 function Badges({ store, signals }) {

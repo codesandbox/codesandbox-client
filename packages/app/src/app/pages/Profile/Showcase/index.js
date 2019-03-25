@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Column from 'common/lib/components/flex/Column';
-import Centered from 'common/lib/components/flex/Centered';
-import Margin from 'common/lib/components/spacing/Margin';
-import { Button } from 'common/lib/components/Button';
+import Column from '@codesandbox/common/lib/components/flex/Column';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 import SandboxInfo from './SandboxInfo';
 import ShowcasePreview from '../../common/ShowcasePreview';

@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import PlayIcon from 'react-icons/lib/go/playback-play';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';

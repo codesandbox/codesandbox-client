@@ -1,5 +1,5 @@
 import { Module } from 'cerebral';
-import { isIOS } from 'common/lib/utils/platform';
+import { isIOS } from '@codesandbox/common/lib/utils/platform';
 
 import model from './model';
 import * as sequences from './sequences';

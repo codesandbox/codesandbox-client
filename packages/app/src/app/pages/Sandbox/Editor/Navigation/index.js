@@ -5,7 +5,7 @@ import PlusIcon from 'react-icons/lib/go/plus';
 import ServerIcon from 'react-icons/lib/go/server';
 
 import getWorkspaceItems from 'app/store/modules/workspace/items';
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import InfoIcon from '-!svg-react-loader!common/lib/icons/sandbox.svg';
 import GitHubIcon from '-!svg-react-loader!common/lib/icons/github.svg';

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import Tooltip from 'common/lib/components/Tooltip';
-import fadeIn from 'common/lib/utils/animation/fade-in';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 
 import Save from 'react-icons/lib/md/save';
 

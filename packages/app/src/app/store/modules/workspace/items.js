@@ -1,4 +1,4 @@
-import getTemplate from 'common/lib/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 const PROJECT = {
   id: 'project',

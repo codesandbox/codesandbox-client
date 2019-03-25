@@ -6,10 +6,10 @@ import HeartIcon from '-!svg-react-loader!common/lib/icons/heart-open.svg'; // e
 // @ts-ignore
 import FullHeartIcon from '-!svg-react-loader!common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { Container } from './elements';
-import { Sandbox } from 'common/lib/types';
+import { Sandbox } from '@codesandbox/common/lib/types';
 
 const MaybeTooltip = ({ loggedIn, disableTooltip, title, children }) =>
   loggedIn && !disableTooltip ? (

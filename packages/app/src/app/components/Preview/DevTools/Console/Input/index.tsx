@@ -4,11 +4,11 @@ import CodeMirror from 'codemirror';
 import styled from 'styled-components';
 
 import ChevronRight from 'react-icons/lib/md/chevron-right';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 import { getCodeMirror } from 'app/utils/codemirror';
 
-import { ARROW_UP, ARROW_DOWN, ENTER } from 'common/lib/utils/keycodes';
+import { ARROW_UP, ARROW_DOWN, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 import { IconContainer, CodeMirrorContainer } from './elements';
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { sandboxUrl } from 'common/lib/utils/url-generator';
-import getIcon from 'common/lib/templates/icons';
-import { SmallSandbox } from 'common/lib/types';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import getIcon from '@codesandbox/common/lib/templates/icons';
+import { SmallSandbox } from '@codesandbox/common/lib/types';
 
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';

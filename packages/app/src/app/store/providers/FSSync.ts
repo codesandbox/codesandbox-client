@@ -1,8 +1,8 @@
 import { Provider } from 'cerebral';
-import { getAbsoluteDependencies } from 'common/lib/utils/dependencies';
-import { protocolAndHost } from 'common/lib/utils/url-generator';
+import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
-import { getGlobal } from 'common/lib/utils/global';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
 
 const global = getGlobal() as Window & { BrowserFS: any };
 

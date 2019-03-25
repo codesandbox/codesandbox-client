@@ -1,4 +1,4 @@
-import { getGlobal, commonPostMessage } from 'common/lib/utils/global';
+import { getGlobal, commonPostMessage } from '@codesandbox/common/lib/utils/global';
 import {
   IModule,
   IManager,
