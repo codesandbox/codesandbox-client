@@ -30,17 +30,23 @@ export default ({ data: { feedMediumBlog, markdownRemark } }) => {
         <TitleAndMetaTags title={`${title} - CodeSandbox Blog`} />
         <PageContainer width={800}>
           <Title>{title}</Title>
-          <aside>
-            <PostDate>{format(date, 'MMM DD,YYYY')}</PostDate>
+          <aside
+            css={`
+              display: flex;
+              align-items: center;
+            `}
+          >
             <div
               css={`
                 display: flex;
                 align-items: center;
+                flex: 1;
               `}
             >
               <AuthorImage src={photo} alt={creator} />
               <Author>{creator}</Author>
             </div>
+            <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
           </aside>
           {featuredImage ? <Image src={featuredImage} alt={title} /> : null}
           <div

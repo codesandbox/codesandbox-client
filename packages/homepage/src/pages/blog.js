@@ -30,7 +30,7 @@ import { makeFeed } from '../utils/makePosts';
 
 const Info = ({ post, mobile, ...props }) => (
   <Aside mobile={mobile} {...props}>
-    <PostDate>{format(post.date, 'MMM DD,YYYY')}</PostDate>
+    <PostDate>{format(post.date, 'MMM DD, YYYY')}</PostDate>
     <section>
       <AuthorImage src={post.photo} alt={post.creator} />
       <Author>{post.creator}</Author>

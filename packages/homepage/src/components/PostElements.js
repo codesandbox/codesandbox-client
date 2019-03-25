@@ -8,8 +8,8 @@ export const Container = styled.div`
 export const Title = styled.h2`
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  font-size: 30px;
-  line-height: 1.5;
+  font-size: 1.5rem;
+  line-height: 1.2;
 
   color: #f2f2f2;
 `;
@@ -18,7 +18,6 @@ export const PostDate = styled.span`
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-size: 14px;
-  margin-bottom: 12px;
   color: #b8b9ba;
   display: block;
 `;

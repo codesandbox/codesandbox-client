@@ -15,8 +15,8 @@ export const Posts = styled.article`
 
 export const Subtitle = styled.h3`
   font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 18px;
+  font-weight: 300;
+  font-size: 16px;
   line-height: 1.5;
 
   color: #b8b9ba;

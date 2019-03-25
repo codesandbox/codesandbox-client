@@ -8,7 +8,7 @@
     "build:prod": "lerna run build  --scope homepage --stream && lerna run build --scope app --stream && gulp",
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
-    "build:deps": "lerna run build:dev --scope codesandbox-api && lerna run build:dev --scope common && lerna run build:dev --scope vscode-textmate --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks",
+    "build:deps": "lerna run build:dev --scope codesandbox-api && lerna run build:dev --scope @codesandbox/common && lerna run build:dev --scope vscode-textmate --scope codesandbox-browserfs --scope node-services && lerna run build:dev --scope sse-hooks",
     "build:dynamic": "lerna run build --scope dynamic-pages --stream",
     "start": "yarn build:deps && lerna run start --scope app --stream",
     "start:fast": "lerna run start --scope app --stream",
@@ -16,7 +16,7 @@
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:home": "lerna run start --scope homepage --stream",
     "start:test": "lerna run start:test --scope app --stream",
-    "start:dev_api": "yarn build:deps && (lerna run start --parallel --scope codesandbox-api & lerna run start:dev_api --scope app --stream)",
+    "start:dev_api": "lerna run start:dev_api --scope app --stream",
     "test": "lerna run test --ignore codesandbox-browserfs",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
@@ -76,8 +76,7 @@
     "lerna": "^2.5.1",
     "lint-staged": "^5.0.0",
     "prettier": "^1.8.2",
-    "typescript": "^3.2.1"
-
+        "typescript": "^3.3.1"
   },
   "dependencies": {
     "opencollective": "^1.0.3"
