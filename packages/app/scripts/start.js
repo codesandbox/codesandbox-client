@@ -258,7 +258,7 @@ function runDevServer(port, protocol, index) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
-    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
+    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.test',
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
     clientLogLevel: 'warning',
@@ -266,7 +266,7 @@ function runDevServer(port, protocol, index) {
     proxy: {
       '/public/vscode-extensions/**': {
         target: `${protocol}://${
-          process.env.LOCAL_SERVER ? 'localhost:3000' : 'codesandbox.dev'
+          process.env.LOCAL_SERVER ? 'localhost:3000' : 'codesandbox.test'
         }`,
         bypass: req => {
           if (req.method === 'HEAD') {
