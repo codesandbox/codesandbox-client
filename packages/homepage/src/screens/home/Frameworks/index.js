@@ -1,13 +1,13 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import MaxWidth from 'common/lib/components/flex/MaxWidth';
-import Column from 'common/lib/components/flex/Column';
-import Centered from 'common/lib/components/flex/Centered';
-import Padding from 'common/lib/components/spacing/Padding';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Column from '@codesandbox/common/lib/components/flex/Column';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 
-import theme from 'common/lib/theme';
-import getIcon from 'common/lib/templates/icons';
+import theme from '@codesandbox/common/lib/theme';
+import getIcon from '@codesandbox/common/lib/templates/icons';
 
 import LoadInView from '../../../components/LoadInView';
 import RollingText from '../../../components/RollingText';

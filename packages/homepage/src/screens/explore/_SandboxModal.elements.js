@@ -1,10 +1,10 @@
 import styled, { css } from 'styled-components';
-import { UserWithAvatar } from 'common/lib/components/UserWithAvatar';
+import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 
 import RightArrow from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftArrow from 'react-icons/lib/md/keyboard-arrow-left';
-import fadeIn from 'common/lib/utils/animation/fade-in';
-import Stats from 'common/lib/components/Stats';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
+import Stats from '@codesandbox/common/lib/components/Stats';
 
 export const Container = styled.div`
   position: relative;

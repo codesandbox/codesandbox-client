@@ -1330,6 +1330,34 @@
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@cerebral/mobx-state-tree/-/mobx-state-tree-3.2.2.tgz#d11e74a5a3e99ae4e29e13d555e3b22221a801dc"
 
+"@codesandbox/common@latest":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@codesandbox/common/-/common-1.0.3.tgz#e150dbdeee7f0781729457d8f8629a9dbb650637"
+  integrity sha512-TPzj3pKbR/SU8ek6XQO+KyfgEkYGHgzEquypeOOu6pqvo9n4h+rWBFlMsH4A1CEwEAuZvBgHnPLRoILlsOPivA==
+  dependencies:
+    "@babel/plugin-transform-flow-strip-types" "^7.0.0"
+    babel-plugin-preval "^3.0.1"
+    codesandbox-api "^0.0.22"
+    color "0.11.4"
+    error-polyfill "^0.1.1"
+    humps CompuIves/humps
+    image-extensions "^1.1.0"
+    jsonlint "^1.6.3"
+    lodash "^4.17.11"
+    memoize-one "^3.1.1"
+    moment "^2.18.1"
+    ot "^0.0.15"
+    react-icons "^2.2.7"
+    react-input-autosize "^2.2.1"
+    react-router-dom "^4.3.1"
+    react-spring "^8.0.18"
+    react-textarea-autosize "^6.1.0"
+    react-tippy "^0.14.0"
+    semver "^5.6.0"
+    sha1 "^1.1.1"
+    socket.io-client "^2.1.1"
+    styled-components "^4.1.2"
+
 "@emmetio/abbreviation@^0.6.0", "@emmetio/abbreviation@^0.6.1":
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/@emmetio/abbreviation/-/abbreviation-0.6.5.tgz#07fdf1d48a74c2cc660eef4b25ff72316f377dd7"
@@ -11986,7 +12014,7 @@ https-proxy-agent@^1.0.0:
     debug "2"
     extend "3"
 
-humps@CompuIves/humps:
+humps@CompuIves/humps, "humps@github:CompuIves/humps":
   version "2.0.0"
   resolved "https://codeload.github.com/CompuIves/humps/tar.gz/7ee34e874c808cf60e7119ee71ac71b8bf2189b7"
 
