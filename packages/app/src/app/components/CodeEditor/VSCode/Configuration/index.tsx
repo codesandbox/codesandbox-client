@@ -1,15 +1,15 @@
 // @flow
 import React from 'react';
 import { TextOperation } from 'ot';
-import { Module } from 'common/lib/types';
-import getUI from 'common/lib/templates/configuration/ui';
+import { Module } from '@codesandbox/common/lib/types';
+import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import getType from 'app/utils/get-type';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 import { Props as EditorProps, Editor } from '../../types';
 import { Container, Title, Description } from './elements';
-import { ConfigurationFile } from 'common/lib/templates/configuration/types';
+import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
 
 type Disposable = {
   dispose: () => void;

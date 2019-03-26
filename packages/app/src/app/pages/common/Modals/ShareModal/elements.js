@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Preference from 'common/lib/components/Preference';
+import Preference from '@codesandbox/common/lib/components/Preference';
 
 export const FilesContainer = styled.div`
   max-height: 300px;
@@ -76,7 +76,7 @@ export const Wrapper = styled.section`
 `;
 
 export const SideTitle = styled.span`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   font-weight: bold;
   font-size: 20px;
   margin-top: 20px;

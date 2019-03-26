@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
+import { UserWithAvatar } from '../UserWithAvatar';
 
 export const BG_COLOR = '#1C2022';
 export const BG_HOVER = '#212629';
@@ -52,7 +52,7 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 
 export const SandboxTitle = styled.h2`
   color: ${props => props.color};
-  font-family: 'Poppins';
+ font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 6px;

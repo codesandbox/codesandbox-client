@@ -1,5 +1,5 @@
 // @flow
-import { join, absolute } from 'common/lib/utils/path';
+import { join, absolute } from '@codesandbox/common/lib/utils/path';
 import Preset from '../';
 
 import angular2Transpiler from '../../transpilers/angular2-template';
@@ -63,7 +63,7 @@ async function addAngularJSONResources(manager) {
     for (let i = 0; i < styles.length; i++) {
       const p = styles[i];
 
-      const finalPath = absolute(join(project.root, p));
+      const finalPath = absolute(join(project.root, p.input || p));
 
       const tModule = await manager.resolveTranspiledModuleAsync(
         finalPath,
@@ -103,7 +103,7 @@ async function addAngularCLIResources(manager) {
     /* eslint-disable no-await-in-loop */
     for (let i = 0; i < styles.length; i++) {
       const p = styles[i];
-      const finalPath = absolute(join(app.root || 'src', p));
+      const finalPath = absolute(join(app.root || 'src', p.input || p));
 
       const tModule = await manager.resolveTranspiledModuleAsync(
         finalPath,

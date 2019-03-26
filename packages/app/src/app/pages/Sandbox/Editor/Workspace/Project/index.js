@@ -5,20 +5,20 @@ import {
   sandboxUrl,
   githubRepoUrl,
   profileUrl,
-} from 'common/lib/utils/url-generator';
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import TeamIcon from 'react-icons/lib/md/people';
 
-import UserWithAvatar from 'app/components/UserWithAvatar';
+import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
-import GithubBadge from 'common/lib/components/GithubBadge';
+import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import EditableTags from 'app/components/EditableTags';
-import Tags from 'common/lib/components/Tags';
-import Switch from 'common/lib/components/Switch';
-import Tooltip from 'common/lib/components/Tooltip';
+import Tags from '@codesandbox/common/lib/components/Tags';
+import Switch from '@codesandbox/common/lib/components/Switch';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
-import getTemplateDefinition from 'common/lib/templates';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { WorkspaceInputContainer } from '../elements';
 
 import {
@@ -196,7 +196,7 @@ class Project extends React.Component {
           )}
 
         {!!sandbox.team && (
-          <Tooltip title="This sandbox is owned by this team">
+          <Tooltip content="This sandbox is owned by this team">
             <Item style={{ color: 'white', display: 'flex' }}>
               <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
               <div>{sandbox.team.name}</div>
@@ -273,7 +273,7 @@ class Project extends React.Component {
           <Item style={{ marginTop: 5 }} flex>
             <PropertyName>
               Frozen
-              <Tooltip title="When true this sandbox will fork on edit">
+              <Tooltip content="When true this sandbox will fork on edit">
                 <Icon />
               </Tooltip>
             </PropertyName>

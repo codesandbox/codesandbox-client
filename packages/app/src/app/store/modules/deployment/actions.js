@@ -1,5 +1,6 @@
 import { omit } from 'lodash-es';
-import getTemplate from 'common/lib/templates';
+
+import getTemplate from '@codesandbox/common/lib/templates';
 import pollUntilDone from '../../utils/pollUntilDone';
 
 export function createZip({ utils, state }) {

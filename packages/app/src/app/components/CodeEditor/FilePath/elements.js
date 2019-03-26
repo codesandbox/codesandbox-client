@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import ExitZen from 'react-icons/lib/md/fullscreen-exit';
-import { withTooltip } from 'common/lib/components/Tooltip';
 
 export const Container = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
@@ -43,19 +42,16 @@ export const FileName = styled.div`
   flex: 1;
 `;
 
-export const StyledExitZen = withTooltip(
-  styled(ExitZen)`
-    transition: 0.3s ease opacity;
+export const StyledExitZen = styled(ExitZen)`
+  transition: 0.3s ease opacity;
 
-    cursor: pointer;
-    font-size: 1.25rem;
+  cursor: pointer;
+  font-size: 1.25rem;
 
-    z-index: 10;
-    opacity: 0.7;
+  z-index: 10;
+  opacity: 0.7;
 
-    &:hover {
-      opacity: 1;
-    }
-  `,
-  { title: 'Close Zen Mode', style: { zIndex: 10 } }
-);
+  &:hover {
+    opacity: 1;
+  }
+`;

@@ -1,7 +1,7 @@
 // @flow
 import styled, { css } from 'styled-components';
 import MenuIconSVG from 'react-icons/lib/md/menu';
-import { Button as RealButton } from 'common/lib/components/Button';
+import { Button as RealButton } from '@codesandbox/common/lib/components/Button';
 
 import { SIDEBAR_SHOW_SCREEN_SIZE } from '../../util/constants';
 

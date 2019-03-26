@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import Modal from '../../components/Modal';
 
 import { Title } from './_sidebar.elements';

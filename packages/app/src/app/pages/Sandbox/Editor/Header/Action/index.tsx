@@ -53,8 +53,7 @@ function ActionComponent({
   if (!href && (placeholder || tooltip)) {
     return (
       <ActionTooltip
-        disabledAction={!onClick}
-        title={placeholder || tooltip}
+        content={placeholder || tooltip}
         hideOnClick={false}
         {...props}
       >
@@ -83,7 +82,7 @@ function ActionComponent({
   if (href && a && (placeholder || tooltip)) {
     return (
       <ActionA href={href} target="_blank" rel="noopener noreferrer">
-        <ActionTooltip title={placeholder || tooltip}>
+        <ActionTooltip content={placeholder || tooltip}>
           <IconContainer {...iconContainerProps}>
             <Icon {...iconProps} />
             {title !== undefined && <Title>{title}</Title>}
@@ -98,7 +97,7 @@ function ActionComponent({
   if (href && (placeholder || tooltip)) {
     return (
       <ActionLink to={href} {...props}>
-        <ActionTooltip title={placeholder || tooltip}>
+        <ActionTooltip content={placeholder || tooltip}>
           <IconContainer>
             <Icon {...iconProps} />
             {title !== undefined && <Title>{title}</Title>}

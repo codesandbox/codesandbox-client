@@ -5,8 +5,8 @@ import Media from 'react-media';
 
 import { Spring } from 'react-spring/renderprops';
 
-import track from 'common/lib/utils/analytics';
-import { ESC } from 'common/lib/utils/keycodes';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 
 import { Container, SandboxName, SandboxInput, FolderName } from './elements';
 
@@ -73,6 +73,9 @@ class CollectionInfo extends React.Component {
 
   render() {
     const { sandbox, isLoggedIn, signals } = this.props;
+    const { nameValue, updatingName } = this.state;
+
+    const value = nameValue !== 'Untitled' && updatingName ? nameValue : '';
 
     const folderName = sandbox.collection
       ? basename(sandbox.collection.path) ||
@@ -85,7 +88,7 @@ class CollectionInfo extends React.Component {
           opacity: 1,
         }}
         to={
-          this.state.updatingName
+          updatingName
             ? {
                 opacity: 0,
                 pointerEvents: 'none',
@@ -125,7 +128,7 @@ class CollectionInfo extends React.Component {
                     </div>
                   )}
                 />
-                {this.state.updatingName ? (
+                {updatingName ? (
                   <form
                     css={{
                       position: 'absolute',
@@ -147,7 +150,8 @@ class CollectionInfo extends React.Component {
                       onKeyUp={this.handleKeyUp}
                       onBlur={this.handleBlur}
                       onChange={this.handleInputUpdate}
-                      value={this.state.nameValue}
+                      placeholder={nameValue}
+                      value={value}
                     />
                   </form>
                 ) : (

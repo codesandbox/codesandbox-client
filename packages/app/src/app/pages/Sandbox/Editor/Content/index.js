@@ -6,18 +6,18 @@ import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 
-import getTemplateDefinition from 'common/lib/templates';
-import type { ModuleError } from 'common/lib/types';
-import { getPreviewTabs } from 'common/lib/templates/devtools';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import type { ModuleError } from '@codesandbox/common/lib/types';
+import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 
+import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
-import Preview from './Preview';
 
 const settings = store =>
   ({
@@ -90,7 +90,6 @@ class EditorPreview extends React.Component<Props, State> {
     }
     if (this.el) {
       const { width, height } = this.el.getBoundingClientRect();
-
       if (width !== this.state.width || height !== this.state.height) {
         this.setState({ width, height });
       }
@@ -431,10 +430,7 @@ class EditorPreview extends React.Component<Props, State> {
 
     const windowVisible = store.editor.previewWindowVisible;
 
-    const { width: absoluteWidth, height: absoluteHeight } = this.state;
-
-    const editorWidth = absoluteWidth;
-    const editorHeight = absoluteHeight;
+    const { width: editorWidth, height: editorHeight } = this.state;
 
     const template = getTemplateDefinition(sandbox.template);
 
@@ -575,8 +571,6 @@ class EditorPreview extends React.Component<Props, State> {
                 isModuleSynced={store.editor.isModuleSynced}
                 width={editorWidth}
                 height={editorHeight}
-                absoluteWidth={absoluteWidth}
-                absoluteHeight={absoluteHeight}
                 settings={settings(store)}
                 sendTransforms={this.sendTransforms}
                 readOnly={isReadOnly()}

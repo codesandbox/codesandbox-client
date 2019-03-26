@@ -2,14 +2,14 @@ import React from 'react';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
 import Loadable from 'app/utils/Loadable';
-import getUI from 'common/lib/templates/configuration/ui';
-import Centered from 'common/lib/components/flex/Centered';
-import Margin from 'common/lib/components/spacing/Margin';
-import isImage from 'common/lib/utils/is-image';
-import getDefinition from 'common/lib/templates';
-import { Sandbox } from 'common/lib/types';
-import { getModulePath } from 'common/lib/sandbox/modules';
-import Tooltip from 'common/lib/components/Tooltip';
+import getUI from '@codesandbox/common/lib/templates/configuration/ui';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import isImage from '@codesandbox/common/lib/utils/is-image';
+import getDefinition from '@codesandbox/common/lib/templates';
+import { Sandbox } from '@codesandbox/common/lib/types';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import UIIcon from 'react-icons/lib/md/dvr';
 import QuestionIcon from 'react-icons/lib/go/question';
 
@@ -195,7 +195,7 @@ export default class CodeEditor extends React.PureComponent<
         {config &&
           (getUI(config.type) && !settings.experimentVSCode ? (
             <Icons>
-              <Tooltip title="Switch to UI Configuration">
+              <Tooltip content="Switch to UI Configuration">
                 <Icon onClick={this.toggleConfigUI}>
                   <UIIcon />
                 </Icon>
@@ -210,11 +210,11 @@ export default class CodeEditor extends React.PureComponent<
             >
               {config.partialSupportDisclaimer ? (
                 <Tooltip
-                  position="bottom"
-                  title={config.partialSupportDisclaimer}
+                  placement="bottom"
+                  content={config.partialSupportDisclaimer}
                   style={{
                     display: 'flex',
-                    alignItems: 'center',
+                    'align-items': 'center',
                   }}
                 >
                   Partially Supported Config{' '}

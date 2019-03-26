@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Row from 'common/lib/components/flex/Row';
-import Column from 'common/lib/components/flex/Column';
+import Row from '@codesandbox/common/lib/components/flex/Row';
+import Column from '@codesandbox/common/lib/components/flex/Column';
 
-import Margin from 'common/lib/components/spacing/Margin';
-import PatronStar from 'app/components/PatronStar';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { PatronStar } from '@codesandbox/common/lib/components/PatronStar';
 
 import { ProfileImage, Name, Username, IconWrapper } from './elements';
 

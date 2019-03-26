@@ -3,11 +3,11 @@ import App, { Container } from 'next/app';
 import Head from 'next/head';
 import { ThemeProvider } from 'styled-components';
 
-import theme from 'common/lib/theme';
-import Navigation from 'common/lib/components/Navigation';
-import Footer from 'common/lib/components/Footer';
-import '../css/global.css';
+import theme from '@codesandbox/common/lib/theme';
+import Navigation from '@codesandbox/common/lib/components/Navigation';
+import Footer from '@codesandbox/common/lib/components/Footer';
 import '../css/typography.css';
+import '../css/global.css';
 
 export default class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {

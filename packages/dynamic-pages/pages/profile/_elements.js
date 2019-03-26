@@ -15,6 +15,7 @@ export const Title = styled.h3`
   font-weight: 300;
   font-size: 24px;
   margin-bottom: 30px;
+  margin-top: 2rem;
   color: ${props => props.theme.new.title};
 `;
 
@@ -29,7 +30,7 @@ export const More = styled.div`
   height: 100%;
 
   a {
-    font-family: 'Poppins';
+    font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     color: white;

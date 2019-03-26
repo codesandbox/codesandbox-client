@@ -1,11 +1,11 @@
 import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
-import { absolute } from 'common/lib/utils/path';
-import _debug from 'common/lib/utils/debug';
-import parseConfigurations from 'common/lib/templates/configuration/parse';
+import { absolute } from '@codesandbox/common/lib/utils/path';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
-import { isBabel7 } from 'common/lib/utils/is-babel-7';
-import getDefinition, { TemplateType } from 'common/lib/templates/index';
+import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import getDefinition, { TemplateType } from '@codesandbox/common/lib/templates/index';
 
 import getPreset from './eval';
 import Manager, { Manifest } from './eval/manager';
@@ -28,7 +28,7 @@ import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 
 import { showRunOnClick } from './status-screen/run-on-click';
 import { Module } from './eval/entities/module';
-import { ParsedConfigurationFiles } from 'common/lib/templates/template';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import TranspiledModule from './eval/transpiled-module';
 
 let initializedResizeListener = false;

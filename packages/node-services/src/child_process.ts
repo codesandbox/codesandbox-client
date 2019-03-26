@@ -1,9 +1,13 @@
 import { EventEmitter } from 'events';
-import { protocolAndHost } from 'common/lib/utils/url-generator';
-import { commonPostMessage } from 'common/lib/utils/global';
-import _debug from 'common/lib/utils/debug';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+import _debug from '@codesandbox/common/lib/utils/debug';
 
 const debug = _debug('cs:node:child_process');
+
+const isSafari =
+  typeof navigator !== 'undefined' &&
+  /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 let DefaultWorker: false | (() => Worker);
 let workerMap: Map<string, false | (() => Worker)> = new Map();
@@ -186,6 +190,8 @@ function handleBroadcast(
   }
   sentBroadcastsForPath.push(data.$id);
   if (
+    // @ts-ignore This check is for the subworker polyfill, if it has an id it's polyfilled by subworkers and indeed a worker
+    target.id ||
     target.constructor.name === 'Worker' ||
     // @ts-ignore Unknown to TS
     (typeof DedicatedWorkerGlobalScope !== 'undefined' &&
@@ -262,11 +268,40 @@ function fork(path: string, argv?: string[], processOpts?: IProcessOpts) {
     data.execArgv = processOpts.execArgv;
   }
 
-  worker.postMessage({
-    $type: 'worker-manager',
-    $event: 'init',
-    data,
-  });
+  if (isSafari) {
+    // For Safari it takes a while until the worker started, so we listen for ready message
+    // and send a message anyway if a second passes
+
+    let sentReady = false;
+    const timeout = setTimeout(() => {
+      if (!sentReady) {
+        worker.postMessage({
+          $type: 'worker-manager',
+          $event: 'init',
+          data,
+        });
+        sentReady = true;
+      }
+    }, 1500);
+
+    worker.addEventListener('message', e => {
+      if (!sentReady && e.data && e.data.$type === 'ready') {
+        worker.postMessage({
+          $type: 'worker-manager',
+          $event: 'init',
+          data,
+        });
+        clearTimeout(timeout);
+        sentReady = true;
+      }
+    });
+  } else {
+    worker.postMessage({
+      $type: 'worker-manager',
+      $event: 'init',
+      data,
+    });
+  }
 
   return new ChildProcess(worker);
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import { ESC } from 'common/lib/utils/keycodes';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 
-import { Spring, animated } from 'react-spring/renderprops';
+import { Spring, animated } from 'react-spring/renderprops.cjs';
 
 const NoScroll = createGlobalStyle`
   html {

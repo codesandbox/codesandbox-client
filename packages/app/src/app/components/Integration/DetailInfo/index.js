@@ -1,8 +1,8 @@
 import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
-import Margin from 'common/lib/components/spacing/Margin';
-import Tooltip from 'common/lib/components/Tooltip';
-import { Button } from 'common/lib/components/Button';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 import { Details, Heading, Info, Action } from './elements';
 
@@ -15,7 +15,7 @@ function DetailInfo({ heading, info, signOut, signIn }) {
       </Margin>
 
       {signOut ? (
-        <Tooltip title="Sign out">
+        <Tooltip content="Sign out">
           <Action onClick={signOut} red>
             <CrossIcon />
           </Action>

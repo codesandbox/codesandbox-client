@@ -1,10 +1,13 @@
 import React from 'react';
 
-import getTemplate from 'common/lib/templates';
-import { protocolAndHost } from 'common/lib/utils/url-generator';
-import { ARROW_LEFT, ARROW_RIGHT } from 'common/lib/utils/keycodes';
-import FeaturedSandbox from 'common/lib/components/FeaturedSandbox';
-import WideSandbox from 'common/lib/components/WideSandbox';
+import getTemplate from '@codesandbox/common/lib/templates';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  ARROW_LEFT,
+  ARROW_RIGHT,
+} from '@codesandbox/common/lib/utils/keycodes';
+import FeaturedSandbox from '@codesandbox/common/lib/components/FeaturedSandbox';
+import WideSandbox from '@codesandbox/common/lib/components/WideSandbox';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -107,26 +110,29 @@ export default class Explore extends React.PureComponent {
   };
 
   navigateToNextSandbox = () => {
-    this.setState(state => ({
-      featuredSandboxIndex: state.featuredSandboxIndex + 1,
-    }));
+    const next = this.state.featuredSandboxIndex + 1;
+    // if last go to first
+    this.setState({
+      featuredSandboxIndex: next === featuredSandboxes.length ? 0 : next,
+    });
   };
 
   navigateToPreviousSandbox = () => {
-    this.setState(state => ({
-      featuredSandboxIndex: state.featuredSandboxIndex - 1,
-    }));
+    const index = this.state.featuredSandboxIndex;
+
+    // if first go to last
+    this.setState({
+      featuredSandboxIndex:
+        index === 0 ? featuredSandboxes.length - 1 : index - 1,
+    });
   };
 
   handleKeyPress = ({ keyCode }) => {
-    const { featuredSandboxIndex } = this.state;
     switch (keyCode) {
       case ARROW_LEFT:
-        if (featuredSandboxIndex === 0) return;
         this.navigateToPreviousSandbox();
         break;
       case ARROW_RIGHT:
-        if (featuredSandboxIndex === featuredSandboxes.length - 1) return;
         this.navigateToNextSandbox();
         break;
       default:

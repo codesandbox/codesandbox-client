@@ -14,6 +14,7 @@ body {
   height: 100%;
   background: #1c2022;
   color: #cccccc;
+  font-size: 16px !important;
 
   -ms-overflow-style: -ms-autohiding-scrollbar;
 }

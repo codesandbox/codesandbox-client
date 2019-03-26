@@ -4,7 +4,7 @@ import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
 import FaAngleUp from 'react-icons/lib/fa/angle-up';
 
-import { TemplateType } from 'common/lib/templates';
+import { TemplateType } from '@codesandbox/common/lib/templates';
 
 import console from './Console';
 import tests from './Tests';
@@ -12,7 +12,7 @@ import problems from './Problems';
 import terminal from './Terminal';
 
 import { Container, Header, ContentContainer } from './elements';
-import { ViewConfig } from 'common/lib/templates/template';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import Tabs, { ITabPosition } from './Tabs';
 
 function unFocus(document, window) {

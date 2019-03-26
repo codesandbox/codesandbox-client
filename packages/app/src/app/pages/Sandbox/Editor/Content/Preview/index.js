@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
-import BasePreview from 'app/components/Preview';
-import RunOnClick from 'common/lib/components/RunOnClick';
-import getTemplate from 'common/lib/templates';
+import BasePreview from '@codesandbox/common/lib/components/Preview';
+import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 type Props = {
   width?: number | string,

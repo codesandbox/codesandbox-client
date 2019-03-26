@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Preview from 'app/components/Preview';
+import Preview from '@codesandbox/common/lib/components/Preview';
 import { parseConfigurations } from 'app/store/utils/parse-configurations';
 import { mainModule } from 'app/store/utils/main-module';
 

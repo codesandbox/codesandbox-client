@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import MaxWidth from 'common/lib/components/flex/MaxWidth';
-import Centered from 'common/lib/components/flex/Centered';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
 
 import ExternalIcon from 'react-icons/lib/md/launch';
 import HotModuleReloading from 'react-icons/lib/md/autorenew';

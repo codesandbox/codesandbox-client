@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Select from 'common/lib/components/Select';
-import UserWithAvatar from 'app/components/UserWithAvatar';
+import Select from '@codesandbox/common/lib/components/Select';
+import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 
 export const Container = styled.div`
   display: flex;

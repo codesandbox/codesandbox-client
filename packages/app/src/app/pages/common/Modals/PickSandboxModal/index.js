@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { Button } from 'common/lib/components/Button';
-import Row from 'common/lib/components/flex/Row';
-import Input, { TextArea } from 'common/lib/components/Input';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import Row from '@codesandbox/common/lib/components/flex/Row';
+import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
 
 import { Container } from '../LiveSessionEnded/elements';
 import { Heading, Explanation } from '../elements';

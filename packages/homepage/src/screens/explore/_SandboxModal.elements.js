@@ -1,10 +1,10 @@
 import styled, { css } from 'styled-components';
-import UserWithAvatar from 'app/src/app/components/UserWithAvatar';
+import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 
 import RightArrow from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftArrow from 'react-icons/lib/md/keyboard-arrow-left';
-import fadeIn from 'common/lib/utils/animation/fade-in';
-import Stats from 'common/lib/components/Stats';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
+import Stats from '@codesandbox/common/lib/components/Stats';
 
 export const Container = styled.div`
   position: relative;
@@ -57,7 +57,7 @@ export const SandboxInfoContainer = styled.div`
 `;
 
 export const StatsContainer = styled.div`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
 
   flex: 1;
   padding: 1.5rem;
@@ -71,7 +71,7 @@ export const StyledStats = styled(Stats)`
 `;
 
 export const StatsHeader = styled.h2`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: ${props => props.theme.new.title};
   font-size: 1.25rem;
   margin-top: 0 !important;
@@ -89,14 +89,14 @@ export const Author = styled(UserWithAvatar)`
 
 export const SandboxInfo = styled.div`
   padding: 1.5rem;
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: ${props => props.theme.new.title};
   flex: 2;
   min-height: 200px;
 `;
 
 export const Footer = styled.footer`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   padding: 1rem 1.5rem;
   padding-top: 10px;
 `;
@@ -110,14 +110,14 @@ export const FooterInfo = styled.div`
 
 export const SandboxTitle = styled.h1`
   font-size: 1.5rem;
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: ${props => props.theme.new.title};
   font-weight: 800;
   margin-bottom: 0.5rem;
 `;
 
 export const SandboxDescription = styled.p`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   color: ${props => props.theme.new.title};
   color: ${props => props.theme.new.description};
 `;

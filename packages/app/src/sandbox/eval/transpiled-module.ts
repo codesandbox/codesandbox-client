@@ -2,11 +2,11 @@
 import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'common/lib/utils/debug';
+import _debug from '@codesandbox/common/lib/utils/debug';
 
 import hashsum from 'hash-sum';
 
-import * as pathUtils from 'common/lib/utils/path';
+import * as pathUtils from '@codesandbox/common/lib/utils/path';
 
 import { Module } from './entities/module';
 import { SourceMap } from './transpilers/utils/get-source-map';
@@ -596,7 +596,14 @@ export default class TranspiledModule {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      requires.forEach(r => loaderContext.addDependency(r));
+      requires.forEach(r => {
+        if (r.indexOf('glob:') === 0) {
+          const reGlob = r.replace('glob:', '');
+          loaderContext.addDependenciesInDirectory(reGlob);
+        } else {
+          loaderContext.addDependency(r);
+        }
+      });
 
       code = this.module.code;
     } else {

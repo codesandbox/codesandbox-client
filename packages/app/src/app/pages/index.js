@@ -4,11 +4,11 @@ import { inject, observer } from 'mobx-react';
 import Loadable from 'app/utils/Loadable';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-import _debug from 'common/lib/utils/debug';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
 import { DragDropContext } from 'react-dnd';
 
-import send, { DNT } from 'common/lib/utils/analytics';
+import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';

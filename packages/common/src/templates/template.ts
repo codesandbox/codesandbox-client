@@ -127,7 +127,13 @@ export default class Template {
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.ts',
+      '/src/index.tsx',
       '/src/index.js',
+      '/src/pages/index.js',
+      '/src/pages/index.vue',
+      '/index.js',
+      '/index.ts',
+      '/index.tsx',
       ...(this.mainFile || []),
     ].filter(x => x);
   }
