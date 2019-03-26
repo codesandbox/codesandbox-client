@@ -86,7 +86,7 @@ class NetlifyDeployment extends Component {
                       >
                         {deployment.building ? (
                           <>
-                            <Cogs /> Building
+                            <Cogs /> Building...
                           </>
                         ) : (
                           <>
