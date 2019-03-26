@@ -35,7 +35,9 @@ class NetlifyLogs extends Component {
           Builds typically take a minute or two to complete
         </Explanation>
         <List>{this.state.logs.map(log => <Item key={log}>{log}</Item>)}</List>
-        <Button onClick={() => signals.modalClosed()}>Close</Button>
+        <Button small onClick={() => signals.modalClosed()}>
+          Close
+        </Button>
       </Container>
     );
   }
