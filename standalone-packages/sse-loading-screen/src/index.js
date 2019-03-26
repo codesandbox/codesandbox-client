@@ -12,7 +12,7 @@ import { Power3 } from 'gsap/EasePack';
 import TweenLite from 'gsap/TweenLite';
 import TimelineLite from 'gsap/TimelineLite';
 
-import getTemplate from '../../../packages/common/src/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 import Cube from './Cube';
 
