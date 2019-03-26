@@ -1,7 +1,7 @@
 import React from 'react';
 import Down from 'react-icons/lib/fa/angle-down';
 import Up from 'react-icons/lib/fa/angle-up';
-import Notice from 'common/lib/components/Notice';
+import Notice from '@codesandbox/common/lib/components/Notice';
 import DetailInfo from './DetailInfo';
 import { Container, IntegrationBlock, Name } from './elements';
 
