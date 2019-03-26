@@ -40,7 +40,6 @@ const Integration = ({
             width: 1.5rem;
             height: auto;
           `}
-          onClick={toggle}
         />
       ) : (
         <Down
@@ -50,7 +49,6 @@ const Integration = ({
             width: 1.5rem;
             height: auto;
           `}
-          onClick={toggle}
         />
       )}
     </IntegrationBlock>
