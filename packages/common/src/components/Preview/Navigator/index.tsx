@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import LeftIcon from 'react-icons/lib/fa/angle-left';
@@ -82,7 +81,7 @@ function Navigator({
             <Tooltip
               delay={0}
               content={isProjectView ? 'Project View' : 'Current Module View'}
-              position="left"
+              placement="left"
             >
               <Switch
                 offMode
@@ -98,4 +97,4 @@ function Navigator({
   );
 }
 
-export default Navigator
+export default Navigator;
