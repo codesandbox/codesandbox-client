@@ -39,6 +39,10 @@ function shouldSaveOnlineCache(firstRun: boolean, changes: number) {
   return false;
 }
 
+export function clearIndexedDBCache() {
+  return localforage.clear();
+}
+
 export async function saveCache(
   sandboxId: string,
   managerModuleToTranspile: any,
@@ -64,7 +68,7 @@ export async function saveCache(
       debug(
         'Saving cache of ' +
           (JSON.stringify(managerState).length / 1024).toFixed(2) +
-          'kb to localStorage'
+          'kb to indexedDB'
       );
     }
     localforage.setItem(manager.id, managerState);
@@ -111,7 +115,7 @@ export async function saveCache(
   return Promise.resolve(false);
 }
 
-export function deleteAPICache(sandboxId: string) {
+export function deleteAPICache(sandboxId: string): Promise<any> {
   if (APICacheUsed) {
     debug('Deleting cache of API');
     return window

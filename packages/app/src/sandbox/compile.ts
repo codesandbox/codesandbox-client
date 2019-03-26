@@ -5,7 +5,9 @@ import parseConfigurations from '@codesandbox/common/lib/templates/configuration
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import getDefinition, { TemplateType } from '@codesandbox/common/lib/templates/index';
+import getDefinition, {
+  TemplateType,
+} from '@codesandbox/common/lib/templates/index';
 
 import getPreset from './eval';
 import Manager, { Manifest } from './eval/manager';
@@ -647,7 +649,7 @@ async function compile({
       manager.clearCache();
 
       if (firstLoad && changedModuleCount === 0) {
-        deleteAPICache(manager.id);
+        await deleteAPICache(manager.id);
       }
     }
 

@@ -789,10 +789,12 @@ export default class TranspiledModule {
             // We're in a reload loop! Ignore all caches!
 
             manager.clearCache();
-            manager.deleteAPICache();
+            manager.deleteAPICache().then(() => {
+              document.location.reload();
+            });
+          } else {
+            document.location.reload();
           }
-
-          location.reload();
           return {};
         }
       } else if (

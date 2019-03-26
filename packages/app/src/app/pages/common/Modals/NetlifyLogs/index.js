@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import { Container } from '../LiveSessionEnded/elements';
 import { Heading, Explanation } from '../elements';
 
@@ -35,7 +35,9 @@ class NetlifyLogs extends Component {
           Builds typically take a minute or two to complete
         </Explanation>
         <List>{this.state.logs.map(log => <Item key={log}>{log}</Item>)}</List>
-        <Button onClick={() => signals.modalClosed()}>Close</Button>
+        <Button small onClick={() => signals.modalClosed()}>
+          Close
+        </Button>
       </Container>
     );
   }

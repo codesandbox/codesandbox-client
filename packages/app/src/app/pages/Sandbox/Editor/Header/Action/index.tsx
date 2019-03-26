@@ -1,6 +1,7 @@
 import React from 'react';
 
 import MoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import {
   Title,
@@ -52,18 +53,16 @@ function ActionComponent({
 }: Props) {
   if (!href && (placeholder || tooltip)) {
     return (
-      <ActionTooltip
-        content={placeholder || tooltip}
-        hideOnClick={false}
-        {...props}
-      >
-        <IconContainer onClick={onClick} {...iconContainerProps}>
-          <Icon {...iconProps} />
-          {title !== undefined && <Title>{title}</Title>}
-          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
-        </IconContainer>
-        {children}
-      </ActionTooltip>
+      <Action {...props}>
+        <Tooltip content={placeholder || tooltip} hideOnClick={false}>
+          <IconContainer onClick={onClick} {...iconContainerProps}>
+            <Icon {...iconProps} />
+            {title !== undefined && <Title>{title}</Title>}
+            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          </IconContainer>
+          {children}
+        </Tooltip>
+      </Action>
     );
   }
   if (onClick) {

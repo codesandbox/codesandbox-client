@@ -4,8 +4,8 @@ import LinkIcon from 'react-icons/lib/fa/external-link';
 import Cogs from 'react-icons/lib/fa/cogs';
 import NetlifyLogo from 'app/components/NetlifyLogo';
 import DeploymentIntegration from 'app/components/DeploymentIntegration';
-import getTemplate from 'common/lib/templates';
-import { Button } from 'common/lib/components/Button';
+import getTemplate from '@codesandbox/common/lib/templates';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../elements';
 import {
   Deploys,
@@ -86,7 +86,7 @@ class NetlifyDeployment extends Component {
                       >
                         {deployment.building ? (
                           <>
-                            <Cogs /> Building
+                            <Cogs /> Building...
                           </>
                         ) : (
                           <>

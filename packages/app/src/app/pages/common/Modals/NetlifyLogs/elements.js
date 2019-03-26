@@ -13,11 +13,12 @@ export const List = styled.ul`
   padding: 1.3em;
   list-style: none;
   font-family: 'dm';
-  background: #1b1d1f;
+  background: ${props => props.theme.background4};
   max-height: 400px;
   overflow: auto;
-  margin-bottom: 1.3em;
+  margin: 1.3em 0;
   word-break: break-word;
+  border-radius: 4px;
 `;
 
 export const Item = styled.li`
