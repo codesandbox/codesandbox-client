@@ -2,7 +2,13 @@
 import Template from './template';
 import { decorateSelector } from '../theme';
 
-export default new Template(
+export class VuePressTemplate extends Template {
+  // The file to open by the editor
+  getDefaultOpenedFiles() {
+   return ['/README.md', '/guide/README.md'];
+  }
+}
+export default new VuePressTemplate(
   'vuepress',
   'VuePress',
   'https://vuepress.vuejs.org/',
