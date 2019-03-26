@@ -13,6 +13,7 @@ export default new Template(
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
     },
+    distDir: 'dist',
     isServer: true,
     mainFile: ['/pages/index.vue'],
     showOnHomePage: true,

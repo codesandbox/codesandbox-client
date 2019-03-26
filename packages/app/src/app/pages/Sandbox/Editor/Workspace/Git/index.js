@@ -5,12 +5,13 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import Notice from '@codesandbox/common/lib/components/Notice';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
 
 import TotalChanges from './TotalChanges';
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
 
-import { Container, Buttons, ErrorMessage, Notice } from './elements';
+import { Container, Buttons, ErrorMessage } from './elements';
 
 function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
   return rights === 'write' || rights === 'admin';

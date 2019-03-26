@@ -63,6 +63,45 @@ export const deleteDeployment = [
   },
 ];
 
+export const claimNetlifyWebsite = [
+  actions.claimNetlifyWebsite,
+  {
+    success: [set(state`deployment.netlifyClaimUrl`, props`claimURL`)],
+  },
+];
+
+export const getNetlifyDeploys = [
+  claimNetlifyWebsite,
+  actions.getNetlifyDeploys,
+  {
+    success: [set(state`deployment.netlifySite`, props`site`)],
+    error: [set(state`deployment.netlifySite`, null)],
+  },
+];
+
+export const deployWithNetlify = [
+  set(state`deployment.deploying`, true),
+  actions.createZip,
+  actions.deployToNetlify,
+  set(state`deployment.deploying`, false),
+  getNetlifyDeploys,
+  set(state`deployment.building`, true),
+  actions.getStatus,
+  {
+    success: [
+      addNotification('Sandbox Deployed', 'success'),
+      set(state`deployment.building`, false),
+    ],
+    error: [
+      addNotification(
+        'An unknown error occurred when deploying your site',
+        'error'
+      ),
+      set(state`deployment.building`, false),
+    ],
+  },
+];
+
 export const deploy = [
   set(state`deployment.deploying`, true),
   actions.createZip,

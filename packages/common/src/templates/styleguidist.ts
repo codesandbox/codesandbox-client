@@ -14,7 +14,8 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
-    mainFile: [], //'/src/components/Button.js'
+    distDir: 'styleguide',
+    mainFile: [], // '/src/components/Button.js'
     showOnHomePage: true,
   }
 );

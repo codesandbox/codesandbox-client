@@ -1,5 +1,7 @@
 import { omit } from 'lodash-es';
+
 import getTemplate from '@codesandbox/common/lib/templates';
+import pollUntilDone from '../../utils/pollUntilDone';
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
@@ -11,6 +13,106 @@ export function loadZip({ props, jsZip }) {
   const { file } = props;
 
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
+}
+
+const NetlifyBaseURL = 'https://netlify.deploy.codesandbox.io/site';
+
+export async function claimNetlifyWebsite({ http, state, path }) {
+  const userId = state.get('user.id');
+  const sandboxId = state.get('editor.currentId');
+  const sessionId = `${userId}-${sandboxId}`;
+
+  const { result } = await http.request({
+    url: `${NetlifyBaseURL}-claim?sessionId=${sessionId}`,
+  });
+
+  return path.success({
+    claimURL: result.claim,
+  });
+}
+
+export async function getNetlifyDeploys({ http, state, path }) {
+  const sandboxId = state.get('editor.currentId');
+
+  try {
+    const site = await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}`,
+    });
+
+    return path.success({
+      site: site.result,
+    });
+  } catch (error) {
+    return path.error({ error });
+  }
+}
+
+export async function deployToNetlify({ http, props, state }) {
+  const { file } = props;
+  state.set('deployment.netlifyLogs', null);
+  const userId = state.get('user.id');
+  const sandboxId = state.get('editor.currentId');
+  const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
+  const template = getTemplate(sandbox.template);
+  const buildCommand = name => {
+    if (name === 'styleguidist') return 'styleguide:build';
+    if (name === 'nuxt') return 'generate';
+
+    return 'build';
+  };
+
+  let id = '';
+  try {
+    const { result } = await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}`,
+    });
+
+    id = result.site_id;
+  } catch (e) {
+    const { result } = await http.request({
+      url: NetlifyBaseURL,
+      method: 'POST',
+      body: {
+        name: `csb-${sandboxId}`,
+        session_id: `${userId}-${sandboxId}`,
+      },
+    });
+    id = result.site_id;
+  }
+
+  try {
+    await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${
+        template.distDir
+      }&buildCommand=${buildCommand(template.name)}`,
+      method: 'POST',
+      body: file,
+      headers: {
+        'Content-Type': 'application/zip',
+      },
+    });
+
+    return { id };
+  } catch (e) {
+    return { error: true };
+  }
+}
+
+export async function getStatus({ props, path, http, state }) {
+  const url = `${NetlifyBaseURL}/${props.id}/status`;
+  if (props.error) {
+    return path.error();
+  }
+  const { result } = await http.request({
+    url,
+  });
+
+  if (result.status.status === 'IN_PROGRESS') {
+    // polls every 10s for up to 2m
+    await pollUntilDone(http, url, 10000, 60 * 2000, state);
+    return path.success();
+  }
+  return path.success();
 }
 
 export async function createApiData({ props, state }) {

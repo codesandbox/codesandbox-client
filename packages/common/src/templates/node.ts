@@ -12,6 +12,7 @@ export default new Template(
     isServer: true,
     showOnHomePage: true,
     main: true,
+    netlify: false,
     mainFile: ['/pages/index.vue', '/pages/index.js', '/src/pages/index.js'],
   }
 );
