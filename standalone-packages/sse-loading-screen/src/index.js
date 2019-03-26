@@ -204,6 +204,7 @@ async function start() {
 
   const socket = io(`https://${domain}`, {
     autoConnect: false,
+    transports: ['websocket', 'polling'],
   });
 
   socket.on('connect', () => {
