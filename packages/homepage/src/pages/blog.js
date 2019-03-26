@@ -40,6 +40,7 @@ const Info = ({ post, mobile, ...props }) => (
 
 const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
   const posts = makeFeed(allFeedMediumBlog, allMarkdownRemark);
+
   return (
     <Layout>
       <PageContainer width={1440}>
@@ -57,8 +58,10 @@ const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
         {posts.map(post => (
           <Wrapper key={post.id}>
             <Info post={post} />
-            <Posts key={post.id}>
-              <Thumbnail src={post.src} width="340" alt={post.title} />
+            <Posts>
+              {post.src && (
+                <Thumbnail src={post.src} width="340" alt={post.title} />
+              )}
               <div>
                 <Link
                   css={`
