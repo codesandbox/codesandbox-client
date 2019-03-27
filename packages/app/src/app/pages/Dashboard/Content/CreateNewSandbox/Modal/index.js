@@ -1,6 +1,4 @@
 import React, { Fragment } from 'react';
-import * as templates from '@codesandbox/common/lib/templates';
-import { sortBy } from 'lodash-es';
 
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';
@@ -15,48 +13,10 @@ import {
   Tab,
   Button,
   TabContainer,
+  Title,
 } from './elements';
 import Template from './Template';
-
-const usedTemplates = sortBy(
-  Object.keys(templates)
-    .filter(x => x !== 'default')
-    .map(t => templates[t])
-    .filter(t => t.showOnHomePage),
-  'niceName'
-);
-
-const availableTemplates = [
-  {
-    name: 'Popular Templates',
-    templates: usedTemplates.filter(t => t.popular),
-  },
-  {
-    name: 'Client Templates',
-    templates: usedTemplates.filter(t => !t.isServer && !t.popular),
-  },
-  {
-    name: 'Server Templates',
-    templates: usedTemplates.filter(t => t.isServer && !t.popular),
-  },
-  {
-    name: 'Presets',
-    templates: [
-      {
-        ...templates.react,
-        variantName: templates.react.niceName,
-        niceName: 'React + TS',
-        shortid: 'react-ts',
-      },
-      {
-        ...templates.parcel,
-        variantName: templates.parcel.niceName,
-        niceName: 'Vanilla + TS',
-        shortid: 'vanilla-ts',
-      },
-    ],
-  },
-];
+import availableTemplates from './availableTemplates';
 
 export default class Modal extends React.PureComponent {
   state = {
@@ -95,13 +55,30 @@ export default class Modal extends React.PureComponent {
             {availableTemplates.map((tab, i) => (
               <Tab visible={selectedTab === i}>
                 <Templates>
-                  {tab.templates.map(template => (
-                    <Template
-                      key={template.name}
-                      template={template}
-                      selectTemplate={this.selectTemplate}
-                    />
-                  ))}
+                  {tab.templates &&
+                    tab.templates.map(template => (
+                      <Template
+                        key={template.name}
+                        template={template}
+                        selectTemplate={this.selectTemplate}
+                      />
+                    ))}
+                  {tab.types && (
+                    <>
+                      {tab.types.map(type => (
+                        <>
+                          <Title>{type.name}</Title>
+                          {type.templates.map(template => (
+                            <Template
+                              key={template.name}
+                              template={template}
+                              selectTemplate={this.selectTemplate}
+                            />
+                          ))}
+                        </>
+                      ))}
+                    </>
+                  )}
                 </Templates>
               </Tab>
             ))}

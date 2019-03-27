@@ -10,6 +10,7 @@ export type Options = {
   showOnHomePage?: boolean;
   distDir?: string;
   netlify?: boolean;
+  popular?: boolean;
   extraConfigurations?: {
     [path: string]: ConfigurationFile;
   };

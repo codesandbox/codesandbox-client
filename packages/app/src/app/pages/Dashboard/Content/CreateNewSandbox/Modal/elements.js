@@ -51,13 +51,16 @@ export const Templates = styled.div`
   grid-gap: 1rem;
 
   @media (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 `;
 
-export const ImportChoices = styled(Templates)`
-  justify-content: space-between;
+export const ImportChoices = styled.div`
   margin-top: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  ${delayEffect(0.1)};
 `;
 
 export const Tab = styled.section`
@@ -86,6 +89,21 @@ export const ImportChoice = styled.a`
   }
 `;
 
+const activeStyles = css`
+  color: white;
+  padding-bottom: 0;
+  padding-top: 0;
+  outline: none;
+
+  &:after {
+    width: 110%;
+
+    @media screen and (max-width: 500px) {
+      width: 100%;
+    }
+  }
+`;
+
 export const Button = styled.button`
   background: transparent;
   border: none;
@@ -93,20 +111,38 @@ export const Button = styled.button`
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 20px;
-  padding-bottom: ${props => (props.selected ? '16px' : '20px')};
-  border-bottom: ${props => (props.selected ? '4px solid #40a9f3' : 'none')};
-  transition: 0.15s ease opacity;
-  top: -10px;
+  color: ${props => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.5)')};
+  padding: 0 20px;
+  transition: 0.15s ease all;
   position: relative;
   cursor: pointer;
   ${delayEffect(0.1)};
 
-  &:focus {
-    outline: none;
-    border-bottom: 4px solid #40a9f3;
-    padding-bottom: 16px;
+  &:after {
+    content: '';
+    margin-top: 22px;
+    display: block;
+    position: relative;
+    background: #40a9f3;
+    height: 2px;
+    box-sizing: border-box;
+    width: 0%;
+    margin-left: -5%;
+    transition: all 200ms ease;
+
+    @media screen and (max-width: 500px) {
+      margin-left: 0%;
+    }
+  }
+
+  ${props =>
+    props.selected &&
+    css`
+      ${activeStyles};
+    `};
+
+  &:hover {
+    ${activeStyles};
   }
 `;
 
@@ -115,8 +151,21 @@ export const TabContainer = styled.div`
   border-radius: 4px 4px 0 0;
   display: flex;
   background: #1b1d1f;
-  padding: 0;
+  height: 62px;
   box-sizing: border-box;
   padding: 0 2rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+`;
+
+export const Title = styled.h2`
+  grid-column: 1/-1;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0;
+  margin-top: 1rem;
+  &:first-child {
+    margin-top: 0;
+  }
 `;
