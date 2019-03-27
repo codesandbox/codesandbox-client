@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';
@@ -23,8 +23,6 @@ export default class Modal extends React.PureComponent {
     selectedTab: 0,
   };
 
-  setTab = tab => this.setState({ selectedTab: tab });
-
   selectTemplate = template => {
     this.props.createSandbox(template);
   };
@@ -33,14 +31,15 @@ export default class Modal extends React.PureComponent {
     const { forking = false, closing = false } = this.props;
 
     const { selectedTab } = this.state;
+
     return (
-      <Fragment>
+      <>
         <TabContainer>
           {availableTemplates.map(({ name }, i) => (
             <Button
               key={name}
               selected={selectedTab === i}
-              onClick={() => this.setTab(i)}
+              onClick={() => this.setState({ selectedTab: i })}
             >
               {name}
             </Button>
@@ -53,7 +52,7 @@ export default class Modal extends React.PureComponent {
         >
           <InnerContainer forking={forking} closing={closing}>
             {availableTemplates.map((tab, i) => (
-              <Tab visible={selectedTab === i}>
+              <Tab key={tab.name} visible={selectedTab === i}>
                 <Templates>
                   {tab.templates &&
                     tab.templates.map(template => (
@@ -63,22 +62,19 @@ export default class Modal extends React.PureComponent {
                         selectTemplate={this.selectTemplate}
                       />
                     ))}
-                  {tab.types && (
-                    <>
-                      {tab.types.map(type => (
-                        <>
-                          <Title>{type.name}</Title>
-                          {type.templates.map(template => (
-                            <Template
-                              key={template.name}
-                              template={template}
-                              selectTemplate={this.selectTemplate}
-                            />
-                          ))}
-                        </>
-                      ))}
-                    </>
-                  )}
+                  {tab.types &&
+                    tab.types.map(type => (
+                      <>
+                        <Title>{type.name}</Title>
+                        {type.templates.map(template => (
+                          <Template
+                            key={template.name}
+                            template={template}
+                            selectTemplate={this.selectTemplate}
+                          />
+                        ))}
+                      </>
+                    ))}
                 </Templates>
               </Tab>
             ))}
@@ -101,7 +97,7 @@ export default class Modal extends React.PureComponent {
             </ImportChoices>
           </InnerContainer>
         </Container>
-      </Fragment>
+      </>
     );
   }
 }
