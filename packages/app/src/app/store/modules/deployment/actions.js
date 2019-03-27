@@ -193,7 +193,12 @@ export async function createApiData({ props, state }) {
 
       apiData.files.push({ file: filePath, data, encoding: 'base64' });
     }
-    if (filePath === 'package.json') {
+
+    // if person added some files but no package.json
+    if (
+      filePath === 'package.json' &&
+      !apiData.files.filter(f => f.name === 'package.json')
+    ) {
       apiData.files.push({
         file: 'package.json',
         data: JSON.stringify(packageJSON, null, 2),
