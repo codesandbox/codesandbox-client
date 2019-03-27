@@ -106,6 +106,7 @@ const activeStyles = css`
 
 export const Button = styled.button`
   background: transparent;
+  font-family: 'Roboto', sans-serif;
   border: none;
   margin: 0;
   font-weight: 600;
