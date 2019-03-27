@@ -15,6 +15,7 @@ export default new Template(
     },
     distDir: 'dist',
     isServer: true,
+    popular: true,
     mainFile: ['/pages/index.vue'],
     showOnHomePage: true,
     main: true,

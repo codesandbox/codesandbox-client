@@ -20,5 +20,6 @@ export default new Template(
     backgroundColor: decorateSelector(() => '#000000'),
     showOnHomePage: true,
     main: true,
+    popular: true,
   }
 );

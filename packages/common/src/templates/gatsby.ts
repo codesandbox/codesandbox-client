@@ -18,5 +18,6 @@ export default new Template(
     mainFile: ['/src/pages/index.js'],
     showOnHomePage: true,
     main: true,
+    popular: true,
   }
 );

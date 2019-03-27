@@ -34,5 +34,6 @@ export default new VueTemplate(
     },
     distDir: 'dist',
     main: true,
+    popular: true,
   }
 );

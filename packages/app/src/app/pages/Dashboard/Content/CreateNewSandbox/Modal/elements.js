@@ -8,10 +8,11 @@ export const Container = styled.main`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
-  border-radius: 4px;
+  border-radius: 0 0 4px 4px;
   padding: 2rem;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
 
   ${props =>
     props.closing &&
@@ -35,9 +36,6 @@ export const Container = styled.main`
 `;
 
 export const InnerContainer = styled.div`
-  transition: 0.15s ease opacity;
-  ${delayEffect(0.3)};
-
   ${props =>
     (props.closing || props.forking) &&
     css`
@@ -47,30 +45,28 @@ export const InnerContainer = styled.div`
     `};
 `;
 
-export const Title = styled.h2`
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 1rem;
-  margin-top: 1rem;
+export const Templates = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
 
-  &:first-child {
-    margin-top: 0;
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
   }
 `;
 
-export const Templates = styled.div`
+export const ImportChoices = styled.div`
+  margin-top: 2.5em;
   display: flex;
   align-items: center;
-
-  @media (max-width: 870px) {
-    flex-wrap: wrap;
-  }
+  justify-content: space-between;
+  ${delayEffect(0.1)};
 `;
 
-export const ImportChoices = styled(Templates)`
-  justify-content: space-between;
+export const Tab = styled.section`
+  display: ${props => (props.visible ? 'block' : 'none')};
+  transition: 0.15s ease opacity;
+  ${delayEffect(0.1)};
 `;
 
 export const ImportChoice = styled.a`
@@ -90,5 +86,87 @@ export const ImportChoice = styled.a`
 
   &:hover {
     color: rgba(255, 255, 255, 1);
+  }
+`;
+
+const activeStyles = css`
+  color: white;
+  padding-bottom: 0;
+  padding-top: 0;
+  outline: none;
+
+  &:after {
+    width: 110%;
+
+    @media screen and (max-width: 500px) {
+      width: 100%;
+    }
+  }
+`;
+
+export const Button = styled.button`
+  background: transparent;
+  font-family: 'Roboto', sans-serif;
+  border: none;
+  margin: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: ${props => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.5)')};
+  padding: 0 20px;
+  transition: 0.15s ease all;
+  position: relative;
+  cursor: pointer;
+  ${delayEffect(0.1)};
+
+  &:after {
+    content: '';
+    margin-top: 22px;
+    display: block;
+    position: relative;
+    background: #40a9f3;
+    height: 2px;
+    box-sizing: border-box;
+    width: 0%;
+    margin-left: -5%;
+    transition: all 200ms ease;
+
+    @media screen and (max-width: 500px) {
+      margin-left: 0%;
+    }
+  }
+
+  ${props =>
+    props.selected &&
+    css`
+      ${activeStyles};
+    `};
+
+  &:hover {
+    ${activeStyles};
+  }
+`;
+
+export const TabContainer = styled.div`
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  background: #1b1d1f;
+  height: 62px;
+  box-sizing: border-box;
+  padding: 0 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+`;
+
+export const Title = styled.h2`
+  grid-column: 1/-1;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0;
+  margin-top: 1rem;
+  &:first-child {
+    margin-top: 0;
   }
 `;
