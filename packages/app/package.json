@@ -126,6 +126,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-destructuring": "^7.1.2",
+    "@babel/preset-env": "^7.4.2",
     "@cerebral/http": "^4.0.0",
     "@cerebral/mobx-state-tree": "^3.0.0",
     "@emmetio/codemirror-plugin": "^0.3.5",
