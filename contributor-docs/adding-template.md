@@ -157,7 +157,9 @@ To do this, please add a `sandbox.config.json` file to the root folder of the re
 }
 ```
 
-To test it, use CodeSandbox to access the repository: `https://codesanbox.io/s/github/user/repo-name`.
+To test it, you use CodeSandbox to access the repository that will be used for the template like so: `https://codesanbox.io/s/github/user/repo-name`, where `user` is the user/organisation who owns the repository and `repo-name` is the name of the repository to use for the template.
+
+After your Pull Request to add a new template has been merged, you can delete this `sandbox.json.config` file from your repository.
 
 ### Conclusion
 
