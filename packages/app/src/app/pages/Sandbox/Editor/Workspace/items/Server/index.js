@@ -34,10 +34,6 @@ const Server = ({ store }) => {
         This sandbox is executed on a server. You can control the server from
         this panel.
       </Description>
-      <Description>
-        This functionality is in <strong>beta</strong>. It can behave
-        differently than you expect, handle with care!
-      </Description>
 
       <Margin top={1}>
         <SubTitle>Status</SubTitle>
