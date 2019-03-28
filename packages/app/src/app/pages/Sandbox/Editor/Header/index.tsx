@@ -44,7 +44,10 @@ type ButtonProps = {
   signals: any;
   style: React.CSSProperties;
   secondary?: boolean;
-  disabled?: boolean;
+};
+
+type ForkButtonProps = ButtonProps & {
+  isForking: boolean;
 };
 
 const LikeButton = ({
@@ -65,19 +68,24 @@ const LikeButton = ({
   />
 );
 
-const ForkButton = ({ signals, secondary, disabled, style }: ButtonProps) => (
+const ForkButton = ({
+  signals,
+  secondary,
+  isForking,
+  style,
+}: ForkButtonProps) => (
   <Button
     onClick={() => {
       signals.editor.forkSandboxClicked();
     }}
     style={style}
     secondary={secondary}
-    disabled={disabled}
+    disabled={isForking}
     small
   >
     <>
       <Fork style={{ marginRight: '.5rem' }} />
-      Fork
+      {isForking ? 'Forking' : 'Fork'}
     </>
   </Button>
 );
@@ -212,7 +220,7 @@ const Header = ({ store, signals, zenMode }: Props) => {
         />
         <ForkButton
           secondary={sandbox.owned}
-          disabled={store.editor.isForkingSandbox}
+          isForking={store.editor.isForkingSandbox}
           style={{ fontSize: '.75rem' }}
           signals={signals}
           store={store}
