@@ -211,7 +211,7 @@ class CreateNewSandbox extends React.PureComponent {
                 right: 0,
                 left: 0,
 
-                margin: '0 auto 20vh',
+                margin: '0 auto 15vh',
                 height: 'auto',
                 width: 950,
               }}

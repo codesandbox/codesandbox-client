@@ -9,7 +9,6 @@ export const Container = styled.main`
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
   border-radius: 0 0 4px 4px;
-  padding: 2rem;
   width: 100%;
   box-sizing: border-box;
   position: relative;
@@ -35,12 +34,33 @@ export const Container = styled.main`
     `};
 `;
 
-export const InnerContainer = styled.div`
+export const TabContainer = styled.div`
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  background: #1b1d1f;
+  height: 62px;
+  box-sizing: border-box;
+  padding: 0 2rem;
+
   ${props =>
     (props.closing || props.forking) &&
     css`
       position: absolute;
       overflow: hidden;
+      ${delayOutEffect(0)};
+    `};
+`;
+
+export const InnerContainer = styled.div`
+  padding: 1rem 2rem;
+  overflow: hidden;
+  ${props =>
+    (props.closing || props.forking) &&
+    css`
+      position: absolute;
+      overflow: hidden;
+      padding: 0;
       ${delayOutEffect(0)};
     `};
 `;
@@ -60,6 +80,7 @@ export const ImportChoices = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-bottom: 1rem;
   ${delayEffect(0.1)};
 `;
 
@@ -121,7 +142,7 @@ export const Button = styled.button`
 
   &:after {
     content: '';
-    margin-top: 22px;
+    margin-top: 21px;
     display: block;
     position: relative;
     background: #40a9f3;
@@ -145,17 +166,6 @@ export const Button = styled.button`
   &:hover {
     ${activeStyles};
   }
-`;
-
-export const TabContainer = styled.div`
-  width: 100%;
-  border-radius: 4px 4px 0 0;
-  display: flex;
-  background: #1b1d1f;
-  height: 62px;
-  box-sizing: border-box;
-  padding: 0 2rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
 export const Title = styled.h2`
