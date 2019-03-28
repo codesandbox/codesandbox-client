@@ -44,6 +44,7 @@ type ButtonProps = {
   signals: any;
   style: React.CSSProperties;
   secondary?: boolean;
+  disabled?: boolean;
 };
 
 const LikeButton = ({
@@ -64,13 +65,14 @@ const LikeButton = ({
   />
 );
 
-const ForkButton = ({ signals, secondary, style }: ButtonProps) => (
+const ForkButton = ({ signals, secondary, disabled, style }: ButtonProps) => (
   <Button
     onClick={() => {
       signals.editor.forkSandboxClicked();
     }}
     style={style}
     secondary={secondary}
+    disabled={disabled}
     small
   >
     <>
@@ -210,6 +212,7 @@ const Header = ({ store, signals, zenMode }: Props) => {
         />
         <ForkButton
           secondary={sandbox.owned}
+          disabled={store.editor.isForkingSandbox}
           style={{ fontSize: '.75rem' }}
           signals={signals}
           store={store}
