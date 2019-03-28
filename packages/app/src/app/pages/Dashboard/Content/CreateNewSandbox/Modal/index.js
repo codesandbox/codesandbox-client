@@ -1,5 +1,7 @@
 import React from 'react';
 
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';
 import UploadIcon from 'react-icons/lib/go/cloud-upload';
@@ -24,6 +26,7 @@ export default class Modal extends React.PureComponent {
   };
 
   selectTemplate = template => {
+    track('New Sandbox Modal - Select Template', { template });
     this.props.createSandbox(template);
   };
 
