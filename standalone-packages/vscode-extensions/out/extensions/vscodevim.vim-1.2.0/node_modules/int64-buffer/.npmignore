@@ -1,0 +1,6 @@
+*~
+node_modules
+gh-pages
+.idea
+.DS_Store
+*.min.js.gz

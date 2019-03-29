@@ -267,9 +267,10 @@ export default class Module {
       };
       fs.access = (_path: any, cb1: any, cb: (err?: Error) => void) => {
         const callback = cb || cb1;
+
         // TODO: make this async
         if (fs.existsSync(_path)) {
-          return callback;
+          return callback();
         }
         callback(new Error('File not found'));
       };

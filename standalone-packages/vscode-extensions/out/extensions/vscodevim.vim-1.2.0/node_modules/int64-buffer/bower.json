@@ -1,0 +1,31 @@
+{
+  "name": "int64-buffer",
+  "description": "64bit Long Integer on Buffer/Array/ArrayBuffer in Pure JavaScript",
+  "authors": [
+    "@kawanet"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "64bit",
+    "IEEE-754",
+    "buffer",
+    "arraybuffer",
+    "int8array",
+    "int",
+    "int64",
+    "integer",
+    "long",
+    "longlong",
+    "signed",
+    "uint64",
+    "unsinged"
+  ],
+  "homepage": "https://github.com/kawanet/int64-buffer",
+  "ignore": [
+    ".*",
+    "Makefile",
+    "bower_components",
+    "node_modules",
+    "test"
+  ]
+}

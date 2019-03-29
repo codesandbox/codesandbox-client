@@ -1,0 +1,9 @@
+sudo: false
+
+language: node_js
+
+matrix:
+  include:
+    - node_js: "6"
+    - node_js: "8"
+    - node_js: "10"
