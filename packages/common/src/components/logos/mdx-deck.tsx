@@ -5,7 +5,7 @@ export default ({ width = 32, height = 32, className }) => (
     width={width}
     height={height}
     className={className}
-    viewBox="0 0 128 128"
+    viewBox="0 0 138 57"
     xmlns="http://www.w3.org/2000/svg"
   >
     <g fill="none" fillRule="evenodd">
