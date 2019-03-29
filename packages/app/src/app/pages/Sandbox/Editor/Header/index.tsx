@@ -85,7 +85,7 @@ const ForkButton = ({
   >
     <>
       <Fork style={{ marginRight: '.5rem' }} />
-      {isForking ? 'Forking' : 'Fork'}
+      {isForking ? 'Forking...' : 'Fork'}
     </>
   </Button>
 );
