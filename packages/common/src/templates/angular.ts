@@ -1,4 +1,4 @@
-// @flow
+
 
 import { absolute, join } from '../utils/path';
 

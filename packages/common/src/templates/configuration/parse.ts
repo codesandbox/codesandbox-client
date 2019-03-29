@@ -1,4 +1,4 @@
-// @flow
+
 import { ConfigurationFile } from '../../templates/configuration/types';
 
 import { parse } from 'jsonlint';

@@ -1,4 +1,4 @@
-// @flow
+
 import configurations from './configuration';
 
 import Template from './template';

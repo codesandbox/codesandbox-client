@@ -1,4 +1,4 @@
-// @flow
+
 import { absolute } from '../utils/path';
 
 import Template, { ParsedConfigurationFiles } from './template';
