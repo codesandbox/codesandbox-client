@@ -27,6 +27,7 @@ class More extends React.PureComponent<Props> {
 
   render() {
     const { owned } = this.props.store.editor.currentSandbox;
+    const { isForkingSandbox } = this.props.store.editor;
     const message = !owned ? NOT_OWNED_MESSAGE : NOT_SIGNED_IN_MESSAGE;
 
     return (
@@ -34,8 +35,13 @@ class More extends React.PureComponent<Props> {
         <Description>{message}</Description>
         <Margin margin={1}>
           {!owned ? (
-            <Button small block onClick={this.forkSandbox}>
-              Fork Sandbox
+            <Button
+              small
+              block
+              disabled={isForkingSandbox}
+              onClick={this.forkSandbox}
+            >
+              {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
             </Button>
           ) : (
             <SignInButton block />
