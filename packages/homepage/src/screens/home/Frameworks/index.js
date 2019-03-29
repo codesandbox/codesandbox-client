@@ -94,6 +94,7 @@ const Icons = styled.div`
   margin-top: 1rem;
   margin-bottom: 4rem;
   min-width: 100%;
+  flex-wrap: wrap;
 
   @media (max-width: 800px) {
     margin: 2rem 0;
