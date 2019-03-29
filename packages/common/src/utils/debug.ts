@@ -26,7 +26,7 @@ const getDebugger: () => (key: string) => (...message: any[]) => void = () => {
     const global = getGlobal() as any;
     // Return a debugger that will log to sentry
     return (key: string) => (message: string) => {
-      if (typeof global.Raven === 'object') {
+      if (false || typeof global.Raven === 'object') {
         try {
           global.Raven.captureBreadcrumb({
             message: `${key} - ${message}`,
