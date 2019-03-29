@@ -1,4 +1,4 @@
-// @flow
+
 
 import { Sandbox } from '../../../types';
 import slugify from '../../../utils/slugify';

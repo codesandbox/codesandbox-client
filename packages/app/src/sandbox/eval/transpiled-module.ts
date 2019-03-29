@@ -1,4 +1,4 @@
-// @flow
+
 import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';

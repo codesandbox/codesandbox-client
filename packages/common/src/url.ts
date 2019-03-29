@@ -1,4 +1,4 @@
-// @flow
+
 
 export interface Result {
   editorSize: number;

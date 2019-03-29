@@ -1,4 +1,4 @@
-// @flow
+
 
 import React from '../components/logos/React';
 import Angular from '../components/logos/Angular';

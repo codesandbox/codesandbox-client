@@ -1,4 +1,3 @@
-// @flow
 import angular from './angular';
 import babel from './babel';
 import parcel from './parcel';

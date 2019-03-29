@@ -1,4 +1,4 @@
-// @flow
+
 
 import Template, { ParsedConfigurationFiles } from './template';
 import { decorateSelector } from '../theme';
