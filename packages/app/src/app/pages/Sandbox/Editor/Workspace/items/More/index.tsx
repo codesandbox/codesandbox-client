@@ -41,7 +41,7 @@ class More extends React.PureComponent<Props> {
               disabled={isForkingSandbox}
               onClick={this.forkSandbox}
             >
-              {isForkingSandbox ? 'Forking Sandbox' : 'Fork Sandbox'}
+              {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
             </Button>
           ) : (
             <SignInButton block />
