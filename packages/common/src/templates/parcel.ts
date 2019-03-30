@@ -1,4 +1,4 @@
-// @flow
+
 import { absolute } from '../utils/path';
 
 import Template, { ParsedConfigurationFiles } from './template';
@@ -59,5 +59,6 @@ export default new ParcelTemplate(
     distDir: 'dist',
     main: true,
     isTypescript: true,
+    popular: true,
   }
 );

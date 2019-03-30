@@ -1,4 +1,3 @@
-// @flow
 import angular from './angular';
 import babel from './babel';
 import parcel from './parcel';
@@ -21,6 +20,7 @@ import sapper from './sapper';
 import nest from './nest';
 import staticTemplate from './static';
 import styleguidist from './styleguidist';
+import mdxDeck from './mdx-deck';
 
 export {
   angular,
@@ -45,6 +45,7 @@ export {
   ember,
   staticTemplate,
   styleguidist,
+  mdxDeck,
 };
 
 export type TemplateType =
@@ -65,7 +66,8 @@ export type TemplateType =
   | 'sapper'
   | 'nest'
   | 'static'
-  | 'styleguidist';
+  | 'styleguidist'
+  | 'mdx-deck';
 
 export default function getDefinition(theme: TemplateType) {
   switch (theme) {
@@ -111,6 +113,8 @@ export default function getDefinition(theme: TemplateType) {
       return staticTemplate;
     case styleguidist.name:
       return styleguidist;
+    case mdxDeck.name:
+      return mdxDeck;
     case ember.name:
       return ember;
     default:

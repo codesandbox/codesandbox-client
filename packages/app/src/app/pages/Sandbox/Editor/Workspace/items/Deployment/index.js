@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Description } from '../../elements';
-import ZeitDeployments from './zeit';
+import ZeitDeployments from './Zeit';
+import NetlifyDeployments from './Netlify';
 
 class Deployment extends Component {
   componentDidMount = () => {
@@ -16,6 +17,7 @@ class Deployment extends Component {
           supported providers.
         </Description>
         <ZeitDeployments />
+        <NetlifyDeployments />
       </div>
     );
   }

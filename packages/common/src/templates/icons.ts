@@ -1,4 +1,4 @@
-// @flow
+
 
 import React from '../components/logos/React';
 import Angular from '../components/logos/Angular';
@@ -19,6 +19,7 @@ import Apollo from '../components/logos/Apollo';
 import Nest from '../components/logos/Nest';
 import Static from '../components/logos/Static';
 import Styleguidist from '../components/logos/Styleguidist';
+import MDXDeck from '../components/logos/mdx-deck';
 
 import {
   react,
@@ -41,6 +42,7 @@ import {
   sapper,
   staticTemplate,
   styleguidist,
+  mdxDeck,
 } from './';
 
 import { TemplateType } from './';
@@ -94,6 +96,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return Static;
     case styleguidist.name:
       return Styleguidist;
+    case mdxDeck.name:
+      return MDXDeck;
     default:
       return React;
   }

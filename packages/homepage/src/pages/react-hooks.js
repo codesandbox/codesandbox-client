@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import WideSandbox from 'common/lib/components/WideSandbox';
+import WideSandbox from '@codesandbox/common/lib/components/WideSandbox';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';

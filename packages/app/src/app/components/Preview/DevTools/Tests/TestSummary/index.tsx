@@ -3,7 +3,7 @@ import * as React from 'react';
 import PlayIcon from 'react-icons/lib/go/playback-play';
 import SyncIcon from 'react-icons/lib/go/sync';
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { File, Test, Status } from '../';
 
@@ -68,13 +68,13 @@ export default ({
             <div style={{ fontSize: '.875rem' }}>
               {totalTestCount !== 0 && `${totalDuration}ms`}
             </div>
-            <Tooltip title="Toggle File Watching">
+            <Tooltip content="Toggle File Watching">
               <SyncIcon
                 style={{ color: watching ? 'white' : 'inherit' }}
                 onClick={toggleWatching}
               />
             </Tooltip>
-            <Tooltip title="Run All Tests">
+            <Tooltip content="Run All Tests">
               <PlayIcon onClick={runAllTests} />
             </Tooltip>
           </Actions>

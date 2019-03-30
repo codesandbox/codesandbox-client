@@ -6,15 +6,15 @@ import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'mobx-react';
 
 import history from 'app/utils/history';
-import _debug from 'common/lib/utils/debug';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import { client } from 'app/graphql/client';
-import VERSION from 'common/lib/version';
-import registerServiceWorker from 'common/lib/registerServiceWorker';
-import requirePolyfills from 'common/lib/load-dynamic-polyfills';
+import VERSION from '@codesandbox/common/lib/version';
+import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
+import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
-import 'common/lib/global.css';
-import theme from 'common/lib/theme';
-import { isSafari } from 'common/lib/utils/platform';
+import '@codesandbox/common/lib/global.css';
+import theme from '@codesandbox/common/lib/theme';
+import { isSafari } from '@codesandbox/common/lib/utils/platform';
 
 // eslint-disable-next-line
 import * as child_process from 'node-services/lib/child_process';

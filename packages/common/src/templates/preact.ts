@@ -1,4 +1,4 @@
-// @flow
+
 
 import Template from './template';
 import { decorateSelector } from '../theme';

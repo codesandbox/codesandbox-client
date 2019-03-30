@@ -1,4 +1,4 @@
-// @flow
+
 import { Sandbox } from '../types';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
@@ -21,7 +21,7 @@ export const host = () => {
   if (process.env.LOCAL_SERVER) {
     return 'localhost:3000';
   }
-  return 'codesandbox.dev';
+  return 'codesandbox.test';
 };
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;

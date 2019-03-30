@@ -3,11 +3,11 @@ import { Query, Mutation } from 'react-apollo';
 import { inject, Observer } from 'mobx-react';
 import { sortBy } from 'lodash-es';
 
-import { UserWithAvatar } from 'common/lib/components/UserWithAvatar';
-import { Button } from 'common/lib/components/Button';
-import AutosizeTextArea from 'common/lib/components/AutosizeTextArea';
-import Margin from 'common/lib/components/spacing/Margin';
-import track from 'common/lib/utils/analytics';
+import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Container, HeaderContainer, Description } from '../../elements';
 import {

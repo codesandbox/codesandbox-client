@@ -1,7 +1,7 @@
 import React from 'react';
-import Badge from 'common/lib/utils/badges/Badge';
-import ContributorsBadge from 'common/lib/components/ContributorsBadge';
-import CommunityBadge from 'common/lib/components/CommunityBadges';
+import Badge from '@codesandbox/common/lib/utils/badges/Badge';
+import ContributorsBadge from '@codesandbox/common/lib/components/ContributorsBadge';
+import CommunityBadge from '@codesandbox/common/lib/components/CommunityBadges';
 import { H3 } from '../../../components/Typography';
 import { BadgeWrapper, BadgeAside } from './elements';
 

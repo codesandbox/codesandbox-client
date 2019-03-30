@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import { commonPostMessage } from 'common/lib/utils/global';
-import { protocolAndHost } from 'common/lib/utils/url-generator';
+import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 const SOCKET_IDENTIFIER = 'node-socket';
 

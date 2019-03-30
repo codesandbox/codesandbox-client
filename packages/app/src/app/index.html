@@ -59,20 +59,22 @@
           env: {
             VSCODE_DEV: false
           },
-          nextTick: (cb) => requestAnimationFrame(cb),
+          nextTick: function(cb) {
+            return requestAnimationFrame(cb);
+          },
           once: BrowserFS.BFSRequire('process').once,
-          removeListener: () => {}
+          removeListener: function () {}
         };
         window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
       }
     </script>
 
-    <link data-name="/public/vscode15/vs/editor/editor.main"
+    <link data-name="/public/vscode16/vs/editor/editor.main"
       rel="preload"
       as="style"
-      href="/public/vscode15/vs/editor/codesandbox.editor.main.css">
+      href="/public/vscode16/vs/editor/codesandbox.editor.main.css">
     </link>
-    <link rel="preload" as="script" href="/public/vscode15/vs/editor/codesandbox.editor.main.js"></link>
+    <link rel="preload" as="script" href="/public/vscode16/vs/editor/codesandbox.editor.main.js"></link>
   </head>
   <body style="margin: 0; padding: 0;">
     <!-- Google Tag Manager (noscript) -->

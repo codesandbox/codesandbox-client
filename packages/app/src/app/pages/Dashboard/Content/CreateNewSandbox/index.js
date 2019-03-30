@@ -3,10 +3,10 @@ import { Spring } from 'react-spring/renderprops';
 import { inject } from 'mobx-react';
 import { ThemeProvider } from 'styled-components';
 import history from 'app/utils/history';
-import { ESC, ENTER } from 'common/lib/utils/keycodes';
-import theme from 'common/lib/theme';
-import { sandboxUrl } from 'common/lib/utils/url-generator';
-import Portal from 'common/lib/components/Portal';
+import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import theme from '@codesandbox/common/lib/theme';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import Portal from '@codesandbox/common/lib/components/Portal';
 
 import {
   ButtonsContainer,
@@ -211,7 +211,7 @@ class CreateNewSandbox extends React.PureComponent {
                 right: 0,
                 left: 0,
 
-                margin: '0 auto 20vh',
+                margin: '0 auto 15vh',
                 height: 'auto',
                 width: 950,
               }}

@@ -1,10 +1,10 @@
-import { getModulePath } from 'common/lib/sandbox/modules';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import {
   optionsToParameterizedUrl,
   protocolAndHost,
   sandboxUrl,
   embedUrl,
-} from 'common/lib/utils/url-generator';
+} from '@codesandbox/common/lib/utils/url-generator';
 
 export const BUTTON_URL = `${
   process.env.CODESANDBOX_HOST
@@ -68,7 +68,7 @@ export const getIframeScript = (sandbox, mainModule, state) =>
     sandbox,
     mainModule,
     state
-  )}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
+  )}" title="${sandbox.title || sandbox.id}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
 
 // eslint-disable-next-line
 export const getButtonMarkdown = (sandbox, mainModule, state) => {

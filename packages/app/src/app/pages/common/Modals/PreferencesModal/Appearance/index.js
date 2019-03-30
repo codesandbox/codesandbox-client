@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import themes from 'common/lib/themes';
+import themes from '@codesandbox/common/lib/themes';
 
-import PreferenceText from 'common/lib/components/Preference/PreferenceText';
+import PreferenceText from '@codesandbox/common/lib/components/Preference/PreferenceText';
 import {
   Title,
   SubContainer,
@@ -127,12 +127,12 @@ function EditorSettings({ store, signals }) {
                 {'"'} as your color theme.
               </SubDescription>
 
-            <PreferenceText
-              isTextArea
-              style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
-              block
-              rows={7}
-              placeholder={`You can use your own theme from VSCode directly:
+              <PreferenceText
+                isTextArea
+                style={{ fontFamily: 'Source Code Pro', fontSize: '.8rem' }}
+                block
+                rows={7}
+                placeholder={`You can use your own theme from VSCode directly:
 1. Open VSCode
 2. Press (CMD or CTRL) + SHIFT + P
 3. Enter: '> Developer: Generate Color Scheme From Current Settings'

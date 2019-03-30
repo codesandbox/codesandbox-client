@@ -3,12 +3,16 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ChevronRight from 'react-icons/lib/md/chevron-right';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 import MonacoEditor from 'app/components/CodeEditor/Monaco/MonacoReactComponent';
 import defineTheme from 'app/components/CodeEditor/Monaco/define-theme';
 
-import { ARROW_UP, ARROW_DOWN, ENTER } from 'common/lib/utils/keycodes';
+import {
+  ARROW_UP,
+  ARROW_DOWN,
+  ENTER,
+} from '@codesandbox/common/lib/utils/keycodes';
 
 import { IconContainer } from './elements';
 

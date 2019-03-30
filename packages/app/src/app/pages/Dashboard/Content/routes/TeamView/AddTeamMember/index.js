@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { Mutation } from 'react-apollo';
 
-import Input from 'common/lib/components/Input';
-import { Button } from 'common/lib/components/Button';
-import track from 'common/lib/utils/analytics';
+import Input from '@codesandbox/common/lib/components/Input';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { INVITE_TO_TEAM } from '../../../../queries';
 

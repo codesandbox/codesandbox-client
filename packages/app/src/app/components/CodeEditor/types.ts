@@ -1,11 +1,11 @@
-// @flow
+
 
 import {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
-} from 'common/lib/types';
+} from '@codesandbox/common/lib/types';
 
 export type Settings = {
   autoCompleteEnabled: boolean;

@@ -1,4 +1,4 @@
-// @flow
+
 const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
 
 function splitPath(filename: string) {

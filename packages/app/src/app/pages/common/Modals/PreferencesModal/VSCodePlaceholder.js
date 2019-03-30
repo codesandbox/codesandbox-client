@@ -3,8 +3,8 @@ import { observer, inject } from 'mobx-react';
 import { Route } from 'react-router-dom';
 
 import vscode from 'app/vscode';
-import { Button } from 'common/lib/components/Button';
-import { editorUrl } from 'common/lib/utils/url-generator';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import { editorUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 const VSCodePlaceholder = ({ children, store, signals, hideTitle }) => {
   if (store.preferences.settings.experimentVSCode) {

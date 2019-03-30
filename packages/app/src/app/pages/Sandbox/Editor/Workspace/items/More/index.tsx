@@ -1,10 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import SignInButton from 'app/pages/common/SignInButton';
-import Margin from 'common/lib/components/spacing/Margin';
-import track from 'common/lib/utils/analytics';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Description } from '../../elements';
 
@@ -27,6 +27,7 @@ class More extends React.PureComponent<Props> {
 
   render() {
     const { owned } = this.props.store.editor.currentSandbox;
+    const { isForkingSandbox } = this.props.store.editor;
     const message = !owned ? NOT_OWNED_MESSAGE : NOT_SIGNED_IN_MESSAGE;
 
     return (
@@ -34,8 +35,13 @@ class More extends React.PureComponent<Props> {
         <Description>{message}</Description>
         <Margin margin={1}>
           {!owned ? (
-            <Button small block onClick={this.forkSandbox}>
-              Fork Sandbox
+            <Button
+              small
+              block
+              disabled={isForkingSandbox}
+              onClick={this.forkSandbox}
+            >
+              {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
             </Button>
           ) : (
             <SignInButton block />

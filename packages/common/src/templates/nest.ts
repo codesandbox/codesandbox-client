@@ -1,4 +1,4 @@
-// @flow
+
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
@@ -16,5 +16,6 @@ export default new Template(
     isServer: true,
     mainFile: ['/src/main.ts'],
     showOnHomePage: true,
+    netlify: false,
   }
 );

@@ -1,4 +1,4 @@
-// @flow
+
 import Template from './template';
 import { decorateSelector } from '../theme';
 
@@ -8,5 +8,5 @@ export default new Template(
   'https://github.com/sveltejs/svelte',
   'svelte',
   decorateSelector(() => '#AA1E1E'),
-  { showOnHomePage: true, showCube: false, distDir: 'public' }
+  { showOnHomePage: true, showCube: false, distDir: 'public', netlify: false }
 );

@@ -1,6 +1,6 @@
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'common/lib/utils/debug';
-import { getAbsoluteDependencies } from 'common/lib/utils/dependencies';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
 
 import dependenciesToQuery from './dependencies-to-query';
 
@@ -18,13 +18,24 @@ const VERSION = 1;
 
 const BUCKET_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://prod-packager-packages.codesandbox.io'
+    ? 'https://d1jyvh0kxilfa7.cloudfront.net'
     : 'https://dev-packager-packages.codesandbox.io';
+
+const NEW_PACKAGER_URL =
+  'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages';
 
 const PACKAGER_URL =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages'
+    ? 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages'
     : 'https://xi5p9f7czk.execute-api.eu-west-1.amazonaws.com/dev/packages';
+
+function warmupPackager(url: string, method = 'GET') {
+  fetch(url, {
+    method,
+  })
+    .then(() => {})
+    .catch(() => {});
+}
 
 function callApi(url: string, method = 'GET') {
   return fetch(url, {
@@ -111,6 +122,7 @@ async function getDependencies(dependencies: Object) {
   const bucketDependencyUrl = dependenciesToBucketPath(absoluteDependencies);
 
   setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+  warmupPackager(`${NEW_PACKAGER_URL}/${dependencyUrl}`, 'POST');
   try {
     const bucketManifest = await callApi(
       `${BUCKET_URL}/${bucketDependencyUrl}`

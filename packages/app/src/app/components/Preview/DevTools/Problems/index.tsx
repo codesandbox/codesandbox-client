@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { listen, dispatch, actions } from 'codesandbox-api';
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
 import { Console } from 'console-feed';
@@ -106,7 +106,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
                 <Path>{splittedPath.join('/')}/</Path>
                 <FileName>{fileName}</FileName>
                 <Actions>
-                  <Tooltip title="Open File">
+                  <Tooltip content="Open File">
                     <FileIcon onClick={() => this.openFile(file)} />
                   </Tooltip>
                 </Actions>

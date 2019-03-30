@@ -1,4 +1,4 @@
-// @flow
+
 import { ConfigurationFile } from '../types';
 
 const JSX_PRAGMA = {

@@ -1,5 +1,5 @@
-// @flow
-import * as pathUtils from 'common/lib/utils/path';
+
+import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
