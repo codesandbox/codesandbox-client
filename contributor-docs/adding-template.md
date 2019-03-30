@@ -8,7 +8,7 @@ If you think that we missed something in this guide or believe we could explain 
 
 ## What is a template?
 
-A template is an identifier for a specific type of sandbox project that you can create on [codesandbox.io](https://codesandbox.io), like projects using `Gatsby`, `React` or `Vue`.
+A template is an identifier for a specific type of sandbox project that you can create on [codesandbox.io](https://codesandbox.io), like projects using `Gatsby`, `React` or `Vue.js`.
 
 When you create a template you can customise how the template behaves, in order to improve the User Experience of your template in the CodeSandbox editor and preview. Examples of this include configuring which file should be opened in the editor by default when choosing a template, or changing the default `eslint` rules in a template, like with `vue-cli`.
 
