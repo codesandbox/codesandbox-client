@@ -42,7 +42,7 @@ We encourage everyone to first evaluate whether the template works as a sandbox,
 
 In order to add a new template, you need to go through a set of steps. Some of these steps you have to do, others depend on the type of template you want to add (**sandbox** vs. **container**).
 
-To get started, you should first follow the steps in our Contribution guidelines in order to [set up CodeSandbox locally](https://github.com/CompuIves/codesandbox-client/blob/master/CONTRIBUTING.md#setting-up-the-project-locally).
+To get started, you should first follow the steps in our contribution guidelines in order to [set up CodeSandbox locally](https://github.com/CompuIves/codesandbox-client/blob/master/CONTRIBUTING.md#setting-up-the-project-locally).
 
 ### 1. Add template logo
 
