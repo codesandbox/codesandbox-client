@@ -161,6 +161,18 @@ To test it, you use CodeSandbox to access the repository that will be used for t
 
 After your Pull Request to add a new template has been merged, you can delete this `sandbox.json.config` file from your repository.
 
+### 6. Add yourself as a contributor
+
+This project follows the all-contributors specification. Contributions of any kind are welcome! To add yourself to the table of contributors in the README.md file, please use the automated script as part of your PR:
+
+```
+yarn add-contributor
+```
+
+Follow the prompt and commit .all-contributorsrc and README.md in the PR.
+
+Thank you for taking the time to contribute! 👍
+
 ### Conclusion
 
 If your testing went well, congratulations! You have now created a new template for CodeSandbox!
