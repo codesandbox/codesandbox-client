@@ -1076,6 +1076,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vicbergquist",
+      "name": "Victoria Bergquist",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/25737281?v=4",
+      "profile": "https://twitter.com/vicbergquist",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github"
