@@ -18,7 +18,7 @@ export const DNT =
 let sentryInitialized = false;
 
 function getSentry() {
-  return import('@sentry/browser');
+  return import(/* webpackChunkName: 'sentry' */ '@sentry/browser');
 }
 export async function initializeSentry(dsn: string) {
   const Sentry = await getSentry();
