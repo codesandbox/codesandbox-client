@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser';
+
 import VERSION from '../version';
 import _debug from '../utils/debug';
 
@@ -15,7 +17,22 @@ export const DNT =
     global.navigator.msDoNotTrack === '1'
   );
 
-export function identify(key, value) {
+export function initializeSentry(dsn: string) {
+  if (!DNT) {
+    return Sentry.init({
+      dsn,
+      release: VERSION,
+    });
+  }
+}
+
+export function logError(err: Error) {
+  Sentry.captureException(err);
+
+  if (window.console && console.error) console.error(err);
+}
+
+export function identify(key: string, value: string) {
   try {
     if (!DNT) {
       if (typeof global.amplitude !== 'undefined') {
@@ -24,6 +41,10 @@ export function identify(key, value) {
         global.amplitude.identify(identity);
         debug('[Amplitude] Identifying', key, value);
       }
+
+      Sentry.configureScope(scope => {
+        scope.setExtra(key, value);
+      });
     }
   } catch (e) {
     /* */
@@ -40,6 +61,10 @@ export function setUserId(userId: string) {
 
         global.amplitude.getInstance().setUserId(hashedId);
       }
+
+      Sentry.configureScope(scope => {
+        scope.setUser({ id: userId });
+      });
     }
   } catch (e) {
     /* */
@@ -58,6 +83,10 @@ export function resetUserId() {
           global.amplitude.getInstance().regenerateDeviceId();
         }
       }
+
+      Sentry.configureScope(scope => {
+        scope.setUser({ id: undefined });
+      });
     }
   } catch (e) {
     /* */
