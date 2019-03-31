@@ -23,11 +23,12 @@ function getSentry() {
 export async function initializeSentry(dsn: string) {
   const Sentry = await getSentry();
   if (!DNT) {
+    sentryInitialized = true;
+
     return Sentry.init({
       dsn,
       release: VERSION,
     });
-    sentryInitialized = true;
   }
 }
 
