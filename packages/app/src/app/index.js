@@ -51,7 +51,9 @@ window.addEventListener('unhandledrejection', e => {
 
 if (process.env.NODE_ENV === 'production') {
   try {
-    initializeSentry();
+    initializeSentry(
+      'https://3943f94c73b44cf5bb2302a72d52e7b8@sentry.io/155188'
+    );
   } catch (error) {
     console.error(error);
   }
