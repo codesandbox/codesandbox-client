@@ -187,7 +187,7 @@ export default class CodeEditor extends React.PureComponent<
       >
         {!isModuleSynced(module.shortid) &&
           module.title === 'index.html' && (
-            <Icons style={{ fontSize: '.875rem' }}>
+            <Icons>
               You may have to save this file and refresh the preview to see
               changes
             </Icons>
@@ -202,12 +202,7 @@ export default class CodeEditor extends React.PureComponent<
               </Tooltip>
             </Icons>
           ) : (
-            <Icons
-              style={{
-                fontSize: '.875rem',
-                marginTop: settings.experimentVSCode ? 35 : 0,
-              }}
-            >
+            <Icons>
               {config.partialSupportDisclaimer ? (
                 <Tooltip
                   placement="bottom"
