@@ -12,13 +12,13 @@ let onigurumaLib: Thenable<IOnigLib> = null;
 export function getOnigasm(): Thenable<IOnigLib> {
 	if (!onigasmLib) {
 		let onigasmModule = require('onigasm');
-		const wasmBin = '/public/onigasm/2.1.0/onigasm.wasm';
+		const wasmBin = '/public/onigasm/2.2.1/onigasm.wasm';
 		onigasmLib = onigasmModule.loadWASM(wasmBin).then((_: any) => {
 			return {
 				createOnigScanner(patterns: string[]) { return new onigasmModule.OnigScanner(patterns); },
-				createOnigString(s: string) { 
+				createOnigString(s: string) {
 					const r = new onigasmModule.OnigString(s);
-					
+
 					(<any>r).$str = s;
 					return r;
 				 }
@@ -36,7 +36,7 @@ export function getOniguruma(): Thenable<IOnigLib> {
 				if (!onigurumaModule) {
 					// CODESANDBOX EDIT
 					onigurumaModule = {};
-					
+
 				}
 				return onigurumaModule;
 			};
