@@ -32,6 +32,7 @@ export const parcelSandboxUrl = () => `/s/vanilla`;
 export const newReactTypeScriptSandboxUrl = () => `/s/react-ts`;
 export const newDojoSandboxUrl = () =>
   `/s/github/dojo/dojo-codesandbox-template`;
+export const newMarkoSandboxUrl = () => `s/marko`;
 export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;

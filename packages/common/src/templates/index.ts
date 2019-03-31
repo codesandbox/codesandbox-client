@@ -12,6 +12,7 @@ import cxjs from './cxjs';
 import dojo from './dojo';
 import custom from './custom';
 import gatsby from './gatsby';
+import marko from './marko';
 import nuxt from './nuxt';
 import next from './next';
 import node from './node';
@@ -27,6 +28,7 @@ export {
   custom,
   apollo,
   gatsby,
+  marko,
   next,
   nuxt,
   node,
@@ -59,6 +61,7 @@ export type TemplateType =
   | 'cxjs'
   | '@dojo/cli-create-app'
   | 'gatsby'
+  | 'marko'
   | 'nuxt'
   | 'next'
   | 'reason'
@@ -95,6 +98,8 @@ export default function getDefinition(theme: TemplateType) {
       return custom;
     case gatsby.name:
       return gatsby;
+    case marko.name:
+      return marko;
     case nuxt.name:
       return nuxt;
     case next.name:
