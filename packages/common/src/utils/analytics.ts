@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/browser';
-
 import VERSION from '../version';
 import _debug from '../utils/debug';
 
@@ -17,22 +15,32 @@ export const DNT =
     global.navigator.msDoNotTrack === '1'
   );
 
-export function initializeSentry(dsn: string) {
+let sentryInitialized = false;
+
+function getSentry() {
+  return import('@sentry/browser');
+}
+export async function initializeSentry(dsn: string) {
+  const Sentry = await getSentry();
   if (!DNT) {
     return Sentry.init({
       dsn,
       release: VERSION,
     });
+    sentryInitialized = true;
   }
 }
 
-export function logError(err: Error) {
-  Sentry.captureException(err);
+export async function logError(err: Error) {
+  if (sentryInitialized) {
+    const Sentry = await getSentry();
+    Sentry.captureException(err);
+  }
 
   if (window.console && console.error) console.error(err);
 }
 
-export function identify(key: string, value: string) {
+export async function identify(key: string, value: string) {
   try {
     if (!DNT) {
       if (typeof global.amplitude !== 'undefined') {
@@ -42,16 +50,20 @@ export function identify(key: string, value: string) {
         debug('[Amplitude] Identifying', key, value);
       }
 
-      Sentry.configureScope(scope => {
-        scope.setExtra(key, value);
-      });
+      if (sentryInitialized) {
+        const Sentry = await getSentry();
+
+        Sentry.configureScope(scope => {
+          scope.setExtra(key, value);
+        });
+      }
     }
   } catch (e) {
     /* */
   }
 }
 
-export function setUserId(userId: string) {
+export async function setUserId(userId: string) {
   try {
     if (!DNT) {
       if (typeof global.amplitude !== 'undefined') {
@@ -62,16 +74,19 @@ export function setUserId(userId: string) {
         global.amplitude.getInstance().setUserId(hashedId);
       }
 
-      Sentry.configureScope(scope => {
-        scope.setUser({ id: userId });
-      });
+      if (sentryInitialized) {
+        const Sentry = await getSentry();
+        Sentry.configureScope(scope => {
+          scope.setUser({ id: userId });
+        });
+      }
     }
   } catch (e) {
     /* */
   }
 }
 
-export function resetUserId() {
+export async function resetUserId() {
   try {
     if (!DNT) {
       if (typeof global.amplitude !== 'undefined') {
@@ -84,9 +99,12 @@ export function resetUserId() {
         }
       }
 
-      Sentry.configureScope(scope => {
-        scope.setUser({ id: undefined });
-      });
+      if (sentryInitialized) {
+        const Sentry = await getSentry();
+        Sentry.configureScope(scope => {
+          scope.setUser({ id: undefined });
+        });
+      }
     }
   } catch (e) {
     /* */
