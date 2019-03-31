@@ -1076,6 +1076,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nm123github",
+      "name": "Neville Mehta",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8527474?v=4",
+      "profile": "https://twitter.com/ask_neville",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
