@@ -70,7 +70,7 @@ import filename from './filename.png';
 export default props => <img alt="filename" src={filename} {...props} />;
 ```
 
-Replace `filename` with your logo name. The file name should be all lowercase and the `.tsx` file should be capitalised: `Filename.tsx`. 
+Replace `filename` with your logo name. The image file name should be all lowercase and the `.tsx` file should be capitalised: `Filename.tsx`. 
 
 Example:
 
