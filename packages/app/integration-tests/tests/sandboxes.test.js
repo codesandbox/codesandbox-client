@@ -35,6 +35,7 @@ const SANDBOXES = [
   '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
   '31kn7voz4q', // cxjs
   'zw9zjy0683', // aurelia
+  'zx22owojr3', // vue v-slot test
 ];
 
 function pageLoaded(page) {
