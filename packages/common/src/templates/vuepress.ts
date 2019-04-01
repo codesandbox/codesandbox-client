@@ -16,6 +16,7 @@ export default new VuePressTemplate(
   decorateSelector(() => '#4abf8a'),
   {
     mainFile: [], // 🤔
+    distDir: 'docs/.vuepress/dist',
     isServer: true,
     showOnHomePage: true,
   }
