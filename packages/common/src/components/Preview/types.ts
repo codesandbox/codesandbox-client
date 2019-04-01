@@ -1,4 +1,4 @@
-// @flow
+
 
 import { Module, Sandbox, ModuleError, ModuleCorrection } from '../../types';
 

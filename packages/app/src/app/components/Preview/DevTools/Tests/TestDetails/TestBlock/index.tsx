@@ -2,7 +2,7 @@
 import * as React from 'react';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { Test } from '../../';
 
 import { BlockHeader, Container, Actions } from './elements';
@@ -20,7 +20,7 @@ export default ({ test, openFile }: Props) => (
       <TestName test={test} />
       <Actions>
         {openFile && (
-          <Tooltip title="Open File">
+          <Tooltip content="Open File">
             <FileIcon onClick={() => openFile(test.path)} />
           </Tooltip>
         )}

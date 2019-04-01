@@ -1,11 +1,10 @@
-// @flow
+
 import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
-import localforage from 'localforage';
 
-import * as pathUtils from 'common/lib/utils/path';
-import _debug from 'common/lib/utils/debug';
+import * as pathUtils from '@codesandbox/common/lib/utils/path';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
@@ -24,10 +23,10 @@ import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import { packageFilter } from './utils/resolve-utils';
 
-import { ignoreNextCache, deleteAPICache } from './cache';
+import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
-import { getGlobal } from 'common/lib/utils/global';
-import { ParsedConfigurationFiles } from 'common/lib/templates/template';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 
 declare var BrowserFS: any;
 
@@ -1165,12 +1164,12 @@ export default class Manager {
 
   deleteAPICache() {
     ignoreNextCache();
-    deleteAPICache(this.id);
+    return deleteAPICache(this.id);
   }
 
   clearCache() {
     try {
-      localforage.clear();
+      clearIndexedDBCache();
     } catch (ex) {
       if (process.env.NODE_ENV === 'development') {
         console.error(ex);

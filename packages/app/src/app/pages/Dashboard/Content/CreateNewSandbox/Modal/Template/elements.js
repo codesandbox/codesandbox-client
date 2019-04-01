@@ -5,25 +5,12 @@ export const Container = styled.div`
   display: inline-block;
   padding: 1em;
   color: white;
-
-  width: 100%;
   border: 2px solid rgba(0, 0, 0, 0.3);
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   display: flex;
   align-items: center;
-  margin-bottom: 1em;
   cursor: pointer;
-
-  @media (min-width: 768px) {
-    width: ${props => props.width}px;
-    margin-right: 1em;
-
-    &:last-child {
-      margin-right: 0;
-    }
-  }
-
   outline: none;
 
   ${props =>

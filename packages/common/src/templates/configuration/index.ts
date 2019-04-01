@@ -1,4 +1,4 @@
-// @flow
+
 import packageJSON from './package-json';
 import prettierRC from './prettierRC';
 import sandboxConfig from './sandbox';

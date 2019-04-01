@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 import ansiHTML from 'ansi-html';
 
 import { TestError } from '../../';

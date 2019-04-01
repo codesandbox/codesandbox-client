@@ -286,6 +286,16 @@ function initializeRequires() {
           return 1;
         },
       },
+      clipboard: {
+        writeText: (text: string) => {
+          // @ts-ignore
+          return navigator.clipboard.writeText(text);
+        },
+        readText: () => {
+          // @ts-ignore
+          return navigator.clipboard.readText();
+        },
+      },
     };
   });
 

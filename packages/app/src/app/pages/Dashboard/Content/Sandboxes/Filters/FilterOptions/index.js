@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import * as templates from 'common/lib/templates';
+import * as templates from '@codesandbox/common/lib/templates';
 import { orderBy } from 'lodash-es';
 import OverlayComponent from 'app/components/Overlay';
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { TextOperation } from 'ot';
-import { Module } from 'common/lib/types';
-import getUI from 'common/lib/templates/configuration/ui';
+import { Module } from '@codesandbox/common/lib/types';
+import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import getType from 'app/utils/get-type';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import Tooltip from 'common/lib/components/Tooltip';
-import { ConfigurationFile } from 'common/lib/templates/configuration/types';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
 
 import CodeIcon from 'react-icons/lib/md/code';
 
@@ -100,7 +100,7 @@ export default class Configuration extends React.PureComponent<Props>
           />
           <Title>{config.title}</Title>
 
-          <Tooltip title="Show Code">
+          <Tooltip content="Show Code">
             <Icon onClick={this.props.toggleConfigUI}>
               <CodeIcon />
             </Icon>

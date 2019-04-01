@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
-import { protocolAndHost } from 'common/lib/utils/url-generator';
-import { commonPostMessage } from 'common/lib/utils/global';
-import _debug from 'common/lib/utils/debug';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+import _debug from '@codesandbox/common/lib/utils/debug';
 
 const debug = _debug('cs:node:child_process');
 

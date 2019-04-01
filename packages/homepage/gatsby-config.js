@@ -72,9 +72,20 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-source-rss-feed`,
+      options: {
+        url: `https://medium.com/feed/@compuives`,
+        name: `MediumBlog`,
+      },
+    },
+    {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
-        fonts: [`Poppins:600,700,800`, `source sans pro:300,400,500,600,700`],
+        fonts: [
+          `Poppins:600,700,800`,
+          `source sans pro:300,400,500,600,700`,
+          'open sans:400',
+        ],
       },
     },
     {

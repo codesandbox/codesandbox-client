@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 // @ts-ignore
-import Dashboard from '-!svg-react-loader!common/lib/icons/dashboard.svg';
+import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 import { Link } from 'react-router-dom';
 
 export const Container = styled.div<{ zenMode: boolean }>`

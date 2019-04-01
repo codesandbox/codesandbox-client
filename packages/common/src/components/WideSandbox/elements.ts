@@ -52,7 +52,7 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 
 export const SandboxTitle = styled.h2`
   color: ${props => props.color};
-  font-family: 'Poppins';
+ font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 6px;

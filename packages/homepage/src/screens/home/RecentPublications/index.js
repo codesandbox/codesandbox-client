@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
 
-import MaxWidth from 'common/lib/components/flex/MaxWidth';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 
 import media from '../../../utils/media';
 

@@ -1,4 +1,4 @@
-// @flow
+
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
@@ -14,9 +14,12 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     isServer: true,
+    distDir: 'out',
+    netlify: false,
     mainFile: ['/pages/index.js'],
     backgroundColor: decorateSelector(() => '#000000'),
     showOnHomePage: true,
     main: true,
+    popular: true,
   }
 );

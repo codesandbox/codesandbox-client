@@ -3,7 +3,7 @@ import renderer from 'react-test-renderer';
 import 'jest-styled-components';
 
 import { ThemeProvider } from 'styled-components';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 export default Component => {
   const tree = renderer

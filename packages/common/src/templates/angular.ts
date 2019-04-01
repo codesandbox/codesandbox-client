@@ -1,4 +1,4 @@
-// @flow
+
 
 import { absolute, join } from '../utils/path';
 
@@ -117,9 +117,11 @@ export default new AngularTemplate(
       '/.angular-cli.json': configurations.angularCli,
       '/angular.json': configurations.angularJSON,
     },
+    netlify: false,
     isTypescript: true,
     distDir: 'dist',
     showOnHomePage: true,
+    popular: true,
     main: true,
   }
 );

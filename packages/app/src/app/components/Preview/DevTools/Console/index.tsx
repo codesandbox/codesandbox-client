@@ -7,12 +7,12 @@ import update from 'immutability-helper';
 import ClearIcon from 'react-icons/lib/md/clear-all';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
 
-import Select from 'common/lib/components/Select';
+import Select from '@codesandbox/common/lib/components/Select';
 import Input from './Input';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
 import { DevToolProps } from '..';
-import theme from 'common/lib/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';

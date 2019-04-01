@@ -1,4 +1,4 @@
-// @flow
+
 import { orderBy } from 'lodash-es';
 import querystring from 'querystring';
 import { Module } from '../entities/module';

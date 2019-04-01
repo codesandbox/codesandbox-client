@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Tooltip from 'common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { IViewType } from '..';
 import { Actions, Container, Tabs } from './elements';
@@ -85,7 +85,7 @@ const DevToolTabs = ({
         {actions.map(({ title, onClick, Icon }) => (
           <Tooltip
             style={{ pointerEvents: hidden ? 'none' : 'initial' }}
-            title={title}
+            content={title}
             key={title}
           >
             <Icon

@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const env = require('common/lib/config/env');
+const env = require('@codesandbox/common/lib/config/env');
 
 // Parse date information out of post filename.
 
@@ -41,6 +41,7 @@ exports.createPages = async ({ graphql, actions }) => {
   const { createPage, createRedirect } = actions;
 
   const docsTemplate = resolve(__dirname, './src/templates/docs.js');
+  const blogTemplate = resolve(__dirname, './src/templates/post.js');
 
   // Redirect /index.html to root.
   createRedirect({
@@ -49,7 +50,74 @@ exports.createPages = async ({ graphql, actions }) => {
     toPath: '/',
   });
 
-  const allMarkdown = await graphql(
+  const blogsFromMedium = await graphql(`
+    {
+      allFeedMediumBlog {
+        edges {
+          node {
+            id
+            title
+            categories
+          }
+        }
+      }
+    }
+  `);
+
+  blogsFromMedium.data.allFeedMediumBlog.edges.forEach(edge => {
+    const slug = edge.node.title
+      .toLowerCase()
+      .replace(/[^\w ]+/g, '')
+      .replace(/ +/g, '-');
+    const id = edge.node.id;
+
+    // If there are no categories it's a comment
+    if (edge.node.categories) {
+      createPage({
+        path: 'post/' + slug,
+        component: blogTemplate,
+        context: {
+          id,
+        },
+      });
+    }
+  });
+  const allMarkdownArticles = await graphql(
+    `
+      {
+        allMarkdownRemark(
+          filter: { fileAbsolutePath: { regex: "/articles/" } }
+          limit: 1000
+        ) {
+          edges {
+            node {
+              id
+              frontmatter {
+                slug
+              }
+            }
+          }
+        }
+      }
+    `
+  );
+
+  if (allMarkdownArticles.data) {
+    allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
+      const slug = edge.node.frontmatter.slug;
+      const id = edge.node.id;
+
+      createPage({
+        path: 'blog/' + slug,
+        component: blogTemplate,
+        context: {
+          id,
+        },
+      });
+    });
+  }
+
+  const allDocs = await graphql(
     `
       {
         allMarkdownRemark(
@@ -69,13 +137,13 @@ exports.createPages = async ({ graphql, actions }) => {
     `
   );
 
-  if (allMarkdown.errors) {
-    console.error(allMarkdown.errors);
+  if (allDocs.errors) {
+    console.error(allDocs.errors);
 
-    throw Error(allMarkdown.errors);
+    throw Error(allDocs.errors);
   }
 
-  allMarkdown.data.allMarkdownRemark.edges.forEach(edge => {
+  allDocs.data.allMarkdownRemark.edges.forEach(edge => {
     const slug = edge.node.fields.slug;
     const url = edge.node.fields.url;
 
