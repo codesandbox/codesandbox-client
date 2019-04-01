@@ -219,9 +219,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  getCurrentPane = () => {
-    return this.props.viewConfig.views[this.state.currentPaneIndex];
-  };
+  getCurrentPane = () => this.props.viewConfig.views[this.state.currentPaneIndex];
 
   updateStatus = (id: string) => (
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
@@ -397,9 +395,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  getViews = (): IViews => {
-    return this.allViews;
-  };
+  getViews = (): IViews => this.allViews;
 
   node: HTMLElement;
   allViews: IViews;
@@ -425,9 +421,15 @@ export default class DevTools extends React.PureComponent<Props, State> {
         }}
         style={{
           height: primary ? '100%' : height,
-          minHeight: height,
           position: 'relative',
           display: 'flex',
+          maxHeight: '100%',
+          /**
+           * Necessary to ensure it drags naturally. Otherwise there's an issue
+           * where flex tries to allocate equal space to the preview and the terminal,
+           * resulting in a very jaggy experience
+           */
+          flexShrink: 0,
         }}
       >
         {!hideTabs && (
