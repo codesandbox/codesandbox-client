@@ -170,7 +170,7 @@ class BasePreview extends React.Component<Props, State> {
     this.state = {
       frameInitialized: false,
       history: [],
-      historyPosition: -1,
+      historyPosition: 0,
       urlInAddressBar: this.serverPreview
         ? getSSEUrl(props.sandbox.id, props.initialPath)
         : frameUrl(props.sandbox.id, props.initialPath || ''),
