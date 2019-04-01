@@ -17,6 +17,7 @@ import Apollo from '../components/logos/Apollo';
 import Nest from '../components/logos/Nest';
 import Static from '../components/logos/Static';
 import Styleguidist from '../components/logos/Styleguidist';
+import VuePress from '../components/logos/VuePress';
 import MDXDeck from '../components/logos/mdx-deck';
 import GridSome from '../components/logos/Gridsome';
 
@@ -41,8 +42,9 @@ import {
   sapper,
   staticTemplate,
   styleguidist,
-  mdxDeck,
   gridsome,
+  vuepress,
+  mdxDeck
 } from './';
 
 import { TemplateType } from './';
@@ -98,6 +100,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return Styleguidist;
     case gridsome.name:
       return GridSome;
+    case vuepress.name:
+      return VuePress;
     case mdxDeck.name:
       return MDXDeck;
     default:
