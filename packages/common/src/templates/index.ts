@@ -69,7 +69,7 @@ export type TemplateType =
   | 'nest'
   | 'static'
   | 'styleguidist'
-  | 'vuepress';
+  | 'vuepress'
   | 'mdx-deck';
 
 export default function getDefinition(theme: TemplateType) {
