@@ -154,7 +154,10 @@ const Header = ({ store, signals, zenMode }: Props) => {
 
       {sandbox.owned && (
         <Centered style={{ margin: '0 3rem' }}>
-          <CollectionInfo isLoggedIn={store.isLoggedIn} sandbox={sandbox} />
+          <CollectionInfo
+            isLoggedIn={store.isLoggedIn}
+            sandbox={{ ...sandbox }}
+          />
         </Centered>
       )}
 
