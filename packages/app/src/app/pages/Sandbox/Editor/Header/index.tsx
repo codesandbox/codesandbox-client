@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
 import Fork from 'react-icons/lib/go/repo-forked';
@@ -156,7 +157,8 @@ const Header = ({ store, signals, zenMode }: Props) => {
         <Centered style={{ margin: '0 3rem' }}>
           <CollectionInfo
             isLoggedIn={store.isLoggedIn}
-            sandbox={{ ...sandbox }}
+            // Passing a clone of observable requires it to be called in render of observer
+            sandbox={toJS(sandbox)}
           />
         </Centered>
       )}
