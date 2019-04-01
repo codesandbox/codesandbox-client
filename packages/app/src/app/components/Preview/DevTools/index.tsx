@@ -219,7 +219,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  getCurrentPane = () => this.props.viewConfig.views[this.state.currentPaneIndex];
+  getCurrentPane = () =>
+    this.props.viewConfig.views[this.state.currentPaneIndex];
 
   updateStatus = (id: string) => (
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
@@ -427,9 +428,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
           /**
            * Necessary to ensure it drags naturally. Otherwise there's an issue
            * where flex tries to allocate equal space to the preview and the terminal,
-           * resulting in a very jaggy experience
+           * resulting in a very jaggy experience. We set flex-shrink to 0 only
+           * for the console, and not for the preview
            */
-          flexShrink: 0,
+          flexShrink: devToolIndex === 1 ? 0 : 1,
         }}
       >
         {!hideTabs && (
