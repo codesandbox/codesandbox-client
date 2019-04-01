@@ -1,6 +1,6 @@
 # Contribute with a Template
 
-To contribute with a CodSandbox template, you need to complete multiple steps and submit two Pull Requests and we have created this guide to help you do this. Here you will find descriptions and explanations for what you need to do, along with some examples that we have added as references.
+To contribute with a CodeSandbox template, you need to complete multiple steps and submit two Pull Requests and we have created this guide to help you do this. Here you will find descriptions and explanations for what you need to do, along with some examples that we have added as references.
 
 We realise that the process of submitting a template is not straightforward and we hope that this guide will help you along the way. We are working on a system that will make it easier.
 
