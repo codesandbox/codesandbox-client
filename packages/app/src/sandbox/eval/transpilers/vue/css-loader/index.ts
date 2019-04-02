@@ -1,6 +1,6 @@
 // @flow
 import Transpiler from '../../';
-import { type LoaderContext } from '../../../transpiled-module';
+import { LoaderContext } from '../../../transpiled-module';
 
 // This is the most advanced compiler, I wanted to get it working in sync first,
 // but will eventually move to async.

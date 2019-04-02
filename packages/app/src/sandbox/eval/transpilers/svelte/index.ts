@@ -1,10 +1,11 @@
-// @flow
+// @ts-ignore
 import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-transpiler.[hash:8].worker.js!./svelte-worker.js';
 
 import semver from 'semver';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import { LoaderContext } from '../../transpiled-module';
+import { TranspilerResult } from '..';
 
 class SvelteTranspiler extends WorkerTranspiler {
   worker: Worker;
@@ -22,7 +23,7 @@ class SvelteTranspiler extends WorkerTranspiler {
       packageJSON.parsed.devDependencies.svelte &&
       semver.intersects(packageJSON.parsed.devDependencies.svelte, '^2.0.0');
 
-    return new Promise((resolve, reject) => {
+    return new Promise<TranspilerResult>((resolve, reject) => {
       const path = loaderContext.path;
 
       this.queueTask(

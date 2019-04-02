@@ -1,6 +1,5 @@
 // @flow
-import Transpiler from '../';
-import { type LoaderContext } from '../../transpiled-module';
+import Transpiler, { TranspilerResult } from '../';
 
 import mimes from './mimes.json';
 
@@ -24,9 +23,9 @@ class Base64Transpiler extends Transpiler {
   }
 
   doTranspilation(code: string) {
-    return new Promise(resolve => {
+    return new Promise<TranspilerResult>(resolve => {
       const reader = new FileReader();
-      // $FlowIssue
+      // @ts-ignore
       reader.readAsDataURL(code);
 
       reader.onloadend = function() {

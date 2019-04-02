@@ -1,8 +1,9 @@
-// @flow
+// @ts-ignore
 import PugWorker from 'worker-loader?publicPath=/&name=pug-transpiler.[hash:8].worker.js!./pug-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import { LoaderContext } from '../../transpiled-module';
+import { TranspilerResult } from '..';
 
 class PugTranspiler extends WorkerTranspiler {
   worker: Worker;
@@ -13,7 +14,10 @@ class PugTranspiler extends WorkerTranspiler {
     this.cacheable = false;
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(
+    code: string,
+    loaderContext: LoaderContext
+  ): Promise<TranspilerResult> {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 

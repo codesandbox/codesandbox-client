@@ -2,13 +2,13 @@ import { SourceMap } from './utils/get-source-map';
 import { LoaderContext } from '../transpiled-module';
 import Manager from '../manager';
 
-type TranspilerResult = {
-  transpiledCode: string;
+export interface TranspilerResult {
+  transpiledCode: any;
   ast?: Object;
   sourceMap?: SourceMap;
-};
+}
 
-export default class Transpiler {
+export default abstract class Transpiler {
   cacheable: boolean;
   name: string;
   HMREnabled: boolean;
@@ -26,12 +26,10 @@ export default class Transpiler {
 
   cleanModule(loaderContext: LoaderContext) {}
 
-  doTranspilation(
+  abstract doTranspilation(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<TranspilerResult> {
-    throw new Error('This is an abstract function, please override it!');
-  }
+  ): Promise<TranspilerResult>;
   /* eslint-enable */
 
   transpile(

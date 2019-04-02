@@ -1,6 +1,6 @@
 // @flow
 import Transpiler from '../';
-import { type LoaderContext } from '../../transpiled-module';
+import { LoaderContext } from '../../transpiled-module';
 
 // using: regex, capture groups, and capture group variables.
 const templateUrlRegex = /templateUrl\s*:(\s*['"`](.*?)['"`]\s*([,}]))/gm;

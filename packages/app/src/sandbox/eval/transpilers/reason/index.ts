@@ -4,11 +4,11 @@ import { basename, dirname, join } from 'path';
 import stripANSI from 'strip-ansi';
 
 import Transpiler from '../';
-import { type LoaderContext } from '../../transpiled-module';
-import type { Module } from '../../entities/module';
+import { LoaderContext } from '../../transpiled-module';
+import { Module } from '../../entities/module';
 
 type ReasonModule = Module & {
-  moduleName: string,
+  moduleName: string;
 };
 
 function addScript(src) {
@@ -36,6 +36,7 @@ function getModuleName(path: string) {
 }
 
 const cachedDependencies = new Map();
+const global = window as any;
 
 function getDependencyList(
   modules: Array<ReasonModule>,
@@ -45,8 +46,8 @@ function getDependencyList(
   const cache = cachedDependencies.get(module.path);
 
   const listFunction = module.path.endsWith('.re')
-    ? window.ocaml.reason_list_dependencies
-    : window.ocaml.list_dependencies;
+    ? global.ocaml.reason_list_dependencies
+    : global.ocaml.list_dependencies;
 
   const deps =
     cache ||
@@ -87,7 +88,7 @@ class ReasonTranspiler extends Transpiler {
     code: string,
     loaderContext: LoaderContext
   ): Promise<{ transpiledCode: string }> {
-    if (!window.ocaml) {
+    if (!global.ocaml) {
       await addScript(
         'https://cdn.jsdelivr.net/gh/jaredly/reason-react@more-docs/docs/bucklescript.js'
       );
@@ -125,7 +126,7 @@ class ReasonTranspiler extends Transpiler {
       .map(x => {
         const usedCode = x.path.endsWith('.re')
           ? x.code
-          : window.printRE(window.parseML(x.code));
+          : global.printRE(global.parseML(x.code));
 
         const moduleName = x.moduleName;
 
@@ -159,14 +160,17 @@ ${usedCode}
       row,
       column,
       text,
-    } = window.ocaml.reason_compile_super_errors(newCode);
+    } = global.ocaml.reason_compile_super_errors(newCode);
 
     if (errorMessage) {
       const error = new Error(stripANSI(text));
 
       error.name = 'Reason Compile Error';
+      // @ts-ignore
       error.fileName = loaderContext._module.module.path;
+      // @ts-ignore
       error.lineNumber = row + 1;
+      // @ts-ignore
       error.columnNumber = column;
       return Promise.reject(error);
     }
