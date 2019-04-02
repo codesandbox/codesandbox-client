@@ -9,6 +9,28 @@ const Title = styled.h1`
   font-weight: 500;
 `;
 
+const StyledInput = styled(Input)`
+  border: 1px solid #0d7bc9;
+  box-sizing: border-box;
+  box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25);
+  padding-left: 8px;
+  border-radius: 4px;
+  padding-right: 30px;
+
+  ::-webkit-input-placeholder {
+    color: ${props => props.theme.lightText};
+    opacity: 0.8;
+  }
+  ::-moz-placeholder {
+    color: ${props => props.theme.lightText};
+    opacity: 0.8;
+  }
+  :-ms-input-placeholder {
+    color: ${props => props.theme.lightText};
+    opacity: 0.8;
+  }
+`;
+
 class DocSearch extends Component {
   state = {
     enabled: true,
@@ -37,7 +59,7 @@ class DocSearch extends Component {
     return enabled ? (
       <form>
         <Title>Search our docs</Title>
-        <Input
+        <StyledInput
           id="algolia-doc-search"
           type="search"
           placeholder="Search"

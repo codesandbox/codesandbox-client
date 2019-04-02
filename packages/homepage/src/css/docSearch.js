@@ -4,11 +4,36 @@ export default createGlobalStyle`
     body .algolia-autocomplete {
       width: 90%;
 
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        top: 6px;
+        right: 4px;
+        background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z' fill='%23F2F2F2'/%3E%3C/svg%3E");
+      }
+
       .ds-dropdown-menu [class^='ds-dataset-'],
       .algolia-docsearch-suggestion.algolia-docsearch-suggestion__secondary {
         padding: 0;
         border: none;
         background: ${props => props.theme.background2};
+      }
+
+      .algolia-docsearch-suggestion.algolia-docsearch-suggestion__secondary {
+        margin-right: -8px;
+      }
+
+      .ds-dropdown-menu
+        .ds-suggestion.ds-cursor
+        .algolia-docsearch-suggestion.suggestion-layout-simple,
+      .ds-dropdown-menu
+        .ds-suggestion.ds-cursor
+        .algolia-docsearch-suggestion:not(.suggestion-layout-simple)
+        .algolia-docsearch-suggestion--content {
+        background: transparent;
       }
 
       .ds-dropdown-menu:before {
@@ -39,6 +64,7 @@ export default createGlobalStyle`
         width: 500px;
         font-family: 'Open Sans', Segoe UI, sans-serif;
         font-size: 14px;
+        margin-top: 13px;
 
         color: ${props => props.theme.lightText};
       }
@@ -64,6 +90,11 @@ export default createGlobalStyle`
       .algolia-docsearch-suggestion--text {
         font-size: 14px;
         color: ${props => props.theme.lightText};
+        max-width: 90%;
+      }
+
+      .algolia-docsearch-suggestion--text {
+        line-height: 1.5;
       }
 
       .algolia-docsearch-suggestion--title {
