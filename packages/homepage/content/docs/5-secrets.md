@@ -23,7 +23,7 @@ Let's say you want to add a Google Maps API key. You can do it like so:
 
 Pro tip: It's always a good practice to name your secrets all in uppercase.
 
-After clicking add secret you will a list of all your secrets above the form.
+After clicking the "Save Secret" button the secret is added, the sandbox is restarted, and you can see the list of all your secrets above the form.
 
 ![Secrets](./images/secrets-3.png)
 
