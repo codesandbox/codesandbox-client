@@ -20,6 +20,7 @@ import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
 import { moveDevToolsTab } from './utils';
+import immer from 'immer';
 
 const settings = store =>
   ({
@@ -378,9 +379,55 @@ class EditorPreview extends React.Component<Props, State> {
     });
   };
 
+  getViews = () => {
+    const sandbox = this.props.store.editor.currentSandbox;
+    const views = getPreviewTabs(sandbox);
+
+    // Do it in an immutable manner, prevents changing the original object
+    return immer(views, draft => {
+      const sandboxConfig = sandbox.modules.find(
+        x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+      );
+      let view = 'browser';
+      if (sandboxConfig) {
+        try {
+          view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+        } catch (e) {
+          /* swallow */
+        }
+      }
+
+      const sandboxOptions = getSandboxOptions(location.href);
+      if (
+        (sandboxOptions.previewWindow &&
+          sandboxOptions.previewWindow === 'tests') ||
+        sandboxOptions.previewWindow === 'console'
+      ) {
+        // Backwards compatibility for ?previewwindow=
+
+        view = sandboxOptions.previewWindow;
+      }
+
+      if (view !== 'browser') {
+        // Backwards compatibility for sandbox.config.json
+        if (view === 'console') {
+          draft[0].views = draft[0].views.filter(
+            t => t.id !== 'codesandbox.console'
+          );
+          draft[0].views.unshift({ id: 'codesandbox.console' });
+        } else if (view === 'tests') {
+          draft[0].views = draft[0].views.filter(
+            t => t.id !== 'codesandbox.tests'
+          );
+          draft[0].views.unshift({ id: 'codesandbox.tests' });
+        }
+      }
+    });
+  };
+
   moveDevToolsTab = (prevPos, nextPos) => {
     const { store, signals } = this.props;
-    const tabs = getPreviewTabs(store.editor.currentSandbox);
+    const tabs = this.getViews();
 
     const newTabs = moveDevToolsTab(tabs, prevPos, nextPos);
 
@@ -437,46 +484,7 @@ class EditorPreview extends React.Component<Props, State> {
       return false;
     };
 
-    const views = getPreviewTabs(sandbox);
-
-    const sandboxConfig = sandbox.modules.find(
-      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
-    );
-
-    let view = 'browser';
-    if (sandboxConfig) {
-      try {
-        view = JSON.parse(sandboxConfig.code || '').view || 'browser';
-      } catch (e) {
-        /* swallow */
-      }
-    }
-
-    const sandboxOptions = getSandboxOptions(location.href);
-    if (
-      (sandboxOptions.previewWindow &&
-        sandboxOptions.previewWindow === 'tests') ||
-      sandboxOptions.previewWindow === 'console'
-    ) {
-      // Backwards compatibility for ?previewwindow=
-
-      view = sandboxOptions.previewWindow;
-    }
-
-    if (view !== 'browser') {
-      // Backwards compatibility for sandbox.config.json
-      if (view === 'console') {
-        views[0].views = views[0].views.filter(
-          t => t.id !== 'codesandbox.console'
-        );
-        views[0].views.unshift({ id: 'codesandbox.console' });
-      } else if (view === 'tests') {
-        views[0].views = views[0].views.filter(
-          t => t.id !== 'codesandbox.tests'
-        );
-        views[0].views.unshift({ id: 'codesandbox.tests' });
-      }
-    }
+    const views = this.getViews();
 
     const browserConfig = {
       id: 'codesandbox.browser',
