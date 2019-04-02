@@ -11,7 +11,7 @@ The most common example for the usage is with API keys.
 
 Secrets values will not be transferred between forks and **can only be used in container sandboxes**.
 
-## How add secrets in CodeSandbox
+## Adding secrets in CodeSandbox
 
 You can control the secrets in your server control panel and before adding any it should look like this:
 
