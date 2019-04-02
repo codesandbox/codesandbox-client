@@ -399,9 +399,9 @@ class EditorPreview extends React.Component<Props, State> {
 
       const sandboxOptions = getSandboxOptions(location.href);
       if (
-        (sandboxOptions.previewWindow &&
-          sandboxOptions.previewWindow === 'tests') ||
-        sandboxOptions.previewWindow === 'console'
+        sandboxOptions.previewWindow &&
+        (sandboxOptions.previewWindow === 'tests' ||
+          sandboxOptions.previewWindow === 'console')
       ) {
         // Backwards compatibility for ?previewwindow=
 
