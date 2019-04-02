@@ -20,6 +20,7 @@ import DevTools from 'app/components/Preview/DevTools';
 import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
+import { moveDevToolsTab } from './utils';
 
 const settings = store =>
   ({
@@ -382,25 +383,7 @@ class EditorPreview extends React.Component<Props, State> {
     const { store, signals } = this.props;
     const tabs = getPreviewTabs(store.editor.currentSandbox);
 
-    const prevDevTools = tabs[prevPos.devToolIndex];
-    const nextDevTools = tabs[nextPos.devToolIndex];
-    const prevTab = tabs[prevPos.devToolIndex].views[prevPos.tabPosition];
-
-    prevDevTools.views = prevDevTools.views.filter(
-      (_, i) => i !== prevPos.tabPosition
-    );
-
-    nextDevTools.views.splice(nextPos.tabPosition, 0, prevTab);
-
-    const newTabs = tabs.map((t, i) => {
-      if (i === prevPos.devToolIndex) {
-        return prevDevTools;
-      } else if (i === nextPos.devToolIndex) {
-        return nextDevTools;
-      }
-
-      return t;
-    });
+    const newTabs = moveDevToolsTab(tabs, prevPos, nextPos);
 
     const code = JSON.stringify({ preview: newTabs }, null, 2);
     const previousFile =
