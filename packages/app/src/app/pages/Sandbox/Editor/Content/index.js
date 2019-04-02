@@ -5,7 +5,6 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
-import { uniqBy } from 'lodash-es';
 
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
