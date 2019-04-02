@@ -257,9 +257,9 @@
     "util": "0.11.1",
     "vue": "^2.5.2",
     "vue-eslint-parser": "^2.0.3",
-    "vue-hot-reload-api": "^2.2.4",
-    "vue-template-compiler": "^2.5.2",
-    "vue-template-es2015-compiler": "^1.6.0",
+    "vue-hot-reload-api": "^2.3.3",
+    "vue-template-compiler": "^2.6.10",
+    "vue-template-es2015-compiler": "^1.9.1",
     "xterm": "3.7.0"
   },
   "jest": {

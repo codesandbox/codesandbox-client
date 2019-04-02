@@ -282,11 +282,15 @@ class SandboxItem extends React.PureComponent<Props> {
     });
   };
 
-  openSandbox = (openNewWindow = false) => {
+  openSandbox = (e, openNewWindow = false) => {
+    // check for cmd click
+    const cmd = e.ctrlKey || e.metaKey;
     // Git sandboxes aren't shown here anyway
     const url = sandboxUrl({ id: this.props.id });
+
     if (!this.props.removedAt) {
-      if (openNewWindow === true) {
+      if (openNewWindow === true || cmd) {
+        track('Dashboard - Sandbox Opened in a new tab');
         window.open(url, '_blank');
       } else {
         history.push(url);

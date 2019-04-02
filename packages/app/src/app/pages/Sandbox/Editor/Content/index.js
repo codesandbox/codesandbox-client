@@ -515,6 +515,7 @@ class EditorPreview extends React.Component<Props, State> {
             }
           />
           <SplitPane
+            maxSize={-100}
             onDragFinished={() => {
               this.props.signals.editor.resizingStopped();
             }}
@@ -533,7 +534,9 @@ class EditorPreview extends React.Component<Props, State> {
             defaultSize={'50%'}
             pane1Style={
               windowVisible
-                ? {}
+                ? {
+                    minWidth: 100,
+                  }
                 : {
                     width: '100%',
                     minWidth: '100%',

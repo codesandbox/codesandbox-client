@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectStripe, CardElement } from 'react-stripe-elements';
-import reportError from 'app/utils/error';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import { logError } from '@codesandbox/common/lib/utils/analytics';
 
 import { CardContainer, NameInput, ErrorText, Label } from './elements';
 
@@ -52,7 +52,7 @@ class CheckoutForm extends React.PureComponent {
     try {
       await this.props.subscribe(token.id);
     } catch (e) {
-      reportError(e);
+      logError(e);
 
       return this.setState({
         loading: false,

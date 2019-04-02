@@ -19,10 +19,10 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Tooltip = ({ children, style = {}, ...props }) => (
+const Tooltip = ({ children, style = {}, content, ...props }) => (
   <React.Fragment>
     <GlobalStyle />
-    <Tippy delay={[500, 0]} {...props}>
+    <Tippy delay={[500, 0]} content={content} {...props}>
       <span
         style={{
           ...style,
