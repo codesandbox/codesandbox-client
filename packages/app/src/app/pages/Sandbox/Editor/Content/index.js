@@ -5,6 +5,7 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
+import immer from 'immer';
 
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
@@ -20,7 +21,6 @@ import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
 import { moveDevToolsTab } from './utils';
-import immer from 'immer';
 
 const settings = store =>
   ({
