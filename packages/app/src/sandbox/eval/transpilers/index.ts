@@ -1,13 +1,11 @@
-// @flow
-
-import type { SourceMap } from './utils/get-source-map';
-import { type LoaderContext } from '../transpiled-module';
-import type { default as Manager } from '../manager';
+import { SourceMap } from './utils/get-source-map';
+import { LoaderContext } from '../transpiled-module';
+import Manager from '../manager';
 
 type TranspilerResult = {
-  transpiledCode: string,
-  ast?: Object,
-  sourceMap?: SourceMap,
+  transpiledCode: string;
+  ast?: Object;
+  sourceMap?: SourceMap;
 };
 
 export default class Transpiler {
@@ -47,7 +45,7 @@ export default class Transpiler {
    * Get custom info of the current transpiler, this is open for implementation
    * per transpiler
    */
-  getTranspilerContext(manager: Manager): Promise<Object> {
+  getTranspilerContext(manager: Manager): Promise<object> {
     return Promise.resolve({
       name: this.name,
       HMREnabled: this.HMREnabled,
