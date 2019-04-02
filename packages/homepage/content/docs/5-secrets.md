@@ -46,7 +46,7 @@ http
 
 The sandbox used is [https://codesandbox.io/s/2v6xq474kj](https://codesandbox.io/s/2v6xq474kj)
 
-## How edit secrets in CodeSandbox
+## Editing secrets in CodeSandbox
 
 Our UI also gives you the option to edit or even remove a secret, by hovering the secret you want to edit you will see these two icons:
 
