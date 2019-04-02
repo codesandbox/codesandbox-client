@@ -7,7 +7,6 @@ import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import immer from 'immer';
 
-import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { ModuleError } from '@codesandbox/common/lib/types';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
@@ -483,7 +482,6 @@ class EditorPreview extends React.Component<Props, State> {
 
       return false;
     };
-
     const views = this.getViews();
 
     const browserConfig = {
