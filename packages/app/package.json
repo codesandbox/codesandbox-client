@@ -42,6 +42,7 @@
     "@types/codemirror": "^0.0.72",
     "@types/debug": "^4.1.1",
     "@types/gsap": "^1.20.1",
+    "@types/jest": "^24.0.11",
     "@types/lodash-es": "^4.17.2",
     "@types/react": "^16.8.3",
     "@types/react-dom": "^16.0.11",
@@ -273,8 +274,17 @@
     "testPathIgnorePatterns": [
       "/create-zip\\/.*\\/files/"
     ],
+    "testRegex": "(test|spec)\\.(j|t)sx?$",
     "transformIgnorePatterns": [
       "node_modules/(?!(common|lodash-es|sandbox-hooks|react-icons)/.+\\.js$)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",
