@@ -1,33 +1,33 @@
 ---
 title: "Secrets"
-authors: ["CompuIves"]
+authors: ["SaraVieira"]
 description: "CodeSandbox allows you to store secrets so you don't share your keys"
 ---
 
 ## What are secrets?
 
-Secrets are also known as enviroment variables are used to hide sensitive information in your application that you don't want the world to see.
+Secrets are used to hide sensitive information in your application that you don't want the world to see, and are implemented in CodeSandbox using environment variables.
 The most common use case for using secrets is with API keys.
 
 Secrets values will not be transferred between forks and **can only be used in container sandboxes**.
 
 ## Adding secrets in CodeSandbox
 
-You can control the secrets in your server control panel and before adding any it should look like this:
+You can control the secrets in your Server Control Panel, before adding any it should look like this:
 
 ![No Secrets](./images/secrets-1.png)
 
-Let's say you wanna add a google maps api key. You can do it like so:
+Let's say you want to add a Google Maps API key. You can do it like so:
 
 ![Map Secrets](./images/secrets-2.png)
 
-It's always a good practice to name your secrets all in uppercase.
+Pro tip: It's always a good practice to name your secrets all in uppercase.
 
 After clicking add secret you will a list of all your secrets above the form.
 
 ![Secrets](./images/secrets-3.png)
 
-To use them in your code you use `process.env` and the name of your secret so in the case I call `process.env.GOOGLE_MAPS_API_KEY` and it will return me the value.
+As said earlier, secrets are environment variables, meaning they are defined on `process.env`. In the example above, we can read the API key from `process.env.GOOGLE_MAPS_API_KEY`.
 
 Like so:
 
