@@ -4,7 +4,14 @@ export default createGlobalStyle`
     body .algolia-autocomplete {
       width: 90%;
 
+      &:hover {
+          &:after {
+            opacity: 1;
+        }
+      }
+
       &:after {
+        opacity: 0.8;
         content: '';
         display: block;
         position: absolute;
