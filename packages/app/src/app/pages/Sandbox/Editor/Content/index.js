@@ -5,9 +5,7 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
-import { uniqBy } from 'lodash-es';
 
-import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { ModuleError } from '@codesandbox/common/lib/types';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
@@ -470,28 +468,11 @@ class EditorPreview extends React.Component<Props, State> {
       }
     }
 
-    const sandboxOptions = getSandboxOptions(location.href);
-    if (
-      (sandboxOptions.previewWindow &&
-        sandboxOptions.previewWindow === 'tests') ||
-      sandboxOptions.previewWindow === 'console'
-    ) {
-      // Backwards compatibility for ?previewwindow=
-
-      view = sandboxOptions.previewWindow;
-    }
-
     if (view !== 'browser') {
       // Backwards compatibility for sandbox.config.json
       if (view === 'console') {
-        views[0].views = views[0].views.filter(
-          t => t.id !== 'codesandbox.console'
-        );
         views[0].views.unshift({ id: 'codesandbox.console' });
       } else if (view === 'tests') {
-        views[0].views = views[0].views.filter(
-          t => t.id !== 'codesandbox.tests'
-        );
         views[0].views.unshift({ id: 'codesandbox.tests' });
       }
     }
