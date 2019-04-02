@@ -9,7 +9,7 @@ description: "CodeSandbox allows you to store secrets so you don't share your ke
 Secrets are also known as enviroment variables are used to hide sensitive information in your application that you don't want the world to see.
 The most common example for the usage is with API keys.
 
-These secrets will not be transferred between forks and **can only be used in container sandboxes**
+Secrets values will not be transferred between forks and **can only be used in container sandboxes**.
 
 ## How add secrets in CodeSandbox
 
