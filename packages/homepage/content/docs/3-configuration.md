@@ -6,7 +6,7 @@ description: "You can configure sandboxes and other options with configuration f
 
 ## Configuration Files
 
-We think that configuration is used when a program is too stupid to figure out what the user really wants, and try to steer away from it as much as possible. However, there are always advanced use cases where the user wants to control every aspect of their program, and thus configure everything. CodeSandbox is a clear example of a program that requires configuration, it doesn't fit the 95%.
+There are always advanced use cases where the user wants to control every aspect of their program, and thus configure everything. CodeSandbox is a clear example of a program that requires configuration, it doesn't fit the 95%.
 
 That's why we introduce a concept called 'Configuration Files'. Every template on CodeSandbox has a list of configuration files it supports. You can see this list in the sidebar:
 
