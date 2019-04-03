@@ -1094,6 +1094,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "AndyOGo",
+      "name": "Andreas",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/914443?v=4",
+      "profile": "http://www.scale-unlimited.com",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "repoType": "github"
