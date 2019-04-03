@@ -65,14 +65,14 @@ export default function getTerminalTheme(theme: VSTheme): XTermTheme {
     brightWhite: theme.vscodeTheme.colors['terminal.ansiBrightWhite'],
     brightYellow: theme.vscodeTheme.colors['terminal.ansiBrightYellow'],
     cyan: theme.vscodeTheme.colors['terminal.ansiCyan'],
-    cursorAccent: theme.vscodeTheme.colors['editor.foreground'],
-    cursor: theme.vscodeTheme.colors['editor.foreground'],
-    foreground: theme.vscodeTheme.colors['editor.foreground'],
+    foreground:
+      theme.vscodeTheme.colors['terminal.foreground'] ||
+      theme.vscodeTheme.colors['panel.foreground'],
     green: theme.vscodeTheme.colors['terminal.ansiGreen'],
     magenta: theme.vscodeTheme.colors['terminal.ansiMagenta'],
     red: theme.vscodeTheme.colors['terminal.ansiRed'],
     white: theme.vscodeTheme.colors['terminal.ansiWhite'],
     yellow: theme.vscodeTheme.colors['terminal.ansiYellow'],
-    selection: theme.light ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.1)',
+    selection: theme.vscodeTheme.colors['terminal.selectionBackground'],
   };
 }
