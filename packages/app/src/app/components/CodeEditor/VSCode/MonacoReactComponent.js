@@ -85,8 +85,6 @@ class MonacoEditor extends React.PureComponent {
         r('vs/platform/instantiation/common/instantiation'),
       ];
 
-      document.getElementById('root').className += ' monaco-shell vs-dark';
-
       const container = document.createElement('div');
       const part = document.createElement('div');
       container.appendChild(part);
@@ -174,6 +172,7 @@ class MonacoEditor extends React.PureComponent {
 
             // After initializing monaco editor
             this.editorDidMount(editorApi, context.monaco);
+            document.getElementById('root').className += ` monaco-shell`;
           });
         }
       );

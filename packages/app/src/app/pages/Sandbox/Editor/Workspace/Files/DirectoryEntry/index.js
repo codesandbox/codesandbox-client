@@ -311,6 +311,14 @@ class DirectoryEntry extends React.Component {
               width={400}
             >
               <Alert
+                css={`
+                  background-color: ${props =>
+                    props.theme['sideBar.background'] || 'auto'};
+                  color: ${props =>
+                    props.theme.light
+                      ? 'rgba(0,0,0,0.9)'
+                      : 'rgba(255,255,255,0.9)'};
+                `}
                 title="Delete File"
                 body={
                   <span>
