@@ -31,7 +31,7 @@ class DocSearch extends Component {
         apiKey: '45db7de01ac97a7c4c673846830c4117',
         indexName: 'codesandbox',
         inputSelector: '#algolia-doc-search',
-        debug: true,
+        debug: false,
       });
     } else {
       // eslint-disable-next-line
