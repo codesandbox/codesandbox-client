@@ -45,7 +45,7 @@ class DocSearch extends Component {
     const { enabled } = this.state;
 
     return enabled ? (
-      <form>
+      <form style={{ margin: 0 }}>
         <StyledInput
           id="algolia-doc-search"
           type="search"
