@@ -15,7 +15,6 @@ module.exports = {
         '@babel/plugin-transform-runtime',
         '@babel/plugin-syntax-dynamic-import',
         'babel-plugin-lodash',
-        'babel-plugin-styled-components',
         'babel-plugin-system-import-transformer',
         'babel-plugin-macros',
         'babel-plugin-styled-components',
