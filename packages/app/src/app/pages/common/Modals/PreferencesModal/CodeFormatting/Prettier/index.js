@@ -135,7 +135,7 @@ function Prettier({ store, signals }) {
           title="Arrow Function Parentheses"
           type="dropdown"
           options={['avoid', 'always']}
-          {...this.bindValue('arrowParens')}
+          {...bindValue('arrowParens')}
         />
         <SubDescription>
           Include parentheses around a sole arrow function parameter.
