@@ -4,7 +4,7 @@ export const Container = styled.div`
   padding: 1rem;
   color: rgba(255, 255, 255, 0.8);
   box-sizing: border-box;
-
+  max-height: 100%;
   overflow: auto;
 `;
 
