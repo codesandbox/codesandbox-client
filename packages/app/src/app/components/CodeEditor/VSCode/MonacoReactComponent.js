@@ -103,6 +103,7 @@ class MonacoEditor extends React.PureComponent {
           );
 
           container.className = 'monaco-workbench';
+          part.id = 'vscode-editor';
           part.className = 'part editor has-watermark';
           editorElement.className += ' monaco-workbench mac nopanel';
 
