@@ -1,6 +1,7 @@
 import React from 'react';
 import FontFaceObserver from 'fontfaceobserver';
 import vscode from 'app/vscode';
+import theme from '@codesandbox/common/lib/theme';
 
 import './icon-theme.css';
 import './workbench-theme.css';
@@ -84,8 +85,6 @@ class MonacoEditor extends React.PureComponent {
         r('vs/platform/quickOpen/common/quickOpen'),
         r('vs/platform/instantiation/common/instantiation'),
       ];
-
-      document.getElementById('root').className += ' monaco-shell vs-dark';
 
       const container = document.createElement('div');
       const part = document.createElement('div');
@@ -174,6 +173,7 @@ class MonacoEditor extends React.PureComponent {
 
             // After initializing monaco editor
             this.editorDidMount(editorApi, context.monaco);
+            document.getElementById('root').className += ` monaco-shell`;
           });
         }
       );

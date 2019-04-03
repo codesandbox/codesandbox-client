@@ -58,7 +58,6 @@ function fetchTheme(foundTheme) {
         theme = parseTheme(text);
       } catch (e) {
         console.error(e);
-
         if (window.showNotification) {
           window.showNotification(
             'We had trouble loading the theme, error: \n' + e.message,
