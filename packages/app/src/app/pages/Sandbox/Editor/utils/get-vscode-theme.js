@@ -107,6 +107,8 @@ export default async function getTheme(themeName, customTheme) {
   const foundTheme = await findTheme(themeName, customTheme);
   // Explicitly check for dark as that is the default
   const isLight = foundTheme.type !== 'dark' && foundTheme.type !== 'hc';
+  // We need to set this so VSCode knows that the last known theme is the right one. This prevents
+  // flickering for light themes.
   document.body.classList.remove('vs');
   document.body.classList.remove('vs-dark');
   document.body.classList.remove('hc-black');
