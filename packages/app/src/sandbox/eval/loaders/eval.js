@@ -41,6 +41,7 @@ export default function(
       `) {` +
       code +
       `\n})`;
+    // eslint-disable-next-line no-new-func
     new Function(`return ${newCode}`)().apply(
       this,
       [

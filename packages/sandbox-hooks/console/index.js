@@ -23,6 +23,7 @@ export default function setupConsole() {
             try {
               const wrapped = `(${data.command})`;
               // `new Function` is used to validate Javascript syntax
+              // eslint-disable-next-line no-new-func no-unused-vars
               const validate = new Function(wrapped);
               data.command = wrapped;
             } catch (e) {
@@ -30,7 +31,8 @@ export default function setupConsole() {
             }
           }
 
-          result = (new Function(`return ${data.command}`))()
+          // eslint-disable-next-line no-new-func
+          result = new Function(`return ${data.command}`)();
         } catch (e) {
           result = e;
           error = true;
