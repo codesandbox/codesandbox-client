@@ -1,8 +1,9 @@
-// @flow
+// @ts-ignore
 import SassWorker from 'worker-loader?publicPath=/&name=sass-transpiler.[hash:8].worker.js!./worker';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import { LoaderContext } from '../../transpiled-module';
+import { TranspilerResult } from '..';
 
 class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
@@ -16,7 +17,7 @@ class SassTranspiler extends WorkerTranspiler {
   doTranspilation(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<{ transpiledCode: string }> {
+  ): Promise<TranspilerResult> {
     const indentedSyntax =
       loaderContext.options.indentedSyntax == null
         ? loaderContext.path.endsWith('.sass')

@@ -1,8 +1,9 @@
-// @flow
+// @ts-ignore
 import LessWorker from 'worker-loader?publicPath=/&name=less-transpiler.[hash:8].worker.js!./less-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import { LoaderContext } from '../../transpiled-module';
+import { TranspilerResult } from '..';
 
 class LessTranspiler extends WorkerTranspiler {
   worker: Worker;
@@ -13,7 +14,10 @@ class LessTranspiler extends WorkerTranspiler {
     this.cacheable = false;
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(
+    code: string,
+    loaderContext: LoaderContext
+  ): Promise<TranspilerResult> {
     return new Promise((resolve, reject) => {
       const modules = loaderContext.getModules();
 

@@ -1,15 +1,18 @@
 // @flow
+// @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index.js';
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 
 import regexGetRequireStatements from './worker/simple-get-require-statements';
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
-import type { default as Manager } from '../../manager';
+import { LoaderContext } from '../../transpiled-module';
+import Manager from '../../manager';
 
 import delay from '../../../utils/delay';
 import { shouldTranspile } from './check';
+
+const global = window as any;
 
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
@@ -24,16 +27,16 @@ class BabelTranspiler extends WorkerTranspiler {
   startupWorkersInitialized = false;
 
   async getWorker() {
-    while (typeof window.babelworkers === 'undefined') {
+    while (typeof global.babelworkers === 'undefined') {
       await delay(50); // eslint-disable-line
     }
 
-    if (window.babelworkers.length === 0) {
+    if (global.babelworkers.length === 0) {
       return super.getWorker();
     }
 
     // We set these up in startup.js.
-    return window.babelworkers.pop();
+    return global.babelworkers.pop();
   }
 
   doTranspilation(
@@ -92,7 +95,7 @@ class BabelTranspiler extends WorkerTranspiler {
       );
 
       const babelConfig = getBabelConfig(
-        foundConfig || loaderOptions.config,
+        foundConfig || (loaderOptions as any).config,
         loaderOptions,
         path,
         isV7
@@ -127,7 +130,7 @@ class BabelTranspiler extends WorkerTranspiler {
     });
   }
 
-  async getTranspilerContext(manager: Manager) {
+  async getTranspilerContext(manager: Manager): Promise<any> {
     return new Promise(async resolve => {
       const baseConfig = await super.getTranspilerContext(manager);
 
@@ -142,6 +145,7 @@ class BabelTranspiler extends WorkerTranspiler {
           babelTranspilerOptions,
         },
         'babelContext',
+        // @ts-ignore
         {},
         (err, data) => {
           const { version, availablePlugins, availablePresets } = data;

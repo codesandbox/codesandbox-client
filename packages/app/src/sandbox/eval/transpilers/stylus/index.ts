@@ -1,19 +1,23 @@
-// @flow
-import CoffeeWorker from 'worker-loader?publicPath=/&name=coffee-transpiler.[hash:8].worker.js!./coffee-worker.js';
+// @ts-ignore
+import StylusWorker from 'worker-loader?publicPath=/&name=stylus-transpiler.[hash:8].worker.js!./stylus-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import { LoaderContext } from '../../transpiled-module';
+import { TranspilerResult } from '..';
 
-class CoffeeTranspiler extends WorkerTranspiler {
+class StylusTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('coffee-loader', CoffeeWorker, 1);
+    super('stylus-loader', StylusWorker, 1);
 
     this.cacheable = false;
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(
+    code: string,
+    loaderContext: LoaderContext
+  ): Promise<TranspilerResult> {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
@@ -38,8 +42,8 @@ class CoffeeTranspiler extends WorkerTranspiler {
   }
 }
 
-const transpiler = new CoffeeTranspiler();
+const transpiler = new StylusTranspiler();
 
-export { CoffeeTranspiler };
+export { StylusTranspiler };
 
 export default transpiler;

@@ -1,6 +1,6 @@
 // @flow
-import Transpiler from '../';
-import { type LoaderContext } from '../../transpiled-module';
+import Transpiler, { TranspilerResult } from '../';
+import { LoaderContext } from '../../transpiled-module';
 
 /**
  * Just fetches a file from the interwebs and converts it to a blob
@@ -13,7 +13,10 @@ class BinaryTranspiler extends Transpiler {
     super('binary-loader');
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(
+    code: string,
+    loaderContext: LoaderContext
+  ): Promise<TranspilerResult> {
     return fetch(code)
       .then(res => res.blob())
       .then(blob => ({ transpiledCode: blob }));

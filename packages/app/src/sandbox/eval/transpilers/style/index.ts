@@ -1,7 +1,7 @@
 // @flow
 import { dispatch } from 'codesandbox-api';
 import Transpiler from '../';
-import { type LoaderContext } from '../../transpiled-module';
+import { LoaderContext } from '../../transpiled-module';
 
 import insertCss from './utils/insert-css';
 import toDefinition from './utils/to-definition';

@@ -37,7 +37,6 @@ export default function initialize() {
     ],
     {},
     {
-      htmlDisabled: true,
       setup: manager => {
         const packageJSON = manager.configurations.package;
 

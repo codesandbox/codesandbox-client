@@ -1,41 +1,46 @@
-import type BrowserFS from 'codesandbox-browserfs';
 import _debug from '@codesandbox/common/lib/utils/debug';
 
-import Transpiler from './';
+import Transpiler, { TranspilerResult } from './';
 import { parseWorkerError } from './utils/worker-error-handler';
-import { type LoaderContext } from '../transpiled-module';
+import { LoaderContext } from '../transpiled-module';
+import Manager from '../manager';
 
 const debug = _debug('cs:compiler:worker-transpiler');
 
+type TranspilerCallback = (
+  err: any | undefined,
+  data: TranspilerResult | undefined
+) => void;
+
 type Task = {
-  message: any,
-  callbacks: Array<(err: ?any, data: ?any) => void>,
-  loaderContext: LoaderContext,
+  message: any;
+  callbacks: TranspilerCallback[];
+  loaderContext: LoaderContext;
 };
 
 /**
  * A transpiler that handles worker messaging for you! Magic
  */
-export default class WorkerTranspiler extends Transpiler {
-  Worker: Worker;
+export default abstract class WorkerTranspiler extends Transpiler {
+  Worker: () => Worker;
   workers: Array<Worker>;
   idleWorkers: Array<Worker>;
   loadingWorkers: number;
   workerCount: number;
   tasks: {
-    [id: string]: Task,
+    [id: string]: Task;
   };
   initialized: boolean;
   runningTasks: {
-    [id: string]: (error: Error, message: Object) => void,
+    [id: string]: (error: Error, message: Object) => void;
   };
   hasFS: boolean;
 
   constructor(
     name: string,
-    Worker: Worker,
+    Worker: () => Worker,
     workerCount = navigator.hardwareConcurrency,
-    options: { hasFS: boolean, preload: boolean } = {}
+    options: { hasFS?: boolean; preload?: boolean } = {}
   ) {
     super(name);
 
@@ -57,7 +62,8 @@ export default class WorkerTranspiler extends Transpiler {
     }
   }
 
-  getWorker() {
+  getWorker(): Promise<Worker> {
+    // @ts-ignore
     return Promise.resolve(new this.Worker());
   }
 
@@ -76,6 +82,7 @@ export default class WorkerTranspiler extends Transpiler {
 
       if (this.hasFS) {
         // Register file system that syncs with filesystem in manager
+        // @ts-ignore
         BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
         worker.postMessage({ type: 'initialize-fs', codesandbox: true });
       }
@@ -121,7 +128,11 @@ export default class WorkerTranspiler extends Transpiler {
     }
   }
 
-  runCallbacks(callbacks: Array<Function>, err, data) {
+  runCallbacks(
+    callbacks: Array<TranspilerCallback>,
+    err: Error | undefined,
+    data?: TranspilerResult
+  ) {
     callbacks.forEach(c => c(err, data));
   }
 
@@ -211,7 +222,7 @@ export default class WorkerTranspiler extends Transpiler {
     message: any,
     id: string,
     loaderContext: LoaderContext,
-    callback: (err: Error, message: Object) => void
+    callback: (err: Error, message: TranspilerResult) => void
   ) {
     this.initialized = true;
     if (
@@ -235,8 +246,8 @@ export default class WorkerTranspiler extends Transpiler {
     this.executeRemainingTasks();
   }
 
-  async getTranspilerContext() {
-    return super.getTranspilerContext().then(x => ({
+  async getTranspilerContext(manager: Manager) {
+    return super.getTranspilerContext(manager).then(x => ({
       ...x,
       worker: true,
       hasFS: this.hasFS,

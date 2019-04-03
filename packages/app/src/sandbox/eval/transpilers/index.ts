@@ -1,16 +1,14 @@
-// @flow
+import { SourceMap } from './utils/get-source-map';
+import { LoaderContext } from '../transpiled-module';
+import Manager from '../manager';
 
-import type { SourceMap } from './utils/get-source-map';
-import { type LoaderContext } from '../transpiled-module';
-import type { default as Manager } from '../manager';
+export interface TranspilerResult {
+  transpiledCode: any;
+  ast?: Object;
+  sourceMap?: SourceMap;
+}
 
-type TranspilerResult = {
-  transpiledCode: string,
-  ast?: Object,
-  sourceMap?: SourceMap,
-};
-
-export default class Transpiler {
+export default abstract class Transpiler {
   cacheable: boolean;
   name: string;
   HMREnabled: boolean;
@@ -28,12 +26,10 @@ export default class Transpiler {
 
   cleanModule(loaderContext: LoaderContext) {}
 
-  doTranspilation(
+  abstract doTranspilation(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<TranspilerResult> {
-    throw new Error('This is an abstract function, please override it!');
-  }
+  ): Promise<TranspilerResult>;
   /* eslint-enable */
 
   transpile(
@@ -47,7 +43,7 @@ export default class Transpiler {
    * Get custom info of the current transpiler, this is open for implementation
    * per transpiler
    */
-  getTranspilerContext(manager: Manager): Promise<Object> {
+  getTranspilerContext(manager: Manager): Promise<object> {
     return Promise.resolve({
       name: this.name,
       HMREnabled: this.HMREnabled,

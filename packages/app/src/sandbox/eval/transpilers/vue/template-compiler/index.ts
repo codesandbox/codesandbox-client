@@ -1,6 +1,6 @@
 // @flow
 import Transpiler from '../../';
-import { type LoaderContext } from '../../../transpiled-module';
+import { LoaderContext } from '../../../transpiled-module';
 
 class VueTemplateTranspiler extends Transpiler {
   constructor() {

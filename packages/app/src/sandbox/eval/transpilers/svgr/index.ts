@@ -1,6 +1,6 @@
 // @flow
 import Transpiler from '../';
-import type { LoaderContext } from '../../../eval/transpiled-module';
+import { LoaderContext } from '../../../eval/transpiled-module';
 
 class SVGRTranspiler extends Transpiler {
   async doTranspilation(code: string, loaderContext: LoaderContext) {
