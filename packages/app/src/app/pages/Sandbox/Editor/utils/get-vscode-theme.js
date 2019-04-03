@@ -58,6 +58,7 @@ function fetchTheme(foundTheme) {
         theme = parseTheme(text);
       } catch (e) {
         console.error(e);
+
         if (window.showNotification) {
           window.showNotification(
             'We had trouble loading the theme, error: \n' + e.message,
@@ -96,10 +97,19 @@ const findTheme = async (themeName, customTheme) => {
   };
 };
 
+const classnames = {
+  dark: 'vs-dark',
+  light: 'vs',
+  hc: 'hc-black',
+};
+
 export default async function getTheme(themeName, customTheme) {
   const foundTheme = await findTheme(themeName, customTheme);
   // Explicitly check for dark as that is the default
   const isLight = foundTheme.type !== 'dark' && foundTheme.type !== 'hc';
+  document.body.classList.remove('vs');
+  document.body.classList.remove('vs-dark');
+  document.body.classList.add(classnames[foundTheme.type] || 'vs');
 
   const colors = {
     ...(isLight ? vs : vsDark),
