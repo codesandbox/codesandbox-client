@@ -5,7 +5,6 @@ export const Container = styled.div`
   color: rgba(255, 255, 255, 0.8);
   box-sizing: border-box;
   max-height: 100%;
-  background: red;
 `;
 
 export const Title = styled.h1`

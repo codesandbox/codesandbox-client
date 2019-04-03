@@ -130,6 +130,16 @@ function Prettier({ store, signals }) {
           Put the `{'>'}` of a multi-line JSX element at the end of the last
           line instead of being alone on the next line.
         </SubDescription>
+        <Rule />
+        <PaddedPreference
+          title="Arrow Function Parentheses"
+          type="dropdown"
+          options={['avoid', 'always']}
+          {...this.bindValue('arrowParens')}
+        />
+        <SubDescription>
+          Include parentheses around a sole arrow function parameter.
+        </SubDescription>
       </PreferenceContainer>
     </SubContainer>
   );
