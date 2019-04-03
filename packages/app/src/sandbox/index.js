@@ -88,7 +88,7 @@ requirePolyfills().then(() => {
     // We need to fetch the sandbox ourselves...
     const id = getId();
     window
-      .fetch(host + `/api/v1/sandboxes/${id}`, {
+      .fetch(`https://codesandbox.stream/api/v1/sandboxes/${id}`, {
         credentials: 'include',
       })
       .then(res => res.json())
