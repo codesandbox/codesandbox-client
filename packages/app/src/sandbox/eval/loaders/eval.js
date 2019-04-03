@@ -42,7 +42,7 @@ export default function(
       code +
       `\n})`;
     // eslint-disable-next-line no-eval
-    (0, eval)(newCode).apply(
+    (new Function(`return ${newCode}`)).apply(
       this,
       [
         require,
