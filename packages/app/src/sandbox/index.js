@@ -12,7 +12,7 @@ import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
 import compile, { getCurrentManager } from './compile';
 
-const host = process.env.CODESANDBOX_HOST;
+const host = 'https://csb-sandbox.stream';
 const debug = _debug('cs:sandbox');
 
 export const SCRIPT_VERSION =
