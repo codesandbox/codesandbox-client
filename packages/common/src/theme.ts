@@ -77,6 +77,7 @@ const theme = {
     redBackground: '#400000',
     red: '#F27777',
     dangerBackground: '#DC3545',
+    sidebar: '#191d1f',
   }),
   vscodeTheme: codesandbox,
 
