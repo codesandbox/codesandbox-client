@@ -1,6 +1,6 @@
 # Contribute with a Template
 
-To contribute with a CodeSandbox template, you need to complete multiple steps and submit two Pull Requests and we have created this guide to help you do this. Here you will find descriptions and explanations for what you need to do, along with some examples that we have added as references.
+To contribute with a CodeSandbox template, you need to complete multiple steps and submit two Pull Requests. We have created this guide to help you do this. Here you will find descriptions and explanations for what you need to do, along with some examples that we have added as references.
 
 We realise that the process of submitting a template is not straightforward and we hope that this guide will help you along the way. We are working on a system that will make it easier.
 
@@ -28,13 +28,13 @@ There are also some disadvantages to this approach. When sandboxes run in the br
 
 Unlike sandboxes, **containers** are executed on a server. This makes it possible to create projects that are end-to-end based, like `Next.js` with CodeSandbox, and also makes it possible to build bigger projects. **Containers** let you run any command, and everything that works locally will also work in container.
 
-However, like the sandboxes, **containers** also come with some limitations. In order to work on a container, you need to be signed in as a user, you can't edit containers while offline, it's not possible viewing them from an embed, and ~~you can only have a limited amount of container based projects~~ ([containers are now out of beta](https://medium.com/@compuives/codesandbox-containers-out-of-beta-improvements-be79679df4cc)).
+However, like the sandboxes, **containers** also come with some limitations. In order to work on a container, you need to be signed in as a user, you can't edit containers while offline, it's not possible viewing them from an embed, and you can only have a limited amount of container based projects.
 
 ### Which one to choose?
 
 As you have read above, the template type determines whether a project is executed in a *sandbox in a browser* or in a *container on a server*. This means that the template type you have to choose, depends on your specific use-case and where you want your project to be executed.
 
-If you would like to demonstrate CLI functionality, we recommend that you use a **container** type template, and if you want to demonstrate a JavaScript framework (like `create-react-app`) we recommended using a**sandbox** type template.
+If you would like to demonstrate CLI functionality, we recommend that you use a **container** type template, and if you want to demonstrate a JavaScript framework (like `React`) we recommended using a **sandbox** type template.
 
 We encourage everyone to first evaluate whether the template works as a sandbox, before deciding on using a container.
 
