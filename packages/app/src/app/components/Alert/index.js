@@ -3,9 +3,9 @@ import React from 'react';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { Container, Title, Text, Buttons } from './elements';
 
-function Alert({ title, body, onCancel, onDelete }) {
+function Alert({ title, body, onCancel, onDelete, ...props }) {
   return (
-    <Container>
+    <Container {...props}>
       <Title>{title}</Title>
       <Text>{body}</Text>
       <Buttons>
