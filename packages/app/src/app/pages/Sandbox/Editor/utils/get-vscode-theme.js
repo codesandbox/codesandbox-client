@@ -109,6 +109,7 @@ export default async function getTheme(themeName, customTheme) {
   const isLight = foundTheme.type !== 'dark' && foundTheme.type !== 'hc';
   document.body.classList.remove('vs');
   document.body.classList.remove('vs-dark');
+  document.body.classList.remove('hc-black');
   document.body.classList.add(classnames[foundTheme.type] || 'vs');
 
   const colors = {
