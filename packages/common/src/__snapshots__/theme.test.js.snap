@@ -27,6 +27,7 @@ Object {
   "redBackground": [Function],
   "secondary": [Function],
   "shySecondary": [Function],
+  "sidebar": [Function],
   "vscodeTheme": Object {
     "$schema": "vscode://schemas/color-theme",
     "colors": Object {
