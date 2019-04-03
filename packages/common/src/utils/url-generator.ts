@@ -1,4 +1,4 @@
-// @flow
+
 import { Sandbox } from '../types';
 
 export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;

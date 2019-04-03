@@ -1,6 +1,7 @@
 // next.config.js
 const withCSS = require('@zeit/next-css');
 const withTM = require('next-transpile-modules');
+const env = require('@codesandbox/common/lib/config/env');
 
 const dotEnvResult = require('dotenv').config();
 
@@ -10,9 +11,18 @@ const dotEnvVariables = {};
 for (const key of Object.keys(parsedVariables)) {
   dotEnvVariables[key] = process.env[key];
 }
+// eslint-disable-next-line
+for (const key of Object.keys(env)) {
+  dotEnvVariables[key] = env[key];
+}
 
 module.exports = withCSS(
   withTM({
+    exportPathMap() {
+      return {
+        '/profile': { page: '/profile' },
+      };
+    },
     transpileModules: ['common'],
     webpack(config) {
       // Further custom configuration here

@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
-import delayInEffect from 'common/lib/utils/animation/delay-effect';
-import delayOutEffect from 'common/lib/utils/animation/delay-out-effect';
+import delayInEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
+import delayOutEffect from '@codesandbox/common/lib/utils/animation/delay-out-effect';
 import NowLogo from 'app/components/NowLogo';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 import Cube from './Cube';

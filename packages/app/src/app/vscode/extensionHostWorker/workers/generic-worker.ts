@@ -4,8 +4,8 @@
 import { default as Module } from 'node-services/lib/module';
 import resolve from 'resolve';
 import { basename } from 'path';
-import _debug from 'common/lib/utils/debug';
-import { commonPostMessage } from 'common/lib/utils/global';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
 
 import { initializeBrowserFS } from '../common/fs';
 

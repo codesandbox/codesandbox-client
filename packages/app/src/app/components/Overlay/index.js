@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 
 import { Transition, animated, config } from 'react-spring/renderprops';
-import track from 'common/lib/utils/analytics';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 class OverlayComponent extends React.Component {
   state = {

@@ -6,15 +6,15 @@ import {
   patronUrl,
   searchUrl,
   exploreUrl,
-} from 'common/lib/utils/url-generator';
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import SearchIcon from 'react-icons/lib/go/search';
 import PlusIcon from 'react-icons/lib/go/plus';
 import BellIcon from 'react-icons/lib/md/notifications';
 import FlameIcon from 'react-icons/lib/go/flame';
-import Row from 'common/lib/components/flex/Row';
-import Tooltip from 'common/lib/components/Tooltip';
-import PatronBadge from '-!svg-react-loader!common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import Row from '@codesandbox/common/lib/components/flex/Row';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import OverlayComponent from 'app/components/Overlay';
 import Notifications from './Notifications';
@@ -50,7 +50,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
             <Media query="(max-width: 920px)">
               {matches =>
                 matches || searchNoInput ? (
-                  <Tooltip position="bottom" title="Search All Sandboxes">
+                  <Tooltip placement="bottom" content="Search All Sandboxes">
                     <Link style={{ color: 'white' }} to={searchUrl()}>
                       <SearchIcon height={35} />
                     </Link>
@@ -63,7 +63,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
           </Action>
 
           <Action>
-            <Tooltip position="bottom" title="Explore Sandboxes">
+            <Tooltip placement="bottom" content="Explore Sandboxes">
               <a style={{ color: 'white' }} href={exploreUrl()}>
                 <FlameIcon />
               </a>
@@ -72,7 +72,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
 
           {!isPatron && (
             <Action>
-              <Tooltip position="bottom" title="Support CodeSandbox">
+              <Tooltip placement="bottom" content="Support CodeSandbox">
                 <Link to={patronUrl()}>
                   <PatronBadge width={40} height={40} />
                 </Link>
@@ -91,7 +91,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
             >
               {open => (
                 <Action
-                  style={{ position: 'relative', fontSize: '1.25rem' }}
+                  style={{ placement: 'relative', fontSize: '1.25rem' }}
                   onClick={open}
                 >
                   <BellIcon height={35} />
@@ -111,7 +111,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
               })
             }
           >
-            <Tooltip position="bottom" title="New Sandbox">
+            <Tooltip placement="bottom" content="New Sandbox">
               <PlusIcon height={35} />
             </Tooltip>
           </Action>

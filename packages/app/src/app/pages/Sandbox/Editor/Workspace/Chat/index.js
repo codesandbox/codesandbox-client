@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { sortBy, takeRight } from 'lodash-es';
 import { inject, observer } from 'mobx-react';
 
-import AutosizeTextArea from 'common/lib/components/AutosizeTextArea';
-import { ENTER } from 'common/lib/utils/keycodes';
+import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 const Container = styled.div`
   min-height: 200px;

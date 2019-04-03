@@ -18,7 +18,7 @@ const SHADOW_SIZE = (() => {
     return 100;
   }
 
-  return 150;
+  return 100;
 })();
 
 const getContainerAnimation = (offset: number) => {

@@ -1,4 +1,4 @@
-// @flow
+
 import Template from './template';
 import { decorateSelector } from '../theme';
 
@@ -27,5 +27,6 @@ export default new Template(
     isServer: true,
     showOnHomePage: true,
     main: false,
+    netlify: false,
   }
 );

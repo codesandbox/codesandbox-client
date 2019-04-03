@@ -7,8 +7,8 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
-const env = require('common/lib/config/env');
-const getHost = require('common/lib/utils/host');
+const env = require('@codesandbox/common/lib/config/env');
+const getHost = require('@codesandbox/common/lib/utils/host');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
@@ -465,12 +465,12 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode15/vs',
+          to: 'public/vscode18/vs',
           force: true,
         },
         {
           from: '../../standalone-packages/vscode-extensions/out',
-          to: 'public/vscode-extensions/v3',
+          to: 'public/vscode-extensions/v4',
           force: true,
         },
         {

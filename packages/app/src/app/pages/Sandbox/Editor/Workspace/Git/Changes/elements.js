@@ -11,7 +11,7 @@ export const Entry = styled(EntryContainer)`
   display: flex;
   align-items: center;
   line-height: 1;
-
+  color: ${props => props.theme.vscodeTheme.colors['editor.foreground']};
   ${({ hideColor }) =>
     hideColor &&
     css`

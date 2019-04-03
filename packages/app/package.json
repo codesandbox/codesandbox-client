@@ -42,6 +42,7 @@
     "@types/codemirror": "^0.0.72",
     "@types/debug": "^4.1.1",
     "@types/gsap": "^1.20.1",
+    "@types/jest": "^24.0.11",
     "@types/lodash-es": "^4.17.2",
     "@types/react": "^16.8.3",
     "@types/react-dom": "^16.0.11",
@@ -126,6 +127,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-destructuring": "^7.1.2",
+    "@babel/preset-env": "^7.4.2",
     "@cerebral/http": "^4.0.0",
     "@cerebral/mobx-state-tree": "^3.0.0",
     "@emmetio/codemirror-plugin": "^0.3.5",
@@ -159,8 +161,8 @@
     "cerebral": "^4.0.0",
     "circular-json": "^0.4.0",
     "codemirror": "^5.27.4",
-    "codesandbox-api": "^0.0.20",
-    "codesandbox-import-utils": "2.1.1",
+    "codesandbox-api": "^0.0.22",
+    "codesandbox-import-utils": "2.1.2",
     "color": "^0.11.4",
     "compare-versions": "^3.1.0",
     "console-feed": "^2.8.5",
@@ -247,7 +249,6 @@
     "sha1": "^1.1.1",
     "shelljs": "^0.7.8",
     "shortid": "^2.2.8",
-    "socket.io-client": "^2.1.1",
     "store": "^2.0.12",
     "string-replace-loader": "^2.1.1",
     "styled-components": "^4.1.2",
@@ -257,9 +258,9 @@
     "util": "0.11.1",
     "vue": "^2.5.2",
     "vue-eslint-parser": "^2.0.3",
-    "vue-hot-reload-api": "^2.2.4",
-    "vue-template-compiler": "^2.5.2",
-    "vue-template-es2015-compiler": "^1.6.0",
+    "vue-hot-reload-api": "^2.3.3",
+    "vue-template-compiler": "^2.6.10",
+    "vue-template-es2015-compiler": "^1.9.1",
     "xterm": "3.7.0"
   },
   "jest": {
@@ -273,8 +274,17 @@
     "testPathIgnorePatterns": [
       "/create-zip\\/.*\\/files/"
     ],
+    "testRegex": "(test|spec)\\.(j|t)sx?$",
     "transformIgnorePatterns": [
       "node_modules/(?!(common|lodash-es|sandbox-hooks|react-icons)/.+\\.js$)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",

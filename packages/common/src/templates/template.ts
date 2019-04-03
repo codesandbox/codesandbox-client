@@ -1,4 +1,4 @@
-// @flow
+
 import { absolute } from '../utils/path';
 import {
   ConfigurationFile,
@@ -9,6 +9,8 @@ import configurations from './configuration';
 export type Options = {
   showOnHomePage?: boolean;
   distDir?: string;
+  netlify?: boolean;
+  popular?: boolean;
   extraConfigurations?: {
     [path: string]: ConfigurationFile;
   };
@@ -69,8 +71,10 @@ export default class Template {
   color: () => string;
   backgroundColor: (() => string | undefined);
 
+  popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
+  netlify: boolean;
   configurationFiles: ConfigurationFiles;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
@@ -92,6 +96,7 @@ export default class Template {
     this.shortid = shortid;
     this.color = color;
 
+    this.popular = options.popular || false;
     this.isServer = options.isServer || false;
     this.main = options.main || false;
     this.showOnHomePage = options.showOnHomePage || false;
@@ -107,6 +112,7 @@ export default class Template {
         : true;
 
     this.mainFile = options.mainFile;
+    this.netlify = options.netlify;
     this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;

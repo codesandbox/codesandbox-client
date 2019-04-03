@@ -4,17 +4,20 @@ import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'mobx-react';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import {
+  initializeSentry,
+  logError,
+} from '@codesandbox/common/lib/utils/analytics';
+import '@codesandbox/common/lib/global.css';
 
 import history from 'app/utils/history';
-import _debug from 'common/lib/utils/debug';
 import { client } from 'app/graphql/client';
-import VERSION from 'common/lib/version';
-import registerServiceWorker from 'common/lib/registerServiceWorker';
-import requirePolyfills from 'common/lib/load-dynamic-polyfills';
+import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
+import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
-import 'common/lib/global.css';
-import theme from 'common/lib/theme';
-import { isSafari } from 'common/lib/utils/platform';
+import theme from '@codesandbox/common/lib/theme';
+import { isSafari } from '@codesandbox/common/lib/utils/platform';
 
 // eslint-disable-next-line
 import * as child_process from 'node-services/lib/child_process';
@@ -22,7 +25,6 @@ import * as child_process from 'node-services/lib/child_process';
 import controller from './controller';
 import App from './pages/index';
 import './split-pane.css';
-import logError from './utils/error';
 import { getTypeFetcher } from './vscode/extensionHostWorker/common/type-downloader';
 
 import vscode from './vscode';
@@ -49,50 +51,9 @@ window.addEventListener('unhandledrejection', e => {
 
 if (process.env.NODE_ENV === 'production') {
   try {
-    Raven.config('https://3943f94c73b44cf5bb2302a72d52e7b8@sentry.io/155188', {
-      release: VERSION,
-      ignoreErrors: [
-        // Random plugins/extensions
-        'top.GLOBALS',
-        // See: http://blog.errorception.com/2012/03/tale-of-unfindable-js-error. html
-        'originalCreateNotification',
-        'canvas.contentDocument',
-        'MyApp_RemoveAllHighlights',
-        'http://tt.epicplay.com',
-        "Can't find variable: ZiteReader",
-        'jigsaw is not defined',
-        'ComboSearch is not defined',
-        'http://loading.retry.widdit.com/',
-        'atomicFindClose',
-        // Facebook borked
-        'fb_xd_fragment',
-        // ISP "optimizing" proxy - `Cache-Control: no-transform` seems to
-        // reduce this. (thanks @acdha)
-        // See http://stackoverflow.com/questions/4113268
-        'bmi_SafeAddOnload',
-        'EBCallBackMessageReceived',
-        // See http://toolbar.conduit.com/Developer/HtmlAndGadget/Methods/JSInjection.aspx
-        'conduitPage',
-      ],
-      ignoreUrls: [
-        // Facebook flakiness
-        /graph\.facebook\.com/i,
-        // Facebook blocked
-        /connect\.facebook\.net\/en_US\/all\.js/i,
-        // Woopra flakiness
-        /eatdifferent\.com\.woopra-ns\.com/i,
-        /static\.woopra\.com\/js\/woopra\.js/i,
-        // Chrome extensions
-        /extensions\//i,
-        /^chrome:\/\//i,
-        // Other plugins
-        /127\.0\.0\.1:4001\/isrunning/i, // Cacaoweb
-        /webappstoolbarba\.texthelp\.com\//i,
-        /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
-        // Monaco debuggers
-        'https://codesandbox.io/public/14/vs/language/typescript/lib/typescriptServices.js',
-      ],
-    }).install();
+    initializeSentry(
+      'https://3943f94c73b44cf5bb2302a72d52e7b8@sentry.io/155188'
+    );
   } catch (error) {
     console.error(error);
   }

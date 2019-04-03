@@ -1,4 +1,4 @@
-// @flow
+
 import { Sandbox } from '../../types';
 
 export type ConfigurationFile = {

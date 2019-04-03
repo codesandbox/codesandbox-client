@@ -2,7 +2,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import history from 'app/utils/history';
-import { sandboxUrl } from 'common/lib/utils/url-generator';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { Mutation } from 'react-apollo';
@@ -11,12 +11,12 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import Unlisted from 'react-icons/lib/md/insert-link';
 import Private from 'react-icons/lib/md/lock';
 
-import Input from 'common/lib/components/Input';
-import getTemplate from 'common/lib/templates';
-import theme from 'common/lib/theme';
-import track from 'common/lib/utils/analytics';
+import Input from '@codesandbox/common/lib/components/Input';
+import getTemplate from '@codesandbox/common/lib/templates';
+import theme from '@codesandbox/common/lib/theme';
+import track from '@codesandbox/common/lib/utils/analytics';
 
-import { ESC, ENTER } from 'common/lib/utils/keycodes';
+import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
 import {
@@ -67,13 +67,13 @@ class SandboxItem extends React.PureComponent<Props> {
   getPrivacyIcon = () => {
     if (this.props.privacy === 1) {
       return (
-        <PrivacyIconContainer title="Unlisted Sandbox">
+        <PrivacyIconContainer content="Unlisted Sandbox">
           <Unlisted />
         </PrivacyIconContainer>
       );
     } else if (this.props.privacy === 2) {
       return (
-        <PrivacyIconContainer title="Private Sandbox">
+        <PrivacyIconContainer content="Private Sandbox">
           <Private />
         </PrivacyIconContainer>
       );
@@ -282,11 +282,15 @@ class SandboxItem extends React.PureComponent<Props> {
     });
   };
 
-  openSandbox = (openNewWindow = false) => {
+  openSandbox = (e, openNewWindow = false) => {
+    // check for cmd click
+    const cmd = e.ctrlKey || e.metaKey;
     // Git sandboxes aren't shown here anyway
     const url = sandboxUrl({ id: this.props.id });
+
     if (!this.props.removedAt) {
-      if (openNewWindow === true) {
+      if (openNewWindow === true || cmd) {
+        track('Dashboard - Sandbox Opened in a new tab');
         window.open(url, '_blank');
       } else {
         history.push(url);

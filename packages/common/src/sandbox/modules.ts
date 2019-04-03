@@ -1,4 +1,4 @@
-// @flow
+
 import { Module, Directory } from '../types';
 import memoize from 'lodash/memoize';
 

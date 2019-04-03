@@ -4,8 +4,8 @@ export const Container = styled.div`
   padding: 1rem;
   color: rgba(255, 255, 255, 0.8);
   box-sizing: border-box;
-
   overflow: auto;
+  max-height: 100%;
 `;
 
 export const Title = styled.h1`

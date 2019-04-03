@@ -5,8 +5,8 @@ import { dispatch } from 'codesandbox-api';
 import { inject, observer } from 'mobx-react';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
-import Margin from 'common/lib/components/spacing/Margin';
-import { Button } from 'common/lib/components/Button';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 import { Description, WorkspaceInputContainer } from '../../elements';
 
@@ -33,10 +33,6 @@ const Server = ({ store }) => {
       <Description>
         This sandbox is executed on a server. You can control the server from
         this panel.
-      </Description>
-      <Description>
-        This functionality is in <strong>beta</strong>. It can behave
-        differently than you expect, handle with care!
       </Description>
 
       <Margin top={1}>

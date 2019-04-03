@@ -48,9 +48,11 @@
           env: {
             VSCODE_DEV: false
           },
-          nextTick: (cb) => requestAnimationFrame(cb),
+          nextTick: function(cb) {
+            return requestAnimationFrame(cb);
+          },
           once: BrowserFS.BFSRequire('process').once,
-          removeListener: () => {}
+          removeListener: function () {}
         };
         window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
       }

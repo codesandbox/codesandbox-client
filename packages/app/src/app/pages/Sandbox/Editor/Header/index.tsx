@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
 import Fork from 'react-icons/lib/go/repo-forked';
@@ -6,16 +7,19 @@ import PlusIcon from 'react-icons/lib/go/plus';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import SaveIcon from 'react-icons/lib/md/save';
-import { Button } from 'common/lib/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import SignInButton from 'app/pages/common/SignInButton';
 
 import { saveAllModules } from 'app/store/modules/editor/utils';
 
-import { patronUrl, dashboardUrl } from 'common/lib/utils/url-generator';
+import {
+  patronUrl,
+  dashboardUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 
 // @ts-ignore
-import PatronBadge from '-!svg-react-loader!common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-import Margin from 'common/lib/components/spacing/Margin';
+import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import LikeHeart from 'app/pages/common/LikeHeart';
 import UserMenu from 'app/pages/common/UserMenu';
@@ -43,6 +47,10 @@ type ButtonProps = {
   secondary?: boolean;
 };
 
+type ForkButtonProps = ButtonProps & {
+  isForking: boolean;
+};
+
 const LikeButton = ({
   store,
   signals,
@@ -61,18 +69,24 @@ const LikeButton = ({
   />
 );
 
-const ForkButton = ({ signals, secondary, style }: ButtonProps) => (
+const ForkButton = ({
+  signals,
+  secondary,
+  isForking,
+  style,
+}: ForkButtonProps) => (
   <Button
     onClick={() => {
       signals.editor.forkSandboxClicked();
     }}
     style={style}
     secondary={secondary}
+    disabled={isForking}
     small
   >
     <>
       <Fork style={{ marginRight: '.5rem' }} />
-      Fork
+      {isForking ? 'Forking...' : 'Fork'}
     </>
   </Button>
 );
@@ -141,7 +155,11 @@ const Header = ({ store, signals, zenMode }: Props) => {
 
       {sandbox.owned && (
         <Centered style={{ margin: '0 3rem' }}>
-          <CollectionInfo isLoggedIn={store.isLoggedIn} sandbox={sandbox} />
+          <CollectionInfo
+            isLoggedIn={store.isLoggedIn}
+            // Passing a clone of observable requires it to be called in render of observer
+            sandbox={toJS(sandbox)}
+          />
         </Centered>
       )}
 
@@ -207,6 +225,7 @@ const Header = ({ store, signals, zenMode }: Props) => {
         />
         <ForkButton
           secondary={sandbox.owned}
+          isForking={store.editor.isForkingSandbox}
           style={{ fontSize: '.75rem' }}
           signals={signals}
           store={store}

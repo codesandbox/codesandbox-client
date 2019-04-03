@@ -1,7 +1,7 @@
 // @ts-check
 import styled from 'styled-components';
-import fadeIn from 'common/lib/utils/animation/fade-in';
-import Tooltip from 'common/lib/components/Tooltip';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import ContextMenu from 'app/components/ContextMenu';
 import MoreInfoIcon from './KebabIcon';
 

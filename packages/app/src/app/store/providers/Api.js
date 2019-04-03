@@ -1,8 +1,8 @@
+import { logError } from '@codesandbox/common/lib/utils/analytics';
 import { values } from 'lodash-es';
 
 import { camelizeKeys, decamelizeKeys } from 'humps';
 import { Provider } from 'cerebral';
-import sendError from 'app/utils/error';
 import { addNotification } from '../factories';
 
 const API_ROOT = '/api/v1';
@@ -21,7 +21,7 @@ const getMessage = (error: Error & { response: ?Object }) => {
   const response = error.response;
 
   if (!response || response.status >= 500) {
-    sendError(error);
+    logError(error);
   }
 
   if (response && response.result) {

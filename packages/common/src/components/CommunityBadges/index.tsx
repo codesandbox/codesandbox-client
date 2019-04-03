@@ -33,7 +33,7 @@ export default ({ style, sandboxesNumber, template }) => {
   return sandboxesNumber >= 50 ? (
     <Tooltip
       style={{ display: 'flex', position: 'relative' }}
-      title={`${sandboxesNumber < 100 ? 'Silver' : 'Gold'} medal for ${
+      content={`${sandboxesNumber < 100 ? 'Silver' : 'Gold'} medal for ${
         templateInfo.niceName
       }`}
     >

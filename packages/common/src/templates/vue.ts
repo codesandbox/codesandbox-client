@@ -1,4 +1,4 @@
-// @flow
+
 import Template, { ParsedConfigurationFiles } from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
@@ -34,5 +34,6 @@ export default new VueTemplate(
     },
     distDir: 'dist',
     main: true,
+    popular: true,
   }
 );

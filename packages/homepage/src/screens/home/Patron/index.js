@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import getBadge from 'common/lib/utils/badges';
+import getBadge from '@codesandbox/common/lib/utils/badges';
 
-import MaxWidth from 'common/lib/components/flex/MaxWidth';
-import Centered from 'common/lib/components/flex/Centered';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
 
 import { Heading, SubHeading } from '../../../components/style';
 

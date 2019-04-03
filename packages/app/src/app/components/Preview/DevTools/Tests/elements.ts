@@ -1,4 +1,4 @@
-// @flow
+
 import styled, { css } from 'styled-components';
 
 import Check from 'react-icons/lib/go/check';

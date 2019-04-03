@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Input from 'common/lib/components/Input';
-import { Button } from 'common/lib/components/Button';
+import Input from '@codesandbox/common/lib/components/Input';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 const InputContainer = styled.div`
   display: flex;

@@ -5,6 +5,7 @@ import { graphql } from 'gatsby';
 
 import media from '../utils/media';
 
+import DocSearch from '../components/DocSearch';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
@@ -53,7 +54,7 @@ const DocumentationContent = styled.div`
   }
 
   h2 {
-    font-family: 'Poppins';
+    font-family: 'Poppins', sans-serif;
     margin: 1.5rem 0;
     font-weight: 400;
     color: white;
@@ -195,7 +196,7 @@ const Heading = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
   font-size: 2rem;
   font-weight: 500;
 `;
@@ -230,6 +231,7 @@ export default class Docs extends React.Component {
                   minWidth: 250,
                 }}
               >
+                <DocSearch />
                 <StickyNavigation docs={docs} />
               </div>
               <Article>
@@ -274,7 +276,6 @@ export const pageQuery = graphql`
             title
           }
           fields {
-            slug
             url
           }
         }
@@ -287,7 +288,6 @@ export const pageQuery = graphql`
         description
       }
       fields {
-        slug
         path
       }
     }

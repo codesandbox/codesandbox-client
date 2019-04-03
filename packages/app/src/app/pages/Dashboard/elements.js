@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import Logo from 'common/lib/components/Logo';
+import Logo from '@codesandbox/common/lib/components/Logo';
 
 export const Container = styled.div`
   height: 100%;

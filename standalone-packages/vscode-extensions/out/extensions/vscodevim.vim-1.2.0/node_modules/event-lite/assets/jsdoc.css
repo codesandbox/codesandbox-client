@@ -1,0 +1,20 @@
+h3, h4 {
+    margin-top: 50px;
+}
+
+h5 + dl, .details .tag-source, .param-desc + dl {
+    display: none;
+}
+
+h5, h5 + ul, .description, .params, pre, .details, .param-desc {
+    margin-left: 50px;
+}
+
+article dl {
+    margin-bottom: 20px;
+}
+
+pre.prettyprint {
+    padding: 10px;
+    width: 100%;
+}

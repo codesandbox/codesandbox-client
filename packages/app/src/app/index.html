@@ -33,7 +33,6 @@
     <!-- Injected by server: -->
     <!-- {{OEMBED TAG}} -->
     <title>CodeSandbox</title>
-    <script src="https://cdn.ravenjs.com/3.21.0/raven.min.js" crossorigin="anonymous"></script>
     <link href="/static/fonts/dmvendor.css" rel="stylesheet"></link>
     <!-- Google Tag Manager -->
     <script>
@@ -59,20 +58,22 @@
           env: {
             VSCODE_DEV: false
           },
-          nextTick: (cb) => requestAnimationFrame(cb),
+          nextTick: function(cb) {
+            return requestAnimationFrame(cb);
+          },
           once: BrowserFS.BFSRequire('process').once,
-          removeListener: () => {}
+          removeListener: function () {}
         };
         window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
       }
     </script>
 
-    <link data-name="/public/vscode15/vs/editor/editor.main"
+    <link data-name="/public/vscode18/vs/editor/editor.main"
       rel="preload"
       as="style"
-      href="/public/vscode15/vs/editor/codesandbox.editor.main.css">
+      href="/public/vscode18/vs/editor/codesandbox.editor.main.css">
     </link>
-    <link rel="preload" as="script" href="/public/vscode15/vs/editor/codesandbox.editor.main.js"></link>
+    <link rel="preload" as="script" href="/public/vscode18/vs/editor/codesandbox.editor.main.js"></link>
   </head>
   <body style="margin: 0; padding: 0;">
     <!-- Google Tag Manager (noscript) -->
@@ -81,7 +82,7 @@
         height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
-    <div class="vs-dark" id="root">
+    <div id="root">
     </div>
   </body>
 </html>

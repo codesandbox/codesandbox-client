@@ -1,5 +1,3 @@
-// @flow
-
 import React from '../components/logos/React';
 import Angular from '../components/logos/Angular';
 import Ember from '../components/logos/Ember';
@@ -19,6 +17,9 @@ import Apollo from '../components/logos/Apollo';
 import Nest from '../components/logos/Nest';
 import Static from '../components/logos/Static';
 import Styleguidist from '../components/logos/Styleguidist';
+import VuePress from '../components/logos/VuePress';
+import MDXDeck from '../components/logos/mdx-deck';
+import GridSome from '../components/logos/Gridsome';
 
 import {
   react,
@@ -41,6 +42,9 @@ import {
   sapper,
   staticTemplate,
   styleguidist,
+  gridsome,
+  vuepress,
+  mdxDeck
 } from './';
 
 import { TemplateType } from './';
@@ -94,6 +98,12 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return Static;
     case styleguidist.name:
       return Styleguidist;
+    case gridsome.name:
+      return GridSome;
+    case vuepress.name:
+      return VuePress;
+    case mdxDeck.name:
+      return MDXDeck;
     default:
       return React;
   }

@@ -1,4 +1,4 @@
-import { isBabel7 } from 'common/lib/utils/is-babel-7';
+import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 
 import Preset from '../';
 

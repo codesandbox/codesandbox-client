@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import DEFAULT_PRETTIER_CONFIG from 'common/lib/prettify-default-config';
+import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import {
   lineAndColumnToIndex,
   indexToLineAndColumn,
@@ -148,7 +148,7 @@ export default function prettify(
 ) {
   const mode = getMode(title);
 
-  worker = worker || new Worker('/static/js/prettier/worker-1.15.1.js');
+  worker = worker || new Worker('/static/js/prettier/worker-1.16.4.js');
 
   return new Promise((resolve, reject) => {
     if (cancellationToken && cancellationToken.isCancellationRequested) {

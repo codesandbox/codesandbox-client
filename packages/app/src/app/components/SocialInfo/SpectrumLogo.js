@@ -9,7 +9,7 @@ export default () => (
     clipRule="evenodd"
     strokeLinejoin="round"
     strokeMiterlimit="1.414"
-    ariaLabelledby="title"
+    aria-labelledby="title"
     viewBox="0 0 32 32"
     preserveAspectRatio="xMidYMid meet"
   >

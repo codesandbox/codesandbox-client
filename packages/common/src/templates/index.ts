@@ -1,4 +1,3 @@
-// @flow
 import angular from './angular';
 import babel from './babel';
 import parcel from './parcel';
@@ -21,6 +20,9 @@ import sapper from './sapper';
 import nest from './nest';
 import staticTemplate from './static';
 import styleguidist from './styleguidist';
+import gridsome from './gridsome';
+import vuepress from './vuepress';
+import mdxDeck from './mdx-deck';
 
 export {
   angular,
@@ -45,6 +47,9 @@ export {
   ember,
   staticTemplate,
   styleguidist,
+  gridsome,
+  vuepress,
+  mdxDeck
 };
 
 export type TemplateType =
@@ -65,7 +70,10 @@ export type TemplateType =
   | 'sapper'
   | 'nest'
   | 'static'
-  | 'styleguidist';
+  | 'styleguidist'
+  | 'gridsome'
+  | 'vuepress'
+  | 'mdx-deck';
 
 export default function getDefinition(theme: TemplateType) {
   switch (theme) {
@@ -111,8 +119,14 @@ export default function getDefinition(theme: TemplateType) {
       return staticTemplate;
     case styleguidist.name:
       return styleguidist;
+    case mdxDeck.name:
+      return mdxDeck;
+    case gridsome.name:
+      return gridsome;
     case ember.name:
       return ember;
+    case vuepress.name:
+      return vuepress;
     default:
       return react;
   }
