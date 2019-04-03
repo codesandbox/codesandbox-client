@@ -30,7 +30,7 @@ export default function setupConsole() {
             }
           }
 
-          result = (0, eval)(data.command); // eslint-disable-line no-eval
+          result = (new Function(`return ${data.command}`))()
         } catch (e) {
           result = e;
           error = true;
