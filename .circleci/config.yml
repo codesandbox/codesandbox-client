@@ -174,5 +174,6 @@ workflows:
           requires:
             - build-prod
             - lint
+            - typecheck
             # - test-integrations
             - test-jest

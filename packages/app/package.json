@@ -42,6 +42,7 @@
     "@types/codemirror": "^0.0.72",
     "@types/debug": "^4.1.1",
     "@types/gsap": "^1.20.1",
+    "@types/jest": "^24.0.11",
     "@types/lodash-es": "^4.17.2",
     "@types/react": "^16.8.3",
     "@types/react-dom": "^16.0.11",
@@ -161,7 +162,7 @@
     "circular-json": "^0.4.0",
     "codemirror": "^5.27.4",
     "codesandbox-api": "^0.0.22",
-    "codesandbox-import-utils": "2.1.1",
+    "codesandbox-import-utils": "2.1.2",
     "color": "^0.11.4",
     "compare-versions": "^3.1.0",
     "console-feed": "^2.8.5",
@@ -273,8 +274,17 @@
     "testPathIgnorePatterns": [
       "/create-zip\\/.*\\/files/"
     ],
+    "testRegex": "(test|spec)\\.(j|t)sx?$",
     "transformIgnorePatterns": [
       "node_modules/(?!(common|lodash-es|sandbox-hooks|react-icons)/.+\\.js$)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",

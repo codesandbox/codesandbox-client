@@ -7,7 +7,7 @@ export const Container = styled.div`
   height: 100%;
   color: rgba(255, 255, 255, 0.8);
   z-index: 10;
-  background-color: ${props => props.theme.background.darken(0.1)};
+  background-color: ${props => props.theme.sidebar};
   overflow: auto;
 `;
 

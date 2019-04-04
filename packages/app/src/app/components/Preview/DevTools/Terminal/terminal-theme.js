@@ -53,7 +53,7 @@ type XTermTheme = {
 export default function getTerminalTheme(theme: VSTheme): XTermTheme {
   return {
     background:
-      theme.vscodeTheme.colors['panel.background'] || theme.background2(),
+      theme.vscodeTheme.colors['terminal.background'] || theme.background2(),
     black: theme.vscodeTheme.colors['terminal.ansiBlack'],
     blue: theme.vscodeTheme.colors['terminal.ansiBlue'],
     brightBlack: theme.vscodeTheme.colors['terminal.ansiBrightBlack'],
@@ -74,5 +74,7 @@ export default function getTerminalTheme(theme: VSTheme): XTermTheme {
     white: theme.vscodeTheme.colors['terminal.ansiWhite'],
     yellow: theme.vscodeTheme.colors['terminal.ansiYellow'],
     selection: theme.vscodeTheme.colors['terminal.selectionBackground'],
+    cursor: theme.vscodeTheme.colors['terminalCursor.foreground'],
+    cursorAccent: theme.vscodeTheme.colors['terminalCursor.background'],
   };
 }

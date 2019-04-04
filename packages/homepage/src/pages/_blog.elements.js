@@ -14,8 +14,8 @@ export const Posts = styled.article`
 `;
 
 export const Subtitle = styled.h3`
-  font-family: 'Poppins', sans-serif;
-  font-weight: 300;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
   font-size: 16px;
   line-height: 1.5;
 
@@ -98,8 +98,9 @@ export const PageTitle = styled.h1`
 `;
 
 export const PageSubtitle = styled.h2`
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
   font-size: 18px;
   line-height: 1.5;
+  margin-bottom: 0;
 `;

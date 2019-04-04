@@ -1,4 +1,3 @@
-
 import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
@@ -84,6 +83,7 @@ export type LoaderContext = {
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void;
   options: {
     context: string;
+    config?: object;
     [key: string]: any;
   };
   webpack: boolean;
@@ -95,6 +95,7 @@ export type LoaderContext = {
     depPath: string,
     options?: {
       isAbsolute?: boolean;
+      isEntry?: boolean;
     }
   ) => void;
   resolveTranspiledModule: (

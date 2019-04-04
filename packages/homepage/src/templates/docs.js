@@ -5,6 +5,7 @@ import { graphql } from 'gatsby';
 
 import media from '../utils/media';
 
+import DocSearch from '../components/DocSearch';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
@@ -230,6 +231,7 @@ export default class Docs extends React.Component {
                   minWidth: 250,
                 }}
               >
+                <DocSearch />
                 <StickyNavigation docs={docs} />
               </div>
               <Article>

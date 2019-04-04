@@ -1085,7 +1085,27 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "samrith-s",
+      "name": "Samrith Shankar",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9032162?v=4",
+      "profile": "https://github.com/samrith-s",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "tinahir",
+      "name": "Mahendra Hirapra",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/827497?v=4",
+      "profile": "https://github.com/tinahir",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "repoType": "github"
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "contributorsPerLine": 7
 }

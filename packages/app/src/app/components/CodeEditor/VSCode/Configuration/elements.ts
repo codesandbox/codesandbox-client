@@ -2,9 +2,9 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   padding: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props => props.theme['sideBar.foreground'] || 'inherit'};
   box-sizing: border-box;
-
+  max-height: 100%;
   overflow: auto;
 `;
 
@@ -12,7 +12,7 @@ export const Title = styled.h1`
   display: inline-block;
   font-weight: 600;
   font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props => props.theme['sideBar.foreground'] || 'inherit'};
   text-transform: uppercase;
   margin-top: 0;
   margin-bottom: 0;
@@ -23,7 +23,5 @@ export const Title = styled.h1`
 export const Description = styled.p`
   font-size: 1;
   line-height: 1.4;
-
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+  color: ${props => props.theme['sideBar.foreground'] || 'inherit'};
 `;

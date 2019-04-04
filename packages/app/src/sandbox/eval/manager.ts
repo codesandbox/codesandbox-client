@@ -1,4 +1,3 @@
-
 import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
@@ -1167,9 +1166,9 @@ export default class Manager {
     return deleteAPICache(this.id);
   }
 
-  clearCache() {
+  async clearCache() {
     try {
-      clearIndexedDBCache();
+      await clearIndexedDBCache();
     } catch (ex) {
       if (process.env.NODE_ENV === 'development') {
         console.error(ex);
