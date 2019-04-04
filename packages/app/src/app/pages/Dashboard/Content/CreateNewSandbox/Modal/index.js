@@ -82,10 +82,7 @@ export default class Modal extends React.PureComponent {
             </Tab>
           ))}
           <ImportChoices>
-            <ImportChoice
-              href="/docs/importing#import-from-github"
-              target="_blank"
-            >
+            <ImportChoice href="/s/github" target="_blank">
               <GithubLogo /> Import from GitHub
             </ImportChoice>
             <ImportChoice
