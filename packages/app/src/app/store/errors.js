@@ -6,3 +6,10 @@ export class AuthenticationError extends CerebralError {
     this.name = 'AuthenticationError';
   }
 }
+
+export class CancelError extends CerebralError {
+  constructor(message) {
+    super(message);
+    this.name = 'CancelError';
+  }
+}

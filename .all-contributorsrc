@@ -654,6 +654,18 @@
         "design"
       ]
     },
+        {
+          "login": "JonShort",
+      "name": "Jon Short",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/21317379?v=4",
+      "profile": "https://jonshort.me/",
+      "contributions": [
+        "code"
+        ]
+    },
+    
+    
+
     {
       "login": "dv297",
       "name": "Daniel Vu",

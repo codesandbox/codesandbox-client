@@ -104,7 +104,10 @@ export default Module({
     refetchSandboxInfo: sequences.refetchSandboxInfo,
     track: sequences.track,
   },
-  catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
+  catch: [
+    [errors.CancelError, []],
+    [errors.AuthenticationError, sequences.showAuthenticationError],
+  ],
   modules: {
     dashboard,
     patron,
