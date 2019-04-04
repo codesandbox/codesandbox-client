@@ -14,16 +14,29 @@ import vueStyleLoader from '../../transpilers/vue/style-loader';
 import cssLoader from '../../transpilers/vue/css-loader';
 import htmlTranspiler from './transpilers/html-transpiler';
 import pugTranspiler from '../../transpilers/pug';
+import coffeeTranspiler from '../../transpilers/coffee';
+import noopTranspiler from '../../transpilers/noop';
 
 import Preset from '../';
 
 export default function initialize() {
   const parcelPreset = new Preset(
     'parcel',
-    ['js', 'jsx', 'ts', 'tsx', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
+    [
+      'js',
+      'jsx',
+      'ts',
+      'tsx',
+      'json',
+      'less',
+      'scss',
+      'sass',
+      'styl',
+      'css',
+      'vue',
+    ],
     {},
     {
-      htmlDisabled: true,
       setup: manager => {
         const packageJSON = manager.configurations.package;
 
@@ -33,6 +46,11 @@ export default function initialize() {
       },
     }
   );
+
+  parcelPreset.registerTranspiler(module => /\.coffee$/.test(module.path), [
+    { transpiler: coffeeTranspiler },
+    { transpiler: babelTranspiler },
+  ]);
 
   parcelPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
     {
@@ -120,6 +138,10 @@ export default function initialize() {
   registerStyleTranspilers();
 
   parcelPreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
+
+  parcelPreset.registerTranspiler(() => false, [
+    { transpiler: noopTranspiler },
+  ]);
 
   return parcelPreset;
 }

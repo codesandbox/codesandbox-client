@@ -19,9 +19,9 @@ const allowedKeys = {
   zenMode: 'settings.zenMode',
   keybindings: 'settings.keybindings',
   enableLigatures: 'settings.enableLigatures',
-  editorTheme: 'settings.editorTheme',
   customVSCodeTheme: 'settings.customVSCodeTheme',
-  experimentVSCode: 'settings.experimentVSCode',
+  manualCustomVSCodeTheme: 'settings.manualCustomVSCodeTheme',
+  // experimentVSCode: 'settings.experimentVSCode',
 };
 
 export default Provider({

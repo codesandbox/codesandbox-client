@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Spring } from 'react-spring';
+import { Spring } from 'react-spring/renderprops';
+import Portal from '@codesandbox/common/lib/components/Portal';
 
-import Portal from '../Portal';
 import { Container, Item, ItemContainer } from './elements';
 
 class ContextMenu extends React.PureComponent {
@@ -102,7 +102,14 @@ class ContextMenu extends React.PureComponent {
       return null;
     }
 
-    const { children, childFunction, items, ...props } = this.props;
+    // remove isDraggingItem from the list of props as it's generating warnings.
+    const {
+      children,
+      childFunction,
+      items,
+      isDraggingItem,
+      ...props
+    } = this.props;
     const { show, x, y, down, left } = this.state;
 
     const mapFunction = (item, i) => {
@@ -119,6 +126,7 @@ class ContextMenu extends React.PureComponent {
           color={item.color}
           onMouseDown={e => {
             e.preventDefault();
+            e.stopPropagation();
           }}
           onMouseUp={e => {
             if (item.action()) {

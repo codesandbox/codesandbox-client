@@ -7,15 +7,15 @@ export const Container = styled.div`
   border-radius: 2px;
   margin-bottom: 1rem;
 
-  .ais-SearchBox__wrapper {
+  .ais-SearchBox-form {
     margin-bottom: 0.5rem;
   }
 
-  .ais-SearchBox__reset {
+  .ais-SearchBox-reset {
     top: 0.25rem;
   }
 
-  .ais-SearchBox__input {
+  .ais-SearchBox-input {
     font-size: 0.875rem;
     padding-left: 2.5em;
   }

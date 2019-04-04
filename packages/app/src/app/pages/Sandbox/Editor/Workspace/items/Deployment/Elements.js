@@ -1,4 +1,34 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+const mapColorToState = (state, theme) => {
+  const STARTING = ['DEPLOYING', 'BUILDING', 'INITIALIZING'];
+  const ERROR = ['DEPLOYMENT_ERROR', 'BUILD_ERROR', 'ERROR'];
+  const STARTED = ['BOOTED', 'READY'];
+
+  if (STARTING.includes(state)) return '#fccb7e';
+  if (ERROR.includes(state)) return theme.red;
+  if (STARTED.includes(state)) return theme.green;
+  if (state === 'FROZEN') return theme.blue;
+
+  return theme.gray;
+};
+
+export const State = styled.span`
+  align-items: center;
+  display: flex;
+  text-transform: capitalize;
+  margin-bottom: 0.5rem;
+
+  &:before {
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    background: ${props => mapColorToState(props.state, props.theme)};
+  }
+`;
 
 export const Deploys = styled.ul`
   list-style: none;
@@ -15,45 +45,12 @@ export const Deploy = styled.li`
   flex-direction: column;
 `;
 
-export const State = styled.span`
-  align-items: center;
-  display: flex;
-  text-transform: capitalize;
-  margin-bottom: 0.5rem;
-
-  &:before {
-    content: '';
-    display: block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 0.5rem;
-    background: ${props => {
-      if (
-        props.state === 'DEPLOYING' ||
-        props.state === 'BUILDING' ||
-        props.state === 'INITIALIZING'
-      )
-        return '#fccb7e';
-      if (
-        props.state === 'DEPLOYMENT_ERROR' ||
-        props.state === 'BUILD_ERROR' ||
-        props.state === 'ERROR'
-      )
-        return props.theme.red;
-      if (props.state === 'BOOTED' || props.state === 'READY')
-        return props.theme.green;
-      if (props.state === 'FROZEN') return props.theme.blue;
-
-      return props.theme.gray;
-    }};
-  }
-`;
-
 export const Name = styled.span`
   font-weight: 600;
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
+    props.theme.light || props.light
+      ? 'rgba(0, 0, 0, 0.8)'
+      : 'rgba(255, 255, 255, 0.8)'};
   font-size: 1rem;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -61,7 +58,7 @@ export const Name = styled.span`
 
   span {
     color: ${props =>
-      props.theme.light
+      props.theme.light || props.light
         ? props.theme.background3.darken(0.5)
         : props.theme.background3.lighten(0.5)};
     font-size: 12px;
@@ -79,6 +76,21 @@ export const Link = styled.a`
   border-radius: 2px;
   font-weight: 600;
   margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  flex-grow: 0;
+  max-width: 50%;
+
+  svg {
+    margin-right: 10px;
+  }
+
+  ${props =>
+    props.disabled &&
+    css`
+      background: ${props.theme.gray};
+      pointer-events: none;
+    `};
 
   &:disabled {
     background: ${props => props.theme.gray};
@@ -92,4 +104,27 @@ export const ButtonContainer = styled.section`
   > *:not(:last-child) {
     margin-right: 0.5rem;
   }
+`;
+
+export const DeploysWrapper = styled.div`
+  background: rgb(0, 0, 0);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.75rem 1rem;
+  padding: 0.75rem 0rem;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  margin: 0.5rem 0.75rem;
+  margin-top: 0;
+`;
+
+export const Wrapper = styled.div`
+  opacity: 1;
+  ${props =>
+    props.loading &&
+    css`
+      opacity: 0.5;
+      pointer-events: none;
+    `};
 `;

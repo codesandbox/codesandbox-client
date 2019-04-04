@@ -71,7 +71,7 @@ export default class Tasks extends React.PureComponent<Props> {
   };
 
   render() {
-    if (!this.props.package) {
+    if (!this.props.package || !this.props.package.scripts) {
       return null;
     }
 

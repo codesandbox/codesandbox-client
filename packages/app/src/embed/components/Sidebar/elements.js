@@ -7,7 +7,7 @@ export const Container = styled.div`
   height: 100%;
   color: rgba(255, 255, 255, 0.8);
   z-index: 10;
-  background-color: ${props => props.theme.background.darken(0.1)};
+  background-color: ${props => props.theme.sidebar};
   overflow: auto;
 `;
 
@@ -16,8 +16,8 @@ export const Title = styled.h2`
   padding: 0 1rem;
   margin: 0;
   font-size: 1rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 0.9rem;
+  margin-bottom: 0.9rem;
   vertical-align: middle;
   box-sizing: border-box;
 `;

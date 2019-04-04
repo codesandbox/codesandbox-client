@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
   // Don't try to find .babelrc because we want to force this configuration.
   babelrc: false,
@@ -20,6 +18,8 @@ module.exports = {
     ],
     // JSX, Flow
     require.resolve('@babel/preset-react'),
+
+    require.resolve('@babel/preset-typescript'),
   ],
   plugins: [
     require.resolve('@babel/plugin-transform-template-literals'),

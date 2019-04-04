@@ -1,15 +1,15 @@
 import React from 'react';
-import getDefinition from 'common/templates';
-import getUI from 'common/templates/configuration/ui';
-import { Module, Configuration } from 'common/types';
-import { resolveModule } from 'common/sandbox/modules';
+import getDefinition from '@codesandbox/common/lib/templates';
+import getUI from '@codesandbox/common/lib/templates/configuration/ui';
+import { Module, Configuration } from '@codesandbox/common/lib/types';
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 
 import { inject, observer } from 'mobx-react';
 
 import BookIcon from 'react-icons/lib/md/library-books';
 import UIIcon from 'react-icons/lib/md/dvr';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { Description, WorkspaceSubtitle } from '../../elements';
 import {
@@ -50,7 +50,7 @@ const FileConfig = ({
     >
       <FileTitle>
         {config.title}{' '}
-        <Tooltip title="More Info">
+        <Tooltip content="More Info">
           <a
             href={config.moreInfoUrl}
             target="_blank"
@@ -62,7 +62,7 @@ const FileConfig = ({
           </a>
         </Tooltip>
         {getUI(config.type) && (
-          <Tooltip title="Editable with UI">
+          <Tooltip content="Editable with UI">
             <UIIcon style={{ marginLeft: '.5rem' }} />
           </Tooltip>
         )}

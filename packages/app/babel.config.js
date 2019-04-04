@@ -5,6 +5,7 @@ module.exports = {
         '@babel/preset-env',
         '@babel/preset-flow',
         '@babel/preset-react',
+        '@babel/preset-typescript',
       ],
       plugins: [
         '@babel/plugin-transform-destructuring',
@@ -16,6 +17,7 @@ module.exports = {
         'babel-plugin-lodash',
         'babel-plugin-system-import-transformer',
         'babel-plugin-macros',
+        'babel-plugin-styled-components',
       ],
     },
   },

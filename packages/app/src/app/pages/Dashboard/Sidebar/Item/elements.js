@@ -1,10 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 export const Container = styled(NavLink)`
+  transition: 0.3s ease all;
   display: flex;
-  transition: 0.3s ease background-color;
   width: 100%;
   height: 2.5rem;
   user-select: none;
@@ -16,12 +16,21 @@ export const Container = styled(NavLink)`
 
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
+  background-color: transparent;
 
-  &.active {
-    background-color: ${props => props.theme.secondary};
+  cursor: pointer;
+
+  &:hover {
     color: white;
-    font-weight: 600;
   }
+
+  ${props =>
+    props.active &&
+    css`
+      background-color: ${props.theme.secondary};
+      color: white;
+      font-weight: 600;
+    `};
 `;
 
 export const IconContainer = styled.div`

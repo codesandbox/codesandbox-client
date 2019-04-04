@@ -1,0 +1,1142 @@
+{
+    "b-autocomplete/value": {
+        "description": "Binding value",
+        "type": "string|number"
+    },
+    "b-autocomplete/data": {
+        "description": "Options / suggestions",
+        "type": "array<string>|array<number>|array<object>"
+    },
+    "b-autocomplete/field": {
+        "description": "Property of the object (if data is array of objects) to use as display text, and to keep track of selected option",
+        "type": "string"
+    },
+    "b-autocomplete/clear-on-select": {
+        "description": "Clear input text on select",
+        "type": "boolean"
+    },
+    "b-autocomplete/open-on-focus": {
+        "description": "Open dropdown list on focus",
+        "type": "boolean"
+    },
+    "b-autocomplete/keep-first": {
+        "description": "The first option will always be pre-selected (easier to just hit enter or tab)",
+        "type": "boolean"
+    },
+    "b-autocomplete/size": {
+        "description": "Vertical size of input, optional",
+        "type": "string"
+    },
+    "b-autocomplete/expanded": {
+        "description": "Makes input full width when inside a grouped or addon field",
+        "type": "boolean"
+    },
+    "b-autocomplete/loading": {
+        "description": "Add the loading state to the input",
+        "type": "boolean"
+    },
+    "b-autocomplete/icon": {
+        "description": "Icon name to be added",
+        "type": "string"
+    },
+    "b-autocomplete/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-autocomplete/maxlength": {
+        "description": "Same as native maxlength, plus character counter",
+        "type": "string|number"
+    },
+    "b-checkbox/value": {
+        "description": "Binding value",
+        "type": "any"
+    },
+    "b-checkbox/native-value": {
+        "description": "Same as native value",
+        "type": "any"
+    },
+    "b-checkbox/true-value": {
+        "description": "Overrides the returned value when it's checked",
+        "type": "any"
+    },
+    "b-checkbox/false-value": {
+        "description": "Overrides the returned value when it's not checked",
+        "type": "any"
+    },
+    "b-checkbox/disabled": {
+        "description": "Same as native disabled",
+        "type": "boolean"
+    },
+    "b-checkbox/required": {
+        "description": "Same as native required",
+        "type": "boolean"
+    },
+    "b-checkbox/name": {
+        "description": "Same as native name",
+        "type": "string"
+    },
+    "b-checkbox/size": {
+        "description": "Size  of the control, optional",
+        "type": "string"
+    },
+    "b-checkbox/type": {
+        "description": "Type (color) of the control, optional",
+        "type": "string"
+    },
+    "b-checkbox-button/value": {
+        "description": "Binding value",
+        "type": "any"
+    },
+    "b-checkbox-button/native-value": {
+        "description": "Same as native value",
+        "type": "any"
+    },
+    "b-checkbox-button/type": {
+        "description": "Type (color) of the button <strong>when checked</strong>",
+        "type": "string"
+    },
+    "b-checkbox-button/disabled": {
+        "description": "Same as native disabled",
+        "type": "boolean"
+    },
+    "b-checkbox-button/name": {
+        "description": "Same as native name",
+        "type": "string"
+    },
+    "b-checkbox-button/size": {
+        "description": "Size of the button, optional",
+        "type": "string"
+    },
+    "b-collapse/open": {
+        "description": "Whether collapse is open or not, use the .sync modifier to make it two-way binding",
+        "type": "boolean"
+    },
+    "b-collapse/animation": {
+        "description": "Custom animation (transition name)",
+        "type": "string"
+    },
+    "b-datepicker/value": {
+        "description": "Binding value",
+        "type": "date"
+    },
+    "b-datepicker/date-formatter": {
+        "description": "Function to format date to a string for display in the input",
+        "type": "function"
+    },
+    "b-datepicker/date-parser": {
+        "description": "Function to parse string to a date for set a date from the input to the component",
+        "type": "function"
+    },
+    "b-datepicker/min-date": {
+        "description": "Earliest date available for selection",
+        "type": "date"
+    },
+    "b-datepicker/max-date": {
+        "description": "Latest date available for selection",
+        "type": "date"
+    },
+    "b-datepicker/events": {
+        "description": "Dates to display indicators",
+        "type": "array"
+    },
+    "b-datepicker/indicators": {
+        "description": "Shape to use when showing event indicators",
+        "type": "string"
+    },
+    "b-datepicker/focused-date": {
+        "description": "Date that should be initially focused upon",
+        "type": "date"
+    },
+    "b-datepicker/size": {
+        "description": "Vertical size of input and picker, optional",
+        "type": "string"
+    },
+    "b-datepicker/inline": {
+        "description": "Datepicker is shown inline, input is removed",
+        "type": "boolean"
+    },
+    "b-datepicker/readonly": {
+        "description": "Does not allow to type a date, set to false to enable input. <b>Note that you might have to set a custom date parser</b>",
+        "type": "boolean"
+    },
+    "b-datepicker/loading": {
+        "description": "Add the loading state to the input",
+        "type": "boolean"
+    },
+    "b-datepicker/icon": {
+        "description": "Icon name to be added",
+        "type": "string"
+    },
+    "b-datepicker/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-datepicker/unselectable-dates": {
+        "description": "Array of unselectable dates",
+        "type": "array"
+    },
+    "b-datepicker/unselectable-days-of-week": {
+        "description": "Array of unselectable days of week",
+        "type": "array"
+    },
+    "b-datepicker/selectable-dates": {
+        "description": "Array of selectable dates",
+        "type": "array"
+    },
+    "b-datepicker/month-names": {
+        "description": "Names of months to display in table header",
+        "type": "array"
+    },
+    "b-datepicker/day-names": {
+        "description": "Names of days to display in table header",
+        "type": "array"
+    },
+    "b-datepicker/first-day-of-week": {
+        "description": "First day of week to display in table header",
+        "type": "number"
+    },
+    "b-datepicker/mobile-native": {
+        "description": "Enable native datepicker on mobile",
+        "type": "boolean"
+    },
+    "b-datepicker/position": {
+        "description": "Optional, position of the datepicker relative to the input",
+        "type": "string"
+    },
+    "b-dropdown/value": {
+        "description": "Binding value",
+        "type": "any"
+    },
+    "b-dropdown/hoverable": {
+        "description": "Dropdown will be triggered by hover instead of click",
+        "type": "boolean"
+    },
+    "b-dropdown/position": {
+        "description": "Optional, position of the dropdown relative to the trigger",
+        "type": "string"
+    },
+    "b-dropdown/disabled": {
+        "description": "Disables dropdown",
+        "type": "boolean"
+    },
+    "b-dropdown/inline": {
+        "description": "Dropdown content (items) are shown inline, trigger is removed",
+        "type": "boolean"
+    },
+    "b-dropdown/mobile-modal": {
+        "description": "Dropdown content (items) are shown into a modal on mobile",
+        "type": "boolean"
+    },
+    "b-dropdown-item/value": {
+        "description": "The value that will be returned on events and v-model",
+        "type": "any"
+    },
+    "b-dropdown-item/separator": {
+        "description": "Set the item to be a separator",
+        "type": "boolean"
+    },
+    "b-dropdown-item/disabled": {
+        "description": "Item is disabled",
+        "type": "boolean"
+    },
+    "b-dropdown-item/custom": {
+        "description": "Item is not a clickable item",
+        "type": "boolean"
+    },
+    "b-dropdown-item/has-link": {
+        "description": "Use it if your item is an anchor tag or router-link",
+        "type": "boolean"
+    },
+    "b-dropdown-item/paddingless": {
+        "description": "Remove padding",
+        "type": "boolean"
+    },
+    "b-field/type": {
+        "description": "Type (color) of the field and help message, also adds a matching icon, optional. Used by Input, Select and Autocomplete",
+        "type": "string"
+    },
+    "b-field/label": {
+        "description": "Field label",
+        "type": "string"
+    },
+    "b-field/label-for": {
+        "description": "Same as native for set on the label",
+        "type": "string"
+    },
+    "b-field/custom-class": {
+        "description": "CSS classes to be applied on field label",
+        "type": "string"
+    },
+    "b-field/message": {
+        "description": "Help message text",
+        "type": "string|array<string>"
+    },
+    "b-field/grouped": {
+        "description": "Direct child components/elements of Field will be grouped horizontally (see which ones at the top of the page)",
+        "type": "boolean"
+    },
+    "b-field/group-multiline": {
+        "description": "Allow controls to fill up multiple lines, making it responsive",
+        "type": "boolean"
+    },
+    "b-field/position": {
+        "description": "Which position should the addons appear, optional",
+        "type": "string"
+    },
+    "b-field/addons": {
+        "description": "Field automatically attach controls together",
+        "type": "boolean"
+    },
+    "b-field/horizontal": {
+        "description": "Group label and control on the same line for horizontal forms",
+        "type": "boolean"
+    },
+    "b-icon/type": {
+        "description": "Type (color) of the icon, optional",
+        "type": "string"
+    },
+    "b-icon/pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-icon/icon": {
+        "description": "Icon name",
+        "type": "string"
+    },
+    "b-icon/size": {
+        "description": "Icon size, optional",
+        "type": "string"
+    },
+    "b-icon/custom-size": {
+        "description": "Overrides icon font size, optional",
+        "type": "string"
+    },
+    "b-icon/custom-class": {
+        "description": "Add class to icon font, optional",
+        "type": "string"
+    },
+    "b-input/value": {
+        "description": "Binding value",
+        "type": "string|number"
+    },
+    "b-input/type": {
+        "description": "Input type, like native",
+        "type": "string"
+    },
+    "b-input/size": {
+        "description": "Vertical size of input, optional",
+        "type": "string"
+    },
+    "b-input/expanded": {
+        "description": "Makes input full width when inside a grouped or addon field",
+        "type": "boolean"
+    },
+    "b-input/password-reveal": {
+        "description": "Add the reveal password functionality",
+        "type": "boolean"
+    },
+    "b-input/loading": {
+        "description": "Add the loading state to the input",
+        "type": "boolean"
+    },
+    "b-input/icon": {
+        "description": "Icon name to be added",
+        "type": "string"
+    },
+    "b-input/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-input/maxlength": {
+        "description": "Same as native maxlength, plus character counter",
+        "type": "string|number"
+    },
+    "b-input/has-counter": {
+        "description": "Show character counter when maxlength prop is passed",
+        "type": "boolean"
+    },
+    "b-loading/active": {
+        "description": "Whether modal is active or not, use the .sync modifier to make it two-way binding",
+        "type": "boolean"
+    },
+    "b-loading/animation": {
+        "description": "Custom animation (transition name)",
+        "type": "string"
+    },
+    "b-loading/is-full-page": {
+        "description": "Loader will overlay the full page",
+        "type": "boolean"
+    },
+    "b-loading/canCancel": {
+        "description": "Can close Loading by pressing escape or clicking outside",
+        "type": "boolean"
+    },
+    "b-loading/onCancel": {
+        "description": "Callback function to call after user canceled (pressed escape / clicked outside)",
+        "type": "function"
+    },
+    "b-message/type": {
+        "description": "Type (color) of the message, optional",
+        "type": "string"
+    },
+    "b-message/active": {
+        "description": "Whether notification is active or not, use the .sync modifier to make it two-way binding",
+        "type": "boolean"
+    },
+    "b-message/closable": {
+        "description": "Adds an 'X' button that closes the notification — works if has a title",
+        "type": "boolean"
+    },
+    "b-message/auto-close": {
+        "description": "Hide notification after duration",
+        "type": "boolean"
+    },
+    "b-message/duration": {
+        "description": "Visibility duration in miliseconds",
+        "type": "number"
+    },
+    "b-message/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-message/has-icon": {
+        "description": "Adds an icon on the left side depending on the type",
+        "type": "boolean"
+    },
+    "b-message/size": {
+        "description": "Size of the control, optional",
+        "type": "string"
+    },
+    "b-message/icon-size": {
+        "description": "Size of the icon, optional",
+        "type": "string"
+    },
+    "b-message/title": {
+        "description": "Message title",
+        "type": "string"
+    },
+    "b-modal/active": {
+        "description": "Whether modal is active or not, use the .sync modifier to make it two-way binding",
+        "type": "boolean"
+    },
+    "b-modal/component": {
+        "description": "Component to be injected, used to open a component modal programmatically.\r\n                    Close modal within the component by emitting a 'close' event — this.$emit('close')",
+        "type": "object|function"
+    },
+    "b-modal/parent": {
+        "description": "Parent component of the modal, <strong>required</strong> if using component",
+        "type": "vue"
+    },
+    "b-modal/props": {
+        "description": "Props to be binded to the injected component",
+        "type": "object"
+    },
+    "b-modal/events": {
+        "description": "Events to be binded to the injected component",
+        "type": "object"
+    },
+    "b-modal/content": {
+        "description": "HTML content",
+        "type": "string"
+    },
+    "b-modal/width": {
+        "description": "Width of the Modal, maximum of 960",
+        "type": "number|string"
+    },
+    "b-modal/has-modal-card": {
+        "description": "If your modal content has a .modal-card as root, add this prop or the card might break on mobile",
+        "type": "boolean"
+    },
+    "b-modal/animation": {
+        "description": "Custom animation (transition name)",
+        "type": "string"
+    },
+    "b-modal/canCancel": {
+        "description": "Can close Modal by clicking 'X', pressing escape or clicking outside",
+        "type": "boolean|array"
+    },
+    "b-modal/onCancel": {
+        "description": "Callback function to call after user canceled (clicked 'X' / pressed escape / clicked outside)",
+        "type": "function"
+    },
+    "b-modal/scroll": {
+        "description": "clip to remove the &lt;body&gt; scrollbar, keep to have a non scrollable scrollbar\r\n                    to avoid shifting background, but will set &lt;body&gt; to position fixed, might break some layouts",
+        "type": "string"
+    },
+    "b-notification/type": {
+        "description": "Type (color) of the notification, optional",
+        "type": "string"
+    },
+    "b-notification/active": {
+        "description": "Whether notification is active or not, use the .sync modifier to make it two-way binding",
+        "type": "boolean"
+    },
+    "b-notification/closable": {
+        "description": "Adds an 'X' button that closes the notification",
+        "type": "boolean"
+    },
+    "b-notification/auto-close": {
+        "description": "Hide notification after duration",
+        "type": "boolean"
+    },
+    "b-notification/duration": {
+        "description": "Visibility duration in miliseconds",
+        "type": "number"
+    },
+    "b-notification/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-notification/has-icon": {
+        "description": "Adds an icon on the left side depending on the type",
+        "type": "boolean"
+    },
+    "b-pagination/total": {
+        "description": "Total count of items",
+        "type": "number"
+    },
+    "b-pagination/per-page": {
+        "description": "Items count for each page",
+        "type": "number"
+    },
+    "b-pagination/current": {
+        "description": "Current page number, use the .sync modifier to make it two-way binding",
+        "type": "number"
+    },
+    "b-pagination/order": {
+        "description": "Buttons order, optional",
+        "type": "string"
+    },
+    "b-pagination/size": {
+        "description": "Pagination size, optional",
+        "type": "string"
+    },
+    "b-pagination/simple": {
+        "description": "Simpler style",
+        "type": "boolean"
+    },
+    "b-pagination/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-panel/collapsible": {
+        "description": "Panel will be collapsible",
+        "type": "boolean"
+    },
+    "b-panel/open": {
+        "description": "Whether panel is open or not, use the .sync modifier to make it two-way binding",
+        "type": "boolean"
+    },
+    "b-panel/has-custom-template": {
+        "description": "If your panel content has custom template (see Bulma docs), add this prop",
+        "type": "string"
+    },
+    "b-panel/header": {
+        "description": "Simple text or HTML content",
+        "type": "string"
+    },
+    "b-panel/content": {
+        "description": "Simple text or HTML content",
+        "type": "string"
+    },
+    "b-panel/animation": {
+        "description": "Custom animation (transition name)",
+        "type": "string"
+    },
+    "b-panel/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-radio/value": {
+        "description": "Binding value",
+        "type": "any"
+    },
+    "b-radio/native-value": {
+        "description": "Same as native value",
+        "type": "any"
+    },
+    "b-radio/disabled": {
+        "description": "Same as native disabled",
+        "type": "boolean"
+    },
+    "b-radio/required": {
+        "description": "Same as native required",
+        "type": "boolean"
+    },
+    "b-radio/name": {
+        "description": "Same as native name",
+        "type": "string"
+    },
+    "b-radio/size": {
+        "description": "Size  of the control, optional",
+        "type": "string"
+    },
+    "b-radio/type": {
+        "description": "Type (color) of the control, optional",
+        "type": "string"
+    },
+    "b-radio-button/value": {
+        "description": "Binding value",
+        "type": "any"
+    },
+    "b-radio-button/native-value": {
+        "description": "Same as native value",
+        "type": "any"
+    },
+    "b-radio-button/type": {
+        "description": "Type (color) of the button <strong>when checked</strong>",
+        "type": "string"
+    },
+    "b-radio-button/disabled": {
+        "description": "Same as native disabled",
+        "type": "boolean"
+    },
+    "b-radio-button/name": {
+        "description": "Same as native name",
+        "type": "string"
+    },
+    "b-radio-button/size": {
+        "description": "Size of the button, optional",
+        "type": "string"
+    },
+    "b-select/value": {
+        "description": "Binding value",
+        "type": "any"
+    },
+    "b-select/size": {
+        "description": "Size of the select, optional",
+        "type": "string"
+    },
+    "b-select/placeholder": {
+        "description": "Text when nothing is selected",
+        "type": "string"
+    },
+    "b-select/loading": {
+        "description": "Add the loading state to the Select",
+        "type": "boolean"
+    },
+    "b-select/expanded": {
+        "description": "Select will be expanded (full-width)",
+        "type": "boolean"
+    },
+    "b-select/icon": {
+        "description": "Icon name to be added",
+        "type": "string"
+    },
+    "b-select/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-select/native-size": {
+        "description": "Same as native size",
+        "type": "number"
+    },
+    "b-switch/type": {
+        "description": "Type (color) of the switch, optional",
+        "type": "string"
+    },
+    "b-switch/value": {
+        "description": "Binding value",
+        "type": "any"
+    },
+    "b-switch/native-value": {
+        "description": "Same as native value",
+        "type": "any"
+    },
+    "b-switch/true-value": {
+        "description": "Overrides the returned value when it's checked",
+        "type": "any"
+    },
+    "b-switch/false-value": {
+        "description": "Overrides the returned value when it's not checked",
+        "type": "any"
+    },
+    "b-switch/disabled": {
+        "description": "Same as native disabled",
+        "type": "boolean"
+    },
+    "b-switch/name": {
+        "description": "Same as native name",
+        "type": "string"
+    },
+    "b-switch/size": {
+        "description": "Size  of the control, optional",
+        "type": "string"
+    },
+    "b-table/data": {
+        "description": "Table data",
+        "type": "array<object>"
+    },
+    "b-table/columns": {
+        "description": "Table columns, you can also add renderHtml: true on each column object",
+        "type": "array<object>(sameastablecolumnsprops)"
+    },
+    "b-table/default-sort": {
+        "description": "Sets the default sort column and order — e.g. ['first_name', 'desc']",
+        "type": "string|array"
+    },
+    "b-table/default-sort-direction": {
+        "description": "Sets the default sort column direction on the first click",
+        "type": "string"
+    },
+    "b-table/bordered": {
+        "description": "Border to all cells",
+        "type": "boolean"
+    },
+    "b-table/narrowed": {
+        "description": "Makes the cells narrower",
+        "type": "boolean"
+    },
+    "b-table/selected": {
+        "description": "Set which row is selected, use the .sync modifier to make it two-way binding",
+        "type": "object"
+    },
+    "b-table/focusable": {
+        "description": "Table can be focused and user can navigate with keyboard arrows (require selected.sync) and rows are highlighted when hovering",
+        "type": "boolean"
+    },
+    "b-table/hoverable": {
+        "description": "Rows are highlighted when hovering",
+        "type": "boolean"
+    },
+    "b-table/checkable": {
+        "description": "Rows can be checked (multiple), checked rows will have a .is-checked class if you want to style",
+        "type": "boolean"
+    },
+    "b-table/checked-rows": {
+        "description": "Set which rows are checked, use the .sync modifier to make it two-way binding",
+        "type": "array<object>"
+    },
+    "b-table/mobile-cards": {
+        "description": "Rows appears as cards on mobile (collapse rows)",
+        "type": "boolean"
+    },
+    "b-table/backend-sorting": {
+        "description": "Columns won't be sorted with Javascript, use with sort event to sort in your backend",
+        "type": "boolean"
+    },
+    "b-table/backend-pagination": {
+        "description": "Rows won't be paginated with Javascript, use with page-change event to paginate in your backend",
+        "type": "boolean"
+    },
+    "b-table/total": {
+        "description": "Total number of table data if backend-pagination is enabled",
+        "type": "number"
+    },
+    "b-table/current-page": {
+        "description": "Current page of table data (if paginated)",
+        "type": "number"
+    },
+    "b-table/loading": {
+        "description": "Loading state",
+        "type": "boolean"
+    },
+    "b-table/paginated": {
+        "description": "Adds pagination to the table",
+        "type": "boolean"
+    },
+    "b-table/pagination-simple": {
+        "description": "Simple pagination (if paginated)",
+        "type": "boolean"
+    },
+    "b-table/pagination-size": {
+        "description": "Pagination size (if paginated)",
+        "type": "string"
+    },
+    "b-table/per-page": {
+        "description": "How many rows per page (if paginated)",
+        "type": "number"
+    },
+    "b-table/row-class": {
+        "description": "Add a class to row (&lt;tr&gt; element) based on the return",
+        "type": "function(row:object|index:number)"
+    },
+    "b-table/detailed": {
+        "description": "Allow row details (check scoped slots documentation)",
+        "type": "boolean"
+    },
+    "b-table/opened-detailed": {
+        "description": "Allow pre-defined opened details. Ideal to open details via vue-router. (An unique key is required; check detail-key prop)",
+        "type": "array"
+    },
+    "b-table/has-detailed-visible": {
+        "description": "Controls the visibility of the trigger that toggles the detailed rows.",
+        "type": "function(row:object)"
+    },
+    "b-table/detail-key": {
+        "description": "Use an unique key of your data Object when use detailed or opened detailed. (id recommended)",
+        "type": "string"
+    },
+    "b-table/custom-is-checked": {
+        "description": "Custom method to verify if row is checked, works when is checkable. Useful for backend pagination",
+        "type": "function(a:object|b:object)"
+    },
+    "b-table/is-row-checkable": {
+        "description": "Custom method to verify if a row is disabled, works when is checkable. ",
+        "type": "function(row:object)"
+    },
+    "b-table/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-table-column/label": {
+        "description": "Column header text, also used to identify column if custom-key prop is missing",
+        "type": "string"
+    },
+    "b-table-column/custom-key": {
+        "description": "Unique identifier, use when label is missing or there are duplicate label names",
+        "type": "string|number"
+    },
+    "b-table-column/field": {
+        "description": "Property of the object the column is attributed, used for sorting",
+        "type": "string"
+    },
+    "b-table-column/meta": {
+        "description": "Meta prop to add anything, useful when creating custom headers",
+        "type": "any"
+    },
+    "b-table-column/width": {
+        "description": "Column fixed width in pixels",
+        "type": "number"
+    },
+    "b-table-column/numeric": {
+        "description": "Align the cell content to the right, sort icon on left",
+        "type": "boolean"
+    },
+    "b-table-column/centered": {
+        "description": "Align the cell content to the center",
+        "type": "boolean"
+    },
+    "b-table-column/sortable": {
+        "description": "Whether the column can be sorted",
+        "type": "boolean"
+    },
+    "b-table-column/visible": {
+        "description": "Whether the column is visible",
+        "type": "boolean"
+    },
+    "b-table-column/custom-sort": {
+        "description": "Custom sort method, works when is sortable",
+        "type": "function(a:object|b:object|isasc:boolean)"
+    },
+    "b-tabs/value": {
+        "description": "Binding value, tab index",
+        "type": "number"
+    },
+    "b-tabs/expanded": {
+        "description": "Make tab full width",
+        "type": "boolean"
+    },
+    "b-tabs/animated": {
+        "description": "Tabs have slide animation",
+        "type": "boolean"
+    },
+    "b-tabs/type": {
+        "description": "Type/Style of the tab, optional",
+        "type": "string"
+    },
+    "b-tabs/size": {
+        "description": "Size of the tab, optional",
+        "type": "string"
+    },
+    "b-tabs/position": {
+        "description": "Position of the tab, optional",
+        "type": "string"
+    },
+    "b-tab-item/label": {
+        "description": "Tab label",
+        "type": "string"
+    },
+    "b-tab-item/icon": {
+        "description": "Icon name",
+        "type": "string"
+    },
+    "b-tab-item/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-tab-item/disabled": {
+        "description": "Item is disabled",
+        "type": "boolean"
+    },
+    "b-tab-item/visible": {
+        "description": "Item is visible",
+        "type": "boolean"
+    },
+    "b-tag/type": {
+        "description": "Type (color) of the icon, optional",
+        "type": "string"
+    },
+    "b-tag/size": {
+        "description": "Size of the tab, optional",
+        "type": "string"
+    },
+    "b-tag/rounded": {
+        "description": "Tag border rounded",
+        "type": "boolean"
+    },
+    "b-tag/closable": {
+        "description": "Add close/delete button to the tag",
+        "type": "boolean"
+    },
+    "b-tag/attached": {
+        "description": "Close/delete button style equal to attached tags",
+        "type": "boolean"
+    },
+    "b-tag/ellipsis": {
+        "description": "Adds ellipsis to not overflow the text",
+        "type": "boolean"
+    },
+    "b-tag/tabstop": {
+        "description": "If should stop when using tab key",
+        "type": "boolean"
+    },
+    "b-tag/disabled": {
+        "description": "Disable delete button",
+        "type": "boolean"
+    },
+    "b-taglist/attached": {
+        "description": "Tabs inside are attached together",
+        "type": "boolean"
+    },
+    "b-taginput/value": {
+        "description": "Binding value",
+        "type": "array<string>|array<number>|array<object>"
+    },
+    "b-taginput/maxlength": {
+        "description": "Limits the length of each tag, plus character counter",
+        "type": "string|number"
+    },
+    "b-taginput/maxtags": {
+        "description": "Limits the number of tags, plus tag counter",
+        "type": "string|number"
+    },
+    "b-taginput/type": {
+        "description": "Type (color) of the tags, optional",
+        "type": "string"
+    },
+    "b-taginput/size": {
+        "description": "Tag and input size, optional",
+        "type": "string"
+    },
+    "b-taginput/rounded": {
+        "description": "Makes the tags rounded, optional",
+        "type": "boolean"
+    },
+    "b-taginput/attached": {
+        "description": "Makes the tags attached instead of having an appended delete button, optional",
+        "type": "boolean"
+    },
+    "b-taginput/ellipsis": {
+        "description": "Adds ellipsis on tags to not overflow the text",
+        "type": "boolean"
+    },
+    "b-taginput/field": {
+        "description": "Property of the object (if data is array of objects) to use as display text",
+        "type": "string"
+    },
+    "b-taginput/autocomplete": {
+        "description": "Add autocomplete feature",
+        "type": "boolean"
+    },
+    "b-taginput/allow-new": {
+        "description": "When autocomplete, it allow to add new tags",
+        "type": "boolean"
+    },
+    "b-taginput/remove-on-keys": {
+        "description": "Allow removing last tag when pressing given keys, if input is empty",
+        "type": "array"
+    },
+    "b-taginput/confirm-key-codes": {
+        "description": "Array of key codes which will add a tag when typing (default comma and enter)",
+        "type": "array"
+    },
+    "b-taginput/on-paste-separators": {
+        "description": "Array of chars used to split when pasting a new string",
+        "type": "array"
+    },
+    "b-taginput/before-adding": {
+        "description": "Function to validate the value of the tag before adding",
+        "type": "function"
+    },
+    "b-taginput/allow-duplicates": {
+        "description": "Allows adding the same tag multiple times",
+        "type": "boolean"
+    },
+    "b-taginput/data": {
+        "description": "Options / suggestions (Autocomplete)",
+        "type": "array<string>|array<number>|array<object>"
+    },
+    "b-taginput/clear-on-select": {
+        "description": "Clear input text on select (Autocomplete)",
+        "type": "boolean"
+    },
+    "b-taginput/open-on-focus": {
+        "description": "Open dropdown list on focus (Autocomplete)",
+        "type": "boolean"
+    },
+    "b-taginput/keep-first": {
+        "description": "The first option will always be pre-selected (easier to just hit enter or tab) (Autocomplete)",
+        "type": "boolean"
+    },
+    "b-taginput/expanded": {
+        "description": "Makes input full width when inside a grouped or addon field (Autocomplete)",
+        "type": "boolean"
+    },
+    "b-taginput/loading": {
+        "description": "Add the loading state to the input (Autocomplete)",
+        "type": "boolean"
+    },
+    "b-taginput/icon": {
+        "description": "Icon name to be added (Autocomplete)",
+        "type": "string"
+    },
+    "b-taginput/icon-pack": {
+        "description": "Icon pack to use (Autocomplete)",
+        "type": "string"
+    },
+    "b-timepicker/value": {
+        "description": "Binding value",
+        "type": "date"
+    },
+    "b-timepicker/hour-format": {
+        "description": "Hour format for input and display",
+        "type": "string"
+    },
+    "b-timepicker/increment-minutes": {
+        "description": "Step minutes for select component",
+        "type": "number"
+    },
+    "b-timepicker/time-formatter": {
+        "description": "Function to format time (Date type) to a string for display in the input",
+        "type": "function"
+    },
+    "b-timepicker/time-parser": {
+        "description": "Function to parse string to a time (Date type) for set a time from the input to the component",
+        "type": "function"
+    },
+    "b-timepicker/min-time": {
+        "description": "Earliest time available for selection",
+        "type": "date"
+    },
+    "b-timepicker/max-time": {
+        "description": "Latest time available for selection",
+        "type": "date"
+    },
+    "b-timepicker/size": {
+        "description": "Vertical size of input and picker, optional",
+        "type": "string"
+    },
+    "b-timepicker/inline": {
+        "description": "Datepicker is shown inline, input is removed",
+        "type": "boolean"
+    },
+    "b-timepicker/readonly": {
+        "description": "Does not allow to type a time, set to false to enable input. <b>Note that you might have to set a custom time parser</b>",
+        "type": "boolean"
+    },
+    "b-timepicker/loading": {
+        "description": "Add the loading state to the input",
+        "type": "boolean"
+    },
+    "b-timepicker/icon": {
+        "description": "Icon name to be added",
+        "type": "string"
+    },
+    "b-timepicker/icon-pack": {
+        "description": "Icon pack to use",
+        "type": "string"
+    },
+    "b-timepicker/unselectable-times": {
+        "description": "Array of unselectable times (Date object)",
+        "type": "array"
+    },
+    "b-timepicker/mobile-native": {
+        "description": "Enable native timepicker on mobile",
+        "type": "boolean"
+    },
+    "b-timepicker/position": {
+        "description": "Optional, position of the timepicker relative to the input",
+        "type": "string"
+    },
+    "b-tooltip/type": {
+        "description": "Type (color) of the tooltip",
+        "type": "string"
+    },
+    "b-tooltip/active": {
+        "description": "Whether tooltip is active or not",
+        "type": "boolean"
+    },
+    "b-tooltip/label": {
+        "description": "Tooltip text",
+        "type": "string"
+    },
+    "b-tooltip/position": {
+        "description": "Tooltip position in relation to the element",
+        "type": "string"
+    },
+    "b-tooltip/always": {
+        "description": "Tooltip will be always active",
+        "type": "boolean"
+    },
+    "b-tooltip/animated": {
+        "description": "Tooltip will have a little fade animation",
+        "type": "boolean"
+    },
+    "b-tooltip/square": {
+        "description": "Tooltip will be square (not rounded corners)",
+        "type": "boolean"
+    },
+    "b-tooltip/dashed": {
+        "description": "Tooltip slot will have a dashed underline",
+        "type": "boolean"
+    },
+    "b-tooltip/multilined": {
+        "description": "Tooltip will be multilined",
+        "type": "boolean"
+    },
+    "b-tooltip/size": {
+        "description": "Tooltip multiline size (only works for multilined tooltips)",
+        "type": "string"
+    },
+    "b-upload/value": {
+        "description": "Binding value",
+        "type": "array<file>"
+    },
+    "b-upload/drag-drop": {
+        "description": "Accepts drag & drop and change its style",
+        "type": "boolean"
+    },
+    "b-upload/type": {
+        "description": "Type (color) of the drag area when hovered",
+        "type": "string"
+    },
+    "b-upload/disabled": {
+        "description": "Same as native disabled",
+        "type": "boolean"
+    },
+    "b-upload/name": {
+        "description": "Same as native name",
+        "type": "string"
+    },
+    "b-upload/required": {
+        "description": "Same as native required",
+        "type": "boolean"
+    },
+    "b-upload/accept": {
+        "description": "Same as native accept",
+        "type": "string"
+    },
+    "b-upload/loading": {
+        "description": "Add the loading state",
+        "type": "boolean"
+    },
+    "b-upload/multiple": {
+        "description": "Same as native, also push new item to v-model instead of replacing",
+        "type": "boolean"
+    },
+    "b-upload/native": {
+        "description": "Replace last chosen files every time (like native file input element)",
+        "type": "boolean"
+    }
+}

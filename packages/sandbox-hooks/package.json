@@ -4,6 +4,6 @@
   "private": true,
   "dependencies": {
     "codesandbox-api": "^0.0.18",
-    "console-feed": "^2.8.1"
+    "console-feed": "^2.8.5"
   }
 }

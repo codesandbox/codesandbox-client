@@ -116,7 +116,7 @@ class Navigator extends React.Component<Props, State> {
 
   onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
-      // Enter
+      //  Enter
       e.preventDefault();
       e.stopPropagation();
 

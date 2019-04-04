@@ -1,14 +1,18 @@
 // @flow
 import * as React from 'react';
-import type { Sandbox, Module, ModuleError } from 'common/types';
-import BasePreview from 'app/components/Preview';
+import type {
+  Sandbox,
+  Module,
+  ModuleError,
+} from '@codesandbox/common/lib/types';
+import BasePreview from '@codesandbox/common/lib/components/Preview';
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 
-import getTemplate from 'common/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 import { StyledNotSyncedIcon } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab/elements';
 import {
@@ -19,8 +23,12 @@ import {
 
 import DevTools from 'app/components/Preview/DevTools';
 
-import { resolveModule, findMainModule } from 'common/sandbox/modules';
-import RunOnClick from 'common/components/RunOnClick';
+import {
+  resolveModule,
+  findMainModule,
+} from '@codesandbox/common/lib/sandbox/modules';
+import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
+import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 
 import { Container, Tabs, Split } from './elements';
 
@@ -54,6 +62,7 @@ type Props = {
   expandDevTools: boolean,
   runOnClick: boolean,
   verticalMode: boolean,
+  tabs?: Array<string>,
 };
 
 type State = {
@@ -67,17 +76,7 @@ export default class Content extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    let tabs = [];
-
-    const module = props.sandbox.modules.find(
-      m => m.id === props.currentModule.id
-    );
-    // Show all tabs if there are not many files
-    if (props.sandbox.modules.length <= 5 || !module) {
-      tabs = [...props.sandbox.modules];
-    } else {
-      tabs = [module];
-    }
+    const tabs = this.getInitTabs(props);
 
     this.state = {
       running: !props.runOnClick,
@@ -88,6 +87,35 @@ export default class Content extends React.PureComponent<Props, State> {
 
     this.errors = [];
   }
+
+  getInitTabs = (props: Props) => {
+    let tabs: Array<Module> = [];
+    const module = props.sandbox.modules.find(
+      m => m.id === props.currentModule.id
+    );
+    if (props.tabs) {
+      tabs = props.tabs
+        .map(modulePath => {
+          try {
+            return resolveModule(
+              modulePath,
+              props.sandbox.modules,
+              props.sandbox.directories
+            );
+          } catch (e) {
+            return undefined;
+          }
+        })
+        .filter(Boolean);
+    } else if (props.sandbox.modules.length <= 5 || !module) {
+      // Show all tabs if there are not many files
+      tabs = [...props.sandbox.modules];
+    } else {
+      tabs = [module];
+    }
+
+    return tabs;
+  };
 
   renderTabStatus = (hovering, closeTab) => {
     const { isNotSynced, tabCount } = this.props;
@@ -132,6 +160,12 @@ export default class Content extends React.PureComponent<Props, State> {
       if (this.editor && this.editor.changeModule) {
         this.editor.changeModule(nextProps.currentModule);
       }
+    }
+
+    if (this.props.sandbox.id !== nextProps.sandbox.id) {
+      this.setState({
+        tabs: this.getInitTabs(nextProps),
+      });
     }
   }
 
@@ -317,6 +351,7 @@ export default class Content extends React.PureComponent<Props, State> {
     if (!mainModule) throw new Error('Cannot find main module');
 
     const templateDefinition = getTemplate(sandbox.template);
+    const views = getPreviewTabs(sandbox);
 
     const sandboxConfig = sandbox.modules.find(
       x => x.directoryShortid == null && x.title === 'sandbox.config.json'
@@ -332,6 +367,43 @@ export default class Content extends React.PureComponent<Props, State> {
         /* swallow */
       }
     }
+
+    if (view !== 'browser') {
+      // Backwards compatability for sandbox.config.json
+      if (view === 'console') {
+        views[0].views.unshift({ id: 'codesandbox.console' });
+      } else if (view === 'tests') {
+        views[0].views.unshift({ id: 'codesandbox.tests' });
+      }
+    }
+
+    if (expandDevTools) {
+      views[1].open = true;
+    }
+
+    const browserConfig = {
+      id: 'codesandbox.browser',
+      title: 'Browser',
+      Content: ({ hidden }) => (
+        <BasePreview
+          onInitialized={this.onPreviewInitialized}
+          sandbox={sandbox}
+          hide={hidden}
+          currentModule={mainModule}
+          settings={this.getPreferences()}
+          initialPath={this.props.initialPath}
+          isInProjectView={isInProjectView}
+          onClearErrors={this.clearErrors}
+          onAction={this.handleAction}
+          showNavigation={!hideNavigation}
+          onToggleProjectView={this.onToggleProjectView}
+          showDevtools={expandDevTools}
+          onResize={this.handleResize}
+          dragging={this.state.dragging}
+        />
+      ),
+      actions: [],
+    };
 
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
@@ -374,7 +446,12 @@ export default class Content extends React.PureComponent<Props, State> {
                       <React.Fragment>
                         <EntryIcons type={getType(module.title)} />
                         <TabTitle>{module.title}</TabTitle>
-                        {dirName && <TabDir>../{dirName}</TabDir>}
+                        {dirName && (
+                          <TabDir>
+                            ../
+                            {dirName}
+                          </TabDir>
+                        )}
 
                         {this.renderTabStatus(hovering, closeTab)}
                       </React.Fragment>
@@ -393,7 +470,7 @@ export default class Content extends React.PureComponent<Props, State> {
               <CodeEditor
                 onInitialized={this.onCodeEditorInitialized}
                 currentModule={currentModule || mainModule}
-                isModuleSynced
+                isModuleSynced={() => true}
                 sandbox={sandbox}
                 settings={this.getPreferences()}
                 canSave={false}
@@ -419,34 +496,27 @@ export default class Content extends React.PureComponent<Props, State> {
             ) : (
               <div
                 style={{
-                  height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
+                  height: '100%',
                 }}
               >
-                <BasePreview
-                  onInitialized={this.onPreviewInitialized}
-                  sandbox={sandbox}
-                  currentModule={mainModule}
-                  settings={this.getPreferences()}
-                  initialPath={this.props.initialPath}
-                  isInProjectView={isInProjectView}
-                  onClearErrors={this.clearErrors}
-                  onAction={this.handleAction}
-                  showNavigation={!hideNavigation}
-                  onToggleProjectView={this.onToggleProjectView}
-                  showDevtools={expandDevTools}
-                  onResize={this.handleResize}
-                  dragging={this.state.dragging}
-                />
-                <DevTools
-                  setDragging={this.setDragging}
-                  sandboxId={sandbox.id}
-                  template={sandbox.template}
-                  shouldExpandDevTools={this.props.expandDevTools}
-                  view={view}
-                  owned={false}
-                />
+                {views.map((devView, i) => (
+                  <DevTools
+                    key={i} // eslint-disable-line react/no-array-index-key
+                    devToolIndex={i}
+                    addedViews={{
+                      'codesandbox.browser': browserConfig,
+                    }}
+                    setDragging={this.setDragging}
+                    sandboxId={sandbox.id}
+                    template={sandbox.template}
+                    owned={false}
+                    primary={i === 0}
+                    hideTabs={i === 0}
+                    viewConfig={devView}
+                  />
+                ))}
               </div>
             )}
           </Split>

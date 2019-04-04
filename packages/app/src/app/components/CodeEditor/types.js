@@ -5,7 +5,7 @@ import type {
   Sandbox,
   ModuleError,
   ModuleCorrection,
-} from 'common/types';
+} from '@codesandbox/common/lib/types';
 
 export type Settings = {
   autoCompleteEnabled: boolean,
@@ -89,4 +89,5 @@ export type Props = {
   receivingCode?: boolean,
   onCodeReceived?: () => void,
   onSelectionChanged: (d: { selection: any, moduleShortid: string }) => void,
+  onModuleStateMismatch?: () => void,
 };

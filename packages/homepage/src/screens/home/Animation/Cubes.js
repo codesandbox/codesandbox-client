@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { TimelineMax, TweenMax, Power2, Power3, Elastic } from 'gsap';
-import fadeIn from 'common/utils/animation/fade-in';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 
 import Cube from '../../../components/Cube';
 import media from '../../../utils/media';
@@ -129,7 +129,7 @@ export default class Cubes extends React.Component {
   }
 
   updateCubePos = () => {
-    if (this.props.canvas) {
+    if (this.props.canvas && this.els[this.props.template.name]) {
       const pos = this.els[this.props.template.name].getBoundingClientRect();
       this.props.canvas.setCubePos(pos.x + 50, pos.y + 70 + getScrollPos().y);
     }
@@ -195,6 +195,8 @@ export default class Cubes extends React.Component {
 
       return this.shrinkTimelines[template.template.name].restart();
     }
+
+    return null;
   };
 
   hoverCube = template => {

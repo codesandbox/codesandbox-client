@@ -1,0 +1,15 @@
+{
+  "name": "nuxt-helper-json",
+  "version": "1.0.0",
+  "description": "Definitions of Nuxt components",
+  "main": "nuxt-tags.json",
+  "keywords": [
+    "nuxt",
+    "nuxtjs",
+    "vue",
+    "plugin",
+    "definition"
+  ],
+  "author": "octref@gmail.com",
+  "license": "MIT"
+}

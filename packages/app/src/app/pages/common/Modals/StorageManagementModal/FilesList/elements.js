@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import delayEffect from 'common/utils/animation/delay-effect';
+import styled, { css } from 'styled-components';
+import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 export const HeaderTitle = styled.th`
   font-weight: 400;
@@ -8,12 +8,20 @@ export const HeaderTitle = styled.th`
   color: rgba(255, 255, 255, 0.9);
 `;
 
+export const Buttons = styled.div`
+  margin: 0.5rem 0;
+  display: flex;
+
+  > *:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+`;
+
 export const Table = styled.table`
   ${delayEffect(0.2)};
   width: 100%;
   border-spacing: 0;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  background-color: ${props => props.theme.background2};
 `;
 
 export const StatBody = styled.td`
@@ -26,7 +34,7 @@ export const Body = styled.tbody`
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
-  background: ${props => props.theme.background2};
+  background-color: ${props => props.theme.background2};
 
   td {
     border: none;
@@ -46,4 +54,28 @@ export const FileRow = styled.tr`
     background-color: ${props => props.theme.primary.clearer(0.9)};
     color: rgba(255, 255, 255, 0.9);
   }
+`;
+
+export const CheckBox = styled.span`
+  ${props =>
+    props.selected
+      ? css`
+          background: ${props.color} url('') no-repeat 50%/10px;
+          background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 10 9' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.88l2.378 2.435L9.046 1.6' stroke-width='1.6' stroke='%23FFF' fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+        `
+      : css`
+          background: rgba(0, 0, 0, 0.3) url('') no-repeat 50%/10px;
+          background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 10 9' xmlns='http://www.w3.org/2000/svg'><path fill='rgba(255, 255, 255, 0.2)/></svg>");
+        `};
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  margin-left: 1rem;
+  box-shadow: none;
+  display: inline-block;
+  border-radius: 3.5px;
+  width: 16px;
+  height: 16px;
+  outline: none;
+  vertical-align: middle;
+  transition: 0.15s ease all;
+  cursor: pointer;
 `;

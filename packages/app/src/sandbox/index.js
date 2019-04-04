@@ -1,12 +1,12 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
-import _debug from 'app/utils/debug';
+import _debug from '@codesandbox/common/lib/utils/debug';
 
-import registerServiceWorker from 'common/registerServiceWorker';
-import requirePolyfills from 'common/load-dynamic-polyfills';
-import { getModulePath } from 'common/sandbox/modules';
-import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
+import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
@@ -77,8 +77,11 @@ requirePolyfills().then(() => {
 
     sendReady();
 
-    setupHistoryListeners();
-    setupConsole();
+    if (!window.opener) {
+      // Means we're in the editor
+      setupHistoryListeners();
+      setupConsole();
+    }
   }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {

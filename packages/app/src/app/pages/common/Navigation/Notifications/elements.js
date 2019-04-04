@@ -1,12 +1,9 @@
 import styled, { css } from 'styled-components';
-import delayEffect from 'common/utils/animation/delay-effect';
+import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 export const Container = styled.div`
-  position: absolute;
-  top: calc(100% + 1rem);
   overflow: hidden;
   box-sizing: border-box;
-  right: 0;
   text-align: left;
   line-height: 1.6;
   width: 358px;
@@ -50,27 +47,29 @@ export const NotificationContainer = styled.div`
 
   border-left: 2px solid transparent;
 
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
   ${props =>
     props.read
       ? css`
-          border-color: rgba(0, 0, 0, 0.3);
+          border-left-color: rgba(0, 0, 0, 0.3);
           opacity: 0.6;
         `
       : css`
-          border-color: ${props.theme.secondary.clearer(0.2)()};
+          border-left-color: ${props.theme.secondary.clearer(0.2)()};
 
           &:hover {
-            border-color: ${props.theme.secondary()};
+            border-left-color: ${props.theme.secondary()};
           }
         `};
 
   ${props =>
     props.success &&
     css`
-      border-color: ${props.theme.green.clearer(0.2)()};
+      border-left-color: ${props.theme.green.clearer(0.2)()};
 
       &:hover {
-        border-color: ${props.theme.green()};
+        border-left-color: ${props.theme.green()};
       }
     `};
 `;
@@ -79,6 +78,8 @@ export const NotificationImage = styled.img`
   border-radius: 4px;
   width: 24px;
   height: 24px;
+  min-width: 24px;
+  min-height: 24px;
   margin-right: 1rem;
   margin-top: 0.25rem;
 `;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { TimelineMax, Power2 } from 'gsap';
 
-import Relative from 'common/components/Relative';
+import Relative from '@codesandbox/common/lib/components/Relative';
 
 import browserSvg from './browser.svg';
 import codesandboxSvg from './codesandbox.svg';
@@ -77,25 +77,25 @@ export default class EmbedAnimation extends React.PureComponent {
           src={browserSvg}
         />
         <AbsoluteImage
-          innerRef={el => {
+          ref={el => {
             this.vue = el;
           }}
           src={vueSvg}
         />
         <AbsoluteImage
-          innerRef={el => {
+          ref={el => {
             this.egghead = el;
           }}
           src={eggheadSvg}
         />
         <AbsoluteImage
-          innerRef={el => {
+          ref={el => {
             this.medium = el;
           }}
           src={mediumSvg}
         />
         <AbsoluteImage
-          innerRef={el => {
+          ref={el => {
             this.codesandbox = el;
           }}
           src={codesandboxSvg}

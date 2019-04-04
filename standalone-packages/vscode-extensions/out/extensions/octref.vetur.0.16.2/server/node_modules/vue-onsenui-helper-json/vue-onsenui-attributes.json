@@ -1,0 +1,662 @@
+{
+  "v-ons-action-sheet-button/icon": {
+    "type": "any",
+    "description": "Creates an `ons-icon` component with this string. Only visible on Android."
+  },
+  "v-ons-action-sheet-button/modifier": {
+    "type": "any",
+    "description": "The appearance of the action sheet button."
+  },
+  "v-ons-action-sheet/title": {
+    "type": "any",
+    "description": "Optional title of the action sheet. A new element will be created containing this string."
+  },
+  "v-ons-action-sheet/modifier": {
+    "type": "any",
+    "description": "The appearance of the action sheet."
+  },
+  "v-ons-action-sheet/cancelable": {
+    "type": "any",
+    "description": "If this attribute is set the action sheet can be closed by tapping the background or by pressing the back button on Android devices."
+  },
+  "v-ons-action-sheet/disabled": {
+    "type": "any",
+    "description": "If this attribute is set the action sheet is disabled."
+  },
+  "v-ons-action-sheet/mask-color": {
+    "type": "any",
+    "description": "Color of the background mask. Default is `\"rgba(0, 0, 0, 0.2)\"`."
+  },
+  "v-ons-action-sheet/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-alert-dialog-button/modifier": {
+    "type": "any",
+    "description": "The appearance of the button."
+  },
+  "v-ons-alert-dialog-button/disabled": {
+    "type": "any",
+    "description": "Specify if button should be disabled."
+  },
+  "v-ons-alert-dialog/modifier": {
+    "type": "any",
+    "description": "The appearance of the dialog."
+  },
+  "v-ons-alert-dialog/cancelable": {
+    "type": "any",
+    "description": "If this attribute is set the dialog can be closed by tapping the background or by pressing the back button on Android devices."
+  },
+  "v-ons-alert-dialog/disabled": {
+    "type": "any",
+    "description": "If this attribute is set the dialog is disabled."
+  },
+  "v-ons-alert-dialog/mask-color": {
+    "type": "any",
+    "description": "Color of the background mask. Default is \"rgba(0, 0, 0, 0.2)\"."
+  },
+  "v-ons-alert-dialog/title": {
+    "type": "any",
+    "description": "Represents the dialog title. It can be provided inside a `slot=\"title\"` element instead."
+  },
+  "v-ons-alert-dialog/footer": {
+    "type": "any",
+    "description": "Object keys will be treated as button names and their corresponding values must be functions that are called on click. It can be provided inside a `slot=\"footer\"` element instead."
+  },
+  "v-ons-alert-dialog/visible": {
+    "type": "any",
+    "description": "Specify the visibility of the component."
+  },
+  "v-ons-alert-dialog/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-back-button/modifier": {
+    "type": "any",
+    "description": "The appearance of the back button."
+  },
+  "v-ons-bottom-toolbar/modifier": {
+    "type": "any",
+    "description": "The appearance of the toolbar."
+  },
+  "v-ons-button/modifier": {
+    "type": "any",
+    "description": "The appearance of the button."
+  },
+  "v-ons-button/ripple": {
+    "type": "any",
+    "description": "If this attribute is defined, the button will have a ripple effect."
+  },
+  "v-ons-button/disabled": {
+    "type": "any",
+    "description": "Specify if button should be disabled."
+  },
+  "v-ons-card/modifier": {
+    "type": "any",
+    "description": "The appearance of the card."
+  },
+  "v-ons-carousel/direction": {
+    "type": "any",
+    "description": "The direction of the carousel. Can be either \"horizontal\" or \"vertical\". Default is \"horizontal\"."
+  },
+  "v-ons-carousel/fullscreen": {
+    "type": "any",
+    "description": "If this attribute is set the carousel will cover the whole screen."
+  },
+  "v-ons-carousel/overscrollable": {
+    "type": "any",
+    "description": "If this attribute is set the carousel will be scrollable over the edge. It will bounce back when released."
+  },
+  "v-ons-carousel/centered": {
+    "type": "any",
+    "description": "If this attribute is set the carousel then the selected item will be in the center of the carousel instead of the beginning. Useful only when the items are smaller than the carousel. "
+  },
+  "v-ons-carousel/item-width": {
+    "type": "any",
+    "description": "ons-carousel-item's width. Only works when the direction is set to \"horizontal\"."
+  },
+  "v-ons-carousel/item-height": {
+    "type": "any",
+    "description": "ons-carousel-item's height. Only works when the direction is set to \"vertical\"."
+  },
+  "v-ons-carousel/auto-scroll": {
+    "type": "any",
+    "description": "If this attribute is set the carousel will be automatically scrolled to the closest item border when released."
+  },
+  "v-ons-carousel/auto-scroll-ratio": {
+    "type": "any",
+    "description": "A number between 0.0 and 1.0 that specifies how much the user must drag the carousel in order for it to auto scroll to the next item."
+  },
+  "v-ons-carousel/swipeable": {
+    "type": "any",
+    "description": "If this attribute is set the carousel can be scrolled by drag or swipe."
+  },
+  "v-ons-carousel/disabled": {
+    "type": "any",
+    "description": "If this attribute is set the carousel is disabled."
+  },
+  "v-ons-carousel/auto-refresh": {
+    "type": "any",
+    "description": "When this attribute is set the carousel will automatically refresh when the number of child nodes change."
+  },
+  "v-ons-carousel/index": {
+    "type": "any",
+    "description": "If exists, specifies the current active index. It is also used as the initial index. Must be modified on `update:index` event."
+  },
+  "v-ons-carousel/on-swipe": {
+    "type": "any",
+    "description": "Hook called whenever the user slides the carousel. It gets a decimal index and an animationOptions object as arguments."
+  },
+  "v-ons-carousel/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-checkbox/input-id": {
+    "type": "any",
+    "description": "Specify the \"id\" attribute of the inner `<input>` element. This is useful when using `<label for=\"...\">` elements."
+  },
+  "v-ons-col/vertical-align": {
+    "type": "any",
+    "description": "Vertical alignment of the column. Valid values are \"top\", \"center\", and \"bottom\"."
+  },
+  "v-ons-col/width": {
+    "type": "any",
+    "description": "The width of the column. Valid values are css width values (\"10%\", \"50px\")."
+  },
+  "v-ons-dialog/modifier": {
+    "type": "any",
+    "description": "The appearance of the dialog."
+  },
+  "v-ons-dialog/cancelable": {
+    "type": "any",
+    "description": "If this attribute is set the dialog can be closed by tapping the background or by pressing the back button on Android devices."
+  },
+  "v-ons-dialog/disabled": {
+    "type": "any",
+    "description": "If this attribute is set the dialog is disabled."
+  },
+  "v-ons-dialog/mask-color": {
+    "type": "any",
+    "description": "Color of the background mask. Default is `\"rgba(0, 0, 0, 0.2)\"`."
+  },
+  "v-ons-dialog/visible": {
+    "type": "any",
+    "description": "Specify the visibility of the component."
+  },
+  "v-ons-dialog/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-fab/modifier": {
+    "type": "any",
+    "description": "The appearance of the button."
+  },
+  "v-ons-fab/ripple": {
+    "type": "any",
+    "description": "If this attribute is defined, the button will have a ripple effect when tapped."
+  },
+  "v-ons-fab/position": {
+    "type": "any",
+    "description": "The position of the button. Should be a string like `\"bottom right\"` or `\"top left\"`. If this attribute is not defined it will be displayed as an inline element."
+  },
+  "v-ons-fab/disabled": {
+    "type": "any",
+    "description": "Specify if button should be disabled."
+  },
+  "v-ons-icon/icon": {
+    "type": "any",
+    "description": "The icon name. `\"md-\"` prefix for Material Icons, `\"fa-\"` for Font Awesome and `\"ion-\"` prefix for Ionicons.\n  See all available icons on their respective sites:\n  * [Font Awesome](https://fortawesome.github.io/Font-Awesome/)\n  * [Ionicons](http://ionicons.com)\n  * [Material Design Iconic Font](http://zavoloklom.github.io/material-design-iconic-font/)\n  Icons can also be styled based on modifier presence. Add comma-separated icons with `\"modifierName:\"` prefix.\n  The code:\n  ```\n  <ons-icon\n    icon=\"ion-edit, material:md-edit\">\n  </ons-icon>\n  ```\n  will display `\"md-edit\"` for Material Design and `\"ion-edit\"` as the default icon.\n"
+  },
+  "v-ons-icon/size": {
+    "type": "any",
+    "description": "The sizes of the icon. Valid values are lg, 2x, 3x, 4x, 5x, or in the size in pixels.\n  Icons can also be styled based on modifier presence. Add comma-separated icons with `\"modifierName:\"` prefix.\n  The code:\n  ```\n  <ons-icon\n    icon=\"ion-edit\"\n    size=\"32px, material:24px\">\n  </ons-icon>\n  ```\n  will render as a `24px` icon if the `\"material\"` modifier is present and `32px` otherwise.\n"
+  },
+  "v-ons-icon/rotate": {
+    "type": "any",
+    "description": "Number of degrees to rotate the icon. Valid values are 90, 180 and 270."
+  },
+  "v-ons-icon/fixed-width": {
+    "type": "any",
+    "description": "When used in a list, you want the icons to have the same width so that they align vertically by defining this attribute."
+  },
+  "v-ons-icon/spin": {
+    "type": "any",
+    "description": "Specify whether the icon should be spinning."
+  },
+  "v-ons-input/placeholder": {
+    "type": "any",
+    "description": "Placeholder text. In Material Design, this placeholder will be a floating label."
+  },
+  "v-ons-input/float": {
+    "type": "any",
+    "description": "If this attribute is present, the placeholder will be animated in Material Design."
+  },
+  "v-ons-input/type": {
+    "type": "any",
+    "description": "Specify the input type. This is the same as the \"type\" attribute for normal inputs. It expects strict text types such as `text`, `password`, etc. For checkbox, radio button, select or range, please have a look at the corresponding elements.\n  Please take a look at [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-type) for an exhaustive list of possible values. Depending on the platform and browser version some of these might not work.\n"
+  },
+  "v-ons-input/input-id": {
+    "type": "any",
+    "description": "Specify the \"id\" attribute of the inner `<input>` element. This is useful when using `<label for=\"...\">` elements."
+  },
+  "v-ons-lazy-repeat/render-item": {
+    "type": "any",
+    "description": "Item generator. This function gets an index as its first argument and must return an unmounted Vue component corresponding to a row in the list. The index should be used to get the necessary data for the new item."
+  },
+  "v-ons-lazy-repeat/length": {
+    "type": "any",
+    "description": "Total number of items."
+  },
+  "v-ons-lazy-repeat/calculate-item-height": {
+    "type": "any",
+    "description": "This function gets an index as its first argument and should return the expected height of the item. This is useful to ease calculations and possibly achieve a better scrolling."
+  },
+  "v-ons-list-header/modifier": {
+    "type": "any",
+    "description": "The appearance of the list header."
+  },
+  "v-ons-list-item/modifier": {
+    "type": "any",
+    "description": "The appearance of the list item."
+  },
+  "v-ons-list-item/lock-on-drag": {
+    "type": "any",
+    "description": "Prevent vertical scrolling when the user drags horizontally."
+  },
+  "v-ons-list-item/tappable": {
+    "type": "any",
+    "description": "Makes the element react to taps."
+  },
+  "v-ons-list-item/tap-background-color": {
+    "type": "any",
+    "description": "Changes the background color when tapped. For this to work, the attribute \"tappable\" needs to be set. The default color is \"#d9d9d9\". It will display as a ripple effect on Android."
+  },
+  "v-ons-list/modifier": {
+    "type": "any",
+    "description": "The appearance of the list."
+  },
+  "v-ons-modal/visible": {
+    "type": "any",
+    "description": "Specify the visibility of the component."
+  },
+  "v-ons-modal/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-navigator/swipeable": {
+    "type": "any",
+    "description": "Enable iOS \"swipe to pop\" feature."
+  },
+  "v-ons-navigator/swipe-target-width": {
+    "type": "any",
+    "description": "The width of swipeable area calculated from the edge (in pixels). Use this to enable swipe only when the finger touch on the screen edge."
+  },
+  "v-ons-navigator/swipe-threshold": {
+    "type": "any",
+    "description": "Specify how much the page needs to be swiped before popping. A value between `0` and `1`."
+  },
+  "v-ons-navigator/page-stack": {
+    "type": "any",
+    "description": "Array of `VOnsPage` components that represents `VOnsNavigator` page stack."
+  },
+  "v-ons-navigator/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-page/modifier": {
+    "type": "any",
+    "description": "Specify modifier name to specify custom styles."
+  },
+  "v-ons-page/infinite-scroll": {
+    "type": "any",
+    "description": "Called when the scroll is near the bottom. This function gets a `done` callback as its first argument. Useful for loading extra items in a list."
+  },
+  "v-ons-popover/modifier": {
+    "type": "any",
+    "description": "The appearance of the popover."
+  },
+  "v-ons-popover/direction": {
+    "type": "any",
+    "description": "A space separated list of directions. If more than one direction is specified,\n  it will be chosen automatically. Valid directions are `\"up\"`, `\"down\"`, `\"left\"` and `\"right\"`.\n"
+  },
+  "v-ons-popover/cancelable": {
+    "type": "any",
+    "description": "If this attribute is set the popover can be closed by tapping the background or by pressing the back button."
+  },
+  "v-ons-popover/cover-target": {
+    "type": "any",
+    "description": "If set the popover will cover the target on the screen."
+  },
+  "v-ons-popover/mask-color": {
+    "type": "any",
+    "description": "Color of the background mask. Default is `\"rgba(0, 0, 0, 0.2)\"`."
+  },
+  "v-ons-popover/target": {
+    "type": "any",
+    "description": "Target element. Can be either a Vue component reference, a CSS selector, an event object or a DOM element. It can also be provided as `options.target`."
+  },
+  "v-ons-popover/visible": {
+    "type": "any",
+    "description": "Specify the visibility of the component."
+  },
+  "v-ons-popover/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-progress-bar/modifier": {
+    "type": "any",
+    "description": "Change the appearance of the progress indicator."
+  },
+  "v-ons-progress-bar/value": {
+    "type": "any",
+    "description": "Current progress. Should be a value between 0 and 100."
+  },
+  "v-ons-progress-bar/secondary-value": {
+    "type": "any",
+    "description": "Current secondary progress. Should be a value between 0 and 100."
+  },
+  "v-ons-progress-bar/indeterminate": {
+    "type": "any",
+    "description": "If this attribute is set, an infinite looping animation will be shown."
+  },
+  "v-ons-progress-circular/modifier": {
+    "type": "any",
+    "description": "Change the appearance of the progress indicator."
+  },
+  "v-ons-progress-circular/value": {
+    "type": "any",
+    "description": "Current progress. Should be a value between 0 and 100."
+  },
+  "v-ons-progress-circular/secondary-value": {
+    "type": "any",
+    "description": "Current secondary progress. Should be a value between 0 and 100."
+  },
+  "v-ons-progress-circular/indeterminate": {
+    "type": "any",
+    "description": "If this attribute is set, an infinite looping animation will be shown."
+  },
+  "v-ons-pull-hook/disabled": {
+    "type": "any",
+    "description": "If this attribute is set the \"pull-to-refresh\" functionality is disabled."
+  },
+  "v-ons-pull-hook/height": {
+    "type": "any",
+    "description": "Specify the height of the component. When pulled down further than this value it will switch to the \"preaction\" state. The default value is \"64px\"."
+  },
+  "v-ons-pull-hook/threshold-height": {
+    "type": "any",
+    "description": "Specify the threshold height. The component automatically switches to the \"action\" state when pulled further than this value. The default value is \"96px\". A negative value or a value less than the height will disable this property."
+  },
+  "v-ons-pull-hook/fixed-content": {
+    "type": "any",
+    "description": "If this attribute is set the content of the page will not move when pulling."
+  },
+  "v-ons-pull-hook/action": {
+    "type": "any",
+    "description": "This will be called in the `action` state if exists. The function will be given a `done` callback as it's first argument."
+  },
+  "v-ons-pull-hook/on-pull": {
+    "type": "any",
+    "description": "Hook called whenever the element is pulled. It gets the pulled distance ratio (scroll / height) and an animationOptions object as arguments."
+  },
+  "v-ons-radio/input-id": {
+    "type": "any",
+    "description": "Specify the \"id\" attribute of the inner `<input>` element. This is useful when using `<label for=\"...\">` elements."
+  },
+  "v-ons-range/disabled": {
+    "type": "any",
+    "description": "Whether the element is disabled or not."
+  },
+  "v-ons-ripple/color": {
+    "type": "any",
+    "description": "Color of the ripple effect."
+  },
+  "v-ons-ripple/modifier": {
+    "type": "any",
+    "description": "The appearance of the ripple effect."
+  },
+  "v-ons-ripple/background": {
+    "type": "any",
+    "description": "Color of the background."
+  },
+  "v-ons-ripple/size": {
+    "type": "any",
+    "description": "Sizing of the wave on ripple effect. Set \"cover\" or \"contain\". Default is \"cover\"."
+  },
+  "v-ons-ripple/center": {
+    "type": "any",
+    "description": "If this attribute presents, change the position of wave effect to center of the target element."
+  },
+  "v-ons-ripple/disabled": {
+    "type": "any",
+    "description": "If this attribute is set, the ripple effect will be disabled."
+  },
+  "v-ons-row/vertical-align": {
+    "type": "any",
+    "description": "Short hand attribute for aligning vertically. Valid values are top, bottom, and center."
+  },
+  "v-ons-search-input/input-id": {
+    "type": "any",
+    "description": "Specify the \"id\" attribute of the inner `<input>` element. This is useful when using `<label for=\"...\">` elements."
+  },
+  "v-ons-segment/modifier": {
+    "type": "any",
+    "description": "The appearance of the segment."
+  },
+  "v-ons-segment/tabbar-id": {
+    "type": "any",
+    "description": "ID of the tabbar element to \"connect\" to the segment. Must be inside the same page."
+  },
+  "v-ons-segment/disabled": {
+    "type": "any",
+    "description": "Specify if segment should be disabled."
+  },
+  "v-ons-segment/index": {
+    "type": "any",
+    "description": "If exists, specifies the current active button's index. It is also used as the initially active button index. Must be modified on `update:index` event."
+  },
+  "v-ons-select/autofocus": {
+    "type": "any",
+    "description": "Element automatically gains focus on page load."
+  },
+  "v-ons-select/disabled": {
+    "type": "any",
+    "description": "Specify if select input should be disabled."
+  },
+  "v-ons-select/form": {
+    "type": "any",
+    "description": "Associate a select element to an existing form on the page, even if not nested."
+  },
+  "v-ons-select/multiple": {
+    "type": "any",
+    "description": "If this attribute is defined, multiple options can be selected at once."
+  },
+  "v-ons-select/name": {
+    "type": "any",
+    "description": "Name the select element, useful for instance if it is part of a form."
+  },
+  "v-ons-select/required": {
+    "type": "any",
+    "description": "Make the select input required for submitting the form it is part of."
+  },
+  "v-ons-select/select-id": {
+    "type": "any",
+    "description": "ID given to the inner select, useful for dynamic manipulation."
+  },
+  "v-ons-select/size": {
+    "type": "any",
+    "description": "How many options are displayed; if there are more than the size then a scroll appears to navigate them."
+  },
+  "v-ons-speed-dial-item/modifier": {
+    "type": "any",
+    "description": "The appearance of the component."
+  },
+  "v-ons-speed-dial-item/ripple": {
+    "type": "any",
+    "description": "If this attribute is defined, the button will have a ripple effect when tapped."
+  },
+  "v-ons-speed-dial/modifier": {
+    "type": "any",
+    "description": "The appearance of the component."
+  },
+  "v-ons-speed-dial/ripple": {
+    "type": "any",
+    "description": "If this attribute is defined, the button will have a ripple effect when tapped."
+  },
+  "v-ons-speed-dial/position": {
+    "type": "any",
+    "description": "Specify the vertical and horizontal position of the component.\n  I.e. to display it in the top right corner specify \"right top\".\n  Choose from \"right\", \"left\", \"top\" and \"bottom\".\n"
+  },
+  "v-ons-speed-dial/direction": {
+    "type": "any",
+    "description": "Specify the direction the items are displayed. Possible values are \"up\", \"down\", \"left\" and \"right\"."
+  },
+  "v-ons-speed-dial/disabled": {
+    "type": "any",
+    "description": "Specify if button should be disabled."
+  },
+  "v-ons-speed-dial/visible": {
+    "type": "any",
+    "description": "Specify the visibility of the component."
+  },
+  "v-ons-speed-dial/open": {
+    "type": "any",
+    "description": "If exists, the inner items will be shown accordingly. Must be modified on `update:open` event."
+  },
+  "v-ons-splitter-side/open-threshold": {
+    "type": "any",
+    "description": "Specify how much the menu needs to be swiped before opening. A value between `0` and `1`."
+  },
+  "v-ons-splitter-side/collapse": {
+    "type": "any",
+    "description": "Specify the collapse behavior. Valid values are `\"portrait\"`, `\"landscape\"` or a media query.\n  The strings `\"portrait\"` and `\"landscape\"` means the view will collapse when device is in landscape or portrait orientation.\n  If the value is a media query, the view will collapse when the media query resolves to `true`.\n  If the value is not defined, the view always be in `\"collapse\"` mode.\n"
+  },
+  "v-ons-splitter-side/swipe-target-width": {
+    "type": "any",
+    "description": "The width of swipeable area calculated from the edge (in pixels). Use this to enable swipe only when the finger touch on the screen edge."
+  },
+  "v-ons-splitter-side/width": {
+    "type": "any",
+    "description": "Can be specified in either pixels or as a percentage, e.g. `90%` or `200px`."
+  },
+  "v-ons-splitter-side/side": {
+    "type": "any",
+    "description": "Specify which side of the screen the `<ons-splitter-side>` element is located. Possible values are `\"left\"` and `\"right\"`."
+  },
+  "v-ons-splitter-side/mode": {
+    "type": "any",
+    "description": "Current mode. Possible values are `\"collapse\"` or `\"split\"`. This attribute is read only."
+  },
+  "v-ons-splitter-side/swipeable": {
+    "type": "any",
+    "description": "Whether to enable swipe interaction on collapse mode."
+  },
+  "v-ons-splitter-side/open": {
+    "type": "any",
+    "description": "If exists, the menu will be opened accordingly. Must be modified on `update:open` event."
+  },
+  "v-ons-splitter-side/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-switch/modifier": {
+    "type": "any",
+    "description": "The appearance of the switch."
+  },
+  "v-ons-switch/disabled": {
+    "type": "any",
+    "description": "Whether the switch is be disabled."
+  },
+  "v-ons-switch/checked": {
+    "type": "any",
+    "description": "Whether the switch is checked."
+  },
+  "v-ons-switch/input-id": {
+    "type": "any",
+    "description": "Specify the `id` attribute of the inner `<input>` element. This is useful when using `<label for=\"...\">` elements."
+  },
+  "v-ons-tab/icon": {
+    "type": "any",
+    "description": "The icon name for the tab. Can specify the same icon name as `<ons-icon>`.\n"
+  },
+  "v-ons-tab/active-icon": {
+    "type": "any",
+    "description": "The name of the icon when the tab is active."
+  },
+  "v-ons-tab/label": {
+    "type": "any",
+    "description": "The label of the tab item."
+  },
+  "v-ons-tab/badge": {
+    "type": "any",
+    "description": "Display a notification badge on top of the tab."
+  },
+  "v-ons-tab/active": {
+    "type": "any",
+    "description": "This attribute should be set to the tab that is active by default."
+  },
+  "v-ons-tabbar/position": {
+    "type": "any",
+    "description": "Tabbar's position. Available values are `\"bottom\"` and `\"top\"`. Use `\"auto\"` to choose position depending on platform (iOS bottom, Android top)."
+  },
+  "v-ons-tabbar/swipeable": {
+    "type": "any",
+    "description": "If this attribute is set the tab bar can be scrolled by drag or swipe."
+  },
+  "v-ons-tabbar/ignore-edge-width": {
+    "type": "any",
+    "description": "Distance in pixels from both edges. Swiping on these areas will prioritize parent components such as `ons-splitter` or `ons-navigator`."
+  },
+  "v-ons-tabbar/hide-tabs": {
+    "type": "any",
+    "description": "Whether to hide the tabs."
+  },
+  "v-ons-tabbar/tab-border": {
+    "type": "any",
+    "description": "If this attribute is set the tabs show a dynamic bottom border. Only works for iOS since the border is always visible in Material Design."
+  },
+  "v-ons-tabbar/modifier": {
+    "type": "any",
+    "description": "The appearance of the tabbar."
+  },
+  "v-ons-tabbar/tabs": {
+    "type": "any",
+    "description": "Contains as many objects as desired tabs in the tabbar. Every object describes a `VOnsTab` component. Every object must include at least one of the next properties: `page`, `icon` or `label` (see `VOnsTab` reference for more options). It is also possible to pass props to the pages through a `props` object for each tab. Example: `tabs: [ { label: 'p1', page: p1 }, { label: 'p2', page: p2, props: { myPage2Prop: 'something' } } ]`. This can be omitted if using `slot=\"pages\"` and `slot=\"tabs\"` elements."
+  },
+  "v-ons-tabbar/index": {
+    "type": "any",
+    "description": "If exists, specifies the current active index. It is also used as the initial index. Must be modified on `update:index` event."
+  },
+  "v-ons-tabbar/on-swipe": {
+    "type": "any",
+    "description": "Hook called whenever the user slides the tabbar. It gets a decimal index and an animationOptions object as arguments."
+  },
+  "v-ons-tabbar/tabbar-style": {
+    "type": "any",
+    "description": "Optional style for the actual tabbar element. Accepts any Vue valid style."
+  },
+  "v-ons-tabbar/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-toast/options": {
+    "type": "any",
+    "description": "Additional options for this element. Must be specified with an object."
+  },
+  "v-ons-toolbar-button/modifier": {
+    "type": "any",
+    "description": "The appearance of the button."
+  },
+  "v-ons-toolbar-button/disabled": {
+    "type": "any",
+    "description": "Specify if button should be disabled."
+  },
+  "v-ons-toolbar/inline": {
+    "type": "any",
+    "description": "Display the toolbar as an inline element."
+  },
+  "v-ons-toolbar/modifier": {
+    "type": "any",
+    "description": "The appearance of the toolbar."
+  }
+}

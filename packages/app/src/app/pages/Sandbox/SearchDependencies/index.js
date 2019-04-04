@@ -1,7 +1,7 @@
 import React from 'react';
 import { InstantSearch, Configure, PoweredBy } from 'react-instantsearch/dom';
 import { connectAutoComplete } from 'react-instantsearch/connectors';
-import theme from 'common/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 import 'app/pages/Search/search.css';
 import './dependencies.css';
@@ -53,7 +53,10 @@ export default class SearchDependencies extends React.PureComponent {
         apiKey="00383ecd8441ead30b1b0ff981c426f5"
         indexName="npm-search"
       >
-        <Configure hitsPerPage={5} />
+        <Configure
+          analyticsTags={['codesandbox-dependencies']}
+          hitsPerPage={5}
+        />
         <ConnectedAutoComplete
           onSelect={this.handleSelect}
           onManualSelect={this.handleManualSelect}

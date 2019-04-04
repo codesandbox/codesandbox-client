@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'gatsby';
 
-import { sandboxUrl } from 'common/utils/url-generator';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import media from '../../../utils/media';
 import { fadeIn } from '../../../utils/animation';
@@ -100,11 +101,10 @@ const Secondary = styled.div`
   ${fadeIn(0.2)};
 `;
 
-const isBot = () => {
-  return /google|baidu|bing|msn|duckduckgo|teoma|slurp|yandex/i.test(
+const isBot = () =>
+  /google|baidu|bing|msn|duckduckgo|teoma|slurp|yandex/i.test(
     navigator.userAgent
   );
-};
 
 export default ({ template }) => (
   <Container>
@@ -134,16 +134,10 @@ export default ({ template }) => (
           color={template.color}
           style={{ width: 220 }}
         >
-          Open {template.niceName}
+          Open {template.niceName === 'Vanilla' ? 'Editor' : template.niceName}
         </Button>
 
-        <Button
-          href={`https://codesandbox.io/search?refinementList%5Btemplate%5D%5B0%5D=${
-            template.name
-          }`}
-          color={template.color}
-          secondary
-        >
+        <Button as={Link} to={`/explore`} color={template.color} secondary>
           Explore Examples
         </Button>
       </Buttons>

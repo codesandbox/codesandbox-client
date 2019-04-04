@@ -5,8 +5,9 @@ import EditIcon from 'react-icons/lib/go/pencil';
 import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import UploadFileIcon from 'react-icons/lib/md/file-upload';
+import DownloadIcon from 'react-icons/lib/md/file-download';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { Icon } from '../../../../elements';
 import { Container } from './elements';
@@ -26,6 +27,7 @@ function EditIcons({
   onCreateDirectory,
   active,
   onUploadFile,
+  onDownload,
   forceShow,
 }) {
   // Phones need double click if we show elements on click, that's why we only want
@@ -38,36 +40,43 @@ function EditIcons({
     <div className={className}>
       {(hovering || (window.__isTouch && active) || forceShow) && (
         <Container>
-          {onEdit && (
-            <Tooltip title="Rename">
-              <Icon onClick={handleClick(onEdit)}>
-                <EditIcon />
+          {onDownload && (
+            <Tooltip content="Export to ZIP">
+              <Icon onClick={handleClick(onDownload)}>
+                <DownloadIcon />
               </Icon>
             </Tooltip>
           )}
           {onUploadFile && (
-            <Tooltip title="Upload Files">
+            <Tooltip content="Upload Files">
               <Icon onClick={handleClick(onUploadFile)}>
                 <UploadFileIcon />
               </Icon>
             </Tooltip>
           )}
+          {onEdit && (
+            <Tooltip content="Rename">
+              <Icon onClick={handleClick(onEdit)}>
+                <EditIcon />
+              </Icon>
+            </Tooltip>
+          )}
           {onCreateFile && (
-            <Tooltip title="New File">
+            <Tooltip content="New File">
               <Icon onClick={handleClick(onCreateFile)}>
                 <AddFileIcon />
               </Icon>
             </Tooltip>
           )}
           {onCreateDirectory && (
-            <Tooltip title="New Directory">
+            <Tooltip content="New Directory">
               <Icon onClick={handleClick(onCreateDirectory)}>
                 <AddDirectoryIcon />
               </Icon>
             </Tooltip>
           )}
           {onDelete && (
-            <Tooltip title="Delete">
+            <Tooltip content="Delete">
               <Icon onClick={handleClick(onDelete)}>
                 <CrossIcon />
               </Icon>

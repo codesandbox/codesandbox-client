@@ -3,14 +3,17 @@ import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
 
-import getTemplateDefinition from 'common/templates';
-import type { Module, Sandbox } from 'common/types';
-import Centered from 'common/components/flex/Centered';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import type { Module, Sandbox } from '@codesandbox/common/lib/types';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import { getSandboxOptions } from 'common/url';
+import { getSandboxOptions } from '@codesandbox/common/lib/url';
 
-import { findCurrentModule, findMainModule } from 'common/sandbox/modules';
+import {
+  findCurrentModule,
+  findMainModule,
+} from '@codesandbox/common/lib/sandbox/modules';
 
 import Header from '../Header';
 import Content from '../Content';
@@ -45,6 +48,7 @@ type State = {
   runOnClick: boolean,
   verticalMode: boolean,
   highlightedLines: Array<number>,
+  tabs?: Array<number>,
 };
 
 const isSafari = () => {
@@ -56,9 +60,16 @@ const isSafari = () => {
   return false;
 };
 
-export default class App extends React.PureComponent<{}, State> {
-  constructor() {
-    super();
+export default class App extends React.PureComponent<
+  {
+    id?: string,
+    embedOptions?: Object,
+    sandbox?: any,
+  },
+  State
+> {
+  constructor(props) {
+    super(props);
 
     const {
       currentModule,
@@ -78,12 +89,14 @@ export default class App extends React.PureComponent<{}, State> {
       forceRefresh,
       expandDevTools,
       runOnClick,
-      verticalMode,
-    } = getSandboxOptions(document.location.href);
+      verticalMode = window.innerWidth < window.innerHeight,
+      tabs,
+    } =
+      props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
       notFound: false,
-      sandbox: null,
+      sandbox: this.props.sandbox || null,
       fontSize: fontSize || 16,
       showEditor: isSplitScreen || isEditorScreen,
       showPreview: isSplitScreen || isPreviewScreen,
@@ -99,6 +112,7 @@ export default class App extends React.PureComponent<{}, State> {
       editorSize,
       forceRefresh,
       expandDevTools,
+      tabs,
       runOnClick:
         runOnClick === false
           ? false
@@ -112,6 +126,14 @@ export default class App extends React.PureComponent<{}, State> {
   }
 
   getId = () => {
+    if (this.props.id) {
+      return this.props.id;
+    }
+
+    if (this.props.sandbox) {
+      return this.props.sandbox.id;
+    }
+
     const matches = location.pathname.match(/^\/embed\/(.*?)$/);
 
     if (matches && matches.length > 1) {
@@ -123,31 +145,56 @@ export default class App extends React.PureComponent<{}, State> {
   getAppOrigin = () => location.origin.replace('embed.', '');
 
   fetchSandbox = async (id: string) => {
-    try {
-      const response = await fetch(
-        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`
-      )
-        .then(res => res.json())
-        .then(camelizeKeys);
+    if (id === 'custom') {
+      await new Promise(resolve => {
+        window.parent.postMessage('ready', '*');
+        window.addEventListener('message', e => {
+          if (e.data && e.data.sandbox) {
+            this.setState({
+              sandbox: e.data.sandbox,
+            });
 
-      document.title = `${response.data.title ||
-        response.data.id} - CodeSandbox`;
+            resolve();
+          }
+        });
+      });
+    } else {
+      try {
+        const response = await fetch(
+          `${this.getAppOrigin()}/api/v1/sandboxes/${id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.jwt()}`,
+            },
+          }
+        )
+          .then(res => res.json())
+          .then(camelizeKeys);
 
-      this.setState({ sandbox: response.data });
-    } catch (e) {
-      this.setState({ notFound: true });
+        document.title = `${response.data.title ||
+          response.data.id} - CodeSandbox`;
+
+        this.setState({ sandbox: response.data });
+      } catch (e) {
+        this.setState({ notFound: true });
+      }
     }
   };
 
   componentWillMount() {
-    const id = this.getId();
+    if (window.__SANDBOX_DATA__) {
+      this.setState({ sandbox: camelizeKeys(window.__SANDBOX_DATA__) });
+    } else {
+      const id = this.getId();
 
-    if (!id) {
-      this.setState({ notFound: true });
-      return;
+      if (!id) {
+        this.setState({ notFound: true });
+        return;
+      }
+
+      this.fetchSandbox(id);
     }
-
-    this.fetchSandbox(id);
   }
 
   setEditorView = () => this.setState({ showEditor: true, showPreview: false });
@@ -193,13 +240,96 @@ export default class App extends React.PureComponent<{}, State> {
     );
   };
 
+  jwt = () => {
+    try {
+      return JSON.parse(localStorage.getItem('jwt'));
+    } catch (e) {
+      return undefined;
+    }
+  };
+
+  toggleLike = () => {
+    const jwt = this.jwt();
+
+    if (this.state.sandbox.userLiked && jwt) {
+      this.setState(s => ({
+        sandbox: {
+          ...s.sandbox,
+          userLiked: false,
+          likeCount: s.sandbox.likeCount - 1,
+        },
+      }));
+      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+          id: this.state.sandbox.id,
+        }),
+      })
+        .then(x => x.json())
+        .then(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: false,
+              likeCount: s.sandbox.likeCount - 1,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: true,
+              likeCount: s.sandbox.likeCount + 1,
+            },
+          }));
+        });
+    } else {
+      this.setState(s => ({
+        sandbox: {
+          ...s.sandbox,
+          userLiked: true,
+          likeCount: s.sandbox.likeCount + 1,
+        },
+      }));
+      fetch(`/api/v1/sandboxes/${this.state.sandbox.id}/likes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+        .then(x => x.json())
+        .then(res => {
+          this.setState(s => ({
+            sandbox: { ...s.sandbox, userLiked: true, likeCount: res.count },
+          }));
+        })
+        .catch(() => {
+          this.setState(s => ({
+            sandbox: {
+              ...s.sandbox,
+              userLiked: false,
+              likeCount: s.sandbox.likeCount - 1,
+            },
+          }));
+        });
+    }
+  };
+
   content = () => {
     if (this.state.notFound) {
       return (
         <Centered vertical horizontal>
           <Title delay={0.1}>Not Found</Title>
           <SubTitle delay={0.05}>
-            We could not find the sandbox you{"'"}re looking for.
+            We could not find the sandbox you
+            {"'"}
+            re looking for.
           </SubTitle>
         </Centered>
       );
@@ -239,6 +369,8 @@ export default class App extends React.PureComponent<{}, State> {
             setMixedView={this.setMixedView}
             sandbox={sandbox}
             toggleSidebar={this.toggleSidebar}
+            toggleLike={this.jwt() && this.toggleLike}
+            liked={sandbox.userLiked}
           />
           <Content
             showEditor={showEditor}
@@ -259,6 +391,7 @@ export default class App extends React.PureComponent<{}, State> {
             highlightedLines={this.state.highlightedLines}
             forceRefresh={this.state.forceRefresh}
             expandDevTools={this.state.expandDevTools}
+            tabs={this.state.tabs}
             runOnClick={runOnClick}
             verticalMode={verticalMode}
           />

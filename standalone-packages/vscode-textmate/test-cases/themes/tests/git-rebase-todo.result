@@ -1,0 +1,4146 @@
+{
+	"abyss": [
+		{
+			"content": "pick",
+			"color": "#9966B8",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+		},
+		{
+			"content": "    ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#6688CC",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#6688CC",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "squash",
+			"color": "#9966B8",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#6688CC",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#6688CC",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "pick",
+			"color": "#9966B8",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+		},
+		{
+			"content": "    ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#6688CC",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#6688CC",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "pick",
+			"color": "#9966B8",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+		},
+		{
+			"content": "    ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#6688CC",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#6688CC",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "fixup",
+			"color": "#9966B8",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+		},
+		{
+			"content": "   ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "c619268",
+			"color": "#6688CC",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#6688CC",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "edit",
+			"color": "#9966B8",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+		},
+		{
+			"content": "    ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#6688CC",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#6688CC",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "reword",
+			"color": "#9966B8",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#6688CC",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "  ",
+			"color": "#6688CC",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#6688CC",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#223355",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#223355",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#223355",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#223355",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#223355",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#223355",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "#",
+			"color": "#223355",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#223355",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+		}
+	],
+	"dark_vs": [
+		{
+			"content": "pick",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "squash",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "pick",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "pick",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "fixup",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "   ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "c619268",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "edit",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "reword",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": "pick",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "squash",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "pick",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "pick",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "fixup",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "   ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "c619268",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "edit",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "reword",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": "pick",
+			"color": "#D4D4D4",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.support.function.git-rebase rgb(212, 212, 212)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "squash",
+			"color": "#D4D4D4",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.support.function.git-rebase rgb(212, 212, 212)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "pick",
+			"color": "#D4D4D4",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.support.function.git-rebase rgb(212, 212, 212)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "pick",
+			"color": "#D4D4D4",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.support.function.git-rebase rgb(212, 212, 212)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "fixup",
+			"color": "#D4D4D4",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.support.function.git-rebase rgb(212, 212, 212)"
+		},
+		{
+			"content": "   ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "c619268",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "edit",
+			"color": "#D4D4D4",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.support.function.git-rebase rgb(212, 212, 212)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "reword",
+			"color": "#D4D4D4",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.support.function.git-rebase rgb(212, 212, 212)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#7CA668",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#7CA668",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#7CA668",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#7CA668",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#7CA668",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#7CA668",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "#",
+			"color": "#7CA668",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#7CA668",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": "pick",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "squash",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "pick",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "pick",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "fixup",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "   ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "c619268",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "edit",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "reword",
+			"color": "#9CDCFE",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function.git-rebase rgb(156, 220, 254)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#B5CEA8",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.constant.sha.git-rebase rgb(181, 206, 168)"
+		},
+		{
+			"content": "  ",
+			"color": "#D4D4D4",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#D4D4D4",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "#",
+			"color": "#608B4E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#608B4E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": "pick",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "squash",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "pick",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "pick",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "fixup",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "   ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "c619268",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "edit",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "reword",
+			"color": "#0451A5",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function.git-rebase rgb(4, 81, 165)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#09885A",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.constant.sha.git-rebase rgb(9, 136, 90)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#000000",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "#",
+			"color": "#008000",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#008000",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		}
+	],
+	"kimbie_dark": [
+		{
+			"content": "pick",
+			"color": "#7E602C",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+		},
+		{
+			"content": "    ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#F79A32",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant rgb(247, 154, 50)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#D3AF86",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "squash",
+			"color": "#7E602C",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#F79A32",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant rgb(247, 154, 50)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#D3AF86",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "pick",
+			"color": "#7E602C",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+		},
+		{
+			"content": "    ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#F79A32",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant rgb(247, 154, 50)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#D3AF86",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "pick",
+			"color": "#7E602C",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+		},
+		{
+			"content": "    ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#F79A32",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant rgb(247, 154, 50)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#D3AF86",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "fixup",
+			"color": "#7E602C",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+		},
+		{
+			"content": "   ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "c619268",
+			"color": "#F79A32",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant rgb(247, 154, 50)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#D3AF86",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "edit",
+			"color": "#7E602C",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+		},
+		{
+			"content": "    ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#F79A32",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant rgb(247, 154, 50)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#D3AF86",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "reword",
+			"color": "#7E602C",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#F79A32",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.constant rgb(247, 154, 50)"
+		},
+		{
+			"content": "  ",
+			"color": "#D3AF86",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#D3AF86",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#A57A4C",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#A57A4C",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#A57A4C",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#A57A4C",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#A57A4C",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#A57A4C",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "#",
+			"color": "#A57A4C",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#A57A4C",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+		}
+	],
+	"monokai": [
+		{
+			"content": "pick",
+			"color": "#66D9EF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#F8F8F2",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#F8F8F2",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "squash",
+			"color": "#66D9EF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#F8F8F2",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#F8F8F2",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "pick",
+			"color": "#66D9EF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#F8F8F2",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#F8F8F2",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "pick",
+			"color": "#66D9EF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#F8F8F2",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#F8F8F2",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "fixup",
+			"color": "#66D9EF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+		},
+		{
+			"content": "   ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "c619268",
+			"color": "#F8F8F2",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#F8F8F2",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "edit",
+			"color": "#66D9EF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#F8F8F2",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#F8F8F2",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "reword",
+			"color": "#66D9EF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#F8F8F2",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F2",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#F8F8F2",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#75715E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#75715E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#75715E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#75715E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#75715E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#75715E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "#",
+			"color": "#75715E",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#75715E",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"content": "pick",
+			"color": "#9872A2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+		},
+		{
+			"content": "    ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#C5C8C6",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#C5C8C6",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "squash",
+			"color": "#9872A2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#C5C8C6",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#C5C8C6",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "pick",
+			"color": "#9872A2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+		},
+		{
+			"content": "    ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#C5C8C6",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#C5C8C6",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "pick",
+			"color": "#9872A2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+		},
+		{
+			"content": "    ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#C5C8C6",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#C5C8C6",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "fixup",
+			"color": "#9872A2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+		},
+		{
+			"content": "   ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "c619268",
+			"color": "#C5C8C6",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#C5C8C6",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "edit",
+			"color": "#9872A2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+		},
+		{
+			"content": "    ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#C5C8C6",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#C5C8C6",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "reword",
+			"color": "#9872A2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#C5C8C6",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "  ",
+			"color": "#C5C8C6",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#C5C8C6",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#9A9B99",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#9A9B99",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#9A9B99",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#9A9B99",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#9A9B99",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#9A9B99",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "#",
+			"color": "#9A9B99",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#9A9B99",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+		}
+	],
+	"quietlight": [
+		{
+			"content": "pick",
+			"color": "#AA3731",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+		},
+		{
+			"content": "    ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#AB6526",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant rgb(171, 101, 38)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#333333",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "squash",
+			"color": "#AA3731",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#AB6526",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant rgb(171, 101, 38)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#333333",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "pick",
+			"color": "#AA3731",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+		},
+		{
+			"content": "    ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#AB6526",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant rgb(171, 101, 38)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#333333",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "pick",
+			"color": "#AA3731",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+		},
+		{
+			"content": "    ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#AB6526",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant rgb(171, 101, 38)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#333333",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "fixup",
+			"color": "#AA3731",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+		},
+		{
+			"content": "   ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "c619268",
+			"color": "#AB6526",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant rgb(171, 101, 38)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#333333",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "edit",
+			"color": "#AA3731",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+		},
+		{
+			"content": "    ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#AB6526",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant rgb(171, 101, 38)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#333333",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "reword",
+			"color": "#AA3731",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#AB6526",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.constant rgb(171, 101, 38)"
+		},
+		{
+			"content": "  ",
+			"color": "#333333",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#333333",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#AAAAAA",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#AAAAAA",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#AAAAAA",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#AAAAAA",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#AAAAAA",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#AAAAAA",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "#",
+			"color": "#AAAAAA",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#AAAAAA",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+		}
+	],
+	"red": [
+		{
+			"content": "pick",
+			"color": "#FFB454",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#994646",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#F8F8F8",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "squash",
+			"color": "#FFB454",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#994646",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#F8F8F8",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "pick",
+			"color": "#FFB454",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#994646",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#F8F8F8",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "pick",
+			"color": "#FFB454",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#994646",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#F8F8F8",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "fixup",
+			"color": "#FFB454",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+		},
+		{
+			"content": "   ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "c619268",
+			"color": "#994646",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#F8F8F8",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "edit",
+			"color": "#FFB454",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#994646",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#F8F8F8",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "reword",
+			"color": "#FFB454",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#994646",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.constant rgb(153, 70, 70)"
+		},
+		{
+			"content": "  ",
+			"color": "#F8F8F8",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#F8F8F8",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#E7C0C0",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#E7C0C0",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#E7C0C0",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#E7C0C0",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#E7C0C0",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#E7C0C0",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "#",
+			"color": "#E7C0C0",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#E7C0C0",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+		}
+	],
+	"solarized_dark": [
+		{
+			"content": "pick",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "    ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#93A1A1",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#93A1A1",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "squash",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#93A1A1",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#93A1A1",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "pick",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "    ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#93A1A1",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#93A1A1",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "pick",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "    ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#93A1A1",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#93A1A1",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "fixup",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "   ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "c619268",
+			"color": "#93A1A1",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#93A1A1",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "edit",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "    ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#93A1A1",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#93A1A1",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "reword",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#93A1A1",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "  ",
+			"color": "#93A1A1",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#93A1A1",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#657B83",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#657B83",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#657B83",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#657B83",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#657B83",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#657B83",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "#",
+			"color": "#657B83",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#657B83",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+		}
+	],
+	"solarized_light": [
+		{
+			"content": "pick",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "    ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#586E75",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#586E75",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "squash",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#586E75",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#586E75",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "pick",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "    ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#586E75",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#586E75",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "pick",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "    ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#586E75",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#586E75",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "fixup",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "   ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "c619268",
+			"color": "#586E75",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#586E75",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "edit",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "    ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#586E75",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#586E75",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "reword",
+			"color": "#268BD2",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#586E75",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "  ",
+			"color": "#586E75",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#586E75",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#93A1A1",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#93A1A1",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#93A1A1",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#93A1A1",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#93A1A1",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#93A1A1",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#93A1A1",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"content": "pick",
+			"color": "#BBDAFF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#FFFFFF",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Patch A",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "squash",
+			"color": "#BBDAFF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "fa39187",
+			"color": "#FFFFFF",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Something to add to patch A",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "pick",
+			"color": "#BBDAFF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "7b36971",
+			"color": "#FFFFFF",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Something to move before patch B",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "pick",
+			"color": "#BBDAFF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#FFFFFF",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Patch B",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "fixup",
+			"color": "#BBDAFF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+		},
+		{
+			"content": "   ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "c619268",
+			"color": "#FFFFFF",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "A fix for Patch B",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "edit",
+			"color": "#BBDAFF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#FFFFFF",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Something I want to split",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "reword",
+			"color": "#BBDAFF",
+			"_t": "commit-command.function.git-rebase.meta.support",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#FFFFFF",
+			"_t": "commit-command.constant.git-rebase.meta.sha",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "  ",
+			"color": "#FFFFFF",
+			"_t": "commit-command.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "i cant' typ goods",
+			"color": "#FFFFFF",
+			"_t": "commit-command.commit-message.git-rebase.meta",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": " Commands:",
+			"color": "#7285B7",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "  p, pick = use commit",
+			"color": "#7285B7",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "  r, reword = use commit, but edit the commit message",
+			"color": "#7285B7",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "  e, edit = use commit, but stop for amending",
+			"color": "#7285B7",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "  s, squash = use commit, but meld into previous commit",
+			"color": "#7285B7",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "#7285B7",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "#",
+			"color": "#7285B7",
+			"_t": "comment.definition.git-rebase.line.number-sign.punctuation",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		},
+		{
+			"content": "  x, exec = run command (the rest of the line) using shell",
+			"color": "#7285B7",
+			"_t": "comment.git-rebase.line.number-sign",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+		}
+	]
+}

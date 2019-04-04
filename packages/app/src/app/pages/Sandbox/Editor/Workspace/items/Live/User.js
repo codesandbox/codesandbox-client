@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
 
-import delay from 'common/utils/animation/delay-effect';
+import delay from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 const Status = styled.div`
   font-size: 0.75rem;
@@ -46,10 +46,8 @@ class User extends React.Component {
   render() {
     const { user, type, sideView, roomInfo, currentUserId } = this.props;
 
-    const metaData = roomInfo.usersMetadata.get(user.id);
-    const [r, g, b] = metaData
-      ? roomInfo.usersMetadata.get(user.id).color
-      : [0, 0, 0];
+    const metaData = roomInfo.users.find(u => u.id === user.id);
+    const [r, g, b] = metaData ? metaData.color : [0, 0, 0];
 
     const isCurrentUser = user.id === currentUserId;
 

@@ -41,8 +41,8 @@ export default {
     vimMode: types.boolean,
     zenMode: types.boolean,
     enableLigatures: types.boolean,
-    editorTheme: types.string,
     customVSCodeTheme: types.maybeNull(types.string),
+    manualCustomVSCodeTheme: types.maybeNull(types.string),
 
     experimentVSCode: types.maybeNull(types.boolean),
   }),

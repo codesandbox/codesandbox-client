@@ -1,5 +1,6 @@
 // @ts-check
 import React from 'react';
+
 import FolderIcon from 'react-icons/lib/md/folder';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import RenameIcon from 'react-icons/lib/md/mode-edit';
@@ -7,22 +8,26 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
 import { inject, observer } from 'mobx-react';
-import track from 'common/utils/analytics';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { client } from 'app/graphql/client';
 
-import ReactShow from 'react-show';
-import { Route } from 'react-router-dom';
+import { Animate as ReactShow } from 'react-show';
 import { join, dirname } from 'path';
 
-import theme from 'common/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 import ContextMenu from 'app/components/ContextMenu';
 
-import Input from 'common/components/Input';
+import Input from '@codesandbox/common/lib/components/Input';
+import {
+  ARROW_LEFT,
+  ARROW_RIGHT,
+  ESC,
+} from '@codesandbox/common/lib/utils/keycodes';
 
 import { Container, AnimatedChevron, IconContainer } from './elements';
 
-import getDirectChildren from '../utils/get-direct-children';
+import getDirectChildren from '../../../utils/get-direct-children';
 import { entryTarget, collectTarget } from '../folder-drop-target';
 
 import CreateFolderEntry from './CreateFolderEntry';
@@ -48,13 +53,17 @@ class FolderEntry extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.open == null && nextProps.open === true) {
+    if (
+      (this.state.open == null || this.state.open === false) &&
+      nextProps.open === true
+    ) {
       this.setState({ open: true });
     }
   }
 
   toggleOpen = e => {
     e.preventDefault();
+    e.stopPropagation();
     this.setState(state => ({ open: !state.open }));
   };
 
@@ -62,15 +71,18 @@ class FolderEntry extends React.Component {
     this.setState({ renamingDirectory: false, open: true });
   };
 
+  handleSelect = () => {
+    this.props.onSelect({
+      teamId: this.props.teamId,
+      path: this.props.path,
+    });
+  };
+
   handleKeyDown = e => {
     if (!this.state.renamingDirectory) {
-      if (e.keyCode === 39) {
-        // Right arrow
-
+      if (e.keyCode === ARROW_RIGHT) {
         this.setState({ open: true });
-      } else if (e.keyCode === 37) {
-        // Left arrow
-
+      } else if (e.keyCode === ARROW_LEFT) {
         this.setState({ open: false });
       }
     }
@@ -84,89 +96,105 @@ class FolderEntry extends React.Component {
       foldersByPath,
       depth,
       isOver,
+      toToggle = true,
+      allowCreate = true,
       canDrop,
       connectDropTarget,
       connectDragSource,
       isDragging,
       basePath,
       teamId,
+      onSelect,
+      currentPath,
+      currentTeamId,
     } = this.props;
 
     const url = `${basePath}${path}`;
     const children = getDirectChildren(path, folders);
 
+    const menuItems = [
+      {
+        title: 'Rename Folder',
+        icon: RenameIcon,
+        action: () => {
+          this.setState({ renamingDirectory: true });
+          return true;
+        },
+      },
+      {
+        title: 'Delete Folder',
+        icon: TrashIcon,
+        color: theme.red.darken(0.2)(),
+        action: () => {
+          track('Dashboard - Folder Deleted');
+          client.mutate({
+            mutation: DELETE_FOLDER_MUTATION,
+            variables: { path, teamId },
+
+            refetchQueries: [
+              {
+                query: PATHED_SANDBOXES_CONTENT_QUERY,
+                variables: { path: '/', teamId },
+              },
+            ],
+            update: (cache, { data: { deleteCollection } }) => {
+              const variables = {};
+              if (teamId) {
+                variables.teamId = teamId;
+              }
+
+              const cacheData = cache.readQuery({
+                query: PATHED_SANDBOXES_FOLDER_QUERY,
+                variables,
+              });
+
+              cache.writeQuery({
+                query: PATHED_SANDBOXES_FOLDER_QUERY,
+                variables,
+                data: {
+                  ...cacheData,
+                  me: {
+                    ...cacheData.me,
+                    collections: deleteCollection,
+                  },
+                },
+              });
+            },
+          });
+          return true;
+        },
+      },
+    ];
+
+    if (allowCreate) {
+      menuItems.unshift({
+        title: 'Create Folder',
+        icon: AddFolderIcon,
+        action: () => {
+          this.setState({ creatingDirectory: true, open: true });
+          return true;
+        },
+      });
+    }
+
     return connectDropTarget(
       connectDragSource(
         <div>
-          <ContextMenu
-            items={[
-              {
-                title: 'Create Folder',
-                icon: AddFolderIcon,
-                action: () => {
-                  this.setState({ creatingDirectory: true, open: true });
-                  return true;
-                },
-              },
-              {
-                title: 'Rename Folder',
-                icon: RenameIcon,
-                action: () => {
-                  this.setState({ renamingDirectory: true });
-                  return true;
-                },
-              },
-              {
-                title: 'Delete Folder',
-                icon: TrashIcon,
-                color: theme.red.darken(0.2)(),
-                action: () => {
-                  track('Dashboard - Folder Deleted');
-                  client.mutate({
-                    mutation: DELETE_FOLDER_MUTATION,
-                    variables: { path, teamId },
-
-                    refetchQueries: [
-                      {
-                        query: PATHED_SANDBOXES_CONTENT_QUERY,
-                        variables: { path: '/', teamId },
-                      },
-                    ],
-                    update: (cache, { data: { deleteCollection } }) => {
-                      const cacheData = cache.readQuery({
-                        query: PATHED_SANDBOXES_FOLDER_QUERY,
-                        variables: {
-                          teamId,
-                        },
-                      });
-                      cacheData.me.collections = deleteCollection;
-
-                      cache.writeQuery({
-                        query: PATHED_SANDBOXES_FOLDER_QUERY,
-                        variables: {
-                          teamId,
-                        },
-                        data: cacheData,
-                      });
-                    },
-                  });
-                  return true;
-                },
-              },
-            ]}
-          >
+          <ContextMenu items={menuItems}>
             <Container
-              activeStyle={{
-                borderColor: theme.secondary(),
-                color: 'white',
-              }}
+              as={onSelect ? 'div' : undefined}
+              onClick={onSelect ? this.handleSelect : undefined}
               style={{
-                color:
-                  isOver && canDrop
-                    ? theme.secondary()
-                    : 'rgba(255, 255, 255, 0.6)',
+                color: isOver && canDrop ? theme.secondary() : undefined,
                 backgroundColor:
-                  isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : 'transparent',
+                  isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
+
+                ...(currentPath === path && currentTeamId === teamId
+                  ? {
+                      borderColor: theme.secondary(),
+                      color: 'white',
+                    }
+                  : {}),
               }}
               exact
               depth={depth}
@@ -175,10 +203,13 @@ class FolderEntry extends React.Component {
               tabIndex={0}
             >
               <IconContainer>
-                <AnimatedChevron
-                  onClick={this.toggleOpen}
-                  open={this.state.open}
-                />
+                {toToggle ? (
+                  <AnimatedChevron
+                    onClick={this.toggleOpen}
+                    open={this.state.open}
+                    style={{ opacity: children.size > 0 ? 1 : 0 }}
+                  />
+                ) : null}
                 <FolderIcon />
               </IconContainer>{' '}
               {this.state.renamingDirectory ? (
@@ -191,7 +222,6 @@ class FolderEntry extends React.Component {
                       if (e) {
                         e.preventDefault();
                       }
-
                       mutate({
                         variables: {
                           path,
@@ -209,11 +239,16 @@ class FolderEntry extends React.Component {
                             query: PATHED_SANDBOXES_FOLDER_QUERY,
                             variables,
                           });
-                          cacheData.me.collections = renameCollection;
 
                           cache.writeQuery({
                             query: PATHED_SANDBOXES_FOLDER_QUERY,
-                            data: cacheData,
+                            data: {
+                              ...cacheData,
+                              me: {
+                                ...cacheData.me,
+                                collections: renameCollection,
+                              },
+                            },
                             variables,
                           });
                         },
@@ -228,7 +263,7 @@ class FolderEntry extends React.Component {
                       <form onSubmit={submit}>
                         <Input
                           block
-                          innerRef={node => {
+                          ref={node => {
                             if (node) {
                               input = node;
                               node.focus();
@@ -238,9 +273,7 @@ class FolderEntry extends React.Component {
                           defaultValue={name}
                           onBlur={this.handleBlur}
                           onKeyDown={e => {
-                            if (e.keyCode === 27) {
-                              // Escape
-
+                            if (e.keyCode === ESC) {
                               this.handleBlur();
                             }
                           }}
@@ -256,8 +289,20 @@ class FolderEntry extends React.Component {
           </ContextMenu>
 
           <ReactShow
-            show={children.size > 0 && !isDragging && this.state.open}
+            show={
+              children.size > 0 && !isDragging && this.state.open && toToggle
+            }
             duration={250}
+            stayMounted={false}
+            style={{
+              height: 'auto',
+              overflow: 'hidden',
+            }}
+            transitionOnMount
+            start={{
+              height: 0, // The starting style for the component.
+              // If the 'leave' prop isn't defined, 'start' is reused!
+            }}
           >
             {Array.from(children)
               .sort()
@@ -265,21 +310,20 @@ class FolderEntry extends React.Component {
                 const childPath = join(path, childName);
 
                 return (
-                  <Route key={childPath} path={`${basePath}${childPath}`}>
-                    {({ match }) => (
-                      <DropFolderEntry
-                        path={childPath}
-                        basePath={basePath}
-                        teamId={teamId}
-                        folders={folders}
-                        foldersByPath={foldersByPath}
-                        key={childName}
-                        name={childName}
-                        depth={this.props.depth + 1}
-                        open={match ? !!match : match}
-                      />
-                    )}
-                  </Route>
+                  <DropFolderEntry
+                    path={childPath}
+                    basePath={basePath}
+                    teamId={teamId}
+                    folders={folders}
+                    foldersByPath={foldersByPath}
+                    key={childName}
+                    name={childName}
+                    depth={this.props.depth + 1}
+                    open={currentPath.indexOf(childPath) === 0}
+                    onSelect={onSelect}
+                    currentPath={currentPath}
+                    currentTeamId={currentTeamId}
+                  />
                 );
               })}
           </ReactShow>

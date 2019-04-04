@@ -1,5 +1,6 @@
 import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'app/utils/debug';
+import _debug from '@codesandbox/common/lib/utils/debug';
+import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
 
 import dependenciesToQuery from './dependencies-to-query';
 
@@ -13,18 +14,28 @@ type Dependencies = {
 const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
-const host = process.env.CODESANDBOX_HOST;
-
 const VERSION = 1;
 
 const BUCKET_URL =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
     ? 'https://d1jyvh0kxilfa7.cloudfront.net'
-    : 'https://s3-eu-west-1.amazonaws.com/dev.packager.packages';
+    : 'https://dev-packager-packages.codesandbox.io';
+
+const NEW_PACKAGER_URL =
+  'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages';
+
 const PACKAGER_URL =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
     ? 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages'
-    : 'https://8o2xeuyo66.execute-api.eu-west-1.amazonaws.com/dev/packages';
+    : 'https://xi5p9f7czk.execute-api.eu-west-1.amazonaws.com/dev/packages';
+
+function warmupPackager(url: string, method = 'GET') {
+  fetch(url, {
+    method,
+  })
+    .then(() => {})
+    .catch(() => {});
+}
 
 function callApi(url: string, method = 'GET') {
   return fetch(url, {
@@ -90,45 +101,28 @@ function dependenciesToBucketPath(dependencies: Object) {
     .join('%2B')}.json`;
 }
 
-async function getAbsoluteDependencies(dependencies: Object) {
-  const nonAbsoluteDependencies = Object.keys(dependencies).filter(dep => {
-    const version = dependencies[dep];
-
-    const isAbsolute = /^\d+\.\d+\.\d+$/.test(version);
-
-    return !isAbsolute && !/\//.test(version);
+/**
+ * Some dependencies have a space in their version for some reason, this is invalid and we
+ * ignore them. This is what yarn does as well.
+ */
+function removeSpacesFromDependencies(dependencies: Object) {
+  const newDeps = {};
+  Object.keys(dependencies).forEach(depName => {
+    const [version] = dependencies[depName].split(' ');
+    newDeps[depName] = version;
   });
-
-  const newDependencies = { ...dependencies };
-
-  await Promise.all(
-    nonAbsoluteDependencies.map(async dep => {
-      try {
-        const data = await window
-          .fetch(
-            `${host}/api/v1/dependencies/${dep}@${encodeURIComponent(
-              dependencies[dep]
-            )}`
-          )
-          .then(x => x.json())
-          .then(x => x.data);
-
-        newDependencies[dep] = data.version;
-      } catch (e) {
-        /* ignore */
-      }
-    })
-  );
-
-  return newDependencies;
+  return newDeps;
 }
 
 async function getDependencies(dependencies: Object) {
-  const absoluteDependencies = await getAbsoluteDependencies(dependencies);
+  const absoluteDependencies = await getAbsoluteDependencies(
+    removeSpacesFromDependencies(dependencies)
+  );
   const dependencyUrl = dependenciesToQuery(absoluteDependencies);
   const bucketDependencyUrl = dependenciesToBucketPath(absoluteDependencies);
 
   setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+  warmupPackager(`${NEW_PACKAGER_URL}/${dependencyUrl}`, 'POST');
   try {
     const bucketManifest = await callApi(
       `${BUCKET_URL}/${bucketDependencyUrl}`
@@ -142,6 +136,8 @@ async function getDependencies(dependencies: Object) {
       `${PACKAGER_URL}/${dependencyUrl}`,
       'POST'
     );
+
+    setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
 
     return requestPackager(`${BUCKET_URL}/${url}`);
   }

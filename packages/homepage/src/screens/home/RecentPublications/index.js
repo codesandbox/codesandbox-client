@@ -1,11 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { StaticQuery, graphql } from 'gatsby';
 
-import MaxWidth from 'common/components/flex/MaxWidth';
-
-import liveImage from './codesandbox-live.png';
-import dashboardImage from './dashboard.png';
-import parcelImage from './parcel.png';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 
 import media from '../../../utils/media';
 
@@ -69,56 +66,78 @@ const PublicationDescription = styled.p`
   font-weight: 400;
   font-size: 1rem;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  opacity: 0.6;
+`;
+
+const Image = styled.div`
+  height: 245px;
+  width: 100%;
+  background-image: url('${props => props.bg}');
+    background-position: center center;
+  background-size: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
 const PublicationItem = ({ title, image, url, description }) => (
   <Item href={url} target="_blank" rel="noopener noreferrer">
-    <img
-      style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)' }}
-      src={image}
-      alt={title}
-    />
+    <Image bg={image} aria-label={title} />
     <PublicationTitle>{title}</PublicationTitle>
     <PublicationDescription>{description}</PublicationDescription>
   </Item>
 );
 
 export default () => (
-  <Container>
-    <MaxWidth width={1280}>
-      <Title>Recent Publications</Title>
-      <SubTitle>
-        You can follow{' '}
-        <a
-          href="https://medium.com/@compuives/"
-          target="_blank"
-          rel="noreferrer noopener"
-          style={{ textDecoration: 'none' }}
-        >
-          our blog
-        </a>{' '}
-        to stay up to date with new publications.
-      </SubTitle>
-      <Items style={{ marginBottom: '2rem' }}>
-        <PublicationItem
-          title="CodeSandbox Dashboard & Teams"
-          description="Announcing Dashboard & Teams, you now have a dashboard to manage your sandboxes. With that you can now also share your sandboxes with your team."
-          url="https://medium.com/@compuives/announcing-codesandbox-dashboard-teams-876f5933160b"
-          image={dashboardImage}
-        />
-        <PublicationItem
-          title="CodeSandbox Live"
-          description="Real time code collaboration in the browser. From now on you can open up your sandbox for live editing with others."
-          url="https://medium.com/@compuives/introducing-codesandbox-live-real-time-code-collaboration-in-the-browser-6d508cfc70c9"
-          image={liveImage}
-        />
-        <PublicationItem
-          title="Vanilla Template"
-          description="Introducing the Vanilla template: a template based on Parcel for any kind of web project you like to create."
-          url="https://hackernoon.com/introducing-the-vanilla-template-to-codesandbox-32244b58acec"
-          image={parcelImage}
-        />
-      </Items>
-    </MaxWidth>
-  </Container>
+  <StaticQuery
+    query={graphql`
+      query {
+        allMediumPost(limit: 3, sort: { fields: [createdAt], order: DESC }) {
+          edges {
+            node {
+              id
+              title
+              uniqueSlug
+              virtuals {
+                subtitle
+                previewImage {
+                  imageId
+                }
+              }
+            }
+          }
+        }
+      }
+    `}
+    render={({ allMediumPost: { edges } }) => (
+      <Container>
+        <MaxWidth width={1280}>
+          <Title>Recent Publications</Title>
+          <SubTitle>
+            You can follow{' '}
+            <a
+              href="https://medium.com/@compuives/"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{ textDecoration: 'none' }}
+            >
+              our blog
+            </a>{' '}
+            to stay up to date with new publications.
+          </SubTitle>
+          <Items style={{ marginBottom: '2rem' }}>
+            {edges.map(post => (
+              <PublicationItem
+                key={post.node.id}
+                title={post.node.title}
+                description={post.node.virtuals.subtitle}
+                url={`https://medium.com/@compuives/${post.node.uniqueSlug}`}
+                image={`https://cdn-images-1.medium.com/max/2000/${
+                  post.node.virtuals.previewImage.imageId
+                }`}
+              />
+            ))}
+          </Items>
+        </MaxWidth>
+      </Container>
+    )}
+  />
 );

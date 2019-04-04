@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 const Cube = styled.div`
   width: ${props => props.size + 1}px;
@@ -12,23 +12,23 @@ const Cube = styled.div`
   }
 `;
 
-const getAnimation = (offset: number = 0) => {
-  return keyframes`
+const getAnimation = (offset: number = 0) => keyframes`
   0% {
     transform: rotateY(${45 + offset}deg) rotateX(${-37.5 + offset}deg);
   }
   100% {
     transform: rotateY(${45 + offset + 360}deg) rotateX(${-37.5 +
-    offset +
-    360}deg);
+  offset +
+  360}deg);
   }
 `;
-};
 
 const Sides = styled.div`
   ${({ noAnimation, offset, speed }) =>
     !noAnimation &&
-    `animation: ${getAnimation(offset)} ${speed}s linear infinite;`};
+    css`
+      animation: ${getAnimation(offset)} ${speed}s linear infinite;
+    `};
   transform-style: preserve-3d;
   will-change: transform;
 
@@ -72,7 +72,7 @@ export default class GlowCube extends React.PureComponent<Props> {
       id,
     } = this.props;
     return (
-      <Cube id={id} innerRef={ref} className={className} size={size}>
+      <Cube id={id} ref={ref} className={className} size={size}>
         <Sides
           color={color}
           offset={offset}

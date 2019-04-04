@@ -36,11 +36,25 @@ const Deploy = types.model('Deploy', {
   alias: types.maybeNull(types.array(Alias)),
   scale: types.maybeNull(Scale),
   creator: Creator,
-  type: types.enumeration('types', ['NPM', 'DOCKER', 'STATIC']),
+  type: types.enumeration('types', ['NPM', 'DOCKER', 'STATIC', 'LAMBDAS']),
+});
+
+const NetlifySite = types.model('NetlifySite', {
+  id: types.string,
+  site_id: types.string,
+  name: types.string,
+  url: types.string,
+  state: types.string,
+  screenshot_url: types.maybeNull(types.string),
+  sandboxId: types.string,
 });
 
 export default {
   hasAlias: types.boolean,
+  building: types.boolean,
+  netlifyClaimUrl: types.maybeNull(types.string),
+  netlifyLogs: types.maybeNull(types.string),
+  netlifySite: types.maybeNull(NetlifySite),
   deployToDelete: types.maybeNull(types.string),
   deploying: types.boolean,
   url: types.maybeNull(types.string),

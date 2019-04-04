@@ -1,6 +1,6 @@
 // @flow
 import { dispatch, actions, listen } from 'codesandbox-api';
-import { react, reactTs } from 'common/templates';
+import { react, reactTs } from '@codesandbox/common/lib/templates';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
@@ -18,10 +18,10 @@ import {
   dispatch as dispatchJest,
   ROOT_DESCRIBE_BLOCK_NAME,
 } from 'jest-circus/build/state';
-
-import run from './run-circus';
 import { parse } from 'sandbox-hooks/react-error-overlay/utils/parser';
 import { map } from 'sandbox-hooks/react-error-overlay/utils/mapper';
+
+import run from './run-circus';
 
 import type Manager from '../manager';
 import type { Module } from '../entities/module';
@@ -212,7 +212,10 @@ export default class TestRunner {
 
     if (testModule) {
       await this.manager.transpileModules(testModule, true);
-      this.manager.evaluateModule(testModule, true);
+      this.manager.evaluateModule(testModule, {
+        force: true,
+        testGlobals: true,
+      });
     }
 
     if (this.manager.modules) {
@@ -227,7 +230,10 @@ export default class TestRunner {
     await Promise.all(
       tests.map(async t => {
         try {
-          this.manager.evaluateModule(t, true);
+          this.manager.evaluateModule(t, {
+            force: true,
+            testGlobals: true,
+          });
           this.ranTests.add(t.path);
         } catch (e) {
           this.ranTests.delete(t.path);

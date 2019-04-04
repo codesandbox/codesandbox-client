@@ -2,11 +2,11 @@ import * as React from 'react';
 import { sortBy, groupBy, flatten } from 'lodash-es';
 import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
-import { getModulePath } from 'common/sandbox/modules';
-import Input from 'common/components/Input';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import Input from '@codesandbox/common/lib/components/Input';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
-
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import {
   Container,
   InputContainer,
@@ -61,7 +61,7 @@ export default class FuzzySearch extends React.PureComponent {
   };
 
   handleKeyUp = e => {
-    if (e.keyCode === 27) {
+    if (e.keyCode === ESC) {
       this.props.closeFuzzySearch();
     }
   };
@@ -87,7 +87,7 @@ export default class FuzzySearch extends React.PureComponent {
               <InputContainer>
                 <Input
                   {...getInputProps({
-                    innerRef: el => el && el.focus(),
+                    ref: el => el && el.focus(),
                     onKeyUp: this.handleKeyUp,
                     // Timeout so the fuzzy handler can still select the module
                     onBlur: () => setTimeout(this.props.closeFuzzySearch, 100),

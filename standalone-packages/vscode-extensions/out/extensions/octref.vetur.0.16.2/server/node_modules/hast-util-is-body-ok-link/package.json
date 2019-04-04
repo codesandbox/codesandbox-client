@@ -1,0 +1,27 @@
+{
+  "name": "hast-util-is-body-ok-link",
+  "version": "1.0.1",
+  "description": "Check if a link element is “Body OK”",
+  "license": "MIT",
+  "keywords": [
+    "rehype",
+    "hast",
+    "link",
+    "body",
+    "ok"
+  ],
+  "repository": "https://github.com/wooorm/rehype-minify/tree/master/packages/hast-util-is-body-ok-link",
+  "bugs": "https://github.com/wooorm/rehype-minify/issues",
+  "author": "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)",
+  "contributors": [
+    "Titus Wormer <tituswormer@gmail.com>"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "hast-util-has-property": "^1.0.0",
+    "hast-util-is-element": "^1.0.0"
+  },
+  "xo": false
+}

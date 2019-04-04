@@ -1,0 +1,35 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [],
+	"monokai": [],
+	"monokai_dimmed": [
+		{
+			"index": 1,
+			"content": "ion-view",
+			"color": "#9872A2",
+			"newColor": "#6089B4"
+		},
+		{
+			"index": 4,
+			"content": "button-view",
+			"color": "#9872A2",
+			"newColor": "#6089B4"
+		},
+		{
+			"index": 15,
+			"content": "ion-view",
+			"color": "#9872A2",
+			"newColor": "#6089B4"
+		}
+	],
+	"quietlight": [],
+	"red": [],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": []
+}

@@ -1,14 +1,23 @@
 import axios from 'axios';
 
-import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import track, {
+  identify,
+  setUserId,
+} from '@codesandbox/common/lib/utils/analytics';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
+import getItems from './modules/workspace/items';
 
 export function getSandbox({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
-    .then(data => path.success({ sandbox: data }))
+    .then(data => {
+      // data.template = 'custom';
+      const sandbox = data;
+      return path.success({ sandbox });
+    })
     .catch(error => {
       if (error.response.status === 404) {
         return path.notFound();
@@ -28,10 +37,25 @@ export function callVSCodeCallback({ props }) {
   }
 }
 
-export function setWorkspace({ state, props }) {
+export function callVSCodeCallbackError({ props }) {
+  const { cbID } = props;
+  if (cbID) {
+    if (window.cbs && window.cbs[cbID]) {
+      const errorMessage =
+        props.message || 'Something went wrong while saving the file.';
+      window.cbs[cbID](new Error(errorMessage), undefined);
+      delete window.cbs[cbID];
+    }
+  }
+}
+
+export function setWorkspace({ controller, state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');
-  state.set(`workspace.openedWorkspaceItem`, 'files');
+
+  const items = getItems(controller.getState());
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+  state.set(`workspace.openedWorkspaceItem`, defaultItem.id);
 }
 
 export function setUrlOptions({ state, router, utils }) {
@@ -84,8 +108,6 @@ export function setUrlOptions({ state, router, utils }) {
     state.set('preferences.settings.fontSize', options.fontSize);
   if (options.highlightedLines)
     state.set('editor.highlightedLines', options.highlightedLines);
-  if (options.editorSize)
-    state.set('editor.previewWindow.editorSize', options.editorSize);
   if (options.hideNavigation)
     state.set('preferences.hideNavigation', options.hideNavigation);
   if (options.isInProjectView)
@@ -102,22 +124,7 @@ export function setUrlOptions({ state, router, utils }) {
     state.set('preferences.showDevtools', options.expandDevTools);
   if (options.runOnClick)
     state.set(`preferences.runOnClick`, options.runOnClick);
-  if (options.previewWindow) {
-    state.set('editor.previewWindow.content', options.previewWindow);
-  }
 }
-
-export const setSandboxConfigOptions = ({ state }) => {
-  const config = state.get('editor.parsedConfigurations.sandbox');
-
-  if (config && config.parsed) {
-    const view = config.parsed.view;
-
-    if (view) {
-      state.set('editor.previewWindow.content', view);
-    }
-  }
-};
 
 export function setCurrentModuleShortid({ props, state }) {
   const currentModuleShortid = state.get('editor.currentModuleShortid');
@@ -219,7 +226,7 @@ export function closeTabByIndex({ state, props }) {
 export function signInGithub({ browser, path, props }) {
   const { useExtraScopes } = props;
   const popup = browser.openPopup(
-    `/auth/github${useExtraScopes ? '?scope=user:email,public_repo' : ''}`,
+    `/auth/github${useExtraScopes ? '?scope=user:email,repo' : ''}`,
     'sign in'
   );
 
@@ -248,6 +255,8 @@ export function getAuthToken({ api, path }) {
 }
 
 export function setModal({ state, props }) {
+  track('Open Modal', { modal: props.modal });
+  state.set('currentModalMessage', props.message);
   state.set('currentModal', props.modal);
 }
 
@@ -309,8 +318,10 @@ export function removeJwtFromStorage({ jwt }) {
   jwt.reset();
 }
 
-export function setSignedInCookie() {
+export function setSignedInCookie({ props }) {
   document.cookie = 'signedIn=true; Path=/;';
+  identify('signed_in', true);
+  setUserId(props.user.id);
 }
 
 export function listenToConnectionChange({ connection }) {

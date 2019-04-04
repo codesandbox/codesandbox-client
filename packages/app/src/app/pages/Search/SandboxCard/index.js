@@ -1,9 +1,9 @@
 import React from 'react';
 import { Highlight } from 'react-instantsearch/dom';
 
-import Tags from 'app/components/Tags';
+import Tags from '@codesandbox/common/lib/components/Tags';
 
-import { sandboxUrl } from 'common/utils/url-generator';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import SandboxInfo from './SandboxInfo';
 
@@ -23,7 +23,7 @@ function SandboxCard({ hit }) {
         <Header alignItems="flex-start">
           <Title>
             {hit.title ? (
-              <Highlight attributeName="title" hit={hit} />
+              <Highlight attribute="title" hit={hit} />
             ) : (
               hit.objectID
             )}
@@ -37,7 +37,7 @@ function SandboxCard({ hit }) {
           </TagContainer>
         </Header>
         <Description>
-          <Highlight attributeName="description" hit={hit} />
+          <Highlight attribute="description" hit={hit} />
         </Description>
 
         <SandboxInfo

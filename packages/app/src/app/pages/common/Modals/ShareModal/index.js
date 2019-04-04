@@ -1,39 +1,35 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import Files from 'embed/components/Files';
-import ModeIcons from 'app/components/ModeIcons';
-import { getModulePath } from 'common/sandbox/modules';
 import QRCode from 'qrcode.react';
-import Button from 'app/components/Button';
-import track from 'common/utils/analytics';
-
-import {
-  optionsToParameterizedUrl,
-  protocolAndHost,
-  sandboxUrl,
-  embedUrl,
-} from 'common/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import Title from './Title';
 
 import {
   FilesContainer,
+  Wrapper,
   PaddedPreference,
   ShareOptions,
   Inputs,
   LinkName,
-  Divider,
-  Column,
+  SideTitle,
   ButtonContainer,
-  ButtonName,
 } from './elements';
 
-const BUTTON_URL = `${
-  process.env.CODESANDBOX_HOST
-}/static/img/play-codesandbox.svg`;
+import {
+  BUTTON_URL,
+  VIEW_OPTIONS,
+  getIframeScript,
+  getEditorUrl,
+  getEmbedUrl,
+  getButtonMarkdown,
+  getButtonHTML,
+} from './getCode';
 
 class ShareView extends React.Component {
   state = {
-    showEditor: true,
-    showPreview: true,
+    view: VIEW_OPTIONS[0],
     testsView: false,
     defaultModule: null,
     autoResize: false,
@@ -44,7 +40,6 @@ class ShareView extends React.Component {
     useCodeMirror: false,
     enableEslint: false,
     expandDevTools: false,
-    showQRCode: false,
   };
 
   componentDidMount() {
@@ -69,123 +64,6 @@ class ShareView extends React.Component {
   setDefaultModule = id => this.setState({ defaultModule: id });
 
   clearDefaultModule = () => this.setState({ defaultModule: null });
-
-  toggleQRCode = () => this.setState({ showQRCode: !this.state.showQRCode });
-
-  getOptionsUrl = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-    const mainModule = this.props.store.editor.mainModule;
-    const {
-      defaultModule,
-      showEditor,
-      showPreview,
-      testsView,
-      autoResize,
-      hideNavigation,
-      isCurrentModuleView,
-      fontSize,
-      initialPath,
-      enableEslint,
-      useCodeMirror,
-      expandDevTools,
-    } = this.state;
-
-    const options = {};
-
-    const mainModuleId = mainModule.id;
-    if (defaultModule && defaultModule !== mainModuleId) {
-      const modulePath = getModulePath(
-        sandbox.modules,
-        sandbox.directories,
-        defaultModule
-      );
-      options.module = modulePath;
-    }
-
-    if (showEditor && !showPreview) {
-      options.view = 'editor';
-    }
-    if (!showEditor && showPreview) {
-      options.view = 'preview';
-    }
-
-    if (testsView) {
-      options.previewwindow = 'tests';
-    }
-
-    if (autoResize) {
-      options.autoresize = 1;
-    }
-    if (hideNavigation) {
-      options.hidenavigation = 1;
-    }
-
-    if (isCurrentModuleView) {
-      options.moduleview = 1;
-    }
-
-    if (enableEslint) {
-      options.eslint = 1;
-    }
-
-    if (useCodeMirror) {
-      options.codemirror = 1;
-    }
-
-    if (fontSize !== 14) {
-      options.fontsize = fontSize;
-    }
-
-    if (initialPath) {
-      options.initialpath = initialPath;
-    }
-
-    if (expandDevTools) {
-      options.expanddevtools = 1;
-    }
-
-    return optionsToParameterizedUrl(options);
-  };
-
-  getEditorUrl = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-
-    return protocolAndHost() + sandboxUrl(sandbox) + this.getOptionsUrl();
-  };
-
-  getEmbedUrl = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-
-    return protocolAndHost() + embedUrl(sandbox) + this.getOptionsUrl();
-  };
-
-  setInitialPath = ({ target }) => {
-    const initialPath = target.value;
-    this.setState({ initialPath });
-  };
-
-  getIframeScript = () =>
-    `<iframe src="${this.getEmbedUrl()}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
-
-  select = function select(event) {
-    event.target.select();
-  };
-
-  // eslint-disable-next-line
-  getButtonMarkdown = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-    return `[![Edit ${sandbox.title ||
-      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
-  };
-
-  // eslint-disable-next-line
-  getButtonHTML = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-    return `<a href="${this.getEditorUrl()}">
-  <img alt="Edit ${sandbox.title || sandbox.id}" src="${BUTTON_URL}">
-</a>
-`;
-  };
 
   setAutoResize = (autoResize: boolean) => {
     this.setState({ autoResize });
@@ -217,13 +95,29 @@ class ShareView extends React.Component {
     this.setState({ testsView });
   };
 
+  setInitialPath = ({ target }) => {
+    const initialPath = target.value;
+    this.setState({ initialPath });
+  };
+
+  setView = (view: string) => {
+    this.setState({ view });
+  };
+
+  select = function select(event) {
+    event.target.select();
+  };
+
+  toggle = (key: string) => {
+    this.setState({ [key]: !this.state[key] });
+  };
+
   render() {
     const sandbox = this.props.store.editor.currentSandbox;
     const mainModule = this.props.store.editor.mainModule;
 
     const {
-      showEditor,
-      showPreview,
+      view,
       testsView,
       autoResize,
       hideNavigation,
@@ -233,181 +127,175 @@ class ShareView extends React.Component {
       useCodeMirror,
       enableEslint,
       expandDevTools,
-      showQRCode,
     } = this.state;
 
     const defaultModule = this.state.defaultModule || mainModule.id;
 
     return (
-      <ShareOptions>
-        <h3>Share options</h3>
-        <Divider>
-          <Column>
-            <ButtonName>URL Options</ButtonName>
-            <div>
-              <h4>Embed specific options</h4>
-              <PaddedPreference
-                title="Auto resize"
-                type="boolean"
-                tooltip="Works only on Medium"
-                value={autoResize}
-                setValue={this.setAutoResize}
-              />
-              <PaddedPreference
-                title="Hide navigation bar"
-                type="boolean"
-                value={hideNavigation}
-                setValue={this.setHideNavigation}
-              />
-              <PaddedPreference
-                title="Expand console"
-                type="boolean"
-                value={expandDevTools}
-                setValue={this.setExpandDevTools}
-              />
-              <PaddedPreference
-                title="Use CodeMirror instead of Monaco editor"
-                type="boolean"
-                value={useCodeMirror}
-                setValue={this.setUseCodeMirror}
-              />
-              <PaddedPreference
-                title="Enable eslint (significantly higher bundle size)"
-                type="boolean"
-                value={enableEslint}
-                setValue={this.setEnableEslint}
-              />
-              <PaddedPreference
-                title="Show current module view"
-                type="boolean"
-                tooltip="Only show the module that's currently open"
-                value={isCurrentModuleView}
-                setValue={this.setIsCurrentModuleView}
-              />
-              <PaddedPreference
-                title="Show Tests (instead of browser preview)"
-                type="boolean"
-                value={testsView}
-                setValue={this.setTestsView}
-              />
-              <PaddedPreference
-                title="Font size"
-                type="number"
-                value={fontSize}
-                setValue={this.setFontSize}
-              />
-            </div>
-            <Inputs>
-              <LinkName>Project Initial Path</LinkName>
-              <input
-                onFocus={this.select}
-                placeholder="e.g: /home"
-                value={initialPath}
-                onChange={this.setInitialPath}
-              />
-            </Inputs>
-            <div>
-              <h4>Default view</h4>
-              <div
-                style={{
-                  position: 'relative',
-                  height: '2rem',
-                  width: '200px',
-                  marginLeft: '-10px',
-                }}
-              >
-                <ModeIcons
-                  showEditor={showEditor}
-                  showPreview={showPreview}
-                  setEditorView={this.setEditorView}
-                  setPreviewView={this.setPreviewView}
-                  setMixedView={this.setMixedView}
-                />
-              </div>
-            </div>
-            <div>
-              <h4>Default module to show</h4>
+      <Fragment>
+        <header
+          // eslint-disable-next-line
+          dangerouslySetInnerHTML={{
+            __html: getIframeScript(sandbox, mainModule, this.state),
+          }}
+        />
 
-              <FilesContainer>
-                <Files
-                  modules={sandbox.modules}
-                  directoryId={null}
-                  directories={sandbox.directories}
-                  currentModule={defaultModule}
-                  setCurrentModule={this.setDefaultModule}
+        <ShareOptions>
+          <Wrapper>
+            <section>
+              <SideTitle>Configure</SideTitle>
+              <Title title="Appearance">
+                <PaddedPreference
+                  title="Default View"
+                  type="dropdown"
+                  options={VIEW_OPTIONS}
+                  value={view}
+                  setValue={this.setView}
                 />
-              </FilesContainer>
-            </div>
-          </Column>
-          <Column>
-            <ButtonName>Links</ButtonName>
-            <Inputs>
-              <LinkName>Editor url (also works on Medium)</LinkName>
-              <input
-                onFocus={this.select}
-                value={this.getEditorUrl()}
-                readOnly
-              />
-              <LinkName>Embed url</LinkName>
-              <input
-                onFocus={this.select}
-                value={this.getEmbedUrl()}
-                readOnly
-              />
-              <LinkName>iframe</LinkName>
-              <textarea
-                onFocus={this.select}
-                value={this.getIframeScript()}
-                readOnly
-              />
-              <LinkName>QR Code</LinkName>
-              <Inputs>
-                <ButtonContainer>
-                  <Button
-                    onClick={this.toggleQRCode}
-                    small
-                    style={{ width: '100%' }}
-                  >
-                    {showQRCode ? 'Hide' : 'Show'} QR Code
-                  </Button>
-                  {showQRCode && (
-                    <Inputs>
-                      <QRCode
-                        value={this.getEmbedUrl()}
-                        size={'100%'}
-                        renderAs="svg"
-                      />
-                    </Inputs>
-                  )}
-                </ButtonContainer>
-              </Inputs>
-            </Inputs>
-          </Column>
-          <Column>
-            <ButtonName>Button</ButtonName>
-            <Inputs>
-              <ButtonContainer>
-                <a href={sandboxUrl(sandbox)}>
-                  <img alt={sandbox.title || 'Untitled'} src={BUTTON_URL} />
-                </a>
-              </ButtonContainer>
-              <LinkName>Markdown</LinkName>
-              <textarea
-                onFocus={this.select}
-                value={this.getButtonMarkdown()}
-                readOnly
-              />
+                <PaddedPreference
+                  title="Auto resize"
+                  type="boolean"
+                  tooltip="Works only on Medium"
+                  value={autoResize}
+                  setValue={this.setAutoResize}
+                />
+                <PaddedPreference
+                  title="Hide navigation bar"
+                  type="boolean"
+                  value={hideNavigation}
+                  setValue={this.setHideNavigation}
+                />
+                <PaddedPreference
+                  title="Expand console"
+                  type="boolean"
+                  value={expandDevTools}
+                  setValue={this.setExpandDevTools}
+                />
+                <PaddedPreference
+                  title="Show current module view"
+                  type="boolean"
+                  tooltip="Only show the module that's currently open"
+                  value={isCurrentModuleView}
+                  setValue={this.setIsCurrentModuleView}
+                />
+                <PaddedPreference
+                  title="Show Tests (instead of browser preview)"
+                  type="boolean"
+                  value={testsView}
+                  setValue={this.setTestsView}
+                />
+                <PaddedPreference
+                  title="Font size"
+                  type="number"
+                  value={fontSize}
+                  setValue={this.setFontSize}
+                />
+              </Title>
+              <Title title="Sandbox Options">
+                <PaddedPreference
+                  title="Use CodeMirror instead of Monaco editor"
+                  type="boolean"
+                  value={useCodeMirror}
+                  setValue={this.setUseCodeMirror}
+                />
+                <PaddedPreference
+                  title="Enable eslint (significantly higher bundle size)"
+                  type="boolean"
+                  value={enableEslint}
+                  setValue={this.setEnableEslint}
+                />
+                <div>
+                  <h4>Default module to show</h4>
 
-              <LinkName>HTML</LinkName>
-              <textarea
-                onFocus={this.select}
-                value={this.getButtonHTML()}
-                readOnly
-              />
-            </Inputs>
-          </Column>
-        </Divider>
-      </ShareOptions>
+                  <FilesContainer>
+                    <Files
+                      modules={sandbox.modules}
+                      directoryId={null}
+                      directories={sandbox.directories}
+                      currentModule={defaultModule}
+                      setCurrentModule={this.setDefaultModule}
+                    />
+                  </FilesContainer>
+                </div>
+              </Title>
+              <Title title="Other Options">
+                <Inputs>
+                  <LinkName>Project Initial Path</LinkName>
+                  <input
+                    onFocus={this.select}
+                    placeholder="e.g: /home"
+                    value={initialPath}
+                    onChange={this.setInitialPath}
+                  />
+                </Inputs>
+              </Title>
+            </section>
+            <section>
+              <SideTitle>Share</SideTitle>
+              <Title title="Share embed" open>
+                <Inputs>
+                  <LinkName>Editor url (also works on Medium)</LinkName>
+                  <input
+                    onFocus={this.select}
+                    value={getEditorUrl(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
+                <Inputs>
+                  <LinkName>Embed url</LinkName>
+                  <input
+                    onFocus={this.select}
+                    value={getEmbedUrl(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
+                <Inputs>
+                  <LinkName>iframe</LinkName>
+                  <textarea
+                    onFocus={this.select}
+                    value={getIframeScript(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
+              </Title>
+              <Title title="Share CodeSandbox Button">
+                <Inputs>
+                  <ButtonContainer>
+                    <a href={sandboxUrl(sandbox)}>
+                      <img alt={sandbox.title || 'Untitled'} src={BUTTON_URL} />
+                    </a>
+                  </ButtonContainer>
+                </Inputs>
+                <Inputs>
+                  <LinkName>Markdown</LinkName>
+                  <textarea
+                    onFocus={this.select}
+                    value={getButtonMarkdown(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
+                <Inputs>
+                  <LinkName>HTML</LinkName>
+                  <textarea
+                    onFocus={this.select}
+                    value={getButtonHTML(sandbox, mainModule, this.state)}
+                    readOnly
+                  />
+                </Inputs>
+              </Title>
+              <Title title="Share QR code">
+                <Inputs>
+                  <QRCode
+                    value={getEmbedUrl(sandbox, mainModule, this.state)}
+                    size={'100%'}
+                    renderAs="svg"
+                  />
+                </Inputs>
+              </Title>
+            </section>
+          </Wrapper>
+        </ShareOptions>
+      </Fragment>
     );
   }
 }

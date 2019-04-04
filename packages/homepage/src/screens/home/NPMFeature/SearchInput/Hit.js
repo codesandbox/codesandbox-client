@@ -21,11 +21,9 @@ const Container = styled.a`
     box-shadow: 0 8px 8px rgba(0, 0, 0, 0.3);
   }
 
-  ${props => {
-    return css`
-      background-color: ${props.theme.background()};
-    `;
-  }};
+  ${props => css`
+    background-color: ${props.theme.background()};
+  `};
 `;
 
 const Title = styled.div`
@@ -59,7 +57,7 @@ export default class Hit extends React.PureComponent {
   render() {
     return (
       <Container
-        innerRef={el => {
+        ref={el => {
           this.el = el;
         }}
         href={`https://codesandbox.io/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${
@@ -69,7 +67,7 @@ export default class Hit extends React.PureComponent {
         rel="noreferrer noopener"
       >
         <Title>{this.props.hit.value}</Title>
-        <Count>{this.props.hit.count}</Count>
+        <Count>{this.props.hit.count.toLocaleString('en-US')}</Count>
       </Container>
     );
   }

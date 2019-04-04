@@ -5,14 +5,14 @@ import { inject } from 'mobx-react';
 import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import MaxWidth from 'common/components/flex/MaxWidth';
-import Margin from 'common/components/spacing/Margin';
-import Button from 'app/components/Button';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import {
   gitHubToSandboxUrl,
   protocolAndHost,
   gitHubRepoPattern,
-} from 'common/utils/url-generator';
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import {
   Container,

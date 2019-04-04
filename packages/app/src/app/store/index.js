@@ -18,6 +18,7 @@ import ModuleRecover from './providers/ModuleRecover';
 import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
 import SSEProvider from './providers/SSE';
+import FSSyncProvider from './providers/FSSync';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -29,6 +30,7 @@ import editor from './modules/editor';
 import profile from './modules/profile';
 import server from './modules/server';
 import deployment from './modules/deployment';
+import explore from './modules/explore';
 import git from './modules/git';
 import preferences from './modules/preferences';
 import workspace from './modules/workspace';
@@ -40,6 +42,7 @@ import userNotifications from './modules/user-notifications';
 export default Module({
   model,
   state: {
+    popularSandboxes: null,
     hasLoadedApp: false,
     jwt: null,
     isAuthenticating: true,
@@ -60,6 +63,7 @@ export default Module({
       y: 0,
     },
     currentModal: undefined,
+    currentModalMessage: undefined,
     uploadedFiles: null,
     maxStorage: 0,
     usedStorage: 0,
@@ -76,7 +80,6 @@ export default Module({
   signals: {
     appUnmounted: sequences.unloadApp,
     searchMounted: sequences.loadSearch,
-    termsMounted: sequences.loadTerms,
     sandboxPageMounted: sequences.loadSandboxPage,
     cliMounted: sequences.loadCLI,
     cliInstructionsMounted: sequences.loadCLIInstructions,
@@ -98,6 +101,8 @@ export default Module({
     signOutClicked: sequences.signOut,
     signOutGithubIntegration: sequences.signOutGithubIntegration,
     setUpdateStatus: sequences.setUpdateStatus,
+    refetchSandboxInfo: sequences.refetchSandboxInfo,
+    track: sequences.track,
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {
@@ -113,6 +118,7 @@ export default Module({
     live,
     userNotifications,
     server,
+    explore,
   },
   providers: {
     api: ApiProvider,
@@ -132,5 +138,6 @@ export default Module({
     recover: ModuleRecover,
     ot: OTProvider,
     sse: SSEProvider,
+    fsSync: FSSyncProvider,
   },
 });

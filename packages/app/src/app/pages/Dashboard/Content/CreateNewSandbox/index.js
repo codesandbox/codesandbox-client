@@ -1,12 +1,12 @@
 import React from 'react';
-import { Spring } from 'react-spring';
+import { Spring } from 'react-spring/renderprops';
 import { inject } from 'mobx-react';
 import { ThemeProvider } from 'styled-components';
 import history from 'app/utils/history';
-
-import theme from 'common/theme';
-import { sandboxUrl } from 'common/utils/url-generator';
-import Portal from 'app/components/Portal';
+import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import theme from '@codesandbox/common/lib/theme';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import Portal from '@codesandbox/common/lib/components/Portal';
 
 import {
   ButtonsContainer,
@@ -67,9 +67,7 @@ class CreateNewSandbox extends React.PureComponent {
   };
 
   keydownListener = e => {
-    if (e.keyCode === 27) {
-      // Escape
-
+    if (e.keyCode === ESC) {
       this.close();
     }
   };
@@ -114,7 +112,7 @@ class CreateNewSandbox extends React.PureComponent {
       if (collectionId) {
         mostUsedSandboxComponent = (
           <Container
-            innerRef={node => {
+            ref={node => {
               this.ref = node;
             }}
             onClick={() => this.createSandbox(mostUsedSandboxTemplate)}
@@ -184,7 +182,7 @@ class CreateNewSandbox extends React.PureComponent {
         <div style={style}>
           <ButtonsContainer>
             <Container
-              innerRef={node => {
+              ref={node => {
                 this.ref = node;
               }}
               onClick={this.handleClick}
@@ -192,7 +190,7 @@ class CreateNewSandbox extends React.PureComponent {
               role="button"
               hide={this.state.creating}
               onKeyDown={e => {
-                if (e.keyCode === 13) {
+                if (e.keyCode === ENTER) {
                   this.handleClick();
                 }
               }}
@@ -213,7 +211,7 @@ class CreateNewSandbox extends React.PureComponent {
                 right: 0,
                 left: 0,
 
-                margin: '0 auto 20vh',
+                margin: '0 auto 15vh',
                 height: 'auto',
                 width: 950,
               }}

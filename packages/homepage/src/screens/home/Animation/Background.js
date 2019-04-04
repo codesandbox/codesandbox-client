@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import fadeIn from 'common/utils/animation/fade-in';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 
 import setupCanvas from './canvas';
 
@@ -31,7 +31,7 @@ export default class Background extends React.PureComponent {
     '@dojo/cli-create-app': '#211D1C',
     'vue-cli': '#1D2525',
     'preact-cli': '#202328',
-    'ember': '#2a201d',
+    ember: '#2a201d',
     svelte: '#202022',
   };
 

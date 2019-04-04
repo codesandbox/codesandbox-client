@@ -1,0 +1,88 @@
+{
+  "name": "vue-eslint-parser",
+  "version": "4.0.3",
+  "description": "The ESLint custom parser for `.vue` files.",
+  "engines": {
+    "node": ">=6.5"
+  },
+  "main": "index.js",
+  "files": [
+    "index.*"
+  ],
+  "peerDependencies": {
+    "eslint": "^5.0.0"
+  },
+  "dependencies": {
+    "debug": "^4.1.0",
+    "eslint-scope": "^4.0.0",
+    "eslint-visitor-keys": "^1.0.0",
+    "espree": "^4.1.0",
+    "esquery": "^1.0.1",
+    "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "@mysticatea/eslint-plugin": "^7.0.0",
+    "@types/debug": "0.0.30",
+    "@types/estree": "0.0.38",
+    "@types/lodash": "^4.14.118",
+    "@types/mocha": "^5.2.4",
+    "@types/node": "^10.12.9",
+    "acorn": "^6.0.4",
+    "acorn-jsx": "^5.0.0",
+    "babel-eslint": "^10.0.1",
+    "chokidar": "^2.0.4",
+    "codecov": "^3.1.0",
+    "cross-spawn": "^6.0.5",
+    "dts-bundle": "^0.7.3",
+    "eslint": "^5.9.0",
+    "fs-extra": "^7.0.1",
+    "mocha": "^5.2.0",
+    "npm-run-all": "^4.1.3",
+    "nyc": "^13.1.0",
+    "opener": "^1.5.1",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.67.1",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-watch": "^4.3.1",
+    "typescript": "~3.1.6",
+    "typescript-eslint-parser": "^21.0.1",
+    "wait-on": "^3.2.0",
+    "warun": "^1.0.0"
+  },
+  "scripts": {
+    "_mocha": "_mocha \"test/*.js\" --reporter dot --timeout 10000",
+    "prebuild": "npm run -s clean",
+    "build": "tsc && rollup -c -o index.js && dts-bundle --name vue-eslint-parser --main .temp/index.d.ts --out ../index.d.ts",
+    "clean": "rimraf .nyc_output .temp coverage index.*",
+    "codecov": "nyc report --reporter lcovonly && codecov",
+    "coverage": "nyc report --reporter lcov && opener ./coverage/lcov-report/index.html",
+    "lint": "eslint src test --ext .js,.ts",
+    "setup": "git submodule update --init && cd test/fixtures/eslint && npm install",
+    "pretest": "run-s build lint",
+    "test": "nyc npm run _mocha",
+    "preupdate-fixtures": "npm run -s build",
+    "update-fixtures": "node scripts/update-fixtures-ast.js",
+    "preversion": "npm test",
+    "version": "npm run -s build",
+    "postversion": "git push && git push --tags",
+    "prewatch": "npm run -s clean",
+    "watch": "run-p watch:*",
+    "watch:tsc": "tsc --watch",
+    "watch:rollup": "wait-on .temp/index.js && rollup -c -o index.js --watch",
+    "watch:test": "wait-on index.js && warun index.js \"test/*.js\" \"test/fixtures/ast/*/*.json\" \"test/fixtures/*\" --debounce 1000 --no-initial -- nyc -r lcov npm run -s _mocha",
+    "watch:update-ast": "wait-on index.js && warun index.js \"test/fixtures/ast/*/*.vue\" -- node scripts/update-fixtures-ast.js",
+    "watch:coverage-report": "wait-on coverage/lcov-report/index.html && opener coverage/lcov-report/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mysticatea/vue-eslint-parser.git"
+  },
+  "keywords": [],
+  "author": "Toru Nagashima",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mysticatea/vue-eslint-parser/issues"
+  },
+  "homepage": "https://github.com/mysticatea/vue-eslint-parser#readme"
+}

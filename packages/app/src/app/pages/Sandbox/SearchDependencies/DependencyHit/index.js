@@ -4,7 +4,7 @@ import SearchIcon from 'react-icons/lib/go/search';
 import { Highlight } from 'react-instantsearch/dom';
 import compareVersions from 'compare-versions';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import GitHubLogo from 'app/components/GitHubLogo';
 import formatDownloads from '../formatDownloads';
@@ -31,7 +31,7 @@ const getDefaultSelectedVersion = tags => {
     return '';
   }
 
-  return tags.latest + ' - latest';
+  return tags.latest;
 };
 
 export default class DependencyHit extends React.PureComponent {
@@ -85,7 +85,7 @@ export default class DependencyHit extends React.PureComponent {
       <Container highlighted={highlighted} onClick={onClick}>
         <Left>
           <Row>
-            <Highlight attributeName="name" hit={hit} />
+            <Highlight attribute="name" hit={hit} />
             <Downloads>{formatDownloads(hit.downloadsLast30Days)}</Downloads>
             {hit.license && <License>{hit.license}</License>}
           </Row>
@@ -100,7 +100,7 @@ export default class DependencyHit extends React.PureComponent {
         <Right>
           <Row>
             {hit.githubRepo && (
-              <Tooltip title={`GitHub repository of ${hit.name}`}>
+              <Tooltip content={`GitHub repository of ${hit.name}`}>
                 <IconLink
                   href={this.makeGitHubRepoUrl(hit.githubRepo)}
                   target="_blank"
@@ -112,7 +112,7 @@ export default class DependencyHit extends React.PureComponent {
               </Tooltip>
             )}
             {hit.homepage && (
-              <Tooltip title={`Homepage of ${hit.name}`}>
+              <Tooltip content={`Homepage of ${hit.name}`}>
                 <IconLink
                   href={hit.homepage}
                   target="_blank"
@@ -123,7 +123,7 @@ export default class DependencyHit extends React.PureComponent {
                 </IconLink>
               </Tooltip>
             )}
-            <Tooltip title={`Search for sandboxes using ${hit.name}`}>
+            <Tooltip content={`Search for sandboxes using ${hit.name}`}>
               <IconLink
                 href={this.makeSearchUrl(hit.name)}
                 target="_blank"
@@ -141,7 +141,7 @@ export default class DependencyHit extends React.PureComponent {
               {versions.map(v => {
                 const tagName = getTagName(hit.tags, v);
                 return (
-                  <option key={v}>
+                  <option value={v} key={v}>
                     {v} {tagName && `- ${tagName}`}
                   </option>
                 );

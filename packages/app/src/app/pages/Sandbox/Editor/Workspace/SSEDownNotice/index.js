@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import getTemplate from 'common/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 import { Container } from './elements';
 
@@ -29,17 +29,20 @@ const ConnectionNotice = ({ store }) => {
       It seems like our Server Manager is either updating or experiencing some
       heavy load. Reconnecting in a couple seconds...
       <p style={{ marginBottom: 0 }}>
-        We{"'"}re working on fixing this as soon as possible. If this isn{"'"}t
-        resolved with in a minute it would greatly help us if you could let us
-        know on{' '}
+        We
+        {"'"}
+        re working on fixing this as soon as possible. If this isn
+        {"'"}t resolved with in a minute it would greatly help us if you could
+        let us know on{' '}
         <a
           style={{ color: 'white' }}
-          href="https://discord.gg/FGeubVt"
+          href="https://spectrum.chat/codesandbox"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Discord
-        </a>.
+          Spectrum
+        </a>
+        .
       </p>
     </Container>
   );

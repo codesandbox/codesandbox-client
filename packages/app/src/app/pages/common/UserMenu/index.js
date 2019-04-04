@@ -2,38 +2,23 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import HoverMenu from 'app/components/HoverMenu';
-import Relative from 'common/components/Relative';
-import Tooltip from 'common/components/Tooltip';
+import Relative from '@codesandbox/common/lib/components/Relative';
 
 import Menu from './Menu';
-import {
-  ClickableContainer,
-  ProfileImage,
-  ProfileInfo,
-  Name,
-  Username,
-} from './elements';
+import { ClickableContainer, ProfileImage } from './elements';
 
-function UserMenu({ signals, store, small }) {
-  const smallImage = small || false;
+function UserMenu({ signals, store }) {
   const { user, userMenuOpen } = store;
 
   return (
     <Relative>
       <ClickableContainer onClick={() => signals.userMenuOpened()}>
-        <ProfileInfo>
-          {user.name && <Name>{user.name}</Name>}
-          <Username main={!user.name}>{user.username}</Username>
-        </ProfileInfo>
-
-        <Tooltip title="User Menu">
-          <ProfileImage
-            alt={user.username}
-            width={smallImage ? 35 : 40}
-            height={smallImage ? 35 : 40}
-            src={user.avatarUrl}
-          />
-        </Tooltip>
+        <ProfileImage
+          alt={user.username}
+          width={30}
+          height={30}
+          src={user.avatarUrl}
+        />
       </ClickableContainer>
       {userMenuOpen && (
         <HoverMenu onClose={() => signals.userMenuClosed()}>
@@ -48,6 +33,10 @@ function UserMenu({ signals, store, small }) {
               signals.signOutClicked();
             }}
             username={user.username}
+            curator={user.curatorAt}
+            openFeedback={() => {
+              signals.modalOpened({ modal: 'feedback' });
+            }}
           />
         </HoverMenu>
       )}

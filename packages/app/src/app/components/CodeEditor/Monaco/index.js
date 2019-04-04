@@ -4,21 +4,20 @@ import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
-import { getModulePath } from 'common/sandbox/modules';
-import { css } from 'glamor';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { listen } from 'codesandbox-api';
 
-import getTemplate from 'common/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 import type {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
   Directory,
-} from 'common/types';
-import { getTextOperation } from 'common/utils/diff';
+} from '@codesandbox/common/lib/types';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 
-import delay from 'common/utils/delay';
+import delay from '@codesandbox/common/lib/utils/delay';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
@@ -39,22 +38,11 @@ import {
   lineAndColumnToIndex,
   indexToLineAndColumn,
 } from './monaco-index-converter';
+import { updateUserSelections } from './live-decorations';
 
 type State = {
   fuzzySearchEnabled: boolean,
 };
-
-const fadeIn = css.keyframes('fadeIn', {
-  // optional name
-  '0%': { opacity: 0 },
-  '100%': { opacity: 1 },
-});
-
-const fadeOut = css.keyframes('fadeOut', {
-  // optional name
-  '0%': { opacity: 1 },
-  '100%': { opacity: 0 },
-});
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
@@ -287,7 +275,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // have the correct cursor pos no matter what
       const { onSelectionChanged, isLive } = this.props;
       // Reason 3 is update by mouse or arrow keys
-      if (isLive) {
+      if (isLive && editor.getModel()) {
         const lines = editor.getModel().getLinesContent() || [];
         const data = {
           primary: getSelection(lines, selectionChange.selection),
@@ -340,10 +328,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   setCompilerOptions = () => {
     const hasNativeTypescript = this.hasNativeTypescript();
     const existingConfig = this.tsconfig ? this.tsconfig.compilerOptions : {};
+    const jsxFactory = existingConfig.jsxFactory || 'React.createElement';
+    const reactNamespace = existingConfig.reactNamespace || 'React';
 
     const compilerDefaults = {
-      jsxFactory: 'React.createElement',
-      reactNamespace: 'React',
+      jsxFactory,
+      reactNamespace,
       jsx: this.monaco.languages.typescript.JsxEmit.React,
       target: this.monaco.languages.typescript.ScriptTarget.ES2016,
       allowNonTsExtensions: !hasNativeTypescript,
@@ -435,14 +425,21 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (sendTransforms && changeEvent.changes) {
       this.liveOperationCode =
         this.liveOperationCode || this.currentModule.code || '';
-      const { operation, newCode } = eventToTransform(
-        changeEvent,
-        this.liveOperationCode
-      );
+      try {
+        const { operation, newCode } = eventToTransform(
+          changeEvent,
+          this.liveOperationCode
+        );
 
-      this.liveOperationCode = newCode;
+        this.liveOperationCode = newCode;
 
-      sendTransforms(operation);
+        sendTransforms(operation);
+      } catch (e) {
+        // Something went wrong while composing the operation, so we're opting for a full sync
+        console.error(e);
+
+        this.props.onModuleStateMismatch();
+      }
 
       requestAnimationFrame(() => {
         this.liveOperationCode = '';
@@ -468,168 +465,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
     >
   ) => {
-    const lines = this.editor.getModel().getLinesContent() || [];
-
-    userSelections.forEach(data => {
-      const { userId } = data;
-
-      const decorationId = this.currentModule.shortid + userId;
-      if (data.selection === null) {
-        this.userSelectionDecorations[
-          decorationId
-        ] = this.editor.deltaDecorations(
-          this.userSelectionDecorations[decorationId] || [],
-          [],
-          data.userId
-        );
-
-        return;
-      }
-
-      const decorations = [];
-      const { selection, color, name } = data;
-
-      if (selection) {
-        const addCursor = (position, className) => {
-          const cursorPos = indexToLineAndColumn(lines, position);
-
-          decorations.push({
-            range: new this.monaco.Range(
-              cursorPos.lineNumber,
-              cursorPos.column,
-              cursorPos.lineNumber,
-              cursorPos.column
-            ),
-            options: {
-              className: this.userClassesGenerated[className],
-            },
-          });
-        };
-
-        const addSelection = (start, end, className) => {
-          const from = indexToLineAndColumn(lines, start);
-          const to = indexToLineAndColumn(lines, end);
-
-          decorations.push({
-            range: new this.monaco.Range(
-              from.lineNumber,
-              from.column,
-              to.lineNumber,
-              to.column
-            ),
-            options: {
-              className: this.userClassesGenerated[className],
-            },
-          });
-        };
-
-        const prefix = color.join('-') + userId;
-        const cursorClassName = prefix + '-cursor';
-        const secondaryCursorClassName = prefix + '-secondary-cursor';
-        const selectionClassName = prefix + '-selection';
-        const secondarySelectionClassName = prefix + '-secondary-selection';
-
-        if (!this.userClassesGenerated[cursorClassName]) {
-          const nameStyles = {
-            content: name,
-            position: 'absolute',
-            top: -17,
-            backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-            zIndex: 20,
-            color:
-              color[0] + color[1] + color[2] > 500
-                ? 'rgba(0, 0, 0, 0.8)'
-                : 'white',
-            padding: '2px 4px',
-            borderRadius: 2,
-            borderBottomLeftRadius: 0,
-            fontSize: '.75rem',
-            fontWeight: 600,
-            userSelect: 'none',
-            pointerEvents: 'none',
-            width: 'max-content',
-          };
-          this.userClassesGenerated[cursorClassName] = `${css({
-            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
-            width: '2px !important',
-            cursor: 'text',
-            zIndex: 30,
-            ':before': {
-              animation: `${fadeOut} 0.3s`,
-              animationDelay: '1s',
-              animationFillMode: 'forwards',
-              opacity: 1,
-              ...nameStyles,
-            },
-            ':hover': {
-              ':before': {
-                animation: `${fadeIn} 0.3s`,
-                animationFillMode: 'forwards',
-                opacity: 0,
-                ...nameStyles,
-              },
-            },
-          })}`;
-        }
-
-        if (!this.userClassesGenerated[secondaryCursorClassName]) {
-          this.userClassesGenerated[secondaryCursorClassName] = `${css({
-            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`,
-            width: '2px !important',
-          })}`;
-        }
-
-        if (!this.userClassesGenerated[selectionClassName]) {
-          this.userClassesGenerated[selectionClassName] = `${css({
-            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`,
-            borderRadius: '3px',
-            minWidth: 7.6,
-          })}`;
-        }
-
-        if (!this.userClassesGenerated[secondarySelectionClassName]) {
-          this.userClassesGenerated[secondarySelectionClassName] = `${css({
-            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.2)`,
-            borderRadius: '3px',
-            minWidth: 7.6,
-          })}`;
-        }
-
-        addCursor(selection.primary.cursorPosition, cursorClassName);
-        if (selection.primary.selection.length) {
-          addSelection(
-            selection.primary.selection[0],
-            selection.primary.selection[1],
-            selectionClassName
-          );
-        }
-
-        if (selection.secondary.length) {
-          selection.secondary.forEach(s => {
-            addCursor(s.cursorPosition, secondaryCursorClassName);
-
-            if (s.selection.length) {
-              addSelection(
-                s.selection[0],
-                s.selection[1],
-                secondarySelectionClassName
-              );
-            }
-          });
-        }
-      }
-
-      // Allow new model to attach in case it's attaching
-      requestAnimationFrame(() => {
-        this.userSelectionDecorations[
-          decorationId
-        ] = this.editor.deltaDecorations(
-          this.userSelectionDecorations[decorationId] || [],
-          decorations,
-          userId
-        );
-      });
-    });
+    updateUserSelections(
+      this.monaco,
+      this.editor,
+      this.currentModule,
+      userSelections
+    );
   };
 
   changeSandbox = (
@@ -736,9 +577,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           return;
         }
 
-        const code = operation.apply(module.code || '');
-        if (this.props.onChange) {
-          this.props.onChange(code, module.shortid);
+        try {
+          const code = operation.apply(module.code || '');
+          if (this.props.onChange) {
+            this.props.onChange(code, module.shortid);
+          }
+        } catch (e) {
+          // Something went wrong while applying
+          this.props.onModuleStateMismatch();
         }
         return;
       }
@@ -1228,7 +1074,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   hasNativeTypescript = () => {
     const sandbox = this.sandbox;
+
+    // Add a quick hack for CRA+TS that will be removed when we fully made the switch to
+    // VSCode
     const template = getTemplate(sandbox.template);
+    if (template.name === 'create-react-app') {
+      return sandbox.modules.some(m => m.title.endsWith('.tsx'));
+    }
     return template.isTypescript;
   };
 

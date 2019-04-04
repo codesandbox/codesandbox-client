@@ -7,20 +7,20 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
-const env = require('./env');
-const getHost = require('./host');
+const env = require('@codesandbox/common/lib/config/env');
+const getHost = require('@codesandbox/common/lib/utils/host');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
 
-const NODE_ENV = JSON.parse(env['process.env.NODE_ENV']);
+const NODE_ENV = JSON.parse(env.default['process.env.NODE_ENV']);
 const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
-const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost() + '/';
+const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -98,6 +98,14 @@ module.exports = {
         loader: 'file-loader',
         type: 'javascript/auto',
       },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader', // creates style nodes from JS strings
+          'css-loader', // translates CSS into CommonJS
+          'sass-loader', // compiles Sass to CSS, using Node Sass by default
+        ],
+      },
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
         test: [
@@ -145,13 +153,19 @@ module.exports = {
         },
       },
       {
-        test: /\.js$/,
-        include: [paths.src, paths.common, /@emmetio/],
+        test: /\.(j|t)sx?$/,
+        include: [paths.src, /@emmetio/],
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
           /\.no-webpack\./,
         ],
+        loader: 'happypack/loader',
+      },
+
+      {
+        test: /\.tsx?$/,
+        exclude: [/node_modules/],
         loader: 'happypack/loader',
       },
 
@@ -288,9 +302,13 @@ module.exports = {
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
-    modules: ['node_modules', 'src', 'standalone-packages'],
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, '../src'),
+      'standalone-packages',
+    ],
 
-    extensions: ['.js', '.json'],
+    extensions: ['.js', '.json', '.ts', '.tsx'],
 
     alias: {
       moment: 'moment/moment.js',
@@ -326,7 +344,7 @@ module.exports = {
       ? [
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'sandbox'],
+            chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
             minify: __PROD__ && {
@@ -399,7 +417,7 @@ module.exports = {
             filename: 'embed.html',
             template: path.join(paths.embedSrc, 'index.html'),
             minify: __PROD__ && {
-              removeComments: true,
+              removeComments: false,
               collapseWhitespace: true,
               removeRedundantAttributes: true,
               useShortDoctype: true,
@@ -414,7 +432,9 @@ module.exports = {
         ]),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
-    new webpack.DefinePlugin(env),
+    new webpack.DefinePlugin(env.default),
+
+    new webpack.DefinePlugin({ __DEV__ }),
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
@@ -445,7 +465,12 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode4/vs',
+          to: 'public/vscode18/vs',
+          force: true,
+        },
+        {
+          from: '../../standalone-packages/vscode-extensions/out',
+          to: 'public/vscode-extensions/v4',
           force: true,
         },
         {
@@ -453,8 +478,17 @@ module.exports = {
           to: 'public/onigasm/2.2.1/onigasm.wasm',
         },
         {
+          from:
+            '../../standalone-packages/vscode-textmate/node_modules/onigasm/lib/onigasm.wasm',
+          to: 'public/onigasm/2.1.0/onigasm.wasm',
+        },
+        {
           from: '../../node_modules/monaco-vue/release/min',
-          to: 'public/13/vs/language/vue',
+          to: 'public/14/vs/language/vue',
+        },
+        {
+          from: '../../standalone-packages/monaco-editor/release/min/vs',
+          to: 'public/14/vs',
         },
         {
           from: '../sse-hooks/dist',
@@ -465,8 +499,10 @@ module.exports = {
           to: 'static',
         },
         {
-          from: '../../standalone-packages/codesandbox-browserfs/dist',
-          to: 'static/browserfs2',
+          from: __DEV__
+            ? '../../standalone-packages/codesandbox-browserfs/build'
+            : '../../standalone-packages/codesandbox-browserfs/dist',
+          to: 'static/browserfs3',
         },
       ].filter(x => x)
     ),

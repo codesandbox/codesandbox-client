@@ -4,11 +4,11 @@ import { inject, observer } from 'mobx-react';
 import Loadable from 'app/utils/Loadable';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-import _debug from 'app/utils/debug';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
 import { DragDropContext } from 'react-dnd';
 
-import send, { DNT } from 'common/utils/analytics';
+import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
@@ -48,8 +48,8 @@ const CliInstructions = Loadable(() =>
 const Patron = Loadable(() =>
   import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
-const Terms = Loadable(() =>
-  import(/* webpackChunkName: 'page-terms' */ './Terms')
+const Curator = Loadable(() =>
+  import(/* webpackChunkName: 'page-curator' */ './Curator')
 );
 
 type Props = {
@@ -94,14 +94,15 @@ class Routes extends React.Component<Props> {
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
             <Route path="/dashboard" component={Dashboard} />
+            <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:id" component={Live} />
+            <Route path="/signin" exact component={Dashboard} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
-            <Route path="/legal" component={Terms} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
             <Route component={NotFound} />
           </Switch>

@@ -1,7 +1,7 @@
 import resolve from 'browser-resolve';
-import { absolute } from 'common/utils/path';
+import { absolute } from '@codesandbox/common/lib/utils/path';
 import { extname } from 'path';
-import delay from 'common/utils/delay';
+import delay from '@codesandbox/common/lib/utils/delay';
 
 self.importScripts([
   process.env.NODE_ENV === 'production'

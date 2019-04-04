@@ -1,0 +1,23 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width">
+  <title>test</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.2.5/mocha.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="mocha"></div>
+<!--[if lte IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.10/es5-shim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script>
+<![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.2.5/mocha.min.js"></script>
+<script>mocha.setup("bdd")</script>
+<script src="../int64-buffer.js"></script>
+<script src="./test.js"></script>
+<script>mocha.checkLeaks();</script>
+<script>mocha.run();</script>
+</body>
+</html>

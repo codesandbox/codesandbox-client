@@ -1,13 +1,13 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import MaxWidth from 'common/components/flex/MaxWidth';
-import Column from 'common/components/flex/Column';
-import Centered from 'common/components/flex/Centered';
-import Padding from 'common/components/spacing/Padding';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Column from '@codesandbox/common/lib/components/flex/Column';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 
-import theme from 'common/theme';
-import getIcon from 'common/templates/icons';
+import theme from '@codesandbox/common/lib/theme';
+import getIcon from '@codesandbox/common/lib/templates/icons';
 
 import LoadInView from '../../../components/LoadInView';
 import RollingText from '../../../components/RollingText';
@@ -24,6 +24,7 @@ import FileType, {
   image,
   html,
   pug,
+  coffee,
   cssGlobal,
   vue,
 } from './icons';
@@ -34,7 +35,7 @@ const Container = styled.div`
   transition: 0.3s ease box-shadow;
   border-radius: 2px;
 
-  background-color: ${({ theme }) => theme.background};
+  background-color: ${props => props.theme.background};
 
   box-shadow: 0 3px 200px ${({ color }) => color.clearer(0.8)};
 
@@ -230,6 +231,7 @@ const TEMPLATE_SUPPORT = {
       less,
       stylus,
       pug,
+      coffee,
       cssGlobal,
       image,
     ],
@@ -288,6 +290,7 @@ export default class Frameworks extends React.Component {
 
               return (
                 <IconContainer
+                  // eslint-disable-next-line
                   key={i}
                   selected={templates[i] === template}
                   template={templates[i]}
@@ -342,7 +345,8 @@ export default class Frameworks extends React.Component {
                   style={{ color: template.color() }}
                 >
                   {template.name}
-                </a>.
+                </a>
+                .
               </div>
 
               <HeaderTitle>Supported Loaders</HeaderTitle>

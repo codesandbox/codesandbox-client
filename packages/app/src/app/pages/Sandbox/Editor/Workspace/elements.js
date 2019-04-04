@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import fadeIn from 'common/utils/animation/fade-in';
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 
 export const getContainerStyles = props => {
   const { theme } = props;
@@ -71,8 +71,7 @@ export const getContainerStyles = props => {
       color: ${theme['list.activeSelectionForeground'] ||
         theme.white()} !important;
       border-color: ${color()} !important;
-      background-color: ${theme['list.activeSelectionBackground'] ||
-        color.lighten(0.1).clearer(0.8)()} !important;
+      background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
     `;
   }
 
@@ -101,10 +100,6 @@ export const Container = styled.div`
   width: 100%;
   overflow-y: overlay;
   overflow-x: auto;
-
-  > div {
-    ${fadeIn(0)};
-  }
 `;
 
 export const ContactContainer = styled.div`
@@ -129,12 +124,12 @@ export const Icon = styled.div`
   position: relative;
   display: inline-block;
   transition: 0.3s ease color;
+  cursor: pointer;
   color: ${props =>
     props.theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)'};
   padding-left: 0.5rem;
   &:hover {
-    color: ${props =>
-      props.theme.light ? 'black' : 'rgba(255, 255, 255, 0.5)'};
+    color: ${props => (props.theme.light ? 'black' : 'rgba(255, 255, 255, 1)')};
   }
 `;
 
@@ -182,13 +177,19 @@ export const WorkspaceInputContainer = styled.div`
 `;
 
 export const ItemTitle = styled.div`
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 400;
 
-  margin: 1rem;
-  margin-bottom: 0.5rem;
+  padding: 0 1rem;
+  margin-bottom: 0.25rem;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  font-weight: 700;
 
-  color: ${props => props.theme.templateColor || props.theme.secondary};
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'};
 `;
 
 export const Description = styled.div`
@@ -197,6 +198,10 @@ export const Description = styled.div`
   font-size: 0.875rem;
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
+`;
+
+export const ErrorDescription = styled(Description)`
+  color: ${props => props.theme.red};
 `;
 
 export const VersionContainer = styled.div`

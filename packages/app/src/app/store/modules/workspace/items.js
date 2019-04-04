@@ -1,13 +1,21 @@
-import getTemplate from 'common/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 const PROJECT = {
   id: 'project',
   name: 'Project Info',
 };
 
+const PROJECT_SUMMARY = {
+  id: 'project-summary',
+  name: 'Sandbox Info',
+  hasCustomHeader: true,
+};
+
 const FILES = {
   id: 'files',
-  name: 'File Editor',
+  name: 'Explorer',
+  hasCustomHeader: true,
+  defaultOpen: true,
 };
 
 const GITHUB = {
@@ -52,6 +60,10 @@ export default function getItems(store) {
     )
   ) {
     return [FILES, LIVE];
+  }
+
+  if (!store.editor.currentSandbox.owned) {
+    return [PROJECT_SUMMARY, CONFIGURATION, MORE];
   }
 
   const items = [PROJECT, FILES];

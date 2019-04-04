@@ -1,21 +1,22 @@
 import styled, { css } from 'styled-components';
-import Logo from 'common/components/Logo';
-import Row from 'common/components/flex/Row';
+import Logo from '@codesandbox/common/lib/components/Logo';
+import Row from '@codesandbox/common/lib/components/flex/Row';
 
 export const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
+  color: white;
 `;
 
 export const Border = styled.hr`
   display: inline-block;
-  height: 28px;
+  height: 22px;
   border: none;
   border-right: 1px solid rgba(255, 255, 255, 0.4);
 `;
 
 export const Title = styled.h1`
   margin-left: 1rem;
-  font-size: 1.2rem;
+  font-size: 1.125rem;
   color: white;
   font-weight: 300;
 `;
@@ -67,6 +68,8 @@ export const TitleWrapper = styled(Row)`
 `;
 
 export const Wrapper = styled(Row)`
+  position: relative;
+  z-index: 10;
   @media (max-width: 768px) {
     display: none;
   }

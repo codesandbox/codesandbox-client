@@ -1,6 +1,6 @@
 import { Provider } from 'cerebral';
-import { sandboxUrl } from 'common/utils/url-generator';
-import { getSandboxOptions } from 'common/url';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import history from '../../utils/history';
 
 export default Provider({
@@ -9,6 +9,9 @@ export default Provider({
   },
   redirectToNewSandbox() {
     history.push('/s/new');
+  },
+  redirectToSandboxWizard() {
+    history.replace('/s/');
   },
   getSandboxOptions() {
     return getSandboxOptions(decodeURIComponent(document.location.href));

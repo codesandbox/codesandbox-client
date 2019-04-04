@@ -1,5 +1,5 @@
 import React from 'react';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 
 import { UpdateContainer, UpdateMessage } from './elements';
@@ -26,13 +26,13 @@ export default class UpdateFound extends React.PureComponent {
       <UpdateContainer {...this.props}>
         <Tooltip
           theme="update"
-          html={
+          content={
             <UpdateMessage
               id="update-message"
               onClick={() => document.location.reload()}
             />
           }
-          open={this.state.showTooltipManually}
+          isVisible={this.state.showTooltipManually}
           trigger={
             this.state.showTooltipManually ? 'manual' : 'mouseenter focus'
           }

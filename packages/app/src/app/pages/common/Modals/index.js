@@ -2,6 +2,8 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Modal from 'app/components/Modal';
 
+import Loadable from 'app/utils/Loadable';
+
 import NewSandbox from './NewSandbox';
 import PreferencesModal from './PreferencesModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
@@ -14,12 +16,20 @@ import PRModal from './PRModal';
 import SelectSandboxModal from './SelectSandboxModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
-import LiveSessionEndedModal from './LiveSessionEndedModal';
+import EmptyTrash from './EmptyTrash';
+import LiveSessionEnded from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import UploadModal from './UploadModal';
 import StorageManagementModal from './StorageManagementModal';
 import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
+import PickSandboxModal from './PickSandboxModal';
+import FeedbackModal from './FeedbackModal';
+import NetlifyLogs from './NetlifyLogs';
+
+const MoveSandboxFolderModal = Loadable(() =>
+  import('./MoveSandboxFolderModal')
+);
 
 const modals = {
   preferences: {
@@ -32,7 +42,7 @@ const modals = {
   },
   share: {
     Component: ShareModal,
-    width: 900,
+    width: 1200,
   },
   deployment: {
     Component: DeploymentModal,
@@ -50,16 +60,28 @@ const modals = {
     Component: PRModal,
     width: 400,
   },
-  deleteSandbox: {
-    Component: DeleteSandboxModal,
-    width: 400,
+  netlifyLogs: {
+    Component: NetlifyLogs,
+    width: 750,
   },
   deleteDeployment: {
     Component: DeleteDeploymentModal,
     width: 400,
   },
+  deleteSandbox: {
+    Component: DeleteSandboxModal,
+    width: 400,
+  },
+  pickSandbox: {
+    Component: PickSandboxModal,
+    width: 600,
+  },
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,
+    width: 400,
+  },
+  emptyTrash: {
+    Component: EmptyTrash,
     width: 400,
   },
   selectSandbox: {
@@ -71,7 +93,7 @@ const modals = {
     width: 600,
   },
   liveSessionEnded: {
-    Component: LiveSessionEndedModal,
+    Component: LiveSessionEnded,
     width: 600,
   },
   liveVersionMismatch: {
@@ -93,6 +115,14 @@ const modals = {
   privacyServerWarning: {
     Component: PrivacyServerWarning,
     width: 400,
+  },
+  moveSandbox: {
+    Component: MoveSandboxFolderModal,
+    width: 350,
+  },
+  feedback: {
+    Component: FeedbackModal,
+    width: 450,
   },
 };
 

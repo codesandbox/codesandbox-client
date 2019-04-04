@@ -1,6 +1,6 @@
 {
   "name": "codesandbox-api",
-  "version": "0.0.18",
+  "version": "0.0.22",
   "description": "",
   "keywords": [],
   "main": "dist/codesandbox.umd.js",
@@ -22,10 +22,10 @@
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
     "build:clean": "tsc && rollup -c",
-    "build": "tsc && rollup -c && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+    "build": "tsc && rollup -c && rimraf compiled",
     "build:dev": "tsc && rollup -c",
     "start": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"npm run build:clean\"",
-    "test": "echo TODO",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
     "deploy-docs": "ts-node tools/gh-pages-publish",
@@ -54,6 +54,10 @@
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/compiled/"
+    ],
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
       "ts",
@@ -75,6 +79,7 @@
   },
   "devDependencies": {
     "@types/debug": "^0.0.30",
+    "@types/glob": "^7.1.1",
     "@types/jest": "^20.0.0",
     "@types/uuid": "^3.4.3",
     "colors": "^1.1.2",
@@ -103,8 +108,9 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^6.0.0",
     "typedoc": "^0.7.1",
-    "typescript": "^2.3.4",
+    "typescript": "^3.3.1",
     "uuid": "^3.3.2",
     "validate-commit-msg": "^2.12.2"
-  }
+  },
+  "dependencies": {}
 }

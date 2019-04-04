@@ -1,0 +1,30 @@
+{
+  "name": "@codesandbox/react-embed",
+  "version": "0.0.14",
+  "license": "MIT",
+  "private": false,
+  "sideEffects": false,
+  "main": "dist/index",
+  "module": "dist-es/index",
+  "typings": "dist/index.d.ts",
+  "peerDependencies": {
+    "react": "^15.0.0 | ^16.0.0"
+  },
+  "dependencies": {
+    "react-codesandboxer": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.7.11",
+    "rimraf": "^2.6.2",
+    "typescript": "^3.3.1"
+  },
+  "scripts": {
+    "watch": "tsc --watch",
+    "clean": "rimraf dist dist-es",
+    "build": "yarn clean && tsc || tsc -m es6 --outDir dist-es"
+  },
+  "files": [
+    "dist",
+    "dist-es"
+  ]
+}

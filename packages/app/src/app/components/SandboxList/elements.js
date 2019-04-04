@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import delayEffect from 'common/utils/animation/delay-effect';
+import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 export const HeaderTitle = styled.th`
   font-weight: 400;
@@ -13,6 +13,7 @@ export const Table = styled.table`
   width: 100%;
   border-spacing: 0;
   margin-bottom: 2rem;
+  background: ${props => props.theme.background2};
 `;
 
 export const StatTitle = styled(HeaderTitle)`

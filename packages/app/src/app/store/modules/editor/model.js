@@ -34,6 +34,8 @@ const Directory = types.model({
   shortid: types.string,
   sourceId: types.string,
   title: types.string,
+  insertedAt: types.string,
+  updatedAt: types.string,
 });
 
 const Module = types.model({
@@ -45,6 +47,8 @@ const Module = types.model({
   shortid: types.string,
   sourceId: types.string,
   title: types.string,
+  insertedAt: types.string,
+  updatedAt: types.string,
 });
 
 const Git = types.model({
@@ -55,7 +59,7 @@ const Git = types.model({
   username: types.string,
 });
 
-const Sandbox = types.model({
+export const Sandbox = types.model({
   author: types.maybeNull(Author),
   description: types.maybeNull(types.string),
   directories: types.array(Directory),
@@ -81,6 +85,7 @@ const Sandbox = types.model({
   likeCount: types.number,
   modules: types.array(Module),
   npmDependencies: types.map(types.string),
+  environmentVariables: types.maybeNull(types.map(types.string)),
   originalGit: types.maybeNull(Git),
   originalGitCommitSha: types.maybeNull(types.string),
   owned: types.boolean,
@@ -94,6 +99,16 @@ const Sandbox = types.model({
   version: types.number,
   viewCount: types.number,
   team: types.maybeNull(Team),
+  roomId: types.maybeNull(types.string),
+  collection: types.maybeNull(
+    types.union(
+      types.boolean,
+      types.model({
+        path: types.string,
+        id: types.string,
+      })
+    )
+  ),
 });
 
 export default {
@@ -169,14 +184,11 @@ export default {
   highlightedLines: types.array(types.number),
   isUpdatingPrivacy: types.boolean,
   quickActionsOpen: types.boolean,
-  previewWindow: types.model({
-    content: types.maybeNull(types.string),
-    editorSize: types.maybe(types.number),
-    width: types.maybeNull(types.number),
-    height: types.maybeNull(types.number),
-    x: types.maybeNull(types.number),
-    y: types.maybeNull(types.number),
-  }),
+  previewWindowVisible: types.boolean,
+  previewWindowOrientation: types.enumeration('orientation', [
+    'vertical',
+    'horizontal',
+  ]),
   themes: types.array(
     types.model({
       name: types.string,

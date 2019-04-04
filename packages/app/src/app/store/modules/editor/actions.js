@@ -1,15 +1,16 @@
 import { fromPairs, toPairs, sortBy, mapValues } from 'lodash-es';
-import slugify from 'common/utils/slugify';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 import { clone } from 'mobx-state-tree';
+import { dispatch } from 'codesandbox-api';
 
-import getTemplate from 'common/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
 }
 
-export async function getLatestVersion({ props, api }) {
+export function getLatestVersion({ props, api }) {
   const { name } = props;
 
   return api
@@ -160,6 +161,53 @@ export function updateFrozen({ api, props, state }) {
       },
     })
     .then(() => state.set('editor.currentSandbox.isFrozen', props.frozen));
+}
+
+export function restartSandbox() {
+  dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
+}
+
+export function fetchEnvironmentVariables({ state, api, path }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .get(`/sandboxes/${id}/env`, {}, { shouldCamelize: false })
+    .then(data => {
+      state.set('editor.currentSandbox.environmentVariables', data);
+      return path.success(data);
+    });
+}
+
+export function deleteEnvironmentVariable({ state, props, api, path }) {
+  const id = state.get('editor.currentId');
+  return api
+    .delete(`/sandboxes/${id}/env/${props.name}`, {}, { shouldCamelize: false })
+    .then(data => {
+      state.set('editor.currentSandbox.environmentVariables', data);
+      return path.success(data);
+    });
+}
+
+export function updateEnvironmentVariables({ state, props, api, path }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .post(
+      `/sandboxes/${id}/env`,
+      {
+        environment_variable: {
+          name: props.name,
+          value: props.value,
+        },
+      },
+      {
+        shouldCamelize: false,
+      }
+    )
+    .then(data => {
+      state.set('editor.currentSandbox.environmentVariables', data);
+      return path.success(data);
+    });
 }
 
 export function forceRender({ state }) {
@@ -484,7 +532,7 @@ export function updateTemplateIfSSE({ state, api }) {
   }
 }
 
-export function saveModuleCode({ props, state, api, recover }) {
+export function saveModuleCode({ props, state, api, recover, path }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleToSave = sandbox.modules.find(
     module => module.shortid === props.moduleShortid
@@ -508,6 +556,14 @@ export function saveModuleCode({ props, state, api, recover }) {
       );
 
       if (index > -1) {
+        state.set(
+          `editor.sandboxes.${newSandbox.id}.modules.${index}.insertedAt`,
+          x.insertedAt
+        );
+        state.set(
+          `editor.sandboxes.${newSandbox.id}.modules.${index}.updatedAt`,
+          x.updatedAt
+        );
         if (newModuleToSave.code === codeToSave) {
           state.set(
             `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
@@ -519,14 +575,20 @@ export function saveModuleCode({ props, state, api, recover }) {
             `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
             x.code
           );
-          throw new Error(
-            `The code of '${title}' changed while saving, will ignore the save now. Please try again with saving.`
-          );
+
+          return path.codeOutdated({
+            message: `The code of '${title}' changed while saving. Please try again with saving.`,
+          });
         }
       }
 
-      return x;
-    });
+      return path.success(x);
+    })
+    .catch(e =>
+      path.error({
+        message: e.message,
+      })
+    );
 }
 
 export function getCurrentModuleId({ state }) {
@@ -595,21 +657,6 @@ export function setCode({ props, state, recover }) {
   }
 }
 
-export function setPreviewBounds({ props, state }) {
-  if (props.x != null) {
-    state.set(`editor.previewWindow.x`, props.x);
-  }
-  if (props.y != null) {
-    state.set(`editor.previewWindow.y`, props.y);
-  }
-  if (props.width != null) {
-    state.set(`editor.previewWindow.width`, props.width);
-  }
-  if (props.height != null) {
-    state.set(`editor.previewWindow.height`, props.height);
-  }
-}
-
 export function getSavedCode({ props, state }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleIndex = sandbox.modules.findIndex(
@@ -624,6 +671,22 @@ export function getSavedCode({ props, state }) {
     }
 
     return { oldCode: module.code, code: module.code };
+  }
+
+  return {};
+}
+
+export function touchFile({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === props.moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    state.set(
+      `editor.currentSandbox.modules.${moduleIndex}.updatedAt`,
+      new Date().toString()
+    );
   }
 
   return {};

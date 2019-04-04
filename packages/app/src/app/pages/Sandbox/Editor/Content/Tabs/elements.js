@@ -1,14 +1,16 @@
 import styled, { css } from 'styled-components';
 import PrettierIcon from 'react-icons/lib/md/brush';
 
+const HEIGHT = '35px';
+
 export const Container = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   display: flex;
-  height: 2.5rem;
-  flex: 0 0 2.5rem;
+  height: ${HEIGHT};
+  flex: 0 0 ${HEIGHT};
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 
@@ -18,8 +20,8 @@ export const Container = styled.div`
 
 export const TabsContainer = styled.div`
   display: flex;
-  height: 2.5rem;
-  flex: 1 0 2.5rem;
+  height: ${HEIGHT};
+  flex: 1 0 ${HEIGHT};
 
   overflow-x: auto;
   overflow-y: hidden;

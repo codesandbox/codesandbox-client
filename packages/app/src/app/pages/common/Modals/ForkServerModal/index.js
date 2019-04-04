@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import getTemplateDefinition from 'common/templates';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import SignInButton from 'app/pages/common/SignInButton';
 
 import { Container, Heading, Explanation } from '../elements';

@@ -1,13 +1,8 @@
 import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import getTemplate from 'common/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 import * as actions from './actions';
-import {
-  ensureOwnedEditable,
-  loadSandbox,
-  closeModal,
-  openModal,
-} from '../../sequences';
+import { ensureOwnedEditable, closeModal, openModal } from '../../sequences';
 import { updateSandboxPackage } from './../editor/sequences';
 import { addNotification } from '../../factories';
 
@@ -39,9 +34,7 @@ export const deleteSandbox = [
   actions.deleteSandbox,
   set(state`workspace.showDeleteSandboxModal`, false),
   addNotification('Sandbox deleted!', 'success'),
-  actions.redirectToNewSandbox,
-  set(props`id`, 'new'),
-  loadSandbox,
+  actions.redirectToSandboxWizard,
 ];
 
 export const openIntegrations = [
@@ -55,16 +48,28 @@ export const changeValue = [
 
 export const updateSandboxInfo = [
   ensureOwnedEditable,
-  set(
+  when(
     state`editor.sandboxes.${state`editor.currentId`}.title`,
-    state`workspace.project.title`
-  ),
-  set(
+    state`workspace.project.title`,
     state`editor.sandboxes.${state`editor.currentId`}.description`,
-    state`workspace.project.description`
+    state`workspace.project.description`,
+    (t1, t2, d1, d2) => (t2 && t1 !== t2) || (d2 && d1 !== d2)
   ),
-  actions.updateSandbox,
-  updateSandboxPackage,
+  {
+    true: [
+      set(
+        state`editor.sandboxes.${state`editor.currentId`}.title`,
+        state`workspace.project.title`
+      ),
+      set(
+        state`editor.sandboxes.${state`editor.currentId`}.description`,
+        state`workspace.project.description`
+      ),
+      actions.updateSandbox,
+      updateSandboxPackage,
+    ],
+    false: [],
+  },
 ];
 
 export const addExternalResource = [
@@ -131,9 +136,13 @@ export const setWorkspaceItem = [
 ];
 
 export const toggleCurrentWorkspaceItem = [
-  when(state`workspace.openedWorkspaceItem`),
+  when(state`workspace.workspaceHidden`),
   {
-    false: set(state`workspace.openedWorkspaceItem`, 'files'),
-    true: set(state`workspace.openedWorkspaceItem`, null),
+    false: set(state`workspace.workspaceHidden`, true),
+    true: set(state`workspace.workspaceHidden`, false),
   },
+];
+
+export const setWorkspaceHidden = [
+  set(state`workspace.workspaceHidden`, props`hidden`),
 ];

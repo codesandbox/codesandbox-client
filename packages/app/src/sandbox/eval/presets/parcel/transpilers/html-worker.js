@@ -1,5 +1,4 @@
 import parse from 'posthtml-parser';
-import render from 'posthtml-render';
 import api from 'posthtml/lib/api';
 
 import isUrl from './is-url';
@@ -120,7 +119,10 @@ self.addEventListener('message', async event => {
         }
         const elements = ATTRS[attr];
         // Check for virtual paths
-        if (node.tag === 'a' && node.attrs[attr].lastIndexOf('.') < 1) {
+        if (
+          (node.tag === 'a' && node.attrs[attr].lastIndexOf('.') < 1) ||
+          node.attrs[attr].endsWith('.html')
+        ) {
           continue;
         }
 
@@ -151,17 +153,7 @@ self.addEventListener('message', async event => {
     return node;
   });
 
-  const newHTML = render(res);
-
-  let compiledCode = `
-function setupHTML() {
-  const HTML = ${JSON.stringify(newHTML)}
-  document.open('text/html');
-  document.write(HTML);
-  document.close();
-}
-setupHTML();
-`;
+  let compiledCode = ``;
 
   compiledCode += '\n';
   compiledCode += 'function loadResources() {';

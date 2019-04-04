@@ -1,5 +1,5 @@
 import React from 'react';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { StyledUnlisted, StyledPrivate, Icon } from './elements';
 
@@ -24,14 +24,14 @@ function PrivacyStatus({ privacy, asIcon }) {
 
   if (asIcon) {
     return (
-      <Tooltip title={PRIVACY_MESSAGES[privacy].tooltip}>
+      <Tooltip content={PRIVACY_MESSAGES[privacy].tooltip}>
         {PRIVACY_MESSAGES[privacy].icon}
       </Tooltip>
     );
   }
 
   return (
-    <Tooltip title={PRIVACY_MESSAGES[privacy].tooltip}>
+    <Tooltip content={PRIVACY_MESSAGES[privacy].tooltip}>
       {PRIVACY_MESSAGES[privacy].title}
       <Icon />
     </Tooltip>

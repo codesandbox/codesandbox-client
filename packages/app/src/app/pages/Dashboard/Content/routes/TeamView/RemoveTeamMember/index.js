@@ -1,9 +1,9 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
 
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import history from 'app/utils/history';
-import { dashboardUrl } from 'common/utils/url-generator';
+import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { REMOVE_FROM_TEAM, LEAVE_TEAM } from '../../../../queries';
 
@@ -38,7 +38,9 @@ export default ({
   if (isCreator || isOwnUser) {
     return (
       <Tooltip
-        title={isOwnUser ? 'Leave the team' : `Remove '${name}' from the team`}
+        content={
+          isOwnUser ? 'Leave the team' : `Remove '${name}' from the team`
+        }
         style={{
           fontSize: '1rem',
         }}

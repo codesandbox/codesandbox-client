@@ -1,12 +1,63 @@
 import { clone } from 'mobx-state-tree';
-import { getModulePath } from 'common/sandbox/modules';
-import getDefinition from 'common/templates';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import getDefinition from '@codesandbox/common/lib/templates';
 import { chunk } from 'lodash-es';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
-import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
-import track from 'common/utils/analytics';
+import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
+import track from '@codesandbox/common/lib/utils/analytics';
 
-import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
+import {
+  resolveModuleWrapped,
+  resolveDirectoryWrapped,
+} from '../../utils/resolve-module-wrapped';
+
+export function processSSEUpdates({ state, props, controller }) {
+  const newSandbox = props.sandbox;
+  const oldSandbox = state.get('editor.currentSandbox');
+
+  props.updates.forEach(update => {
+    const { op, path, type } = update;
+    if (type === 'file') {
+      const resolveModuleOld = resolveModuleWrapped(oldSandbox);
+      const resolveModuleNew = resolveModuleWrapped(newSandbox);
+      const oldModule = resolveModuleOld(path);
+      if (op === 'update') {
+        const newModule = resolveModuleNew(path);
+
+        if (oldModule) {
+          const modulePos = oldSandbox.modules.indexOf(oldModule);
+          state.merge(
+            `editor.sandboxes.${oldSandbox.id}.modules.${modulePos}`,
+            newModule
+          );
+        } else {
+          state.push(`editor.sandboxes.${oldSandbox.id}.modules`, newModule);
+        }
+      } else if (op === 'delete') {
+        controller.getSignal('files.removeModule')({
+          moduleShortid: oldModule.shortid,
+        });
+      }
+    } else {
+      const resolveDirectoryOld = resolveDirectoryWrapped(oldSandbox);
+      const resolveDirectoryNew = resolveDirectoryWrapped(newSandbox);
+
+      if (op === 'update') {
+        // Create
+        const newDirectory = resolveDirectoryNew(path);
+        state.push(
+          `editor.sandboxes.${oldSandbox.id}.directories`,
+          newDirectory
+        );
+      } else {
+        const oldDirectory = resolveDirectoryOld(path);
+        controller.getSignal('files.removeDirectory')({
+          directoryShortid: oldDirectory.shortid,
+        });
+      }
+    }
+  });
+}
 
 export function whenModuleIsSelected({ state, props, path }) {
   const currentModule = state.get('editor.currentModule');
@@ -85,6 +136,7 @@ export async function uploadFiles({ api, props, path }) {
               /\.(le|sc|sa)ss$/.test(filePath) ||
               /\.haml$/.test(filePath) ||
               /\.pug$/.test(filePath) ||
+              /\.svg$/.test(filePath) ||
               file.type.startsWith('text/') ||
               file.type === 'application/json') &&
             dataURI.length < MAX_FILE_SIZE
@@ -191,6 +243,8 @@ export function createOptimisticModule({ state, props, utils }) {
     shortid: utils.createOptimisticId(),
     isBinary: props.isBinary === undefined ? false : props.isBinary,
     sourceId: state.get('editor.currentSandbox.sourceId'),
+    insertedAt: new Date().toString(),
+    updatedAt: new Date().toString(),
   };
 
   return { optimisticModule };
@@ -203,6 +257,8 @@ export function createOptimisticDirectory({ state, props, utils }) {
     directoryShortid: props.directoryShortid || null,
     shortid: utils.createOptimisticId(),
     sourceId: state.get('editor.currentSandbox.sourceId'),
+    insertedAt: new Date().toString(),
+    updatedAt: new Date().toString(),
   };
 
   return { optimisticDirectory };
@@ -608,4 +664,8 @@ export function recoverFiles({ recover, controller, state }) {
   }
 
   return {};
+}
+
+export function syncFilesToFS({ props, fsSync }) {
+  fsSync.syncCurrentSandbox(props.sandbox.id);
 }

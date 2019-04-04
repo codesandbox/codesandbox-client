@@ -1,9 +1,13 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import EditIcon from 'react-icons/lib/go/pencil';
+import { graphql } from 'gatsby';
 
 import media from '../utils/media';
 
+import DocSearch from '../components/DocSearch';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
+import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import StickyNavigation from '../components/StickyNavigation';
 
@@ -50,6 +54,7 @@ const DocumentationContent = styled.div`
   }
 
   h2 {
+    font-family: 'Poppins', sans-serif;
     margin: 1.5rem 0;
     font-weight: 400;
     color: white;
@@ -151,16 +156,30 @@ const DocumentationContent = styled.div`
 `;
 
 const Edit = styled.a`
+  transition: 0.3s ease color;
+  display: flex;
+  align-items: center;
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  color: white;
+  top: 2.5rem;
+  right: 2.5rem;
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 500;
-  font-size: 1.125rem;
+  font-size: 1rem;
+  text-decoration: none;
 
   ${media.phone`
     display: none;
   `};
+
+  svg {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-right: 0.5rem;
+  }
+
+  &:hover {
+    color: white;
+  }
 `;
 
 const Heading = styled.div`
@@ -172,13 +191,14 @@ const Heading = styled.div`
     ${({ theme }) => theme.secondary.darken(0.1)()} 0%,
     ${({ theme }) => theme.secondary.darken(0.3)()} 100%
   );
-  padding: 1rem 2rem;
+  padding: 2rem 2rem;
   color: white;
 `;
 
 const Title = styled.h1`
+  font-family: 'Poppins', sans-serif;
   font-size: 2rem;
-  font-weight: 300;
+  font-weight: 500;
 `;
 
 const Description = styled.p`
@@ -197,43 +217,46 @@ export default class Docs extends React.Component {
     const { html, frontmatter, fields } = data.markdownRemark;
 
     return (
-      <Container style={{ overflowX: 'auto' }}>
-        <TitleAndMetaTags
-          title={`${frontmatter.title} - CodeSandbox`}
-          description={frontmatter.description}
-        />
-        <PageContainer>
-          <DocsContainer>
-            <div
-              style={{
-                flex: 1,
-                minWidth: 250,
-              }}
-            >
-              <StickyNavigation docs={docs} />
-            </div>
-            <Article>
-              <Heading>
-                <Title>{frontmatter.title}</Title>
-                <Edit
-                  href={`https://github.com/CompuIves/codesandbox-client/tree/master/packages/homepage/content/${
-                    fields.path
-                  }`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Edit this page
-                </Edit>
-                <Description>{frontmatter.description}</Description>
-              </Heading>
+      <Layout>
+        <Container style={{ overflowX: 'auto' }}>
+          <TitleAndMetaTags
+            title={`${frontmatter.title} - CodeSandbox Documentation`}
+            description={frontmatter.description}
+          />
+          <PageContainer>
+            <DocsContainer>
+              <div
+                style={{
+                  flex: 1,
+                  minWidth: 250,
+                }}
+              >
+                <DocSearch />
+                <StickyNavigation docs={docs} />
+              </div>
+              <Article>
+                <Heading>
+                  <Title>{frontmatter.title}</Title>
+                  <Edit
+                    href={`https://github.com/CompuIves/codesandbox-client/tree/master/packages/homepage/content/${
+                      fields.path
+                    }`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    <EditIcon /> Edit this page
+                  </Edit>
+                  <Description>{frontmatter.description}</Description>
+                </Heading>
 
-              <DocumentationContent
-                dangerouslySetInnerHTML={{ __html: html }}
-              />
-            </Article>
-          </DocsContainer>
-        </PageContainer>
-      </Container>
+                <DocumentationContent
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
+              </Article>
+            </DocsContainer>
+          </PageContainer>
+        </Container>
+      </Layout>
     );
   }
 }
@@ -241,7 +264,7 @@ export default class Docs extends React.Component {
 export const pageQuery = graphql`
   query Docs($slug: String!) {
     allMarkdownRemark(
-      filter: { id: { regex: "/docs/" } }
+      filter: { fields: { slug: { regex: "/docs/" } } }
       sort: { fields: [fileAbsolutePath], order: ASC }
     ) {
       edges {
@@ -253,7 +276,6 @@ export const pageQuery = graphql`
             title
           }
           fields {
-            slug
             url
           }
         }
@@ -266,7 +288,6 @@ export const pageQuery = graphql`
         description
       }
       fields {
-        slug
         path
       }
     }

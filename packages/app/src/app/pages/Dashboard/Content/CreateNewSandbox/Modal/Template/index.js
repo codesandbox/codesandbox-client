@@ -1,9 +1,10 @@
 import React from 'react';
-import getIcon from 'common/templates/icons';
+import getIcon from '@codesandbox/common/lib/templates/icons';
 
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { Container, IconContainer, Title, SubTitle } from './elements';
 
-export default ({ template, width, selectTemplate, small }) => {
+export default ({ template, subtitle, selectTemplate, small }) => {
   const Icon = getIcon(template.name);
 
   const select = () => selectTemplate(template);
@@ -14,19 +15,18 @@ export default ({ template, width, selectTemplate, small }) => {
     <Container
       onClick={select}
       color={template.color}
-      width={width}
       onKeyDown={e => {
-        if (e.keyCode === 13) {
+        if (e.keyCode === ENTER) {
           select();
         }
       }}
       tabIndex="0"
     >
       <div style={{ width: '100%' }}>
-        <Title small={small} color={template.color}>
-          {template.niceName}
-        </Title>
-        {!small && <SubTitle>{template.name}</SubTitle>}
+        <Title color={template.color}>{template.niceName}</Title>
+        {(!small || subtitle) && (
+          <SubTitle>{subtitle || template.name}</SubTitle>
+        )}
       </div>
       <IconContainer>
         <Icon width={small ? 24 : size} height={small ? 24 : 32} />

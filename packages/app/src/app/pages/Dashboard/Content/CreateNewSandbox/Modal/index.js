@@ -1,6 +1,6 @@
 import React from 'react';
-import * as templates from 'common/templates';
-import { chunk, sortBy } from 'lodash-es';
+
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';
@@ -10,49 +10,30 @@ import {
   Container,
   InnerContainer,
   Templates,
-  Title,
   ImportChoice,
   ImportChoices,
+  Tab,
+  Button,
+  TabContainer,
+  Title,
 } from './elements';
 import Template from './Template';
-
-const usedTemplates = sortBy(
-  Object.keys(templates)
-    .filter(x => x !== 'default')
-    .map(t => templates[t])
-    .filter(t => t.showOnHomePage),
-  'niceName'
-);
-
-const TEMPLATE_BASE_WIDTH = 150;
-const MAIN_TEMPLATE_BASE_WIDTH = 190;
+import availableTemplates from './availableTemplates';
 
 export default class Modal extends React.PureComponent {
+  state = {
+    selectedTab: 0,
+  };
+
   selectTemplate = template => {
+    track('New Sandbox Modal - Select Template', { template });
     this.props.createSandbox(template);
   };
 
   render() {
-    const { width, forking = false, closing = false } = this.props;
+    const { forking = false, closing = false } = this.props;
 
-    const paddedWidth = width;
-    const mainTemplates = usedTemplates.filter(t => t.main && !t.isServer);
-    const otherTemplates = usedTemplates.filter(t => !t.main && !t.isServer);
-    const mainServerTemplates = usedTemplates.filter(t => t.main && t.isServer);
-    const otherServerTemplates = usedTemplates.filter(
-      t => !t.main && t.isServer
-    );
-
-    const mainTemplatesPerRow = Math.max(
-      1,
-      paddedWidth / MAIN_TEMPLATE_BASE_WIDTH
-    );
-    const templatesPerRow = Math.max(1, paddedWidth / TEMPLATE_BASE_WIDTH);
-
-    const mainRows = chunk(mainTemplates, mainTemplatesPerRow);
-    const rows = chunk(otherTemplates, templatesPerRow);
-    const mainServerRows = chunk(mainServerTemplates, mainTemplatesPerRow);
-    const serverRows = chunk(otherServerTemplates, templatesPerRow);
+    const { selectedTab } = this.state;
 
     return (
       <Container
@@ -60,68 +41,47 @@ export default class Modal extends React.PureComponent {
         forking={forking}
         onMouseDown={e => e.preventDefault()}
       >
+        <TabContainer forking={forking} closing={closing}>
+          {availableTemplates.map(({ name }, i) => (
+            <Button
+              key={name}
+              selected={selectedTab === i}
+              onClick={() => this.setState({ selectedTab: i })}
+            >
+              {name}
+            </Button>
+          ))}
+        </TabContainer>
+
         <InnerContainer forking={forking} closing={closing}>
-          <Title>Client Templates</Title>
-          {mainRows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates key={i}>
-              {ts.map(t => (
-                <Template
-                  width={Math.floor(paddedWidth / mainTemplatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                />
-              ))}
-            </Templates>
+          {availableTemplates.map((tab, i) => (
+            <Tab key={tab.name} visible={selectedTab === i}>
+              <Templates>
+                {tab.templates &&
+                  tab.templates.map(template => (
+                    <Template
+                      key={template.name}
+                      template={template}
+                      selectTemplate={this.selectTemplate}
+                    />
+                  ))}
+                {tab.types &&
+                  tab.types.map(type => (
+                    <>
+                      <Title>{type.name}</Title>
+                      {type.templates.map(template => (
+                        <Template
+                          key={template.name}
+                          template={template}
+                          selectTemplate={this.selectTemplate}
+                        />
+                      ))}
+                    </>
+                  ))}
+              </Templates>
+            </Tab>
           ))}
-
-          {rows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates style={{ fontSize: '.8rem' }} key={i}>
-              {ts.map(t => (
-                <Template
-                  small
-                  width={Math.floor(paddedWidth / templatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                />
-              ))}
-            </Templates>
-          ))}
-
-          <Title>Server Templates</Title>
-          {mainServerRows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates key={i}>
-              {ts.map(t => (
-                <Template
-                  width={Math.floor(paddedWidth / mainTemplatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                />
-              ))}
-            </Templates>
-          ))}
-
-          {serverRows.map((ts, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Templates style={{ fontSize: '.8rem' }} key={i}>
-              {ts.map(t => (
-                <Template
-                  small
-                  width={Math.floor(paddedWidth / templatesPerRow - 16)}
-                  key={t.name}
-                  template={t}
-                  selectTemplate={this.selectTemplate}
-                />
-              ))}
-            </Templates>
-          ))}
-
-          <ImportChoices style={{ marginTop: '1.5rem' }}>
+          <ImportChoices>
             <ImportChoice
               href="/docs/importing#import-from-github"
               target="_blank"

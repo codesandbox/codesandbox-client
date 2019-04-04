@@ -2,7 +2,13 @@ import { push, set, concat } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import { ensureOwnedEditable, closeModal } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
-import { closeTabByIndex, setModal, callVSCodeCallback } from '../../actions';
+import {
+  closeTabByIndex,
+  setModal,
+  callVSCodeCallback,
+  callVSCodeCallbackError,
+  getSandbox,
+} from '../../actions';
 import {
   sendModuleCreated,
   sendModuleDeleted,
@@ -27,6 +33,21 @@ export const getUploadedFiles = [
     error: [
       addNotification('Unable to get uploaded files information', 'error'),
     ],
+  },
+];
+
+export const syncSandbox = [
+  set(props`id`, state`editor.currentId`),
+  getSandbox,
+  {
+    success: [actions.processSSEUpdates],
+    error: [
+      addNotification(
+        "We weren't able to retrieve the latest files of the sandbox, please refresh",
+        'error'
+      ),
+    ],
+    notFound: [],
   },
 ];
 
@@ -55,7 +76,10 @@ export const massCreateModules = [
       sendMassModuleCreated,
       callVSCodeCallback,
     ],
-    error: [],
+    error: [
+      callVSCodeCallbackError,
+      addNotification('Unable to create new files', 'error'),
+    ],
   },
 ];
 

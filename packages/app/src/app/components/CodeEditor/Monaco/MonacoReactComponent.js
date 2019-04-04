@@ -35,11 +35,11 @@ class MonacoEditor extends React.PureComponent {
     }
 
     // eslint-disable-next-line global-require
-    require('app/vscode/dev-bootstrap').default(['vs/editor/editor.main'])(
-      () => {
-        this.initMonaco();
-      }
-    );
+    require('app/vscode/dev-bootstrap').default(false, [
+      'vs/editor/editor.main',
+    ])(() => {
+      this.initMonaco();
+    });
   };
 
   initMonaco = () => {
@@ -64,20 +64,23 @@ class MonacoEditor extends React.PureComponent {
         // Font is eg. '"aaaa"'
         firstFont = JSON.parse(firstFont);
       }
-      const font = new FontFaceObserver(firstFont);
 
-      font.load().then(
-        () => {
-          if (this.editor && this.props.getEditorOptions) {
-            this.editor.updateOptions(this.props.getEditorOptions());
+      if (firstFont === 'dm') {
+        const font = new FontFaceObserver(firstFont);
+
+        font.load().then(
+          () => {
+            if (this.editor && this.props.getEditorOptions) {
+              this.editor.updateOptions(this.props.getEditorOptions());
+            }
+          },
+          () => {
+            // Font was not loaded in 3s, do nothing
           }
-        },
-        () => {
-          // Font was not loaded in 3s, do nothing
-        }
-      );
+        );
 
-      appliedOptions.fontFamily = fonts.slice(1).join(', ');
+        appliedOptions.fontFamily = fonts.slice(1).join(', ');
+      }
 
       this.editor = context.monaco.editor[
         diffEditor ? 'createDiffEditor' : 'create'

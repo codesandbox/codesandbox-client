@@ -1,0 +1,77 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [],
+	"monokai": [],
+	"monokai_dimmed": [],
+	"quietlight": [],
+	"red": [
+		{
+			"index": 0,
+			"content": "s",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 0,
+			"content": "wagger",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 6,
+			"content": "i",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 6,
+			"content": "nfo",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 9,
+			"content": "d",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 9,
+			"content": "escription",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 19,
+			"content": "t",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 19,
+			"content": "itle",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 24,
+			"content": "v",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 24,
+			"content": "ersion",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		}
+	],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": []
+}

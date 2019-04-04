@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Media from 'react-media';
 
-import Fullscreen from 'common/components/flex/Fullscreen';
-import Centered from 'common/components/flex/Centered';
-import Relative from 'common/components/Relative';
+import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+import Relative from '@codesandbox/common/lib/components/Relative';
 
 import {
   angular,
@@ -15,7 +15,7 @@ import {
   parcel,
   cxjs,
   dojo,
-} from 'common/templates';
+} from '@codesandbox/common/lib/templates';
 
 import Background from './Background';
 import HomeTitle from './Title';
@@ -26,7 +26,7 @@ import getScrollPos from '../../../utils/scroll';
 
 import media from '../../../utils/media';
 
-const Container = Centered.extend`
+const Container = styled(Centered)`
   position: relative;
   width: 100%;
   height: 100vh;
@@ -47,7 +47,7 @@ const Container = Centered.extend`
 `};
 `;
 
-const Message = styled.div`
+const Message = styled.h2`
   text-align: center;
   font-weight: 200;
 

@@ -1,0 +1,438 @@
+{
+	"abyss": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#DDBB88",
+			"newColor": "#F280D0"
+		}
+	],
+	"dark_vs": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#9CDCFE",
+			"newColor": "#569CD6"
+		}
+	],
+	"light_vs": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#FF0000",
+			"newColor": "#0000FF"
+		}
+	],
+	"hc_black": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#9CDCFE",
+			"newColor": "#569CD6"
+		}
+	],
+	"dark_plus": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#9CDCFE",
+			"newColor": "#569CD6"
+		}
+	],
+	"light_plus": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#FF0000",
+			"newColor": "#0000FF"
+		},
+		{
+			"index": 68,
+			"content": "1",
+			"color": "#FF0000",
+			"newColor": "#001080"
+		}
+	],
+	"kimbie_dark": [
+		{
+			"index": 51,
+			"content": "_",
+			"color": "#F79A32",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 68,
+			"content": "1",
+			"color": "#F79A32",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 80,
+			"content": "_",
+			"color": "#F79A32",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 87,
+			"content": "$",
+			"color": "#889B4A",
+			"newColor": "#98676A"
+		},
+		{
+			"index": 88,
+			"content": "Command",
+			"color": "#889B4A",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 97,
+			"content": "_",
+			"color": "#F79A32",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 109,
+			"content": "matches",
+			"color": "#F79A32",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 116,
+			"content": "matches",
+			"color": "#F79A32",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 152,
+			"content": "env:",
+			"color": "#DC3958",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 164,
+			"content": "env:",
+			"color": "#DC3958",
+			"newColor": "#D3AF86"
+		},
+		{
+			"index": 175,
+			"content": "$",
+			"color": "#889B4A",
+			"newColor": "#98676A"
+		},
+		{
+			"index": 177,
+			"content": "ADXSDKProgramFiles",
+			"color": "#889B4A",
+			"newColor": "#DC3958"
+		},
+		{
+			"index": 205,
+			"content": "env:",
+			"color": "#DC3958",
+			"newColor": "#D3AF86"
+		}
+	],
+	"monokai": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#A6E22E",
+			"newColor": "#AE81FF"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#D0B344",
+			"newColor": "#FF0080"
+		},
+		{
+			"index": 68,
+			"content": "1",
+			"color": "#D0B344",
+			"newColor": "#6089B4"
+		},
+		{
+			"index": 86,
+			"content": "\"",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		},
+		{
+			"index": 87,
+			"content": "$",
+			"color": "#D08442",
+			"newColor": "#676867"
+		},
+		{
+			"index": 89,
+			"content": "  2>&1 & set",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		},
+		{
+			"index": 89,
+			"content": "\"",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		},
+		{
+			"index": 101,
+			"content": "'",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		},
+		{
+			"index": 101,
+			"content": "^([^=]+)=(.*)",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		},
+		{
+			"index": 101,
+			"content": "'",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		},
+		{
+			"index": 111,
+			"content": "1",
+			"color": "#6089B4",
+			"newColor": "#C7444A"
+		},
+		{
+			"index": 118,
+			"content": "2",
+			"color": "#6089B4",
+			"newColor": "#C7444A"
+		},
+		{
+			"index": 174,
+			"content": "\"",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		},
+		{
+			"index": 175,
+			"content": "$",
+			"color": "#D08442",
+			"newColor": "#676867"
+		},
+		{
+			"index": 176,
+			"content": "env:",
+			"color": "#D08442",
+			"newColor": "#C7444A"
+		},
+		{
+			"index": 178,
+			"content": "\\Microsoft Visual Studio 12.0",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		},
+		{
+			"index": 178,
+			"content": "\"",
+			"color": "#D08442",
+			"newColor": "#9AA83A"
+		}
+	],
+	"quietlight": [
+		{
+			"index": 87,
+			"content": "$",
+			"color": "#448C27",
+			"newColor": "#4B83CD"
+		},
+		{
+			"index": 88,
+			"content": "Command",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		},
+		{
+			"index": 175,
+			"content": "$",
+			"color": "#448C27",
+			"newColor": "#4B83CD"
+		},
+		{
+			"index": 177,
+			"content": "ADXSDKProgramFiles",
+			"color": "#448C27",
+			"newColor": "#7A3E9D"
+		}
+	],
+	"red": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#FEC758",
+			"newColor": "#994646"
+		},
+		{
+			"index": 86,
+			"content": "\"",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 87,
+			"content": "$",
+			"color": "#9DF39F",
+			"newColor": "#F12727"
+		},
+		{
+			"index": 88,
+			"content": "Command",
+			"color": "#9DF39F",
+			"newColor": "#EDEF7D"
+		},
+		{
+			"index": 89,
+			"content": "  2>&1 & set",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 89,
+			"content": "\"",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 101,
+			"content": "'",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 101,
+			"content": "^([^=]+)=(.*)",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 101,
+			"content": "'",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 152,
+			"content": "env:",
+			"color": "#FB9A4B",
+			"newColor": "#9DF39F"
+		},
+		{
+			"index": 164,
+			"content": "env:",
+			"color": "#FB9A4B",
+			"newColor": "#9DF39F"
+		},
+		{
+			"index": 174,
+			"content": "\"",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 175,
+			"content": "$",
+			"color": "#9DF39F",
+			"newColor": "#F12727"
+		},
+		{
+			"index": 177,
+			"content": "ADXSDKProgramFiles",
+			"color": "#9DF39F",
+			"newColor": "#EDEF7D"
+		},
+		{
+			"index": 178,
+			"content": "\\Microsoft Visual Studio 12.0",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 178,
+			"content": "\"",
+			"color": "#9DF39F",
+			"newColor": "#CD8D8D"
+		},
+		{
+			"index": 205,
+			"content": "env:",
+			"color": "#FB9A4B",
+			"newColor": "#9DF39F"
+		}
+	],
+	"solarized_dark": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#93A1A1",
+			"newColor": "#B58900"
+		},
+		{
+			"index": 68,
+			"content": "1",
+			"color": "#93A1A1",
+			"newColor": "#268BD2"
+		}
+	],
+	"solarized_light": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#93A1A1",
+			"newColor": "#B58900"
+		},
+		{
+			"index": 68,
+			"content": "1",
+			"color": "#93A1A1",
+			"newColor": "#268BD2"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"index": 66,
+			"content": "Mandatory",
+			"color": "#FF9DA4",
+			"newColor": "#FFC58F"
+		},
+		{
+			"index": 88,
+			"content": "Command",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 152,
+			"content": "env:",
+			"color": "#FF9DA4",
+			"newColor": "#FFFFFF"
+		},
+		{
+			"index": 164,
+			"content": "env:",
+			"color": "#FF9DA4",
+			"newColor": "#FFFFFF"
+		},
+		{
+			"index": 177,
+			"content": "ADXSDKProgramFiles",
+			"color": "#D1F1A9",
+			"newColor": "#FF9DA4"
+		},
+		{
+			"index": 205,
+			"content": "env:",
+			"color": "#FF9DA4",
+			"newColor": "#FFFFFF"
+		}
+	]
+}

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Button from 'app/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import { WorkspaceInputContainer } from '../../elements';
-
 import { ButtonContainer } from './elements';
 
 const initialState = {
@@ -25,8 +25,7 @@ export default class AddVersion extends React.PureComponent {
   };
 
   handleKeyUp = e => {
-    if (e.keyCode === 13) {
-      // Enter
+    if (e.keyCode === ENTER) {
       this.addResource();
     }
   };

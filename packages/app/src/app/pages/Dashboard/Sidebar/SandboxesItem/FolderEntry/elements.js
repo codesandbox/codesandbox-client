@@ -16,6 +16,8 @@ export const Container = styled(NavLink)`
 
   user-select: none;
 
+  cursor: pointer;
+
   &:hover {
     color: rgba(255, 255, 255, 0.8);
   }

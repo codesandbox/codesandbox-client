@@ -5,13 +5,14 @@ import { dispatch } from 'codesandbox-api';
 import { inject, observer } from 'mobx-react';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
-import Margin from 'common/components/spacing/Margin';
-import Button from 'app/components/Button';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 import { Description, WorkspaceInputContainer } from '../../elements';
 
 import Status from './Status';
 import Tasks from './Tasks';
+import EnvironmentVariables from './EnvVars';
 
 const SubTitle = styled.div`
   text-transform: uppercase;
@@ -32,10 +33,6 @@ const Server = ({ store }) => {
       <Description>
         This sandbox is executed on a server. You can control the server from
         this panel.
-      </Description>
-      <Description>
-        This functionality is in <strong>beta</strong>. It can behave
-        differently than you expect, handle with care!
       </Description>
 
       <Margin top={1}>
@@ -60,24 +57,41 @@ const Server = ({ store }) => {
           </WorkspaceInputContainer>
         </Margin>
       </Margin>
-      <WorkspaceInputContainer style={{ marginTop: '1rem' }}>
-        <Button
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          small
-          block
-          disabled={disconnected}
-          onClick={() =>
-            dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
-          }
-        >
-          <PowerIcon style={{ fontSize: '1.125em', marginRight: '.25rem ' }} />{' '}
-          Restart Sandbox
-        </Button>
-      </WorkspaceInputContainer>
+
+      <Margin top={1}>
+        <SubTitle>Secret Keys</SubTitle>
+        <Description>
+          Secrets are available as environment variables. They are kept private
+          and will not be transferred between forks.
+        </Description>
+        <Margin top={0.5}>
+          <EnvironmentVariables />
+        </Margin>
+      </Margin>
+
+      <Margin top={1} bottom={0.5}>
+        <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
+        <WorkspaceInputContainer>
+          <Button
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            small
+            block
+            disabled={disconnected}
+            onClick={() =>
+              dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
+            }
+          >
+            <PowerIcon
+              style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+            />{' '}
+            Restart Sandbox
+          </Button>
+        </WorkspaceInputContainer>
+      </Margin>
     </div>
   );
 };

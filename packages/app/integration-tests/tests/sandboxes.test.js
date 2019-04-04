@@ -17,7 +17,6 @@ const SANDBOXES = [
   'lp5rjr0z4z',
   'nOymMxyY',
   'y26rj99yov', // react transition
-  { id: 'X6npLXPRW', threshold: 0.05 }, // react-table
   '6w66jzw3mn', // material-design & preact
   '4j7m47vlm4', // material-ui
   'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
@@ -31,6 +30,12 @@ const SANDBOXES = [
   'github/algolia/doc-onboarding/tree/master/demos/angular/media', // algolia angular demo
   { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
   { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
+  'pm79km5lmj', // babel macros with styled components
+  'j2wpjwqj93', // sandbox with need of transpiling in node_modules
+  '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
+  '31kn7voz4q', // cxjs
+  'zw9zjy0683', // aurelia
+  'zx22owojr3', // vue v-slot test
 ];
 
 function pageLoaded(page) {

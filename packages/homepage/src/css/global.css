@@ -11,7 +11,7 @@ body {
   min-height: 100%;
   -webkit-text-size-adjust: 100%;
   height: 100%;
-  background: #1c2022;
+  background: #111518;
 }
 
 input {
@@ -28,6 +28,10 @@ input {
 .disable-hover,
 .disable-hover * {
   pointer-events: none !important;
+}
+
+iframe {
+  margin-bottom: 0;
 }
 
 a {

@@ -1,8 +1,8 @@
 import JSON from 'json5';
 
-import codesandbox from 'common/themes/codesandbox.json';
+import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 
-import themes from 'common/themes';
+import themes from '@codesandbox/common/lib/themes';
 
 const editorBackground = 'editor.background';
 const editorForeground = 'editor.foreground';
@@ -33,7 +33,7 @@ const vsDark = {
 // parses theme, uncommenting commented colors
 // and using json5 to strip comments
 function parseTheme(theme) {
-  return JSON.parse(theme.replace('/^s*//"', '"'));
+  return JSON.parse(theme.replace(/^\s*\/\/"/gm, '"'));
 }
 
 function fetchTheme(foundTheme) {
@@ -97,11 +97,22 @@ const findTheme = async (themeName, customTheme) => {
   };
 };
 
+const classnames = {
+  dark: 'vs-dark',
+  light: 'vs',
+  hc: 'hc-black',
+};
+
 export default async function getTheme(themeName, customTheme) {
   const foundTheme = await findTheme(themeName, customTheme);
-
   // Explicitly check for dark as that is the default
   const isLight = foundTheme.type !== 'dark' && foundTheme.type !== 'hc';
+  // We need to set this so VSCode knows that the last known theme is the right one. This prevents
+  // flickering for light themes.
+  document.body.classList.remove('vs');
+  document.body.classList.remove('vs-dark');
+  document.body.classList.remove('hc-black');
+  document.body.classList.add(classnames[foundTheme.type] || 'vs');
 
   const colors = {
     ...(isLight ? vs : vsDark),

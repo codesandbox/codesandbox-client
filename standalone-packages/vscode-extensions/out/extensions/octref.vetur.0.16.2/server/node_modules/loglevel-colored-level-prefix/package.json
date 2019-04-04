@@ -1,0 +1,75 @@
+{
+  "name": "loglevel-colored-level-prefix",
+  "version": "1.0.0",
+  "description": "loglevel plugin that adds colored level prefix (node only)",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "nps",
+    "test": "nps test",
+    "commitmsg": "opt --in commit-msg --exec \"validate-commit-msg\"",
+    "precommit": "opt --in pre-commit --exec \"npm start validate\"",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "loglevel-plugin"
+  ],
+  "author": "Kent C. Dodds <kent@doddsfamily.us> (http://kentcdodds.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "loglevel": "^1.4.1"
+  },
+  "devDependencies": {
+    "all-contributors-cli": "^4.0.1",
+    "babel-cli": "^6.18.0",
+    "babel-jest": "^19.0.0",
+    "babel-preset-env": "^1.1.8",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-register": "^6.18.0",
+    "codecov": "^1.0.1",
+    "commitizen": "^2.8.6",
+    "cz-conventional-changelog": "^2.0.0",
+    "eslint": "^3.10.2",
+    "eslint-config-kentcdodds": "^11.1.0",
+    "husky": "^0.13.1",
+    "jest-cli": "^19.0.2",
+    "opt-cli": "^1.5.1",
+    "p-s": "^3.0.3",
+    "rimraf": "^2.5.4",
+    "semantic-release": "^6.3.2",
+    "validate-commit-msg": "^2.8.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "kentcdodds",
+      "kentcdodds/jest"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kentcdodds/loglevel-colored-level-prefix.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kentcdodds/loglevel-colored-level-prefix/issues"
+  },
+  "homepage": "https://github.com/kentcdodds/loglevel-colored-level-prefix#readme"
+}

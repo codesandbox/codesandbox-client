@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import { createZip } from '../Utils/create-zip';
+import { createZip, BLOB_ID } from '../Utils/create-zip';
 
 export default async function deploy(sandbox) {
   // We first get the zip file, this is what we essentially need to have deployed.
@@ -7,7 +7,8 @@ export default async function deploy(sandbox) {
   const zipFile = await createZip(
     sandbox,
     sandbox.modules,
-    sandbox.directories
+    sandbox.directories,
+    false
   );
 
   if (!zipFile) {
@@ -23,9 +24,18 @@ export default async function deploy(sandbox) {
     const file = contents.files[filePath];
 
     if (!file.dir) {
+      let content = await file.async('text'); // eslint-disable-line no-await-in-loop
+      let isBinary = false;
+
+      // It's marked as a binary
+      if (content.startsWith(BLOB_ID)) {
+        isBinary = true;
+        content = content.replace(BLOB_ID, '');
+      }
+
       apiData.sandbox.push({
-        content: await file.async('text'), // eslint-disable-line no-await-in-loop
-        isBinary: false,
+        content,
+        isBinary,
         path: filePath,
       });
     }

@@ -63,7 +63,7 @@ export default class Step extends React.PureComponent {
 
     return (
       <Container
-        innerRef={el => {
+        ref={el => {
           if (el) {
             getY(i, el.getBoundingClientRect().top);
           }

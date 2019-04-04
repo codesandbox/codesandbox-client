@@ -1,5 +1,5 @@
 // import * as debug from 'debug';
-import host from './host';
+// import host from './host';
 
 const bundlers: Map<Window, string> = new Map();
 
@@ -17,7 +17,9 @@ const parentOriginListener = (e: MessageEvent) => {
   }
 };
 
-self.addEventListener('message', parentOriginListener);
+if (typeof window !== 'undefined') {
+  self.addEventListener('message', parentOriginListener);
+}
 
 export function resetState() {
   parentOrigin = null;
@@ -49,7 +51,7 @@ export function dispatch(message: any) {
 }
 
 export type Callback = (
-  message: Object,
+  message: object,
   source?: MessageEvent['source'] | null | undefined
 ) => void;
 
@@ -69,7 +71,7 @@ export function listen(callback: Callback): () => void {
   };
 }
 
-export function notifyListeners(data: Object, source?: MessageEvent['source']) {
+export function notifyListeners(data: object, source?: MessageEvent['source']) {
   Object.keys(listeners).forEach(listenerId => {
     if (listeners[listenerId]) {
       listeners[listenerId](data, source);
@@ -77,7 +79,7 @@ export function notifyListeners(data: Object, source?: MessageEvent['source']) {
   });
 }
 
-function notifyFrames(message: Object) {
+function notifyFrames(message: object) {
   const rawMessage = JSON.parse(JSON.stringify(message));
   bundlers.forEach((origin, frame) => {
     if (frame && frame.postMessage) {
@@ -111,8 +113,10 @@ export function registerFrame(frame: Window, origin: string) {
   );
 }
 
-// We now start listening so we can let our listeners know
-window.addEventListener('message', eventListener);
+if (typeof window !== 'undefined') {
+  // We now start listening so we can let our listeners know
+  window.addEventListener('message', eventListener);
+}
 
 export function reattach() {
   window.addEventListener('message', eventListener);

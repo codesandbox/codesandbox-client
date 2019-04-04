@@ -31,9 +31,19 @@ const Button = styled.button`
     margin-right: 0.25rem;
   }
 
-  &:hover {
-    background-color: #fd2439fa;
-  }
+  ${props =>
+    props.disable
+      ? css`
+          pointer-events: none;
+          background-color: rgba(0, 0, 0, 0.3);
+          border-color: rgba(0, 0, 0, 0.2);
+          color: rgba(255, 255, 255, 0.7);
+        `
+      : css`
+          &:hover {
+            background-color: #fd2439fa;
+          }
+        `};
 `;
 
 const LoadingDiv = styled.div`
@@ -82,6 +92,7 @@ export default class LiveButton extends React.PureComponent {
     const {
       onClick,
       isLoading,
+      disable,
       showIcon = true,
       message = 'Go Live',
     } = this.props;
@@ -92,6 +103,7 @@ export default class LiveButton extends React.PureComponent {
 
     return (
       <Button
+        disable={disable}
         onMouseEnter={this.startHovering}
         onMouseLeave={this.stopHovering}
         onClick={onClick}

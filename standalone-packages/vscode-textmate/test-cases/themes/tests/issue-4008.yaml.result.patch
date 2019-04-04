@@ -1,0 +1,65 @@
+{
+	"abyss": [],
+	"dark_vs": [],
+	"light_vs": [],
+	"hc_black": [],
+	"dark_plus": [],
+	"light_plus": [],
+	"kimbie_dark": [],
+	"monokai": [],
+	"monokai_dimmed": [],
+	"quietlight": [],
+	"red": [
+		{
+			"index": 1,
+			"content": "b",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 1,
+			"content": "lue",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 6,
+			"content": "n",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 6,
+			"content": "ot_blue",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 11,
+			"content": "b",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 11,
+			"content": "lue",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 16,
+			"content": "n",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		},
+		{
+			"index": 16,
+			"content": "ot_blue",
+			"color": "#CD8D8D",
+			"newColor": "#FEC758"
+		}
+	],
+	"solarized_dark": [],
+	"solarized_light": [],
+	"tomorrow_night_blue": []
+}

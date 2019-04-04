@@ -27,7 +27,8 @@ class StorageManagementModal extends React.Component {
           <Title>Storage Management</Title>
           <SubTitle>
             Used {filesize(store.usedStorage)}
-            {' / '}Total {filesize(store.maxStorage)}
+            {' / '}
+            Total {filesize(store.maxStorage)}
           </SubTitle>
         </JustifiedArea>
         <Description>
@@ -39,6 +40,12 @@ class StorageManagementModal extends React.Component {
             <FilesList
               files={store.uploadedFiles}
               deleteFile={signals.files.deletedUploadedFile}
+              deleteFiles={files =>
+                files.map(id => signals.files.deletedUploadedFile({ id }))
+              }
+              addFilesToSandbox={files =>
+                files.map(signals.files.addedFileToSandbox)
+              }
               addFileToSandbox={signals.files.addedFileToSandbox}
             />
           )}

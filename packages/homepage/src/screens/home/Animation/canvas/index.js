@@ -130,13 +130,11 @@ class Canvas {
             }
           }
         }
-      } else {
-        if (!this.lowPerf) {
-          this.ctx.clearRect(0, 0, this.stage.width, this.stage.height);
+      } else if (!this.lowPerf) {
+        this.ctx.clearRect(0, 0, this.stage.width, this.stage.height);
 
-          for (let i = 0; i < this.dots.length; i++) {
-            this.dots[i].draw(this.ctx);
-          }
+        for (let i = 0; i < this.dots.length; i++) {
+          this.dots[i].draw(this.ctx);
         }
       }
 
@@ -187,4 +185,6 @@ export default function start(el: HTMLElement) {
     c.loop();
     return c;
   }
+
+  return null;
 }

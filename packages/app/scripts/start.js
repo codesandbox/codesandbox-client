@@ -196,7 +196,12 @@ function addMiddleware(devServer, index) {
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       cors({
-        origin: ['http://localhost:3000', 'http://localhost:3002'],
+        origin: [
+          'http://localhost:3000',
+          'http://localhost:3002',
+          'http://localhost:8000',
+          'http://localhost:8001',
+        ],
         credentials: true,
       })
     );
@@ -208,14 +213,14 @@ function addMiddleware(devServer, index) {
       })
     );
 
-    devServer.use(
-      '/socket.io',
-      proxy({
-        target: 'https://sse.codesandbox.io',
-        changeOrigin: true,
-        secure: false,
-      })
-    );
+    // devServer.use(
+    //   '/socket.io',
+    //   proxy({
+    //     target: 'https://sse.codesandbox.io',
+    //     changeOrigin: true,
+    //     secure: false,
+    //   })
+    // );
   }
   if (process.env.VSCODE) {
     devServer.use(
@@ -253,11 +258,24 @@ function runDevServer(port, protocol, index) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
-    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
+    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.test',
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
+    proxy: {
+      '/public/vscode-extensions/**': {
+        target: `${protocol}://${
+          process.env.LOCAL_SERVER ? 'localhost:3000' : 'codesandbox.test'
+        }`,
+        bypass: req => {
+          if (req.method === 'HEAD') {
+            // A hack to support HEAD calls for BrowserFS
+            req.method = 'GET';
+          }
+        },
+      },
+    },
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.

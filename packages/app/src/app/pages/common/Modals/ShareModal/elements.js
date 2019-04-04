@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Preference from 'common/components/Preference';
+import Preference from '@codesandbox/common/lib/components/Preference';
 
 export const FilesContainer = styled.div`
   max-height: 300px;
@@ -7,7 +7,7 @@ export const FilesContainer = styled.div`
 `;
 
 export const PaddedPreference = styled(Preference)`
-  color: rgba(255, 255, 255, 0.6);
+  color: #e5e5e5;
   padding-bottom: 1rem;
 
   &:last-child {
@@ -19,39 +19,27 @@ export const ShareOptions = styled.div`
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.8);
   padding: 1rem;
-  background-color: ${props => props.theme.background2};
-
-  h3 {
-    text-align: center;
-    margin: 0;
-    margin-bottom: 1rem;
-    font-weight: 400;
-  }
+  background-color: #1c2022;
 `;
 
 export const Inputs = styled.div`
   margin-top: 0.5rem;
-  input {
-    border: none;
-    outline: none;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 0.2rem;
-    margin: 0.5rem 0;
-    border-radius: 4px;
-  }
+  color: #e5e5e5;
 
+  input,
   textarea {
     border: none;
     outline: none;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: #333739;
+    color: #e5e5e5;
     padding: 0.2rem;
     margin: 0.5rem 0;
-    height: 100px;
     border-radius: 4px;
+    width: 100%;
+  }
+
+  textarea {
+    height: 100px;
   }
 `;
 
@@ -61,32 +49,38 @@ export const LinkName = styled.div`
   margin-bottom: 0;
 `;
 
-export const Divider = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-`;
-
-export const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 100%;
-
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0 0.75rem;
-
-  h4 {
-    margin: 1rem 0;
-    font-weight: 400;
-  }
-`;
-
 export const ButtonContainer = styled.div`
   margin-top: 0.25rem;
 `;
 
-export const ButtonName = styled.div`
-  margin: 0.5rem 0;
+export const Title = styled.h4`
+  font-family: 'Roboto';
   font-weight: 500;
-  margin-bottom: 0;
+  font-size: 18px;
+  padding-bottom: 20px;
+  margin: 0;
+  padding-top: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 10px;
+  }
+`;
+
+export const Wrapper = styled.section`
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(2, 1fr);
+`;
+
+export const SideTitle = styled.span`
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #e5e5e5;
+  display: block;
 `;

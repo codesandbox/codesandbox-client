@@ -22,6 +22,7 @@ export default function initialize() {
       transpiler: babelTranspiler,
       options: {
         dynamicCSSModules: true,
+        compileNodeModulesWithEnv: true,
       },
     },
   ]);

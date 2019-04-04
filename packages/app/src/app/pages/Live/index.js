@@ -3,14 +3,14 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
 import Navigation from 'app/pages/common/Navigation';
-import Fullscreen from 'common/components/flex/Fullscreen';
+import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
-import Centered from 'common/components/flex/Centered';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Skeleton from 'app/components/Skeleton';
-import Padding from 'common/components/spacing/Padding';
+import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import SignInButton from 'app/pages/common/SignInButton';
 
 import Editor from '../Sandbox/Editor';
@@ -21,6 +21,17 @@ class LivePage extends React.Component {
 
   componentWillMount() {
     this.initializeLive();
+  }
+
+  disconnectLive() {
+    if (this.props.store.live.isLive) {
+      this.props.signals.live.onNavigateAway({});
+    }
+  }
+
+  componentWillUnmount() {
+    this.disconnectLive();
+    this.props.signals.editor.onNavigateAway({});
   }
 
   initializeLive = () => {
@@ -37,6 +48,7 @@ class LivePage extends React.Component {
       prevProps.match.params.id !== this.props.match.params.id ||
       (this.props.store.hasLogIn && !this.loggedIn)
     ) {
+      this.disconnectLive();
       this.initializeLive();
     }
   }
@@ -83,7 +95,8 @@ class LivePage extends React.Component {
               Something went wrong
             </div>
             <Title style={{ fontSize: '1.25rem' }}>
-              It seems like this session doesn{"'"}t exist or has been closed
+              It seems like this session doesn
+              {"'"}t exist or has been closed
             </Title>
             <br />
             <Link to="/s">Create Sandbox</Link>

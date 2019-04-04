@@ -39,8 +39,8 @@ class SortOptions extends React.Component {
     const { field, order } = this.props.store.dashboard.orderBy;
     const { hideOrder } = this.props;
 
-    const Overlay = style => (
-      <OverlayContainer style={style}>
+    const Overlay = () => (
+      <OverlayContainer>
         <Option
           setField={this.setField}
           currentField={field}

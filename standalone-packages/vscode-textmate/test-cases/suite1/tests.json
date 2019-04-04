@@ -1,0 +1,1258 @@
+[
+	{
+		"grammars": [
+			"fixtures/groovy.json"
+		],
+		"grammarPath": "fixtures/groovy.json",
+		"desc": "Groovy",
+		"lines": [
+			{
+				"line": "class BootStrap { }",
+				"tokens": [
+					{
+						"value": "class",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.identifier.groovy",
+							"storage.modifier.groovy"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.identifier.groovy"
+						]
+					},
+					{
+						"value": "BootStrap",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.identifier.groovy",
+							"entity.name.type.class.groovy"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy"
+						]
+					},
+					{
+						"value": "{",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.body.groovy"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.body.groovy"
+						]
+					},
+					{
+						"value": "}",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"punctuation.section.class.end.groovy"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/markdown.plist"
+		],
+		"grammarPath": "fixtures/markdown.plist",
+		"desc": "Nested repositories in Markdown",
+		"lines": [
+			{
+				"line": "This is a paragraph",
+				"tokens": [
+					{
+						"value": "This is a paragraph",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown"
+						]
+					}
+				]
+			},
+			{
+				"line": "## This is *great* stuff",
+				"tokens": [
+					{
+						"value": "##",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"punctuation.definition.heading.markdown"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown"
+						]
+					},
+					{
+						"value": "This is ",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown"
+						]
+					},
+					{
+						"value": "*",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown",
+							"punctuation.definition.italic.markdown"
+						]
+					},
+					{
+						"value": "great",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown"
+						]
+					},
+					{
+						"value": "*",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown",
+							"punctuation.definition.italic.markdown"
+						]
+					},
+					{
+						"value": " stuff",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/aspvbnet.plist"
+		],
+		"grammarPath": "fixtures/aspvbnet.plist",
+		"desc": "asp",
+		"lines": [
+			{
+				"line": "Dim tmpStr As String",
+				"tokens": [
+					{
+						"value": "Dim",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp",
+							"storage.type.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp"
+						]
+					},
+					{
+						"value": "tmpStr",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp",
+							"variable.other.bfeac.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp"
+						]
+					},
+					{
+						"value": "As",
+						"scopes": [
+							"source.asp.vb.net",
+							"keyword.operator.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net"
+						]
+					},
+					{
+						"value": "String",
+						"scopes": [
+							"source.asp.vb.net",
+							"support.type.vb.asp"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/aspvbnet.plist"
+		],
+		"grammarPath": "fixtures/aspvbnet.plist",
+		"desc": "asp2",
+		"lines": [
+			{
+				"line": "Dim tmpStr As String",
+				"tokens": [
+					{
+						"value": "Dim",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp",
+							"storage.type.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp"
+						]
+					},
+					{
+						"value": "tmpStr",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp",
+							"variable.other.bfeac.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp"
+						]
+					},
+					{
+						"value": "As",
+						"scopes": [
+							"source.asp.vb.net",
+							"keyword.operator.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net"
+						]
+					},
+					{
+						"value": "String",
+						"scopes": [
+							"source.asp.vb.net",
+							"support.type.vb.asp"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/php.plist",
+			"fixtures/javascript.json",
+			"fixtures/html.json"
+		],
+		"grammarPath": "fixtures/php.plist",
+		"desc": "Injections in PHP",
+		"lines": [
+			{
+				"line": "<?php  $zip = new ZipArchive(); ?>",
+				"tokens": [
+					{
+						"value": "<?php",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.begin.php"
+						]
+					},
+					{
+						"value": "  ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "$",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"variable.other.php",
+							"punctuation.definition.variable.php"
+						]
+					},
+					{
+						"value": "zip",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"variable.other.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "=",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"keyword.operator.assignment.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "new",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"keyword.other.new.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "ZipArchive",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"support.class.builtin.php"
+						]
+					},
+					{
+						"value": "()",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": ";",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"punctuation.terminator.expression.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "?",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.end.php",
+							"source.php"
+						]
+					},
+					{
+						"value": ">",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.end.php"
+						]
+					}
+				]
+			},
+			{
+				"line": "<script><?php echo $test; ?></script>",
+				"tokens": [
+					{
+						"value": "<",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"punctuation.definition.tag.html"
+						]
+					},
+					{
+						"value": "script",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"entity.name.tag.script.html"
+						]
+					},
+					{
+						"value": ">",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"punctuation.definition.tag.html"
+						]
+					},
+					{
+						"value": "<?php",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.begin.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "echo",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php",
+							"support.function.construct.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "$",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php",
+							"variable.other.php",
+							"punctuation.definition.variable.php"
+						]
+					},
+					{
+						"value": "test",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php",
+							"variable.other.php"
+						]
+					},
+					{
+						"value": ";",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php",
+							"punctuation.terminator.expression.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "?",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.end.php",
+							"source.php"
+						]
+					},
+					{
+						"value": ">",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.end.php"
+						]
+					},
+					{
+						"value": "</",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"punctuation.definition.tag.html"
+						]
+					},
+					{
+						"value": "script",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"entity.name.tag.script.html"
+						]
+					},
+					{
+						"value": ">",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"punctuation.definition.tag.html"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/Jade.tmLanguage"
+		],
+		"grammarPath": "fixtures/Jade.tmLanguage",
+		"desc": "Jade",
+		"lines": [
+			{
+				"line": "html",
+				"tokens": [
+					{
+						"value": "html",
+						"scopes": [
+							"text.jade",
+							"meta.tag.other",
+							"entity.name.tag.jade"
+						]
+					}
+				]
+			},
+			{
+				"line": "  head",
+				"tokens": [
+					{
+						"value": "  ",
+						"scopes": [
+							"text.jade"
+						]
+					},
+					{
+						"value": "head",
+						"scopes": [
+							"text.jade",
+							"meta.tag.other",
+							"entity.name.tag.jade"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/Perl.plist"
+		],
+		"grammarPath": "fixtures/Perl.plist",
+		"desc": "Perl",
+		"lines": [
+			{
+				"line": "\t$text =~ s@",
+				"tokens": [
+					{
+						"value": "\t",
+						"scopes": [
+							"source.perl",
+							"meta.leading-tabs",
+							"meta.odd-tab"
+						]
+					},
+					{
+						"value": "$",
+						"scopes": [
+							"source.perl",
+							"variable.other.readwrite.global.perl",
+							"punctuation.definition.variable.perl"
+						]
+					},
+					{
+						"value": "text",
+						"scopes": [
+							"source.perl",
+							"variable.other.readwrite.global.perl"
+						]
+					},
+					{
+						"value": " =~ ",
+						"scopes": [
+							"source.perl"
+						]
+					},
+					{
+						"value": "s",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl",
+							"punctuation.definition.string.perl",
+							"support.function.perl"
+						]
+					},
+					{
+						"value": "@",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl",
+							"punctuation.definition.string.perl"
+						]
+					}
+				]
+			},
+			{
+				"line": "\t\t\t(`+)\t\t# $1 = Opening run of `",
+				"tokens": [
+					{
+						"value": "\t\t\t(`+)\t\t# $1 = Opening run of `",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl"
+						]
+					}
+				]
+			},
+			{
+				"line": "\t\t@",
+				"tokens": [
+					{
+						"value": "\t\t",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl"
+						]
+					},
+					{
+						"value": "@",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl",
+							"punctuation.definition.string.perl"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/Ruby.plist"
+		],
+		"grammarPath": "fixtures/Ruby.plist",
+		"desc": "Ruby",
+		"lines": [
+			{
+				"line": "          %r{^/Developer} === prefix",
+				"tokens": [
+					{
+						"value": "          ",
+						"scopes": [
+							"source.ruby"
+						]
+					},
+					{
+						"value": "%r{",
+						"scopes": [
+							"source.ruby",
+							"string.regexp.percent.ruby",
+							"punctuation.definition.string.begin.ruby"
+						]
+					},
+					{
+						"value": "^/Developer",
+						"scopes": [
+							"source.ruby",
+							"string.regexp.percent.ruby"
+						]
+					},
+					{
+						"value": "}",
+						"scopes": [
+							"source.ruby",
+							"string.regexp.percent.ruby",
+							"punctuation.definition.string.end.ruby"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.ruby"
+						]
+					},
+					{
+						"value": "===",
+						"scopes": [
+							"source.ruby",
+							"keyword.operator.comparison.ruby"
+						]
+					},
+					{
+						"value": " prefix",
+						"scopes": [
+							"source.ruby"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/Makefile.plist"
+		],
+		"grammarPath": "fixtures/Makefile.plist",
+		"desc": "Issue #8",
+		"skipOnigasm": true,
+		"lines": [
+			{
+				"line": "ifeq (version,$(firstword $(MAKECMDGOALS)))",
+				"tokens": [
+					{
+						"value": "ifeq",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"keyword.control.ifeq.makefile"
+						]
+					},
+					{
+						"value": " (version,",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile"
+						]
+					},
+					{
+						"value": "$(",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": "firstword",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"support.function.firstword.makefile"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile"
+						]
+					},
+					{
+						"value": "$(",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": "MAKECMDGOALS",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"variable.other.makefile"
+						]
+					},
+					{
+						"value": ")",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": ")",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": ")",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile"
+						]
+					}
+				]
+			},
+			{
+				"line": "  $(eval $(SET_VERSION):,@:)",
+				"tokens": [
+					{
+						"value": "  ",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile"
+						]
+					},
+					{
+						"value": "$(",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": "eval",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"support.function.eval.makefile"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile"
+						]
+					},
+					{
+						"value": "$(",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": "SET_VERSION",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"variable.other.makefile"
+						]
+					},
+					{
+						"value": ")",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": ":",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"punctuation.separator.key-value.makefile"
+						]
+					},
+					{
+						"value": ",@:)",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"meta.scope.prerequisites.makefile"
+						]
+					}
+				]
+			},
+			{
+				"line": "endif",
+				"tokens": [
+					{
+						"value": "endif",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"keyword.control.endif.makefile"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/testlang12.plist"
+		],
+		"grammarPath": "fixtures/testlang12.plist",
+		"desc": "Issue #12",
+		"lines": [
+			{
+				"line": "[test]|",
+				"tokens": [
+					{
+						"value": "[test]|",
+						"scopes": [
+							"text.testlang",
+							"string.unquoted.verbatim.youki"
+						]
+					}
+				]
+			},
+			{
+				"line": "\tverb",
+				"tokens": [
+					{
+						"value": "\tverb",
+						"scopes": [
+							"text.testlang",
+							"string.unquoted.verbatim.youki"
+						]
+					}
+				]
+			},
+			{
+				"line": "asd",
+				"tokens": [
+					{
+						"value": "asd",
+						"scopes": [
+							"text.testlang"
+						]
+					}
+				]
+			},
+			{
+				"line": "asd",
+				"tokens": [
+					{
+						"value": "asd",
+						"scopes": [
+							"text.testlang"
+						]
+					}
+				]
+			},
+			{
+				"line": "[test]|",
+				"tokens": [
+					{
+						"value": "[test]|",
+						"scopes": [
+							"text.testlang",
+							"string.unquoted.verbatim.youki"
+						]
+					}
+				]
+			},
+			{
+				"line": "\tverbatim",
+				"tokens": [
+					{
+						"value": "\tverbatim",
+						"scopes": [
+							"text.testlang",
+							"string.unquoted.verbatim.youki"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/Jade.json"
+		],
+		"grammarPath": "fixtures/Jade.json",
+		"desc": "Issue #17",
+		"lines": [
+			{
+				"line": ".ssdsd",
+				"tokens": [
+					{
+						"value": ".ssdsd",
+						"scopes": [
+							"text.jade"
+						]
+					}
+				]
+			},
+			{
+				"line": "",
+				"tokens": [
+					{
+						"value": "",
+						"scopes": [
+							"text.jade"
+						]
+					}
+				]
+			},
+			{
+				"line": "    // asdsdas",
+				"tokens": [
+					{
+						"value": "    //",
+						"scopes": [
+							"text.jade",
+							"string.comment.buffered.block.jade"
+						]
+					},
+					{
+						"value": " asdsdas",
+						"scopes": [
+							"text.jade",
+							"string.comment.buffered.block.jade"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/Markdown.tmLanguage"
+		],
+		"grammarPath": "fixtures/Markdown.tmLanguage",
+		"desc": "Issue #10",
+		"lines": [
+			{
+				"line": "Toggle preview `Shift+CMD+V`",
+				"tokens": [
+					{
+						"value": "Toggle preview ",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown"
+						]
+					},
+					{
+						"value": "`",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown",
+							"markup.raw.inline.markdown",
+							"punctuation.definition.raw.markdown"
+						]
+					},
+					{
+						"value": "Shift+CMD+",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown",
+							"markup.raw.inline.markdown"
+						]
+					},
+					{
+						"value": "V",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown",
+							"markup.raw.inline.markdown"
+						]
+					},
+					{
+						"value": "`",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown",
+							"markup.raw.inline.markdown",
+							"punctuation.definition.raw.markdown"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/html2.json",
+			"fixtures/javascript.json"
+		],
+		"grammarPath": "fixtures/html2.json",
+		"desc": "Issue #46",
+		"lines": [
+			{
+				"line": "<script>",
+				"tokens": [
+					{
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"meta.tag.metadata.script.html",
+							"punctuation.definition.tag.begin.html"
+						],
+						"value": "<"
+					},
+					{
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"meta.tag.metadata.script.html",
+							"entity.name.tag.html"
+						],
+						"value": "script"
+					},
+					{
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"meta.tag.metadata.script.html",
+							"punctuation.definition.tag.end.html"
+						],
+						"value": ">"
+					}
+				]
+			},
+			{
+				"line": "//dd<dd<dd",
+				"tokens": [
+					{
+						"value": "//",
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"source.js",
+							"comment.line.double-slash.js",
+							"punctuation.definition.comment.js"
+						]
+					},
+					{
+						"value": "dd<dd<dd",
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"source.js",
+							"comment.line.double-slash.js"
+						]
+					}
+				]
+			}
+		]
+	}
+]

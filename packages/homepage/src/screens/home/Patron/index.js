@@ -1,12 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import getBadge from 'common/utils/badges';
+import getBadge from '@codesandbox/common/lib/utils/badges';
 
-import MaxWidth from 'common/components/flex/MaxWidth';
-import Centered from 'common/components/flex/Centered';
-
-import media from '../../../utils/media';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
 
 import { Heading, SubHeading } from '../../../components/style';
 
@@ -14,11 +12,11 @@ const Container = styled.div`
   background-color: ${props => props.theme.primary};
 `;
 
-const Header = Heading.extend`
+const Header = styled(Heading)`
   color: ${props => props.theme.primaryText};
 `;
 
-const Text = SubHeading.extend`
+const Text = styled(SubHeading)`
   color: rgba(0, 0, 0, 0.5);
   text-shadow: none;
 `;

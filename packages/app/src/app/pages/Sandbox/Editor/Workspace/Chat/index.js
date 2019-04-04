@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { sortBy, takeRight } from 'lodash-es';
 import { inject, observer } from 'mobx-react';
 
-import AutosizeTextArea from 'common/components/AutosizeTextArea';
+import AutosizeTextArea from '@codesandbox/common/lib/components/AutosizeTextArea';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 const Container = styled.div`
   min-height: 200px;
@@ -27,7 +28,7 @@ class Chat extends React.Component {
   };
 
   handleKeyDown = (e: KeyboardEvent) => {
-    if (e.keyCode === 13 && !e.shiftKey) {
+    if (e.keyCode === ENTER && !e.shiftKey) {
       e.preventDefault();
       e.stopPropagation();
       // Enter
@@ -60,19 +61,19 @@ class Chat extends React.Component {
   render() {
     const { store } = this.props;
     const { messages, users } = store.live.roomInfo.chat;
-    const currentUserId = store.user.id;
-    const usersMetadata = store.live.roomInfo.usersMetadata;
+    const currentUserId = store.live.liveUserId;
+    const roomInfoUsers = store.live.roomInfo.users;
 
     return (
       <Container
-        innerRef={el => {
+        ref={el => {
           this.messages = el;
         }}
       >
         <Messages>
           {messages.length > 0 ? (
             sortBy(takeRight(messages, 100), 'date').map((message, i) => {
-              const metadata = usersMetadata.get(message.userId);
+              const metadata = roomInfoUsers.find(u => u.id === message.userId);
               const color = metadata
                 ? `rgb(${metadata.color[0]}, ${metadata.color[1]}, ${
                     metadata.color[2]

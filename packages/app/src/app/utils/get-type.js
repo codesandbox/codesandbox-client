@@ -1,5 +1,5 @@
 /* @flow */
-import isImage from 'common/utils/is-image';
+import isImage from '@codesandbox/common/lib/utils/is-image';
 
 const svgRegex = /\.svg$/;
 
@@ -22,7 +22,7 @@ const regexCasesMap = {
   react: /\.jsx$/,
   reason: /\.re$/,
   sass: /\.scss$/,
-  javascript: /\.js$/,
+  javascript: /\.m?js$/,
   typescript: /\.tsx?$/,
   console: /\.sh$/,
   // STARTS WITH

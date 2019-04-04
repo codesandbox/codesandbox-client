@@ -99,7 +99,11 @@ stories.addWithJSX('transpiled view', () => (
     }}
     dependencies={{ uuid: 'latest' }}
     entry="/index.js"
-    skipEval
+    bundlerURL="http://localhost:3002"
+    fileResolver={{
+      isFile: p => p === '/hello.js',
+      readFile: p => `export default 'hello'`,
+    }}
   >
     <div
       style={{

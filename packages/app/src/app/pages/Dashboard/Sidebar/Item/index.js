@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Route } from 'react-router-dom';
-import ReactShow from 'react-show';
+import { Animate } from 'react-show';
 import ContextMenu from 'app/components/ContextMenu';
 import {
   AnimatedChevron,
@@ -23,7 +23,7 @@ const getContainer = contextItems => {
 
 export default class Item extends React.Component {
   state = {
-    open: undefined,
+    open: this.props.openByDefault,
   };
 
   toggleOpen = e => {
@@ -31,17 +31,38 @@ export default class Item extends React.Component {
     this.setState(state => ({ open: !state.open }));
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.openByDefault === true && !this.props.openByDefault) {
+      this.setState({ open: true });
+    }
+  }
+
   render() {
-    const { name, contextItems, Icon, path, children, style } = this.props;
+    const {
+      name,
+      contextItems,
+      Icon,
+      path,
+      children,
+      style,
+      active,
+      ...props
+    } = this.props;
 
     const UsedContainer = getContainer(contextItems);
+
     return (
       <Route path={path}>
         {res => {
+          const isActive = (res.match && res.match.isExact) || active;
           const isOpen =
-            this.state.open === undefined ? res.match : this.state.open;
+            this.state.open === undefined ? isActive : this.state.open;
 
-          if (res.match && this.state.open === undefined) {
+          if (
+            (res.match || isActive) &&
+            this.state.open === undefined &&
+            children
+          ) {
             this.setState({ open: true });
           }
           return (
@@ -49,8 +70,9 @@ export default class Item extends React.Component {
               <UsedContainer
                 style={style}
                 to={path}
-                activeClassName="active"
                 exact
+                active={isActive}
+                {...props}
               >
                 {children ? (
                   <AnimatedChevron onClick={this.toggleOpen} open={isOpen} />
@@ -66,9 +88,22 @@ export default class Item extends React.Component {
               </UsedContainer>
 
               {children && (
-                <ReactShow show={isOpen} duration={250} unmountOnHide>
-                  {children(res)}
-                </ReactShow>
+                <Animate
+                  transitionOnMount
+                  style={{
+                    height: 'auto',
+                    overflow: 'hidden',
+                  }}
+                  start={{
+                    height: 0, // The starting style for the component.
+                    // If the 'leave' prop isn't defined, 'start' is reused!
+                  }}
+                  show={isOpen}
+                  duration={250}
+                  stayMounted={false}
+                >
+                  {children}
+                </Animate>
               )}
             </Fragment>
           );

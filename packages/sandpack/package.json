@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.35",
+  "version": "0.0.54",
   "description": "",
   "keywords": [],
   "main": "dist/sandpack.umd.js",
@@ -75,7 +75,7 @@
     "mapCoverage": true
   },
   "dependencies": {
-    "codesandbox-api": "^0.0.18",
+    "codesandbox-api": "^0.0.20",
     "codesandbox-import-utils": "^1.2.3",
     "lodash.isequal": "^4.5.0"
   },
@@ -110,7 +110,7 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.11.1",
-    "typescript": "^2.6.2",
+    "typescript": "^3.3.1",
     "validate-commit-msg": "^2.12.2"
   }
 }

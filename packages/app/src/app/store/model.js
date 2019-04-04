@@ -18,6 +18,7 @@ export default {
           visible: types.boolean,
         })
       ),
+      curatorAt: types.maybeNull(types.string),
       email: types.maybeNull(types.string),
       id: types.maybeNull(types.string),
       integrations: types.model({
@@ -63,6 +64,7 @@ export default {
     y: types.number,
   }),
   currentModal: types.maybeNull(types.string),
+  currentModalMessage: types.maybeNull(types.string),
   uploadedFiles: types.maybeNull(
     types.array(
       types.model({

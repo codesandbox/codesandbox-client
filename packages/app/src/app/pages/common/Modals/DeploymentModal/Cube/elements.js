@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 const rotateAnimation = keyframes`
   0% {
@@ -22,7 +22,10 @@ export const Cube = styled.div`
 
 export const Sides = styled.div`
   ${({ noAnimation }) =>
-    !noAnimation && `animation: ${rotateAnimation} 1s linear infinite;`};
+    !noAnimation &&
+    css`
+      animation: ${rotateAnimation} 1s linear infinite;
+    `};
   transform-style: preserve-3d;
   transform: rotateX(-37.5deg) rotateY(45deg);
 

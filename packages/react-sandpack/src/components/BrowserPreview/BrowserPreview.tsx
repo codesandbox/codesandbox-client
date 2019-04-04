@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import SandpackConsumer from '../SandpackConsumer';
 import Preview from '../Preview';
 import Navigator from '../Navigator';
 

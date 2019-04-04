@@ -63,21 +63,29 @@ function printFileSizes(stats, previousSizeMap) {
     .toJson()
     .assets.filter(asset => /\.(js|css)$/.test(asset.name))
     .map(asset => {
-      let fileContents = fs.readFileSync(`${paths.appBuild}/${asset.name}`);
-      let size = gzipSize(fileContents);
-      let previousSize = previousSizeMap[removeFileNameHash(asset.name)];
-      let difference = getDifferenceLabel(size, previousSize);
-      return {
-        folder: path.join('build', path.dirname(asset.name)),
-        name: path.basename(asset.name),
-        size,
-        sizeLabel: filesize(size) + (difference ? ` (${difference})` : ''),
-      };
+      try {
+        let fileContents = fs.readFileSync(`${paths.appBuild}/${asset.name}`);
+        let size = gzipSize(fileContents);
+        let previousSize = previousSizeMap[removeFileNameHash(asset.name)];
+        let difference = getDifferenceLabel(size, previousSize);
+        return {
+          folder: path.join('build', path.dirname(asset.name)),
+          name: path.basename(asset.name),
+          size,
+          sizeLabel: filesize(size) + (difference ? ` (${difference})` : ''),
+        };
+      } catch (e) {
+        return {
+          folder: path.join('build', path.dirname(asset.name)),
+          name: path.basename(asset.name),
+          error: e,
+        };
+      }
     });
   assets.sort((a, b) => b.size - a.size);
   let longestSizeLabelLength = Math.max.apply(
     null,
-    assets.map(a => stripAnsi(a.sizeLabel).length)
+    assets.map(a => (a.error ? 'ERROR'.length : stripAnsi(a.sizeLabel).length))
   );
   assets.forEach(asset => {
     let sizeLabel = asset.sizeLabel;
@@ -86,11 +94,20 @@ function printFileSizes(stats, previousSizeMap) {
       let rightPadding = ' '.repeat(longestSizeLabelLength - sizeLength);
       sizeLabel += rightPadding;
     }
-    console.log(
-      `  ${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(
-        asset.name
-      )}`
-    );
+
+    if (asset.error) {
+      console.log(
+        `  ERROR  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(
+          asset.name
+        )}`
+      );
+    } else {
+      console.log(
+        `  ${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(
+          asset.name
+        )}`
+      );
+    }
   });
 }
 

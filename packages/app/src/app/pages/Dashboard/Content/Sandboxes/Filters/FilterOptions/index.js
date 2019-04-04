@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import * as templates from 'common/templates';
+import * as templates from '@codesandbox/common/lib/templates';
 import { orderBy } from 'lodash-es';
 import OverlayComponent from 'app/components/Overlay';
 
@@ -23,8 +23,8 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
       store.dashboard.filters.blacklistedTemplates.indexOf(template) > -1
   );
 
-  const Overlay = style => (
-    <OverlayContainer style={style}>
+  const Overlay = () => (
+    <OverlayContainer>
       {orderBy(
         Object.keys(templates)
           .filter(x => x !== 'default')

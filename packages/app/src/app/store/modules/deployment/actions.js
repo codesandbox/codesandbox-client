@@ -1,5 +1,8 @@
 import { omit } from 'lodash-es';
 
+import getTemplate from '@codesandbox/common/lib/templates';
+import pollUntilDone from '../../utils/pollUntilDone';
+
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
@@ -12,11 +15,112 @@ export function loadZip({ props, jsZip }) {
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
 }
 
+const NetlifyBaseURL = 'https://netlify.deploy.codesandbox.io/site';
+
+export async function claimNetlifyWebsite({ http, state, path }) {
+  const userId = state.get('user.id');
+  const sandboxId = state.get('editor.currentId');
+  const sessionId = `${userId}-${sandboxId}`;
+
+  const { result } = await http.request({
+    url: `${NetlifyBaseURL}-claim?sessionId=${sessionId}`,
+  });
+
+  return path.success({
+    claimURL: result.claim,
+  });
+}
+
+export async function getNetlifyDeploys({ http, state, path }) {
+  const sandboxId = state.get('editor.currentId');
+
+  try {
+    const site = await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}`,
+    });
+
+    return path.success({
+      site: site.result,
+    });
+  } catch (error) {
+    return path.error({ error });
+  }
+}
+
+export async function deployToNetlify({ http, props, state }) {
+  const { file } = props;
+  state.set('deployment.netlifyLogs', null);
+  const userId = state.get('user.id');
+  const sandboxId = state.get('editor.currentId');
+  const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
+  const template = getTemplate(sandbox.template);
+  const buildCommand = name => {
+    if (name === 'styleguidist') return 'styleguide:build';
+    if (name === 'nuxt') return 'generate';
+
+    return 'build';
+  };
+
+  let id = '';
+  try {
+    const { result } = await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}`,
+    });
+
+    id = result.site_id;
+  } catch (e) {
+    const { result } = await http.request({
+      url: NetlifyBaseURL,
+      method: 'POST',
+      body: {
+        name: `csb-${sandboxId}`,
+        session_id: `${userId}-${sandboxId}`,
+      },
+    });
+    id = result.site_id;
+  }
+
+  try {
+    await http.request({
+      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${
+        template.distDir
+      }&buildCommand=${buildCommand(template.name)}`,
+      method: 'POST',
+      body: file,
+      headers: {
+        'Content-Type': 'application/zip',
+      },
+    });
+
+    return { id };
+  } catch (e) {
+    return { error: true };
+  }
+}
+
+export async function getStatus({ props, path, http, state }) {
+  const url = `${NetlifyBaseURL}/${props.id}/status`;
+  if (props.error) {
+    return path.error();
+  }
+  const { result } = await http.request({
+    url,
+  });
+
+  if (result.status.status === 'IN_PROGRESS') {
+    // polls every 10s for up to 2m
+    await pollUntilDone(http, url, 10000, 60 * 2000, state);
+    return path.success();
+  }
+  return path.success();
+}
+
 export async function createApiData({ props, state }) {
   const { contents } = props;
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
-  const apiData = {
+  const template = getTemplate(sandbox.template);
+  let apiData = {
     files: [],
   };
 
@@ -44,13 +148,12 @@ export async function createApiData({ props, state }) {
 
   const nowDefaults = {
     name: `csb-${sandbox.id}`,
-    type: 'NPM',
     public: true,
   };
 
   const filePaths = nowJSON.files || Object.keys(contents.files);
 
-  // We'll omit the homepage-value from package.json as it creates wrong assumptions over the now deployment evironment.
+  // We'll omit the homepage-value from package.json as it creates wrong assumptions over the now deployment environment.
   packageJSON = omit(packageJSON, 'homepage');
 
   // We force the sandbox id, so ZEIT will always group the deployments to a
@@ -60,8 +163,19 @@ export async function createApiData({ props, state }) {
   apiData.name = nowJSON.name || nowDefaults.name;
   apiData.deploymentType = nowJSON.type || nowDefaults.type;
   apiData.public = nowJSON.public || nowDefaults.public;
-  apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
-  apiData.forceNew = true;
+
+  // if now v2 we need to tell now the version, builds and routes
+  if (nowJSON.version === 2) {
+    apiData.version = 2;
+    apiData.builds = nowJSON.builds;
+    apiData.routes = nowJSON.routes;
+    apiData.env = nowJSON.env;
+    apiData['build.env'] = nowJSON['build.env'];
+    apiData.regions = nowJSON.regions;
+  } else {
+    apiData.config = omit(nowJSON, ['public', 'type', 'name', 'files']);
+    apiData.forceNew = true;
+  }
 
   if (!nowJSON.files) {
     apiData.files.push({
@@ -75,10 +189,27 @@ export async function createApiData({ props, state }) {
     const file = contents.files[filePath];
 
     if (!file.dir && filePath !== 'package.json') {
-      const data = await file.async('text'); // eslint-disable-line no-await-in-loop
+      const data = await file.async('base64'); // eslint-disable-line no-await-in-loop
 
-      apiData.files.push({ file: filePath, data });
+      apiData.files.push({ file: filePath, data, encoding: 'base64' });
     }
+
+    // if person added some files but no package.json
+    if (
+      filePath === 'package.json' &&
+      !apiData.files.filter(f => f.name === 'package.json')
+    ) {
+      apiData.files.push({
+        file: 'package.json',
+        data: JSON.stringify(packageJSON, null, 2),
+      });
+    }
+  }
+
+  // this adds unnecessary code for version 2
+  // packages/common/templates/template.js
+  if (template.alterDeploymentData && nowJSON.version !== 2) {
+    apiData = template.alterDeploymentData(apiData);
   }
 
   return { apiData };
@@ -106,10 +237,11 @@ export async function aliasDeployment({ http, path, props, state }) {
 export async function postToZeit({ http, path, props, state }) {
   const { apiData } = props;
   const token = state.get('user.integrations.zeit.token');
+  const deploymentVersion = apiData.version === 2 ? 'v6' : 'v3';
 
   try {
     const deployment = await http.request({
-      url: 'https://api.zeit.co/v3/now/deployments',
+      url: `https://api.zeit.co/${deploymentVersion}/now/deployments?forceNew=1`,
       body: apiData,
       method: 'POST',
       headers: { Authorization: `bearer ${token}` },

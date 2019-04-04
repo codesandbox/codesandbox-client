@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import theme from 'common/theme';
+import theme from '@codesandbox/common/lib/theme';
 
 export const Container = styled.div`
   position: relative;
@@ -27,7 +27,7 @@ export const Content = styled.div`
   align-items: center;
   padding: 0 1rem;
   height: 100%;
-  verical-align: middle;
+  vertical-align: middle;
   line-height: 1.15;
   box-sizing: border-box;
   color: ${() => theme.white()};

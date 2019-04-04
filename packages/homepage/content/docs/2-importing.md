@@ -1,7 +1,7 @@
 ---
 title: "Importing Sandboxes"
 authors: ["CompuIves"]
-description: "There are many ways to create a sandbox on CodeSandbox, either programatically or with a UI."
+description: "There are many ways to create a sandbox on CodeSandbox, either programmatically or with a UI."
 ---
 
 ## Create Wizard
@@ -22,18 +22,14 @@ The imported repository will always stay up to date with your latest commits. Th
 
 We infer sandbox settings based on several files in a repository.
 
-| Sandbox Setting             | Inferred from                                               |
-| --------------------------- | ----------------------------------------------------------- |
-| Title                       | `name` field in `package.json`                              |
-| Description                 | `description` field in `package.json`                       |
-| Tags                        | `keywords` field in `package.json`                          |
-| Template - Vue              | If there are `.vue` files.                                  |
-| Template - Preact           | If `package.json` dependencies contains `preact-cli`.       |
-| Template - React            | If `package.json` dependencies contains `react-scripts`.    |
-| Template - React-Typescript | If `package.json` dependencies contains `react-scripts-ts`. |
-| Template - Svelte           | If `package.json` dependencies contains `svelte`.           |
+| Sandbox Setting | Inferred from                                                                                                                                         |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Title           | `name` field in `package.json`                                                                                                                        |
+| Description     | `description` field in `package.json`                                                                                                                 |
+| Tags            | `keywords` field in `package.json`                                                                                                                    |
+| Template        | Based on [this](https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts#L63) logic |
 
-Additionally, you may specify a `template` property in your `./sandbox.config.json` file.
+Additionally, you may specify a `template` property in your `./sandbox.config.json` file to override the detected template..
 
 ```json
 {
@@ -60,7 +56,7 @@ $ codesandbox ./
 
 ## Define API
 
-We offer an API that allows you to programatically create a sandbox. This is most often useful in documentation: code examples can generate a sandbox on the fly. You can call the endpoint `https://codesandbox.io/api/v1/sandboxes/define` both with a a `GET` and with a `POST` request.
+We offer an API that allows you to programmatically create a sandbox. This is most often useful in documentation: code examples can generate a sandbox on the fly. You can call the endpoint `https://codesandbox.io/api/v1/sandboxes/define` both with a a `GET` and with a `POST` request.
 
 ### Supported Parameters
 
@@ -132,7 +128,7 @@ You can do the exact same steps for a POST request, but instead of a URL you'd s
 
 If you want to define a new sandbox without getting it rendered, you can add `?json=1` to the request. For instance `https://codesandbox.io/api/v1/sandboxes/define?json=1`. Instead of the render, the result will be json data providing you with the `sandbox_id` of the new sandbox.
 
-This is useful, for instance, if you need to create a new sandbox programatically, so you can then embed it on your site (See Embed documentation).
+This is useful, for instance, if you need to create a new sandbox programmatically, so you can then embed it on your site (See Embed documentation).
 
 Both `get` and `post` requests are supported.
 

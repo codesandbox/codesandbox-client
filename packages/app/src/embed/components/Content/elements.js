@@ -10,10 +10,11 @@ export const Container = styled.div`
 
 export const Tabs = styled.div`
   display: flex;
-  height: 2.5rem;
-  min-height: 2.5rem;
+  height: 35px;
+  min-height: 35px;
   background-color: rgba(0, 0, 0, 0.3);
   overflow-x: auto;
+  font-size: 0.875rem;
 
   -ms-overflow-style: none; // IE 10+
   overflow: -moz-scrollbars-none; // Firefox

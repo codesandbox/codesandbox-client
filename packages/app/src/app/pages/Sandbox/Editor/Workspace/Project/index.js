@@ -5,20 +5,20 @@ import {
   sandboxUrl,
   githubRepoUrl,
   profileUrl,
-} from 'common/utils/url-generator';
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import TeamIcon from 'react-icons/lib/md/people';
 
-import UserWithAvatar from 'app/components/UserWithAvatar';
+import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
-import GithubBadge from 'app/components/GithubBadge';
-import createEditableTags from 'app/components/EditableTags';
-import Tags from 'app/components/Tags';
-import Switch from 'common/components/Switch';
-import Tooltip from 'common/components/Tooltip';
+import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
+import EditableTags from 'app/components/EditableTags';
+import Tags from '@codesandbox/common/lib/components/Tags';
+import Switch from '@codesandbox/common/lib/components/Switch';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
-import getTemplateDefinition from 'common/templates';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { WorkspaceInputContainer } from '../elements';
 
 import {
@@ -102,7 +102,6 @@ class Project extends React.Component {
 
     const template = getTemplateDefinition(sandbox.template);
 
-    const EditableTags = createEditableTags(template.color);
     return (
       <div style={{ marginBottom: '1rem' }}>
         <Item style={{ marginTop: '.5rem' }}>
@@ -183,7 +182,10 @@ class Project extends React.Component {
         {!sandbox.team &&
           !!sandbox.author && (
             <Item>
-              <UserLink to={profileUrl(sandbox.author.username)}>
+              <UserLink
+                title={sandbox.author.username}
+                to={profileUrl(sandbox.author.username)}
+              >
                 <UserWithAvatar
                   username={sandbox.author.username}
                   avatarUrl={sandbox.author.avatarUrl}
@@ -194,7 +196,7 @@ class Project extends React.Component {
           )}
 
         {!!sandbox.team && (
-          <Tooltip title="This sandbox is owned by this team">
+          <Tooltip content="This sandbox is owned by this team">
             <Item style={{ color: 'white', display: 'flex' }}>
               <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
               <div>{sandbox.team.name}</div>
@@ -214,10 +216,10 @@ class Project extends React.Component {
         <StatsContainer>
           <Stats sandbox={sandbox} />
         </StatsContainer>
-
         <Item>
           {editable ? (
             <EditableTags
+              template={template}
               value={sandbox.tags.toJS()}
               onChange={this.changeTags}
               onChangeInput={value => {
@@ -225,6 +227,7 @@ class Project extends React.Component {
                   tagName: value,
                 });
               }}
+              maxTags={5}
               inputValue={store.workspace.tags.tagName}
               renderInput={this.renderInput}
               onlyUnique
@@ -270,7 +273,7 @@ class Project extends React.Component {
           <Item style={{ marginTop: 5 }} flex>
             <PropertyName>
               Frozen
-              <Tooltip title="When true this sandbox will fork on edit">
+              <Tooltip content="When true this sandbox will fork on edit">
                 <Icon />
               </Tooltip>
             </PropertyName>

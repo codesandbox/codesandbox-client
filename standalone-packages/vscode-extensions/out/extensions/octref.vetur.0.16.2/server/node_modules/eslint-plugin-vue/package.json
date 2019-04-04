@@ -1,0 +1,68 @@
+{
+  "name": "eslint-plugin-vue",
+  "version": "5.1.0",
+  "description": "Official ESLint plugin for Vue.js",
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "npm run test:base -- --watch --growl",
+    "test:base": "mocha \"tests/lib/**/*.js\" --reporter dot",
+    "test": "nyc npm run test:base -- \"tests/integrations/*.js\" --timeout 60000",
+    "lint": "eslint . --rulesdir eslint-internal-rules",
+    "pretest": "npm run lint",
+    "preversion": "npm test && npm run update && git add .",
+    "version": "npm run lint -- --fix && git add .",
+    "update": "node ./tools/update.js",
+    "docs:watch": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:deploy": "./tools/deploy.sh"
+  },
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://vuejs.github.io/eslint-plugin-vue/",
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "eslint-config",
+    "vue",
+    "vuejs",
+    "rules"
+  ],
+  "author": "Toru Nagashima (https://github.com/mysticatea)",
+  "contributors": [
+    "Michał Sajnóg <msajnog93@gmail.com> (http://github.com/michalsnik)"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/eslint-plugin-vue.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vuejs/eslint-plugin-vue/issues"
+  },
+  "engines": {
+    "node": ">=6.5"
+  },
+  "peerDependencies": {
+    "eslint": "^5.0.0"
+  },
+  "dependencies": {
+    "vue-eslint-parser": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^4.2.16",
+    "babel-eslint": "^8.2.2",
+    "chai": "^4.1.0",
+    "eslint": "^5.11.1",
+    "eslint-plugin-eslint-plugin": "^2.0.1",
+    "eslint-plugin-vue-libs": "^3.0.0",
+    "eslint4b": "^5.1.0",
+    "lodash": "^4.17.4",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "typescript": "^3.1.3",
+    "typescript-eslint-parser": "^20.0.0",
+    "vue-eslint-editor": "^0.1.4",
+    "vuepress": "^0.14.5"
+  }
+}

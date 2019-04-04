@@ -3,18 +3,20 @@ import React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 
-import requirePolyfills from 'common/load-dynamic-polyfills';
+import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import 'app/split-pane.css';
-import theme from 'common/theme';
-import 'common/global.css';
+import theme from '@codesandbox/common/lib/theme';
+import '@codesandbox/common/lib/global.css';
+
+import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 
 import App from './components/App';
 
 requirePolyfills().then(() => {
   function renderApp(Component) {
     render(
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={{ ...theme, ...codesandbox.colors }}>
         <Component />
       </ThemeProvider>,
       document.getElementById('root')

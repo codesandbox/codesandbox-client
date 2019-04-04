@@ -1,13 +1,13 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Margin from 'common/components/spacing/Margin';
-import Input from 'common/components/Input';
-import Button from 'app/components/Button';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import Input from '@codesandbox/common/lib/components/Input';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
 
-import { Container, Error } from './elements';
+import { Error } from './elements';
 
 class CreateRepo extends React.Component {
   updateRepoTitle = e => {
@@ -19,16 +19,13 @@ class CreateRepo extends React.Component {
   };
 
   render() {
-    const { store } = this.props;
+    const { store, style } = this.props;
     const modulesNotSaved = !store.editor.isAllModulesSynced;
     const repoTitle = store.git.repoTitle;
     const error = store.git.error;
 
     return (
-      <div>
-        <Container margin={1} top={0.5}>
-          Export Sandbox to GitHub
-        </Container>
+      <div style={style}>
         {modulesNotSaved && (
           <Error>Save your files first before exporting.</Error>
         )}

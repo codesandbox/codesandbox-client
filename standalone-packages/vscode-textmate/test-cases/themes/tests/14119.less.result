@@ -1,0 +1,1710 @@
+{
+	"abyss": [
+		{
+			"content": "#",
+			"color": "#DDBB88",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.other.attribute-name rgb(221, 187, 136)"
+		},
+		{
+			"content": "f",
+			"color": "#DDBB88",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.other.attribute-name rgb(221, 187, 136)"
+		},
+		{
+			"content": "(",
+			"color": "#6688CC",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "@hm",
+			"color": "#6688CC",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": ":",
+			"color": "#6688CC",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "\"",
+			"color": "#22AA44",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#22AA44",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "\"",
+			"color": "#22AA44",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": ")",
+			"color": "#6688CC",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "{",
+			"color": "#6688CC",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "    ",
+			"color": "#6688CC",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "content",
+			"color": "#9966B8",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.type rgb(153, 102, 184)"
+		},
+		{
+			"content": ":",
+			"color": "#6688CC",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": " ",
+			"color": "#6688CC",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "\"",
+			"color": "#22AA44",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": "\"",
+			"color": "#22AA44",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+		},
+		{
+			"content": ";",
+			"color": "#6688CC",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		},
+		{
+			"content": "}",
+			"color": "#6688CC",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+		}
+	],
+	"dark_vs": [
+		{
+			"content": "#",
+			"color": "#D7BA7D",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.entity.other.attribute-name.css rgb(215, 186, 125)"
+		},
+		{
+			"content": "f",
+			"color": "#D7BA7D",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.entity.other.attribute-name.css rgb(215, 186, 125)"
+		},
+		{
+			"content": "(",
+			"color": "#D4D4D4",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "@hm",
+			"color": "#D4D4D4",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#CE9178",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#D4D4D4",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "{",
+			"color": "#D4D4D4",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "content",
+			"color": "#9CDCFE",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.support.type.property-name rgb(156, 220, 254)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ";",
+			"color": "#D4D4D4",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "}",
+			"color": "#D4D4D4",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": "#",
+			"color": "#800000",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.entity.other.attribute-name.css rgb(128, 0, 0)"
+		},
+		{
+			"content": "f",
+			"color": "#800000",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.entity.other.attribute-name.css rgb(128, 0, 0)"
+		},
+		{
+			"content": "(",
+			"color": "#000000",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "@hm",
+			"color": "#000000",
+			"_t": "less.other.variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#A31515",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#000000",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "{",
+			"color": "#000000",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "css.meta.property-list",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "content",
+			"color": "#FF0000",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.support.type.property-name.css rgb(255, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "css.meta.property-list",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ";",
+			"color": "#000000",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "}",
+			"color": "#000000",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": "#",
+			"color": "#D7BA7D",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.entity.other.attribute-name.css rgb(215, 186, 125)"
+		},
+		{
+			"content": "f",
+			"color": "#D7BA7D",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.entity.other.attribute-name.css rgb(215, 186, 125)"
+		},
+		{
+			"content": "(",
+			"color": "#FFFFFF",
+			"_t": "brace.css.meta.round",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "@hm",
+			"color": "#FFFFFF",
+			"_t": "less.other.variable",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#CE9178",
+			"_t": "css.double.quoted.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#FFFFFF",
+			"_t": "brace.css.meta.round",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "{",
+			"color": "#FFFFFF",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "css.meta.property-list",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "content",
+			"color": "#D4D4D4",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.support.type.property-name rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "css.meta.property-list",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ";",
+			"color": "#FFFFFF",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "}",
+			"color": "#FFFFFF",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": "#",
+			"color": "#D7BA7D",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.other.attribute-name.css rgb(215, 186, 125)"
+		},
+		{
+			"content": "f",
+			"color": "#D7BA7D",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.other.attribute-name.css rgb(215, 186, 125)"
+		},
+		{
+			"content": "(",
+			"color": "#D4D4D4",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "@hm",
+			"color": "#9CDCFE",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#CE9178",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#D4D4D4",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "{",
+			"color": "#D4D4D4",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    ",
+			"color": "#D4D4D4",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "content",
+			"color": "#9CDCFE",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.type.property-name rgb(156, 220, 254)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ";",
+			"color": "#D4D4D4",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "}",
+			"color": "#D4D4D4",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": "#",
+			"color": "#800000",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.other.attribute-name.css rgb(128, 0, 0)"
+		},
+		{
+			"content": "f",
+			"color": "#800000",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.other.attribute-name.css rgb(128, 0, 0)"
+		},
+		{
+			"content": "(",
+			"color": "#000000",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "@hm",
+			"color": "#001080",
+			"_t": "less.other.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#A31515",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#000000",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "{",
+			"color": "#000000",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000",
+			"_t": "css.meta.property-list",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "content",
+			"color": "#FF0000",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.type.property-name.css rgb(255, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "css.meta.property-list",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ";",
+			"color": "#000000",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "}",
+			"color": "#000000",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		}
+	],
+	"kimbie_dark": [
+		{
+			"content": "#",
+			"color": "#8AB1B0",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.other.attribute-name.id rgb(138, 177, 176)"
+		},
+		{
+			"content": "f",
+			"color": "#8AB1B0",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.other.attribute-name.id rgb(138, 177, 176)"
+		},
+		{
+			"content": "(",
+			"color": "#D3AF86",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "@hm",
+			"color": "#DC3958",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.variable rgb(220, 57, 88)"
+		},
+		{
+			"content": ":",
+			"color": "#D3AF86",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "\"",
+			"color": "#D3AF86",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#889B4A",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+		},
+		{
+			"content": "\"",
+			"color": "#D3AF86",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": ")",
+			"color": "#D3AF86",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "{",
+			"color": "#D3AF86",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "    ",
+			"color": "#D3AF86",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "content",
+			"color": "#D3AF86",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": ":",
+			"color": "#D3AF86",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.meta.separator rgb(211, 175, 134)"
+		},
+		{
+			"content": " ",
+			"color": "#D3AF86",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "\"",
+			"color": "#D3AF86",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": "\"",
+			"color": "#D3AF86",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.string rgb(211, 175, 134)"
+		},
+		{
+			"content": ";",
+			"color": "#D3AF86",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		},
+		{
+			"content": "}",
+			"color": "#D3AF86",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+		}
+	],
+	"monokai": [
+		{
+			"content": "#",
+			"color": "#A6E22E",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.other.attribute-name rgb(166, 226, 46)"
+		},
+		{
+			"content": "f",
+			"color": "#A6E22E",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.other.attribute-name rgb(166, 226, 46)"
+		},
+		{
+			"content": "(",
+			"color": "#F8F8F2",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "@hm",
+			"color": "#F8F8F2",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F2",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "\"",
+			"color": "#E6DB74",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#E6DB74",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "\"",
+			"color": "#E6DB74",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": ")",
+			"color": "#F8F8F2",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "{",
+			"color": "#F8F8F2",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F2",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "content",
+			"color": "#66D9EF",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.type rgb(102, 217, 239)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F2",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F2",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "\"",
+			"color": "#E6DB74",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": "\"",
+			"color": "#E6DB74",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+		},
+		{
+			"content": ";",
+			"color": "#F8F8F2",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		},
+		{
+			"content": "}",
+			"color": "#F8F8F2",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+		}
+	],
+	"monokai_dimmed": [
+		{
+			"content": "#",
+			"color": "#9872A2",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.meta.selector.css.entity.other.attribute-name.id rgb(152, 114, 162)"
+		},
+		{
+			"content": "f",
+			"color": "#9872A2",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.meta.selector.css.entity.other.attribute-name.id rgb(152, 114, 162)"
+		},
+		{
+			"content": "(",
+			"color": "#C5C8C6",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "@hm",
+			"color": "#6089B4",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.variable.other rgb(96, 137, 180)"
+		},
+		{
+			"content": ":",
+			"color": "#C5C8C6",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "\"",
+			"color": "#9AA83A",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#9AA83A",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "\"",
+			"color": "#9AA83A",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": ")",
+			"color": "#C5C8C6",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "{",
+			"color": "#C5C8C6",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "    ",
+			"color": "#C5C8C6",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "content",
+			"color": "#676867",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.type.property-name.css rgb(103, 104, 103)"
+		},
+		{
+			"content": ":",
+			"color": "#C5C8C6",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": " ",
+			"color": "#C5C8C6",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "\"",
+			"color": "#9AA83A",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": "\"",
+			"color": "#9AA83A",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+		},
+		{
+			"content": ";",
+			"color": "#C5C8C6",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		},
+		{
+			"content": "}",
+			"color": "#C5C8C6",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+		}
+	],
+	"quietlight": [
+		{
+			"content": "#",
+			"color": "#7A3E9D",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.selector.entity.punctuation rgb(122, 62, 157)"
+		},
+		{
+			"content": "f",
+			"color": "#7A3E9D",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.selector.entity rgb(122, 62, 157)"
+		},
+		{
+			"content": "(",
+			"color": "#333333",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "@hm",
+			"color": "#7A3E9D",
+			"_t": "less.other.variable",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.variable rgb(122, 62, 157)"
+		},
+		{
+			"content": ":",
+			"color": "#777777",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "\"",
+			"color": "#777777",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#448C27",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+		},
+		{
+			"content": "\"",
+			"color": "#777777",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": ")",
+			"color": "#333333",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "{",
+			"color": "#777777",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "    ",
+			"color": "#333333",
+			"_t": "css.meta.property-list",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "content",
+			"color": "#AB6526",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.type.property-name rgb(171, 101, 38)"
+		},
+		{
+			"content": ":",
+			"color": "#434343",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.separator rgb(67, 67, 67)"
+		},
+		{
+			"content": " ",
+			"color": "#333333",
+			"_t": "css.meta.property-list",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+		},
+		{
+			"content": "\"",
+			"color": "#448C27",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.property-value rgb(68, 140, 39)"
+		},
+		{
+			"content": "\"",
+			"color": "#448C27",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.meta.property-value rgb(68, 140, 39)"
+		},
+		{
+			"content": ";",
+			"color": "#777777",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		},
+		{
+			"content": "}",
+			"color": "#777777",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation rgb(119, 119, 119)"
+		}
+	],
+	"red": [
+		{
+			"content": "#",
+			"color": "#FEC758",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.selector.css.entity.other.attribute-name.id rgb(254, 199, 88)"
+		},
+		{
+			"content": "f",
+			"color": "#FEC758",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.meta.selector.css.entity.other.attribute-name.id rgb(254, 199, 88)"
+		},
+		{
+			"content": "(",
+			"color": "#F8F8F8",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "@hm",
+			"color": "#FB9A4B",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.variable rgb(251, 154, 75)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F8",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "\"",
+			"color": "#CD8D8D",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#CD8D8D",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "\"",
+			"color": "#CD8D8D",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": ")",
+			"color": "#F8F8F8",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "{",
+			"color": "#F8F8F8",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "    ",
+			"color": "#F8F8F8",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "content",
+			"color": "#96DD3B",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.type.property-name.css rgb(150, 221, 59)"
+		},
+		{
+			"content": ":",
+			"color": "#F8F8F8",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": " ",
+			"color": "#F8F8F8",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "\"",
+			"color": "#CD8D8D",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": "\"",
+			"color": "#CD8D8D",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+		},
+		{
+			"content": ";",
+			"color": "#F8F8F8",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		},
+		{
+			"content": "}",
+			"color": "#F8F8F8",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+		}
+	],
+	"solarized_dark": [
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.other.attribute-name rgb(147, 161, 161)"
+		},
+		{
+			"content": "f",
+			"color": "#93A1A1",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.other.attribute-name rgb(147, 161, 161)"
+		},
+		{
+			"content": "(",
+			"color": "#93A1A1",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "@hm",
+			"color": "#268BD2",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.variable.other rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#93A1A1",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#2AA198",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": ")",
+			"color": "#93A1A1",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "{",
+			"color": "#93A1A1",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "    ",
+			"color": "#93A1A1",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "content",
+			"color": "#859900",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.type rgb(133, 153, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#93A1A1",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": " ",
+			"color": "#93A1A1",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": ";",
+			"color": "#93A1A1",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		},
+		{
+			"content": "}",
+			"color": "#93A1A1",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+		}
+	],
+	"solarized_light": [
+		{
+			"content": "#",
+			"color": "#93A1A1",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.other.attribute-name rgb(147, 161, 161)"
+		},
+		{
+			"content": "f",
+			"color": "#93A1A1",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.other.attribute-name rgb(147, 161, 161)"
+		},
+		{
+			"content": "(",
+			"color": "#586E75",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "@hm",
+			"color": "#268BD2",
+			"_t": "less.other.variable",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.variable.other rgb(38, 139, 210)"
+		},
+		{
+			"content": ":",
+			"color": "#586E75",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#2AA198",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": ")",
+			"color": "#586E75",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "{",
+			"color": "#586E75",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "    ",
+			"color": "#586E75",
+			"_t": "css.meta.property-list",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "content",
+			"color": "#859900",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.type rgb(133, 153, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#586E75",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": " ",
+			"color": "#586E75",
+			"_t": "css.meta.property-list",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": "\"",
+			"color": "#2AA198",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+		},
+		{
+			"content": ";",
+			"color": "#586E75",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		},
+		{
+			"content": "}",
+			"color": "#586E75",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"content": "#",
+			"color": "#FF9DA4",
+			"_t": "attribute-name.css.definition.entity.id.meta.other.punctuation.selector",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.other.attribute-name rgb(255, 157, 164)"
+		},
+		{
+			"content": "f",
+			"color": "#FF9DA4",
+			"_t": "attribute-name.css.entity.id.meta.other.selector",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.other.attribute-name rgb(255, 157, 164)"
+		},
+		{
+			"content": "(",
+			"color": "#FFFFFF",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "@hm",
+			"color": "#FF9DA4",
+			"_t": "less.other.variable",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.variable rgb(255, 157, 164)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "css.key-value.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "\"",
+			"color": "#D1F1A9",
+			"_t": "begin.css.definition.double.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "broken highlighting in VS Code",
+			"color": "#D1F1A9",
+			"_t": "css.double.quoted.string",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "\"",
+			"color": "#D1F1A9",
+			"_t": "css.definition.double.end.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": ")",
+			"color": "#FFFFFF",
+			"_t": "brace.css.meta.round",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "{",
+			"color": "#FFFFFF",
+			"_t": "begin.css.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "    ",
+			"color": "#FFFFFF",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "content",
+			"color": "#FFEEAD",
+			"_t": "css.meta.property-list.property-name.support.type",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.type rgb(255, 238, 173)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "css.key-value.meta.property-list.punctuation.separator",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.meta.separator rgb(255, 255, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "css.meta.property-list",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "\"",
+			"color": "#D1F1A9",
+			"_t": "begin.css.definition.double.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": "\"",
+			"color": "#D1F1A9",
+			"_t": "css.definition.double.end.meta.property-list.property-value.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+		},
+		{
+			"content": ";",
+			"color": "#FFFFFF",
+			"_t": "css.meta.property-list.punctuation.rule.terminator",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "}",
+			"color": "#FFFFFF",
+			"_t": "css.end.meta.property-list.punctuation.section",
+			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+		}
+	]
+}

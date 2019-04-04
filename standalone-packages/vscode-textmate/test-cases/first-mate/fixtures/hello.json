@@ -1,0 +1,22 @@
+{
+	"name": "hello",
+	"scopeName": "source.hello",
+	"fileTypes": [
+		"world"
+	],
+	"patterns": [
+		{
+			"match": "hello",
+			"name": "prefix.hello"
+		},
+		{
+			"match": "world(!?)",
+			"captures": {
+				"1": {
+					"name": "emphasis.hello"
+				}
+			},
+			"name": "suffix.hello"
+		}
+	]
+}

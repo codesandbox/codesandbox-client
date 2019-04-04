@@ -1,8 +1,8 @@
 // @flow
-import type { Sandbox } from 'common/types';
+import type { Sandbox } from '@codesandbox/common/lib/types';
 
-import getDefinition from 'common/templates';
-import parse from 'common/templates/configuration/parse';
+import getDefinition from '@codesandbox/common/lib/templates';
+import parse from '@codesandbox/common/lib/templates/configuration/parse';
 import { resolveModuleWrapped } from './resolve-module-wrapped';
 
 export function parseConfigurations(sandbox: Sandbox) {

@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 import { inject } from 'mobx-react';
 import { Mutation } from 'react-apollo';
 import history from 'app/utils/history';
-import { teamOverviewUrl } from 'common/utils/url-generator';
-import track from 'common/utils/analytics';
+import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { NotificationContainer, NotificationImage as Image } from '../elements';
 import {
@@ -12,7 +12,7 @@ import {
   ACCEPT_TEAM_INVITATION,
 } from '../../../../Dashboard/queries';
 
-const Container = NotificationContainer.extend`
+const Container = styled(NotificationContainer)`
   display: flex;
 `;
 

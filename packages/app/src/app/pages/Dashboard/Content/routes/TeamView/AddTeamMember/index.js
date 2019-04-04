@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { Mutation } from 'react-apollo';
 
-import Input from 'common/components/Input';
-import Button from 'app/components/Button';
-import track from 'common/utils/analytics';
+import Input from '@codesandbox/common/lib/components/Input';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { INVITE_TO_TEAM } from '../../../../queries';
 
@@ -66,7 +66,7 @@ const AddTeamMember = ({ teamId, signals }) => (
             onSubmit={loading ? undefined : submit}
           >
             <Input
-              innerRef={node => {
+              ref={node => {
                 input = node;
               }}
               placeholder="Add member by username"

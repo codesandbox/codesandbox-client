@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import AddIcon from 'react-icons/lib/md/add';
-import Tooltip from 'common/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 export const AddFileToSandboxButton = styled(props => (
-  <Tooltip title="Add file to sandbox">
+  <Tooltip content="Add file to sandbox">
     <button {...props}>
       <AddIcon />
     </button>

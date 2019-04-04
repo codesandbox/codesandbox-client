@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import delayEffect from 'common/utils/animation/delay-effect';
+import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 export const Container = styled.div`
   position: absolute;
-  background-color: ${props => props.theme.background2.darken(0.5)};
+  background-color: ${props => props.theme.background4};
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.75);
 
   ${delayEffect(0)};
@@ -21,7 +21,7 @@ export const Item = styled.div`
   display: flex;
   align-items: center;
   font-size: 0.875rem;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem;
 
   text-decoration: none;
 
@@ -39,4 +39,16 @@ export const Item = styled.div`
 
 export const Icon = styled.span`
   margin-right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+`;
+
+export const Separator = styled.hr`
+  height: 1px;
+  width: 100%;
+  margin: 0.5rem 0;
+
+  background-color: ${props => props.theme.background};
+  border: 0;
+  outline: 0;
 `;

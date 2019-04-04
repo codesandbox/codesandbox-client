@@ -13,7 +13,7 @@ export default function transpile(
   content: string,
   loaderContext: LoaderContext
 ) {
-  loaderContext.emitModule(CSSBasePath, CSSBaseRaw, '/', false);
+  loaderContext.emitModule(CSSBasePath, CSSBaseRaw, '/', false, false);
 
   let result = '';
   result += `exports = module.exports = require("${CSSBasePath}")(false);\n\n`;

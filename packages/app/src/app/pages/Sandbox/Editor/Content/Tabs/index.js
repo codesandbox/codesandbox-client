@@ -2,11 +2,9 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import { canPrettify } from 'app/utils/prettify';
-import Tooltip from 'common/components/Tooltip';
-import TestsIcon from 'react-icons/lib/md/subtitles';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import TabContainer from './TabContainer';
-import ConsoleIcon from './ConsoleIcon';
 import PreviewIcon from './PreviewIcon';
 
 import {
@@ -106,14 +104,12 @@ class EditorTabs extends React.Component {
     const currentTab = store.editor.currentTab;
     const currentModule = store.editor.currentModule;
 
-    const previewVisible = store.editor.previewWindow.content === 'browser';
-    const consoleVisible = store.editor.previewWindow.content === 'console';
-    const testsVisible = store.editor.previewWindow.content === 'tests';
+    const previewVisible = store.editor.previewWindowVisible;
 
     return (
       <Container>
         <TabsContainer
-          innerRef={el => {
+          ref={el => {
             this.container = el;
           }}
         >
@@ -171,7 +167,7 @@ class EditorTabs extends React.Component {
                         tab.module.shortid
                       )
                     )}
-                    innerRef={el => {
+                    ref={el => {
                       this.tabEls[id] = el;
                     }}
                   />
@@ -189,7 +185,7 @@ class EditorTabs extends React.Component {
                     tabCount={store.editor.tabs.length}
                     position={i}
                     dirty={tab.dirty}
-                    innerRef={el => {
+                    ref={el => {
                       this.tabEls[tab.id] = el;
                     }}
                     title={`Diff: ${tab.titleA} - ${tab.titleB}`}
@@ -204,7 +200,7 @@ class EditorTabs extends React.Component {
         <IconContainer>
           <Tooltip
             style={{ display: 'inline-flex', alignItems: 'center' }}
-            title="Prettify"
+            content="Prettify"
           >
             <StyledPrettierIcon
               disabled={!this.canPrettify(currentModule)}
@@ -213,47 +209,11 @@ class EditorTabs extends React.Component {
           </Tooltip>
           <Line />
 
-          <Tooltip title={previewVisible ? 'Hide Browser' : 'Show Browser'}>
+          <Tooltip content={previewVisible ? 'Hide Browser' : 'Show Browser'}>
             <IconWrapper active={previewVisible}>
               <PreviewIcon
                 onClick={() =>
-                  previewVisible
-                    ? this.props.signals.editor.setPreviewContent({
-                        content: undefined,
-                      })
-                    : this.props.signals.editor.setPreviewContent({
-                        content: 'browser',
-                      })
-                }
-              />
-            </IconWrapper>
-          </Tooltip>
-          <Tooltip title={consoleVisible ? 'Hide Console' : 'Show Console'}>
-            <IconWrapper active={consoleVisible}>
-              <ConsoleIcon
-                onClick={() =>
-                  consoleVisible
-                    ? this.props.signals.editor.setPreviewContent({
-                        content: undefined,
-                      })
-                    : this.props.signals.editor.setPreviewContent({
-                        content: 'console',
-                      })
-                }
-              />
-            </IconWrapper>
-          </Tooltip>
-          <Tooltip title={testsVisible ? 'Hide Tests' : 'Show Tests'}>
-            <IconWrapper active={testsVisible}>
-              <TestsIcon
-                onClick={() =>
-                  testsVisible
-                    ? this.props.signals.editor.setPreviewContent({
-                        content: undefined,
-                      })
-                    : this.props.signals.editor.setPreviewContent({
-                        content: 'tests',
-                      })
+                  this.props.signals.editor.togglePreviewContent({})
                 }
               />
             </IconWrapper>
