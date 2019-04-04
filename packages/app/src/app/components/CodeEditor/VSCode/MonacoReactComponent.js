@@ -195,9 +195,6 @@ class MonacoEditor extends React.PureComponent {
         );
       })
       .then(() => {
-        if (this.lifecycleService) {
-          this.lifecycleService.shutdown();
-        }
         if (this.quickopenService) {
           // Make sure that the quickopenWidget is gone, it's attached to an old dom node
           this.quickopenService.quickOpenWidget.dispose();
