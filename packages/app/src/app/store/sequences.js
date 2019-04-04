@@ -7,6 +7,7 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import * as actions from './actions';
 import * as factories from './factories';
 import { connectToChannel as setupNotifications } from './modules/user-notifications/actions';
+import { CancelError } from './errors';
 
 import {
   saveNewModule,
@@ -18,6 +19,7 @@ import {
 } from './modules/files/actions';
 
 import { disconnect, clearUserSelections } from './modules/live/actions';
+import { alertForkingFrozenSandbox } from './modules/editor/actions';
 import { initializeLive } from './modules/live/common-sequences';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
@@ -31,6 +33,10 @@ export const openModal = [actions.setModal];
 const whenPackageJSONExists = when(props`sandbox.modules`, modules =>
   modules.find(m => m.directoryShortid == null && m.title === 'package.json')
 );
+
+function stopFrozenSandboxFromEdit() {
+  throw new CancelError("You can't save a frozen sandbox", {});
+}
 
 export const ensurePackageJSON = [
   when(props`sandbox.owned`),
@@ -175,7 +181,17 @@ export const forkSandbox = sequence('forkSandbox', [
 export const forkFrozenSandbox = sequence('forkFrozenSandbox', [
   when(state`editor.currentSandbox.isFrozen`),
   {
-    true: [alertForkingFrozenSandbox, forkSandbox],
+    true: [
+      alertForkingFrozenSandbox,
+      {
+        confirmed: forkSandbox,
+        cancelled: [
+          set(props`message`, "Can't save a frozen sandbox"),
+          actions.callVSCodeCallbackError,
+          stopFrozenSandboxFromEdit,
+        ],
+      },
+    ],
     false: [],
   },
 ]);
