@@ -43,11 +43,11 @@ There are several places that need to be updated to support a new template. This
 
 ### App
 
-- [ ] Add the logo of the template [here](https://github.com/CompuIves/codesandbox-client/tree/master/packages/common/components/logos).
+- [ ] Add the logo of the template [here](https://github.com/CompuIves/codesandbox-client/tree/master/packages/common/src/components/logos).
 - [ ] Add the template definition [here](https://github.com/nicknisi/codesandbox-client/blob/f5b88bdb2faa3c2c85b7a1aa94606883c0473067/packages/common/templates/)
   - [This](https://github.com/nicknisi/codesandbox-client/blob/f5b88bdb2faa3c2c85b7a1aa94606883c0473067/packages/common/templates/preact.js) is a good reference
   - All options are described [here](https://github.com/nicknisi/codesandbox-client/blob/f5b88bdb2faa3c2c85b7a1aa94606883c0473067/packages/common/templates/template.js)
-- [ ] Then add your template to the list [here](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/templates/index.js). This will allow us to retrieve the template.
+- [ ] Then add your template to the list [here](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/templates/index.ts). This will allow us to retrieve the template.
 
 ### Sandbox (container sandboxes can skip this)
 
