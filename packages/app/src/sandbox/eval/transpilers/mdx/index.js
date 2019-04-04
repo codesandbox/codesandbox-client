@@ -1,4 +1,5 @@
 // @flow
+
 import mdx from '@mdx-js/mdx';
 import visit from 'unist-util-visit';
 

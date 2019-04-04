@@ -4,7 +4,25 @@ import type { Module } from '../eval/entities/module';
 import { getCurrentManager } from '../compile';
 import defaultBoilerplates from './default-boilerplates';
 
-const cachedBoilerplates = [];
+let cachedBoilerplates = [];
+
+export async function evalBoilerplates(boilerplates: Array<any>) {
+  cachedBoilerplates = await Promise.all(
+    boilerplates.map(async boilerplate => {
+      const fakeModule: Module = {
+        path: `/boilerplate-${boilerplate.condition}${boilerplate.extension}`,
+        code: boilerplate.code,
+      };
+
+      const manager = getCurrentManager();
+
+      await manager.transpileModules(fakeModule);
+      const module = manager.evaluateModule(fakeModule);
+
+      return { ...boilerplate, module };
+    })
+  );
+}
 
 export async function evalBoilerplate(boilerplate) {
   const fakeModule: Module = {

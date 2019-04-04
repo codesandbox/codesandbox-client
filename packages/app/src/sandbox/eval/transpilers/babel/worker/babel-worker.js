@@ -92,6 +92,7 @@ async function initializeBrowserFS() {
       },
       e => {
         if (e) {
+          console.error(e);
           return;
         }
         fsLoading = false;
@@ -448,7 +449,6 @@ self.addEventListener('message', async event => {
   if (type !== 'compile') {
     return;
   }
-  console.log(path);
 
   const { disableCodeSandboxPlugins } = loaderOptions;
 
