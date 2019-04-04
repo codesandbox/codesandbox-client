@@ -298,7 +298,7 @@ export default class Manager {
       // Check if module syntax, only transpile when that's NOT the case
       // TODO move this check to the packager
       if (!shouldTranspile(module.code, path)) {
-        module.requires = (this.manifest.contents[path] || {}).requires;
+        module.requires = this.manifest.contents[path].requires;
       }
 
       this.addModule(module);
