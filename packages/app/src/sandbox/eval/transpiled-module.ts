@@ -151,6 +151,9 @@ type Compilation = {
 export default class TranspiledModule {
   module: Module;
   query: string;
+  path: string;
+  code: string;
+  transpiledCode: string;
   previousSource: ModuleSource | undefined;
   source: ModuleSource | undefined;
   assets: {
@@ -783,8 +786,8 @@ export default class TranspiledModule {
       inScope = false,
       testGlobals = false,
     }: {
-      asUMD: boolean;
-      inScope: boolean;
+      asUMD?: boolean;
+      inScope?: boolean;
       force?: boolean;
       testGlobals?: boolean;
     } = {},

@@ -13,7 +13,7 @@ export default abstract class Transpiler {
   name: string;
   HMREnabled: boolean;
 
-  constructor(name: string) {
+  constructor(name?: string) {
     this.cacheable = true;
     this.name = name;
     this.HMREnabled = true;

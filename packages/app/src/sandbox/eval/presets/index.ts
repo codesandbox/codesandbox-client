@@ -192,7 +192,7 @@ exports.__csbMdx = MDXContent;
   registerTranspiler(
     test: (module: Module) => boolean,
     transpilers: Array<TranspilerDefinition>,
-    prepend?: boolean = false
+    prepend: boolean = false
   ) {
     const transpilerObject = {
       test,

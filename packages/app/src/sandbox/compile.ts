@@ -690,7 +690,7 @@ async function compile({
     }
 
     if (manager) {
-      const managerState = {
+      const managerState: any = {
         ...(await manager.serialize({ optimizeForSize: false })),
       };
       delete managerState.cachedPaths;
