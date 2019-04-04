@@ -47,7 +47,12 @@ requirePolyfills().then(() => {
   async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
-        compile(data);
+        if (data.version === 3) {
+          compile(data);
+        } else {
+          const compileOld = await import('./compile-old').then(x => x.default);
+          compileOld(data);
+        }
       } else if (data.type === 'get-transpiler-context') {
         const manager = getCurrentManager();
 

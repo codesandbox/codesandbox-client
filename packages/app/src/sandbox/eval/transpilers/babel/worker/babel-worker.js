@@ -92,7 +92,6 @@ async function initializeBrowserFS() {
       },
       e => {
         if (e) {
-          console.error(e);
           return;
         }
         fsLoading = false;
