@@ -27,7 +27,7 @@ import { shouldTranspile } from './transpilers/babel/check';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 
-let var BrowserFS: any;
+declare var BrowserFS: any;
 
 type Externals = {
   [name: string]: string;
@@ -238,7 +238,7 @@ export default class Manager {
     return hasCallback ? callback(null, !!returnValue) : !!returnValue;
   };
 
-  readFileSync = (p: string, cb?: ?Function, c?: Function) => {
+  readFileSync = (p: string, cb?: Function | undefined, c?: Function) => {
     const callback = c || cb;
     const hasCallback = typeof callback === 'function';
 
@@ -298,7 +298,7 @@ export default class Manager {
       // Check if module syntax, only transpile when that's NOT the case
       // TODO move this check to the packager
       if (!shouldTranspile(module.code, path)) {
-        module.requires = this.manifest.contents[path].requires;
+        module.requires = (this.manifest.contents[path] || {}).requires;
       }
 
       this.addModule(module);
@@ -467,7 +467,7 @@ export default class Manager {
     }
   }
 
-  lastEntry: ?string = undefined;
+  lastEntry: string | undefined = undefined;
 
   updateLastEntry(entry: string) {
     if (this.lastEntry && this.lastEntry !== entry) {

@@ -20,7 +20,7 @@ import evaluate from './loaders/eval';
 import Manager, { HMRStatus } from './manager';
 import HMR from './hmr';
 
-let var BrowserFS: any;
+declare var BrowserFS: any;
 
 const debug = _debug('cs:compiler:transpiled-module');
 
@@ -715,7 +715,7 @@ export default class TranspiledModule {
     const sourceEqualsCompiled = code === this.module.code;
     const sourceURL = `//# sourceURL=${location.origin}${this.module.path}${
       this.query ? `?${this.hash}` : ''
-      }`;
+    }`;
 
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
@@ -781,8 +781,13 @@ export default class TranspiledModule {
       asUMD = false,
       force = false,
       inScope = false,
-      testGlobals = false
-    }: { asUMD: boolean, inScope: boolean, force?: boolean, testGlobals?: boolean } = {},
+      testGlobals = false,
+    }: {
+      asUMD: boolean;
+      inScope: boolean;
+      force?: boolean;
+      testGlobals?: boolean;
+    } = {},
     initiator?: TranspiledModule
   ) {
     if (this.source == null) {
@@ -794,7 +799,7 @@ export default class TranspiledModule {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
             `[WARN] Sandpack: loading an untranspiled module: ${
-            this.module.path
+              this.module.path
             }`
           );
         }
@@ -809,7 +814,7 @@ export default class TranspiledModule {
 
         code += `\n//# sourceURL=${location.origin}${this.module.path}${
           this.query ? `?${this.hash}` : ''
-          }`;
+        }`;
 
         this.source = new ModuleSource(this.module.path, code, null);
 
@@ -997,10 +1002,10 @@ export default class TranspiledModule {
         return cache
           ? cache.exports
           : manager.evaluateTranspiledModule(
-            requiredTranspiledModule,
-            transpiledModule,
-            { force, testGlobals }
-          );
+              requiredTranspiledModule,
+              transpiledModule,
+              { force, testGlobals }
+            );
       }
 
       // @ts-ignore
