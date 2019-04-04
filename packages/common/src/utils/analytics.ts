@@ -7,6 +7,14 @@ const debug = _debug('cs:analytics');
 
 const global = (typeof window !== 'undefined' ? window : {}) as any;
 
+if (typeof global.amplitude !== 'undefined') {
+  try {
+    global.amplitude.options.logLevel= 'ERROR'
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 export const DNT =
   typeof window !== 'undefined' &&
   !!(

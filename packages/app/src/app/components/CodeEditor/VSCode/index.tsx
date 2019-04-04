@@ -4,8 +4,11 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
-import { getModulePath, resolveModule } from '@codesandbox/common/lib/sandbox/modules';
-import { listen } from 'codesandbox-api';
+import {
+  getModulePath,
+  resolveModule,
+} from '@codesandbox/common/lib/sandbox/modules';
+import { listen, dispatch, actions } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
@@ -254,11 +257,16 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.modelAddedListener = this.editor.textFileService.modelService.onModelAdded(
       model => {
         if (this.modelListeners[model.uri.path] === undefined) {
-          const module = resolveModule(
-            model.uri.path.replace(/^\/sandbox/, ''),
-            this.sandbox.modules,
-            this.sandbox.directories
-          );
+          let module: Module;
+          try {
+            module = resolveModule(
+              model.uri.path.replace(/^\/sandbox/, ''),
+              this.sandbox.modules,
+              this.sandbox.directories
+            );
+          } catch (e) {
+            return;
+          }
 
           const listener = model.onDidChangeContent(e => {
             const path = model.uri.path;
@@ -939,6 +947,15 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
     const mode = await getMode(currentModule.title, this.monaco);
     if (mode === 'javascript' || mode === 'vue') {
+      dispatch(
+        actions.correction.show('Hello World', {
+          line: 1,
+          column: 1,
+          path: '/src/index.js',
+          source: 'eslint',
+          severity: 'warning',
+        })
+      );
       this.monaco.editor.setModelMarkers(
         this.editor.getActiveCodeEditor().getModel(),
         'eslint',
