@@ -91,6 +91,29 @@ const ForkButton = ({
   </Button>
 );
 
+const PickButton = ({ store, signals, secondary, style }: ButtonProps) => {
+  const { id, title, description } = store.editor.currentSandbox;
+
+  return (
+    <Button
+      onClick={() => {
+        signals.editor.pickSandboxModal({
+          details: {
+            id,
+            title,
+            description,
+          },
+        });
+      }}
+      style={style}
+      secondary={secondary}
+      small
+    >
+      Pick
+    </Button>
+  );
+};
+
 const ShareButton = ({ signals, secondary, style }: ButtonProps) => (
   <Button
     onClick={() => {
@@ -217,17 +240,28 @@ const Header = ({ store, signals, zenMode }: Props) => {
             likeCount={store.editor.currentSandbox.likeCount}
           />
         )}
-        <ShareButton
-          style={{ fontSize: '.75rem', margin: '0 1rem' }}
-          signals={signals}
-          secondary={!sandbox.owned}
-          store={store}
-        />
+
+        {store.user.curatorAt && (
+          <PickButton
+            style={{ fontSize: '.75rem', margin: '0 1rem' }}
+            secondary={sandbox.owned}
+            signals={signals}
+            store={store}
+          />
+        )}
+
         <ForkButton
           secondary={sandbox.owned}
           isForking={store.editor.isForkingSandbox}
           style={{ fontSize: '.75rem' }}
           signals={signals}
+          store={store}
+        />
+
+        <ShareButton
+          style={{ fontSize: '.75rem', margin: '0 1rem' }}
+          signals={signals}
+          secondary={!sandbox.owned}
           store={store}
         />
 

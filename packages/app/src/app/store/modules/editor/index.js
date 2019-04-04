@@ -16,6 +16,7 @@ import {
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
+import { pickSandboxModal } from '../explore/sequences';
 
 export default Module({
   model,
@@ -82,6 +83,7 @@ export default Module({
     moduleDoubleClicked: sequences.unsetDirtyTab,
     tabClosed: sequences.closeTab,
     tabMoved: sequences.moveTab,
+    pickSandboxModal,
     prettifyClicked: sequences.prettifyCode,
     errorsCleared: sequences.clearErrors,
     projectViewToggled: sequences.toggleProjectView,
