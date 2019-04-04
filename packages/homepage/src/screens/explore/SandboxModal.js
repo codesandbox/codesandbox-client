@@ -43,7 +43,7 @@ export default class SandboxModal extends React.PureComponent {
   };
   loadedSandboxes = {};
 
-  getSandbox = (sandboxId: string) => {
+  getSandbox = sandboxId => {
     track('Explore Sandbox Open', { sandboxId });
 
     if (this.loadedSandboxes[sandboxId]) {
@@ -71,7 +71,7 @@ export default class SandboxModal extends React.PureComponent {
 
     const sandbox = await this.getSandbox(props.sandboxId);
 
-    this.setState({ sandbox });
+    this.setState({ sandbox, showFrame: true });
 
     if (this.frame) {
       await this.frameInitializedPromise;
@@ -86,10 +86,6 @@ export default class SandboxModal extends React.PureComponent {
     this.frameInitializedPromise = new Promise(resolve => {
       this.resolveFrameInitializedPromise = resolve;
     });
-
-    setTimeout(() => {
-      this.setState({ showFrame: true });
-    }, 1000);
   }
 
   componentWillUnmount() {
@@ -118,7 +114,10 @@ export default class SandboxModal extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
-      this.setState({ sandbox: undefined });
+      this.setState({
+        sandbox: undefined,
+        showFrame: false,
+      });
       this.fetchSandbox(nextProps);
     }
   }
