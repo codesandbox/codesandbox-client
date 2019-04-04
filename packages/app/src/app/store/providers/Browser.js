@@ -25,6 +25,9 @@ export default Provider({
   setTitle(title) {
     document.title = title;
   },
+  alert(message) {
+    return alert(message); // eslint-disable-line no-alert
+  },
   confirm(message) {
     return confirm(message); // eslint-disable-line no-alert
   },

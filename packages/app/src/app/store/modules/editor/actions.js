@@ -349,6 +349,10 @@ export function confirmForkingOwnSandbox({ browser, path }) {
     : path.cancelled();
 }
 
+export function alertForkingFrozenSandbox({ browser }) {
+  return browser.alert('This sandbox is frozen, and will be forked.');
+}
+
 export function unlikeSandbox({ api, props }) {
   return api.request({
     method: 'DELETE',
