@@ -47,7 +47,13 @@ export default class VersionEntry extends React.PureComponent {
 
   getSizeForPKG(pkg) {
     fetch(`https://bundlephobia.com/api/size?package=${pkg}`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Bad request');
+        }
+
+        return response.json();
+      })
       .then(size =>
         this.setState({
           size,

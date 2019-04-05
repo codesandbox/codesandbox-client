@@ -1,7 +1,7 @@
 import React from 'react';
 import history from 'app/utils/history';
 import { inject, observer } from 'mobx-react';
-import { Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
@@ -17,12 +17,6 @@ import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
 import { TEAMS_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
-  shouldComponentUpdate() {
-    // Without this the app won't update on route changes, we've tried using
-    // `withRouter`, but it caused the app to remount on every route change.
-    return true;
-  }
-
   handleSearchFocus = () => {
     history.push('/dashboard/search');
   };
@@ -129,4 +123,4 @@ class Sidebar extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(Sidebar));
+export default inject('signals', 'store')(withRouter(observer(Sidebar)));
