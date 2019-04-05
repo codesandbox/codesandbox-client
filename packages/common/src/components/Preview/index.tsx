@@ -153,7 +153,6 @@ class BasePreview extends React.Component<Props, State> {
   lastSent: {
     sandboxId: string;
     modules: IModulesByPath;
-    ignoreNextUpdate: boolean;
   };
 
   $socket: SocketIOClient.Socket;
@@ -211,7 +210,6 @@ class BasePreview extends React.Component<Props, State> {
     this.lastSent = {
       sandboxId: this.props.sandbox.id,
       modules: this.getModulesToSend(),
-      ignoreNextUpdate: false,
     };
   };
 
@@ -313,8 +311,6 @@ class BasePreview extends React.Component<Props, State> {
       });
 
       socket.on('sandbox:update', message => {
-        this.lastSent.ignoreNextUpdate = true;
-
         if (this.props.syncSandbox) {
           this.props.syncSandbox({ updates: message.updates });
         }
@@ -608,11 +604,9 @@ class BasePreview extends React.Component<Props, State> {
 
         this.lastSent.modules = modulesToSend;
 
-        const ignoreUpdate = this.lastSent.ignoreNextUpdate;
-        if (!ignoreUpdate && Object.keys(diff).length > 0 && this.$socket) {
+        if (Object.keys(diff).length > 0 && this.$socket) {
           this.$socket.emit('sandbox:update', diff);
         }
-        this.lastSent.ignoreNextUpdate = false;
       } else {
         dispatch({
           type: 'compile',
