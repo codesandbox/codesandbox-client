@@ -448,6 +448,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
               hidden={hidden}
               setPane={this.setPane}
               devToolIndex={devToolIndex}
+              status={this.state.status}
               moveTab={
                 this.props.moveTab
                   ? (prevPos, nextPos) => {
