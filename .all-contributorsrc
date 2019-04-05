@@ -654,18 +654,15 @@
         "design"
       ]
     },
-        {
-          "login": "JonShort",
+    {
+      "login": "JonShort",
       "name": "Jon Short",
       "avatar_url": "https://avatars2.githubusercontent.com/u/21317379?v=4",
       "profile": "https://jonshort.me/",
       "contributions": [
         "code"
-        ]
+      ]
     },
-    
-    
-
     {
       "login": "dv297",
       "name": "Daniel Vu",
@@ -1112,6 +1109,15 @@
       "name": "Mahendra Hirapra",
       "avatar_url": "https://avatars3.githubusercontent.com/u/827497?v=4",
       "profile": "https://github.com/tinahir",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rabingaire",
+      "name": "Rabin Gaire",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/17409675?v=4",
+      "profile": "http://rabingaire.com.np",
       "contributions": [
         "code"
       ]
