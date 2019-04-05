@@ -8,7 +8,7 @@ import {
   getModulePath,
   resolveModule,
 } from '@codesandbox/common/lib/sandbox/modules';
-import { listen, dispatch, actions } from 'codesandbox-api';
+import { listen } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
@@ -947,15 +947,6 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
     const mode = await getMode(currentModule.title, this.monaco);
     if (mode === 'javascript' || mode === 'vue') {
-      dispatch(
-        actions.correction.show('Hello World', {
-          line: 1,
-          column: 1,
-          path: '/src/index.js',
-          source: 'eslint',
-          severity: 'warning',
-        })
-      );
       this.monaco.editor.setModelMarkers(
         this.editor.getActiveCodeEditor().getModel(),
         'eslint',
