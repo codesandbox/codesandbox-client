@@ -11,6 +11,7 @@ type Props = {
   children?: React.ReactElement | string;
   disabled?: boolean;
   type?: 'button' | 'reset' | 'submit';
+  loading?: boolean;
   secondary?: boolean;
 };
 

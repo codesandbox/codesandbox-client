@@ -39,6 +39,7 @@ class More extends React.Component<Props> {
               small
               block
               disabled={isForkingSandbox}
+              loading={isForkingSandbox}
               onClick={this.forkSandbox}
             >
               {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}

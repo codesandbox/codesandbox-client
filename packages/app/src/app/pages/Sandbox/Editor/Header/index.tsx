@@ -82,6 +82,7 @@ const ForkButton = ({
     style={style}
     secondary={secondary}
     disabled={isForking}
+    loading={isForking}
     small
   >
     <>
