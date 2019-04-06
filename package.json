@@ -25,7 +25,7 @@
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged",
-    "postinstall": "rimraf node_modules/@types packages/app/node_modules/styled-components node_modules/react-split-pane/node_modules/react* && cp -R node_modules/uglify-es node_modules/terser && yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
+    "postinstall": "rimraf node_modules/@types/react-native && rimraf packages/app/node_modules/styled-components node_modules/react-split-pane/node_modules/react* && cp -R node_modules/uglify-es node_modules/terser && yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
     "typecheck": "lerna run typecheck --scope app"
   },
   "lint-staged": {
@@ -49,18 +49,16 @@
       "packages/dynamic-pages"
     ],
     "nohoist": [
-      "**/@types",
-      "**/@types/**",
       "**/react-codemirror2",
       "**/react-codemirror2/**"
     ]
   },
   "resolutions": {
     "uglify-es": "npm:terser",
-    "react-split-pane/react-dom": "^16.8.3"
+    "react-split-pane/react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "@types/react": "^16.8.6",
+    "@types/react": "^16.8.12",
     "all-contributors-cli": "^5.4.0",
     "babel-eslint": "^8.2.1",
     "eslint": "CompuIves/eslint#add/define-parser",

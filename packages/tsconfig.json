@@ -1,15 +1,17 @@
 {
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "baseUrl": "./",
     "module": "commonjs",
     "target": "ES6",
-    "lib": ["es6", "dom", "es2017.object", "es2017.sharedmemory"],
+    "lib": [
+      "esnext.asynciterable",
+      "es6",
+      "dom",
+      "es2017.object",
+      "es2017.sharedmemory"
+    ],
     "resolveJsonModule": true,
     "jsx": "react",
-    "allowJs": true,
-    "paths": {
-      "common/*": ["./src/common/*"]
-    }
+    "allowJs": true
   }
 }
