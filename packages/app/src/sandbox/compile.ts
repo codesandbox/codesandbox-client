@@ -557,7 +557,11 @@ async function compile({
           manager.clearCompiledCache();
         }
 
-        if (!manager.preset.htmlDisabled || !firstLoad) {
+        if (
+          !manager.preset.htmlDisabled ||
+          !firstLoad ||
+          process.env.LOCAL_SERVER
+        ) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run.
           document.body.innerHTML = body;
