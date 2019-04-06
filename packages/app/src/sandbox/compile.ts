@@ -550,8 +550,6 @@ async function compile({
               : '<div id="root"></div>'
         );
 
-        document.body.innerHTML = body;
-
         if (lastHeadHTML && lastHeadHTML !== head) {
           document.location.reload();
         }
@@ -559,6 +557,11 @@ async function compile({
           manager.clearCompiledCache();
         }
 
+        if (!firstLoad || process.env.LOCAL_SERVER) {
+          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+          // on the first run.
+          document.body.innerHTML = body;
+        }
         lastBodyHTML = body;
         lastHeadHTML = head;
       }

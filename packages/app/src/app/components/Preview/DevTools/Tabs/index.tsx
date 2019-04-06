@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
-import { IViewType } from '..';
+import { IViewType, Status } from '..';
 import { Actions, Container, Tabs } from './elements';
 import DraggableTab, { PaneTab, TabProps } from './Tab';
 import TabDropZone, { TabDropZoneProps } from './TabDropZone';
@@ -20,6 +20,7 @@ export interface Props {
   setPane: (i: number) => void;
   devToolIndex: number;
   moveTab: (prevPos: ITabPosition, newPos: ITabPosition) => void;
+  status?: { [title: string]: Status | undefined };
 }
 
 const DevToolTabs = ({
@@ -30,6 +31,7 @@ const DevToolTabs = ({
   owned,
   setPane,
   moveTab,
+  status,
 }: Props) => {
   const currentPane = panes[currentPaneIndex];
   const actions =
@@ -68,6 +70,7 @@ const DevToolTabs = ({
               moveTab={moveTab}
               index={i}
               key={i}
+              status={status ? status[pane.id] : undefined}
             />
           );
         })}
