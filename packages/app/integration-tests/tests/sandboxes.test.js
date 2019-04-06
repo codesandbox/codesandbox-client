@@ -36,6 +36,7 @@ const SANDBOXES = [
   '31kn7voz4q', // cxjs
   'zw9zjy0683', // aurelia
   'zx22owojr3', // vue v-slot test
+  '4888omqqz7', // material-ui https://github.com/CompuIves/codesandbox-client/issues/1741
 ];
 
 function pageLoaded(page) {

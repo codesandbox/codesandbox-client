@@ -1,4 +1,3 @@
-
 import { absolute } from '../utils/path';
 import {
   ConfigurationFile,
@@ -118,15 +117,31 @@ export default class Template {
     this.showCube = options.showCube != null ? options.showCube : true;
   }
 
+  private getMainFromPackage(pkg: {
+    main?: string[] | string;
+  }): string | undefined {
+    try {
+      if (!pkg.main) {
+        return undefined;
+      }
+
+      if (Array.isArray(pkg.main)) {
+        return absolute(pkg.main[0]);
+      }
+
+      if (typeof pkg.main === 'string') {
+        return absolute(pkg.main);
+      }
+    } catch (e) {}
+  }
+
   /**
    * Get possible entry files to evaluate, differs per template
    */
   getEntries(configurationFiles: ParsedConfigurationFiles): Array<string> {
     return [
       configurationFiles.package &&
-        configurationFiles.package.parsed &&
-        configurationFiles.package.parsed.main &&
-        absolute(configurationFiles.package.parsed.main),
+        this.getMainFromPackage(configurationFiles.package.parsed),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.ts',
