@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import Preference from '../../components/Preference';
 
-export const PaddedPreference = styled(Preference)`
+export const PaddedPreference = (styled(Preference)`
   width: 100%;
   padding: 0;
   font-weight: 400;
-`;
+` as unknown) as typeof Preference;
 
 export const PaddedConfig = styled.div`
   padding-bottom: 0.75rem;

@@ -1,16 +1,15 @@
-// @ts-ignore
-declare var process: {
-  env: {
+declare namespace NodeJS {
+  export interface ProcessEnv {
     NODE_ENV: 'development' | 'production';
     PUBLIC_URL?: string;
     CODESANDBOX_HOST?: string;
-    LOCAL_SERVER?: boolean;
-    STAGING?: boolean;
+    LOCAL_SERVER?: string;
+    STAGING?: string;
     STAGING_BRANCH?: string;
     ROOT_URL?: string;
-    VSCODE?: boolean;
-  };
-};
+    VSCODE?: string;
+  }
+}
 
 declare module '*.svg' {
   const content: string;

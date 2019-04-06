@@ -46,7 +46,7 @@
     "react-transition-group": "^2.2.1",
     "react-typography": "^0.16.13",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^4.1.2",
+    "styled-components": "^4.2.0",
     "terser": "^3.17.0",
     "three": "^0.87.1",
     "typography": "^0.16.17",
