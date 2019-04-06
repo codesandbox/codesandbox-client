@@ -528,7 +528,6 @@ class SandboxItem extends React.PureComponent<Props, State> {
                                 onBlur={saveName}
                                 block
                                 defaultValue={title}
-                                small
                               />
                             );
                           }}
