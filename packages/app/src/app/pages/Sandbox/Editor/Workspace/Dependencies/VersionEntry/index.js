@@ -3,6 +3,7 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
 import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
@@ -121,16 +122,25 @@ export default class VersionEntry extends React.PureComponent {
           {hovering && (
             <IconArea>
               {size.size ? (
-                <Icon onClick={this.handleOpen}>
-                  {open ? <ArrowDropUp /> : <ArrowDropDown />}
-                </Icon>
+                <Tooltip
+                  content={open ? 'Hide sizes' : 'Show sizes'}
+                  style={{ outline: 'none' }}
+                >
+                  <Icon onClick={this.handleOpen}>
+                    {open ? <ArrowDropUp /> : <ArrowDropDown />}
+                  </Icon>
+                </Tooltip>
               ) : null}
-              <Icon onClick={this.handleRefresh}>
-                <RefreshIcon />
-              </Icon>
-              <Icon onClick={this.handleRemove}>
-                <CrossIcon />
-              </Icon>
+              <Tooltip content="Update to latest" style={{ outline: 'none' }}>
+                <Icon onClick={this.handleRefresh}>
+                  <RefreshIcon />
+                </Icon>
+              </Tooltip>
+              <Tooltip content="Remove" style={{ outline: 'none' }}>
+                <Icon onClick={this.handleRemove}>
+                  <CrossIcon />
+                </Icon>
+              </Tooltip>
             </IconArea>
           )}
         </EntryContainer>
