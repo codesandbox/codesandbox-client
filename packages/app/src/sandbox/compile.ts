@@ -536,7 +536,7 @@ async function compile({
 
       manager.preset.preEvaluate(manager, updatedModules);
 
-      if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
+      if (!manager.webpackHMR) {
         const htmlModulePath = templateDefinition
           .getHTMLEntries(configurations)
           .find(p => modules[p]);
@@ -557,7 +557,7 @@ async function compile({
           manager.clearCompiledCache();
         }
 
-        if (!firstLoad || process.env.LOCAL_SERVER) {
+        if (!manager.preset.htmlDisabled || !firstLoad) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run.
           document.body.innerHTML = body;
