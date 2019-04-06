@@ -12,7 +12,7 @@ import Unlisted from 'react-icons/lib/md/insert-link';
 import Private from 'react-icons/lib/md/lock';
 
 import Input from '@codesandbox/common/lib/components/Input';
-import getTemplate from '@codesandbox/common/lib/templates';
+import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
 import theme from '@codesandbox/common/lib/theme';
 import track from '@codesandbox/common/lib/utils/analytics';
 
@@ -33,27 +33,47 @@ import {
 } from './elements';
 
 type Props = {
-  id: string,
-  title: string,
-  details: string,
-  selected: boolean,
-  setSandboxesSelected: (ids: string[], additive?: boolean) => void,
-  deleteSandboxes: () => void,
-  permanentlyDeleteSandboxes: () => void,
-  collectionPath: string, // eslint-disable-line react/no-unused-prop-types
-  collectionTeamId: ?string,
-  sandbox: Object,
-  page: ?string,
-  privacy: number,
-  isPatron: boolean,
-  setSandboxesPrivacy: () => void,
-  undeleteSandboxes: () => void,
+  id: string;
+  title: string;
+  details: string;
+  selected: boolean;
+  template: TemplateType;
+  screenshotUrl: string | undefined;
+  setSandboxesSelected: (
+    ids: string[],
+    options?: { additive?: boolean; range?: boolean }
+  ) => void;
+  selectedCount: number;
+  deleteSandboxes: () => void;
+  permanentlyDeleteSandboxes: () => void;
+  collectionPath: string; // eslint-disable-line react/no-unused-prop-types
+  collectionTeamId: string | undefined;
+  sandbox: Object;
+  page: string | undefined;
+  privacy: number;
+  isPatron: boolean;
+  setSandboxesPrivacy: (privacy: 0 | 1 | 2) => void;
+  isScrolling: () => boolean;
+  undeleteSandboxes: () => void;
+  removedAt?: number;
+  style?: React.CSSProperties;
+
+  // React-DnD, lazy typings
+  connectDragSource: any;
+  isDraggingItem: any;
+  connectDragPreview: any;
 };
 
-class SandboxItem extends React.PureComponent<Props> {
-  el: HTMLDivElement;
+type State = {
+  renamingSandbox: boolean;
+  screenshotUrl: string | undefined;
+};
 
-  state = {
+class SandboxItem extends React.PureComponent<Props, State> {
+  el: HTMLDivElement;
+  screenshotTimeout: number;
+
+  state: State = {
     renamingSandbox: false,
     screenshotUrl: this.props.screenshotUrl,
   };
@@ -85,7 +105,7 @@ class SandboxItem extends React.PureComponent<Props> {
   checkScreenshot() {
     if (!this.state.screenshotUrl && this.hasScreenshot()) {
       // We only request the screenshot if the sandbox card is in view for > 1 second
-      this.screenshotTimeout = setTimeout(() => {
+      this.screenshotTimeout = window.setTimeout(() => {
         this.requestScreenshot();
       }, 1000);
     }
@@ -275,21 +295,19 @@ class SandboxItem extends React.PureComponent<Props> {
     ].filter(Boolean);
   };
 
-  selectSandbox = e => {
+  selectSandbox = (e: React.MouseEvent | React.FocusEvent) => {
     this.props.setSandboxesSelected([this.props.id], {
-      additive: e.metaKey,
-      range: e.shiftKey,
+      additive: 'metaKey' in e ? e.metaKey : false,
+      range: 'shiftKey' in e ? e.shiftKey : false,
     });
   };
 
-  openSandbox = (e, openNewWindow = false) => {
-    // check for cmd click
-    const cmd = e.ctrlKey || e.metaKey;
-    // Git sandboxes aren't shown here anyway
+  openSandbox = (openNewWindow = false) => {
+    // @ts-ignore Git sandboxes aren't shown here anyway
     const url = sandboxUrl({ id: this.props.id });
 
     if (!this.props.removedAt) {
-      if (openNewWindow === true || cmd) {
+      if (openNewWindow === true) {
         track('Dashboard - Sandbox Opened in a new tab');
         window.open(url, '_blank');
       } else {
@@ -300,7 +318,7 @@ class SandboxItem extends React.PureComponent<Props> {
     return true;
   };
 
-  handleMouseDown = e => {
+  handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
 
     if (!this.props.selected || e.metaKey) {
@@ -308,7 +326,7 @@ class SandboxItem extends React.PureComponent<Props> {
     }
   };
 
-  handleKeyDown = (e: KeyboardEvent) => {
+  handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.keyCode === ENTER) {
       track('Dashboard - Sandbox Opened With Enter');
       // enter
@@ -316,20 +334,20 @@ class SandboxItem extends React.PureComponent<Props> {
     }
   };
 
-  handleOnContextMenu = e => {
+  handleOnContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     track('Dashboard - Sandbox Context Menu Opened');
     if (!this.props.selected) {
       this.selectSandbox(e);
     }
   };
 
-  handleOnFocus = e => {
+  handleOnFocus = (e: React.FocusEvent) => {
     if (!this.props.selected) {
       this.selectSandbox(e);
     }
   };
 
-  handleOnBlur = (e: MouseEvent) => {
+  handleOnBlur = (e: React.FocusEvent) => {
     if (this.props.selected && e.bubbles) {
       this.props.setSandboxesSelected([]);
     }
@@ -387,8 +405,8 @@ class SandboxItem extends React.PureComponent<Props> {
       details,
       template,
       connectDragSource,
-      selected,
       isDraggingItem,
+      selected,
     } = this.props;
 
     const { screenshotUrl } = this.state;
@@ -420,7 +438,12 @@ class SandboxItem extends React.PureComponent<Props> {
                   onContextMenu(e);
                   this.handleOnContextMenu(e);
                 }}
-                onDoubleClick={this.openSandbox}
+                onDoubleClick={event => {
+                  // check for cmd click
+                  const cmd = event.ctrlKey || event.metaKey;
+
+                  this.openSandbox(!!cmd);
+                }}
                 onBlur={this.handleOnBlur}
                 onFocus={this.handleOnFocus}
                 onKeyDown={this.handleKeyDown}
@@ -505,7 +528,6 @@ class SandboxItem extends React.PureComponent<Props> {
                                 onBlur={saveName}
                                 block
                                 defaultValue={title}
-                                small
                               />
                             );
                           }}

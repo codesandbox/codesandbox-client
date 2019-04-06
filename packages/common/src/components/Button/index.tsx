@@ -10,7 +10,7 @@ type Props = {
   onClick?: () => void;
   children?: React.ReactElement | string;
   disabled?: boolean;
-  type?: string;
+  type?: 'button' | 'reset' | 'submit';
   secondary?: boolean;
 };
 

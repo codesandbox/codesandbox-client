@@ -17,7 +17,9 @@ export const Container = styled.div`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 `;
 
-export const StyledContextMenu = styled(ContextMenu)`
+export const StyledContextMenu = styled(ContextMenu)<{
+  isDraggingItem: boolean;
+}>`
   padding-right: ${PADDING}px;
   box-sizing: border-box;
   opacity: ${({ isDraggingItem }) => (isDraggingItem ? 0 : 1)};
