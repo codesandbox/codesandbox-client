@@ -19,7 +19,7 @@ export type Options = {
   isServer?: boolean;
   main?: boolean;
   backgroundColor?: () => string;
-  mainFile?: Array<string>;
+  mainFile?: string[];
 };
 
 export type ConfigurationFiles = {
@@ -138,7 +138,7 @@ export default class Template {
   /**
    * Get possible entry files to evaluate, differs per template
    */
-  getEntries(configurationFiles: ParsedConfigurationFiles): Array<string> {
+  getEntries(configurationFiles: ParsedConfigurationFiles): string[] {
     return [
       configurationFiles.package &&
         this.getMainFromPackage(configurationFiles.package.parsed),
@@ -161,7 +161,7 @@ export default class Template {
    */
   getDefaultOpenedFiles(
     configurationFiles: ParsedConfigurationFiles
-  ): Array<string> {
+  ): string[] {
     return this.getEntries(configurationFiles);
   }
 
@@ -177,9 +177,7 @@ export default class Template {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getHTMLEntries(configurationFiles: {
-    [type: string]: Object;
-  }): Array<string> {
+  getHTMLEntries(configurationFiles: { [type: string]: Object }): string[] {
     return ['/public/index.html', '/index.html'];
   }
 
