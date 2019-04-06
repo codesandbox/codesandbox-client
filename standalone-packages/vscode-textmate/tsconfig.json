@@ -9,7 +9,8 @@
 		"lib": [
 			"es5",
 			"es2015.promise"
-		]
+    ],
+    "types": ["mocha", "node"]
 	},
 	"exclude": [
 		"node_modules",
