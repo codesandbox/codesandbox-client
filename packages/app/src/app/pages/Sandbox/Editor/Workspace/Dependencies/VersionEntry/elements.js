@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Select from '@codesandbox/common/lib/components/Select';
 import { EntryContainer } from '../../elements';
 
 export const Version = styled.div`
@@ -24,4 +25,12 @@ export const MoreData = styled(EntryContainer)`
       margin-bottom: 0.5rem;
     }
   }
+`;
+
+export const VersionSelect = styled(Select)`
+  width: 60px;
+  position: absolute;
+  right: ${props => (props.hovering ? (props.withSize ? 5 : 3.5) : 1)}rem;
+  color: ${props => props.theme.background.lighten(2)};
+  margin-top: -4px;
 `;

@@ -3,11 +3,12 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
 import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
+import algoliasearch from 'algoliasearch';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
-import { Version, MoreData } from './elements';
+import { Version, MoreData, VersionSelect } from './elements';
 
 const formatSize = value => {
   let unit;
@@ -32,6 +33,7 @@ export default class VersionEntry extends React.PureComponent {
     version: null,
     open: false,
     size: {},
+    versions: [],
   };
 
   setVersionsForLatestPkg(pkg) {
@@ -68,15 +70,27 @@ export default class VersionEntry extends React.PureComponent {
   }
 
   componentWillMount() {
+    const { dependencies, dependency } = this.props;
+    const client = algoliasearch(
+      'OFCNCOG2CU',
+      '00383ecd8441ead30b1b0ff981c426f5'
+    );
+    const index = client.initIndex('npm-search');
+    index.search({ query: dependency, hitsPerPage: 1 }, (err, { hits }) => {
+      this.setState({
+        versions: hits[0].versions,
+      });
+    });
+
     try {
       const versionRegex = /^\d{1,3}\.\d{1,3}.\d{1,3}$/;
-      const version = this.props.dependencies[this.props.dependency];
+      const version = dependencies[dependency];
       const cleanVersion = version.split('^');
       this.getSizeForPKG(
-        `${this.props.dependency}@${cleanVersion[cleanVersion.length - 1]}`
+        `${dependency}@${cleanVersion[cleanVersion.length - 1]}`
       );
       if (!versionRegex.test(version)) {
-        this.setVersionsForLatestPkg(`${this.props.dependency}@${version}`);
+        this.setVersionsForLatestPkg(`${dependency}@${version}`);
       }
     } catch (e) {
       console.error(e);
@@ -104,7 +118,7 @@ export default class VersionEntry extends React.PureComponent {
   render() {
     const { dependencies, dependency } = this.props;
 
-    const { hovering, version, size, open } = this.state;
+    const { hovering, version, size, open, versions } = this.state;
     return (
       <Fragment>
         <EntryContainer
@@ -114,10 +128,29 @@ export default class VersionEntry extends React.PureComponent {
           <Link href={`https://www.npmjs.com/package/${dependency}`}>
             {dependency}
           </Link>
-          <Version withSize={!!size.size} hovering={hovering}>
-            {dependencies[dependency]}{' '}
-            {hovering && version && <span>({version})</span>}
-          </Version>
+          {hovering ? (
+            <VersionSelect
+              withSize={!!size.size}
+              hovering={hovering}
+              onChange={e => {
+                this.props.onRefresh(dependency, e.target.value);
+                this.setState({ hovering: false });
+              }}
+            >
+              {Object.keys(versions)
+                .filter(v => v < dependencies[dependency])
+                .map(a => <option>{a}</option>)}
+              <option selected>{dependencies[dependency]}</option>
+              {Object.keys(versions)
+                .filter(v => v > dependencies[dependency])
+                .map(a => <option>{a}</option>)}
+            </VersionSelect>
+          ) : (
+            <Version withSize={!!size.size} hovering={hovering}>
+              {dependencies[dependency]}{' '}
+              {hovering && version && <span>({version})</span>}
+            </Version>
+          )}
 
           {hovering && (
             <IconArea>
