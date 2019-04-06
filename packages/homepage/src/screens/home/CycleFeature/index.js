@@ -436,23 +436,23 @@ export default class CycleFeatures extends React.PureComponent {
             </OffsettedCube>
             <ImportContainer>
               <AddressBar
-                href="https://github.com/reactjs/redux/tree/master/examples/todos"
+                href="https://github.com/reduxjs/redux/tree/master/examples/todos"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <span>github.com/</span>
                 <AddedUrl id="added-url">
-                  reactjs/redux/tree/master/examples/todos
+                  reduxjs/redux/tree/master/examples/todos
                 </AddedUrl>
               </AddressBar>
               <AddressBar
-                href="/s/github/reactjs/redux/tree/master/examples/todos"
+                href="/s/github/reduxjs/redux/tree/master/examples/todos"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <span>codesandbox.io/s/github/</span>
                 <AddedUrl id="added-url">
-                  reactjs/redux/tree/master/examples/todos
+                  reduxjs/redux/tree/master/examples/todos
                 </AddedUrl>
               </AddressBar>
             </ImportContainer>

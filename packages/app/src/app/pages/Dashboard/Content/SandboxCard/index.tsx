@@ -295,10 +295,10 @@ class SandboxItem extends React.PureComponent<Props, State> {
     ].filter(Boolean);
   };
 
-  selectSandbox = (e: React.MouseEvent) => {
+  selectSandbox = (e: React.MouseEvent | React.FocusEvent) => {
     this.props.setSandboxesSelected([this.props.id], {
-      additive: e.metaKey,
-      range: e.shiftKey,
+      additive: 'metaKey' in e ? e.metaKey : false,
+      range: 'shiftKey' in e ? e.shiftKey : false,
     });
   };
 
@@ -318,7 +318,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
     return true;
   };
 
-  handleMouseDown = e => {
+  handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
 
     if (!this.props.selected || e.metaKey) {
@@ -334,14 +334,14 @@ class SandboxItem extends React.PureComponent<Props, State> {
     }
   };
 
-  handleOnContextMenu = e => {
+  handleOnContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     track('Dashboard - Sandbox Context Menu Opened');
     if (!this.props.selected) {
       this.selectSandbox(e);
     }
   };
 
-  handleOnFocus = e => {
+  handleOnFocus = (e: React.FocusEvent) => {
     if (!this.props.selected) {
       this.selectSandbox(e);
     }
