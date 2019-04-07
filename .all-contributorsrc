@@ -655,6 +655,15 @@
       ]
     },
     {
+      "login": "JonShort",
+      "name": "Jon Short",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/21317379?v=4",
+      "profile": "https://jonshort.me/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "dv297",
       "name": "Daniel Vu",
       "avatar_url": "https://avatars2.githubusercontent.com/u/5365325?v=4",
@@ -1078,14 +1087,43 @@
       ]
     },
     {
-      "login": "nm123github",
-      "name": "Neville Mehta",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/8527474?v=4",
-      "profile": "https://twitter.com/ask_neville",
+      "login": "vicbergquist",
+      "name": "Victoria Bergquist",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/25737281?v=4",
+      "profile": "https://twitter.com/vicbergquist",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "samrith-s",
+      "name": "Samrith Shankar",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9032162?v=4",
+      "profile": "https://github.com/samrith-s",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "tinahir",
+      "name": "Mahendra Hirapra",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/827497?v=4",
+      "profile": "https://github.com/tinahir",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rabingaire",
+      "name": "Rabin Gaire",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/17409675?v=4",
+      "profile": "http://rabingaire.com.np",
       "contributions": [
         "code"
       ]
     }
   ],
-  "repoType": "github"
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "contributorsPerLine": 7
 }

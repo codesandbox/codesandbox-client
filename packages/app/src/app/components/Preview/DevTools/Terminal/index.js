@@ -177,7 +177,10 @@ class TerminalComponent extends React.Component<Props, State> {
     const { height, hidden } = this.props;
 
     return (
-      <div ref={this.setupResizeObserver}>
+      <div
+        style={{ width: '100%', height: '100%' }}
+        ref={this.setupResizeObserver}
+      >
         {!hidden &&
           this.state.shells.length > 0 && (
             <ShellTabs

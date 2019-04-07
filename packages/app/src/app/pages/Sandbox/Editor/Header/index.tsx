@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
 import Fork from 'react-icons/lib/go/repo-forked';
@@ -90,6 +91,29 @@ const ForkButton = ({
   </Button>
 );
 
+const PickButton = ({ store, signals, secondary, style }: ButtonProps) => {
+  const { id, title, description } = store.editor.currentSandbox;
+
+  return (
+    <Button
+      onClick={() => {
+        signals.explore.pickSandboxModal({
+          details: {
+            id,
+            title,
+            description,
+          },
+        });
+      }}
+      style={style}
+      secondary={secondary}
+      small
+    >
+      Pick
+    </Button>
+  );
+};
+
 const ShareButton = ({ signals, secondary, style }: ButtonProps) => (
   <Button
     onClick={() => {
@@ -154,7 +178,11 @@ const Header = ({ store, signals, zenMode }: Props) => {
 
       {sandbox.owned && (
         <Centered style={{ margin: '0 3rem' }}>
-          <CollectionInfo isLoggedIn={store.isLoggedIn} sandbox={sandbox} />
+          <CollectionInfo
+            isLoggedIn={store.isLoggedIn}
+            // Passing a clone of observable requires it to be called in render of observer
+            sandbox={toJS(sandbox)}
+          />
         </Centered>
       )}
 
@@ -212,12 +240,24 @@ const Header = ({ store, signals, zenMode }: Props) => {
             likeCount={store.editor.currentSandbox.likeCount}
           />
         )}
+
+        {store.user &&
+          store.user.curatorAt && (
+            <PickButton
+              style={{ fontSize: '.75rem' }}
+              secondary={sandbox.owned}
+              signals={signals}
+              store={store}
+            />
+          )}
+
         <ShareButton
           style={{ fontSize: '.75rem', margin: '0 1rem' }}
           signals={signals}
           secondary={!sandbox.owned}
           store={store}
         />
+
         <ForkButton
           secondary={sandbox.owned}
           isForking={store.editor.isForkingSandbox}

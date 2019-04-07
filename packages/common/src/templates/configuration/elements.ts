@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import Preference from '../../components/Preference';
 
-export const PaddedPreference = styled(Preference)`
+export const PaddedPreference = (styled(Preference)`
   width: 100%;
   padding: 0;
   font-weight: 400;
-`;
+` as unknown) as typeof Preference;
 
 export const PaddedConfig = styled.div`
   padding-bottom: 0.75rem;
@@ -25,7 +25,7 @@ export const ConfigName = styled.span`
   flex: 1;
   font-weight: 400;
 
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props => props.theme['sideBar.foreground'] || 'inherit'};
 `;
 
 export const ConfigValue = styled.div``;
@@ -33,7 +33,8 @@ export const ConfigValue = styled.div``;
 export const ConfigDescription = styled.div`
   margin-top: 0.25rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${props => props.theme['sideBar.foreground'] || 'inherit'};
+  opacity: 0.8;
   font-size: 0.875rem;
   max-width: 75%;
 `;

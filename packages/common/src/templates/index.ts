@@ -21,6 +21,8 @@ import sapper from './sapper';
 import nest from './nest';
 import staticTemplate from './static';
 import styleguidist from './styleguidist';
+import gridsome from './gridsome';
+import vuepress from './vuepress';
 import mdxDeck from './mdx-deck';
 
 export {
@@ -47,7 +49,9 @@ export {
   ember,
   staticTemplate,
   styleguidist,
-  mdxDeck,
+  gridsome,
+  vuepress,
+  mdxDeck
 };
 
 export type TemplateType =
@@ -70,6 +74,8 @@ export type TemplateType =
   | 'nest'
   | 'static'
   | 'styleguidist'
+  | 'gridsome'
+  | 'vuepress'
   | 'mdx-deck';
 
 export default function getDefinition(theme: TemplateType) {
@@ -120,8 +126,12 @@ export default function getDefinition(theme: TemplateType) {
       return styleguidist;
     case mdxDeck.name:
       return mdxDeck;
+    case gridsome.name:
+      return gridsome;
     case ember.name:
       return ember;
+    case vuepress.name:
+      return vuepress;
     default:
       return react;
   }

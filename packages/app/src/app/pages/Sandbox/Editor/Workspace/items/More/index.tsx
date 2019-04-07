@@ -16,7 +16,7 @@ type Props = {
 const NOT_OWNED_MESSAGE = `Fork this sandbox to make deployments, commit to GitHub, create live sessions with others and more!`;
 const NOT_SIGNED_IN_MESSAGE = `Sign in to be able to organize your sandboxes with a dashboard, make deployments, collaborate live with others, make commits to GitHub and more!`;
 
-class More extends React.PureComponent<Props> {
+class More extends React.Component<Props> {
   componentDidMount() {
     track('Workspace - More Opened');
   }

@@ -10,8 +10,9 @@ import {
 import CrossIcon from 'react-icons/lib/md/clear';
 
 import { Tab, CloseTab } from './elements';
-import { IViewType } from '../..';
+import { IViewType, Status } from '../..';
 import { ITabPosition } from '..';
+import { UnreadDevToolsCount } from './UnreadDevToolsCount';
 
 export interface TabProps {
   active: boolean;
@@ -22,6 +23,7 @@ export interface TabProps {
   index: number;
   devToolIndex: number;
   canDrag: boolean;
+  status: Status | undefined;
 }
 
 interface DragProps {
@@ -88,6 +90,8 @@ export const PaneTab = ({
   connectDropTarget,
   isOver,
   isDragging,
+  devToolIndex,
+  status,
 }: TabProps & DragProps) => {
   useGlobalDim(isDragging);
 
@@ -101,6 +105,11 @@ export const PaneTab = ({
         isOver={isOver && !isDragging}
       >
         {pane.title}
+
+        {devToolIndex !== 0 &&
+          status && (
+            <UnreadDevToolsCount status={status.type} unread={status.unread} />
+          )}
         {false &&
         active && ( // This will be enabled later on
             <CloseTab>

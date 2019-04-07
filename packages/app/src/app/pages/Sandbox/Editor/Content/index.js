@@ -5,7 +5,9 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
+import immer from 'immer';
 
+import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { ModuleError } from '@codesandbox/common/lib/types';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
@@ -18,6 +20,7 @@ import DevTools from 'app/components/Preview/DevTools';
 import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
+import { moveDevToolsTab } from './utils';
 
 const settings = store =>
   ({
@@ -376,29 +379,57 @@ class EditorPreview extends React.Component<Props, State> {
     });
   };
 
-  moveDevToolsTab = (prevPos, nextPos) => {
-    const { store, signals } = this.props;
-    const tabs = getPreviewTabs(store.editor.currentSandbox);
+  getViews = () => {
+    const sandbox = this.props.store.editor.currentSandbox;
+    const views = getPreviewTabs(sandbox);
 
-    const prevDevTools = tabs[prevPos.devToolIndex];
-    const nextDevTools = tabs[nextPos.devToolIndex];
-    const prevTab = tabs[prevPos.devToolIndex].views[prevPos.tabPosition];
-
-    prevDevTools.views = prevDevTools.views.filter(
-      (_, i) => i !== prevPos.tabPosition
-    );
-
-    nextDevTools.views.splice(nextPos.tabPosition, 0, prevTab);
-
-    const newTabs = tabs.map((t, i) => {
-      if (i === prevPos.devToolIndex) {
-        return prevDevTools;
-      } else if (i === nextPos.devToolIndex) {
-        return nextDevTools;
+    // Do it in an immutable manner, prevents changing the original object
+    return immer(views, draft => {
+      const sandboxConfig = sandbox.modules.find(
+        x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+      );
+      let view = 'browser';
+      if (sandboxConfig) {
+        try {
+          view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+        } catch (e) {
+          /* swallow */
+        }
       }
 
-      return t;
+      const sandboxOptions = getSandboxOptions(location.href);
+      if (
+        sandboxOptions.previewWindow &&
+        (sandboxOptions.previewWindow === 'tests' ||
+          sandboxOptions.previewWindow === 'console')
+      ) {
+        // Backwards compatibility for ?previewwindow=
+
+        view = sandboxOptions.previewWindow;
+      }
+
+      if (view !== 'browser') {
+        // Backwards compatibility for sandbox.config.json
+        if (view === 'console') {
+          draft[0].views = draft[0].views.filter(
+            t => t.id !== 'codesandbox.console'
+          );
+          draft[0].views.unshift({ id: 'codesandbox.console' });
+        } else if (view === 'tests') {
+          draft[0].views = draft[0].views.filter(
+            t => t.id !== 'codesandbox.tests'
+          );
+          draft[0].views.unshift({ id: 'codesandbox.tests' });
+        }
+      }
     });
+  };
+
+  moveDevToolsTab = (prevPos, nextPos) => {
+    const { store, signals } = this.props;
+    const tabs = this.getViews();
+
+    const newTabs = moveDevToolsTab(tabs, prevPos, nextPos);
 
     const code = JSON.stringify({ preview: newTabs }, null, 2);
     const previousFile =
@@ -453,29 +484,7 @@ class EditorPreview extends React.Component<Props, State> {
       return false;
     };
 
-    const views = getPreviewTabs(sandbox);
-
-    const sandboxConfig = sandbox.modules.find(
-      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
-    );
-
-    let view = 'browser';
-    if (sandboxConfig) {
-      try {
-        view = JSON.parse(sandboxConfig.code || '').view || 'browser';
-      } catch (e) {
-        /* swallow */
-      }
-    }
-
-    if (view !== 'browser') {
-      // Backwards compatibility for sandbox.config.json
-      if (view === 'console') {
-        views[0].views.unshift({ id: 'codesandbox.console' });
-      } else if (view === 'tests') {
-        views[0].views.unshift({ id: 'codesandbox.tests' });
-      }
-    }
+    const views = this.getViews();
 
     const browserConfig = {
       id: 'codesandbox.browser',
@@ -515,6 +524,7 @@ class EditorPreview extends React.Component<Props, State> {
             }
           />
           <SplitPane
+            maxSize={-100}
             onDragFinished={() => {
               this.props.signals.editor.resizingStopped();
             }}
@@ -533,7 +543,9 @@ class EditorPreview extends React.Component<Props, State> {
             defaultSize={'50%'}
             pane1Style={
               windowVisible
-                ? {}
+                ? {
+                    minWidth: 100,
+                  }
                 : {
                     width: '100%',
                     minWidth: '100%',

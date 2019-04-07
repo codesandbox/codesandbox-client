@@ -67,6 +67,7 @@ const theme = {
     background5: '#111518', // Less brown version
     primary: '#FFD399',
     primaryText: '#7F694C',
+    lightText: '#F2F2F2',
     secondary: '#40A9F3',
     shySecondary: '#66b9f4',
     white: '#E0E0E0',
@@ -76,6 +77,7 @@ const theme = {
     redBackground: '#400000',
     red: '#F27777',
     dangerBackground: '#DC3545',
+    sidebar: '#191d1f',
   }),
   vscodeTheme: codesandbox,
 

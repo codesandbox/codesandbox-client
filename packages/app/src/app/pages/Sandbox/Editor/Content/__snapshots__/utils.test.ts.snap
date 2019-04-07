@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`moveDevToolsTab can move a tab from one devtools to the other 1`] = `
+Array [
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.tests",
+      },
+    ],
+  },
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.console",
+      },
+      Object {
+        "id": "codesandbox.browser",
+      },
+      Object {
+        "id": "codesandbox.problems",
+      },
+    ],
+  },
+]
+`;
+
+exports[`moveDevToolsTab can move a tab from one devtools to the other and move it back 1`] = `
+Array [
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.browser",
+      },
+      Object {
+        "id": "codesandbox.tests",
+      },
+    ],
+  },
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.console",
+      },
+      Object {
+        "id": "codesandbox.problems",
+      },
+    ],
+  },
+]
+`;
+
+exports[`moveDevToolsTab can move a tab in same devtools 1`] = `
+Array [
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.tests",
+      },
+      Object {
+        "id": "codesandbox.browser",
+      },
+    ],
+  },
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.console",
+      },
+      Object {
+        "id": "codesandbox.problems",
+      },
+    ],
+  },
+]
+`;
+
+exports[`moveDevToolsTab can move a tab in same devtools and move the tab back 1`] = `
+Array [
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.browser",
+      },
+      Object {
+        "id": "codesandbox.tests",
+      },
+    ],
+  },
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.console",
+      },
+      Object {
+        "id": "codesandbox.problems",
+      },
+    ],
+  },
+]
+`;
+
+exports[`moveDevToolsTab can move the tab to the same position 1`] = `
+Array [
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.browser",
+      },
+      Object {
+        "id": "codesandbox.tests",
+      },
+    ],
+  },
+  Object {
+    "views": Array [
+      Object {
+        "id": "codesandbox.console",
+      },
+      Object {
+        "id": "codesandbox.problems",
+      },
+    ],
+  },
+]
+`;

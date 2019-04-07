@@ -3,7 +3,7 @@ import * as React from 'react';
 import sortBy from 'lodash/sortBy';
 
 import * as templates from '../../../templates';
-import { default as Template } from '../../../templates/template';
+import Template from '../../../templates/template';
 
 import {
   PaddedPreference,

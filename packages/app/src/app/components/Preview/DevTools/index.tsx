@@ -219,9 +219,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  getCurrentPane = () => {
-    return this.props.viewConfig.views[this.state.currentPaneIndex];
-  };
+  getCurrentPane = () =>
+    this.props.viewConfig.views[this.state.currentPaneIndex];
 
   updateStatus = (id: string) => (
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
@@ -397,9 +396,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  getViews = (): IViews => {
-    return this.allViews;
-  };
+  getViews = (): IViews => this.allViews;
 
   node: HTMLElement;
   allViews: IViews;
@@ -425,15 +422,22 @@ export default class DevTools extends React.PureComponent<Props, State> {
         }}
         style={{
           height: primary ? '100%' : height,
-          minHeight: height,
           position: 'relative',
           display: 'flex',
+          maxHeight: '100%',
+          /**
+           * Necessary to ensure it drags naturally. Otherwise there's an issue
+           * where flex tries to allocate equal space to the preview and the terminal,
+           * resulting in a very jaggy experience. We set flex-shrink to 0 only
+           * for the console, and not for the preview
+           */
+          flexShrink: devToolIndex === 1 ? 0 : 1,
         }}
       >
         {!hideTabs && (
           <Header
-            onTouchStart={!primary && this.handleTouchStart}
-            onMouseDown={!primary && this.handleMouseDown}
+            onTouchStart={!primary ? this.handleTouchStart : undefined}
+            onMouseDown={!primary ? this.handleMouseDown : undefined}
             primary={primary}
             open={!this.state.hidden}
           >
@@ -444,6 +448,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
               hidden={hidden}
               setPane={this.setPane}
               devToolIndex={devToolIndex}
+              status={this.state.status}
               moveTab={
                 this.props.moveTab
                   ? (prevPos, nextPos) => {

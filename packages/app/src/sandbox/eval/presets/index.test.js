@@ -1,6 +1,6 @@
 import Preset from './index.ts';
 
-import Transpiler from '../transpilers';
+import Transpiler from '../transpilers/index.ts';
 
 function createDummyTranspiler(name: string) {
   const Klass = class Trans extends Transpiler {

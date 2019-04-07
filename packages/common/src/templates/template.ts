@@ -1,4 +1,3 @@
-
 import { absolute } from '../utils/path';
 import {
   ConfigurationFile,
@@ -20,7 +19,7 @@ export type Options = {
   isServer?: boolean;
   main?: boolean;
   backgroundColor?: () => string;
-  mainFile?: Array<string>;
+  mainFile?: string[];
 };
 
 export type ConfigurationFiles = {
@@ -118,15 +117,31 @@ export default class Template {
     this.showCube = options.showCube != null ? options.showCube : true;
   }
 
+  private getMainFromPackage(pkg: {
+    main?: string[] | string;
+  }): string | undefined {
+    try {
+      if (!pkg.main) {
+        return undefined;
+      }
+
+      if (Array.isArray(pkg.main)) {
+        return absolute(pkg.main[0]);
+      }
+
+      if (typeof pkg.main === 'string') {
+        return absolute(pkg.main);
+      }
+    } catch (e) {}
+  }
+
   /**
    * Get possible entry files to evaluate, differs per template
    */
-  getEntries(configurationFiles: ParsedConfigurationFiles): Array<string> {
+  getEntries(configurationFiles: ParsedConfigurationFiles): string[] {
     return [
       configurationFiles.package &&
-        configurationFiles.package.parsed &&
-        configurationFiles.package.parsed.main &&
-        absolute(configurationFiles.package.parsed.main),
+        this.getMainFromPackage(configurationFiles.package.parsed),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.ts',
@@ -146,7 +161,7 @@ export default class Template {
    */
   getDefaultOpenedFiles(
     configurationFiles: ParsedConfigurationFiles
-  ): Array<string> {
+  ): string[] {
     return this.getEntries(configurationFiles);
   }
 
@@ -162,9 +177,7 @@ export default class Template {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getHTMLEntries(configurationFiles: {
-    [type: string]: Object;
-  }): Array<string> {
+  getHTMLEntries(configurationFiles: { [type: string]: Object }): string[] {
     return ['/public/index.html', '/index.html'];
   }
 

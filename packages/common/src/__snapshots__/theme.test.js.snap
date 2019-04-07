@@ -15,6 +15,7 @@ Object {
   "dangerBackground": [Function],
   "gray": [Function],
   "green": [Function],
+  "lightText": [Function],
   "new": Object {
     "bg": [Function],
     "description": [Function],
@@ -26,6 +27,7 @@ Object {
   "redBackground": [Function],
   "secondary": [Function],
   "shySecondary": [Function],
+  "sidebar": [Function],
   "vscodeTheme": Object {
     "$schema": "vscode://schemas/color-theme",
     "colors": Object {

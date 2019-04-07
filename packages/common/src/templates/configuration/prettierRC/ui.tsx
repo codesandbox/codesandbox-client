@@ -152,6 +152,19 @@ export class ConfigWizard extends React.Component<ConfigurationUIProps> {
             line instead of being alone on the next line.
           </ConfigDescription>
         </PaddedConfig>
+        <PaddedConfig>
+          <ConfigItem>
+            <PaddedPreference
+              title="Arrow Function Parentheses"
+              type="dropdown"
+              options={['avoid', 'always']}
+              {...this.bindValue(parsedFile, 'arrowParens')}
+            />
+          </ConfigItem>
+          <ConfigDescription>
+            Include parentheses around a sole arrow function parameter.
+          </ConfigDescription>
+        </PaddedConfig>
       </div>
     );
   }

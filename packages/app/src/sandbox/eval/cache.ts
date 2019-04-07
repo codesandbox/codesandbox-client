@@ -71,7 +71,7 @@ export async function saveCache(
           'kb to indexedDB'
       );
     }
-    localforage.setItem(manager.id, managerState);
+    await localforage.setItem(manager.id, managerState);
   } catch (e) {
     if (process.env.NODE_ENV === 'development') {
       console.error(e);

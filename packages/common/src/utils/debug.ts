@@ -28,6 +28,8 @@ const getDebugger: () => (key: string) => (...message: any[]) => void = () => {
     return (key: string) => (message: string) => {
       // Disable it for now, seems to affect performance. That's the last thing we want
       // from this (https://github.com/CompuIves/codesandbox-client/issues/1671)
+
+      // TODO: move this to sentry
       if (false || typeof global.Raven === 'object') {
         try {
           global.Raven.captureBreadcrumb({

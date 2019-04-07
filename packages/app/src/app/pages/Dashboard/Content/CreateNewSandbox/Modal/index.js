@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import track from '@codesandbox/common/lib/utils/analytics';
 
@@ -67,7 +67,7 @@ export default class Modal extends React.PureComponent {
                   ))}
                 {tab.types &&
                   tab.types.map(type => (
-                    <>
+                    <Fragment key={type.name}>
                       <Title>{type.name}</Title>
                       {type.templates.map(template => (
                         <Template
@@ -76,16 +76,13 @@ export default class Modal extends React.PureComponent {
                           selectTemplate={this.selectTemplate}
                         />
                       ))}
-                    </>
+                    </Fragment>
                   ))}
               </Templates>
             </Tab>
           ))}
           <ImportChoices>
-            <ImportChoice
-              href="/docs/importing#import-from-github"
-              target="_blank"
-            >
+            <ImportChoice href="/s/github" target="_blank">
               <GithubLogo /> Import from GitHub
             </ImportChoice>
             <ImportChoice

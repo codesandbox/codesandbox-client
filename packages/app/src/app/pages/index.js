@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import Loadable from 'app/utils/Loadable';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import _debug from '@codesandbox/common/lib/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
@@ -61,12 +61,6 @@ class Routes extends React.Component<Props> {
     this.props.signals.appUnmounted();
   }
 
-  shouldComponentUpdate() {
-    // Without this the app won't update on route changes, we've tried using
-    // `withRouter`, but it caused the app to remount on every route change.
-    return true;
-  }
-
   render() {
     return (
       <Container>
@@ -114,5 +108,5 @@ class Routes extends React.Component<Props> {
 }
 
 export default inject('signals', 'store')(
-  DragDropContext(HTML5Backend)(observer(Routes))
+  DragDropContext(HTML5Backend)(withRouter(observer(Routes)))
 );

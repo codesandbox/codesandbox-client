@@ -89,7 +89,7 @@ export default class FeaturedSandbox extends React.PureComponent<
     return fetch(`${protocolAndHost()}/api/v1/sandboxes/${id}`)
       .then(x => x.json())
       .then(x => {
-        this.fetchedSandboxes[x.data.id] = x.data;
+        this.fetchedSandboxes[x.data.id] = camelizeKeys(x.data);
 
         return x.data;
       });
