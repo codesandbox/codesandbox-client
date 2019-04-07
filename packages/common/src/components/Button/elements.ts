@@ -1,11 +1,10 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 import Link from 'react-router-dom/Link';
 import theme from '../../theme';
 
 export type OptionProps = {
   theme: any;
   disabled?: boolean;
-  loading?: boolean;
   red?: boolean;
   secondary?: boolean;
   danger?: boolean;
@@ -98,39 +97,14 @@ const getBorder = ({
   return '2px solid #66B9F4';
 };
 
-const progressAnimation = keyframes`
-  0%   { transform: scale(0); }
-  100% { transform: scale(1); }
-`;
-
-const getLoader = ({ disabled }: OptionProps) => css`
-  &:before {
-    content: ' ';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    left: 50%;
-    top: 50%;
-    bottom: 0;
-    margin-left: -10px;
-    margin-top: -10px;
-    border-radius: 50%;
-    opacity: 0.5;
-    background: white;
-    animation: ${progressAnimation} 0.7s ease-in-out infinite alternate;
-  }
-`;
-
 const styles = css<{
   disabled?: boolean;
-  loading?: boolean;
   secondary?: boolean;
   danger?: boolean;
   red?: boolean;
   block?: boolean;
   small?: boolean;
 }>`
-  position: relative;
   transition: 0.3s ease all;
   font-family: Poppins, Roboto, sans-serif;
 
@@ -176,8 +150,6 @@ const styles = css<{
     ${props => getBackgroundHoverColor(props)};
     ${props => getHoverColor(props)};
   }
-
-  ${props => props.loading && getLoader(props)};
 `;
 
 export const LinkButton = styled(Link)`

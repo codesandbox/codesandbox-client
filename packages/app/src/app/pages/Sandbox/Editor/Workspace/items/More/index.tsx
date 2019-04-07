@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { Button } from '@codesandbox/common/lib/components/Button';
+import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
 import SignInButton from 'app/pages/common/SignInButton';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -35,15 +35,14 @@ class More extends React.Component<Props> {
         <Description>{message}</Description>
         <Margin margin={1}>
           {!owned ? (
-            <Button
+            <ProgressButton
               small
               block
-              disabled={isForkingSandbox}
               loading={isForkingSandbox}
               onClick={this.forkSandbox}
             >
               {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
-            </Button>
+            </ProgressButton>
           ) : (
             <SignInButton block />
           )}
