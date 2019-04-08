@@ -339,6 +339,7 @@ module.exports = {
           query: babelConfig,
         },
       ],
+      threads: Math.max(1, require('os').cpus().length - 1),
     }),
     ...(SANDBOX_ONLY
       ? [
