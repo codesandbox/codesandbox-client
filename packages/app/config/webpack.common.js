@@ -22,6 +22,14 @@ const babelConfig = __DEV__ ? babelDev : babelProd;
 
 const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
 
+let threads = 1;
+
+try {
+  threads = Math.max(1, require('os').cpus().length - 1);
+} catch (e) {
+  threads = 3;
+}
+
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
   rules: {${fs
@@ -334,12 +342,13 @@ module.exports = {
   plugins: [
     new HappyPack({
       loaders: [
+        'cache-loader',
         {
           path: 'babel-loader',
           query: babelConfig,
         },
       ],
-      threads: Math.max(1, require('os').cpus().length - 1),
+      threads,
     }),
     ...(SANDBOX_ONLY
       ? [
