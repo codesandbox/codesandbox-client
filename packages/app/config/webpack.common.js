@@ -25,7 +25,7 @@ const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
 let threads = 1;
 
 try {
-  if (process.env.CIRCLE_CI) {
+  if (process.env.CIRCLECI) {
     threads = 2;
   } else {
     threads = Math.max(1, require('os').cpus().length - 1);
