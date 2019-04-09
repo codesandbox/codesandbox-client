@@ -22,7 +22,9 @@
     "lint:app": "eslint src/app",
     "lint:embed": "eslint src/embed",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
-    "typecheck": "tsc --noEmit -p tsconfig.check.json"
+    "typecheck": "tsc --noEmit -p tsconfig.check.json",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -169,7 +171,7 @@
     "compare-versions": "^3.1.0",
     "console-feed": "^2.8.5",
     "css-modules-loader-core": "^1.1.0",
-    "cssnano": "^3.10.0",
+    "cssnano": "^4.0.0",
     "debug": "^2.6.8",
     "downshift": "^1.0.0-rc.14",
     "eslint-config-react-app": "^1.0.5",
@@ -183,7 +185,7 @@
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
     "gsap": "^1.20.3",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-filter": "^5.0.0",
     "gulp-postcss": "^6.4.0",
     "gulp-rev": "^7.1.2",
@@ -195,7 +197,7 @@
     "immutability-helper": "^2.6.6",
     "instantsearch.css": "^7.1.0",
     "is-url": "^1.2.2",
-    "jest-circus": "^22.1.4",
+    "jest-circus": "^23.0.0",
     "jest-snapshot": "^22.1.2",
     "jszip": "^3.1.3",
     "localforage": "^1.5.5",
@@ -263,7 +265,8 @@
     "vue-hot-reload-api": "^2.3.3",
     "vue-template-compiler": "^2.6.10",
     "vue-template-es2015-compiler": "^1.9.1",
-    "xterm": "3.7.0"
+    "xterm": "3.7.0",
+    "snyk": "^1.149.0"
   },
   "jest": {
     "roots": [
@@ -296,5 +299,6 @@
     "transform": {
       "^.+\\.(t|j)s$": "babel-jest"
     }
-  }
+  },
+  "snyk": true
 }
