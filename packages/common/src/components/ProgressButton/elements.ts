@@ -11,11 +11,11 @@ export const Wrapper = styled.div`
 `;
 
 const circle = css`
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: ${theme.secondary()};
-  opacity: 0.5;
+  opacity: 0.7;
   animation: ${loaderAnimation} 1s infinite linear alternate;
 `;
 
@@ -29,7 +29,7 @@ export const Loader = styled.div`
   &:before {
     content: ' ';
     position: absolute;
-    left: -15px;
+    left: -12px;
     ${circle};
     animation-delay: 0s;
   }
@@ -37,7 +37,7 @@ export const Loader = styled.div`
   &:after {
     content: ' ';
     position: absolute;
-    left: 15px;
+    left: 12px;
     ${circle};
     animation-delay: 1s;
   }
