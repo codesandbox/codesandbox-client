@@ -151,6 +151,10 @@ const setSandboxData = [
         state`editor.sandboxes.${props`sandbox.id`}.userLiked`,
         props`sandbox.userLiked`
       ),
+      set(
+        state`editor.sandboxes.${props`sandbox.id`}.title`,
+        props`sandbox.title`
+      ),
     ],
   },
 ];
