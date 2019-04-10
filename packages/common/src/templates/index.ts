@@ -1,3 +1,4 @@
+import adonis from './adonis';
 import angular from './angular';
 import babel from './babel';
 import parcel from './parcel';
@@ -25,6 +26,7 @@ import vuepress from './vuepress';
 import mdxDeck from './mdx-deck';
 
 export {
+  adonis,
   angular,
   custom,
   apollo,
@@ -53,6 +55,7 @@ export {
 };
 
 export type TemplateType =
+  | 'adonis'
   | 'create-react-app'
   | 'vue-cli'
   | 'preact-cli'
@@ -77,6 +80,8 @@ export type TemplateType =
 
 export default function getDefinition(theme: TemplateType) {
   switch (theme) {
+    case adonis.name:
+      return adonis;
     case react.name:
       return react;
     case vue.name:
