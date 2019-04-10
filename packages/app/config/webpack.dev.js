@@ -18,7 +18,7 @@ module.exports = merge(
   },
   commonConfig,
   {
-    devtool: 'cheap-module-source-map',
+    devtool: 'eval',
     output: {
       filename: 'static/js/[name].js',
       pathinfo: false,
