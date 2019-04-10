@@ -89,15 +89,25 @@ const Intro = styled(Column)`
 `;
 
 const Icons = styled.div`
-  display: flex;
-  justify-content: space-around;
   margin-top: 1rem;
   margin-bottom: 4rem;
-  flex: 1;
   min-width: 100%;
 
   ${media.phone`
     margin: 2rem 0;
+    width: 100%;
+  `};
+`;
+
+const ScrollAtMobile = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  min-width: 100%;
+
+  ${media.phone`
+    justify-content: flex-start;
+    overflow-x: scroll;
   `};
 `;
 
@@ -115,6 +125,7 @@ const IconContainer = styled.div`
   }
 
   ${media.phone`
+    flex-shrink: 0;
     width: 96px;
     height: 96px;
 
@@ -285,23 +296,25 @@ export default class Frameworks extends React.Component {
       <Pane width={1280}>
         <Flex>
           <Icons>
-            {templates.map(({ name }, i) => {
-              const TIcon = getIcon(name);
+            <ScrollAtMobile>
+              {templates.map(({ name }, i) => {
+                const TIcon = getIcon(name);
 
-              return (
-                <IconContainer
-                  // eslint-disable-next-line
-                  key={i}
-                  selected={templates[i] === template}
-                  template={templates[i]}
-                  onClick={() => {
-                    this.setTemplate(templates[i]);
-                  }}
-                >
-                  <TIcon width={80} height={80} />
-                </IconContainer>
-              );
-            })}
+                return (
+                  <IconContainer
+                    // eslint-disable-next-line
+                    key={i}
+                    selected={templates[i] === template}
+                    template={templates[i]}
+                    onClick={() => {
+                      this.setTemplate(templates[i]);
+                    }}
+                  >
+                    <TIcon width={80} height={80} />
+                  </IconContainer>
+                );
+              })}
+            </ScrollAtMobile>
           </Icons>
 
           <Intro style={{ marginRight: '2rem' }}>
