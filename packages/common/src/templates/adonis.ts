@@ -6,7 +6,7 @@ import { decorateSelector } from '../theme';
   'AdonisJs',
   'https://adonisjs.com/',
   'github/adonisjs/adonis-starter-codesandbox',
-  decorateSelector(() => '#a666ff'),
+  decorateSelector(() => '#fff'),
   {
     isServer: true,
     mainFile: ['/start/routes.js'],

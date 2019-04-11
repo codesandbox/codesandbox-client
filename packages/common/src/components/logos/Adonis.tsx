@@ -14,12 +14,12 @@ export default ({ width = 32, height = 32, className }) => (
     >
       <path
         d="M20 2.236L5.618 31h28.764L20 2.236z"
-        stroke="#a666ff"
+        stroke="#fff"
         stroke-width="2"
       />
       <path
         d="M12 2l12 24H0"
-        fill="#a666ff"
+        fill="#fff"
       />
     </g>
   </svg>
