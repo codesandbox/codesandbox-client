@@ -3,6 +3,8 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import { clone } from 'mobx-state-tree';
 import { dispatch } from 'codesandbox-api';
 
+import vscode from 'app/vscode';
+
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
@@ -321,6 +323,10 @@ export function moveTab({ state, props }) {
 }
 
 export function unsetDirtyTab({ state }) {
+  if (state.get('preferences.settings.experimentVSCode')) {
+    vscode.runCommand('workbench.action.keepEditor');
+  }
+
   const currentModule = state.get('editor.currentModule');
   const tabs = state.get('editor.tabs');
   const tabIndex = tabs.findIndex(
