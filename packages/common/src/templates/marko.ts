@@ -8,8 +8,8 @@ export default new Template(
   'github/nm123github/marko-codesandbox',
   decorateSelector(() => '#f5ac00'),
   {
-    showOnHomePage: true,
-    main: false,
+    isServer: true,
+    showOnHomePage: false,
     netlify: false
   }
 );
