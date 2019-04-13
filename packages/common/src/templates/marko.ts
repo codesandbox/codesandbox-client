@@ -9,7 +9,8 @@ export default new Template(
   decorateSelector(() => '#f5ac00'),
   {
     isServer: true,
-    showOnHomePage: false,
+    showOnHomePage: true,
+    main: false,
     netlify: false
   }
 );
