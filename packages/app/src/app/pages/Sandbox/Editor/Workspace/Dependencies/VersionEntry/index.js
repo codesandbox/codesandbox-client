@@ -4,6 +4,7 @@ import RefreshIcon from 'react-icons/lib/md/refresh';
 import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
 import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
 import algoliasearch from 'algoliasearch';
+import compareVersions from 'compare-versions';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
@@ -77,8 +78,15 @@ export default class VersionEntry extends React.PureComponent {
     );
     const index = client.initIndex('npm-search');
     index.search({ query: dependency, hitsPerPage: 1 }, (err, { hits }) => {
+      const versions = Object.keys(hits[0].versions).sort((a, b) => {
+        try {
+          return compareVersions(b, a);
+        } catch (e) {
+          return 0;
+        }
+      });
       this.setState({
-        versions: hits[0].versions,
+        versions,
       });
     });
 
@@ -137,13 +145,9 @@ export default class VersionEntry extends React.PureComponent {
                 this.setState({ hovering: false });
               }}
             >
-              {Object.keys(versions)
-                .filter(v => v < dependencies[dependency])
-                .map(a => <option>{a}</option>)}
-              <option selected>{dependencies[dependency]}</option>
-              {Object.keys(versions)
-                .filter(v => v > dependencies[dependency])
-                .map(a => <option>{a}</option>)}
+              {versions.map(a => (
+                <option selected={a === dependencies[dependency]}>{a}</option>
+              ))}
             </VersionSelect>
           ) : (
             <Version withSize={!!size.size} hovering={hovering}>
