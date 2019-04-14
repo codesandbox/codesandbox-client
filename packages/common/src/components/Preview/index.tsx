@@ -819,7 +819,7 @@ class BasePreview extends React.Component<Props, State> {
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      top: 40,
+                      top: 35,
                       zIndex: 0,
                     }}
                   >

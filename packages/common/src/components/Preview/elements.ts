@@ -26,7 +26,7 @@ export const Loading = styled.div`
   animation: ${fadeInAnimation} 0.2s;
   animation-fill-mode: forwards;
   position: absolute;
-  top: 2.5rem;
+  top: 35px;
   bottom: 0;
   right: 0;
   left: 0;
