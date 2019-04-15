@@ -61,7 +61,10 @@ export async function deployToNetlify({ http, props, state }) {
     return 'build';
   };
 
-  const buildConfig = getNetlifyConfig(sandbox.modules);
+  const buildConfig = getNetlifyConfig(sandbox);
+  const buildCommandFromConfig = buildConfig.command
+    .replace('npm run', '')
+    .replace('yarn ', '');
   let id = '';
   try {
     const { result } = await http.request({
@@ -84,10 +87,8 @@ export async function deployToNetlify({ http, props, state }) {
   try {
     await http.request({
       url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${buildConfig.publish ||
-        template.distDir}&buildCommand=${buildConfig.command.replace(
-        'npm run',
-        ''
-      ) || buildCommand(template.name)}`,
+        template.distDir}&buildCommand=${buildCommandFromConfig ||
+        buildCommand(template.name)}`,
       method: 'POST',
       body: file,
       headers: {

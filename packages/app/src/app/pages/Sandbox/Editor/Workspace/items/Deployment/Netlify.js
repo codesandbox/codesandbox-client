@@ -109,6 +109,7 @@ class NetlifyDeployment extends Component {
                         >
                           {functions.map(file => (
                             <Link
+                              disabled={deployment.building}
                               href={`${
                                 deployment.netlifySite.url
                               }/.netlify/functions/${
