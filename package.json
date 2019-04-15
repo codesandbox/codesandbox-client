@@ -1,7 +1,7 @@
 {
   "name": "codesandbox",
   "version": "0.1.0",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "private": true,
   "scripts": {
     "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
