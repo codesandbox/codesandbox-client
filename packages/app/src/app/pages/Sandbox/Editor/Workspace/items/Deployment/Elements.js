@@ -53,7 +53,6 @@ export const Name = styled.span`
       : 'rgba(255, 255, 255, 0.8)'};
   font-size: 1rem;
   margin-top: 0;
-  margin-bottom: 0.5rem;
   vertical-align: middle;
 
   span {

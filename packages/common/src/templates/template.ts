@@ -35,6 +35,7 @@ const defaultConfigurations = {
   '/.prettierrc': configurations.prettierRC,
   '/sandbox.config.json': configurations.sandboxConfig,
   '/now.json': configurations.nowConfig,
+  '/netlify.toml': configurations.netlifyConfig,
 };
 
 export type ViewConfig = {

@@ -1,5 +1,5 @@
 import { omit } from 'lodash-es';
-
+import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 import getTemplate from '@codesandbox/common/lib/templates';
 import pollUntilDone from '../../utils/pollUntilDone';
 
@@ -61,6 +61,7 @@ export async function deployToNetlify({ http, props, state }) {
     return 'build';
   };
 
+  const buildConfig = getNetlifyConfig(sandbox.modules);
   let id = '';
   try {
     const { result } = await http.request({
@@ -82,9 +83,11 @@ export async function deployToNetlify({ http, props, state }) {
 
   try {
     await http.request({
-      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${
-        template.distDir
-      }&buildCommand=${buildCommand(template.name)}`,
+      url: `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${buildConfig.publish ||
+        template.distDir}&buildCommand=${buildConfig.command.replace(
+        'npm run',
+        ''
+      ) || buildCommand(template.name)}`,
       method: 'POST',
       body: file,
       headers: {
