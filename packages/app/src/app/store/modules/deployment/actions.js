@@ -62,6 +62,7 @@ export async function deployToNetlify({ http, props, state }) {
   };
 
   const buildConfig = getNetlifyConfig(sandbox);
+  // command needs to be passed without the package manager name
   const buildCommandFromConfig = (buildConfig.command || '')
     .replace('npm run', '')
     .replace('yarn ', '');
