@@ -62,7 +62,7 @@ export async function deployToNetlify({ http, props, state }) {
   };
 
   const buildConfig = getNetlifyConfig(sandbox);
-  const buildCommandFromConfig = buildConfig.command
+  const buildCommandFromConfig = (buildConfig.command || '')
     .replace('npm run', '')
     .replace('yarn ', '');
   let id = '';
