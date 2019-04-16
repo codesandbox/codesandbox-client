@@ -3,6 +3,15 @@ import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 
 export const getContainerStyles = props => {
   const { theme } = props;
+  const getSelectedColor = activeColor => {
+    // some have active as full white and should never be
+    if (activeColor === '#ffffff') {
+      return theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)';
+    }
+
+    return activeColor || theme.white();
+  };
+
   const color =
     props.color ||
     (props.alternative
@@ -68,8 +77,9 @@ export const getContainerStyles = props => {
 
   if (props.active) {
     styles += `
-      color: ${theme['list.activeSelectionForeground'] ||
-        theme.white()} !important;
+      color: ${getSelectedColor(
+        theme['list.activeSelectionForeground']
+      )} !important;
       border-color: ${color()} !important;
       background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
     `;
