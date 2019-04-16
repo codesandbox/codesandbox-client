@@ -22,7 +22,7 @@ Templates can be of different types: **Sandboxes** or **Containers**, and have m
 
 CodeSandbox executes projects in the browser, which we call sandboxes. This means that the transpiling, bundling, dependency resolvment and more happens in the browser itself, without a server being involved. This has some advantages over conventional approaches; it works offline, is more performant and doesn't give us server costs, which means we can have many sandboxes without having to worry (a lot ;-)).
 
-There are also some disadvantages to this approach. When sandboxes run in the browser, we lose flexibility. It's no longer possible to run Command Line Interface (CLI) commans and in some cases custom configations are not supported, for example a custom webpack configuration. This is why we have developed a new kind of sandbox called **Container**, which we released in September 2018.
+There are also some disadvantages to this approach. When sandboxes run in the browser, we lose flexibility. It's no longer possible to run Command Line Interface (CLI) commands and in some cases custom configurations are not supported, for example a custom webpack configuration. This is why we have developed a new kind of sandbox called **Container**, which we released in September 2018.
 
 ### Containers
 
