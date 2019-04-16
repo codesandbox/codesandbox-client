@@ -1,3 +1,4 @@
+import Adonis from '../components/logos/Adonis';
 import React from '../components/logos/React';
 import Angular from '../components/logos/Angular';
 import Ember from '../components/logos/Ember';
@@ -23,6 +24,7 @@ import MDXDeck from '../components/logos/mdx-deck';
 import GridSome from '../components/logos/Gridsome';
 
 import {
+  adonis,
   react,
   ember,
   vue,
@@ -60,6 +62,8 @@ export type ReturnedIcon = React.SFC<{
 
 export default function getIcon(theme: TemplateType): ReturnedIcon {
   switch (theme) {
+    case adonis.name:
+      return Adonis;
     case react.name:
       return React;
     case vue.name:
