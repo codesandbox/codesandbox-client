@@ -1148,6 +1148,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "libetl",
+      "name": "LiBe",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1233790?v=4",
+      "profile": "http://libe.toile-libre.org",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github",
