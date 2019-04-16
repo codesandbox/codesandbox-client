@@ -10,6 +10,7 @@ import Dojo from '../components/logos/Dojo';
 import CxJS from '../components/logos/CxJS';
 import Reason from '../components/logos/Reason';
 import Gatsby from '../components/logos/Gatsby';
+import Marko from '../components/logos/Marko';
 import Next from '../components/logos/Next';
 import Nuxt from '../components/logos/Nuxt';
 import Node from '../components/logos/Node';
@@ -34,6 +35,7 @@ import {
   cxjs,
   reason,
   gatsby,
+  marko,
   next,
   nuxt,
   node,
@@ -84,6 +86,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return Reason;
     case gatsby.name:
       return Gatsby;
+    case marko.name:
+      return Marko;
     case next.name:
       return Next;
     case nuxt.name:
