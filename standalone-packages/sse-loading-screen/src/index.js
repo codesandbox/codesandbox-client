@@ -2,7 +2,7 @@
 /** @jsx h */
 import io from 'socket.io-client';
 import { Terminal } from 'xterm';
-import { render, h } from 'preact';
+import { render, h } from 'preact'; // eslint-disable-line import/extensions
 import * as fit from 'xterm/lib/addons/fit/fit';
 import * as WebfontLoader from 'xterm-webfont';
 import 'xterm/dist/xterm.css';
@@ -12,7 +12,7 @@ import { Power3 } from 'gsap/EasePack';
 import TweenLite from 'gsap/TweenLite';
 import TimelineLite from 'gsap/TimelineLite';
 
-import getTemplate from '../../../packages/common/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 
 import Cube from './Cube';
 
@@ -31,36 +31,15 @@ if (process.env.NODE_ENV === 'development') {
 const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
 const domain = `sse.${rootDomain}`;
 const sandbox = hostParts[0];
+const lastLoadedAt = parseInt(localStorage.getItem('last_loaded_at'), 10);
+const now = Date.now();
+let isLoop = false;
 
-if (process.env.NODE_ENV === 'production') {
-  fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
-    .then(res => {
-      if (res.status === 404) {
-        window.location.replace(`https://${rootDomain}/s/${sandbox}`);
-        return {};
-      }
-
-      return res.json();
-    })
-    .then(json => {
-      if (Object.keys(json) > 0 && !json.is_sse) {
-        window.location.replace(`https://${sandbox}.${rootDomain}/`);
-      }
-      if (json.template) {
-        const templateDef = getTemplate(json.template);
-
-        color =
-          json.template === 'next'
-            ? templateDef.color.darken(0.3)
-            : templateDef.color;
-      }
-    });
-} else {
-  setTimeout(() => {
-    const templateDef = getTemplate('gatsby');
-
-    color = templateDef.color;
-  }, 1200);
+if (lastLoadedAt) {
+  const timeDiff = now - lastLoadedAt;
+  if (timeDiff <= 5000) {
+    isLoop = true;
+  }
 }
 
 function createCube(element, id, noAnimation = false, styles = {}) {
@@ -173,9 +152,9 @@ const createMainCube = () => {
       '-=.1'
     );
 
-  //topfront 0 -16
-  //topleft -52 -42
-  //topright 53 -41
+  // topfront 0 -16
+  // topleft -52 -42
+  // topright 53 -41
 
   // createCube(cubeEl, 'second', true);
   // TweenLite.to('#second', 0.5, { x: 53, y: 26 });
@@ -225,6 +204,7 @@ async function start() {
 
   const socket = io(`https://${domain}`, {
     autoConnect: false,
+    transports: ['websocket', 'polling'],
   });
 
   socket.on('connect', () => {
@@ -232,8 +212,15 @@ async function start() {
     socket.emit('sandbox:start');
   });
 
-  socket.on('sandbox:log', ({ chan, data }) => {
+  socket.on('sandbox:log', ({ data }) => {
     term.write(data);
+  });
+
+  socket.on('sandbox:error', ({ message, unrecoverable }) => {
+    if (unrecoverable) {
+      document.getElementById('loading-text').textContent = message;
+      socket.close();
+    }
   });
 
   window.s = socket;
@@ -278,9 +265,7 @@ async function start() {
     updateStatus(4, 3, 'started');
 
     setTimeout(() => {
-      // if (process.env.NODE_ENV === 'production') {
-      window.location.replace(`https://${sandbox}.${domain}/`);
-      // }
+      window.location.reload(true);
     }, 100);
   });
 
@@ -289,4 +274,41 @@ async function start() {
   socket.connect();
 }
 
-start();
+if (isLoop) {
+  document.getElementById('loading-text').textContent = 'Error: Reloading too fast.';
+} else {
+  localStorage.setItem('last_loaded_at', now);
+
+  if (process.env.NODE_ENV === 'production') {
+    fetch(`https://${rootDomain}/api/v1/sandboxes/${sandbox}/slim`)
+      .then(res => {
+        if (res.status === 404) {
+          window.location.replace(`https://${rootDomain}/s/${sandbox}`);
+          return {};
+        }
+
+        return res.json();
+      })
+      .then(json => {
+        if (Object.keys(json) > 0 && !json.is_sse) {
+          window.location.replace(`https://${sandbox}.${rootDomain}/`);
+        }
+        if (json.template) {
+          const templateDef = getTemplate(json.template);
+
+          color =
+            json.template === 'next'
+              ? templateDef.color.darken(0.3)
+              : templateDef.color;
+        }
+      });
+  } else {
+    setTimeout(() => {
+      const templateDef = getTemplate('gatsby');
+
+      color = templateDef.color;
+    }, 1200);
+  }
+
+  start();
+}
