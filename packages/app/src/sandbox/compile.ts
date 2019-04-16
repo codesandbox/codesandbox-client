@@ -421,7 +421,7 @@ async function compile({
     const templateDefinition = getDefinition(template);
     const configurations = parseConfigurations(
       template,
-      omit(templateDefinition.configurationFiles, '/netlify.toml'),
+      templateDefinition.configurationFiles,
       path => modules[path]
     );
 

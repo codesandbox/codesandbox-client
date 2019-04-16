@@ -129,6 +129,14 @@ class NetlifyDeployment extends Component {
                         </section>
                       </>
                     ) : null}
+
+                    <WorkspaceSubtitle
+                      css={`
+                        padding-left: 0;
+                      `}
+                    >
+                      Actions
+                    </WorkspaceSubtitle>
                     <ButtonContainer>
                       <Link
                         disabled={deployment.building}
