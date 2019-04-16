@@ -28,7 +28,7 @@ There are also some disadvantages to this approach. When sandboxes run in the br
 
 Unlike sandboxes, **containers** are executed on a server. This makes it possible to create projects that are end-to-end based, like `Next.js` with CodeSandbox, and also makes it possible to build bigger projects. **Containers** let you run any command, and everything that works locally will also work in container.
 
-However, like the sandboxes, **containers** also come with some limitations. In order to work on a container, you need to be signed in as a user, you can't edit containers while offline, it's not possible viewing them from an embed, and you can only have a limited amount of container based projects.
+However, like the sandboxes, **containers** also come with some limitations. In order to work on a container, you need to be signed in as a user, you can't edit containers while offline, it's not possible to edit them from an embed, and you can only have a limited amount of container based projects.
 
 ### Which one to choose?
 
