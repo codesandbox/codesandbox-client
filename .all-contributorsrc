@@ -1139,6 +1139,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "RomainLanz",
+      "name": "Romain Lanz",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2793951?v=4",
+      "profile": "https://slynova.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github",
