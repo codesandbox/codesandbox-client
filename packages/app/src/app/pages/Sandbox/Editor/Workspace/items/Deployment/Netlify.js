@@ -21,9 +21,13 @@ import {
   ButtonContainer,
 } from './Elements';
 
-const getFunctionDir = (functions, modules, directories) => {
+const getFunctionDir = sandbox => {
   try {
-    return resolveDirectory(functions, modules, directories);
+    return resolveDirectory(
+      getNetlifyConfig(sandbox).functions,
+      sandbox.modules,
+      sandbox.directories
+    );
   } catch (e) {
     return [];
   }
@@ -49,11 +53,7 @@ class NetlifyDeployment extends Component {
 
     const template = getTemplate(editor.currentSandbox.template);
     const { show } = this.state;
-    const functionDirectory = getFunctionDir(
-      getNetlifyConfig(editor.currentSandbox).functions,
-      editor.currentSandbox.modules,
-      editor.currentSandbox.directories
-    );
+    const functionDirectory = getFunctionDir(editor.currentSandbox);
 
     const functions = editor.currentSandbox.modules.filter(
       m => m.directoryShortid === functionDirectory.shortid

@@ -1,7 +1,6 @@
 import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from '@codesandbox/common/lib/utils/path';
 import _debug from '@codesandbox/common/lib/utils/debug';
-import { omit } from 'lodash-es';
 import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
