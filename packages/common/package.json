@@ -25,6 +25,7 @@
     "image-extensions": "^1.1.0",
     "jsonlint": "^1.6.3",
     "lodash": "^4.17.11",
+    "markty-toml": "^0.0.9",
     "memoize-one": "^3.1.1",
     "moment": "^2.18.1",
     "ot": "^0.0.15",

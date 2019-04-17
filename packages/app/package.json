@@ -201,7 +201,6 @@
     "localforage": "^1.5.5",
     "lodash-es": "^4.17.2",
     "lru-cache": "^4.1.3",
-    "markty-toml": "^0.0.9",
     "match-sorter": "^1.8.1",
     "memoize-one": "^4.0.0",
     "mobx": "^4.0.0",
