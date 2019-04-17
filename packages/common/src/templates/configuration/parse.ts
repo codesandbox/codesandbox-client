@@ -62,8 +62,15 @@ export default function parseConfigurations(
     if (code) {
       try {
         let parsed;
-        if (module && module.title && module.title.includes('.toml')) {
-          console.log(module.title);
+        // it goes here three times and the third time it doesn't have a title but a path
+        // that took a while ffs
+        // if toml do it with toml parser
+        if (
+          module &&
+          ((module.title && module.title.includes('.toml')) ||
+            (module.path && module.path.includes('.toml')))
+        ) {
+          // never throws
           parsed = toml(code);
         } else {
           parsed = parse(code);

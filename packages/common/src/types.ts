@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { TemplateType } from './templates';
 
@@ -31,6 +30,7 @@ export type Module = {
   isNotSynced: boolean;
   sourceId: string;
   isBinary: boolean;
+  path?: string;
 };
 
 export type Directory = {
