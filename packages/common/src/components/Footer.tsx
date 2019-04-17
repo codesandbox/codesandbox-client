@@ -1,30 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
 import MaxWidth from './flex/MaxWidth';
+import Logo from './Logo';
 
 import media from '../utils/media';
 
 const Container = styled.div`
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 90px;
   width: 100%;
   padding-top: 5rem;
   padding-bottom: 3rem;
-  flex-wrap: wrap;
-`;
-
-const Column = styled.div`
-  width: calc(33% - 2rem);
-  margin: 0 1rem;
 
   ${media.phone`
-    width: 100%;
+    grid-template-columns: repeat(1, 1fr);
     margin-bottom: 1rem;
   `};
 `;
 
+const Column = styled.div``;
+
 const Title = styled.h5`
   font-size: 1.125rem;
+  font-family: Poppins;
   font-weight: 400;
   margin: 0;
   margin-bottom: 1rem;
@@ -42,10 +41,10 @@ const List = styled.ul`
     a {
       transition: 0.3s ease color;
       text-decoration: none;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 1);
 
       &:hover {
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(255, 255, 255, 0.7);
       }
     }
   }
@@ -53,9 +52,32 @@ const List = styled.ul`
 
 const Background = styled.div`
   position: relative;
-  background-color: ${props => props.theme.background2.darken(0.2)};
+  background-color: ${props => props.theme.background2};
   padding: 1rem;
   z-index: 5;
+`;
+
+const Name = styled.h3`
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  color: ${props => props.theme.secondary};
+  margin: 0;
+  padding: 0;
+  padding-left: 12px;
+  span {
+    color: white;
+  }
+`;
+
+const TagLine = styled.h4`
+  font-family: Open Sans;
+  font-size: 14px;
+  margin: 12px 0 24px;
+  max-width: 200px;
+  line-height: 24px;
+  color: ${props => props.theme.lightText};
 `;
 
 export default () => (
@@ -64,25 +86,45 @@ export default () => (
       <React.Fragment>
         <Container>
           <Column>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Logo />
+              <Name>
+                Code<span>Sandbox</span>
+              </Name>
+            </div>
+            <TagLine>
+              Code, prototype, collaborate & share all in the browser.
+            </TagLine>
+            <a href="/legal" style={{ color: 'white' }}>
+              Terms and Privacy
+            </a>
+          </Column>
+          <Column>
             <Title>CodeSandbox</Title>
             <List>
               <li>
                 <a href="/s" target="_blank" rel="noopener noreferrer">
-                  Create Sandbox
+                  Create a Sandbox
                 </a>
               </li>
               <li>
-                <a href="/search" target="_blank" rel="noopener noreferrer">
-                  Search
-                </a>
+                <a href="/explore">Explore</a>
+              </li>
+              <li>
+                <a href="/features">Features</a>
+              </li>
+              <li>
+                <a href="/explore">Explore</a>
+              </li>
+
+              <li>
+                <a href="/patron">Pricing</a>
+              </li>
+              <li>
+                <a href="/search">Search</a>
               </li>
               <li>
                 <a href="/docs">Documentation</a>
-              </li>
-              <li>
-                <a href="/patron" target="_blank" rel="noopener noreferrer">
-                  Patron
-                </a>
               </li>
             </List>
           </Column>
@@ -91,28 +133,10 @@ export default () => (
             <Title>About</Title>
             <List>
               <li>
-                <a
-                  href="https://medium.com/@compuives"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Blog
-                </a>
+                <a href="/about">About</a>
               </li>
               <li>
-                <a
-                  href="https://github.com/CompuIves/codesandbox-client"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a href="/legal">Legal</a>
-              </li>
-              <li>
-                <a href="mailto:hello@codesandbox.io">Contact Us</a>
+                <a href="/blog">Blog</a>
               </li>
             </List>
           </Column>
@@ -137,6 +161,18 @@ export default () => (
                 >
                   Spectrum
                 </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/CompuIves/codesandbox-client"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub
+                </a>
+                <li>
+                  <a href="mailto:hello@codesandbox.io">Contact Us</a>
+                </li>
               </li>
             </List>
           </Column>

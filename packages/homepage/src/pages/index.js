@@ -4,7 +4,7 @@ import React from 'react';
 // import NPMFeature from '../screens/home/NPMFeature';
 // import CycleFeature from '../screens/home/CycleFeature';
 // import ExtraFeatures from '../screens/home/ExtraFeatures';
-// import RecentPublications from '../screens/home/RecentPublications';
+import RecentPublications from '../screens/home/RecentPublications';
 // import Patron from '../screens/home/Patron';
 // import Users from '../screens/home/Users';
 import Hero from '../screens/home/Hero';
@@ -41,9 +41,9 @@ export default class HomePage extends React.Component {
         {/* <Animation />
         <NPMFeature />
         <CycleFeature />
-        <ExtraFeatures />
+        <ExtraFeatures /> */}
         <RecentPublications />
-        <Patron />
+        {/* <Patron />
         <Users /> */}
       </Layout>
     );

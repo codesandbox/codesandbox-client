@@ -7,40 +7,28 @@ import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import media from '../../../utils/media';
 
 const Container = styled.div`
-  background-color: ${({ theme }) => theme.background2};
-
   padding: 6rem 0;
+  margin-bottom: 160px;
 `;
 
 const Title = styled.h3`
-  font-weight: 200;
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 0.5rem;
-  color: white;
-`;
-
-const SubTitle = styled.h4`
-  font-weight: 200;
-  font-size: 1.25rem;
-  text-align: center;
-  margin-bottom: 3.5rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 38px;
+  margin-bottom: 24px;
+  color: ${props => props.theme.lightText};
 `;
 
 const Items = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   justify-content: space-around;
+  grid-gap: 90px;
 `;
 
 const Item = styled.a`
   transition: 0.3s ease transform;
-  width: calc(33% - 2rem);
-
-  margin: 0 1rem;
   text-decoration: none;
-
   color: rgba(255, 255, 255, 0.9);
 
   img {
@@ -57,7 +45,8 @@ const Item = styled.a`
 `;
 
 const PublicationTitle = styled.h4`
-  font-weight: 400;
+  font-family: Poppins;
+  font-weight: 500;
   font-size: 1.25rem;
   margin: 0.5rem 0;
 `;
@@ -109,20 +98,8 @@ export default () => (
     `}
     render={({ allMediumPost: { edges } }) => (
       <Container>
-        <MaxWidth width={1280}>
+        <MaxWidth width={1440}>
           <Title>Recent Publications</Title>
-          <SubTitle>
-            You can follow{' '}
-            <a
-              href="https://medium.com/@compuives/"
-              target="_blank"
-              rel="noreferrer noopener"
-              style={{ textDecoration: 'none' }}
-            >
-              our blog
-            </a>{' '}
-            to stay up to date with new publications.
-          </SubTitle>
           <Items style={{ marginBottom: '2rem' }}>
             {edges.map(post => (
               <PublicationItem

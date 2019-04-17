@@ -15,7 +15,7 @@ const Title = styled.h3`
   font-family: Poppins;
   font-style: normal;
   font-weight: bold;
-  font-size: 80px;
+  font-size: 64px;
   color: ${props => props.theme.secondary};
 
   span {
@@ -31,7 +31,7 @@ const Hero = styled.section`
 const TagLine = styled.h4`
   margin: 48px 0;
   font-family: Open Sans;
-  font-size: 48px;
+  font-size: 32px;
 
   color: ${props => props.theme.lightText};
 `;
@@ -63,7 +63,7 @@ export default () => (
             Explore
           </Button>
         </div>
-        <Logo width={404} height={464} />
+        <Logo width={323} height={371} />
       </Hero>
     </MaxWidth>
   </Container>
