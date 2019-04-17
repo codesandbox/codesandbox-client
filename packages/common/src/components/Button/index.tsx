@@ -7,6 +7,7 @@ export type Props = {
   small?: boolean;
   style?: React.CSSProperties;
   block?: boolean;
+  hidePhone?: boolean;
   onClick?: () => void;
   children?: React.ReactElement | string;
   disabled?: boolean;

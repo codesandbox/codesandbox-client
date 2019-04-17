@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Logo from '@codesandbox/common/lib/components/Logo';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import media from '../../../utils/media';
 
 const Container = styled.div`
   margin-top: 100px;
@@ -18,6 +19,10 @@ const Title = styled.h3`
   font-size: 64px;
   color: ${props => props.theme.secondary};
 
+  ${media.phone`
+    font-size: 48px;
+  `};
+
   span {
     color: white;
   }
@@ -28,6 +33,7 @@ const Hero = styled.section`
   grid-template-columns: 1fr 1fr;
   grid-gap: 200px;
 `;
+
 const TagLine = styled.h4`
   margin: 48px 0;
   font-family: Open Sans;
@@ -63,7 +69,17 @@ export default () => (
             Explore
           </Button>
         </div>
-        <Logo width={323} height={371} />
+        <Logo
+          width={323}
+          height={371}
+          css={`
+            max-width: 100%;
+
+            @media screen and (max-width: 900px) {
+              display: none;
+            }
+          `}
+        />
       </Hero>
     </MaxWidth>
   </Container>

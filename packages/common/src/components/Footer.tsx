@@ -13,6 +13,10 @@ const Container = styled.div`
   padding-top: 5rem;
   padding-bottom: 3rem;
 
+  ${media.tablet`
+    grid-template-columns: repeat(2, 1fr);
+  `};
+
   ${media.phone`
     grid-template-columns: repeat(1, 1fr);
     margin-bottom: 1rem;

@@ -137,6 +137,7 @@ export default class Navigation extends React.PureComponent {
 
           <Right>
             <Button
+              hidePhone
               style={{
                 marginRight: 16,
               }}
@@ -148,7 +149,7 @@ export default class Navigation extends React.PureComponent {
             </Button>
 
             {!user && (
-              <Button small href="/signin">
+              <Button hidePhone small href="/signin">
                 <>
                   <GithubIcon
                     width="15"

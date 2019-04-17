@@ -1,12 +1,14 @@
 import styled, { css } from 'styled-components';
 import Link from 'react-router-dom/Link';
 import theme from '../../theme';
+import media from '../../utils/media';
 
 export type OptionProps = {
   theme: any;
   disabled?: boolean;
   red?: boolean;
   secondary?: boolean;
+  hidePhone?: boolean;
   danger?: boolean;
 };
 
@@ -102,6 +104,7 @@ const styles = css<{
   red?: boolean;
   block?: boolean;
   small?: boolean;
+  hidePhone?: boolean;
 }>`
   transition: 0.3s ease all;
   font-family: Poppins, Roboto, sans-serif;
@@ -123,6 +126,14 @@ const styles = css<{
 
   user-select: none;
   text-decoration: none;
+
+  ${props =>
+    props.hidePhone &&
+    css`
+      ${media.phone`
+        display: none;
+      `};
+    `};
 
   ${props =>
     props.small

@@ -24,6 +24,14 @@ const Items = styled.div`
   grid-template-columns: repeat(3, 1fr);
   justify-content: space-around;
   grid-gap: 90px;
+
+  ${media.tablet`
+    grid-template-columns: repeat(2, 1fr);
+  `};
+
+  ${media.phone`
+    grid-template-columns: repeat(1, 1fr);
+  `};
 `;
 
 const Item = styled.a`
