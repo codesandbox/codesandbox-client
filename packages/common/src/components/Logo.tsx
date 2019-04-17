@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 export default ({
-  width = 35,
-  height = 35,
+  width = 36,
+  height = 41,
   className,
   style,
 }: {
@@ -19,49 +19,23 @@ export default ({
     className={className}
     width={typeof width === 'number' ? `${width}px` : width}
     height={typeof height === 'number' ? `${height}px` : height}
-    viewBox="0 0 1024 1024"
     style={{ verticalAlign: 'middle', ...style }}
+    viewBox="0 0 405 464"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <title>CodeSandbox</title>
-    <g id="Layer_1">
-      <polyline
-        fill="currentColor"
-        points="719.001,851 719.001,639.848 902,533.802 902,745.267 719.001,851"
-      />
-      <polyline
-        fill="currentColor"
-        points="302.082,643.438 122.167,539.135 122.167,747.741 302.082,852.573 302.082,643.438"
-      />
-      <polyline
-        fill="currentColor"
-        points="511.982,275.795 694.939,169.633 512.06,63 328.436,169.987 511.982,275.795"
-      />
-    </g>
-    <g id="Layer_2">
-      <polyline
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="80"
-        strokeMiterlimit="10"
-        points="899,287.833 509,513 509,963"
-      />
-      <line
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="80"
-        strokeMiterlimit="10"
-        x1="122.167"
-        y1="289"
-        x2="511.5"
-        y2="513"
-      />
-      <polygon
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="80"
-        strokeMiterlimit="10"
-        points="121,739.083 510.917,963.042 901,738.333 901,288 511,62 121,289"
-      />
-    </g>
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M202.013 464V227.265L404.027 113.633V347.211L202.013 464ZM313.493 369.306V296.322L378.775 255.673V160.98L230.422 243.048V416.653L313.493 369.306Z"
+      fill="#B8B9BA"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M202.014 464L0 347.211V113.633L198.857 0L404.027 113.633L202.014 227.265V464ZM25.2517 157.823V255.673L98.4314 298.18V372.463L176.762 416.653V243.048L25.2517 157.823ZM268.299 66.2857L198.857 104.59L132.571 66.2857L53.6599 110.476L198.857 195.701L347.211 110.476L268.299 66.2857Z"
+      fill="white"
+    />
   </svg>
 );

@@ -1,16 +1,19 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-
+import GithubIcon from 'react-icons/lib/go/mark-github';
 import Logo from '../Logo';
 import MaxWidth from '../flex/MaxWidth';
+import { Button } from '../Button';
 
 import media from '../../utils/media';
 
 const Container = styled.div`
   display: flex;
   align-items: center;
+  font-family: Poppins, Roboto, sans-serif;
   padding: 1rem 0;
-  width: 100%;
+  width: 1440px;
+  max-width: 100%;
   color: white;
   z-index: 5;
 `;
@@ -37,33 +40,15 @@ const Item = styled.a<{
   display: inline-flex;
   align-items: center;
   transition: 0.2s ease color;
-  font-size: 1.125rem;
+  font-size: 18px;
   text-decoration: none;
   color: white;
 
   margin: 0 1rem;
-  font-weight: 400;
 
   &:hover {
     color: ${props => props.theme.secondary};
   }
-
-  ${props =>
-    props.button &&
-    css`
-      transition: 0.3s ease all;
-      padding: 0.2rem 0.8rem;
-      border-radius: 4px;
-      font-weight: 600;
-      background-color: ${props.theme.secondary};
-      border: 2px solid rgba(255, 255, 255, 0.3);
-
-      &:hover {
-        color: white;
-        background-color: #7fc3f7;
-        border-color: transparent;
-      }
-    `};
 
   ${media.phone`
     font-size: 1rem;
@@ -143,29 +128,37 @@ export default class Navigation extends React.PureComponent {
             </a>
 
             <Item href="/explore">Explore</Item>
-            <Item href="/search">Search</Item>
-            <Item href="/docs">Docs</Item>
+            <Item href="/features">Features</Item>
+            <Item href="/pricing">Pricing</Item>
 
-            <Item href="/blog">Blog</Item>
-            <Item
-              href="https://github.com/CompuIves/codesandbox-client"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub
-            </Item>
+            <Item href="/about-us">About us</Item>
           </Left>
 
           <Right>
-            {!user && (
-              <Item hideOn={730} href="/signin">
-                Sign In
-              </Item>
-            )}
-
-            <Item hidePhone href="/s" rel="noopener noreferrer" button={!user}>
+            <Button
+              style={{
+                marginRight: 16,
+              }}
+              small
+              secondary
+              href="/s"
+            >
               Create Sandbox
-            </Item>
+            </Button>
+
+            {!user && (
+              <Button small href="/signin">
+                <>
+                  <GithubIcon
+                    width="15"
+                    style={{
+                      marginRight: 5,
+                    }}
+                  />{' '}
+                  Sign in with GitHub
+                </>
+              </Button>
+            )}
 
             {user && (
               <Item hidePhone href={`/dashboard`} rel="noopener noreferrer">

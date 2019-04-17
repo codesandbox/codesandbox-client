@@ -63,9 +63,7 @@ const getColor = ({
 }: OptionProps) => {
   if (disabled) return theme.background2.lighten(1.5)();
   if (secondary)
-    return internalTheme.light
-      ? 'rgba(0, 0, 0, 0.75)'
-      : 'rgba(255, 255, 255, 0.75)';
+    return internalTheme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)';
 
   return 'white';
 };
