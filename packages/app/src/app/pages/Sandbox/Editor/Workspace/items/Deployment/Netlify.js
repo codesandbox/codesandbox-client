@@ -148,6 +148,9 @@ class NetlifyDeployment extends Component {
                         disabled={deployment.building}
                         href={deployment.netlifySite.url}
                         target="_blank"
+                        css={`
+                          margin-top: 0;
+                        `}
                         rel="noreferrer noopener"
                       >
                         {deployment.building ? (
@@ -166,6 +169,9 @@ class NetlifyDeployment extends Component {
                           disabled={deployment.building}
                           href={deployment.netlifyClaimUrl}
                           target="_blank"
+                          css={`
+                            margin-top: 0;
+                          `}
                           rel="noreferrer noopener"
                         >
                           <span>Claim Site</span>
