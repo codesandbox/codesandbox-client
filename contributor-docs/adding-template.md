@@ -1,85 +1,180 @@
-# Adding a Template
+# Contribute with a Template
 
-This doc will describe all the resource you might need to add a new template to CodeSandbox. We will list all the contributions that are needed to add a new template, and will give some examples.
+To contribute with a CodeSandbox template, you need to complete multiple steps and submit two Pull Requests. We have created this guide to help you do this. Here you will find descriptions and explanations for what you need to do, along with some examples that we have added as references.
 
-It might sound like a lot of work to add a new template, it's currently not the easiest process. That's why we created the docs, we're working on a system that will make it easier to create new templates.
+We realise that the process of submitting a template is not straightforward and we hope that this guide will help you along the way. We are working on a system that will make it easier.
 
-## What are templates?
+If you think that we missed something in this guide or believe we could explain something better, please let us know by submitting an [issue](https://github.com/CompuIves/codesandbox-client/issues/new/choose) with your feedback.
 
-Templates are nothing more than an identifier for a sandbox. We use this identifier to improve the UX in the editor and the preview. For example, for the `vue-cli` template we change the default `eslint` rules and what can be configured in a sandbox. We encourage every template creator to take an effort to improve the editor experience for their template, that will give the best experience for everyone using your template.
+## What is a template?
 
-## Types of Templates
+A template is an identifier for a specific type of sandbox project that you can create on [codesandbox.io](https://codesandbox.io), like projects using `Gatsby`, `React` or `Vue.js`.
 
-Before working on a template it's important to know the difference between Containers and Sandboxes. We currently support two kind of projects, with vastly different functionalities.
+When you create a template you can customise how the template behaves, in order to improve the User Experience of your template in the CodeSandbox editor and preview. Examples of this include configuring which file should be opened in the editor by default when choosing a template, or changing the default `eslint` rules in a template, like with `vue-cli`.
+
+We encourage template creators to improve the editor experience for their templates in order to give everyone the best possible experience when using templates.
+
+## Template types
+
+Templates can be of different types: **Sandboxes** or **Containers**, and have major differences in functionalities. It's important to know these differences before you start working on a new template.
 
 ### Sandboxes
 
-CodeSandbox has always executed projects in the browser. This means that we do transpiling, bundling, dependency resolvement and more all in the browser. There is no server involved. This has some advantages over conventional approaches; it works offline, is more snappy and doesn't give us server costs (which means that we can have as many sandboxes as we want without worrying (a lot ;-)).
+CodeSandbox executes projects in the browser, which we call sandboxes. This means that the transpiling, bundling, dependency resolvment and more happens in the browser itself, without a server being involved. This has some advantages over conventional approaches; it works offline, is more performant and doesn't give us server costs, which means we can have many sandboxes without having to worry (a lot ;-)).
 
-There are also some disadvantages to running the sandboxes in a browser. The main one is that we lose flexibility: it's not possible to run CLI commands and in some cases we don't support custom configuration (like a custom webpack configuration). That's why we developed a new kind of sandbox called Container in September.
+There are also some disadvantages to this approach. When sandboxes run in the browser, we lose flexibility. It's no longer possible to run Command Line Interface (CLI) commands and in some cases custom configurations are not supported, for example a custom webpack configuration. This is why we have developed a new kind of sandbox called **Container**, which we released in September 2018.
 
 ### Containers
 
-We, unlike sandboxes, execute Container sandboxes on a server. We can run more end-to-end projects with container sandboxes, like `Next.js`. We allow you to run any command on a container, everything that works locally works in a container. Containers are also used to build bigger projects.
+Unlike sandboxes, **containers** are executed on a server. This makes it possible to create projects that are end-to-end based, like `Next.js` with CodeSandbox, and also makes it possible to build bigger projects. **Containers** let you run any command, and everything that works locally will also work in container.
 
-There are some limitations to this approach though: we only allow signed in users to work on a container and the amount of container sandboxes a user can have is limited (this limit changes as we make containers more stable). You also can't edit containers while offline and it's not possible to edit containers when viewing from an embed.
+However, like the sandboxes, **containers** also come with some limitations. In order to work on a container, you need to be signed in as a user, you can't edit containers while offline, it's not possible to edit them from an embed, and you can only have a limited amount of container based projects.
 
 ### Which one to choose?
 
-The template defines whether a sandbox is executed in a container or in the browser. This means that it's your choice where to execute the sandbox.
+As you have read above, the template type determines whether a project is executed in a *sandbox in a browser* or in a *container on a server*. This means that the template type you have to choose, depends on your specific use-case and where you want your project to be executed.
 
-It fully depends on what you aim to demo. If you aim to demo some CLI functionality we recommend you to create a container, if you're aiming to demo a JavaScript framework (like `create-react-app`) it's recommended to use a sandbox.
+If you would like to demonstrate CLI functionality, we recommend that you use a **container** type template, and if you want to demonstrate a JavaScript framework (like `React`) we recommended using a **sandbox** type template.
 
-We encourage everyone to first evaluate whether the template works as a "sandbox".
+We encourage everyone to first evaluate whether the template works as a sandbox, before deciding on using a container.
 
-## Implementing the Template
+## Adding a new template
 
-There are already some example PRs that add new templates, these are a great resource to check out:
+In order to add a new template, you need to go through a set of steps. Some of these steps you have to do, others depend on the type of template you want to add (**sandbox** vs. **container**).
 
-- [CxJS](https://github.com/CompuIves/codesandbox-client/pull/683)
-- [Dojo](https://github.com/CompuIves/codesandbox-client/pull/665)
+To get started, you should first follow the steps in our contribution guidelines in order to [set up CodeSandbox locally](https://github.com/CompuIves/codesandbox-client/blob/master/CONTRIBUTING.md#setting-up-the-project-locally).
 
-There are several places that need to be updated to support a new template. This is a list of steps that need to be done for a new template:
+### 1. Add template logo
 
-### App
+Add the logo for your template in the [logos directory](https://github.com/CompuIves/codesandbox-client/tree/master/packages/common/src/components/logos) (`codesandbox-client/packages/common/src/components/logos`). How you do this depends on the file format of your logo.
 
-- [ ] Add the logo of the template [here](https://github.com/CompuIves/codesandbox-client/tree/master/packages/common/src/components/logos).
-- [ ] Add the template definition [here](https://github.com/nicknisi/codesandbox-client/blob/f5b88bdb2faa3c2c85b7a1aa94606883c0473067/packages/common/templates/)
-  - [This](https://github.com/nicknisi/codesandbox-client/blob/f5b88bdb2faa3c2c85b7a1aa94606883c0473067/packages/common/templates/preact.js) is a good reference
-  - All options are described [here](https://github.com/nicknisi/codesandbox-client/blob/f5b88bdb2faa3c2c85b7a1aa94606883c0473067/packages/common/templates/template.js)
-- [ ] Then add your template to the list [here](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/templates/index.ts). This will allow us to retrieve the template.
+#### SVG logos
 
-### Sandbox (container sandboxes can skip this)
+Create a `.tsx` file in the `/logos` directory with the appropirate name and content. If your template's name is "Banana", name your logo file "Banana".
 
-For the sandboxes that run in the browser we need to define what transpilers need to be run.
+Examples:
 
-We call a template configuration for the bundler in CodeSandbox a 'Preset'. All currently installed presets are defined [here](https://github.com/CompuIves/codesandbox-client/blob/master/packages/app/src/sandbox/eval/index.js). I recommend everyone to take a look at some templates to grasp how the configuration works. [This](https://github.com/CompuIves/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/create-react-app-typescript/index.js) is one of the simplest presets.
+- [Vue logo](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/components/logos/Vue.tsx)
+- [React logo](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/components/logos/React.tsx)
 
-For a template to work in the bundler it needs to have a preset in the sandbox.
+#### PNG/JPEG logos
 
-### Sandbox Importer
+Add the image file in the `/logos` directory and create `.tsx` file with the appropriate name.
 
-We allow people to import sandboxes from GitHub/CLI/API, to make sure that the right template is imported we have some specific logic that determines a template for every template. This is not in the current repository, it's in our [importers repository](https://github.com/codesandbox-app/codesandbox-importers). Your template needs to be added to [this file](https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts).
+Example:
 
-### Testing
+```js
+import * as React from 'react';
+import filename from './filename.png';
 
-To test the new template we need to mock the response from the API to force the new template specification. We can do this by uncommenting [this line](https://github.com/CompuIves/codesandbox-client/blob/master/packages/app/src/app/store/actions.js#L13) and changing "custom" to the id of your template:
+export default props => <img alt="filename" src={filename} {...props} />;
+```
+
+Replace `filename` with your logo name. The image file name should be all lowercase and the `.tsx` file should be capitalised: `Filename.tsx`. 
+
+Example:
+
+- [Parcel](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/components/logos/Parcel.tsx)
+
+### 2. Add template definition
+
+In order for CodeSandbox to recognise your template, you need to add a new definition of it in the `codesandbox-client/packages/common/src/templates` [directory](https://github.com/CompuIves/codesandbox-client/tree/master/packages/common/src/templates). You do this by creating a new `.ts` file with the name of your template.
+
+Examples:
+
+- [Parcel](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/templates/parcel.ts)
+- [Gatsby](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/templates/gatsby.ts)
+
+The template definition can have various options, which you can find more information about in [template.ts](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/templates/template.ts).
+
+We encourage you to improve the user experience of your templates by taking advantage of the options you have available while writing your template definition.
+
+Examples:
+
+- Which file the editor should open by default
+- Default rules the template should use
+
+<!-- TODO: Add more examples -->
+
+After writing your template definition, you also need to add it to the [index.js](https://github.com/CompuIves/codesandbox-client/blob/master/packages/common/src/templates/index.ts) file in the same directory (`codesandbox-client/packages/common/src/templates`) in order for CodeSandbox to be able to retrieve your template.
+
+### 3. Define transpilers for sandbox
+
+*If you are adding a template for a **container** sandbox, you can skip this step and proceed to step 4.*
+
+For the sandboxes that run in the browser we need to define what transpilers need to be run. A template will not work in the bundler if it does not have a preset.
+
+We call a template configuration for the bundler in CodeSandbox a 'Preset'. All currently installed presets are defined in the [index.ts](https://github.com/CompuIves/codesandbox-client/blob/master/packages/app/src/sandbox/eval/index.js) file under `codesandbox-client/packages/app/src/sandbox/eval/presets`.
+
+In order to understand how this configuration works, we recommend you to take a look at templates that have already been implemented and their presets.
+
+Examples:
+
+- [create-react-app-typescript](https://github.com/CompuIves/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/create-react-app-typescript/index.js) (most basic one)
+- [CxJS](https://github.com/CompuIves/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/cxjs/index.js)
+- [vue-cli](https://github.com/CompuIves/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/vue-cli/index.js)
+
+### 4. Add the importer
+
+We allow people to import sandboxes from GitHub/CLI/API, and to make sure that the right template is imported we have some specific logic that determines a template for every template. This logic is **not** found in `codesanbox-client`. 
+
+This means you that you also have to add your template in another file in the `codesandbox-importers` repository called [templates.ts](https://github.com/codesandbox/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts).
+
+When you create your Pull Request in `codesanbox-client`, you also need to create a Pull Request in `codesandbox-importer` and reference it in your Pull Request for `codesandbox-client`. Example:
+
+- [Add VuePress](https://github.com/CompuIves/codesandbox-client/pull/1652) in [codesandbox-client](https://github.com/CompuIves/codesandbox-client)
+- [Add VuePress support](https://github.com/codesandbox/codesandbox-importers/pull/30) in [codesandbox-importer](https://github.com/codesandbox/codesandbox-importers)
+
+### 5. Test the template
+
+You can test your new sandbox template, however you cannot preview the functionality of templates using containers.
+
+#### Sandbox template
+
+To test your new template, you need to create a mock response from the API and force the new template specification. To do this, you uncomment [this line](https://github.com/CompuIves/codesandbox-client/blob/master/packages/app/src/app/store/actions.js#L17) and change `'custom'` to the id/name of your template:
 
 ```diff
     .then(data => {
 -     // data.template = 'custom';
-+     data.template = 'custom';
++     data.template = 'templatename';
       const sandbox = data;
       return path.success({ sandbox });
     })
 ```
 
-#### Container Sandboxes
+#### Container template
 
-It's currently not possible to test the preview functionality of container sandboxes, we recommend you to test if the sandbox works in a `node` template. If that's the case it will work for the new template as well.
+<!-- TODO: clearify what to do here -->
+<!-- TODO: Improve description of step -->
 
-### Conclusion and Tips
+It's currently not possible to test the preview functionality of container sandboxes and we recommend you to test if the sandbox works in a `node` template. If your template works using `node`, it will work with your new template as well.
 
-We recommend you to open 2 Pull Requests: one in the `codesandbox-client` repository and one in the `codesandbox-importers` repository for the import. We will make sure to merge and deploy the two PRs at the same time.
+To do this, please add a `sandbox.config.json` file to the root folder of the repository that you are using as the basis for your template, with the content of:
 
-This is all that's needed to add a new template to CodeSandbox 🎉!
+```json
+{
+    "template": "node"
+}
+```
+
+To test it, you use CodeSandbox to access the repository that will be used for the template like so: `https://codesanbox.io/s/github/user/repo-name`, where `user` is the user/organisation who owns the repository and `repo-name` is the name of the repository to use for the template.
+
+After your Pull Request to add a new template has been merged, you can delete this `sandbox.json.config` file from your repository.
+
+### 6. Add yourself as a contributor
+
+This project follows the all-contributors specification. Contributions of any kind are welcome! To add yourself to the table of contributors in the README.md file, please use the automated script as part of your PR:
+
+```
+yarn add-contributor
+```
+
+Follow the prompt and commit .all-contributorsrc and README.md in the PR.
+
+Thank you for taking the time to contribute! 👍
+
+### Conclusion
+
+If your testing went well, congratulations! You have now created a new template for CodeSandbox!
+
+We will make sure to merge and deploy the two Pull Requests you made to both `codesanbox-client` and `codesandbox-importers` at the same time.
