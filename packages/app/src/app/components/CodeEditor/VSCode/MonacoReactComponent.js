@@ -85,8 +85,6 @@ class MonacoEditor extends React.PureComponent {
         r('vs/platform/instantiation/common/instantiation'),
       ];
 
-      document.getElementById('root').className += ' monaco-shell vs-dark';
-
       const container = document.createElement('div');
       const part = document.createElement('div');
       container.appendChild(part);
@@ -103,6 +101,7 @@ class MonacoEditor extends React.PureComponent {
           );
 
           container.className = 'monaco-workbench';
+          part.id = 'vscode-editor';
           part.className = 'part editor has-watermark';
           editorElement.className += ' monaco-workbench mac nopanel';
 
@@ -173,6 +172,7 @@ class MonacoEditor extends React.PureComponent {
 
             // After initializing monaco editor
             this.editorDidMount(editorApi, context.monaco);
+            document.getElementById('root').className += ` monaco-shell`;
           });
         }
       );
@@ -195,12 +195,11 @@ class MonacoEditor extends React.PureComponent {
         );
       })
       .then(() => {
-        if (this.lifecycleService) {
-          this.lifecycleService.shutdown();
-        }
         if (this.quickopenService) {
           // Make sure that the quickopenWidget is gone, it's attached to an old dom node
-          this.quickopenService.quickOpenWidget.dispose();
+          if (this.quickopenService.quickOpenWidget) {
+            this.quickopenService.quickOpenWidget.dispose();
+          }
           this.quickopenService.quickOpenWidget = undefined;
         }
       });

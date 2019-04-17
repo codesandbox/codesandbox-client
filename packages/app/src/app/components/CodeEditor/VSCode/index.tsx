@@ -4,7 +4,10 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
-import { getModulePath, resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import {
+  getModulePath,
+  resolveModule,
+} from '@codesandbox/common/lib/sandbox/modules';
 import { listen } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
@@ -254,11 +257,16 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.modelAddedListener = this.editor.textFileService.modelService.onModelAdded(
       model => {
         if (this.modelListeners[model.uri.path] === undefined) {
-          const module = resolveModule(
-            model.uri.path.replace(/^\/sandbox/, ''),
-            this.sandbox.modules,
-            this.sandbox.directories
-          );
+          let module: Module;
+          try {
+            module = resolveModule(
+              model.uri.path.replace(/^\/sandbox/, ''),
+              this.sandbox.modules,
+              this.sandbox.directories
+            );
+          } catch (e) {
+            return;
+          }
 
           const listener = model.onDidChangeContent(e => {
             const path = model.uri.path;

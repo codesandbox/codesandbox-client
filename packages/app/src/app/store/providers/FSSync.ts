@@ -76,18 +76,22 @@ async function syncDependencyTypings(
       Object.keys(absoluteDependencies).map(async depName => {
         const depVersion = absoluteDependencies[depName];
 
-        return fetch(`${SERVICE_URL}/${depName}@${depVersion}.json`)
-          .then(x => x.json())
-          .then(x => x.files)
-          .then(x => {
-            types = { ...types, ...x };
+        try {
+          const fetchRequest = await fetch(`${SERVICE_URL}/${depName}@${depVersion}.json`);
 
-            sendTypes();
-          })
-          .catch(() => {
+          if (!fetchRequest.ok) {
+            throw new Error("Fetch error");
+          }
+
+          const {files} = await fetchRequest.json();
+          types = {...types, ...files};
+          sendTypes();
+        } catch (e) {
+          if (process.env.NODE_ENV === 'development') {
             console.warn('Trouble fetching types for ' + depName);
-            return {};
-          });
+          }
+          return {};
+        }
       })
     );
   } catch (e) {

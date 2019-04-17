@@ -655,6 +655,15 @@
       ]
     },
     {
+      "login": "JonShort",
+      "name": "Jon Short",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/21317379?v=4",
+      "profile": "https://jonshort.me/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "dv297",
       "name": "Daniel Vu",
       "avatar_url": "https://avatars2.githubusercontent.com/u/5365325?v=4",
@@ -1095,7 +1104,63 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "tinahir",
+      "name": "Mahendra Hirapra",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/827497?v=4",
+      "profile": "https://github.com/tinahir",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rabingaire",
+      "name": "Rabin Gaire",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/17409675?v=4",
+      "profile": "http://rabingaire.com.np",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nm123github",
+      "name": "Neville Mehta",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8527474?v=4",
+      "profile": "https://twitter.com/ask_neville",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Yeti-or",
+      "name": "Vasiliy",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1813468?v=4",
+      "profile": "https://github.com/Yeti-or",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "RomainLanz",
+      "name": "Romain Lanz",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2793951?v=4",
+      "profile": "https://slynova.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "libetl",
+      "name": "LiBe",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1233790?v=4",
+      "profile": "http://libe.toile-libre.org",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "repoType": "github"
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "contributorsPerLine": 7
 }

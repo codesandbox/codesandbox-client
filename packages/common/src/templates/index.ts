@@ -1,3 +1,4 @@
+import adonis from './adonis';
 import angular from './angular';
 import babel from './babel';
 import parcel from './parcel';
@@ -12,6 +13,7 @@ import cxjs from './cxjs';
 import dojo from './dojo';
 import custom from './custom';
 import gatsby from './gatsby';
+import marko from './marko';
 import nuxt from './nuxt';
 import next from './next';
 import node from './node';
@@ -25,10 +27,12 @@ import vuepress from './vuepress';
 import mdxDeck from './mdx-deck';
 
 export {
+  adonis,
   angular,
   custom,
   apollo,
   gatsby,
+  marko,
   next,
   nuxt,
   node,
@@ -53,6 +57,7 @@ export {
 };
 
 export type TemplateType =
+  | 'adonis'
   | 'create-react-app'
   | 'vue-cli'
   | 'preact-cli'
@@ -63,6 +68,7 @@ export type TemplateType =
   | 'cxjs'
   | '@dojo/cli-create-app'
   | 'gatsby'
+  | 'marko'
   | 'nuxt'
   | 'next'
   | 'reason'
@@ -77,6 +83,8 @@ export type TemplateType =
 
 export default function getDefinition(theme: TemplateType) {
   switch (theme) {
+    case adonis.name:
+      return adonis;
     case react.name:
       return react;
     case vue.name:
@@ -101,6 +109,8 @@ export default function getDefinition(theme: TemplateType) {
       return custom;
     case gatsby.name:
       return gatsby;
+    case marko.name:
+      return marko;
     case nuxt.name:
       return nuxt;
     case next.name:

@@ -8,6 +8,7 @@ import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import SaveIcon from 'react-icons/lib/md/save';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
 import SignInButton from 'app/pages/common/SignInButton';
 
 import { saveAllModules } from 'app/store/modules/editor/utils';
@@ -75,21 +76,44 @@ const ForkButton = ({
   isForking,
   style,
 }: ForkButtonProps) => (
-  <Button
+  <ProgressButton
     onClick={() => {
       signals.editor.forkSandboxClicked();
     }}
     style={style}
     secondary={secondary}
-    disabled={isForking}
+    loading={isForking}
     small
   >
     <>
       <Fork style={{ marginRight: '.5rem' }} />
       {isForking ? 'Forking...' : 'Fork'}
     </>
-  </Button>
+  </ProgressButton>
 );
+
+const PickButton = ({ store, signals, secondary, style }: ButtonProps) => {
+  const { id, title, description } = store.editor.currentSandbox;
+
+  return (
+    <Button
+      onClick={() => {
+        signals.explore.pickSandboxModal({
+          details: {
+            id,
+            title,
+            description,
+          },
+        });
+      }}
+      style={style}
+      secondary={secondary}
+      small
+    >
+      Pick
+    </Button>
+  );
+};
 
 const ShareButton = ({ signals, secondary, style }: ButtonProps) => (
   <Button
@@ -217,12 +241,24 @@ const Header = ({ store, signals, zenMode }: Props) => {
             likeCount={store.editor.currentSandbox.likeCount}
           />
         )}
+
+        {store.user &&
+          store.user.curatorAt && (
+            <PickButton
+              style={{ fontSize: '.75rem' }}
+              secondary={sandbox.owned}
+              signals={signals}
+              store={store}
+            />
+          )}
+
         <ShareButton
           style={{ fontSize: '.75rem', margin: '0 1rem' }}
           signals={signals}
           secondary={!sandbox.owned}
           store={store}
         />
+
         <ForkButton
           secondary={sandbox.owned}
           isForking={store.editor.isForkingSandbox}

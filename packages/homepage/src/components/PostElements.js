@@ -8,8 +8,9 @@ export const Container = styled.div`
 export const Title = styled.h2`
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   line-height: 1.2;
+  margin-bottom: 1rem;
 
   color: #f2f2f2;
 `;
@@ -20,6 +21,7 @@ export const PostDate = styled.span`
   font-size: 14px;
   color: #b8b9ba;
   display: block;
+  margin-bottom: 0.5rem;
 `;
 
 export const AuthorImage = styled.img`

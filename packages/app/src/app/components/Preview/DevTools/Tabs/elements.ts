@@ -6,6 +6,7 @@ export const Container = styled.div`
   height: 100%;
   width: 100%;
   margin-right: 1rem;
+  overflow: hidden;
 `;
 
 export const Tabs = styled.div`

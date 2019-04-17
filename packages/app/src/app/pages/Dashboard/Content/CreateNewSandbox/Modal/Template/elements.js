@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
+export const Button = styled.button`
   transition: 0.3s ease all;
   display: inline-block;
   padding: 1em;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { Button } from '@codesandbox/common/lib/components/Button';
+import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
 import SignInButton from 'app/pages/common/SignInButton';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -16,7 +16,7 @@ type Props = {
 const NOT_OWNED_MESSAGE = `Fork this sandbox to make deployments, commit to GitHub, create live sessions with others and more!`;
 const NOT_SIGNED_IN_MESSAGE = `Sign in to be able to organize your sandboxes with a dashboard, make deployments, collaborate live with others, make commits to GitHub and more!`;
 
-class More extends React.PureComponent<Props> {
+class More extends React.Component<Props> {
   componentDidMount() {
     track('Workspace - More Opened');
   }
@@ -35,14 +35,14 @@ class More extends React.PureComponent<Props> {
         <Description>{message}</Description>
         <Margin margin={1}>
           {!owned ? (
-            <Button
+            <ProgressButton
               small
               block
-              disabled={isForkingSandbox}
+              loading={isForkingSandbox}
               onClick={this.forkSandbox}
             >
               {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
-            </Button>
+            </ProgressButton>
           ) : (
             <SignInButton block />
           )}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { LinkButton, AButton, Button } from './elements';
 
-type Props = {
+export type Props = {
   to?: string;
   href?: string;
   small?: boolean;
@@ -10,7 +10,7 @@ type Props = {
   onClick?: () => void;
   children?: React.ReactElement | string;
   disabled?: boolean;
-  type?: string;
+  type?: 'button' | 'reset' | 'submit';
   secondary?: boolean;
 };
 

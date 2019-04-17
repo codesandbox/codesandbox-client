@@ -2,7 +2,7 @@ import React from 'react';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { Container, IconContainer, Title, SubTitle } from './elements';
+import { Button, IconContainer, Title, SubTitle } from './elements';
 
 export default ({ template, subtitle, selectTemplate, small }) => {
   const Icon = getIcon(template.name);
@@ -12,7 +12,7 @@ export default ({ template, subtitle, selectTemplate, small }) => {
   const size = template.name === 'next' ? 64 : 32;
 
   return (
-    <Container
+    <Button
       onClick={select}
       color={template.color}
       onKeyDown={e => {
@@ -31,6 +31,6 @@ export default ({ template, subtitle, selectTemplate, small }) => {
       <IconContainer>
         <Icon width={small ? 24 : size} height={small ? 24 : 32} />
       </IconContainer>
-    </Container>
+    </Button>
   );
 };

@@ -47,9 +47,9 @@ export type DropdownPreference = {
 
 export type KeybindingPreference = {
   type: 'keybinding';
-  value: Array<string[]>;
-  defaultValue?: Array<string[]>;
-  setValue: SetValueT<Array<string[]>>;
+  value: string[][];
+  defaultValue?: string[][];
+  setValue: SetValueT<string[][]>;
 };
 
 export type NumberPreference = {

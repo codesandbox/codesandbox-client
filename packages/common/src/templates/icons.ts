@@ -1,3 +1,4 @@
+import Adonis from '../components/logos/Adonis';
 import React from '../components/logos/React';
 import Angular from '../components/logos/Angular';
 import Ember from '../components/logos/Ember';
@@ -10,6 +11,7 @@ import Dojo from '../components/logos/Dojo';
 import CxJS from '../components/logos/CxJS';
 import Reason from '../components/logos/Reason';
 import Gatsby from '../components/logos/Gatsby';
+import Marko from '../components/logos/Marko';
 import Next from '../components/logos/Next';
 import Nuxt from '../components/logos/Nuxt';
 import Node from '../components/logos/Node';
@@ -22,6 +24,7 @@ import MDXDeck from '../components/logos/mdx-deck';
 import GridSome from '../components/logos/Gridsome';
 
 import {
+  adonis,
   react,
   ember,
   vue,
@@ -34,6 +37,7 @@ import {
   cxjs,
   reason,
   gatsby,
+  marko,
   next,
   nuxt,
   node,
@@ -58,6 +62,8 @@ export type ReturnedIcon = React.SFC<{
 
 export default function getIcon(theme: TemplateType): ReturnedIcon {
   switch (theme) {
+    case adonis.name:
+      return Adonis;
     case react.name:
       return React;
     case vue.name:
@@ -84,6 +90,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return Reason;
     case gatsby.name:
       return Gatsby;
+    case marko.name:
+      return Marko;
     case next.name:
       return Next;
     case nuxt.name:

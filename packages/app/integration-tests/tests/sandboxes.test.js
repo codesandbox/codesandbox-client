@@ -6,13 +6,13 @@ const SANDBOXES = [
   'vue',
   'svelte',
   'react-ts',
-  { id: 'github/reactjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
+  { id: 'github/reduxjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
   'o29j95wx9',
   'k3q1zjjml5',
-  'github/reactjs/redux/tree/master/examples/real-world',
+  'github/reduxjs/redux/tree/master/examples/real-world',
   'github/CompuIves/codesandbox-presentation',
   'lp5rjr0z4z',
   'nOymMxyY',
@@ -36,6 +36,7 @@ const SANDBOXES = [
   '31kn7voz4q', // cxjs
   'zw9zjy0683', // aurelia
   'zx22owojr3', // vue v-slot test
+  '4888omqqz7', // material-ui https://github.com/CompuIves/codesandbox-client/issues/1741
 ];
 
 function pageLoaded(page) {

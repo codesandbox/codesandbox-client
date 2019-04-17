@@ -436,8 +436,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
       >
         {!hideTabs && (
           <Header
-            onTouchStart={!primary && this.handleTouchStart}
-            onMouseDown={!primary && this.handleMouseDown}
+            onTouchStart={!primary ? this.handleTouchStart : undefined}
+            onMouseDown={!primary ? this.handleMouseDown : undefined}
             primary={primary}
             open={!this.state.hidden}
           >
@@ -448,6 +448,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
               hidden={hidden}
               setPane={this.setPane}
               devToolIndex={devToolIndex}
+              status={this.state.status}
               moveTab={
                 this.props.moveTab
                   ? (prevPos, nextPos) => {

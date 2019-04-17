@@ -3,9 +3,20 @@
 
 const bundlers: Map<Window, string> = new Map();
 
+function checkIsStandalone() {
+  if (typeof window === 'undefined') {
+    return true;
+  }
+
+  if (window.location && window.location.href.indexOf('?standalone') > -1) {
+    return true;
+  }
+
+  return !window.opener && window.parent === window;
+}
+
 // Whether the tab has a connection with the editor
-export const isStandalone =
-  typeof window === 'undefined' || (!window.opener && window.parent === window);
+export const isStandalone = checkIsStandalone();
 
 let parentOrigin: string | null = null;
 

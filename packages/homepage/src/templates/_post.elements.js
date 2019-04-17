@@ -7,7 +7,7 @@ export const mainStyle = css`
   line-height: 1.7;
 
   font-weight: 500;
-  font-size: 16px;
+  font-size: 18px;
 
   color: rgba(255, 255, 255, 0.9);
 
@@ -17,8 +17,14 @@ export const mainStyle = css`
   h4,
   h5,
   h6 {
-    font-family: 'Poppins', sans-serif;
     color: white;
+    font-weight: 800;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Poppins', sans-serif;
   }
 
   h2 {
@@ -36,7 +42,7 @@ export const mainStyle = css`
     margin-top: 2rem;
     margin-bottom: 0.5rem;
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 600;
   }
 
   p {
@@ -47,6 +53,7 @@ export const mainStyle = css`
   p,
   li {
     font-family: 'Open Sans', sans-serif;
+    color: rgba(255, 255, 255, 0.8);
   }
 
   img {
@@ -57,6 +64,10 @@ export const mainStyle = css`
   figcaption {
     text-align: center;
     color: rgba(255, 255, 255, 0.6);
+  }
+
+  a {
+    color: ${props => props.theme.shySecondary};
   }
 `;
 

@@ -1,4 +1,3 @@
-
 import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
@@ -961,18 +960,18 @@ export default class Manager {
       this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
     }
 
-    const allModulesToUpdate = uniq(
-      flattenDeep([
-        tModulesToUpdate,
-        // All modules with errors
-        this.getTranspiledModules().filter(t => {
-          if (t.hasMissingDependencies) {
-            t.resetTranspilation();
-          }
-          return t.errors.length > 0 || t.hasMissingDependencies;
-        }),
-      ])
-    ) as TranspiledModule[];
+    const modulesWithWErrors = this.getTranspiledModules().filter(t => {
+      if (t.hasMissingDependencies) {
+        t.resetTranspilation();
+      }
+      return t.errors.length > 0 || t.hasMissingDependencies;
+    });
+    const flattenedTModulesToUpdate = (flattenDeep([
+      tModulesToUpdate,
+      modulesWithWErrors,
+    ]) as unknown) as TranspiledModule[];
+
+    const allModulesToUpdate = uniq(flattenedTModulesToUpdate);
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
       m => !m.isTestFile
     );
@@ -1167,9 +1166,9 @@ export default class Manager {
     return deleteAPICache(this.id);
   }
 
-  clearCache() {
+  async clearCache() {
     try {
-      clearIndexedDBCache();
+      await clearIndexedDBCache();
     } catch (ex) {
       if (process.env.NODE_ENV === 'development') {
         console.error(ex);
