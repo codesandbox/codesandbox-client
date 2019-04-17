@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+
 import LinkIcon from 'react-icons/lib/fa/external-link';
 import Cogs from 'react-icons/lib/fa/cogs';
+import LightningIcon from 'react-icons/lib/md/flash-on';
 import NetlifyLogo from 'app/components/NetlifyLogo';
 import DeploymentIntegration from 'app/components/DeploymentIntegration';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import { resolveDirectory } from '@codesandbox/common/lib/sandbox/modules';
+import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../elements';
 import {
   Deploys,
@@ -16,6 +20,18 @@ import {
   Wrapper,
   ButtonContainer,
 } from './Elements';
+
+const getFunctionDir = sandbox => {
+  try {
+    return resolveDirectory(
+      getNetlifyConfig(sandbox).functions,
+      sandbox.modules,
+      sandbox.directories
+    );
+  } catch (e) {
+    return [];
+  }
+};
 
 class NetlifyDeployment extends Component {
   state = { show: false };
@@ -37,6 +53,11 @@ class NetlifyDeployment extends Component {
 
     const template = getTemplate(editor.currentSandbox.template);
     const { show } = this.state;
+    const functionDirectory = getFunctionDir(editor.currentSandbox);
+
+    const functions = editor.currentSandbox.modules.filter(
+      m => m.directoryShortid === functionDirectory.shortid
+    );
     return (
       template.netlify !== false && (
         <Wrapper loading={deployment.deploying}>
@@ -77,11 +98,59 @@ class NetlifyDeployment extends Component {
                   <Deploy key={deployment.netlifySite.uid}>
                     <Name light>{deployment.netlifySite.name}</Name>
                     {!deployment.building && <div>Building</div>}
+                    {functions.length ? (
+                      <>
+                        <WorkspaceSubtitle
+                          css={`
+                            padding-left: 0;
+                          `}
+                        >
+                          Functions
+                        </WorkspaceSubtitle>
+                        <section
+                          css={`
+                            display: flex;
+                            margin-bottom: 0.5rem;
+                          `}
+                        >
+                          {functions.map(file => (
+                            <Link
+                              disabled={deployment.building}
+                              href={`${
+                                deployment.netlifySite.url
+                              }/.netlify/functions/${
+                                file.title.split('.js')[0]
+                              }`}
+                              css={`
+                                margin-top: 0;
+                                margin-right: 0.5rem;
+                              `}
+                              target="_blank"
+                              rel="noreferrer noopener"
+                            >
+                              <LightningIcon />
+                              <span>{file.title.split('.js')[0]}</span>
+                            </Link>
+                          ))}
+                        </section>
+                      </>
+                    ) : null}
+
+                    <WorkspaceSubtitle
+                      css={`
+                        padding-left: 0;
+                      `}
+                    >
+                      Actions
+                    </WorkspaceSubtitle>
                     <ButtonContainer>
                       <Link
                         disabled={deployment.building}
                         href={deployment.netlifySite.url}
                         target="_blank"
+                        css={`
+                          margin-top: 0;
+                        `}
                         rel="noreferrer noopener"
                       >
                         {deployment.building ? (
@@ -100,6 +169,9 @@ class NetlifyDeployment extends Component {
                           disabled={deployment.building}
                           href={deployment.netlifyClaimUrl}
                           target="_blank"
+                          css={`
+                            margin-top: 0;
+                          `}
                           rel="noreferrer noopener"
                         >
                           <span>Claim Site</span>

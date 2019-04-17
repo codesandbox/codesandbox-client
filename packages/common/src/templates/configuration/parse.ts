@@ -1,6 +1,5 @@
-
 import { ConfigurationFile } from '../../templates/configuration/types';
-
+import toml from 'markty-toml';
 import { parse } from 'jsonlint';
 import { ParsedConfigurationFiles } from '../template';
 import { Sandbox, Module } from '../../types';
@@ -57,11 +56,25 @@ export default function parseConfigurations(
       path,
       ...getCode(template, module, sandbox, resolveModule, configurationFile),
     };
+
     const code = baseObject.code;
 
     if (code) {
       try {
-        const parsed = parse(code);
+        let parsed;
+        // it goes here three times and the third time it doesn't have a title but a path
+        // that took a while ffs
+        // if toml do it with toml parser
+        if (
+          module &&
+          ((module.title && module.title.includes('.toml')) ||
+            (module.path && module.path.includes('.toml')))
+        ) {
+          // never throws
+          parsed = toml(code);
+        } else {
+          parsed = parse(code);
+        }
 
         configurations[configurationFile.type] = {
           ...baseObject,

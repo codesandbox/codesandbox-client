@@ -16262,6 +16262,18 @@ marked@^0.3.12, marked@^0.3.17, marked@^0.3.5, marked@^0.3.9:
   version "0.3.19"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.19.tgz#5d47f709c4c9fc3c216b6d46127280f40b39d790"
 
+markty-toml@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/markty-toml/-/markty-toml-0.0.9.tgz#1ccc3d9336b98cbe2451569ae2648dbf26bf7ede"
+  integrity sha512-bMIzcRN4mmp5S6WFxor8THsi9xeCPupBfG+bjTCpN7g7ez33TAxqT7FhTfuBU94uIvrqgXT7af3P+eJW0XpGfg==
+  dependencies:
+    markty "0.0.4"
+
+markty@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/markty/-/markty-0.0.4.tgz#060f943bdc2275b676b1628335bd8a39ea44a8ee"
+  integrity sha512-V2g+PRfySY9zKL0n4NHuE2rK2daHuVrcdRaJ8Gfhy4IYwEb2NywCSqCrxrn2LSJQ+dXf2Gubqw9+kU5m7fXUJw==
+
 match-sorter@^1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/match-sorter/-/match-sorter-1.8.1.tgz#5b164e526c261dc8628db925430facbe0cd26614"
@@ -23306,7 +23318,7 @@ terser@3.16.1:
     source-map "~0.6.1"
     source-map-support "~0.5.9"
 
-terser@^3.16.1, terser@^3.17.0, uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9, "uglify-es@npm:terser":
+terser@^3.16.1, terser@^3.17.0, uglify-es@^3.3.4, uglify-es@^3.3.7, uglify-es@^3.3.9:
   name uglify-es
   version "3.17.0"
   resolved "https://registry.yarnpkg.com/terser/-/terser-3.17.0.tgz#f88ffbeda0deb5637f9d24b0da66f4e15ab10cb2"

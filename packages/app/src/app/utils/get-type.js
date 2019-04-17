@@ -9,6 +9,7 @@ const specialCasesMap = {
   'package.json': 'npm',
   'sandbox.config.json': 'codesandbox',
   'now.json': 'now',
+  'netlify.toml': 'settings',
   'readme.md': 'readme',
   'contributing.md': 'contributing',
   'tsconfig.json': 'typescript',
