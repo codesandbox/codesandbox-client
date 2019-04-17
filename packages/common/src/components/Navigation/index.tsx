@@ -78,11 +78,12 @@ const Right = styled.div`
 `;
 
 const Image = styled.img`
-  width: 1.75em;
-  height: 1.75em;
-  border-radius: 4px;
-  margin-left: 0.75rem;
+  width: 45px;
+  height: 45px;
   margin-bottom: 0;
+  border: 2px solid ${props => props.theme.secondary};
+  box-sizing: border-box;
+  border-radius: 4px;
 `;
 
 export default class Navigation extends React.PureComponent {
@@ -140,7 +141,7 @@ export default class Navigation extends React.PureComponent {
                 marginRight: 16,
               }}
               small
-              secondary
+              secondary={!user}
               href="/s"
             >
               Create Sandbox
@@ -161,8 +162,12 @@ export default class Navigation extends React.PureComponent {
             )}
 
             {user && (
-              <Item hidePhone href={`/dashboard`} rel="noopener noreferrer">
-                {user.username}
+              <Item
+                style={{ margin: 0 }}
+                hidePhone
+                href={`/dashboard`}
+                rel="noopener noreferrer"
+              >
                 <Image alt={user.username} src={user.avatar_url} />
               </Item>
             )}
