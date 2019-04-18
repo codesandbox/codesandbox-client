@@ -4,7 +4,6 @@ import media from '../../../utils/media';
 
 export const Title = styled.h3`
   font-family: Poppins;
-  font-style: normal;
   font-weight: bold;
   font-size: 50px;
   color: white;

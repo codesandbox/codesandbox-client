@@ -1,14 +1,8 @@
 import React from 'react';
-
-// import Animation from '../screens/home/Animation';
-// import NPMFeature from '../screens/home/NPMFeature';
-// import CycleFeature from '../screens/home/CycleFeature';
-// import ExtraFeatures from '../screens/home/ExtraFeatures';
 import RecentPublications from '../screens/home/RecentPublications';
-// import Patron from '../screens/home/Patron';
-// import Users from '../screens/home/Users';
 import Hero from '../screens/home/Hero';
 import Explore from '../screens/home/Explore';
+import Features from '../screens/home/Features';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 import Frameworks from '../screens/home/Frameworks';
@@ -42,13 +36,8 @@ export default class HomePage extends React.Component {
         <Hero />
         <Explore />
         <Frameworks />
-        {/* <Animation />
-        <NPMFeature />
-        <CycleFeature />
-        <ExtraFeatures /> */}
+        <Features />
         <RecentPublications />
-        {/* <Patron />
-        <Users /> */}
       </Layout>
     );
   }
