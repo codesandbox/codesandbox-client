@@ -212,7 +212,7 @@ jobs:
     executor: node
     steps:
       - checkout
-      - yarn_typecheckt
+      - yarn_typecheck
   create-docker-image:
     executor: docker_machine
     steps:
