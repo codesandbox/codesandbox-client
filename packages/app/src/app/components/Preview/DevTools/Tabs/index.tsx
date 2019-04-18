@@ -70,7 +70,11 @@ const DevToolTabs = ({
               moveTab={moveTab}
               index={i}
               key={i}
-              status={status ? status[pane.id] : undefined}
+              status={
+                status
+                  ? status[pane.id] || { unread: 0, type: 'notice' }
+                  : undefined
+              }
             />
           );
         })}
