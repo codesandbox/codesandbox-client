@@ -11,6 +11,7 @@ import Hero from '../screens/home/Hero';
 import Explore from '../screens/home/Explore';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
+import Frameworks from '../screens/home/Frameworks';
 
 export default class HomePage extends React.Component {
   componentDidMount() {
@@ -40,6 +41,7 @@ export default class HomePage extends React.Component {
         <TitleAndMetaTags />
         <Hero />
         <Explore />
+        <Frameworks />
         {/* <Animation />
         <NPMFeature />
         <CycleFeature />
