@@ -24,7 +24,7 @@ const getBackgroundColor = ({
       internalTheme.light
         ? 'rgba(0, 0, 0, 0.4)'
         : theme.background2.darken(0.3)()
-    }`;
+      }`;
   if (danger) return `background-color: ${theme.dangerBackground()}`;
   if (secondary) return `background-color: transparent`;
   if (red) return `background-color: ${theme.red.darken(0.2)()}`;
@@ -47,7 +47,7 @@ const getBackgroundHoverColor = ({
       internalTheme.light
         ? 'rgba(0, 0, 0, 0.4)'
         : theme.background2.darken(0.3)()
-    }`;
+      }`;
   if (danger) return `background-color: #E25D6A`;
   if (secondary) return `background-color: #66b9f4`;
   if (red) return `background-color: #F27777`;

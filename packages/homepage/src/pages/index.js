@@ -8,6 +8,7 @@ import RecentPublications from '../screens/home/RecentPublications';
 // import Patron from '../screens/home/Patron';
 // import Users from '../screens/home/Users';
 import Hero from '../screens/home/Hero';
+import Explore from '../screens/home/Explore';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
 
@@ -38,6 +39,7 @@ export default class HomePage extends React.Component {
       <Layout>
         <TitleAndMetaTags />
         <Hero />
+        <Explore />
         {/* <Animation />
         <NPMFeature />
         <CycleFeature />
