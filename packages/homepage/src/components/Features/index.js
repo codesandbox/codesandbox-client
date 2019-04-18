@@ -58,7 +58,7 @@ export default ({ homepage = true }) => (
             <Title>{feature.title}</Title>
           </Header>
           <Description>{feature.description}</Description>
-          <Link href={feature.link}>Learn how it works</Link>
+          {feature.link && <Link href={feature.link}>Learn how it works</Link>}
         </section>
       ))}
   </Grid>

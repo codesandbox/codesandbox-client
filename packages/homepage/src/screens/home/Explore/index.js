@@ -47,7 +47,7 @@ const Title = styled.h3`
 `;
 
 export const Sandboxes = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 0.5rem;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 2rem;
