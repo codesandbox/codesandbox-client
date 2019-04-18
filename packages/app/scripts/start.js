@@ -2,6 +2,7 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express');
+var csp = require('express-csp-header');
 var cors = require('cors');
 var chalk = require('chalk');
 var webpack = require('webpack');
@@ -170,6 +171,14 @@ function openBrowser(port, protocol) {
 }
 
 function addMiddleware(devServer, index) {
+  devServer.use(
+    csp({
+      policies: {
+        'default-src': [csp.SELF],
+        'script-src': [csp.SELF, csp.INLINE, 'unsafe-eval'],
+      },
+    })
+  );
   devServer.use(function(req, res, next) {
     if (req.url === '/') {
       req.url = '/homepage';
