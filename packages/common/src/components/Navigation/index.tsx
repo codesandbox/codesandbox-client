@@ -140,6 +140,7 @@ export default class Navigation extends React.PureComponent {
               hidePhone
               style={{
                 marginRight: 16,
+                lineHeight: 1,
               }}
               small
               secondary={!user}
@@ -149,12 +150,15 @@ export default class Navigation extends React.PureComponent {
             </Button>
 
             {!user && (
-              <Button hidePhone small href="/signin">
+              <Button hidePhone style={{
+                lineHeight: 1,
+              }} small href="/signin">
                 <>
                   <GithubIcon
-                    width="15"
+                    height="13"
                     style={{
                       marginRight: 5,
+                      verticalAlign: 'inherit'
                     }}
                   />{' '}
                   Sign in with GitHub

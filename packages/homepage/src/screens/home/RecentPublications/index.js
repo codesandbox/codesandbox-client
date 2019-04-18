@@ -7,8 +7,7 @@ import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import media from '../../../utils/media';
 
 const Container = styled.div`
-  padding: 6rem 0;
-  margin-bottom: 160px;
+  margin: 160px 0;
 `;
 
 const Title = styled.h3`

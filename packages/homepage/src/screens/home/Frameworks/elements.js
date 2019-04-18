@@ -22,6 +22,13 @@ export const Grid = styled.div`
   grid-template-columns: 1fr 270px;
   grid-gap: 32px;
   margin-top: 2rem;
+
+  ${media.tablet`
+    grid-template-columns: 1fr;
+    > section {
+      order: 2;
+    }
+  `};
 `;
 
 export const TemplateTitle = styled.h5`
@@ -38,6 +45,13 @@ export const Icons = styled.div`
   box-shadow: 8px 8px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px 4px 0px 0px;
   padding: 16px 24px;
+
+  ${media.tablet`
+    > section {
+      display: flex;
+      align-items: center;
+    }
+  `};
 
   ${media.phone`
     margin: 2rem 0;
@@ -67,6 +81,10 @@ export const TemplateName = styled.span`
   letter-spacing: -0.02em;
   color: ${props => props.theme.lightText};
 
+  ${media.phone`
+      display: none;
+  `};
+
   ${({ selected }) =>
     selected &&
     css`
@@ -91,10 +109,6 @@ export const IconContainer = styled.div`
         filter: grayscale(0);
       `};
   }
-
-  ${media.phone`
-    flex-shrink: 0;
-  `};
 
   border-radius: 2px;
 
