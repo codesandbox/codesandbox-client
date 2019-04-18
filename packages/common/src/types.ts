@@ -18,6 +18,7 @@ export type ModuleCorrection = {
   column: number;
   moduleId: string;
   source: string | undefined;
+  path: string | undefined;
   severity: 'notice' | 'warning';
 };
 

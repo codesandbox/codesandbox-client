@@ -1,7 +1,13 @@
 // @flow
 import * as React from 'react';
 import { Sandbox, Module } from '../../types';
-import { listen, dispatch, registerFrame, resetState } from 'codesandbox-api';
+import {
+  listen,
+  dispatch,
+  actions,
+  registerFrame,
+  resetState,
+} from 'codesandbox-api';
 import debounce from 'lodash/debounce';
 import io from 'socket.io-client';
 
@@ -624,6 +630,7 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   clearErrors = () => {
+    dispatch(actions.error.clear('*', 'browser'));
     if (this.props.onClearErrors) {
       this.props.onClearErrors();
     }

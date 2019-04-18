@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 export const Container = styled.div`
   background-color: ${props =>
@@ -12,7 +13,7 @@ export const Container = styled.div`
 export const File = styled.div`
   display: flex;
   align-items: center;
-  font-size: 1rem;
+  font-size: 0.875rem;
   padding: 0.5rem 1rem;
   background-color: rgba(0, 0, 0, 0.3);
 
@@ -45,4 +46,35 @@ export const Actions = styled.div`
       color: rgba(255, 255, 255, 1);
     }
   }
+`;
+
+export const AnimatedChevron = styled(ChevronRight)<{ show: boolean }>`
+  transition: 0.3s ease transform;
+  transform: rotateZ(${props => (props.show ? 90 : 0)}deg);
+  margin-right: 0.25rem;
+`;
+
+export const MessageContainer = styled.div`
+  transition: 0.3s ease background-color;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 1.5rem;
+  font-size: 0.875rem;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${props => props.theme.background};
+  }
+`;
+
+export const MessageIconContainer = styled.div`
+  display: inline-flex;
+  margin-right: 0.5rem;
+  font-size: 0.75rem;
+`;
+
+export const MessageSource = styled.div`
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 1.5rem;
 `;

@@ -1,19 +1,29 @@
 import * as React from 'react';
 import { listen, dispatch, actions } from 'codesandbox-api';
-
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import FileIcon from 'react-icons/lib/md/insert-drive-file';
-
+import {
+  CorrectionAction,
+  CorrectionClearAction,
+} from 'codesandbox-api/dist/types/actions/correction';
+import {
+  ErrorAction,
+  ErrorClearAction,
+} from 'codesandbox-api/dist/types/actions/error';
 import { Console } from 'console-feed';
+import immer from 'immer';
+
 import { inspectorTheme } from '../Console/elements';
 
-import { Container, File, Path, FileName, Actions } from './elements';
+import { Container, File } from './elements';
 import { DevToolProps } from '..';
+
+import { FileErrors } from './FileErrors';
+
+export type MessageType = CorrectionAction | ErrorAction;
 
 type State = {
   corrections: {
-    [path: string]: Array<string>;
-    root?: Array<string>;
+    [path: string]: MessageType[];
+    root?: MessageType[];
   };
 };
 
@@ -33,39 +43,66 @@ class Problems extends React.PureComponent<DevToolProps, State> {
 
   handleMessage = data => {
     if (data.action === 'show-correction') {
-      const path = data.path || 'root';
+      const correction: CorrectionAction = data;
+      correction.path = correction.path || 'root';
 
       const newMessages = [
-        ...(this.state.corrections[path] || []),
-        { method: 'warn', data: [data.message] },
+        ...(this.state.corrections[correction.path] || []),
+        correction,
       ];
 
       this.setState({
         corrections: {
           ...this.state.corrections,
-          [path]: newMessages,
+          [correction.path]: newMessages,
         },
       });
 
       this.props.updateStatus('warning');
     } else if (data.action === 'show-error') {
-      const path = data.path || 'root';
+      const correction: ErrorAction = data;
+      correction.path = correction.path || 'root';
 
       const newMessages = [
-        ...(this.state.corrections[path] || []),
-        { method: 'error', data: [data.message] },
+        ...(this.state.corrections[correction.path] || []),
+        correction,
       ];
 
       this.setState({
         corrections: {
           ...this.state.corrections,
-          [path]: newMessages,
+          [correction.path]: newMessages,
         },
       });
 
       this.props.updateStatus('error');
-    } else if (data.type === 'start') {
-      this.setState({ corrections: {} });
+    } else if (
+      data.action === 'clear-corrections' ||
+      data.action === 'clear-errors'
+    ) {
+      const message: CorrectionClearAction | ErrorClearAction = data;
+      const path = message.path || 'root';
+      console.log('got it', message);
+
+      const newState = immer(this.state.corrections, draft => {
+        const clearCorrections = (clearPath: string) => {
+          if (draft[clearPath]) {
+            draft[clearPath] = draft[clearPath].filter(
+              corr => corr.source !== message.source
+            );
+          }
+        };
+
+        if (path === '*') {
+          Object.keys(draft).forEach(p => {
+            clearCorrections(p);
+          });
+        } else {
+          clearCorrections(path);
+        }
+      });
+
+      this.setState({ corrections: newState });
       this.props.updateStatus('clear');
     }
   };
@@ -96,29 +133,16 @@ class Problems extends React.PureComponent<DevToolProps, State> {
             <Console logs={root} variant="dark" styles={inspectorTheme} />
           </div>
         )}
-        {files.map(file => {
-          const splittedPath = file.split('/');
-          const fileName = splittedPath.pop();
-
-          return (
-            <div key={file}>
-              <File>
-                <Path>{splittedPath.join('/')}/</Path>
-                <FileName>{fileName}</FileName>
-                <Actions>
-                  <Tooltip content="Open File">
-                    <FileIcon onClick={() => this.openFile(file)} />
-                  </Tooltip>
-                </Actions>
-              </File>
-              <Console
-                logs={this.state.corrections[file]}
-                variant="dark"
-                styles={inspectorTheme}
+        {files.map(
+          file =>
+            this.state.corrections[file] && (
+              <FileErrors
+                key={file}
+                file={file}
+                corrections={this.state.corrections[file]}
               />
-            </div>
-          );
-        })}
+            )
+        )}
       </Container>
     );
   }

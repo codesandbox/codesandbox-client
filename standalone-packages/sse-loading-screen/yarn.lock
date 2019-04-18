@@ -2681,7 +2681,7 @@ https-browserify@^1.0.0:
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
 
-"humps@github:CompuIves/humps":
+humps@CompuIves/humps:
   version "2.0.0"
   resolved "https://codeload.github.com/CompuIves/humps/tar.gz/7ee34e874c808cf60e7119ee71ac71b8bf2189b7"
 

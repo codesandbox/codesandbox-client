@@ -46,6 +46,7 @@ const getDebugger: () => (key: string) => (...message: any[]) => void = () => {
   // @ts-ignore
   const debug = require('debug'); // eslint-disable-line global-require
   debug.enable('cs:*');
+  debug.disable('cs:cp-*');
   return debug;
 };
 

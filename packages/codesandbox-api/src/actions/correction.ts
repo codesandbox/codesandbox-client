@@ -3,6 +3,8 @@ import { Action } from './';
 export interface CorrectionOptions {
   line?: number;
   column?: number;
+  lineEnd?: number;
+  columnEnd?: number;
   path: string;
   payload?: Object;
   severity: 'warning' | 'notice';
@@ -13,10 +15,19 @@ export interface CorrectionAction extends Action {
   message: string;
   line?: number;
   column?: number;
+  lineEnd?: number;
+  columnEnd?: number;
   path: string;
   payload?: Object;
   severity: 'warning' | 'notice';
-  source?: string;
+  source: string;
+}
+
+export interface CorrectionClearAction extends Action {
+  type: 'action';
+  action: 'clear-corrections';
+  path: string;
+  source: string;
 }
 
 /**
@@ -34,6 +45,8 @@ export function show(
   {
     line,
     column,
+    lineEnd,
+    columnEnd,
     path,
     payload,
     severity = 'warning',
@@ -48,11 +61,22 @@ export function show(
     message,
     line,
     column,
+    lineEnd,
+    columnEnd,
     path,
     payload,
     severity,
     source,
     type: 'action',
     action: 'show-correction',
+  };
+}
+
+export function clear(path: string, source: 'all' | string): CorrectionClearAction {
+  return {
+    type: 'action',
+    action: 'clear-corrections',
+    path,
+    source,
   };
 }

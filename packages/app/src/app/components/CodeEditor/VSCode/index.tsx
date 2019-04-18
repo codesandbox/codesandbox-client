@@ -8,7 +8,7 @@ import {
   getModulePath,
   resolveModule,
 } from '@codesandbox/common/lib/sandbox/modules';
-import { listen } from 'codesandbox-api';
+import { listen, actions, dispatch } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
@@ -230,7 +230,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
   setupTranspilationListener() {
     // @ts-ignore
-    return listen(({ type, code, path }) => {
+    return listen(({ action, type, code, path, lineNumber, column }) => {
       if (type === 'add-extra-lib') {
         // TODO; bring this func back
         // const dtsPath = `${path}.d.ts`;
@@ -238,6 +238,16 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         //   `file:///${dtsPath}`
         // ] = code;
         // this.commitLibChanges();
+      } else if (action === 'editor.open-module') {
+        this.editor.codeEditorService.openCodeEditor({
+          resource: this.monaco.Uri.file('/sandbox' + path),
+          options: {
+            selection: {
+              startLineNumber: lineNumber,
+              startColumn: column,
+            },
+          },
+        });
       }
     });
   }
@@ -855,8 +865,27 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
         requestAnimationFrame(() => {
           const activeEditor = this.editor.getActiveCodeEditor();
+
           if (activeEditor && activeEditor.getModel()) {
+            dispatch(
+              actions.correction.clear(this.getCurrentModelPath(), 'eslint')
+            );
+
             if (version === activeEditor.getModel().getVersionId()) {
+              markers.forEach(marker => {
+                dispatch(
+                  actions.correction.show(marker.message, {
+                    line: marker.startLineNumber,
+                    column: marker.startColumn,
+                    lineEnd: marker.endLineNumber,
+                    columnEnd: marker.endColumn,
+                    source: 'eslint',
+                    severity: marker.severity === 2 ? 'warning' : 'notice',
+                    path: this.getCurrentModelPath(),
+                  })
+                );
+              });
+
               this.updateLintWarnings(markers);
             } else {
               this.updateLintWarnings([]);

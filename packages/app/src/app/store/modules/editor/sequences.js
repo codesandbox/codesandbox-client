@@ -311,14 +311,6 @@ export const handlePreviewAction = [
       addNpmDependency,
       actions.forceRender,
     ],
-    'editor.open-module': [
-      actions.outputModuleIdFromActionPath,
-      when(props`id`),
-      {
-        true: setCurrentModule(props`id`),
-        false: [],
-      },
-    ],
     otherwise: [],
   },
 ];
