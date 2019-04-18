@@ -17,6 +17,7 @@
     "date-fns": "^1.30.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
+    "express-csp-header": "^2.2.0",
     "http-proxy-middleware": "^0.19.1",
     "humps": "CompuIves/humps",
     "isomorphic-unfetch": "^3.0.0",

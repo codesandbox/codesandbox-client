@@ -1,4 +1,5 @@
 const express = require('express');
+const csp = require('express-csp-header');
 const next = require('next');
 const proxy = require('http-proxy-middleware');
 
@@ -10,6 +11,14 @@ app
   .prepare()
   .then(() => {
     const server = express();
+    server.use(
+      csp({
+        policies: {
+          'default-src': [csp.SELF],
+          'script-src': [csp.SELF, csp.INLINE, 'unsafe-eval'],
+        },
+      })
+    );
     server.use(
       '/api',
       proxy({ target: 'https://codesandbox.io', changeOrigin: true })
