@@ -19,6 +19,7 @@ const specialCasesMap = {
 
 const regexCasesMap = {
   markdown: /\.md$/,
+  markojs: /\.marko$/,
   yaml: /\.yml$/,
   react: /\.jsx$/,
   reason: /\.re$/,

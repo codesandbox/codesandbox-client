@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Language="en-US" Id="night-owl" Version="0.4.2" Publisher="sdras"/>
+    <Identity Language="en-US" Id="night-owl" Version="1.1.3" Publisher="sdras"/>
     <DisplayName>Night Owl</DisplayName>
-    <Description xml:space="preserve">A VS Code theme for the night owls out there. Works well in the daytime, too. Decisions were based on meaningful contrast for reading comprehension and for optimal razzle dazzle. ✨</Description>
-    <Tags>Theme,Dark Theme,Night Owl,Night Theme,Accessible Theme,theme,color-theme</Tags>
+    <Description xml:space="preserve">A VS Code theme for the night owls out there. Now introducing Light Owl theme for daytime usage. Decisions were based on meaningful contrast for reading comprehension and for optimal razzle dazzle. ✨</Description>
+    <Tags>Theme,Dark Theme,Light Theme,Night Owl,Night Theme,Light Owl,Snow Owl,Early Bird,Accessible Theme,theme,color-theme</Tags>
     <Categories>Themes</Categories>
     <GalleryFlags>Public</GalleryFlags>
     <Badges></Badges>

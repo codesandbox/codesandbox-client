@@ -3,18 +3,26 @@
 [![Version](https://vsmarketplacebadge.apphb.com/version/sdras.night-owl.svg)](https://aka.ms/nightowl)
 [![Downloads](https://img.shields.io/vscode-marketplace/r/sdras.night-owl.svg)](https://aka.ms/nightowl)
 
-A VS Code theme for the night owls out there. Works well in the daytime, too, but this theme is fine-tuned for those of us who like to code late into the night. Color choices have taken into consideration what is accessible to people with colorblindness and in low-light circumstances. Decisions were also based on meaningful contrast for reading comprehension and for optimal razzle dazzle. ✨
+A Visual Studio Code theme for the night owls out there. Fine-tuned for those of us who like to code late into the night. Color choices have taken into consideration what is accessible to people with colorblindness and in low-light circumstances. Decisions were also based on meaningful contrast for reading comprehension and for optimal razzle dazzle. ✨
+
+As of 1.0.0, there's a Light Owl Theme too! Color balanced from the Dark version for easy viewing in daylight. 🌅
 
 About this theme, and some of the considerations made while creating it (as well as _how_ to create it should you want to make your own): [https://css-tricks.com/creating-a-vs-code-theme/](https://css-tricks.com/creating-a-vs-code-theme/)
 
-![Preview](https://github.com/sdras/night-owl-vscode-theme/raw/master/preview.png)
+## Night Owl
+![First Screen](https://github.com/sdras/night-owl-vscode-theme/raw/master/first-screen.jpg)
+![Night Owl Frameworks](https://github.com/sdras/night-owl-vscode-theme/raw/master/three-dark.jpg)
+
+## Light Owl
+![First Screen Light](https://github.com/sdras/night-owl-vscode-theme/raw/master/light-owl-full.jpg)
+![Light Owl Frameworks](https://github.com/sdras/night-owl-vscode-theme/raw/master/three-light.jpg)
 
 # Installation
 
 1.  Install [Visual Studio Code](https://code.visualstudio.com/)
 2.  Launch Visual Studio Code
 3.  Choose **Extensions** from menu
-4.  Search for `night-owl-vscode-theme`
+4.  Search for `night-owl`
 5.  Click **Install** to install it
 6.  Click **Reload** to reload the Code
 7.  From the menu bar click: Code > Preferences > Color Theme > **Night Owl**
@@ -23,7 +31,7 @@ About this theme, and some of the considerations made while creating it (as well
 
 If you wish to disable italics, there is now a no-italic theme available. You will have access to both, select **Night Owl No Italics** as your color theme.
 
-## Other versions of this Theme
+## Other versions of this Theme (Dark Theme only so far)
 
 The community is awesome and has ported this theme over to other environments
 
@@ -36,7 +44,7 @@ The community is awesome and has ported this theme over to other environments
 - Atom: [https://atom.io/themes/night-owl-vs-code-syntax](https://atom.io/themes/night-owl-vs-code-syntax)
 - Jetbrains: [https://github.com/xdrop/night-owl-jetbrains](https://github.com/xdrop/night-owl-jetbrains)
 - Emacs: [https://github.com/aaronjensen/night-owl-emacs](https://github.com/aaronjensen/night-owl-emacs)
-- Vim 
+- Vim
   1. [https://github.com/Khaledgarbaya/night-owl-vim-theme](https://github.com/Khaledgarbaya/night-owl-vim-theme)
   2. [https://github.com/haishanh/night-owl.vim](https://github.com/haishanh/night-owl.vim)
 - Pygments [https://github.com/liamdawson/nightowl-pygments-style](https://github.com/liamdawson/nightowl-pygments-style)
@@ -45,6 +53,8 @@ The community is awesome and has ported this theme over to other environments
 - Ace Editor [https://github.com/batpigandme/night-owlish](https://github.com/batpigandme/night-owlish/tree/master/aceTheme)
 - RStudio [https://github.com/batpigandme/night-owlish](https://github.com/batpigandme/night-owlish/tree/master/rstheme)
 - Insomnia [https://github.com/yoannfleurydev/insomnia-plugin-night-owl-theme](https://github.com/yoannfleurydev/insomnia-plugin-night-owl-theme)
+- Sublime Text 3 [https://github.com/VonHeikemen/night-owl-sublime-scheme](https://github.com/VonHeikemen/night-owl-sublime-scheme)
+- Slack [https://github.com/clouby/night-owl-slack](https://github.com/clouby/night-owl-slack)
 
 ## Separate the Editor from the Sidebar
 
@@ -52,11 +62,20 @@ This theme uses contrast sparingly so that when it's applied, it's more meaningf
 
 ```
 "workbench.colorCustomizations": {
-  "activityBar.background": "#000C1D",
-  "activityBar.border": "#102a44",
-  "sideBar.background": "#001122",
-  "sideBar.border": "#102a44",
-  "sideBar.foreground": "#8BADC1"
+  "[Night Owl]": {
+    "activityBar.background": "#000C1D",
+    "activityBar.border": "#102a44",
+    "sideBar.background": "#001122",
+    "sideBar.border": "#102a44",
+    "sideBar.foreground": "#8BADC1"
+  },
+  "[Night Owl No Italics]": {
+    "activityBar.background": "#000C1D",
+    "activityBar.border": "#102a44",
+    "sideBar.background": "#001122",
+    "sideBar.border": "#102a44",
+    "sideBar.foreground": "#8BADC1"
+  }
 },
 ```
 
