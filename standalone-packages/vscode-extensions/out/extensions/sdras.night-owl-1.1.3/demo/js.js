@@ -39,17 +39,35 @@ async function asyncCall() {
   var result = await resolveAfter2Seconds();
 }
 
-for (let i=0; i <10; i++) {
+const options = {
+  connections: {
+    compression: false
+  }
+}
+
+for (let i = 0; i < 10; i++) {
   continue;
 }
 
-if (true) {}
+if (true) { }
 
-while (true) {}
+while (true) { }
 
-switch(2) {
+switch (2) {
   case 2:
     break;
   default:
     break;
+}
+
+class EditFishForm extends Component {
+  static propTypes = {
+    updateFish: PropTypes.func,
+    deleteFish: PropTypes.func,
+    index: PropTypes.string,
+    fish: PropTypes.shape({
+      image: PropTypes.string,
+      name: PropTypes.string.isRequired
+    })
+  }
 }

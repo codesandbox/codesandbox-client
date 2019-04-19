@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf out",
-    "copy": "yarn clean && mkdir out && cp -R ../vscode/extensions-bundle/ ./out/ && yarn rimraf out/draft"
+    "copy": "yarn clean && mkdir out && cp -R ../vscode/extensions-bundle/ ./out/ && yarn rimraf out/draft",
+    "compile": "node ../codesandbox-browserfs/build/scripts/make_http_index.js > index.json"
   },
   "dependencies": {
     "rimraf": "^2.6.3"

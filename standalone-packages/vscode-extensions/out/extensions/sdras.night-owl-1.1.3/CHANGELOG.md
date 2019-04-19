@@ -2,6 +2,69 @@
 
 All notable changes to the "night-owl" extension are be documented in this file.
 
+## "1.1.3"
+
+### Light 
+- Update Go too-light function calls
+
+### Dark
+- make selection background in search more legible
+
+## "1.1.2"
+
+### Light Theme
+- make selection background darker
+- make code comments darker
+
+## "1.1.1"
+
+### Light Theme
+- fix the find match background
+- fix the badge background to not be so distracting
+- fix keyword other unit css bright yellow
+- fix the too-bright-orange
+- fix the too-light turquoise, give it some contrast from the purple
+- fix up invalid illegal, make it not white so you can read it
+- stop all the weird border error lines
+
+### Dark theme
+- fix up terminal selection background
+
+## "1.1.0"
+
+- Light theme no italics introduced
+- Fix bug in empty editor view
+
+## "1.0.1"
+
+- Updated readme with new screenshots, including light theme
+
+## "1.0.0"
+
+- Light theme introduced
+- C++ support
+- Fix active selection background bug
+- Fix Markdown Header bug
+
+## "0.5.0"
+
+- Better Closure support
+- Better Powershell support
+- Update notification toasts so you can see them better
+- Make Proptypes stand out a bit more
+- Fix bottom statusbar foreground
+- Make inactive tab less distracting
+- Make object.other.property more pronounced
+- Update editorGroup.emptyBackground from deprecated version
+- Make contrast between function keyword stronger
+- Fix bug in markdown punctuation
+- Make a difference between current highlighted and searched-for keyword
+- Update JSON key to be less barfy
+
+## "0.4.3"
+
+- Update README: vs code => visual studio code
+
 ## "0.4.2"
 
 - Update warn widget color
