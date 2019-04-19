@@ -1,0 +1,86 @@
+{
+	"name": "better-toml",
+	"displayName": "Better TOML",
+	"description": "Better TOML Language support",
+	"author": "Gigih Aji Ibrahim <bungcip@gmail.com>",
+	"icon": "icon.png",
+	"version": "0.3.2",
+	"publisher": "bungcip",
+	"license": "MIT",
+	"homepage": "https://github.com/bungcip/better-toml/blob/master/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bungcip/better-toml.git"
+	},
+	"bugs": {
+		"url": "https://github.com/bungcip/better-toml/issues",
+		"email": "bungcip@gmail.com"
+	},
+	"engines": {
+		"vscode": "^1.18.0"
+	},
+	"categories": [
+		"Languages"
+	],
+	"keywords": [
+		"toml"
+	],
+	"activationEvents": [
+		"onLanguage:toml"
+	],
+	"main": "./out/src/extension",
+	"contributes": {
+		"languages": [
+			{
+				"id": "toml",
+				"aliases": [
+					"TOML",
+					"toml"
+				],
+				"extensions": [
+					".toml"
+				],
+				"mimetypes": [
+					"text/x-toml"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "toml",
+				"scopeName": "source.toml",
+				"path": "./syntaxes/TOML.tmLanguage"
+			},
+			{
+				"scopeName": "markdown.toml.frontmatter.codeblock",
+				"path": "./syntaxes/TOML.frontMatter.tmLanguage",
+				"injectTo": [
+					"text.html.markdown"
+				]
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "tsc -p ./",
+		"compile": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^2.6.0",
+		"vscode-languageserver": "^2.6.0",
+		"toml": "^2.3.3"
+	},
+	"devDependencies": {
+		"typescript": "2.5.2",
+		"vscode": "^1.0.3",
+		"mocha": "^3.1.2",
+		"@types/node": "^6.0.46",
+		"@types/mocha": "^2.2.32"
+	},
+	"__metadata": {
+		"id": "464f4ac7-af65-4aa9-9907-4ba7fa419085",
+		"publisherId": "87bfa971-0ee5-4ec2-afdb-1d26a8959fa4",
+		"publisherDisplayName": "bungcip"
+	}
+}

@@ -6,8 +6,8 @@ const EventEmitter = require('events');
 
 interface IWatchEntry {
   filename: string;
-  watcher: any,
-  curr?: Stats,
+  watcher: any;
+  curr?: Stats;
   recursive?: boolean;
   persistent?: boolean;
   callback?: ((event: string, filename: string) => any) | undefined;
@@ -15,12 +15,6 @@ interface IWatchEntry {
 }
 
 export class FileWatcher {
-  private watchEntries: IWatchEntry[] = [];
-
-  private removeEntry(watchEntry: IWatchEntry) {
-    this.watchEntries = this.watchEntries.filter(en => en !== watchEntry);
-  }
-
   public triggerWatch(filename: string, event: 'change' | 'rename', newStats?: Stats) {
     const validEntries = this.watchEntries.filter(entry => {
       if (entry.filename === filename) {
@@ -110,5 +104,11 @@ export class FileWatcher {
 
   unwatchFile(filename: string, listener: (curr: Stats, prev: Stats) => void): any {
     this.watchEntries = this.watchEntries.filter(entry => entry.filename !== filename && entry.fileCallback !== listener);
+  }
+
+  private watchEntries: IWatchEntry[] = [];
+
+  private removeEntry(watchEntry: IWatchEntry) {
+    this.watchEntries = this.watchEntries.filter(en => en !== watchEntry);
   }
 }

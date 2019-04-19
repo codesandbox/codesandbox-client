@@ -1,0 +1,119 @@
+#!/usr/bin/env node
+
+var path = require('path');
+var fs = require('fs');
+var cp = require('child_process');
+
+var extensionDirectory = process.argv[2];
+if (!extensionDirectory) {
+	console.error('No extension directory provided.');
+	process.exit(1)
+}
+extensionDirectory = path.resolve(extensionDirectory)
+if (!fs.existsSync(extensionDirectory)) {
+	console.error('Extension directory ' + extensionDirectory + ' doesn\'t exist on disk.');
+	process.exit(1);
+}
+
+var packageFile = process.argv[3];
+if (!packageFile) {
+	console.error('No package.json file provided.');
+	process.exit(1);
+}
+packageFile = path.resolve(packageFile);
+if (!fs.existsSync(packageFile)) {
+	console.error('Package file ' + packageFile + ' doesn\'t exist on disk.');
+	process.exit(1);
+}
+var tsconfigFile = process.argv[4];
+if (!tsconfigFile) {
+	console.error('No tsconfig.json file provided');
+	process.exit(1);
+}
+tsconfigFile = path.resolve(tsconfigFile);
+if (!fs.existsSync(tsconfigFile)) {
+	console.error('tsconfig file ' + tsconfigFile + ' doesn\'t exist on disk.')
+	process.exit(1);
+}
+
+var extensionServerDirectory = path.join(extensionDirectory, 'server')
+
+json = require(tsconfigFile);
+var compilerOptions = json.compilerOptions;
+if (compilerOptions) {
+	var outDir = compilerOptions.outDir;
+	if (!outDir || path.join(path.dirname(tsconfigFile), outDir) !== extensionServerDirectory) {
+		console.error('outDir in ' + process.argv[4] + ' must point to ' + extensionServerDirectory + ' but it points to ' + path.join(path.dirname(tsconfigFile), outDir));
+		console.error('Please change outDir in ' + process.argv[4] + ' to ' + path.relative(path.dirname(tsconfigFile), extensionServerDirectory).replace(/\\/g, '/'));
+		process.exit(1);
+	}
+}
+
+var launchFile = path.join(path.dirname(packageFile), '.vscode', 'launch.json');
+if (fs.existsSync(launchFile)) {
+	try {
+		json = JSON.parse(stripComments(fs.readFileSync(launchFile, 'utf8').toString()));
+		var configurations = json.configurations;
+		if (configurations) {
+			configurations.forEach(function(config) {
+				if (config.request === 'attach' && config.type === 'node') {
+					var outDir = config.outDir;
+					var resolvedOutDir = outDir;
+					if (resolvedOutDir) {
+						var workspaceRoot = path.dirname(packageFile);
+						resolvedOutDir = resolvedOutDir.replace(/\$\{workspaceRoot\}/g, workspaceRoot);
+						if (path.isAbsolute(resolvedOutDir)) {
+							resolvedOutDir = path.normalize(resolvedOutDir);
+						} else {
+							resolvedOutDir = path.join(workspaceRoot, outDir);
+						}
+					}
+					if (!resolvedOutDir || resolvedOutDir !== extensionServerDirectory) {
+						console.error('outDir in ./.vscode/launch.json must point to ' + extensionServerDirectory + ' but it points to ' + path.join(path.dirname(packageFile), outDir));
+						console.error('Please change outDir in ./.vscode/launch.json to ' + path.relative(path.dirname(packageFile), extensionServerDirectory).replace(/\\/g, '/'));
+						process.exit(1);
+					}
+				}
+			})
+		}
+	} catch (error) {
+		console.warn('Couldn\'t check launch.json file. Reading the file failed with: ' + error.message);
+	}
+}
+
+function stripComments(content) {
+	var regexp = /("(?:[^\\\"]*(?:\\.)?)*")|('(?:[^\\\']*(?:\\.)?)*')|(\/\*(?:\r?\n|.)*?\*\/)|(\/{2,}.*?(?:(?:\r?\n)|$))/g;
+	var result = content.replace(regexp, function (match, m1, m2, m3, m4) {
+		// Only one of m1, m2, m3, m4 matches
+		if (m3) {
+			// A block comment. Replace with nothing
+			return "";
+		}
+		else if (m4) {
+			// A line comment. If it ends in \r?\n then keep it.
+			var length_1 = m4.length;
+			if (length_1 > 2 && m4[length_1 - 1] === '\n') {
+				return m4[length_1 - 2] === '\r' ? '\r\n' : '\n';
+			}
+			else {
+				return "";
+			}
+		}
+		else {
+			// We match a string
+			return match;
+		}
+	});
+	return result;
+}
+
+if (!fs.existsSync(extensionServerDirectory)) {
+	fs.mkdirSync(extensionServerDirectory);
+}
+
+var dest = path.join(extensionServerDirectory, 'package.json');
+console.log('Copying package.json to extension\'s server location...');
+fs.writeFileSync(dest, fs.readFileSync(packageFile));
+
+console.log('Updating server npm modules into extension\'s server location...');
+cp.execSync('npm update --production --prefix ' + extensionServerDirectory);

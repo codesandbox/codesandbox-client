@@ -1,0 +1,12 @@
+fileTypes: []
+injectionSelector: 'L:text.html.markdown'
+patterns:
+    - include: '#toml-frontmatter-code-block'
+repository:
+    toml-frontmatter-code-block:
+        begin: '\A\+{3}\s*$'
+        end: '(^|\G)(?=\s*[\+~]{3,}\s*$)'
+        contentName: meta.embedded.block.toml.frontmatter
+        patterns:
+            - include: source.toml
+scopeName: markdown.toml.frontmatter.codeblock
