@@ -19,7 +19,6 @@ www
 .DS_Store
 npm-debug.log
 yarn-error.log
-.vscode
 .idea
 jest
 
