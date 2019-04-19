@@ -1,0 +1,162 @@
+fileTypes:
+    - toml
+    - tml
+name: TOML
+patterns:
+    - include: '#comments'
+    - include: '#tables'
+    - include: '#keys'
+repository:
+    array:
+        begin: '(?<!\w)(\[)\s*'
+        beginCaptures:
+            '1':
+                name: punctuation.definition.array.toml
+        comment: Array
+        end: '\s*(\])(?!\w)'
+        endCaptures:
+            '1':
+                name: punctuation.definition.array.toml
+        patterns:
+            - include: '#comments'
+            - include: '#dataTypes'
+    boolean:
+        captures:
+            '1':
+                name: constant.other.boolean.toml
+        comment: Boolean
+        match: '(?<!\w)(true|false)(?!\w)'
+    comments:
+        captures:
+            '1':
+                name: comment.line.number-sign.toml
+            '2':
+                name: punctuation.definition.comment.toml
+        comment: Comments
+        match: '\s*((#).*)$'
+    dataTypes:
+        patterns:
+            - include: '#inlinetable'
+            - include: '#array'
+            - include: '#string'
+            - include: '#dateTimeWithTz'
+            - include: '#dateTime'
+            - include: '#date'
+            - include: '#float'
+            - include: '#integer'
+            - include: '#boolean'
+    dateTimeWithTz:
+        captures:
+            '1':
+                name: constant.other.datetime-with-timezone.toml
+        comment: DateTime
+        match: '(?<!\w)(\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[\+\-]\d{2}:\d{2}))(?!\w)'
+        #match: '(?<!\w)(\d{4}\-\d{2}\-\d{2}(T\d{2}:\d{2}:\d{2}(?:\.\d+)|(?:Z|[\+\-]\d{2}:\d{2}))?)?)(?!\w)'
+    dateTime:
+        captures:
+            '1':
+                name: constant.other.datetime.toml
+        comment: DateTime
+        match: '(\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?)'
+    date:
+        captures:
+            '1':
+                name: constant.other.date.toml
+        comment: DateTime
+        match: '(\d{4}\-\d{2}\-\d{2})'
+        
+    float:
+        captures:
+            '1':
+                name: constant.numeric.float.toml
+        comment: 'Float, decimal and exponential representation'
+        # match: '(?<!\w)([\+\-]?(?:[1-9][0-9]*|0)(?:(?:\.[0-9]*)?[eE][\+\-]?[1-9][0-9]*|(?:\.[0-9]*)))(?!\w)'
+        match: '(?<!\w)([\+\-]?(0|([1-9](([0-9]|_[0-9])+)?))(?:(?:\.(0|([1-9](([0-9]|_[0-9])+)?)))?[eE][\+\-]?[1-9]_?[0-9]*|(?:\.[0-9_]*)))(?!\w)'
+    illegal:
+        captures:
+            '1':
+                name: invalid.illegal.toml
+        comment: 'Invalid things -> everything unmatched'
+        match: '(.*)'
+    inlinetable:
+        begin: '(?<!\w)(\{)\s*'
+        beginCaptures:
+            '1':
+                name: punctuation.definition.inlinetable.toml
+        end: '\s*(\})(?!\w)'
+        endCaptures:
+            '1':
+                name: punctuation.definition.inlinetable.toml
+        patterns:
+            - include: '#keys'
+            - include: '#dataTypes'
+    integer:
+        captures:
+            '1':
+                name: constant.numeric.integer.toml
+        comment: 'Integer (with and without + and - prefixes)'
+        match: '(?<!\w)((?:[\+\-]?(0|([1-9](([0-9]|_[0-9])+)?))))(?!\w)'
+    keys:
+        comment: Key-value-pairs
+        patterns:
+            -
+                comment: 'Assignments without key are invalid'
+                match: '(\s*=.*)$'
+                name: invalid.illegal.noKeyDefined.toml
+            -
+                comment: 'Assignments without value are unusual'
+                match: '(\s*[A-Za-z_\-][A-Za-z0-9_\-]*\s*=)(?=\s*$)'
+                name: invalid.deprecated.noValueGiven.toml
+            -
+                begin: '\s*([A-Za-z_-][A-Za-z0-9_-]*|".+"|''.+''|[0-9]+)\s*(=)\s*'
+                beginCaptures:
+                    '1': {name: keyword.key.toml}
+                    '2': {name: punctuation.definition.keyValuePair.toml}
+                end: '($|(?==)|\,|\s*(?=\}))'
+                patterns:
+                    - {include: '#comments'}
+                    - {include: '#dataTypes'}
+                    - {include: '#illegal'}
+    string:
+        patterns:
+            -
+                begin: ''''''''
+                comment: 'literal string block (no escape sequences)'
+                end: ''''''''
+                name: string.quoted.triple.literal.block.toml
+            -
+                comment: 'literal string line (no escape sequences)'
+                match: '''.*?'''
+                name: string.quoted.single.literal.line.toml
+            -
+                begin: '"""'
+                comment: 'basic string block'
+                end: '"""'
+                name: string.quoted.triple.basic.block.toml
+                patterns:
+                    - {match: '\\([btnfr"\\ \n]|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})', name: constant.character.escape.toml}
+                    - {match: '\\[^btnfr"\\\n]', name: invalid.illegal.escape.toml}
+            -
+                comment: 'basic string line'
+                match: '"[^"\\]*(?:\\.[^"\\]*)*"'
+                name: string.quoted.single.basic.line.toml
+
+    tables:
+        patterns:
+            -
+                captures:
+                    '1': {name: punctuation.definition.table.toml}
+                    '2': {patterns: [{match: '[^\s.]+', name: entity.other.attribute-name.table.toml}]}
+                    '3': {name: punctuation.definition.table.toml}
+                match: '^\s*(\[)([^\[\]]*)(\])'
+                name: meta.tag.table.toml
+            -
+                captures:
+                    '1': {name: punctuation.definition.table.array.toml}
+                    '2': {patterns: [{match: '[^\s.]+', name: entity.other.attribute-name.table.array.toml}]}
+                    '3': {name: punctuation.definition.table.array.toml}
+                match: '^\s*(\[\[)([^\[\]]*)(\]\])'
+                name: meta.tag.table.array.toml
+                
+scopeName: source.toml
+uuid: ffffeb76-439f-4c5e-b60f-d8a13606d63d
