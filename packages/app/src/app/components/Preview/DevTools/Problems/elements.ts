@@ -15,17 +15,22 @@ export const File = styled.div`
   align-items: center;
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: ${props =>
+    props.theme.light ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
 
   cursor: pointer;
 `;
 
 export const Path = styled.span`
-  color: rgba(255, 255, 255, 0.6);
+  color: ${props =>
+    props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.8)'};
+
+  opacity: 0.75;
 `;
 
 export const FileName = styled.span`
-  color: rgba(255, 255, 255, 0.8);
+  color: ${props =>
+    props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.8)'};
 
   flex: 1;
 `;
@@ -60,11 +65,12 @@ export const MessageContainer = styled.div`
   align-items: center;
   padding: 0.25rem 1.5rem;
   font-size: 0.875rem;
-  color: white;
+  color: ${props => props.theme['editor.foreground'] || 'white'};
   cursor: pointer;
 
   &:hover {
-    background-color: ${props => props.theme.background};
+    background-color: ${props =>
+      props.theme['list.hoverBackground'] || props.theme.background};
   }
 `;
 

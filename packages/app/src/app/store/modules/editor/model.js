@@ -156,25 +156,23 @@ export default {
     types.model({
       column: types.maybeNull(types.number),
       line: types.maybeNull(types.number),
+      columnEnd: types.maybeNull(types.number),
+      lineEnd: types.maybeNull(types.number),
       message: types.string,
+      source: types.string,
       title: types.string,
-      moduleId: types.maybeNull(types.string),
-    })
-  ),
-  glyphs: types.array(
-    types.model({
-      line: types.number,
-      className: types.string,
-      moduleId: types.string,
+      path: types.string,
     })
   ),
   corrections: types.array(
     types.model({
       column: types.maybeNull(types.number),
       line: types.maybeNull(types.number),
+      columnEnd: types.maybeNull(types.number),
+      lineEnd: types.maybeNull(types.number),
       message: types.string,
       source: types.string,
-      moduleId: types.maybeNull(types.string),
+      path: types.string,
       severity: types.maybeNull(types.string),
     })
   ),

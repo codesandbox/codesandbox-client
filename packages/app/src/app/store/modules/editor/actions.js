@@ -4,6 +4,7 @@ import { clone } from 'mobx-state-tree';
 import { dispatch } from 'codesandbox-api';
 
 import vscode from 'app/vscode';
+import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
@@ -244,74 +245,48 @@ export function consumeRenameModuleFromPreview({ state, props, utils }) {
   return {};
 }
 
-export function addErrorFromPreview({ state, props, utils }) {
-  const sandbox = state.get('editor.currentSandbox');
-
-  try {
-    let module = null;
-
-    if (props.action.path) {
-      module = utils.resolveModule(
-        props.action.path.replace(/^\//, ''),
-        sandbox.modules,
-        sandbox.directories
-      );
-    }
-
-    const error = {
-      moduleId: module ? module.id : undefined,
-      column: props.action.column,
-      line: props.action.line,
-      message: props.action.message,
-      title: props.action.title,
-    };
-
-    state.push('editor.errors', error);
-  } catch (e) {
-    /* ignore, module not found */
-  }
-}
-
-export function addGlyphFromPreview({ state, props, utils }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const module = utils.resolveModule(
-    props.action.path.replace(/^\//, ''),
-    sandbox.modules,
-    sandbox.directories
-  );
-  const glyph = {
-    moduleId: module.id,
-    line: props.action.line,
-    className: props.action.className,
-  };
-
-  if (module) {
-    state.push('editor.glyphs', glyph);
-  }
-}
-
-export function addCorrectionFromPreview({ state, props, utils }) {
-  const sandbox = state.get('editor.currentSandbox');
-
-  let module = null;
-
-  if (props.action.path) {
-    module = utils.resolveModule(
-      props.action.path.replace(/^\//, ''),
-      sandbox.modules,
-      sandbox.directories
-    );
-  }
-  const correction = {
+export function addErrorFromPreview({ state, props }) {
+  const error = {
     moduleId: module ? module.id : undefined,
     column: props.action.column,
     line: props.action.line,
+    columnEnd: props.action.columnEnd,
+    lineEnd: props.action.lineEnd,
+    message: props.action.message,
+    title: props.action.title,
+    path: props.action.path,
+    source: props.action.source,
+  };
+
+  state.push('editor.errors', error);
+}
+
+export function addCorrectionFromPreview({ state, props }) {
+  const correction = {
+    path: props.action.path,
+    column: props.action.column,
+    line: props.action.line,
+    columnEnd: props.action.columnEnd,
+    lineEnd: props.action.lineEnd,
     message: props.action.message,
     source: props.action.source,
     severity: props.action.severity,
   };
 
   state.push('editor.corrections', correction);
+}
+
+export function clearCorrections({ state, props }) {
+  const currentCorrections = state.get('editor.corrections');
+
+  const newCorrections = clearCorrectionsFromAction(
+    currentCorrections,
+    props.action
+  );
+
+  if (newCorrections.length !== currentCorrections.length) {
+    state.set('editor.corrections', newCorrections);
+  }
 }
 
 export function moveTab({ state, props }) {

@@ -48,7 +48,6 @@ export interface Editor {
   ) => Promise<any>;
   setErrors?: (errors: Array<ModuleError>) => any;
   setCorrections?: (corrections: Array<ModuleCorrection>) => any;
-  setGlyphs?: (glyphs: Array<any>) => any;
   updateModules?: () => any;
   changeSettings?: (settings: Settings) => any;
   changeDependencies?: (deps: Object) => any;

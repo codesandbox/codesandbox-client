@@ -8,6 +8,7 @@ import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import { File, Path, FileName, Actions, AnimatedChevron } from './elements';
 import { ProblemMessage } from './Message';
 import { MessageType } from '.';
+import { dispatch, actions } from 'codesandbox-api';
 
 export interface Props {
   file: string;
@@ -42,7 +43,7 @@ export function FileErrors({ file, corrections }: Props) {
             <FileIcon
               onClick={e => {
                 e.stopPropagation();
-                this.openFile(file);
+                dispatch(actions.editor.openModule(file));
               }}
             />
           </Tooltip>

@@ -734,30 +734,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  setGlyphs = (glyphs: Array<{ line: number, className: string }>) => {
-    if (glyphs.length > 0) {
-      const glyphMarkers = glyphs
-        .map(glyph => {
-          if (glyph) {
-            return {
-              range: new this.monaco.Range(glyph.line, 1, glyph.line, 1),
-              options: {
-                isWholeLine: true,
-                glyphMarginClassName: glyph.className,
-              },
-            };
-          }
-
-          return null;
-        })
-        .filter(x => x);
-
-      this.editor.deltaDecorations([], glyphMarkers);
-    } else {
-      this.editor.deltaDecorations([], []);
-    }
-  };
-
   registerAutoCompletions = () => {
     this.monaco.languages.registerCompletionItemProvider('typescript', {
       triggerCharacters: ['"', "'", '.'],

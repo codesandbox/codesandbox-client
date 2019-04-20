@@ -8,14 +8,10 @@ import {
   ErrorAction,
   ErrorClearAction,
 } from 'codesandbox-api/dist/types/actions/error';
-import { Console } from 'console-feed';
 import immer from 'immer';
 
-import { inspectorTheme } from '../Console/elements';
-
-import { Container, File } from './elements';
 import { DevToolProps } from '..';
-
+import { Container } from './elements';
 import { FileErrors } from './FileErrors';
 
 export type MessageType = CorrectionAction | ErrorAction;
@@ -82,7 +78,6 @@ class Problems extends React.PureComponent<DevToolProps, State> {
     ) {
       const message: CorrectionClearAction | ErrorClearAction = data;
       const path = message.path || 'root';
-      console.log('got it', message);
 
       const newState = immer(this.state.corrections, draft => {
         const clearCorrections = (clearPath: string) => {
@@ -90,6 +85,10 @@ class Problems extends React.PureComponent<DevToolProps, State> {
             draft[clearPath] = draft[clearPath].filter(
               corr => corr.source !== message.source
             );
+
+            if (Object.keys(draft[clearPath]).length === 0) {
+              delete draft[clearPath];
+            }
           }
         };
 
@@ -102,13 +101,21 @@ class Problems extends React.PureComponent<DevToolProps, State> {
         }
       });
 
-      this.setState({ corrections: newState });
-      this.props.updateStatus('clear');
+      this.setState({ corrections: newState }, () => {
+        this.setUpdatedStatus();
+      });
     }
   };
 
-  openFile = (path: string) => {
-    dispatch(actions.editor.openModule(path));
+  setUpdatedStatus = () => {
+    const messages: MessageType[] = Object.keys(this.state.corrections).reduce(
+      (p, n) => p.concat(this.state.corrections[n]),
+      []
+    );
+    const count = messages.length;
+    const isError = messages.some(m => m.severity === 'error');
+
+    this.props.updateStatus(isError ? 'error' : 'warning', count);
   };
 
   render() {
@@ -129,8 +136,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
         )}
         {root && (
           <div>
-            <File>Root</File>
-            <Console logs={root} variant="dark" styles={inspectorTheme} />
+            <FileErrors key="root" file="root" corrections={root} />
           </div>
         )}
         {files.map(
