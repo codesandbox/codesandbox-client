@@ -150,7 +150,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /\/vscode19/,
+          urlPattern: /\/vscode20/,
           handler: 'cacheFirst',
           options: {
             cache: {

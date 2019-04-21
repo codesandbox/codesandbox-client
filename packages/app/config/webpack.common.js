@@ -479,7 +479,7 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode19/vs',
+          to: 'public/vscode20/vs',
           force: true,
         },
         {
