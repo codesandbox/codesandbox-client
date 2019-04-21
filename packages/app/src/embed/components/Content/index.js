@@ -269,20 +269,7 @@ export default class Content extends React.PureComponent<Props, State> {
 
   addError = (error: EmbedError & { path: string }) => {
     if (module) {
-      this.errors = [
-        ...this.errors,
-        {
-          path: error.path,
-          column: error.column,
-          line: error.line,
-          message: error.message,
-          title: error.title,
-          type: 'compile',
-          payload: error.payload || {},
-          severity: error.severity || 'error',
-          source: error.source,
-        },
-      ];
+      this.errors.push(error);
 
       if (this.editor && this.editor.setErrors) {
         this.editor.setErrors(this.errors);
