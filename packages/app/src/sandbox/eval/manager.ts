@@ -26,6 +26,7 @@ import { ignoreNextCache, deleteAPICache, clearIndexedDBCache } from './cache';
 import { shouldTranspile } from './transpilers/babel/check';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
+import { splitQueryFromPath } from './utils/query-path';
 
 declare var BrowserFS: any;
 
@@ -761,10 +762,11 @@ export default class Manager {
   downloadDependency(
     path: string,
     currentTModule: TranspiledModule,
+    query: string = '',
     ignoredExtensions: Array<string> = this.preset.ignoredExtensions
   ): Promise<TranspiledModule> {
     return fetchModule(path, currentTModule, this, ignoredExtensions).then(
-      module => this.getTranspiledModule(module)
+      module => this.getTranspiledModule(module, query)
     );
   }
 
@@ -794,7 +796,13 @@ export default class Manager {
       );
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
-        return this.downloadDependency(e.path, tModule, ignoredExtensions);
+        const { queryPath } = splitQueryFromPath(path);
+        return this.downloadDependency(
+          e.path,
+          tModule,
+          queryPath,
+          ignoredExtensions
+        );
       }
 
       throw e;
@@ -844,16 +852,14 @@ export default class Manager {
       throw new Error('Cannot resolve webpack path');
     }
 
-    const queryPath = path.split('!');
-    // pop() mutates queryPath, queryPath is now just the loaders
-    const modulePath = queryPath.pop();
+    const { queryPath, modulePath } = splitQueryFromPath(path);
 
     if (async) {
       return this.resolveModuleAsync(
         modulePath,
         currentPath,
         ignoredExtensions || this.preset.ignoredExtensions
-      ).then(module => this.getTranspiledModule(module, queryPath.join('!')));
+      ).then(module => this.getTranspiledModule(module, queryPath));
     }
 
     const module = this.resolveModule(
@@ -862,29 +868,24 @@ export default class Manager {
       ignoredExtensions || this.preset.ignoredExtensions
     );
 
-    return this.getTranspiledModule(module, queryPath.join('!'));
+    return this.getTranspiledModule(module, queryPath);
   }
 
   resolveTranspiledModulesInDirectory(
     path: string,
     currentPath: string
   ): Array<TranspiledModule> {
-    const queryPath = path.split('!');
-    // pop() mutates queryPath, queryPath is now just the loaders
-    const modulesPath = queryPath.pop();
+    const { queryPath, modulePath } = splitQueryFromPath(path);
 
     const joinedPath = pathUtils.join(
       pathUtils.dirname(currentPath),
-      modulesPath
+      modulePath
     );
 
     return Object.keys(this.transpiledModules)
       .filter(p => p.startsWith(joinedPath))
       .map(m =>
-        this.getTranspiledModule(
-          this.transpiledModules[m].module,
-          queryPath.join('!')
-        )
+        this.getTranspiledModule(this.transpiledModules[m].module, queryPath)
       );
   }
 

@@ -19,6 +19,7 @@ import evaluate from './loaders/eval';
 
 import Manager, { HMRStatus } from './manager';
 import HMR from './hmr';
+import { splitQueryFromPath } from './utils/query-path';
 
 declare var BrowserFS: any;
 
@@ -352,7 +353,10 @@ export default class TranspiledModule {
       }
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
-        this.asyncDependencies.push(manager.downloadDependency(e.path, this));
+        const { queryPath } = splitQueryFromPath(depPath);
+        this.asyncDependencies.push(
+          manager.downloadDependency(e.path, this, queryPath)
+        );
       } else {
         // When a custom file resolver is given to the manager we will try
         // to resolve using this file resolver. If that fails we will still
@@ -593,7 +597,7 @@ export default class TranspiledModule {
     let finalSourceMap = null;
 
     const requires = this.module.requires;
-    if (requires != null) {
+    if (requires != null && this.query === '') {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
