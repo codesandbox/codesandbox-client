@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 export const Button = styled.button`
   transition: 0.3s ease all;
   display: inline-block;
+  text-align: left;
   padding: 1em;
   color: white;
   border: 2px solid rgba(0, 0, 0, 0.3);
