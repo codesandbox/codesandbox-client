@@ -6,7 +6,7 @@ export const getContainerStyles = props => {
   const getSelectedColor = activeColor => {
     // some have active as full white and should never be
     if (activeColor === '#ffffff') {
-      return theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)';
+      return theme.light ? '#6c6c6c' : activeColor;
     }
 
     return activeColor || theme.white();

@@ -6,6 +6,10 @@ import type {
   ModuleError,
 } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
+import type {
+  CorrectionAction,
+  CorrectionClearAction,
+} from 'codesandbox-api/dist/types/actions/correction.d.ts';
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
@@ -22,6 +26,7 @@ import {
 } from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
 
 import DevTools from 'app/components/Preview/DevTools';
+import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import {
   resolveModule,
@@ -86,6 +91,7 @@ export default class Content extends React.PureComponent<Props, State> {
     };
 
     this.errors = [];
+    this.corrections = [];
   }
 
   getInitTabs = (props: Props) => {
@@ -236,23 +242,37 @@ export default class Content extends React.PureComponent<Props, State> {
     switch (action.action) {
       case 'show-error':
         return this.addError(action);
+      case 'show-correction':
+        return this.addCorrection(action);
+      case 'clear-corrections':
+        return this.clearCorrections(action);
+      case 'editor.open-module':
+        return this.setCurrentModuleFromPath(action.path);
       default:
         return null;
     }
   };
 
-  addError = (error: EmbedError & { path: string }) => {
-    const module = resolveModule(
-      error.path.replace(/^\//, ''),
-      this.props.sandbox.modules,
-      this.props.sandbox.directories
-    );
+  setCurrentModuleFromPath = (path: string) => {
+    try {
+      const module = resolveModule(
+        path,
+        this.props.sandbox.modules,
+        this.props.sandbox.directories
+      );
 
+      this.setCurrentModule(module.id);
+    } catch (e) {
+      /* Ignore */
+    }
+  };
+
+  addError = (error: EmbedError & { path: string }) => {
     if (module) {
       this.errors = [
         ...this.errors,
         {
-          moduleId: module.id,
+          path: error.path,
           column: error.column,
           line: error.line,
           message: error.message,
@@ -260,12 +280,29 @@ export default class Content extends React.PureComponent<Props, State> {
           type: 'compile',
           payload: error.payload || {},
           severity: error.severity || 'error',
+          source: error.source,
         },
       ];
 
       if (this.editor && this.editor.setErrors) {
         this.editor.setErrors(this.errors);
       }
+    }
+  };
+
+  addCorrection = (correction: CorrectionAction) => {
+    this.corrections.push(correction);
+
+    if (this.editor && this.editor.setCorrections) {
+      this.editor.setCorrections(this.corrections);
+    }
+  };
+
+  clearCorrections = (action: CorrectionClearAction) => {
+    this.corrections = clearCorrectionsFromAction(this.corrections, action);
+
+    if (this.editor && this.editor.setCorrections) {
+      this.editor.setCorrections(this.corrections);
     }
   };
 

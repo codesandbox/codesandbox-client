@@ -5,8 +5,6 @@ export function clearCorrectionsFromAction(
   currentCorrections: ModuleCorrection[],
   action: CorrectionClearAction
 ) {
-  console.log(currentCorrections);
-
   if (action.path === '*') {
     return currentCorrections.filter(cor => cor.source !== action.source);
   }

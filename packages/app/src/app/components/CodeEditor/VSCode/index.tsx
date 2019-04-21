@@ -86,7 +86,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   editor: any;
   monaco: any;
   receivingCode: boolean = false;
-  transpilationListener: Function | undefined;
+  codeSandboxAPIListener: Function | undefined;
   sizeProbeInterval: number | null;
 
   modelSelectionListener: {
@@ -116,7 +116,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.resizeEditor = debounce(this.resizeEditorInstantly, 150);
     this.commitLibChanges = debounce(this.commitLibChangesInstantly, 300);
 
-    this.transpilationListener = this.setupTranspilationListener();
+    this.codeSandboxAPIListener = this.setupCodeSandboxAPIListener();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -143,8 +143,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     if (this.lintWorker) {
       this.lintWorker.terminate();
     }
-    if (this.transpilationListener) {
-      this.transpilationListener();
+    if (this.codeSandboxAPIListener) {
+      this.codeSandboxAPIListener();
     }
     clearInterval(this.sizeProbeInterval);
     if (this.modelSelectionListener) {
@@ -228,7 +228,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       },
     ]);
 
-  setupTranspilationListener() {
+  setupCodeSandboxAPIListener() {
     // @ts-ignore
     return listen(({ action, type, code, path, lineNumber, column }) => {
       if (type === 'add-extra-lib') {
@@ -239,14 +239,20 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         // ] = code;
         // this.commitLibChanges();
       } else if (action === 'editor.open-module') {
+        const options: {
+          selection?: { startLineNumber: number; startColumn: number };
+        } = {};
+
+        if (lineNumber || column) {
+          options.selection = {
+            startLineNumber: lineNumber,
+            startColumn: column,
+          };
+        }
+
         this.editor.codeEditorService.openCodeEditor({
           resource: this.monaco.Uri.file('/sandbox' + path),
-          options: {
-            selection: {
-              startLineNumber: lineNumber,
-              startColumn: column,
-            },
-          },
+          options,
         });
       }
     });
