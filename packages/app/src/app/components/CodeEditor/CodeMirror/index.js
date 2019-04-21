@@ -59,9 +59,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     this.codeSandboxListener = this.setupCodeSandboxListener();
   }
 
-  setupCodeSandboxListener = () => {
-    return listen(this.handleMessage);
-  };
+  setupCodeSandboxListener = () => listen(this.handleMessage);
 
   handleMessage = action => {
     if (action.action === 'editor.open-module') {
