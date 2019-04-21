@@ -6784,10 +6784,6 @@ codemirror@^5.27.4, codemirror@^5.35.0:
   version "5.38.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
 
-codesandbox-api@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.18.tgz#56b96b37533f80d20c21861e5e477d3557e613ca"
-
 codesandbox-api@^0.0.19:
   version "0.0.19"
   resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.19.tgz#fffc50c8da178e2a0af91edc240b0c764e44ca7b"

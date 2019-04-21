@@ -1,5 +1,3 @@
-
-
 import { Module, Sandbox, ModuleError, ModuleCorrection } from '../../types';
 
 export type Settings = {
@@ -44,15 +42,14 @@ export interface Editor {
     dependencies: Object
   ) => Promise<any>;
   setErrors?: (errors: Array<ModuleError>) => any;
-  setCorrections?: (corrections: Array<ModuleCorrection>) => any;
-  setGlyphs?: (glyphs: Array<any>) => any;
+  setCorrections?: (corrections: ModuleCorrection[]) => any;
   updateModules?: () => any;
   changeSettings?: (settings: Settings) => any;
   changeDependencies?: (deps: Object) => any;
   changeModule?: (
     module: Module,
     errors?: Array<ModuleError>,
-    corrections?: Array<ModuleCorrection>
+    corrections?: ModuleCorrection[]
   ) => any;
   changeCode?: (code: string, moduleId?: string) => any;
   currentModule?: Module;

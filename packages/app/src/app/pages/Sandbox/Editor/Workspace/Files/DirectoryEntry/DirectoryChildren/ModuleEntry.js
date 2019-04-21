@@ -29,8 +29,10 @@ class ModuleEntry extends React.Component {
     const isMainModule = module.id === mainModuleId;
     const type = getType(module.title);
 
+    const currentPath = getModulePath(module.id);
+
     const hasError = store.editor.errors.filter(
-      error => error.moduleId === module.id
+      error => error.path === currentPath
     ).length;
 
     const liveUsers = store.live.liveUsersByModule[module.shortid] || [];

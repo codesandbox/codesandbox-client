@@ -5,7 +5,10 @@ import CodeMirror from 'codemirror';
 import { withTheme } from 'styled-components';
 
 import type { ModuleError, Module } from '@codesandbox/common/lib/types';
+import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import { getCodeMirror } from 'app/utils/codemirror';
+
+import { listen } from 'codesandbox-api';
 
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
@@ -52,7 +55,27 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     this.sandbox = props.sandbox;
     this.currentModule = props.currentModule;
     this.settings = props.settings;
+
+    this.codeSandboxListener = this.setupCodeSandboxListener();
   }
+
+  setupCodeSandboxListener = () => listen(this.handleMessage);
+
+  handleMessage = action => {
+    if (action.action === 'editor.open-module') {
+      try {
+        const module = resolveModule(
+          action.path,
+          this.sandbox.modules,
+          this.sandbox.directories
+        );
+
+        this.setCurrentModule(module.id);
+      } catch (e) {
+        /* Ignore */
+      }
+    }
+  };
 
   shouldComponentUpdate(nextProps: Props) {
     if (
@@ -72,6 +95,9 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   componentWillUnmount() {
     if (this.disposeInitializer) {
       this.disposeInitializer();
+    }
+    if (this.codeSandboxListener) {
+      this.codeSandboxListener();
     }
   }
 

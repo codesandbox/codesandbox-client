@@ -33,7 +33,6 @@ export default Module({
     currentTabId: null,
     tabs: [],
     errors: [],
-    glyphs: [],
     corrections: [],
     pendingOperations: {},
     pendingUserSelections: [],

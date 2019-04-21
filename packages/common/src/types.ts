@@ -6,7 +6,7 @@ export type ModuleError = {
   line: number;
   column: number;
   title: string;
-  moduleId: string | undefined;
+  path: string;
   severity: 'error' | 'warning';
   type: 'compile' | 'dependency-not-found' | 'no-dom-change';
   payload: Object;
@@ -16,8 +16,10 @@ export type ModuleCorrection = {
   message: string;
   line: number;
   column: number;
-  moduleId: string;
+  lineEnd?: number;
+  columnEnd?: number;
   source: string | undefined;
+  path: string | undefined;
   severity: 'notice' | 'warning';
 };
 

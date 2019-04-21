@@ -5,7 +5,7 @@ import { debounce } from 'lodash-es';
 import { join, dirname } from 'path';
 import { withTheme } from 'styled-components';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { listen } from 'codesandbox-api';
+import { listen, dispatch, actions } from 'codesandbox-api';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import type {
@@ -69,6 +69,9 @@ function getSelection(lines, selection) {
 
 let modelCache = {};
 
+/**
+ * This editor is like a slim version of our VSCode editor. It's used in the embed.
+ */
 class MonacoEditor extends React.Component<Props, State> implements Editor {
   static defaultProps = {
     width: '100%',
@@ -666,18 +669,19 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   setErrors = (errors: Array<ModuleError>) => {
     if (errors.length > 0) {
+      const currentPath = this.editor.getModel().uri.path;
       const thisModuleErrors = errors.filter(
-        error => error.moduleId === this.currentModule.id
+        error => error.path === currentPath
       );
       const errorMarkers = thisModuleErrors
         .map(error => {
           if (error) {
             return {
-              severity: this.monaco.Severity.Error,
+              severity: this.monaco.MarkerSeverity.Error,
               startColumn: 1,
               startLineNumber: error.line,
-              endColumn: error.column,
-              endLineNumber: error.line + 1,
+              endColumn: error.columnEnd || error.column,
+              endLineNumber: error.lineEnd || error.line + 1,
               message: error.message,
             };
           }
@@ -698,19 +702,21 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   setCorrections = (corrections: Array<ModuleCorrection>) => {
     if (corrections.length > 0) {
+      const currentPath = this.editor.getModel().uri.path;
+
       const correctionMarkers = corrections
-        .filter(correction => correction.moduleId === this.currentModule.id)
+        .filter(correction => correction.path === currentPath)
         .map(correction => {
           if (correction) {
             return {
               severity:
                 correction.severity === 'warning'
-                  ? this.monaco.Severity.Warning
-                  : this.monaco.Severity.Notice,
+                  ? this.monaco.MarkerSeverity.Warning
+                  : this.monaco.MarkerSeverity.Notice,
               startColumn: correction.column,
               startLineNumber: correction.line,
-              endColumn: 1,
-              endLineNumber: correction.line + 1,
+              endColumn: correction.columnEnd || 1,
+              endLineNumber: correction.lineEnd || correction.line + 1,
               message: correction.message,
               source: correction.source,
             };
@@ -731,30 +737,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         'correction',
         []
       );
-    }
-  };
-
-  setGlyphs = (glyphs: Array<{ line: number, className: string }>) => {
-    if (glyphs.length > 0) {
-      const glyphMarkers = glyphs
-        .map(glyph => {
-          if (glyph) {
-            return {
-              range: new this.monaco.Range(glyph.line, 1, glyph.line, 1),
-              options: {
-                isWholeLine: true,
-                glyphMarginClassName: glyph.className,
-              },
-            };
-          }
-
-          return null;
-        })
-        .filter(x => x);
-
-      this.editor.deltaDecorations([], glyphMarkers);
-    } else {
-      this.editor.deltaDecorations([], []);
     }
   };
 
@@ -900,10 +882,23 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
         requestAnimationFrame(() => {
           if (this.editor.getModel()) {
+            const modelPath = this.editor.getModel().uri.path;
+            dispatch(actions.correction.clear(modelPath, 'eslint'));
+
             if (version === this.editor.getModel().getVersionId()) {
-              this.updateLintWarnings(markers);
-            } else {
-              this.updateLintWarnings([]);
+              markers.forEach(marker => {
+                dispatch(
+                  actions.correction.show(marker.message, {
+                    line: marker.startLineNumber,
+                    column: marker.startColumn,
+                    lineEnd: marker.endLineNumber,
+                    columnEnd: marker.endColumn,
+                    source: 'eslint',
+                    severity: marker.severity === 2 ? 'warning' : 'notice',
+                    path: modelPath,
+                  })
+                );
+              });
             }
           }
         });
@@ -962,19 +957,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       modelInfo.decorations || [],
       decorations
     );
-  };
-
-  updateLintWarnings = async (markers: Array<Object>) => {
-    const currentModule = this.currentModule;
-
-    const mode = await getMode(currentModule.title, this.monaco);
-    if (mode === 'javascript' || mode === 'vue') {
-      this.monaco.editor.setModelMarkers(
-        this.editor.getModel(),
-        'eslint',
-        markers
-      );
-    }
   };
 
   disposeModel = (id: string) => {

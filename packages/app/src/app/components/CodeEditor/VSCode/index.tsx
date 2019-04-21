@@ -8,7 +8,7 @@ import {
   getModulePath,
   resolveModule,
 } from '@codesandbox/common/lib/sandbox/modules';
-import { listen } from 'codesandbox-api';
+import { listen, actions, dispatch } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
@@ -86,7 +86,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   editor: any;
   monaco: any;
   receivingCode: boolean = false;
-  transpilationListener: Function | undefined;
+  codeSandboxAPIListener: Function | undefined;
   sizeProbeInterval: number | null;
 
   modelSelectionListener: {
@@ -116,7 +116,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.resizeEditor = debounce(this.resizeEditorInstantly, 150);
     this.commitLibChanges = debounce(this.commitLibChangesInstantly, 300);
 
-    this.transpilationListener = this.setupTranspilationListener();
+    this.codeSandboxAPIListener = this.setupCodeSandboxAPIListener();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -143,8 +143,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     if (this.lintWorker) {
       this.lintWorker.terminate();
     }
-    if (this.transpilationListener) {
-      this.transpilationListener();
+    if (this.codeSandboxAPIListener) {
+      this.codeSandboxAPIListener();
     }
     clearInterval(this.sizeProbeInterval);
     if (this.modelSelectionListener) {
@@ -228,9 +228,9 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       },
     ]);
 
-  setupTranspilationListener() {
+  setupCodeSandboxAPIListener() {
     // @ts-ignore
-    return listen(({ type, code, path }) => {
+    return listen(({ action, type, code, path, lineNumber, column }) => {
       if (type === 'add-extra-lib') {
         // TODO; bring this func back
         // const dtsPath = `${path}.d.ts`;
@@ -238,6 +238,22 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         //   `file:///${dtsPath}`
         // ] = code;
         // this.commitLibChanges();
+      } else if (action === 'editor.open-module') {
+        const options: {
+          selection?: { startLineNumber: number; startColumn: number };
+        } = {};
+
+        if (lineNumber || column) {
+          options.selection = {
+            startLineNumber: lineNumber,
+            startColumn: column,
+          };
+        }
+
+        this.editor.codeEditorService.openCodeEditor({
+          resource: this.monaco.Uri.file('/sandbox' + path),
+          options,
+        });
       }
     });
   }
@@ -312,6 +328,10 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       model => {
         if (this.modelListeners[model.uri.path]) {
           this.modelListeners[model.uri.path].listener.dispose();
+
+          const csbPath = model.uri.path.replace('/sandbox', '');
+          dispatch(actions.correction.clear(csbPath, 'eslint'));
+
           delete this.modelListeners[model.uri.path];
         }
       }
@@ -379,6 +399,12 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           if (!modulePath.startsWith('/sandbox')) {
             return;
           }
+
+          this.lint(
+            activeEditor.getModel().getValue(),
+            modulePath,
+            activeEditor.getModel().getVersionId()
+          );
 
           if (
             modulePath === this.getCurrentModuleVSCodePath() &&
@@ -468,8 +494,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
   changeModule = (
     newModule: Module,
-    errors?: Array<ModuleError>,
-    corrections?: Array<ModuleCorrection>
+    errors?: ModuleError[],
+    corrections?: ModuleCorrection[]
   ) => {
     const oldModule = this.currentModule;
     this.swapDocuments(oldModule, newModule);
@@ -741,13 +767,14 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.forceUpdate();
   };
 
-  setErrors = (errors: Array<ModuleError>) => {
+  setErrors = (errors: ModuleError[]) => {
     const activeEditor = this.editor.getActiveCodeEditor();
 
     if (activeEditor) {
       if (errors.length > 0) {
+        const currentPath = this.getCurrentModelPath();
         const thisModuleErrors = errors.filter(
-          error => error.moduleId === this.currentModule.id
+          error => error.path === currentPath
         );
         const errorMarkers = thisModuleErrors
           .map(error => {
@@ -781,12 +808,13 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     }
   };
 
-  setCorrections = (corrections: Array<ModuleCorrection>) => {
+  setCorrections = (corrections: ModuleCorrection[]) => {
     const activeEditor = this.editor.getActiveCodeEditor();
     if (activeEditor) {
       if (corrections.length > 0) {
+        const currentPath = this.getCurrentModelPath();
         const correctionMarkers = corrections
-          .filter(correction => correction.moduleId === this.currentModule.id)
+          .filter(correction => correction.path === currentPath)
           .map(correction => {
             if (correction) {
               return {
@@ -796,8 +824,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
                     : this.monaco.MarkerSeverity.Notice,
                 startColumn: correction.column,
                 startLineNumber: correction.line,
-                endColumn: 1,
-                endLineNumber: correction.line + 1,
+                endColumn: correction.columnEnd || 1,
+                endLineNumber: correction.lineEnd || correction.line + 1,
                 message: correction.message,
                 source: correction.source,
               };
@@ -822,30 +850,6 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     }
   };
 
-  setGlyphs = (glyphs: Array<{ line: number; className: string }>) => {
-    if (glyphs.length > 0) {
-      const glyphMarkers = glyphs
-        .map(glyph => {
-          if (glyph) {
-            return {
-              range: new this.monaco.Range(glyph.line, 1, glyph.line, 1),
-              options: {
-                isWholeLine: true,
-                glyphMarginClassName: glyph.className,
-              },
-            };
-          }
-
-          return null;
-        })
-        .filter(x => x);
-
-      this.editor.getActiveCodeEditor().deltaDecorations([], glyphMarkers);
-    } else {
-      this.editor.getActiveCodeEditor().deltaDecorations([], []);
-    }
-  };
-
   setupLintWorker = () => {
     if (!this.lintWorker) {
       this.lintWorker = new LinterWorker();
@@ -855,11 +859,26 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
         requestAnimationFrame(() => {
           const activeEditor = this.editor.getActiveCodeEditor();
+
           if (activeEditor && activeEditor.getModel()) {
+            dispatch(
+              actions.correction.clear(this.getCurrentModelPath(), 'eslint')
+            );
+
             if (version === activeEditor.getModel().getVersionId()) {
-              this.updateLintWarnings(markers);
-            } else {
-              this.updateLintWarnings([]);
+              markers.forEach(marker => {
+                dispatch(
+                  actions.correction.show(marker.message, {
+                    line: marker.startLineNumber,
+                    column: marker.startColumn,
+                    lineEnd: marker.endLineNumber,
+                    columnEnd: marker.endColumn,
+                    source: 'eslint',
+                    severity: marker.severity === 2 ? 'warning' : 'notice',
+                    path: this.getCurrentModelPath(),
+                  })
+                );
+              });
             }
           }
         });
@@ -941,19 +960,6 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.editor.textFileService.getFileModels(
       this.monaco.Uri.file(modulePath)
     )[0];
-
-  updateLintWarnings = async (markers: Array<Object>) => {
-    const currentModule = this.currentModule;
-
-    const mode = await getMode(currentModule.title, this.monaco);
-    if (mode === 'javascript' || mode === 'vue') {
-      this.monaco.editor.setModelMarkers(
-        this.editor.getActiveCodeEditor().getModel(),
-        'eslint',
-        markers
-      );
-    }
-  };
 
   getCurrentModelPath = () => {
     const activeEditor = this.editor.getActiveCodeEditor();

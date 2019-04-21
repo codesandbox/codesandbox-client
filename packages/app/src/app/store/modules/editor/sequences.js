@@ -41,11 +41,7 @@ export const closeTab = [
   },
 ];
 
-export const clearErrors = [
-  set(state`editor.errors`, []),
-  set(state`editor.corrections`, []),
-  set(state`editor.glyphs`, []),
-];
+export const clearErrors = [set(state`editor.errors`, [])];
 
 export const moveTab = actions.moveTab;
 
@@ -301,7 +297,7 @@ export const handlePreviewAction = [
     ),
     'show-error': actions.addErrorFromPreview,
     'show-correction': actions.addCorrectionFromPreview,
-    'show-glyph': actions.addGlyphFromPreview,
+    'clear-corrections': actions.clearCorrections,
     'source.module.rename': [
       actions.consumeRenameModuleFromPreview,
       renameModule,
@@ -310,14 +306,6 @@ export const handlePreviewAction = [
       set(props`name`, props`action.dependency`),
       addNpmDependency,
       actions.forceRender,
-    ],
-    'editor.open-module': [
-      actions.outputModuleIdFromActionPath,
-      when(props`id`),
-      {
-        true: setCurrentModule(props`id`),
-        false: [],
-      },
     ],
     otherwise: [],
   },
