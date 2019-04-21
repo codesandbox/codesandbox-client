@@ -10,8 +10,9 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
 
-  background-color: ${props => props.theme.background4};
-  color: rgba(255, 255, 255, 0.8);
+  background-color: ${props => props.theme['sideBar.background'] || 'inherit'};
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
 `;
 
 export const Navigation = styled.div`
@@ -23,13 +24,13 @@ export const Navigation = styled.div`
 `;
 
 export const TestContainer = styled(Navigation)`
-  background-color: ${props => props.theme.background2};
+  background-color: ${props => props.theme['sideBar.background'] || 'inherit'};
   height: 100%;
 `;
 
 export const TestDetails = styled.div`
   flex: 3;
-  background-color: ${props => props.theme.background};
+  background-color: ${props => props.theme['sideBar.background'] || 'inherit'};
   height: 100%;
 `;
 
@@ -56,7 +57,9 @@ export const Fail = styled(Cross)`
 
 export const Dot = styled(DotIcon)`
   ${iconStyles};
-  color: rgba(255, 255, 255, 0.3);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+  opacity: 0.3;
 `;
 
 export const StatusElements = {

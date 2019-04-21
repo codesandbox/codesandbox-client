@@ -8,6 +8,7 @@ import { Test } from '../../';
 import { BlockHeader, Container, Actions } from './elements';
 import TestName from './TestName';
 import ErrorDetails from '../ErrorDetails';
+import theme from '@codesandbox/common/lib/theme';
 
 type Props = {
   test: Test;

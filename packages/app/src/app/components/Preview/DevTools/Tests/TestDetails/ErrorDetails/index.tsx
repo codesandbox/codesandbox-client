@@ -12,13 +12,10 @@ const Container = styled.div`
   font-size: 0.875rem;
   line-height: 1.6;
 
-  color: rgba(255, 255, 255, 0.8);
-
-  background-color: rgba(0, 0, 0, 0.5);
-
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+  background-color: ${props => props.theme['sideBar.background']};
   white-space: pre-wrap;
-
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 
   &:last-child {
     border-bottom: none;
@@ -33,15 +30,12 @@ function escapeHtml(unsafe) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
-
-const white = 'rgba(255, 255, 255, 0.8)';
+const white = theme['sideBar.foreground'];
 
 const formatDiffMessage = (error: TestError, path: string) => {
   let finalMessage: string = '';
   if (error.matcherResult) {
-    finalMessage = `<span style="color:rgba(255, 255, 255, 0.5);">${escapeHtml(
-      error.message
-    )
+    finalMessage = `<span style="color:${white};">${escapeHtml(error.message)
       .replace(/(expected)/m, `<span style="color:${theme.green()}">$1</span>`)
       .replace(/(received)/m, `<span style="color:${theme.red()}">$1</span>`)
       .replace(/(Difference:)/m, `<span style="color:${white}">$1</span>`)
@@ -96,7 +90,7 @@ const formatDiffMessage = (error: TestError, path: string) => {
         finalMessage +=
           `<div ${
             code.highlight
-              ? `style="font-weight:900;color:rgba(255, 255, 255, 0.5)"`
+              ? `style="font-weight:900;color:${theme['sideBar.foreground']})"`
               : ``
           }>` +
           (code.highlight

@@ -18,6 +18,10 @@ export const Action = styled.div`
   opacity: 0.7;
   cursor: pointer;
 
+  svg {
+        color: ${props => props.theme['button.hoverBackground']};
+  }
+
   &:hover {
     opacity: 1;
   }
@@ -28,14 +32,14 @@ export const Action = styled.div`
 `;
 
 export const ErrorNotice = styled.div`
-  color: rgba(255, 255, 255, 0.5);
+  color:${props => props.theme['sideBar.foreground']};
   font-weight: 500;
 `;
 
 export const TestName = styled.span`
   font-weight: 400;
   font-size: 1rem;
-  color: white;
+  color:${props => props.theme['sideBar.foreground']};
   margin: 0;
   margin-top: 0;
   margin-bottom: 0;
@@ -44,5 +48,5 @@ export const TestName = styled.span`
 export const Blocks = styled.span`
   font-size: 1rem;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.7);
+  color:${props => props.theme['sideBar.foreground']}
 `;

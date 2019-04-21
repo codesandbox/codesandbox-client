@@ -7,7 +7,6 @@ export const BlockHeader = styled.div`
   box-sizing: border-box;
   padding: 0 0.5rem;
   padding-right: 2px;
-  background-color: #191c1d;
   overflow: hidden;
 `;
 
@@ -22,19 +21,22 @@ export const Actions = styled.div`
   display: flex;
   align-items: center;
   padding: 7px;
-  background-color: ${props => props.theme.background2};
+  background-color: ${props => props.theme['sideBar.background']};
 
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+
 
   svg {
     transition: 0.3s ease color;
     margin-right: 1rem;
     font-size: 1.125rem;
     cursor: pointer;
-
+    color: ${props => props.theme['button.hoverBackground']};
+    opacity: 0.8;
     &:hover {
-      color: white;
+      opacity: 1;
     }
   }
 `;

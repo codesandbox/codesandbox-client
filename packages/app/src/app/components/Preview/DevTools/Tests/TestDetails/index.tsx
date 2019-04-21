@@ -13,6 +13,7 @@ import TestBlock from './TestBlock';
 import ErrorDetails from './ErrorDetails';
 import TestSummaryText from '../TestSummaryText';
 import TestProgressBar from '../TestProgressBar';
+import theme from '@codesandbox/common/lib/theme';
 
 type Props = {
   file: File;
