@@ -1,3 +1,3 @@
 export const EXTENSIONS_LOCATION = process.env.VSCODE
   ? '/vscode/extensions-bundle'
-  : '/public/vscode-extensions/v4';
+  : '/public/vscode-extensions/v5';

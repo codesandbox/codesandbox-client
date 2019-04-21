@@ -1,7 +1,7 @@
 import Template from './template';
 import { decorateSelector } from '../theme';
 
- export default new Template(
+export default new Template(
   'adonis',
   'AdonisJs',
   'https://adonisjs.com/',

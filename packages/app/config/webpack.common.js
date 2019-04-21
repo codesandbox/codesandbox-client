@@ -484,7 +484,7 @@ module.exports = {
         },
         {
           from: '../../standalone-packages/vscode-extensions/out',
-          to: 'public/vscode-extensions/v4',
+          to: 'public/vscode-extensions/v5',
           force: true,
         },
         {
