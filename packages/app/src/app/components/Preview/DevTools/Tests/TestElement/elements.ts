@@ -11,7 +11,7 @@ export const Actions = styled.div`
 
   svg {
     margin-left: 0.5rem;
-    transition: 0.3s ease color;
+    transition: 0.3s ease opacity;
     opacity: 0.6;
     color: ${props => props.theme['button.hoverBackground']};
 
@@ -22,7 +22,6 @@ export const Actions = styled.div`
 `;
 
 export const TestName = styled.div`
-  transition: 0.3s ease background-color;
   padding: 0.25rem;
   padding-left: 20px;
   background-color: ${props => props.theme['sideBar.background']};
@@ -47,7 +46,6 @@ export const Test = styled.div<{ status: Status }>`
 `;
 
 export const Block = styled.div<{ last: boolean }>`
-  transition: 0.3s ease color;
   display: flex;
   padding: 0.25rem 0.4rem;
   padding-left: 0.5rem;

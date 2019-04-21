@@ -19,7 +19,7 @@ export const Action = styled.div`
   cursor: pointer;
 
   svg {
-        color: ${props => props.theme['button.hoverBackground']};
+    color: ${props => props.theme['button.hoverBackground']};
   }
 
   &:hover {

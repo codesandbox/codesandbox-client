@@ -11,7 +11,6 @@ export const ProgressBar = styled.div`
 `;
 
 const BaseBar = styled.div<{ count: number }>`
-  transition: 0.3s ease all;
   border-radius: 1px;
   height: 3px;
   flex: ${props => props.count};

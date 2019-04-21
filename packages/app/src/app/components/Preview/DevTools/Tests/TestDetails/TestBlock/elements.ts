@@ -29,7 +29,7 @@ export const Actions = styled.div`
 
 
   svg {
-    transition: 0.3s ease color;
+    transition: 0.3s ease opacity;
     margin-right: 1rem;
     font-size: 1.125rem;
     cursor: pointer;

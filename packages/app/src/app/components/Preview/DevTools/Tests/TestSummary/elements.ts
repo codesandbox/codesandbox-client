@@ -25,7 +25,6 @@ export const Progress = styled.div`
 `;
 
 const Bar = styled.div<{ count: number }>`
-  transition: 0.3s ease all;
   flex: ${props => props.count};
   width: 100%;
   height: 100%;
@@ -65,15 +64,15 @@ export const Actions = styled.div`
   font-size: 1.125rem;
 
   svg {
-    transition: 0.3s ease color;
+    transition: 0.3s ease opacity;
     cursor: pointer;
+    opacity: 0.8;
     color: ${props => props.theme['button.hoverBackground']};
 
     margin-left: 0.5rem;
 
     &:hover {
-       color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
+       opacity: 1;
     }
   }
 `;

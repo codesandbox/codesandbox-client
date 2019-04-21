@@ -1,14 +1,13 @@
 import styled from 'styled-components';
 
 export const Block = styled.div<{ last: boolean }>`
-  transition: 0.3s ease color;
   display: flex;
   padding: 0.5rem 0.4rem;
   padding-left: 0.5rem;
   position: relative;
   margin-right: ${props => (props.last ? 0 : 12)}px;
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
 
   white-space: nowrap;
 
@@ -29,12 +28,11 @@ export const Block = styled.div<{ last: boolean }>`
 `;
 
 export const TestName = styled.div`
-  transition: 0.3s ease background-color;
   padding: 0.4rem;
   padding-left: 20px;
   background-color: ${props => props.theme['sideBar.background']};
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   flex: auto;
   white-space: nowrap;
 `;
