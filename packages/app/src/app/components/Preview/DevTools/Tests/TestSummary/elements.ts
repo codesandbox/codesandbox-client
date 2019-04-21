@@ -12,7 +12,7 @@ export const Title = styled.div`
   font-weight: 600;
   font-size: 1rem;
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.4)'};
   width: 100%;
 `;
 
@@ -41,7 +41,7 @@ export const FailBar = styled(Bar)`
 
 export const IdleBar = styled(Bar)`
   background-color: ${props =>
-    !props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    !props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
   opacity: 0.6;
 `;
 
@@ -73,7 +73,7 @@ export const Actions = styled.div`
 
     &:hover {
        color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
     }
   }
 `;

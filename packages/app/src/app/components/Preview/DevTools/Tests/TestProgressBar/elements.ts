@@ -28,6 +28,5 @@ export const FailedBar = styled(BaseBar)`
 
 export const IdleBar = styled(BaseBar)`
   background-color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
-  opacity: 0.6;
+    props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
 `;

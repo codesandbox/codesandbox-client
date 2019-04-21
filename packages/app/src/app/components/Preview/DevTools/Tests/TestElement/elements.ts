@@ -7,12 +7,12 @@ export const Actions = styled.div`
   font-size: 1.125rem;
 
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)'};
 
   svg {
     margin-left: 0.5rem;
     transition: 0.3s ease color;
-    opacity: 0.8;
+    opacity: 0.6;
     color: ${props => props.theme['button.hoverBackground']};
 
     &:hover {
@@ -27,7 +27,7 @@ export const TestName = styled.div`
   padding-left: 20px;
   background-color: ${props => props.theme['sideBar.background']};
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   flex: auto;
   white-space: nowrap;
 `;
@@ -42,7 +42,7 @@ export const Test = styled.div<{ status: Status }>`
     props.status === 'idle' &&
     css`
       color: ${props =>
-        props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+        props.theme.light ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.4)'};
     `};
 `;
 
@@ -54,7 +54,7 @@ export const Block = styled.div<{ last: boolean }>`
   position: relative;
   margin-right: ${props => (props.last ? 0 : 12)}px;
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
 
   white-space: nowrap;
 
@@ -89,12 +89,12 @@ export const FileData = styled.div`
 
 export const Path = styled.span`
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'};
 `;
 
 export const FileName = styled.span`
   color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
 
   flex: 1;
 `;

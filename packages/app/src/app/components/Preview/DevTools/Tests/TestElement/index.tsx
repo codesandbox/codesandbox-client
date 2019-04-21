@@ -23,7 +23,6 @@ import {
 } from './elements';
 
 import { StatusElements } from '../elements';
-import theme from '@codesandbox/common/lib/theme';
 
 type Props = {
   file: File;

@@ -32,6 +32,7 @@ export const Action = styled.div`
 `;
 
 export const ErrorNotice = styled.div`
+  opacity: 0.5;
   color:${props => props.theme['sideBar.foreground']};
   font-weight: 500;
 `;
@@ -48,5 +49,6 @@ export const TestName = styled.span`
 export const Blocks = styled.span`
   font-size: 1rem;
   font-weight: 300;
+  opacity: 0.7;
   color:${props => props.theme['sideBar.foreground']}
 `;
