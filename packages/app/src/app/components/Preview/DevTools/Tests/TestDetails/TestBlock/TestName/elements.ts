@@ -15,14 +15,16 @@ export const Block = styled.div<{ last: boolean }>`
     content: '';
     position: absolute;
     margin: auto;
-    top: 5px;
+    top: 12px;
     right: -10px;
-    width: 24px;
-    height: 24px;
+    width: 10px;
+    height: 10px;
     transform: rotate(45deg);
-    border-right: 1px solid rgba(0, 0, 0, ${props => (props.last ? 0.3 : 0.4)});
-    border-top: 1px solid rgba(0, 0, 0, ${props => (props.last ? 0.3 : 0.4)});
-    background-color: #181b1d;
+    border-right: 1px solid ${props =>
+    props.theme.light ? `rgba(0, 0, 0, ${(props.last ? 0.3 : 0.4)})` : `rgba(255, 255, 255, ${(props.last ? 0.3 : 0.4)})`};
+    border-top:  1px solid ${props =>
+    props.theme.light ? `rgba(0, 0, 0, ${(props.last ? 0.3 : 0.4)})` : `rgba(255, 255, 255, ${(props.last ? 0.3 : 0.4)})`};
+    background-color:  rgba(0, 0, 0, 0.01);
     z-index: 1;
   }
 `;
