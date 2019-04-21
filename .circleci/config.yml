@@ -7,18 +7,18 @@ version: 2.1
 aliases:
   - &restore_repo_cache
     key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
-  
+
   - &save_repo_cache
     key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ~/codesandbox-client
-  
+
   - &restore_deps_cache
     keys:
       - v17-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - v17-dependency-cache-{{ .Branch }}
       - v17-dependency-cache
-  
+
   - &save_deps_cache
     key: v17-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
@@ -41,15 +41,15 @@ aliases:
       - v17-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
       - v17-standalone-dependency-cache-{{ .Branch }}
       - v17-standalone-dependency-cache
-  
+
   - &save_standalone_deps_cache
     key: v17-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
-  
+
   - &restore_prod_build_cache
     key: v17-prod-app-build-cache-master
-  
+
   - &restore_prod_cache
     key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
@@ -58,15 +58,15 @@ aliases:
     paths:
       - ./packages/app/www
       - ./packages/app/.cache-loader
-  
+
   - &save_prod_cache
     key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
-  
+
   - &store_test_results
     path: /tmp/test-results
-  
+
   - &store_artifacts
     path: packages/app/integration-tests/tests/__image_snapshots__/__diff_output__
     destination: image_snapshot_diff
@@ -80,6 +80,10 @@ executors:
     docker:
       - image: circleci/node:10
     working_directory: ~/codesandbox-client
+  node-with-puppeteer:
+    docker:
+      - image: codesandbox/node-puppeteer
+    working_directory: ~/codesandbox-client
   docker_machine:
     machine: true
     working_directory: ~/codesandbox-client
@@ -90,7 +94,7 @@ executors:
 
 commands:
   build_deps:
-    description: "Install Dependencies with `yarn install`"
+    description: 'Install Dependencies with `yarn install`'
     steps:
       - restore_cache: *restore_deps_cache
       - restore_cache: *restore_standalone_deps_cache
@@ -104,7 +108,7 @@ commands:
           command: yarn build:deps
       - save_cache: *save_repo_cache
   build_prod:
-    description: "Build the Application with `yarn build:prod`"
+    description: 'Build the Application with `yarn build:prod`'
     steps:
       - restore_cache: *restore_repo_cache
       - restore_cache: *restore_prod_build_cache
@@ -135,7 +139,7 @@ commands:
       - store_test_results: *store_test_results
       - store_artifacts: *store_artifacts
   test_jest:
-    description: "Test with `yarn test`"
+    description: 'Test with `yarn test`'
     steps:
       - restore_cache: *restore_repo_cache
       - run:
@@ -144,28 +148,28 @@ commands:
           environment:
             JEST_JUNIT_OUTPUT: 'reports/junit/js-tests-results.xml'
   yarn_lint:
-    description: "Lint with `yarn lint`"
+    description: 'Lint with `yarn lint`'
     steps:
       - restore_cache: *restore_repo_cache
       - run:
           name: Lint
           command: yarn lint
   yarn_typecheck:
-    description: "Lint with `yarn typecheck`"
+    description: 'Lint with `yarn typecheck`'
     steps:
       - restore_cache: *restore_repo_cache
       - run:
           name: Lint
           command: yarn typecheck
   docker_cache:
-    description: "Cache, Sign In, Create, and Push Docker Image"
+    description: 'Cache, Sign In, Create, and Push Docker Image'
     parameters:
       user:
         type: string
-        default: "$DOCKER_USER"
+        default: '$DOCKER_USER'
       password:
         type: string
-        default: "$DOCKER_PWD"
+        default: '$DOCKER_PWD'
     steps:
       - restore_cache: *restore_prod_cache
       - run:
@@ -194,7 +198,7 @@ jobs:
       - checkout
       - build_prod
   test-integrations:
-    executor: node
+    executor: node-with-puppeteer
     steps:
       - checkout
       - test_integrations
