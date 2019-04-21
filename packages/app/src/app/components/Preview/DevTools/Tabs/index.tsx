@@ -72,7 +72,7 @@ const DevToolTabs = ({
               key={i}
               status={
                 status
-                  ? status[pane.id] || { unread: 0, type: 'notice' }
+                  ? status[pane.id] || { unread: 0, type: 'info' }
                   : undefined
               }
             />
