@@ -1,83 +1,122 @@
-version: 2
+version: 2.1
 
-jobs:
-  build-dependencies:
+################################
+# Aliases
+################################
+
+aliases:
+  - &restore_repo_cache
+    key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
+  
+  - &save_repo_cache
+    key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
+    paths:
+      - ~/codesandbox-client
+  
+  - &restore_deps_cache
+    keys:
+      - v17-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v17-dependency-cache-{{ .Branch }}
+      - v17-dependency-cache
+  
+  - &save_deps_cache
+    key: v17-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    paths:
+      - node_modules
+      - packages/app/node_modules
+      - packages/chrome-extension/node_modules
+      - packages/codesandbox-api/node_modules
+      - packages/common/node_modules
+      - packages/dynamic-pages/node_modules
+      - packages/homepage/node_modules
+      - packages/node-services/node_modules
+      - packages/react-embed/node_modules
+      - packages/react-sandpack/node_modules
+      - packages/sandbox-hooks/node_modules
+      - packages/sandpack/node_modules
+      - packages/sse-hooks/node_modules
+
+  - &restore_standalone_deps_cache
+    keys:
+      - v17-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+      - v17-standalone-dependency-cache-{{ .Branch }}
+      - v17-standalone-dependency-cache
+  
+  - &save_standalone_deps_cache
+    key: v17-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+    paths:
+      - standalone-packages/codesandbox-browserfs/node_modules
+  
+  - &restore_prod_build_cache
+    key: v17-prod-app-build-cache-master
+  
+  - &restore_prod_cache
+    key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+
+  - &save_prod_app_cache
+    key: v17-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    paths:
+      - ./packages/app/www
+      - ./packages/app/.cache-loader
+  
+  - &save_prod_cache
+    key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    paths:
+      - ./www
+  
+  - &store_test_results
+    path: /tmp/test-results
+  
+  - &store_artifacts
+    path: packages/app/integration-tests/tests/__image_snapshots__/__diff_output__
+    destination: image_snapshot_diff
+
+################################
+# Executors
+################################
+
+executors:
+  node:
     docker:
       - image: circleci/node:10
     working_directory: ~/codesandbox-client
+  docker_machine:
+    machine: true
+    working_directory: ~/codesandbox-client
+
+################################
+# Commands
+################################
+
+commands:
+  build_deps:
+    description: "Install Dependencies with `yarn install`"
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v17-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - v17-dependency-cache-{{ .Branch }}
-            - v17-dependency-cache
-      - restore_cache:
-          keys:
-            - v17-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-            - v17-standalone-dependency-cache-{{ .Branch }}
-            - v17-standalone-dependency-cache
+      - restore_cache: *restore_deps_cache
+      - restore_cache: *restore_standalone_deps_cache
       - run:
           name: Install Dependencies
           command: yarn install
-      - save_cache:
-          key: v17-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths:
-            - node_modules
-            - packages/app/node_modules
-            - packages/chrome-extension/node_modules
-            - packages/codesandbox-api/node_modules
-            - packages/common/node_modules
-            - packages/dynamic-pages/node_modules
-            - packages/homepage/node_modules
-            - packages/node-services/node_modules
-            - packages/react-embed/node_modules
-            - packages/react-sandpack/node_modules
-            - packages/sandbox-hooks/node_modules
-            - packages/sandpack/node_modules
-            - packages/sse-hooks/node_modules
-      - save_cache:
-          key: v17-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-          paths:
-            - standalone-packages/codesandbox-browserfs/node_modules
+      - save_cache: *save_deps_cache
+      - save_cache: *save_standalone_deps_cache
       - run:
           name: Build
           command: yarn build:deps
-      - save_cache:
-          key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ~/codesandbox-client
-
-  build-prod:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/codesandbox-client
+      - save_cache: *save_repo_cache
+  build_prod:
+    description: "Build the Application with `yarn build:prod`"
     steps:
-      - restore_cache:
-          key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
-      # We do this to compare sizes from these builds with master
-      - restore_cache:
-          key: v17-prod-app-build-cache-master
+      - restore_cache: *restore_repo_cache
+      - restore_cache: *restore_prod_build_cache
       - run:
           name: Build Application
           command: yarn build:prod
-      - save_cache:
-          key: v17-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ./packages/app/www
-            - ./packages/app/.cache-loader
-      - save_cache:
-          key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ./www
-
-  test-integrations:
-    docker:
-      - image: codesandbox/node-puppeteer
-    working_directory: ~/codesandbox-client
+      - save_cache: *save_prod_app_cache
+      - save_cache: *save_prod_cache
+  test_integrations:
+    description: "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
-      - restore_cache:
-          key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache: *restore_repo_cache
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -93,84 +132,117 @@ jobs:
             yarn test:integrations --ci --testResultsProcessor="jest-junit"
           environment:
             JEST_JUNIT_OUTPUT: '/tmp/test-results/js-test-results.xml'
-      - store_test_results:
-          path: /tmp/test-results
-      - store_artifacts:
-          path: packages/app/integration-tests/tests/__image_snapshots__/__diff_output__
-          destination: image_snapshot_diff
-
-  test-jest:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/codesandbox-client
+      - store_test_results: *store_test_results
+      - store_artifacts: *store_artifacts
+  test_jest:
+    description: "Test with `yarn test`"
     steps:
-      - restore_cache:
-          key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache: *restore_repo_cache
       - run:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
           environment:
-            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
-
-  lint:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/codesandbox-client
+            JEST_JUNIT_OUTPUT: 'reports/junit/js-tests-results.xml'
+  yarn_lint:
+    description: "Lint with `yarn lint`"
     steps:
-      - restore_cache:
-          key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache: *restore_repo_cache
       - run:
           name: Lint
           command: yarn lint
-
-  typecheck:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/codesandbox-client
+  yarn_typecheck:
+    description: "Lint with `yarn typecheck`"
     steps:
-      - restore_cache:
-          key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache: *restore_repo_cache
       - run:
           name: Lint
           command: yarn typecheck
-
-  create-docker-image:
-    machine: true
-    working_directory: ~/codesandbox-client
+  docker_cache:
+    description: "Cache, Sign In, Create, and Push Docker Image"
+    parameters:
+      user:
+        type: string
+        default: "$DOCKER_USER"
+      password:
+        type: string
+        default: "$DOCKER_PWD"
     steps:
-      - checkout
-      - restore_cache:
-          key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache: *restore_prod_cache
       - run:
           name: Docker Sign In
-          command: '[ -n "$DOCKER_USER" ] && echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin || true'
+          command: '[ -n << parameters.user >> ] && echo << parameters.password >> | docker login -u << parameters.user >> --password-stdin || true'
       - run:
           name: Create Image
-          command: '[ -n "$DOCKER_USER" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
-      - deploy:
+          command: '[ -n << parameters.user >> ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
+      - run:
           name: Push Image
-          command: '[ -n "$DOCKER_USER" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true'
+          command: '[ -n << parameters.user >> ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true'
+
+################################
+# Jobs
+################################
+
+jobs:
+  build-deps:
+    executor: node
+    steps:
+      - checkout
+      - build_deps
+  build-prod:
+    executor: node
+    steps:
+      - checkout
+      - build_prod
+  test-integrations:
+    executor: node
+    steps:
+      - checkout
+      - test_integrations
+  test-jest:
+    executor: node
+    steps:
+      - checkout
+      - test_jest
+  lint:
+    executor: node
+    steps:
+      - checkout
+      - yarn_lint
+  typecheck:
+    executor: node
+    steps:
+      - checkout
+      - yarn_typecheck
+  create-docker-image:
+    executor: docker_machine
+    steps:
+      - checkout
+      - docker_cache
+
+################################
+# Workflows
+################################
 
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - build-dependencies
+      - build-deps
       - test-integrations:
           requires:
-            - build-dependencies
+            - build-deps
       - typecheck:
           requires:
-            - build-dependencies
+            - build-deps
       - test-jest:
           requires:
-            - build-dependencies
+            - build-deps
       - lint:
           requires:
-            - build-dependencies
+            - build-deps
       - build-prod:
           requires:
-            - build-dependencies
+            - build-deps
       - create-docker-image:
           requires:
             - build-prod
