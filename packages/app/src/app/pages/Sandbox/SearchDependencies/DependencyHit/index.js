@@ -6,7 +6,6 @@ import compareVersions from 'compare-versions';
 
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
-import GitHubLogo from 'app/components/GitHubLogo';
 import formatDownloads from '../formatDownloads';
 
 import {
@@ -20,6 +19,7 @@ import {
   IconLink,
   StyledSelect,
   StyledUserWithAvatar,
+  GitHubLogoStyled,
 } from './elements';
 
 const getDefaultSelectedVersion = tags => {
@@ -43,7 +43,7 @@ export default class DependencyHit extends React.PureComponent {
     return `https://github.com/${repo.user}/${repo.project}`;
   }
 
-  makeSearchUrl(hitName: string) {
+  makeSearchUrl(hitName) {
     return `${
       process.env.CODESANDBOX_HOST
     }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${hitName}&page=1`;
@@ -70,7 +70,7 @@ export default class DependencyHit extends React.PureComponent {
       }
     }
 
-    const versions = Object.keys(hit.versions).sort((a: string, b: string) => {
+    const versions = Object.keys(hit.versions).sort((a, b) => {
       try {
         return compareVersions(b, a);
       } catch (e) {
@@ -107,7 +107,7 @@ export default class DependencyHit extends React.PureComponent {
                   rel="noreferrer noopener"
                   onClick={this.stopPropagation}
                 >
-                  <GitHubLogo />
+                  <GitHubLogoStyled />
                 </IconLink>
               </Tooltip>
             )}
