@@ -8,6 +8,7 @@ import media from '../../../utils/media';
 
 const Container = styled.div`
   margin: 160px 0;
+  margin-bottom: ;
 `;
 
 const Title = styled.h3`

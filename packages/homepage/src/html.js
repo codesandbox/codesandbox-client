@@ -2,6 +2,7 @@ import React from 'react';
 
 const JS_NPM_URLS = [
   'https://unpkg.com/docsearch.js@2.4.1/dist/cdn/docsearch.min.js',
+  'https://platform.twitter.com/widgets.js',
 ];
 
 export default function HTML(props) {
