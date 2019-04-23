@@ -10,11 +10,21 @@ export const GitHubLogoStyled = styled(GitHubLogo)`
     !props.theme.light ? 'inherit' : 'rgba(255, 255, 255, 0.8)'};
 `;
 
+const getContainerColor = props => {
+  if (props.highlighted) {
+    return Color(props.theme['sideBar.background'])
+      .darken(0.2)
+      .rgbString();
+  }
+
+  return props.theme['sideBar.background'];
+};
+
 export const Container = styled.div`
   display: flex;
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
-  background-color: ${props => props.theme['sideBar.background']};
+  background-color: ${getContainerColor};
   cursor: pointer;
 
   &:not(:last-child) {
@@ -57,7 +67,7 @@ export const Description = styled(Row)`
 `;
 
 export const Downloads = styled.span`
-  color: ${props => props.theme['button.background']};
+  color: ${props => props.theme['panelTitle.inactiveForeground']};
   font-weight: 500;
   font-size: 12px;
 `;
