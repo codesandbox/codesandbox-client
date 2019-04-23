@@ -1,8 +1,0 @@
-{
-  "builds": [
-    {
-      "src": "packages/dynamic-pages/next.config.js",
-      "use": "@now/next"
-    }
-  ]
-}
