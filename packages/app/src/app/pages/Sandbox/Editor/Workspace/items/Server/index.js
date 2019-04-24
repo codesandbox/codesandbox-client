@@ -58,17 +58,6 @@ const Server = ({ store }) => {
         </Margin>
       </Margin>
 
-      <Margin top={1}>
-        <SubTitle>Secret Keys</SubTitle>
-        <Description>
-          Secrets are available as environment variables. They are kept private
-          and will not be transferred between forks.
-        </Description>
-        <Margin top={0.5}>
-          <EnvironmentVariables />
-        </Margin>
-      </Margin>
-
       <Margin top={1} bottom={0.5}>
         <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
         <WorkspaceInputContainer>
@@ -91,6 +80,40 @@ const Server = ({ store }) => {
             Restart Sandbox
           </Button>
         </WorkspaceInputContainer>
+        <WorkspaceInputContainer>
+          <Button
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            small
+            block
+            disabled={disconnected}
+            onClick={() =>
+              dispatch({
+                type: 'socket:message',
+                channel: 'sandbox:restart-container',
+              })
+            }
+          >
+            <PowerIcon
+              style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+            />{' '}
+            Restart Container
+          </Button>
+        </WorkspaceInputContainer>
+      </Margin>
+
+      <Margin top={1}>
+        <SubTitle>Secret Keys</SubTitle>
+        <Description>
+          Secrets are available as environment variables. They are kept private
+          and will not be transferred between forks.
+        </Description>
+        <Margin top={0.5}>
+          <EnvironmentVariables />
+        </Margin>
       </Margin>
     </div>
   );
