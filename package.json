@@ -46,7 +46,8 @@
       "packages/sandbox-hooks",
       "packages/sse-hooks",
       "packages/react-embed",
-      "packages/dynamic-pages"
+      "packages/dynamic-pages",
+      "packages/notifications"
     ],
     "nohoist": [
       "**/react-codemirror2",

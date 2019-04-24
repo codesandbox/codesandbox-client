@@ -14,7 +14,9 @@ import {
   CloseIconHandler,
 } from './elements';
 
-function getIcon(type) {
+export type NotificationType = 'success' | 'warning' | 'error';
+
+function getIcon(type: NotificationType) {
   if (type === 'error') return <ErrorIcon />;
   if (type === 'warning') return <WarningIcon />;
   return <InfoIcon />;

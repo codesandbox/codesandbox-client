@@ -5,7 +5,7 @@ import Loadable from 'app/utils/Loadable';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import _debug from '@codesandbox/common/lib/utils/debug';
-import Notifications from 'app/pages/common/Notifications';
+import { Notifications } from 'app/pages/common/Notifications';
 import { DragDropContext } from 'react-dnd';
 
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';

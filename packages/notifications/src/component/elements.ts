@@ -14,7 +14,7 @@ export const GlobalStyle = createGlobalStyle`
 
 export const NotificationContainer = styled.div`
   position: fixed;
-  right: 24px;
-  bottom: 0;
+  right: 1rem;
+  bottom: 1rem;
   z-index: 41;
 `;

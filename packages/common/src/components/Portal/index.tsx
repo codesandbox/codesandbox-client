@@ -2,7 +2,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 
 export interface Props {
-  node: HTMLDivElement;
+  node?: HTMLDivElement;
 }
 
 export default class Portal extends React.Component<Props> {

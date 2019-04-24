@@ -1,0 +1,16 @@
+{
+  "name": "@codesandbox/notifications",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc --watch",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@codesandbox/common": "^1.0.4",
+    "react": "^16.8.6",
+    "styled-components": "^4.2.0",
+    "uuid": "^3.3.2"
+  }
+}

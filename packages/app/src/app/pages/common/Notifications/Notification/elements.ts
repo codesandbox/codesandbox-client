@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import theme from '@codesandbox/common/lib/theme';
+import { NotificationType } from '.';
 
-export const Container = styled.div`
+export const Container = styled.div<{ type: NotificationType }>`
   position: relative;
   width: 300px;
   padding: 1rem 0;
@@ -57,7 +58,7 @@ export const Buttons = styled.div`
   flex: auto;
 `;
 
-export const Button = styled.div`
+export const Button = styled.div<{ type: NotificationType }>`
   transition: 0.3s ease all;
   position: relative;
   display: block;
