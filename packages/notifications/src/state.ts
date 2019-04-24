@@ -1,4 +1,5 @@
 import * as uuid from 'uuid';
+import { Emitter } from './utils/events';
 
 export interface NotificationAction {
   title: string;
@@ -21,17 +22,55 @@ export interface NotificationMessage {
   status: NotificationStatus;
 }
 
+export enum NotificationChange {
+  ADD,
+  CHANGE,
+  REMOVE,
+}
+
+export interface NotificationEvent {
+  type: NotificationChange;
+  id: string;
+  notification: NotificationMessage;
+}
+
 export class NotificationState {
-  notifications: Map<string, NotificationMessage>;
+  private _onNotificationAdded = new Emitter<NotificationEvent>();
+
+  notifications: Map<string, NotificationMessage> = new Map();
+  onNotificationAdded = this._onNotificationAdded.event;
 
   public addNotification(notification: NotificationMessage): string {
     const id = notification.id || uuid.v4();
-    this.notifications[id] = notification;
+    this.notifications.set(id, notification);
+
+    this._onNotificationAdded.emit({
+      type: NotificationChange.ADD,
+      id,
+      notification,
+    });
 
     return id;
   }
 
-  public updateNotification(id: string, options: NotificationMessage) {
-    this.notifications[id] = options;
+  public updateNotification(id: string, notification: NotificationMessage) {
+    this.notifications.set(id, notification);
+
+    this._onNotificationAdded.emit({
+      type: NotificationChange.CHANGE,
+      id,
+      notification,
+    });
+  }
+
+  public removeNotification(id: string) {
+    if (this.notifications.has(id)) {
+      this.notifications.delete(id);
+
+      this._onNotificationAdded.emit({
+        type: NotificationChange.REMOVE,
+        id,
+      });
+    }
   }
 }
