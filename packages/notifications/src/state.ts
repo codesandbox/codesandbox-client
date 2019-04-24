@@ -16,6 +16,7 @@ export enum NotificationStatus {
 export interface NotificationMessage {
   id?: string;
   title?: string;
+  sticky?: boolean;
   message: string;
   actions?: {
     primary: NotificationAction;

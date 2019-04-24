@@ -43,6 +43,10 @@ const isSticky = (toast: NotificationToast) => {
     return true;
   }
 
+  if (toast.notification.sticky) {
+    return true;
+  }
+
   return false;
 };
 
@@ -76,7 +80,10 @@ export function Toasts({ state }: { state: NotificationState }) {
         const newNotifs = notifs.filter(
           notif =>
             isSticky(notif) ||
-            Date.now() < notif.createdAt + TIME_ALIVE[notif.notification.status]
+            Date.now() <
+              notif.createdAt +
+                (notif.notification.timeAlive ||
+                  TIME_ALIVE[notif.notification.status])
         );
 
         if (newNotifs.length !== notifs.length) {
