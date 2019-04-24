@@ -8,6 +8,8 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import { Notifications } from 'app/pages/common/Notifications';
 import { DragDropContext } from 'react-dnd';
 
+import { Toasts, NotificationState } from '@codesandbox/notifications';
+
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 
 import Modals from './common/Modals';
@@ -17,6 +19,7 @@ import Dashboard from './Dashboard';
 import { Container, Content } from './elements';
 
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
+import { NotificationStatus } from '../../../../notifications/lib/state';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -56,6 +59,39 @@ type Props = {
   signals: any,
 };
 
+const notifState = new NotificationState();
+
+const messages = [
+  "This is a test notification message, you've been notified.",
+  'The TypeScript service has been reloaded',
+  'Successfully joined the team!',
+  'Forked Sandbox!',
+  'There are multiple formatters for JSON-files. Select a default formatter to continue.',
+];
+
+setInterval(() => {
+  notifState.addNotification({
+    title: 'Dependency not found',
+    message: messages[Math.floor(messages.length * Math.random())],
+    status: Math.floor(Math.random() * 4),
+    actions:
+      Math.random() > 0.5
+        ? [
+            {
+              primary: {
+                title: 'Install Dependency',
+                run: () => alert('test'),
+              },
+              secondary: {
+                title: 'Close',
+                run: () => alert('World'),
+              },
+            },
+          ]
+        : undefined,
+  });
+}, 3000);
+
 class Routes extends React.Component<Props> {
   componentWillUnmount() {
     this.props.signals.appUnmounted();
@@ -80,7 +116,8 @@ class Routes extends React.Component<Props> {
             return null;
           }}
         />
-        <Notifications />
+        {/* <Notifications /> */}
+        <Toasts state={notifState} />
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s" />} />

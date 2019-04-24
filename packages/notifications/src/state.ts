@@ -17,7 +17,10 @@ export interface NotificationMessage {
   id?: string;
   title?: string;
   message: string;
-  actions?: NotificationAction[];
+  actions?: {
+    primary: NotificationAction;
+    secondary?: NotificationAction;
+  }[];
   timeAlive?: number;
   status: NotificationStatus;
 }
@@ -25,26 +28,35 @@ export interface NotificationMessage {
 export enum NotificationChange {
   ADD,
   CHANGE,
-  REMOVE,
 }
 
-export interface NotificationEvent {
+export interface NotificationUpdatedEvent {
   type: NotificationChange;
   id: string;
   notification: NotificationMessage;
 }
 
+export interface NotificationRemovedEvent {
+  id: string;
+}
+
 export class NotificationState {
-  private _onNotificationAdded = new Emitter<NotificationEvent>();
+  private _onNotificationUpdated = new Emitter<NotificationUpdatedEvent>();
+  private _onNotificationRemoved = new Emitter<NotificationRemovedEvent>();
+  onNotificationUpdated = this._onNotificationUpdated.event;
+  onNotificationRemoved = this._onNotificationRemoved.event;
 
   notifications: Map<string, NotificationMessage> = new Map();
-  onNotificationAdded = this._onNotificationAdded.event;
+
+  public getNotifications() {
+    return this.notifications;
+  }
 
   public addNotification(notification: NotificationMessage): string {
     const id = notification.id || uuid.v4();
     this.notifications.set(id, notification);
 
-    this._onNotificationAdded.emit({
+    this._onNotificationUpdated.emit({
       type: NotificationChange.ADD,
       id,
       notification,
@@ -56,7 +68,7 @@ export class NotificationState {
   public updateNotification(id: string, notification: NotificationMessage) {
     this.notifications.set(id, notification);
 
-    this._onNotificationAdded.emit({
+    this._onNotificationUpdated.emit({
       type: NotificationChange.CHANGE,
       id,
       notification,
@@ -67,8 +79,7 @@ export class NotificationState {
     if (this.notifications.has(id)) {
       this.notifications.delete(id);
 
-      this._onNotificationAdded.emit({
-        type: NotificationChange.REMOVE,
+      this._onNotificationRemoved.emit({
         id,
       });
     }
