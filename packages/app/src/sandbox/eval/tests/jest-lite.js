@@ -51,7 +51,7 @@ function addScript(src) {
   });
 }
 
-const jsdomPromise = addScript('/static/js/jsdom.min.js');
+const jsdomPromise = addScript('/static/js/jsdom-4.0.0.min.js');
 
 function resetTestState() {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
