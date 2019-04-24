@@ -39,6 +39,20 @@ expect.extend({
 });
 (expect: Object).addSnapshotSerializer = addSerializer;
 
+function addScript(src) {
+  return new Promise(resolve => {
+    const s = document.createElement('script');
+    s.setAttribute('src', src);
+    document.body.appendChild(s);
+
+    s.onload = () => {
+      resolve();
+    };
+  });
+}
+
+const jsdomPromise = addScript('/static/js/jsdom.min.js');
+
 function resetTestState() {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
   const INITIAL_STATE = {
@@ -102,12 +116,17 @@ export default class TestRunner {
       });
     };
 
+    const { JSDOM } = JSDOM2;
+    const { window } = new JSDOM('');
+    const { document } = window;
+
     return {
       ...jestTestHooks,
       expect,
       jest: jestMock,
       test,
       it,
+      document,
     };
   }
 
@@ -195,6 +214,8 @@ export default class TestRunner {
     if (!this.watching && !force) {
       return;
     }
+
+    await jsdomPromise;
 
     this.sendMessage('total_test_start');
 
