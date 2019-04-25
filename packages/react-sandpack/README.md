@@ -4,7 +4,7 @@ React components that help you create a full fledged online web application edit
 
 ## Getting Started
 
-You can install this package by running `npm i --save @codesandbox/react-sandpack` or `yarn add @codesandbox/react-sandpack`.
+You can install this package by running `npm i --save @codesandbox/react-smooshpack` or `yarn add @codesandbox/react-smooshpack`.
 
 An example implementation of this is:
 
@@ -16,7 +16,7 @@ import {
   CodeMirror,
   BrowserPreview,
   SandpackProvider,
-} from 'react-sandpack/es/components';
+} from 'react-smooshpack/es/components';
 import "react-smooshpack/dist/styles.css";
 
 const files = {
