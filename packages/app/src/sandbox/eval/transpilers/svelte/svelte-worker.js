@@ -50,16 +50,15 @@ function getV2Code(code, path) {
 
 function getV3Code(code) {
   self.importScripts(['https://unpkg.com/svelte@3.0.0/compiler.js']);
-  return {
-    code: window.svelte.compile(code, {
-      // onParseError: e => {
-      //   self.postMessage({
-      //     type: 'error',
-      //     error: buildWorkerError(e),
-      //   });
-      // },
-    }).js.code,
-  };
+  return window.svelte.compile(code, {
+    dev: true,
+    // onParseError: e => {
+    //   self.postMessage({
+    //     type: 'error',
+    //     error: buildWorkerError(e),
+    //   });
+    // },
+  }).js;
 }
 
 function getV1Code(code, path) {
@@ -104,7 +103,7 @@ self.addEventListener('message', event => {
       : getV2Code(code, path);
 
   const withInlineSourcemap = `${compiledCode}
-  ${map ? `//# sourceMappingURL=${map.toUrl()}` : ''}`;
+  //# sourceMappingURL=${map.toUrl()}`;
 
   console.log(withInlineSourcemap);
 
