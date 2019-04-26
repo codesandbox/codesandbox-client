@@ -7,6 +7,6 @@ export default new Template(
   'Svelte',
   'https://github.com/sveltejs/svelte',
   'svelte',
-  decorateSelector(() => '#AA1E1E'),
+  decorateSelector(() => '#FF3E00'),
   { showOnHomePage: true, showCube: false, distDir: 'public', netlify: false }
 );
