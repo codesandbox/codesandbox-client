@@ -23,9 +23,8 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-const Server = ({ store }) => {
+function Server({ store }) {
   const { parsed } = store.editor.parsedConfigurations.package;
-
   const disconnected = store.server.status !== 'connected';
 
   return (
@@ -38,7 +37,10 @@ const Server = ({ store }) => {
       <Margin top={1}>
         <SubTitle>Status</SubTitle>
         <WorkspaceInputContainer>
-          <Status status={store.server.status} />
+          <Status
+            managerStatus={store.server.status}
+            containerStatus={store.server.containerStatus}
+          />
         </WorkspaceInputContainer>
       </Margin>
 
@@ -69,10 +71,12 @@ const Server = ({ store }) => {
             }}
             small
             block
-            disabled={disconnected}
-            onClick={() =>
-              dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
+            disabled={
+              disconnected || store.server.containerStatus !== 'sandbox-started'
             }
+            onClick={() => {
+              dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
+            }}
           >
             <PowerIcon
               style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
@@ -89,18 +93,23 @@ const Server = ({ store }) => {
             }}
             small
             block
-            disabled={disconnected}
-            onClick={() =>
+            disabled={
+              disconnected || store.server.containerStatus === 'initializing'
+            }
+            onClick={() => {
+              this.props.signals.server.containerStatusChanged({
+                status: 'initializing',
+              });
               dispatch({
                 type: 'socket:message',
                 channel: 'sandbox:restart-container',
-              })
-            }
+              });
+            }}
           >
             <PowerIcon
               style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
             />{' '}
-            Restart Container
+            Restart Server
           </Button>
         </WorkspaceInputContainer>
       </Margin>
@@ -117,6 +126,6 @@ const Server = ({ store }) => {
       </Margin>
     </div>
   );
-};
+}
 
-export default inject('store')(observer(Server));
+export default inject('store', 'signals')(observer(Server));

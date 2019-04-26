@@ -1,6 +1,15 @@
 import * as React from 'react';
 import { TemplateType } from './templates';
 
+export type SSEContainerStatus =
+  | 'initializing'
+  | 'container-started'
+  | 'sandbox-started'
+  | 'stopped'
+  | 'hibernated'
+  | 'error';
+export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
+
 export type ModuleError = {
   message: string;
   line: number;

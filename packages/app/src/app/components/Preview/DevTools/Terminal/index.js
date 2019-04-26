@@ -234,14 +234,15 @@ export default {
   Content: withTheme(TerminalComponent),
   actions: (owner: boolean) =>
     [
-      owner && {
-        title: 'Add Terminal',
+      {
+        title: owner ? 'Add Terminal' : 'Fork to add a terminal',
         onClick: () => {
-          if (createShell) {
+          if (createShell && owner) {
             createShell();
           }
         },
         Icon: PlusIcon,
+        disabled: !owner,
       },
     ].filter(Boolean),
 };

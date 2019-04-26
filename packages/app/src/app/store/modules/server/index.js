@@ -6,8 +6,10 @@ export default Module({
   model,
   state: {
     status: 'initializing',
+    containerStatus: 'initializing',
   },
   signals: {
     statusChanged: sequences.setStatus,
+    containerStatusChanged: sequences.setContainerStatus,
   },
 });

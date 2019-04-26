@@ -46,6 +46,7 @@ export interface IViewAction {
   title: string;
   onClick: () => void;
   Icon: React.ComponentClass<any, any>;
+  disabled?: boolean;
 }
 
 export interface IViewType {
