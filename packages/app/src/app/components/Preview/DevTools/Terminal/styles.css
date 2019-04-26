@@ -158,3 +158,8 @@
   height: 1px;
   overflow: hidden;
 }
+
+.terminal {
+  height: 100%;
+  width: 100%;
+}
