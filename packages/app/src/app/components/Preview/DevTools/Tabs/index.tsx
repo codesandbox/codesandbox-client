@@ -36,7 +36,7 @@ const DevToolTabs = ({
   const currentPane = panes[currentPaneIndex];
   const actions =
     typeof currentPane.actions === 'function'
-      ? currentPane.actions(owned)
+      ? currentPane.actions({ owned })
       : currentPane.actions;
 
   const TypedTabDropZone = (TabDropZone as unknown) as React.SFC<

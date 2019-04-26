@@ -15,14 +15,13 @@ const SHADOW_SIZE = (() => {
   }
 
   if (isSafari) {
-    return 100;
+    return 50;
   }
 
-  return 100;
+  return 50;
 })();
 
-const getContainerAnimation = (offset: number) => {
-  return keyframes`
+const getContainerAnimation = () => keyframes`
   0% {
     transform: translateY(-5px);
   }
@@ -33,7 +32,6 @@ const getContainerAnimation = (offset: number) => {
     transform: translateY(-5px);
   }
 `;
-};
 
 const Container = styled.div`
   animation: ${() => getContainerAnimation(0)} 8 s ease infinite;

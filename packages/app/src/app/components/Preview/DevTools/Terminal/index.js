@@ -232,17 +232,17 @@ export default {
   id: 'codesandbox.terminal',
   title: 'Terminal',
   Content: withTheme(TerminalComponent),
-  actions: (owner: boolean) =>
+  actions: ({ owned }) =>
     [
       {
-        title: owner ? 'Add Terminal' : 'Fork to add a terminal',
+        title: owned ? 'Add Terminal' : 'Fork to add a terminal',
         onClick: () => {
-          if (createShell && owner) {
+          if (createShell && owned) {
             createShell();
           }
         },
         Icon: PlusIcon,
-        disabled: !owner,
+        disabled: !owned,
       },
     ].filter(Boolean),
 };

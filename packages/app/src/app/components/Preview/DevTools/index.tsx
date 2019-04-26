@@ -53,7 +53,7 @@ export interface IViewType {
   id: string;
   title: string;
   Content: React.ComponentClass<any, any>;
-  actions: IViewAction[] | ((owner: boolean) => IViewAction[]);
+  actions: IViewAction[] | ((info: { owned: boolean }) => IViewAction[]);
 }
 
 export type StatusType = 'info' | 'warning' | 'error' | 'success' | 'clear';
