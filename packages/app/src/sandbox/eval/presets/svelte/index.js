@@ -6,9 +6,14 @@ import svelteTranspiler from '../../transpilers/svelte';
 import Preset from '../';
 
 export default function initialize() {
-  const sveltePreset = new Preset('svelte', ['js', 'jsx'], {});
+  const sveltePreset = new Preset('svelte', ['js', 'jsx', 'svelte'], {});
 
   sveltePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+    { transpiler: babelTranspiler },
+  ]);
+
+  sveltePreset.registerTranspiler(module => /\.svelte$/.test(module.path), [
+    { transpiler: svelteTranspiler },
     { transpiler: babelTranspiler },
   ]);
 
