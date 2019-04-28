@@ -38,7 +38,8 @@ export const Tests = styled.div`
   overflow-y: auto;
 
   /* Using absolute for correct scrolling, browsers have trouble handling
-   * an inner scroll inside a container unless the child is absolute */
+   * an inner scroll inside a container unless the child is absolute, also check for
+   * TestDetails/elements.ts if you want to change this. */
   position: absolute;
   top: 3.5rem;
   bottom: 0;

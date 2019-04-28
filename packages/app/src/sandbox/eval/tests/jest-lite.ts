@@ -33,7 +33,7 @@ expect.extend({
 });
 expect.addSnapshotSerializer = addSerializer;
 
-function addScript(src) {
+function addScript(src: string) {
   return new Promise(resolve => {
     const s = document.createElement('script');
     s.setAttribute('src', src);
@@ -45,7 +45,9 @@ function addScript(src) {
   });
 }
 
-const origin = document.location.origin;
+/**
+ * Load JSDOM while the sandbox loads. Before we run a test we make sure that this has been loaded.
+ */
 const jsdomPromise = addScript('/static/js/jsdom-4.0.0.min.js');
 
 function resetTestState() {
@@ -114,7 +116,7 @@ export default class TestRunner {
     const { JSDOM } = (window as any).JSDOM;
     const { window: jsdomWindow } = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
-      url: origin,
+      url: document.location.origin,
     });
     const { document: jsdomDocument } = jsdomWindow;
 
