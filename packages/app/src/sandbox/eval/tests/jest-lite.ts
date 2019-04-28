@@ -328,6 +328,8 @@ export default class TestRunner {
     switch (message.name) {
       case 'test_start': {
         const test = await this.testToCodeSandbox(message.test);
+
+        dispatch(actions.error.clear(test.path, 'jest'));
         return this.sendMessage('test_start', {
           test,
         });
@@ -357,6 +359,7 @@ export default class TestRunner {
                   column: mappedError._originalColumnNumber,
                   path: test.path,
                   payload: {},
+                  source: 'jest',
                 })
               );
             }
