@@ -1,6 +1,6 @@
 import {default as Stats, FileType} from '../core/node_fs_stats';
 import * as path from 'path';
-import { UNPKGMeta, UNPKGMetaDirectory } from '../backend/UnpkgRequest';
+import { UNPKGMeta, UNPKGMetaDirectory } from '../backend/UNPKGRequest';
 
 /**
  * A simple class for storing a filesystem index. Assumes that all paths passed
