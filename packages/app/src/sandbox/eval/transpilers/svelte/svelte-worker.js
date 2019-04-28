@@ -7,57 +7,12 @@ self.window = self;
 
 self.postMessage('ready');
 
-declare var svelte: {
-  compile: (code: string, options: Object) => { code: string },
-};
-
-function getV2Code(code, path) {
-<<<<<<< HEAD
-  self.importScripts(['https://unpkg.com/svelte@^2.0.0/compiler/svelte.js']);
-=======
-  self.postMessage({
-    type: 'clear-warnings',
-    path,
-    source: 'svelte',
-  });
-
->>>>>>> Svelte Improvements
-  const {
-    js: { code: compiledCode, map },
-  } = self.svelte.compile(code, {
-    filename: path,
-    dev: true,
-    cascade: false,
-    store: true,
-
-    onerror: e => {
-      self.postMessage({
-        type: 'error',
-        error: buildWorkerError(e),
-      });
-    },
-
-    onwarn: w => {
-      self.postMessage({
-        type: 'warning',
-        warning: buildWorkerWarning(
-          {
-            fileName: w.fileName,
-            lineNumber: w.loc && w.loc.line,
-            columnNumber: w.loc && w.loc.column,
-            message: w.message,
-          },
-          'svelte'
-        ),
-      });
-    },
-  });
-
-  return { code: compiledCode, map };
-}
+// declare var svelte: {
+//   compile: (code: string, options: Object) => { code: string },
+// };
 
 function getV3Code(code, path) {
-  self.importScripts(['https://unpkg.com/svelte@3.0.1/compiler.js']);
+  self.importScripts(['https://unpkg.com/svelte@3.1.0/compiler.js']);
   try {
     const { js, warnings } = self.svelte.compile(code, {
       filename: path,
@@ -92,6 +47,48 @@ function getV3Code(code, path) {
       error: buildWorkerError(e),
     });
   }
+}
+
+function getV2Code(code, path) {
+  self.importScripts(['https://unpkg.com/svelte@^2.0.0/compiler/svelte.js']);
+  self.postMessage({
+    type: 'clear-warnings',
+    path,
+    source: 'svelte',
+  });
+
+  const {
+    js: { code: compiledCode, map },
+  } = self.svelte.compile(code, {
+    filename: path,
+    dev: true,
+    cascade: false,
+    store: true,
+
+    onerror: e => {
+      self.postMessage({
+        type: 'error',
+        error: buildWorkerError(e),
+      });
+    },
+
+    onwarn: w => {
+      self.postMessage({
+        type: 'warning',
+        warning: buildWorkerWarning(
+          {
+            fileName: w.fileName,
+            lineNumber: w.loc && w.loc.line,
+            columnNumber: w.loc && w.loc.column,
+            message: w.message,
+          },
+          'svelte'
+        ),
+      });
+    },
+  });
+
+  return { code: compiledCode, map };
 }
 
 function getV1Code(code, path) {
