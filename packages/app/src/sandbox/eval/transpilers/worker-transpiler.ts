@@ -1,4 +1,5 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { dispatch, actions } from 'codesandbox-api';
 
 import Transpiler, { TranspilerResult } from './';
 import { parseWorkerError } from './utils/worker-error-handler';
@@ -150,6 +151,10 @@ export default abstract class WorkerTranspiler extends Transpiler {
         if (data.type === 'warning') {
           loaderContext.emitWarning(data.warning);
           return;
+        }
+
+        if (data.type === 'clear-warnings') {
+          dispatch(actions.correction.clear(data.path, data.source));
         }
 
         if (data.type === 'resolve-async-transpiled-module') {

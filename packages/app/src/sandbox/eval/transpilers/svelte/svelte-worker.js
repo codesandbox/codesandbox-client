@@ -12,7 +12,16 @@ declare var svelte: {
 };
 
 function getV2Code(code, path) {
+<<<<<<< HEAD
   self.importScripts(['https://unpkg.com/svelte@^2.0.0/compiler/svelte.js']);
+=======
+  self.postMessage({
+    type: 'clear-warnings',
+    path,
+    source: 'svelte',
+  });
+
+>>>>>>> Svelte Improvements
   const {
     js: { code: compiledCode, map },
   } = self.svelte.compile(code, {
@@ -47,12 +56,36 @@ function getV2Code(code, path) {
   return { code: compiledCode, map };
 }
 
-function getV3Code(code) {
+function getV3Code(code, path) {
   self.importScripts(['https://unpkg.com/svelte@3.0.1/compiler.js']);
   try {
-    return self.svelte.compile(code, {
+    const { js, warnings } = self.svelte.compile(code, {
+      filename: path,
       dev: true,
-    }).js;
+    });
+
+    self.postMessage({
+      type: 'clear-warnings',
+      path,
+      source: 'svelte',
+    });
+
+    warnings.forEach(w => {
+      self.postMessage({
+        type: 'warning',
+        warning: buildWorkerWarning(
+          {
+            fileName: w.fileName,
+            lineNumber: w.start && w.start.line,
+            columnNumber: w.start && w.start.column,
+            message: w.message,
+          },
+          'svelte'
+        ),
+      });
+    });
+
+    return js;
   } catch (e) {
     return self.postMessage({
       type: 'error',
