@@ -1,7 +1,7 @@
-
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  position: relative;
   height: 100%;
 `;
 
@@ -35,8 +35,15 @@ export const TestStatuses = styled.div`
 export const Tests = styled.div`
   padding: 1rem;
   box-sizing: border-box;
-  overflow-y: overlay;
-  height: calc(100% - 4rem);
+  overflow-y: auto;
+
+  /* Using absolute for correct scrolling, browsers have trouble handling
+   * an inner scroll inside a container unless the child is absolute */
+  position: absolute;
+  top: 3.5rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
 `;
 
 export const HappyMessage = styled.div`
