@@ -6,6 +6,7 @@ import { sortBy } from 'lodash-es';
 import type { Module, Directory } from '@codesandbox/common/lib/types';
 
 import { isMainModule } from '@codesandbox/common/lib/sandbox/modules';
+// eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
 
 import File from '../File';

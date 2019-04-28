@@ -1,4 +1,5 @@
 // @flow
+// @ts-ignore
 import * as React from 'react';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
@@ -879,7 +880,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
       this.lintWorker.addEventListener('message', event => {
         const { markers, version } = event.data;
-        console.log(markers);
         requestAnimationFrame(() => {
           if (this.editor.getModel()) {
             const modelPath = this.editor.getModel().uri.path;

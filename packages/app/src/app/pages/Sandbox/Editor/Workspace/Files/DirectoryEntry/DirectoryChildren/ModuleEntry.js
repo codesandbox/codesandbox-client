@@ -1,5 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+// eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
 import validateTitle from '../validateTitle';
 import Entry from '../Entry';
