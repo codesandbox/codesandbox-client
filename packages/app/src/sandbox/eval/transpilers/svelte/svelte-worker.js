@@ -7,12 +7,8 @@ self.window = self;
 
 self.postMessage('ready');
 
-// declare var svelte: {
-//   compile: (code: string, options: Object) => { code: string },
-// };
-
-function getV3Code(code, path) {
-  self.importScripts(['https://unpkg.com/svelte@3.1.0/compiler.js']);
+function getV3Code(code, version, path) {
+  self.importScripts([`https://unpkg.com/svelte@${version}/compiler.js`]);
   try {
     const { js, warnings } = self.svelte.compile(code, {
       filename: path,
@@ -49,8 +45,10 @@ function getV3Code(code, path) {
   }
 }
 
-function getV2Code(code, path) {
-  self.importScripts(['https://unpkg.com/svelte@^2.0.0/compiler/svelte.js']);
+function getV2Code(code, version, path) {
+  self.importScripts([
+    `https://unpkg.com/svelte@${version}/compiler/svelte.js`,
+  ]);
   self.postMessage({
     type: 'clear-warnings',
     path,
@@ -91,8 +89,10 @@ function getV2Code(code, path) {
   return { code: compiledCode, map };
 }
 
-function getV1Code(code, path) {
-  self.importScripts(['https://unpkg.com/svelte@^1.43.1/compiler/svelte.js']);
+function getV1Code(code, version, path) {
+  self.importScripts([
+    `https://unpkg.com/svelte@${version}/compiler/svelte.js`,
+  ]);
   return self.svelte.compile(code, {
     filename: path,
     dev: true,
@@ -128,13 +128,13 @@ self.addEventListener('message', event => {
   let versionCode = '';
 
   if (semver.satisfies(version, '1.x')) {
-    versionCode = getV1Code(code, path);
+    versionCode = getV1Code(code, version, path);
   }
   if (semver.satisfies(version, '2.x')) {
-    versionCode = getV2Code(code, path);
+    versionCode = getV2Code(code, version, path);
   }
   if (semver.satisfies(version, '3.x')) {
-    versionCode = getV3Code(code, path);
+    versionCode = getV3Code(code, version, path);
   }
 
   const { code: compiledCode, map } = versionCode;

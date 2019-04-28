@@ -16,12 +16,12 @@ class SvelteTranspiler extends WorkerTranspiler {
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
     const packageJSON = loaderContext.options.configurations.package;
-    const version =
+    const svelte =
       packageJSON &&
       packageJSON.parsed &&
       packageJSON.parsed.devDependencies &&
       packageJSON.parsed.devDependencies.svelte &&
-      semver.clean(packageJSON.parsed.devDependencies.svelte) || semver.clean(packageJSON.parsed.dependencies.svelte);
+      semver.coerce(packageJSON.parsed.devDependencies.svelte) || semver.coerce(packageJSON.parsed.dependencies.svelte);
 
     return new Promise<TranspilerResult>((resolve, reject) => {
       const path = loaderContext.path;
@@ -30,7 +30,7 @@ class SvelteTranspiler extends WorkerTranspiler {
         {
           code,
           path,
-          version,
+          version: (svelte || {}).version,
         },
         loaderContext._module.getId(),
         loaderContext,
