@@ -46,17 +46,3 @@ export const Blocks = styled.span`
   font-weight: 300;
   color: rgba(255, 255, 255, 0.7);
 `;
-
-export const Tests = styled.div`
-  padding: 1rem;
-
-  /* Using absolute for correct scrolling, browsers have trouble handling
-   * an inner scroll inside a container unless the child is absolute, also check for
-   * TestOverview/elements.ts if you want to change this. */
-  position: absolute;
-  top: 3.5rem;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-`;

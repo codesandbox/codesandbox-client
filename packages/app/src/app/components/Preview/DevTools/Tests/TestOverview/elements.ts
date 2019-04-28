@@ -32,21 +32,6 @@ export const TestStatuses = styled.div`
   font-size: 0.875rem;
 `;
 
-export const Tests = styled.div`
-  padding: 1rem;
-  box-sizing: border-box;
-  overflow-y: auto;
-
-  /* Using absolute for correct scrolling, browsers have trouble handling
-   * an inner scroll inside a container unless the child is absolute, also check for
-   * TestDetails/elements.ts if you want to change this. */
-  position: absolute;
-  top: 3.5rem;
-  bottom: 0;
-  left: 0;
-  right: 0;
-`;
-
 export const HappyMessage = styled.div`
   color: ${props => props.theme.green};
   font-weight: 500;

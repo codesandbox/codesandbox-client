@@ -6,15 +6,8 @@ import PlayIcon from 'react-icons/lib/go/playback-play';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { File, Status } from '../';
 
-import {
-  Action,
-  TestName,
-  TestTitle,
-  Blocks,
-  Tests,
-  ErrorNotice,
-} from './elements';
-import { StatusElements } from '../elements';
+import { Action, TestName, TestTitle, Blocks, ErrorNotice } from './elements';
+import { StatusElements, Tests } from '../elements';
 
 import TestBlock from './TestBlock';
 import ErrorDetails from './ErrorDetails';

@@ -3,8 +3,9 @@
 import * as React from 'react';
 
 import { Test } from '../';
+import { Tests } from '../elements';
 
-import { Container, HappyMessage, Item, Tests, ItemTitle } from './elements';
+import { Container, HappyMessage, Item, ItemTitle } from './elements';
 
 import TestSummaryText from '../TestSummaryText';
 import TestProgressBar from '../TestProgressBar';
