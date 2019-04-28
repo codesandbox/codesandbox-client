@@ -245,19 +245,23 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       return; // is replaced
     }
 
-    if (usedDep === '@vue/babel-preset-app' && d[dep].startsWith('^3')) {
-      // Native modules got added in 3.7.0, we need to hardcode to latest
-      // working version of the babel plugin as a fix. https://twitter.com/notphanan/status/1122475053633941509
-      returnedDependencies[usedDep] = '3.6.0';
-      return;
-    }
-
     returnedDependencies[usedDep] = d[dep];
   });
 
   Object.keys(devDependencies).forEach(dep => {
     const usedDep = DEPENDENCY_ALIASES[dep] || dep;
+
     if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
+      if (
+        usedDep === '@vue/babel-preset-app' &&
+        devDependencies[dep].startsWith('^3')
+      ) {
+        // Native modules got added in 3.7.0, we need to hardcode to latest
+        // working version of the babel plugin as a fix. https://twitter.com/notphanan/status/1122475053633941509
+        returnedDependencies[usedDep] = '3.6.0';
+        return;
+      }
+
       returnedDependencies[usedDep] = devDependencies[dep];
     }
   });
