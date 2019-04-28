@@ -1,7 +1,20 @@
-/* @flow */
 import isImage from '@codesandbox/common/lib/utils/is-image';
 
 const svgRegex = /\.svg$/;
+
+type regexCasesMap = {
+  markdown: RegExp;
+  markojs: RegExp;
+  yaml: RegExp;
+  react: RegExp;
+  reason: RegExp;
+  sass: RegExp;
+  javascript: RegExp;
+  typescript: RegExp;
+  console: RegExp;
+  git: RegExp;
+  flow: RegExp;
+}
 
 const specialCasesMap = {
   'favicon.ico': 'favicon',
@@ -32,7 +45,7 @@ const regexCasesMap = {
   flow: /^.flow/i,
 };
 
-const getKeyByValue = (object, value) =>
+const getKeyByValue = (object: regexCasesMap, value: RegExp) =>
   Object.keys(object).find(key => object[key] === value);
 
 export function getMode(title: string = '') {
@@ -54,7 +67,6 @@ export function getMode(title: string = '') {
   // TEST BASED
   const regexValues = Object.values(regexCasesMap);
   const match = regexValues.find(value =>
-    // $FlowIssue
     new RegExp(value).test(removeIgnoreTitle)
   );
 

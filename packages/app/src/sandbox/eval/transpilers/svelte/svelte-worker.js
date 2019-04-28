@@ -95,17 +95,29 @@ function getV1Code(code, path) {
 
 self.addEventListener('message', event => {
   const { code, path, version } = event.data;
+  let versionCode = '';
 
-  const { code: compiledCode, map } = semver.satisfies(version, '<2.0.0')
-    ? getV1Code(code, path)
-    : semver.satisfies(version, '>=3.0.0')
-      ? getV3Code(code, path)
-      : getV2Code(code, path);
+  switch (version) {
+    case semver.satisfies(version, '<2.0.0'): {
+      versionCode = getV1Code(code, path);
+      break;
+    }
+    case semver.satisfies(version, '>=3.0.0'): {
+      versionCode = getV3Code(code, path);
+      break;
+    }
+    case semver.satisfies(version, '>=2.0.0'): {
+      versionCode = getV2Code(code, path);
+      break;
+    }
+    default:
+      versionCode = getV3Code(code, path);
+  }
+
+  const { code: compiledCode, map } = versionCode;
 
   const withInlineSourcemap = `${compiledCode}
   //# sourceMappingURL=${map.toUrl()}`;
-
-  console.log(withInlineSourcemap);
 
   self.postMessage({
     type: 'result',
