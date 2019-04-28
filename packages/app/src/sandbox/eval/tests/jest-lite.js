@@ -135,6 +135,7 @@ export default class TestRunner {
       it,
       document: jsdomDocument,
       window: jsdomWindow,
+      global: jsdomWindow,
     };
   }
 
