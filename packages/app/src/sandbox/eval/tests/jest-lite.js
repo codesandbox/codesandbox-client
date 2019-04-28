@@ -51,6 +51,7 @@ function addScript(src) {
   });
 }
 
+const origin = document.location.origin;
 const jsdomPromise = addScript('/static/js/jsdom-4.0.0.min.js');
 
 function resetTestState() {
@@ -116,9 +117,15 @@ export default class TestRunner {
       });
     };
 
-    const { JSDOM } = JSDOM2;
-    const { window } = new JSDOM('');
-    const { document } = window;
+    const { JSDOM } = window.JSDOM;
+    const { window: jsdomWindow } = new JSDOM('<!DOCTYPE html>', {
+      pretendToBeVisual: true,
+      url: origin,
+    });
+    const { document: jsdomDocument } = jsdomWindow;
+
+    // Date is not set correctly on window in JSDOM. This breaks Jest
+    jsdomWindow.Date = Date;
 
     return {
       ...jestTestHooks,
@@ -126,7 +133,8 @@ export default class TestRunner {
       jest: jestMock,
       test,
       it,
-      document,
+      document: jsdomDocument,
+      window: jsdomWindow,
     };
   }
 
