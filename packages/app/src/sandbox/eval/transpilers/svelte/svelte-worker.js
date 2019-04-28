@@ -49,16 +49,17 @@ function getV2Code(code, path) {
 }
 
 function getV3Code(code) {
-  self.importScripts(['https://unpkg.com/svelte@3.0.0/compiler.js']);
-  return window.svelte.compile(code, {
-    dev: true,
-    // onParseError: e => {
-    //   self.postMessage({
-    //     type: 'error',
-    //     error: buildWorkerError(e),
-    //   });
-    // },
-  }).js;
+  self.importScripts(['https://unpkg.com/svelte@3.0.1/compiler.js']);
+  try {
+    return window.svelte.compile(code, {
+      dev: true,
+    }).js;
+  } catch (e) {
+    return self.postMessage({
+      type: 'error',
+      error: buildWorkerError(e),
+    });
+  }
 }
 
 function getV1Code(code, path) {
