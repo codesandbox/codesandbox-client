@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import getType from 'app/utils/get-type';
+import getType from 'app/utils/get-type.ts';
 import validateTitle from '../validateTitle';
 import Entry from '../Entry';
 
