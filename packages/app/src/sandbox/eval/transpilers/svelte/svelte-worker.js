@@ -5,8 +5,6 @@ import { buildWorkerWarning } from '../utils/worker-warning-handler';
 // Allow svelte to use btoa
 self.window = self;
 
-self.importScripts(['https://unpkg.com/svelte@3.1.0/compiler.js']);
-
 self.postMessage('ready');
 
 declare var svelte: {
@@ -14,6 +12,7 @@ declare var svelte: {
 };
 
 function getV2Code(code, path) {
+  self.importScripts(['https://unpkg.com/svelte@^2.0.0/compiler/svelte.js']);
   const {
     js: { code: compiledCode, map },
   } = self.svelte.compile(code, {
@@ -98,21 +97,14 @@ self.addEventListener('message', event => {
   const { code, path, version } = event.data;
   let versionCode = '';
 
-  switch (version) {
-    case semver.satisfies(version, '<2.0.0'): {
-      versionCode = getV1Code(code, path);
-      break;
-    }
-    case semver.satisfies(version, '>=3.0.0'): {
-      versionCode = getV3Code(code, path);
-      break;
-    }
-    case semver.satisfies(version, '>=2.0.0'): {
-      versionCode = getV2Code(code, path);
-      break;
-    }
-    default:
-      versionCode = getV3Code(code, path);
+  if (semver.satisfies(version, '1.x')) {
+    versionCode = getV1Code(code, path);
+  }
+  if (semver.satisfies(version, '2.x')) {
+    versionCode = getV2Code(code, path);
+  }
+  if (semver.satisfies(version, '3.x')) {
+    versionCode = getV3Code(code, path);
   }
 
   const { code: compiledCode, map } = versionCode;
