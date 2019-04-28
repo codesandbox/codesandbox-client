@@ -10,6 +10,7 @@ export type ModuleError = {
   severity: 'error' | 'warning';
   type: 'compile' | 'dependency-not-found' | 'no-dom-change';
   payload: Object;
+  source: string | undefined;
 };
 
 export type ModuleCorrection = {
