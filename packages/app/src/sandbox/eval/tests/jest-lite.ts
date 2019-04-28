@@ -255,6 +255,8 @@ export default class TestRunner {
 
     await Promise.all(
       tests.map(async t => {
+        dispatch(actions.error.clear(t.path, 'jest'));
+
         try {
           this.manager.evaluateModule(t, {
             force: true,
@@ -329,7 +331,6 @@ export default class TestRunner {
       case 'test_start': {
         const test = await this.testToCodeSandbox(message.test);
 
-        dispatch(actions.error.clear(test.path, 'jest'));
         return this.sendMessage('test_start', {
           test,
         });
