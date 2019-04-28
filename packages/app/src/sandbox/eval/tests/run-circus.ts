@@ -19,7 +19,7 @@ import {
 import { SnapshotState } from 'jest-snapshot';
 import expect from 'jest-matchers';
 
-import type {
+import {
   TestEntry,
   TestResults,
   TestContext,
@@ -49,9 +49,9 @@ const _setGlobalState = (test: TestEntry) => {
 
   const currentTestName = describeName + testName;
   const update: {
-    snapshotState?: SnapshotState,
-    testPath?: string,
-    currentTestName: string,
+    snapshotState?: SnapshotState;
+    testPath?: string;
+    currentTestName: string;
   } = { currentTestName };
   if (testPath == null || currentTestPath !== testPath) {
     update.snapshotState = new SnapshotState(testPath, {

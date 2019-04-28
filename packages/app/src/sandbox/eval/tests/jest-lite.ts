@@ -23,21 +23,15 @@ import { map } from 'sandbox-hooks/react-error-overlay/utils/mapper';
 
 import run from './run-circus';
 
-import type Manager from '../manager';
-import type { Module } from '../entities/module';
-import type {
-  Event,
-  TestEntry,
-  DescribeBlock,
-  TestName,
-  TestFn,
-} from './types';
+import Manager from '../manager';
+import { Module } from '../entities/module';
+import { Event, TestEntry, DescribeBlock, TestName, TestFn } from './types';
 
 expect.extend({
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
 });
-(expect: Object).addSnapshotSerializer = addSerializer;
+expect.addSnapshotSerializer = addSerializer;
 
 function addScript(src) {
   return new Promise(resolve => {
@@ -117,7 +111,7 @@ export default class TestRunner {
       });
     };
 
-    const { JSDOM } = window.JSDOM;
+    const { JSDOM } = (window as any).JSDOM;
     const { window: jsdomWindow } = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       url: origin,
@@ -282,13 +276,14 @@ export default class TestRunner {
 
   async errorToCodeSandbox(
     error: Error & {
-      matcherResult?: boolean,
+      matcherResult?: boolean;
     }
   ) {
     const parsedError = parse(error);
     const mappedErrors = await map(parsedError);
 
     return {
+      name: error.name,
       message: error.message,
       stack: error.stack,
       matcherResult: !!error.matcherResult,
@@ -297,13 +292,12 @@ export default class TestRunner {
   }
 
   getDescribeBlocks(test: TestEntry) {
-    let t: ?(TestEntry | DescribeBlock) = test;
+    let t: TestEntry | DescribeBlock | undefined = test;
     const blocks = [];
 
-    // $FlowIssue
     while (t.parent != null) {
       blocks.push(t.parent.name);
-      // $FlowIssue
+
       t = t.parent;
     }
 

@@ -9,11 +9,21 @@ type ConfigurationFiles = {
   [path: string]: ConfigurationFile;
 };
 
+type PossibleModule = {
+  code: string;
+} & (
+  | {
+      title: string;
+    }
+  | {
+      path: string;
+    });
+
 function getCode(
   template: TemplateType,
-  module: Module,
+  module: PossibleModule,
   sandbox: Sandbox,
-  resolveModule: (path: string) => { code: string } | undefined,
+  resolveModule: (path: string) => PossibleModule | undefined,
   configurationFile: ConfigurationFile
 ) {
   if (module) {
@@ -33,6 +43,18 @@ function getCode(
   return { code: '', generated: false };
 }
 
+function titleIncludes(module: PossibleModule, test: string) {
+  if ('title' in module) {
+    return module.title.includes(test);
+  }
+
+  if ('path' in module) {
+    return module.path.includes(test);
+  }
+
+  return false;
+}
+
 /**
  * We convert all configuration file configs to an object with configuration per
  * type. This makes configs universal.
@@ -40,7 +62,7 @@ function getCode(
 export default function parseConfigurations(
   template: TemplateType,
   configurationFiles: ConfigurationFiles,
-  resolveModule: (path: string) => Module | undefined,
+  resolveModule: (path: string) => PossibleModule | undefined,
   sandbox?: Sandbox
 ): ParsedConfigurationFiles {
   const configurations: ParsedConfigurationFiles = {};
@@ -65,11 +87,7 @@ export default function parseConfigurations(
         // it goes here three times and the third time it doesn't have a title but a path
         // that took a while ffs
         // if toml do it with toml parser
-        if (
-          module &&
-          ((module.title && module.title.includes('.toml')) ||
-            (module.path && module.path.includes('.toml')))
-        ) {
+        if (module && titleIncludes(module, 'toml')) {
           // never throws
           parsed = toml(code);
         } else {
