@@ -501,7 +501,13 @@ class Tests extends React.Component<DevToolProps, State> {
     const TSplitPane = SplitPane as any;
     return (
       <Container>
-        <TSplitPane split="horizontal" defaultSize={'50%'}>
+        <TSplitPane
+          split="horizontal"
+          defaultSize={'50%'}
+          pane2Style={{
+            height: '100%',
+          }}
+        >
           <TestContainer>
             <TestSummary
               running={this.state.running}
