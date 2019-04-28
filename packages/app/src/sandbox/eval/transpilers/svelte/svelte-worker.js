@@ -5,18 +5,18 @@ import { buildWorkerWarning } from '../utils/worker-warning-handler';
 // Allow svelte to use btoa
 self.window = self;
 
-self.importScripts(['https://unpkg.com/svelte@3.0.0/compiler.js']);
+self.importScripts(['https://unpkg.com/svelte@3.1.0/compiler.js']);
 
 self.postMessage('ready');
 
-// declare var svelte: {
-//   compile: (code: string, options: Object) => { code: string },
-// };
+declare var svelte: {
+  compile: (code: string, options: Object) => { code: string },
+};
 
 function getV2Code(code, path) {
   const {
     js: { code: compiledCode, map },
-  } = window.svelte.compile(code, {
+  } = self.svelte.compile(code, {
     filename: path,
     dev: true,
     cascade: false,
@@ -51,7 +51,7 @@ function getV2Code(code, path) {
 function getV3Code(code) {
   self.importScripts(['https://unpkg.com/svelte@3.0.1/compiler.js']);
   try {
-    return window.svelte.compile(code, {
+    return self.svelte.compile(code, {
       dev: true,
     }).js;
   } catch (e) {
@@ -64,7 +64,7 @@ function getV3Code(code) {
 
 function getV1Code(code, path) {
   self.importScripts(['https://unpkg.com/svelte@^1.43.1/compiler/svelte.js']);
-  return window.svelte.compile(code, {
+  return self.svelte.compile(code, {
     filename: path,
     dev: true,
     cascade: false,
