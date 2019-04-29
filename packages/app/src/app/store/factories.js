@@ -81,9 +81,9 @@ export function setCurrentModule(id) {
 export function addNotification(title, notificationType, timeAlive) {
   return function addNotif({ resolve }) {
     notificationState.addNotification({
-      title: resolve.value(title),
+      message: resolve.value(title),
       status: convertTypeToStatus(resolve.value(notificationType)),
-      timeAlive: resolve.value(timeAlive),
+      timeAlive: resolve.value(timeAlive) * 1000,
     });
   };
 }
