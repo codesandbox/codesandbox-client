@@ -13,8 +13,8 @@ import { SerializedTranspiledModule } from './transpiled-module';
 import Preset from './presets';
 import { SCRIPT_VERSION } from '../';
 import fetchModule, {
-  getCombinedMetas,
   setCombinedMetas,
+  combinedMetas,
 } from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
@@ -34,7 +34,7 @@ type Externals = {
   [name: string]: string;
 };
 
-type ModuleObject = {
+export type ModuleObject = {
   [path: string]: Module;
 };
 
@@ -223,7 +223,7 @@ export default class Manager {
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.
-      returnValue = this.transpiledModules[p] || getCombinedMetas()[p];
+      returnValue = this.transpiledModules[p] || combinedMetas[p];
     } else {
       returnValue = this.transpiledModules[p];
     }
@@ -1049,7 +1049,7 @@ export default class Manager {
     const dependenciesQuery = this.getDependencyQuery();
 
     const meta = {};
-    Object.keys(getCombinedMetas() || {}).forEach(p => {
+    Object.keys(combinedMetas || {}).forEach(p => {
       const dir = pathUtils.dirname(p.replace('/node_modules', ''));
       meta[dir] = meta[dir] || [];
       meta[dir].push(pathUtils.basename(p));

@@ -1,6 +1,11 @@
 // @flow
 import * as React from 'react';
-import { Sandbox, Module } from '../../types';
+import {
+  Sandbox,
+  Module,
+  SSEManagerStatus,
+  SSEContainerStatus,
+} from '../../types';
 import {
   listen,
   dispatch,
@@ -44,7 +49,10 @@ export type Props = {
   noPreview?: boolean;
   alignDirection?: 'right' | 'bottom';
   delay?: number;
-  setServerStatus?: (status: string) => void;
+  setSSEManagerStatus?: (status: SSEManagerStatus) => void;
+  setSSEContainerStatus?: (status: SSEContainerStatus) => void;
+  managerStatus?: SSEManagerStatus;
+  containerStatus?: SSEContainerStatus;
   syncSandbox?: (updates: any) => void;
   className?: string;
 };
@@ -231,10 +239,10 @@ class BasePreview extends React.Component<Props, State> {
   setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
 
-    function onTimeout(comp) {
+    function onTimeout(comp: BasePreview) {
       comp.connectTimeout = null;
-      if (comp.props.setServerStatus) {
-        comp.props.setServerStatus('disconnected');
+      if (comp.props.setSSEManagerStatus) {
+        comp.props.setSSEManagerStatus('disconnected');
       }
     }
 
@@ -267,14 +275,12 @@ class BasePreview extends React.Component<Props, State> {
           return;
         }
 
-        if (this.props.setServerStatus) {
-          let status = 'disconnected';
-          if (this.state.hibernated) {
-            status = 'hibernated';
-          } else if (this.state.sseError) {
-            status = 'error';
-          }
-          this.props.setServerStatus(status);
+        if (
+          this.props.setSSEManagerStatus &&
+          this.props.managerStatus === 'connected' &&
+          this.props.containerStatus !== 'hibernated'
+        ) {
+          this.props.setSSEManagerStatus('disconnected');
           dispatch({ type: 'codesandbox:sse:disconnect' });
         }
       });
@@ -285,8 +291,8 @@ class BasePreview extends React.Component<Props, State> {
           this.connectTimeout = null;
         }
 
-        if (this.props.setServerStatus) {
-          this.props.setServerStatus('connected');
+        if (this.props.setSSEManagerStatus) {
+          this.props.setSSEManagerStatus('connected');
         }
 
         const { id } = this.props.sandbox;
@@ -322,28 +328,49 @@ class BasePreview extends React.Component<Props, State> {
         }
       });
 
+      socket.on('sandbox:status', message => {
+        if (this.props.setSSEContainerStatus) {
+          if (message.status === 'starting-container') {
+            this.props.setSSEContainerStatus('initializing');
+          } else if (message.status === 'installing-packages') {
+            this.props.setSSEContainerStatus('container-started');
+          }
+        }
+      });
+
       socket.on('sandbox:start', () => {
         sseTerminalMessage(`sandbox ${this.props.sandbox.id} started.`);
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
-        this.handleRefresh();
+
         this.setState({
           frameInitialized: true,
           overlayMessage: null,
+        });
+        if (this.props.setSSEContainerStatus) {
+          this.props.setSSEContainerStatus('sandbox-started');
+        }
+
+        setTimeout(() => {
+          this.executeCodeImmediately(true);
+          this.handleRefresh();
         });
       });
 
       socket.on('sandbox:hibernate', () => {
         sseTerminalMessage(`sandbox ${this.props.sandbox.id} hibernated.`);
 
+        if (this.props.setSSEContainerStatus) {
+          this.props.setSSEContainerStatus('hibernated');
+        }
+
         this.setState(
           {
             frameInitialized: false,
             overlayMessage:
               'The sandbox was hibernated because of inactivity. Refresh the page to restart it.',
-            hibernated: true,
           },
           () => this.$socket.close()
         );
@@ -351,6 +378,10 @@ class BasePreview extends React.Component<Props, State> {
 
       socket.on('sandbox:stop', () => {
         sseTerminalMessage(`sandbox ${this.props.sandbox.id} restarting...`);
+
+        if (this.props.setSSEContainerStatus) {
+          this.props.setSSEContainerStatus('stopped');
+        }
 
         this.setState({
           frameInitialized: false,
@@ -607,8 +638,11 @@ class BasePreview extends React.Component<Props, State> {
       const modulesToSend = this.getModulesToSend();
       if (this.serverPreview) {
         const diff = getDiff(this.lastSent.modules, modulesToSend);
-
-        this.lastSent.modules = modulesToSend;
+        if (this.props.containerStatus === 'sandbox-started') {
+          // Only mark the last modules if we're sure that the container has been able
+          // to process the last diff
+          this.lastSent.modules = modulesToSend;
+        }
 
         if (Object.keys(diff).length > 0 && this.$socket) {
           this.$socket.emit('sandbox:update', diff);

@@ -1,10 +1,9 @@
 import React from 'react';
 import { InstantSearch, Configure, PoweredBy } from 'react-instantsearch/dom';
 import { connectAutoComplete } from 'react-instantsearch/connectors';
-import theme from '@codesandbox/common/lib/theme';
 
 import 'app/pages/Search/search.css';
-import './dependencies.css';
+import DependenciesCSS from './dependencies';
 
 import RawAutoComplete from './RawAutoComplete';
 
@@ -48,29 +47,27 @@ export default class SearchDependencies extends React.PureComponent {
 
   render() {
     return (
-      <InstantSearch
-        appId="OFCNCOG2CU"
-        apiKey="00383ecd8441ead30b1b0ff981c426f5"
-        indexName="npm-search"
-      >
-        <Configure
-          analyticsTags={['codesandbox-dependencies']}
-          hitsPerPage={5}
-        />
-        <ConnectedAutoComplete
-          onSelect={this.handleSelect}
-          onManualSelect={this.handleManualSelect}
-          onHitVersionChange={this.handleHitVersionChange}
-        />
-        <div
-          style={{
-            height: 40,
-            backgroundColor: theme.background2.darken(0.2)(),
-          }}
+      <div className="search-dependencies">
+        <DependenciesCSS />
+        <InstantSearch
+          appId="OFCNCOG2CU"
+          apiKey="00383ecd8441ead30b1b0ff981c426f5"
+          indexName="npm-search"
         >
-          <PoweredBy />
-        </div>
-      </InstantSearch>
+          <Configure
+            analyticsTags={['codesandbox-dependencies']}
+            hitsPerPage={5}
+          />
+          <ConnectedAutoComplete
+            onSelect={this.handleSelect}
+            onManualSelect={this.handleManualSelect}
+            onHitVersionChange={this.handleHitVersionChange}
+          />
+          <footer>
+            <PoweredBy />
+          </footer>
+        </InstantSearch>
+      </div>
     );
   }
 }

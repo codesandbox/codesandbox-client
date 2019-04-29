@@ -7,6 +7,7 @@ export type WarningStructure = {
   lineNumber: number,
   columnNumber: number,
   source: ?string,
+  severity?: 'notice' | 'warning',
 };
 
 type Params = {

@@ -297,6 +297,7 @@ export const handlePreviewAction = [
     ),
     'show-error': actions.addErrorFromPreview,
     'show-correction': actions.addCorrectionFromPreview,
+    'clear-errors': actions.clearErrors,
     'clear-corrections': actions.clearCorrections,
     'source.module.rename': [
       actions.consumeRenameModuleFromPreview,

@@ -276,6 +276,16 @@ export function addCorrectionFromPreview({ state, props }) {
   state.push('editor.corrections', correction);
 }
 
+export function clearErrors({ state, props }) {
+  const currentErrors = state.get('editor.errors');
+
+  const newErrors = clearCorrectionsFromAction(currentErrors, props.action);
+
+  if (newErrors.length !== currentErrors.length) {
+    state.set('editor.errors', newErrors);
+  }
+}
+
 export function clearCorrections({ state, props }) {
   const currentCorrections = state.get('editor.corrections');
 

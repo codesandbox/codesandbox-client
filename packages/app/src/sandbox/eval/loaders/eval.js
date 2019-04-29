@@ -30,29 +30,23 @@ export default function(
   const process = buildProcess(env);
   g.global = global;
 
-  const globalsCode = Object.keys(globals).length
-    ? ', ' + Object.keys(globals).join(', ')
-    : '';
-  const globalsValues = Object.keys(globals).map(k => globals[k]);
+  const allGlobals = {
+    require,
+    module: asUMD ? undefined : module,
+    exports: asUMD ? undefined : exports,
+    process,
+    setImmediate: requestFrame,
+    global: asUMD ? undefined : global,
+    ...globals,
+  };
+
+  const allGlobalKeys = Object.keys(allGlobals);
+  const globalsCode = allGlobalKeys.length ? allGlobalKeys.join(', ') : '';
+  const globalsValues = allGlobalKeys.map(k => allGlobals[k]);
   try {
-    const newCode =
-      `(function evaluate(require, module, exports, process, setImmediate, global` +
-      globalsCode +
-      `) {` +
-      code +
-      `\n})`;
+    const newCode = `(function evaluate(` + globalsCode + `) {` + code + `\n})`;
     // eslint-disable-next-line no-eval
-    (0, eval)(newCode).apply(
-      this,
-      [
-        require,
-        asUMD ? undefined : module,
-        asUMD ? undefined : exports,
-        process,
-        requestFrame,
-        asUMD ? undefined : global,
-      ].concat(globalsValues)
-    );
+    (0, eval)(newCode).apply(this, globalsValues);
 
     return module.exports;
   } catch (e) {

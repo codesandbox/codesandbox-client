@@ -504,13 +504,15 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.currentTitle = newModule.title;
     this.currentDirectoryShortid = newModule.directoryShortid;
 
-    if (errors) {
-      this.setErrors(errors);
-    }
-
-    if (corrections) {
-      this.setCorrections(corrections);
-    }
+    // Let the model load first
+    setTimeout(() => {
+      if (errors) {
+        this.setErrors(errors);
+      }
+      if (corrections) {
+        this.setCorrections(corrections);
+      }
+    }, 100);
 
     if (this.props.onCodeReceived) {
       // Whenever the user changes a module we set up a state that defines

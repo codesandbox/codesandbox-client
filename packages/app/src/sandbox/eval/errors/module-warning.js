@@ -15,6 +15,18 @@ export default class ModuleWarning extends Error {
     this.source = warning.source;
   }
 
+  serialize(): WarningStructure {
+    return {
+      name: 'ModuleWarning',
+      message: this.message,
+      fileName: this.path,
+      lineNumber: this.lineNumber,
+      columnNumber: this.columnNumber,
+      source: this.source,
+      severity: this.severity,
+    };
+  }
+
   path: string;
   message: string;
   warning: string;

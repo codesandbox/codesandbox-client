@@ -23,9 +23,8 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-const Server = ({ store }) => {
+function Server({ store }) {
   const { parsed } = store.editor.parsedConfigurations.package;
-
   const disconnected = store.server.status !== 'connected';
 
   return (
@@ -38,7 +37,10 @@ const Server = ({ store }) => {
       <Margin top={1}>
         <SubTitle>Status</SubTitle>
         <WorkspaceInputContainer>
-          <Status status={store.server.status} />
+          <Status
+            managerStatus={store.server.status}
+            containerStatus={store.server.containerStatus}
+          />
         </WorkspaceInputContainer>
       </Margin>
 
@@ -58,17 +60,6 @@ const Server = ({ store }) => {
         </Margin>
       </Margin>
 
-      <Margin top={1}>
-        <SubTitle>Secret Keys</SubTitle>
-        <Description>
-          Secrets are available as environment variables. They are kept private
-          and will not be transferred between forks.
-        </Description>
-        <Margin top={0.5}>
-          <EnvironmentVariables />
-        </Margin>
-      </Margin>
-
       <Margin top={1} bottom={0.5}>
         <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
         <WorkspaceInputContainer>
@@ -80,10 +71,12 @@ const Server = ({ store }) => {
             }}
             small
             block
-            disabled={disconnected}
-            onClick={() =>
-              dispatch({ type: 'socket:message', channel: 'sandbox:restart' })
+            disabled={
+              disconnected || store.server.containerStatus !== 'sandbox-started'
             }
+            onClick={() => {
+              dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
+            }}
           >
             <PowerIcon
               style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
@@ -91,9 +84,48 @@ const Server = ({ store }) => {
             Restart Sandbox
           </Button>
         </WorkspaceInputContainer>
+        <WorkspaceInputContainer>
+          <Button
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            small
+            block
+            disabled={
+              disconnected || store.server.containerStatus === 'initializing'
+            }
+            onClick={() => {
+              this.props.signals.server.containerStatusChanged({
+                status: 'initializing',
+              });
+              dispatch({
+                type: 'socket:message',
+                channel: 'sandbox:restart-container',
+              });
+            }}
+          >
+            <PowerIcon
+              style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+            />{' '}
+            Restart Server
+          </Button>
+        </WorkspaceInputContainer>
+      </Margin>
+
+      <Margin top={1}>
+        <SubTitle>Secret Keys</SubTitle>
+        <Description>
+          Secrets are available as environment variables. They are kept private
+          and will not be transferred between forks.
+        </Description>
+        <Margin top={0.5}>
+          <EnvironmentVariables />
+        </Margin>
       </Margin>
     </div>
   );
-};
+}
 
-export default inject('store')(observer(Server));
+export default inject('store', 'signals')(observer(Server));

@@ -1,4 +1,3 @@
-
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
@@ -28,13 +27,9 @@ type MetaFiles = Array<{
 }>;
 
 const metas: Metas = {};
-let combinedMetas: Meta = {};
+export let combinedMetas: Meta = {};
 const normalizedMetas: { [key: string]: Meta } = {};
 const packages: Packages = {};
-
-export function getCombinedMetas() {
-  return combinedMetas;
-}
 
 export function setCombinedMetas(givenCombinedMetas: Meta) {
   combinedMetas = givenCombinedMetas;

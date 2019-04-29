@@ -1,7 +1,7 @@
-
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  position: relative;
   height: 100%;
 `;
 
@@ -30,13 +30,6 @@ export const TestStatus = styled.div`
 export const TestStatuses = styled.div`
   margin-top: 1.25rem;
   font-size: 0.875rem;
-`;
-
-export const Tests = styled.div`
-  padding: 1rem;
-  box-sizing: border-box;
-  overflow-y: overlay;
-  height: calc(100% - 4rem);
 `;
 
 export const HappyMessage = styled.div`

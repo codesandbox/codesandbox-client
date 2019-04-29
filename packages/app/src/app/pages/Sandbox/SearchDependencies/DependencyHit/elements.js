@@ -1,21 +1,45 @@
 import styled from 'styled-components';
 import Select from '@codesandbox/common/lib/components/Select';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
+import Color from 'color';
+
+import GitHubLogo from 'app/components/GitHubLogo';
+
+export const GitHubLogoStyled = styled(GitHubLogo)`
+  color: ${props =>
+    !props.theme.light ? 'inherit' : 'rgba(255, 255, 255, 0.8)'};
+`;
+
+const getContainerColor = props => {
+  if (props.highlighted) {
+    return Color(props.theme['sideBar.background'])
+      .darken(0.2)
+      .rgbString();
+  }
+
+  return props.theme['sideBar.background'];
+};
 
 export const Container = styled.div`
   display: flex;
-  background: ${props =>
-    props.highlighted
-      ? props.theme.background2.darken(0.3)
-      : props.theme.background2};
-  color: ${props => props.theme.white};
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
+  background-color: ${getContainerColor};
   cursor: pointer;
+
   &:not(:last-child) {
-    border-bottom: 1px solid ${props => props.theme.background3};
+    border-bottom: 1px solid
+      ${props =>
+        Color(props.theme['sideBar.background'])
+          .darken(0.4)
+          .rgbString()};
   }
 
   &:hover {
-    background-color: ${props => props.theme.background2.darken(0.2)};
+    background-color: ${props =>
+      Color(props.theme['sideBar.background'])
+        .darken(0.2)
+        .rgbString()};
   }
 `;
 
@@ -37,20 +61,26 @@ export const Row = styled.div`
 
 export const Description = styled(Row)`
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'};
 `;
 
 export const Downloads = styled.span`
-  color: ${props => props.theme.gray};
+  color: ${props => props.theme['panelTitle.inactiveForeground']};
   font-weight: 500;
   font-size: 12px;
 `;
 
 export const License = styled.span`
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid
+    ${props =>
+      !props.theme.light ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.4)'};
   border-radius: 3px;
   padding: 1px 3px;
-  color: rgba(255, 255, 255, 0.6);
+
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'};
   font-size: 12px;
 `;
 
