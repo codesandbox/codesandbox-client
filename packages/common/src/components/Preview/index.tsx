@@ -633,8 +633,11 @@ class BasePreview extends React.Component<Props, State> {
       const modulesToSend = this.getModulesToSend();
       if (this.serverPreview) {
         const diff = getDiff(this.lastSent.modules, modulesToSend);
-
-        this.lastSent.modules = modulesToSend;
+        if (this.props.containerStatus === 'sandbox-started') {
+          // Only mark the last modules if we're sure that the container has been able
+          // to process the last diff
+          this.lastSent.modules = modulesToSend;
+        }
 
         if (Object.keys(diff).length > 0 && this.$socket) {
           this.$socket.emit('sandbox:update', diff);
