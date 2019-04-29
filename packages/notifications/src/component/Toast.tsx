@@ -1,5 +1,8 @@
 import * as React from 'react';
+
+// @ts-ignore: will be available, but common is built after this...
 import { Button } from '@codesandbox/common/lib/components/Button';
+// @ts-ignore: will be available, but common is built after this...
 import theme from '@codesandbox/common/lib/theme';
 
 import { NotificationToast } from './Toasts';
