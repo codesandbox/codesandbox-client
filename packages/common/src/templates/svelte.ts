@@ -5,8 +5,8 @@ import { decorateSelector } from '../theme';
 export default new Template(
   'svelte',
   'Svelte',
-  'https://github.com/sveltejs/svelte',
+  'https://svelte.dev',
   'svelte',
   decorateSelector(() => '#FF3E00'),
-  { showOnHomePage: true, showCube: false, distDir: 'public', netlify: false }
+  { showOnHomePage: true, showCube: false, distDir: 'public', mainFile: ['/app.svelte'] }
 );
