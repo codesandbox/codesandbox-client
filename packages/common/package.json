@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/common",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "source": true,
   "files": [
     "lib"
