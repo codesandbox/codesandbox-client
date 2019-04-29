@@ -82,7 +82,6 @@ class Routes extends React.Component<Props> {
             return null;
           }}
         />
-        {/* <Notifications /> */}
         <Toasts state={notificationState} />
         <Content>
           <Switch>
