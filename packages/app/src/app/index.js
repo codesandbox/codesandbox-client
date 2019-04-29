@@ -95,7 +95,7 @@ function boot() {
         notificationState.addNotification({
           title: 'CodeSandbox Update Available',
           message:
-            'We just installed a new CodeSandbox update, refresh to update!',
+            'We just installed a new version of CodeSandbox, refresh to update!',
           status: NotificationStatus.SUCCESS,
           sticky: true,
           actions: [
