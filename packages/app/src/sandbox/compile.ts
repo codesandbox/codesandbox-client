@@ -63,7 +63,7 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
-function sendTestCount(manager: Manager, modules: Array<Module>) {
+function sendTestCount(manager: Manager, modules: { [path: string]: Module }) {
   const testRunner = manager.testRunner;
   const tests = testRunner.findTests(modules);
 
@@ -395,6 +395,20 @@ overrideDocumentClose();
 
 inject();
 
+interface CompileOptions {
+  sandboxId: string;
+  modules: { [path: string]: Module };
+  externalResources: string[];
+  hasActions?: boolean;
+  isModuleView?: boolean;
+  template: TemplateType;
+  entry: string;
+  showOpenInCodeSandbox?: boolean;
+  skipEval?: boolean;
+  hasFileResolver?: boolean;
+  disableDependencyPreprocessing?: boolean;
+}
+
 async function compile({
   sandboxId,
   modules,
@@ -407,7 +421,7 @@ async function compile({
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
-}) {
+}: CompileOptions) {
   dispatch({
     type: 'start',
   });
@@ -496,7 +510,7 @@ async function compile({
 
     const foundMain = isModuleView
       ? entry
-      : possibleEntries.find(p => modules[p]);
+      : possibleEntries.find(p => !!modules[p]);
 
     if (!foundMain) {
       throw new Error(
@@ -550,7 +564,7 @@ async function compile({
       if (!manager.webpackHMR) {
         const htmlModulePath = templateDefinition
           .getHTMLEntries(configurations)
-          .find(p => modules[p]);
+          .find(p => !!modules[p]);
         const htmlModule = modules[htmlModulePath];
 
         const { head, body } = getHTMLParts(
@@ -717,21 +731,7 @@ async function compile({
   }
 }
 
-type Arguments = {
-  sandboxId: string;
-  modules: Array<{
-    code: string;
-    path: string;
-  }>;
-  entry: string | undefined;
-  externalResources: Array<string>;
-  hasActions: boolean;
-  template: string;
-  showOpenInCodeSandbox?: boolean;
-  skipEval?: boolean;
-};
-
-const tasks: Array<Arguments> = [];
+const tasks: CompileOptions[] = [];
 let runningTask = false;
 
 async function executeTaskIfAvailable() {
@@ -752,7 +752,7 @@ async function executeTaskIfAvailable() {
  * and if there are 3 tasks we will remove the second task, this one is unnecessary as it is not the
  * latest version.
  */
-export default function queueTask(data: Arguments) {
+export default function queueTask(data: CompileOptions) {
   tasks[0] = data;
 
   if (!runningTask) {
