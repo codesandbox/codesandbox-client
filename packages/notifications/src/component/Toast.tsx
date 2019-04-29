@@ -76,7 +76,10 @@ export function Toast({ toast, removeToast, getRef }: Props) {
             color: getColor(toast.notification.status),
             width: 32,
             fontSize: '1.25rem',
-            lineHeight: 1.4,
+            lineHeight:
+              toast.notification.message && toast.notification.title
+                ? 1.4
+                : undefined,
             verticalAlign: 'middle',
           }}
         >

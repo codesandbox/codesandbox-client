@@ -8,7 +8,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@codesandbox/common": "^1.0.4",
+    "@codesandbox/common": "^1.0.5",
     "react": "^16.8.6",
     "react-spring": "^8.0.19",
     "styled-components": "^4.2.0",
