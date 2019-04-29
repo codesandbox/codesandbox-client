@@ -1,21 +1,63 @@
+import semver from 'semver';
 import { buildWorkerError } from '../utils/worker-error-handler';
 import { buildWorkerWarning } from '../utils/worker-warning-handler';
 
 // Allow svelte to use btoa
 self.window = self;
 
-self.importScripts(['https://unpkg.com/svelte@^2.0.0/compiler/svelte.js']);
-
 self.postMessage('ready');
 
-declare var svelte: {
-  compile: (code: string, options: Object) => { code: string },
-};
+function getV3Code(code, version, path) {
+  self.importScripts([`https://unpkg.com/svelte@${version}/compiler.js`]);
+  try {
+    const { js, warnings } = self.svelte.compile(code, {
+      filename: path,
+      dev: true,
+    });
 
-function getV2Code(code, path) {
+    self.postMessage({
+      type: 'clear-warnings',
+      path,
+      source: 'svelte',
+    });
+
+    warnings.forEach(w => {
+      self.postMessage({
+        type: 'warning',
+        warning: buildWorkerWarning(
+          {
+            fileName: w.fileName,
+            lineNumber: w.start && w.start.line,
+            columnNumber: w.start && w.start.column,
+            message: w.message,
+          },
+          'svelte'
+        ),
+      });
+    });
+
+    return js;
+  } catch (e) {
+    return self.postMessage({
+      type: 'error',
+      error: buildWorkerError(e),
+    });
+  }
+}
+
+function getV2Code(code, version, path) {
+  self.importScripts([
+    `https://unpkg.com/svelte@${version}/compiler/svelte.js`,
+  ]);
+  self.postMessage({
+    type: 'clear-warnings',
+    path,
+    source: 'svelte',
+  });
+
   const {
     js: { code: compiledCode, map },
-  } = svelte.compile(code, {
+  } = self.svelte.compile(code, {
     filename: path,
     dev: true,
     cascade: false,
@@ -47,9 +89,11 @@ function getV2Code(code, path) {
   return { code: compiledCode, map };
 }
 
-function getV1Code(code, path) {
-  self.importScripts(['https://unpkg.com/svelte@^1.43.1/compiler/svelte.js']);
-  return svelte.compile(code, {
+function getV1Code(code, version, path) {
+  self.importScripts([
+    `https://unpkg.com/svelte@${version}/compiler/svelte.js`,
+  ]);
+  return self.svelte.compile(code, {
     filename: path,
     dev: true,
     cascade: false,
@@ -80,11 +124,20 @@ function getV1Code(code, path) {
 }
 
 self.addEventListener('message', event => {
-  const { code, path, isV2 } = event.data;
+  const { code, path, version } = event.data;
+  let versionCode = '';
 
-  const { code: compiledCode, map } = isV2
-    ? getV2Code(code, path)
-    : getV1Code(code, path);
+  if (semver.satisfies(version, '1.x')) {
+    versionCode = getV1Code(code, version, path);
+  }
+  if (semver.satisfies(version, '2.x')) {
+    versionCode = getV2Code(code, version, path);
+  }
+  if (semver.satisfies(version, '3.x')) {
+    versionCode = getV3Code(code, version, path);
+  }
+
+  const { code: compiledCode, map } = versionCode;
 
   const withInlineSourcemap = `${compiledCode}
   //# sourceMappingURL=${map.toUrl()}`;

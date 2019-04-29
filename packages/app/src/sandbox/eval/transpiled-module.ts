@@ -12,7 +12,10 @@ import { SourceMap } from './transpilers/utils/get-source-map';
 import ModuleError from './errors/module-error';
 import ModuleWarning from './errors/module-warning';
 
-import { WarningStructure } from './transpilers/utils/worker-warning-handler';
+import {
+  WarningStructure,
+  buildWorkerWarning,
+} from './transpilers/utils/worker-warning-handler';
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
@@ -68,6 +71,7 @@ export type SerializedTranspiledModule = {
   asyncDependencies: Array<string>;
   transpilationDependencies: Array<string>;
   transpilationInitiators: Array<string>;
+  warnings: WarningStructure[];
 };
 
 /* eslint-disable no-use-before-define */
@@ -633,21 +637,6 @@ export default class TranspiledModule {
             sourceMap,
           } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
 
-          if (this.warnings.length) {
-            this.warnings.forEach(warning => {
-              console.warn(warning.message); // eslint-disable-line no-console
-              dispatch(
-                actions.correction.show(warning.message, {
-                  line: warning.lineNumber,
-                  column: warning.columnNumber,
-                  path: warning.path,
-                  source: warning.source,
-                  severity: 'warning',
-                })
-              );
-            });
-          }
-
           if (this.errors.length) {
             throw this.errors[0];
           }
@@ -668,6 +657,8 @@ export default class TranspiledModule {
         }
         debug(`Transpiled '${this.getId()}' in ${Date.now() - t}ms`);
       }
+
+      this.logWarnings();
     }
 
     const sourceEqualsCompiled = code === this.module.code;
@@ -730,6 +721,23 @@ export default class TranspiledModule {
 
     return this;
   }
+
+  logWarnings = () => {
+    if (this.warnings.length) {
+      this.warnings.forEach(warning => {
+        console.warn(warning.message); // eslint-disable-line no-console
+        dispatch(
+          actions.correction.show(warning.message, {
+            line: warning.lineNumber,
+            column: warning.columnNumber,
+            path: warning.path,
+            source: warning.source,
+            severity: warning.severity || 'warning',
+          })
+        );
+      });
+    }
+  };
 
   evaluate(
     manager: Manager,
@@ -1056,6 +1064,7 @@ export default class TranspiledModule {
       asyncDependencies: await Promise.all(
         Array.from(this.asyncDependencies).map(m => m.then(x => x.getId()))
       ),
+      warnings: this.warnings.map(war => war.serialize()),
     };
 
     if (!sourceEqualsCompiled || !optimizeForSize) {
@@ -1143,5 +1152,9 @@ export default class TranspiledModule {
     data.asyncDependencies.forEach((depId: string) => {
       this.asyncDependencies.push(Promise.resolve(loadModule(depId)));
     });
+
+    this.warnings =
+      data.warnings.map(war => new ModuleWarning(this, war)) || [];
+    this.logWarnings();
   }
 }

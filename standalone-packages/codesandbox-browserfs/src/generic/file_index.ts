@@ -1,5 +1,6 @@
 import {default as Stats, FileType} from '../core/node_fs_stats';
 import * as path from 'path';
+import { UNPKGMeta, UNPKGMetaDirectory } from '../backend/UNPKGRequest';
 
 /**
  * A simple class for storing a filesystem index. Assumes that all paths passed
@@ -43,6 +44,31 @@ export class FileIndex<T> {
         }
       }
     }
+    return idx;
+  }
+
+  public static fromUnpkg<T>(listing: UNPKGMeta): FileIndex<T> {
+    const idx = new FileIndex<T>();
+
+    function handleDir(dirPath: string, entry: UNPKGMetaDirectory) {
+      const dirInode: DirInode<T> = new DirInode<T>();
+      entry.files.forEach((child) => {
+        let inode: Inode;
+        if (child.type === 'file') {
+          inode = new FileInode<Stats>(new Stats(FileType.FILE, child.size));
+
+          // @ts-ignore
+          dirInode._ls[path.basename(child.path)] = inode;
+        } else {
+          idx._index[child.path] = inode = handleDir(child.path, child);
+        }
+      });
+
+      return dirInode;
+    }
+
+    idx._index['/'] = handleDir('/', listing);
+
     return idx;
   }
 
