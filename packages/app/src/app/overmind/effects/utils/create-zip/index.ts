@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { Sandbox, Module, Directory } from 'types';
+import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
 import {
   react,
   reactTs,

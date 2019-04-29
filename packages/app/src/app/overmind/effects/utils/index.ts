@@ -1,7 +1,7 @@
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 import { isEqual } from 'lodash-es';
 import prettify from 'app/utils/prettify';
-import { Sandbox, PrettierConfig } from 'types';
+import { Sandbox, PrettierConfig } from '@codesandbox/common/lib/types';
 
 let nextOptimisticId = 0;
 
