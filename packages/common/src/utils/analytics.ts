@@ -64,6 +64,8 @@ export async function identify(key: string, value: string) {
   }
 }
 
+identify('[Amplitude] Version', VERSION);
+
 export async function setUserId(userId: string) {
   try {
     if (!DNT) {
