@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useTransition, animated, useSpring } from 'react-spring';
 
-import Portal from '@codesandbox/common/lib/components/Portal';
-
+import Portal from './Portal';
 import { NotificationContainer } from './elements';
 import {
   NotificationState,
