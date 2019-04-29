@@ -46,10 +46,3 @@ export const Blocks = styled.span`
   font-weight: 300;
   color: rgba(255, 255, 255, 0.7);
 `;
-
-export const Tests = styled.div`
-  padding: 1rem;
-  box-sizing: border-box;
-  overflow-y: overlay;
-  height: calc(100% - 4rem);
-`;

@@ -5,6 +5,8 @@ import DefaultWorkLoader from 'worker-loader?publicPath=/&name=dynamic-worker.[h
 import TSWorker from 'worker-loader?publicPath=/&name=typescript-worker.[hash:8].worker.js!./ts-extension';
 // @ts-ignore
 import VueWorker from 'worker-loader?publicPath=/&name=vue-worker.[hash:8].worker.js!./vue-worker';
+// @ts-ignore
+import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-worker.[hash:8].worker.js!./svelte-worker';
 import { initializeAll } from '../common/global';
 
 child_process.addDefaultForkHandler(DefaultWorkLoader);
@@ -15,6 +17,10 @@ child_process.addForkHandler(
 child_process.addForkHandler(
   '/extensions/octref.vetur.0.16.2/server/dist/vueServerMain.js',
   VueWorker
+);
+child_process.addForkHandler(
+  '/extensions/jamesbirtles.svelte-vscode-0.7.1/node_modules/svelte-language-server/bin/server.js',
+  SvelteWorker
 );
 
 initializeAll().then(() => {

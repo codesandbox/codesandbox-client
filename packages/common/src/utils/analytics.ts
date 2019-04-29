@@ -64,6 +64,8 @@ export async function identify(key: string, value: string) {
   }
 }
 
+identify('[Amplitude] Version', VERSION);
+
 export async function setUserId(userId: string) {
   try {
     if (!DNT) {
@@ -112,9 +114,22 @@ export async function resetUserId() {
   }
 }
 
+const isAllowedEvent = (eventName, secondArg) => {
+  try {
+    if (eventName === 'VSCode - workbenchActionExecuted') {
+      if (secondArg.id.startsWith('cursor')) {
+        return false;
+      }
+    }
+    return true;
+  } catch (e) {
+    return true;
+  }
+};
+
 export default function track(eventName, secondArg: Object = {}) {
   try {
-    if (!DNT) {
+    if (!DNT && isAllowedEvent(eventName, secondArg)) {
       const data = {
         ...secondArg,
         version: VERSION,

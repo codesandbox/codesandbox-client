@@ -1,0 +1,75 @@
+{
+	"name": "theme-dracula",
+	"version": "2.17.0",
+	"displayName": "Dracula Official",
+	"homepage": "https://draculatheme.com/",
+	"description": "Official Dracula Theme. A dark theme for many editors, shells, and more.",
+	"publisher": "dracula-theme",
+	"license": "MIT",
+	"scripts": {
+		"dev": "node ./scripts/dev.js",
+		"build": "node ./scripts/build.js",
+		"lint": "node ./scripts/lint.js",
+		"package": "vsce package -o ./bin/dracula.vsix",
+		"vscode:prepublish": "npm run build"
+	},
+	"maintainers": [
+		"Derek P Sifford <dereksifford@gmail.com>"
+	],
+	"contributors": [
+		"Krzysztof Wisznarewski",
+		"Daniel Ramos",
+		"Eric Jackson",
+		"Elliott Pogue",
+		"Ajit Singh",
+		"Teddy Bradford"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dracula/visual-studio-code.git"
+	},
+	"bugs": {
+		"url": "https://github.com/dracula/visual-studio-code/issues"
+	},
+	"engines": {
+		"vscode": "^1.13.0"
+	},
+	"categories": [
+		"Themes"
+	],
+	"keywords": [
+		"dracula",
+		"dark",
+		"theme",
+		"color-theme"
+	],
+	"icon": "icon.png",
+	"galleryBanner": {
+		"color": "#3c4557",
+		"theme": "dark"
+	},
+	"contributes": {
+		"themes": [
+			{
+				"label": "Dracula",
+				"uiTheme": "vs-dark",
+				"path": "./theme/dracula.json"
+			},
+			{
+				"label": "Dracula Soft",
+				"uiTheme": "vs-dark",
+				"path": "./theme/dracula-soft.json"
+			}
+		]
+	},
+	"devDependencies": {
+		"js-yaml": "^3.12.0",
+		"prettier": "^1.14.3",
+		"tinycolor2": "^1.4.1"
+	},
+	"__metadata": {
+		"id": "4e44877c-1c8d-4f9c-ba86-1372d0fbeeb1",
+		"publisherId": "fbb3d024-f8f2-460c-bdb5-99552f6d8c4b",
+		"publisherDisplayName": "Dracula Theme"
+	}
+}

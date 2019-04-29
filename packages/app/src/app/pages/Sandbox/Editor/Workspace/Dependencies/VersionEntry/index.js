@@ -146,7 +146,9 @@ export default class VersionEntry extends React.PureComponent {
               }}
             >
               {versions.map(a => (
-                <option selected={a === dependencies[dependency]}>{a}</option>
+                <option key={a} selected={a === dependencies[dependency]}>
+                  {a}
+                </option>
               ))}
             </VersionSelect>
           ) : (

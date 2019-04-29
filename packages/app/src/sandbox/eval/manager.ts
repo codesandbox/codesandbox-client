@@ -34,7 +34,7 @@ type Externals = {
   [name: string]: string;
 };
 
-type ModuleObject = {
+export type ModuleObject = {
   [path: string]: Module;
 };
 

@@ -1,4 +1,3 @@
-
 import styled, { css } from 'styled-components';
 
 import Check from 'react-icons/lib/go/check';
@@ -66,3 +65,17 @@ export const StatusElements = {
   running: Loading,
   idle: Dot,
 };
+
+export const Tests = styled.div`
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  /* Using absolute for correct scrolling, browsers have trouble handling
+   * an inner scroll inside a container unless the child is absolute */
+  position: absolute;
+  top: 3.5rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`;

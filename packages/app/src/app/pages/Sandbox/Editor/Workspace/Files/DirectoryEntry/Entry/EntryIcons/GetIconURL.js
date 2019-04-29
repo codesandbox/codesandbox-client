@@ -5,6 +5,7 @@ import fileSvg from '@codesandbox/common/lib/components/icons/file.svg';
 import imageSvg from '@codesandbox/common/lib/components/icons/image.svg';
 import codesandboxSvg from '@codesandbox/common/lib/components/icons/codesandbox.svg';
 import nowSvg from '@codesandbox/common/lib/components/icons/now.svg';
+import svelteSvg from '@codesandbox/common/lib/components/icons/svelte.svg';
 
 function imageExists(url) {
   return new Promise((resolve, reject) => {
@@ -36,6 +37,10 @@ async function getIconURL(type) {
 
     case 'now':
       url = nowSvg;
+      break;
+
+    case 'svelte':
+      url = svelteSvg;
       break;
 
     case 'directory':
