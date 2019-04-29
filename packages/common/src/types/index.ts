@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TemplateType } from './templates';
+import { TemplateType } from '../templates';
 
 export type SSEContainerStatus =
   | 'initializing'
