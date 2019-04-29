@@ -18,7 +18,7 @@ const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
-const babelConfig = __DEV__ ? babelDev : babelProd;
+const babelConfig = __DEV__ && !SANDBOX_ONLY ? babelDev : babelProd;
 
 const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
 
