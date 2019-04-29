@@ -217,9 +217,14 @@ class Preview extends Component<Props, State> {
         onToggleProjectView={() => signals.editor.projectViewToggled()}
         showDevtools={store.preferences.showDevtools}
         isResizing={store.editor.isResizing}
-        setServerStatus={(status: string) => {
+        setSSEManagerStatus={(status: string) => {
           signals.server.statusChanged({ status });
         }}
+        setSSEContainerStatus={(status: string) => {
+          signals.server.containerStatusChanged({ status });
+        }}
+        managerStatus={store.server.status}
+        containerStatus={store.server.containerStatus}
         syncSandbox={signals.files.syncSandbox}
       />
     ) : (
