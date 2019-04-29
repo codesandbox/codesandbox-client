@@ -1,6 +1,6 @@
 {
   "name": "@codesandbox/notifications",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
@@ -9,6 +9,7 @@
     "build:dev": "yarn build"
   },
   "dependencies": {
+    "@codesandbox/common": "^1.0.5",
     "react": "^16.8.6",
     "react-spring": "^8.0.19",
     "styled-components": "^4.2.0",

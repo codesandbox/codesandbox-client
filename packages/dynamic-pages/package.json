@@ -11,7 +11,7 @@
     "format": "prettier --trailing-comma es5 --single-quote --write './**/*.js'"
   },
   "dependencies": {
-    "@codesandbox/common": "^1.0.3",
+    "@codesandbox/common": "^1.0.5",
     "@zeit/next-css": "^1.0.1",
     "airtable": "^0.5.9",
     "date-fns": "^1.30.1",
