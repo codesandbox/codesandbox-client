@@ -4,6 +4,8 @@ import { Mutation } from 'react-apollo';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import history from 'app/utils/history';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { NotificationStatus } from '@codesandbox/notifications';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 
 import { REMOVE_FROM_TEAM, LEAVE_TEAM } from '../../../../queries';
 
@@ -50,14 +52,13 @@ export default ({
           mutation={isOwnUser ? LEAVE_TEAM : REMOVE_FROM_TEAM}
           refetchQueries={isOwnUser ? ['TeamsSidebar'] : []}
           onCompleted={() => {
-            if (window.showNotification) {
-              window.showNotification(
-                isOwnUser
-                  ? 'Succesfully left the team'
-                  : 'Succesfully removed from team',
-                'success'
-              );
-            }
+            notificationState.addNotification({
+              message: isOwnUser
+                ? 'Succesfully left the team'
+                : 'Succesfully removed from team',
+              status: NotificationStatus.SUCCESS,
+            });
+
             history.push(dashboardUrl());
           }}
         >

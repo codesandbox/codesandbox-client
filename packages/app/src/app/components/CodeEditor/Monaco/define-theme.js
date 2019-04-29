@@ -1,4 +1,6 @@
 import Color from 'color';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 const sanitizeColor = color => {
   if (!color) {
@@ -93,12 +95,11 @@ const defineTheme = (monaco, theme) => {
       monaco.editor.setTheme('CodeSandbox');
     } catch (e) {
       console.error(e);
-      if (window.showNotification) {
-        window.showNotification(
-          `Problem initializing template in editor: ${e.message}`,
-          'error'
-        );
-      }
+
+      notificationState.addNotification({
+        message: `Problem initializing template in editor: ${e.message}`,
+        status: NotificationStatus.ERROR,
+      });
     }
   }
 };

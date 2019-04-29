@@ -48,7 +48,7 @@ const showError = (error, controller) => {
   const errorMessage = getMessage(error);
 
   controller.runSignal(
-    'showNotification',
+    'notificationAdded',
     addNotification(errorMessage, 'error')
   );
 

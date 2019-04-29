@@ -42,8 +42,12 @@ export interface NotificationRemovedEvent {
 }
 
 export class NotificationState {
-  private _onNotificationUpdated = new Emitter<NotificationUpdatedEvent>();
-  private _onNotificationRemoved = new Emitter<NotificationRemovedEvent>();
+  private readonly _onNotificationUpdated = new Emitter<
+    NotificationUpdatedEvent
+  >();
+  private readonly _onNotificationRemoved = new Emitter<
+    NotificationRemovedEvent
+  >();
   onNotificationUpdated = this._onNotificationUpdated.event;
   onNotificationRemoved = this._onNotificationRemoved.event;
 

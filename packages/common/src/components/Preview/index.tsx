@@ -24,9 +24,12 @@ import { Spring } from 'react-spring/renderprops.cjs';
 
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 
+import { notificationState } from '../../utils/notifications';
+
 import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
 import { Settings } from './types';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 export type Props = {
   sandbox: Sandbox;
@@ -413,10 +416,10 @@ class BasePreview extends React.Component<Props, State> {
             () => this.$socket.close()
           );
         } else {
-          (window as any).showNotification(
-            `Sandbox Container: ${message}`,
-            'error'
-          );
+          notificationState.addNotification({
+            message: `Sandbox Container: ${message}`,
+            status: NotificationStatus.ERROR,
+          });
         }
       });
 

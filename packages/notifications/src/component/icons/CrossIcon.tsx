@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export function Cross({
+export function CrossIcon({
   style,
   onClick,
 }: {

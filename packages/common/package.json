@@ -32,7 +32,7 @@
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
     "react-router-dom": "^4.3.1",
-    "react-spring": "^8.0.18",
+    "react-spring": "^8.0.19",
     "react-textarea-autosize": "^6.1.0",
     "semver": "^5.6.0",
     "sha1": "^1.1.1",

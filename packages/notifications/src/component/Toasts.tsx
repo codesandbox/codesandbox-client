@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTransition, animated, useSpring } from 'react-spring';
 
 import Portal from '@codesandbox/common/lib/components/Portal';
 
@@ -58,6 +59,12 @@ const TIME_ALIVE = {
 };
 
 export function Toasts({ state }: { state: NotificationState }) {
+  const [refMap] = React.useState(
+    () => new WeakMap<NotificationToast, HTMLDivElement>()
+  );
+
+  const mouseOverRef = React.useRef(false);
+
   const [notificationsToShow, setNotificationsToShow] = React.useState(
     convertMapToToasts(state.getNotifications())
   );
@@ -77,6 +84,11 @@ export function Toasts({ state }: { state: NotificationState }) {
   React.useEffect(() => {
     const interval = setInterval(() => {
       setNotificationsToShow(notifs => {
+        if (mouseOverRef.current) {
+          // Don't remove notifs if there is a mouse there
+          return notifs;
+        }
+
         const newNotifs = notifs.filter(
           notif =>
             isSticky(notif) ||
@@ -117,17 +129,41 @@ export function Toasts({ state }: { state: NotificationState }) {
     [state]
   );
 
+  const transitions = useTransition<
+    NotificationToast,
+    { overflow: string; opacity: number; height: number }
+  >(notificationsToShow, n => n.id, {
+    from: { overflow: 'hidden', opacity: 0, height: 0 },
+    // @ts-ignore: not typed properly in react-spring
+    enter: item => next =>
+      next({
+        overflow: 'hidden',
+        opacity: 1,
+        height: refMap.get(item) ? refMap.get(item).offsetHeight + 16 : 0,
+      }),
+    leave: { overflow: 'hidden', opacity: 0, height: 0 },
+  });
+
   return (
     <Portal>
-      <NotificationContainer>
-        {notificationsToShow.map(toast => (
-          <Toast
-            key={toast.id}
-            toast={toast}
-            removeToast={(id: string) => {
-              removeNotification(id);
-            }}
-          />
+      <NotificationContainer
+        onMouseEnter={() => {
+          mouseOverRef.current = true;
+        }}
+        onMouseLeave={() => {
+          mouseOverRef.current = false;
+        }}
+      >
+        {transitions.map(({ item, props, key }) => (
+          <animated.div key={key} style={props}>
+            <Toast
+              getRef={ref => ref && refMap.set(item, ref)}
+              toast={item}
+              removeToast={(id: string) => {
+                removeNotification(id);
+              }}
+            />
+          </animated.div>
         ))}
       </NotificationContainer>
     </Portal>

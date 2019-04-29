@@ -1,4 +1,4 @@
-import { NotificationState } from './state';
+import { NotificationState, NotificationStatus } from './state';
 import { Toasts } from './component/Toasts';
 
-export { NotificationState, Toasts };
+export { NotificationState, NotificationStatus, Toasts };

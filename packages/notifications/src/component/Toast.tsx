@@ -3,9 +3,13 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import theme from '@codesandbox/common/lib/theme';
 
 import { NotificationToast } from './Toasts';
-import { Cross } from './Cross';
 import { NotificationStatus } from '../state';
-import { ErrorIcon } from './ErrorIcon';
+
+import { ErrorIcon } from './icons/ErrorIcon';
+import { SuccessIcon } from './icons/SuccessIcon';
+import { WarningIcon } from './icons/WarningIcon';
+import { InfoIcon } from './icons/InfoIcon';
+import { StyledCrossIcon } from './elements';
 
 const getColor = (status: NotificationStatus) => {
   switch (status) {
@@ -20,14 +24,30 @@ const getColor = (status: NotificationStatus) => {
   }
 };
 
+const getIcon = (status: NotificationStatus) => {
+  switch (status) {
+    case NotificationStatus.ERROR:
+      return ErrorIcon;
+    case NotificationStatus.WARNING:
+      return WarningIcon;
+    case NotificationStatus.SUCCESS:
+      return SuccessIcon;
+    case NotificationStatus.NOTICE:
+      return InfoIcon;
+  }
+};
+
 export type Props = {
   toast: NotificationToast;
   removeToast: (id: string) => void;
+  getRef?: React.LegacyRef<HTMLDivElement>;
 };
 
-export function Toast({ toast, removeToast }: Props) {
+export function Toast({ toast, removeToast, getRef }: Props) {
+  const Icon = getIcon(toast.notification.status);
   return (
     <div
+      ref={getRef}
       style={{
         display: 'flex',
         backgroundColor: '#141618',
@@ -37,7 +57,7 @@ export function Toast({ toast, removeToast }: Props) {
 
         width: 450,
         overflow: 'hidden',
-        marginBottom: '1rem',
+        marginBottom: '0.5rem',
       }}
     >
       <div
@@ -51,8 +71,16 @@ export function Toast({ toast, removeToast }: Props) {
         }}
       />
       <div style={{ display: 'flex', padding: '.75rem 1rem', width: '100%' }}>
-        <div style={{ width: 32, fontSize: '1.125rem', lineHeight: 1.1 }}>
-          <ErrorIcon />
+        <div
+          style={{
+            color: getColor(toast.notification.status),
+            width: 32,
+            fontSize: '1.25rem',
+            lineHeight: 1.4,
+            verticalAlign: 'middle',
+          }}
+        >
+          <Icon />
         </div>
         <div style={{ width: '100%' }}>
           <div style={{ display: 'flex', width: '100%' }}>
@@ -63,7 +91,10 @@ export function Toast({ toast, removeToast }: Props) {
                   fontWeight: 500,
                   color: 'white',
                   fontFamily: 'Poppins, sans-serif',
-                  marginBottom: toast.notification.title ? '.5rem' : 0,
+                  marginBottom:
+                    toast.notification.title && toast.notification.message
+                      ? '.5rem'
+                      : 0,
                   lineHeight: 1.6,
                 }}
               >
@@ -85,14 +116,7 @@ export function Toast({ toast, removeToast }: Props) {
             </div>
 
             <div style={{ width: 24 }}>
-              <Cross
-                onClick={() => removeToast(toast.id)}
-                style={{
-                  fontSize: '1rem',
-                  marginLeft: '0.5rem',
-                  cursor: 'pointer',
-                }}
-              />
+              <StyledCrossIcon onClick={() => removeToast(toast.id)} />
             </div>
           </div>
 
@@ -112,7 +136,7 @@ export function Toast({ toast, removeToast }: Props) {
                   }}
                   style={{
                     marginTop: '1rem',
-                    marginRight: '0.5rem',
+                    marginRight: '0.75rem',
                     lineHeight: 1,
                   }}
                 >

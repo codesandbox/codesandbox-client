@@ -2,6 +2,10 @@ import { sequence, parallel } from 'cerebral';
 import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import trackAnalytics from '@codesandbox/common/lib/utils/analytics';
+import {
+  notificationState,
+  convertTypeToStatus,
+} from '@codesandbox/common/lib/utils/notifications';
 import * as actions from './actions';
 import { initializeNotifications } from './modules/user-notifications/sequences';
 
@@ -74,25 +78,12 @@ export function setCurrentModule(id) {
   ]);
 }
 
-export function addNotification(
-  title,
-  notificationType,
-  timeAlive,
-  buttons = []
-) {
-  // eslint-disable-next-line no-shadow
-  return function addNotification({ state, resolve }) {
-    const now = Date.now();
-    const notificationTypeValue = resolve.value(notificationType);
-    const timeAliveDefault = notificationTypeValue === 'error' ? 6 : 3;
-
-    state.push('notifications', {
-      id: now,
+export function addNotification(title, notificationType, timeAlive) {
+  return function addNotif({ resolve }) {
+    notificationState.addNotification({
       title: resolve.value(title),
-      notificationType: notificationTypeValue,
-      buttons: resolve.value(buttons),
-      endTime:
-        now + (timeAlive ? resolve.value(timeAlive) : timeAliveDefault) * 1000,
+      status: convertTypeToStatus(resolve.value(notificationType)),
+      timeAlive: resolve.value(timeAlive),
     });
   };
 }

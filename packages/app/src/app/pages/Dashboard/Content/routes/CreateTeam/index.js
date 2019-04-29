@@ -6,6 +6,8 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import track from '@codesandbox/common/lib/utils/analytics';
 import history from 'app/utils/history';
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 import { Container, Description, HeaderContainer } from '../../elements';
 import {
@@ -86,12 +88,10 @@ export default class CreateTeam extends React.PureComponent {
                   });
                 },
               }).then(({ data }) => {
-                if (window.showNotification) {
-                  window.showNotification(
-                    `Succesfully created team '${data.createTeam.name}'`,
-                    'success'
-                  );
-                }
+                notificationState.addNotification({
+                  message: `Succesfully created team '${data.createTeam.name}'`,
+                  status: NotificationStatus.SUCCESS,
+                });
 
                 history.push(teamOverviewUrl(data.createTeam.id));
               });
