@@ -35,6 +35,7 @@ export function initializeSettings() {
           'editor.tabSize': 2,
           'editor.minimap.enabled': false,
           'workbench.editor.openSideBySideDirection': 'down',
+          'svelte.plugin.typescript.diagnostics.enable': false,
         },
         null,
         2
