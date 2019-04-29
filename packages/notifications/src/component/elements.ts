@@ -9,6 +9,8 @@ export const NotificationContainer = styled.div`
 `;
 
 export const StyledCrossIcon = styled(CrossIcon)`
+  transition: 0.3s ease color;
+
   font-size: 1rem;
   margin-left: 0.5rem;
   cursor: pointer;

@@ -3,9 +3,11 @@ import * as React from 'react';
 export function CrossIcon({
   style,
   onClick,
+  className,
 }: {
   onClick: () => void;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
+  className?: string;
 }) {
   return (
     <svg
@@ -19,6 +21,7 @@ export function CrossIcon({
       }}
       onClick={onClick}
       tabIndex={-1}
+      className={className}
     >
       <path d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z" />
     </svg>
