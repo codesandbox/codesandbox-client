@@ -36,7 +36,7 @@ export const Loading = styled.div`
   align-items: center;
   justify-content: center;
 
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 300;
   color: white;
   line-height: 1.3;

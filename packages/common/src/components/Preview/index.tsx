@@ -71,7 +71,7 @@ type State = {
 
 const getSSEUrl = (id?: string, initialPath: string = '') =>
   `https://${id ? id + '.' : ''}sse.${
-    process.env.NODE_ENV === 'development' ? 'codesandbox.stream' : host()
+    process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
   }${initialPath}`;
 
 interface IModulesByPath {
@@ -239,7 +239,7 @@ class BasePreview extends React.Component<Props, State> {
   setupSSESockets = async () => {
     const hasInitialized = !!this.$socket;
 
-    function onTimeout(comp) {
+    function onTimeout(comp: BasePreview) {
       comp.connectTimeout = null;
       if (comp.props.setSSEManagerStatus) {
         comp.props.setSSEManagerStatus('disconnected');
@@ -344,7 +344,7 @@ class BasePreview extends React.Component<Props, State> {
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
-        this.handleRefresh();
+
         this.setState({
           frameInitialized: true,
           overlayMessage: null,
@@ -352,6 +352,11 @@ class BasePreview extends React.Component<Props, State> {
         if (this.props.setSSEContainerStatus) {
           this.props.setSSEContainerStatus('sandbox-started');
         }
+
+        setTimeout(() => {
+          this.executeCodeImmediately(true);
+          this.handleRefresh();
+        });
       });
 
       socket.on('sandbox:hibernate', () => {

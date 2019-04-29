@@ -208,19 +208,19 @@ function addMiddleware(devServer, index) {
     devServer.use(
       '/api',
       proxy({
-        target: 'https://codesandbox.stream',
+        target: 'https://codesandbox.io',
         changeOrigin: true,
       })
     );
 
-    devServer.use(
-      '/socket.io',
-      proxy({
-        target: 'https://sse.codesandbox.stream',
-        changeOrigin: true,
-        secure: false,
-      })
-    );
+    // devServer.use(
+    //   '/socket.io',
+    //   proxy({
+    //     target: 'https://sse.codesandbox.stream',
+    //     changeOrigin: true,
+    //     secure: false,
+    //   })
+    // );
   }
   if (process.env.VSCODE) {
     devServer.use(
