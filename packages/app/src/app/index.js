@@ -15,6 +15,11 @@ import history from 'app/utils/history';
 import { client } from 'app/graphql/client';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
+import {
+  notificationState,
+  convertTypeToStatus,
+} from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import 'normalize.css';
 import theme from '@codesandbox/common/lib/theme';
 import { isSafari } from '@codesandbox/common/lib/utils/platform';
@@ -73,11 +78,12 @@ function boot() {
 
     const rootEl = document.getElementById('root');
 
-    const showNotification = (message, type) =>
-      controller.getSignal('notificationAdded')({
-        type,
+    const showNotification = (message, type) => {
+      notificationState.addNotification({
         message,
+        status: convertTypeToStatus(type),
       });
+    };
 
     window.showNotification = showNotification;
 
@@ -85,9 +91,26 @@ function boot() {
       onUpdated: () => {
         debug('Updated SW');
         controller.getSignal('setUpdateStatus')({ status: 'available' });
+
+        notificationState.addNotification({
+          title: 'CodeSandbox Update Available',
+          message:
+            'We just installed a new version of CodeSandbox, refresh to update!',
+          status: NotificationStatus.SUCCESS,
+          sticky: true,
+          actions: [
+            {
+              primary: {
+                run: () => document.location.reload(),
+                title: 'Reload Page',
+              },
+            },
+          ],
+        });
       },
       onInstalled: () => {
         debug('Installed SW');
+
         showNotification(
           'CodeSandbox has been installed, it now works offline!',
           'success'

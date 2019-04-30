@@ -6,7 +6,7 @@
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "dependencies": {
     "@babel/preset-flow": "^7.0.0",
-    "@codesandbox/common": "^1.0.3",
+    "@codesandbox/common": "^1.0.5",
     "algoliasearch": "^3.24.5",
     "babel-plugin-macros": "^2.4.2",
     "babel-preset-gatsby": "^0.1.5",
@@ -41,7 +41,7 @@
     "react-media": "^1.6.1",
     "react-router-dom": "^4.2.2",
     "react-slick": "^0.23.2",
-    "react-spring": "^8.0.4",
+    "react-spring": "^8.0.19",
     "react-text-loop": "^2.0.1",
     "react-transition-group": "^2.2.1",
     "react-typography": "^0.16.13",

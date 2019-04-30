@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "exclude": ["node_modules", "./**/*.test.ts"],
+  "include": ["./src/**/*"],
+
+  "compilerOptions": {
+    "lib": ["es2015", "dom"],
+    "outDir": "lib",
+    "declaration": true,
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  }
+}

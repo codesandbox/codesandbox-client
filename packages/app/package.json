@@ -246,7 +246,7 @@
     "react-router-dom": "^4.3.1",
     "react-show": "^3.0.4",
     "react-split-pane": "^0.1.85",
-    "react-spring": "^8.0.4",
+    "react-spring": "^8.0.19",
     "react-stripe-elements": "^1.2.0",
     "react-tagsinput": "^3.19.0",
     "react-virtualized": "^9.19.1",
