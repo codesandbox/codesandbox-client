@@ -90,43 +90,6 @@ const styles = css`
 
   .ais-SearchBox-reset {
     display: none;
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    margin: 0;
-    border: 0;
-    background: none;
-    cursor: pointer;
-    padding: 0;
-    font-size: inherit;
-    user-select: none;
-    fill: rgba(255, 255, 255, 0.5);
-  }
-
-  .ais-SearchBox-reset:focus {
-    outline: 0;
-  }
-
-  .ais-SearchBox-reset svg {
-    display: block;
-    margin: 6px;
-    width: 14px;
-    height: 14px;
-  }
-
-  .ais-SearchBox-input:valid ~ .ais-SearchBox-reset {
-    display: block;
-    animation-name: sbx-reset-in;
-    animation-duration: 250ms;
-  }
-
-  @keyframes sbx-reset-in {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
   }
 
   .ais-Highlight-highlighted {
@@ -180,7 +143,7 @@ const styles = css`
   }
 
   .ais-RefinementList-item--selected .ais-RefinementList-count {
-    background-color: rgba(108, 174, 221, 1);
+    background-color: ${props => props.theme.secondary};
   }
 
   .ais-RefinementList-count {
@@ -252,8 +215,6 @@ const styles = css`
   }
 
   .ais-Pagination {
-    background-color: ${props => props.theme.background};
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.25);
     width: auto;
     margin: 0 auto;
     box-sizing: border-box;
@@ -270,6 +231,7 @@ const styles = css`
     border-radius: 4px;
     text-align: center;
     font-size: 14px;
+    font-weight: bold;
   }
 
   .ais-Pagination-item:hover {
@@ -277,7 +239,7 @@ const styles = css`
   }
 
   .ais-Pagination-item.ais-Pagination-item--selected.ais-Pagination-item--page:hover {
-    background: rgba(108, 174, 221, 1);
+    background: ${props => props.theme.secondary};
   }
 
   .ais-Pagination-item.ais-Pagination-item--selected.ais-Pagination-item--page:hover
@@ -286,17 +248,16 @@ const styles = css`
   }
 
   .ais-Pagination__item:hover .ais-Pagination-link {
-    color: rgba(108, 174, 221, 1);
+    color: ${props => props.theme.secondary};
   }
 
   .ais-Pagination-item--selected {
     color: ${props => props.theme.white};
-    background: rgba(108, 174, 221, 1);
+    background: ${props => props.theme.secondary};
   }
 
   .ais-Pagination-item--selected .ais-Pagination-link {
     color: currentColor;
-    font-weight: normal;
   }
 
   .ais-Pagination-item--disabled {
