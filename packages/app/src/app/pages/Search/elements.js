@@ -15,16 +15,6 @@ export const StyledTitle = styled(Title)`
   display: flex;
   color: ${props => props.theme.lightText};
   margin-bottom: 16px;
-
-  /* Algolia Icon */
-  + div {
-    @media (max-width: 768px) {
-      float: none;
-      margin-top: -10px;
-      padding: 0;
-      margin-bottom: 1.5rem;
-    }
-  }
 `;
 
 export const Main = styled(Row)`

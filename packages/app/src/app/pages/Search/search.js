@@ -323,10 +323,12 @@ const styles = css`
     grid-gap: 2rem;
     grid-template-columns: 1fr 1fr 1fr;
     margin-top: 2rem;
-  }
 
-  @media screen and (max-width: 1100px) {
-    .ais-Hits-list {
+    @media screen and (max-width: 1100px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media screen and (max-width: 900px) {
       grid-template-columns: 1fr;
     }
   }

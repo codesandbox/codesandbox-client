@@ -5,5 +5,6 @@ export const Container = styled.aside`
   max-width: 340px;
   @media (max-width: 768px) {
     width: 100%;
+    max-width: 100%;
   }
 `;
