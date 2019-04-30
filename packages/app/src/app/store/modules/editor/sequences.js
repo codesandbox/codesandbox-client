@@ -210,7 +210,7 @@ export const saveCode = [
   ensureOwnedEditable,
   when(state`preferences.settings.experimentVSCode`),
   {
-    true: [changeCode],
+    true: [],
     false: [
       when(state`preferences.settings.prettifyOnSaveEnabled`),
       {
