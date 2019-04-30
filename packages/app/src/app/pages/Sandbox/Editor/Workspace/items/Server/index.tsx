@@ -23,8 +23,7 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-function Server({ store }) {
-  const { parsed } = store.editor.parsedConfigurations.package;
+function Server({ store }: { store: any }) {
   const disconnected = store.server.status !== 'connected';
 
   return (
@@ -55,7 +54,12 @@ function Server({ store }) {
               opacity: disconnected ? 0.5 : 1,
             }}
           >
-            <Tasks package={parsed} />
+            <Tasks
+              package={
+                store.editor.parsedConfigurations.package &&
+                store.editor.parsedConfigurations.package.parsed
+              }
+            />
           </WorkspaceInputContainer>
         </Margin>
       </Margin>
@@ -78,10 +82,12 @@ function Server({ store }) {
               dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
             }}
           >
-            <PowerIcon
-              style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
-            />{' '}
-            Restart Sandbox
+            <React.Fragment>
+              <PowerIcon
+                style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+              />{' '}
+              Restart Sandbox
+            </React.Fragment>
           </Button>
         </WorkspaceInputContainer>
         <WorkspaceInputContainer>
@@ -106,10 +112,12 @@ function Server({ store }) {
               });
             }}
           >
-            <PowerIcon
-              style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
-            />{' '}
-            Restart Server
+            <React.Fragment>
+              <PowerIcon
+                style={{ fontSize: '1.125em', marginRight: '.25rem ' }}
+              />{' '}
+              Restart Server
+            </React.Fragment>
           </Button>
         </WorkspaceInputContainer>
       </Margin>
