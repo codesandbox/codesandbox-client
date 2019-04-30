@@ -21,6 +21,7 @@ Object {
     "description": [Function],
     "title": [Function],
   },
+  "placeholder": [Function],
   "primary": [Function],
   "primaryText": [Function],
   "red": [Function],
