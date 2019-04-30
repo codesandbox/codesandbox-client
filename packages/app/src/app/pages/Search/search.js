@@ -199,6 +199,8 @@ const styles = css`
     color: rgba(255, 255, 255, 0.8);
     margin-top: 8px;
     padding: 5px 7px;
+    padding-right: 0;
+    margin-right: -4px;
   }
 
   .ais-PoweredBy-link {
@@ -323,6 +325,8 @@ const styles = css`
     grid-gap: 2rem;
     grid-template-columns: 1fr 1fr 1fr;
     margin-top: 2rem;
+    margin-left: -0.5rem;
+    margin-right: 0.5rem;
 
     @media screen and (max-width: 1100px) {
       grid-template-columns: 1fr 1fr;

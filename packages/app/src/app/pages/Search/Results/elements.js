@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const Container = styled.div`
   flex: 2;
   border-top: 1px solid #828282;
-  margin-right: 2rem;
   padding-top: 1rem;
 
   color: rgba(255, 255, 255, 0.6);
