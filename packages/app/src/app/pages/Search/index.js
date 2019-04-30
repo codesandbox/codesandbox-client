@@ -1,6 +1,11 @@
 import React from 'react';
 import { inject } from 'mobx-react';
-import { InstantSearch, SearchBox, PoweredBy } from 'react-instantsearch/dom';
+import {
+  InstantSearch,
+  SearchBox,
+  PoweredBy,
+  Configure,
+} from 'react-instantsearch/dom';
 import qs from 'qs';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
@@ -79,6 +84,7 @@ class Search extends React.PureComponent {
                 onSearchStateChange={this.onSearchStateChange}
                 createURL={createURL}
               >
+                <Configure hitsPerPage={12} />
                 <Main alignItems="flex-start">
                   <div>
                     <StyledTitle>Search</StyledTitle>
