@@ -45,10 +45,15 @@ function addScript(src: string) {
   });
 }
 
+let jsdomPromise = null;
 /**
  * Load JSDOM while the sandbox loads. Before we run a test we make sure that this has been loaded.
  */
-const jsdomPromise = addScript('/static/js/jsdom-4.0.0.min.js');
+const getJSDOM = () => {
+  jsdomPromise = jsdomPromise || addScript('/static/js/jsdom-4.0.0.min.js');
+
+  return jsdomPromise;
+};
 
 function resetTestState() {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
@@ -220,7 +225,7 @@ export default class TestRunner {
       return;
     }
 
-    await jsdomPromise;
+    await getJSDOM();
 
     this.sendMessage('total_test_start');
 
