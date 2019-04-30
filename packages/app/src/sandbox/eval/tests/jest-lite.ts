@@ -1,4 +1,4 @@
-// @flow
+
 import { dispatch, actions, listen } from 'codesandbox-api';
 import { react, reactTs } from '@codesandbox/common/lib/templates';
 import expect from 'jest-matchers';

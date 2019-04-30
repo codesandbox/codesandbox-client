@@ -1,4 +1,4 @@
-// @flow
+
 import { dispatch } from 'codesandbox-api';
 import Transpiler from '../';
 import { LoaderContext } from '../../transpiled-module';
