@@ -164,6 +164,7 @@ const styles = css`
     margin: 0;
     color: rgba(255, 255, 255, 0.8);
     margin-top: 1rem;
+    font-weight: normal;
   }
 
   .ais-RefinementList__showMoreDisabled[disabled],
