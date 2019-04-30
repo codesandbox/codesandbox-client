@@ -32,6 +32,7 @@ export type Props = {
     };
   };
   small?: boolean;
+  noHeight?: boolean;
   defaultHeight?: number;
   noMargin?: boolean;
   selectSandbox: (
@@ -81,7 +82,13 @@ export default class WideSandbox extends React.PureComponent<Props> {
   };
 
   render() {
-    const { sandbox, small, noMargin, defaultHeight = 245 } = this.props;
+    const {
+      sandbox,
+      small,
+      noMargin,
+      noHeight,
+      defaultHeight = 245,
+    } = this.props;
 
     if (!sandbox) {
       return (
@@ -118,7 +125,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
             this.setState({ imageLoaded: true });
           }}
         />
-        <SandboxInfo>
+        <SandboxInfo noHeight={noHeight}>
           <SandboxTitle color={template.color()}>
             {this.getTitle()}
           </SandboxTitle>

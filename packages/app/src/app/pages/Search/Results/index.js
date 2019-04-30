@@ -18,6 +18,7 @@ function Results() {
             selectSandbox={() =>
               window.open(sandboxUrl({ id: hit.objectID, git: hit.git }))
             }
+            noHeight
             sandbox={{
               ...hit,
               title: hit.title || hit.objectID,

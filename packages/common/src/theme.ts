@@ -30,7 +30,7 @@ const colorMethods = [
  */
 const addModifier = (fn, method, ...modifierArgs) => (...args) =>
   Color(fn(...args))
-    [method](...modifierArgs)
+  [method](...modifierArgs)
     .rgbString();
 /**
  * Add useful methods directly to selector function, as well as put an rgbString() call at the end
@@ -78,6 +78,7 @@ const theme = {
     red: '#F27777',
     dangerBackground: '#DC3545',
     sidebar: '#191d1f',
+    placeholder: "#B8B9BA"
   }),
   vscodeTheme: codesandbox,
 

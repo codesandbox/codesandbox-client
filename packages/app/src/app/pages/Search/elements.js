@@ -9,9 +9,12 @@ export const Content = styled.div`
 `;
 
 export const StyledTitle = styled(Title)`
-  display: inline-block;
-  text-align: left;
-  font-size: 2rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  display: flex;
+  color: ${props => props.theme.lightText};
+  margin-bottom: 16px;
 
   /* Algolia Icon */
   + div {
@@ -25,7 +28,16 @@ export const StyledTitle = styled(Title)`
 `;
 
 export const Main = styled(Row)`
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-gap: 24px;
   @media (max-width: 768px) {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
+`;
+
+export const Container = styled.div`
+  background: ${props => props.theme.background5};
+  width: 100vw;
+  font-family: 'Open Sans', sans-serif;
 `;

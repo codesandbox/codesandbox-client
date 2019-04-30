@@ -14,23 +14,13 @@ import {
 } from '@codesandbox/common/lib/utils/config';
 
 import 'instantsearch.css/themes/reset.css';
-import './search.css';
+import Styles from './search';
 
 import Results from './Results';
 import Filters from './Filters';
-import { Content, StyledTitle, Main } from './elements';
-
-const SEARCHABLE_THINGS = [
-  'dependency',
-  'sandbox title',
-  'sandbox tag',
-  'github repository',
-];
+import { Content, StyledTitle, Main, Container } from './elements';
 
 const updateAfter = 700;
-
-const getRandomSearch = () =>
-  SEARCHABLE_THINGS[Math.floor(Math.random() * SEARCHABLE_THINGS.length)];
 
 const createURL = state => `?${qs.stringify(state)}`;
 
@@ -42,7 +32,6 @@ class Search extends React.PureComponent {
     super(props);
     this.state = {
       searchState: qs.parse(props.location.search.slice(1)),
-      randomSearch: getRandomSearch(),
     };
 
     this.unlisten = this.props.history.listen((location, action) => {
@@ -76,34 +65,40 @@ class Search extends React.PureComponent {
   render() {
     document.title = 'Search - CodeSandbox';
     return (
-      <MaxWidth>
-        <Margin vertical={1.5}>
-          <Navigation title="Search" searchNoInput />
-          <Content>
-            <InstantSearch
-              appId={ALGOLIA_APPLICATION_ID}
-              apiKey={ALGOLIA_API_KEY}
-              indexName={ALGOLIA_DEFAULT_INDEX}
-              searchState={this.state.searchState}
-              onSearchStateChange={this.onSearchStateChange}
-              createURL={createURL}
-            >
-              <StyledTitle>Sandbox Search</StyledTitle>
-              <PoweredBy />
-              <SearchBox
-                autoFocus
-                translations={{
-                  placeholder: `Search for a ${this.state.randomSearch}...`,
-                }}
-              />
-              <Main alignItems="flex-start">
-                <Results />
-                <Filters />
-              </Main>
-            </InstantSearch>
-          </Content>
-        </Margin>
-      </MaxWidth>
+      <Container>
+        <Styles />
+        <MaxWidth>
+          <Margin vertical={1.5}>
+            <Navigation title="Search" searchNoInput />
+            <Content>
+              <InstantSearch
+                appId={ALGOLIA_APPLICATION_ID}
+                apiKey={ALGOLIA_API_KEY}
+                indexName={ALGOLIA_DEFAULT_INDEX}
+                searchState={this.state.searchState}
+                onSearchStateChange={this.onSearchStateChange}
+                createURL={createURL}
+              >
+                <Main alignItems="flex-start">
+                  <div>
+                    <StyledTitle>Search</StyledTitle>
+                    <PoweredBy />
+                    <SearchBox
+                      autoFocus
+                      translations={{
+                        placeholder: `Search here...`,
+                      }}
+                    />
+                    <Results />
+                  </div>
+
+                  <Filters />
+                </Main>
+              </InstantSearch>
+            </Content>
+          </Margin>
+        </MaxWidth>
+      </Container>
     );
   }
 }

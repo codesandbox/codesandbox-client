@@ -92,13 +92,17 @@ export const SandboxImage = styled.img`
   border-image-width: 0;
 `;
 
-export const SandboxInfo = styled.div`
+export const SandboxInfo = styled.div<{ noHeight?: boolean }>`
   left: -1px;
   right: -1px;
   padding: 0.75rem;
   min-height: 90px;
   z-index: 1;
   height: 130px;
+
+    ${props => props.noHeight && css`
+    height: auto;
+  `}:
 `;
 
 export const TemplateIcon = styled.div`
