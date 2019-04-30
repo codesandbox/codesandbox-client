@@ -61,31 +61,31 @@ const styles = css`
     user-select: none;
     padding-left: 4px;
     padding-bottom: 2px;
+
+    svg {
+      margin: 6px;
+      width: 14px;
+      height: 14px;
+      vertical-align: middle;
+      fill: rgba(255, 255, 255, 0.5);
+    }
+
+    &::before {
+      display: inline-block;
+      margin-right: -4px;
+      height: 100%;
+      vertical-align: middle;
+      content: '' 2;
+    }
+
+    &:focus {
+      outline: 0;
+    }
   }
 
-  .ais-SearchBox-submit::before {
-    display: inline-block;
-    margin-right: -4px;
-    height: 100%;
-    vertical-align: middle;
-    content: '' 2;
-  }
-
-  .ais-SearchBox-submit:hover,
+  .ais-SearchBox-submit .ais-SearchBox-submit:hover,
   .ais-SearchBox-submit:active {
     cursor: pointer;
-  }
-
-  .ais-SearchBox-submit:focus {
-    outline: 0;
-  }
-
-  .ais-SearchBox-submit svg {
-    margin: 6px;
-    width: 14px;
-    height: 14px;
-    vertical-align: middle;
-    fill: rgba(255, 255, 255, 0.5);
   }
 
   .ais-SearchBox-reset {
@@ -100,18 +100,18 @@ const styles = css`
   .ais-RefinementList-item {
     color: rgba(255, 255, 255, 0.8);
     margin-top: 6px;
-  }
 
-  .ais-RefinementList-item .ais-RefinementList-checkbox {
-    display: inline-block;
-    border-radius: 3.5px;
-    width: 16px;
-    height: 16px;
-    background: rgba(0, 0, 0, 0.3);
-    outline: none;
-    vertical-align: middle;
-    margin-right: 8px;
-    transition: all 0.15s ease;
+    .ais-RefinementList-checkbox {
+      display: inline-block;
+      border-radius: 3.5px;
+      width: 16px;
+      height: 16px;
+      background: rgba(0, 0, 0, 0.3);
+      outline: none;
+      vertical-align: middle;
+      margin-right: 8px;
+      transition: all 0.15s ease;
+    }
   }
 
   .ais-RefinementList-item input[type='checkbox']:checked {
@@ -183,12 +183,12 @@ const styles = css`
     border-radius: 4px;
     color: white;
     background: ${props => props.theme.secondary};
-  }
 
-  .ais-ClearRefinements-button:disabled[disabled],
-  .ais-ClearRefinements-button:disabled:disabled {
-    opacity: 0.5;
-    pointer-events: none;
+    &:disabled[disabled],
+    &:disabled:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
   }
 
   .ais-PoweredBy {
@@ -201,20 +201,19 @@ const styles = css`
     padding: 5px 7px;
     padding-right: 0;
     margin-right: -4px;
-  }
 
-  .ais-PoweredBy-link {
-    padding: 0 5px;
-  }
+    .ais-PoweredBy-link {
+      padding: 0 5px;
+      svg {
+        height: 1.2em;
+        vertical-align: bottom;
+        fill: rgba(255, 255, 255, 0.8) !important;
 
-  .ais-PoweredBy-link svg {
-    height: 1.2em;
-    vertical-align: bottom;
-    fill: rgba(255, 255, 255, 0.8) !important;
-  }
-
-  .ais-PoweredBy-link svg path:nth-child(4) {
-    fill: rgba(255, 255, 255, 0.8) !important;
+        path:nth-child(4) {
+          fill: rgba(255, 255, 255, 0.8) !important;
+        }
+      }
+    }
   }
 
   .ais-Pagination {
@@ -224,75 +223,75 @@ const styles = css`
     display: inline-block;
     border-radius: 4px;
     padding: 8px 16px;
-  }
 
-  .ais-Pagination-item {
-    transition: 0.3s ease all;
-    display: inline-block;
-    padding: 3px;
-    width: 28px;
-    border-radius: 4px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-  }
+    .ais-Pagination-item {
+      transition: 0.3s ease all;
+      display: inline-block;
+      padding: 3px;
+      width: 28px;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+    }
 
-  .ais-Pagination-item:hover {
-    background: rgba(108, 174, 221, 0.2);
-  }
+    .ais-Pagination-item:hover {
+      background: rgba(108, 174, 221, 0.2);
+    }
 
-  .ais-Pagination-item.ais-Pagination-item--selected.ais-Pagination-item--page:hover {
-    background: ${props => props.theme.secondary};
-  }
+    .ais-Pagination-item.ais-Pagination-item--selected.ais-Pagination-item--page:hover {
+      background: ${props => props.theme.secondary};
+    }
 
-  .ais-Pagination-item.ais-Pagination-item--selected.ais-Pagination-item--page:hover
-    .ais-Pagination-link.ais-Pagination__itemLinkSelected {
-    color: white;
-  }
+    .ais-Pagination-item.ais-Pagination-item--selected.ais-Pagination-item--page:hover
+      .ais-Pagination-link.ais-Pagination__itemLinkSelected {
+      color: white;
+    }
 
-  .ais-Pagination__item:hover .ais-Pagination-link {
-    color: ${props => props.theme.secondary};
-  }
+    .ais-Pagination__item:hover .ais-Pagination-link {
+      color: ${props => props.theme.secondary};
+    }
 
-  .ais-Pagination-item--selected {
-    color: ${props => props.theme.white};
-    background: ${props => props.theme.secondary};
-  }
+    .ais-Pagination-item--selected {
+      color: ${props => props.theme.white};
+      background: ${props => props.theme.secondary};
+    }
 
-  .ais-Pagination-item--selected .ais-Pagination-link {
-    color: currentColor;
-  }
+    .ais-Pagination-item--selected .ais-Pagination-link {
+      color: currentColor;
+    }
 
-  .ais-Pagination-item--disabled {
-    visibility: visible;
-    color: #bbbbbb;
-  }
+    .ais-Pagination-item--disabled {
+      visibility: visible;
+      color: #bbbbbb;
+    }
 
-  .ais-Pagination-item--disabled[disabled],
-  .ais-Pagination-item--disabled:disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
+    .ais-Pagination-item--disabled[disabled],
+    .ais-Pagination-item--disabled:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
 
-  .ais-Pagination-item--disabled:hover {
-    cursor: default;
-    text-decoration: none;
-  }
+    .ais-Pagination-item--disabled:hover {
+      cursor: default;
+      text-decoration: none;
+    }
 
-  .ais-Pagination-link {
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.5);
-    display: block;
-    width: 100%;
-    height: 100%;
+    .ais-Pagination-link {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.5);
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .ais-Stats {
     display: inline-block;
-  }
 
-  .ais-Stats-text {
-    color: ${props => props.theme.placeholder};
+    .ais-Stats-text {
+      color: ${props => props.theme.placeholder};
+    }
   }
 
   [type='checkbox'],
@@ -334,6 +333,16 @@ const styles = css`
 
     @media screen and (max-width: 900px) {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media screen and (min-width: 1100px) {
+    .ais-Hits-item {
+      > div {
+        > img {
+          height: 147px !important;
+        }
+      }
     }
   }
 `;
