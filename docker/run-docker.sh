@@ -1,4 +1,4 @@
 #!/bin/bash
 
 yarn
-yarn run start:dev_api
+NODE_OPTIONS=--max_old_space_size=8192 yarn run start:dev_api

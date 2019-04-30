@@ -12,13 +12,10 @@ const Container = styled.div`
   font-size: 0.875rem;
   line-height: 1.6;
 
-  color: rgba(255, 255, 255, 0.8);
-
-  background-color: rgba(0, 0, 0, 0.5);
-
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
+  background-color: ${props => props.theme['sideBar.background']};
   white-space: pre-wrap;
-
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 
   &:last-child {
     border-bottom: none;
@@ -34,24 +31,20 @@ function escapeHtml(unsafe) {
     .replace(/'/g, '&#039;');
 }
 
-const white = 'rgba(255, 255, 255, 0.8)';
-
 const formatDiffMessage = (error: TestError, path: string) => {
   let finalMessage: string = '';
   if (error.matcherResult) {
-    finalMessage = `<span style="color:rgba(255, 255, 255, 0.5);">${escapeHtml(
-      error.message
-    )
+    finalMessage = `<span>${escapeHtml(error.message)
       .replace(/(expected)/m, `<span style="color:${theme.green()}">$1</span>`)
       .replace(/(received)/m, `<span style="color:${theme.red()}">$1</span>`)
-      .replace(/(Difference:)/m, `<span style="color:${white}">$1</span>`)
+      .replace(/(Difference:)/m, `<span>$1</span>`)
       .replace(
         /(Expected.*\n)(.*)/m,
-        `<span style="color:${white}">$1</span><span style="color:${theme.green()}">$2</span>`
+        `<span>$1</span><span style="color:${theme.green()}">$2</span>`
       )
       .replace(
         /(Received.*\n)(.*)/m,
-        `<span style="color:${white}">$1</span><span style="color:${theme.red()}">$2</span>`
+        `<span>$1</span><span style="color:${theme.red()}">$2</span>`
       )
       .replace(/^(-.*)/gm, `<span style="color:${theme.red()}">$1</span>`)
       .replace(
@@ -94,11 +87,7 @@ const formatDiffMessage = (error: TestError, path: string) => {
         }
 
         finalMessage +=
-          `<div ${
-            code.highlight
-              ? `style="font-weight:900;color:rgba(255, 255, 255, 0.5)"`
-              : ``
-          }>` +
+          `<div ${code.highlight ? `style="font-weight:900;"` : ``}>` +
           (code.highlight
             ? `<span style="color:${theme.red()};">></span> `
             : '') +

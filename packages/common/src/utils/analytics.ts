@@ -64,7 +64,9 @@ export async function identify(key: string, value: string) {
   }
 }
 
-identify('[Amplitude] Version', VERSION);
+setTimeout(() => {
+  identify('[Amplitude] Version', VERSION);
+}, 5000);
 
 export async function setUserId(userId: string) {
   try {

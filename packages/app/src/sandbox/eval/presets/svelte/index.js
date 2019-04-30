@@ -10,6 +10,9 @@ const babelOptions = {
   config: {
     presets: [],
     plugins: [],
+    parserOpts: {
+      plugins: ['dynamicImport', 'objectRestSpread'],
+    },
   },
 };
 

@@ -31,7 +31,7 @@ export function listen({ props, live }) {
 
 export function consumeModuleState({ props }) {
   return {
-    moduleState: camelizeKeys(props.data.module_state),
+    moduleState: props.data.module_state,
   };
 }
 
@@ -363,11 +363,22 @@ export function updateModule({ props, state }) {
   );
 }
 
-export function sendTransform({ ot, props }) {
+export function sendTransform({ ot, props, live }) {
   if (!props.operation) {
     return {};
   }
-  ot.applyClient(props.moduleShortid, props.operation);
+
+  try {
+    ot.applyClient(props.moduleShortid, props.operation);
+  } catch (e) {
+    // Something went wrong, probably a sync mismatch. Request new version
+    console.error(
+      'Something went wrong with applying OT operation',
+      props.moduleShortid,
+      props.operation
+    );
+    live.send('live:module_state', {});
+  }
 
   return {};
 }
