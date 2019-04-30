@@ -168,6 +168,18 @@ export type Sandbox = {
   screenshotUrl: string | undefined;
 };
 
+export type PrettierConfig = {
+  fluid: boolean;
+  printWidth: number;
+  tabWidth: number;
+  useTabs: boolean;
+  semi: boolean;
+  singleQuote: boolean;
+  trailingComma: string;
+  bracketSpacing: boolean;
+  jsxBracketSameLine: boolean;
+};
+
 export type Preferences = {
   autoCompleteEnabled: boolean | undefined;
   vimMode: boolean | undefined;
@@ -178,7 +190,7 @@ export type Preferences = {
   fontSize: number | undefined;
   fontFamily: string | undefined;
   clearConsoleEnabled: boolean | undefined;
-  prettierConfig: Object;
+  prettierConfig: PrettierConfig;
   autoDownloadTypes: boolean | undefined;
   newPackagerExperiment: boolean | undefined;
   zenMode: boolean | undefined;
