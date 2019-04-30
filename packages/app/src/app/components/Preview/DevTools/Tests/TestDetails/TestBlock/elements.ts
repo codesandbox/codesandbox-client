@@ -1,17 +1,22 @@
 import styled from 'styled-components';
+import Color from 'color'
 
 export const BlockHeader = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
   box-sizing: border-box;
-  padding: 0 0.5rem;
-  padding-right: 2px;
+  padding: 0rem 1rem;
+
   overflow: hidden;
+    background-color: ${props => Color(props.theme['sideBar.background'])
+    .darken(props.theme.light ? 0.1 : 0.3)
+    .rgbString()};
 `;
 
+
 export const Container = styled.div`
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   overflow: hidden;
 
   border-radius: 2px;
@@ -21,7 +26,7 @@ export const Actions = styled.div`
   display: flex;
   align-items: center;
   padding: 7px;
-  background-color: ${props => props.theme['sideBar.background']};
+  padding-right: 0;
 
   font-size: 0.875rem;
   color: ${props =>

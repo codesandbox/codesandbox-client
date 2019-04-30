@@ -15,10 +15,10 @@ export const Block = styled.div<{ last: boolean }>`
     content: '';
     position: absolute;
     margin: auto;
-    top: 12px;
+    top: 13px;
     right: -10px;
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     transform: rotate(45deg);
     border-right: 1px solid ${props =>
     props.theme.light ? `rgba(0, 0, 0, ${(props.last ? 0.3 : 0.4)})` : `rgba(255, 255, 255, ${(props.last ? 0.3 : 0.4)})`};
@@ -32,7 +32,6 @@ export const Block = styled.div<{ last: boolean }>`
 export const TestName = styled.div`
   padding: 0.4rem;
   padding-left: 20px;
-  background-color: ${props => props.theme['sideBar.background']};
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
   flex: auto;
