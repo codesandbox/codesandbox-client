@@ -86,7 +86,7 @@ class Search extends React.PureComponent {
                     <SearchBox
                       autoFocus
                       translations={{
-                        placeholder: `Search here...`,
+                        placeholder: `Search Sandboxes...`,
                       }}
                     />
                     <Results />
