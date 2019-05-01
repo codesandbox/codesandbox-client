@@ -1,6 +1,7 @@
 import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import getTemplate from '@codesandbox/common/lib/templates';
+import track from '@codesandbox/common/lib/utils/analytics';
 import * as actions from './actions';
 import { ensureOwnedEditable, closeModal, openModal } from '../../sequences';
 import { updateSandboxPackage } from './../editor/sequences';
@@ -57,6 +58,27 @@ export const updateSandboxInfo = [
   ),
   {
     true: [
+      // eslint-disable-next-line
+      ({ state }) => {
+        if (
+          state.get('workspace.project.title') &&
+          state.get(
+            `editor.sandboxes.${state.get('editor.currentId')}.title`
+          ) !== state.get('workspace.project.title')
+        ) {
+          track('Sandbox - Update Title');
+        }
+
+        if (
+          state.get('workspace.project.description') &&
+          state.get(
+            `editor.sandboxes.${state.get('editor.currentId')}.description`
+          ) !== state.get('workspace.project.description')
+        ) {
+          track('Sandbox - Update Description');
+        }
+      },
+
       set(
         state`editor.sandboxes.${state`editor.currentId`}.title`,
         state`workspace.project.title`
