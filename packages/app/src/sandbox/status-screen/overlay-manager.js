@@ -29,10 +29,12 @@ function createIframe() {
 
     if (iframe.contentDocument) {
       resolve(iframe);
-    } else {
+    } else if (document.getElementById('frame')) {
       document.getElementById('frame').onload = () => {
         resolve(iframe);
       };
+    } else {
+      resolve(iframe);
     }
   });
 }

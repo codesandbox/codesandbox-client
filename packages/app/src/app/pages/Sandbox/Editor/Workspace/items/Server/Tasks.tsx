@@ -37,11 +37,13 @@ const Task = styled.button`
 `;
 
 type Props = {
-  package: ?{
-    scripts: {
-      [command: string]: string,
-    },
-  },
+  package:
+    | {
+        scripts: {
+          [command: string]: string;
+        };
+      }
+    | undefined;
 };
 
 // These scripts are only supposed to run on the main thread.

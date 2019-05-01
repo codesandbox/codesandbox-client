@@ -1,8 +1,6 @@
 
 import * as React from 'react';
 import PlayIcon from 'react-icons/lib/go/playback-play';
-import SyncIcon from 'react-icons/lib/go/sync';
-
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { File, Test, Status } from '../';
@@ -16,6 +14,7 @@ import {
   TestData,
   IdleBar,
   Actions,
+  SyncIconStyled,
 } from './elements';
 
 import TestSummaryText from '../TestSummaryText';
@@ -69,10 +68,7 @@ export default ({
               {totalTestCount !== 0 && `${totalDuration}ms`}
             </div>
             <Tooltip content="Toggle File Watching">
-              <SyncIcon
-                style={{ color: watching ? 'white' : 'inherit' }}
-                onClick={toggleWatching}
-              />
+              <SyncIconStyled watching={watching} onClick={toggleWatching} />
             </Tooltip>
             <Tooltip content="Run All Tests">
               <PlayIcon onClick={runAllTests} />

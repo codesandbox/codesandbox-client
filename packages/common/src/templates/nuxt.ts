@@ -1,4 +1,3 @@
-
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
@@ -19,5 +18,6 @@ export default new Template(
     mainFile: ['/pages/index.vue'],
     showOnHomePage: true,
     main: true,
+    showCube: false,
   }
 );

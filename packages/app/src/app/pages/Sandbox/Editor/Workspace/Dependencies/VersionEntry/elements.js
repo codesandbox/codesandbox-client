@@ -7,6 +7,7 @@ export const Version = styled.div`
   position: absolute;
   right: ${props => (props.hovering ? (props.withSize ? 5 : 3.5) : 1)}rem;
   color: ${props => props.theme.background.lighten(2).clearer(0.5)};
+  display: ${props => (props.hovering ? 'none' : 'block')};
 `;
 
 export const MoreData = styled(EntryContainer)`
@@ -28,9 +29,10 @@ export const MoreData = styled(EntryContainer)`
 `;
 
 export const VersionSelect = styled(Select)`
+  visibility: ${props => (props.hovering ? 'visible' : 'hidden')};
   width: 60px;
   position: absolute;
-  right: ${props => (props.hovering ? (props.withSize ? 5 : 3.5) : 1)}rem;
+  right: 5rem;
   color: ${props => props.theme.background.lighten(2)};
   margin-top: -4px;
 `;

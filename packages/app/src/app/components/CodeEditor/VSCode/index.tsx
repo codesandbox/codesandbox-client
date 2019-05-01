@@ -888,14 +888,12 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
       this.lint = debounce(this.lint, 400);
 
-      if (this.editor.getActiveCodeEditor()) {
+      const activeEditor = this.editor.getActiveCodeEditor();
+      if (activeEditor && activeEditor.getModel()) {
         this.lint(
           this.getCode(),
           this.currentModule.title,
-          this.editor
-            .getActiveCodeEditor()
-            .getModel()
-            .getVersionId()
+          activeEditor.getModel().getVersionId()
         );
       }
     }

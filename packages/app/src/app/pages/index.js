@@ -5,8 +5,10 @@ import Loadable from 'app/utils/Loadable';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import _debug from '@codesandbox/common/lib/utils/debug';
-import Notifications from 'app/pages/common/Notifications';
 import { DragDropContext } from 'react-dnd';
+
+import { Toasts } from '@codesandbox/notifications';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 
@@ -80,7 +82,7 @@ class Routes extends React.Component<Props> {
             return null;
           }}
         />
-        <Notifications />
+        <Toasts state={notificationState} />
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s" />} />

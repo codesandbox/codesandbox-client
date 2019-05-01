@@ -136,27 +136,23 @@ export default class VersionEntry extends React.PureComponent {
           <Link href={`https://www.npmjs.com/package/${dependency}`}>
             {dependency}
           </Link>
-          {hovering ? (
-            <VersionSelect
-              withSize={!!size.size}
-              hovering={hovering}
-              onChange={e => {
-                this.props.onRefresh(dependency, e.target.value);
-                this.setState({ hovering: false });
-              }}
-            >
-              {versions.map(a => (
-                <option key={a} selected={a === dependencies[dependency]}>
-                  {a}
-                </option>
-              ))}
-            </VersionSelect>
-          ) : (
-            <Version withSize={!!size.size} hovering={hovering}>
-              {dependencies[dependency]}{' '}
-              {hovering && version && <span>({version})</span>}
-            </Version>
-          )}
+          <VersionSelect
+            hovering={hovering}
+            onChange={e => {
+              this.props.onRefresh(dependency, e.target.value);
+              this.setState({ hovering: false });
+            }}
+          >
+            {versions.map(a => (
+              <option key={a} selected={a === dependencies[dependency]}>
+                {a}
+              </option>
+            ))}
+          </VersionSelect>
+          <Version withSize={!!size.size} hovering={hovering}>
+            {dependencies[dependency]}{' '}
+            {hovering && version && <span>({version})</span>}
+          </Version>
 
           {hovering && (
             <IconArea>

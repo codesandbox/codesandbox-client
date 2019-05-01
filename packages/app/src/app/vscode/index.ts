@@ -1,6 +1,11 @@
 import { KeyCode, KeyMod } from './keyCodes';
 import bootstrap from './dev-bootstrap';
 import { MenuId } from './menus';
+import {
+  notificationState,
+  convertTypeToStatus,
+} from '@codesandbox/common/lib/utils/notifications';
+import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 
 interface IServiceCache {
   [serviceName: string]: any;
@@ -303,6 +308,18 @@ class VSCodeManager {
     });
   }
 
+  addNotification(
+    message: string,
+    type: 'warning' | 'notice' | 'error' | 'success',
+    notification: NotificationMessage
+  ) {
+    notificationState.addNotification({
+      message,
+      status: convertTypeToStatus(type),
+      ...notification,
+    });
+  }
+
   /**
    * Initialize the base VSCode editor, this includes registering all the services in VSCode.
    */
@@ -364,7 +381,7 @@ class VSCodeManager {
       container,
       {
         codesandboxService: i =>
-          new SyncDescriptor(CodeSandboxService, [this.controller]),
+          new SyncDescriptor(CodeSandboxService, [this.controller, this]),
         codesandboxConfigurationUIService: i =>
           new SyncDescriptor(CodeSandboxConfigurationUIService, [
             customEditorAPI,

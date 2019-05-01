@@ -50,7 +50,6 @@ export default Module({
     error: null,
     user: null,
     connected: true,
-    notifications: [],
     contributors: [],
     userMenuOpen: false,
     isLoadingZeit: false,
