@@ -48,8 +48,8 @@ export const LoggedInTitle = styled.div`
   color: ${props => props.theme.new.title};
   font-weight: 600;
   margin-bottom: 2rem;
-  font-family: Poppins -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 `;
 
 export const LoggedInSubTitle = styled.div`
