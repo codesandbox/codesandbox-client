@@ -10,11 +10,10 @@ import {
   angular,
   vue,
   react,
-  preact,
-  svelte,
   parcel,
-  cxjs,
-  dojo,
+  gatsby,
+  nuxt,
+  next,
 } from '@codesandbox/common/lib/templates';
 
 import Background from './Background';
@@ -65,7 +64,7 @@ const Message = styled.h2`
 `};
 `;
 
-const TEMPLATES = [parcel, react, vue, angular, preact, svelte, cxjs, dojo];
+const TEMPLATES = [parcel, react, vue, angular, gatsby, nuxt, next];
 
 export default class Animation extends React.PureComponent {
   state = {

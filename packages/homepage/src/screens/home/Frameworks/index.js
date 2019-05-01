@@ -5,9 +5,11 @@ import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Column from '@codesandbox/common/lib/components/flex/Column';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
-
 import theme from '@codesandbox/common/lib/theme';
 import getIcon from '@codesandbox/common/lib/templates/icons';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+
+import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 import LoadInView from '../../../components/LoadInView';
 import RollingText from '../../../components/RollingText';
@@ -148,6 +150,7 @@ const IconContainer = styled.div`
 
   ${({ selected, template }) =>
     selected &&
+    template &&
     css`
       background-color: ${template.color.clearer(0.9)};
 
@@ -213,6 +216,7 @@ const CSSTypes = styled.div`
   font-size: 0.875rem;
   color: white;
   margin-top: 0.5rem;
+  margin-right: 1rem;
 `;
 
 const TEMPLATE_SUPPORT = {
@@ -290,6 +294,11 @@ export default class Frameworks extends React.Component {
   render() {
     const { templates } = this.props;
     const template = templates[this.state.templateIndex];
+    const additionalInfo = TEMPLATE_SUPPORT[template.name] || {
+      loaders: [],
+      css: [],
+      description: `Used for ${template.niceName} development, based on: `,
+    };
     const TemplateIcon = getIcon(template.name);
 
     return (
@@ -314,6 +323,20 @@ export default class Frameworks extends React.Component {
                   </IconContainer>
                 );
               })}
+
+              <Tooltip
+                delay={0}
+                placement="bottom"
+                content="Check out other templates"
+              >
+                <IconContainer
+                  onClick={() => {
+                    window.open('/s', '_blank');
+                  }}
+                >
+                  <ChevronRight width={56} height={56} />
+                </IconContainer>
+              </Tooltip>
             </ScrollAtMobile>
           </Icons>
 
@@ -350,7 +373,7 @@ export default class Frameworks extends React.Component {
                   fontSize: '.875rem',
                 }}
               >
-                {TEMPLATE_SUPPORT[template.name].description}
+                {additionalInfo.description}
                 <a
                   href={template.url}
                   target="_blank"
@@ -362,23 +385,38 @@ export default class Frameworks extends React.Component {
                 .
               </div>
 
-              <HeaderTitle>Supported Loaders</HeaderTitle>
-              <TemplateIcons>
-                {TEMPLATE_SUPPORT[template.name].loaders.map((data, i) => (
-                  <FileType
-                    key={template.name + data.title}
-                    iconSrc={data.svg}
-                    title={data.title}
-                    extension={data.extension}
-                    i={i}
-                  />
-                ))}
-              </TemplateIcons>
+              {additionalInfo.loaders.length > 0 && (
+                <React.Fragment>
+                  <HeaderTitle>Supported Loaders</HeaderTitle>
+                  <TemplateIcons>
+                    {additionalInfo.loaders.map((data, i) => (
+                      <FileType
+                        key={template.name + data.title}
+                        iconSrc={data.svg}
+                        title={data.title}
+                        extension={data.extension}
+                        i={i}
+                      />
+                    ))}
+                  </TemplateIcons>
+                </React.Fragment>
+              )}
 
-              <HeaderTitle>CSS Scoping Support</HeaderTitle>
-              <CSSTypes>
-                {TEMPLATE_SUPPORT[template.name].css.join(', ')}
-              </CSSTypes>
+              {additionalInfo.css.length > 0 && (
+                <React.Fragment>
+                  <HeaderTitle>CSS Scoping Support</HeaderTitle>
+                  <CSSTypes>{additionalInfo.css.join(', ')}</CSSTypes>
+                </React.Fragment>
+              )}
+
+              {template.isServer && (
+                <React.Fragment>
+                  <HeaderTitle>Container Support</HeaderTitle>
+                  <CSSTypes>
+                    For this template we run the code on a server.
+                  </CSSTypes>
+                </React.Fragment>
+              )}
             </Padding>
           </Container>
         </Flex>

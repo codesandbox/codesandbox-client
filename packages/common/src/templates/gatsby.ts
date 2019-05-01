@@ -18,5 +18,6 @@ export default new Template(
     showOnHomePage: true,
     main: true,
     popular: true,
+    showCube: false,
   }
 );
