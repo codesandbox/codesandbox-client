@@ -21,7 +21,6 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 
   margin-right: 0.5rem;
   margin-left: 0.5rem;
-  margin-bottom: 2rem;
 
   background-color: ${BG_COLOR};
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
@@ -52,7 +51,7 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 
 export const SandboxTitle = styled.h2`
   color: ${props => props.color};
- font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 6px;
@@ -100,9 +99,11 @@ export const SandboxInfo = styled.div<{ noHeight?: boolean }>`
   z-index: 1;
   height: 130px;
 
-    ${props => props.noHeight && css`
-    height: auto;
-  `}:
+  ${props =>
+    props.noHeight &&
+    css`
+      height: auto;
+    `}: ;
 `;
 
 export const TemplateIcon = styled.div`

@@ -1,6 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import WideSandbox from '@codesandbox/common/lib/components/WideSandbox';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -112,11 +113,12 @@ export default class extends React.PureComponent {
             <ShuffleWords />
             <Sandboxes>
               {sandboxes.map(sandbox => (
-                <WideSandbox
-                  key={sandbox.id}
-                  selectSandbox={this.selectSandbox}
-                  sandbox={sandbox}
-                />
+                <Margin key={sandbox.id} bottom={2}>
+                  <WideSandbox
+                    selectSandbox={this.selectSandbox}
+                    sandbox={sandbox}
+                  />
+                </Margin>
               ))}
             </Sandboxes>
           </PageContainer>

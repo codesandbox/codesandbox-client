@@ -346,7 +346,6 @@ module.exports = {
   plugins: [
     new HappyPack({
       loaders: [
-        'cache-loader',
         {
           path: 'babel-loader',
           query: babelConfig,
