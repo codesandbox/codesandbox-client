@@ -54,29 +54,12 @@ const List = styled.ul`
   }
 `;
 
-const Authors = styled.div`
-  color: white;
-  font-size: 0.875rem;
-  text-align: right;
-`;
-
 const Background = styled.div`
   position: relative;
   background-color: ${props => props.theme.background2.darken(0.2)};
   padding: 1rem;
   z-index: 5;
 `;
-
-const BasComponent = () => (
-  <a
-    id="bas"
-    href="https://www.linkedin.com/in/basbuursma/"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Bas Buursma
-  </a>
-);
 
 export default () => (
   <Background id="footer">
@@ -160,18 +143,6 @@ export default () => (
           </List>
         </Column>
       </Container>
-
-      <Authors>
-        By <BasComponent /> and{' '}
-        <a
-          id="ives"
-          href="https://twitter.com/CompuIves"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Ives van Hoorne
-        </a>
-      </Authors>
     </MaxWidth>
   </Background>
 );
