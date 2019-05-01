@@ -64,9 +64,11 @@ export async function identify(key: string, value: string) {
   }
 }
 
-setTimeout(() => {
-  identify('[Amplitude] Version', VERSION);
-}, 5000);
+if (process.env.NODE_ENV === 'production') {
+  setTimeout(() => {
+    identify('[Amplitude] Version', VERSION);
+  }, 5000);
+}
 
 export async function setUserId(userId: string) {
   try {
