@@ -106,7 +106,7 @@
     "@types/react": "16.8.12",
     "@types/react-broadcast": "^0.6.1",
     "awesome-typescript-loader": "^3.5.0",
-    "babel-core": "7.0.0-bridge.0",
+    "@babel/core": "^7.0.0",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
     "coveralls": "^3.0.0",
