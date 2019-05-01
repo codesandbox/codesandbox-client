@@ -98,14 +98,14 @@ function boot() {
             'We just installed a new version of CodeSandbox, refresh to update!',
           status: NotificationStatus.SUCCESS,
           sticky: true,
-          actions: [
-            {
-              primary: {
+          actions: {
+            primary: [
+              {
                 run: () => document.location.reload(),
-                title: 'Reload Page',
+                label: 'Reload Page',
               },
-            },
-          ],
+            ],
+          },
         });
       },
       onInstalled: () => {

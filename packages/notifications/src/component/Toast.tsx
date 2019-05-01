@@ -137,8 +137,8 @@ export function Toast({ toast, removeToast, getRef }: Props) {
                 <Button
                   small
                   onClick={() => {
-                    toast.notification.actions[0].primary.run();
                     removeToast(toast.id);
+                    toast.notification.actions.primary[0].run();
                   }}
                   style={{
                     marginTop: '1rem',
@@ -146,16 +146,15 @@ export function Toast({ toast, removeToast, getRef }: Props) {
                     lineHeight: 1,
                   }}
                 >
-                  {toast.notification.actions[0].primary.title}
+                  {toast.notification.actions.primary[0].label}
                 </Button>
 
-                {toast.notification.actions[0].secondary && (
+                {toast.notification.actions.secondary[0] && (
                   <Button
                     secondary
                     small
                     onClick={() => {
-                      toast.notification.actions[0].secondary.run();
-                      removeToast(toast.id);
+                      toast.notification.actions.secondary[0].run();
                     }}
                     style={{
                       marginTop: '1rem',
@@ -163,7 +162,7 @@ export function Toast({ toast, removeToast, getRef }: Props) {
                       lineHeight: 1,
                     }}
                   >
-                    {toast.notification.actions[0].secondary.title}
+                    {toast.notification.actions.secondary[0].label}
                   </Button>
                 )}
               </div>
