@@ -114,7 +114,7 @@ export default class extends React.PureComponent {
               {sandboxes.map(sandbox => (
                 <WideSandbox
                   key={sandbox.id}
-                  pickSandbox={this.selectSandbox}
+                  selectSandbox={this.selectSandbox}
                   sandbox={sandbox}
                 />
               ))}

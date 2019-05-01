@@ -32,9 +32,10 @@ export type Props = {
     };
   };
   small?: boolean;
+  noHeight?: boolean;
   defaultHeight?: number;
   noMargin?: boolean;
-  pickSandbox: (
+  selectSandbox: (
     params: {
       id: string;
       title: string;
@@ -66,7 +67,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
   };
 
   toggleOpen = () => {
-    this.props.pickSandbox({
+    this.props.selectSandbox({
       id: this.props.sandbox.id,
       title: this.getTitle(),
       description: this.getDescription(),
@@ -81,7 +82,13 @@ export default class WideSandbox extends React.PureComponent<Props> {
   };
 
   render() {
-    const { sandbox, small, noMargin, defaultHeight = 245 } = this.props;
+    const {
+      sandbox,
+      small,
+      noMargin,
+      noHeight,
+      defaultHeight = 245,
+    } = this.props;
 
     if (!sandbox) {
       return (
@@ -118,7 +125,7 @@ export default class WideSandbox extends React.PureComponent<Props> {
             this.setState({ imageLoaded: true });
           }}
         />
-        <SandboxInfo>
+        <SandboxInfo noHeight={noHeight}>
           <SandboxTitle color={template.color()}>
             {this.getTitle()}
           </SandboxTitle>

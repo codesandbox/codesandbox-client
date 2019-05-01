@@ -1,4 +1,4 @@
-// @flow
+
 // @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index.js';
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';

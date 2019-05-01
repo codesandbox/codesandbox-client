@@ -105,7 +105,7 @@ const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
               <WideSandbox
                 small
                 key={sandbox.id}
-                pickSandbox={({ id }) => openSandbox(id)}
+                selectSandbox={({ id }) => openSandbox(id)}
                 sandbox={sandbox}
               />
             ))}

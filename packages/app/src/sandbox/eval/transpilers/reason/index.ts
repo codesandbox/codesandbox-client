@@ -1,4 +1,4 @@
-// @flow
+
 
 import { basename, dirname, join } from 'path';
 import stripANSI from 'strip-ansi';

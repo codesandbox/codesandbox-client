@@ -1,4 +1,4 @@
-// @flow
+
 import * as React from 'react';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import PlayIcon from 'react-icons/lib/go/playback-play';
