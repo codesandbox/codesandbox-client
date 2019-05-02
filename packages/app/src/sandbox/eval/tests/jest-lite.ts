@@ -1,4 +1,3 @@
-
 import { dispatch, actions, listen } from 'codesandbox-api';
 import { react, reactTs } from '@codesandbox/common/lib/templates';
 import expect from 'jest-matchers';
@@ -84,6 +83,8 @@ export default class TestRunner {
   manager: Manager;
   watching: boolean = true;
 
+  dom: any;
+
   constructor(manager: Manager) {
     this.manager = manager;
     this.ranTests = new Set();
@@ -118,11 +119,7 @@ export default class TestRunner {
       });
     };
 
-    const { JSDOM } = (window as any).JSDOM;
-    const { window: jsdomWindow } = new JSDOM('<!DOCTYPE html>', {
-      pretendToBeVisual: true,
-      url: document.location.origin,
-    });
+    const { window: jsdomWindow } = this.dom;
     const { document: jsdomDocument } = jsdomWindow;
 
     // Date is not set correctly on window in JSDOM. This breaks Jest
@@ -226,6 +223,14 @@ export default class TestRunner {
     }
 
     await getJSDOM();
+
+    const { JSDOM } = (window as any).JSDOM;
+
+    this.manager.clearCompiledCache();
+    this.dom = new JSDOM('<!DOCTYPE html>', {
+      pretendToBeVisual: true,
+      url: document.location.origin,
+    });
 
     this.sendMessage('total_test_start');
 
