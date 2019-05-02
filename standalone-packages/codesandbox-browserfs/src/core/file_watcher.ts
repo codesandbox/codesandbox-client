@@ -1,5 +1,6 @@
 // Typing info only.
 import * as _fs from 'fs';
+import * as path from 'path';
 import Stats from './node_fs_stats';
 
 const EventEmitter = require('events');
@@ -15,8 +16,10 @@ interface IWatchEntry {
 }
 
 export class FileWatcher {
+  private watchEntries: IWatchEntry[] = [];
+
   public triggerWatch(filename: string, event: 'change' | 'rename', newStats?: Stats) {
-    const validEntries = this.watchEntries.filter(entry => {
+    const validEntries = this.watchEntries.filter((entry) => {
       if (entry.filename === filename) {
         return true;
       }
@@ -25,10 +28,14 @@ export class FileWatcher {
         return true;
       }
 
+      if (path.dirname(filename) === entry.filename) {
+        return true;
+      }
+
       return false;
     });
 
-    validEntries.forEach(entry => {
+    validEntries.forEach((entry) => {
       if (entry.callback) {
         entry.callback(event, filename);
       }
@@ -50,7 +57,7 @@ export class FileWatcher {
 
   public watch(filename: string, listener?: (event: string, filename: string) => any): _fs.FSWatcher;
   public watch(filename: string, options: { recursive?: boolean; persistent?: boolean; }, listener?: (event: string, filename: string) => any): _fs.FSWatcher;
-  public watch(filename: string, arg2: any, listener: (event: string, filename: string) => any = (() => {})): _fs.FSWatcher {
+  public watch(filename: string, arg2: any, listener: (event: string, filename: string) => any = (() => void 0)): _fs.FSWatcher {
     const watcher = new EventEmitter();
     const watchEntry: IWatchEntry  = {
       filename,
@@ -58,9 +65,9 @@ export class FileWatcher {
     };
 
     watcher.close = () => {
+      watcher.emit('close');
       this.removeEntry(watchEntry);
     };
-
 
     if (typeof arg2 === 'object') {
       watchEntry.recursive = arg2.recursive;
@@ -77,7 +84,7 @@ export class FileWatcher {
 
   public watchFile(curr: Stats, filename: string, listener: (curr: Stats, prev: Stats) => void): void;
   public watchFile(curr: Stats, filename: string, options: { persistent?: boolean; interval?: number; }, listener: (curr: Stats, prev: Stats) => void): void;
-  public watchFile(curr: Stats, filename: string, arg2: any, listener: (curr: Stats, prev: Stats) => void = (() => {})): void {
+  public watchFile(curr: Stats, filename: string, arg2: any, listener: (curr: Stats, prev: Stats) => void = (() => void 0)): void {
     const watcher = new EventEmitter();
     const watchEntry: IWatchEntry  = {
       filename,
@@ -102,13 +109,12 @@ export class FileWatcher {
     return watchEntry.watcher;
   }
 
-  unwatchFile(filename: string, listener: (curr: Stats, prev: Stats) => void): any {
-    this.watchEntries = this.watchEntries.filter(entry => entry.filename !== filename && entry.fileCallback !== listener);
+  public unwatchFile(filename: string, listener: (curr: Stats, prev: Stats) => void): any {
+    this.watchEntries = this.watchEntries.filter((entry) => entry.filename !== filename && entry.fileCallback !== listener);
   }
 
-  private watchEntries: IWatchEntry[] = [];
-
   private removeEntry(watchEntry: IWatchEntry) {
-    this.watchEntries = this.watchEntries.filter(en => en !== watchEntry);
+    watchEntry.watcher.emit('close');
+    this.watchEntries = this.watchEntries.filter((en) => en !== watchEntry);
   }
 }

@@ -189,24 +189,14 @@ window.BrowserFS.configure(
 
     console.log('Watching /sandbox');
     // Test scripts for watching sandboxes
-    fs.watch('/sandbox', { persistent: true }, (err, result) => {
-      if (err) {
-        console.error('Error while watching dir /sandbox', err);
-        return;
-      }
-
-      console.log('Detected change in /sandbox folder', result);
+    fs.watch('/sandbox', { persistent: true }, (change, path) => {
+      console.log('Detected change in /sandbox folder', change, path);
     });
 
     console.log('Watching /sandbox/src/index.js');
     // Test scripts for watching sandboxes
-    fs.watch('/sandbox/src/index.js', { persistent: true }, (err, result) => {
-      if (err) {
-        console.error('Error while watching /sandbox/src/index.js', err);
-        return;
-      }
-
-      console.log('Detected change in /sandbox/src/index.js', result);
+    fs.watch('/sandbox/src/index.js', { persistent: true }, (change, path) => {
+      console.log('Detected change in /sandbox/src/index.js', change, path);
     });
 
     const isVSCode = controller.getState().preferences.settings

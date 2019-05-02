@@ -223,6 +223,7 @@ export const saveCode = [
   actions.saveModuleCode,
   {
     success: [
+      actions.saveFileInFS,
       actions.setModuleSaved,
       callVSCodeCallback,
       when(state`editor.currentSandbox.originalGit`),

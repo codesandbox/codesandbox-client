@@ -1,5 +1,10 @@
 import { clone } from 'mobx-state-tree';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import fs from 'fs';
+import { dirname, join } from 'path';
+import {
+  getModulePath,
+  getDirectoryPath,
+} from '@codesandbox/common/lib/sandbox/modules';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { chunk } from 'lodash-es';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
@@ -236,6 +241,114 @@ export function saveNewModuleDirectoryShortid({ api, state, props, path }) {
     .catch(error => path.error({ error }));
 }
 
+function getCreatePath({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const foundDir = props.directoryShortid
+    ? state
+        .get('editor.currentSandbox.directories')
+        .find(dir => dir.shortid === props.directoryShortid)
+    : {};
+
+  if (!foundDir) {
+    return undefined;
+  }
+
+  const dirPath = getDirectoryPath(
+    sandbox.modules,
+    sandbox.directories,
+    foundDir.id
+  );
+
+  if (dirPath !== undefined) {
+    return '/sandbox/' + dirPath + (dirPath ? '/' : '') + props.title;
+  }
+
+  return undefined;
+}
+
+/**
+ * Do create file so the watcher of fs is called
+ */
+function fsCreateFile({ props, state }) {
+  try {
+    const foundPath = getCreatePath({ props, state });
+    if (foundPath) {
+      fs.writeFile(foundPath, props.newCode || '');
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function fsRemoveFile(id, { state }) {
+  try {
+    const sandbox = state.get('editor.currentSandbox');
+    const foundPath = getModulePath(sandbox.modules, sandbox.directories, id);
+    if (foundPath) {
+      fs.unlink('/sandbox' + foundPath);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function fsMoveFile(id, oldTitle, { state }) {
+  try {
+    const sandbox = state.get('editor.currentSandbox');
+    const foundPath = getModulePath(sandbox.modules, sandbox.directories, id);
+    const withPrefix = '/sandbox' + foundPath;
+    if (foundPath) {
+      fs.rename(join(dirname(withPrefix), oldTitle), withPrefix);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function fsMoveDir(id, oldTitle, { state }) {
+  try {
+    const sandbox = state.get('editor.currentSandbox');
+    const foundPath = getDirectoryPath(
+      sandbox.modules,
+      sandbox.directories,
+      id
+    );
+    const withPrefix = '/sandbox' + foundPath;
+    if (foundPath) {
+      fs.rename(join(dirname(withPrefix), oldTitle), withPrefix);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function fsCreateDir({ props, state }) {
+  try {
+    const foundPath = getCreatePath({ props, state });
+    if (foundPath) {
+      fs.mkdir(foundPath);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function fsRemoveDir(id, { state }) {
+  try {
+    const sandbox = state.get('editor.currentSandbox');
+    const foundPath = getDirectoryPath(
+      sandbox.modules,
+      sandbox.directories,
+      id
+    );
+    if (foundPath) {
+      fs.rmdir('/sandbox' + foundPath);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function createOptimisticModule({ state, props, utils }) {
   const optimisticModule = {
     id: utils.createOptimisticId(),
@@ -248,6 +361,8 @@ export function createOptimisticModule({ state, props, utils }) {
     insertedAt: new Date().toString(),
     updatedAt: new Date().toString(),
   };
+
+  fsCreateFile({ state, props });
 
   return { optimisticModule };
 }
@@ -262,6 +377,8 @@ export function createOptimisticDirectory({ state, props, utils }) {
     insertedAt: new Date().toString(),
     updatedAt: new Date().toString(),
   };
+
+  fsCreateDir({ state, props });
 
   return { optimisticDirectory };
 }
@@ -338,12 +455,24 @@ export function moveDirectoryToDirectory({ state, props }) {
     }.directories.${directoryIndex}.directoryShortid`
   );
 
+  const { id } = state.get(
+    `editor.currentSandbox.directories.${directoryIndex}`
+  );
+  const oldPath = getDirectoryPath(sandbox.modules, sandbox.directories, id);
+
   state.set(
     `editor.sandboxes.${
       sandbox.id
     }.directories.${directoryIndex}.directoryShortid`,
     props.directoryShortid
   );
+
+  const newPath = getDirectoryPath(sandbox.modules, sandbox.directories, id);
+  try {
+    fs.rename(`/sandbox${oldPath}`, `/sandbox${newPath}`);
+  } catch (e) {
+    console.error(e);
+  }
 
   return { currentDirectoryShortid };
 }
@@ -380,10 +509,21 @@ export function moveModuleToDirectory({ state, props }) {
     module => module.shortid === props.moduleShortid
   );
 
+  const id = state.get(`editor.currentSandbox.modules.${moduleIndex}`).id;
+  const oldPath = getModulePath(sandbox.modules, sandbox.directories, id);
+
   state.set(
     `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.directoryShortid`,
     props.directoryShortid
   );
+
+  const newPath = getModulePath(sandbox.modules, sandbox.directories, id);
+
+  try {
+    fs.rename(`/sandbox${oldPath}`, `/sandbox${newPath}`);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 export function deleteDirectory({ api, state, props, path }) {
@@ -404,6 +544,8 @@ export function removeDirectory({ state, props }) {
     directoryEntry => directoryEntry.shortid === props.directoryShortid
   );
   const removedDirectory = clone(sandbox.directories[directoryIndex]);
+
+  fsRemoveDir(removedDirectory.id, { state, props });
 
   state.splice(`editor.sandboxes.${sandboxId}.directories`, directoryIndex, 1);
 
@@ -437,6 +579,14 @@ export function renameDirectory({ state, props }) {
   state.set(
     `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.title`,
     props.title
+  );
+
+  fsMoveDir(
+    state.get(
+      `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.id`
+    ),
+    oldTitle,
+    { state, props }
   );
 
   return { oldTitle };
@@ -485,6 +635,8 @@ export function removeModule({ state, props }) {
     moduleEntry => moduleEntry.shortid === props.moduleShortid
   );
   const moduleCopy = clone(sandbox.modules[moduleIndex]);
+
+  fsRemoveFile(moduleCopy.id, { state, props });
 
   state.splice(`editor.sandboxes.${sandboxId}.modules`, moduleIndex, 1);
 
@@ -536,6 +688,12 @@ export function renameModule({ state, props }) {
   state.set(
     `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.title`,
     props.title
+  );
+
+  fsMoveFile(
+    state.get(`editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.id`),
+    oldTitle,
+    { state, props }
   );
 
   return { oldTitle };

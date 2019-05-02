@@ -560,9 +560,18 @@ export default class FS {
         return newCb(new ApiError(ErrorCode.EINVAL, 'Flag passed to writeFile must allow for writing.'));
       }
 
-      setImmediate(() => {
-        this.stat(filename, (err, stat) => {
-          this.fileWatcher.triggerWatch(filename, 'change', stat);
+      this.stat(filename, (err, stat) => {
+        if (err) {
+          if (err.code === 'ENOENT') {
+            this.fileWatcher.triggerWatch(normalizePath(filename), 'rename');
+          }
+          return;
+        }
+
+        setImmediate(() => {
+          this.stat(filename, (err, newStat) => {
+            this.fileWatcher.triggerWatch(normalizePath(filename), 'change', newStat);
+          });
         });
       });
       return assertRoot(this.root).writeFile(normalizePath(filename), data, options.encoding, flag, options.mode, newCb);
@@ -1485,14 +1494,18 @@ export default class FS {
   public watchFile(filename: string, listener: (curr: Stats, prev: Stats) => void): void;
   public watchFile(filename: string, options: { persistent?: boolean; interval?: number; }, listener: (curr: Stats, prev: Stats) => void): void;
   public watchFile(filename: string, arg2: any, listener: (curr: Stats, prev: Stats) => void = nopCb): void {
-    this.stat(filename, (err, stat) => {
-      let usedStat = stat;
-      if (err) {
-        usedStat = new Stats(FileType.FILE, 0, undefined, 0,  0, 0, 0)
-      }
+    if (assertRoot(this.root).hasCustomWatch()) {
+      return assertRoot(this.root).watchFile(filename, arg2, listener);
+    } else {
+      this.stat(filename, (err, stat) => {
+        let usedStat = stat;
+        if (err) {
+          usedStat = new Stats(FileType.FILE, 0, undefined, 0,  0, 0, 0);
+        }
 
-      this.fileWatcher.watchFile(usedStat!, filename, arg2, listener);
-    });
+        this.fileWatcher.watchFile(usedStat!, filename, arg2, listener);
+      });
+    }
   }
 
   public unwatchFile(filename: string, listener: (curr: Stats, prev: Stats) => void = nopCb): void {
@@ -1502,7 +1515,11 @@ export default class FS {
   public watch(filename: string, listener?: (event: string, filename: string) => any): _fs.FSWatcher;
   public watch(filename: string, options: { persistent?: boolean; }, listener?: (event: string, filename: string) => any): _fs.FSWatcher;
   public watch(filename: string, arg2: any, listener: (event: string, filename: string) => any = nopCb): _fs.FSWatcher {
-    return this.fileWatcher.watch(filename, arg2, listener);
+    if (assertRoot(this.root).hasCustomWatch()) {
+      return assertRoot(this.root).watch(filename, arg2, listener);
+    } else {
+      return this.fileWatcher.watch(filename, arg2, listener);
+    }
   }
 
   public access(path: string, callback: (err: ApiError) => void): void;

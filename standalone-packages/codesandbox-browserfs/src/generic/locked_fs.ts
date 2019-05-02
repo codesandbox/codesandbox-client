@@ -355,4 +355,12 @@ export default class LockedFS<T extends FileSystem> implements FileSystem {
     }
     return this._fs.readlinkSync(p);
   }
+
+  public watch(p: string, options: { persistent?: boolean | undefined; }, cb: (event: "rename" | "change", filename?: string | undefined) => void) {
+    return this._fs.watch(p, options, cb);
+  }
+
+  public watchFile(p: string, options: { persistent?: boolean | undefined; interval?: number | undefined; }, cb: (curr: Stats, prev: Stats) => void) {
+    return this._fs.watchFile(p, options, cb);
+  }
 }

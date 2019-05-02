@@ -1,4 +1,5 @@
 import { fromPairs, toPairs, sortBy, mapValues } from 'lodash-es';
+import fs from 'fs';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { clone } from 'mobx-state-tree';
 import { dispatch } from 'codesandbox-api';
@@ -8,6 +9,7 @@ import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -87,6 +89,23 @@ export function updateSandboxPackage({ state }) {
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
   };
+}
+
+export function saveFileInFS({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  try {
+    console.log(props);
+    const modulePath = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      props.shortid
+    );
+    if (modulePath) {
+      fs.writeFileSync('/sandbox/' + modulePath, props.code);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 export function setModuleSaved({ props, state }) {

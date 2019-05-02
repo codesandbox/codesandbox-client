@@ -1,9 +1,13 @@
 import {ApiError, ErrorCode} from './api_error';
-import Stats from './node_fs_stats';
+import Stats, { FileType } from './node_fs_stats';
 import {File} from './file';
 import {FileFlag, ActionType} from './file_flag';
 import * as path from 'path';
 import {fail} from './util';
+import { FileWatcher } from './file_watcher';
+
+// Typing info only.
+import * as _fs from 'fs';
 
 export type BFSOneArgCallback = (e?: ApiError | null) => any;
 export type BFSCallback<T> = (e: ApiError | null | undefined, rv?: T) => any;
@@ -98,6 +102,15 @@ export interface FileSystem {
    * @return True if the FileSystem supports synchronous operations.
    */
   supportsSynch(): boolean;
+
+  /**
+   * **Core**: Does the filesystem have a custom watch interface? Recommended to be true if
+   * there is a chance of external changes to the fs, like when you change a file directly in Dropbox.
+   *
+   * You'll need to implement `watch` and `watchFile` for this.
+   * @return True if the FileSystem has a custom watcher.
+   */
+  hasCustomWatch(): boolean;
   // **CORE API METHODS**
   // File or directory operations
   /**
@@ -324,6 +337,15 @@ export interface FileSystem {
    * **Optional**: Synchronous readlink.
    */
   readlinkSync(p: string): string;
+  /**
+   * **Optional**: Watch file or directory.
+   */
+  watch(p: string, options: { persistent?: boolean; }, cb: (event: 'rename' | 'change', filename?: string) => void): any;
+
+  /**
+   * **Optional**: Watch file.
+   */
+  watchFile(p: string, options: { persistent?: boolean; interval?: number; }, cb: (curr: Stats, prev: Stats) => void): any;
 }
 
 /**
@@ -383,6 +405,11 @@ export interface FileSystemConstructor {
  * provides default implementations for a handful of methods.
  */
 export class BaseFileSystem {
+  private fileWatcher = new FileWatcher();
+
+  public hasCustomWatch() {
+    return false;
+  }
   public supportsLinks(): boolean {
     return false;
   }
@@ -752,6 +779,73 @@ export class BaseFileSystem {
     } finally {
       fd.closeSync();
     }
+  }
+  public watch(p: string, options: { persistent?: boolean; }, cb: (event: 'rename' | 'change', filename?: string) => void) {
+    throw new Error('Not implemented');
+    // We are going to add custom implementation of watch methods later on. Right now we're going to assume
+    // that the file system can only be changed from within the file system itself.
+
+    const watcher = this.fileWatcher.watch(p, options, cb);
+
+    let timeout: NodeJS.Timer;
+    this.stat(p, false, (err, result) => {
+      let stat: Stats | undefined;
+      if (err) {
+        if (err.code !== 'ENOENT') {
+          watcher.emit('error');
+          watcher.close();
+          return;
+        }
+      } else {
+        stat = result!;
+      }
+
+      const watchFile = () => {
+        this.stat(p, false, (err, result) => {
+          if (err) {
+            if (err.code !== 'ENOENT') {
+              watcher.emit('error');
+              watcher.close();
+              return;
+            }
+
+            if (stat) {
+              this.fileWatcher.triggerWatch(p, 'rename');
+            }
+          } else if (stat === undefined) {
+            this.fileWatcher.triggerWatch(p, 'rename');
+          } else if (+stat.mtime !== +result!.mtime) {
+            this.fileWatcher.triggerWatch(p, 'change', result!);
+          }
+
+          stat = result;
+        });
+
+        timeout = setTimeout(watchFile, 500);
+      };
+
+      watchFile();
+    });
+
+    watcher.on('close', () => {
+      clearTimeout(timeout);
+    });
+
+    return watcher;
+  }
+  public watchFile(p: string, options: { persistent?: boolean; interval?: number; }, cb: (curr: Stats, prev: Stats) => void) {
+    throw new Error('Not implemented');
+    // We are going to add custom implementation of watch methods later on. Right now we're going to assume
+    // that the file system can only be changed from within the file system itself.
+
+    this.stat(p, null, (err, stat) => {
+      let usedStat = stat;
+      if (err) {
+        usedStat = new Stats(FileType.FILE, 0, undefined, 0,  0, 0, 0);
+      }
+
+      this.fileWatcher.watchFile(usedStat!, p, options, cb);
+    });
   }
   public chmod(p: string, isLchmod: boolean, mode: number, cb: BFSOneArgCallback): void {
     cb(new ApiError(ErrorCode.ENOTSUP));
