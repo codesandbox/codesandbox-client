@@ -57,10 +57,12 @@ export default () => {
         .to(box1.current, 0.2, { x: 3, y: 3 })
         .to(box2.current, 0.2, { x: -3, y: 3 })
         .to(box3.current, 0.2, { x: 0, y: -3 })
-        .to(box1.current, 0.3, { opacity: 0 }, '+=2')
-        .to(box2.current, 0.3, { opacity: 0 }, '-=0.3')
-        .to(box3.current, 0.3, { opacity: 0 }, '-=0.3')
-        .to(logo.current, 1, { opacity: 1 }, '-=0.3');
+        .to(box1.current, 0.2, { opacity: 0 }, '+=1')
+        .to(box2.current, 0.2, { opacity: 0 }, '-=0.2')
+        .to(box3.current, 0.2, { opacity: 0 }, '-=0.2')
+        .to(logo.current, 1, { opacity: 1 }, '-=0.4')
+        .to(logo.current, 0.01, { scale: 1.1 }, '-=0.8')
+        .to(logo.current, 0.01, { scale: 1 }, '-=0.5');
     },
     [logoAnimation]
   );
