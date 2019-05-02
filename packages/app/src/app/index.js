@@ -1,4 +1,5 @@
 import React from 'react';
+import fs from 'fs';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
@@ -185,6 +186,28 @@ window.BrowserFS.configure(
       // An error happened!
       throw e;
     }
+
+    console.log('Watching /sandbox');
+    // Test scripts for watching sandboxes
+    fs.watch('/sandbox', { persistent: true }, (err, result) => {
+      if (err) {
+        console.error('Error while watching dir /sandbox', err);
+        return;
+      }
+
+      console.log('Detected change in /sandbox folder', result);
+    });
+
+    console.log('Watching /sandbox/src/index.js');
+    // Test scripts for watching sandboxes
+    fs.watch('/sandbox/src/index.js', { persistent: true }, (err, result) => {
+      if (err) {
+        console.error('Error while watching /sandbox/src/index.js', err);
+        return;
+      }
+
+      console.log('Detected change in /sandbox/src/index.js', result);
+    });
 
     const isVSCode = controller.getState().preferences.settings
       .experimentVSCode;
