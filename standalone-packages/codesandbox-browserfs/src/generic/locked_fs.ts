@@ -52,6 +52,10 @@ export default class LockedFS<T extends FileSystem> implements FileSystem {
     return this._fs.supportsSynch();
   }
 
+  public hasCustomWatch(): boolean {
+    return this._fs.hasCustomWatch();
+  }
+
   public rename(oldPath: string, newPath: string, cb: BFSOneArgCallback): void {
     this._mu.lock(() => {
       this._fs.rename(oldPath, newPath, (err?: ApiError) => {
