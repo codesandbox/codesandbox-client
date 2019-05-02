@@ -6,7 +6,8 @@ function isCRAVersion2(dependencies: object, devDependencies: object) {
   if (reactScriptsVersion) {
     return (
       /^[a-z]/.test(reactScriptsVersion) ||
-      semver.intersects(reactScriptsVersion, '^2.0.0')
+      semver.intersects(reactScriptsVersion, '^2.0.0') ||
+      semver.intersects(reactScriptsVersion, '^3.0.0')
     );
   }
 
