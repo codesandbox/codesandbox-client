@@ -16,8 +16,14 @@ class NewSandboxComponent extends React.PureComponent {
     this.props.signals.sandboxPageMounted();
   }
 
-  createSandbox = template => {
-    history.push(sandboxUrl({ id: template.shortid }));
+  createSandbox = (template, e) => {
+    const cmd = e.ctrlKey || e.metaKey;
+    const url = sandboxUrl({ id: template.shortid });
+    if (cmd === true) {
+      window.open(url, '_blank');
+    } else {
+      history.push(url);
+    }
   };
 
   render() {

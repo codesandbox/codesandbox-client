@@ -18,8 +18,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="-0.0902654867%"
         id="linearGradient-1"
       >
-        <stop stop-color="#8AC23E" offset="0%" />
-        <stop stop-color="#8AC23E" stop-opacity="0" offset="100%" />
+        <stop stopColor="#8AC23E" offset="0%" />
+        <stop stopColor="#8AC23E" stopOpacity="0" offset="100%" />
       </linearGradient>
       <linearGradient
         x1="49.9835165%"
@@ -28,8 +28,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="100.062389%"
         id="linearGradient-2"
       >
-        <stop stop-color="#698932" offset="0%" />
-        <stop stop-color="#698932" stop-opacity="0" offset="100%" />
+        <stop stopColor="#698932" offset="0%" />
+        <stop stopColor="#698932" stopOpacity="0" offset="100%" />
       </linearGradient>
       <linearGradient
         x1="50.0595611%"
@@ -38,8 +38,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="100.062389%"
         id="linearGradient-3"
       >
-        <stop stop-color="#FFED01" offset="0%" />
-        <stop stop-color="#FFED01" stop-opacity="0" offset="100%" />
+        <stop stopColor="#FFED01" offset="0%" />
+        <stop stopColor="#FFED01" stopOpacity="0" offset="100%" />
       </linearGradient>
       <linearGradient
         x1="50.0170846%"
@@ -48,8 +48,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="100.092699%"
         id="linearGradient-4"
       >
-        <stop stop-color="#E02A89" offset="0%" />
-        <stop stop-color="#E02A89" stop-opacity="0" offset="100%" />
+        <stop stopColor="#E02A89" offset="0%" />
+        <stop stopColor="#E02A89" stopOpacity="0" offset="100%" />
       </linearGradient>
       <linearGradient
         x1="49.9631661%"
@@ -58,8 +58,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="99.9070796%"
         id="linearGradient-5"
       >
-        <stop stop-color="#7F1E4F" offset="0%" />
-        <stop stop-color="#7F1E4F" stop-opacity="0" offset="100%" />
+        <stop stopColor="#7F1E4F" offset="0%" />
+        <stop stopColor="#7F1E4F" stopOpacity="0" offset="100%" />
       </linearGradient>
       <linearGradient
         x1="49.9652038%"
@@ -68,8 +68,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="99.9070796%"
         id="linearGradient-6"
       >
-        <stop stop-color="#E95506" offset="0%" />
-        <stop stop-color="#E95506" stop-opacity="0" offset="100%" />
+        <stop stopColor="#E95506" offset="0%" />
+        <stop stopColor="#E95506" stopOpacity="0" offset="100%" />
       </linearGradient>
       <linearGradient
         x1="49.9766458%"
@@ -78,8 +78,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="-0.0265486726%"
         id="linearGradient-7"
       >
-        <stop stop-color="#88D0F1" offset="0%" />
-        <stop stop-color="#88D0F1" stop-opacity="0" offset="100%" />
+        <stop stopColor="#88D0F1" offset="0%" />
+        <stop stopColor="#88D0F1" stopOpacity="0" offset="100%" />
       </linearGradient>
       <linearGradient
         x1="50.0205329%"
@@ -88,8 +88,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="99.9986726%"
         id="linearGradient-8"
       >
-        <stop stop-color="#00828B" offset="0%" />
-        <stop stop-color="#00828B" stop-opacity="0" offset="83.25%" />
+        <stop stopColor="#00828B" offset="0%" />
+        <stop stopColor="#00828B" stopOpacity="0" offset="83.25%" />
       </linearGradient>
       <linearGradient
         x1="50.078022%"
@@ -98,8 +98,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="0.0705752212%"
         id="linearGradient-9"
       >
-        <stop stop-color="#2073BA" offset="0%" />
-        <stop stop-color="#2073BA" stop-opacity="0" offset="100%" />
+        <stop stopColor="#2073BA" offset="0%" />
+        <stop stopColor="#2073BA" stopOpacity="0" offset="100%" />
       </linearGradient>
       <linearGradient
         x1="50.0177116%"
@@ -108,8 +108,8 @@ export default ({ width = 32, height = 32, className }) => (
         y2="99.9986726%"
         id="linearGradient-10"
       >
-        <stop stop-color="#8ED0E1" offset="0%" />
-        <stop stop-color="#88D0F1" stop-opacity="0" offset="100%" />
+        <stop stopColor="#8ED0E1" offset="0%" />
+        <stop stopColor="#88D0F1" stopOpacity="0" offset="100%" />
       </linearGradient>
     </defs>
     <g>

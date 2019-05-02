@@ -35,11 +35,16 @@ class CreateNewSandbox extends React.PureComponent {
     document.removeEventListener('keydown', this.keydownListener);
   }
 
-  createSandbox = template => {
-    this.setState({ forking: true }, () => {
+  createSandbox = (template, e) => {
+    const cmd = e.ctrlKey || e.metaKey;
+    const url = sandboxUrl({ id: template.shortid });
+    if (cmd === true) {
+      return window.open(url, '_blank');
+    }
+    return this.setState({ forking: true }, () => {
       if (!this.props.collectionId) {
         setTimeout(() => {
-          history.push(sandboxUrl({ id: template.shortid }));
+          history.push(url);
         }, 300);
       } else {
         this.props.signals.dashboard.createSandboxClicked({
@@ -115,7 +120,7 @@ class CreateNewSandbox extends React.PureComponent {
             ref={node => {
               this.ref = node;
             }}
-            onClick={() => this.createSandbox(mostUsedSandboxTemplate)}
+            onClick={e => this.createSandbox(mostUsedSandboxTemplate, e)}
             color={mostUsedSandboxTemplate.color}
             tabIndex="0"
             role="button"

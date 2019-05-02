@@ -25,9 +25,9 @@ export default class Modal extends React.PureComponent {
     selectedTab: 0,
   };
 
-  selectTemplate = template => {
+  selectTemplate = (template, e) => {
     track('New Sandbox Modal - Select Template', { template });
-    this.props.createSandbox(template);
+    this.props.createSandbox(template, e);
   };
 
   render() {

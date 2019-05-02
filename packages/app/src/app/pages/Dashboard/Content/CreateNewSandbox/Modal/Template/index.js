@@ -7,7 +7,7 @@ import { Button, IconContainer, Title, SubTitle } from './elements';
 export default ({ template, subtitle, selectTemplate, small }) => {
   const Icon = getIcon(template.name);
 
-  const select = () => selectTemplate(template);
+  const select = e => selectTemplate(template, e);
 
   const size = template.name === 'next' ? 64 : 32;
 
