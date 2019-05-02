@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Logo from '@codesandbox/common/lib/components/Logo';
+
 import { Button } from '@codesandbox/common/lib/components/Button';
 import media from '../../../utils/media';
+import Logo from './Logo';
 
 const Container = styled.div`
   margin-top: 100px;
@@ -69,17 +70,21 @@ export default () => (
             Explore
           </Button>
         </div>
-        <Logo
-          width={323}
-          height={371}
+        <div
           css={`
-            max-width: 100%;
-
-            @media screen and (max-width: 900px) {
-              display: none;
-            }
+            position: relative;
           `}
-        />
+        >
+          <Logo
+            css={`
+              max-width: 100%;
+
+              @media screen and (max-width: 900px) {
+                display: none;
+              }
+            `}
+          />
+        </div>
       </Hero>
     </MaxWidth>
   </Container>
