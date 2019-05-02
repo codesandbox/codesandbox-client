@@ -210,7 +210,9 @@ export const saveCode = [
   ensureOwnedEditable,
   when(state`preferences.settings.experimentVSCode`),
   {
-    true: [],
+    true: [
+      changeCode, // Call this to send the live changes before saving
+    ],
     false: [
       when(state`preferences.settings.prettifyOnSaveEnabled`),
       {
@@ -269,7 +271,6 @@ export const addNpmDependency = [
     false: [actions.getLatestVersion],
   },
   actions.addNpmDependencyToPackage,
-  changeCode,
   saveCode,
 ];
 
@@ -277,15 +278,10 @@ export const removeNpmDependency = [
   track('Remove NPM Dependency', {}),
   ensureOwnedEditable,
   actions.removeNpmDependencyFromPackage,
-  changeCode,
   saveCode,
 ];
 
-export const updateSandboxPackage = [
-  actions.updateSandboxPackage,
-  changeCode,
-  saveCode,
-];
+export const updateSandboxPackage = [actions.updateSandboxPackage, saveCode];
 
 export const handlePreviewAction = [
   equals(props`action.action`),
