@@ -22,6 +22,7 @@ import Styleguidist from '../components/logos/Styleguidist';
 import VuePress from '../components/logos/VuePress';
 import MDXDeck from '../components/logos/mdx-deck';
 import GridSome from '../components/logos/Gridsome';
+import Expo from '../components/logos/Expo';
 
 import {
   adonis,
@@ -48,7 +49,8 @@ import {
   styleguidist,
   gridsome,
   vuepress,
-  mdxDeck
+  mdxDeck,
+  expo,
 } from './';
 
 import { TemplateType } from './';
@@ -112,6 +114,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return VuePress;
     case mdxDeck.name:
       return MDXDeck;
+    case expo.name:
+      return Expo;
     default:
       return React;
   }
