@@ -9,6 +9,7 @@ import angularJSON from './angular-json';
 import tsconfig from './tsconfig';
 import babelTranspiler from './babel-transpiler';
 import customCodeSandbox from './custom-codesandbox';
+import expoConfig from './expo';
 
 const configs = {
   babelrc,
@@ -22,6 +23,7 @@ const configs = {
   customCodeSandbox,
   nowConfig,
   netlifyConfig,
+  expoConfig,
 };
 
 export default configs;
