@@ -41,7 +41,7 @@ export default () => {
   const path = useRef(null);
   const logo = useRef(null);
   const boxes = useRef(null);
-  const logoAnimation = new TimelineLite();
+  const logoAnimation = typeof window !== 'undefined' ? new TimelineLite() : {};
 
   useEffect(
     () => {
