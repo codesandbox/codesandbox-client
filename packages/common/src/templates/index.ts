@@ -25,6 +25,7 @@ import styleguidist from './styleguidist';
 import gridsome from './gridsome';
 import vuepress from './vuepress';
 import mdxDeck from './mdx-deck';
+import expo from './expo';
 
 export {
   adonis,
@@ -53,7 +54,8 @@ export {
   styleguidist,
   gridsome,
   vuepress,
-  mdxDeck
+  mdxDeck,
+  expo,
 };
 
 export type TemplateType =
@@ -79,7 +81,8 @@ export type TemplateType =
   | 'styleguidist'
   | 'gridsome'
   | 'vuepress'
-  | 'mdx-deck';
+  | 'mdx-deck'
+  | 'expo';
 
 export default function getDefinition(theme: TemplateType) {
   switch (theme) {
@@ -137,6 +140,8 @@ export default function getDefinition(theme: TemplateType) {
       return ember;
     case vuepress.name:
       return vuepress;
+    case expo.name:
+      return expo;
     default:
       return react;
   }
