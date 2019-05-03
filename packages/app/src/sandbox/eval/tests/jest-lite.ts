@@ -234,24 +234,40 @@ export default class TestRunner {
 
     this.sendMessage('total_test_start');
 
-    let testModule = null;
+    let testModules: Module[] = [];
 
     try {
       if (this.manager.preset.name === react.name) {
-        testModule = this.manager.resolveModule('./src/setupTests.js', '/');
+        try {
+          testModules = [
+            this.manager.resolveModule('./src/setupTests.js', '/'),
+          ];
+        } catch (e) {
+          testModules = [
+            this.manager.resolveModule('./src/setupTests.ts', '/'),
+          ];
+        }
       } else if (this.manager.preset.name === reactTs.name) {
-        testModule = this.manager.resolveModule('./src/setupTests.ts', '/');
+        testModules = [this.manager.resolveModule('./src/setupTests.ts', '/')];
+      } else if (this.manager.configurations.package) {
+        const { parsed } = this.manager.configurations.package;
+
+        if (parsed && parsed.jest && parsed.jest.setupFilesAfterEnv) {
+          testModules = parsed.jest.setupFilesAfterEnv.map((path: string) =>
+            this.manager.resolveModule(path, '/')
+          );
+        }
       }
     } catch (e) {
       /* ignore */
     }
 
-    if (testModule) {
-      await this.manager.transpileModules(testModule, true);
-      this.manager.evaluateModule(testModule, {
-        force: true,
-        testGlobals: true,
-      });
+    if (testModules.length) {
+      await Promise.all(
+        testModules.map(testSetup => {
+          return this.manager.transpileModules(testSetup, true);
+        })
+      );
     }
 
     if (this.manager.modules) {
@@ -268,6 +284,15 @@ export default class TestRunner {
         dispatch(actions.error.clear(t.path, 'jest'));
 
         try {
+          if (testModules.length) {
+            testModules.forEach(module => {
+              this.manager.evaluateModule(module, {
+                force: true,
+                testGlobals: true,
+              });
+            });
+          }
+
           this.manager.evaluateModule(t, {
             force: true,
             testGlobals: true,
