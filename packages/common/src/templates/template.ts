@@ -153,6 +153,8 @@ export default class Template {
       '/index.js',
       '/index.ts',
       '/index.tsx',
+      '/README.md',
+      '/package.json',
       ...(this.mainFile || []),
     ].filter(x => x);
   }
