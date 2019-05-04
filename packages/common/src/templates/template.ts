@@ -26,8 +26,15 @@ export type ConfigurationFiles = {
   [path: string]: ConfigurationFile;
 };
 
+export type Dependencies = { [name: string]: string };
+
 export type ParsedConfigurationFiles = {
-  [path: string]: ParsedConfigurationFile;
+  [path: string]: ParsedConfigurationFile<{}>;
+  package?: ParsedConfigurationFile<{
+    main: string;
+    dependencies?: Dependencies;
+    devDependencies: Dependencies;
+  }>;
 };
 
 const defaultConfigurations = {

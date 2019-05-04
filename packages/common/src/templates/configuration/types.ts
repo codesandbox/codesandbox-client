@@ -1,4 +1,3 @@
-
 import { Sandbox } from '../../types';
 
 export type ConfigurationFile = {
@@ -18,8 +17,8 @@ export type ConfigurationFile = {
   partialSupportDisclaimer?: string;
 };
 
-export type ParsedConfigurationFile = {
-  parsed?: any;
+export type ParsedConfigurationFile<T> = {
+  parsed?: T;
   code: string;
   generated: boolean;
   error?: Error;
