@@ -2,7 +2,7 @@ import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 
 self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.7.2/typescript.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/typescript/3.4.1/typescript.min.js',
 ]);
 
 self.postMessage('ready');
@@ -20,7 +20,13 @@ declare var ts: {
 };
 
 self.addEventListener('message', event => {
-  const { code, path, config } = event.data;
+  const { code, path, config, typescriptVersion } = event.data;
+
+  if (typescriptVersion !== '3.4.1') {
+    self.importScripts(
+      `https://unpkg.com/typescript@${typescriptVersion}/lib/typescript.js`
+    );
+  }
 
   const defaultConfig = {
     fileName: path,

@@ -1,5 +1,3 @@
-
-
 import { absolute, join } from '../utils/path';
 
 import Template, { ParsedConfigurationFiles } from './template';
@@ -94,7 +92,7 @@ class AngularTemplate extends Template {
     if (!configurationFiles['angular-config'].generated) {
       const { parsed } = configurationFiles['angular-config'];
       entries = entries.concat(getAngularJSONHTMLEntry(parsed));
-    } else {
+    } else if (configurationFiles['angular-cli']) {
       const { parsed } = configurationFiles['angular-cli'];
       entries = entries.concat(getAngularCLIHTMLEntry(parsed));
     }

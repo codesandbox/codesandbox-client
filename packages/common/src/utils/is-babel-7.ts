@@ -1,6 +1,10 @@
 import semver from 'semver';
+import { Dependencies } from '../templates/template';
 
-function isCRAVersion2(dependencies: object, devDependencies: object) {
+function isCRAVersion2(
+  dependencies: Dependencies,
+  devDependencies: Dependencies
+) {
   const reactScriptsVersion =
     dependencies['react-scripts'] || devDependencies['react-scripts'];
   if (reactScriptsVersion) {
@@ -14,7 +18,10 @@ function isCRAVersion2(dependencies: object, devDependencies: object) {
   return false;
 }
 
-export function isBabel7(dependencies = {}, devDependencies = {}) {
+export function isBabel7(
+  dependencies: Dependencies = {},
+  devDependencies: Dependencies = {}
+) {
   if (devDependencies['@vue/cli-plugin-babel']) {
     return true;
   }

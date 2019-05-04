@@ -26,8 +26,16 @@ export type ConfigurationFiles = {
   [path: string]: ConfigurationFile;
 };
 
+export type Dependencies = { [name: string]: string };
+
 export type ParsedConfigurationFiles = {
-  [path: string]: ParsedConfigurationFile;
+  package?: ParsedConfigurationFile<{
+    main: string;
+    dependencies?: Dependencies;
+    devDependencies: Dependencies;
+    [otherProperties: string]: any | undefined;
+  }>;
+  [path: string]: ParsedConfigurationFile<any> | undefined;
 };
 
 const defaultConfigurations = {
@@ -180,7 +188,7 @@ export default class Template {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getHTMLEntries(configurationFiles: { [type: string]: Object }): string[] {
+  getHTMLEntries(configurationFiles: ParsedConfigurationFiles): string[] {
     return ['/public/index.html', '/index.html'];
   }
 
