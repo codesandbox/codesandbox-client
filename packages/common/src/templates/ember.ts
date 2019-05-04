@@ -24,7 +24,7 @@ export default new Template(
   'github/mike-north/ember-new-output',
   decorateSelector(() => '#E04E39'),
   {
-    isServer: true,
+    isServer: false,
     showOnHomePage: true,
     main: false,
     netlify: false,
