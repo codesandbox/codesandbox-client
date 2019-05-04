@@ -29,8 +29,8 @@ export type ConfigurationFiles = {
 export type Dependencies = { [name: string]: string };
 
 export type ParsedConfigurationFiles = {
-  [path: string]: ParsedConfigurationFile<{}>;
-  package?: ParsedConfigurationFile<{
+  [path: string]: ParsedConfigurationFile<object>;
+  package: ParsedConfigurationFile<{
     main: string;
     dependencies?: Dependencies;
     devDependencies: Dependencies;
