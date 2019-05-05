@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import AngularLogo from '@codesandbox/common/lib/components/logos/Angular';
 import ReactLogo from '@codesandbox/common/lib/components/logos/React';
 import VueLogo from '@codesandbox/common/lib/components/logos/Vue';

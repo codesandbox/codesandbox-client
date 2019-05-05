@@ -17,13 +17,21 @@ const TwitterCSS = css`
     display: none;
   }
 
+  .EmbeddedTweet {
+    border: none;
+    background-color: #1c2022;
+  }
+
   .TweetInfo {
     display: none;
   }
 
+  .EmbeddedTweet--cta .EmbeddedTweet-tweet {
+    padding-bottom: 20px;
+  }
+
   .Tweet {
-    font-family: 'Helvetica Neue', 'Roboto';
-    font-weight: bold;
+    font-family: 'Source Sans Pro', 'Open Sans', 'Segoe UI', sans-serif;
     line-height: 24px;
     font-size: 18px;
 
@@ -34,7 +42,7 @@ const TwitterCSS = css`
 const List = styled.div`
   display: flex;
   align-items: center;
-  overflow: scroll;
+  overflow-y: scroll;
   margin-bottom: 100px;
 
   > div {
@@ -74,7 +82,7 @@ export default class extends Component {
                 this[tweet] = c;
               }}
             />
-          ))}})}
+          ))}
         </List>
       </MaxWidth>
     );
