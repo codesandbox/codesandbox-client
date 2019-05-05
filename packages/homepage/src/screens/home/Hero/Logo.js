@@ -54,13 +54,22 @@ export default () => {
         .to(cube2.current, 0, { opacity: 0 })
         .to(cube3.current, 0, { opacity: 0 })
         .to(boxes.current, 0, { opacity: 1 })
-        .to(box1.current, 0.2, { x: 3, y: 3 })
-        .to(box2.current, 0.2, { x: -3, y: 3 })
-        .to(box3.current, 0.2, { x: 0, y: -3 })
-        .to(box1.current, 0.2, { opacity: 0 }, '+=1')
-        .to(box2.current, 0.2, { opacity: 0 }, '-=0.2')
-        .to(box3.current, 0.2, { opacity: 0 }, '-=0.2')
-        .to(logo.current, 1, { opacity: 1 }, '-=0.4')
+        .add('createbox')
+        .to(box1.current, 0.2, { x: 3, y: 3 }, 'createbox')
+        .to(box2.current, 0.2, { x: -3, y: 3 }, 'createbox')
+        .to(box3.current, 0.2, { x: 0, y: -3 }, 'createbox')
+        .add('splitbox', 'createbox+=1')
+        .to(box1.current, 1.5, { opacity: 0 }, 'splitbox')
+        .to(box2.current, 1.5, { opacity: 0 }, 'splitbox')
+        .to(box3.current, 1.5, { opacity: 0 }, 'splitbox')
+        .to(
+          logo.current,
+          1,
+          {
+            opacity: 1,
+          },
+          'splitbox'
+        )
         .to(logo.current, 0.01, { scale: 1.1 }, '-=0.8')
         .to(logo.current, 0.01, { scale: 1 }, '-=0.5');
     },
