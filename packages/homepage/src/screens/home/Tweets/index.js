@@ -1,55 +1,10 @@
 import React, { Component } from 'react';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import theme from '@codesandbox/common/lib/theme';
-import styled, { css } from 'styled-components';
 import tweets from './tweets';
+import shuffle from '../../../utils/shuffleArray';
 
-function shuffle(a) {
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-const TwitterCSS = css`
-  .CallToAction {
-    display: none;
-  }
-
-  .EmbeddedTweet {
-    border: none;
-    background-color: #1c2022;
-  }
-
-  .TweetInfo {
-    display: none;
-  }
-
-  .EmbeddedTweet--cta .EmbeddedTweet-tweet {
-    padding-bottom: 20px;
-  }
-
-  .Tweet {
-    font-family: 'Source Sans Pro', 'Open Sans', 'Segoe UI', sans-serif;
-    line-height: 24px;
-    font-size: 18px;
-
-    color: #f2f2f2;
-  }
-`;
-
-const List = styled.div`
-  display: flex;
-  align-items: center;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  margin-bottom: 100px;
-
-  > div {
-    margin-right: 32px;
-  }
-`;
+import { TwitterCSS, List } from './elements';
 
 export default class extends Component {
   componentDidMount() {

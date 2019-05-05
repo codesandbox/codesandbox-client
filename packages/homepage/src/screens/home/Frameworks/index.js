@@ -78,6 +78,7 @@ export default () => {
           <TemplateTitle>Templates</TemplateTitle>
           {templates.map(template => (
             <IconContainer
+              key={template.link}
               aria-label={template.name}
               selected={templates.indexOf(template) === templateIndex}
               onClick={() => setTemplate(template)}

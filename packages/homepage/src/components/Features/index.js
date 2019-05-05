@@ -52,7 +52,7 @@ export default ({ homepage = true }) => (
     {features
       .filter(f => (homepage ? f.homepage === homepage : true))
       .map(feature => (
-        <section>
+        <section key={feature.icon}>
           <Header>
             <Icon src={feature.icon} alt={feature.title} />
             <Title>{feature.title}</Title>
