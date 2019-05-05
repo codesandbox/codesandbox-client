@@ -92,12 +92,16 @@ export const TemplateName = styled.span`
     `};
 `;
 
-export const IconContainer = styled.div`
+export const IconContainer = styled.button`
   display: flex;
   width: 100%;
   align-items: center;
   margin-bottom: 16px;
   cursor: pointer;
+  border-radius: 2px;
+  border: none;
+  padding: 0%;
+  background: transparent;
 
   svg {
     transition: 0.3s ease filter;
@@ -108,11 +112,5 @@ export const IconContainer = styled.div`
       css`
         filter: grayscale(0);
       `};
-  }
-
-  border-radius: 2px;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
   }
 `;

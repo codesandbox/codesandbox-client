@@ -5,7 +5,7 @@ import Explore from '../screens/home/Explore';
 import Features from '../screens/home/Features';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout from '../components/layout';
-// import Frameworks from '../screens/home/Frameworks';
+import Frameworks from '../screens/home/Frameworks';
 import Tweets from '../screens/home/Tweets';
 
 export default class HomePage extends React.Component {
@@ -36,7 +36,7 @@ export default class HomePage extends React.Component {
         <TitleAndMetaTags />
         <Hero />
         <Explore />
-        {/* <Frameworks /> */}
+        <Frameworks />
         <Features />
         <RecentPublications />
         <Tweets />
