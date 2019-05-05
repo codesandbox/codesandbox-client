@@ -42,7 +42,8 @@ const TwitterCSS = css`
 const List = styled.div`
   display: flex;
   align-items: center;
-  overflow-y: scroll;
+  overflow-x: scroll;
+  overflow-y: hidden;
   margin-bottom: 100px;
 
   > div {
