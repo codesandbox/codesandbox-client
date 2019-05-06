@@ -42,6 +42,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const docsTemplate = resolve(__dirname, './src/templates/docs.js');
   const blogTemplate = resolve(__dirname, './src/templates/post.js');
+  const jobTemplate = resolve(__dirname, './src/templates/job.js');
 
   // Redirect /index.html to root.
   createRedirect({
@@ -166,6 +167,38 @@ exports.createPages = async ({ graphql, actions }) => {
       createArticlePage(url || slug);
     }
   });
+
+  // JOBS
+
+  const allJobs = await graphql(
+    `
+      {
+        allMarkdownRemark(
+          filter: { fileAbsolutePath: { regex: "/jobs/" } }
+          limit: 1000
+        ) {
+          edges {
+            node {
+              id
+              frontmatter {
+                slug
+              }
+            }
+          }
+        }
+      }
+    `
+  );
+
+  if (allJobs.data) {
+    allJobs.data.allMarkdownRemark.edges.forEach(edge => {
+      createPage({
+        path: 'job/' + edge.node.frontmatter.slug,
+        component: jobTemplate,
+        context: { id: edge.node.id },
+      });
+    });
+  }
 };
 
 exports.onCreateWebpackConfig = ({

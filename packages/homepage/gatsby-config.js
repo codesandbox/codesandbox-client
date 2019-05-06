@@ -84,7 +84,7 @@ module.exports = {
         fonts: [
           `Poppins:600,700,800`,
           `source sans pro:300,400,500,600,700`,
-          'open sans:400',
+          'open sans:300,400',
         ],
       },
     },
