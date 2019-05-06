@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import Files from 'embed/components/Files';
 import QRCode from 'qrcode.react';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Title from './Title';
 
@@ -290,6 +291,25 @@ class ShareView extends React.Component {
                     size={'100%'}
                     renderAs="svg"
                   />
+                </Inputs>
+              </Title>
+              <Title title="Share on DEV">
+                <Inputs
+                  style={{
+                    margin: '20px 0',
+                  }}
+                >
+                  <Button
+                    small
+                    target="_blank"
+                    href={`https://dev.to/new?prefill=---%5Cn%20title:${encodeURIComponent(
+                      sandbox.title || sandbox.id
+                    )}%5Cn%20published:%20false%5Cn%20tags:%20codesandbox%5Cn%20---%5Cn%20%5Cn%20%5Cn%20%5Cn%20%7B%25%20codesandbox%20${encodeURIComponent(
+                      sandbox.id
+                    )}%20%25%7D`}
+                  >
+                    Share on DEV
+                  </Button>
                 </Inputs>
               </Title>
             </section>
