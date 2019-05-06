@@ -293,7 +293,7 @@ class ShareView extends React.Component {
                   />
                 </Inputs>
               </Title>
-              <Title title="Share on DEV">
+              <Title title="Share on Social Media">
                 <Inputs
                   style={{
                     margin: '20px 0',
@@ -309,6 +309,16 @@ class ShareView extends React.Component {
                     )}%20%25%7D`}
                   >
                     Share on DEV
+                  </Button>
+                  <Button
+                    style={{ marginLeft: '1em' }}
+                    small
+                    target="_blank"
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                      sandbox.title || sandbox.id
+                    )}.+${getEditorUrl(sandbox, mainModule, this.state)}`}
+                  >
+                    Share on Twitter
                   </Button>
                 </Inputs>
               </Title>
