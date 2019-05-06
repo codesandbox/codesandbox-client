@@ -68,7 +68,7 @@ describe('sandboxes', () => {
         const page = await browser.newPage();
         const waitFunction = pageLoaded(page);
         page.goto('http://localhost:3002/#' + id, {
-          timeout: 60000,
+          timeout: 80000,
         });
         await waitFunction;
         await page.waitFor(sandbox.waitFor || 2000);
