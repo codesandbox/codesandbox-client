@@ -151,6 +151,7 @@ export default class Template {
     return [
       configurationFiles.package &&
         this.getMainFromPackage(configurationFiles.package.parsed),
+      ...(this.mainFile || []),
       '/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
       '/src/index.ts',
@@ -163,7 +164,6 @@ export default class Template {
       '/index.tsx',
       '/README.md',
       '/package.json',
-      ...(this.mainFile || []),
     ].filter(x => x);
   }
 
