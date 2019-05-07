@@ -53,7 +53,7 @@ export default () => (
             style={{ color: 'white' }}
             target="_blank"
             rel="noreferrer noopener"
-            href="https://github.com/CompuIves/codesandbox-client/issues"
+            href="https://github.com/codesandbox/codesandbox-client/issues"
           >
             GitHub
           </a>
@@ -183,7 +183,7 @@ export default () => (
               re almost fully open source! Our most active repository can be
               found{' '}
               <a
-                href="https://github.com/CompuIves/codesandbox-client"
+                href="https://github.com/codesandbox/codesandbox-client"
                 target="_blank"
                 rel="noreferrer noopener"
               >

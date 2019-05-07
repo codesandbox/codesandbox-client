@@ -46,7 +46,7 @@ export default class ContributorsBadge extends React.Component<Props, State> {
           e.stopPropagation();
         }}
         href={
-          'https://github.com/CompuIves/codesandbox-client/commits?author=' +
+          'https://github.com/codesandbox/codesandbox-client/commits?author=' +
           username
         }
       >

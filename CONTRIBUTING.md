@@ -10,7 +10,7 @@
 
 ## Code of Conduct
 
-We have a code of conduct you can find [here](https://github.com/CompuIves/codesandbox-client/blob/master/CODE_OF_CONDUCT.md) and every contributor is expected to obey the rules therein. Any issues or PRs that don't abide by the code of conduct may be closed.
+We have a code of conduct you can find [here](https://github.com/codesandbox/codesandbox-client/blob/master/CODE_OF_CONDUCT.md) and every contributor is expected to obey the rules therein. Any issues or PRs that don't abide by the code of conduct may be closed.
 
 ## Code Organization
 
@@ -20,7 +20,7 @@ The CodeSandbox client is currently divided in to 5 parts. We use `lerna` to sha
 - `homepage`: The Gatsby website of the homepage.
 - `common`: All common parts between these packages, reusable JS.
 - `codesandbox-api`: The npm package that's responsible for communication between the sandbox and the editor.
-- `codesandbox-browserfs`: An in-browser file system that emulates the Node JS file system API and supports storing and retrieving files from various backends. Forked from [https://github.com/jvilk/BrowserFS](https://github.com/jvilk/BrowserFS), with an additional [CodeSandbox backend](https://github.com/CompuIves/codesandbox-client/blob/master/standalone-packages/codesandbox-browserfs/src/backend/CodeSandboxFS.ts).
+- `codesandbox-browserfs`: An in-browser file system that emulates the Node JS file system API and supports storing and retrieving files from various backends. Forked from [https://github.com/jvilk/BrowserFS](https://github.com/jvilk/BrowserFS), with an additional [CodeSandbox backend](https://github.com/codesandbox/codesandbox-client/blob/master/standalone-packages/codesandbox-browserfs/src/backend/CodeSandboxFS.ts).
 
 This version of CodeSandbox is using the production server as source of truth, this is specified by the environment variable `LOCAL_SERVER`. If you're working on a feature that needs you to be logged in, you can login on [https://codesandbox.io/](https://codesandbox.io/) and copy the contents of the `jwt` local storage key over to your development environment on [http://localhost:3000/](http://localhost:3000/). **Be very careful with how you handle the token**, as anyone who knows it can login as you and have read/write access to all your CodeSandbox content!
 
@@ -50,7 +50,7 @@ To install the project you need to have `yarn` and `node`
 > pull requests from branches on your fork. To do this, run:
 >
 > ```
-> git remote add upstream https://github.com/CompuIves/codesandbox-client.git
+> git remote add upstream https://github.com/codesandbox/codesandbox-client.git
 > git fetch upstream
 > git branch --set-upstream-to=upstream/master master
 > ```
