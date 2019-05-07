@@ -69,13 +69,9 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
           Don't see a position that fits your skill set?
         </PageSubtitle>
         <OtherJobs>
-          <p
-            css={`
-              max-width: 70%;
-            `}
-          >
-            We are always looking for talented, hard working people. Tell us
-            what you love to do!
+          <p>
+            We are always looking for talented, hard working people. Drop us a
+            line and show us your work
           </p>
           <Button
             css={`

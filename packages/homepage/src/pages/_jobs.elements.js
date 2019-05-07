@@ -50,4 +50,17 @@ export const OtherJobs = styled.div`
   margin-top: 12px;
   justify-content: space-between;
   align-items: center;
+  align-items: flex-start;
+
+  @media screen and (max-width: 500px) {
+    flex-direction: column;
+  }
+
+  p {
+    max-width: 70%;
+
+    @media screen and (max-width: 500px) {
+      max-width: 100%;
+    }
+  }
 `;
