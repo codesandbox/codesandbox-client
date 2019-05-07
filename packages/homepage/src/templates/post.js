@@ -17,14 +17,23 @@ import {
 import { makePost } from '../utils/makePosts';
 
 export default ({ data: { feedMediumBlog, markdownRemark } }) => {
-  const { creator, title, content, date, photo, featuredImage } = makePost(
-    markdownRemark,
-    feedMediumBlog
-  );
+  const {
+    creator,
+    title,
+    content,
+    date,
+    photo,
+    featuredImage,
+    description,
+  } = makePost(markdownRemark, feedMediumBlog);
   return (
     <Layout>
       <Container style={{ overflowX: 'auto' }}>
-        <TitleAndMetaTags title={`${title} - CodeSandbox Blog`} />
+        <TitleAndMetaTags
+          title={`${title} - CodeSandbox Blog`}
+          image={featuredImage}
+          description={description}
+        />
         <PageContainer width={800}>
           <Title>{title}</Title>
           <aside
