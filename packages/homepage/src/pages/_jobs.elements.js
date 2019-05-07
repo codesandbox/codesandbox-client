@@ -51,6 +51,7 @@ export const OtherJobs = styled.div`
   justify-content: space-between;
   align-items: center;
   padding-bottom: 3rem;
+
   align-items: flex-start;
 
   @media screen and (max-width: 500px) {
