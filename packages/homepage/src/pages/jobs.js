@@ -21,7 +21,7 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
     <Layout>
       <PageContainer width={600}>
         <TitleAndMetaTags
-          description="Here you can all Careers we have available for you at CodeSandbox"
+          description="Find out here about careers and working at CodeSandbox!"
           title="Careers - CodeSandbox"
         />
         <PageTitle>Join the team</PageTitle>
@@ -82,12 +82,12 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
               font-size: 14px;
               line-height: 1;
             `}
-            href={'mailto:hello@codesandbox.io'}
+            href={'mailto:careers@codesandbox.io'}
             small
             secondary
             target="_blank"
           >
-            contact us
+            Contact Us
           </Button>
         </OtherJobs>
       </PageContainer>
