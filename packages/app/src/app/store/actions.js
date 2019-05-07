@@ -176,7 +176,8 @@ export function forkSandbox({ state, props, api }) {
 
   return api
     .post(url, props.body || {})
-    .then(data => ({ forkedSandbox: data }));
+    .then(data => ({ forkedSandbox: data }))
+    .catch(() => state.set('editor.isForkingSandbox', false));
 }
 
 export function moveModuleContent({ props, state }) {
