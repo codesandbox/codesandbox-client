@@ -1,5 +1,5 @@
 ---
-featuredImage: "./images/Untitled-bea0a6f1-5509-4455-b205-e12201f7ca82.png"
+featuredImage: "./images/investment-featured.png"
 slug: "CodeSandbox-Raises-2-4M-Seed-Round-led-by-Kleiner-Perkins"
 authors: ["Ives van Hoorne"]
 photo: "https://avatars0.githubusercontent.com/u/587016?s=460&v=4"
