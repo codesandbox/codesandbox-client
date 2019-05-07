@@ -15,7 +15,7 @@ As a front-end engineer you will be responsible for a wide range of projects. Yo
 
 - Work on the main editor and build new features and fixes
 - Work on community pages
-- Work on some of our libraries like `sandpack
+- Work on some of our libraries like `sandpack`
 - Interact with the community to make sure they get the best of CodeSandbox
 - Anything you think will be beneficial, you will shape the future of CodeSandbox
 
