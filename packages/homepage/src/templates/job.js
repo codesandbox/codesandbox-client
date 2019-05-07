@@ -26,10 +26,7 @@ const styles = css`
   }
 
   font-family: 'Open Sans', sans-serif;
-  <<<<<<<HEAD
   font-weight: 400;
-  =======font-weight: 300;
-  >>>>>>>add job page
   font-size: 18px;
   line-height: 1.5;
   color: ${props => props.theme.lightText};
