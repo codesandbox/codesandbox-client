@@ -14,6 +14,7 @@ export const makePost = (markdown, medium) => {
   return {
     ...markdown.frontmatter,
     content: markdown.html,
+    featuredImage: markdown.frontmatter.featuredImage.publicURL,
     creator: markdown.frontmatter.authors[0],
   };
 };
@@ -58,7 +59,7 @@ export const makeFeed = (mediumPosts, markdownPosts) => {
   if (markdownPosts) {
     markdown = markdownPosts.edges.map(post => ({
       ...post.node.frontmatter,
-      src: post.node.frontmatter.featuredImage,
+      src: post.node.frontmatter.featuredImage.publicURL,
       subtitle: post.node.frontmatter.description,
       content: post.node.html,
       date: new Date(post.node.frontmatter.date),

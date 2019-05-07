@@ -45,6 +45,11 @@ export const mainStyle = css`
     font-weight: 600;
   }
 
+  ul,
+  ol {
+    margin-bottom: 28px;
+  }
+
   p {
     margin-bottom: 28px;
     word-break: break-word;

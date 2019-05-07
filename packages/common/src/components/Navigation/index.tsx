@@ -147,18 +147,22 @@ export default class Navigation extends React.PureComponent {
             <Item href="/docs">Docs</Item>
 
             <Item href="/blog">Blog</Item>
+
             <Item
               href="https://github.com/CompuIves/codesandbox-client"
               target="_blank"
               rel="noopener noreferrer"
+              hideOn={970}
             >
               GitHub
             </Item>
+
+            <Item href="/jobs">Careers</Item>
           </Left>
 
           <Right>
             {!user && (
-              <Item hideOn={730} href="/signin">
+              <Item hideOn={875} href="/signin">
                 Sign In
               </Item>
             )}
