@@ -109,7 +109,7 @@ exports.createPages = async ({ graphql, actions }) => {
       const id = edge.node.id;
 
       createPage({
-        path: 'blog/' + slug,
+        path: 'post/' + slug,
         component: blogTemplate,
         context: {
           id,

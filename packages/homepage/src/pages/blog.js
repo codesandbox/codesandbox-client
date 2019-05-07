@@ -92,16 +92,17 @@ export const query = graphql`
         node {
           id
           html
-          # UNCOMMENT ME
-          # frontmatter {
-          #   featuredImage
-          #   slug
-          #   authors
-          #   photo
-          #   title
-          #   description
-          #   date
-          # }
+          frontmatter {
+            featuredImage {
+              publicURL
+            }
+            slug
+            authors
+            photo
+            title
+            description
+            date
+          }
         }
       }
     }
