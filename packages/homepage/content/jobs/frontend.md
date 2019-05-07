@@ -1,11 +1,11 @@
 ---
 title: "Front-end engineer"
 slug: "frontend-engineer"
-description: "At CodeSandbox we work on a wide variety of tools that is used by frontend engineers. We are a small team with a big impact in the development tooling space. We are using a modern frontend technology stack (React, TypeScript, even vanilla JS!) that is [open source](https://github.com/codesandbox)!"
+description: "At CodeSandbox we work on a wide variety of tools that is used by frontend engineers. We are a small team with a big impact in the development tooling space. We're also using a modern frontend technology stack (React, TypeScript, even vanilla JS!) that is [open source](https://github.com/codesandbox)!"
 link: "https://airtable.com/shrYgsLKkdfchPlmZ"
 ---
 
-At CodeSandbox we work on a wide variety of tools that is used by frontend engineers. We are a small team with a big impact in the development tooling space. We are using a modern frontend technology stack (React, TypeScript, even vanilla JS!) that is [open source](https://github.com/codesandbox)!
+At CodeSandbox we work on a wide variety of tools that is used by frontend engineers. We are a small team with a big impact in the development tooling space. We're lso using a modern frontend technology stack (React, TypeScript, even vanilla JS!) that is [open source](https://github.com/codesandbox)!
 
 ## Role
 

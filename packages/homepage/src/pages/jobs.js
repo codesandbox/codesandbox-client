@@ -19,7 +19,7 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
 
   return (
     <Layout>
-      <PageContainer width={600}>
+      <PageContainer width={800}>
         <TitleAndMetaTags
           description="Find out here about careers and working at CodeSandbox!"
           title="Careers - CodeSandbox"
