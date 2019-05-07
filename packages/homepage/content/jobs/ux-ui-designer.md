@@ -1,6 +1,6 @@
 ---
-title: "UX Designer"
-slug: "ux-designer"
+title: "UI/UX Designer"
+slug: "ux-ui-designer"
 description: "As a designer you'll be working closely with our engineers to implement and improve interaction opportunities that embody our [core values](https://codesandbox.io/docs/#our-values) and support our growing community of engineers, designers and teachers."
 link: "https://airtable.com/shrYgsLKkdfchPlmZ"
 ---
@@ -19,10 +19,10 @@ As a designer you'll be working closely with our engineers to implement and impr
 ## We'll be looking for
 
 - 3+ years in a design role
-- Strong Javascript, React, HTML, CSS skills
+- Preferably Javascript, React, HTML, CSS skills
 - Thorough understanding of software development process
 - Modern design tooling fluency
-- Demonstrably shipped UX solutions to complex problems
+- Demonstrably shipped solutions to complex UI problems
 - Ideally, you have worked on or helped build a design system
 
 ## Our offer

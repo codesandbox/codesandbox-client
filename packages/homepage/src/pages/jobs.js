@@ -26,9 +26,11 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
         />
         <PageTitle>Join the team</PageTitle>
         <PageSubtitle>
-          We’re building a better developer tool for the digital age. [Something
-          about community focus and remote working]. [Also we’re an awesome
-          company etc. etc.]
+          Come and join us and start building a cutting-edge tool that is
+          shaping how the web is used and built. Instantly sharing our work
+          should be easier now than ever before.<br /> Our team is distributed
+          across The Netherlands, Romania, Germany. We're looking forward to
+          meeting you.
         </PageSubtitle>
         <PageTitle as="h2">Job Openings</PageTitle>
         {jobs.map(({ node: job }) => (
