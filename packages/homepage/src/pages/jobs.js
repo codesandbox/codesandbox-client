@@ -72,6 +72,7 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
           <p
             css={`
               max-width: 70%;
+              margin-bottom: 0;
             `}
           >
             We are always looking for talented, hard working people. Tell us

@@ -50,4 +50,5 @@ export const OtherJobs = styled.div`
   margin-top: 12px;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 3rem;
 `;
