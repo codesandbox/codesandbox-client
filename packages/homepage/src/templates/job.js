@@ -49,6 +49,12 @@ export default ({ data: { markdownRemark: job } }) => (
           __html: job.html,
         }}
       />
+      <div css={styles}>
+        <h2>Applying</h2>
+        <p>
+          Not sure you meet 100% of our qualifications? Please apply anyway!
+        </p>
+      </div>
       <Button
         css={`
           font-size: 14px;
