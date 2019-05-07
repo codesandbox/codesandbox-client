@@ -7,7 +7,7 @@ link: "https://airtable.com/shrYgsLKkdfchPlmZ"
 
 ## Role
 
-At CodeSandbox we spin up Docker containers for every container sandbox, this is why, as a backend engineer, you're key to our functionality. You'll be part of a small team of 3 working on the infrastructure to support and determine our growth. You'll work on setting up and automating the infrastructure so people using CodeSandbox won't even realize it's there.
+At CodeSandbox we spin up Docker containers for every container sandbox, this is why, as a backend engineer, you're key to our functionality. You'll be part of a small team working on the infrastructure to support and determine our growth. You'll work on setting up and automating the infrastructure so people using CodeSandbox won't even realize it's there.
 
 ## Responsibilities
 
