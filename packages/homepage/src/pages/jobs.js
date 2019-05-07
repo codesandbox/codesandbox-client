@@ -26,11 +26,29 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
         />
         <PageTitle>Join the team</PageTitle>
         <PageSubtitle>
-          Come and join us and start building a cutting-edge tool that is
-          shaping how the web is used and built. Instantly sharing our work
-          should be easier now than ever before.<br /> Our team is distributed
-          across The Netherlands, Romania, Germany. We're looking forward to
-          meeting you.
+          CodeSandbox is a company that aims to make it easy for everyone to
+          create applications. We want to cut away the hassle of setting up the
+          environment, installing the tooling and sharing your project with
+          others. We are specifically focused on lowering the barrier to entry
+          of web development and want to make creating applications both easier
+          and faster.
+          <br />
+          <br />
+          Do you resonate with this goal? Then CodeSandbox is the right place
+          for you! At CodeSandbox you have the chance to work on development
+          tooling that’s used by more than a million people on a monthly basis.
+          You’ll get the chance to be part of the founding team and will have a
+          big impact on how the online development tooling will be shaped in the
+          future. We’re also an open source company, the majority of our work is
+          in the open and the community is a big part of us.
+          <br />
+          <br />
+          Our team is remote-first, you can work from wherever you’d like. Our
+          current team is distributed across The Netherlands, Romania and
+          Germany.
+          <br />
+          <br />
+          We’re looking forward to meeting you!
         </PageSubtitle>
         <PageTitle as="h2">Job Openings</PageTitle>
         {jobs.map(({ node: job }) => (
