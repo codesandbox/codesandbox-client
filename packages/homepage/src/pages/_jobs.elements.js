@@ -27,9 +27,11 @@ export const Job = styled.li`
   color: ${props => props.theme.lightText};
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   a {
     font-size: 14px;
+    min-width: 100px;
     line-height: 1;
   }
 `;

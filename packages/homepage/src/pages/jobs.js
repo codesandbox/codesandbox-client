@@ -81,6 +81,7 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
             css={`
               font-size: 14px;
               line-height: 1;
+              min-width: 110px;
             `}
             href={'mailto:careers@codesandbox.io'}
             small
