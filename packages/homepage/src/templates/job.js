@@ -26,7 +26,7 @@ const styles = css`
   }
 
   font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 18px;
   line-height: 1.5;
   color: ${props => props.theme.lightText};

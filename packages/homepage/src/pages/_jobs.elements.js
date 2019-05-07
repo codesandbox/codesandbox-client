@@ -9,7 +9,7 @@ export const PageTitle = styled.h1`
 
 export const PageSubtitle = styled.h2`
   font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 18px;
   line-height: 1.5;
   color: ${props => props.theme.lightText};
@@ -19,7 +19,7 @@ export const PageSubtitle = styled.h2`
 export const Job = styled.li`
   list-style: none;
   font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 18px;
   line-height: 33px;
   letter-spacing: -0.04em;
