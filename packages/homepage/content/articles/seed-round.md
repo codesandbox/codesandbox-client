@@ -1,10 +1,10 @@
 ---
-featuredImage: "./images/Untitled-bea0a6f1-5509-4455-b205-e12201f7ca82.png"
+featuredImage: "./images/seed-investors.png"
 slug: "CodeSandbox-Raises-2-4M-Seed-Round-led-by-Kleiner-Perkins"
 authors: ["Ives van Hoorne"]
 photo: "https://avatars0.githubusercontent.com/u/587016?s=460&v=4"
 title: "CodeSandbox Raises $2.4M Seed Round led by Kleiner Perkins"
-description: "Two years ago we released CodeSandbox as the result of a side project while I was studying at the university. At the time there was no easy way to start or share modern JavaScript projects, and I needed this when working at Catawiki."
+description: "We're super excited to share that we've raised a seed round from Kleiner Perkins, Arches Capital, and the founders of Figma, Framer, Netlify, ZEIT, Sourcegraph and Catawiki!"
 date: 05/07/2019
 ---
 
@@ -16,7 +16,7 @@ Thus CodeSandbox was born. CodeSandbox is an online code editor that allows you 
 
 It turned out that I wasn’t the only one who wanted to have something like this. CodeSandbox quickly grew in usage, and with every new release, we got a new surge of encouragement from the community. Now, two years later, over 2 million projects have been created and we have over 1.2 million visitors per month!
 
-![](./images/Untitled-7d49206d-0ad2-472a-b887-8055f046d279.png)
+![Amount of sandboxes created in the past two years](./images/sandboxes-created.png)
 
 We never could’ve imagined this kind of adoption and support from so many people in such a short time: Thanks to everyone involved for being so supportive!
 
@@ -26,9 +26,9 @@ We've always said that we are an online code editor, but we think we can be much
 
 We raised money from an incredible group of people, many of whom have been advising us for some time now. Like us, our investors believe that the process of creating software can be more accessible, productive and effective by recreating the tooling to do so. Instantly sharing our work should be easier now than ever before.
 
-We’re proud to announce a seed round of $2.4M, led by Kleiner Perkins. Kleiner Perkins has invested in many companies that want to improve the flow of developing applications, like Figma and Netlify. Among the investors are [Arches Capital](https://arches.capital/), Christian Bach & Mathias Biilmann (Founders [Netlify](https://www.netlify.com/)), Dylan Field (Co-Founder [Figma](https://www.figma.com/)), Guillermo Rauch (Founder [ZEIT](https://zeit.co/)), Koen Bok (Co-Founder [Framer](https://www.framer.com/)), Marco Jansen (Co-Founder and former CTO [Catawiki](https://www.catawiki.nl/)), Petri Parvinen ([Angel Investor](http://www.arctum.fi)) and Quinn Slack (Co-Founder [Sourcegraph](https://sourcegraph.com/)).
+We’re proud to announce a seed round of $2.4M, led by [Kleiner Perkins](https://kleinerperkins.com/about). Kleiner Perkins has invested in many companies that are improving the flow of developing applications, like Figma and Netlify. Among the investors are [Arches Capital](https://arches.capital/), Christian Bach & Mathias Biilmann (Founders [Netlify](https://www.netlify.com/)), Dylan Field (Co-Founder [Figma](https://www.figma.com/)), Guillermo Rauch (Founder [ZEIT](https://zeit.co/)), Koen Bok (Co-Founder [Framer](https://www.framer.com/)), Marco Jansen (Co-Founder and former CTO [Catawiki](https://www.catawiki.nl/)), Petri Parvinen ([Angel Investor](http://www.arctum.fi)) and Quinn Slack (Co-Founder [Sourcegraph](https://sourcegraph.com/)).
 
-![](./images/Untitled-bea0a6f1-5509-4455-b205-e12201f7ca82.png)
+![Our seed investors](./images/seed-investors.png)
 
 We’re super excited to raise this round from such a smart group of people, we can’t wait to continue building!
 
