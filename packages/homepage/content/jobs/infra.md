@@ -7,25 +7,22 @@ link: "https://airtable.com/shrYgsLKkdfchPlmZ"
 
 ## Role
 
-As a backend engineer you’re key to our success. You'll work on building the infrastructure to support and determine our growth.
+As a backend engineer you’re key to our success. You'll be part of a small team of 3 working on the infrastructure to support and determine our growth.
 
 ## Responsibilities
 
-- Design, implement and optimise main infrastructure and make sure it scales
+- Design and implement supporting Node.js microservices
+- Design and implement CI/CD pipelines
+- Close collaboration with other engineers to determine our infrastructural needs
 
 ## We'll be looking for
 
 - 4+ years in a similar role where scalability's key
-- Container
-- Ephemeral environments
-- Docker
-- Node.js
-- Seniority
-- APIs
-- Familiarity with security best practices
-- You have a deep understanding of system design and data structures
-- Nice to have: Contributions to open source projects and/or enterprise solutions
-- Nice to have: Linux/Unix sysadmin?
+- Experience with containers and container orchestration - Docker, Kubernetes
+- Experience with Jenkins and preferably other CI/CD platforms
+- Familiarity with security best practices in the industry
+- Experience building APIs and Node.js, TypeScript microservices
+- Nice to have: experience with main IaaS platforms such as GCP, AWS
 
 ## Our offer
 
