@@ -147,7 +147,7 @@ export default class Navigation extends React.PureComponent {
             <Item href="/docs">Docs</Item>
 
             <Item href="/blog">Blog</Item>
-            <Item href="/jobs">Jobs</Item>
+            <Item href="/jobs">Careers</Item>
           </Left>
 
           <Right>
