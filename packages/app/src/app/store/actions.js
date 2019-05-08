@@ -168,7 +168,7 @@ export function getGitChanges({ api, state }) {
     .then(gitChanges => ({ gitChanges }));
 }
 
-export function forkSandbox({ state, props, api }) {
+export function forkSandbox({ state, props, api, path }) {
   const sandboxId = props.sandboxId || state.get('editor.currentId');
   const url = sandboxId.includes('/')
     ? `/sandboxes/fork/${sandboxId}`
@@ -176,8 +176,8 @@ export function forkSandbox({ state, props, api }) {
 
   return api
     .post(url, props.body || {})
-    .then(data => ({ forkedSandbox: data }))
-    .catch(() => state.set('editor.isForkingSandbox', false));
+    .then(data => path.success({ forkedSandbox: data }))
+    .catch(error => path.error({ error }));
 }
 
 export function moveModuleContent({ props, state }) {
