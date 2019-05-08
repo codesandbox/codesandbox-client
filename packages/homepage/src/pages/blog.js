@@ -60,7 +60,15 @@ const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
             <Info post={post} />
             <Posts>
               {post.src && (
-                <Thumbnail src={post.src} width="340" alt={post.title} />
+                <Link
+                  css={`
+                    text-decoration: none;
+                    display: contents;
+                  `}
+                  to={`post/${post.slug}`}
+                >
+                  <Thumbnail src={post.src} width="340" alt={post.title} />
+                </Link>
               )}
               <div>
                 <Link
