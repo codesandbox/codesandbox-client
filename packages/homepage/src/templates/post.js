@@ -27,7 +27,7 @@ export default ({ data: { feedMediumBlog, markdownRemark } }) => {
     description,
   } = makePost(markdownRemark, feedMediumBlog);
 
-  const featuredImageUrl = featuredImage.includes('http')
+  const featuredImageUrl = (featuredImage || '').includes('http')
     ? featuredImage
     : `https://codesandbox.io${featuredImage}`;
   return (
