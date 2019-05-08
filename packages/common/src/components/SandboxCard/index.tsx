@@ -87,7 +87,6 @@ export default class SandboxCard extends React.PureComponent<Props> {
       noHeight,
       defaultHeight = 245,
     } = this.props;
-    console.log(sandbox);
     if (!sandbox) {
       return (
         <Container style={{}}>

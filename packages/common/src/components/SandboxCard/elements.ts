@@ -155,7 +155,7 @@ export const Overlay = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 3px);
   padding: 1rem;
   box-sizing: border-box;
   opacity: 0;
