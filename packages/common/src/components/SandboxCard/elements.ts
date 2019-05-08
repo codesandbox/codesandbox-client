@@ -90,6 +90,7 @@ export const SandboxInfo = styled.div<{ noHeight?: boolean }>`
   left: -1px;
   right: -1px;
   padding: 0.75rem;
+  padding-bottom: 4px;
   z-index: 1;
   display: flex;
   justify-content: space-between;
@@ -149,7 +150,7 @@ export const SandboxStats = styled.div`
 
 export const Overlay = styled.div`
   position: absolute;
-  background: rgba(28, 32, 34, 0.75);
+  background: rgba(28, 32, 34, 0.9);
   border-radius: 4px 4px 0px 0px;
   top: 0;
   left: 0;
