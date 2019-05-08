@@ -79,7 +79,7 @@ export const SandboxImage = styled.img`
   display: block;
   margin-bottom: 0;
   z-index: 0;
-  border-bottom: 3.2px solid ${props => props.color};
+  border-bottom: 3px solid ${props => props.color};
   height: auto;
   width: 100%;
   background-color: ${BG_HOVER};
