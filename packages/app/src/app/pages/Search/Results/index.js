@@ -2,24 +2,25 @@ import React from 'react';
 
 import { Hits, Pagination } from 'react-instantsearch/dom';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import WideSandbox from '@codesandbox/common/lib/components/WideSandbox';
+import SandboxCard from '@codesandbox/common/lib/components/SandboxCard';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import ResultInfo from '../ResultInfo';
 import { Container } from './elements';
 
-function Results() {
+const Results = () => {
+  const selectSandbox = hit =>
+    window.open(sandboxUrl({ id: hit.objectID, git: hit.git }));
+
   return (
     <Container>
       <ResultInfo />
       <Margin bottom={2}>
         <Hits
           hitComponent={({ hit }) => (
-            <WideSandbox
-              selectSandbox={() =>
-                window.open(sandboxUrl({ id: hit.objectID, git: hit.git }))
-              }
+            <SandboxCard
+              selectSandbox={() => selectSandbox(hit)}
               noHeight
               sandbox={{
                 ...hit,
@@ -35,6 +36,6 @@ function Results() {
       </Centered>
     </Container>
   );
-}
+};
 
 export default Results;
