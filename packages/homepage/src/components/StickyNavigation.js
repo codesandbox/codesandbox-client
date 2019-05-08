@@ -186,7 +186,7 @@ export default class StickyNavigation extends React.PureComponent<Props> {
         </ul>
 
         <MissingNotice
-          href="https://github.com/CompuIves/codesandbox-client/issues"
+          href="https://github.com/codesandbox/codesandbox-client/issues"
           target="_blank"
           rel="noopener noreferrer"
         >

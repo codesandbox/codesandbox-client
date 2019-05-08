@@ -398,7 +398,7 @@ export function createPackageJSON({ props }) {
 export function getContributors({ state }) {
   return window
     .fetch(
-      'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
+      'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
     )
     .then(x => x.json())
     .then(x => x.contributors.map(u => u.login))

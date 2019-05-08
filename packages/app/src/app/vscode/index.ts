@@ -201,12 +201,12 @@ class VSCodeManager {
     addBrowserNavigationCommand(
       'codesandbox.help.open-issue',
       'Open Issue on GitHub',
-      'https://github.com/CompuIves/codesandbox-client/issues'
+      'https://github.com/codesandbox/codesandbox-client/issues'
     );
     addBrowserNavigationCommand(
       'codesandbox.help.github',
       'Open Our GitHub Repository',
-      'https://github.com/CompuIves/codesandbox-client'
+      'https://github.com/codesandbox/codesandbox-client'
     );
     addBrowserNavigationCommand(
       'codesandbox.help.twitter',
