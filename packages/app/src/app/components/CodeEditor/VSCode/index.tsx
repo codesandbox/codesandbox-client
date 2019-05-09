@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
@@ -1013,7 +1012,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
     const mode = await getMode(title, this.monaco);
     if (this.settings.lintEnabled) {
-      if (mode === 'javascript' || mode === 'vue') {
+      if (mode === 'javascript' || mode === 'typescript' || mode === 'vue') {
         if (this.lintWorker) {
           this.lintWorker.postMessage({
             code,
