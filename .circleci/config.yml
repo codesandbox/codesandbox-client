@@ -283,7 +283,11 @@ workflows:
             - build-deps
       - build-homepage:
           requires:
-            - build:deps
+            - build-deps
+      - combine-artifacts:
+          requires:
+            - build-app
+            - build-homepage
       - create-docker-image:
           requires:
             - combine-artifacts
