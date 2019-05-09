@@ -44,9 +44,10 @@ aliases:
       - v18-standalone-dependency-cache
 
   - &save_standalone_deps_cache
-    key: v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+    key: v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}-{{ checksum "standalone-packages/vscode-textmate/package-lock.json" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
+      - standalone-packages/vscode-textmate/node_modules
 
   - &restore_prod_app_build_cache
     key: v18-prod-app-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
