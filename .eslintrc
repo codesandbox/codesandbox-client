@@ -1,5 +1,6 @@
 {
   "extends": ["airbnb", "prettier", "prettier/react", "prettier/flowtype"],
+  "plugins": ["react-hooks"],
   "parser": "babel-eslint",
   "env": {
     "browser": true,
@@ -40,6 +41,8 @@
       }
     ],
     "no-param-reassign": ["error", { "props": false }],
-    "camelcase": "error"
+    "camelcase": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import Relative from '@codesandbox/common/lib/components/Relative';
@@ -33,26 +33,25 @@ const Icon = styled(SearchIcon)`
   color: rgba(0, 0, 0, 0.5);
 `;
 
-export default class SearchInput extends React.PureComponent {
-  state = {
-    query: '',
+const SearchInput = ({ searchQuery }) => {
+  const [query, setQuery] = useState('');
+
+  const onChange = e => {
+    setQuery(e.target.value);
+    searchQuery(e.target.value);
   };
 
-  onChange = e => {
-    this.setState({ query: e.target.value });
-    this.props.searchQuery(e.target.value);
-  };
+  return (
+    <Relative>
+      <Input
+        onChange={onChange}
+        placeholder="Search for a dependency"
+        value={query}
+      />
 
-  render() {
-    return (
-      <Relative>
-        <Input
-          placeholder="Search for a dependency"
-          value={this.state.query}
-          onChange={this.onChange}
-        />
-        <Icon />
-      </Relative>
-    );
-  }
-}
+      <Icon />
+    </Relative>
+  );
+};
+
+export default SearchInput;
