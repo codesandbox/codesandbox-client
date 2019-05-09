@@ -67,13 +67,11 @@
   },
   "devDependencies": {
     "dotenv": "^6.2.0",
-    "extract-text-webpack-plugin": "1.0.1",
     "gatsby-plugin-remove-trailing-slashes": "^2.0.6",
     "gatsby-source-medium": "^2.0.2",
     "prettier": "^1.8.2",
     "rimraf": "^2.6.2",
-    "terser": "^3.17.0",
-    "webpack": "^1.13.3"
+    "terser": "^3.17.0"
   },
   "browserslist": [
     "> 1%",
