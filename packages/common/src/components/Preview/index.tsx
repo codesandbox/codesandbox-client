@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import {
   Sandbox,
@@ -72,8 +71,8 @@ type State = {
   showScreenshot: boolean;
 };
 
-const getSSEUrl = (id?: string, initialPath: string = '') =>
-  `https://${id ? id + '.' : ''}sse.${
+const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
+  `https://${sandbox ? sandbox.alias || sandbox.id + '.' : ''}sse.${
     process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
   }${initialPath}`;
 
@@ -188,8 +187,8 @@ class BasePreview extends React.Component<Props, State> {
       history: [],
       historyPosition: 0,
       urlInAddressBar: this.serverPreview
-        ? getSSEUrl(props.sandbox.id, props.initialPath)
-        : frameUrl(props.sandbox.id, props.initialPath || ''),
+        ? getSSEUrl(props.sandbox, props.initialPath)
+        : frameUrl(props.sandbox, props.initialPath || ''),
       url: null,
       overlayMessage: null,
       hibernated: false,
@@ -457,7 +456,7 @@ class BasePreview extends React.Component<Props, State> {
       this.props.sandbox &&
       prevProps.sandbox.id !== this.props.sandbox.id
     ) {
-      this.handleSandboxChange(this.props.sandbox.id);
+      this.handleSandboxChange(this.props.sandbox);
     }
   }
 
@@ -469,14 +468,14 @@ class BasePreview extends React.Component<Props, State> {
     window.open(this.state.urlInAddressBar, '_blank');
   };
 
-  handleSandboxChange = (newId: string) => {
+  handleSandboxChange = (sandbox: Sandbox) => {
     this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
 
     resetState();
 
     const url = this.serverPreview
-      ? getSSEUrl(newId, this.props.initialPath)
-      : frameUrl(newId, this.props.initialPath || '');
+      ? getSSEUrl(sandbox, this.props.initialPath)
+      : frameUrl(sandbox, this.props.initialPath || '');
 
     if (this.serverPreview) {
       this.initializeLastSent();
@@ -510,8 +509,8 @@ class BasePreview extends React.Component<Props, State> {
         registerFrame(
           source,
           this.serverPreview
-            ? getSSEUrl(this.props.sandbox.id)
-            : frameUrl(this.props.sandbox.id)
+            ? getSSEUrl(this.props.sandbox)
+            : frameUrl(this.props.sandbox)
         );
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
@@ -701,8 +700,8 @@ class BasePreview extends React.Component<Props, State> {
       (el as HTMLIFrameElement).src =
         url ||
         (this.serverPreview
-          ? getSSEUrl(this.props.sandbox.id)
-          : frameUrl(this.props.sandbox.id));
+          ? getSSEUrl(this.props.sandbox)
+          : frameUrl(this.props.sandbox));
     }
 
     this.setState({
@@ -781,9 +780,10 @@ class BasePreview extends React.Component<Props, State> {
       urlInAddressBar,
       overlayMessage,
     } = this.state;
+
     const url =
       urlInAddressBar ||
-      (this.serverPreview ? getSSEUrl(sandbox.id) : frameUrl(sandbox.id));
+      (this.serverPreview ? getSSEUrl(sandbox) : frameUrl(sandbox));
 
     if (noPreview) {
       // Means that preview is open in another tab definitely
@@ -835,11 +835,11 @@ class BasePreview extends React.Component<Props, State> {
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
                 src={
                   this.serverPreview
-                    ? getSSEUrl(sandbox.id, this.initialPath)
-                    : frameUrl(sandbox.id, this.initialPath)
+                    ? getSSEUrl(sandbox, this.initialPath)
+                    : frameUrl(sandbox, this.initialPath)
                 }
                 id="sandbox"
-                title={sandbox.title || sandbox.id}
+                title={sandbox.title || sandbox.alias || sandbox.id}
                 style={{
                   ...style,
                   zIndex: 1,
