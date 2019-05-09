@@ -48,8 +48,11 @@ aliases:
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
-  - &restore_prod_build_cache
-    key: v17-prod-app-build-cache-master
+  - &restore_prod_app_build_cache
+    key: v17-prod-app-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+
+  - &restore_prod_homepage_build_cache
+    key: v17-prod-homepage-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
   - &restore_prod_cache
     key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
@@ -58,6 +61,10 @@ aliases:
     key: v17-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/app/www
+
+  - &save_prod_homepage_cache
+    key: v17-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    paths:
       - ./packages/homepage/public
 
   - &save_prod_cache
@@ -108,15 +115,32 @@ commands:
           name: Build
           command: yarn build:deps
       - save_cache: *save_repo_cache
-  build_prod:
-    description: 'Build the Application with `yarn build:prod`'
+  build_app:
+    description: 'Build the Application with `yarn build:app`'
     steps:
       - restore_cache: *restore_repo_cache
-      - restore_cache: *restore_prod_build_cache
+      - restore_cache: *restore_prod_app_build_cache
       - run:
           name: Build Application
-          command: yarn build:prod
+          command: yarn build:app
       - save_cache: *save_prod_app_cache
+  build_homepage:
+    description: 'Build the Homepages with `yarn build:homepage`'
+    steps:
+      - restore_cache: *restore_repo_cache
+      - restore_cache: *restore_prod_homepage_build_cache
+      - run:
+          name: Build Homepage
+          command: yarn build:homepage
+      - save_cache: *save_prod_homepage_cache
+  build_combine_artifacts:
+    description: 'Combine all the build artifacts from app and homepage'
+    steps:
+      - restore_cache: *restore_prod_app_build_cache
+      - restore_cache: *restore_prod_homepage_build_cache
+      - run:
+          name: Build Homepage
+          command: yarn build:combine-homepage-app
       - save_cache: *save_prod_cache
   test_integrations:
     description: "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
@@ -193,11 +217,20 @@ jobs:
     steps:
       - checkout
       - build_deps
-  build-prod:
+  build-app:
     executor: node
     steps:
       - checkout
-      - build_prod
+      - build_app
+  build-homepage:
+    executor: node
+    steps:
+      - checkout
+      - build_homepage
+  combine-artifacts:
+    executor: node
+    steps:
+      - build_combine_artifacts
   test-integrations:
     executor: node-with-puppeteer
     steps:
@@ -245,12 +278,15 @@ workflows:
       - lint:
           requires:
             - build-deps
-      - build-prod:
+      - build-app:
           requires:
             - build-deps
+      - build-homepage:
+          requires:
+            - build:deps
       - create-docker-image:
           requires:
-            - build-prod
+            - combine-artifacts
             - lint
             - typecheck
             # - test-integrations
