@@ -26,12 +26,16 @@ export default ({ data: { feedMediumBlog, markdownRemark } }) => {
     featuredImage,
     description,
   } = makePost(markdownRemark, feedMediumBlog);
+
+  const featuredImageUrl = (featuredImage || '').includes('http')
+    ? featuredImage
+    : `https://codesandbox.io${featuredImage}`;
   return (
     <Layout>
       <Container style={{ overflowX: 'auto' }}>
         <TitleAndMetaTags
           title={`${title} - CodeSandbox Blog`}
-          image={featuredImage}
+          image={featuredImageUrl}
           description={description}
         />
         <PageContainer width={800}>
