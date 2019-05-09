@@ -442,7 +442,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
                   // check for cmd click
                   const cmd = event.ctrlKey || event.metaKey;
 
-                  this.openSandbox(!!cmd);
+                  this.openSandbox(Boolean(cmd));
                 }}
                 onBlur={this.handleOnBlur}
                 onFocus={this.handleOnFocus}

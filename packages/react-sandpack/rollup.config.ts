@@ -9,7 +9,7 @@ const pkg = require('./package.json');
 
 const libraryName = 'react-sandpack';
 
-const minify = !!process.env.BUILD_MINIFY;
+const minify = Boolean(process.env.BUILD_MINIFY);
 
 function getFileName(name) {
   if (minify) {

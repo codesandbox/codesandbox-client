@@ -129,7 +129,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     const activeEditor = this.editor && this.editor.getActiveCodeEditor();
 
     if (this.props.readOnly !== nextProps.readOnly && activeEditor) {
-      activeEditor.updateOptions({ readOnly: !!nextProps.readOnly });
+      activeEditor.updateOptions({ readOnly: Boolean(nextProps.readOnly) });
     }
 
     return false;
@@ -1091,7 +1091,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     return {
       ...getSettings(settings),
       ariaLabel: currentModule.title,
-      readOnly: !!this.props.readOnly,
+      readOnly: Boolean(this.props.readOnly),
     };
   };
 

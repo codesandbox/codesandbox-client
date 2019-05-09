@@ -478,7 +478,7 @@ export default function(isVSCode = false, requiredModule?: string[]) {
         return '';
       })
       .filter(function(assignment) {
-        return !!assignment;
+        return Boolean(assignment);
       })
       .join('&');
     if (search.length > 0) {

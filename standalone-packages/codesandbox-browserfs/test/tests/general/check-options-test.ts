@@ -34,7 +34,7 @@ function errorMessageAssert(expectedMsgs: string[], unexpectedMsgs: string[] = [
   return (e?: ApiError) => {
     assert(called === false, `Callback called twice!`);
     called = true;
-    assert(!!e, `Did not receive planned error message.`);
+    assert(Boolean(e), `Did not receive planned error message.`);
     const errorMessage = e.message;
     for (const m of expectedMsgs) {
       assert(errorMessage.indexOf(m) !== -1, `Error message '${errorMessage}' is missing expected string '${m}'.`);

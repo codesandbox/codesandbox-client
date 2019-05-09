@@ -230,11 +230,11 @@ export default class Manager {
 
     if (returnValue == null && hasCallback && this.fileResolver) {
       return this.fileResolver.isFile(p).then(bool => {
-        callback(null, !!bool);
+        callback(null, Boolean(bool));
       });
     }
 
-    return hasCallback ? callback(null, !!returnValue) : !!returnValue;
+    return hasCallback ? callback(null, Boolean(returnValue)) : Boolean(returnValue);
   };
 
   readFileSync = (p: string, cb: Function | undefined, c?: Function) => {

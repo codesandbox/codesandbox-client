@@ -19,7 +19,7 @@ export function deprecationMessage(print: boolean, fsName: string, opts: any): v
  * userAgent string.
  * @hidden
  */
-export const isIE: boolean = typeof navigator !== "undefined" && !!(/(msie) ([\w.]+)/.exec(navigator.userAgent.toLowerCase()) || navigator.userAgent.indexOf('Trident') !== -1);
+export const isIE: boolean = typeof navigator !== "undefined" && Boolean(/(msie) ([\w.]+)/.exec(navigator.userAgent.toLowerCase()) || navigator.userAgent.indexOf('Trident') !== -1);
 
 /**
  * Check if we're in a web worker.

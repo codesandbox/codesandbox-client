@@ -38,7 +38,7 @@ const FileConfig = ({
   const { module, config } = info;
   return (
     <File
-      created={!!module}
+      created={Boolean(module)}
       key={path}
       onClick={
         openModule

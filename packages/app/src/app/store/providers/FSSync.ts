@@ -141,7 +141,7 @@ export default Provider({
 
               fs.stat('/sandbox/tsconfig.json', (err, result) => {
                 // If tsconfig exists we want to sync the types
-                syncDependencyTypings(rv.toString(), !!err || !result);
+                syncDependencyTypings(rv.toString(), Boolean(err) || !result);
               });
             });
           }
