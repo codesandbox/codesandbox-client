@@ -1,7 +1,7 @@
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const path = require('path');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const paths = require('./paths');
 
@@ -29,21 +29,7 @@ module.exports = merge(
       //   // include all types of chunks
       //   chunks: 'all',
       // },
-      minimizer: [
-        new UglifyJSPlugin({
-          cache: true,
-          parallel: true,
-          sourceMap: true,
-          uglifyOptions: {
-            mangle: {
-              safari10: true,
-            },
-            output: {
-              comments: false,
-            },
-          },
-        }),
-      ],
+      minimizer: [new TerserPlugin({ parallel: true })],
       concatenateModules: true, // ModuleConcatenationPlugin
       namedModules: true, // NamedModulesPlugin()
       noEmitOnErrors: true, // NoEmitOnErrorsPlugin
