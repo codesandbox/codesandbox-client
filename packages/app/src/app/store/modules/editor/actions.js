@@ -91,10 +91,12 @@ export function updateSandboxPackage({ state }) {
   };
 }
 
+/**
+ * We only do this to call all related fs watching in BrowserFS
+ */
 export function saveFileInFS({ props, state }) {
   const sandbox = state.get('editor.currentSandbox');
   try {
-    console.log(props);
     const modulePath = getModulePath(
       sandbox.modules,
       sandbox.directories,

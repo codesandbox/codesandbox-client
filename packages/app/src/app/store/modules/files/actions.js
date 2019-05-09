@@ -1,6 +1,5 @@
 import { clone } from 'mobx-state-tree';
 import fs from 'fs';
-import { dirname, join } from 'path';
 import {
   getModulePath,
   getDirectoryPath,
@@ -17,6 +16,14 @@ import {
   resolveModuleWrapped,
   resolveDirectoryWrapped,
 } from '../../utils/resolve-module-wrapped';
+import {
+  fsCreateFile,
+  fsCreateDir,
+  fsRemoveDir,
+  fsRemoveFile,
+  fsMoveDir,
+  fsMoveFile,
+} from './fs-watch';
 
 export function processSSEUpdates({ state, props, controller }) {
   const newSandbox = props.sandbox;
@@ -239,114 +246,6 @@ export function saveNewModuleDirectoryShortid({ api, state, props, path }) {
     })
     .then(() => path.success())
     .catch(error => path.error({ error }));
-}
-
-function getCreatePath({ props, state }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const foundDir = props.directoryShortid
-    ? state
-        .get('editor.currentSandbox.directories')
-        .find(dir => dir.shortid === props.directoryShortid)
-    : {};
-
-  if (!foundDir) {
-    return undefined;
-  }
-
-  const dirPath = getDirectoryPath(
-    sandbox.modules,
-    sandbox.directories,
-    foundDir.id
-  );
-
-  if (dirPath !== undefined) {
-    return '/sandbox/' + dirPath + (dirPath ? '/' : '') + props.title;
-  }
-
-  return undefined;
-}
-
-/**
- * Do create file so the watcher of fs is called
- */
-function fsCreateFile({ props, state }) {
-  try {
-    const foundPath = getCreatePath({ props, state });
-    if (foundPath) {
-      fs.writeFile(foundPath, props.newCode || '');
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-function fsRemoveFile(id, { state }) {
-  try {
-    const sandbox = state.get('editor.currentSandbox');
-    const foundPath = getModulePath(sandbox.modules, sandbox.directories, id);
-    if (foundPath) {
-      fs.unlink('/sandbox' + foundPath);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-function fsMoveFile(id, oldTitle, { state }) {
-  try {
-    const sandbox = state.get('editor.currentSandbox');
-    const foundPath = getModulePath(sandbox.modules, sandbox.directories, id);
-    const withPrefix = '/sandbox' + foundPath;
-    if (foundPath) {
-      fs.rename(join(dirname(withPrefix), oldTitle), withPrefix);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-function fsMoveDir(id, oldTitle, { state }) {
-  try {
-    const sandbox = state.get('editor.currentSandbox');
-    const foundPath = getDirectoryPath(
-      sandbox.modules,
-      sandbox.directories,
-      id
-    );
-    const withPrefix = '/sandbox' + foundPath;
-    if (foundPath) {
-      fs.rename(join(dirname(withPrefix), oldTitle), withPrefix);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-function fsCreateDir({ props, state }) {
-  try {
-    const foundPath = getCreatePath({ props, state });
-    if (foundPath) {
-      fs.mkdir(foundPath);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-function fsRemoveDir(id, { state }) {
-  try {
-    const sandbox = state.get('editor.currentSandbox');
-    const foundPath = getDirectoryPath(
-      sandbox.modules,
-      sandbox.directories,
-      id
-    );
-    if (foundPath) {
-      fs.rmdir('/sandbox' + foundPath);
-    }
-  } catch (e) {
-    console.error(e);
-  }
 }
 
 export function createOptimisticModule({ state, props, utils }) {
