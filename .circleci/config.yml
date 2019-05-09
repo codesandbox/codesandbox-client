@@ -6,21 +6,21 @@ version: 2.1
 
 aliases:
   - &restore_repo_cache
-    key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
+    key: v18-repo-{{ .Environment.CIRCLE_SHA1 }}
 
   - &save_repo_cache
-    key: v17-repo-{{ .Environment.CIRCLE_SHA1 }}
+    key: v18-repo-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ~/codesandbox-client
 
   - &restore_deps_cache
     keys:
-      - v17-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v17-dependency-cache-{{ .Branch }}
-      - v17-dependency-cache
+      - v18-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v18-dependency-cache-{{ .Branch }}
+      - v18-dependency-cache
 
   - &save_deps_cache
-    key: v17-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v18-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -39,36 +39,36 @@ aliases:
 
   - &restore_standalone_deps_cache
     keys:
-      - v17-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v17-standalone-dependency-cache-{{ .Branch }}
-      - v17-standalone-dependency-cache
+      - v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+      - v18-standalone-dependency-cache-{{ .Branch }}
+      - v18-standalone-dependency-cache
 
   - &save_standalone_deps_cache
-    key: v17-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+    key: v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_app_build_cache
-    key: v17-prod-app-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key: v18-prod-app-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
   - &restore_prod_homepage_build_cache
-    key: v17-prod-homepage-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key: v18-prod-homepage-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
   - &restore_prod_cache
-    key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key: v18-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
   - &save_prod_app_cache
-    key: v17-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key: v18-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/app/www
 
   - &save_prod_homepage_cache
-    key: v17-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key: v18-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/homepage/public
 
   - &save_prod_cache
-    key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key: v18-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
 
