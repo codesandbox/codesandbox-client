@@ -73,6 +73,12 @@ yarn test
 yarn lint
 ```
 
+Before running `yarn lint`, you must have build our `common` and `notifications` packages.
+
+```sh
+yarn build:deps
+```
+
 ## Add yourself as a contributor
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
