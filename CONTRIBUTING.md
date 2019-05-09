@@ -81,7 +81,7 @@ yarn build:deps
 
 ## Add yourself as a contributor
 
-This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 To add yourself to the table of contributors on the `README.md`, please use the
 automated script as part of your PR:
