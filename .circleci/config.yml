@@ -57,7 +57,7 @@ aliases:
     key: v17-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/app/www
-      - ./packages/app/.cache-loader
+      - ./packages/homepage/.cache
 
   - &save_prod_cache
     key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
