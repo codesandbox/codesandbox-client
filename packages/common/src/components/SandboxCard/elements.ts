@@ -5,6 +5,21 @@ import { UserWithAvatar } from '../UserWithAvatar';
 export const BG_COLOR = '#1C2022';
 export const BG_HOVER = '#212629';
 
+export const Overlay = styled.div`
+  position: absolute;
+  background: rgba(28, 32, 34, 0.9);
+  border-radius: 4px 4px 0px 0px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  padding: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 200ms ease;
+
+`
+
 export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
   transition: 0.3s ease all;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
@@ -36,6 +51,13 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
     css`
       margin: 0;
     `};
+
+
+  &:hover {
+    ${Overlay} {
+      opacity: 1;
+    }
+  }
 
   &:hover {
     background-color: ${BG_HOVER};
@@ -117,7 +139,7 @@ export const Stats = styled.ul`
   display: flex;
   align-items: center;
 
-  color:${props => props.theme.placeholder};
+  color: ${props => props.theme.placeholder};
 
   li:not(:last-child) {
     margin-right: 8px;
@@ -130,6 +152,7 @@ export const Stats = styled.ul`
     svg {
       margin-right: 6px;
       width: 16px;
+      color: ${props => props.theme.placeholder.darken(0.3)};
     }
   }
 `
@@ -148,31 +171,9 @@ export const SandboxStats = styled.div`
   justify-content: space-between;
 `
 
-export const Overlay = styled.div`
-  position: absolute;
-  background: rgba(28, 32, 34, 0.9);
-  border-radius: 4px 4px 0px 0px;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(100% - 3px);
-  padding: 1rem;
-  box-sizing: border-box;
-  opacity: 0;
-  transition: opacity 200ms ease;
-
-`
-
 export const Image = styled.div`
-position: relative;
+  position: relative;
   font-size: 10px;
-
-&:hover {
-  ${Overlay} {
-    opacity: 1;
-  }
-}
-
 `
 
 

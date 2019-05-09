@@ -52,7 +52,7 @@ export type Props = {
   selectSandbox: (params: Sandbox) => void;
 };
 
-const kFormatter = (num: number): number | React.ReactText => {
+const kFormatter = (num: number): number | string => {
   if (num > 999) {
     return (num / 1000).toFixed(1) + 'K';
   }
@@ -85,7 +85,7 @@ export default class SandboxCard extends React.PureComponent<Props> {
       small,
       noMargin,
       noHeight,
-      defaultHeight = 245,
+      defaultHeight = 152,
     } = this.props;
     if (!sandbox) {
       return (
@@ -97,7 +97,6 @@ export default class SandboxCard extends React.PureComponent<Props> {
     }
     const template = getTemplate(sandbox.template);
     const Icon = getIcon(sandbox.template);
-    console.log(sandbox);
     return (
       <Container
         noMargin={noMargin}
@@ -113,7 +112,7 @@ export default class SandboxCard extends React.PureComponent<Props> {
             alt={sandbox.title}
             src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
             color={template.color()}
-            style={{ height: this.state.imageLoaded ? 'auto' : defaultHeight }}
+            style={{ height: defaultHeight }}
             ref={img => {
               if (img && img.complete) {
                 this.setState({ imageLoaded: true });
@@ -124,13 +123,10 @@ export default class SandboxCard extends React.PureComponent<Props> {
             }}
           />
 
-          {sandbox.description || sandbox.tags.length ? (
-            <Overlay>
-              <SandboxDescription>{sandbox.description}</SandboxDescription>
-
-              <Tags tags={sandbox.tags} />
-            </Overlay>
-          ) : null}
+          <Overlay>
+            <SandboxDescription>{sandbox.description}</SandboxDescription>
+            <Tags tags={sandbox.tags} />
+          </Overlay>
         </Image>
         <SandboxInfo noHeight={noHeight}>
           <SandboxTitle color={template.color()}>{sandbox.title}</SandboxTitle>
