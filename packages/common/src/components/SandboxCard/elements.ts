@@ -17,8 +17,7 @@ export const Overlay = styled.div`
   box-sizing: border-box;
   opacity: 0;
   transition: opacity 200ms ease;
-
-`
+`;
 
 export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
   transition: 0.3s ease all;
@@ -52,7 +51,6 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
       margin: 0;
     `};
 
-
   &:hover {
     ${Overlay} {
       opacity: 1;
@@ -85,6 +83,8 @@ export const SandboxTitle = styled.h2`
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   max-height: 20px;
+
+  word-break: break-all;
 `;
 
 export const SandboxDescription = styled.p`
@@ -133,7 +133,7 @@ export const Stats = styled.ul`
   list-style: none;
   padding: 0;
   display: flex;
-  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;;
+  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 12px;
   line-height: 16px;
   display: flex;
@@ -155,8 +155,7 @@ export const Stats = styled.ul`
       color: ${props => props.theme.placeholder.darken(0.3)};
     }
   }
-`
-
+`;
 
 export const Avatar = styled.img`
   width: 1rem;
@@ -164,16 +163,13 @@ export const Avatar = styled.img`
   border-radius: 4px;
 `;
 
-
 export const SandboxStats = styled.div`
   display: flex;
   padding: 0.75rem;
   justify-content: space-between;
-`
+`;
 
 export const Image = styled.div`
   position: relative;
   font-size: 10px;
-`
-
-
+`;
