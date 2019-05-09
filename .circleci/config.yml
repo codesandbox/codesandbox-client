@@ -30,6 +30,7 @@ aliases:
       - packages/dynamic-pages/node_modules
       - packages/homepage/node_modules
       - packages/node-services/node_modules
+      - packages/notifications/node_modules
       - packages/react-embed/node_modules
       - packages/react-sandpack/node_modules
       - packages/sandbox-hooks/node_modules
