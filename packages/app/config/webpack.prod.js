@@ -34,7 +34,10 @@ module.exports = merge(commonConfig, {
   stats: 'verbose',
 
   optimization: {
-    minimizer: [new TerserJSPlugin({ parallel: true })],
+    minimizer: [
+      // CircleCI has 32cpu cores, but only 2 for us. os.cpu().length gives back 32, which always results in OOM
+      new TerserJSPlugin({ parallel: process.env.CIRCLECI ? 2 : true }),
+    ],
     concatenateModules: true, // ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin

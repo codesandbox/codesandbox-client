@@ -256,6 +256,11 @@ exports.onCreateWebpackConfig = ({
     },
   ];
 
+  if (process.env.CIRCLECI) {
+    // CircleCI has 32cpu cores, but only 2 for us. os.cpu().length gives back 32, which always results in OOM
+    config.optimization.minimizer[0].options.parallel = 2;
+  }
+
   // This will completely replace the webpack config with the modified object.
   actions.replaceWebpackConfig(config);
 };
