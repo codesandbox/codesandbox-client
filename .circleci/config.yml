@@ -51,20 +51,20 @@ aliases:
       - standalone-packages/sse-loading-screen/node_modules
 
   - &restore_prod_app_build_cache
-    key: v19-prod-app-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key: v19-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
   - &restore_prod_homepage_build_cache
-    key: v19-prod-homepage-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key: v19-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
   - &restore_prod_cache
     key: v19-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
-  - &save_prod_app_cache
+  - &save_prod_app_build_cache
     key: v19-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/app/www
 
-  - &save_prod_homepage_cache
+  - &save_prod_homepage_build_cache
     key: v19-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/homepage/public
@@ -124,11 +124,10 @@ commands:
     description: 'Build the Application with `yarn build:app`'
     steps:
       - restore_cache: *restore_repo_cache
-      - restore_cache: *restore_prod_app_build_cache
       - run:
           name: Build Application
           command: yarn build:app
-      - save_cache: *save_prod_app_cache
+      - save_cache: *save_prod_app_build_cache
   build_homepage:
     description: 'Build the Homepages with `yarn build:homepage`'
     steps:
@@ -137,7 +136,7 @@ commands:
       - run:
           name: Build Homepage
           command: yarn build:homepage
-      - save_cache: *save_prod_homepage_cache
+      - save_cache: *save_prod_homepage_build_cache
   build_combine_artifacts:
     description: 'Combine all the build artifacts from app and homepage'
     steps:
