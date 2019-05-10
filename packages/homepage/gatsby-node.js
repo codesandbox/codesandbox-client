@@ -256,7 +256,9 @@ exports.onCreateWebpackConfig = ({
     },
   ];
 
-  if (process.env.CIRCLECI) {
+  if (process.env.CIRCLECI && config.optimization) {
+    // eslint-disable-next-line no-console
+    console.log('Setting new parallel option for CircleCI');
     // CircleCI has 32cpu cores, but only 2 for us. os.cpu().length gives back 32, which always results in OOM
     config.optimization.minimizer[0].options.parallel = 2;
   }
