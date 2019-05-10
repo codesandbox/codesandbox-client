@@ -222,7 +222,7 @@ export default class Module {
 
     if (request === 'util') {
       // Direct import to get the right version
-      return require('../node_modules/util');
+      return require('../../../node_modules/util');
     }
 
     if (request === 'os') {
