@@ -137,6 +137,7 @@ commands:
   build_combine_artifacts:
     description: 'Combine all the build artifacts from app and homepage'
     steps:
+      - restore_cache: *restore_repo_cache
       - restore_cache: *restore_prod_app_build_cache
       - restore_cache: *restore_prod_homepage_build_cache
       - run:
@@ -221,12 +222,10 @@ jobs:
   build-app:
     executor: node
     steps:
-      - checkout
       - build_app
   build-homepage:
     executor: node
     steps:
-      - checkout
       - build_homepage
   combine-artifacts:
     executor: node
@@ -235,27 +234,22 @@ jobs:
   test-integrations:
     executor: node-with-puppeteer
     steps:
-      - checkout
       - test_integrations
   test-jest:
     executor: node
     steps:
-      - checkout
       - test_jest
   lint:
     executor: node
     steps:
-      - checkout
       - yarn_lint
   typecheck:
     executor: node
     steps:
-      - checkout
       - yarn_typecheck
   create-docker-image:
     executor: docker_machine
     steps:
-      - checkout
       - docker_cache
 
 ################################
