@@ -211,20 +211,22 @@ class SandboxItem extends React.PureComponent<Props, State> {
         ...items,
         [
           {
-            title: `Move ${selectedCount} Sandboxes To Trash`,
-            action: () => {
-              this.props.deleteSandboxes();
-              return true;
-            },
-            color: theme.red.darken(0.2)(),
-          },
-          {
             title: `Export ${selectedCount} Sandboxes`,
             action: () => {
               this.props.exportSandboxes()
               return true;
             },
           },
+        ],
+        [
+          {
+            title: `Move ${selectedCount} Sandboxes To Trash`,
+            action: () => {
+              this.props.deleteSandboxes();
+              return true;
+            },
+            color: theme.red.darken(0.2)(),
+          }
         ],
       ];
     }
