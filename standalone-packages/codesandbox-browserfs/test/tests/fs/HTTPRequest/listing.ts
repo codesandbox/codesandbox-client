@@ -55,7 +55,7 @@ export default function() {
       });
 
       fs.stat("/src/not-existing-name", function(err, stats) {
-        assert(!!err, "Non existing file should return an error");
+        assert(Boolean(err), "Non existing file should return an error");
       });
 
     });

@@ -123,7 +123,7 @@ export class TypeScriptWorker implements ts.LanguageServiceHost {
     const ensureDirectoryExistence = (filePath, cb) => {
       const dirname = BrowserFS.BFSRequire("path").dirname(filePath);
       this.fs.stat(dirname, (err, exists) => {
-        if (!!exists) {
+        if (Boolean(exists)) {
           cb(true);
           return;
         }

@@ -326,7 +326,7 @@ export default class TestRunner {
       name: error.name,
       message: error.message,
       stack: error.stack,
-      matcherResult: !!error.matcherResult,
+      matcherResult: Boolean(error.matcherResult),
       mappedErrors,
     };
   }

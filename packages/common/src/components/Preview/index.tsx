@@ -240,7 +240,7 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   setupSSESockets = async () => {
-    const hasInitialized = !!this.$socket;
+    const hasInitialized = Boolean(this.$socket);
 
     function onTimeout(comp: BasePreview) {
       comp.connectTimeout = null;
@@ -660,7 +660,7 @@ class BasePreview extends React.Component<Props, State> {
           externalResources: sandbox.externalResources,
           isModuleView: !this.props.isInProjectView,
           template: sandbox.template,
-          hasActions: !!this.props.onAction,
+          hasActions: Boolean(this.props.onAction),
         });
       }
     }

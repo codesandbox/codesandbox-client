@@ -432,7 +432,7 @@ abstract class DirectoryRecord {
     }
   }
   public isDirectory(isoData: Buffer): boolean {
-    let rv = !!(this.fileFlags() & FileFlags.Directory);
+    let rv = Boolean(this.fileFlags() && FileFlags.Directory);
     // If it lacks the Directory flag, it may still be a directory if we've exceeded the directory
     // depth limit. Rock Ridge marks these as files and adds a special attribute.
     if (!rv && this.hasRockRidge()) {
@@ -1030,7 +1030,7 @@ class TFEntry extends SystemUseEntry {
     }
   }
   private _longFormDates(): boolean {
-    return !!(this.flags() && TFFlags.LONG_FORM);
+    return Boolean(this.flags() && TFFlags.LONG_FORM);
   }
 }
 

@@ -10,7 +10,7 @@ export default function() {
       fs.mkdir('/rmdirTest/rmdirTest2', function(e: NodeJS.ErrnoException) {
         assert(!e);
         fs.rmdir('/rmdirTest', function(e) {
-          assert(!!e, "Invariant failed: Successfully removed a non-empty directory.");
+          assert(Boolean(e), "Invariant failed: Successfully removed a non-empty directory.");
           assert(e.code === "ENOTEMPTY");
         });
       });

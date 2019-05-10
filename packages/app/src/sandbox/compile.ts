@@ -510,7 +510,7 @@ async function compile({
 
     const foundMain = isModuleView
       ? entry
-      : possibleEntries.find(p => !!modules[p]);
+      : possibleEntries.find(p => Boolean(modules[p]));
 
     if (!foundMain) {
       throw new Error(
@@ -564,7 +564,7 @@ async function compile({
       if (!manager.webpackHMR) {
         const htmlModulePath = templateDefinition
           .getHTMLEntries(configurations)
-          .find(p => !!modules[p]);
+          .find(p => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
 
         const { head, body } = getHTMLParts(

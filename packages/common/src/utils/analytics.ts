@@ -9,10 +9,10 @@ const global = (typeof window !== 'undefined' ? window : {}) as any;
 
 export const DNT =
   typeof window !== 'undefined' &&
-  !!(
+  Boolean(
     global.doNotTrack === '1' ||
-    global.navigator.doNotTrack === '1' ||
-    global.navigator.msDoNotTrack === '1'
+      global.navigator.doNotTrack === '1' ||
+      global.navigator.msDoNotTrack === '1'
   );
 
 let sentryInitialized = false;
