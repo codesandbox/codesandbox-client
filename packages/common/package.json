@@ -54,7 +54,7 @@
     "@types/styled-components": "^4.1.13",
     "babel-jest": "^24.8.0",
     "cpx": "^1.5.0",
-    "jest": "^21.2.1",
+    "jest": "^24.8.0",
     "rimraf": "^2.6.3",
     "typescript": "3.3.4000"
   },

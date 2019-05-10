@@ -81,7 +81,7 @@
     "html-webpack-plugin": "^4.0.0-beta.1",
     "http-proxy-middleware": "^0.17.3",
     "husky": "^0.14.3",
-    "jest": "^21.2.1",
+    "jest": "^24.8.0",
     "jest-image-snapshot": "^1.0.1",
     "jest-junit": "^3.4.1",
     "jest-styled-components": "^6.3.1",
