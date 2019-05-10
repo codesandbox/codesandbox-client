@@ -39,12 +39,12 @@ aliases:
 
   - &restore_standalone_deps_cache
     keys:
-      - v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}-{{ checksum "standalone-packages/vscode-textmate/package-lock.json" }}-{{ checksum "standalone-packages/sse-loading-screen/yarn.lock "}}
+      - v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}-{{ checksum "standalone-packages/vscode-textmate/package-lock.json" }}-{{ checksum "standalone-packages/sse-loading-screen/yarn.lock"}}
       - v18-standalone-dependency-cache-{{ .Branch }}
       - v18-standalone-dependency-cache
 
   - &save_standalone_deps_cache
-    key: v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}-{{ checksum "standalone-packages/vscode-textmate/package-lock.json" }}-{{ checksum "standalone-packages/sse-loading-screen/yarn.lock "}}
+    key: v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}-{{ checksum "standalone-packages/vscode-textmate/package-lock.json" }}-{{ checksum "standalone-packages/sse-loading-screen/yarn.lock"}}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
       - standalone-packages/vscode-textmate/node_modules
