@@ -261,6 +261,7 @@ jobs:
   create-docker-image:
     executor: docker_machine
     steps:
+      - checkout
       - docker_cache
 
 ################################
