@@ -39,15 +39,16 @@ aliases:
 
   - &restore_standalone_deps_cache
     keys:
-      - v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+      - v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}-{{ checksum "standalone-packages/vscode-textmate/package-lock.json" }}-{{ checksum "standalone-packages/sse-loading-screen/yarn.lock "}}
       - v18-standalone-dependency-cache-{{ .Branch }}
       - v18-standalone-dependency-cache
 
   - &save_standalone_deps_cache
-    key: v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}-{{ checksum "standalone-packages/vscode-textmate/package-lock.json" }}
+    key: v18-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}-{{ checksum "standalone-packages/vscode-textmate/package-lock.json" }}-{{ checksum "standalone-packages/sse-loading-screen/yarn.lock "}}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
       - standalone-packages/vscode-textmate/node_modules
+      - standalone-packages/sse-loading-screen/node_modules
 
   - &restore_prod_app_build_cache
     key: v18-prod-app-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
@@ -115,6 +116,9 @@ commands:
       - run:
           name: Build
           command: yarn build:deps
+      - run:
+          name: Exclude VSCode extensions from cache
+          command: rm -rf standalone-packages/vscode-extensions/out
       - save_cache: *save_repo_cache
   build_app:
     description: 'Build the Application with `yarn build:app`'
@@ -222,30 +226,37 @@ jobs:
   build-app:
     executor: node
     steps:
+      - checkout
       - build_app
   build-homepage:
     executor: node
     steps:
+      - checkout
       - build_homepage
   combine-artifacts:
     executor: node
     steps:
+      - checkout
       - build_combine_artifacts
   test-integrations:
     executor: node-with-puppeteer
     steps:
+      - checkout
       - test_integrations
   test-jest:
     executor: node
     steps:
+      - checkout
       - test_jest
   lint:
     executor: node
     steps:
+      - checkout
       - yarn_lint
   typecheck:
     executor: node
     steps:
+      - checkout
       - yarn_typecheck
   create-docker-image:
     executor: docker_machine
