@@ -10,7 +10,7 @@
 
 ## Code of Conduct
 
-We have a code of conduct you can find [here](https://github.com/codesandbox/codesandbox-client/blob/master/CODE_OF_CONDUCT.md) and every contributor is expected to obey the rules therein. Any issues or PRs that don't abide by the code of conduct may be closed.
+We have a code of conduct you can find [here](./CODE_OF_CONDUCT.md) and every contributor is expected to obey the rules therein. Any issues or PRs that don't abide by the code of conduct may be closed.
 
 ## Code Organization
 
@@ -32,7 +32,7 @@ To install the project you need to have `yarn` and `node`
 
 1.  [Fork](https://help.github.com/articles/fork-a-repo/) the project, clone your fork:
 
-    ```
+    ```sh
     # Clone your fork
     git clone https://github.com/<your-username>/codesandbox-client.git
 
@@ -49,7 +49,7 @@ To install the project you need to have `yarn` and `node`
 > Tip: Keep your `master` branch pointing at the original repository and make
 > pull requests from branches on your fork. To do this, run:
 >
-> ```
+> ```sh
 > git remote add upstream https://github.com/codesandbox/codesandbox-client.git
 > git fetch upstream
 > git branch --set-upstream-to=upstream/master master
@@ -68,7 +68,7 @@ Please go through existing issues and pull requests to check if somebody else is
 
 Also, make sure to run the tests and lint the code before you commit your changes.
 
-```
+```sh
 yarn test
 yarn lint
 ```
@@ -81,12 +81,12 @@ yarn build:deps
 
 ## Add yourself as a contributor
 
-This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 To add yourself to the table of contributors on the `README.md`, please use the
 automated script as part of your PR:
 
-```
+```sh
 yarn add-contributor
 ```
 
