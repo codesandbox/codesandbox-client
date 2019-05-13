@@ -1,4 +1,4 @@
-import getSandboxName from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import {
   optionsToParameterizedUrl,

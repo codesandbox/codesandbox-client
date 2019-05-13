@@ -1,4 +1,4 @@
 
 import { Sandbox } from '../types';
 
-export default (sandbox: Sandbox) => sandbox.title || sandbox.alias || sandbox.id;
+export const getSandboxName = (sandbox: Sandbox) => sandbox.title || sandbox.alias || sandbox.id;

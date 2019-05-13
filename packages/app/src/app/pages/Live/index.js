@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
-import getSandboxName from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import Navigation from 'app/pages/common/Navigation';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 

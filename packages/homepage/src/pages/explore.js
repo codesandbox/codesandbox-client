@@ -2,7 +2,7 @@ import React from 'react';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import getSandboxName from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
   ARROW_LEFT,
   ARROW_RIGHT,

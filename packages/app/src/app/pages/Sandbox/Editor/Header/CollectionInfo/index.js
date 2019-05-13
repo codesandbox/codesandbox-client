@@ -7,7 +7,7 @@ import { Spring } from 'react-spring/renderprops';
 
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import getSandboxName from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Container, SandboxName, SandboxInput, FolderName } from './elements';
 
 class CollectionInfo extends React.Component {

@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import getSandboxName from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 
 import { Date, Button } from './elements';
 

@@ -24,12 +24,12 @@ import { Spring } from 'react-spring/renderprops.cjs';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 
 import { notificationState } from '../../utils/notifications';
+import { getSandboxName } from '../../utils/get-sandbox-name';
 
 import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
 import { Settings } from './types';
 import { NotificationStatus } from '@codesandbox/notifications';
-import getSandboxName from '@codesandbox/common/lib/utils/get-sandbox-name';
 
 export type Props = {
   sandbox: Sandbox;
