@@ -35,16 +35,9 @@
     "commit": "git-cz",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "prepublish": "yarn build",
     "docs": "typedoc --out docs --target es6 --theme minimal --mode file src"
-  },
-  "lint-staged": {
-    "{src,test}/**/*.ts": [
-      "prettier --write --no-semi --single-quote",
-      "git add"
-    ]
   },
   "config": {
     "commitizen": {
@@ -117,12 +110,9 @@
     "gulp-cssimport": "^6.0.1",
     "gulp-plugin-prettier": "^1.1.0",
     "gulp-sass": "^3.1.0",
-    "husky": "^0.14.0",
     "jest": "^22.0.2",
-    "lint-staged": "^7.0.0",
     "lodash.camelcase": "^4.3.0",
     "npm-run-all": "^4.1.2",
-    "prettier": "^1.4.4",
     "prompt": "^1.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
