@@ -96,11 +96,10 @@ export const frameUrl = (sandbox: Sandbox, append: string = '') => {
   }
 
   if (process.env.STAGING) {
-    return stagingFrameUrl(sandbox.alias || sandbox.id, path);
+    return stagingFrameUrl(sandbox.id, path);
   }
 
-  return `${location.protocol}//${sandbox.alias ||
-    sandbox.id}.${host()}/${path}`;
+  return `${location.protocol}//${sandbox.id}.${host()}/${path}`;
 };
 
 export const forkSandboxUrl = (sandbox: Sandbox) =>

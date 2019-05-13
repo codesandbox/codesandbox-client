@@ -184,7 +184,8 @@ class Project extends React.Component {
               {editable && <EditPen onClick={this.setDescriptionEditing} />}
             </Description>
           )}
-          {store.isPatron ? (
+          {/* Disable until we also moved SSE over */}
+          {store.isPatron && false ? (
             <>
               {this.state.editingAlias ? (
                 <WorkspaceInputContainer>
@@ -221,21 +222,20 @@ class Project extends React.Component {
           ) : null}
         </Item>
 
-        {!sandbox.team &&
-          !!sandbox.author && (
-            <Item>
-              <UserLink
-                title={sandbox.author.username}
-                to={profileUrl(sandbox.author.username)}
-              >
-                <UserWithAvatar
-                  username={sandbox.author.username}
-                  avatarUrl={sandbox.author.avatarUrl}
-                  subscriptionSince={sandbox.author.subscriptionSince}
-                />
-              </UserLink>
-            </Item>
-          )}
+        {!sandbox.team && !!sandbox.author && (
+          <Item>
+            <UserLink
+              title={sandbox.author.username}
+              to={profileUrl(sandbox.author.username)}
+            >
+              <UserWithAvatar
+                username={sandbox.author.username}
+                avatarUrl={sandbox.author.avatarUrl}
+                subscriptionSince={sandbox.author.subscriptionSince}
+              />
+            </UserLink>
+          </Item>
+        )}
 
         {!!sandbox.team && (
           <Tooltip content="This sandbox is owned by this team">

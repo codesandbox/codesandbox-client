@@ -13,6 +13,7 @@ import Column from 'react-virtualized/dist/commonjs/Table/Column';
 import Table from 'react-virtualized/dist/commonjs/Table';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import downloadZip from 'app/store/providers/Utils/create-zip';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import 'react-virtualized/styles.css';
 
 import SandboxItem from '../SandboxCard';
@@ -281,7 +282,8 @@ class SandboxGrid extends React.Component<*, State> {
       <SandboxItem
         isScrolling={this.isScrolling}
         id={item.id}
-        title={item.title || item.id}
+        title={getSandboxName(item)}
+        alias={item.alias}
         details={editedSince}
         style={style}
         key={key}

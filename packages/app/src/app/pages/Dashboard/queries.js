@@ -11,6 +11,7 @@ const SIDEBAR_COLLECTION_FRAGMENT = gql`
 const SANDBOX_FRAGMENT = gql`
   fragment Sandbox on Sandbox {
     id
+    alias
     title
     description
     insertedAt

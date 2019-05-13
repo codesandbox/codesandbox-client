@@ -45,7 +45,16 @@ class SandboxPage extends React.Component {
   }
 
   fetchSandbox = () => {
-    const id = this.props.match.params.id;
+    let id = this.props.match.params.id;
+
+    // If the id is in the form of "slugified-title-shortid" we can take the last
+    // shortid and get the data with that. This solves the problem with urls becoming
+    // invalid after giving a sandbox a new title.
+    const split = id.split('-');
+    if (split.length > 1) {
+      id = split.pop();
+    }
+
     this.props.signals.editor.sandboxChanged({ id });
   };
 
@@ -92,29 +101,25 @@ class SandboxPage extends React.Component {
               {hasLogIn ? 'Dashboard' : 'Homepage'}
             </Button>
           </div>
-          {hasLogIn &&
-            isGithub &&
-            !hasPrivateAccess && (
+          {hasLogIn && isGithub && !hasPrivateAccess && (
+            <div style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}>
               <div
-                style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
+                style={{
+                  fontWeight: 300,
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  marginBottom: '1rem',
+                  fontSize: '1rem',
+                  textAlign: 'center',
+                  lineHeight: 1.6,
+                }}
               >
-                <div
-                  style={{
-                    fontWeight: 300,
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    marginBottom: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'center',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Did you try to open a private GitHub repository and are you a{' '}
-                  <Link to="/patron">patron</Link>? Then you might need to get
-                  private access:
-                </div>
-                <GithubIntegration small />
+                Did you try to open a private GitHub repository and are you a{' '}
+                <Link to="/patron">patron</Link>? Then you might need to get
+                private access:
               </div>
-            )}
+              <GithubIntegration small />
+            </div>
+          )}
         </React.Fragment>
       );
     }
