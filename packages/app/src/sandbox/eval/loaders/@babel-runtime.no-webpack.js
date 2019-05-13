@@ -421,7 +421,7 @@ function M(e) {
     );
   var o = e.descriptor;
   K(e, 'elements', 'An element descriptor');
-  var i = { kind: r, key: t, placement: n, descriptor: Object.assign({}, o) };
+  var i = { kind: r, key: t, placement: n, descriptor: { ...o } };
   return (
     'field' !== r
       ? K(e, 'initializer', 'A method descriptor')

@@ -131,13 +131,12 @@ export default {
   },
   request(options) {
     return this.context.http
-      .request(
-        Object.assign(options, {
-          url: API_ROOT + options.url,
-          body: options.body ? camelizeKeys(options.body) : null,
-          headers: createHeaders(this.context),
-        })
-      )
+      .request({
+        ...options,
+        url: API_ROOT + options.url,
+        body: options.body ? camelizeKeys(options.body) : null,
+        headers: createHeaders(this.context),
+      })
       .then(response => handleResponse(response, options))
       .catch(e => handleError(e, this.context.controller));
   },
