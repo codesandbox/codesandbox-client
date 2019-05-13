@@ -29,6 +29,7 @@ import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
 import { Settings } from './types';
 import { NotificationStatus } from '@codesandbox/notifications';
+import getSandboxName from '@codesandbox/common/lib/utils/get-sandbox-name';
 
 export type Props = {
   sandbox: Sandbox;
@@ -839,7 +840,7 @@ class BasePreview extends React.Component<Props, State> {
                     : frameUrl(sandbox, this.initialPath)
                 }
                 id="sandbox"
-                title={sandbox.title || sandbox.alias || sandbox.id}
+                title={getSandboxName(sandbox)}
                 style={{
                   ...style,
                   zIndex: 1,
