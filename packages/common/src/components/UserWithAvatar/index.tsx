@@ -29,7 +29,7 @@ export function UserWithAvatar({
         <Names>
           {name && <div>{name}</div>}
           {username && (
-            <Username hasTwoNames={name && !!username}>{username}</Username>
+            <Username hasTwoNames={name && Boolean(username)}>{username}</Username>
           )}
         </Names>
         {subscriptionSince && (

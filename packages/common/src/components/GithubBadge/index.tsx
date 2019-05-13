@@ -12,7 +12,7 @@ const DivOrA = ({ href, ...props }) =>
 function GithubBadge({ username, repo, url, branch, ...props }) {
   return (
     <DivOrA {...props} href={url}>
-      <BorderRadius hasUrl={!!url}>
+      <BorderRadius hasUrl={Boolean(url)}>
         <Icon>
           <GithubIcon />
         </Icon>

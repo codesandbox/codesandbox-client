@@ -535,7 +535,7 @@ function ProcessListFolderError(e: DropboxTypes.Error<DropboxTypes.files.ListFol
 }
 
 function ContinueReadingDir(client: DropboxClient, path: string, res: DropboxTypes.files.ListFolderResult, previousEntries: string[], cb: BFSCallback<string[]>): void {
-  const newEntries = <string[]> res.entries.map((e) => e.path_display).filter((p) => !!p);
+  const newEntries = <string[]> res.entries.map((e) => e.path_display).filter(Boolean);
   const entries = previousEntries.concat(newEntries);
   if (!res.has_more) {
     cb(null, entries);

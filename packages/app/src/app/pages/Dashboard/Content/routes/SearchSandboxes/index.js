@@ -65,7 +65,7 @@ const SearchSandboxes = ({ store }) => (
               isLoading={loading}
               Header={Header}
               page="search"
-              hideOrder={!!search}
+              hideOrder={Boolean(search)}
               sandboxes={loading ? [] : sandboxes}
               possibleTemplates={possibleTemplates}
             />

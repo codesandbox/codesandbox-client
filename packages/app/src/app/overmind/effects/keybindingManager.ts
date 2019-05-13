@@ -5,7 +5,7 @@ import {
 
 const isIOS =
   typeof navigator !== 'undefined' &&
-  !!navigator.platform.match(/(iPhone|iPod|iPad)/i);
+  Boolean(navigator.platform.match(/(iPhone|iPod|iPad)/i));
 
 const state = {
   keybindings: null,

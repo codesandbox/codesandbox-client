@@ -257,7 +257,7 @@ export default abstract class WorkerTranspiler extends Transpiler {
       worker: true,
       hasFS: this.hasFS,
       workerCount: this.workerCount,
-      initialized: !!this.initialized,
+      initialized: Boolean(this.initialized),
     }));
   }
 }

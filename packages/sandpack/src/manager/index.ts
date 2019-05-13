@@ -204,7 +204,7 @@ export default class PreviewManager {
       version: 3,
       modules,
       externalResources: [],
-      hasFileResolver: !!this.options.fileResolver,
+      hasFileResolver: Boolean(this.options.fileResolver),
       disableDependencyPreprocessing: this.sandboxInfo
         .disableDependencyPreprocessing,
       template:

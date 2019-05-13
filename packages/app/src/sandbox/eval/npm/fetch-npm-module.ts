@@ -168,7 +168,7 @@ function resolvePath(
   const isFile = (p, c, cb) => {
     const callback = cb || c;
 
-    callback(null, !!manager.transpiledModules[p] || !!meta[p]);
+    callback(null, Boolean(manager.transpiledModules[p]) || Boolean(meta[p]));
   };
 
   return new Promise((res, reject) => {

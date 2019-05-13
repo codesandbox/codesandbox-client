@@ -9,7 +9,7 @@ export type Props = {
 
 export default function Tag({ tag, removeTag }: Props) {
   return (
-    <Container canRemove={!!removeTag}>
+    <Container canRemove={Boolean(removeTag)}>
       {tag}
       {removeTag && (
         <DeleteIcon

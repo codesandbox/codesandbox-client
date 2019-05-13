@@ -1186,6 +1186,15 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "gabeeden",
+      "name": "gabeeden",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/14077091?v=4",
+      "profile": "https://github.com/gabeeden",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github",

@@ -27,7 +27,7 @@ export default class WorkspaceItem extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      open: !!props.defaultOpen,
+      open: Boolean(props.defaultOpen),
     };
   }
 
