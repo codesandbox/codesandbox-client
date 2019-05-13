@@ -184,40 +184,42 @@ class Project extends React.Component {
               {editable && <EditPen onClick={this.setDescriptionEditing} />}
             </Description>
           )}
-          {this.state.editingAlias ? (
-            <WorkspaceInputContainer>
-              <input
-                value={workspace.project.alias}
-                onChange={event => {
-                  signals.workspace.valueChanged({
-                    field: 'alias',
-                    value: event.target.value,
-                  });
-                }}
-                type="text"
-                onBlur={this.updateSandboxInfo}
-                onKeyUp={event => {
-                  if (event.keyCode === 13) {
-                    this.updateSandboxInfo();
-                  }
-                }}
-                ref={el => {
-                  if (el) {
-                    el.focus();
-                  }
-                }}
-                placeholder="Alias"
-              />
-            </WorkspaceInputContainer>
-          ) : (
-            <Alias>
-              {workspace.project.alias || sandbox.alias}
-              {editable && <EditPen onClick={this.setAliasEditing} />}
-            </Alias>
-          )}
+          {store.isPatron ? (
+            <>
+              {this.state.editingAlias ? (
+                <WorkspaceInputContainer>
+                  <input
+                    value={workspace.project.alias}
+                    onChange={event => {
+                      signals.workspace.valueChanged({
+                        field: 'alias',
+                        value: event.target.value,
+                      });
+                    }}
+                    type="text"
+                    onBlur={this.updateSandboxInfo}
+                    onKeyUp={event => {
+                      if (event.keyCode === 13) {
+                        this.updateSandboxInfo();
+                      }
+                    }}
+                    ref={el => {
+                      if (el) {
+                        el.focus();
+                      }
+                    }}
+                    placeholder="Alias"
+                  />
+                </WorkspaceInputContainer>
+              ) : (
+                <Alias>
+                  {workspace.project.alias || sandbox.alias}
+                  {editable && <EditPen onClick={this.setAliasEditing} />}
+                </Alias>
+              )}
+            </>
+          ) : null}
         </Item>
-        {/* {store.isPatron && (
-      )} */}
 
         {!sandbox.team &&
           !!sandbox.author && (
