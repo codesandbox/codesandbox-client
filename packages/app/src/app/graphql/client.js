@@ -24,14 +24,11 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const absintheAfterware = new ApolloLink((operation, forward) =>
-  forward(operation).map(result => {
-    /* eslint-disable no-param-reassign */
-    result.errors = result.payload.errors;
-    result.data = result.payload.data;
-    /* eslint-enable */
-
-    return result;
-  })
+  forward(operation).map(({ payload, ...result }) => ({
+    ...result,
+    errors: payload.errors,
+    data: payload.data
+  }))
 );
 
 const errorHandler = onError(({ graphQLErrors, networkError }) => {
