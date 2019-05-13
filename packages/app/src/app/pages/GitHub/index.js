@@ -75,7 +75,8 @@ class GitHub extends React.PureComponent {
                 <SubTitle>
                   Enter the URL to your GitHub repository to generate a URL to
                   your sandbox. The sandbox will stay in sync with your
-                  repository.<br />
+                  repository.
+                  <br />
                   <a
                     href="/docs/importing#import-from-github"
                     rel="noopener norefereer"

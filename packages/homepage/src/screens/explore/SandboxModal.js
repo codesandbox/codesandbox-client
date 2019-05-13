@@ -199,10 +199,9 @@ export default class SandboxModal extends React.PureComponent {
             <SandboxInfo>
               <SandboxTitle>{this.props.title}</SandboxTitle>
               <SandboxDescription>{this.props.description}</SandboxDescription>
-              {sandbox &&
-                sandbox.tags && (
-                  <Tags style={{ fontSize: '.7rem' }} tags={sandbox.tags} />
-                )}
+              {sandbox && sandbox.tags && (
+                <Tags style={{ fontSize: '.7rem' }} tags={sandbox.tags} />
+              )}
             </SandboxInfo>
 
             <StatsContainer>

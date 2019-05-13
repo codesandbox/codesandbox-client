@@ -1,4 +1,3 @@
-
 import Transpiler from '../';
 
 class NoopTranspiler extends Transpiler {

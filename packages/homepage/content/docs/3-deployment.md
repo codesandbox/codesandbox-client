@@ -1,6 +1,6 @@
 ---
-title: "Deploying your Sandbox"
-authors: ["arthurdenner", "CompuIves"]
+title: 'Deploying your Sandbox'
+authors: ['arthurdenner', 'CompuIves']
 description: "It's possible to deploy your app directly from CodeSandbox"
 ---
 

@@ -1,7 +1,7 @@
 ---
-title: "Configuration"
-authors: ["CompuIves"]
-description: "You can configure sandboxes and other options with configuration files specified by the template."
+title: 'Configuration'
+authors: ['CompuIves']
+description: 'You can configure sandboxes and other options with configuration files specified by the template.'
 ---
 
 ## Configuration Files

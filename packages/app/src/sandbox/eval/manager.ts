@@ -234,7 +234,9 @@ export default class Manager {
       });
     }
 
-    return hasCallback ? callback(null, Boolean(returnValue)) : Boolean(returnValue);
+    return hasCallback
+      ? callback(null, Boolean(returnValue))
+      : Boolean(returnValue);
   };
 
   readFileSync = (p: string, cb: Function | undefined, c?: Function) => {
@@ -979,9 +981,11 @@ export default class Manager {
 
     // Reset test files, but don't transpile. We want to do that in the test runner
     // so we can catch any errors
-    allModulesToUpdate.filter(m => m.isTestFile).forEach(m => {
-      m.resetTranspilation();
-    });
+    allModulesToUpdate
+      .filter(m => m.isTestFile)
+      .forEach(m => {
+        m.resetTranspilation();
+      });
 
     debug(
       `Generated update diff, updating ${

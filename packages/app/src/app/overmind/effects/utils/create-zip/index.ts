@@ -216,13 +216,13 @@ export async function createZip(
     // a zip by just adding all existing files to it (downloading binaries too).
     promise = fullPromise();
   } else if (sandbox.template === react.name) {
-    promise = import(/* webpackChunkName: 'create-react-app-zip' */ './create-react-app').then(
-      generator => generator.default(zip, sandbox, modules, directories)
-    );
+    promise = import(
+      /* webpackChunkName: 'create-react-app-zip' */ './create-react-app'
+    ).then(generator => generator.default(zip, sandbox, modules, directories));
   } else if (sandbox.template === reactTs.name) {
-    promise = import(/* webpackChunkName: 'create-react-app-typescript-zip' */ './create-react-app-typescript').then(
-      generator => generator.default(zip, sandbox, modules, directories)
-    );
+    promise = import(
+      /* webpackChunkName: 'create-react-app-typescript-zip' */ './create-react-app-typescript'
+    ).then(generator => generator.default(zip, sandbox, modules, directories));
   } else if (sandbox.template === vue.name) {
     try {
       const packageJSONModule = sandbox.modules.find(

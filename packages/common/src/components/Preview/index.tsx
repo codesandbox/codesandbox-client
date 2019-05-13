@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import {
   Sandbox,
@@ -34,7 +33,7 @@ import { NotificationStatus } from '@codesandbox/notifications';
 export type Props = {
   sandbox: Sandbox;
   settings: Settings;
-  onInitialized?: (preview: BasePreview) => (() => void); // eslint-disable-line no-use-before-define
+  onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
   currentModule?: Module;
   initialPath?: string;
@@ -518,11 +517,14 @@ class BasePreview extends React.Component<Props, State> {
           this.disposeInitializer = this.props.onInitialized(this);
         }
 
-        setTimeout(() => {
-          // We show a screenshot of the sandbox (if available) on top of the preview if the frame
-          // hasn't loaded yet
-          this.setState({ showScreenshot: false });
-        }, this.serverPreview ? 0 : 600);
+        setTimeout(
+          () => {
+            // We show a screenshot of the sandbox (if available) on top of the preview if the frame
+            // hasn't loaded yet
+            this.setState({ showScreenshot: false });
+          },
+          this.serverPreview ? 0 : 600
+        );
 
         this.executeCodeImmediately(true);
       } else {
@@ -851,37 +853,36 @@ class BasePreview extends React.Component<Props, State> {
                 }}
               />
 
-              {this.props.sandbox.screenshotUrl &&
-                style.opacity !== 1 && (
+              {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    width: '100%',
+                    position: 'absolute',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    top: 35,
+                    zIndex: 0,
+                  }}
+                >
                   <div
                     style={{
-                      overflow: 'hidden',
                       width: '100%',
-                      position: 'absolute',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      top: 35,
-                      zIndex: 0,
+                      height: '100%',
+                      filter: `blur(2px)`,
+                      transform: 'scale(1.025, 1.025)',
+                      backgroundImage: `url("${
+                        this.props.sandbox.screenshotUrl
+                      }")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPositionX: 'center',
                     }}
-                  >
-                    <div
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        filter: `blur(2px)`,
-                        transform: 'scale(1.025, 1.025)',
-                        backgroundImage: `url("${
-                          this.props.sandbox.screenshotUrl
-                        }")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPositionX: 'center',
-                      }}
-                    />
-                  </div>
-                )}
+                  />
+                </div>
+              )}
             </React.Fragment>
           )}
         </AnySpring>

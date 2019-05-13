@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Color from 'color'
+import Color from 'color';
 
 export const BlockHeader = styled.div`
   display: flex;
@@ -9,11 +9,11 @@ export const BlockHeader = styled.div`
   padding: 0rem 1rem;
 
   overflow: hidden;
-    background-color: ${props => Color(props.theme['sideBar.background'])
-    .darken(props.theme.light ? 0.1 : 0.3)
-    .rgbString()};
+  background-color: ${props =>
+    Color(props.theme['sideBar.background'])
+      .darken(props.theme.light ? 0.1 : 0.3)
+      .rgbString()};
 `;
-
 
 export const Container = styled.div`
   margin-bottom: 0.75rem;
@@ -31,7 +31,6 @@ export const Actions = styled.div`
   font-size: 0.875rem;
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
-
 
   svg {
     transition: 0.3s ease opacity;

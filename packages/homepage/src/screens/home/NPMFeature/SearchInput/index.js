@@ -43,7 +43,9 @@ const SearchInput = () => {
         <div>Sandbox Count</div>
       </Legend>
 
-      {hits.map(hit => <Hit key={hit.value} hit={hit} />)}
+      {hits.map(hit => (
+        <Hit key={hit.value} hit={hit} />
+      ))}
 
       <a
         href="https://www.algolia.com/?utm_source=algoliaclient&utm_medium=website&utm_content=codesandbox.io&utm_campaign=poweredby"

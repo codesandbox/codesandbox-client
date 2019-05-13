@@ -62,14 +62,12 @@
     "start:dev": "LOCAL_SERVER=1 LOCAL_DEV=1 gatsby develop",
     "start": "gatsby develop",
     "lint": "eslint .",
-    "format": "prettier --trailing-comma es5 --single-quote --write 'src/**/*.js'",
     "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "devDependencies": {
     "dotenv": "^6.2.0",
     "gatsby-plugin-remove-trailing-slashes": "^2.0.6",
     "gatsby-source-medium": "^2.0.2",
-    "prettier": "^1.8.2",
     "rimraf": "^2.6.2",
     "terser": "^3.17.0"
   },

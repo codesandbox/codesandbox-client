@@ -1,5 +1,3 @@
-
-
 export interface Result {
   editorSize: number;
   tabs?: string[];
@@ -104,8 +102,8 @@ export const getSandboxOptions = (url: string) => {
   result.runOnClick = url.includes('runonclick=0')
     ? false
     : url.includes('runonclick=1')
-      ? true
-      : undefined;
+    ? true
+    : undefined;
 
   return result;
 };

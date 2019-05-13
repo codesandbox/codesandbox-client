@@ -91,8 +91,7 @@ export default class App extends React.PureComponent<
       runOnClick,
       verticalMode = window.innerWidth < window.innerHeight,
       tabs,
-    } =
-      props.embedOptions || getSandboxOptions(document.location.href);
+    } = props.embedOptions || getSandboxOptions(document.location.href);
 
     this.state = {
       notFound: false,

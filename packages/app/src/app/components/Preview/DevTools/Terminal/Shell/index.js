@@ -95,9 +95,12 @@ class Shell extends React.PureComponent<Props> {
     if (this.term) {
       if (prevProps.height !== this.props.height) {
         clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          this.term.fit();
-        }, this.props.hidden ? 1500 : 300);
+        this.timeout = setTimeout(
+          () => {
+            this.term.fit();
+          },
+          this.props.hidden ? 1500 : 300
+        );
       }
 
       if (prevProps.hidden !== this.props.hidden && !this.props.hidden) {

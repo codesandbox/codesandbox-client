@@ -14,7 +14,7 @@ type regexCasesMap = {
   console: RegExp;
   git: RegExp;
   flow: RegExp;
-}
+};
 
 const specialCasesMap = {
   'favicon.ico': 'favicon',

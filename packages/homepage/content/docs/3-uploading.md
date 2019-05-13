@@ -1,6 +1,6 @@
 ---
-title: "Uploading Static Files"
-authors: ["CompuIves"]
+title: 'Uploading Static Files'
+authors: ['CompuIves']
 description: "It's possible to upload your static files to CodeSandbox for usage in the sandbox."
 ---
 

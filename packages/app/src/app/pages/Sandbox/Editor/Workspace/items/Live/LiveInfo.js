@@ -237,16 +237,15 @@ class LiveInfo extends React.Component {
           value={`https://codesandbox.io/live/${roomInfo.roomId}`}
         />
 
-        {isOwner &&
-          !isTeam && (
-            <WorkspaceInputContainer>
-              <LiveButton
-                message="Stop Session"
-                onClick={onSessionCloseClicked}
-                showIcon={false}
-              />
-            </WorkspaceInputContainer>
-          )}
+        {isOwner && !isTeam && (
+          <WorkspaceInputContainer>
+            <LiveButton
+              message="Stop Session"
+              onClick={onSessionCloseClicked}
+              showIcon={false}
+            />
+          </WorkspaceInputContainer>
+        )}
 
         <Margin top={1}>
           <SubTitle>Preferences</SubTitle>
@@ -336,60 +335,58 @@ class LiveInfo extends React.Component {
           </Margin>
         )}
 
-        {editors.length > 0 &&
-          roomInfo.mode === 'classroom' && (
-            <Margin top={1}>
-              <SubTitle>Editors</SubTitle>
-              <Users>
-                {editors.map(user => (
-                  <User
-                    currentUserId={currentUserId}
-                    key={user.id}
-                    user={user}
-                    roomInfo={roomInfo}
-                    type="Editor"
-                    sideView={
-                      <React.Fragment>
-                        {user.id !== currentUserId && (
-                          <IconContainer>
-                            {followingUserId === user.id ? (
-                              <Tooltip content="Stop following">
-                                <UnFollowIcon
-                                  onClick={() =>
-                                    setFollowing({ liveUserId: null })
-                                  }
-                                />
-                              </Tooltip>
-                            ) : (
-                              <Tooltip content="Follow along">
-                                <FollowIcon
-                                  onClick={() =>
-                                    setFollowing({ liveUserId: user.id })
-                                  }
-                                />
-                              </Tooltip>
-                            )}
-                          </IconContainer>
-                        )}
-                        {isOwner &&
-                          roomInfo.mode === 'classroom' && (
-                            <IconContainer style={{ marginLeft: '0.25rem' }}>
-                              <Tooltip content={'Make spectator'}>
-                                <RemoveIcon
-                                  onClick={() =>
-                                    removeEditor({ liveUserId: user.id })
-                                  }
-                                />
-                              </Tooltip>
-                            </IconContainer>
+        {editors.length > 0 && roomInfo.mode === 'classroom' && (
+          <Margin top={1}>
+            <SubTitle>Editors</SubTitle>
+            <Users>
+              {editors.map(user => (
+                <User
+                  currentUserId={currentUserId}
+                  key={user.id}
+                  user={user}
+                  roomInfo={roomInfo}
+                  type="Editor"
+                  sideView={
+                    <React.Fragment>
+                      {user.id !== currentUserId && (
+                        <IconContainer>
+                          {followingUserId === user.id ? (
+                            <Tooltip content="Stop following">
+                              <UnFollowIcon
+                                onClick={() =>
+                                  setFollowing({ liveUserId: null })
+                                }
+                              />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip content="Follow along">
+                              <FollowIcon
+                                onClick={() =>
+                                  setFollowing({ liveUserId: user.id })
+                                }
+                              />
+                            </Tooltip>
                           )}
-                      </React.Fragment>
-                    }
-                  />
-                ))}
-              </Users>
-            </Margin>
-          )}
+                        </IconContainer>
+                      )}
+                      {isOwner && roomInfo.mode === 'classroom' && (
+                        <IconContainer style={{ marginLeft: '0.25rem' }}>
+                          <Tooltip content={'Make spectator'}>
+                            <RemoveIcon
+                              onClick={() =>
+                                removeEditor({ liveUserId: user.id })
+                              }
+                            />
+                          </Tooltip>
+                        </IconContainer>
+                      )}
+                    </React.Fragment>
+                  }
+                />
+              ))}
+            </Users>
+          </Margin>
+        )}
 
         <Margin top={1}>
           <SubTitle>Users</SubTitle>
@@ -427,18 +424,15 @@ class LiveInfo extends React.Component {
                             )}
                           </IconContainer>
                         )}
-                      {isOwner &&
-                        roomInfo.mode === 'classroom' && (
-                          <IconContainer style={{ marginLeft: '0.25rem' }}>
-                            <Tooltip content={'Make editor'}>
-                              <AddIcon
-                                onClick={() =>
-                                  addEditor({ liveUserId: user.id })
-                                }
-                              />
-                            </Tooltip>
-                          </IconContainer>
-                        )}
+                      {isOwner && roomInfo.mode === 'classroom' && (
+                        <IconContainer style={{ marginLeft: '0.25rem' }}>
+                          <Tooltip content={'Make editor'}>
+                            <AddIcon
+                              onClick={() => addEditor({ liveUserId: user.id })}
+                            />
+                          </Tooltip>
+                        </IconContainer>
+                      )}
                     </React.Fragment>
                   }
                 />

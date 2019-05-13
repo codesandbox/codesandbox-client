@@ -60,7 +60,7 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
               </Button>
             </Job>
           </Jobs>
-        ))};
+        ))}
         <PageSubtitle
           css={`
             margin-bottom: 0;

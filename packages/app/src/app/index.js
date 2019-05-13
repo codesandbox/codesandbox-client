@@ -215,12 +215,12 @@ window.BrowserFS.configure(
         if (isVSCode) {
           vscode.acquireController(controller);
 
-          import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host').then(
-            ExtHostWorkerLoader => {
-              child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
-              // child_process.preloadWorker('/vs/bootstrap-fork');
-            }
-          );
+          import(
+            'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
+          ).then(ExtHostWorkerLoader => {
+            child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
+            // child_process.preloadWorker('/vs/bootstrap-fork');
+          });
 
           // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
           //   SearchServiceWorker => {
