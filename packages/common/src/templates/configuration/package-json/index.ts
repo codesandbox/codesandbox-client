@@ -1,5 +1,3 @@
-
-
 import { Sandbox } from '../../../types';
 import slugify from '../../../utils/slugify';
 import { ConfigurationFile } from '../types';

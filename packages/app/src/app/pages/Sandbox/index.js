@@ -91,29 +91,25 @@ class SandboxPage extends React.Component {
               {hasLogIn ? 'Dashboard' : 'Homepage'}
             </Button>
           </div>
-          {hasLogIn &&
-            isGithub &&
-            !hasPrivateAccess && (
+          {hasLogIn && isGithub && !hasPrivateAccess && (
+            <div style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}>
               <div
-                style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
+                style={{
+                  fontWeight: 300,
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  marginBottom: '1rem',
+                  fontSize: '1rem',
+                  textAlign: 'center',
+                  lineHeight: 1.6,
+                }}
               >
-                <div
-                  style={{
-                    fontWeight: 300,
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    marginBottom: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'center',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Did you try to open a private GitHub repository and are you a{' '}
-                  <Link to="/patron">patron</Link>? Then you might need to get
-                  private access:
-                </div>
-                <GithubIntegration small />
+                Did you try to open a private GitHub repository and are you a{' '}
+                <Link to="/patron">patron</Link>? Then you might need to get
+                private access:
               </div>
-            )}
+              <GithubIntegration small />
+            </div>
+          )}
         </React.Fragment>
       );
     }

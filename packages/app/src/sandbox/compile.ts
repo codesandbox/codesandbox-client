@@ -571,8 +571,8 @@ async function compile({
           htmlModule && htmlModule.code
             ? htmlModule.code
             : template === 'vue-cli'
-              ? '<div id="app"></div>'
-              : '<div id="root"></div>'
+            ? '<div id="app"></div>'
+            : '<div id="root"></div>'
         );
 
         if (lastHeadHTML && lastHeadHTML !== head) {

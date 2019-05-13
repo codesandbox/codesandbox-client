@@ -77,7 +77,7 @@ export default class Template {
   url: string;
   main: boolean;
   color: () => string;
-  backgroundColor: (() => string | undefined);
+  backgroundColor: () => string | undefined;
 
   popular: boolean;
   showOnHomePage: boolean;

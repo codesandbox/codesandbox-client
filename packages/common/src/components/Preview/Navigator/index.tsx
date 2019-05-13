@@ -74,25 +74,23 @@ function Navigator({
           </Tooltip>
         </Icon>
       )}
-      {!zenMode &&
-        !isServer &&
-        toggleProjectView && (
-          <SwitchContainer>
-            <Tooltip
-              delay={0}
-              content={isProjectView ? 'Project View' : 'Current Module View'}
-              placement="left"
-            >
-              <Switch
-                offMode
-                secondary
-                small
-                right={!isProjectView}
-                onClick={toggleProjectView}
-              />
-            </Tooltip>
-          </SwitchContainer>
-        )}
+      {!zenMode && !isServer && toggleProjectView && (
+        <SwitchContainer>
+          <Tooltip
+            delay={0}
+            content={isProjectView ? 'Project View' : 'Current Module View'}
+            placement="left"
+          >
+            <Switch
+              offMode
+              secondary
+              small
+              right={!isProjectView}
+              onClick={toggleProjectView}
+            />
+          </Tooltip>
+        </SwitchContainer>
+      )}
     </Container>
   );
 }

@@ -39,46 +39,43 @@ interface DragProps {
  */
 function useGlobalDim(isDragging: boolean) {
   const blockerRef = React.useRef(null);
-  React.useEffect(
-    () => {
-      const clean = () => {
-        if (blockerRef.current) {
-          blockerRef.current.parentElement.removeChild(blockerRef.current);
-          blockerRef.current = null;
-        }
-        if (devtools && devtools.parentElement) {
-          devtools.parentElement.style.zIndex = '0';
-        }
-      };
-
-      const devtools = document.getElementById('csb-devtools');
-      const container = document.getElementById('workbench.main.container');
-      if (devtools && container) {
-        if (isDragging) {
-          const blocker = document.createElement('div');
-          blocker.style.position = 'fixed';
-          blocker.style.top = '0';
-          blocker.style.right = '0';
-          blocker.style.left = '0';
-          blocker.style.bottom = '0';
-          blocker.style.zIndex = '1000';
-          devtools.parentElement.style.zIndex = '2000';
-          blocker.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
-
-          container.appendChild(blocker);
-
-          blockerRef.current = blocker;
-        } else {
-          clean();
-        }
+  React.useEffect(() => {
+    const clean = () => {
+      if (blockerRef.current) {
+        blockerRef.current.parentElement.removeChild(blockerRef.current);
+        blockerRef.current = null;
       }
+      if (devtools && devtools.parentElement) {
+        devtools.parentElement.style.zIndex = '0';
+      }
+    };
 
-      return () => {
+    const devtools = document.getElementById('csb-devtools');
+    const container = document.getElementById('workbench.main.container');
+    if (devtools && container) {
+      if (isDragging) {
+        const blocker = document.createElement('div');
+        blocker.style.position = 'fixed';
+        blocker.style.top = '0';
+        blocker.style.right = '0';
+        blocker.style.left = '0';
+        blocker.style.bottom = '0';
+        blocker.style.zIndex = '1000';
+        devtools.parentElement.style.zIndex = '2000';
+        blocker.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+
+        container.appendChild(blocker);
+
+        blockerRef.current = blocker;
+      } else {
         clean();
-      };
-    },
-    [isDragging]
-  );
+      }
+    }
+
+    return () => {
+      clean();
+    };
+  }, [isDragging]);
 }
 
 export const PaneTab = ({
@@ -106,10 +103,9 @@ export const PaneTab = ({
       >
         {pane.title}
 
-        {devToolIndex !== 0 &&
-          status && (
-            <UnreadDevToolsCount status={status.type} unread={status.unread} />
-          )}
+        {devToolIndex !== 0 && status && (
+          <UnreadDevToolsCount status={status.type} unread={status.unread} />
+        )}
         {false &&
         active && ( // This will be enabled later on
             <CloseTab>

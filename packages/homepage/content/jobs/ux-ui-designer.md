@@ -1,8 +1,8 @@
 ---
-title: "UI/UX Designer"
-slug: "ux-ui-designer"
+title: 'UI/UX Designer'
+slug: 'ux-ui-designer'
 description: "As a designer you'll be working closely with our engineers to implement and improve interaction opportunities that embody our [core values](https://codesandbox.io/docs/#our-values) and support our growing community of engineers, designers and teachers."
-link: "https://airtable.com/shrYgsLKkdfchPlmZ"
+link: 'https://airtable.com/shrYgsLKkdfchPlmZ'
 ---
 
 ## Role

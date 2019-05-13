@@ -1,4 +1,3 @@
-
 import { Module, Directory, Sandbox, User } from '../types';
 
 export function createModule(index: number = 0, params?: Module & any): Module {

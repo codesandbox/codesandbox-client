@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TextOperation } from 'ot';
 import { Module } from '@codesandbox/common/lib/types';

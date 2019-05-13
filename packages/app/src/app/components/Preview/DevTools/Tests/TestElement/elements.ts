@@ -64,10 +64,16 @@ export const Block = styled.div<{ last: boolean }>`
     width: 10px;
     height: 10px;
     transform: rotate(45deg);
-    border-right: 1px solid ${props =>
-    props.theme.light ? `rgba(0, 0, 0, ${(props.last ? 0.3 : 0.4)})` : `rgba(255, 255, 255, ${(props.last ? 0.3 : 0.4)})`};
-    border-top:  1px solid ${props =>
-    props.theme.light ? `rgba(0, 0, 0, ${(props.last ? 0.3 : 0.4)})` : `rgba(255, 255, 255, ${(props.last ? 0.3 : 0.4)})`};
+    border-right: 1px solid
+      ${props =>
+        props.theme.light
+          ? `rgba(0, 0, 0, ${props.last ? 0.3 : 0.4})`
+          : `rgba(255, 255, 255, ${props.last ? 0.3 : 0.4})`};
+    border-top: 1px solid
+      ${props =>
+        props.theme.light
+          ? `rgba(0, 0, 0, ${props.last ? 0.3 : 0.4})`
+          : `rgba(255, 255, 255, ${props.last ? 0.3 : 0.4})`};
   }
 `;
 
@@ -112,9 +118,9 @@ export const Container = styled.div<{ selected: boolean }>`
 
   &:hover {
     background-color: ${props =>
-    !props.theme.light ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)'};
+      !props.theme.light ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)'};
     color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
+      props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
     border-left-color: ${props => props.theme.secondary.clearer(0.5)};
 
     ${Actions} {
@@ -127,7 +133,7 @@ export const Container = styled.div<{ selected: boolean }>`
 
       ${Block} {
         color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
+          props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
       }
     }
   }
@@ -144,20 +150,20 @@ export const Container = styled.div<{ selected: boolean }>`
       ${Test} {
         ${TestName} {
           background-color: ${props =>
-        !props.theme.light
-          ? 'rgba(0, 0, 0, 0.2)'
-          : 'rgba(255, 255, 255, 0.2)'};
+            !props.theme.light
+              ? 'rgba(0, 0, 0, 0.2)'
+              : 'rgba(255, 255, 255, 0.2)'};
           color: ${props =>
-        props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
+            props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
         }
 
         ${Block} {
           background-color: ${props =>
-        !props.theme.light
-          ? 'rgba(0, 0, 0, 0.2)'
-          : 'rgba(255, 255, 255, 0.2)'};
+            !props.theme.light
+              ? 'rgba(0, 0, 0, 0.2)'
+              : 'rgba(255, 255, 255, 0.2)'};
           color: ${props =>
-        props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
+            props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
         }
       }
 

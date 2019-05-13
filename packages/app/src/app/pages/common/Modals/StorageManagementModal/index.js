@@ -35,20 +35,19 @@ class StorageManagementModal extends React.Component {
           This is where you can manage your uploaded files.
         </Description>
         <Rule />
-        {!isEmpty &&
-          !isLoading && (
-            <FilesList
-              files={store.uploadedFiles}
-              deleteFile={signals.files.deletedUploadedFile}
-              deleteFiles={files =>
-                files.map(id => signals.files.deletedUploadedFile({ id }))
-              }
-              addFilesToSandbox={files =>
-                files.map(signals.files.addedFileToSandbox)
-              }
-              addFileToSandbox={signals.files.addedFileToSandbox}
-            />
-          )}
+        {!isEmpty && !isLoading && (
+          <FilesList
+            files={store.uploadedFiles}
+            deleteFile={signals.files.deletedUploadedFile}
+            deleteFiles={files =>
+              files.map(id => signals.files.deletedUploadedFile({ id }))
+            }
+            addFilesToSandbox={files =>
+              files.map(signals.files.addedFileToSandbox)
+            }
+            addFileToSandbox={signals.files.addedFileToSandbox}
+          />
+        )}
         {isEmpty && (
           <SubDescription>You have no uploaded files.</SubDescription>
         )}

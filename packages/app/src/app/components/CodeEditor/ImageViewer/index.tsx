@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';

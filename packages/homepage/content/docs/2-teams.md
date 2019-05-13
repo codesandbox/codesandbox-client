@@ -1,7 +1,7 @@
 ---
-title: "Teams"
-authors: ["CompuIves"]
-description: "A team makes it easier to collaborate on sandboxes with others. As a team you share the ownership of the sandboxes in that team, every sandbox automatically has a live session open."
+title: 'Teams'
+authors: ['CompuIves']
+description: 'A team makes it easier to collaborate on sandboxes with others. As a team you share the ownership of the sandboxes in that team, every sandbox automatically has a live session open.'
 ---
 
 ## Creating a Team

@@ -226,10 +226,12 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     };
 
     if (settings.autoCompleteEnabled) {
-      const tern = await import(/* webpackChunkName: 'codemirror-tern' */ 'tern').then(
-        x => x.default
+      const tern = await import(
+        /* webpackChunkName: 'codemirror-tern' */ 'tern'
+      ).then(x => x.default);
+      const defs = await import(
+        /* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json'
       );
-      const defs = await import(/* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json');
       window.tern = tern;
       this.server =
         this.server ||
@@ -285,7 +287,9 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     }
 
     if (settings.vimMode) {
-      await import(/* webpackChunkName: 'codemirror-vim' */ 'codemirror/keymap/vim');
+      await import(
+        /* webpackChunkName: 'codemirror-vim' */ 'codemirror/keymap/vim'
+      );
       this.codemirror.setOption('keyMap', 'vim');
     } else {
       this.codemirror.setOption('keyMap', 'sublime');
@@ -347,7 +351,9 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
     if (kind) {
       if (kind[1] === 'css' || kind[1] === 'scss' || kind[1] === 'less') {
-        await import(/* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css');
+        await import(
+          /* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'
+        );
         if (kind[1] === 'less') {
           return 'text/x-less';
         }
@@ -356,30 +362,48 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
         }
         return 'css';
       } else if (kind[1] === 'html' || kind[1] === 'vue') {
-        await import(/* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed');
+        await import(
+          /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
+        );
 
         if (kind[1] === 'vue') {
           await Promise.all([
-            import(/* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'),
-            import(/* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'),
-            import(/* webpackChunkName: 'codemirror-stylus' */ 'codemirror/mode/stylus/stylus'),
-            import(/* webpackChunkName: 'codemirror-handlebars' */ 'codemirror/mode/handlebars/handlebars'),
-            import(/* webpackChunkName: 'codemirror-vue' */ 'codemirror/mode/vue/vue'),
+            import(
+              /* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'
+            ),
+            import(
+              /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
+            ),
+            import(
+              /* webpackChunkName: 'codemirror-stylus' */ 'codemirror/mode/stylus/stylus'
+            ),
+            import(
+              /* webpackChunkName: 'codemirror-handlebars' */ 'codemirror/mode/handlebars/handlebars'
+            ),
+            import(
+              /* webpackChunkName: 'codemirror-vue' */ 'codemirror/mode/vue/vue'
+            ),
           ]);
           return { name: 'vue' };
         }
 
         return 'htmlmixed';
       } else if (kind[1] === 'md') {
-        await import(/* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown');
+        await import(
+          /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
+        );
         return 'markdown';
       } else if (kind[1] === 'json') {
         return 'application/json';
       } else if (kind[1] === 'sass') {
-        await import(/* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass');
+        await import(
+          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
+        );
         return 'sass';
       } else if (kind[1] === 'styl') {
-        await import(/* webpackChunkName: 'codemirror-stylus' */ 'codemirror/mode/stylus/stylus');
+        await import(
+          /* webpackChunkName: 'codemirror-stylus' */ 'codemirror/mode/stylus/stylus'
+        );
         return 'stylus';
       }
     }

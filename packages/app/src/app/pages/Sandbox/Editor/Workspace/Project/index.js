@@ -179,21 +179,20 @@ class Project extends React.Component {
           )}
         </Item>
 
-        {!sandbox.team &&
-          !!sandbox.author && (
-            <Item>
-              <UserLink
-                title={sandbox.author.username}
-                to={profileUrl(sandbox.author.username)}
-              >
-                <UserWithAvatar
-                  username={sandbox.author.username}
-                  avatarUrl={sandbox.author.avatarUrl}
-                  subscriptionSince={sandbox.author.subscriptionSince}
-                />
-              </UserLink>
-            </Item>
-          )}
+        {!sandbox.team && !!sandbox.author && (
+          <Item>
+            <UserLink
+              title={sandbox.author.username}
+              to={profileUrl(sandbox.author.username)}
+            >
+              <UserWithAvatar
+                username={sandbox.author.username}
+                avatarUrl={sandbox.author.avatarUrl}
+                subscriptionSince={sandbox.author.subscriptionSince}
+              />
+            </UserLink>
+          </Item>
+        )}
 
         {!!sandbox.team && (
           <Tooltip content="This sandbox is owned by this team">

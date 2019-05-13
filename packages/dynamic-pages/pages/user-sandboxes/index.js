@@ -33,13 +33,10 @@ const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
   };
 
   // reset everything when tab changes
-  useEffect(
-    () => {
-      setSandboxes(data[1]);
-      setPage(1);
-    },
-    [currentTab]
-  );
+  useEffect(() => {
+    setSandboxes(data[1]);
+    setPage(1);
+  }, [currentTab]);
 
   return (
     <PageContainer>

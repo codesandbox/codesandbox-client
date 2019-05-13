@@ -27,7 +27,7 @@ const absintheAfterware = new ApolloLink((operation, forward) =>
   forward(operation).map(({ payload, ...result }) => ({
     ...result,
     errors: payload.errors,
-    data: payload.data
+    data: payload.data,
   }))
 );
 

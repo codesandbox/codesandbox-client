@@ -62,15 +62,14 @@ export default ({
           />
         </Social>
       )}
-      {twitter &&
-        !editing && (
-          <Social>
-            <img src={twitterLogo} alt="twitter logo" />
-            <a href={`https://twitter.com/${twitter}`} target="_blank">
-              @{twitter.toLowerCase()}
-            </a>
-          </Social>
-        )}
+      {twitter && !editing && (
+        <Social>
+          <img src={twitterLogo} alt="twitter logo" />
+          <a href={`https://twitter.com/${twitter}`} target="_blank">
+            @{twitter.toLowerCase()}
+          </a>
+        </Social>
+      )}
       {editing && (
         <Social>
           <img src={mail} alt="email" />
@@ -86,15 +85,14 @@ export default ({
           />
         </Social>
       )}
-      {profile_email &&
-        !editing && (
-          <Social>
-            <img src={mail} alt="email" />
-            <a href={`mailto:${profile_email}`} target="_blank">
-              {profile_email.toLowerCase()}
-            </a>
-          </Social>
-        )}
+      {profile_email && !editing && (
+        <Social>
+          <img src={mail} alt="email" />
+          <a href={`mailto:${profile_email}`} target="_blank">
+            {profile_email.toLowerCase()}
+          </a>
+        </Social>
+      )}
       <Social>
         <img src={calendar} alt="User Since" />
         <span>Joined {format(inserted_at, 'MMMM YYYY')}</span>

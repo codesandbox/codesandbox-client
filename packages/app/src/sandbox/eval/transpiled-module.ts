@@ -683,9 +683,8 @@ export default class TranspiledModule {
     ) {
       const hasHMR = manager.preset
         .getLoaders(this.module, this.query)
-        .some(
-          t =>
-            t.transpiler.HMREnabled == null ? true : t.transpiler.HMREnabled
+        .some(t =>
+          t.transpiler.HMREnabled == null ? true : t.transpiler.HMREnabled
         );
 
       if (!hasHMR) {
@@ -1028,9 +1027,8 @@ export default class TranspiledModule {
     if (
       manager.preset
         .getLoaders(this.module, this.query)
-        .some(
-          t =>
-            t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
+        .some(t =>
+          t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
         )
     ) {
       debug(`Removing '${this.getId()}' cache as it's not cacheable.`);

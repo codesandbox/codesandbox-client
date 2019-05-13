@@ -1,8 +1,8 @@
 ---
-title: "Documentation"
-authors: ["CompuIves"]
+title: 'Documentation'
+authors: ['CompuIves']
 url: /
-description: "Welcome to CodeSandbox! This documentation serves as a way for you to learn what CodeSandbox is, how to use it and what its APIs are."
+description: 'Welcome to CodeSandbox! This documentation serves as a way for you to learn what CodeSandbox is, how to use it and what its APIs are.'
 ---
 
 ## What is CodeSandbox
