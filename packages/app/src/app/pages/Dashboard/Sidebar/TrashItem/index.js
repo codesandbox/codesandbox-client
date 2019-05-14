@@ -1,28 +1,32 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
 import TrashIcon from 'react-icons/lib/md/delete';
-
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 import Item from '../Item';
 
+// 50 items is the limit
+
 const TrashItem = ({ isOver, canDrop, connectDropTarget }) =>
   connectDropTarget(
     <div>
-      <Item
-        path={'/dashboard/trash'}
-        Icon={TrashIcon}
-        name="Trash"
-        style={
-          isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
-        }
-      />
+      <Tooltip content="Todo Hit Limit">
+        <Item
+          path={'/dashboard/trash'}
+          Icon={TrashIcon}
+          name="Trash"
+          style={
+            isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
+          }
+        />
+      </Tooltip>
     </div>
   );
 
 export const entryTarget = {
-  drop: (props, monitor) => {
+  drop: monitor => {
     if (monitor == null) return {};
 
     // Check if only child is selected:
