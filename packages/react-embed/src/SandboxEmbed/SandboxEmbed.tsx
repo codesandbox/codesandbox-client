@@ -44,7 +44,7 @@ export interface CodeSandboxerProps {
    * Allow codesandboxer to accept more extensions like .jsx
    **/
   extensions?: string[];
-  template?: 'create-react-app' | 'create-react-app-typescript';
+  template?: 'create-react-app';
 }
 
 export interface Props {

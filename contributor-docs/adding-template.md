@@ -110,7 +110,6 @@ In order to understand how this configuration works, we recommend you to take a 
 
 Examples:
 
-- [create-react-app-typescript](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/create-react-app-typescript/index.js) (most basic one)
 - [CxJS](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/cxjs/index.js)
 - [vue-cli](https://github.com/codesandbox/codesandbox-client/blob/master/packages/app/src/sandbox/eval/presets/vue-cli/index.js)
 

@@ -1,5 +1,5 @@
 import { dispatch, actions, listen } from 'codesandbox-api';
-import { react, reactTs } from '@codesandbox/common/lib/templates';
+import { react } from '@codesandbox/common/lib/templates';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
@@ -248,8 +248,6 @@ export default class TestRunner {
             this.manager.resolveModule('./src/setupTests.ts', '/'),
           ];
         }
-      } else if (this.manager.preset.name === reactTs.name) {
-        testModules = [this.manager.resolveModule('./src/setupTests.ts', '/')];
       } else if (this.manager.configurations.package) {
         const { parsed } = this.manager.configurations.package;
 

@@ -30,7 +30,6 @@ import {
   ember,
   vue,
   preact,
-  reactTs,
   svelte,
   angular,
   parcel,
@@ -72,8 +71,6 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return Vue;
     case preact.name:
       return Preact;
-    case reactTs.name:
-      return React;
     case svelte.name:
       return Svelte;
     case angular.name:

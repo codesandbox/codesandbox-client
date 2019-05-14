@@ -5,7 +5,6 @@ import parcel from './parcel';
 import preact from './preact';
 import reason from './reason';
 import react from './react';
-import reactTs from './react-ts';
 import svelte from './svelte';
 import vue from './vue';
 import ember from './ember';
@@ -43,7 +42,6 @@ export {
   parcel,
   preact,
   react,
-  reactTs,
   reason,
   svelte,
   vue,
@@ -64,7 +62,6 @@ export type TemplateType =
   | 'vue-cli'
   | 'preact-cli'
   | 'svelte'
-  | 'create-react-app-typescript'
   | 'angular-cli'
   | 'parcel'
   | 'cxjs'
@@ -94,8 +91,6 @@ export default function getDefinition(theme: TemplateType) {
       return vue;
     case preact.name:
       return preact;
-    case reactTs.name:
-      return reactTs;
     case svelte.name:
       return svelte;
     case angular.name:

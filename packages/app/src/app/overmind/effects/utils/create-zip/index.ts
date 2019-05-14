@@ -3,7 +3,6 @@ import { saveAs } from 'file-saver';
 import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
 import {
   react,
-  reactTs,
   vue,
   preact,
   svelte,
@@ -209,7 +208,6 @@ export async function createZip(
 
   if (
     sandbox.template !== vue.name &&
-    sandbox.template !== reactTs.name &&
     directories.find(m => m.title === 'src' && m.directoryShortid == null)
   ) {
     // This is a full project, with all files already in there. We need to create
@@ -218,10 +216,6 @@ export async function createZip(
   } else if (sandbox.template === react.name) {
     promise = import(
       /* webpackChunkName: 'create-react-app-zip' */ './create-react-app'
-    ).then(generator => generator.default(zip, sandbox, modules, directories));
-  } else if (sandbox.template === reactTs.name) {
-    promise = import(
-      /* webpackChunkName: 'create-react-app-typescript-zip' */ './create-react-app-typescript'
     ).then(generator => generator.default(zip, sandbox, modules, directories));
   } else if (sandbox.template === vue.name) {
     try {

@@ -37,7 +37,6 @@ export interface Props {
   skipEval?: boolean;
   template?:
     | 'create-react-app'
-    | 'create-react-app-typescript'
     | 'parcel'
     | 'vue-cli'
     | 'angular-cli'

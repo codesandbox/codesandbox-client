@@ -5,7 +5,6 @@ import {
   parcel,
   svelte,
   preact,
-  reactTs,
   angular,
   cxjs,
   babel,
@@ -15,7 +14,6 @@ import {
 } from '@codesandbox/common/lib/templates';
 
 import reactPreset from './presets/create-react-app';
-import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
 import preactPreset from './presets/preact-cli';
 import sveltePreset from './presets/svelte';
@@ -31,8 +29,6 @@ export default function getPreset(template: string) {
   switch (template) {
     case react.name:
       return reactPreset();
-    case reactTs.name:
-      return reactTsPreset();
     case reason.name:
       return reasonPreset();
     case vue.name:

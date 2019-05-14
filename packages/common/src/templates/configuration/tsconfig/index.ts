@@ -15,42 +15,6 @@ const config: ConfigurationFile = {
     template: string,
     resolveModule: (path: string) => { code: string } | undefined
   ) => {
-    if (template === 'create-react-app-typescript') {
-      return JSON.stringify(
-        {
-          compilerOptions: {
-            outDir: 'build/dist',
-            module: 'esnext',
-            target: 'es5',
-            lib: ['es6', 'dom'],
-            sourceMap: true,
-            allowJs: true,
-            jsx: 'react',
-            moduleResolution: 'node',
-            rootDir: 'src',
-            forceConsistentCasingInFileNames: true,
-            noImplicitReturns: true,
-            noImplicitThis: true,
-            noImplicitAny: true,
-            strictNullChecks: true,
-            suppressImplicitAnyIndexErrors: true,
-            noUnusedLocals: true,
-          },
-          exclude: [
-            'node_modules',
-            'build',
-            'scripts',
-            'acceptance-tests',
-            'webpack',
-            'jest',
-            'src/setupTests.ts',
-          ],
-        },
-        null,
-        2
-      );
-    }
-
     if (template === 'parcel') {
       const tsconfig = {
         compilerOptions: {
