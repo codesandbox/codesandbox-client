@@ -16,8 +16,9 @@ const useWindowSize = (initialWidth = Infinity, initialHeight = Infinity) => {
       });
     };
     window.addEventListener('resize', handler);
+
     return () => window.removeEventListener('resize', handler);
-  }, [1]);
+  }, []);
 
   return state;
 };
