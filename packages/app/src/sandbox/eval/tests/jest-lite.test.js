@@ -1,7 +1,13 @@
-// import TestRunner from './jest-lite';
-const TestRunner = {};
+import TestRunner from './jest-lite';
+//const TestRunner = {};
 
-describe.skip('TestRunner class', () => {
+jest.mock('sandbox-hooks/react-error-overlay/utils/mapper', () => {
+  return {
+    map: jest.fn(),
+  };
+});
+
+describe('TestRunner class', () => {
   it('exports a module', () => {
     expect(TestRunner).toEqual(expect.any(Function));
   });
@@ -15,17 +21,20 @@ describe.skip('TestRunner class', () => {
   describe('initialize', () => {
     it('should reset results', () => {
       const testRunner = new TestRunner();
-      expect(testRunner.aggregatedResults.totalTests).toBe(0);
+      expect(testRunner.ranTests.size).toBe(0);
+
       testRunner.addResult({ status: 'pass', name: 'foo' });
-      expect(testRunner.aggregatedResults.totalTests).toBe(1);
+      // It will add test in ranTests query
+      testRunner.runTests(true);
+      expect(testRunner.ranTests.size).toBe(1);
       testRunner.initialize();
-      expect(testRunner.aggregatedResults.totalTests).toBe(0);
+      expect(testRunner.ranTests.size).toBe(0);
     });
   });
 
   describe('testGlobals', () => {
     it('returns an object', () => {
-      let {
+      const {
         describe: _describe,
         it: _it,
         test: _test,
@@ -40,7 +49,7 @@ describe.skip('TestRunner class', () => {
       expect(_jest).toEqual(expect.any(Object));
     });
 
-    describe('describe', () => {
+    xdescribe('describe', () => {
       let testRunner;
       let _describe;
       let fnSpy;
