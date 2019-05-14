@@ -272,7 +272,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
       this.props.isPatron &&
         [
           this.props.privacy !== 0 && {
-            title: `Make Sandbox Public`,
+            title: 'Make Sandbox Public',
             action: () => {
               this.props.setSandboxesPrivacy(0);
               return true;
