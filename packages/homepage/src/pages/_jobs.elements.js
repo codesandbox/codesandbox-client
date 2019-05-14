@@ -4,16 +4,24 @@ export const PageTitle = styled.h1`
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
   font-size: 36px;
-  color: ${props => props.theme.lightText};
+  color: ${props => props.theme.white};
 `;
 
 export const PageSubtitle = styled.h2`
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.5;
+  color: ${props => props.theme.white};
+`;
+
+export const TitleDescription = styled.p`
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 1.5;
   color: ${props => props.theme.lightText};
-  margin-bottom: 160px;
+  margin-bottom: 120px;
 `;
 
 export const Job = styled.li`

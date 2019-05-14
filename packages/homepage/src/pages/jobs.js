@@ -7,6 +7,7 @@ import PageContainer from '../components/PageContainer';
 import {
   PageTitle,
   PageSubtitle,
+  TitleDescription,
   Job,
   Jobs,
   OtherJobs,
@@ -25,7 +26,7 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
           title="Careers - CodeSandbox"
         />
         <PageTitle>Join the team</PageTitle>
-        <PageSubtitle>
+        <TitleDescription>
           CodeSandbox is a company that aims to make it easy for everyone to
           create applications. We want to cut away the hassle of setting up the
           environment, installing the tooling and sharing your project with
@@ -49,8 +50,8 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
           <br />
           <br />
           We’re looking forward to meeting you!
-        </PageSubtitle>
-        <PageTitle as="h2">Job Openings</PageTitle>
+        </TitleDescription>
+        <PageSubtitle>Job Openings</PageSubtitle>
         {jobs.map(({ node: job }) => (
           <Jobs key={job.id}>
             <Job>
@@ -61,13 +62,13 @@ const Careers = ({ data: { allMarkdownRemark } }) => {
             </Job>
           </Jobs>
         ))}
-        <PageSubtitle
+        <TitleDescription
           css={`
             margin-bottom: 0;
           `}
         >
           Don't see a position that fits your skill set?
-        </PageSubtitle>
+        </TitleDescription>
         <OtherJobs>
           <p>
             We are always looking for talented, hard working people. Drop us a
