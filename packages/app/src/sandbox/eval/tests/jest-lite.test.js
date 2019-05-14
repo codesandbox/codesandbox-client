@@ -19,15 +19,24 @@ describe('TestRunner class', () => {
   });
 
   describe('initialize', () => {
-    it('should reset results', () => {
-      const testRunner = new TestRunner();
-      expect(testRunner.ranTests.size).toBe(0);
+    let testRunner;
+    beforeEach(() => {
+      testRunner = new TestRunner();
+    });
 
+    it('should be created with 0 test ran', () => {
+      expect(testRunner.ranTests.size).toBe(0);
+    });
+
+    it('should send message on initilaization');
+
+    it('should reset results', () => {
       testRunner.addResult({ status: 'pass', name: 'foo' });
       // It will add test in ranTests query
       testRunner.runTests(true);
       expect(testRunner.ranTests.size).toBe(1);
       testRunner.initialize();
+      // handleCodeSandboxMessage for 2 different messages
       expect(testRunner.ranTests.size).toBe(0);
     });
   });
@@ -167,17 +176,6 @@ describe('TestRunner class', () => {
 
     beforeEach(() => {
       testRunner = new TestRunner();
-    });
-
-    it('should start off with no test results', () => {
-      expect(testRunner.aggregatedResults).toMatchObject({
-        failedTestSuites: 0,
-        passedTestSuites: 0,
-        totalTestSuites: 0,
-        failedTests: 0,
-        passedTests: 0,
-        totalTests: 0,
-      });
     });
 
     it('should add pass test results', () => {
