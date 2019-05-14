@@ -1,11 +1,9 @@
+import theme from '@codesandbox/common/lib/theme';
+import slugify from '@codesandbox/common/lib/utils/slugify';
+import { Router } from '@reach/router';
+import { Link } from 'gatsby';
 import React from 'react';
 import styled, { css } from 'styled-components';
-import theme from '@codesandbox/common/lib/theme';
-
-import { Link } from 'gatsby';
-import { Router } from '@reach/router';
-import slugify from '@codesandbox/common/lib/utils/slugify';
-
 import media from '../utils/media';
 import getScrollPos from '../utils/scroll';
 
@@ -89,29 +87,35 @@ const MissingNotice = styled.a`
   }
 `;
 
+type Doc = {
+  frontmatter: {
+    title: string,
+  },
+  fields: {
+    url: string,
+  },
+  headings: { value: string }[],
+};
 type Props = {
-  docs: Array<{
-    frontmatter: {
-      title: string,
-    },
-    fields: {
-      url: string,
-    },
-    headings: Array<{ value: string }>,
-  }>,
+  docs: Doc[],
 };
 
-const SubLink = ({ node }) => (
-  <ul style={{ marginTop: '.5rem' }} path={node.fields.url}>
-    {node.headings.map(({ value }) => (
+const SubLink = ({ node: { fields, headings } }: { node: Doc }) => (
+  <ul style={{ marginTop: '.5rem' }} path={fields.url}>
+    {headings.map(({ value }) => (
       <li key={value}>
-        <SecondaryNavigationLink to={`${node.fields.url}#${slugify(value)}`}>
+        <SecondaryNavigationLink to={`${fields.url}#${slugify(value)}`}>
           {value}
         </SecondaryNavigationLink>
       </li>
     ))}
   </ul>
 );
+
+const activeStyle = {
+  color: theme.secondary(),
+  fontWeight: 700,
+};
 
 export default class StickyNavigation extends React.PureComponent<Props> {
   state = {
@@ -157,27 +161,20 @@ export default class StickyNavigation extends React.PureComponent<Props> {
 
   render() {
     const { docs } = this.props;
-
-    const activeStyle = {
-      color: theme.secondary(),
-      fontWeight: 700,
-    };
+    const { absoluteTop, fixed } = this.state;
 
     return (
-      <Navigation
-        fixed={this.state.fixed}
-        absoluteTop={this.state.absoluteTop}
-        id="navigation"
-      >
+      <Navigation absoluteTop={absoluteTop} fixed={fixed} id="navigation">
         <ul>
-          {docs.map(({ node }) => (
+          {docs.map(node => (
             <NavigationItem key={node.frontmatter.title}>
               <PrimaryNavigationLink
-                to={node.fields.url}
                 activeStyle={activeStyle}
+                to={node.fields.url}
               >
                 {node.frontmatter.title}
               </PrimaryNavigationLink>
+
               <Router>
                 <SubLink node={node} path={node.fields.url} />
               </Router>
@@ -187,8 +184,8 @@ export default class StickyNavigation extends React.PureComponent<Props> {
 
         <MissingNotice
           href="https://github.com/codesandbox/codesandbox-client/issues"
-          target="_blank"
           rel="noopener noreferrer"
+          target="_blank"
         >
           Missing documentation?
           <br />

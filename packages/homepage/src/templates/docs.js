@@ -232,7 +232,8 @@ export default class Docs extends React.Component {
                 }}
               >
                 <DocSearch />
-                <StickyNavigation docs={docs} />
+
+                <StickyNavigation docs={docs.map(({ node }) => node)} />
               </div>
               <Article>
                 <Heading>
