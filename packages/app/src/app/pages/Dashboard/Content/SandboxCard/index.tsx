@@ -279,7 +279,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
             },
           },
           this.props.privacy !== 1 && {
-            title: `Make Sandbox Unlisted`,
+            title: 'Make Sandbox Unlisted',
             action: () => {
               this.props.setSandboxesPrivacy(1);
               return true;
