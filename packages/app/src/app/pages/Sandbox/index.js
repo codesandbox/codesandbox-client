@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import NotFound from 'app/pages/common/NotFound';
 import Navigation from 'app/pages/common/Navigation';
@@ -44,7 +45,16 @@ class SandboxPage extends React.Component {
   }
 
   fetchSandbox = () => {
-    const id = this.props.match.params.id;
+    let id = this.props.match.params.id;
+
+    // If the id is in the form of "slugified-title-shortid" we can take the last
+    // shortid and get the data with that. This solves the problem with urls becoming
+    // invalid after giving a sandbox a new title.
+    const split = id.split('-');
+    if (split.length > 1) {
+      id = split.pop();
+    }
+
     this.props.signals.editor.sandboxChanged({ id });
   };
 
@@ -173,7 +183,7 @@ class SandboxPage extends React.Component {
     const sandbox = store.editor.currentSandbox;
 
     if (sandbox) {
-      document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
+      document.title = `${getSandboxName(sandbox)} - CodeSandbox`;
     }
 
     return (

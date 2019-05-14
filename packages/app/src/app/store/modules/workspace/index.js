@@ -8,6 +8,7 @@ export default Module({
     project: {
       title: '',
       description: '',
+      alias: '',
     },
     tags: {
       tag: '',

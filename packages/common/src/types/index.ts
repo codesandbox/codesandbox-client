@@ -128,6 +128,7 @@ export type GitInfo = {
 
 export type Sandbox = {
   id: string;
+  alias: string | undefined;
   title: string | undefined;
   description: string;
   viewCount: number;

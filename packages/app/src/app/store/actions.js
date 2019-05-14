@@ -52,6 +52,7 @@ export function callVSCodeCallbackError({ props }) {
 export function setWorkspace({ controller, state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');
+  state.set('workspace.project.alias', props.sandbox.alias || '');
 
   const items = getItems(controller.getState());
   const defaultItem = items.find(i => i.defaultOpen) || items[0];
