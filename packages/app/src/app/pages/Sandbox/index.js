@@ -51,7 +51,7 @@ class SandboxPage extends React.Component {
     // shortid and get the data with that. This solves the problem with urls becoming
     // invalid after giving a sandbox a new title.
     const split = id.split('-');
-    if (split.length > 1) {
+    if (!id.startsWith('github') && split.length > 1) {
       id = split.pop();
     }
 
