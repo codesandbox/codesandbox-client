@@ -185,13 +185,12 @@ export default class CodeEditor extends React.PureComponent<
           ...props.style,
         }}
       >
-        {!isModuleSynced(module.shortid) &&
-          module.title === 'index.html' && (
-            <Icons>
-              You may have to save this file and refresh the preview to see
-              changes
-            </Icons>
-          )}
+        {!isModuleSynced(module.shortid) && module.title === 'index.html' && (
+          <Icons>
+            You may have to save this file and refresh the preview to see
+            changes
+          </Icons>
+        )}
         {config &&
           (getUI(config.type) && !settings.experimentVSCode ? (
             <Icons>

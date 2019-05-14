@@ -84,7 +84,7 @@ const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
               <Info post={post} mobile />
             </Posts>
           </Wrapper>
-        ))};
+        ))}
       </PageContainer>
     </Layout>
   );

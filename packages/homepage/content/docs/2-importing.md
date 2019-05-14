@@ -1,7 +1,7 @@
 ---
-title: "Importing Sandboxes"
-authors: ["CompuIves"]
-description: "There are many ways to create a sandbox on CodeSandbox, either programmatically or with a UI."
+title: 'Importing Sandboxes'
+authors: ['CompuIves']
+description: 'There are many ways to create a sandbox on CodeSandbox, either programmatically or with a UI.'
 ---
 
 ## Create Wizard
@@ -148,7 +148,7 @@ Below the surface, react-codesandboxer fetches the files it needs from github or
 
 Check out the [react-codesandboxer docs](https://github.com/noviny/react-codesandboxer) for information on how to implement it.
 
-```jsx
+```jsx harmony
 import React, { Component } from 'react';
 import CodeSandboxer from 'react-codesandboxer';
 

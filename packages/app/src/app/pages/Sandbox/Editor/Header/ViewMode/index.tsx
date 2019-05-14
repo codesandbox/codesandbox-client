@@ -20,7 +20,7 @@ const ViewButton = styled.div`
   color: white;
   font-weight: 400;
   border-radius: 4px;
- font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
 
   svg {
     height: 100%;

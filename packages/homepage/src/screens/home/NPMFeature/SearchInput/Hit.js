@@ -49,12 +49,9 @@ const Hit = ({ hit: { count, value } }) => {
     );
   }, []);
 
-  useEffect(
-    () => {
-      tl.current.restart();
-    },
-    [value]
-  );
+  useEffect(() => {
+    tl.current.restart();
+  }, [value]);
 
   return (
     <Container

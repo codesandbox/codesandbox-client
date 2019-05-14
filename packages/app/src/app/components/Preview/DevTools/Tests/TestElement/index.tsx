@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 

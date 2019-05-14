@@ -2,10 +2,7 @@ import { TranspiledModule, Module } from '../typings/codesandbox';
 
 const transformers: Check[] = [];
 
-export type SuggestionAction = (
-  module: TranspiledModule,
-  modules: TranspiledModule[]
-) => boolean;
+export type SuggestionAction = (module: TranspiledModule, modules: TranspiledModule[]) => boolean;
 
 export interface Suggestion {
   title: string;
@@ -27,9 +24,7 @@ export function transformError(
   module: TranspiledModule,
   modules: TranspiledModule[]
 ) {
-  const transformedErrors = transformers
-    .map(c => c(error, module, modules))
-    .filter(x => x != null);
+  const transformedErrors = transformers.map(c => c(error, module, modules)).filter(x => x != null);
 
   return transformedErrors[0];
 }

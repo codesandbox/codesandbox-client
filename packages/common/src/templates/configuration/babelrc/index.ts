@@ -1,4 +1,3 @@
-
 import { isBabel7 } from '../../../utils/is-babel-7';
 
 import { ConfigurationFile } from '../types';

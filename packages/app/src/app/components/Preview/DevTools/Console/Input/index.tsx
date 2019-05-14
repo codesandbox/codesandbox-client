@@ -8,7 +8,11 @@ import theme from '@codesandbox/common/lib/theme';
 
 import { getCodeMirror } from 'app/utils/codemirror';
 
-import { ARROW_UP, ARROW_DOWN, ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import {
+  ARROW_UP,
+  ARROW_DOWN,
+  ENTER,
+} from '@codesandbox/common/lib/utils/keycodes';
 
 import { IconContainer, CodeMirrorContainer } from './elements';
 

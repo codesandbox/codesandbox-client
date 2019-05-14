@@ -71,7 +71,7 @@ export const SandboxInfo = styled.div`
 
 export const Title = styled.h1`
   margin-bottom: 0.5em;
- font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 2.125em;
   display: -webkit-box;
@@ -83,7 +83,7 @@ export const Title = styled.h1`
 
 export const Description = styled.p`
   color: ${theme.new.description};
- font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 1em;
 `;

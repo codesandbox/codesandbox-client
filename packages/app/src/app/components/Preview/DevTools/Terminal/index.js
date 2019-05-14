@@ -167,8 +167,8 @@ class TerminalComponent extends React.Component<Props, State> {
    */
   endShell = (shellId: string) => {
     this.setState(s => ({
-      shells: s.shells.map(
-        shell => (shell.id === shellId ? { ...shell, ended: true } : shell)
+      shells: s.shells.map(shell =>
+        shell.id === shellId ? { ...shell, ended: true } : shell
       ),
     }));
   };
@@ -178,15 +178,14 @@ class TerminalComponent extends React.Component<Props, State> {
 
     return (
       <div className={!hidden && 'terminal'} ref={this.setupResizeObserver}>
-        {!hidden &&
-          this.state.shells.length > 0 && (
-            <ShellTabs
-              selectedShell={this.state.selectedShell}
-              shells={this.state.shells}
-              selectShell={this.selectShell}
-              closeShell={this.closeShell}
-            />
-          )}
+        {!hidden && this.state.shells.length > 0 && (
+          <ShellTabs
+            selectedShell={this.state.selectedShell}
+            shells={this.state.shells}
+            selectShell={this.selectShell}
+            closeShell={this.closeShell}
+          />
+        )}
 
         <div style={{ position: 'relative' }}>
           <div

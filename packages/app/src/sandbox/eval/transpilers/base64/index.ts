@@ -1,4 +1,3 @@
-
 import Transpiler, { TranspilerResult } from '../';
 
 import mimes from './mimes.json';

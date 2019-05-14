@@ -32,7 +32,7 @@ However, like the sandboxes, **containers** also come with some limitations. In 
 
 ### Which one to choose?
 
-As you have read above, the template type determines whether a project is executed in a *sandbox in a browser* or in a *container on a server*. This means that the template type you have to choose, depends on your specific use-case and where you want your project to be executed.
+As you have read above, the template type determines whether a project is executed in a _sandbox in a browser_ or in a _container on a server_. This means that the template type you have to choose, depends on your specific use-case and where you want your project to be executed.
 
 If you would like to demonstrate CLI functionality, we recommend that you use a **container** type template, and if you want to demonstrate a JavaScript framework (like `React`) we recommended using a **sandbox** type template.
 
@@ -70,7 +70,7 @@ import filename from './filename.png';
 export default props => <img alt="filename" src={filename} {...props} />;
 ```
 
-Replace `filename` with your logo name. The image file name should be all lowercase and the `.tsx` file should be capitalised: `Filename.tsx`. 
+Replace `filename` with your logo name. The image file name should be all lowercase and the `.tsx` file should be capitalised: `Filename.tsx`.
 
 Example:
 
@@ -100,7 +100,7 @@ After writing your template definition, you also need to add it to the [index.js
 
 ### 3. Define transpilers for sandbox
 
-*If you are adding a template for a **container** sandbox, you can skip this step and proceed to step 4.*
+_If you are adding a template for a **container** sandbox, you can skip this step and proceed to step 4._
 
 For the sandboxes that run in the browser we need to define what transpilers need to be run. A template will not work in the bundler if it does not have a preset.
 
@@ -116,7 +116,7 @@ Examples:
 
 ### 4. Add the importer
 
-We allow people to import sandboxes from GitHub/CLI/API, and to make sure that the right template is imported we have some specific logic that determines a template for every template. This logic is **not** found in `codesanbox-client`. 
+We allow people to import sandboxes from GitHub/CLI/API, and to make sure that the right template is imported we have some specific logic that determines a template for every template. This logic is **not** found in `codesanbox-client`.
 
 This means you that you also have to add your template in another file in the `codesandbox-importers` repository called [templates.ts](https://github.com/codesandbox/codesandbox-importers/blob/master/packages/import-utils/src/create-sandbox/templates.ts).
 
@@ -153,7 +153,7 @@ To do this, please add a `sandbox.config.json` file to the root folder of the re
 
 ```json
 {
-    "template": "node"
+  "template": "node"
 }
 ```
 

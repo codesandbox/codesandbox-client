@@ -1,4 +1,3 @@
-
 import DEFAULT_PRETTIER_CONFIG from '../../../prettify-default-config';
 
 import { ConfigurationFile } from '../types';

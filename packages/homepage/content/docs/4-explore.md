@@ -1,7 +1,7 @@
 ---
-title: "Explore Page & Curators"
-authors: ["CompuIves"]
-description: "Curators can pick outstanding sandboxes to be featured on the explore page. You can find info here on how to get picked and how to become a curator."
+title: 'Explore Page & Curators'
+authors: ['CompuIves']
+description: 'Curators can pick outstanding sandboxes to be featured on the explore page. You can find info here on how to get picked and how to become a curator.'
 ---
 
 ## Explore Page

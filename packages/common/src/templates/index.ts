@@ -53,7 +53,7 @@ export {
   styleguidist,
   gridsome,
   vuepress,
-  mdxDeck
+  mdxDeck,
 };
 
 export type TemplateType =

@@ -19,8 +19,7 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
         });
 
   const allSelected = possibleTemplates.every(
-    template =>
-      store.dashboard.filters.blacklistedTemplates.indexOf(template) > -1
+    store.dashboard.isTemplateSelected
   );
 
   const Overlay = () => (
@@ -52,7 +51,7 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
 
       <Option
         toggleTemplate={() => {
-          if (allSelected) {
+          if (!allSelected) {
             signals.dashboard.blacklistedTemplatesCleared();
           } else {
             signals.dashboard.blacklistedTemplatesChanged({
@@ -60,7 +59,7 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
             });
           }
         }}
-        selected={!allSelected}
+        selected={allSelected}
         color="#374140"
         name="all"
         style={{ marginTop: '1rem' }}

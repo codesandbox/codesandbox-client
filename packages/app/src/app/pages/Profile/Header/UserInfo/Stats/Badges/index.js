@@ -11,7 +11,9 @@ function Badges({ badges, username }) {
   return (
     <Margin style={{ display: 'flex', alignItems: 'center' }} right={2}>
       <Link to={patronUrl()}>
-        {badges.map(badge => <Badge key={badge.id} badge={badge} size={64} />)}
+        {badges.map(badge => (
+          <Badge key={badge.id} badge={badge} size={64} />
+        ))}
       </Link>
 
       <ContributorsBadge

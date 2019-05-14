@@ -110,23 +110,20 @@ export function Toasts({ state }: { state: NotificationState }) {
     };
   }, []);
 
-  React.useEffect(
-    () => {
-      const addListener = state.onNotificationUpdated(event => {
-        if (event.type === NotificationChange.ADD) {
-          setNotificationsToShow(notifications => [
-            ...notifications,
-            convertNotificationEventToToast(event),
-          ]);
-        }
-      });
+  React.useEffect(() => {
+    const addListener = state.onNotificationUpdated(event => {
+      if (event.type === NotificationChange.ADD) {
+        setNotificationsToShow(notifications => [
+          ...notifications,
+          convertNotificationEventToToast(event),
+        ]);
+      }
+    });
 
-      return () => {
-        addListener();
-      };
-    },
-    [state]
-  );
+    return () => {
+      addListener();
+    };
+  }, [state]);
 
   const transitions = useTransition<
     NotificationToast,

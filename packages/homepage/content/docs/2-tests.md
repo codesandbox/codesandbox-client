@@ -1,7 +1,7 @@
 ---
-title: "Jest Tests"
-authors: ["CompuIves"]
-description: "CodeSandbox has a native integration with Jest Tests for running tests."
+title: 'Jest Tests'
+authors: ['CompuIves']
+description: 'CodeSandbox has a native integration with Jest Tests for running tests.'
 ---
 
 ## What is Jest

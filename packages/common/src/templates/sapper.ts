@@ -1,4 +1,3 @@
-
 import configurations from './configuration';
 
 import Template from './template';
@@ -23,7 +22,7 @@ export default new Template(
   'Sapper',
   'https://sapper.svelte.technology/',
   'github/codesandbox-app/sapper-template',
-  decorateSelector(() => '#105E10'),
+  decorateSelector(() => '#159497'),
   {
     extraConfigurations: {
       '/sandbox.config.json': extendedSandboxConfig,

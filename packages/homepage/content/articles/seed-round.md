@@ -1,9 +1,9 @@
 ---
-featuredImage: "./images/investment-featured.png"
-slug: "CodeSandbox-Raises-2-4M-Seed-Round-led-by-Kleiner-Perkins"
-authors: ["Ives van Hoorne"]
-photo: "https://avatars0.githubusercontent.com/u/587016?s=460&v=4"
-title: "CodeSandbox Raises $2.4M Seed Round led by Kleiner Perkins"
+featuredImage: './images/investment-featured.png'
+slug: 'CodeSandbox-Raises-2-4M-Seed-Round-led-by-Kleiner-Perkins'
+authors: ['Ives van Hoorne']
+photo: 'https://avatars0.githubusercontent.com/u/587016?s=460&v=4'
+title: 'CodeSandbox Raises $2.4M Seed Round led by Kleiner Perkins'
 description: "We're super excited to share that we've raised a seed round from Kleiner Perkins, Arches Capital, and the founders of Figma, Framer, Netlify, ZEIT, Sourcegraph and Catawiki!"
 date: 05/07/2019
 ---
@@ -26,7 +26,7 @@ We've always said that we are an online code editor, but we think we can be much
 
 We raised money from an incredible group of people, many of whom have been advising us for some time now. Like us, our investors believe that the process of creating software can be more accessible, productive and effective by recreating the tooling to do so. Instantly sharing our work should be easier now than ever before.
 
-We’re proud to announce a seed round of $2.4M, led by [Kleiner Perkins](https://kleinerperkins.com/about). Kleiner Perkins has invested in many companies that are improving the flow of developing applications, like Figma and Netlify. Among the investors are [Arches Capital](https://arches.capital/), Christian Bach & Mathias Biilmann (Founders [Netlify](https://www.netlify.com/)), Dylan Field (Co-Founder [Figma](https://www.figma.com/)), Guillermo Rauch (Founder [ZEIT](https://zeit.co/)), Koen Bok (Co-Founder [Framer](https://www.framer.com/)), Marco Jansen (Co-Founder and former CTO [Catawiki](https://www.catawiki.nl/)), Petri Parvinen ([Angel Investor](http://www.arctum.fi)) and Quinn Slack (Co-Founder [Sourcegraph](https://sourcegraph.com/)).
+We’re proud to announce a seed round of \$2.4M, led by [Kleiner Perkins](https://kleinerperkins.com/about). Kleiner Perkins has invested in many companies that are improving the flow of developing applications, like Figma and Netlify. Among the investors are [Arches Capital](https://arches.capital/), Christian Bach & Mathias Biilmann (Founders [Netlify](https://www.netlify.com/)), Dylan Field (Co-Founder [Figma](https://www.figma.com/)), Guillermo Rauch (Founder [ZEIT](https://zeit.co/)), Koen Bok (Co-Founder [Framer](https://www.framer.com/)), Marco Jansen (Co-Founder and former CTO [Catawiki](https://www.catawiki.nl/)), Petri Parvinen ([Angel Investor](http://www.arctum.fi)) and Quinn Slack (Co-Founder [Sourcegraph](https://sourcegraph.com/)).
 
 ![Our seed investors](./images/seed-investors.png)
 

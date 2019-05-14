@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import { ProgressBar, FailedBar, SuccessBar, IdleBar } from './elements';
 

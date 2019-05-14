@@ -14,19 +14,26 @@ export default function initialize() {
   const preset = new Preset(
     'create-react-app',
     ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
-    { 
-      // Directly match react-native to react-native-web. 
+    {
+      // Directly match react-native to react-native-web.
       // Attempt to use react-native internals shouldn't work on web.
       'react-native$': 'react-native-web',
       // Alias core react-native internals to react-native-web equivalents
-      'react-native/Libraries/EventEmitter/RCTDeviceEventEmitter$': 'react-native-web/dist/vendor/react-native/NativeEventEmitter/RCTDeviceEventEmitter',
-      'react-native/Libraries/vendor/emitter/EventEmitter$': 'react-native-web/dist/vendor/react-native/emitter/EventEmitter',
-      'react-native/Libraries/vendor/emitter/EventSubscriptionVendor$': 'react-native-web/dist/vendor/react-native/emitter/EventSubscriptionVendor',
-      'react-native/Libraries/EventEmitter/NativeEventEmitter$': 'react-native-web/dist/vendor/react-native/NativeEventEmitter',
+      'react-native/Libraries/EventEmitter/RCTDeviceEventEmitter$':
+        'react-native-web/dist/vendor/react-native/NativeEventEmitter/RCTDeviceEventEmitter',
+      'react-native/Libraries/vendor/emitter/EventEmitter$':
+        'react-native-web/dist/vendor/react-native/emitter/EventEmitter',
+      'react-native/Libraries/vendor/emitter/EventSubscriptionVendor$':
+        'react-native-web/dist/vendor/react-native/emitter/EventSubscriptionVendor',
+      'react-native/Libraries/EventEmitter/NativeEventEmitter$':
+        'react-native-web/dist/vendor/react-native/NativeEventEmitter',
       // Alias core react-native asset management internals to unimodule equivalents.
-      'react-native/Libraries/Image/AssetSourceResolver$': 'expo-asset/build/AssetSourceResolver',
-      'react-native/Libraries/Image/assetPathUtils$': 'expo-asset/build/Image/assetPathUtils',
-      'react-native/Libraries/Image/resolveAssetSource$': 'expo-asset/build/resolveAssetSource',
+      'react-native/Libraries/Image/AssetSourceResolver$':
+        'expo-asset/build/AssetSourceResolver',
+      'react-native/Libraries/Image/assetPathUtils$':
+        'expo-asset/build/Image/assetPathUtils',
+      'react-native/Libraries/Image/resolveAssetSource$':
+        'expo-asset/build/resolveAssetSource',
     },
     {
       hasDotEnv: true,

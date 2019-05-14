@@ -48,7 +48,7 @@ import {
   styleguidist,
   gridsome,
   vuepress,
-  mdxDeck
+  mdxDeck,
 } from './';
 
 import { TemplateType } from './';

@@ -60,12 +60,11 @@ function Workspace({ store }) {
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <Component />
       </div>
-      {store.live.isLive &&
-        store.live.roomInfo.chatEnabled && (
-          <WorkspaceItem defaultOpen title="Chat">
-            <Chat />
-          </WorkspaceItem>
-        )}
+      {store.live.isLive && store.live.roomInfo.chatEnabled && (
+        <WorkspaceItem defaultOpen title="Chat">
+          <Chat />
+        </WorkspaceItem>
+      )}
       {!preferences.settings.zenMode && (
         <div>
           {!store.isPatron && !sandbox.owned && <Advertisement />}

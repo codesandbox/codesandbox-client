@@ -25,15 +25,8 @@
     "lint": "lerna run lint",
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
-    "precommit": "lint-staged",
     "postinstall": "rimraf node_modules/@types/react-native && rimraf packages/app/node_modules/styled-components node_modules/react-split-pane/node_modules/react* && yarn lerna run install-dependencies --scope vscode-textmate --scope codesandbox-browserfs --scope sse-loading-screen --stream && opencollective postinstall",
     "typecheck": "lerna run typecheck --scope app"
-  },
-  "lint-staged": {
-    "*.{js,css,json}": [
-      "prettier --write --single-quote --trailing-comma es5",
-      "git add"
-    ]
   },
   "workspaces": {
     "packages": [
@@ -64,7 +57,7 @@
     "babel-eslint": "^8.2.1",
     "eslint": "CompuIves/eslint#add/define-parser",
     "eslint-config-airbnb": "^15.0.1",
-    "eslint-config-prettier": "^2.1.1",
+    "eslint-config-prettier": "^4.2.0",
     "eslint-import-resolver-webpack": "^0.8.1",
     "eslint-loader": "^1.7.1",
     "eslint-plugin-flowtype": "^2.34.0",
@@ -74,9 +67,10 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "flow-bin": "^0.72.0",
     "gulp": "^3.9.1",
+    "husky": "^2.2.0",
     "lerna": "^2.5.1",
-    "lint-staged": "^5.0.0",
-    "prettier": "^1.8.2",
+    "prettier": "1.17.0",
+    "pretty-quick": "^1.10.0",
     "typescript": "3.3.4000"
   },
   "dependencies": {

@@ -483,12 +483,10 @@ export default function(content: string, loaderContext: LoaderContext) {
   // stringify an Array of loader objects
   function stringifyLoaders(loaders) {
     return loaders
-      .map(
-        obj =>
-          obj && typeof obj === 'object' && typeof obj.loader === 'string'
-            ? obj.loader +
-              (obj.options ? '?' + JSON.stringify(obj.options) : '')
-            : obj
+      .map(obj =>
+        obj && typeof obj === 'object' && typeof obj.loader === 'string'
+          ? obj.loader + (obj.options ? '?' + JSON.stringify(obj.options) : '')
+          : obj
       )
       .join('!');
   }

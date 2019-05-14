@@ -21,14 +21,16 @@ export default class ModuleList extends React.PureComponent<Props> {
       prefixedPath,
       files,
     } = this.props;
-    
+
     const fileListWithoutPrefix = Object.keys(files)
       .filter(file => file.startsWith(prefixedPath))
       .map(file => file.substring(prefixedPath.length));
 
-    const directoriesToShow = new Set(fileListWithoutPrefix
-      .filter(file => file.includes('/'))
-      .map(file => `${prefixedPath}${file.split('/')[0]}/`));
+    const directoriesToShow = new Set(
+      fileListWithoutPrefix
+        .filter(file => file.includes('/'))
+        .map(file => `${prefixedPath}${file.split('/')[0]}/`)
+    );
 
     const filesToShow = fileListWithoutPrefix
       .filter(file => !file.includes('/'))
