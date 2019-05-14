@@ -73,7 +73,7 @@ type State = {
 };
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
-  `https://${sandbox ? sandbox.id + '.' : ''}sse.${
+  `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
     process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
   }${initialPath}`;
 
