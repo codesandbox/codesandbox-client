@@ -45,15 +45,7 @@ class SandboxPage extends React.Component {
   }
 
   fetchSandbox = () => {
-    let id = this.props.match.params.id;
-
-    // If the id is in the form of "slugified-title-shortid" we can take the last
-    // shortid and get the data with that. This solves the problem with urls becoming
-    // invalid after giving a sandbox a new title.
-    const split = id.split('-');
-    if (!id.startsWith('github') && split.length > 1) {
-      id = split.pop();
-    }
+    const id = this.props.match.params.id;
 
     this.props.signals.editor.sandboxChanged({ id });
   };
