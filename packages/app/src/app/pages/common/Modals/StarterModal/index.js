@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import { inject } from 'mobx-react';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
+import { Checkbox } from '@codesandbox/common/lib/components/Checkbox';
 
 import { Heading, Container, Explanation } from '../elements';
-import { CheckBox, Fieldset, Label } from './elements';
+import { Fieldset, Label } from './elements';
 
 const StarterModal = ({ store, signals }) => {
   const { title, description } = store.workspace.project;
@@ -56,8 +57,7 @@ const StarterModal = ({ store, signals }) => {
         </Fieldset>
         <Fieldset>
           <Label htmlFor="public">Make Public?</Label>
-          <CheckBox
-            type="checkbox"
+          <Checkbox
             checked={selected}
             id="public"
             onChange={() => setSelected(!selected)}
