@@ -1198,6 +1198,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jaredpalmer",
+      "name": "Jared Palmer",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4060187?v=4,
+      "profile": "https://github.com/jaredpalmer",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github",
