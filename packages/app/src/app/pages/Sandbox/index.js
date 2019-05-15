@@ -45,7 +45,21 @@ class SandboxPage extends React.Component {
   }
 
   fetchSandbox = () => {
-    const id = this.props.match.params.id;
+    let id = this.props.match.params.id;
+
+    // /**
+    //  * We do this as an optimization. Most urls end with the shortid (5 chars), if we can extract that
+    //  * we try to do so. This check is also handled on the server, but this way the sequence of `sandboxChanged`
+    //  * won't try to fetch the sandbox twice if it doesn't find the "id" in the state.
+    //  */
+    // const split = id.split('-');
+    // if (
+    //   split.length > 1 &&
+    //   !id.startsWith('github') &&
+    //   split[split.length - 1].length === 5
+    // ) {
+    //   id = split.pop();
+    // }
 
     this.props.signals.editor.sandboxChanged({ id });
   };

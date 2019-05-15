@@ -208,7 +208,7 @@ function addMiddleware(devServer, index) {
     devServer.use(
       '/api',
       proxy({
-        target: 'https://codesandbox.io',
+        target: 'https://codesandbox.stream',
         changeOrigin: true,
       })
     );
