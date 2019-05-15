@@ -27,6 +27,7 @@ import vuepress from './vuepress';
 import mdxDeck from './mdx-deck';
 import quasar from './quasar';
 import unibit from './unibit';
+import razzle from './razzle';
 
 export {
   adonis,
@@ -58,6 +59,7 @@ export {
   mdxDeck,
   quasar,
   unibit,
+  razzle,
 };
 
 export type TemplateType =
@@ -76,6 +78,7 @@ export type TemplateType =
   | 'nuxt'
   | 'next'
   | 'reason'
+  | 'razzle'
   | 'apollo'
   | 'sapper'
   | 'nest'
@@ -123,6 +126,8 @@ export default function getDefinition(theme: TemplateType) {
       return next;
     case reason.name:
       return reason;
+    case razzle.name:
+      return razzle;
     case node.name:
       return node;
     case apollo.name:

@@ -25,7 +25,9 @@ import {
   ParcelIcon,
   VuePressIcon,
   UnibitIcon,
+  RazzleIcon
 } from '@codesandbox/template-icons';
+
 
 import {
   adonis,
@@ -52,6 +54,7 @@ import {
   styleguidist,
   gridsome,
   vuepress,
+  razzle,
   mdxDeck,
   quasar,
   unibit,
@@ -96,6 +99,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return ReasonIcon;
     case gatsby.name:
       return GatsbyIcon;
+    case razzle.name:
+      return RazzleIcon;
     case marko.name:
       return MarkoIcon;
     case next.name:
