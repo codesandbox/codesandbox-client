@@ -1200,6 +1200,7 @@
       ]
     },
     {
+<<<<<<< HEAD
       "login": "twhite96",
       "name": "Tiffany White",
       "avatar_url": "https://avatars0.githubusercontent.com/u/7698292?v=4",
@@ -1288,6 +1289,15 @@
       "profile": "https://github.com/RafaelKr",
       "contributions": [
         "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "jaredpalmer",
+      "name": "Jared Palmer",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4060187?v=4,
+      "profile": "https://github.com/jaredpalmer",
+      "contributions": [
         "code"
       ]
     }
