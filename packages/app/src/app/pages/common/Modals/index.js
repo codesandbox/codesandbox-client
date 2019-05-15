@@ -28,6 +28,7 @@ import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
 import FeedbackModal from './FeedbackModal';
+import StarterModal from './StarterModal';
 import NetlifyLogs from './NetlifyLogs';
 
 const MoveSandboxFolderModal = Loadable(() =>
@@ -125,6 +126,10 @@ const modals = {
   },
   feedback: {
     Component: FeedbackModal,
+    width: 450,
+  },
+  starter: {
+    Component: StarterModal,
     width: 450,
   },
 };

@@ -9,6 +9,7 @@ import {
 
 import TeamIcon from 'react-icons/lib/md/people';
 
+import { Button } from '@codesandbox/common/lib/components/Button';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
@@ -111,9 +112,11 @@ class Project extends React.Component {
     const template = getTemplateDefinition(sandbox.template);
     return (
       <div style={{ marginBottom: '1rem' }}>
+
         <Item style={{ marginTop: '.5rem' }}>
           {this.state.editingTitle ? (
             <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
+
               <input
                 value={workspace.project.title}
                 onChange={event => {
@@ -122,6 +125,7 @@ class Project extends React.Component {
                     value: event.target.value,
                   });
                 }}
+
                 type="text"
                 onBlur={this.updateSandboxInfo}
                 onKeyUp={event => {
@@ -222,20 +226,21 @@ class Project extends React.Component {
           ) : null}
         </Item>
 
-        {!sandbox.team && !!sandbox.author && (
-          <Item>
-            <UserLink
-              title={sandbox.author.username}
-              to={profileUrl(sandbox.author.username)}
-            >
-              <UserWithAvatar
-                username={sandbox.author.username}
-                avatarUrl={sandbox.author.avatarUrl}
-                subscriptionSince={sandbox.author.subscriptionSince}
-              />
-            </UserLink>
-          </Item>
-        )}
+        {!sandbox.team &&
+          !!sandbox.author && (
+            <Item>
+              <UserLink
+                title={sandbox.author.username}
+                to={profileUrl(sandbox.author.username)}
+              >
+                <UserWithAvatar
+                  username={sandbox.author.username}
+                  avatarUrl={sandbox.author.avatarUrl}
+                  subscriptionSince={sandbox.author.subscriptionSince}
+                />
+              </UserLink>
+            </Item>
+          )}
 
         {!!sandbox.team && (
           <Tooltip content="This sandbox is owned by this team">
@@ -312,25 +317,46 @@ class Project extends React.Component {
           </PropertyValue>
         </Item>
         {sandbox.owned ? (
-          <Item style={{ marginTop: 5 }} flex>
-            <PropertyName>
-              Frozen
-              <Tooltip content="When true this sandbox will fork on edit">
-                <Icon />
-              </Tooltip>
-            </PropertyName>
-            <PropertyValue>
-              <FreezeContainer>
-                <Switch
+          <>
+            <Item style={{ marginTop: 5 }} flex>
+              <PropertyName>
+                Frozen
+                <Tooltip content="When true this sandbox will fork on edit">
+                  <Icon />
+                </Tooltip>
+              </PropertyName>
+              <PropertyValue>
+                <FreezeContainer>
+                  <Switch
+                    small
+                    right={sandbox.isFrozen}
+                    onClick={this.updateFrozenState}
+                    offMode
+                    secondary
+                  />
+                </FreezeContainer>
+              </PropertyValue>
+            </Item>
+            <Item style={{ marginTop: 5 }} flex>
+              <PropertyName>
+                Starter
+                <Tooltip content="Set a template as a starter to get started with it more easily">
+                  <Icon />
+                </Tooltip>
+              </PropertyName>
+              <PropertyValue>
+                <Button
                   small
-                  right={sandbox.isFrozen}
-                  onClick={this.updateFrozenState}
-                  offMode
                   secondary
-                />
-              </FreezeContainer>
-            </PropertyValue>
-          </Item>
+                  onClick={() => {
+                    signals.modalOpened({ modal: 'starter' });
+                  }}
+                >
+                  Make Stater
+                </Button>
+              </PropertyValue>
+            </Item>
+          </>
         ) : null}
       </div>
     );
