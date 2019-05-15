@@ -31,6 +31,7 @@ const Results = () => {
                   id: hit.objectID,
                   alias: hit.alias,
                   git: hit.git,
+                  title: hit.title,
                 }),
                 id: hit.objectID,
               }}
