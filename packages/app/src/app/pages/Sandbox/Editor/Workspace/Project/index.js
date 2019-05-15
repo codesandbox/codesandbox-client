@@ -112,11 +112,9 @@ class Project extends React.Component {
     const template = getTemplateDefinition(sandbox.template);
     return (
       <div style={{ marginBottom: '1rem' }}>
-
         <Item style={{ marginTop: '.5rem' }}>
           {this.state.editingTitle ? (
             <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
-
               <input
                 value={workspace.project.title}
                 onChange={event => {
@@ -125,7 +123,6 @@ class Project extends React.Component {
                     value: event.target.value,
                   });
                 }}
-
                 type="text"
                 onBlur={this.updateSandboxInfo}
                 onKeyUp={event => {
@@ -337,7 +334,7 @@ class Project extends React.Component {
                 </FreezeContainer>
               </PropertyValue>
             </Item>
-            <Item style={{ marginTop: 5 }} flex>
+            <Item style={{ marginTop: 5, alignItems: 'center' }} flex>
               <PropertyName>
                 Starter
                 <Tooltip content="Set a template as a starter to get started with it more easily">
@@ -348,6 +345,10 @@ class Project extends React.Component {
                 <Button
                   small
                   secondary
+                  css={`
+                  font-size: 10px;
+                  line-height: 1;
+                  `}
                   onClick={() => {
                     signals.modalOpened({ modal: 'starter' });
                   }}

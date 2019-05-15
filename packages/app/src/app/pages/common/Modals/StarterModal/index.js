@@ -3,16 +3,11 @@ import React, { useState } from 'react';
 import { inject } from 'mobx-react';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
-import theme from '@codesandbox/common/lib/theme';
 
-import { Heading, Container } from '../elements';
+import { Heading, Container, Explanation } from '../elements';
 import { CheckBox, Fieldset, Label } from './elements';
 
-// const Feedback = Loadable(() =>
-//   import(/* webpackChunkName: 'feedback' */ './Feedback')
-// );
-
-const FeedbackModal = ({ store }) => {
+const StarterModal = ({ store, signals }) => {
   const { title, description } = store.workspace.project;
   const [selected, setSelected] = useState(false);
   const [starterTitle, setStaterTitle] = useState(title);
@@ -20,15 +15,27 @@ const FeedbackModal = ({ store }) => {
 
   const makeStarter = e => {
     e.preventDefault();
+    signals.editor.frozenUpdated({
+      frozen: true,
+    });
+    signals.modalOpened({ modal: null });
   };
 
   return (
     <Container>
       <Heading>Make Starter</Heading>
+      <Explanation>
+        By making your sandbox a starter you will be able to see it in your
+        create sandbox modal and start with this sandbox quickly.
+        <br />
+        If you decide to make it public it can be used by anyone in the
+        CodeSandbox community.
+      </Explanation>
       <form onSubmit={makeStarter}>
         <Fieldset>
           <Label htmlFor="title">Title</Label>
           <Input
+            block
             name="title"
             required
             id="title"
@@ -39,6 +46,7 @@ const FeedbackModal = ({ store }) => {
         <Fieldset>
           <Label htmlFor="description">Description</Label>
           <TextArea
+            block
             required
             name="description"
             id="description"
@@ -49,10 +57,10 @@ const FeedbackModal = ({ store }) => {
         <Fieldset>
           <Label htmlFor="public">Make Public?</Label>
           <CheckBox
-            selected
+            type="checkbox"
+            checked={selected}
             id="public"
-            onClick={() => setSelected(!selected)}
-            color={selected ? theme.shySecondary : theme.background2}
+            onChange={() => setSelected(!selected)}
           />
         </Fieldset>
         <Button
@@ -68,4 +76,4 @@ const FeedbackModal = ({ store }) => {
   );
 };
 
-export default inject('store')(FeedbackModal);
+export default inject('store', 'signals')(StarterModal);
