@@ -57,6 +57,27 @@ export type Directory = {
   sourceId: string;
 };
 
+export type Template = {
+  name: TemplateType;
+  niceName: string;
+  shortid: string;
+  url: string;
+  main: boolean;
+  color: string;
+  backgroundColor: () => string | undefined;
+
+  popular: boolean;
+  showOnHomePage: boolean;
+  distDir: string;
+  netlify: boolean;
+  isTypescript: boolean;
+  externalResourcesEnabled: boolean;
+  showCube: boolean;
+  isServer: boolean;
+  mainFile: undefined | string[];
+
+}
+
 export type Badge = {
   id: string;
   name: string;
@@ -71,11 +92,11 @@ export type CurrentUser = {
   avatarUrl: string | undefined;
   jwt: string | undefined;
   subscription:
-    | {
-        since: string;
-        amount: string;
-      }
-    | undefined;
+  | {
+    since: string;
+    amount: string;
+  }
+  | undefined;
   curatorAt: string;
   badges: Array<Badge>;
   integrations: {
@@ -162,13 +183,13 @@ export type Sandbox = {
   originalGit: GitInfo | undefined;
   originalGitCommitSha: string | undefined;
   originalGitChanges:
-    | {
-        added: Array<string>;
-        modified: Array<string>;
-        deleted: Array<string>;
-        rights: 'none' | 'read' | 'write' | 'admin';
-      }
-    | undefined;
+  | {
+    added: Array<string>;
+    modified: Array<string>;
+    deleted: Array<string>;
+    rights: 'none' | 'read' | 'write' | 'admin';
+  }
+  | undefined;
   version: number;
   screenshotUrl: string | undefined;
 };

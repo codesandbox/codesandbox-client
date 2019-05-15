@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 
 import track from '@codesandbox/common/lib/utils/analytics';
+import Template from '@codesandbox/common/lib/components/Template';
 
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';
@@ -17,7 +18,6 @@ import {
   TabContainer,
   Title,
 } from './elements';
-import Template from './Template';
 import availableTemplates from './availableTemplates';
 
 export default class Modal extends React.PureComponent {

@@ -1,10 +1,17 @@
 import React from 'react';
-import getIcon from '@codesandbox/common/lib/templates/icons';
-
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { Template } from '../../types/index';
+import getIcon from '../../templates/icons';
+import { ENTER } from '../../utils/keycodes';
 import { Button, IconContainer, Title, SubTitle } from './elements';
 
-export default ({ template, subtitle, selectTemplate, small }) => {
+type Props = {
+  template: Template;
+  subtitle: string;
+  selectTemplate: (t: Template) => void;
+  small: boolean;
+};
+
+export default ({ template, subtitle, selectTemplate, small }: Props) => {
   const Icon = getIcon(template.name);
 
   const select = () => selectTemplate(template);
@@ -20,7 +27,7 @@ export default ({ template, subtitle, selectTemplate, small }) => {
           select();
         }
       }}
-      tabIndex="0"
+      tabIndex={0}
     >
       <div style={{ width: '100%' }}>
         <Title color={template.color}>{template.niceName}</Title>

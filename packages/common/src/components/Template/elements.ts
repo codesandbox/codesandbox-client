@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Button = styled.button`
+export const Button = styled.button<{ selected?: boolean, color: any }>`
   transition: 0.3s ease all;
   display: inline-block;
   text-align: left;
@@ -30,14 +30,14 @@ export const Button = styled.button`
         `};
 `;
 
-export const Title = styled.div`
+export const Title = styled.div<{ selected?: boolean }>`
   transition: 0.3s ease color;
   font-size: 1.125em;
   color: ${props => (props.selected ? 'white' : props.color)};
   font-weight: 600;
 `;
 
-export const SubTitle = styled.div`
+export const SubTitle = styled.div<{ selected?: boolean }>`
   font-size: 0.8em;
   margin-top: 0.25rem;
 
