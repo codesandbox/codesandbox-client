@@ -25,6 +25,7 @@ import styleguidist from './styleguidist';
 import gridsome from './gridsome';
 import vuepress from './vuepress';
 import mdxDeck from './mdx-deck';
+import razzle from './razzle';
 
 export {
   adonis,
@@ -54,6 +55,7 @@ export {
   gridsome,
   vuepress,
   mdxDeck,
+  razzle,
 };
 
 export type TemplateType =
@@ -72,6 +74,7 @@ export type TemplateType =
   | 'nuxt'
   | 'next'
   | 'reason'
+  | 'razzle'
   | 'apollo'
   | 'sapper'
   | 'nest'
@@ -117,6 +120,8 @@ export default function getDefinition(theme: TemplateType) {
       return next;
     case reason.name:
       return reason;
+    case razzle.name:
+      return razzle;
     case node.name:
       return node;
     case apollo.name:

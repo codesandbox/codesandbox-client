@@ -10,6 +10,7 @@ import Sapper from '../components/logos/Sapper';
 import Dojo from '../components/logos/Dojo';
 import CxJS from '../components/logos/CxJS';
 import Reason from '../components/logos/Reason';
+import Razzle from '../components/logos/Razzle';
 import Gatsby from '../components/logos/Gatsby';
 import Marko from '../components/logos/Marko';
 import Next from '../components/logos/Next';
@@ -48,6 +49,7 @@ import {
   styleguidist,
   gridsome,
   vuepress,
+  razzle,
   mdxDeck,
 } from './';
 
@@ -90,6 +92,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return Reason;
     case gatsby.name:
       return Gatsby;
+    case razzle.name:
+      return Razzle;
     case marko.name:
       return Marko;
     case next.name:
