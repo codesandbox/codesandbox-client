@@ -17,7 +17,7 @@ import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
 import ConnectionNotice from './ConnectionNotice';
-import Advertisement from './Advertisement';
+import { Advertisement } from './Advertisement';
 import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';
 import SSEDownNotice from './SSEDownNotice';

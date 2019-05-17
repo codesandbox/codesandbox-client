@@ -1,0 +1,1 @@
+export { useScript } from './useScript';
