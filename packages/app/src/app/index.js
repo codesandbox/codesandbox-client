@@ -11,6 +11,7 @@ import {
 } from '@codesandbox/common/lib/utils/analytics';
 import '@codesandbox/common/lib/global.css';
 
+import { Cerebral } from 'app/store';
 import history from 'app/utils/history';
 import { client } from 'app/graphql/client';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
@@ -120,15 +121,17 @@ function boot() {
 
     try {
       render(
-        <Provider {...controller.provide()}>
-          <ApolloProvider client={client}>
-            <ThemeProvider theme={theme}>
-              <Router history={history}>
-                <App />
-              </Router>
-            </ThemeProvider>
-          </ApolloProvider>
-        </Provider>,
+        <Cerebral.Provider value={controller.provide()}>
+          <Provider {...controller.provide()}>
+            <ApolloProvider client={client}>
+              <ThemeProvider theme={theme}>
+                <Router history={history}>
+                  <App />
+                </Router>
+              </ThemeProvider>
+            </ApolloProvider>
+          </Provider>
+        </Cerebral.Provider>,
         rootEl
       );
     } catch (e) {

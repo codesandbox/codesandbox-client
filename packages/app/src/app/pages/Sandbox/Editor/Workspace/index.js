@@ -16,7 +16,7 @@ import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
-import ConnectionNotice from './ConnectionNotice';
+import { ConnectionNotice } from './ConnectionNotice';
 import { Advertisement } from './Advertisement';
 import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';

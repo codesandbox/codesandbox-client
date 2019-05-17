@@ -1,3 +1,4 @@
+import { createContext } from 'react';
 import { Module } from 'cerebral';
 import HttpProvider from '@cerebral/http';
 
@@ -38,6 +39,8 @@ import files from './modules/files';
 import live from './modules/live';
 import dashboard from './modules/dashboard';
 import userNotifications from './modules/user-notifications';
+
+export const Cerebral = createContext();
 
 export default Module({
   model,
