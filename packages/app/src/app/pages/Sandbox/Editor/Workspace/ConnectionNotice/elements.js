@@ -1,8 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
-  color: ${props => props.theme.red};
-  background-color: ${props => props.theme.redBackground};
-  padding: 1rem;
-  font-size: 0.75rem;
+  ${({ theme }) => css`
+    color: ${theme.red};
+    background-color: ${theme.redBackground};
+    padding: 1rem;
+    font-size: 0.75rem;
+  `}
 `;
