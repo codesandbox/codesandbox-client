@@ -1,4 +1,4 @@
-// Based on https://www.robinwieruch.de/react-hooks-fetch-data/
+// Based on https://usehooks.com/useScript/
 import { useState, useEffect } from 'react';
 
 const cachedScripts = [];
