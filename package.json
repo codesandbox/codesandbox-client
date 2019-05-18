@@ -54,8 +54,8 @@
   "devDependencies": {
     "@types/react": "^16.8.12",
     "all-contributors-cli": "^5.4.0",
-    "babel-eslint": "^8.2.1",
-    "eslint": "CompuIves/eslint#add/define-parser",
+    "babel-eslint": "^10.0.1",
+    "eslint": "5.16.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-config-prettier": "^4.2.0",
     "eslint-import-resolver-webpack": "^0.8.1",
@@ -74,6 +74,8 @@
     "typescript": "3.3.4000"
   },
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
     "opencollective": "^1.0.3"
   },
   "collective": {
