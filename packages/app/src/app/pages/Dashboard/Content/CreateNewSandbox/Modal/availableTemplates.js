@@ -1,5 +1,6 @@
 import * as templates from '@codesandbox/common/lib/templates';
 import { sortBy } from 'lodash-es';
+import ImportTab from './ImportTab';
 
 const usedTemplates = sortBy(
   Object.keys(templates)
@@ -53,5 +54,9 @@ export default [
   {
     name: 'Presets',
     templates: presets,
+  },
+  {
+    name: 'Import',
+    component: ImportTab,
   },
 ];

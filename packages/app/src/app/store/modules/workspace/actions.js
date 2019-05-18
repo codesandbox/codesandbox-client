@@ -33,6 +33,18 @@ export function redirectToSandboxWizard({ router }) {
   router.redirectToSandboxWizard();
 }
 
+export function addTemplate({ api, state, props, path }) {
+  const sandboxId = state.get('editor.currentId');
+  const body = {
+    template: props.template,
+  };
+
+  return api
+    .post(`/sandboxes/${sandboxId}/templates`, body)
+    .then(data => path.success({ data }))
+    .catch(e => path.error({ error: e }));
+}
+
 export function updateSandbox({ api, state }) {
   const sandboxId = state.get('editor.currentId');
   const body = {

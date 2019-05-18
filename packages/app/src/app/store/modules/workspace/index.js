@@ -22,6 +22,7 @@ export default Module({
     tagChanged: sequences.updateTag,
     tagAdded: sequences.addTag,
     tagRemoved: sequences.removeTag,
+    addedTemplate: sequences.addTemplate,
     sandboxInfoUpdated: sequences.updateSandboxInfo,
     externalResourceAdded: sequences.addExternalResource,
     externalResourceRemoved: sequences.removeExternalResource,

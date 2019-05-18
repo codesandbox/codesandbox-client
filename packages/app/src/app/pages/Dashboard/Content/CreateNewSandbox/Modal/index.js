@@ -3,16 +3,10 @@ import React, { Fragment, useState } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import Template from '@codesandbox/common/lib/components/Template';
 
-import GithubLogo from 'react-icons/lib/go/mark-github';
-import TerminalIcon from 'react-icons/lib/go/terminal';
-import UploadIcon from 'react-icons/lib/go/cloud-upload';
-
 import {
   Container,
   InnerContainer,
   Templates,
-  ImportChoice,
-  ImportChoices,
   Tab,
   Button,
   TabContainer,
@@ -49,6 +43,7 @@ export default ({ forking = false, closing = false, createSandbox }) => {
       <InnerContainer forking={forking} closing={closing}>
         {availableTemplates.map((tab, i) => (
           <Tab key={tab.name} visible={selectedTab === i}>
+            {tab.component && tab.component()}
             <Templates>
               {tab.templates &&
                 tab.templates.map(template => (
@@ -74,17 +69,6 @@ export default ({ forking = false, closing = false, createSandbox }) => {
             </Templates>
           </Tab>
         ))}
-        <ImportChoices>
-          <ImportChoice href="/s/github" target="_blank">
-            <GithubLogo /> Import from GitHub
-          </ImportChoice>
-          <ImportChoice href="/docs/importing#export-with-cli" target="_blank">
-            <TerminalIcon /> Export with CLI
-          </ImportChoice>
-          <ImportChoice href="/docs/importing#define-api" target="_blank">
-            <UploadIcon /> Create with API
-          </ImportChoice>
-        </ImportChoices>
       </InnerContainer>
     </Container>
   );

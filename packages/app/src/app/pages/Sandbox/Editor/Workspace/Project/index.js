@@ -223,21 +223,20 @@ class Project extends React.Component {
           ) : null}
         </Item>
 
-        {!sandbox.team &&
-          !!sandbox.author && (
-            <Item>
-              <UserLink
-                title={sandbox.author.username}
-                to={profileUrl(sandbox.author.username)}
-              >
-                <UserWithAvatar
-                  username={sandbox.author.username}
-                  avatarUrl={sandbox.author.avatarUrl}
-                  subscriptionSince={sandbox.author.subscriptionSince}
-                />
-              </UserLink>
-            </Item>
-          )}
+        {!sandbox.team && !!sandbox.author && (
+          <Item>
+            <UserLink
+              title={sandbox.author.username}
+              to={profileUrl(sandbox.author.username)}
+            >
+              <UserWithAvatar
+                username={sandbox.author.username}
+                avatarUrl={sandbox.author.avatarUrl}
+                subscriptionSince={sandbox.author.subscriptionSince}
+              />
+            </UserLink>
+          </Item>
+        )}
 
         {!!sandbox.team && (
           <Tooltip content="This sandbox is owned by this team">
@@ -335,26 +334,23 @@ class Project extends React.Component {
               </PropertyValue>
             </Item>
             <Item style={{ marginTop: 5, alignItems: 'center' }} flex>
-              <PropertyName>
-                Starter
-                <Tooltip content="Set a template as a starter to get started with it more easily">
-                  <Icon />
-                </Tooltip>
-              </PropertyName>
               <PropertyValue>
                 <Button
                   small
                   secondary
                   css={`
-                  font-size: 10px;
-                  line-height: 1;
+                    font-size: 10px;
+                    line-height: 1;
                   `}
                   onClick={() => {
                     signals.modalOpened({ modal: 'starter' });
                   }}
                 >
-                  Make Stater
+                  Make Template
                 </Button>
+                <Tooltip content="Set a template as a starter to get started with it more easily">
+                  <Icon />
+                </Tooltip>
               </PropertyValue>
             </Item>
           </>

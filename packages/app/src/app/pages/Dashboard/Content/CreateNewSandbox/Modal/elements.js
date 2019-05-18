@@ -53,7 +53,7 @@ export const TabContainer = styled.div`
 `;
 
 export const InnerContainer = styled.div`
-  padding: 1rem 2rem;
+  padding: 2rem;
   overflow: hidden;
   ${props =>
     (props.closing || props.forking) &&
@@ -95,7 +95,7 @@ export const ImportChoice = styled.a`
   font-weight: 300;
   color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
-  font-size: 1.125rem;
+  font-size: 1.25em;
   margin-top: 0.2rem;
 
   display: flex;

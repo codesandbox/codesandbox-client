@@ -30,6 +30,18 @@ export const changeSandboxPrivacy = [
   ),
 ];
 
+export const addTemplate = [
+  actions.addTemplate,
+  {
+    success: [
+      set(state`editor.sandboxes.${state`editor.currentId`}.isFrozen`, true),
+      closeModal,
+      addNotification('template added', 'success'),
+    ],
+    error: [addNotification('Could not add custom template', 'error')],
+  },
+];
+
 export const deleteSandbox = [
   closeModal,
   actions.deleteSandbox,
