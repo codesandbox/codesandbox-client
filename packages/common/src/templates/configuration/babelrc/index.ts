@@ -110,7 +110,9 @@ const config: ConfigurationFile = {
               },
             ],
             'transform-object-rest-spread',
+            'syntax-dynamic-import',
           ];
+      const parserOpts = isV7 ? { plugins: ['dynamicImport'] } : {};
 
       const packageJSONModule = resolveModule('/package.json');
 
@@ -137,7 +139,7 @@ const config: ConfigurationFile = {
         }
       }
 
-      return JSON.stringify({ presets, plugins }, null, 2);
+      return JSON.stringify({ presets, plugins, parserOpts }, null, 2);
     }
 
     if (template === 'cxjs') {
