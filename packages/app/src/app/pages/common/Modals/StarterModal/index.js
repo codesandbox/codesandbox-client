@@ -38,7 +38,7 @@ const StarterModal = ({ store, signals }) => {
       id: sandbox.id,
       template: {
         color: selectedColor,
-        name: starterTitle,
+        title: starterTitle,
         description: starterDescription,
         icon: sandbox.template,
         published: selected,
