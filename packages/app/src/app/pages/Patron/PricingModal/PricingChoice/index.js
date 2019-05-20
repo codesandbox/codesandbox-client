@@ -30,6 +30,7 @@ function PricingChoice({ store, signals, badge }) {
           <ThankYou
             price={store.user.subscription.amount}
             color={badges[badge].colors[0]}
+            markedAsCancelled={store.user.subscription.cancelAtPeriodEnd}
           />
         )}
         <Relative>
@@ -66,6 +67,7 @@ function PricingChoice({ store, signals, badge }) {
                 signals.patron.cancelSubscriptionClicked()
               }
               date={store.user.subscription.since}
+              markedAsCancelled={store.user.subscription.cancelAtPeriodEnd}
             />
           ) : (
             <Centered style={{ marginTop: '2rem' }} horizontal>

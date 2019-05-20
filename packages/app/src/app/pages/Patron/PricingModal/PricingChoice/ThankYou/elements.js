@@ -15,4 +15,5 @@ export const SubTitle = styled.div`
   margin: 1rem;
   margin-bottom: 0rem;
   text-align: center;
+  line-height: 1.6;
 `;

@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { SmallText, Buttons, StyledButton } from './elements';
 
-function ChangeSubscription({ date, store, signals }) {
+function ChangeSubscription({ date, store, signals, markedAsCancelled }) {
   const isLoading = store.patron.isUpdatingSubscription;
   const error = store.patron.error;
 
@@ -37,6 +37,16 @@ function ChangeSubscription({ date, store, signals }) {
     buttons = (
       <Buttons>
         <StyledButton disabled>Processing...</StyledButton>
+      </Buttons>
+    );
+  }
+
+  if (markedAsCancelled) {
+    buttons = (
+      <Buttons>
+        <StyledButton onClick={() => this.props.updateSubscription()}>
+          Reactivate Subscription
+        </StyledButton>
       </Buttons>
     );
   }
