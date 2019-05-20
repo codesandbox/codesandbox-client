@@ -2,6 +2,23 @@
 # yarn lockfile v1
 
 
+"@apollo/react-common@^0.1.0-beta.5":
+  version "0.1.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@apollo/react-common/-/react-common-0.1.0-beta.5.tgz#afa00e4e906ab910de42a6c54178f5d1e4a78fab"
+  integrity sha512-lrWNm0bedg8Jui8yvgPUOt16yXlkIGK0AFOqsRrMzaAbvLWI7kEPU+nMzXDCTABX/aC4dcDuPlARUImIBuPZmg==
+  dependencies:
+    ts-invariant "^0.4.2"
+    tslib "^1.9.3"
+
+"@apollo/react-hooks@^0.1.0-beta.2":
+  version "0.1.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@apollo/react-hooks/-/react-hooks-0.1.0-beta.7.tgz#431e43054f196363ecfb354e03defe39994598fa"
+  integrity sha512-AeFavSE/zoWcdf/Ml4NOtG7v8waK8DirhScGaOCVvQ6u4GaYJOUGVI9Zo3DLqq5RmPwIoe1XMpdfI6uCmuyfFw==
+  dependencies:
+    "@apollo/react-common" "^0.1.0-beta.5"
+    ts-invariant "^0.4.2"
+    tslib "^1.9.3"
+
 "@babel/cli@^7.1.0", "@babel/cli@^7.2.3":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.4.4.tgz#5454bb7112f29026a4069d8e6f0e1794e651966c"

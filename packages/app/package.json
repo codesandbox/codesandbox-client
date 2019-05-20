@@ -125,6 +125,7 @@
     "worker-loader": "2.0.0"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^0.1.0-beta.2",
     "@babel/plugin-transform-destructuring": "^7.1.2",
     "@babel/preset-env": "^7.4.2",
     "@cerebral/http": "^4.0.0",
