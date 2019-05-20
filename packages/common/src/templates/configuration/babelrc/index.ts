@@ -110,7 +110,6 @@ const config: ConfigurationFile = {
               },
             ],
             'transform-object-rest-spread',
-            'syntax-dynamic-import',
           ];
       const parserOpts = isV7 ? { plugins: ['dynamicImport'] } : {};
 
