@@ -1,12 +1,12 @@
-import React from 'react';
 import { inject } from 'mobx-react';
+import qs from 'qs';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   InstantSearch,
   SearchBox,
   PoweredBy,
   Configure,
 } from 'react-instantsearch/dom';
-import qs from 'qs';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
@@ -19,94 +19,100 @@ import {
 } from '@codesandbox/common/lib/utils/config';
 
 import 'instantsearch.css/themes/reset.css';
-import Styles from './search';
 
-import Results from './Results';
+import { Container, Content, StyledTitle, Main } from './elements';
 import Filters from './Filters';
-import { Content, StyledTitle, Main, Container } from './elements';
+import Results from './Results';
+import Styles from './search';
 
 const updateAfter = 700;
 
 const createURL = state => `?${qs.stringify(state)}`;
 
-const searchStateToUrl = (props, searchState) =>
-  searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
+const searchStateToUrl = (location, searchState) =>
+  searchState ? `${location.pathname}${createURL(searchState)}` : '';
 
-class Search extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchState: qs.parse(props.location.search.slice(1)),
-    };
+const Search = ({ history, location, signals }) => {
+  const [searchState, setSearchState] = useState(
+    qs.parse(location.search.slice(1))
+  );
+  const debouncedSetState = useRef(null);
 
-    this.unlisten = this.props.history.listen((location, action) => {
-      if (action === 'PUSH' || action === 'POP') {
-        this.setState({
-          searchState: qs.parse(location.search.slice(1)),
-        });
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    this.unlisten();
-  }
-
-  componentDidMount() {
-    this.props.signals.searchMounted();
-  }
-
-  onSearchStateChange = searchState => {
-    clearTimeout(this.debouncedSetState);
-    this.debouncedSetState = setTimeout(() => {
-      this.props.history.push(
-        searchStateToUrl(this.props, searchState),
-        searchState
-      );
-    }, updateAfter);
-    this.setState({ searchState });
-  };
-
-  render() {
+  useEffect(() => {
     document.title = 'Search - CodeSandbox';
-    return (
-      <Container>
-        <Styles />
-        <MaxWidth>
-          <Margin vertical={1.5}>
-            <Navigation title="Search" searchNoInput />
-            <Content>
-              <InstantSearch
-                appId={ALGOLIA_APPLICATION_ID}
-                apiKey={ALGOLIA_API_KEY}
-                indexName={ALGOLIA_DEFAULT_INDEX}
-                searchState={this.state.searchState}
-                onSearchStateChange={this.onSearchStateChange}
-                createURL={createURL}
-              >
-                <Configure hitsPerPage={12} />
-                <Main alignItems="flex-start">
-                  <div>
-                    <StyledTitle>Search</StyledTitle>
-                    <PoweredBy />
-                    <SearchBox
-                      autoFocus
-                      translations={{
-                        placeholder: `Search Sandboxes...`,
-                      }}
-                    />
-                    <Results />
-                  </div>
+  }, []);
 
-                  <Filters />
-                </Main>
-              </InstantSearch>
-            </Content>
-          </Margin>
-        </MaxWidth>
-      </Container>
-    );
-  }
-}
+  useEffect(() => {
+    signals.searchMounted();
+  }, [signals]);
+
+  useEffect(() => {
+    const unlisten = history.listen((loc, action) => {
+      if (['POP', 'PUSH'].includes(action)) {
+        setSearchState(qs.parse(loc.search.slice(1)));
+      }
+
+      return unlisten;
+    });
+  }, [history]);
+
+  const onSearchStateChange = useCallback(
+    newSearchState => {
+      clearTimeout(debouncedSetState.current);
+
+      debouncedSetState.current = setTimeout(() => {
+        history.push(
+          searchStateToUrl(location, newSearchState),
+          newSearchState
+        );
+      }, updateAfter);
+
+      setSearchState(newSearchState);
+    },
+    [history, location]
+  );
+
+  return (
+    <Container>
+      <Styles />
+
+      <MaxWidth>
+        <Margin vertical={1.5}>
+          <Navigation title="Search" searchNoInput />
+
+          <Content>
+            <InstantSearch
+              appId={ALGOLIA_APPLICATION_ID}
+              apiKey={ALGOLIA_API_KEY}
+              createURL={createURL}
+              indexName={ALGOLIA_DEFAULT_INDEX}
+              onSearchStateChange={onSearchStateChange}
+              searchState={searchState}
+            >
+              <Configure hitsPerPage={12} />
+
+              <Main alignItems="flex-start">
+                <div>
+                  <StyledTitle>Search</StyledTitle>
+
+                  <PoweredBy />
+
+                  <SearchBox
+                    autoFocus
+                    translations={{ placeholder: 'Search Sandboxes...' }}
+                  />
+
+                  <Results />
+                </div>
+
+                <Filters />
+              </Main>
+            </InstantSearch>
+          </Content>
+        </Margin>
+      </MaxWidth>
+    </Container>
+  );
+};
 
 export default inject('signals')(Search);
