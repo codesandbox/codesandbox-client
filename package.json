@@ -18,7 +18,7 @@
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:common": "lerna run start --scope @codesandbox/common --stream",
     "start:home": "lerna run start --scope homepage --stream",
-    "start:storybook": "lerna run storybook --scope common --stream",
+    "start:storybook": "lerna run storybook --scope @codesandbox/common --stream",
     "start:test": "lerna run start:test --scope app --stream",
     "start:dev_api": "lerna run start:dev_api --scope app --stream",
     "test": "lerna run test --ignore codesandbox-browserfs",
