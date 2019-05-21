@@ -14,6 +14,7 @@ import * as actions from './actions';
 import * as preferences from './namespaces/preferences';
 import * as userNotifications from './namespaces/userNotifications';
 import * as patron from './namespaces/patron';
+import * as editor from './namespaces/editor';
 
 export const config = merge(
   {
@@ -26,6 +27,7 @@ export const config = merge(
     preferences,
     userNotifications,
     patron,
+    editor,
   })
 );
 

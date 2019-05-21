@@ -116,6 +116,15 @@ export const getContributors: Action = async ({ state, effects }) => {
   } catch (error) {}
 };
 
+export const authorize: Action = async ({ state, effects }) => {
+  try {
+    const data = await effects.api.get<{ token: string }>('/auth/auth-token');
+    state.authToken = data.token;
+  } catch (error) {
+    state.editor.error = error.message;
+  }
+};
+
 /*import axios from 'axios';
 
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';

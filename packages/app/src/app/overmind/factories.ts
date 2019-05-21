@@ -1,11 +1,11 @@
 import { Action } from '.';
 
-export function withLoadApp<T>(continueAction: Action<T>): Action<T> {
+export function withLoadApp<T>(continueAction?: Action<T>): Action<T> {
   return async (context, value) => {
-    const { state, actions, effects } = context;
+    const { state, actions } = context;
 
     if (state.hasLoadedApp) {
-      return continueAction(context, value);
+      return continueAction && continueAction(context, value);
     }
 
     state.isAuthenticating = true;
@@ -32,7 +32,7 @@ export function withLoadApp<T>(continueAction: Action<T>): Action<T> {
       await continueAction(context, value);
     } else {
       actions.internal.removeJwtFromStorage();
-      await continueAction(context, value);
+      continueAction && (await continueAction(context, value));
     }
     state.hasLoadedApp = true;
     state.isAuthenticating = false;

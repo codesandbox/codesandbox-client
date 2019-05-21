@@ -97,7 +97,11 @@ export default (() => {
     initialize(options: Options) {
       _options = options;
     },
-    get(path: string, params?: { [key: string]: string }, options?: {}) {
+    get<T>(
+      path: string,
+      params?: { [key: string]: string },
+      options?: {}
+    ): Promise<T> {
       return axios
         .get(API_ROOT + path, {
           params,
