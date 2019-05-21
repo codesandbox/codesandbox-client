@@ -1,135 +1,138 @@
-import React from 'react';
-
-import { inject, observer } from 'mobx-react';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import getTime from 'date-fns/get_time';
 import subMonths from 'date-fns/sub_months';
 import subWeeks from 'date-fns/sub_weeks';
 import format from 'date-fns/format';
+import { observer } from 'mobx-react-lite';
+import React, { useCallback, useEffect, useState } from 'react';
 import DayPicker from 'react-day-picker';
 
 import 'react-day-picker/lib/style.css';
 
-import Navigation from 'app/pages/common/Navigation';
 import SubTitle from 'app/components/SubTitle';
-import { Button } from '@codesandbox/common/lib/components/Button';
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import DelayedAnimation from 'app/components/DelayedAnimation';
-import SandboxCard from './SandboxCard';
+import Navigation from 'app/pages/common/Navigation';
+import { useSignals, useStore } from 'app/store';
 
 import { Container, Buttons, Heading, PickerWrapper } from './elements';
+import SandboxCard from './SandboxCard';
 
-class Curator extends React.Component {
-  state = { showPicker: false, selectedDate: null };
-  componentDidMount() {
-    this.getPopularSandboxes(getTime(subWeeks(new Date(), 1)));
-  }
+const Curator = () => {
+  const {
+    explore: { pickSandboxModal, popularSandboxesMounted },
+  } = useSignals();
+  const {
+    explore: { popularSandboxes },
+  } = useStore();
 
-  handleDayClick = date => {
-    this.getPopularSandboxes(getTime(new Date(date)));
-    this.setState({ selectedDate: date, showPicker: false });
-  };
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showPicker, setShowPicker] = useState(false);
 
-  getPopularSandboxes = date =>
-    this.props.signals.explore.popularSandboxesMounted({
-      date,
-    });
+  const fetchPopularSandboxes = useCallback(
+    date => {
+      popularSandboxesMounted(date);
+    },
+    [popularSandboxesMounted]
+  );
 
-  pickSandbox = (id, title, description) => {
-    this.props.signals.explore.pickSandboxModal({
-      details: {
-        id,
-        title,
-        description,
-      },
-    });
-  };
+  useEffect(() => {
+    fetchPopularSandboxes(getTime(subWeeks(new Date(), 1)));
+  }, [fetchPopularSandboxes]);
 
-  render() {
-    const {
-      store: { explore },
-    } = this.props;
+  const pickSandbox = useCallback(
+    (id, title, description) => {
+      pickSandboxModal({ details: { description, id, title } });
+    },
+    [pickSandboxModal]
+  );
 
-    const { showPicker, selectedDate } = this.state;
+  const handleDayClick = useCallback(
+    date => {
+      fetchPopularSandboxes(getTime(new Date(date)));
 
-    return (
-      <MaxWidth>
-        <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="Curator Page" />
-          <Heading>Curator Page</Heading>
-          <SubTitle>
-            Here you can choose the sandboxes that go in the explore page
-          </SubTitle>
-          <Buttons>
-            Most popular sandboxes in the:
-            <Button
-              small
-              onClick={() =>
-                this.getPopularSandboxes(getTime(subWeeks(new Date(), 1)))
-              }
-            >
-              Last Week
-            </Button>
-            <Button
-              small
-              onClick={() =>
-                this.getPopularSandboxes(getTime(subMonths(new Date(), 1)))
-              }
-            >
-              Last Month
-            </Button>
-            <Button
-              small
-              onClick={() =>
-                this.getPopularSandboxes(getTime(subMonths(new Date(), 6)))
-              }
-            >
-              Last 6 Months
-            </Button>
-            <Button
-              small
-              onClick={() =>
-                this.setState(state => ({ showPicker: !state.showPicker }))
-              }
-            >
-              {selectedDate ? format(selectedDate, 'DD/MM/YYYY') : 'Custom'}
-            </Button>
-            {showPicker ? (
-              <PickerWrapper>
-                <DayPicker
-                  selectedDays={selectedDate}
-                  onDayClick={this.handleDayClick}
-                />
-              </PickerWrapper>
-            ) : null}
-          </Buttons>
+      setSelectedDate(date);
+      setShowPicker(false);
+    },
+    [fetchPopularSandboxes]
+  );
 
-          {explore.popularSandboxes ? (
-            <Container>
-              {explore.popularSandboxes.sandboxes.map(sandbox => (
-                <SandboxCard
-                  key={sandbox.id}
-                  {...sandbox}
-                  pickSandbox={this.pickSandbox}
-                />
-              ))}
-            </Container>
-          ) : (
-            <DelayedAnimation
-              style={{
-                textAlign: 'center',
-                marginTop: '2rem',
-                fontWeight: 600,
-                color: 'rgba(255, 255, 255, 0.5)',
-              }}
-            >
-              Fetching Sandboxes...
-            </DelayedAnimation>
-          )}
-        </Margin>
-      </MaxWidth>
-    );
-  }
-}
+  return (
+    <MaxWidth>
+      <Margin horizontal={1.5} vertical={1.5}>
+        <Navigation title="Curator Page" />
 
-export default inject('signals', 'store')(observer(Curator));
+        <Heading>Curator Page</Heading>
+
+        <SubTitle>
+          Here you can choose the sandboxes that go in the explore page
+        </SubTitle>
+
+        <Buttons>
+          Most popular sandboxes in the:
+          <Button
+            onClick={() =>
+              fetchPopularSandboxes(getTime(subWeeks(new Date(), 1)))
+            }
+            small
+          >
+            Last Week
+          </Button>
+          <Button
+            onClick={() =>
+              fetchPopularSandboxes(getTime(subMonths(new Date(), 1)))
+            }
+            small
+          >
+            Last Month
+          </Button>
+          <Button
+            onClick={() =>
+              fetchPopularSandboxes(getTime(subMonths(new Date(), 6)))
+            }
+            small
+          >
+            Last 6 Months
+          </Button>
+          <Button onClick={() => setShowPicker(show => !show)} small>
+            {selectedDate ? format(selectedDate, 'DD/MM/YYYY') : 'Custom'}
+          </Button>
+          {showPicker ? (
+            <PickerWrapper>
+              <DayPicker
+                onDayClick={handleDayClick}
+                selectedDays={selectedDate}
+              />
+            </PickerWrapper>
+          ) : null}
+        </Buttons>
+
+        {popularSandboxes ? (
+          <Container>
+            {popularSandboxes.sandboxes.map(sandbox => (
+              <SandboxCard
+                key={sandbox.id}
+                {...sandbox}
+                pickSandbox={pickSandbox}
+              />
+            ))}
+          </Container>
+        ) : (
+          <DelayedAnimation
+            style={{
+              color: 'rgba(255, 255, 255, 0.5)',
+              fontWeight: 600,
+              marginTop: '2rem',
+              textAlign: 'center',
+            }}
+          >
+            Fetching Sandboxes...
+          </DelayedAnimation>
+        )}
+      </Margin>
+    </MaxWidth>
+  );
+};
+
+export default observer(Curator);
