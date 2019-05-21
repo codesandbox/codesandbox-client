@@ -1,26 +1,25 @@
-import React from 'react';
-import { forEach } from 'lodash-es';
-
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
+import React, { useEffect, useRef } from 'react';
+
 import { Particle } from './elements';
 
 const classNameRegex = /\shide/g;
 
-function showElement(el: HTMLElement) {
+const showElement = (el: HTMLElement) => {
   if (el.nodeName === 'svg') {
     el.setAttribute('class', el.className.baseVal.replace(classNameRegex, ''));
   } else {
     el.className = el.className.replace(classNameRegex, ''); // eslint-disable-line no-param-reassign
   }
-}
+};
 
-function hideElement(el: HTMLElement) {
+const hideElement = (el: HTMLElement) => {
   if (el.nodeName === 'svg') {
     el.setAttribute('class', `${el.className.baseVal} hide`);
   } else {
     el.className += ' hide'; // eslint-disable-line no-param-reassign
   }
-}
+};
 
 const createParticles = (amount: number, badge) =>
   Array(amount)
@@ -35,54 +34,52 @@ const createParticles = (amount: number, badge) =>
       />
     ));
 
-export default class Particles extends React.Component {
-  makeItRain = () => {
-    const particleSelector = document.getElementsByClassName('particle');
-    forEach(particleSelector, hideElement);
+const makeItRainFn = () => {
+  const particleSelector = [...document.getElementsByClassName('particle')];
+
+  particleSelector.forEach(hideElement);
+
+  requestAnimationFrame(() => {
+    particleSelector.forEach(showElement);
+  });
+};
+
+const Particles = ({ badge, makeItRain }) => {
+  const timeout = useRef(null);
+
+  useEffect(() => {
+    const particleSelector = [
+      ...document.getElementsByClassName(`${badge}-particle`),
+    ];
+
+    particleSelector.forEach(hideElement);
 
     requestAnimationFrame(() => {
-      forEach(particleSelector, showElement);
+      particleSelector.forEach(showElement);
     });
-  };
 
-  timeout: ?number;
+    clearTimeout(timeout.current);
 
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.badge !== this.props.badge) {
-      const particleSelector = document.getElementsByClassName(
-        `${nextProps.badge}-particle`
-      );
+    timeout.current = setTimeout(() => {
+      const allParticleSelector = document.getElementsByClassName('particle');
 
-      forEach(particleSelector, hideElement);
+      [...allParticleSelector].forEach(hideElement);
+    }, 700);
+  }, [badge]);
 
-      requestAnimationFrame(() => {
-        forEach(particleSelector, showElement);
-      });
-
-      if (this.timeout) {
-        clearTimeout(this.timeout);
-      }
-
-      this.timeout = setTimeout(() => {
-        const allParticleSelector = document.getElementsByClassName('particle');
-        forEach(allParticleSelector, hideElement);
-      }, 700);
+  useEffect(() => {
+    if (makeItRain) {
+      makeItRainFn();
     }
+  }, [makeItRain]);
 
-    if (!this.props.makeItRain && nextProps.makeItRain) {
-      this.makeItRain();
-    }
+  return (
+    <div>
+      {Object.entries(badges).map(([name, { particleCount }]) =>
+        createParticles(particleCount, name)
+      )}
+    </div>
+  );
+};
 
-    return false;
-  }
-
-  render() {
-    return (
-      <div>
-        {Object.keys(badges).map(badge =>
-          createParticles(badges[badge].particleCount, badge)
-        )}
-      </div>
-    );
-  }
-}
+export default Particles;

@@ -1,27 +1,26 @@
-import React from 'react';
 import Slider from 'rc-slider/lib/Slider';
+import React from 'react';
+
 import 'rc-slider/assets/index.css';
 
-function Range(props) {
-  return (
-    <Slider
-      railStyle={{ background: 'rgba(0, 0, 0, 0.3)', height: 12 }}
-      trackStyle={{
-        transition: '0.3s ease background-color',
-        height: 12,
-        background: props.color,
-      }}
-      handleStyle={{
-        height: 20,
-        width: 20,
-        borderRadius: '50%',
-        background: '#ffffff',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
-        border: 'none',
-      }}
-      {...props}
-    />
-  );
-}
+const Range = props => (
+  <Slider
+    railStyle={{ background: 'rgba(0, 0, 0, 0.3)', height: 12 }}
+    trackStyle={{
+      background: props.color,
+      height: 12,
+      transition: '0.3s ease background-color',
+    }}
+    handleStyle={{
+      background: '#FFFFFF',
+      border: 'none',
+      borderRadius: '50%',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+      height: 20,
+      width: 20,
+    }}
+    {...props}
+  />
+);
 
 export default Range;
