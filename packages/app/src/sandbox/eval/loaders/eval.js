@@ -15,6 +15,8 @@ const requestFrame = (() => {
   };
 })();
 
+const hasGlobalDeclaration = /^const global/m;
+
 /* eslint-disable no-unused-vars */
 export default function(
   code: string,
@@ -32,13 +34,24 @@ export default function(
 
   const allGlobals = {
     require,
-    module: asUMD ? undefined : module,
-    exports: asUMD ? undefined : exports,
+    module,
+    exports,
     process,
     setImmediate: requestFrame,
-    global: asUMD ? undefined : global,
+    global,
     ...globals,
   };
+
+  if (asUMD) {
+    delete allGlobals.module;
+    delete allGlobals.exports;
+    delete allGlobals.global;
+  }
+
+  const a = performance.now();
+  if (hasGlobalDeclaration.test(code)) {
+    delete allGlobals.global;
+  }
 
   const allGlobalKeys = Object.keys(allGlobals);
   const globalsCode = allGlobalKeys.length ? allGlobalKeys.join(', ') : '';
