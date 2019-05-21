@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
+import styled from 'styled-components';
 
 const DotContainer = styled.div`
   font-size: 4rem;
@@ -12,26 +12,22 @@ const DotContainer = styled.div`
   }
 `;
 
-export default class BlinkingDot extends React.PureComponent {
-  state = {
-    showing: true,
-  };
+const BlinkingDot = () => {
+  const [showing, setShowing] = useState(true);
 
-  componentDidMount() {
-    this.timer = setInterval(() => {
-      this.setState({ showing: !this.state.showing });
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setShowing(show => !show);
     }, 1000);
-  }
 
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
+    return () => clearInterval(timer);
+  }, []);
 
-  render() {
-    return (
-      <DotContainer>
-        <RecordIcon style={{ opacity: this.state.showing ? 1 : 0 }} />
-      </DotContainer>
-    );
-  }
-}
+  return (
+    <DotContainer>
+      <RecordIcon style={{ opacity: showing ? 1 : 0 }} />
+    </DotContainer>
+  );
+};
+
+export default BlinkingDot;
