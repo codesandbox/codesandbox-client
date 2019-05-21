@@ -48,7 +48,6 @@ export default function(
     delete allGlobals.global;
   }
 
-  const a = performance.now();
   if (hasGlobalDeclaration.test(code)) {
     delete allGlobals.global;
   }
