@@ -24,11 +24,7 @@ export const setJwtFromStorage: Action = ({ effects, state }) => {
 };
 
 export const listenToConnectionChange: Action = ({ effects, actions }) => {
-  effects.connection.addListener(actions.internal.onConnectionChange);
-};
-
-export const onConnectionChange: Action<boolean> = ({ state }, connected) => {
-  state.connected = connected;
+  effects.connection.addListener(actions.connectionChanged);
 };
 
 export const setStoredSettings: Action = ({ state, effects }) => {
@@ -123,6 +119,35 @@ export const authorize: Action = async ({ state, effects }) => {
   } catch (error) {
     state.editor.error = error.message;
   }
+};
+
+export const signInGithub: Action<
+  { useExtraScopes: boolean },
+  Promise<string>
+> = ({ effects }, options) => {
+  const popup = effects.browser.openPopup(
+    `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`,
+    'sign in'
+  );
+
+  return effects.browser
+    .waitForMessage<{ jwt: string }>('signin')
+    .then(data => {
+      const jwt = data.jwt;
+
+      popup.close();
+
+      if (jwt) {
+        return jwt;
+      }
+
+      throw new Error('Could not get sign in token');
+    });
+};
+
+export const setJwt: Action<string> = ({ state, effects }, jwt) => {
+  effects.jwt.set(jwt);
+  state.jwt = jwt;
 };
 
 /*import axios from 'axios';
@@ -332,25 +357,7 @@ export function closeTabByIndex({ state, props }) {
   state.splice('editor.tabs', props.tabIndex, 1);
 }
 
-export function signInGithub({ browser, path, props }) {
-  const { useExtraScopes } = props;
-  const popup = browser.openPopup(
-    `/auth/github${useExtraScopes ? '?scope=user:email,repo' : ''}`,
-    'sign in'
-  );
 
-  return browser.waitForMessage('signin').then(data => {
-    const jwt = data.jwt;
-
-    popup.close();
-
-    if (jwt) {
-      return path.success({ jwt });
-    }
-
-    return path.error();
-  });
-}
 
 export function signOut({ api }) {
   api.delete(`/users/signout`);

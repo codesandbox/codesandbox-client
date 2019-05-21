@@ -15,6 +15,7 @@ import * as preferences from './namespaces/preferences';
 import * as userNotifications from './namespaces/userNotifications';
 import * as patron from './namespaces/patron';
 import * as editor from './namespaces/editor';
+import * as live from './namespaces/live';
 
 export const config = merge(
   {
@@ -28,6 +29,7 @@ export const config = merge(
     userNotifications,
     patron,
     editor,
+    live,
   })
 );
 

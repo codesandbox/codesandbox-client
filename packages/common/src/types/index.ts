@@ -161,6 +161,16 @@ export type User = {
   subscriptionSince: string;
 };
 
+export type RoomInfo = {
+  moduleState: {
+    [shortId: string]: {
+      code: string;
+      revision: string;
+      synced: boolean;
+    };
+  };
+};
+
 export type Sandbox = {
   id: string;
   alias: string | undefined;
@@ -172,6 +182,7 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Array<Module>;
   directories: Array<Directory>;
+  collection: boolean;
   owned: boolean;
   npmDependencies: {
     [dep: string]: string;
@@ -179,6 +190,10 @@ export type Sandbox = {
   customTemplate: CustomTemplate | null;
   forkedTemplate: CustomTemplate | null;
   externalResources: string[];
+  team: {
+    id: string;
+  };
+  roomId: string;
   privacy: 0 | 1 | 2;
   author: User | undefined;
   forkedFromSandbox: SmallSandbox | undefined;
