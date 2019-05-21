@@ -7,6 +7,7 @@ import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import TimeIcon from 'react-icons/lib/md/access-time';
 import PeopleIcon from 'react-icons/lib/md/people';
+import SaveIcon from 'react-icons/lib/md/save';
 
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 
@@ -69,6 +70,13 @@ class Sidebar extends React.Component {
                     currentTeamId={currentTeamId}
                     openByDefault
                   />
+
+                  <Item
+                    Icon={SaveIcon}
+                    path="/dashboard/templates"
+                    name="Templates"
+                  />
+
                   <TrashItem currentPath={path} />
                 </Items>
 

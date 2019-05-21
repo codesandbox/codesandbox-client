@@ -37,6 +37,7 @@ type Props = {
   title: string;
   details: string;
   selected: boolean;
+  color?: string;
   template: TemplateType;
   screenshotUrl: string | undefined;
   setSandboxesSelected: (
@@ -421,6 +422,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
       id,
       title,
       details,
+      color,
       template,
       connectDragSource,
       isDraggingItem,
@@ -491,7 +493,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
                       left: 0,
                       width: 2,
                       height: '100%',
-                      backgroundColor: templateInfo.color(),
+                      backgroundColor: color || templateInfo.color(),
                     }}
                   />
                   <div style={{ flex: 1 }}>

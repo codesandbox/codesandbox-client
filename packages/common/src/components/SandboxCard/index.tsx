@@ -125,7 +125,7 @@ export default class SandboxCard extends React.PureComponent<Props> {
 
           <Overlay>
             <SandboxDescription>{sandbox.description}</SandboxDescription>
-            <Tags tags={sandbox.tags} />
+            {sandbox.tags && <Tags tags={sandbox.tags} />}
           </Overlay>
         </Image>
         <SandboxInfo noHeight={noHeight}>

@@ -16,14 +16,11 @@ import {
 } from './elements';
 
 import { popular, client, container } from './availableTemplates';
-import { LIST_TEMPLATES } from '../GraphQL/list';
+import { LIST_TEMPLATES } from '../../../queries';
 
 export default ({ forking = false, closing = false, createSandbox }) => {
   const [selectedTab, setSelectedTab] = useState(0);
-  const {
-    loading,
-    data: { me },
-  } = useQuery(LIST_TEMPLATES);
+  const { loading, error, data } = useQuery(LIST_TEMPLATES);
 
   const selectTemplate = template => {
     track('New Sandbox Modal - Select Template', { template });
@@ -40,9 +37,14 @@ export default ({ forking = false, closing = false, createSandbox }) => {
         <Button selected={selectedTab === 0} onClick={() => setSelectedTab(0)}>
           Create Sandbox
         </Button>
-        <Button selected={selectedTab === 1} onClick={() => setSelectedTab(1)}>
-          My Templates
-        </Button>
+        {!error && (
+          <Button
+            selected={selectedTab === 1}
+            onClick={() => setSelectedTab(1)}
+          >
+            My Templates
+          </Button>
+        )}
         <Button selected={selectedTab === 2} onClick={() => setSelectedTab(2)}>
           Import
         </Button>
@@ -65,21 +67,23 @@ export default ({ forking = false, closing = false, createSandbox }) => {
             ))}
           </Templates>
         </Tab>
-        <Tab visible={selectedTab === 1}>
-          {loading ? (
-            <Loading />
-          ) : (
-            <Templates>
-              {me.templates.map(template => (
-                <Template
-                  key={template.id}
-                  template={template}
-                  selectTemplate={selectTemplate}
-                />
-              ))}
-            </Templates>
-          )}
-        </Tab>
+        {!error && (
+          <Tab visible={selectedTab === 1}>
+            {loading ? (
+              <Loading />
+            ) : (
+              <Templates>
+                {data.me.templates.map(template => (
+                  <Template
+                    key={template.id}
+                    template={template}
+                    selectTemplate={selectTemplate}
+                  />
+                ))}
+              </Templates>
+            )}
+          </Tab>
+        )}
         <Tab visible={selectedTab === 2}>
           <ImportTab />
         </Tab>

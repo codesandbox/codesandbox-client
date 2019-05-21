@@ -28,11 +28,9 @@ type Props = {
 };
 
 export default ({ template, subtitle, selectTemplate, small }: Props) => {
-  const Icon = template.iconUrl ? (
-    <img src={template.iconUrl} />
-  ) : (
-    getIcon(template.sandbox.source.template)
-  );
+  const Icon = template.iconUrl
+    ? getIcon(template.sandbox.source.template)
+    : null;
 
   const select = () =>
     selectTemplate({
@@ -61,10 +59,12 @@ export default ({ template, subtitle, selectTemplate, small }: Props) => {
         )}
       </div>
       <IconContainer>
-        {
+        {template.iconUrl ? (
           // @ts-ignore
           <Icon width={small ? 24 : 32} height={small ? 24 : 32} />
-        }
+        ) : (
+          <img src={template.iconUrl} />
+        )}
       </IconContainer>
     </Button>
   );

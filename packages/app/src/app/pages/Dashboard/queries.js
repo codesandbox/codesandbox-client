@@ -427,3 +427,23 @@ export const SET_TEAM_DESCRIPTION = gql`
   }
   ${TEAM_FRAGMENT}
 `;
+
+export const LIST_TEMPLATES = gql`
+  query listTemplates {
+    me {
+      templates {
+        title
+        description
+        color
+        iconUrl
+        id
+        published
+        sandbox {
+          ...Sandbox
+        }
+      }
+    }
+  }
+
+  ${SANDBOX_FRAGMENT}
+`;
