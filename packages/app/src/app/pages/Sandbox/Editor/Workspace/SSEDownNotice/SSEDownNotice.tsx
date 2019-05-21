@@ -1,10 +1,11 @@
 import React from 'react';
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import getTemplate from '@codesandbox/common/lib/templates';
-
+import { useStore } from 'app/store';
 import { Container } from './elements';
 
-const ConnectionNotice = ({ store }) => {
+export const SSEDownNotice = observer(() => {
+  const store = useStore();
   const templateDef = getTemplate(store.editor.currentSandbox.template);
   if (!templateDef.isServer) {
     return null;
@@ -46,6 +47,4 @@ const ConnectionNotice = ({ store }) => {
       </p>
     </Container>
   );
-};
-
-export default inject('store')(observer(ConnectionNotice));
+});

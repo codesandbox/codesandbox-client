@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 import { Module } from 'cerebral';
 import HttpProvider from '@cerebral/http';
 
@@ -40,7 +40,11 @@ import live from './modules/live';
 import dashboard from './modules/dashboard';
 import userNotifications from './modules/user-notifications';
 
-export const Cerebral = createContext();
+export const Signals = createContext();
+export const Store = createContext();
+
+export const useSignals = () => useContext(Signals);
+export const useStore = () => useContext(Store);
 
 export default Module({
   model,

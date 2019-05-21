@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 const cachedScripts = [];
 
-export const useScript = src => {
+export const useScript = (src: string) => {
   const [state, setState] = useState({
     loaded: false,
     error: false,

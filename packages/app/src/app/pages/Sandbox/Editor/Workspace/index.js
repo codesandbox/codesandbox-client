@@ -10,7 +10,7 @@ import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
 import Server from './items/Server';
-import Live from './items/Live';
+import { Live } from './items/Live';
 import More from './items/More';
 import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
@@ -20,7 +20,7 @@ import { ConnectionNotice } from './ConnectionNotice';
 import { Advertisement } from './Advertisement';
 import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';
-import SSEDownNotice from './SSEDownNotice';
+import { SSEDownNotice } from './SSEDownNotice';
 
 import {
   Container,

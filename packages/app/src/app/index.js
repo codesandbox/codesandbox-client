@@ -10,8 +10,7 @@ import {
   logError,
 } from '@codesandbox/common/lib/utils/analytics';
 import '@codesandbox/common/lib/global.css';
-
-import { Cerebral } from 'app/store';
+import { Signals, Store } from 'app/store';
 import history from 'app/utils/history';
 import { client } from 'app/graphql/client';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
@@ -120,18 +119,21 @@ function boot() {
     });
 
     try {
+      const { signals, store } = controller.provide();
       render(
-        <Cerebral.Provider value={controller.provide()}>
-          <Provider {...controller.provide()}>
-            <ApolloProvider client={client}>
-              <ThemeProvider theme={theme}>
-                <Router history={history}>
-                  <App />
-                </Router>
-              </ThemeProvider>
-            </ApolloProvider>
-          </Provider>
-        </Cerebral.Provider>,
+        <Signals.Provider value={signals}>
+          <Store.Provider value={store}>
+            <Provider {...{ signals, store }}>
+              <ApolloProvider client={client}>
+                <ThemeProvider theme={theme}>
+                  <Router history={history}>
+                    <App />
+                  </Router>
+                </ThemeProvider>
+              </ApolloProvider>
+            </Provider>
+          </Store.Provider>
+        </Signals.Provider>,
         rootEl
       );
     } catch (e) {
