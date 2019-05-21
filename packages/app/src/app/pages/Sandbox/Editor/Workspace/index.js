@@ -8,7 +8,7 @@ import SocialInfo from 'app/components/SocialInfo';
 
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
-import GitHub from './items/GitHub';
+import { GitHub } from './items/GitHub';
 import Server from './items/Server';
 import { Live } from './items/Live';
 import More from './items/More';
