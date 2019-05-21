@@ -16,7 +16,7 @@
     "start:fast": "lerna run start --scope app --stream",
     "start:vscode": "VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
-    "start:common": "lerna run start --scope common --stream",
+    "start:common": "lerna run start --scope @codesandbox/common --stream",
     "start:home": "lerna run start --scope homepage --stream",
     "start:storybook": "lerna run storybook --scope common --stream",
     "start:test": "lerna run start:test --scope app --stream",
