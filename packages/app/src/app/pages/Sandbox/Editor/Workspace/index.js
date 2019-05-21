@@ -20,7 +20,7 @@ import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
 import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';
-import SSEDownNotice from './SSEDownNotice';
+import { SSEDownNotice } from './SSEDownNotice';
 
 import {
   Container,

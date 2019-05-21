@@ -1,10 +1,14 @@
-import React from 'react';
-import { observer, inject } from 'mobx-react';
 import getTemplate from '@codesandbox/common/lib/templates';
+import { observer } from 'mobx-react-lite';
+import React from 'react';
+
+import { useStore } from 'app/store';
 
 import { Container } from './elements';
 
-const ConnectionNotice = ({ store }) => {
+export const SSEDownNotice = observer(() => {
+  const store = useStore();
+
   const templateDef = getTemplate(store.editor.currentSandbox.template);
   if (!templateDef.isServer) {
     return null;
@@ -18,9 +22,9 @@ const ConnectionNotice = ({ store }) => {
     <Container>
       <p
         style={{
-          fontWeight: 700,
-          color: 'white',
+          color: '#FFFFFF',
           fontSize: '.875rem',
+          fontWeight: 700,
           marginTop: 0,
         }}
       >
@@ -35,10 +39,10 @@ const ConnectionNotice = ({ store }) => {
         {"'"}t resolved with in a minute it would greatly help us if you could
         let us know on{' '}
         <a
-          style={{ color: 'white' }}
           href="https://spectrum.chat/codesandbox"
-          target="_blank"
           rel="noopener noreferrer"
+          style={{ color: '#FFFFFF' }}
+          target="_blank"
         >
           Spectrum
         </a>
@@ -46,6 +50,4 @@ const ConnectionNotice = ({ store }) => {
       </p>
     </Container>
   );
-};
-
-export default inject('store')(observer(ConnectionNotice));
+});
