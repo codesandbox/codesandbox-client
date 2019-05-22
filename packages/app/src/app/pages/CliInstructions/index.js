@@ -1,15 +1,17 @@
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { inject } from 'mobx-react';
 import React, { useEffect } from 'react';
 
 import Navigation from 'app/pages/common/Navigation';
 import SubTitle from 'app/components/SubTitle';
 import Title from 'app/components/Title';
+import { useSignals } from 'app/store';
 
 import { Container, Content, Code } from './elements';
 
-const CLIInstructions = ({ signals: { cliInstructionsMounted } }) => {
+const CLIInstructions = () => {
+  const { cliInstructionsMounted } = useSignals();
+
   useEffect(() => {
     cliInstructionsMounted();
   }, [cliInstructionsMounted]);
@@ -41,4 +43,4 @@ const CLIInstructions = ({ signals: { cliInstructionsMounted } }) => {
   );
 };
 
-export default inject(['signals'])(CLIInstructions);
+export default CLIInstructions;

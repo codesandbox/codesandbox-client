@@ -1,4 +1,10 @@
-import { inject } from 'mobx-react';
+import {
+  ALGOLIA_API_KEY,
+  ALGOLIA_APPLICATION_ID,
+  ALGOLIA_DEFAULT_INDEX,
+} from '@codesandbox/common/lib/utils/config';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import qs from 'qs';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -8,19 +14,12 @@ import {
   Configure,
 } from 'react-instantsearch/dom';
 
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-
 import Navigation from 'app/pages/common/Navigation';
-import {
-  ALGOLIA_API_KEY,
-  ALGOLIA_APPLICATION_ID,
-  ALGOLIA_DEFAULT_INDEX,
-} from '@codesandbox/common/lib/utils/config';
+import { useSignals } from 'app/store';
 
 import 'instantsearch.css/themes/reset.css';
 
-import { Container, Content, StyledTitle, Main } from './elements';
+import { Container, Content, Main, StyledTitle } from './elements';
 import Filters from './Filters';
 import Results from './Results';
 import Styles from './search';
@@ -32,7 +31,9 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (location, searchState) =>
   searchState ? `${location.pathname}${createURL(searchState)}` : '';
 
-const Search = ({ history, location, signals }) => {
+const Search = ({ history, location }) => {
+  const { searchMounted } = useSignals();
+
   const [searchState, setSearchState] = useState(
     qs.parse(location.search.slice(1))
   );
@@ -43,8 +44,8 @@ const Search = ({ history, location, signals }) => {
   }, []);
 
   useEffect(() => {
-    signals.searchMounted();
-  }, [signals]);
+    searchMounted();
+  }, [searchMounted]);
 
   useEffect(() => {
     const unlisten = history.listen((loc, action) => {
@@ -115,4 +116,4 @@ const Search = ({ history, location, signals }) => {
   );
 };
 
-export default inject('signals')(Search);
+export default Search;

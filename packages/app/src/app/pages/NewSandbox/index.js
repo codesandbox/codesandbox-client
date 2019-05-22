@@ -2,10 +2,10 @@ import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { inject } from 'mobx-react';
 import React, { useEffect } from 'react';
 
 import Navigation from 'app/pages/common/Navigation';
+import { useSignals } from 'app/store';
 import history from 'app/utils/history';
 
 import NewSandboxModal from '../Dashboard/Content/CreateNewSandbox/Modal';
@@ -14,7 +14,9 @@ const createSandbox = template => {
   history.push(sandboxUrl({ id: template.shortid }));
 };
 
-const NewSandbox = ({ signals: { sandboxPageMounted } }) => {
+const NewSandbox = () => {
+  const { sandboxPageMounted } = useSignals();
+
   useEffect(() => {
     sandboxPageMounted();
   }, [sandboxPageMounted]);
@@ -36,4 +38,4 @@ const NewSandbox = ({ signals: { sandboxPageMounted } }) => {
   );
 };
 
-export default inject('signals')(NewSandbox);
+export default NewSandbox;
