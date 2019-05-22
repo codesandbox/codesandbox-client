@@ -14,7 +14,7 @@ import { Live } from './items/Live';
 import { More } from './items/More';
 import { Deployment } from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
-import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
+import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 
 import { ConnectionNotice } from './ConnectionNotice';
 import { Advertisement } from './Advertisement';
@@ -29,7 +29,7 @@ import {
   VersionContainer,
 } from './elements';
 
-const idToItem = {
+const workspaceTabs = {
   project: ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
   files: Files,
@@ -45,15 +45,15 @@ function Workspace({ store }) {
   const sandbox = store.editor.currentSandbox;
   const preferences = store.preferences;
 
-  const currentItem = store.workspace.openedWorkspaceItem;
+  const activeTab = store.workspace.openedWorkspaceItem;
 
-  if (!currentItem) {
+  if (!activeTab) {
     return null;
   }
 
-  const Component = idToItem[currentItem];
+  const Component = workspaceTabs[activeTab];
 
-  const item = getWorkspaceItems(store).find(i => i.id === currentItem);
+  const item = getWorkspaceItems(store).find(i => i.id === activeTab);
   return (
     <Container>
       {item && !item.hasCustomHeader && <ItemTitle>{item.name}</ItemTitle>}
