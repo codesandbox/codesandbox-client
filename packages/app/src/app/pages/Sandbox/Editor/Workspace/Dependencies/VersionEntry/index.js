@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
@@ -77,8 +77,8 @@ export default class VersionEntry extends React.PureComponent {
       '00383ecd8441ead30b1b0ff981c426f5'
     );
     const index = client.initIndex('npm-search');
-    index.getObject(dependency, ['versions']).then(({ versions }) => {
-      Object.keys(versions).sort((a, b) => {
+    index.getObject(dependency, ['versions']).then(({ versions: hits }) => {
+      const versions = Object.keys(hits).sort((a, b) => {
         try {
           return compareVersions(b, a);
         } catch (e) {
@@ -128,7 +128,7 @@ export default class VersionEntry extends React.PureComponent {
 
     const { hovering, version, size, open, versions } = this.state;
     return (
-      <>
+      <Fragment>
         <EntryContainer
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
@@ -191,7 +191,7 @@ export default class VersionEntry extends React.PureComponent {
             </li>
           </MoreData>
         ) : null}
-      </>
+      </Fragment>
     );
   }
 }
