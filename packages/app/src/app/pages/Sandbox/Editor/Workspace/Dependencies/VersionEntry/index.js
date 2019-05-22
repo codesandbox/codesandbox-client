@@ -3,7 +3,7 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 import ArrowDropDown from 'react-icons/lib/md/keyboard-arrow-down';
 import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
-import algoliasearch from 'algoliasearch';
+import algoliasearch from 'algoliasearch/lite';
 import compareVersions from 'compare-versions';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
@@ -77,18 +77,20 @@ export default class VersionEntry extends React.PureComponent {
       '00383ecd8441ead30b1b0ff981c426f5'
     );
     const index = client.initIndex('npm-search');
-    index.search({ query: dependency, hitsPerPage: 1 }, (err, { hits }) => {
-      const versions = Object.keys(hits[0].versions).sort((a, b) => {
-        try {
-          return compareVersions(b, a);
-        } catch (e) {
-          return 0;
-        }
+    index
+      .getObject(dependency, ['versions'])
+      .then(({ versions }) => {
+        const versions = Object.keys(versions).sort((a, b) => {
+          try {
+            return compareVersions(b, a);
+          } catch (e) {
+            return 0;
+          }
+        });
+        this.setState({
+          versions
+        });
       });
-      this.setState({
-        versions,
-      });
-    });
 
     try {
       const versionRegex = /^\d{1,3}\.\d{1,3}.\d{1,3}$/;
