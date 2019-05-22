@@ -8,7 +8,7 @@ var defaultOptions = {
 
 export default (userOptions, loaderContext: LoaderContext) => {
   var options = userOptions
-    ? Object.assign({}, defaultOptions, userOptions)
+    ? { ...defaultOptions, userOptions }
     : defaultOptions;
 
   return {

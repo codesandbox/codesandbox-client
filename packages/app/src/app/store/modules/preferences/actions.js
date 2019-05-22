@@ -38,10 +38,10 @@ export function changeKeybinding({ props, state }) {
 export function storeKeybindings({ state, settingsStore }) {
   const keybindings = state.get('preferences.settings.keybindings');
   const value = keybindings.reduce(
-    (currentValue, binding) =>
-      Object.assign(currentValue, {
-        [binding.key]: binding.bindings,
-      }),
+    (currentValue, binding) => ({
+      ...currentValue,
+      [binding.key]: binding.bindings,
+    }),
     {}
   );
 
