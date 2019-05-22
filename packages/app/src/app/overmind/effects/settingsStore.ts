@@ -29,10 +29,9 @@ export default {
       const value = this.get(allowedKeys[prop]);
 
       if (value !== undefined) {
-        return {
-          ...result,
+        return Object.assign(result, {
           [prop]: value,
-        };
+        });
       }
 
       return result;
