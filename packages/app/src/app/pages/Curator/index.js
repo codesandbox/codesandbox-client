@@ -32,7 +32,7 @@ const Curator = () => {
 
   const fetchPopularSandboxes = useCallback(
     date => {
-      popularSandboxesMounted(date);
+      popularSandboxesMounted({ date });
     },
     [popularSandboxesMounted]
   );
