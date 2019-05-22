@@ -296,11 +296,10 @@ function extractAbbreviation(line, pos, options) {
 	// make sure `pos` is within line range
 	pos = Math.min(line.length, Math.max(0, pos == null ? line.length : pos));
 
-	if (typeof options === 'boolean') {
-		options = Object.assign(defaultOptions, { lookAhead: options });
-	} else {
-		options = Object.assign(defaultOptions, options);
-	}
+	options = {
+    ...defaultOptions,
+    ...(typeof options === 'boolean' ? { lookAhead: options } : options),
+  };
 
 	if (options.lookAhead == null || options.lookAhead === true) {
 		pos = offsetPastAutoClosed(line, pos, options);

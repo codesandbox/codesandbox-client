@@ -1,48 +1,42 @@
-import React from 'react';
 import { debounce } from 'lodash-es';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import getScrollPos from '../utils/scroll';
 
-export default class LoadInView extends React.PureComponent {
-  state = {
-    show: false,
-  };
+const LoadInView = ({ children, style, ...props }) => {
+  const [show, setShow] = useState(false);
+  const el = useRef(null);
+  const elPos = useRef(null);
 
-  constructor(props) {
-    super(props);
-    this.listen = debounce(this.listen, 50);
-  }
+  useEffect(() => {
+    elPos.current = el.current.getBoundingClientRect().top;
+  }, []);
 
-  listen = () => {
-    if (!this.state.show && this.elPos && getScrollPos().y + 600 > this.elPos) {
+  const listenFn = useCallback(() => {
+    if (!show && elPos.current && getScrollPos().y + 600 > elPos.current) {
       requestAnimationFrame(() => {
-        this.setState({ show: true });
+        setShow(true);
       });
     }
-  };
+  }, [show]);
 
-  componentDidMount() {
-    this.elPos = this.el.getBoundingClientRect().top;
+  useEffect(() => {
+    const listen = debounce(listenFn, 50);
 
-    window.addEventListener('scroll', this.listen);
-  }
+    window.addEventListener('scroll', listen);
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.listen);
-  }
+    return () => window.removeEventListener('scroll', listen);
+  }, [listenFn]);
 
-  render() {
-    const { children, style, ...props } = this.props;
-    return (
-      <div
-        style={{ display: 'inline-block', width: '100%', ...style }}
-        ref={el => {
-          this.el = el;
-        }}
-        {...props}
-      >
-        {this.state.show && children}
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      ref={el}
+      style={{ display: 'inline-block', width: '100%', ...style }}
+      {...props}
+    >
+      {show && children}
+    </div>
+  );
+};
+
+export default LoadInView;

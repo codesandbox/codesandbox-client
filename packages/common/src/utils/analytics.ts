@@ -124,6 +124,9 @@ const isAllowedEvent = (eventName, secondArg) => {
       if (secondArg.id.startsWith('cursor')) {
         return false;
       }
+      if (secondArg.id === 'deleteLeft') {
+        return false;
+      }
     }
     return true;
   } catch (e) {

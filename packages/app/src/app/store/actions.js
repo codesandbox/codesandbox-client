@@ -5,6 +5,10 @@ import track, {
   identify,
   setUserId,
 } from '@codesandbox/common/lib/utils/analytics';
+import {
+  sandboxUrl,
+  editorUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
@@ -25,6 +29,28 @@ export function getSandbox({ props, api, path }) {
 
       return path.error({ error });
     });
+}
+
+/**
+ * Sometimes the alias is set as "id" in the url, if we already have that
+ * sandbox in the state we need to make sure that the id is set correctly.
+ * This function is reps
+ */
+export function setIdFromAlias({ props, state }) {
+  if (state.get(`editor.sandboxes.${props.id}`)) {
+    return {};
+  }
+
+  const sandboxes = state.get(`editor.sandboxes`).toJSON();
+  const matchingSandbox = Object.keys(sandboxes).find(
+    id => sandboxUrl(sandboxes[id]) === `${editorUrl()}${props.id}`
+  );
+
+  if (matchingSandbox) {
+    return { id: matchingSandbox };
+  }
+
+  return {};
 }
 
 export function callVSCodeCallback({ props }) {
@@ -186,16 +212,16 @@ export function moveModuleContent({ props, state }) {
 
   if (currentSandbox) {
     return {
-      sandbox: Object.assign({}, props.forkedSandbox, {
-        modules: props.forkedSandbox.modules.map(module =>
-          Object.assign(module, {
-            code: currentSandbox.modules.find(
-              currentSandboxModule =>
-                currentSandboxModule.shortid === module.shortid
-            ).code,
-          })
-        ),
-      }),
+      sandbox: {
+        ...props.forkedSandbox,
+        modules: props.forkedSandbox.modules.map(module => ({
+          ...module,
+          code: currentSandbox.modules.find(
+            currentSandboxModule =>
+              currentSandboxModule.shortid === module.shortid
+          ).code,
+        })),
+      },
     };
   }
 
