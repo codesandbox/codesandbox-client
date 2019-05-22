@@ -235,10 +235,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const { dependencies } = this;
     if (dependencies != null) {
       if (Object.keys(dependencies)) {
-        setTimeout(() => {
-          this.fetchDependencyTypings(dependencies);
-          this.getConfigSchemas();
-        }, this.hasNativeTypescript() ? 500 : 5000);
+        setTimeout(
+          () => {
+            this.fetchDependencyTypings(dependencies);
+            this.getConfigSchemas();
+          },
+          this.hasNativeTypescript() ? 500 : 5000
+        );
       }
     }
 

@@ -7,8 +7,7 @@
     "dev": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
-    "lint": "eslint .",
-    "format": "prettier --trailing-comma es5 --single-quote --write './**/*.js'"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@codesandbox/common": "^1.0.5",

@@ -166,13 +166,18 @@ export const forkSandbox = sequence('forkSandbox', [
       factories.track('Fork Sandbox', {}),
       set(state`editor.isForkingSandbox`, true),
       actions.forkSandbox,
-      actions.moveModuleContent,
-      setSandboxData,
-      set(state`editor.currentId`, props`sandbox.id`),
-      factories.addNotification('Forked sandbox!', 'success'),
-      factories.updateSandboxUrl(props`sandbox`),
-      ensurePackageJSON,
-      set(state`editor.isForkingSandbox`, false),
+      {
+        success: [
+          actions.moveModuleContent,
+          setSandboxData,
+          set(state`editor.currentId`, props`sandbox.id`),
+          factories.addNotification('Forked sandbox!', 'success'),
+          factories.updateSandboxUrl(props`sandbox`),
+          ensurePackageJSON,
+          set(state`editor.isForkingSandbox`, false),
+        ],
+        error: set(state`editor.isForkingSandbox`, false),
+      },
     ],
     false: [
       factories.track('Show Server Fork Sign In Modal', {}),
@@ -470,6 +475,8 @@ export const signInCli = [
 
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
+
+  actions.setIdFromAlias,
 
   when(
     state`editor.sandboxes.${props`id`}`,

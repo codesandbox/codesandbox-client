@@ -1,7 +1,7 @@
 ---
-title: "Git Committing and PRs"
-authors: ["CompuIves"]
-description: "CodeSandbox allows you to import, commit and make a pull requests to GitHub repositories."
+title: 'Git Committing and PRs'
+authors: ['CompuIves']
+description: 'CodeSandbox allows you to import, commit and make a pull requests to GitHub repositories.'
 ---
 
 ## Base Concept

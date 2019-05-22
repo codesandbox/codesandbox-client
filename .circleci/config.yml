@@ -30,6 +30,7 @@ aliases:
       - packages/dynamic-pages/node_modules
       - packages/homepage/node_modules
       - packages/node-services/node_modules
+      - packages/notifications/node_modules
       - packages/react-embed/node_modules
       - packages/react-sandpack/node_modules
       - packages/sandbox-hooks/node_modules
@@ -57,7 +58,7 @@ aliases:
     key: v17-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/app/www
-      - ./packages/app/.cache-loader
+      - ./packages/homepage/public
 
   - &save_prod_cache
     key: v17-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}

@@ -1,3 +1,5 @@
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+
 export function saveSandboxPrivacy({ api, state, props }) {
   const id = state.get('editor.currentId');
   return api
@@ -37,12 +39,16 @@ export function updateSandbox({ api, state }) {
     sandbox: {
       title: state.get('workspace.project.title'),
       description: state.get('workspace.project.description'),
+      alias: state.get('workspace.project.alias'),
     },
   };
 
   return api
     .put(`/sandboxes/${sandboxId}`, body)
-    .then(data => ({ data }))
+    .then(data => {
+      window.history.pushState({}, null, sandboxUrl(data));
+      return { data };
+    })
     .catch(error => ({ error }));
 }
 

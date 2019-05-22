@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import {
   Sandbox,
@@ -25,6 +24,7 @@ import { Spring } from 'react-spring/renderprops.cjs';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 
 import { notificationState } from '../../utils/notifications';
+import { getSandboxName } from '../../utils/get-sandbox-name';
 
 import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
@@ -34,7 +34,7 @@ import { NotificationStatus } from '@codesandbox/notifications';
 export type Props = {
   sandbox: Sandbox;
   settings: Settings;
-  onInitialized?: (preview: BasePreview) => (() => void); // eslint-disable-line no-use-before-define
+  onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
   currentModule?: Module;
   initialPath?: string;
@@ -72,8 +72,8 @@ type State = {
   showScreenshot: boolean;
 };
 
-const getSSEUrl = (id?: string, initialPath: string = '') =>
-  `https://${id ? id + '.' : ''}sse.${
+const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
+  `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
     process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
   }${initialPath}`;
 
@@ -188,8 +188,8 @@ class BasePreview extends React.Component<Props, State> {
       history: [],
       historyPosition: 0,
       urlInAddressBar: this.serverPreview
-        ? getSSEUrl(props.sandbox.id, props.initialPath)
-        : frameUrl(props.sandbox.id, props.initialPath || ''),
+        ? getSSEUrl(props.sandbox, props.initialPath)
+        : frameUrl(props.sandbox, props.initialPath || ''),
       url: null,
       overlayMessage: null,
       hibernated: false,
@@ -240,7 +240,7 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   setupSSESockets = async () => {
-    const hasInitialized = !!this.$socket;
+    const hasInitialized = Boolean(this.$socket);
 
     function onTimeout(comp: BasePreview) {
       comp.connectTimeout = null;
@@ -457,7 +457,7 @@ class BasePreview extends React.Component<Props, State> {
       this.props.sandbox &&
       prevProps.sandbox.id !== this.props.sandbox.id
     ) {
-      this.handleSandboxChange(this.props.sandbox.id);
+      this.handleSandboxChange(this.props.sandbox);
     }
   }
 
@@ -469,14 +469,14 @@ class BasePreview extends React.Component<Props, State> {
     window.open(this.state.urlInAddressBar, '_blank');
   };
 
-  handleSandboxChange = (newId: string) => {
+  handleSandboxChange = (sandbox: Sandbox) => {
     this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
 
     resetState();
 
     const url = this.serverPreview
-      ? getSSEUrl(newId, this.props.initialPath)
-      : frameUrl(newId, this.props.initialPath || '');
+      ? getSSEUrl(sandbox, this.props.initialPath)
+      : frameUrl(sandbox, this.props.initialPath || '');
 
     if (this.serverPreview) {
       this.initializeLastSent();
@@ -510,19 +510,22 @@ class BasePreview extends React.Component<Props, State> {
         registerFrame(
           source,
           this.serverPreview
-            ? getSSEUrl(this.props.sandbox.id)
-            : frameUrl(this.props.sandbox.id)
+            ? getSSEUrl(this.props.sandbox)
+            : frameUrl(this.props.sandbox)
         );
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
         }
 
-        setTimeout(() => {
-          // We show a screenshot of the sandbox (if available) on top of the preview if the frame
-          // hasn't loaded yet
-          this.setState({ showScreenshot: false });
-        }, this.serverPreview ? 0 : 600);
+        setTimeout(
+          () => {
+            // We show a screenshot of the sandbox (if available) on top of the preview if the frame
+            // hasn't loaded yet
+            this.setState({ showScreenshot: false });
+          },
+          this.serverPreview ? 0 : 600
+        );
 
         this.executeCodeImmediately(true);
       } else {
@@ -660,7 +663,7 @@ class BasePreview extends React.Component<Props, State> {
           externalResources: sandbox.externalResources,
           isModuleView: !this.props.isInProjectView,
           template: sandbox.template,
-          hasActions: !!this.props.onAction,
+          hasActions: Boolean(this.props.onAction),
         });
       }
     }
@@ -701,8 +704,8 @@ class BasePreview extends React.Component<Props, State> {
       (el as HTMLIFrameElement).src =
         url ||
         (this.serverPreview
-          ? getSSEUrl(this.props.sandbox.id)
-          : frameUrl(this.props.sandbox.id));
+          ? getSSEUrl(this.props.sandbox)
+          : frameUrl(this.props.sandbox));
     }
 
     this.setState({
@@ -781,9 +784,10 @@ class BasePreview extends React.Component<Props, State> {
       urlInAddressBar,
       overlayMessage,
     } = this.state;
+
     const url =
       urlInAddressBar ||
-      (this.serverPreview ? getSSEUrl(sandbox.id) : frameUrl(sandbox.id));
+      (this.serverPreview ? getSSEUrl(sandbox) : frameUrl(sandbox));
 
     if (noPreview) {
       // Means that preview is open in another tab definitely
@@ -835,11 +839,11 @@ class BasePreview extends React.Component<Props, State> {
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
                 src={
                   this.serverPreview
-                    ? getSSEUrl(sandbox.id, this.initialPath)
-                    : frameUrl(sandbox.id, this.initialPath)
+                    ? getSSEUrl(sandbox, this.initialPath)
+                    : frameUrl(sandbox, this.initialPath)
                 }
                 id="sandbox"
-                title={sandbox.title || sandbox.id}
+                title={getSandboxName(sandbox)}
                 style={{
                   ...style,
                   zIndex: 1,
@@ -851,37 +855,36 @@ class BasePreview extends React.Component<Props, State> {
                 }}
               />
 
-              {this.props.sandbox.screenshotUrl &&
-                style.opacity !== 1 && (
+              {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    width: '100%',
+                    position: 'absolute',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    top: 35,
+                    zIndex: 0,
+                  }}
+                >
                   <div
                     style={{
-                      overflow: 'hidden',
                       width: '100%',
-                      position: 'absolute',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      top: 35,
-                      zIndex: 0,
+                      height: '100%',
+                      filter: `blur(2px)`,
+                      transform: 'scale(1.025, 1.025)',
+                      backgroundImage: `url("${
+                        this.props.sandbox.screenshotUrl
+                      }")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPositionX: 'center',
                     }}
-                  >
-                    <div
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        filter: `blur(2px)`,
-                        transform: 'scale(1.025, 1.025)',
-                        backgroundImage: `url("${
-                          this.props.sandbox.screenshotUrl
-                        }")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPositionX: 'center',
-                      }}
-                    />
-                  </div>
-                )}
+                  />
+                </div>
+              )}
             </React.Fragment>
           )}
         </AnySpring>

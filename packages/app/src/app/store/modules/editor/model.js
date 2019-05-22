@@ -82,6 +82,7 @@ export const Sandbox = types.model({
   ),
   git: types.maybeNull(Git),
   id: types.string,
+  alias: types.maybeNull(types.string),
   likeCount: types.number,
   modules: types.array(Module),
   npmDependencies: types.map(types.string),

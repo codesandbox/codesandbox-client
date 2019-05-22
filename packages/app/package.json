@@ -3,9 +3,6 @@
   "version": "0.1.1",
   "license": "MIT",
   "private": true,
-  "resolutions": {
-    "uglify-es": "npm:terser"
-  },
   "scripts": {
     "start": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 node scripts/start.js",
     "start:sandbox": "cross-env SANDBOX_ONLY=true node scripts/start.js",
@@ -88,7 +85,6 @@
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^4.0.0-beta.1",
     "http-proxy-middleware": "^0.17.3",
-    "husky": "^0.14.3",
     "jest": "^21.2.1",
     "jest-image-snapshot": "^1.0.1",
     "jest-junit": "^3.4.1",
@@ -98,7 +94,6 @@
     "path-exists": "3.0.0",
     "path-override-webpack-plugin": "^0.1.2",
     "postcss-loader": "2.1.5",
-    "prettier": "^1.8.2",
     "preval.macro": "^1.0.1",
     "promise": "7.1.1",
     "raw-loader": "^0.5.1",
@@ -112,9 +107,9 @@
     "strip-ansi": "3.0.1",
     "style-loader": "^0.21.0",
     "sw-precache-webpack-plugin": "^0.11.5",
-    "terser": "^3.8.0",
+    "terser": "^3.17.0",
+    "terser-webpack-plugin": "^1.2.3",
     "typescript": "3.3.4000",
-    "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "1.0.1",
     "webpack": "^4.10.2",
     "webpack-bundle-analyzer": "^2.13.1",

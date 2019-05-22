@@ -1,4 +1,3 @@
-
 import { ConfigurationFile } from '../types';
 
 const config: ConfigurationFile = {

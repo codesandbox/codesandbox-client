@@ -45,6 +45,7 @@ type Props = {
   ) => void;
   selectedCount: number;
   deleteSandboxes: () => void;
+  exportSandboxes: () => void;
   permanentlyDeleteSandboxes: () => void;
   collectionPath: string; // eslint-disable-line react/no-unused-prop-types
   collectionTeamId: string | undefined;
@@ -57,6 +58,7 @@ type Props = {
   undeleteSandboxes: () => void;
   removedAt?: number;
   style?: React.CSSProperties;
+  alias: string | undefined;
 
   // React-DnD, lazy typings
   connectDragSource: any;
@@ -210,6 +212,15 @@ class SandboxItem extends React.PureComponent<Props, State> {
         ...items,
         [
           {
+            title: `Export ${selectedCount} Sandboxes`,
+            action: () => {
+              this.props.exportSandboxes();
+              return true;
+            },
+          },
+        ],
+        [
+          {
             title: `Move ${selectedCount} Sandboxes To Trash`,
             action: () => {
               this.props.deleteSandboxes();
@@ -250,25 +261,32 @@ class SandboxItem extends React.PureComponent<Props, State> {
             return true;
           },
         },
+        {
+          title: 'Export Sandbox',
+          action: () => {
+            this.props.exportSandboxes();
+            return true;
+          },
+        },
       ],
       this.props.isPatron &&
         [
           this.props.privacy !== 0 && {
-            title: `Make Sandbox Public`,
+            title: 'Make Sandbox Public',
             action: () => {
               this.props.setSandboxesPrivacy(0);
               return true;
             },
           },
           this.props.privacy !== 1 && {
-            title: `Make Sandbox Unlisted`,
+            title: 'Make Sandbox Unlisted',
             action: () => {
               this.props.setSandboxesPrivacy(1);
               return true;
             },
           },
           this.props.privacy !== 2 && {
-            title: `Make Sandbox Private`,
+            title: 'Make Sandbox Private',
             action: () => {
               this.props.setSandboxesPrivacy(2);
               return true;
@@ -304,7 +322,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
 
   openSandbox = (openNewWindow = false) => {
     // @ts-ignore Git sandboxes aren't shown here anyway
-    const url = sandboxUrl({ id: this.props.id });
+    const url = sandboxUrl({ id: this.props.id, alias: this.props.alias });
 
     if (!this.props.removedAt) {
       if (openNewWindow === true) {
@@ -442,7 +460,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
                   // check for cmd click
                   const cmd = event.ctrlKey || event.metaKey;
 
-                  this.openSandbox(!!cmd);
+                  this.openSandbox(Boolean(cmd));
                 }}
                 onBlur={this.handleOnBlur}
                 onFocus={this.handleOnFocus}

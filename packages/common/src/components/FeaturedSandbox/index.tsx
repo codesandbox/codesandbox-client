@@ -56,14 +56,12 @@ export type FeaturedSandboxProps = (SingleSandboxProps &
   title: string;
   description: string;
   height?: number;
-  pickSandbox: (
-    args: {
-      id: string;
-      title: string;
-      description: string;
-      screenshotUrl: string;
-    }
-  ) => void;
+  pickSandbox: (args: {
+    id: string;
+    title: string;
+    description: string;
+    screenshotUrl: string;
+  }) => void;
 };
 
 export type FeaturedSandboxState = {

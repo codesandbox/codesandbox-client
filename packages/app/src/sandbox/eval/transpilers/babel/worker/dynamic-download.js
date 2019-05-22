@@ -59,7 +59,7 @@ export const resolveAsyncModule = (
         if (found) {
           r(message.data);
         } else {
-          reject(message.data);
+          reject(new Error("Could not find path: '" + path + "'."));
         }
         self.removeEventListener('message', resolveFunc);
       }

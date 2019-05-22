@@ -1,4 +1,3 @@
-
 import Transpiler from '../';
 import { LoaderContext } from '../../transpiled-module';
 

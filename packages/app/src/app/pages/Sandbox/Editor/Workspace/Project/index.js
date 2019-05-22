@@ -11,6 +11,7 @@ import TeamIcon from 'react-icons/lib/md/people';
 
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import PrivacyStatus from 'app/components/PrivacyStatus';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import EditableTags from 'app/components/EditableTags';
@@ -27,6 +28,7 @@ import {
   StatsContainer,
   PrivacyContainer,
   Title,
+  Alias,
   Description,
   EditPen,
   PropertyValue,
@@ -39,10 +41,15 @@ class Project extends React.Component {
   state = {
     editingTitle: false,
     editingDescription: false,
+    editingAlias: false,
   };
 
   setTitleEditing = () => {
     this.setState({ editingTitle: true });
+  };
+
+  setAliasEditing = () => {
+    this.setState({ editingAlias: true });
   };
 
   setDescriptionEditing = () => {
@@ -82,6 +89,7 @@ class Project extends React.Component {
     this.setState({
       editingTitle: false,
       editingDescription: false,
+      editingAlias: false,
     });
   };
 
@@ -101,7 +109,6 @@ class Project extends React.Component {
     const workspace = store.workspace;
 
     const template = getTemplateDefinition(sandbox.template);
-
     return (
       <div style={{ marginBottom: '1rem' }}>
         <Item style={{ marginTop: '.5rem' }}>
@@ -132,7 +139,7 @@ class Project extends React.Component {
             </WorkspaceInputContainer>
           ) : (
             <Title>
-              {workspace.project.title || sandbox.title || sandbox.id}
+              {workspace.project.title || getSandboxName(sandbox)}
               {editable && <EditPen onClick={this.setTitleEditing} />}
             </Title>
           )}
@@ -177,23 +184,58 @@ class Project extends React.Component {
               {editable && <EditPen onClick={this.setDescriptionEditing} />}
             </Description>
           )}
+          {/* Disable until we also moved SSE over */}
+          {store.isPatron && false ? (
+            <>
+              {this.state.editingAlias ? (
+                <WorkspaceInputContainer>
+                  <input
+                    value={workspace.project.alias}
+                    onChange={event => {
+                      signals.workspace.valueChanged({
+                        field: 'alias',
+                        value: event.target.value,
+                      });
+                    }}
+                    type="text"
+                    onBlur={this.updateSandboxInfo}
+                    onKeyUp={event => {
+                      if (event.keyCode === 13) {
+                        this.updateSandboxInfo();
+                      }
+                    }}
+                    ref={el => {
+                      if (el) {
+                        el.focus();
+                      }
+                    }}
+                    placeholder="Alias"
+                  />
+                </WorkspaceInputContainer>
+              ) : (
+                <Alias>
+                  {workspace.project.alias || sandbox.alias}
+                  {editable && <EditPen onClick={this.setAliasEditing} />}
+                </Alias>
+              )}
+            </>
+          ) : null}
         </Item>
 
-        {!sandbox.team &&
-          !!sandbox.author && (
-            <Item>
-              <UserLink
-                title={sandbox.author.username}
-                to={profileUrl(sandbox.author.username)}
-              >
-                <UserWithAvatar
-                  username={sandbox.author.username}
-                  avatarUrl={sandbox.author.avatarUrl}
-                  subscriptionSince={sandbox.author.subscriptionSince}
-                />
-              </UserLink>
-            </Item>
-          )}
+        {!sandbox.team && !!sandbox.author && (
+          <Item>
+            <UserLink
+              title={sandbox.author.username}
+              to={profileUrl(sandbox.author.username)}
+            >
+              <UserWithAvatar
+                username={sandbox.author.username}
+                avatarUrl={sandbox.author.avatarUrl}
+                subscriptionSince={sandbox.author.subscriptionSince}
+              />
+            </UserLink>
+          </Item>
+        )}
 
         {!!sandbox.team && (
           <Tooltip content="This sandbox is owned by this team">

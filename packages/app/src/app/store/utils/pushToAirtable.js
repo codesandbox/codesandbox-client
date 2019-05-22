@@ -1,5 +1,7 @@
 export default async ({ feedback, emoji, sandboxId, username, email }) => {
-  const Airtable = await import(/* webpackChunkName: 'airtable' */ './setAirtable');
+  const Airtable = await import(
+    /* webpackChunkName: 'airtable' */ './setAirtable'
+  );
   const base = Airtable.default.base('appzdQFPct2p9gFZi');
 
   return new Promise((resolve, reject) => {

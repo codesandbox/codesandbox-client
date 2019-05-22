@@ -54,7 +54,10 @@ export const updateSandboxInfo = [
     state`workspace.project.title`,
     state`editor.sandboxes.${state`editor.currentId`}.description`,
     state`workspace.project.description`,
-    (t1, t2, d1, d2) => (t2 && t1 !== t2) || (d2 && d1 !== d2)
+    state`editor.sandboxes.${state`editor.currentId`}.alias`,
+    state`workspace.project.alias`,
+    (t1, t2, d1, d2, a1, a2) =>
+      (t2 && t1 !== t2) || (d2 && d1 !== d2) || (a2 && a1 !== a2)
   ),
   {
     true: [
@@ -77,6 +80,15 @@ export const updateSandboxInfo = [
         ) {
           track('Sandbox - Update Description');
         }
+
+        if (
+          state.get('workspace.project.alias') &&
+          state.get(
+            `editor.sandboxes.${state.get('editor.currentId')}.alias`
+          ) !== state.get('workspace.project.alias')
+        ) {
+          track('Sandbox - Update Alias');
+        }
       },
 
       set(
@@ -86,6 +98,10 @@ export const updateSandboxInfo = [
       set(
         state`editor.sandboxes.${state`editor.currentId`}.description`,
         state`workspace.project.description`
+      ),
+      set(
+        state`editor.sandboxes.${state`editor.currentId`}.alias`,
+        state`workspace.project.alias`
       ),
       actions.updateSandbox,
       updateSandboxPackage,

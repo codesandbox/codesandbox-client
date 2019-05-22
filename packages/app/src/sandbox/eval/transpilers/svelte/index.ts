@@ -17,11 +17,12 @@ class SvelteTranspiler extends WorkerTranspiler {
   doTranspilation(code: string, loaderContext: LoaderContext) {
     const packageJSON = loaderContext.options.configurations.package;
     const svelte =
-      packageJSON &&
-      packageJSON.parsed &&
-      packageJSON.parsed.devDependencies &&
-      packageJSON.parsed.devDependencies.svelte &&
-      semver.coerce(packageJSON.parsed.devDependencies.svelte) || semver.coerce(packageJSON.parsed.dependencies.svelte);
+      (packageJSON &&
+        packageJSON.parsed &&
+        packageJSON.parsed.devDependencies &&
+        packageJSON.parsed.devDependencies.svelte &&
+        semver.coerce(packageJSON.parsed.devDependencies.svelte)) ||
+      semver.coerce(packageJSON.parsed.dependencies.svelte);
 
     return new Promise<TranspilerResult>((resolve, reject) => {
       const path = loaderContext.path;

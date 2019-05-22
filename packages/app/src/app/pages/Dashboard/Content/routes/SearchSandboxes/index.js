@@ -27,6 +27,8 @@ const SearchSandboxes = ({ store }) => (
             (lastSandboxes === null || lastSandboxes !== sandboxes)
           ) {
             searchIndex = new Fuse(sandboxes, {
+              threshold: 0.1,
+              distance: 1000,
               keys: [
                 { name: 'title', weight: 0.5 },
                 { name: 'description', weight: 0.3 },
@@ -65,7 +67,7 @@ const SearchSandboxes = ({ store }) => (
               isLoading={loading}
               Header={Header}
               page="search"
-              hideOrder={!!search}
+              hideOrder={Boolean(search)}
               sandboxes={loading ? [] : sandboxes}
               possibleTemplates={possibleTemplates}
             />

@@ -15,13 +15,11 @@ This extension adds a button to all github repos that will open that repo in Cod
 
 ![load](https://developer.chrome.com/static/images/get_started/load_extension.png)
 
-
 ## How to run in Firefox
 
 - Open about:debugging
 - Click "Load Temporary Add-on"
 - Open the extension's directory and select any file inside the extension.
-
 
 ## How to publish
 

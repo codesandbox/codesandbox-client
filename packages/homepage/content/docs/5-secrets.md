@@ -1,6 +1,6 @@
 ---
-title: "Secrets"
-authors: ["SaraVieira"]
+title: 'Secrets'
+authors: ['SaraVieira']
 description: "CodeSandbox allows you to store secrets so you don't share your keys"
 ---
 

@@ -35,14 +35,12 @@ export type Props = {
   noHeight?: boolean;
   defaultHeight?: number;
   noMargin?: boolean;
-  selectSandbox: (
-    params: {
-      id: string;
-      title: string;
-      description: string;
-      screenshotUrl: string;
-    }
-  ) => void;
+  selectSandbox: (params: {
+    id: string;
+    title: string;
+    description: string;
+    screenshotUrl: string;
+  }) => void;
 };
 
 export default class WideSandbox extends React.PureComponent<Props> {

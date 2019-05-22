@@ -1,7 +1,7 @@
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
@@ -34,21 +34,7 @@ module.exports = merge(commonConfig, {
   stats: 'verbose',
 
   optimization: {
-    minimizer: [
-      new UglifyJSPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true,
-        uglifyOptions: {
-          mangle: {
-            safari10: true,
-          },
-          output: {
-            comments: false,
-          },
-        },
-      }),
-    ],
+    minimizer: [new TerserJSPlugin({ parallel: true })],
     concatenateModules: true, // ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin

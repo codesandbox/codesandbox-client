@@ -5,6 +5,10 @@ import track, {
   identify,
   setUserId,
 } from '@codesandbox/common/lib/utils/analytics';
+import {
+  sandboxUrl,
+  editorUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
@@ -25,6 +29,28 @@ export function getSandbox({ props, api, path }) {
 
       return path.error({ error });
     });
+}
+
+/**
+ * Sometimes the alias is set as "id" in the url, if we already have that
+ * sandbox in the state we need to make sure that the id is set correctly.
+ * This function is reps
+ */
+export function setIdFromAlias({ props, state }) {
+  if (state.get(`editor.sandboxes.${props.id}`)) {
+    return {};
+  }
+
+  const sandboxes = state.get(`editor.sandboxes`).toJSON();
+  const matchingSandbox = Object.keys(sandboxes).find(
+    id => sandboxUrl(sandboxes[id]) === `${editorUrl()}${props.id}`
+  );
+
+  if (matchingSandbox) {
+    return { id: matchingSandbox };
+  }
+
+  return {};
 }
 
 export function callVSCodeCallback({ props }) {
@@ -52,6 +78,7 @@ export function callVSCodeCallbackError({ props }) {
 export function setWorkspace({ controller, state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');
+  state.set('workspace.project.alias', props.sandbox.alias || '');
 
   const items = getItems(controller.getState());
   const defaultItem = items.find(i => i.defaultOpen) || items[0];
@@ -168,7 +195,7 @@ export function getGitChanges({ api, state }) {
     .then(gitChanges => ({ gitChanges }));
 }
 
-export function forkSandbox({ state, props, api }) {
+export function forkSandbox({ state, props, api, path }) {
   const sandboxId = props.sandboxId || state.get('editor.currentId');
   const url = sandboxId.includes('/')
     ? `/sandboxes/fork/${sandboxId}`
@@ -176,7 +203,8 @@ export function forkSandbox({ state, props, api }) {
 
   return api
     .post(url, props.body || {})
-    .then(data => ({ forkedSandbox: data }));
+    .then(data => path.success({ forkedSandbox: data }))
+    .catch(error => path.error({ error }));
 }
 
 export function moveModuleContent({ props, state }) {
@@ -398,7 +426,7 @@ export function createPackageJSON({ props }) {
 export function getContributors({ state }) {
   return window
     .fetch(
-      'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
+      'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
     )
     .then(x => x.json())
     .then(x => x.contributors.map(u => u.login))

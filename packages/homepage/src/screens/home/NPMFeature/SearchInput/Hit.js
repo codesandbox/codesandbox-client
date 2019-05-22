@@ -1,11 +1,9 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-
 import { TimelineMax } from 'gsap';
+import React, { useEffect, useRef } from 'react';
+import styled, { css } from 'styled-components';
 
 const Container = styled.a`
   transition: 0.3s ease all;
-  display: block;
   margin-bottom: 0.5rem;
   padding: 1rem;
   display: flex;
@@ -38,37 +36,35 @@ const Count = styled.div`
   font-size: 1.125rem;
 `;
 
-export default class Hit extends React.PureComponent {
-  componentDidMount() {
-    this.tl = new TimelineMax().fromTo(
-      this.el,
+const Hit = ({ hit: { count, value } }) => {
+  const el = useRef(null);
+  const tl = useRef(null);
+
+  useEffect(() => {
+    tl.current = new TimelineMax().fromTo(
+      el.current,
       0.1,
       { opacity: 0 },
       { opacity: 1 }
     );
-  }
+  }, []);
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props || nextProps.hit.value !== this.props.hit.value) {
-      this.tl.restart();
-    }
-  }
+  useEffect(() => {
+    tl.current.restart();
+  }, [value]);
 
-  render() {
-    return (
-      <Container
-        ref={el => {
-          this.el = el;
-        }}
-        href={`https://codesandbox.io/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${
-          this.props.hit.value
-        }&page=1`}
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        <Title>{this.props.hit.value}</Title>
-        <Count>{this.props.hit.count.toLocaleString('en-US')}</Count>
-      </Container>
-    );
-  }
-}
+  return (
+    <Container
+      href={`https://codesandbox.io/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${value}&page=1`}
+      ref={el}
+      rel="noreferrer noopener"
+      target="_blank"
+    >
+      <Title>{value}</Title>
+
+      <Count>{count.toLocaleString('en-US')}</Count>
+    </Container>
+  );
+};
+
+export default Hit;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   position: relative;
   height: 100%;
-  border-top: 2px solid ${props => props.theme['panel.border']}
+  border-top: 2px solid ${props => props.theme['panel.border']};
 `;
 
 export const Item = styled.div`

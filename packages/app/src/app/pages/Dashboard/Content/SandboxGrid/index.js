@@ -4,12 +4,16 @@ import { inject, observer } from 'mobx-react';
 import moment from 'moment';
 import { uniq } from 'lodash-es';
 import { basename } from 'path';
+import { camelizeKeys } from 'humps';
 
 import track from '@codesandbox/common/lib/utils/analytics';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
 import Table from 'react-virtualized/dist/commonjs/Table';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import downloadZip from 'app/store/providers/Utils/create-zip';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import 'react-virtualized/styles.css';
 
 import SandboxItem from '../SandboxCard';
@@ -44,6 +48,8 @@ class SandboxGrid extends React.Component<*, State> {
   state = {
     selection: undefined,
   };
+
+  loadedSandboxes = {};
 
   setSandboxesSelected = (ids, { additive = false, range = false } = {}) => {
     const { store, sandboxes, signals } = this.props;
@@ -114,6 +120,39 @@ class SandboxGrid extends React.Component<*, State> {
 
   setSandboxesPrivacy = (privacy: number) => {
     setSandboxesPrivacy(this.props.store.dashboard.selectedSandboxes, privacy);
+  };
+
+  getSandbox = async sandboxId => {
+    if (this.loadedSandboxes[sandboxId]) {
+      return Promise.resolve(this.loadedSandboxes[sandboxId]);
+    }
+
+    return fetch(`${protocolAndHost()}/api/v1/sandboxes/${sandboxId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('jwt'))}`,
+      },
+    })
+      .then(x => x.json())
+      .then(x => {
+        const data = camelizeKeys(x.data);
+        this.loadedSandboxes[data.id] = data;
+        return data;
+      });
+  };
+
+  exportSandboxes = async () => {
+    const sandboxIds = uniq(
+      this.props.sandboxes
+        .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
+        .map(s => s.id)
+    );
+    const sandboxes = await Promise.all(
+      sandboxIds.map(s => this.getSandbox(s))
+    );
+    return Promise.all(
+      sandboxes.map(s => downloadZip(s, s.modules, s.directories))
+    );
   };
 
   onMouseDown = (event: MouseEvent) => {
@@ -243,7 +282,8 @@ class SandboxGrid extends React.Component<*, State> {
       <SandboxItem
         isScrolling={this.isScrolling}
         id={item.id}
-        title={item.title || item.id}
+        title={getSandboxName(item)}
+        alias={item.alias}
         details={editedSince}
         style={style}
         key={key}
@@ -262,6 +302,7 @@ class SandboxGrid extends React.Component<*, State> {
         deleteSandboxes={this.deleteSandboxes}
         undeleteSandboxes={this.undeleteSandboxes}
         permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
+        exportSandboxes={this.exportSandboxes}
         setSandboxesPrivacy={this.setSandboxesPrivacy}
         page={this.props.page}
         privacy={item.privacy}

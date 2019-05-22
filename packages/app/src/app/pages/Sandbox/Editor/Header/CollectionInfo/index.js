@@ -7,7 +7,7 @@ import { Spring } from 'react-spring/renderprops';
 
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Container, SandboxName, SandboxInput, FolderName } from './elements';
 
 class CollectionInfo extends React.Component {
@@ -17,7 +17,7 @@ class CollectionInfo extends React.Component {
     collectionNameWidth: undefined,
   };
 
-  sandboxName = () => this.props.sandbox.title || 'Untitled';
+  sandboxName = () => getSandboxName(this.props.sandbox) || 'Untitled';
 
   updateSandboxInfo = () => {
     this.props.signals.workspace.sandboxInfoUpdated();

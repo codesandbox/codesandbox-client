@@ -104,7 +104,7 @@ We built another library called `react-sandpack` for usage with `sandpack`. This
 
 An example implementation:
 
-```jsx
+```jsx harmony
 import React from 'react';
 import { render } from 'react-dom';
 import {
@@ -137,7 +137,7 @@ const App = () => (
 render(<App />, document.getElementById('root'));
 ```
 
-The above code will render a File Explorer, a working code editor and a preview with browser navigation. We have many more components, like a Jest test view or a console. For more info about `react-sandpack` you can go here: https://github.com/CompuIves/codesandbox-client/tree/master/packages/react-sandpack.
+The above code will render a File Explorer, a working code editor and a preview with browser navigation. We have many more components, like a Jest test view or a console. For more info about `react-sandpack` you can go here: https://github.com/codesandbox/codesandbox-client/tree/master/packages/react-sandpack.
 
 > It would be really cool if we would have more libraries that uses this library as a basis. Like `vue-sandpack` and `angular-sandpack`. Or even a library that just exposes components that use `sandpack`.
 

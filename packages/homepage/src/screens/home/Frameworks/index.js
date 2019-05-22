@@ -95,6 +95,11 @@ const Icons = styled.div`
   margin-bottom: 4rem;
   min-width: 100%;
 
+  @media (max-width: 800px) {
+    margin: 2rem 0;
+    width: 100%;
+  }
+
   ${media.phone`
     margin: 2rem 0;
     width: 100%;
@@ -106,6 +111,11 @@ const ScrollAtMobile = styled.div`
   flex: 1;
   justify-content: space-around;
   min-width: 100%;
+
+  @media (max-width: 800px) {
+    justify-content: flex-start;
+    overflow-x: scroll;
+  }
 
   ${media.phone`
     justify-content: flex-start;
@@ -124,6 +134,22 @@ const IconContainer = styled.div`
   height: 128px;
   img {
     margin-bottom: 0;
+  }
+
+  @media (max-width: 800px) {
+    flex-shrink: 0;
+    width: 96px;
+    height: 96px;
+
+    svg {
+      width: 60px;
+      height: 60px;
+    }
+
+    img {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   ${media.phone`

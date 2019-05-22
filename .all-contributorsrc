@@ -1,6 +1,6 @@
 {
   "projectName": "codesandbox-client",
-  "projectOwner": "CompuIves",
+  "projectOwner": "codesandbox",
   "files": [
     "README.md"
   ],
@@ -1173,6 +1173,46 @@
       "name": "Evan Bacon",
       "avatar_url": "https://avatars1.githubusercontent.com/u/9664363?v=4",
       "profile": "https://twitter.com/baconbrix",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "MichaelDeBoey",
+      "name": "Michaël De Boey",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6643991?v=4",
+      "profile": "https://michaeldeboey.be",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "infra",
+        "tool"
+      ]
+    },
+    {
+      "login": "gabeeden",
+      "name": "gabeeden",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/14077091?v=4",
+      "profile": "https://github.com/gabeeden",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "twhite96",
+      "name": "Tiffany White",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7698292?v=4",
+      "profile": "https://tiffanywhite.dev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "JABedford",
+      "name": "James Bedford",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/32302360?v=4",
+      "profile": "http://www.dopest.tech",
       "contributions": [
         "code"
       ]

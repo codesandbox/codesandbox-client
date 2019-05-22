@@ -1,5 +1,3 @@
-
-
 import Template, { ParsedConfigurationFiles } from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';

@@ -15,7 +15,9 @@ export default ({ templateSandboxes, badges, username }) => {
     <BadgeAside>
       <H3>Achievement Badges</H3>
       <BadgeWrapper>
-        {badges.map(badge => <Badge key={badge.id} badge={badge} size={64} />)}
+        {badges.map(badge => (
+          <Badge key={badge.id} badge={badge} size={64} />
+        ))}
 
         {Object.keys(templateSandboxes).map(
           key =>

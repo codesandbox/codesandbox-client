@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Input from './Input';
@@ -17,50 +17,50 @@ const Legend = styled.div`
   color: white;
 `;
 
-// eslint-disable-next-line
-export default class SearchInput extends React.PureComponent {
-  state = {
-    hits: [],
-  };
+const SearchInput = () => {
+  const [hits, setHits] = useState([]);
 
-  componentDidMount() {
-    this.searchQuery('');
-  }
-
-  searchQuery = (query: string) => {
+  const searchQuery = (query: string) => {
     searchFacets({
       facet: 'npm_dependencies.dependency',
       query,
       hitsPerPage: 3,
     }).then(({ facetHits }) => {
-      this.setState({
-        hits: facetHits,
-      });
+      setHits(facetHits);
     });
   };
 
-  render() {
-    return (
-      <div style={{ width: '100%' }}>
-        <Input searchQuery={this.searchQuery} />
-        <Legend>
-          <div>Dependency</div>
-          <div>Sandbox Count</div>
-        </Legend>
-        {this.state.hits.map(hit => <Hit key={hit.value} hit={hit} />)}
-        <a
-          href="https://www.algolia.com/?utm_source=algoliaclient&utm_medium=website&utm_content=codesandbox.io&utm_campaign=poweredby"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          <img
-            alt="Algolia"
-            style={{ marginTop: '1rem' }}
-            width={160}
-            src={algoliaImage}
-          />
-        </a>
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    searchQuery('');
+  }, []);
+
+  return (
+    <div style={{ width: '100%' }}>
+      <Input searchQuery={searchQuery} />
+
+      <Legend>
+        <div>Dependency</div>
+        <div>Sandbox Count</div>
+      </Legend>
+
+      {hits.map(hit => (
+        <Hit key={hit.value} hit={hit} />
+      ))}
+
+      <a
+        href="https://www.algolia.com/?utm_source=algoliaclient&utm_medium=website&utm_content=codesandbox.io&utm_campaign=poweredby"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        <img
+          alt="Algolia"
+          style={{ marginTop: '1rem' }}
+          width={160}
+          src={algoliaImage}
+        />
+      </a>
+    </div>
+  );
+};
+
+export default SearchInput;

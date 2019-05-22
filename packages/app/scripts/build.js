@@ -130,9 +130,9 @@ function build(previousSizeMap) {
     console.log(chalk.green('Compiled successfully.'));
     console.log();
 
-    console.log('File sizes after gzip:');
-    console.log();
-    printFileSizes(stats, previousSizeMap);
+    // console.log('File sizes after gzip:');
+    // console.log();
+    // printFileSizes(stats, previousSizeMap);
 
     // fs.writeFile(
     //   paths.appBuild + '/stats.json',

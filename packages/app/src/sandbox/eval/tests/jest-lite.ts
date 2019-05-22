@@ -122,8 +122,9 @@ export default class TestRunner {
     const { window: jsdomWindow } = this.dom;
     const { document: jsdomDocument } = jsdomWindow;
 
-    // Date is not set correctly on window in JSDOM. This breaks Jest
+    // Set the modules that are not set on JSDOM
     jsdomWindow.Date = Date;
+    jsdomWindow.fetch = fetch;
 
     return {
       ...jestTestHooks,
@@ -325,7 +326,7 @@ export default class TestRunner {
       name: error.name,
       message: error.message,
       stack: error.stack,
-      matcherResult: !!error.matcherResult,
+      matcherResult: Boolean(error.matcherResult),
       mappedErrors,
     };
   }

@@ -111,7 +111,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const isOpen = !!props.viewConfig.open;
+    const isOpen = Boolean(props.viewConfig.open);
 
     this.allViews = props.addedViews
       ? { ...VIEWS, ...props.addedViews }

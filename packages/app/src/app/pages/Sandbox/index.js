@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import NotFound from 'app/pages/common/NotFound';
 import Navigation from 'app/pages/common/Navigation';
@@ -45,6 +46,7 @@ class SandboxPage extends React.Component {
 
   fetchSandbox = () => {
     const id = this.props.match.params.id;
+
     this.props.signals.editor.sandboxChanged({ id });
   };
 
@@ -91,29 +93,25 @@ class SandboxPage extends React.Component {
               {hasLogIn ? 'Dashboard' : 'Homepage'}
             </Button>
           </div>
-          {hasLogIn &&
-            isGithub &&
-            !hasPrivateAccess && (
+          {hasLogIn && isGithub && !hasPrivateAccess && (
+            <div style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}>
               <div
-                style={{ maxWidth: 400, marginTop: '2.5rem', width: '100%' }}
+                style={{
+                  fontWeight: 300,
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  marginBottom: '1rem',
+                  fontSize: '1rem',
+                  textAlign: 'center',
+                  lineHeight: 1.6,
+                }}
               >
-                <div
-                  style={{
-                    fontWeight: 300,
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    marginBottom: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'center',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Did you try to open a private GitHub repository and are you a{' '}
-                  <Link to="/patron">patron</Link>? Then you might need to get
-                  private access:
-                </div>
-                <GithubIntegration small />
+                Did you try to open a private GitHub repository and are you a{' '}
+                <Link to="/patron">patron</Link>? Then you might need to get
+                private access:
               </div>
-            )}
+              <GithubIntegration small />
+            </div>
+          )}
         </React.Fragment>
       );
     }
@@ -177,7 +175,7 @@ class SandboxPage extends React.Component {
     const sandbox = store.editor.currentSandbox;
 
     if (sandbox) {
-      document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
+      document.title = `${getSandboxName(sandbox)} - CodeSandbox`;
     }
 
     return (

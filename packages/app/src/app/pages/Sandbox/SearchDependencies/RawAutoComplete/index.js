@@ -28,8 +28,8 @@ function getVersion(value: string, hit) {
   return value.indexOf('@') > 0
     ? value.split('@')[1]
     : hit
-      ? hit.version
-      : null;
+    ? hit.version
+    : null;
 }
 
 function getIsValid(value: string, hit, version: string) {
@@ -66,8 +66,8 @@ class RawAutoComplete extends React.Component {
     const autoCompletedQuery = isExplicitVersion(this.state.value)
       ? null
       : hit && isValid
-        ? hit.name + '@' + hit.version
-        : null;
+      ? hit.name + '@' + hit.version
+      : null;
 
     return (
       <Downshift itemToString={h => (h ? h.name : h)} onSelect={onSelect}>
@@ -78,8 +78,8 @@ class RawAutoComplete extends React.Component {
                 {isExplicitVersion(this.state.value)
                   ? this.state.value
                   : hit
-                    ? hit.name
-                    : currentRefinement}
+                  ? hit.name
+                  : currentRefinement}
                 <span
                   css={{
                     color: 'var(--color-white-3)',
@@ -88,8 +88,8 @@ class RawAutoComplete extends React.Component {
                   {isExplicitVersion(this.state.value)
                     ? null
                     : hit && isValid
-                      ? '@' + hit.version
-                      : null}
+                    ? '@' + hit.version
+                    : null}
                 </span>
               </SuggestionInput>
             )}

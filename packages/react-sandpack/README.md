@@ -8,7 +8,7 @@ You can install this package by running `npm i --save @codesandbox/react-sandpac
 
 An example implementation of this is:
 
-```jsx
+```jsx harmony
 import React from 'react';
 import { render } from 'react-dom';
 import {
@@ -17,7 +17,7 @@ import {
   BrowserPreview,
   SandpackProvider,
 } from 'react-sandpack/es/components';
-import "react-smooshpack/dist/styles.css";
+import 'react-smooshpack/dist/styles.css';
 
 const files = {
   '/index.js': {
@@ -48,7 +48,7 @@ This renders a simple `FileExplorer`, with an editor and a preview with navigati
 
 We expose the full API of Sandpack, you can access it by using a `SandpackConsumer` or the `withLive` function, both exported:
 
-```jsx
+```jsx harmony
 <SandpackConsumer>
   {sandpack => {
     // Your logic!

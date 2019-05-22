@@ -16,18 +16,28 @@ import {
 } from '../components/PostElements';
 import { makePost } from '../utils/makePosts';
 
-// UNCOMMENT AT THE BOTTOM IF IT BREAKS
-// GATSBY DOES NOT LET YOU HAVE FIELDS THAT DON'T EXIST YET
-
 export default ({ data: { feedMediumBlog, markdownRemark } }) => {
-  const { creator, title, content, date, photo, featuredImage } = makePost(
-    markdownRemark,
-    feedMediumBlog
-  );
+  const {
+    creator,
+    title,
+    content,
+    date,
+    photo,
+    featuredImage,
+    description,
+  } = makePost(markdownRemark, feedMediumBlog);
+
+  const featuredImageUrl = (featuredImage || '').includes('http')
+    ? featuredImage
+    : `https://codesandbox.io${featuredImage}`;
   return (
     <Layout>
       <Container style={{ overflowX: 'auto' }}>
-        <TitleAndMetaTags title={`${title} - CodeSandbox Blog`} />
+        <TitleAndMetaTags
+          title={`${title} - CodeSandbox Blog`}
+          image={featuredImageUrl}
+          description={description}
+        />
         <PageContainer width={800}>
           <Title>{title}</Title>
           <aside
@@ -75,18 +85,19 @@ export const pageQuery = graphql`
         encoded
       }
     }
-    # UNCOMMENT ME
-    # markdownRemark(id: { eq: $id }) {
-    #   html
-    # frontmatter {
-    #   featuredImage
-    #   slug
-    #   authors
-    #   photo
-    #   title
-    #   description
-    #   date
-    # }
-    # }
+    markdownRemark(id: { eq: $id }) {
+      html
+      frontmatter {
+        featuredImage {
+          publicURL
+        }
+        slug
+        authors
+        photo
+        title
+        description
+        date
+      }
+    }
   }
 `;

@@ -242,15 +242,14 @@ const Header = ({ store, signals, zenMode }: Props) => {
           />
         )}
 
-        {store.user &&
-          store.user.curatorAt && (
-            <PickButton
-              style={{ fontSize: '.75rem', marginLeft: '0.5rem' }}
-              secondary={sandbox.owned}
-              signals={signals}
-              store={store}
-            />
-          )}
+        {store.user && store.user.curatorAt && (
+          <PickButton
+            style={{ fontSize: '.75rem', marginLeft: '0.5rem' }}
+            secondary={sandbox.owned}
+            signals={signals}
+            store={store}
+          />
+        )}
 
         <ShareButton
           style={{ fontSize: '.75rem', margin: '0 1rem' }}

@@ -2,6 +2,7 @@ import React from 'react';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
   ARROW_LEFT,
   ARROW_RIGHT,
@@ -206,7 +207,7 @@ export default class Explore extends React.PureComponent {
                   return (
                     <DotContainer key={sandbox.sandboxId}>
                       <Dot
-                        aria-label={sandbox.title || sandbox.id}
+                        aria-label={getSandboxName(sandbox)}
                         active={i === this.state.featuredSandboxIndex}
                         color={template.color()}
                         onClick={() =>

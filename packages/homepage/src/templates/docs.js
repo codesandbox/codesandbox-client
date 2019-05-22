@@ -238,7 +238,7 @@ export default class Docs extends React.Component {
                 <Heading>
                   <Title>{frontmatter.title}</Title>
                   <Edit
-                    href={`https://github.com/CompuIves/codesandbox-client/tree/master/packages/homepage/content/${
+                    href={`https://github.com/codesandbox/codesandbox-client/tree/master/packages/homepage/content/${
                       fields.path
                     }`}
                     target="_blank"

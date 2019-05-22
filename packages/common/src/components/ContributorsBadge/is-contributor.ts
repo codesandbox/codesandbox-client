@@ -6,7 +6,7 @@ export async function isContributor(username: string) {
     await (fetchPromise ||
       (fetchPromise = window
         .fetch(
-          'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
+          'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
         )
         .then(x => x.json())
         .then(x => x.contributors.map(u => u.login))

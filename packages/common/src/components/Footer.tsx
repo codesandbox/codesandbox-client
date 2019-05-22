@@ -101,7 +101,7 @@ export default () => (
               </li>
               <li>
                 <a
-                  href="https://github.com/CompuIves/codesandbox-client"
+                  href="https://github.com/codesandbox/codesandbox-client"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

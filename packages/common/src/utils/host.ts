@@ -1,4 +1,4 @@
-const IS_LOCAL_SERVER = !!JSON.stringify(process.env.LOCAL_SERVER);
+const IS_LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 
 export default () => {
   if (IS_LOCAL_SERVER) {

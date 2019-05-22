@@ -23,7 +23,7 @@ export default function() {
 
   try {
     fs.readdir('/', function(err) {
-      assert(!!err, 'OverlayFS should pass an exception to its callback if it is not initialized.');
+      assert(Boolean(err), 'OverlayFS should pass an exception to its callback if it is not initialized.');
     });
   } catch (e) {
     assert(false, 'OverlayFS should never *throw* an exception on an asynchronous API call.');

@@ -11,6 +11,6 @@ export default new Template(
     isServer: true,
     showOnHomePage: true,
     main: false,
-    netlify: false
+    netlify: false,
   }
 );

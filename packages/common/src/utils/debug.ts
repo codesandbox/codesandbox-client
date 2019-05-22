@@ -27,7 +27,7 @@ const getDebugger: () => (key: string) => (...message: any[]) => void = () => {
     // Return a debugger that will log to sentry
     return (key: string) => (message: string) => {
       // Disable it for now, seems to affect performance. That's the last thing we want
-      // from this (https://github.com/CompuIves/codesandbox-client/issues/1671)
+      // from this (https://github.com/codesandbox/codesandbox-client/issues/1671)
 
       // TODO: move this to sentry
       if (false || typeof global.Raven === 'object') {

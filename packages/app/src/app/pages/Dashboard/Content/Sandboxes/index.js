@@ -28,19 +28,18 @@ class Content extends React.Component {
         <HeaderContainer>
           <HeaderTitle>
             {Header}{' '}
-            {sandboxes &&
-              !isLoading && (
-                <span
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    color: 'rgba(255, 255, 255, 0.6',
-                    marginLeft: '.5rem',
-                  }}
-                >
-                  {sandboxes.length}
-                </span>
-              )}
+            {sandboxes && !isLoading && (
+              <span
+                style={{
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.6',
+                  marginLeft: '.5rem',
+                }}
+              >
+                {sandboxes.length}
+              </span>
+            )}
           </HeaderTitle>
           <DashboardActions actions={actions} />
           <Filters

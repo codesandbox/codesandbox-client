@@ -69,7 +69,7 @@ export default ({
         </p>
         <Button
           href="
-        https://github.com/CompuIves/codesandbox-client/blob/master/packages/homepage/content/users.json"
+        https://github.com/codesandbox/codesandbox-client/blob/master/packages/homepage/content/users.json"
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -8,19 +8,17 @@ const useWindowSize = (initialWidth = Infinity, initialHeight = Infinity) => {
     height: isClient ? window.innerHeight : initialHeight,
   });
 
-  useEffect(
-    () => {
-      const handler = () => {
-        setState({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-      };
-      window.addEventListener('resize', handler);
-      return () => window.removeEventListener('resize', handler);
-    },
-    [1]
-  );
+  useEffect(() => {
+    const handler = () => {
+      setState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    window.addEventListener('resize', handler);
+
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   return state;
 };
