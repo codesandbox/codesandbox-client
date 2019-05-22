@@ -6,12 +6,12 @@ import {
   protocolAndHost,
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { inject } from 'mobx-react';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
+import { useSignals } from 'app/store';
 
 import {
   Container,
@@ -25,7 +25,9 @@ import {
 const getFullGitHubUrl = url =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-const GitHub = ({ signals: { githubPageMounted } }) => {
+const GitHub = () => {
+  const { githubPageMounted } = useSignals();
+
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
@@ -106,4 +108,4 @@ const GitHub = ({ signals: { githubPageMounted } }) => {
   );
 };
 
-export default inject(['signals'])(GitHub);
+export default GitHub;

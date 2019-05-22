@@ -1,18 +1,15 @@
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
 
 import Navigation from 'app/pages/common/Navigation';
+import { useSignals } from 'app/store';
 
 import { Container } from './elements';
 import Prompt from './Prompt';
 
-const CLI = ({
-  authToken,
-  error,
-  isLoadingCLI,
-  signals: { cliMounted, signInCliClicked },
-  user,
-}) => {
+const CLI = ({ authToken, error, isLoadingCLI, user }) => {
+  const { cliMounted, signInCliClicked } = useSignals();
+
   useEffect(() => {
     cliMounted();
   }, [cliMounted]);
@@ -32,4 +29,4 @@ const CLI = ({
   );
 };
 
-export default inject('store', 'signals')(observer(CLI));
+export default observer(CLI);
