@@ -35,8 +35,6 @@ const PathedTemplates = props => {
 
   return (
     <Sandboxes
-      hideOrder
-      hideFilters
       isLoading={loading}
       possibleTemplates={possibleTemplates}
       Header={<Navigation path={path} />}

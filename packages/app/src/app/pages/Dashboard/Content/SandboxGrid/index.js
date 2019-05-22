@@ -284,6 +284,7 @@ class SandboxGrid extends React.Component<*, State> {
         id={item.id}
         title={getSandboxName(item)}
         alias={item.alias}
+        color={item.color}
         details={editedSince}
         style={style}
         key={key}
