@@ -77,8 +77,8 @@ export default class VersionEntry extends React.PureComponent {
       '00383ecd8441ead30b1b0ff981c426f5'
     );
     const index = client.initIndex('npm-search');
-    index.getObject(dependency, ['versions']).then(({ versions: hits }) => {
-      const versions = Object.keys(hits).sort((a, b) => {
+    index.getObject(dependency, ['versions']).then(({ versions: results }) => {
+      const versions = Object.keys(results).sort((a, b) => {
         try {
           return compareVersions(b, a);
         } catch (e) {
