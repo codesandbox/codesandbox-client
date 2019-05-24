@@ -1,11 +1,15 @@
-import TestRunner from './jest-lite';
-//const TestRunner = {};
+import TestRunner, { messages } from './jest-lite';
 
 jest.mock('sandbox-hooks/react-error-overlay/utils/mapper', () => {
   return {
     map: jest.fn(),
   };
 });
+
+jest.mock('codesandbox-api');
+const api = require('codesandbox-api');
+
+api.dispatch = jest.fn();
 
 describe('TestRunner class', () => {
   it('exports a module', () => {
@@ -21,6 +25,7 @@ describe('TestRunner class', () => {
   describe('initialize', () => {
     let testRunner;
     beforeEach(() => {
+      TestRunner.sendMessage = jest.fn();
       testRunner = new TestRunner();
     });
 
@@ -28,66 +33,55 @@ describe('TestRunner class', () => {
       expect(testRunner.ranTests.size).toBe(0);
     });
 
-    it('should send message on initilaization');
-
-    it('should reset results', () => {
-      testRunner.addResult({ status: 'pass', name: 'foo' });
-      // It will add test in ranTests query
-      testRunner.runTests(true);
-      expect(testRunner.ranTests.size).toBe(1);
-      testRunner.initialize();
-      // handleCodeSandboxMessage for 2 different messages
-      expect(testRunner.ranTests.size).toBe(0);
+    it('should send message (dispatch) on initilaization', () => {
+      expect(api.dispatch).toHaveBeenCalledWith({
+        type: 'test',
+        event: messages.INITIALIZE,
+      });
     });
   });
 
   describe('testGlobals', () => {
-    it('returns an object', () => {
+    it('returns an object', async () => {
+      const testRunner = new TestRunner();
+
+      window.fetch = jest.fn();
+      window.localStorage = jest.fn();
+
+      await testRunner.initJSDOM();
+
       const {
-        describe: _describe,
         it: _it,
         test: _test,
         expect: _expect,
         jest: _jest,
-      } = new TestRunner().testGlobals();
+        document: _document,
+        window: _window,
+        global: _global,
+      } = testRunner.testGlobals();
 
-      expect(_describe).toEqual(expect.any(Function));
-      expect(_it).toEqual(expect.any(Function));
-      expect(_test).toEqual(expect.any(Function));
-      expect(_expect).toEqual(expect.any(Function));
-      expect(_jest).toEqual(expect.any(Object));
+      expect(_it).toBeInstanceOf(Function);
+      expect(_test).toBeInstanceOf(Function);
+      expect(_expect).toBeInstanceOf(Function);
+      expect(_jest).toBeInstanceOf(Object);
+      expect(_document).toBeInstanceOf(Object);
+      expect(_window).toBeInstanceOf(Object);
+      expect(_global).toBeInstanceOf(Object);
     });
 
-    xdescribe('describe', () => {
-      let testRunner;
-      let _describe;
-      let fnSpy;
-
-      beforeAll(() => {
-        testRunner = new TestRunner();
-        _describe = testRunner.testGlobals().describe;
-        fnSpy = jest.fn();
-      });
-
-      it('calls the function block', () => {
-        _describe('foo', fnSpy);
-        expect(fnSpy).toHaveBeenCalled();
-      });
-    });
-
-    describe('test', () => {
+    xdescribe('test', () => {
       let testRunner;
       let _test;
       let fnSpy;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         testRunner = new TestRunner();
+        await testRunner.initJSDOM();
         _test = testRunner.testGlobals().test;
         fnSpy = jest.fn();
       });
 
       it('calls the function block', () => {
-        _test('foo', fnSpy);
         expect(fnSpy).toHaveBeenCalled();
       });
 
@@ -115,50 +109,58 @@ describe('TestRunner class', () => {
     });
 
     it('should be initialized with no tests', () => {
-      expect(testRunner.tests).toEqual([]);
+      expect(testRunner.ranTests.size).toBe(0);
     });
     it('should not find any tests when no modules are passed', () => {
-      testRunner.findTests([]);
+      testRunner.findTests({});
       expect(testRunner.tests).toEqual([]);
     });
 
-    it('should find tests when modules are passed', () => {
-      testRunner.findTests([{ path: 'Sum.test.js' }]);
+    it('should find 1 test when modules are passed', () => {
+      testRunner.findTests({ 'Sum.test.js': { path: 'Sum.test.js' } });
       expect(testRunner.tests).toHaveLength(1);
+    });
 
-      testRunner.findTests([
-        { path: 'Sum.test.js' },
-        { path: 'Sum.spec.js' },
-        { path: '__tests__/Sum.js' },
-        { path: 'Sum.js' },
-        { path: 'src/Sum.js' },
-        { path: 'src/Sum.js' },
-      ]);
+    it('should find 3 of 6 tests when modules are passed', () => {
+      testRunner.findTests({
+        'Sum.test.js': { path: 'Sum.test.js' },
+        'Sum.spec.js': { path: 'Sum.spec.js' },
+        '__tests__/Sum.js': { path: '__tests__/Sum.js' },
+        'Sum.js': { path: 'Sum.js' },
+        'src/Sum.js': { path: 'src/Sum.js' },
+        'src/Sum.js1': { path: 'src/Sum.js1' },
+      });
       expect(testRunner.tests).toHaveLength(3);
+    });
 
-      testRunner.findTests([
-        { path: 'Sum.test.ts' },
-        { path: 'Sum.spec.ts' },
-        { path: '__tests__/Sum.ts' },
-        { path: 'Sum.ts' },
-        { path: 'src/Sum.ts' },
-      ]);
+    it('should find 3 of 5 tests when modules are passed', () => {
+      testRunner.findTests({
+        'Sum.test.ts': { path: 'Sum.test.ts' },
+        'Sum.spec.ts': { path: 'Sum.spec.ts' },
+        '__tests__/Sum.ts': { path: '__tests__/Sum.ts' },
+        'Sum.ts': { path: 'Sum.ts' },
+        'src/Sum.ts': { path: 'src/Sum.ts' },
+      });
       expect(testRunner.tests).toHaveLength(3);
+    });
 
-      testRunner.findTests([
-        { path: 'Sum.test.tsx' },
-        { path: 'Sum.spec.tsx' },
-        { path: '__tests__/Sum.tsx' },
-        { path: 'Sum.tsx' },
-        { path: 'src/Sum.tsx' },
-      ]);
+    it('should find 3 of 5 (typescript) tests when modules are passed', () => {
+      testRunner.findTests({
+        'Sum.test.tsx': { path: 'Sum.test.tsx' },
+        'Sum.spec.tsx': { path: 'Sum.spec.tsx' },
+        '__tests__/Sum.tsx': { path: '__tests__/Sum.tsx' },
+        'Sum.tsx': { path: 'Sum.tsx' },
+        'src/Sum.tsx': { path: 'src/Sum.tsx' },
+      });
       expect(testRunner.tests).toHaveLength(3);
+    });
 
-      testRunner.findTests([
-        { path: 'Sum.test.js' },
-        { path: 'Sum.test.ts' },
-        { path: 'Sum.test.tsx' },
-      ]);
+    it('should find 3 of 3 tests when modules are passed', () => {
+      testRunner.findTests({
+        'Sum.test.js': { path: 'Sum.test.js' },
+        'Sum.test.ts': { path: 'Sum.test.ts' },
+        'Sum.test.tsx': { path: 'Sum.test.tsx' },
+      });
       expect(testRunner.tests).toHaveLength(3);
     });
   });
@@ -171,7 +173,8 @@ describe('TestRunner class', () => {
     it('todo');
   });
 
-  describe('addResult', () => {
+  // deprecated
+  xdescribe('addResult', () => {
     let testRunner;
 
     beforeEach(() => {
@@ -239,7 +242,8 @@ describe('TestRunner class', () => {
     });
   });
 
-  describe('reportResults', () => {
+  // deprecated
+  xdescribe('reportResults', () => {
     let testRunner;
 
     beforeEach(() => {
@@ -254,8 +258,8 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'pass', name: 'foo' });
       testRunner.addResult({ status: 'pass', name: 'bar' });
 
-      let results = testRunner.reportResults();
-      let { summaryMessage } = results;
+      const results = testRunner.reportResults();
+      const { summaryMessage } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 😎/);
@@ -269,8 +273,8 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'fail', name: 'foo' });
       testRunner.addResult({ status: 'fail', name: 'bar' });
 
-      let results = testRunner.reportResults();
-      let { summaryMessage, failedMessages } = results;
+      const results = testRunner.reportResults();
+      const { summaryMessage, failedMessages } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 👻/);
@@ -297,8 +301,8 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'pass', name: 'foo' });
       testRunner.addResult({ status: 'fail', name: 'bar' });
 
-      let results = testRunner.reportResults();
-      let { summaryMessage } = results;
+      const results = testRunner.reportResults();
+      const { summaryMessage } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 👻/);
@@ -325,8 +329,8 @@ describe('TestRunner class', () => {
       testRunner.setCurrentDescribe('bar');
       testRunner.addResult({ status: 'fail', name: 'baz' });
 
-      let results = testRunner.reportResults();
-      let { failedMessages } = results;
+      const results = testRunner.reportResults();
+      const { failedMessages } = results;
 
       expect(results).not.toEqual(null);
       expect(failedMessages[0]).toMatch(/FAIL/);
@@ -338,8 +342,8 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'pass', name: 'bar' });
       testRunner.addResult({ status: 'fail', name: 'baz' });
 
-      let results = testRunner.reportResults();
-      let { summaryMessage } = results;
+      const results = testRunner.reportResults();
+      const { summaryMessage } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 👻/);
@@ -360,8 +364,8 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'pass', name: 'foo' });
       testRunner.addResult({ status: 'fail', name: 'bar' });
 
-      let results = testRunner.reportResults();
-      let { summaryMessage } = results;
+      const results = testRunner.reportResults();
+      const { summaryMessage } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 👻/);
