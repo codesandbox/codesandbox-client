@@ -128,14 +128,14 @@ export default class TestRunner {
         name: 'add_test',
         testName: `${module.path}:#:${testName}`,
       });
-    test.skip = (testName: TestName, fn?: TestFn) =>
+    const skip = (testName: TestName, fn?: TestFn) =>
       dispatchJest({
         fn,
         mode: 'skip',
         name: 'add_test',
         testName: `${module.path}:#:${testName}`,
       });
-    test.only = (testName: TestName, fn: TestFn) => {
+    const only = (testName: TestName, fn: TestFn) => {
       dispatchJest({
         fn,
         mode: 'only',
@@ -144,8 +144,11 @@ export default class TestRunner {
       });
     };
     test.each = bindEach(test);
-    test.only.each = bindEach(test.only);
-    test.skip.each = bindEach(test.skip);
+    skip.each = bindEach(skip);
+    only.each = bindEach(only);
+
+    test.only = only;
+    test.skip = skip;
 
     const it = test;
     const { window: jsdomWindow } = this.dom;
