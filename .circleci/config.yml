@@ -175,13 +175,13 @@ commands:
       - restore_cache: *restore_prod_cache
       - run:
           name: Docker Sign In
-          command: '[ -n << parameters.user >> ] && echo << parameters.password >> | docker login -u << parameters.user >> --password-stdin || true'
+          command: '[ -n "<< parameters.user >>" ] && echo << parameters.password >> | docker login -u << parameters.user >> --password-stdin || true'
       - run:
           name: Create Image
-          command: '[ -n << parameters.user >> ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
+          command: '[ -n "<< parameters.user >>" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
       - run:
           name: Push Image
-          command: '[ -n << parameters.user >> ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true'
+          command: '[ -n "<< parameters.user >>" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true'
 
 ################################
 # Jobs
