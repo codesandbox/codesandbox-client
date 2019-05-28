@@ -38,12 +38,7 @@ export const GitHub = observer(() => {
     )
   ) : (
     <>
-      <Description
-        css={`
-          margin: 1;
-          top: 0;
-        `}
-      >
+      <Description>
         You can create commits and open pull requests if you add GitHub to your
         integrations.
       </Description>
