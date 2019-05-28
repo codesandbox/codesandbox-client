@@ -3,10 +3,7 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
-import {
-  getModulePath,
-  resolveModule,
-} from '@codesandbox/common/lib/sandbox/modules';
+import * as fs from 'fs';
 import { listen, actions, dispatch } from 'codesandbox-api';
 
 import prettify from 'app/src/app/utils/prettify';
@@ -159,26 +156,24 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
   updateModules = () => {
     Object.keys(this.modelListeners).forEach(path => {
-      const shortid = this.modelListeners[path].moduleShortid;
       const model = this.modelListeners[path].model;
-      const module = this.sandbox.modules.find(m => m.shortid === shortid);
-      if (!module) {
+      const exists = fs.existsSync(path);
+
+      if (!exists) {
         // Deleted
         return;
       }
 
-      const modulePath = this.getVSCodePath(module.id);
-
-      if (modulePath !== model.uri.path) {
+      if (path !== model.uri.path) {
         this.editor.textFileService
-          .move(model.uri, this.monaco.Uri.file(modulePath))
+          .move(model.uri, this.monaco.Uri.file(path))
           .then(() => {
             const editor = this.editor.getActiveCodeEditor();
             const currentModel = editor && editor.getModel();
             const isCurrentFile =
               currentModel && currentModel.uri.path === path;
             if (isCurrentFile) {
-              this.editor.openFile(modulePath.replace('/sandbox', ''));
+              this.editor.openFile(path.replace('/sandbox', ''));
             }
 
             // Don't move the listener from old path to new path, that's handled by the model
@@ -188,24 +183,10 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     });
   };
 
-  getVSCodePath = (moduleId: string) =>
-    `/sandbox${getModulePath(
-      this.sandbox.modules,
-      this.sandbox.directories,
-      moduleId
-    )}`;
-
-  getCurrentModuleVSCodePath = () => this.getVSCodePath(this.currentModule.id);
-
   getPrettierConfig = () => {
     try {
-      const module = resolveModule(
-        '/.prettierrc',
-        this.sandbox.modules,
-        this.sandbox.directories
-      );
-
-      const parsedCode = JSON.parse(module.code || '');
+      const code = fs.readFileSync('/sandbox/.prettierrc').toString();
+      const parsedCode = JSON.parse(code);
 
       return parsedCode;
     } catch (e) {
@@ -260,7 +241,6 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   modelListeners: {
     [path: string]: {
       listener: { dispose: () => void };
-      moduleShortid: string;
       model: any;
     };
   } = {};
@@ -315,7 +295,6 @@ class MonacoEditor extends React.Component<Props> implements Editor {
             }
           });
           this.modelListeners[model.uri.path] = {
-            moduleShortid: module.shortid,
             model,
             listener,
           };
