@@ -385,7 +385,7 @@ linter.defineParser(
 
 linter.defineRules(allRules);
 
-function getPos(error, from) {
+function getPos(error) {
   const { line, column, endLine, endColumn } = error;
 
   return { line, column, endLine, endColumn };

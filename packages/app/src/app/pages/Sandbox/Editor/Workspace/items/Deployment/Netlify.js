@@ -81,7 +81,7 @@ class NetlifyDeployment extends Component {
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                Netlify
+                <span>Netlify</span>
               </a>
             </DeploymentIntegration>
           </WorkspaceInputContainer>
