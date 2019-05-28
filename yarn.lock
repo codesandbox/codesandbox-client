@@ -1515,6 +1515,11 @@
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@cerebral/mobx-state-tree/-/mobx-state-tree-3.2.2.tgz#d11e74a5a3e99ae4e29e13d555e3b22221a801dc"
 
+"@codesandbox/template-icons@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.2.2.tgz#90072f9b54f330b1c7b4f4e8dfe83aa3e7434770"
+  integrity sha512-WdTQ86xEjBiIT3S+CDJK9+cOk5mwD++Si+V2ThxtN6TavT36p2eE3ykZ82ezmoVRAv1eIER0Yz4uo0PREIga0g==
+
 "@emmetio/abbreviation@^0.6.0", "@emmetio/abbreviation@^0.6.1":
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/@emmetio/abbreviation/-/abbreviation-0.6.5.tgz#07fdf1d48a74c2cc660eef4b25ff72316f377dd7"
@@ -16669,6 +16674,11 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@0.x.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdir
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
     minimist "0.0.8"
+
+mobx-react-lite@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-1.3.2.tgz#4366048b5d283d12a82053367638b5d79281951f"
+  integrity sha512-D8VZEsxSxMNYDJmw2SgUXVAgpOlVYmp3hBCusoe+LuBDYUqyn2K3RPrMEF0rIzYJAvqpyv7YRrH8I3eBsPPx1A==
 
 mobx-react@^5.2.3:
   version "5.4.3"

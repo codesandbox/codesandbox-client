@@ -1,16 +1,12 @@
-// @ts-check
-/* eslint-disable react/prefer-stateless-function */
-import React from 'react';
+import getTemplate from '@codesandbox/common/lib/templates';
 import {
   sandboxUrl,
   profileUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import GithubIcon from 'react-icons/lib/fa/github';
-
-import getTemplate from '@codesandbox/common/lib/templates';
 
 import {
   Container,
@@ -26,58 +22,58 @@ import {
 } from './elements';
 
 type Props = {
+  author: object,
+  description: string,
+  git: object,
   id: string,
   title: string,
   viewCount: number,
-  author: Object,
-  git: Object,
-  description: string,
 };
 
-class SandboxItem extends React.Component<Props> {
-  el: HTMLDivElement;
+const SandboxCard = ({
+  author,
+  description,
+  git,
+  id,
+  picks,
+  pickSandbox,
+  screenshotUrl,
+  template,
+  title,
+  viewCount,
+}: Props) => {
+  const [screenShotURL, setScreenShotURL] = useState(screenshotUrl);
+  const screenShotTimeout = useRef(null);
 
-  state = {
-    screenshotUrl: this.props.screenshotUrl,
-  };
+  const hasScreenshot = useCallback(() => {
+    const templateDefinition = getTemplate(template);
 
-  requestScreenshot = () => {
-    this.setState({
-      screenshotUrl: `/api/v1/sandboxes/${this.props.id}/screenshot.png`,
-    });
-  };
+    return !templateDefinition.isServer;
+  }, [template]);
 
-  checkScreenshot() {
-    if (!this.state.screenshotUrl && this.hasScreenshot()) {
+  const requestScreenshot = useCallback(() => {
+    setScreenShotURL(`/api/v1/sandboxes/${id}/screenshot.png`);
+  }, [id]);
+  const checkScreenShot = useCallback(() => {
+    if (!screenShotURL && hasScreenshot()) {
       // We only request the screenshot if the sandbox card is in view for > 1 second
-      this.screenshotTimeout = setTimeout(() => {
-        this.requestScreenshot();
-      }, 1000);
+      screenShotTimeout.current = setTimeout(requestScreenshot, 1000);
     }
-  }
+  }, [hasScreenshot, requestScreenshot, screenShotURL]);
+  useEffect(() => {
+    checkScreenShot();
 
-  componentDidMount() {
-    this.checkScreenshot();
-  }
+    return () => clearTimeout(screenShotTimeout.current);
+  }, [checkScreenShot]);
 
-  componentWillUnmount() {
-    if (this.screenshotTimeout) {
-      clearTimeout(this.screenshotTimeout);
-    }
-  }
+  const openSandbox = useCallback(() => {
+    const url = sandboxUrl({ id });
 
-  openSandbox = () => {
-    const url = sandboxUrl({ id: this.props.id });
     window.open(url, '_blank');
-  };
+  }, [id]);
 
-  openUser = username => {
-    const url = profileUrl(username);
-    window.open(url, '_blank');
-  };
-
-  getImageMessage = () => {
-    const templateDefinition = getTemplate(this.props.template);
+  const getImageMessage = useCallback(() => {
+    const templateDefinition = getTemplate(template);
 
     if (templateDefinition.isServer) {
       return `Container Sandbox`;
@@ -88,116 +84,89 @@ class SandboxItem extends React.Component<Props> {
     }
 
     return `Generating Screenshot...`;
-  };
+  }, [template]);
 
-  hasScreenshot = () => {
-    const templateDefinition = getTemplate(this.props.template);
+  const openUser = useCallback(username => {
+    const url = profileUrl(username);
 
-    if (templateDefinition.isServer) {
-      return false;
-    }
+    window.open(url, '_blank');
+  }, []);
 
-    return true;
-  };
+  const templateInfo = getTemplate(template);
 
-  render() {
-    const {
-      id,
-      title,
-      viewCount,
-      template,
-      author,
-      git,
-      description,
-      pickSandbox,
-      picks,
-    } = this.props;
+  return (
+    <div
+      style={{ backgroundColor: 'transparent', borderRadius: 2, padding: 2 }}
+    >
+      <Container style={{ outline: 'none' }}>
+        <SandboxImageContainer onClick={openSandbox} role="button" tabIndex={0}>
+          <ImageMessage>{getImageMessage()}</ImageMessage>
 
-    const { screenshotUrl } = this.state;
-
-    const templateInfo = getTemplate(template);
-
-    return (
-      <div
-        style={{
-          padding: 2,
-          borderRadius: 2,
-          backgroundColor: 'transparent',
-        }}
-      >
-        <Container style={{ outline: 'none' }}>
-          <SandboxImageContainer
-            role="button"
-            tabIndex={0}
-            onClick={this.openSandbox}
-          >
-            <ImageMessage>{this.getImageMessage()}</ImageMessage>
-
-            {this.hasScreenshot() && (
-              <SandboxImage
-                style={{
-                  backgroundImage: `url(${screenshotUrl})`,
-                }}
-              />
-            )}
-          </SandboxImageContainer>
-          <SandboxInfo>
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                left: 0,
-                width: 2,
-                height: 'calc(100% + 34px)',
-                backgroundColor: templateInfo.color(),
-              }}
+          {hasScreenshot() && (
+            <SandboxImage
+              style={{ backgroundImage: `url(${screenShotURL})` }}
             />
-            <div style={{ flex: 1 }}>
-              <div role="button" tabIndex={0} onClick={this.openSandbox}>
-                <SandboxTitle>{title || id}</SandboxTitle>
-                {description}
-              </div>
-              <Details>
-                {author ? (
-                  <FlexCenter
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => this.openUser(author.username)}
-                  >
-                    <Avatar src={author.avatarUrl} alt={author.username} />
-                    {author.name || author.username}
-                  </FlexCenter>
-                ) : null}
+          )}
+        </SandboxImageContainer>
+
+        <SandboxInfo>
+          <div
+            style={{
+              backgroundColor: templateInfo.color(),
+              bottom: 0,
+              height: 'calc(100% + 34px)',
+              left: 0,
+              position: 'absolute',
+              top: 0,
+              width: 2,
+            }}
+          />
+          <div style={{ flex: 1 }}>
+            <div role="button" tabIndex={0} onClick={openSandbox}>
+              <SandboxTitle>{title || id}</SandboxTitle>
+              {description}
+            </div>
+
+            <Details>
+              {author ? (
                 <FlexCenter
+                  onClick={() => openUser(author.username)}
                   role="button"
                   tabIndex={0}
-                  onClick={this.openSandbox}
                 >
-                  <EyeIcon style={{ marginRight: '0.5rem' }} />
-                  {viewCount}
-                </FlexCenter>
-                {git ? (
-                  <FlexCenter>
-                    <a
-                      href={`https://github.com/${git.username}/${git.repo}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <GithubIcon style={{ marginRight: '0.5rem' }} />
-                    </a>
-                  </FlexCenter>
-                ) : null}
-              </Details>
-            </div>
-          </SandboxInfo>
-          <Pick small onClick={() => pickSandbox(id, title, description)}>
-            {!picks.length ? '✨ Pick Sandbox' : '✨ Pick Sandbox again'}
-          </Pick>
-        </Container>
-      </div>
-    );
-  }
-}
+                  <Avatar alt={author.username} src={author.avatarUrl} />
 
-export default observer(SandboxItem);
+                  {author.name || author.username}
+                </FlexCenter>
+              ) : null}
+
+              <FlexCenter onClick={openSandbox} role="button" tabIndex={0}>
+                <EyeIcon style={{ marginRight: '0.5rem' }} />
+
+                {viewCount}
+              </FlexCenter>
+
+              {git ? (
+                <FlexCenter>
+                  <a
+                    href={`https://github.com/${git.username}/${git.repo}`}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <GithubIcon style={{ marginRight: '0.5rem' }} />
+                  </a>
+                </FlexCenter>
+              ) : null}
+            </Details>
+          </div>
+        </SandboxInfo>
+
+        <Pick onClick={() => pickSandbox(id, title, description)} small>
+          {!picks.length ? '✨ Pick Sandbox' : '✨ Pick Sandbox again'}
+        </Pick>
+      </Container>
+    </div>
+  );
+};
+
+export default observer(SandboxCard);

@@ -212,16 +212,16 @@ export function moveModuleContent({ props, state }) {
 
   if (currentSandbox) {
     return {
-      sandbox: Object.assign({}, props.forkedSandbox, {
-        modules: props.forkedSandbox.modules.map(module =>
-          Object.assign(module, {
-            code: currentSandbox.modules.find(
-              currentSandboxModule =>
-                currentSandboxModule.shortid === module.shortid
-            ).code,
-          })
-        ),
-      }),
+      sandbox: {
+        ...props.forkedSandbox,
+        modules: props.forkedSandbox.modules.map(module => ({
+          ...module,
+          code: currentSandbox.modules.find(
+            currentSandboxModule =>
+              currentSandboxModule.shortid === module.shortid
+          ).code,
+        })),
+      },
     };
   }
 

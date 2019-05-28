@@ -9,3 +9,5 @@ static/
 
 # Our server side code changes html, we don't want to unintentionally break this by formatting
 *.html
+
+.drone.yml

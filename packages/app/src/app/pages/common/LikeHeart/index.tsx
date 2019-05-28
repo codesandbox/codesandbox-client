@@ -13,7 +13,7 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 
 const MaybeTooltip = ({ loggedIn, disableTooltip, title, children }) =>
   loggedIn && !disableTooltip ? (
-    <Tooltip content={title} children={children} />
+    <Tooltip content={title} children={children} style={{ display: 'flex' }} />
   ) : (
     children
   );
