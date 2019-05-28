@@ -14,9 +14,8 @@ import { WorkspaceSubtitle, WorkspaceInputContainer } from '../../../elements';
 import { Container, Buttons, ErrorMessage, NoChanges } from './elements';
 import { TotalChanges } from './TotalChanges';
 
-function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
-  return rights === 'write' || rights === 'admin';
-}
+const hasWriteAccess = (rights: 'none' | 'read' | 'write' | 'admin') =>
+  ['admin', 'write'].includes(rights);
 
 export const Git = observer(() => {
   const {
@@ -38,7 +37,7 @@ export const Git = observer(() => {
 
   useEffect(() => {
     gitMounted();
-  }, []); // eslint-disable-line
+  }, [gitMounted]);
 
   const createCommit = () => createCommitClicked();
   const createPR = () => createPrClicked();
