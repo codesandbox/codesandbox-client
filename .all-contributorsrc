@@ -1234,6 +1234,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "halitogunc",
+      "name": "Halit Ogunc",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/13641726?v=4",
+      "profile": "http://halit.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github",
