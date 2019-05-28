@@ -32,7 +32,9 @@ export const useScript = (src: string) => {
       const onScriptError = () => {
         const index = cachedScripts.indexOf(src);
 
-        if (index >= 0) cachedScripts.splice(index, 1);
+        if (index >= 0) {
+          cachedScripts.splice(index, 1);
+        }
 
         script.remove();
 
