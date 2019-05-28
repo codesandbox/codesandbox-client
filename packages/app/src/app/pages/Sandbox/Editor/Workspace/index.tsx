@@ -50,10 +50,7 @@ const Workspace = () => {
       currentSandbox: { owned },
     },
     isPatron,
-    live: {
-      isLive,
-      roomInfo: { chatEnabled },
-    },
+    live: { isLive, roomInfo },
     preferences: {
       settings: { zenMode },
     },
@@ -74,7 +71,7 @@ const Workspace = () => {
         <Component />
       </div>
 
-      {isLive && chatEnabled && (
+      {isLive && roomInfo.chatEnabled && (
         <WorkspaceItem defaultOpen title="Chat">
           <Chat />
         </WorkspaceItem>
