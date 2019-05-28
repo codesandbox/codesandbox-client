@@ -1,19 +1,27 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { inject, observer } from 'mobx-react';
 
-import GithubIntegration from '../../../../../common/GithubIntegration';
-import WorkspaceItem from '../../WorkspaceItem';
-import Git from '../../Git';
-import CreateRepo from '../../CreateRepo';
+import GithubIntegration from 'app/pages/common/GithubIntegration';
+import { useStore } from 'app/store';
+
 import { Description } from '../../elements';
+import WorkspaceItem from '../../WorkspaceItem';
 
-const GitHub = ({ store }) => {
-  const sandbox = store.editor.currentSandbox;
+import { CreateRepo } from './CreateRepo';
+import { Git } from './Git';
 
-  const hasOriginalGitSource = sandbox.originalGit;
+export const GitHub = observer(() => {
+  const {
+    editor: {
+      currentSandbox: { originalGit },
+    },
+    user: {
+      integrations: { github },
+    },
+  } = useStore();
 
-  return store.user.integrations.github ? ( // eslint-disable-line
-    hasOriginalGitSource ? (
+  return github ? ( // eslint-disable-line
+    originalGit ? (
       <>
         <Git />
 
@@ -24,11 +32,12 @@ const GitHub = ({ store }) => {
     ) : (
       <>
         <Description>Export your sandbox to GitHub.</Description>
+
         <CreateRepo />
       </>
     )
   ) : (
-    <div>
+    <>
       <Description margin={1} top={0}>
         You can create commits and open pull requests if you add GitHub to your
         integrations.
@@ -37,8 +46,6 @@ const GitHub = ({ store }) => {
       <div style={{ margin: '1rem' }}>
         <GithubIntegration small />
       </div>
-    </div>
+    </>
   );
-};
-
-export default inject('signals', 'store')(observer(GitHub));
+});

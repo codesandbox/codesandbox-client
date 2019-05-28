@@ -1,11 +1,15 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+
+import { useStore } from 'app/store';
 
 import { Container } from './elements';
 
-function ConnectionNotice({ store }) {
+export const ConnectionNotice = observer(() => {
+  const { connected } = useStore();
+
   return (
-    !store.connected && (
+    !connected && (
       <Container>
         You{"'"}re not connected to the internet. You can still edit, but you
         cannot save. We recommend using the {"'"}Download{"'"} function to keep
@@ -13,6 +17,4 @@ function ConnectionNotice({ store }) {
       </Container>
     )
   );
-}
-
-export default inject('store')(observer(ConnectionNotice));
+});

@@ -8,19 +8,19 @@ import SocialInfo from 'app/components/SocialInfo';
 
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
-import GitHub from './items/GitHub';
+import { GitHub } from './items/GitHub';
 import Server from './items/Server';
 import Live from './items/Live';
-import More from './items/More';
+import { More } from './items/More';
 import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
-import ConnectionNotice from './ConnectionNotice';
+import { ConnectionNotice } from './ConnectionNotice';
 import Advertisement from './Advertisement';
 import WorkspaceItem from './WorkspaceItem';
 import Chat from './Chat';
-import SSEDownNotice from './SSEDownNotice';
+import { SSEDownNotice } from './SSEDownNotice';
 
 import {
   Container,
