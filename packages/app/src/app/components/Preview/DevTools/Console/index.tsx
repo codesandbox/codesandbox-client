@@ -3,8 +3,9 @@ import { listen, dispatch } from 'codesandbox-api';
 import { withTheme } from 'styled-components';
 import { debounce } from 'lodash-es';
 import update from 'immutability-helper';
+import styled from 'styled-components';
 
-import ClearIcon from 'react-icons/lib/md/clear-all';
+import ClearIcon from 'react-icons/lib/md/block';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
 
 import Select from '@codesandbox/common/lib/components/Select';
@@ -23,6 +24,10 @@ export type IMessage = {
 export type StyledProps = DevToolProps & {
   theme: typeof theme & { light: boolean };
 };
+
+const StyledClearIcon = styled(ClearIcon)`
+  font-size: 0.8em;
+`;
 
 class Console extends React.Component<StyledProps> {
   state = {
@@ -283,7 +288,7 @@ export default {
       onClick: () => {
         dispatch({ type: 'clear-console' });
       },
-      Icon: ClearIcon,
+      Icon: StyledClearIcon,
     },
     {
       title: 'Search',
