@@ -15,6 +15,7 @@ export default ({ name, points, selected }) => (
             alignItems: 'center',
             marginTop: '.25rem',
           }}
+          // eslint-disable-next-line
           key={i}
         >
           <CheckBox

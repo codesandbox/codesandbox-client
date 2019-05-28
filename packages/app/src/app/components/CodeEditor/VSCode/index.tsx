@@ -1012,7 +1012,9 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
     const mode = await getMode(title, this.monaco);
     if (this.settings.lintEnabled) {
-      if (['javascript', 'typescript', 'vue'].includes(mode)) {
+      if (
+        ['javascript', 'typescript', 'typescriptreact', 'vue'].includes(mode)
+      ) {
         if (this.lintWorker) {
           this.lintWorker.postMessage({
             code,

@@ -1,8 +1,6 @@
 import VERSION from '@codesandbox/common/lib/version';
 import { observer } from 'mobx-react-lite';
 import * as React from 'react';
-//  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
-import {} from 'styled-components/cssprop'; // eslint-disable-line
 
 import SocialInfo from 'app/components/SocialInfo';
 import { useStore } from 'app/store';
