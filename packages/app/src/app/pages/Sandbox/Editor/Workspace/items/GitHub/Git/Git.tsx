@@ -47,7 +47,7 @@ export const Git = observer(() => {
   }: React.ChangeEvent<HTMLInputElement>) => subjectChanged({ subject: value });
   const changeDescription = ({
     target: { value },
-  }: React.ChangeEvent<HTMLInputElement>) =>
+  }: React.ChangeEvent<HTMLTextAreaElement>) =>
     descriptionChanged({ description: value });
 
   const modulesNotSaved = !isAllModulesSynced;

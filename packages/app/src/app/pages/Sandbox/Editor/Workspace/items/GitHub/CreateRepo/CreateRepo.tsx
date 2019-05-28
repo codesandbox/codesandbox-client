@@ -13,7 +13,7 @@ import { useSignals, useStore } from 'app/store';
 import { Error } from './elements';
 
 type Props = {
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 };
 export const CreateRepo = observer(({ style }: Props) => {
   const {
