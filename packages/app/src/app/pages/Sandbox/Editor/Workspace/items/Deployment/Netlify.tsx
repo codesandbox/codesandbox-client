@@ -32,7 +32,7 @@ const getFunctionDir = sandbox => {
       sandbox.directories
     );
   } catch (e) {
-    return [];
+    return null;
   }
 };
 
