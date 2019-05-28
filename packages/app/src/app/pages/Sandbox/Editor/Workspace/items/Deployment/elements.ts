@@ -5,10 +5,18 @@ const mapColorToState = (state: string, theme: any) => {
   const ERROR = ['DEPLOYMENT_ERROR', 'BUILD_ERROR', 'ERROR'];
   const STARTED = ['BOOTED', 'READY'];
 
-  if (STARTING.includes(state)) return '#fccb7e';
-  if (ERROR.includes(state)) return theme.red;
-  if (STARTED.includes(state)) return theme.green;
-  if (state === 'FROZEN') return theme.blue;
+  if (STARTING.includes(state)) {
+    return '#fccb7e';
+  }
+  if (ERROR.includes(state)) {
+    return theme.red;
+  }
+  if (STARTED.includes(state)) {
+    return theme.green;
+  }
+  if (state === 'FROZEN') {
+    return theme.blue;
+  }
 
   return theme.gray;
 };
@@ -29,7 +37,7 @@ export const State = styled.span`
       margin-right: 0.5rem;
       background: ${mapColorToState(state, theme)};
     }
-  `}
+  `};
 `;
 
 export const Deploys = styled.ul`
@@ -64,7 +72,7 @@ export const Name = styled.span`
       font-size: 12px;
       margin-left: 0.5rem;
     }
-  `}
+  `};
 `;
 
 export const Link = styled.a`
@@ -96,7 +104,7 @@ export const Link = styled.a`
     &:disabled {
       background: ${theme.gray};
     }
-  `}
+  `};
 `;
 
 export const Action = Link.withComponent('button');
@@ -129,5 +137,5 @@ export const Wrapper = styled.div`
         opacity: 0.5;
         pointer-events: none;
       `};
-  `}
+  `};
 `;

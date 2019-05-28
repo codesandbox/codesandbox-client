@@ -41,7 +41,7 @@ export const Zeit = observer(() => {
       <WorkspaceInputContainer style={{ marginTop: '1rem', marginBottom: 0 }}>
         <DeploymentIntegration
           color="#000000"
-          deploy={() => deploySandboxClicked()}
+          deploy={deploySandboxClicked}
           Icon={NowLogo}
           name="Now"
           open={isVisible}
@@ -73,7 +73,9 @@ export const Zeit = observer(() => {
                   <Name>
                     {deploy.name}
 
-                    <span>({distanceInWordsToNow(deploy.created)} ago)</span>
+                    <span>{`(${distanceInWordsToNow(
+                      deploy.created
+                    )} ago)`}</span>
                   </Name>
 
                   <State state={deploy.state}>

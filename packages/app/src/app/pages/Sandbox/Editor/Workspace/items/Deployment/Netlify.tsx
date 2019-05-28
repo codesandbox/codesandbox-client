@@ -45,7 +45,9 @@ export const Netlify = observer(() => {
 
   const [isVisible, setVisibility] = useState(false);
 
-  useEffect(() => getNetlifyDeploys(), []); // eslint-disable-line
+  useEffect(() => {
+    getNetlifyDeploys();
+  }, [getNetlifyDeploys]);
 
   const template = getTemplate(editor.currentSandbox.template);
   const functionDirectory = getFunctionDir(editor.currentSandbox);
@@ -61,7 +63,7 @@ export const Netlify = observer(() => {
           <DeploymentIntegration
             beta
             color="#FFFFFF"
-            deploy={() => deployWithNetlify()}
+            deploy={deployWithNetlify}
             Icon={NetlifyLogo}
             light
             loading={deployment.deploying || deployment.building}
