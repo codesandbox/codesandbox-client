@@ -14,7 +14,7 @@ interface Props {
   message: string | JSX.Element;
 }
 
-export const More = observer(({ id, message }: Props) => {
+export const More = observer<Props>(({ id, message }) => {
   const {
     editor: { forkSandboxClicked },
   } = useSignals();
@@ -23,7 +23,9 @@ export const More = observer(({ id, message }: Props) => {
     editor: { isForkingSandbox },
   } = useStore();
 
-  useEffect(() => track('Workspace - More Opened', { id }), [id]);
+  useEffect(() => {
+    track('Workspace - More Opened', { id })
+  }, [id]);
 
   return (
     <div>
