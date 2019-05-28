@@ -64,11 +64,9 @@ export const Live = observer(() => {
 
           <WorkspaceInputContainer>
             <LiveButton
-              onClick={() => {
-                createLiveClicked({ sandboxId: currentId });
-              }}
-              isLoading={isLoading}
               disable={hasUnsyncedModules}
+              isLoading={isLoading}
+              onClick={() => {createLiveClicked({ sandboxId: currentId }) }}
             />
           </WorkspaceInputContainer>
         </>
