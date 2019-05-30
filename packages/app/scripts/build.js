@@ -127,6 +127,12 @@ function build(previousSizeMap) {
       process.exit(1);
     }
 
+    if (stats.hasErrors()) {
+      console.error('Failed to create a production build. Reason:');
+      console.error(stats.compilation.errors);
+      process.exit(1);
+    }
+
     console.log(chalk.green('Compiled successfully.'));
     console.log();
 
