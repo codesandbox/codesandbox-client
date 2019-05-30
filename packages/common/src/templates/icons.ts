@@ -1,5 +1,3 @@
-import ParcelIcon from '../components/logos/Parcel';
-import VuePressIcon from '../components/logos/VuePress';
 import {
   AdonisIcon,
   AngularIcon,
@@ -24,6 +22,8 @@ import {
   GridsomeIcon,
   QuasarIcon,
   SapperIcon,
+  ParcelIcon,
+  VuePressIcon,
 } from '@codesandbox/template-icons';
 
 import {
