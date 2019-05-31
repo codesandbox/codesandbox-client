@@ -22,14 +22,18 @@ const NewSandbox = () => {
   }, [sandboxPageMounted]);
 
   return (
-    <MaxWidth>
+    <MaxWidth
+      css={`
+        height: 100vh;
+      `}
+    >
       <Margin horizontal={1.5} style={{ height: '100%' }} vertical={1.5}>
         <Navigation title="New Sandbox" />
 
         <Margin top={5}>
           <Centered horizontal vertical>
             <Margin style={{ maxWidth: '100%', width: 900 }} top={2}>
-              <NewSandboxModal createSandbox={createSandbox} width={950} />
+              <NewSandboxModal createSandbox={createSandbox} width={980} />
             </Margin>
           </Centered>
         </Margin>

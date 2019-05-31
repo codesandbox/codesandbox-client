@@ -27,7 +27,7 @@ import Tags from '../Tags';
 const getScreenshot = (id: string) =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 
-type Sandbox = {
+interface Sandbox {
   title: string;
   description: string;
   tags: string[];
@@ -41,16 +41,16 @@ type Sandbox = {
     username: string;
     avatar_url: string;
   };
-};
+}
 
-export type Props = {
+export interface Props {
   sandbox: Sandbox;
   small?: boolean;
   noHeight?: boolean;
   defaultHeight?: number;
   noMargin?: boolean;
   selectSandbox: (params: Sandbox) => void;
-};
+}
 
 const kFormatter = (num: number): number | string => {
   if (num > 999999) {

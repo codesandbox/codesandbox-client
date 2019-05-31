@@ -9,6 +9,21 @@ const usedTemplates = sortBy(
   'niceName'
 );
 
+export const presets = [
+  {
+    ...templates.react,
+    variantName: templates.react.niceName,
+    niceName: 'React + TS',
+    shortid: 'react-ts',
+  },
+  {
+    ...templates.parcel,
+    variantName: templates.parcel.niceName,
+    niceName: 'Vanilla + TS',
+    shortid: 'vanilla-ts',
+  },
+];
+
 export const popular = [
   {
     name: 'Client Templates',
@@ -18,22 +33,8 @@ export const popular = [
     name: 'Server Templates',
     templates: usedTemplates.filter(t => t.popular && t.isServer),
   },
+  { name: 'Presets', templates: presets },
 ];
 
 export const client = usedTemplates.filter(t => !t.isServer);
 export const container = usedTemplates.filter(t => t.isServer);
-
-// const presets = [
-//   {
-//     ...templates.react,
-//     variantName: templates.react.niceName,
-//     niceName: 'React + TS',
-//     shortid: 'react-ts',
-//   },
-//   {
-//     ...templates.parcel,
-//     variantName: templates.parcel.niceName,
-//     niceName: 'Vanilla + TS',
-//     shortid: 'vanilla-ts',
-//   },
-// ];

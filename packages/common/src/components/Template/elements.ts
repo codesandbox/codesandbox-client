@@ -46,27 +46,22 @@ export const Button = styled.button<{
         `};
 `;
 
-export const Title = styled.div<{
-  color: any;
-  selected?: boolean;
-  custom?: boolean;
-}>`
-  transition: 0.3s ease color;
-  font-size: 1.125em;
-  color: ${props =>
-    props.selected ? 'white' : makeColor(props.color, props.custom)};
-  font-weight: 600;
-`;
-
-export const SubTitle = styled.div<{ selected?: boolean }>`
-  font-size: 0.8em;
-  margin-top: 0.25rem;
-
-  color: ${props =>
-    props.selected ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.4)'};
+export const Title = styled.div`
+  font-family: Poppins, Roboto, sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: ${props => props.theme.placeholder};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-height: 16px; /* fallback */
+  max-height: 32px; /* fallback */
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
 `;
 
 export const IconContainer = styled.div`
-  margin-left: 0.5em;
+  margin-right: 0.75em;
   align-items: center;
+  display: flex;
 `;

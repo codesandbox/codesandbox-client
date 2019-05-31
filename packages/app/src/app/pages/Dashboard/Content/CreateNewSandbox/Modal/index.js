@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
-
 import track from '@codesandbox/common/lib/utils/analytics';
 import Template from '@codesandbox/common/lib/components/Template';
-import Loading from 'app/components/Loading';
+import { useStore } from 'app/store';
 import ImportTab from './ImportTab';
+import MyTemplates from './Components/MyTemplates';
+import MyTemplatesTab from './Components/MyTemplatesTab';
 import {
   Container,
   InnerContainer,
@@ -15,12 +15,11 @@ import {
   Title,
 } from './elements';
 
-import { popular, client, container } from './availableTemplates';
-import { LIST_TEMPLATES } from '../../../queries';
+import { popular, client, container, presets } from './availableTemplates';
 
 export default ({ forking = false, closing = false, createSandbox }) => {
   const [selectedTab, setSelectedTab] = useState(0);
-  const { loading, error, data } = useQuery(LIST_TEMPLATES);
+  const { user } = useStore();
 
   const selectTemplate = template => {
     track('New Sandbox Modal - Select Template', { template });
@@ -35,9 +34,9 @@ export default ({ forking = false, closing = false, createSandbox }) => {
     >
       <TabContainer forking={forking} closing={closing}>
         <Button selected={selectedTab === 0} onClick={() => setSelectedTab(0)}>
-          Create Sandbox
+          Overview
         </Button>
-        {!error && (
+        {user && (
           <Button
             selected={selectedTab === 1}
             onClick={() => setSelectedTab(1)}
@@ -46,45 +45,78 @@ export default ({ forking = false, closing = false, createSandbox }) => {
           </Button>
         )}
         <Button selected={selectedTab === 2} onClick={() => setSelectedTab(2)}>
+          Client Templates
+        </Button>
+        <Button selected={selectedTab === 3} onClick={() => setSelectedTab(3)}>
+          Container Templates
+        </Button>
+        <Button selected={selectedTab === 4} onClick={() => setSelectedTab(4)}>
           Import
         </Button>
       </TabContainer>
 
       <InnerContainer forking={forking} closing={closing}>
         <Tab visible={selectedTab === 0}>
+          {user && <MyTemplates />}
+          <Title>Popular Templates</Title>
           <Templates>
-            {popular.map(type => (
-              <>
-                <Title>{type.name}</Title>
-                {type.templates.map(template => (
-                  <Template
-                    key={template.name}
-                    template={template}
-                    selectTemplate={selectTemplate}
-                  />
-                ))}
-              </>
-            ))}
+            {popular.map(type =>
+              type.templates.map(template => (
+                <Template
+                  key={template.name}
+                  template={template}
+                  selectTemplate={selectTemplate}
+                />
+              ))
+            )}
           </Templates>
         </Tab>
-        {!error && (
+        {user && (
           <Tab visible={selectedTab === 1}>
-            {loading ? (
-              <Loading />
-            ) : (
-              <Templates>
-                {data.me.templates.map(template => (
-                  <Template
-                    key={template.id}
-                    template={template}
-                    selectTemplate={selectTemplate}
-                  />
-                ))}
-              </Templates>
-            )}
+            <MyTemplatesTab selectTemplate={selectTemplate} />
           </Tab>
         )}
         <Tab visible={selectedTab === 2}>
+          <Title>Client Templates</Title>
+          <Templates>
+            {client.map(template => (
+              <Template
+                key={template.name}
+                template={template}
+                selectTemplate={selectTemplate}
+              />
+            ))}
+          </Templates>
+          <Title
+            css={`
+              margin-top: 1rem;
+            `}
+          >
+            Presets
+          </Title>
+          <Templates>
+            {presets.map(template => (
+              <Template
+                key={template.name}
+                template={template}
+                selectTemplate={selectTemplate}
+              />
+            ))}
+          </Templates>
+        </Tab>
+        <Tab visible={selectedTab === 3}>
+          <Title>Container Templates</Title>
+          <Templates>
+            {container.map(template => (
+              <Template
+                key={template.name}
+                template={template}
+                selectTemplate={selectTemplate}
+              />
+            ))}
+          </Templates>
+        </Tab>
+        <Tab visible={selectedTab === 4}>
           <ImportTab />
         </Tab>
       </InnerContainer>

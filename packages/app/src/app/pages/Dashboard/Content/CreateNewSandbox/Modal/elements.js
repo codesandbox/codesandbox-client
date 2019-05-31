@@ -34,14 +34,68 @@ export const Container = styled.main`
     `};
 `;
 
+export const MyTemplates = styled.div`
+  display: flex;
+  margin-bottom: 1rem;
+  overflow: auto;
+
+  button:not(:last-child) {
+    margin-right: 18px;
+  }
+`;
+export const Border = styled.div`
+  width: 100%;
+  height: 4px;
+  background: ${props => props.color};
+  position: relative;
+  top: -4px;
+`;
+
+export const TemplateTitle = styled.span`
+  font-family: Poppins, Roboto, sans-serif;
+  font-weight: 500;
+  margin: 6px 12px;
+  width: 100%;
+  display: block;
+  text-align: left;
+  font-size: 12px;
+`;
+
+export const TemplateSubTitle = styled.span`
+  margin: 0 12px;
+  width: 100%;
+  display: block;
+  text-align: left;
+  font-size: 12px;
+  line-height: 16px;
+  margin-bottom: 6px;
+
+  color: ${props => props.theme.placeholder};
+`;
+
+export const MyTemplate = styled.button`
+  background: transparent;
+  background: ${props => props.theme.background2};
+  border: 2px solid ${props => props.theme.background5};
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 4px;
+  width: 212px;
+  min-width: 212px;
+  color: ${props => props.theme.lightText};
+
+  img {
+    max-width: 100%;
+  }
+`;
+
 export const TabContainer = styled.div`
   width: 100%;
-  border-radius: 4px 4px 0 0;
+  border-radius: 8px 8px 0 0;
   display: flex;
-  background: #1b1d1f;
-  height: 62px;
+  align-items: flex-start;
+  background: ${props => props.theme.background2};
   box-sizing: border-box;
-  padding: 0 2rem;
 
   ${props =>
     (props.closing || props.forking) &&
@@ -112,17 +166,7 @@ export const ImportChoice = styled.a`
 
 const activeStyles = css`
   color: white;
-  padding-bottom: 0;
-  padding-top: 0;
-  outline: none;
-
-  &:after {
-    width: 110%;
-
-    @media screen and (max-width: 500px) {
-      width: 100%;
-    }
-  }
+  background: ${props => props.theme.background};
 `;
 
 export const Button = styled.button`
@@ -130,42 +174,20 @@ export const Button = styled.button`
   font-family: 'Roboto', sans-serif;
   border: none;
   margin: 0;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   font-size: 0.875rem;
   color: ${props => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.5)')};
-  padding: 0 20px;
+  padding: 1rem 2rem;
   transition: 0.15s ease all;
   position: relative;
   cursor: pointer;
-  ${delayEffect(0.1)};
-
-  &:after {
-    content: '';
-    margin-top: 21px;
-    display: block;
-    position: relative;
-    background: #40a9f3;
-    height: 2px;
-    box-sizing: border-box;
-    width: 0%;
-    margin-left: -5%;
-    transition: all 200ms ease;
-
-    @media screen and (max-width: 500px) {
-      margin-left: 0%;
-    }
-  }
-
+  background: ${props => props.theme.background2};
   ${props =>
     props.selected &&
     css`
       ${activeStyles};
     `};
-
-  &:hover {
-    ${activeStyles};
-  }
 `;
 
 export const Title = styled.h2`
@@ -175,7 +197,7 @@ export const Title = styled.h2`
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.5);
   margin-bottom: 0;
-  margin-top: 1rem;
+  margin-bottom: 1rem;
   &:first-child {
     margin-top: 0;
   }

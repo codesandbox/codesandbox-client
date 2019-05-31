@@ -19,6 +19,11 @@ const SANDBOX_FRAGMENT = gql`
     privacy
     screenshotUrl
 
+    author {
+      avatarUrl
+      username
+    }
+
     source {
       template
     }

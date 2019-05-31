@@ -3,14 +3,13 @@ import { Template } from '../../types/index';
 import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';
 import color from 'color';
-import { Button, IconContainer, Title, SubTitle } from './elements';
+import { Button, IconContainer, Title } from './elements';
 import { TemplateType } from '../../templates';
 
 interface UserTemplate extends Template {
   iconUrl?: string;
   id?: string;
   title?: string;
-  description?: string;
   sandbox?: {
     alias: string;
     id: string;
@@ -22,12 +21,11 @@ interface UserTemplate extends Template {
 
 type Props = {
   template: UserTemplate;
-  subtitle: string;
   selectTemplate: (t: Template) => void;
   small: boolean;
 };
 
-export default ({ template, subtitle, selectTemplate, small }: Props) => {
+export default ({ template, selectTemplate, small }: Props) => {
   const Icon = template.iconUrl
     ? getIcon(template.sandbox.source.template)
     : null;
@@ -50,14 +48,6 @@ export default ({ template, subtitle, selectTemplate, small }: Props) => {
       }}
       tabIndex={0}
     >
-      <div style={{ width: '100%' }}>
-        <Title custom color={color(template.color)}>
-          {template.title}
-        </Title>
-        {(!small || subtitle) && (
-          <SubTitle>{subtitle || template.description}</SubTitle>
-        )}
-      </div>
       <IconContainer>
         {template.iconUrl ? (
           // @ts-ignore
@@ -66,6 +56,7 @@ export default ({ template, subtitle, selectTemplate, small }: Props) => {
           <img src={template.iconUrl} />
         )}
       </IconContainer>
+      <Title>{template.title}</Title>
     </Button>
   );
 };
