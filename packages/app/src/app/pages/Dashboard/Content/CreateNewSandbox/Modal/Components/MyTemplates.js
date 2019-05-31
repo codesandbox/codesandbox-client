@@ -26,7 +26,10 @@ export default () => {
                 >
                   <img
                     height="109px"
-                    src={template.sandbox.screenshotUrl}
+                    src={
+                      template.sandbox.screenshotUrl ||
+                      'https://codesandbox.io/static/img/banner.png'
+                    }
                     alt={template.title}
                   />
                   <Border color={template.color} />
@@ -39,7 +42,11 @@ export default () => {
             })
           : new Array(3).fill({}).map(() => (
               <MyTemplate>
-                <img height="109px" alt="loading" />
+                <img
+                  height="109px"
+                  alt="loading"
+                  src="https://codesandbox.io/static/img/banner.png"
+                />
                 <Border />
                 <div>
                   <TemplateTitle>Loading</TemplateTitle>
