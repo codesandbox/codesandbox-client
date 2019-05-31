@@ -33,12 +33,16 @@ const PathedTemplates = props => {
     color: t.color,
   }));
 
+  const orderedSandboxes = props.store.dashboard.getFilteredSandboxes(
+    sandboxes
+  );
+
   return (
     <Sandboxes
       isLoading={loading}
       possibleTemplates={possibleTemplates}
       Header={<Navigation path={path} />}
-      sandboxes={sandboxes}
+      sandboxes={orderedSandboxes}
     />
   );
 };
