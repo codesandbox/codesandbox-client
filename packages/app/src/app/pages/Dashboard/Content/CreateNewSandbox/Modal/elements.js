@@ -86,6 +86,7 @@ export const MyTemplate = styled.button`
 
   img {
     max-width: 100%;
+    display: block;
   }
 `;
 
