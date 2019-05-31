@@ -7,17 +7,15 @@ import { Templates } from '../elements';
 
 export default ({ selectTemplate }) => {
   const { data } = useQuery(LIST_TEMPLATES);
-  return (
-    data.me && (
-      <Templates>
-        {data.me.templates.map(template => (
-          <Template
-            key={template.id}
-            template={template}
-            selectTemplate={selectTemplate}
-          />
-        ))}
-      </Templates>
-    )
-  );
+  return data.me ? (
+    <Templates>
+      {data.me.templates.map(template => (
+        <Template
+          key={template.id}
+          template={template}
+          selectTemplate={selectTemplate}
+        />
+      ))}
+    </Templates>
+  ) : null;
 };

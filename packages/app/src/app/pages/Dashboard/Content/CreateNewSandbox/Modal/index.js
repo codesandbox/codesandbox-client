@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import track from '@codesandbox/common/lib/utils/analytics';
 import Template from '@codesandbox/common/lib/components/Template';
 import { useStore } from 'app/store';
-import ImportTab from './ImportTab';
+import ImportTab from './Components/ImportTab';
 import MyTemplates from './Components/MyTemplates';
 import MyTemplatesTab from './Components/MyTemplatesTab';
 import {
@@ -17,7 +18,7 @@ import {
 
 import { popular, client, container, presets } from './availableTemplates';
 
-export default ({ forking = false, closing = false, createSandbox }) => {
+export const Modal = ({ forking = false, closing = false, createSandbox }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const { user } = useStore();
 
@@ -123,3 +124,5 @@ export default ({ forking = false, closing = false, createSandbox }) => {
     </Container>
   );
 };
+
+export default observer(Modal);

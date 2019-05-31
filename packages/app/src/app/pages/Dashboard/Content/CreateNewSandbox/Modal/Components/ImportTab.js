@@ -3,7 +3,7 @@ import TerminalIcon from 'react-icons/lib/go/terminal';
 import UploadIcon from 'react-icons/lib/go/cloud-upload';
 import GithubPage from 'app/pages/GitHub/main';
 
-import { ImportChoice, ImportChoices } from './elements';
+import { ImportChoice, ImportChoices } from '../elements';
 
 export default () => (
   <>
