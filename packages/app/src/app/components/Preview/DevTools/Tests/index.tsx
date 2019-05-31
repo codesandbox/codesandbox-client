@@ -12,6 +12,7 @@ import TestDetailsContent from './TestDetails';
 import TestSummary from './TestSummary';
 import TestOverview from './TestOverview';
 import { DevToolProps } from '..';
+import { messages } from './../../../../../../src/sandbox/eval/tests/jest-lite';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -80,7 +81,7 @@ type SandboxMessage = { type: 'test' | 'done' } & (
   | TestEndMessage);
 
 interface InitializedTestsMessage {
-  event: 'initialize_tests';
+  event: messages.INITIALIZE;
 }
 
 interface TestCountMessage {
@@ -203,7 +204,7 @@ class Tests extends React.Component<DevToolProps, State> {
       this.runAllTests();
     } else if (data.type === 'test') {
       switch (data.event) {
-        case 'initialize_tests': {
+        case messages.INITIALIZE: {
           this.currentDescribeBlocks = [];
           if (this.props.updateStatus) {
             this.props.updateStatus('clear');
