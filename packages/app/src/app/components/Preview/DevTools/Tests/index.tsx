@@ -12,7 +12,7 @@ import TestDetailsContent from './TestDetails';
 import TestSummary from './TestSummary';
 import TestOverview from './TestOverview';
 import { DevToolProps } from '..';
-import { messages } from './../../../../../../src/sandbox/eval/tests/jest-lite';
+import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
