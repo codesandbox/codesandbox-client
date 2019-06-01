@@ -135,7 +135,7 @@
     "apollo-boost": "^0.3.1",
     "apollo-link-batch-http": "^1.2.2",
     "apollo-link-context": "^1.0.8",
-    "axios": "^0.16.2",
+    "axios": "^0.19.0",
     "babel-code-frame": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
     "babel-macros": "^2.0.0",
