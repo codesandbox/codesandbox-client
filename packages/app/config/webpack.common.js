@@ -467,12 +467,12 @@ module.exports = {
       [
         {
           from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode21/vs',
+          to: 'public/vscode22/vs',
           force: true,
         },
         {
           from: '../../standalone-packages/vscode-extensions/out',
-          to: 'public/vscode-extensions/v7',
+          to: 'public/vscode-extensions/v8',
           force: true,
         },
         {
