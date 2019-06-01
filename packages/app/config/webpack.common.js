@@ -224,17 +224,6 @@ module.exports = {
           flags: 'g',
         },
       },
-      {
-        test: new RegExp(
-          `babel-eslint${sepRe}lib${sepRe}patch-eslint-scope\\.js$`
-        ),
-        loader: 'string-replace-loader',
-        options: {
-          search: '[\\s\\S]+', // whole file.
-          replace: 'module.exports = () => {}',
-          flags: 'g',
-        },
-      },
       // Remove dynamic require in jest circus
       {
         test: /format_node_assert_errors\.js/,

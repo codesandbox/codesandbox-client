@@ -20,13 +20,17 @@ merge of your pull request!
 
 <!-- Have you done all of these things?  -->
 
+**What steps did you take to test this?**
+
+<!-- Most important part!  -->
+
 **Checklist**:
 
 <!-- add "N/A" to the end of each line that's irrelevant to your changes -->
 <!-- to check an item, place an "x" in the box like so: "- [x] Documentation" -->
 
 - [ ] Documentation
-- [ ] Tests
+- [ ] Testing <!-- We can only merge the PR if this is checked -->
 - [ ] Ready to be merged <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
 - [ ] Added myself to contributors table <!-- this is optional, see the contributing guidelines for instructions -->
 

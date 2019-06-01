@@ -99,17 +99,6 @@ const tempTransformFiles = files => {
   return finalObj;
 };
 
-const transformFiles = dir =>
-  dir.files
-    ? dir.files.reduce((prev, next) => {
-        if (next.type === 'file') {
-          return { ...prev, [next.path]: next };
-        }
-
-        return { ...prev, ...transformFiles(next) };
-      }, {})
-    : {};
-
 const getFileMetaData = (dependency, version, depPath) =>
   doFetch(
     `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`

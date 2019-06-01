@@ -1,9 +1,15 @@
 import { dispatch, actions, listen } from 'codesandbox-api';
 import { react, reactTs } from '@codesandbox/common/lib/templates';
+import { messages } from '@codesandbox/common/lib/utils/jest-lite';
+export { messages };
+
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
+
 import { makeDescribe } from 'jest-circus/build/utils';
+import path from 'path';
+import { bind as bindEach } from 'jest-each';
 
 import {
   addSerializer,
@@ -33,13 +39,15 @@ expect.extend({
 expect.addSnapshotSerializer = addSerializer;
 
 function addScript(src: string) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.setAttribute('src', src);
     document.body.appendChild(s);
-
     s.onload = () => {
       resolve();
+    };
+    s.onerror = error => {
+      reject(error);
     };
   });
 }
@@ -49,7 +57,12 @@ let jsdomPromise = null;
  * Load JSDOM while the sandbox loads. Before we run a test we make sure that this has been loaded.
  */
 const getJSDOM = () => {
-  jsdomPromise = jsdomPromise || addScript('/static/js/jsdom-4.0.0.min.js');
+  let jsdomPath = '/static/js/jsdom-4.0.0.min.js';
+  if (navigator.userAgent.indexOf('Node.js') !== -1) {
+    jsdomPath = path.resolve('./static/js/jsdom-4.0.0.min.js');
+  }
+
+  jsdomPromise = jsdomPromise || addScript(jsdomPath);
 
   return jsdomPromise;
 };
@@ -83,6 +96,8 @@ export default class TestRunner {
   manager: Manager;
   watching: boolean = true;
 
+  LOCALHOST_URL: string = 'http://localhost';
+
   dom: any;
 
   constructor(manager: Manager) {
@@ -92,7 +107,7 @@ export default class TestRunner {
     addEventHandler(this.handleMessage);
     listen(this.handleCodeSandboxMessage);
 
-    this.sendMessage('initialize_tests');
+    this.sendMessage(messages.INITIALIZE);
   }
 
   testGlobals(module: Module) {
@@ -102,15 +117,14 @@ export default class TestRunner {
         name: 'add_test',
         testName: `${module.path}:#:${testName}`,
       });
-    const it = test;
-    test.skip = (testName: TestName, fn?: TestFn) =>
+    const skip = (testName: TestName, fn?: TestFn) =>
       dispatchJest({
         fn,
         mode: 'skip',
         name: 'add_test',
         testName: `${module.path}:#:${testName}`,
       });
-    test.only = (testName: TestName, fn: TestFn) => {
+    const only = (testName: TestName, fn: TestFn) => {
       dispatchJest({
         fn,
         mode: 'only',
@@ -118,7 +132,14 @@ export default class TestRunner {
         testName: `${module.path}:#:${testName}`,
       });
     };
+    test.each = bindEach(test);
+    skip.each = bindEach(skip);
+    only.each = bindEach(only);
 
+    test.only = only;
+    test.skip = skip;
+
+    const it = test;
     const { window: jsdomWindow } = this.dom;
     const { document: jsdomDocument } = jsdomWindow;
 
@@ -163,7 +184,7 @@ export default class TestRunner {
       this.tests.forEach(t => {
         if (!modules[t.path]) {
           // A removed test
-          this.sendMessage('remove_file', { path: t.path });
+          this.sendMessage(messages.REMOVE_FILE, { path: t.path });
         }
       });
     }
@@ -189,7 +210,7 @@ export default class TestRunner {
           return null;
         }
 
-        this.sendMessage('add_file', { path: t.path });
+        this.sendMessage(messages.ADD_FILE, { path: t.path });
         try {
           await this.manager.transpileModules(t, true);
 
@@ -201,7 +222,7 @@ export default class TestRunner {
         } catch (e) {
           const error = await this.errorToCodeSandbox(e);
           this.ranTests.delete(t.path);
-          this.sendMessage('file_error', { path: t.path, error });
+          this.sendMessage(messages.FILE_ERROR, { path: t.path, error });
 
           return null;
         }
@@ -217,23 +238,31 @@ export default class TestRunner {
     });
   }
 
+  async initJSDOM() {
+    await getJSDOM();
+    const { JSDOM } = (window as any).JSDOM;
+    let url = document.location.origin;
+    if (url === 'null') {
+      url = this.LOCALHOST_URL;
+    }
+
+    this.dom = new JSDOM('<!DOCTYPE html>', {
+      pretendToBeVisual: true,
+      url,
+    });
+  }
+
   /* istanbul ignore next */
   async runTests(force: boolean = false) {
     if (!this.watching && !force) {
       return;
     }
 
-    await getJSDOM();
-
-    const { JSDOM } = (window as any).JSDOM;
+    await this.initJSDOM();
 
     this.manager.clearCompiledCache();
-    this.dom = new JSDOM('<!DOCTYPE html>', {
-      pretendToBeVisual: true,
-      url: document.location.origin,
-    });
 
-    this.sendMessage('total_test_start');
+    this.sendMessage(messages.TOTAL_TEST_START);
 
     let testModules: Module[] = [];
 
@@ -302,7 +331,7 @@ export default class TestRunner {
         } catch (e) {
           this.ranTests.delete(t.path);
           const error = await this.errorToCodeSandbox(e);
-          this.sendMessage('file_error', { path: t.path, error });
+          this.sendMessage(messages.FILE_ERROR, { path: t.path, error });
         }
       })
     );
@@ -310,7 +339,7 @@ export default class TestRunner {
     await run();
 
     setTimeout(() => {
-      this.sendMessage('total_test_end');
+      this.sendMessage(messages.TOTAL_TEST_END);
     });
   }
 
@@ -367,7 +396,7 @@ export default class TestRunner {
       case 'test_start': {
         const test = await this.testToCodeSandbox(message.test);
 
-        return this.sendMessage('test_start', {
+        return this.sendMessage(messages.TEST_START, {
           test,
         });
       }
@@ -403,25 +432,28 @@ export default class TestRunner {
           });
         }
         try {
-          return this.sendMessage('test_end', {
+          return this.sendMessage(messages.TEST_END, {
             test,
           });
         } catch (e) {
           const error = await this.errorToCodeSandbox(e);
-          return this.sendMessage('file_error', { path: test.path, error });
+          return this.sendMessage(messages.FILE_ERROR, {
+            path: test.path,
+            error,
+          });
         }
       }
       case 'start_describe_definition': {
-        return this.sendMessage('describe_start', {
+        return this.sendMessage(messages.DESCRIBE_START, {
           blockName: message.blockName,
         });
       }
       case 'finish_describe_definition': {
-        return this.sendMessage('describe_end');
+        return this.sendMessage(messages.DESCRIBE_END);
       }
       case 'add_test': {
         const [path, testName] = message.testName.split(':#:');
-        return this.sendMessage('add_test', {
+        return this.sendMessage(messages.ADD_TEST, {
           testName,
           path,
         });

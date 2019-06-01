@@ -175,6 +175,7 @@ export async function createApiData({ props, state }) {
     apiData.builds = nowJSON.builds;
     apiData.routes = nowJSON.routes;
     apiData.env = nowJSON.env;
+    apiData.scope = nowJSON.scope;
     apiData['build.env'] = nowJSON['build.env'];
     apiData.regions = nowJSON.regions;
   } else {

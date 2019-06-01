@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-
 import VERSION from '@codesandbox/common/lib/version';
+import { observer } from 'mobx-react-lite';
+import * as React from 'react';
 
-import getWorkspaceItems from 'app/store/modules/workspace/items';
 import SocialInfo from 'app/components/SocialInfo';
+import { useStore } from 'app/store';
+import getWorkspaceItems from 'app/store/modules/workspace/items';
 
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
@@ -16,11 +16,11 @@ import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
-import { ConnectionNotice } from './ConnectionNotice';
-import Advertisement from './Advertisement';
-import WorkspaceItem from './WorkspaceItem';
+import { Advertisement } from './Advertisement';
 import Chat from './Chat';
+import { ConnectionNotice } from './ConnectionNotice';
 import { SSEDownNotice } from './SSEDownNotice';
+import WorkspaceItem from './WorkspaceItem';
 
 import {
   Container,
@@ -41,45 +41,59 @@ const idToItem = {
   more: More,
 };
 
-function Workspace({ store }) {
-  const sandbox = store.editor.currentSandbox;
-  const preferences = store.preferences;
-
-  const currentItem = store.workspace.openedWorkspaceItem;
+const Workspace = () => {
+  const store = useStore();
+  const {
+    editor: {
+      currentSandbox: { owned },
+    },
+    isPatron,
+    live: { isLive, roomInfo },
+    preferences: {
+      settings: { zenMode },
+    },
+    workspace: { openedWorkspaceItem: currentItem },
+  } = store;
 
   if (!currentItem) {
     return null;
   }
 
   const Component = idToItem[currentItem];
+  const item = getWorkspaceItems(store).find(({ id }) => id === currentItem);
 
-  const item = getWorkspaceItems(store).find(i => i.id === currentItem);
   return (
     <Container>
       {item && !item.hasCustomHeader && <ItemTitle>{item.name}</ItemTitle>}
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <Component />
       </div>
-      {store.live.isLive && store.live.roomInfo.chatEnabled && (
+
+      {isLive && roomInfo.chatEnabled && (
         <WorkspaceItem defaultOpen title="Chat">
           <Chat />
         </WorkspaceItem>
       )}
-      {!preferences.settings.zenMode && (
+
+      {!zenMode && (
         <div>
-          {!store.isPatron && !sandbox.owned && <Advertisement />}
+          {!(isPatron || owned) && <Advertisement />}
+
           <ContactContainer>
             <SocialInfo style={{ display: 'inline-block' }} />
+
             <VersionContainer className="codesandbox-version">
               {VERSION}
             </VersionContainer>
           </ContactContainer>
+
           <SSEDownNotice />
+
           <ConnectionNotice />
         </div>
       )}
     </Container>
   );
-}
+};
 
-export default inject('signals', 'store')(observer(Workspace));
+export default observer(Workspace);
