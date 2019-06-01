@@ -1023,7 +1023,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   }
 
   lint = async (code: string, title: string, version: number) => {
-    const mode = await getMode(title, this.monaco);
+    const mode = (await getMode(title, this.monaco)) || 'typescript';
     if (this.settings.lintEnabled) {
       if (mode === 'javascript' || mode === 'vue') {
         if (this.lintWorker) {
@@ -1219,7 +1219,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
           const lib = this.addLib(module.code || '', path);
 
-          const mode = await getMode(module.title, this.monaco);
+          const mode =
+            (await getMode(module.title, this.monaco)) || 'typescript';
 
           if (
             mode !== 'javascript' &&

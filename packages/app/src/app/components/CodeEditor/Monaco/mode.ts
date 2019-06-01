@@ -1,5 +1,5 @@
 const requireAMDModule = paths =>
-  new Promise(resolve => window.require(paths, () => resolve()));
+  new Promise(resolve => (window as any).require(paths, () => resolve()));
 
 export default async (title: string, monaco) => {
   if (title == null) return 'javascript';
@@ -11,6 +11,7 @@ export default async (title: string, monaco) => {
     if (kind[1] === 'scss') return 'scss';
     if (kind[1] === 'json') return 'json';
     if (kind[1] === 'html') return 'html';
+    if (kind[1] === 'svelte') return 'html';
     if (kind[1] === 'vue') {
       if (
         monaco.languages.getLanguages &&
@@ -26,5 +27,5 @@ export default async (title: string, monaco) => {
     if (/tsx?$/.test(kind[1])) return 'typescript';
   }
 
-  return 'typescript';
+  return undefined;
 };
