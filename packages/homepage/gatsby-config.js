@@ -37,13 +37,7 @@ module.exports = {
           { resolve: require.resolve(`./plugins/remark-sections`) },
           'gatsby-remark-autolink-headers',
           `gatsby-remark-prismjs`,
-          {
-            resolve: 'gatsby-remark-embed-youtube',
-            options: {
-              width: 740,
-              height: 370,
-            },
-          },
+          { resolve: require.resolve('./plugins/remark-embedder') },
         ],
       },
     },
