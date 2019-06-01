@@ -33,7 +33,7 @@ import defineTheme from './define-theme';
 import getSettings from './settings';
 
 import type { Props, Editor } from '../types';
-import getMode from './mode.ts';
+import getMode from './mode';
 import { liftOff } from './grammars/configure-tokenizer';
 import {
   lineAndColumnToIndex,
