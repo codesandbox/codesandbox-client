@@ -1,6 +1,6 @@
 ---
 featuredImage: ./images/banner.png
-slug: TEST-whats-unique-about-codesandbox
+slug: whats-unique-about-codesandbox
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
 title: What's Unique About CodeSandbox
