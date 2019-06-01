@@ -3,6 +3,10 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
+import {
+  getModulePath,
+  resolveModule,
+} from '@codesandbox/common/lib/sandbox/modules';
 import * as fs from 'fs';
 import { listen, actions, dispatch } from 'codesandbox-api';
 
@@ -182,6 +186,15 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       }
     });
   };
+
+  getVSCodePath = (moduleId: string) =>
+    `/sandbox${getModulePath(
+      this.sandbox.modules,
+      this.sandbox.directories,
+      moduleId
+    )}`;
+
+  getCurrentModuleVSCodePath = () => this.getVSCodePath(this.currentModule.id);
 
   getPrettierConfig = () => {
     try {
