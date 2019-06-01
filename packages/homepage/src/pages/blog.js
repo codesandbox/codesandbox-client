@@ -1,15 +1,15 @@
-import React from 'react';
-import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
-import PageContainer from '../components/PageContainer';
+import { graphql, Link } from 'gatsby';
+import React from 'react';
 
+import PageContainer from '../components/PageContainer';
 import {
-  Title,
-  PostDate,
-  AuthorImage,
   Author,
+  AuthorImage,
+  PostDate,
+  Title,
 } from '../components/PostElements';
+import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import {
   Posts,
@@ -28,18 +28,20 @@ import { makeFeed } from '../utils/makePosts';
 // UNCOMMENT AT THE BOTTOM IF IT BREAKS
 // GATSBY DOES NOT LET YOU HAVE FIELDS THAT DON'T EXIST YET
 
-const Info = ({ post, mobile, ...props }) => (
+const Info = ({ mobile, post: { creator, date, photo }, ...props }) => (
   <Aside mobile={mobile} {...props}>
-    <PostDate>{format(post.date, 'MMM DD, YYYY')}</PostDate>
+    <PostDate>{format(date, 'MMM DD, YYYY')}</PostDate>
+
     <section>
-      <AuthorImage src={post.photo} alt={post.creator} />
-      <Author>{post.creator}</Author>
+      <AuthorImage src={photo} alt={creator} />
+
+      <Author>{creator}</Author>
     </section>
   </Aside>
 );
 
-const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
-  const posts = makeFeed(allFeedMediumBlog, allMarkdownRemark);
+const Blog = ({ data: { allMarkdownRemark } }) => {
+  const posts = makeFeed(allMarkdownRemark);
 
   return (
     <Layout>
@@ -48,28 +50,33 @@ const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
           description="Here you can find articles written by the team and external contributors"
           title="Blog - CodeSandbox"
         />
+
         <Header>
           <PageTitle>Blog</PageTitle>
+
           <PageSubtitle>
             Welcome to the CodeSandbox blog. Here you can find posts about new
             releases, tips and tricks and how we made CodeSandbox.
           </PageSubtitle>
         </Header>
+
         {posts.map(post => (
           <Wrapper key={post.id}>
             <Info post={post} />
+
             <Posts>
               {post.src && (
                 <Link
                   css={`
-                    text-decoration: none;
                     display: contents;
+                    text-decoration: none;
                   `}
                   to={`post/${post.slug}`}
                 >
-                  <Thumbnail src={post.src} width="340" alt={post.title} />
+                  <Thumbnail alt={post.title} src={post.src} width="340" />
                 </Link>
               )}
+
               <div>
                 <Link
                   css={`
@@ -79,8 +86,10 @@ const Blog = ({ data: { allFeedMediumBlog, allMarkdownRemark } }) => {
                 >
                   <Title>{post.title}</Title>
                 </Link>
+
                 <Subtitle>{post.subtitle}</Subtitle>
               </div>
+
               <Info post={post} mobile />
             </Posts>
           </Wrapper>
@@ -110,20 +119,6 @@ export const query = graphql`
             title
             description
             date
-          }
-        }
-      }
-    }
-    allFeedMediumBlog {
-      edges {
-        node {
-          id
-          categories
-          creator
-          title
-          isoDate
-          content {
-            encoded
           }
         }
       }
