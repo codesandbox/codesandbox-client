@@ -12,7 +12,7 @@ const GithubIntegration = ({ small = false }: Props) => {
   const { signInGithubClicked, signOutGithubIntegration } = useSignals();
   const {
     isLoadingGithub,
-    signOutGithubIntegration: {
+    user: {
       integrations: { github },
     },
   } = useStore();
