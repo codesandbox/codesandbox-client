@@ -12356,22 +12356,6 @@ gatsby-source-filesystem@^2.1.5:
     valid-url "^1.0.9"
     xstate "^3.1.0"
 
-gatsby-source-medium@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/gatsby-source-medium/-/gatsby-source-medium-2.1.2.tgz#ece35a6fd63491303000afdff48ce2fda2016e20"
-  integrity sha512-hdfx55rF4RLR7OM/HdE7yXuL6H94cCQs5MzfE1rK0w7KZ5enLQbgrBwWsCcbVk5RTvaZkQcpEPUBCzn843CI7w==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    axios "^0.19.0"
-
-gatsby-source-rss-feed@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/gatsby-source-rss-feed/-/gatsby-source-rss-feed-1.1.1.tgz#f929e8bdb3b74bcfcc7402d0b1db100727f14301"
-  integrity sha512-plPlNJl74gQAnfocu6g0wH9bD5P2Radq4ujANhMWoc+fjIhOJAXy3Iq9FYXrZhMG/PrG2aYNPP0DGUzxP3tvCw==
-  dependencies:
-    lodash "^4.17.11"
-    rss-parser "^3.6.2"
-
 gatsby-telemetry@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/gatsby-telemetry/-/gatsby-telemetry-1.1.6.tgz#957c95e1eefcfdfb5a82b4cb85d13e88e429bdd7"
@@ -23827,14 +23811,6 @@ rollup@^1.16.2:
     "@types/node" "^12.0.8"
     acorn "^6.1.1"
 
-rss-parser@^3.6.2:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/rss-parser/-/rss-parser-3.7.0.tgz#945d82864678a805558c1de68b52f00adeaacd92"
-  integrity sha512-xN1fwjVxBO0unbrUAOIUK5MAyEaaZTpKWnPY+d3QYigIG4awtbdqxHPOLuOwsTIJFsaKC78nPxIGRJG92p86Hw==
-  dependencies:
-    entities "^1.1.1"
-    xml2js "^0.4.19"
-
 rsvp@^3.3.3:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.6.2.tgz#2e96491599a96cde1b515d5674a8f7a91452926a"
@@ -28365,7 +28341,7 @@ xml2js@0.4.17:
     sax ">=0.6.0"
     xmlbuilder "^4.1.0"
 
-xml2js@^0.4.17, xml2js@^0.4.19, xml2js@^0.4.5:
+xml2js@^0.4.17, xml2js@^0.4.5:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.19.tgz#686c20f213209e94abf0d1bcf1efaa291c7827a7"
   dependencies:
