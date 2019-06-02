@@ -1,32 +1,31 @@
 const { URL } = require('url');
 
-function shouldTransform(string) {
-  return getUrl(string) !== null;
-}
-
-function getUrl(string) {
+const getUrl = string => {
   if (!string.includes('codesandbox.io/s/')) {
     return null;
   }
-  if (!string.startsWith('http')) {
-    string = `https://${string}`;
-  }
+
+  const urlString = string.startsWith('http') ? string : `https://${string}`;
   let url;
   try {
-    url = new URL(string);
+    url = new URL(urlString);
   } catch (error) {
     return null;
   }
+
   if (!url.host.endsWith('codesandbox.io')) {
     return null;
   }
-  return url;
-}
 
-function getCodeSandboxHTML(string) {
+  return url;
+};
+const shouldTransform = string => getUrl(string) !== null;
+
+const getCodeSandboxHTML = string => {
   const iframeUrl = string.replace('/s/', '/embed/');
+
   return `<iframe src="${iframeUrl}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"></iframe>`;
-}
+};
 
 module.exports = getCodeSandboxHTML;
 module.exports.shouldTransform = shouldTransform;
