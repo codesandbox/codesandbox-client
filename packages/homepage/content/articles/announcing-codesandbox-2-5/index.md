@@ -247,7 +247,7 @@ times, as you can see in this GIF.
 #### Hot Module Reloading API
 
 We also now have official HMR support (finally!). You can use the `module.hot`
-API like in [Webpack](https://github.com/webpack/webpack), this is useful for
+API like in [`webpack`](https://github.com/webpack/webpack), this is useful for
 when you want to preserve state between runs for example. We also added official
 support for the HMR API in our Vue loader, this means that Vue gets proper HMR
 out of the box!

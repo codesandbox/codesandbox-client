@@ -53,32 +53,33 @@ Vue turned out to be even harder in the old system. It was evident that I had to
 rethink the bundling process if we want to support libraries like Vue, plus it
 would give me the chance to improve the bundler.
 
-#### Webpack in the browser
+#### webpack in the browser
 
-My first idea was to make [Webpack](https://github.com/webpack/webpack) work in
-the browser. Almost all existing CLIs already use Webpack and it would require
-no work to add a new loader if it already works with Webpack. Exporting to a
-`webpack.config.js` for the download function would also be effortless and users
-would be able to provide their own config. Sounds like the perfect scenario,
-right? For me as well! It sounds too good to be true, and it turned out to be.
+My first idea was to make [`webpack`](https://github.com/webpack/webpack) work
+in the browser. Almost all existing CLIs already use `webpack` and it would
+require no work to add a new loader if it already works with `webpack`.
+Exporting to a `webpack.config.js` for the download function would also be
+effortless and users would be able to provide their own config. Sounds like the
+perfect scenario, right? For me as well! It sounds too good to be true, and it
+turned out to be.
 
-I got Webpack running in the browser, however the bundle size was 3.5MB
+I got `webpack` running in the browser, however the bundle size was 3.5MB
 uglified. I had to provide many polyfills and compilation threw a dozen warnings
 because of dynamic requires. Furthermore, only half of the loaders worked.
-Webpack assumes a [Node](https://github.com/nodejs/node) environment, and it
+`webpack` assumes a [Node](https://github.com/nodejs/node) environment, and it
 turned out that the cost to simulate that environment was (in my opinion) too
 big for the advantages gained from it. My second reason is that CodeSandbox is a
 very specific platform, and if we build the bundler ourselves we can completely
 optimize for that platform.
 
-#### Webpack Loader API in the browser
+#### webpack Loader API in the browser
 
 My second idea was to write my own bundler, but with a loader API very close to
-Webpack. The advantage of this is that the bundler "feels" like Webpack, but is
-optimized for a browser environment. Writing loaders would be very easy; we can
-just take an existing Webpack loader, strip all SSR, Node and production logic
-away and it _should_ work in CodeSandbox. Another **big** advantage is that we
-assume a browser environment, so we can abuse browser APIs like
+`webpack`. The advantage of this is that the bundler "feels" like `webpack`, but
+is optimized for a browser environment. Writing loaders would be very easy; we
+can just take an existing `webpack` loader, strip all SSR, Node and production
+logic away and it _should_ work in CodeSandbox. Another **big** advantage is
+that we assume a browser environment, so we can abuse browser APIs like
 [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API),
 [Service Workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
 and code splitting!
@@ -86,16 +87,16 @@ and code splitting!
 ## Implementation
 
 For the actual implementation I tried to achieve the best of both worlds: close
-loader API surface with Webpack and full optimization for CodeSandbox. It should
-work faster than first bundler, work offline and it should be extensible. The
-final bundler distinguishes three phases: configuration, transpilation and
+loader API surface with `webpack` and full optimization for CodeSandbox. It
+should work faster than first bundler, work offline and it should be extensible.
+The final bundler distinguishes three phases: configuration, transpilation and
 evaluation.
 
 #### Configuration
 
 The new bundler has been built with templates in mind. For every template we
 have (currently React, Vue and Preact) we define a new preset. These presets
-contain configurations you can also find in a Webpack config: aliases, default
+contain configurations you can also find in a `webpack` config: aliases, default
 loaders and default extensions. The function of a `Preset` is to return what
 loaders are used for a file type, and how files are resolved. The `Preset` for
 Preact looks like this:
@@ -176,11 +177,11 @@ since CodeSandbox 2.5!_)
 
 I'm proud of this bundler, as it allows us to do more and is also much faster
 than the previous version. With the new implementation we have the best of both
-worlds; we have a close API surface with Webpack and it's optimized for
+worlds; we have a close API surface with `webpack` and it's optimized for
 CodeSandbox and the browser. It's of course not as advanced as other solutions
-like Webpack, but it's perfect for CodeSandbox. It now doesn't take longer than
-an hour to add a new template and loaders are very easy to port from their
-Webpack counterparts. This makes us very flexible in the future.
+like `webpack`, but it's perfect for CodeSandbox. It now doesn't take longer
+than an hour to add a new template and loaders are very easy to port from their
+`webpack` counterparts. This makes us very flexible in the future.
 
 #### Performance
 

@@ -66,10 +66,10 @@ turned out to be quite simple, we already support opening a sandbox as a
 separate page by going to `https://:id.codesandbox.io` (example:
 [https://vue.codesandbox.io](https://vue.codesandbox.io)). So the only thing
 left for me was adding this functionality to the development server, so we can
-create screenshots with the new code. I ended up changing our Webpack config to
-have a 'test' mode, this mode will only build the sandbox bundler and host it at
-`http://localhost:3001#:id` (example: `http://localhost:3001#vue`). Note that we
-set the id as a hash, this way we don't interfere with the routing of the
+create screenshots with the new code. I ended up changing our `webpack` config
+to have a 'test' mode, this mode will only build the sandbox bundler and host it
+at `http://localhost:3001#:id` (example: `http://localhost:3001#vue`). Note that
+we set the id as a hash, this way we don't interfere with the routing of the
 sandbox.
 
 ![A generated screenshot of a todo redux example](./images/0.png)

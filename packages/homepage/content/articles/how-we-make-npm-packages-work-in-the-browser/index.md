@@ -36,7 +36,7 @@ an already installed dependency. This, of course, is absolutely not scalable to
 Even though this version was not very usable, it was encouraging to see that I
 was able to at least make two dependencies work in a sandbox environment.
 
-## Webpack Version
+## webpack Version
 
 I was quite satisfied with the first version, and I thought it would be
 sufficient for an [MVP](https://en.wikipedia.org/wiki/Minimum_viable_product)
@@ -59,7 +59,7 @@ My first version didn't fit in my head, so I had to draw a diagram:
 There was one advantage of this overcomplicated approach: the actual
 implementation was much easier than expected!
 
-I learned that [Webpack](https://github.com/webpack/webpack)'s
+I learned that [`webpack`](https://github.com/webpack/webpack)'s
 [DllPlugin](https://webpack.js.org/plugins/dll-plugin) was able to bundle
 dependencies and spit out a JS bundle with a manifest. This manifest looked like
 this:
@@ -74,11 +74,11 @@ started typing away and came up with this actual system:
 ![The source of the service can be found here: https://github.com/CompuIves/codesandbox-bundler. This service also contains code to publish any sandbox to npm (really cool), we scrapped this feature later on.](./images/2.png)
 
 For every request to the packager I would create a new directory in
-`/tmp/:hash`, would run `yarn add ${dependencyList}` and let Webpack bundle
+`/tmp/:hash`, would run `yarn add ${dependencyList}` and let `webpack` bundle
 afterwards. I'd save the new bundle on
 [gcloud](https://cloud.google.com/sdk/gcloud) as a way of caching. Much simpler
 than the diagram, mostly because I replaced installing dependencies with
-[yarn](https://yarnpkg.com) and bundling with Webpack.
+[yarn](https://yarnpkg.com) and bundling with `webpack`.
 
 When you load a sandbox, we would first make sure that we'd have the manifest
 and the bundle before evaluation. During evaluation we would call
@@ -88,7 +88,7 @@ first version with proper npm dependency live!
 ![Whoop! We got material-ui and react running dynamically! (24 Dec 2016)](./images/3.png)
 
 Now there was still a big limitation with this system. It didn't support files
-that were not in the dependency graph of Webpack. This means that for example
+that were not in the dependency graph of `webpack`. This means that for example
 `require('react-icons/lib/fa/fa-beer')` wouldn't work, because it was never
 required by the entry point of the dependency in the first place.
 
@@ -98,12 +98,12 @@ author of [WebpackBin](https://github.com/cerebral/webpackbin)
 system to support npm dependencies and we were having the same limitations. So
 we decided to combine forces and build the **ultimate** packager!
 
-## Webpack with entries
+## webpack with entries
 
 The "ultimate" packager retained the same functionality as our previous
 packager, except [Christian](https://twitter.com/christianalfoni) created an
 algorithm that would add files to the bundle depending on their importance. This
-means that we manually added entry points, to make sure that Webpack would
+means that we manually added entry points, to make sure that `webpack` would
 bundle those files too. After a lot of tweaking of this system we got it working
 for any(?) combination. So you were able to require
 [`react-icons`](https://github.com/react-icons/react-icons), and CSS files as
@@ -187,7 +187,7 @@ cache dependencies independently. We can just merge the dependency files on the
 client. This means that if you request a new dependency on top of your existing
 dependencies, we'd only need to gather files for the new dependency! This will
 solve the 500MB limit from [AWS Lambda](https://aws.amazon.com/lambda), since
-we're only installing one dependency. We can also drop Webpack from the
+we're only installing one dependency. We can also drop `webpack` from the
 packager, since the packager now has the sole responsibility of figuring out
 which files are relevant and sending them.
 

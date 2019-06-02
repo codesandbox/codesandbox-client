@@ -134,7 +134,7 @@ Right now we only detect official templates when you import a sandbox from
 GitHub. If you want to import a node container you need to have a
 `sandbox.config.json` mentioning that the template is `node`. We want to make
 this more streamlined by doing some smart detecting. If, for example, we see you
-are using [Webpack](https://github.com/webpack/webpack) or `express` we will
+are using [`webpack`](https://github.com/webpack/webpack) or `express` we will
 automatically convert that into a container sandbox
 
 #### Restart Container

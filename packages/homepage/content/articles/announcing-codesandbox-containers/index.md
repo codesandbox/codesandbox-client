@@ -11,7 +11,7 @@ date: 2018-09-27
 [CodeSandbox](https://codesandbox.io) is often used to create new websites or to
 quickly edit existing websites. Until now this was only possible for projects
 that follow the default template layout, and if you wanted to change something
-like the [Webpack](https://github.com/webpack/webpack) configuration you would
+like the [`webpack`](https://github.com/webpack/webpack) configuration you would
 have to continue locally. Well, not anymore!
 
 Today we're happy to announce **CodeSandbox Containers**. We execute your code

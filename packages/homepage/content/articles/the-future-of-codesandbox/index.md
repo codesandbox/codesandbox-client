@@ -255,7 +255,7 @@ and I truly believe this will happen more in the future. You can already see
 that some [`css-in-js`](https://github.com/cssinjs/jss) libraries are requiring
 [Babel](https://github.com/babel/babel) plugins to work. That's why there will
 also be a `custom` template where you have control over compilation. The
-[Webpack](https://github.com/webpack/webpack) config and the `.babelrc` can be
+[`webpack`](https://github.com/webpack/webpack) config and the `.babelrc` can be
 altered there. You can get it by ejecting an existing template. All of this is
 possible via either a simple, friendly GUI, or editing the code directly.
 
