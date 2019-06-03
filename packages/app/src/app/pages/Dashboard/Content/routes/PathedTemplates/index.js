@@ -1,13 +1,16 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { uniq } from 'lodash-es';
+import { observer } from 'mobx-react-lite';
 import Loading from 'app/components/Loading';
+import { useStore } from 'app/store';
 
 import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
 import { LIST_TEMPLATES } from '../../../queries';
 
 const PathedTemplates = props => {
+  const { dashboard } = useStore();
   const path = '/' + (props.match.params.path || '');
   const { loading, error, data } = useQuery(LIST_TEMPLATES);
 
@@ -33,18 +36,14 @@ const PathedTemplates = props => {
     color: t.color,
   }));
 
-  const orderedSandboxes = props.store.dashboard.getFilteredSandboxes(
-    sandboxes
-  );
-
   return (
     <Sandboxes
       isLoading={loading}
       possibleTemplates={possibleTemplates}
       Header={<Navigation path={path} />}
-      sandboxes={orderedSandboxes}
+      sandboxes={dashboard.getFilteredSandboxes(sandboxes)}
     />
   );
 };
 
-export default PathedTemplates;
+export default observer(PathedTemplates);
