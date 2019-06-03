@@ -188,7 +188,6 @@
 					"svelte"
 				],
 				"extensions": [
-					".html",
 					".svelte"
 				],
 				"configuration": "./language-configuration.json"
