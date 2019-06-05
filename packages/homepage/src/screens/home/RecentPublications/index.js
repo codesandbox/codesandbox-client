@@ -70,7 +70,7 @@ const PublicationDescription = styled.p`
 `;
 
 const Image = styled.div`
-  height: 245px;
+  height: 218px;
   width: 100%;
   background-image: url('${props => props.bg}');
     background-position: center center;
@@ -130,7 +130,7 @@ export default () => (
                 title={post.node.title}
                 description={post.node.virtuals.subtitle}
                 url={`https://medium.com/@compuives/${post.node.uniqueSlug}`}
-                image={`https://cdn-images-1.medium.com/max/2000/${
+                image={`https://cdn-images-1.medium.com/max/600/${
                   post.node.virtuals.previewImage.imageId
                 }`}
               />
