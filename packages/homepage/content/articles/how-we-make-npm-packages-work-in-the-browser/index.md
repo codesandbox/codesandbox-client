@@ -64,7 +64,22 @@ I learned that [`webpack`](https://github.com/webpack/webpack)'s
 dependencies and spit out a JS bundle with a manifest. This manifest looked like
 this:
 
-https://gist.github.com/CompuIves/79b48e0714edead2cf708c113aa5100b
+```json
+{
+  "name": "dll_bundle",
+  "content": {
+    "./node_modules/fbjs/lib/emptyFunction.js": 0,
+    "./node_modules/fbjs/lib/invariant.js": 1,
+    "./node_modules/fbjs/lib/warning.js": 2,
+    "./node_modules/react": 3,
+    "./node_modules/fbjs/lib/emptyObject.js": 4,
+    "./node_modules/object-assign/index.js": 5,
+    "./node_modules/prop-types/checkPropTypes.js": 6,
+    "./node_modules/prop-types/lib/ReactPropTypesSecret.js": 7,
+    "./node_modules/react/cjs/react.development.js": 8
+  }
+}
+```
 
 Every path is mapped to a module id. If I would require
 [React](https://github.com/facebook/react) I would only have to call
@@ -214,7 +229,111 @@ all files in the directory of the entry point. It searches for require
 statements and adds them to the file list. This happens recursively, so we get a
 dependency graph. An example output (of `react@latest`) is this:
 
-https://gist.github.com/CompuIves/732fb2915be1e4e69a0b58d05d0a8f1d
+```json
+{
+  "aliases": {
+    "asap": "asap/browser-asap.js",
+    "asap/asap": "asap/browser-asap.js",
+    "asap/asap.js": "asap/browser-asap.js",
+    "asap/raw": "asap/browser-raw.js",
+    "asap/raw.js": "asap/browser-raw.js",
+    "asap/test/domain.js": "asap/test/browser-domain.js",
+    "core-js": "core-js/index.js",
+    "encoding": "encoding/lib/encoding.js",
+    "fbjs": "fbjs/index.js",
+    "iconv-lite": "iconv-lite/lib/index.js",
+    "iconv-lite/extend-node": false,
+    "iconv-lite/streams": false,
+    "is-stream": "is-stream/index.js",
+    "isomorphic-fetch": "isomorphic-fetch/fetch-npm-browserify.js",
+    "js-tokens": "js-tokens/index.js",
+    "loose-envify": "loose-envify/index.js",
+    "node-fetch": "node-fetch/index.js",
+    "object-assign": "object-assign/index.js",
+    "promise": "promise/index.js",
+    "prop-types": "prop-types/index.js",
+    "react": "react/index.js",
+    "setimmediate": "setimmediate/setImmediate.js",
+    "ua-parser-js": "ua-parser-js/src/ua-parser.js",
+    "whatwg-fetch": "whatwg-fetch/fetch.js"
+  },
+  "contents": {
+    "fbjs/lib/emptyFunction.js": {
+      "content": "/* code */",
+      "requires": []
+    },
+    "fbjs/lib/emptyObject.js": {
+      "content": "/* code */",
+      "requires": []
+    },
+    "fbjs/lib/invariant.js": {
+      "content": "/* code */",
+      "requires": []
+    },
+    "fbjs/lib/warning.js": {
+      "content": "/* code */",
+      "requires": ["./emptyFunction"]
+    },
+    "object-assign/index.js": {
+      "content": "/* code */",
+      "requires": []
+    },
+    "prop-types/checkPropTypes.js": {
+      "content": "/* code */",
+      "requires": [
+        "fbjs/lib/invariant",
+        "fbjs/lib/warning",
+        "./lib/ReactPropTypesSecret"
+      ]
+    },
+    "prop-types/lib/ReactPropTypesSecret.js": {
+      "content": "/* code */",
+      "requires": []
+    },
+    "react/index.js": {
+      "content": "/* code */",
+      "requires": ["./cjs/react.development.js"]
+    },
+    "react/package.json": {
+      "content": "/* code */",
+      "requires": []
+    },
+    "react/cjs/react.development.js": {
+      "content": "/* code */",
+      "requires": [
+        "object-assign",
+        "fbjs/lib/warning",
+        "fbjs/lib/emptyObject",
+        "fbjs/lib/invariant",
+        "fbjs/lib/emptyFunction",
+        "prop-types/checkPropTypes"
+      ]
+    }
+  },
+  "dependency": {
+    "name": "react",
+    "version": "16.0.0"
+  },
+  "dependencyDependencies": {
+    "asap": "2.0.6",
+    "core-js": "1.2.7",
+    "encoding": "0.1.12",
+    "fbjs": "0.8.16",
+    "iconv-lite": "0.4.19",
+    "is-stream": "1.1.0",
+    "isomorphic-fetch": "2.2.1",
+    "js-tokens": "3.0.2",
+    "loose-envify": "1.3.1",
+    "node-fetch": "1.7.3",
+    "object-assign": "4.1.1",
+    "promise": "7.3.1",
+    "prop-types": "15.6.0",
+    "setimmediate": "1.0.5",
+    "ua-parser-js": "0.7.14",
+    "whatwg-fetch": "2.0.3"
+  }
+}
+```
 
 ## Advantages
 

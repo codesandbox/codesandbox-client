@@ -54,12 +54,40 @@ more than 1% we fail the test suite.
 I decided to use [Jest](https://github.com/facebook/jest) for running all tests.
 We start by setting up an array of sandboxes to test:
 
-https://gist.github.com/CompuIves/26e641726c10e078c5074192d5728ff4
+```js
+const SANDBOXES = [
+  'new',
+  'preact',
+  'vue',
+  'svelte',
+  'react-ts',
+  { id: 'github/reactjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
+  { id: 'jvlrl98xw3', threshold: 0.05 },
+  // And moooore sandboxes
+];
+```
 
 This is a list of sandbox ids, of which some have extra options like a more
 tolerant threshold. We iterate this list to create test cases:
 
-https://gist.github.com/CompuIves/7f671441e1d10497278e5cd53a5efd35
+```js
+const SANDBOXES = [];
+
+describe('sandboxes', () => {
+  SANDBOXES.forEach(sandbox => {
+    const id = sandbox.id || sandbox;
+    const threshold = sandbox.threshold || 0.01;
+
+    it(
+      `loads the sandbox with id '${id}'`,
+      async () => {
+        /* test code */
+      },
+      1000 * 120 * 1
+    );
+  });
+});
+```
 
 The biggest question was how to take a screenshot of a single sandbox. This
 turned out to be quite simple, we already support opening a sandbox as a
@@ -82,7 +110,67 @@ exactly the same as `toMatchSnapshot`.
 
 The final implementation looks like this:
 
-https://gist.github.com/CompuIves/3a6195dafc1aa0cc16266528d1991f81
+```js
+import puppeteer from 'puppeteer';
+
+const SANDBOXES = [
+  /* ids */
+];
+
+function pageLoaded(page) {
+  return new Promise(async resolve => {
+    // We expose a function which the bundler will call after evaluation
+    await page.exposeFunction('__puppeteer__', () => {
+      if (resolve) {
+        resolve();
+      }
+    });
+  });
+}
+
+describe('sandboxes', () => {
+  let browser = puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+  afterAll(() => {
+    browser.close();
+  });
+
+  SANDBOXES.forEach(sandbox => {
+    const id = sandbox.id || sandbox;
+    const threshold = sandbox.threshold || 0.01;
+
+    it(
+      `loads the sandbox with id '${id}'`,
+      async () => {
+        browser = await browser;
+        const page = await browser.newPage();
+        const waitFunction = pageLoaded(page);
+        // Go to the page
+        page.goto('http://localhost:3001/#' + id, {
+          timeout: 60000,
+        });
+        await waitFunction;
+        // Let fetch requests finish before continuing...
+        await page.waitFor(2000);
+
+        const screenshot = await page.screenshot();
+
+        // Check if the snapshot matches
+        expect(screenshot).toMatchImageSnapshot({
+          customDiffConfig: {
+            threshold,
+          },
+          customSnapshotIdentifier: id.split('/').join('-'),
+        });
+
+        await page.close();
+      },
+      1000 * 120 * 1
+    );
+  });
+});
+```
 
 You can see in the code that we expose a function called `window.__puppeteer__`.
 The bundler calls `window.__puppeteer__` when it's finished, this function is
@@ -96,7 +184,12 @@ generate the initial screenshots locally. To ensure that we generate similar
 screenshots as CircleCI we generate screenshots using a docker container. We
 have a simple script which we just run to generate new screenshots:
 
-https://gist.github.com/CompuIves/5038c43cf0926a29e8fa279ba2e82255
+```sh
+#!/bin/bash
+docker run --rm --name test-container -v $(pwd):/home/circleci/codesandbox-client -w /home/circleci/codesandbox-client -d -t codesandbox/node-puppeteer yarn start:test && \
+sleep 6 && docker exec -it test-container yarn test:integrations && \
+docker stop test-container
+```
 
 I have set up a simple workflow for CircleCI to start the test server and
 simultaneously run the tests. These tests are run in a docker container that has
