@@ -15,7 +15,7 @@ const User = types.model({
   username: types.string,
   avatarUrl: types.string,
   selection: types.maybeNull(UserSelection),
-  currentModuleShortid: types.maybeNull(types.string),
+  currentModulePath: types.maybeNull(types.string),
   color: types.array(types.number),
 });
 

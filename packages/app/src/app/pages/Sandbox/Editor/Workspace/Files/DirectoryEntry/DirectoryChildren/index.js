@@ -32,12 +32,7 @@ class DirectoryChildren extends React.Component {
       directories,
       template: sandboxTemplate,
     } = store.editor.currentSandbox;
-    const {
-      mainModule,
-      currentModuleShortid,
-      errors,
-      corrections,
-    } = store.editor;
+    const { mainModule, currentModulePath, errors, corrections } = store.editor;
     const mainModuleId = mainModule.id;
 
     return (
@@ -64,7 +59,7 @@ class DirectoryChildren extends React.Component {
               mainModuleId={mainModuleId}
               modules={modules}
               directories={directories}
-              currentModuleShortid={currentModuleShortid}
+              currentModulePath={currentModulePath}
               isInProjectView={isInProjectView}
               markTabsNotDirty={markTabsNotDirty}
               errors={errors}

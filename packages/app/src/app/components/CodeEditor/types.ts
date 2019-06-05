@@ -93,7 +93,7 @@ export type Props = {
   sendTransforms?: (transform: any) => void;
   receivingCode?: boolean;
   onCodeReceived?: () => void;
-  onSelectionChanged: (d: { selection: any; moduleShortid: string }) => void;
+  onSelectionChanged: (d: { selection: any; modulePath: string }) => void;
   onModuleStateMismatch?: () => void;
   theme: any;
 };

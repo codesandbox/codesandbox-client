@@ -22,6 +22,10 @@ export function getLatestVersion({ props, api }) {
     .catch(() => {});
 }
 
+/**
+ * Legacy function to support module ids, remove this when we moved to paths for
+ * everything
+ */
 export function getIdFromModulePath({ props, state, utils }) {
   if (!props.path) {
     return {};
@@ -31,7 +35,7 @@ export function getIdFromModulePath({ props, state, utils }) {
 
   try {
     const module = utils.resolveModule(
-      props.path.replace(/^\//, ''),
+      props.path.replace(/^\/sandbox\//, ''),
       sandbox.modules,
       sandbox.directories
     );

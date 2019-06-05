@@ -438,14 +438,14 @@ class MonacoEditor extends React.Component<Props> implements Editor {
                   this.onSelectionChangedDebounced.cancel();
                   onSelectionChanged({
                     selection: data,
-                    moduleShortid: this.currentModule.shortid,
+                    modulePath: this.getCurrentModelPath_new(),
                   });
                 } else {
                   // This is just on typing, we send a debounced selection update as a
                   // safeguard to make sure we are in sync
                   this.onSelectionChangedDebounced({
                     selection: data,
-                    moduleShortid: this.currentModule.shortid,
+                    modulePath: this.getCurrentModelPath_new(),
                   });
                 }
               }
@@ -571,7 +571,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       updateUserSelections(
         this.monaco,
         this.editor.getActiveCodeEditor(),
-        this.currentModule,
+        this.getCurrentModelPath_new(),
         userSelections
       );
     }
@@ -951,6 +951,23 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     this.editor.textFileService.getFileModels(
       this.monaco.Uri.file(modulePath)
     )[0];
+
+  /**
+   * Version where we don't strip /sandbox
+   */
+  getCurrentModelPath_new = () => {
+    const activeEditor = this.editor.getActiveCodeEditor();
+
+    if (!activeEditor) {
+      return undefined;
+    }
+    const model = activeEditor.getModel();
+    if (!model) {
+      return undefined;
+    }
+
+    return model.uri.path;
+  };
 
   getCurrentModelPath = () => {
     const activeEditor = this.editor.getActiveCodeEditor();

@@ -290,6 +290,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             getSelection(lines, s)
           ),
         };
+
         if (
           (selectionChange.reason === 3 ||
             /* alt + shift + arrow keys */ selectionChange.source ===
@@ -300,14 +301,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           this.onSelectionChangedDebounced.cancel();
           onSelectionChanged({
             selection: data,
-            moduleShortid: this.currentModule.shortid,
+            modulePath: editor.getModel().resource.path,
           });
         } else {
           // This is just on typing, we send a debounced selection update as a
           // safeguard to make sure we are in sync
           this.onSelectionChangedDebounced({
             selection: data,
-            moduleShortid: this.currentModule.shortid,
+            modulePath: editor.getModel().resource.path,
           });
         }
       }
@@ -475,7 +476,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     updateUserSelections(
       this.monaco,
       this.editor,
-      this.currentModule,
+      this.currentModule.shortid,
       userSelections
     );
   };

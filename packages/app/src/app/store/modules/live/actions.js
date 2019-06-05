@@ -36,14 +36,14 @@ export function consumeModuleState({ props }) {
 }
 
 export function initializeModuleState({ props, state, ot }) {
-  Object.keys(props.moduleState).forEach(moduleShortid => {
-    const moduleInfo = props.moduleState[moduleShortid];
-    ot.initializeModule(moduleShortid, moduleInfo.revision);
+  Object.keys(props.moduleState).forEach(moduleId => {
+    const moduleInfo = props.moduleState[moduleId];
+    ot.initializeModule(moduleId, moduleInfo.revision);
 
     // Module has not been saved, so is different
     const index = state
       .get(`editor.currentSandbox.modules`)
-      .findIndex(m => m.shortid === moduleShortid);
+      .findIndex(m => m.shortid === moduleId);
     if (index > -1) {
       if (moduleInfo.code != null) {
         state.set(
@@ -52,7 +52,7 @@ export function initializeModuleState({ props, state, ot }) {
         );
       }
       if (!moduleInfo.synced) {
-        state.push(`editor.changedModuleShortids`, moduleShortid);
+        state.push(`editor.changedModuleShortids`, moduleId);
       }
     }
   });
@@ -65,19 +65,19 @@ export function sendSelection({ props, state, live }) {
     .findIndex(u => u.id === liveUserId);
 
   if (userIndex > -1) {
-    const moduleShortid = props.moduleShortid;
+    const modulePath = props.modulePath;
     const selection = props.selection;
 
     if (state.get(`live.roomInfo.users.${userIndex}`)) {
       state.set(
-        `live.roomInfo.users.${userIndex}.currentModuleShortid`,
-        moduleShortid
+        `live.roomInfo.users.${userIndex}.currentModulePath`,
+        modulePath
       );
       state.set(`live.roomInfo.users.${userIndex}.selection`, selection);
 
       live.send('user:selection', {
         liveUserId,
-        moduleShortid,
+        modulePath,
         selection,
       });
     }
@@ -92,36 +92,33 @@ export function consumeUserState({ props }) {
 
 export function updateSelection({ props, state }) {
   const liveUserId = props.data.liveUserId;
-  const moduleShortid = props.data.moduleShortid;
+  const modulePath = props.data.modulePath;
   const selection = props.data.selection;
   const userIndex = state
     .get('live.roomInfo.users')
     .findIndex(u => u.id === liveUserId);
 
   if (userIndex > -1) {
-    state.set(
-      `live.roomInfo.users.${userIndex}.currentModuleShortid`,
-      moduleShortid
-    );
+    state.set(`live.roomInfo.users.${userIndex}.currentModulePath`, modulePath);
     state.set(`live.roomInfo.users.${userIndex}.selection`, selection);
   }
 
   return {
     liveUserId,
-    moduleShortid,
+    modulePath,
     selection,
   };
 }
 
 export function getSelectionsForCurrentModule({ state }) {
   const selections = [];
-  const moduleShortid = state.get('editor.currentModuleShortid');
+  const modulePath = state.get('editor.currentModulePath');
 
   state.get('live.roomInfo.users').forEach(user => {
     const userId = user.id;
     if (
       userId === state.get('live.liveUserId') ||
-      user.currentModuleShortid !== moduleShortid ||
+      user.currentModulePath !== modulePath ||
       !state.get('live.isEditor')(userId)
     ) {
       return;
@@ -142,11 +139,11 @@ export function getSelectionsForCurrentModule({ state }) {
 
 export function sendSelectionToEditor({ props, state }) {
   const userId = props.liveUserId;
-  const moduleShortid = props.moduleShortid;
+  const modulePath = props.modulePath;
   const selection = props.selection;
 
   if (
-    moduleShortid === state.get('editor.currentModuleShortid') &&
+    modulePath === state.get('editor.currentModulePath') &&
     state.get('live.isEditor')(userId)
   ) {
     const user = state.get('live.roomInfo.users').find(u => u.id === userId);
@@ -199,8 +196,8 @@ export function changeUserModule({ props, state }) {
 
   if (userIndex > -1) {
     state.set(
-      `live.roomInfo.users.${userIndex}.currentModuleShortid`,
-      props.data.moduleShortid
+      `live.roomInfo.users.${userIndex}.currentModulePath`,
+      props.data.modulePath
     );
   }
 }
@@ -272,19 +269,12 @@ export function sendDirectoryUpdated(context) {
 }
 
 export function sendChangeCurrentModule({ props, state, live }) {
-  const module = state
-    .get('editor.currentSandbox.modules')
-    .find(m => m.id === props.id);
-
   const userIndex = state
     .get('live.roomInfo.users')
     .findIndex(u => u.id === state.get('live.liveUserId'));
 
   if (userIndex > -1) {
-    state.set(
-      `live.roomInfo.users.${userIndex}.currentModuleShortid`,
-      module.shortid
-    );
+    state.set(`live.roomInfo.users.${userIndex}.currentModulePath`, props.path);
 
     const followingUserId = state.get('live.followingUserId');
 
@@ -296,7 +286,7 @@ export function sendChangeCurrentModule({ props, state, live }) {
       if (followingUserIndex > -1) {
         const user = state.get(`live.roomInfo.users.${followingUserIndex}`);
 
-        if (user && user.currentModuleShortid !== module.shortid) {
+        if (user && user.currentModulePath !== props.path) {
           // Reset following as this is a user change module action
           state.set('live.followingUserId', null);
         }
@@ -304,7 +294,7 @@ export function sendChangeCurrentModule({ props, state, live }) {
     }
 
     live.send('user:current-module', {
-      moduleShortid: module.shortid,
+      modulePath: props.path,
     });
   }
 }

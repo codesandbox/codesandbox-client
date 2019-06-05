@@ -115,6 +115,7 @@ export const Sandbox = types.model({
 export default {
   currentId: types.maybeNull(types.string),
   currentModuleShortid: types.maybeNull(types.string),
+  currentModulePath: types.maybeNull(types.string),
   isForkingSandbox: types.boolean,
   mainModuleShortid: types.maybeNull(types.string),
   sandboxes: types.map(Sandbox),

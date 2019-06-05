@@ -81,7 +81,10 @@ class Entry extends React.PureComponent {
     return true; // To close it
   };
 
-  setCurrentModule = () => this.props.setCurrentModule(this.props.id);
+  setCurrentModule = () => {
+    const { setCurrentModule, getModulePath, id } = this.props;
+    setCurrentModule(getModulePath(id));
+  };
 
   onMouseEnter = () => this.setState({ hovering: true });
   onMouseLeave = () => this.setState({ hovering: false });

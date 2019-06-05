@@ -23,14 +23,13 @@ class ModuleEntry extends React.Component {
       discardModuleChanges,
       getModulePath,
     } = this.props;
-    const currentModuleShortid = store.editor.currentModuleShortid;
+    const currentModulePath = store.editor.currentModulePath;
     const mainModuleId = store.editor.mainModule.id;
 
-    const isActive = module.shortid === currentModuleShortid;
+    const currentPath = getModulePath(module.id);
+    const isActive = currentPath === currentModulePath;
     const isMainModule = module.id === mainModuleId;
     const type = getType(module.title);
-
-    const currentPath = getModulePath(module.id);
 
     const hasError = store.editor.errors.filter(
       error => error.path === currentPath

@@ -19,7 +19,7 @@ const userSelectionDecorations = {};
 export function updateUserSelections(
   monaco,
   editor,
-  currentModule,
+  path: string,
   userSelections: Array<
     | {
         userId: string,
@@ -42,7 +42,7 @@ export function updateUserSelections(
   userSelections.forEach(data => {
     const { userId } = data;
 
-    const decorationId = currentModule.shortid + userId;
+    const decorationId = path + userId;
     if (data.selection === null) {
       userSelectionDecorations[decorationId] = editor.deltaDecorations(
         userSelectionDecorations[decorationId] || [],

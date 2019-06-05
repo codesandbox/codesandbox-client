@@ -191,8 +191,8 @@ class DirectoryEntry extends React.Component {
     ];
   };
 
-  setCurrentModule = moduleId => {
-    this.props.signals.editor.moduleSelected({ id: moduleId });
+  setCurrentModule = path => {
+    this.props.signals.editor.moduleSelected({ path });
   };
 
   markTabsNotDirty = () => {

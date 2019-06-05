@@ -80,6 +80,7 @@ export const changeCurrentModule = [
   track('Open File', {}),
   setReceivingStatus,
   actions.getIdFromModulePath,
+  set(state`editor.currentModulePath`, props`path`),
   when(props`id`),
   {
     true: [
