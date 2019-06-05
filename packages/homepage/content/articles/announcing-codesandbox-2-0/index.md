@@ -30,7 +30,7 @@ now designed and built the homepage from scratch using
 [You can see it here](https://codesandbox.io)! A very big thanks to
 [Danny Ruchtie](https://twitter.com/druchtie) for helping us with the design.
 
-<!-- MOVIE -->
+![](./images/0.gif)
 
 There are more pages in the pipeline, like documentation and picked examples. We
 also want to show a more personalized page for logged in users. The basis is
@@ -45,7 +45,7 @@ and from now on you can commit, create repositories and open pull requests right
 from within CodeSandbox! It truly feels incredible to commit changes directly
 from your browser to GitHub.
 
-![](./images/0.gif)
+![](./images/1.gif)
 
 #### Creating Repositories
 
@@ -53,7 +53,7 @@ This is a very simple process. You can now export any normal sandbox to GitHub
 by just entering the name and clicking 'Create Repo' in the sidebar. This will
 create a repository and then redirect you to the Git version of the sandbox.
 
-![](./images/1.png)
+![](./images/2.png)
 
 #### Committing & Opening PRs
 
@@ -64,13 +64,13 @@ example, for my test repository the url would be:
 The next step is to create a fork of this sandbox and make your changes, from
 then on you can commit or open a PR, by clicking on the buttons in the sidebar.
 
-![Create a commit or open a PR](./images/2.png)
+![Create a commit or open a PR](./images/3.png)
 
 We first try to make a commit, if this fails we try to make a merge commit. When
 a merge commit fails as well we fall back to opening a Pull Request. Merge
 conflict solving is next on our list to build inside CodeSandbox.
 
-![Committing some changes 😃](./images/3.gif)
+![Committing some changes 😃](./images/4.gif)
 
 You can only commit to repositories you have write access to, you can open a PR
 to any repository.
@@ -84,7 +84,7 @@ great for me, because you now work on your project in CodeSandbox as if you are
 working locally. There is no transforming happening anymore. The next feature
 also helps with that.
 
-![An Image view](./images/4.png)
+![An Image view](./images/5.png)
 
 ## Static File Hosting
 
@@ -140,7 +140,7 @@ to now. One thing we didn't expect is the amount of support we received when we
 went open source. The open source community is truly amazing and all our
 contributors deserve one extra big thanks.
 
-![](./images/5.png)
+![](./images/6.png)
 
 If you like what we're doing, consider becoming a
 [Patron](https://codesandbox.io/patron). The last 2 weeks were amazing, and I'd
