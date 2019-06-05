@@ -37,12 +37,22 @@ steps:
   - name: deploy
     image: codesandbox-deploy:1
     settings:
-      domain: build.csb.dev
+      domain: &domain build.csb.dev
     volumes:
       - name: docker_sock
         path: /var/run/docker.sock
       - name: deployments
         path: /root/docker/deployments
+    when:
+      event:
+        - pull_request
+
+  - name: create github deployment
+    image: codesandbox-github-deployment:1
+    settings:
+      domain: *domain
+      github_token:
+        from_secret: github_token
     when:
       event:
         - pull_request
@@ -92,6 +102,6 @@ volumes:
       path: /root/docker/deployments
 ---
 kind: signature
-hmac: bc5d7ea6acf15887e17055e6a230bca87495d5bd49b2d451aadabc548aac49c6
+hmac: 4d9c06dbed6f93871c3a0bb5b80b35e353d8a5254d84ba07c0fb14e4f6ea9ecd
 
 ...
