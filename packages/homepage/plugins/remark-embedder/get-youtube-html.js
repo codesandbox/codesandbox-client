@@ -1,25 +1,10 @@
 const { URL } = require('url');
 
-const getUrl = string => {
-  if (!string.includes('youtu')) {
-    return null;
-  }
+const shouldTransform = string => {
+  const { host } = new URL(string);
 
-  const urlString = string.startsWith('http') ? string : `https://${string}`;
-  let url;
-  try {
-    url = new URL(urlString);
-  } catch (error) {
-    return null;
-  }
-
-  if (!url.host.endsWith('youtube.com') && !url.host.endsWith('youtu.be')) {
-    return null;
-  }
-
-  return url;
+  return host.endsWith('youtube.com') || host.endsWith('youtu.be');
 };
-const shouldTransform = string => getUrl(string) !== null;
 
 const getTimeValueInSeconds = timeValue => {
   if (Number(timeValue).toString() === timeValue) {
@@ -32,7 +17,7 @@ const getTimeValueInSeconds = timeValue => {
   return String((Number(hours) * 60 + Number(minutes)) * 60 + Number(seconds));
 };
 const getYouTubeIFrameSrc = string => {
-  const url = getUrl(string);
+  const url = new URL(string);
   let id = url.searchParams.get('v');
   if (url.host === 'youtu.be') {
     id = url.pathname.slice(1);

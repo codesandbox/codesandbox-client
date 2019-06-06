@@ -1,26 +1,11 @@
 const fetch = require('node-fetch');
 const { URL } = require('url');
 
-const getUrl = string => {
-  if (!string.includes('twitter')) {
-    return null;
-  }
+const shouldTransform = string => {
+  const { host, pathname } = new URL(string);
 
-  const urlString = string.startsWith('http') ? string : `https://${string}`;
-  let url;
-  try {
-    url = new URL(urlString);
-  } catch (error) {
-    return null;
-  }
-
-  if (!url.host.endsWith('twitter.com') || !url.pathname.includes('/status/')) {
-    return null;
-  }
-
-  return url;
+  return host.endsWith('twitter.com') && pathname.includes('/status/');
 };
-const shouldTransform = string => getUrl(string) !== null;
 
 const getTwitterHtml = async string =>
   fetch(
