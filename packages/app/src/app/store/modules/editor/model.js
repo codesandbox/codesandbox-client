@@ -59,6 +59,15 @@ const Git = types.model({
   username: types.string,
 });
 
+const Template = types.model({
+  id: types.string,
+  url: types.maybeNull(types.string),
+  iconUrl: types.string,
+  description: types.string,
+  color: types.string,
+  title: types.string,
+});
+
 export const Sandbox = types.model({
   author: types.maybeNull(Author),
   description: types.maybeNull(types.string),
@@ -66,6 +75,7 @@ export const Sandbox = types.model({
   entry: types.string,
   externalResources: types.array(types.string),
   forkCount: types.number,
+  customTemplate: types.maybeNull(Template),
   forkedFromSandbox: types.maybeNull(
     types.model({
       viewCount: types.number,

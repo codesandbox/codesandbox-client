@@ -14,8 +14,7 @@ export default ({ path, teamId }) => {
     }
 
     const baseUrl = bases[bases.length - 1].url;
-    bases.push({ url: join(baseUrl, next), name: next });
-    return bases;
+    return [...bases, { url: join(baseUrl, next), name: next }];
   }, []);
 
   return (

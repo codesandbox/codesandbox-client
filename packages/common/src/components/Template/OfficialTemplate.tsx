@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Template } from '../../types/index';
 import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';
@@ -13,7 +13,9 @@ type Props = {
 export default ({ template, selectTemplate, small }: Props) => {
   const Icon = getIcon(template.name);
 
-  const select = () => selectTemplate(template);
+  const select = useCallback(() => {
+    selectTemplate(template);
+  }, [selectTemplate, template]);
 
   return (
     <Button

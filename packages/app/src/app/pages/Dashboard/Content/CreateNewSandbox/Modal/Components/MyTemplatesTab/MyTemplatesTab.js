@@ -2,9 +2,9 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import Template from '@codesandbox/common/lib/components/Template';
-import { LIST_TEMPLATES } from '../../../../queries';
+import { LIST_TEMPLATES } from '../../../../../queries';
 
-import { Templates } from '../elements';
+import { Templates } from '../../elements';
 
 const Title = styled.h3`
   font-family: 'Poppins', 'Roboto', sans-serif;

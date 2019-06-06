@@ -26,23 +26,37 @@ const StarterModal = ({ store, signals }) => {
   const sandbox = store.editor.currentSandbox;
   const template = templates.default(sandbox.template);
 
-  const { title, description } = store.workspace.project;
+  const { title, description } =
+    sandbox.customTemplate || store.workspace.project;
   const [selected, setSelected] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(template.color());
+  const [selectedColor, setSelectedColor] = useState(
+    (sandbox.customTemplate && sandbox.customTemplate.color) || template.color()
+  );
   const [starterTitle, setStaterTitle] = useState(title);
   const [starterDescription, setStaterDescription] = useState(description);
-  const makeStarter = e => {
+
+  const newTemplate = {
+    template: {
+      color: selectedColor,
+      title: starterTitle,
+      description: starterDescription,
+      icon_url: sandbox.template,
+      published: selected,
+    },
+  };
+
+  const makeTemplate = e => {
     e.preventDefault();
     signals.workspace.addedTemplate({
-      id: sandbox.id,
-      template: {
-        color: selectedColor,
-        title: starterTitle,
-        description: starterDescription,
-        icon_url: sandbox.template,
-        published: selected,
-      },
+      ...newTemplate,
+    });
+  };
+
+  const editTemplate = e => {
+    e.preventDefault();
+    signals.workspace.editTemplate({
+      ...newTemplate,
     });
   };
 
@@ -57,61 +71,82 @@ const StarterModal = ({ store, signals }) => {
         If you decide to make it public it can be used by anyone in the
         CodeSandbox community.
       </Explanation>
-      <form onSubmit={makeStarter}>
-        <Fieldset>
-          <Label htmlFor="title">Title</Label>
-          <Input
-            block
-            name="title"
-            required
-            id="title"
-            value={starterTitle}
-            onChange={e => setStaterTitle(e.target.value)}
-          />
-        </Fieldset>
-        <Fieldset>
-          <Label htmlFor="description">Description</Label>
-          <TextArea
-            block
-            required
-            name="description"
-            id="description"
-            value={starterDescription}
-            onChange={e => setStaterDescription(e.target.value)}
-          />
-        </Fieldset>
-        <Fieldset>
-          <Label htmlFor="public">Make Public?</Label>
-          <Checkbox
-            checked={selected}
-            id="public"
-            onChange={() => setSelected(!selected)}
-          />
-        </Fieldset>
-        <Fieldset>
-          <Label htmlFor="color">Template Color?</Label>
-          <DefaultColor
+      <Fieldset>
+        <Label htmlFor="title">Title</Label>
+        <Input
+          block
+          name="title"
+          required
+          id="title"
+          value={starterTitle}
+          onChange={e => setStaterTitle(e.target.value)}
+        />
+      </Fieldset>
+      <Fieldset>
+        <Label htmlFor="description">Description</Label>
+        <TextArea
+          block
+          required
+          name="description"
+          id="description"
+          value={starterDescription}
+          onChange={e => setStaterDescription(e.target.value)}
+        />
+      </Fieldset>
+      <Fieldset>
+        <Label htmlFor="public">Make Public?</Label>
+        <Checkbox
+          checked={selected}
+          id="public"
+          onChange={() => setSelected(!selected)}
+        />
+      </Fieldset>
+      <Fieldset>
+        <Label htmlFor="color">Template Color?</Label>
+        <DefaultColor
+          type="button"
+          onClick={() => setShowPicker(!showPicker)}
+          id="color"
+          color={selectedColor}
+        />
+        {showPicker ? (
+          <OutsideClickHandler
+            onOutsideClick={() => {
+              setShowPicker(false);
+            }}
+          >
+            <SketchPicker
+              id="color"
+              onChangeComplete={color => setSelectedColor(color.hex)}
+              color={selectedColor}
+              presetColors={uniq(templateColors)}
+            />
+          </OutsideClickHandler>
+        ) : null}
+      </Fieldset>
+      {sandbox.customTemplate ? (
+        <div
+          css={`
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+          `}
+        >
+          <Button small onClick={editTemplate} type="button">
+            Edit template
+          </Button>
+          <Button
+            red
+            small
+            onClick={() => signals.workspace.deleteTemplate()}
             type="button"
-            onClick={() => setShowPicker(!showPicker)}
-            id="color"
-            color={selectedColor}
-          />
-          {showPicker ? (
-            <OutsideClickHandler
-              onOutsideClick={() => {
-                setShowPicker(false);
-              }}
-            >
-              <SketchPicker
-                id="color"
-                onChangeComplete={color => setSelectedColor(color.hex)}
-                color={selectedColor}
-                presetColors={uniq(templateColors)}
-              />
-            </OutsideClickHandler>
-          ) : null}
-        </Fieldset>
+          >
+            Delete template
+          </Button>
+        </div>
+      ) : (
         <Button
+          onClick={makeTemplate}
           css={`
             margin-top: 1rem;
           `}
@@ -119,7 +154,7 @@ const StarterModal = ({ store, signals }) => {
         >
           Make Template
         </Button>
-      </form>
+      )}
     </Container>
   );
 };
