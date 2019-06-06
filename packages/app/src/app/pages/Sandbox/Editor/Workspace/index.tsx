@@ -1,6 +1,6 @@
 import VERSION from '@codesandbox/common/lib/version';
 import { observer } from 'mobx-react-lite';
-import * as React from 'react';
+import React from 'react';
 
 import SocialInfo from 'app/components/SocialInfo';
 import { useStore } from 'app/store';
@@ -14,7 +14,7 @@ import Live from './items/Live';
 import { More } from './items/More';
 import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
-import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
+import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 
 import { Advertisement } from './Advertisement';
 import Chat from './Chat';
@@ -29,7 +29,7 @@ import {
   VersionContainer,
 } from './elements';
 
-const idToItem = {
+const workspaceTabs = {
   project: ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
   files: Files,
@@ -52,15 +52,15 @@ const Workspace = () => {
     preferences: {
       settings: { zenMode },
     },
-    workspace: { openedWorkspaceItem: currentItem },
+    workspace: { openedWorkspaceItem: activeTab },
   } = store;
 
-  if (!currentItem) {
+  if (!activeTab) {
     return null;
   }
 
-  const Component = idToItem[currentItem];
-  const item = getWorkspaceItems(store).find(({ id }) => id === currentItem);
+  const Component = workspaceTabs[activeTab];
+  const item = getWorkspaceItems(store).find(({ id }) => id === activeTab);
 
   return (
     <Container>
@@ -76,7 +76,7 @@ const Workspace = () => {
       )}
 
       {!zenMode && (
-        <div>
+        <>
           {!(isPatron || owned) && <Advertisement />}
 
           <ContactContainer>
@@ -90,7 +90,7 @@ const Workspace = () => {
           <SSEDownNotice />
 
           <ConnectionNotice />
-        </div>
+        </>
       )}
     </Container>
   );
