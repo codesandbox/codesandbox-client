@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 import delayOutEffect from '@codesandbox/common/lib/utils/animation/delay-out-effect';
+import { Overlay } from '@codesandbox/common/lib/components/SandboxCard/elements';
 
 export const Container = styled.main`
   transition: 0.3s ease all;
@@ -69,6 +70,12 @@ export const TemplateSubTitle = styled.span`
   font-size: 12px;
   line-height: 16px;
   margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  max-height: 20px;
 
   color: ${props => props.theme.placeholder};
 `;
@@ -80,13 +87,22 @@ export const MyTemplate = styled.button`
   padding: 0;
   box-sizing: border-box;
   border-radius: 4px;
+  cursor: pointer;
   width: 212px;
   min-width: 212px;
   color: ${props => props.theme.lightText};
+  position: relative;
 
   img {
     max-width: 100%;
     display: block;
+  }
+
+  &:hover {
+    ${Overlay} {
+      text-align: left;
+      opacity: 1;
+    }
   }
 `;
 

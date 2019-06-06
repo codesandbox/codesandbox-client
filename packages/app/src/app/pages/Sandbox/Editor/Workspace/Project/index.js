@@ -346,7 +346,7 @@ class Project extends React.Component {
                     signals.modalOpened({ modal: 'starter' });
                   }}
                 >
-                  Make Template
+                  {sandbox.customTemplate ? 'Edit ' : 'Make '} Template
                 </Button>
                 <Tooltip content="Set a template as a starter to get started with it more easily">
                   <Icon />

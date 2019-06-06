@@ -1,5 +1,10 @@
 import React from 'react';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import Tags from '@codesandbox/common/lib/components/Tags';
+import {
+  Overlay,
+  SandboxDescription,
+} from '@codesandbox/common/lib/components/SandboxCard/elements';
 import history from 'app/utils/history';
 import { useQuery } from '@apollo/react-hooks';
 import {
@@ -35,6 +40,14 @@ export default () => {
                     }
                     alt={template.title}
                   />
+                  <Overlay>
+                    <SandboxDescription>
+                      {template.description}
+                    </SandboxDescription>
+                    {template.sandbox.tags && (
+                      <Tags tags={template.sandbox.tags} />
+                    )}
+                  </Overlay>
                   <Border color={template.color} />
                   <div>
                     <TemplateTitle>{template.title}</TemplateTitle>
