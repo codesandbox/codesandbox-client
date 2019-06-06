@@ -7,9 +7,9 @@ import { LIST_TEMPLATES } from '../../../../queries';
 import { Templates } from '../elements';
 
 const Title = styled.h3`
-  font-family: 'Poppins';
+  font-family: 'Poppins', 'Roboto', sans-serif;
   font-weight: 600;
-  width: 288px;
+  width: 60%;
   font-size: 24px;
   line-height: 36px;
 
@@ -22,11 +22,12 @@ const Empty = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 `;
 
 export default ({ selectTemplate }) => {
   const { data } = useQuery(LIST_TEMPLATES);
-  return data.me ? (
+  return data.me && data.me.templates.length ? (
     <Templates>
       {data.me.templates.map(template => (
         <Template

@@ -14,6 +14,9 @@ import { LIST_TEMPLATES } from '../../../../queries';
 
 export default () => {
   const { data } = useQuery(LIST_TEMPLATES);
+
+  if (data.me && !data.me.templates.length) return null;
+
   return (
     <>
       <Title>My Templates</Title>
