@@ -11,6 +11,7 @@ import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { ModuleError } from '@codesandbox/common/lib/types';
 import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/CodeEditor';
@@ -21,7 +22,6 @@ import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
 import { moveDevToolsTab } from './utils';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 
 const settings = store =>
   ({
