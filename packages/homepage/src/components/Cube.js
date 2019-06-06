@@ -45,73 +45,74 @@ const Side = styled.div`
   transform: ${({ rotate }) => rotate} translateZ(${({ size }) => size / 2}px);
 `;
 
-type Props = {
-  size: number,
-  className: string,
-  noAnimation: ?boolean,
-  speed: number,
-  color: string,
-  offset: number,
-};
-
 const isSafari =
   typeof navigator !== 'undefined' &&
   /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const SHADOW_SIZE = isSafari ? 100 : 150;
 
-export default class GlowCube extends React.PureComponent<Props> {
-  render() {
-    const {
-      size = 150,
-      color = 'rgba(242,119,119,0.5)',
-      speed = 1,
-      offset = 0,
-      noAnimation,
-      className,
-      ref,
-      id,
-    } = this.props;
-    return (
-      <Cube id={id} ref={ref} className={className} size={size}>
-        <Sides
-          color={color}
-          offset={offset}
-          speed={speed}
-          noAnimation={noAnimation}
-          size={size}
-        >
-          <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
-            rotate="rotateX(90deg)"
-            size={size}
-          />
-          <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
-            rotate="rotateX(-90deg)"
-            size={size}
-          />
-          <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
-            rotate="rotateY(0deg)"
-            size={size}
-          />
-          <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
-            rotate="rotateY(-180deg)"
-            size={size}
-          />
-          <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
-            rotate="rotateY(-90deg)"
-            size={size}
-          />
-          <Side
-            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
-            rotate="rotateY(90deg)"
-            size={size}
-          />
-        </Sides>
-      </Cube>
-    );
-  }
-}
+type Props = {
+  className: string,
+  color: string,
+  noAnimation: ?boolean,
+  offset: number,
+  size: number,
+  speed: number,
+};
+const GlowCube = ({
+  className,
+  color = 'rgba(242,119,119,0.5)',
+  id,
+  noAnimation,
+  offset = 0,
+  ref,
+  size = 150,
+  speed = 1,
+}: Props) => (
+  <Cube id={id} ref={ref} className={className} size={size}>
+    <Sides
+      color={color}
+      offset={offset}
+      speed={speed}
+      noAnimation={noAnimation}
+      size={size}
+    >
+      <Side
+        rotate="rotateX(90deg)"
+        size={size}
+        style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
+      />
+
+      <Side
+        rotate="rotateX(-90deg)"
+        size={size}
+        style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
+      />
+
+      <Side
+        rotate="rotateY(0deg)"
+        size={size}
+        style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
+      />
+
+      <Side
+        rotate="rotateY(-180deg)"
+        size={size}
+        style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
+      />
+
+      <Side
+        rotate="rotateY(-90deg)"
+        size={size}
+        style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
+      />
+
+      <Side
+        rotate="rotateY(90deg)"
+        size={size}
+        style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
+      />
+    </Sides>
+  </Cube>
+);
+
+export default GlowCube;

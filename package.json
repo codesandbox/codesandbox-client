@@ -55,16 +55,16 @@
   "devDependencies": {
     "@types/react": "^16.8.12",
     "all-contributors-cli": "^5.4.0",
-    "babel-eslint": "^8.2.1",
+    "babel-eslint": "codesandbox/babel-eslint#v10.0.2",
     "concurrently": "^4.1.0",
-    "eslint": "CompuIves/eslint#add/define-parser",
+    "eslint": "5.16.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-config-prettier": "^4.2.0",
     "eslint-import-resolver-webpack": "^0.8.1",
     "eslint-loader": "^1.7.1",
     "eslint-plugin-flowtype": "^2.34.0",
     "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-jsx-a11y": "^6.1.0",
     "eslint-plugin-react": "~7.4.0",
     "eslint-plugin-react-hooks": "^1.6.0",
     "flow-bin": "^0.72.0",
@@ -76,6 +76,8 @@
     "typescript": "3.4.5"
   },
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
     "opencollective": "^1.0.3"
   },
   "collective": {

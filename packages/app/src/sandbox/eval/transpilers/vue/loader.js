@@ -47,13 +47,11 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   const { path, _module } = loaderContext;
   const query = loaderContext.options;
-  const options = Object.assign(
-    {
-      esModule: false,
-    },
-    this.vue,
-    query
-  );
+  const options = {
+    esModule: false,
+    ...this.vue,
+    ...query,
+  };
 
   // disable esModule in inject mode
   // because import/export must be top-level
@@ -79,11 +77,8 @@ export default function(content: string, loaderContext: LoaderContext) {
     parts.template && parts.template.attrs && parts.template.attrs;
   const hasComment = templateAttrs && templateAttrs.comments;
   const functionalTemplate = templateAttrs && templateAttrs.functional;
-  const bubleTemplateOptions = Object.assign({}, options.buble);
-  bubleTemplateOptions.transforms = Object.assign(
-    {},
-    bubleTemplateOptions.transforms
-  );
+  const bubleTemplateOptions = { ...options.buble };
+  bubleTemplateOptions.transforms = { ...bubleTemplateOptions.transforms };
   bubleTemplateOptions.transforms.stripWithFunctional = functionalTemplate;
 
   const templateCompilerOptions =
@@ -125,7 +120,7 @@ export default function(content: string, loaderContext: LoaderContext) {
     coffee: ['babel-loader', 'coffee-loader'],
   };
 
-  const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);
+  const loaders = { ...defaultLoaders, ...codeSandboxLoaders };
   const preLoaders = {};
   const postLoaders = {};
 
@@ -474,7 +469,7 @@ export default function(content: string, loaderContext: LoaderContext) {
   }
 
   function buildCustomBlockLoaderString(attrs) {
-    const noSrcAttrs = Object.assign({}, attrs);
+    const noSrcAttrs = { ...attrs };
     delete noSrcAttrs.src;
     const qs = querystring.stringify(noSrcAttrs);
     return qs ? '?' + qs : qs;

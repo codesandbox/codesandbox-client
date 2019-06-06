@@ -1,0 +1,107 @@
+---
+kind: pipeline
+name: default
+
+steps:
+  - name: restore node_modules cache
+    image: codesandbox-cache:1
+    settings:
+      restore: true
+    volumes:
+      - name: node_modules-cache
+        path: /cache
+    when:
+      event:
+        - pull_request
+
+  - name: install packages
+    image: node:10.15.3-jessie
+    volumes:
+      - name: yarn-cache
+        path: /usr/local/share/.cache/yarn/v4
+    commands:
+      - yarn
+    when:
+      event:
+        - pull_request
+
+  - name: build
+    image: node:10.15.3-jessie
+    commands:
+      - export STAGING_BRANCH=pr$DRONE_PULL_REQUEST
+      - yarn build
+    when:
+      event:
+        - pull_request
+
+  - name: deploy
+    image: codesandbox-deploy:1
+    settings:
+      domain: &domain build.csb.dev
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+      - name: deployments
+        path: /root/docker/deployments
+    when:
+      event:
+        - pull_request
+
+  - name: create github deployment
+    image: codesandbox-github-deployment:1
+    settings:
+      domain: *domain
+      github_token:
+        from_secret: github_token
+    when:
+      event:
+        - pull_request
+
+  - name: slack notification
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: infra
+      template: >
+        {{#success build.status}}
+          👍 {{repo.owner}}/{{repo.name}} pull request #{{build.pull}} successfully built. Access it at https://pr{{build.pull}}.build.csb.dev/ and see the build logs <{{build.link}}|here>.
+        {{else}}
+          👎 {{repo.owner}}/{{repo.name}} pull request #{{build.pull}} building failed. See what happened <{{build.link}}|here>.
+        {{/success}}
+    when:
+      event:
+        - pull_request
+      status:
+        - success
+        - failure
+
+  - name: rebuild node_modules cache
+    image: codesandbox-cache:1
+    settings:
+      rebuild: true
+    volumes:
+      - name: node_modules-cache
+        path: /cache
+    when:
+      event:
+        - pull_request
+
+volumes:
+  - name: yarn-cache
+    host:
+      path: /var/lib/docker/volumes/yarn-cache/_data
+  - name: node_modules-cache
+    host:
+      path: /var/lib/docker/volumes/node_modules-cache/_data
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
+  - name: deployments
+    host:
+      path: /root/docker/deployments
+---
+kind: signature
+hmac: 4d9c06dbed6f93871c3a0bb5b80b35e353d8a5254d84ba07c0fb14e4f6ea9ecd
+
+...

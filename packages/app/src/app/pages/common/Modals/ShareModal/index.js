@@ -207,6 +207,7 @@ class ShareView extends React.Component {
                   setValue={this.setEnableEslint}
                 />
                 <div>
+                  {/* eslint-disable-next-line */}
                   <h4>Default module to show</h4>
 
                   <FilesContainer>

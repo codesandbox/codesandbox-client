@@ -127,6 +127,19 @@ function build(previousSizeMap) {
       process.exit(1);
     }
 
+    const info = stats.toJson();
+
+    if (stats.hasErrors()) {
+      console.error('Failed to create a production build. Reason:');
+      console.error(info.errors);
+      process.exit(1);
+    }
+
+    if (stats.hasWarnings()) {
+      console.warn('Warnings in Webpack build:');
+      console.warn(info.warnings);
+    }
+
     console.log(chalk.green('Compiled successfully.'));
     console.log();
 

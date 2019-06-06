@@ -74,7 +74,9 @@ type State = {
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
   `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
-    process.env.NODE_ENV === 'development' ? 'codesandbox.io' : host()
+    process.env.NODE_ENV === 'development' || process.env.STAGING
+      ? 'codesandbox.io'
+      : host()
   }${initialPath}`;
 
 interface IModulesByPath {
@@ -837,6 +839,7 @@ class BasePreview extends React.Component<Props, State> {
             <React.Fragment>
               <StyledFrame
                 sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
+                allow="geolocation; microphone; camera;midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media"
                 src={
                   this.serverPreview
                     ? getSSEUrl(sandbox, this.initialPath)

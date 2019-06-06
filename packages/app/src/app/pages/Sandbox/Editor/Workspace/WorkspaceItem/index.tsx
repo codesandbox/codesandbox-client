@@ -10,7 +10,7 @@ import {
 } from './elements';
 
 type Props = {
-  children: React.ReactChildren;
+  children: React.ReactNode;
   title: string;
   keepState?: boolean;
   disabled?: boolean;

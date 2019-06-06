@@ -134,20 +134,23 @@ export function Toast({ toast, removeToast, getRef }: Props) {
                   fontSize: '.875rem',
                 }}
               >
-                <Button
-                  small
-                  onClick={() => {
-                    removeToast(toast.id);
-                    toast.notification.actions.primary[0].run();
-                  }}
-                  style={{
-                    marginTop: '1rem',
-                    marginRight: '0.75rem',
-                    lineHeight: 1,
-                  }}
-                >
-                  {toast.notification.actions.primary[0].label}
-                </Button>
+                {toast.notification.actions.primary &&
+                  toast.notification.actions.primary[0] && (
+                    <Button
+                      small
+                      onClick={() => {
+                        removeToast(toast.id);
+                        toast.notification.actions.primary[0].run();
+                      }}
+                      style={{
+                        marginTop: '1rem',
+                        marginRight: '0.75rem',
+                        lineHeight: 1,
+                      }}
+                    >
+                      {toast.notification.actions.primary[0].label}
+                    </Button>
+                  )}
 
                 {toast.notification.actions.secondary &&
                   toast.notification.actions.secondary[0] && (

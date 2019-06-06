@@ -19,10 +19,10 @@ class KeyMapping extends React.Component {
     const keybindings = this.props.store.preferences.settings.keybindings;
 
     return keybindings.reduce(
-      (bindings, binding) =>
-        Object.assign(bindings, {
-          [binding.key]: binding.bindings,
-        }),
+      (bindings, binding) => ({
+        ...bindings,
+        [binding.key]: binding.bindings,
+      }),
       {}
     );
   };

@@ -18,7 +18,7 @@ import { TEAMS_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
   handleSearchFocus = () => {
-    history.push('/dashboard/search');
+    history.push('/dashboard/search', { from: 'sandboxSearchFocused' });
   };
 
   handleSearchChange = e => {

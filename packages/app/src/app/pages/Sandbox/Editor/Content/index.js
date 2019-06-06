@@ -82,7 +82,7 @@ class EditorPreview extends React.Component<Props, State> {
     window.removeEventListener('resize', this.getBounds);
     clearInterval(this.interval);
 
-    if (this.contenNode) {
+    if (this.contentNode) {
       removeListener(this.contentNode);
     }
   }
