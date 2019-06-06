@@ -8,6 +8,7 @@ import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -28,22 +29,37 @@ export function getLatestVersion({ props, api }) {
  */
 export function getIdFromModulePath({ props, state, utils }) {
   if (!props.path) {
-    return {};
+    if (props.id) {
+      const sandbox = state.get('editor.currentSandbox');
+      try {
+        const path = getModulePath(
+          sandbox.modules,
+          sandbox.directories,
+          props.id
+        );
+
+        return { path };
+      } catch (e) {
+        return {};
+      }
+    }
+  } else {
+    const sandbox = state.get('editor.currentSandbox');
+
+    try {
+      const module = utils.resolveModule(
+        props.path.replace(/^\/sandbox\//, ''),
+        sandbox.modules,
+        sandbox.directories
+      );
+
+      return { id: module.id, moduleShortid: module.shortid };
+    } catch (e) {
+      return {};
+    }
   }
 
-  const sandbox = state.get('editor.currentSandbox');
-
-  try {
-    const module = utils.resolveModule(
-      props.path.replace(/^\/sandbox\//, ''),
-      sandbox.modules,
-      sandbox.directories
-    );
-
-    return { id: module.id };
-  } catch (e) {
-    return {};
-  }
+  return {};
 }
 
 export function addNpmDependencyToPackage({ state, props }) {
@@ -368,6 +384,19 @@ export function likeSandbox({ api, props }) {
   });
 }
 
+export function setChangedFile({ props, state }) {
+  const { code, path } = props;
+  const currentlyChangedFiles = state.get('editor.changedFiles');
+
+  const index = currentlyChangedFiles.findIndex(f => f.path === path);
+
+  if (index > -1) {
+    state.set(`editor.changedFiles.${index}.code`, code);
+  } else {
+    state.push(`editor.changedFiles`, { code, path });
+  }
+}
+
 export function createZip({ utils, state }) {
   const sandbox = state.get('editor.currentSandbox');
 
@@ -675,6 +704,10 @@ export function getSavedCode({ props, state }) {
   return {};
 }
 
+/**
+ * We change the updatedAt field for the file to let VSCode know that the file
+ * changed in the meantime
+ */
 export function touchFile({ props, state }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleIndex = sandbox.modules.findIndex(

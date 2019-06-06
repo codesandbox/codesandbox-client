@@ -21,6 +21,7 @@ export default Module({
   model,
   state: {
     sandboxes: {},
+    changedFiles: [],
     currentId: null,
     isForkingSandbox: false,
     currentModuleShortid: null,

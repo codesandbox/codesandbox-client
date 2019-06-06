@@ -296,11 +296,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
                 this.sendChangeOperations(e);
               }
 
-              this.handleChange(
-                module.shortid,
-                module.title,
-                model.getValue(1)
-              );
+              this.handleChange(path, module.title, model.getValue(1));
             } catch (err) {
               if (process.env.NODE_ENV === 'development') {
                 console.error('caught', err);
@@ -720,7 +716,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         try {
           const code = operation.apply(module.code || '');
           if (this.props.onChange) {
-            this.props.onChange(code, module.shortid);
+            this.props.onChange(code, modulePath);
           }
         } catch (e) {
           // Something went wrong while applying
@@ -740,7 +736,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
         this.props.onChange(
           model.object.textEditorModel.getValue(1),
-          module.shortid
+          model.object.textEditorModel.resource.path
         );
       });
     });
@@ -1037,15 +1033,15 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   };
 
   handleChange = (
-    currentModuleShortid: string,
+    currentModulePath: string,
     currentModuleTitle: string,
     newCode: string
   ) => {
     if (this.props.onChange) {
-      this.props.onChange(newCode, currentModuleShortid);
+      this.props.onChange(newCode, currentModulePath);
     }
 
-    if (currentModuleShortid === this.currentModule.shortid) {
+    if (currentModulePath === this.getCurrentModelPath_new()) {
       this.lint(
         newCode,
         currentModuleTitle,

@@ -136,6 +136,12 @@ export default {
     })
   ),
   currentTabId: types.maybeNull(types.string),
+  changedFiles: types.array(
+    types.model({
+      path: types.string,
+      code: types.string,
+    })
+  ),
   tabs: types.array(
     types.union(
       types.model({

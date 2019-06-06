@@ -154,6 +154,8 @@ export const forceForkSandbox = [
 
 export const changeCode = [
   track('Change Code', {}, { trackOnce: true }),
+  actions.getIdFromModulePath,
+  actions.setChangedFile,
 
   when(
     state`live.isLive`,

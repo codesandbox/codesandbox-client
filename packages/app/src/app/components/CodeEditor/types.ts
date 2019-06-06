@@ -76,7 +76,7 @@ export type Props = {
       path: string
     ) => (container: HTMLElement, extraProps: object) => void;
   };
-  onChange: (code: string, moduleShortid?: string) => void;
+  onChange: (code: string, modulePath?: string) => void;
   onInitialized: (editor: Editor) => Function;
   onModuleChange: (moduleId: string) => void;
   onNpmDependencyAdded?: (name: string) => void;

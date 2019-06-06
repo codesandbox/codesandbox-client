@@ -21,6 +21,7 @@ import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
 import { moveDevToolsTab } from './utils';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 
 const settings = store =>
   ({
@@ -585,10 +586,16 @@ class EditorPreview extends React.Component<Props, State> {
                     signals.editor.addNpmDependency({ name, isDev: true });
                   }
                 }}
-                onChange={(code, moduleShortid) =>
+                onChange={(code, path) =>
                   signals.editor.codeChanged({
                     code,
-                    moduleShortid: moduleShortid || currentModule.shortid,
+                    path:
+                      path ||
+                      getModulePath(
+                        sandbox.modules,
+                        sandbox.diriectories,
+                        currentModule.id
+                      ),
                     noLive: true,
                   })
                 }
