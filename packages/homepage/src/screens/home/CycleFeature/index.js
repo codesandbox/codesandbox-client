@@ -441,9 +441,7 @@ export default class CycleFeatures extends React.PureComponent {
                 rel="noopener noreferrer"
               >
                 <span>github.com/</span>
-                <AddedUrl id="added-url">
-                  reduxjs/redux/tree/master/examples/todos
-                </AddedUrl>
+                <AddedUrl>reduxjs/redux/tree/master/examples/todos</AddedUrl>
               </AddressBar>
               <AddressBar
                 href="/s/github/reduxjs/redux/tree/master/examples/todos"
@@ -451,9 +449,7 @@ export default class CycleFeatures extends React.PureComponent {
                 rel="noopener noreferrer"
               >
                 <span>codesandbox.io/s/github/</span>
-                <AddedUrl id="added-url">
-                  reduxjs/redux/tree/master/examples/todos
-                </AddedUrl>
+                <AddedUrl>reduxjs/redux/tree/master/examples/todos</AddedUrl>
               </AddressBar>
             </ImportContainer>
 
