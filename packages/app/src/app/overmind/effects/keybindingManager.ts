@@ -290,15 +290,12 @@ export default {
       binding => binding.bindings && binding.bindings.filter(Boolean).length
     );
   },
-  start() {
-    if (
-      isStarted ||
-      this.context.controller.getState().preferences.settings.experimentVSCode
-    ) {
+  start(onKeyDownListener: (event: KeyboardEvent) => void) {
+    if (isStarted) {
       return;
     }
 
-    onKeyDown = handleKeyDown.bind(null, this.context.controller);
+    onKeyDown = handleKeyDown.bind(null, onKeyDownListener);
     onKeyUp = handleKeyUp.bind(null);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);

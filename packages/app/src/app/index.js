@@ -54,6 +54,17 @@ window.addEventListener('unhandledrejection', e => {
     e.preventDefault();
   }
 });
+/*
+  OVERMIND REFACTOR
+*/
+if (process.env.NODE_ENV === 'development') {
+  Promise.all([import('overmind'), import('./overmind')]).then(modules => {
+    const createOvermind = modules[0].createOvermind;
+    const config = modules[1].config;
+
+    createOvermind(config);
+  });
+}
 
 if (process.env.NODE_ENV === 'production') {
   try {

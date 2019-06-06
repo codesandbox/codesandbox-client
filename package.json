@@ -12,6 +12,7 @@
     "build:common": "lerna run build:dev --scope @codesandbox/common --stream",
     "build:dynamic": "lerna run build --scope dynamic-pages --stream",
     "start": "yarn build:deps && lerna run start --scope app --stream",
+    "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
     "start:fast": "lerna run start --scope app --stream",
     "start:vscode": "VSCODE=1 yarn start:fast & cd standalone-packages/monaco-editor && yarn simpleserver & cd standalone-packages/vscode && yarn watch",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
@@ -55,6 +56,7 @@
     "@types/react": "^16.8.12",
     "all-contributors-cli": "^5.4.0",
     "babel-eslint": "codesandbox/babel-eslint#v10.0.2",
+    "concurrently": "^4.1.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-config-prettier": "^4.2.0",
@@ -71,7 +73,7 @@
     "lerna": "^2.5.1",
     "prettier": "1.17.0",
     "pretty-quick": "^1.10.0",
-    "typescript": "3.3.4000"
+    "typescript": "3.4.5"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^1.9.0",

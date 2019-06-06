@@ -1,17 +1,14 @@
 import addListener from '@codesandbox/common/lib/connection-manager';
 
-const listeners = {};
+const listeners = new Map();
 
 export default {
-  addListener(signalPath) {
-    const listener = connection =>
-      this.context.controller.getSignal(signalPath)({ connection });
-
-    listeners[signalPath] = addListener(listener);
+  addListener(listener: (connected: boolean) => void) {
+    const disposer = addListener(listener ? listener : () => {});
+    listeners.set(listener, disposer);
   },
-  removeListener(signalPath) {
-    listeners[signalPath]();
-
-    delete listeners[signalPath];
+  removeListener(listener: (connected: boolean) => void) {
+    listeners.get(listener)();
+    listeners.delete(listener);
   },
 };
