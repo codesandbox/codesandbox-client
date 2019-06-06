@@ -463,6 +463,7 @@ export default class CycleFeatures extends React.PureComponent {
                 href="https://csb-921ywn9qrw-emlplxhibt.now.sh/"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Open deployed sandbox"
               >
                 <span id="progress-text" style={{ textAlign: 'center' }}>
                   Deploying...
