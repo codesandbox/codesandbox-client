@@ -35,6 +35,7 @@ export const deleteTemplate = [
   {
     success: [
       set(state`editor.sandboxes.${state`editor.currentId`}.isFrozen`, false),
+      set(state`editor.currentSandbox.customTemplate`, null),
       closeModal,
       addNotification('Template Deleted', 'success'),
     ],
