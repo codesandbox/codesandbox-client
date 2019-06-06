@@ -1,7 +1,9 @@
 import styled, { css } from 'styled-components';
 
 const makeColor = (color: any, custom: boolean) => {
-  if (!custom) return color;
+  if (!custom) {
+    return color;
+  }
 
   return color.rgbString();
 };
