@@ -215,7 +215,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
   if (configurations && configurations.babel && configurations.babel.parsed) {
     flatten(configurations.babel.parsed.presets || [])
       .filter(p => typeof p === 'string')
-      .forEach(p => {
+      .forEach((p: string) => {
         const [first, ...parts] = p.split('/');
         const prefixedName = p.startsWith('@')
           ? first + '/babel-preset-' + parts.join('/')
@@ -227,7 +227,7 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
 
     flatten(configurations.babel.parsed.plugins || [])
       .filter(p => typeof p === 'string')
-      .forEach(p => {
+      .forEach((p: string) => {
         const [first, ...parts] = p.split('/');
         const prefixedName = p.startsWith('@')
           ? first + '/babel-plugin-' + parts.join('/')
