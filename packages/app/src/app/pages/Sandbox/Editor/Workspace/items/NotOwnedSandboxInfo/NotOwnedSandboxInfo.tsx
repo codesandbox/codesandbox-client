@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-import Project from '../../Project';
-import Files from '../../Files';
 import Dependencies from '../../Dependencies';
+import Files from '../../Files';
+import Project from '../../Project';
 import WorkspaceItem from '../../WorkspaceItem';
 
-export default () => {
+export const NotOwnedSandboxInfo = () => {
   const [editActions, setEditActions] = useState(null);
 
   return (
@@ -13,16 +13,17 @@ export default () => {
       <Project />
 
       <WorkspaceItem
-        style={{ marginTop: '.5rem' }}
         actions={editActions}
         defaultOpen
+        style={{ marginTop: '.5rem' }}
         title="Files"
       >
         <Files setEditActions={setEditActions} />
       </WorkspaceItem>
+
       <WorkspaceItem
-        style={{ marginTop: '.5rem' }}
         defaultOpen
+        style={{ marginTop: '.5rem' }}
         title="Dependencies"
       >
         <Dependencies />
