@@ -142,7 +142,6 @@ export const ImportChoices = styled.div`
 export const Tab = styled.section`
   display: ${props => (props.visible ? 'block' : 'none')};
   transition: 0.15s ease opacity;
-  ${delayEffect(0.1)};
 `;
 
 export const ImportChoice = styled.a`
@@ -171,14 +170,13 @@ const activeStyles = css`
 `;
 
 export const Button = styled.button`
-  background: transparent;
   font-family: 'Roboto', sans-serif;
   border: none;
   margin: 0;
   font-weight: 500;
   text-transform: uppercase;
   font-size: 0.875rem;
-  color: ${props => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.5)')};
+  color: rgba(255, 255, 255, 0.5);
   padding: 1rem 2rem;
   transition: 0.15s ease all;
   position: relative;
@@ -189,6 +187,10 @@ export const Button = styled.button`
     css`
       ${activeStyles};
     `};
+
+  &:hover {
+    color: white;
+  }
 `;
 
 export const Title = styled.h2`
