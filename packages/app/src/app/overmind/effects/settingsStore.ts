@@ -24,7 +24,7 @@ const allowedKeys = {
 };
 
 export default {
-  getAll() {
+  getAll(): { [P in keyof typeof allowedKeys]: any } {
     return Object.keys(allowedKeys).reduce((result, prop) => {
       const value = this.get(allowedKeys[prop]);
 
@@ -35,7 +35,7 @@ export default {
       }
 
       return result;
-    }, {});
+    }, {}) as any;
   },
   get(key) {
     try {
