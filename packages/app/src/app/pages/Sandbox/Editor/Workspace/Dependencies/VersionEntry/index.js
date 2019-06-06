@@ -126,6 +126,10 @@ export default class VersionEntry extends React.PureComponent {
   render() {
     const { dependencies, dependency } = this.props;
 
+    if (typeof dependencies[dependency] !== 'string') {
+      return null;
+    }
+
     const { hovering, version, size, open, versions } = this.state;
     return (
       <Fragment>
