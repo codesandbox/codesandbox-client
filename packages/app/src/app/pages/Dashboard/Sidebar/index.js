@@ -69,7 +69,7 @@ class Sidebar extends React.Component {
                     currentTeamId={currentTeamId}
                     openByDefault
                   />
-                  <TrashItem />
+                  <TrashItem currentPath={path} />
                 </Items>
 
                 <Query query={TEAMS_QUERY}>
