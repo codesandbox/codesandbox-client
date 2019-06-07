@@ -45,8 +45,6 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.4",
-    "@babel/plugin-transform-runtime": "^7.1.0",
-    "@babel/preset-typescript": "^7.1.0",
     "@storybook/addon-a11y": "^5.0.3",
     "@storybook/addon-actions": "^5.0.3",
     "@storybook/addon-knobs": "^5.0.3",
@@ -61,8 +59,6 @@
     "@types/styled-components": "^4.1.13",
     "babel-jest": "^23.6.0",
     "babel-loader": "8.0.2",
-    "babel-plugin-lodash": "^3.3.4",
-    "babel-plugin-system-import-transformer": "3.1.0",
     "cpx": "^1.5.0",
     "jest": "^21.2.1",
     "rimraf": "^2.6.3",
