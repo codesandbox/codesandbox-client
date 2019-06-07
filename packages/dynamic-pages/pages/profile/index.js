@@ -114,13 +114,21 @@ const Profile = ({ profile, liked, showcased }) =>
   );
 
 Profile.getInitialProps = async ({ query: { username } }) => {
-  const profile = await fetch(`/api/v1/users/${username}`);
-  const sandboxes = await fetch(`/api/v1/users/${username}/sandboxes`);
-  const liked = await fetch(`/api/v1/users/${username}/sandboxes/liked?page=1`);
+  const profile = await fetch(
+    `https://codesandbox.io/api/v1/users/${username}`
+  );
+  const sandboxes = await fetch(
+    `https://codesandbox.io/api/v1/users/${username}/sandboxes`
+  );
+  const liked = await fetch(
+    `https://codesandbox.io/api/v1/users/${username}/sandboxes/liked?page=1`
+  );
   let showcased = { data: {} };
   if (profile.data) {
     showcased = await fetch(
-      `/api/v1/sandboxes/${profile.data.showcased_sandbox_shortid}`
+      `https://codesandbox.io/api/v1/sandboxes/${
+        profile.data.showcased_sandbox_shortid
+      }`
     );
   }
   return {

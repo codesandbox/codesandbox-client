@@ -13,7 +13,7 @@ export const host = () => {
 export default async url => {
   const protocol =
     typeof window !== 'undefined' ? window.location.protocol : 'http:';
-  const data = await fetch(protocol + '//' + host() + url);
+  const data = await fetch(url);
   const json = await data.json();
 
   return json;

@@ -3,7 +3,10 @@
   "builds": [
     {
       "src": "./next.config.js",
-      "use": "@now/next"
+      "use": "@now/next@canary"
     }
+  ],
+  "routes": [
+    { "src": "/u/(?<username>[^/]+)$", "dest": "/profile?username=$username" }
   ]
 }

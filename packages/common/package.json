@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "@codesandbox/notifications": "^1.0.3",
+    "@codesandbox/template-icons": "^0.3.0",
     "@sentry/browser": "^4.6.6",
     "@tippy.js/react": "^2.1.1",
     "babel-plugin-preval": "^3.0.1",

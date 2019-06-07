@@ -17,13 +17,9 @@ for (const key of Object.keys(env)) {
 }
 
 module.exports = withCSS(
-  withTM({
-    exportPathMap() {
-      return {
-        '/profile': { page: '/profile' },
-      };
-    },
-    transpileModules: ['common'],
+  {
+    // withTM({
+    //   transpileModules: ['common'],
     webpack(config) {
       // Further custom configuration here
       config.module.rules.unshift({
@@ -38,17 +34,17 @@ module.exports = withCSS(
         ],
       });
 
-      config.module.rules.unshift({
-        test: /common\/.*\.(js)$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              plugins: ['@babel/transform-modules-commonjs'],
-            },
-          },
-        ],
-      });
+      // config.module.rules.unshift({
+      //   test: /common\/.*\.(js)$/,
+      //   use: [
+      //     {
+      //       loader: 'babel-loader',
+      //       options: {
+      //         plugins: ['@babel/transform-modules-commonjs'],
+      //       },
+      //     },
+      //   ],
+      // });
 
       return config;
     },
@@ -56,5 +52,8 @@ module.exports = withCSS(
     env: {
       ...dotEnvVariables,
     },
-  })
+
+    target: 'serverless',
+  }
+  // })
 );
