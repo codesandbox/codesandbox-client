@@ -58,6 +58,7 @@ type Props = {
   undeleteSandboxes: () => void;
   removedAt?: number;
   style?: React.CSSProperties;
+  alias: string | undefined;
 
   // React-DnD, lazy typings
   connectDragSource: any;
@@ -271,21 +272,21 @@ class SandboxItem extends React.PureComponent<Props, State> {
       this.props.isPatron &&
         [
           this.props.privacy !== 0 && {
-            title: `Make Sandbox Public`,
+            title: 'Make Sandbox Public',
             action: () => {
               this.props.setSandboxesPrivacy(0);
               return true;
             },
           },
           this.props.privacy !== 1 && {
-            title: `Make Sandbox Unlisted`,
+            title: 'Make Sandbox Unlisted',
             action: () => {
               this.props.setSandboxesPrivacy(1);
               return true;
             },
           },
           this.props.privacy !== 2 && {
-            title: `Make Sandbox Private`,
+            title: 'Make Sandbox Private',
             action: () => {
               this.props.setSandboxesPrivacy(2);
               return true;
@@ -321,7 +322,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
 
   openSandbox = (openNewWindow = false) => {
     // @ts-ignore Git sandboxes aren't shown here anyway
-    const url = sandboxUrl({ id: this.props.id });
+    const url = sandboxUrl({ id: this.props.id, alias: this.props.alias });
 
     if (!this.props.removedAt) {
       if (openNewWindow === true) {

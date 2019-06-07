@@ -10,7 +10,7 @@ export default () => {
   }
 
   if ('STAGING_BRANCH' in process.env) {
-    return `http://${process.env.STAGING_BRANCH}.cs.lbogdan.tk`;
+    return `https://${process.env.STAGING_BRANCH}.build.csb.dev`;
   }
 
   if ('ROOT_URL' in process.env) {

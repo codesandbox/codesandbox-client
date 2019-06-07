@@ -22,6 +22,10 @@ export type ModuleError = {
   source: string | undefined;
 };
 
+export type Contributor = {
+  login: string;
+};
+
 export type ModuleCorrection = {
   message: string;
   line: number;
@@ -128,6 +132,7 @@ export type GitInfo = {
 
 export type Sandbox = {
   id: string;
+  alias: string | undefined;
   title: string | undefined;
   description: string;
   viewCount: number;
@@ -194,6 +199,7 @@ export type Preferences = {
   autoDownloadTypes: boolean | undefined;
   newPackagerExperiment: boolean | undefined;
   zenMode: boolean | undefined;
+  keybindings: any[];
 };
 
 export type NotificationButton = {
@@ -205,8 +211,8 @@ export type Notification = {
   id: number;
   title: string;
   type: 'notice' | 'success' | 'warning' | 'error';
-  number: Date;
-  buttons: Array<NotificationButton> | undefined;
+  endTime: number;
+  buttons: Array<NotificationButton>;
 };
 
 export type Modal = {
@@ -226,4 +232,12 @@ export type PackageJSON = {
   devDependencies: {
     [dep: string]: string;
   };
+};
+
+export type UploadFile = {
+  id: string;
+  url: string;
+  objectSize: number;
+  name: string;
+  path: string;
 };

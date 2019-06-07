@@ -476,6 +476,8 @@ export const signInCli = [
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
 
+  actions.setIdFromAlias,
+
   when(
     state`editor.sandboxes.${props`id`}`,
     sandbox => sandbox && !sandbox.team

@@ -1,3 +1,4 @@
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import {
   optionsToParameterizedUrl,
@@ -68,13 +69,17 @@ export const getIframeScript = (sandbox, mainModule, state) =>
     sandbox,
     mainModule,
     state
-  )}" title="${sandbox.title ||
-    sandbox.id}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
+  )}" title="${getSandboxName(
+    sandbox
+  )}" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
 
 // eslint-disable-next-line
 export const getButtonMarkdown = (sandbox, mainModule, state) => {
-  return `[![Edit ${sandbox.title ||
-    sandbox.id}](${BUTTON_URL})](${getEditorUrl(sandbox, mainModule, state)})`;
+  return `[![Edit ${getSandboxName(sandbox)}](${BUTTON_URL})](${getEditorUrl(
+    sandbox,
+    mainModule,
+    state
+  )})`;
 };
 
 // eslint-disable-next-line

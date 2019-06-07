@@ -18,7 +18,7 @@ import { TEAMS_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
   handleSearchFocus = () => {
-    history.push('/dashboard/search');
+    history.push('/dashboard/search', { from: 'sandboxSearchFocused' });
   };
 
   handleSearchChange = e => {
@@ -69,7 +69,7 @@ class Sidebar extends React.Component {
                     currentTeamId={currentTeamId}
                     openByDefault
                   />
-                  <TrashItem />
+                  <TrashItem currentPath={path} />
                 </Items>
 
                 <Query query={TEAMS_QUERY}>

@@ -1,4 +1,5 @@
 import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
+import { flatten } from 'lodash';
 import { absolute } from '@codesandbox/common/lib/utils/path';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
@@ -195,7 +196,6 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-plugin-detective',
   'babel-plugin-transform-prevent-infinite-loops',
   'babel-plugin-transform-vue-jsx',
-  'babel-plugin-jsx-pragmatic',
   'flow-bin',
   ...BABEL_DEPENDENCIES,
 ];
@@ -213,9 +213,9 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
 
   // Add all babel plugins/presets to whitelisted dependencies
   if (configurations && configurations.babel && configurations.babel.parsed) {
-    (configurations.babel.parsed.presets || [])
+    flatten(configurations.babel.parsed.presets || [])
       .filter(p => typeof p === 'string')
-      .forEach(p => {
+      .forEach((p: string) => {
         const [first, ...parts] = p.split('/');
         const prefixedName = p.startsWith('@')
           ? first + '/babel-preset-' + parts.join('/')
@@ -225,9 +225,9 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
         foundWhitelistedDevDependencies.push(prefixedName);
       });
 
-    (configurations.babel.parsed.plugins || [])
+    flatten(configurations.babel.parsed.plugins || [])
       .filter(p => typeof p === 'string')
-      .forEach(p => {
+      .forEach((p: string) => {
         const [first, ...parts] = p.split('/');
         const prefixedName = p.startsWith('@')
           ? first + '/babel-plugin-' + parts.join('/')

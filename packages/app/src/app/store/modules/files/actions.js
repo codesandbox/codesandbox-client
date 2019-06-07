@@ -121,7 +121,7 @@ export async function uploadFiles({ api, props, path }) {
   try {
     // We traverse all files and upload them when necessary, then add them to the
     // parsedFiles object
-    /* eslint-disable no-restricted-syntax no-await-in-loop */
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for (const filePathsChunk of chunkedFilePaths) {
       await Promise.all(
         filePathsChunk.map(async filePath => {

@@ -1198,6 +1198,79 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "twhite96",
+      "name": "Tiffany White",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7698292?v=4",
+      "profile": "https://tiffanywhite.dev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "JABedford",
+      "name": "James Bedford",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/32302360?v=4",
+      "profile": "http://www.dopest.tech",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "smolinari",
+      "name": "Scott",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3314957?v=4",
+      "profile": "https://www.patreon.com/user?u=16255660",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dutiyesh",
+      "name": "Dutiyesh Salunkhe",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/12200583?v=4",
+      "profile": "https://github.com/dutiyesh",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "halitogunc",
+      "name": "Halit Ogunc",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/13641726?v=4",
+      "profile": "http://halit.dev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jyash97",
+      "name": "Yash Joshi",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22376783?v=4",
+      "profile": "https://github.com/jyash97",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "batiskafff",
+      "name": "Yehor",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1769092?v=4",
+      "profile": "https://github.com/batiskafff",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Jensderond",
+      "name": "Jens de Rond",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6972822?v=4",
+      "profile": "https://github.com/Jensderond",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "repoType": "github",

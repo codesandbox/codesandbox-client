@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import Files from 'embed/components/Files';
 import QRCode from 'qrcode.react';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
@@ -206,6 +207,7 @@ class ShareView extends React.Component {
                   setValue={this.setEnableEslint}
                 />
                 <div>
+                  {/* eslint-disable-next-line */}
                   <h4>Default module to show</h4>
 
                   <FilesContainer>
@@ -263,7 +265,7 @@ class ShareView extends React.Component {
                 <Inputs>
                   <ButtonContainer>
                     <a href={sandboxUrl(sandbox)}>
-                      <img alt={sandbox.title || 'Untitled'} src={BUTTON_URL} />
+                      <img alt={getSandboxName(sandbox)} src={BUTTON_URL} />
                     </a>
                   </ButtonContainer>
                 </Inputs>
@@ -315,8 +317,12 @@ class ShareView extends React.Component {
                     small
                     target="_blank"
                     href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                      sandbox.title || sandbox.id
-                    )}.+${getEditorUrl(sandbox, mainModule, this.state)}`}
+                      `${sandbox.title || sandbox.id}. ${getEditorUrl(
+                        sandbox,
+                        mainModule,
+                        this.state
+                      )}`
+                    )}`}
                   >
                     Share on Twitter
                   </Button>

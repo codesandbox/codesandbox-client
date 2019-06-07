@@ -1,5 +1,6 @@
-import { Module } from 'cerebral';
 import HttpProvider from '@cerebral/http';
+import { Module } from 'cerebral';
+import { createContext, useContext } from 'react';
 
 import model from './model';
 import ApiProvider from './providers/Api';
@@ -38,6 +39,12 @@ import files from './modules/files';
 import live from './modules/live';
 import dashboard from './modules/dashboard';
 import userNotifications from './modules/user-notifications';
+
+export const Signals = createContext();
+export const Store = createContext();
+
+export const useSignals = () => useContext(Signals);
+export const useStore = () => useContext(Store);
 
 export default Module({
   model,

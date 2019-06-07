@@ -36,12 +36,13 @@ const Sandboxes = ({ data, fetchUrl, profile, currentTab }) => {
   useEffect(() => {
     setSandboxes(data[1]);
     setPage(1);
-  }, [currentTab]);
+  }, [currentTab, data]);
 
   return (
     <PageContainer>
       <Grid>
         <Sidebar {...profile} />
+
         <main>
           <TabNavigation>
             <Link

@@ -1,4 +1,7 @@
-import { logError } from '@codesandbox/common/lib/utils/analytics';
+import track, { logError } from '@codesandbox/common/lib/utils/analytics';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
+import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { values } from 'lodash-es';
 
 import { camelizeKeys, decamelizeKeys } from 'humps';
@@ -44,13 +47,53 @@ const getMessage = (error: Error & { response: ?Object }) => {
   return error.message;
 };
 
+function showNotification(controller, errorMessage: string) {
+  if (errorMessage.startsWith('You need to sign in to create more than')) {
+    // Error for "You need to sign in to create more than 10 sandboxes"
+    track('Anonymous Sandbox Limit Reached', { errorMessage });
+
+    notificationState.addNotification({
+      title: errorMessage,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Sign in',
+            run: () => {
+              controller.getSignal('signInClicked')({});
+            },
+          },
+        ],
+      },
+    });
+  } else if (errorMessage.startsWith('You reached the maximum of')) {
+    track('Non-Patron Sandbox Limit Reached', { errorMessage });
+
+    notificationState.addNotification({
+      title: errorMessage,
+      status: NotificationStatus.ERROR,
+      actions: {
+        primary: [
+          {
+            label: 'Open Patron Page',
+            run: () => {
+              window.open(patronUrl(), '_blank');
+            },
+          },
+        ],
+      },
+    });
+  } else {
+    controller.runSignal(
+      'notificationAdded',
+      addNotification(errorMessage, 'error')
+    );
+  }
+}
+
 const showError = (error, controller) => {
   const errorMessage = getMessage(error);
-
-  controller.runSignal(
-    'notificationAdded',
-    addNotification(errorMessage, 'error')
-  );
+  showNotification(controller, errorMessage);
 
   error.apiMessage = errorMessage; // eslint-disable-line no-param-reassign
 };
@@ -126,13 +169,12 @@ export default Provider({
   },
   request(options) {
     return this.context.http
-      .request(
-        Object.assign(options, {
-          url: API_ROOT + options.url,
-          body: options.body ? camelizeKeys(options.body) : null,
-          headers: createHeaders(this.context),
-        })
-      )
+      .request({
+        ...options,
+        url: API_ROOT + options.url,
+        body: options.body ? camelizeKeys(options.body) : null,
+        headers: createHeaders(this.context),
+      })
       .then(response => handleResponse(response, options))
       .catch(e => handleError(e, this.context.controller));
   },

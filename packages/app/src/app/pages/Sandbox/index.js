@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import NotFound from 'app/pages/common/NotFound';
 import Navigation from 'app/pages/common/Navigation';
@@ -45,6 +46,7 @@ class SandboxPage extends React.Component {
 
   fetchSandbox = () => {
     const id = this.props.match.params.id;
+
     this.props.signals.editor.sandboxChanged({ id });
   };
 
@@ -173,7 +175,7 @@ class SandboxPage extends React.Component {
     const sandbox = store.editor.currentSandbox;
 
     if (sandbox) {
-      document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
+      document.title = `${getSandboxName(sandbox)} - CodeSandbox`;
     }
 
     return (

@@ -1,7 +1,10 @@
 import { Socket } from 'phoenix';
 import _debug from '@codesandbox/common/lib/utils/debug';
 
-let socket = null;
+type Options = { provideJwtToken: () => string };
+
+let _socket: Socket = null;
+let _options: Options = null;
 const debug = _debug('cs:socket');
 
 declare global {
@@ -11,30 +14,27 @@ declare global {
 }
 
 export default {
+  initialize(options: Options) {
+    _options = options;
+  },
   connect() {
-    const { state, jwt } = this.context;
-    const token = state.get('jwt') || jwt.get();
+    if (!_socket) {
+      _socket = new Socket(`wss://${location.host}/socket`, {
+        params: {
+          guardian_token: _options.provideJwtToken(),
+        },
+      });
 
-    if (!socket) {
-      socket =
-        socket ||
-        new Socket(`wss://${location.host}/socket`, {
-          params: {
-            guardian_token: token,
-          },
-        });
-
-      socket.connect();
-      window.socket = socket;
-      debug('Connecting to socket', socket);
+      _socket.connect();
+      window.socket = _socket;
+      debug('Connecting to socket', _socket);
     }
   },
-
   getSocket() {
-    if (!socket) {
-      this.context.socket.connect();
+    if (!_socket) {
+      this.connect();
     }
 
-    return socket;
+    return _socket;
   },
 };

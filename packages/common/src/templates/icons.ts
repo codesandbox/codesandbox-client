@@ -1,27 +1,30 @@
-import Adonis from '../components/logos/Adonis';
-import React from '../components/logos/React';
-import Angular from '../components/logos/Angular';
-import Ember from '../components/logos/Ember';
-import Parcel from '../components/logos/Parcel';
-import Preact from '../components/logos/Preact';
-import Vue from '../components/logos/Vue';
-import Svelte from '../components/logos/Svelte';
-import Sapper from '../components/logos/Sapper';
-import Dojo from '../components/logos/Dojo';
-import CxJS from '../components/logos/CxJS';
-import Reason from '../components/logos/Reason';
-import Gatsby from '../components/logos/Gatsby';
-import Marko from '../components/logos/Marko';
-import Next from '../components/logos/Next';
-import Nuxt from '../components/logos/Nuxt';
-import Node from '../components/logos/Node';
-import Apollo from '../components/logos/Apollo';
-import Nest from '../components/logos/Nest';
-import Static from '../components/logos/Static';
-import Styleguidist from '../components/logos/Styleguidist';
-import VuePress from '../components/logos/VuePress';
-import MDXDeck from '../components/logos/mdx-deck';
-import GridSome from '../components/logos/Gridsome';
+import {
+  AdonisIcon,
+  AngularIcon,
+  ApolloIcon,
+  ReactIcon,
+  ReasonIcon,
+  EmberIcon,
+  PreactIcon,
+  VueIcon,
+  SvelteIcon,
+  DojoIcon,
+  CxJSIcon,
+  GatsbyIcon,
+  MarkoIcon,
+  NextIcon,
+  NuxtIcon,
+  NodeIcon,
+  NestIcon,
+  HTML5Icon,
+  StyleguidistIcon,
+  MDXDeckIcon,
+  GridsomeIcon,
+  QuasarIcon,
+  SapperIcon,
+  ParcelIcon,
+  VuePressIcon,
+} from '@codesandbox/template-icons';
 
 import {
   adonis,
@@ -49,6 +52,7 @@ import {
   gridsome,
   vuepress,
   mdxDeck,
+  quasar,
 } from './';
 
 import { TemplateType } from './';
@@ -63,56 +67,58 @@ export type ReturnedIcon = React.SFC<{
 export default function getIcon(theme: TemplateType): ReturnedIcon {
   switch (theme) {
     case adonis.name:
-      return Adonis;
+      return AdonisIcon;
     case react.name:
-      return React;
+      return ReactIcon;
     case vue.name:
-      return Vue;
+      return VueIcon;
     case preact.name:
-      return Preact;
+      return PreactIcon;
     case reactTs.name:
-      return React;
+      return ReactIcon;
     case svelte.name:
-      return Svelte;
+      return SvelteIcon;
     case angular.name:
-      return Angular;
+      return AngularIcon;
     case parcel.name:
-      return Parcel;
+      return ParcelIcon;
     case dojo.name:
-      return Dojo;
+      return DojoIcon;
     case ember.name:
-      return Ember;
+      return EmberIcon;
     case sapper.name:
-      return Sapper;
+      return SapperIcon;
     case cxjs.name:
-      return CxJS;
+      return CxJSIcon;
     case reason.name:
-      return Reason;
+      return ReasonIcon;
     case gatsby.name:
-      return Gatsby;
+      return GatsbyIcon;
     case marko.name:
-      return Marko;
+      return MarkoIcon;
     case next.name:
-      return Next;
+      return NextIcon;
     case nuxt.name:
-      return Nuxt;
+      return NuxtIcon;
     case node.name:
-      return Node;
+      return NodeIcon;
     case apollo.name:
-      return Apollo;
+      return ApolloIcon;
     case nest.name:
-      return Nest;
+      return NestIcon;
     case staticTemplate.name:
-      return Static;
+      return HTML5Icon;
     case styleguidist.name:
-      return Styleguidist;
+      return StyleguidistIcon;
     case gridsome.name:
-      return GridSome;
+      return GridsomeIcon;
     case vuepress.name:
-      return VuePress;
+      return VuePressIcon;
     case mdxDeck.name:
-      return MDXDeck;
+      return MDXDeckIcon;
+    case quasar.name:
+      return QuasarIcon;
     default:
-      return React;
+      return ReactIcon;
   }
 }

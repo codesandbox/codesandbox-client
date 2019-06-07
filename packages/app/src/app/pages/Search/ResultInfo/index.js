@@ -3,19 +3,18 @@ import { Stats, ClearRefinements } from 'react-instantsearch/dom';
 
 import { ClearAllContainer } from './elements';
 
-function ResultInfo() {
-  return (
-    <div style={{ marginBottom: '1rem', fontSize: '.875rem' }}>
-      <Stats
-        translations={{
-          stats: nbHits => `${nbHits.toLocaleString()} results found`,
-        }}
-      />
-      <ClearAllContainer>
-        <ClearRefinements />
-      </ClearAllContainer>
-    </div>
-  );
-}
+const ResultInfo = () => (
+  <div style={{ marginBottom: '1rem', fontSize: '.875rem' }}>
+    <Stats
+      translations={{
+        stats: nbHits => `${nbHits.toLocaleString()} results found`,
+      }}
+    />
+
+    <ClearAllContainer>
+      <ClearRefinements />
+    </ClearAllContainer>
+  </div>
+);
 
 export default ResultInfo;

@@ -57,12 +57,20 @@ export const sandboxUrl = (sandbox: Sandbox) => {
     return `${editorUrl()}${sandboxGitUrl(git)}`;
   }
 
+  if (sandbox.alias) {
+    return `${editorUrl()}${sandbox.alias}`;
+  }
+
   return `${editorUrl()}${sandbox.id}`;
 };
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
     return `/embed/${sandboxGitUrl(git)}`;
+  }
+
+  if (sandbox.alias) {
+    return `/embed/${sandbox.alias}`;
   }
 
   return `/embed/${sandbox.id}`;
@@ -80,7 +88,7 @@ const stagingFrameUrl = (shortid: string, path: string) => {
   )}/${path}`;
 };
 
-export const frameUrl = (shortid: string, append: string = '') => {
+export const frameUrl = (sandbox: Sandbox, append: string = '') => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   if (process.env.LOCAL_SERVER) {
@@ -88,10 +96,10 @@ export const frameUrl = (shortid: string, append: string = '') => {
   }
 
   if (process.env.STAGING) {
-    return stagingFrameUrl(shortid, path);
+    return stagingFrameUrl(sandbox.id, path);
   }
 
-  return `${location.protocol}//${shortid}.${host()}/${path}`;
+  return `${location.protocol}//${sandbox.id}.${host()}/${path}`;
 };
 
 export const forkSandboxUrl = (sandbox: Sandbox) =>
