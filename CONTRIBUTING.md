@@ -40,8 +40,9 @@ To install the project you need to have `yarn` and `node`
     cd codesandbox-client
     ```
 
-2.  `yarn` to install dependencies
-3.  `yarn start` to start the app
+2.  Your environment needs to be running Node v. 10
+3.  from the root of the project: `yarn` to install all dependencies
+4.  from the root of the project: `yarn start`
     - this builds the dependencies (`codesandbox-api` and `codesandbox-browserfs`) and runs the `app` development environment, available on [http://localhost:3000/s/new](http://localhost:3000/s/new)
     - on subsequent runs you can also bypass dependencies building and use `yarn start:fast`
     - if you want to work on the homepage, start it with `yarn start:home`, it will be available on [http://localhost:8000/](http://localhost:8000/)

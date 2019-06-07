@@ -1271,6 +1271,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "benschac",
+      "name": "Benjamin Schachter",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2502947?v=4",
+      "profile": "http://benjaminschachter.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github",
