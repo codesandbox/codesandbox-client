@@ -16,6 +16,7 @@ import * as userNotifications from './namespaces/userNotifications';
 import * as patron from './namespaces/patron';
 import * as editor from './namespaces/editor';
 import * as live from './namespaces/live';
+import * as workspace from './namespaces/workspace';
 
 export const config = merge(
   {
@@ -30,6 +31,7 @@ export const config = merge(
     patron,
     editor,
     live,
+    workspace,
   })
 );
 
@@ -37,8 +39,11 @@ export interface Config extends IConfig<typeof config> {}
 
 export interface OnInitialize extends IOnInitialize<Config> {}
 
-export interface Action<Input = void, Output = void | Promise<void>>
+export interface Action<Input = void, Output = void>
   extends IAction<Config, Input, Output> {}
+
+export interface AsyncAction<Input = void, Output = void>
+  extends IAction<Config, Input, Promise<Output>> {}
 
 export interface Operator<Input = void, Output = Input>
   extends IOperator<Config, Input, Output> {}

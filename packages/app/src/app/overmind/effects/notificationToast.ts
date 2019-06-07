@@ -1,8 +1,12 @@
-import { NotificationStatus } from '@codesandbox/notifications';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import {
+  notificationState,
+  convertTypeToStatus,
+} from '@codesandbox/common/lib/utils/notifications';
+import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 
 export default {
-  add(notification: { message: string; status: NotificationStatus }) {
+  convertTypeToStatus,
+  add(notification: NotificationMessage) {
     notificationState.addNotification(notification);
   },
 };

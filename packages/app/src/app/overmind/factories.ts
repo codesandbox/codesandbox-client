@@ -1,11 +1,14 @@
-import { Action } from '.';
+import { Action, AsyncAction } from '.';
 
-export function withLoadApp<T>(continueAction?: Action<T>): Action<T> {
+export function withLoadApp<T>(
+  continueAction?: Action<T, void | Promise<void>>
+): AsyncAction<T> {
   return async (context, value) => {
     const { state, actions } = context;
 
     if (state.hasLoadedApp) {
-      return continueAction && continueAction(context, value);
+      continueAction(context, value);
+      return;
     }
 
     state.isAuthenticating = true;

@@ -1,5 +1,5 @@
 import { json } from 'overmind';
-import { Action } from '.';
+import { Action, AsyncAction } from '.';
 import track, {
   identify,
   setUserId,
@@ -21,6 +21,30 @@ export const setKeybindings: Action = ({ state, effects }) => {
 
 export const setJwtFromStorage: Action = ({ effects, state }) => {
   state.jwt = effects.jwt.get() || null;
+};
+
+export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
+  { state, effects, actions },
+  options
+) => {
+  state.isAuthenticating = true;
+  effects.analytics.track('Sign In', {});
+  try {
+    const jwt = await actions.internal.signInGithub(options);
+    actions.internal.setJwt(jwt);
+    state.user = await actions.internal.getUser();
+    actions.internal.setPatronPrice();
+    actions.internal.setSignedInCookie();
+    actions.internal.setStoredSettings();
+    actions.internal.connectWebsocket();
+    actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
+    actions.editor.internal.refetchSandboxInfo();
+  } catch (error) {
+    actions.internal.addNotification({
+      title: 'Github Authentication Error',
+      type: 'error',
+    });
+  }
 };
 
 export const listenToConnectionChange: Action = ({ effects, actions }) => {
@@ -100,19 +124,19 @@ export const removeJwtFromStorage: Action = ({ effects }) => {
   effects.jwt.reset();
 };
 
-export const getContributors: Action = async ({ state, effects }) => {
+export const getContributors: AsyncAction = async ({ state, effects }) => {
   try {
     const response = await effects.http.get<{ contributors: Contributor[] }>(
       'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
     );
 
-    state.contributors = response.contributors.map(
+    state.contributors = response.data.contributors.map(
       contributor => contributor.login
     );
   } catch (error) {}
 };
 
-export const authorize: Action = async ({ state, effects }) => {
+export const authorize: AsyncAction = async ({ state, effects }) => {
   try {
     const data = await effects.api.get<{ token: string }>('/auth/auth-token');
     state.authToken = data.token;
@@ -148,6 +172,31 @@ export const signInGithub: Action<
 export const setJwt: Action<string> = ({ state, effects }, jwt) => {
   effects.jwt.set(jwt);
   state.jwt = jwt;
+};
+
+export const getZeitUserDetails: AsyncAction = async ({ state, effects }) => {
+  if (
+    state.user.integrations.zeit &&
+    state.user.integrations.zeit.token &&
+    !state.user.integrations.zeit.email
+  ) {
+    const token = state.user.integrations.zeit.token;
+
+    try {
+      const response = await effects.http.get('https://api.zeit.co/www/user', {
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      });
+
+      state.user.integrations.zeit.email = response.data.user.email;
+    } catch (error) {
+      effects.notificationToast.add({
+        message: 'Could not authorize with ZEIT',
+        status: effects.notificationToast.convertTypeToStatus('error'),
+      });
+    }
+  }
 };
 
 /*import axios from 'axios';
