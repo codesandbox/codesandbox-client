@@ -16,4 +16,5 @@ const user = {
   bio: 'I am sara',
   avatarUrl: 'https://avatars0.githubusercontent.com/u/1051509?v=4',
 };
+
 storiesOf('User', module).add('Default', () => <UserWithAvatar {...user} />);

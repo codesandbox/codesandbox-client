@@ -8,6 +8,7 @@ const loaderAnimation = keyframes`
 
 export const Wrapper = styled.div`
   position: relative;
+  display: inline-flex;
 `;
 
 const circle = css`
