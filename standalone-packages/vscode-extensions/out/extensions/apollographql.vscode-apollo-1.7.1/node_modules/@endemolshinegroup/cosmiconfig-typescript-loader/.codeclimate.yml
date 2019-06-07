@@ -1,0 +1,18 @@
+version: "2"
+
+plugins:
+  markdownlint:
+    enabled: true
+
+exclude_patterns:
+  - ".github/"                                      # Exclude GitHub issue templates
+  - "scripts/"                                      # Exclude project build scripts
+  - "CHANGELOG.md"                                  # Exclude automatically generated CHANGELOG.md
+  - "**/dist/"
+  - "**/node_modules/"
+  - "**/tests/"
+  - "**/__fixtures__/"
+  - "**/vendor/"
+  - "**/*.d.ts"
+  - "**/*.spec.ts"
+  - "**/*.integ.ts"

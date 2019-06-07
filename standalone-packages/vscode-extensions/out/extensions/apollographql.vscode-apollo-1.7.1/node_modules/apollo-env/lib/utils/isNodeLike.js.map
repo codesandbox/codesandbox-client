@@ -1,0 +1,1 @@
+{"version":3,"file":"isNodeLike.js","sourceRoot":"","sources":["../../src/utils/isNodeLike.ts"],"names":[],"mappings":";;AAAa,QAAA,UAAU,GACrB,OAAO,OAAO,KAAK,QAAQ;IAC3B,OAAO;IACP,OAAO,CAAC,OAAO;IACf,OAAO,CAAC,QAAQ;IAChB,OAAO,OAAO,CAAC,QAAQ,CAAC,IAAI,KAAK,QAAQ,CAAC"}

@@ -1,0 +1,18 @@
+{
+  "verifyConditions": [
+    {
+      "path": "@semantic-release/changelog",
+      "changelogFile": "CHANGELOG.md"
+    },
+    "@semantic-release/npm",
+    "@semantic-release/git"
+  ],
+  "prepare": [
+    {
+      "path": "@semantic-release/changelog",
+      "changelogFile": "CHANGELOG.md"
+    },
+    "@semantic-release/npm",
+    "@semantic-release/git"
+  ]
+}

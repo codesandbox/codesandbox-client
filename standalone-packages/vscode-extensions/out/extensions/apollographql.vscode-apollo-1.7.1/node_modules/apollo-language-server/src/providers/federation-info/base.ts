@@ -1,0 +1,12 @@
+// These fields must exist for a service to be a proper
+// federated service
+export interface FederationInfo {
+  sdl: string;
+  name: string;
+  url: string;
+}
+
+export interface ApolloFederationInfoProvider {
+  resolveFederationInfo(): Promise<FederationInfo>;
+  // TODO: onSchemaChange
+}

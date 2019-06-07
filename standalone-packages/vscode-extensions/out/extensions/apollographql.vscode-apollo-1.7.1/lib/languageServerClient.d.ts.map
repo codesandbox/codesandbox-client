@@ -1,0 +1,1 @@
+{"version":3,"file":"languageServerClient.d.ts","sourceRoot":"","sources":["../src/languageServerClient.ts"],"names":[],"mappings":"AAAA,OAAO,EAIL,cAAc,EACf,MAAM,uBAAuB,CAAC;AAC/B,OAAO,EAAa,aAAa,EAAE,MAAM,QAAQ,CAAC;AAIlD,wBAAgB,uBAAuB,CACrC,YAAY,EAAE,MAAM,EACpB,aAAa,EAAE,aAAa,kBAsD7B"}

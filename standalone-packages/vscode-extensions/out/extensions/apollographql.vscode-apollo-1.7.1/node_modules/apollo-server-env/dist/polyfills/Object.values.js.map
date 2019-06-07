@@ -1,0 +1,1 @@
+{"version":3,"file":"Object.values.js","sourceRoot":"","sources":["../../src/polyfills/Object.values.ts"],"names":[],"mappings":";AAAA,IAAI,CAAC,MAAM,CAAC,MAAM,CAAC,MAAM,EAAE;IACzB,MAAM,CAAC,MAAM,CAAC,MAAM,GAAG,UAAS,MAAW;QACzC,OAAO,MAAM,CAAC,IAAI,CAAC,MAAM,CAAC,CAAC,GAAG,CAAC,GAAG,CAAC,EAAE,CAAC,MAAM,CAAC,GAAG,CAAC,CAAC,CAAC;IACrD,CAAC,CAAC;CACH"}

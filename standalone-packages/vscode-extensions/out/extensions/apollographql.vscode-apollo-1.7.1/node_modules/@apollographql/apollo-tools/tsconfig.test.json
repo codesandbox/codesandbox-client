@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.test.base",
+  "compilerOptions": {
+    "composite": true
+  },
+  "include": ["**/__tests__/*", "**/__mocks__/*"],
+  "references": [{ "path": "./tsconfig.json" }]
+}

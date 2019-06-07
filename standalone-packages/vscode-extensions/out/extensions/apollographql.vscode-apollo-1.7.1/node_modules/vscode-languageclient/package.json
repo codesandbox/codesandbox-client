@@ -1,0 +1,39 @@
+{
+	"name": "vscode-languageclient",
+	"description": "VSCode Language client implementation",
+	"version": "5.2.1",
+	"author": "Microsoft Corporation",
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.30"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Microsoft/vscode-languageserver-node.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Microsoft/vscode-languageserver-node/issues"
+	},
+	"main": "./lib/main.js",
+	"typings": "./lib/main",
+	"devDependencies": {
+		"@types/semver": "^5.5.0",
+		"shx": "^0.3.1",
+		"vscode": "^1.1.21"
+	},
+	"dependencies": {
+		"semver": "^5.5.0",
+		"vscode-languageserver-protocol": "3.14.1"
+	},
+	"scripts": {
+		"prepare": "npm run update-vscode",
+		"prepublishOnly": "npm run clean && npm run compile && npm test",
+		"postpublish": "node ../build/npm/post-publish.js",
+		"compile": "node ../build/bin/tsc -p ./tsconfig.json && shx cp src/utils/terminateProcess.sh lib/utils/terminateProcess.sh",
+		"watch": "node ../build/bin/tsc -w -p ./tsconfig.json",
+		"update-vscode": "node ./node_modules/vscode/bin/install && node bin/updateVSCode",
+		"clean": "node ../node_modules/rimraf/bin.js lib",
+		"test": "node bin/runTests",
+		"preversion": "npm test"
+	}
+}

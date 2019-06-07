@@ -1,0 +1,132 @@
+{
+	"name": "vscode-apollo",
+	"displayName": "Apollo GraphQL",
+	"description": "Rich editor support for GraphQL client and server development that seamlessly integrates with the Apollo platform",
+	"version": "1.7.1",
+	"referenceID": "87197759-7617-40d0-b32e-46d378e907c7",
+	"author": "Apollo GraphQL <opensource@apollographql.com>",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/apollographql/apollo-tooling"
+	},
+	"homepage": "https://github.com/apollographql/apollo-tooling",
+	"bugs": "https://github.com/apollographql/apollo-tooling/issues",
+	"main": "./lib/extension",
+	"types": "lib/index.d.ts",
+	"scripts": {
+		"preinstall": "npx rimraf node_modules && mkdir node_modules",
+		"postinstall": "npm run update-vscode && npm run create-server-symlink",
+		"update-vscode": "node ../../node_modules/vscode/bin/install",
+		"create-server-symlink": "npx rimraf node_modules && mkdir node_modules && node create-server-symlink.js",
+		"package-extension": "npx rimraf node_modules && yarn install --force --production --ignore-scripts && ../../node_modules/vsce/out/vsce package --yarn --baseContentUrl https://raw.githubusercontent.com/apollographql/apollo-tooling/master/packages/vscode-apollo && git clean -dfqX -- ./node_modules ./yarn.lock && npm run create-server-symlink",
+		"test": "node ./lib/testRunner/vscode-test-script.js"
+	},
+	"engines": {
+		"vscode": "^1.30.0"
+	},
+	"dependencies": {
+		"apollo-env": "file:../apollo-env",
+		"apollo-language-server": "file:../apollo-language-server",
+		"vscode-languageclient": "^5.2.1"
+	},
+	"publisher": "apollographql",
+	"categories": [
+		"Programming Languages",
+		"Linters"
+	],
+	"icon": "images/icon-apollo-blue-400x400.png",
+	"activationEvents": [
+		"workspaceContains:**/package.json"
+	],
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Configuration",
+			"properties": {
+				"apollographql.trace.server": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
+					"default": "off",
+					"description": "Traces the communication between VS Code and the language server."
+				}
+			}
+		},
+		"languages": [
+			{
+				"id": "graphql",
+				"extensions": [
+					".gql",
+					".graphql",
+					".graphqls"
+				],
+				"aliases": [
+					"GraphQL"
+				],
+				"configuration": "./graphql.configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "graphql",
+				"scopeName": "source.graphql",
+				"path": "./syntaxes/graphql.json"
+			},
+			{
+				"injectTo": [
+					"source.js",
+					"source.ts",
+					"source.js.jsx",
+					"source.tsx",
+					"source.vue"
+				],
+				"scopeName": "inline.graphql",
+				"path": "./syntaxes/graphql.js.json",
+				"embeddedLanguages": {
+					"meta.embedded.block.graphql": "graphql"
+				}
+			},
+			{
+				"injectTo": [
+					"source.python"
+				],
+				"scopeName": "inline.graphql.python",
+				"path": "./syntaxes/graphql.py.json",
+				"embeddedLanguages": {
+					"meta.embedded.block.graphql": "graphql"
+				}
+			}
+		],
+		"commands": [
+			{
+				"command": "apollographql/selectSchemaTag",
+				"title": "Select schema tag",
+				"category": "Apollo"
+			},
+			{
+				"command": "apollographql/reloadService",
+				"title": "Reload schema",
+				"category": "Apollo"
+			},
+			{
+				"command": "apollographql/showStatus",
+				"title": "Show Status",
+				"category": "Apollo"
+			}
+		]
+	},
+	"galleryBanner": {
+		"color": "#1d127d",
+		"theme": "dark"
+	},
+	"__metadata": {
+		"id": "de44183f-5377-4ceb-ac15-79364a30070c",
+		"publisherId": "f0a2646c-9b78-466e-8122-b1dab9060427",
+		"publisherDisplayName": "Apollo GraphQL"
+	}
+}

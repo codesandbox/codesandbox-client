@@ -1,0 +1,13 @@
+{
+  "extends": "../../../../tsconfig.base",
+  "compilerOptions": {
+    "composite": false,
+    "rootDir": ".",
+    "outDir": "../../lib/fetch",
+    "allowJs": true,
+    "declaration": false,
+    "declarationMap": false,
+    "types": ["node"]
+  },
+  "include": ["**/*"]
+}

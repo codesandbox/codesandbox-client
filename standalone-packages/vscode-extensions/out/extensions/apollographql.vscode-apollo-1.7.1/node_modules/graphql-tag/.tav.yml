@@ -1,0 +1,10 @@
+
+graphql-0.11:
+  name: graphql
+  versions: "^0.9.0 || ^0.10.0 || ^0.11.0"
+  commands: mocha test/graphql.js test/graphql-v0.11.js
+
+graphql-0.12:
+  name: graphql
+  versions: "^0.12.0 || ^0.13.0"
+  commands: mocha test/graphql.js test/graphql-v0.12.js

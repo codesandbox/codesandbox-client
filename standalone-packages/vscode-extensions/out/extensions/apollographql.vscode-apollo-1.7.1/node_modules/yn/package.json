@@ -1,0 +1,44 @@
+{
+  "name": "yn",
+  "version": "2.0.0",
+  "description": "Parse yes/no like values",
+  "license": "MIT",
+  "repository": "sindresorhus/yn",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
+  },
+  "contributors": [
+    "Justin Woo <moomoowoo@gmail.com>",
+    "Mark Stosberg <mark@rideamigos.com>"
+  ],
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "files": [
+    "index.js",
+    "lenient.js"
+  ],
+  "keywords": [
+    "yn",
+    "yes",
+    "no",
+    "cli",
+    "prompt",
+    "validate",
+    "input",
+    "answer",
+    "true",
+    "false",
+    "parse",
+    "lenient"
+  ],
+  "devDependencies": {
+    "ava": "*",
+    "xo": "*"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "defaultSeverity": "warning",
+  "extends": [
+    "@endemolshinegroup/tslint-config"
+  ]
+}
