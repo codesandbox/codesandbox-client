@@ -1,0 +1,353 @@
+{
+	"name": "elm",
+	"description": "Elm Language Support for Visual Studio Code",
+	"version": "0.25.0",
+	"publisher": "sbrink",
+	"author": {
+		"name": "Krzysztof Cieslak"
+	},
+	"contributors": [
+		{
+			"name": "Krzysztof Cieślak",
+			"url": "https://twitter.com/k_cieslak"
+		},
+		{
+			"name": "Sascha Brink",
+			"url": "https://github.com/sbrink"
+		},
+		{
+			"name": "Robert Jeppesen",
+			"url": "https://github.com/rojepp"
+		}
+	],
+	"icon": "images/elmIcon.png",
+	"galleryBanner": {
+		"color": "#232323",
+		"theme": "dark"
+	},
+	"engines": {
+		"vscode": "^1.6.0"
+	},
+	"categories": [
+		"Programming Languages",
+		"Snippets",
+		"Linters"
+	],
+	"license": "SEE LICENSE IN LICENSE.md",
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Krzysztof-Cieslak/vscode-elm.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Krzysztof-Cieslak/vscode-elm/issues"
+	},
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Elm configuration",
+			"properties": {
+				"elm.disableLinting": {
+					"type": "boolean",
+					"default": false,
+					"description": "Set this setting to true to disable linter if performance is degraded when another elm compiler is running."
+				},
+				"elm.reactorHost": {
+					"type": "string",
+					"default": "127.0.0.1",
+					"description": "Set the address of the Elm Reactor server."
+				},
+				"elm.reactorPort": {
+					"type": "number",
+					"default": 8000,
+					"description": "Set the port of the Elm Reactor server."
+				},
+				"elm.reactorSubdir": {
+					"type": "string",
+					"default": "",
+					"description": "Set the subdir path traversal used to run Elm reactor server. Example: '../' to use parent directory."
+				},
+				"elm.formatCommand": {
+					"type": "string",
+					"default": "elm-format",
+					"description": "Command to run when executing elm-format"
+				},
+				"elm.makeOutput": {
+					"type": "string",
+					"default": "elm.js",
+					"description": "Elm Make's output file name (relative to root folder)"
+				},
+				"elm.makeCommand": {
+					"type": "string",
+					"default": "elm-make",
+					"description": "Command to run when executing elm make, this is for versions of elm prior to 0.19."
+				},
+				"elm.compiler": {
+					"type": "string",
+					"default": "elm",
+					"description": "Command to run when executing elm compiler and its sub commands like make, repl etc, this is for versions of elm 0.19+"
+				},
+				"elm.elmTestCompiler": {
+					"type": "string",
+					"default": "elm-test",
+					"description": "Command to run when executing elm make on test files, for Elm 0.19 using elm-test 0.19.0-beta11 or later."
+				},
+				"elm.elmTestFileMatcher": {
+					"type": "string",
+					"default": "tests/",
+					"description": "A string to match against your test files, for Elm 0.19. Only useful if you don't put your tests into tests/."
+				},
+				"elm.makeSpecialFile": {
+					"type": "string",
+					"default": "",
+					"description": "When empty, the elm-make uses the current editor file. If set, elm-make always use this file. Example 'src/Main.elm' will run elm-make on workspacepath/src/Main.elm"
+				},
+				"elm.showSuggestionsInElmSyntax": {
+					"type": "boolean",
+					"default": true,
+					"description": "Display autocomplete/hover suggestions with Elm syntax highlighting"
+				},
+				"elm.userProjectIntellisense": {
+					"type": "boolean",
+					"default": true,
+					"description": "Include your functions and types in hover/autocomplete suggestions"
+				},
+				"elm.includeParamsInUserAutocomplete": {
+					"type": "boolean",
+					"default": false,
+					"description": "Include all parameters when accepting an autocomplete. If false, only the function name is inserted."
+				},
+				"elm.userProjectMaxCommentSize": {
+					"type": "number",
+					"default": 10,
+					"description": "Max number of lines in a user hover suggestion (no effect if elm.userProjectIntellisense is false)"
+				},
+				"elm.userProjectImportStrategy": {
+					"type": "string",
+					"enum": [
+						"dotIsFolder",
+						"dotIsFilenameCharacter",
+						"dynamicLookup",
+						"semiDynamicLookup",
+						"ignore"
+					],
+					"default": "dynamicLookup",
+					"description": "How to parse imported files when the module has a dot in it.  Values: \n\tdotIsFolder: Assume everything in front of each dot is a folder name. \n\t dotIsFilenameCharacter: Assume that the dot is part of the file name \n\t dynamicLookup: Don't make any assumptions and parse the first line of all files, building up a list of module names. \n\t semiDynamicLookup: Same as dynamic but it will keep the last looked up modules in memory; reloading the window is required to refresh it \n\t ignore: Do not attempt to generate intellisense for user modules with a dot in them \n\nThe window must be reloaded for changes to take effect"
+				},
+				"elm.maxWorkspaceFilesUsedBySymbols": {
+					"type": "number",
+					"default": 100,
+					"description": "Max number of files to search in workspace when reading workspace symbols."
+				},
+				"elm.workspaceFilesExcludePatternUsedBySymbols": {
+					"type": "string",
+					"default": "**/{node_modules,elm-stuff}/**",
+					"description": "The exclude pattern used to search in workspace when reading workspace symbols."
+				},
+				"elm.includeUserFunctionDocumentation": {
+					"type": "boolean",
+					"default:": true,
+					"description": "Include function/type/type alias comments in intellisense results."
+				},
+				"elm.analyseCommand": {
+					"type": "string",
+					"default": "elm-analyse",
+					"description": "Command to run when executing elm-analyse"
+				},
+				"elm.analysePort": {
+					"type": "string",
+					"default": "3379",
+					"description": "Port used by elm-analyse process"
+				},
+				"elm.analyseEnabled": {
+					"type": "boolean",
+					"default": false,
+					"description": "Enable or disable elm-analyse on startup."
+				},
+				"elm.useWorkSpaceRootForElmRoot": {
+					"type": "boolean",
+					"default": false,
+					"description": "Disable trying to detect elm-package from the current file and just use the VSCode workspace's root as the location of elm-package.json."
+				}
+			}
+		},
+		"languages": [
+			{
+				"id": "elm",
+				"aliases": [
+					"Elm",
+					"elm"
+				],
+				"extensions": [
+					".elm"
+				],
+				"configuration": "./elm.configuration.json"
+			}
+		],
+		"commands": [
+			{
+				"command": "elm.replStart",
+				"title": "Elm: REPL - Start"
+			},
+			{
+				"command": "elm.replSendLine",
+				"title": "Elm: REPL - Send Line"
+			},
+			{
+				"command": "elm.replSendSelection",
+				"title": "Elm: REPL - Send Selection"
+			},
+			{
+				"command": "elm.replSendFile",
+				"title": "Elm: REPL - Send File"
+			},
+			{
+				"command": "elm.reactorStart",
+				"title": "Elm: Reactor - Start"
+			},
+			{
+				"command": "elm.reactorStop",
+				"title": "Elm: Reactor - Stop"
+			},
+			{
+				"command": "elm.make",
+				"title": "Elm: Make"
+			},
+			{
+				"command": "elm.makeWarn",
+				"title": "Elm: Make --warn"
+			},
+			{
+				"command": "elm.install",
+				"title": "Elm: Install packages/dependencies"
+			},
+			{
+				"command": "elm.browsePackage",
+				"title": "Elm: Browse packages/dependencies documentation"
+			},
+			{
+				"command": "elm.clean",
+				"title": "Elm: Clean build artifact"
+			},
+			{
+				"command": "elm.analyseStart",
+				"title": "Elm: Start elm-analyse"
+			},
+			{
+				"command": "elm.analyseStop",
+				"title": "Elm: Stop elm-analyse"
+			}
+		],
+		"outputChannels": [
+			"Elm REPL",
+			"Elm Make",
+			"Elm Reactor",
+			"Elm Package"
+		],
+		"keybindings": [
+			{
+				"command": "elm.replSendLine",
+				"key": "alt+/",
+				"mac": "alt+/",
+				"when": "editorFocus && !findWidgetVisible && editorLangId == 'elm'"
+			},
+			{
+				"command": "elm.replSendSelection",
+				"key": "alt+Enter",
+				"mac": "alt+Enter",
+				"when": "editorFocus && !findWidgetVisible && editorLangId == 'elm'"
+			},
+			{
+				"command": "elm.make",
+				"key": "ctrl+f5",
+				"mac": "cmd+f5",
+				"when": "editorFocus && !findWidgetVisible && editorLangId == 'elm'"
+			}
+		],
+		"grammars": [
+			{
+				"scopeName": "markdown.elm.codeblock",
+				"path": "./syntaxes/codeblock.json",
+				"injectTo": [
+					"text.html.markdown"
+				],
+				"embeddedLanguages": {
+					"meta.embedded.block.elm": "elm",
+					"meta.embedded.block.glsl": "glsl"
+				}
+			},
+			{
+				"language": "elm",
+				"scopeName": "source.elm",
+				"path": "./syntaxes/elm.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "elm",
+				"path": "./snippets/elm.json"
+			}
+		],
+		"jsonValidation": [
+			{
+				"fileMatch": "elm.json",
+				"url": "./schemas/elm.schema.json"
+			},
+			{
+				"fileMatch": "elm-package.json",
+				"url": "./schemas/elm-package.schema.json"
+			}
+		]
+	},
+	"activationEvents": [
+		"onLanguage:elm",
+		"onCommand:elm.replStart",
+		"onCommand:elm.replStop",
+		"onCommand:elm.replSendLine",
+		"onCommand:elm.replSendSelection",
+		"onCommand:elm.replSendFile",
+		"onCommand:elm.reactorStart",
+		"onCommand:elm.reactorStop",
+		"onCommand:elm.make",
+		"onCommand:elm.makeWarn",
+		"onCommand:elm.install",
+		"onCommand:elm.browsePackage",
+		"onCommand:elm.analyseStart",
+		"onCommand:elm.analyseStop",
+		"onCommand:elm.clean"
+	],
+	"main": "./out/src/elmMain",
+	"scripts": {
+		"vscode:prepublish": "tsc -p ./",
+		"build": "tsc -p ./",
+		"compile": "tsc -watch -p ./",
+		"lint": "tslint \"src/**/*.ts\" && prettier \"{src,__{tests,mocks}__}/**/*.ts\"  --single-quote --trailing-comma all --list-different",
+		"test": "node ./node_modules/vscode/bin/test",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"prettier": "prettier --single-quote --trailing-comma all --write \"{src,__{tests,mocks}__}/**/*.ts\""
+	},
+	"devDependencies": {
+		"@types/lodash": "^4.14.118",
+		"@types/mocha": "^2.2.32",
+		"@types/node": "^6.0.50",
+		"mocha": "^2.3.3",
+		"prettier": "^1.5.3",
+		"typescript": "^2.4.0",
+		"vscode": "1.1.0"
+	},
+	"dependencies": {
+		"elm-module-parser": "0.1.12",
+		"elm-oracle": "^0.2.0",
+		"lodash": "^4.17.11",
+		"request": "^2.69.0",
+		"rimraf": "^2.5.2",
+		"tslint": "^5.4.3",
+		"vscode-uri": "^1.0.0",
+		"ws": "^3.0.0"
+	},
+	"__metadata": {
+		"id": "976eb754-5cd2-4716-82fc-90f201c9ca9d",
+		"publisherId": "c275679e-b425-4b9b-b104-4834a6b840ad",
+		"publisherDisplayName": "Elm"
+	}
+}
