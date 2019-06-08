@@ -60,9 +60,9 @@ const Git = types.model({
 });
 
 const Template = types.model({
-  id: types.string,
+  id: types.maybeNull(types.string),
   url: types.maybeNull(types.string),
-  iconUrl: types.string,
+  iconUrl: types.maybeNull(types.string),
   description: types.string,
   color: types.string,
   title: types.string,

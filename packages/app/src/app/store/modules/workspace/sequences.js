@@ -46,7 +46,14 @@ export const deleteTemplate = [
 export const editTemplate = [
   actions.editTemplate,
   {
-    success: [closeModal, addNotification('Template edited', 'success')],
+    success: [
+      closeModal,
+      set(
+        state`editor.sandboxes.${state`editor.currentId`}.customTemplate`,
+        props`template`
+      ),
+      addNotification('Template edited', 'success'),
+    ],
     error: [addNotification('Could not edit custom template', 'error')],
   },
 ];
@@ -56,6 +63,10 @@ export const addTemplate = [
   {
     success: [
       set(state`editor.sandboxes.${state`editor.currentId`}.isFrozen`, true),
+      set(
+        state`editor.sandboxes.${state`editor.currentId`}.customTemplate`,
+        props`template`
+      ),
       closeModal,
       addNotification('template Added', 'success'),
     ],

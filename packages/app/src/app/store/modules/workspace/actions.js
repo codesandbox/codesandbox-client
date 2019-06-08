@@ -64,7 +64,7 @@ export function deleteTemplate({ api, state, path }) {
 
   return api
     .delete(`/sandboxes/${sandboxId}/templates/${templateID}`)
-    .then(data => path.success({ data }))
+    .then(data => path.success({ data: data.template }))
     .catch(e => path.error({ error: e }));
 }
 
@@ -82,7 +82,12 @@ export function updateSandbox({ api, state }) {
     .put(`/sandboxes/${sandboxId}`, body)
     .then(data => {
       window.history.pushState({}, null, sandboxUrl(data));
-      return { data };
+      return {
+        data: {
+          ...data.template,
+          iconURL: data.template.icon_url,
+        },
+      };
     })
     .catch(error => ({ error }));
 }
@@ -95,7 +100,14 @@ export function addTag({ api, path, state }) {
   };
   return api
     .post(`/sandboxes/${sandboxId}/tags`, body)
-    .then(data => path.success({ data }))
+    .then(data =>
+      path.success({
+        data: {
+          ...data.template,
+          iconURL: data.template.icon_url,
+        },
+      })
+    )
     .catch(e => path.error({ error: e }));
 }
 
