@@ -1,41 +1,17 @@
 import React from 'react';
-
-import MoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
 import {
   Title,
-  Action,
+  Container,
   ActionLink,
   ActionA,
   ActionTooltip,
   IconContainer,
+  MoreInfoIcon,
 } from './elements';
+import { ActionProps } from './types';
 
-interface UrlProps {
-  href?: string;
-  a?: boolean;
-}
-
-interface ClickProps {
-  onClick?: () => void;
-}
-
-type Props = (UrlProps & ClickProps) & {
-  moreInfo?: boolean;
-  unresponsive?: boolean;
-  iconProps?: object;
-  iconContainerProps?: object;
-  title?: string;
-  tooltip?: string;
-  highlight?: boolean;
-  placeholder?: string | false;
-  blink?: boolean;
-  children?: React.ReactChildren;
-  Icon: React.ComponentType;
-};
-
-function ActionComponent({
+export const Action = ({
   onClick,
   href,
   a,
@@ -50,31 +26,31 @@ function ActionComponent({
   iconContainerProps = {},
   children,
   ...props
-}: Props) {
+}: ActionProps) => {
   if (!href && (placeholder || tooltip)) {
     return (
-      <Action {...props}>
+      <Container {...props}>
         <Tooltip content={placeholder || tooltip} hideOnClick={false}>
           <IconContainer onClick={onClick} {...iconContainerProps}>
             <Icon {...iconProps} />
             {title !== undefined && <Title>{title}</Title>}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+            {moreInfo && <MoreInfoIcon />}
           </IconContainer>
           {children}
         </Tooltip>
-      </Action>
+      </Container>
     );
   }
   if (onClick) {
     return (
-      <Action highlight={highlight} {...props}>
+      <Container highlight={highlight} {...props}>
         <IconContainer onClick={onClick} {...iconContainerProps}>
           <Icon {...iconProps} />
           {title !== undefined && <Title>{title}</Title>}
-          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          {moreInfo && <MoreInfoIcon />}
         </IconContainer>
         {children}
-      </Action>
+      </Container>
     );
   }
 
@@ -85,7 +61,7 @@ function ActionComponent({
           <IconContainer {...iconContainerProps}>
             <Icon {...iconProps} />
             {title !== undefined && <Title>{title}</Title>}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+            {moreInfo && <MoreInfoIcon />}
           </IconContainer>
         </ActionTooltip>
         {children}
@@ -100,7 +76,7 @@ function ActionComponent({
           <IconContainer>
             <Icon {...iconProps} />
             {title !== undefined && <Title>{title}</Title>}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+            {moreInfo && <MoreInfoIcon />}
           </IconContainer>
         </ActionTooltip>
         {children}
@@ -113,11 +89,9 @@ function ActionComponent({
       <IconContainer {...iconContainerProps}>
         <Icon {...iconProps} />
         {title !== undefined && <Title>{title}</Title>}
-        {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+        {moreInfo && <MoreInfoIcon />}
       </IconContainer>
       {children}
     </ActionLink>
   );
-}
-
-export default ActionComponent;
+};

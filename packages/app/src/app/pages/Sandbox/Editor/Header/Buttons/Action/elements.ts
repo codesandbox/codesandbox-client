@@ -1,8 +1,10 @@
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
+import BaseMoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { OptionProps } from './types';
 
-const blink = keyframes`
+const blinkAnimation = keyframes`
   // @ts-ignore;
   0% {color: ${(props: { theme: { light: boolean } }) =>
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'}};
@@ -14,18 +16,16 @@ const blink = keyframes`
 
 `;
 
-type OptionProps = {
-  blink?: boolean;
-  highlight?: boolean;
-  hideBottomHighlight?: boolean;
-  theme: any;
-};
-
-const styles = (props: OptionProps) =>
+const styles = ({
+  blink,
+  hideBottomHighlight,
+  highlight,
+  theme,
+}: OptionProps) =>
   css`
-    ${props.blink &&
+    ${blink &&
       css`
-        animation: ${blink} 1s infinite;
+        animation: ${blinkAnimation} 1s infinite;
         font-weight: 600;
       `};
     display: flex !important;
@@ -36,28 +36,28 @@ const styles = (props: OptionProps) =>
     font-size: 0.875rem;
     line-height: 1;
     height: 100%;
-    color: ${props.theme.light ? '#636363' : 'rgba(255, 255, 255, 0.7)'};
+    color: ${theme.light ? css`#636363` : css`rgba(255, 255, 255, 0.7)`};
     cursor: pointer;
     box-sizing: inherit;
     border-bottom: 2px solid transparent;
     z-index: 1;
-    ${props.highlight
+    ${highlight
       ? css`
-          background-color: ${props.theme.secondary.darken(0.1)()};
+          background-color: ${theme.secondary.darken(0.1)()};
           color: rgba(255, 255, 255, 0.7);
-          border-bottom: 1px solid ${props.theme.secondary.darken(0.1)()};
+          border-bottom: 1px solid ${theme.secondary.darken(0.1)()};
 
           &:hover {
-            background-color: ${props.theme.secondary.darken(0.2)()};
+            background-color: ${theme.secondary.darken(0.2)()};
           }
         `
       : css`
           &:hover {
-            color: ${props.theme['editor.foreground'] ||
-              (props.theme.light ? 'black' : 'white')};
-            border-color: ${props.hideBottomHighlight
+            color: ${theme['editor.foreground'] ||
+              (theme.light ? 'black' : 'white')};
+            border-color: ${hideBottomHighlight
               ? 'transparent'
-              : props.theme.secondary()};
+              : theme.secondary()};
           }
         `};
   `;
@@ -66,7 +66,7 @@ export const Title = styled.span`
   padding-left: 0.5rem;
 `;
 
-export const Action = styled.div<OptionProps>`
+export const Container = styled.div<OptionProps>`
   ${styles};
 `;
 
@@ -83,19 +83,22 @@ export const ActionA = styled.a<OptionProps>`
 export const ActionTooltip = styled(Tooltip)<
   OptionProps & { disabledAction?: boolean }
 >`
-  ${styles};
-  ${props =>
-    props.disabledAction &&
-    css`
-      color: ${props.theme.light ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'};
-      cursor: default;
+  ${({ disabledAction, theme }) => css`
+    ${styles};
+    ${disabledAction &&
+      css`
+        color: ${theme.light
+          ? css`rgba(0,0,0,0.3)`
+          : css`rgba(255,255,255,0.3)`};
+        cursor: default;
 
-      &:hover {
-        color: ${props.theme.light
-          ? 'rgba(0,0,0,0.4)'
-          : 'rgba(255,255,255,0.4)'};
-      }
-    `};
+        &:hover {
+          color: ${theme.light
+            ? css`rgba(0,0,0,0.4)`
+            : css`rgba(255,255,255,0.4)`};
+        }
+      `};
+  `}
 `;
 
 export const IconContainer = styled.div`
@@ -103,4 +106,8 @@ export const IconContainer = styled.div`
   align-items: center;
   height: 100%;
   padding: 0 0.5rem;
+`;
+
+export const MoreInfoIcon = styled(BaseMoreInfoIcon)`
+  font-size: 1.1rem;
 `;
