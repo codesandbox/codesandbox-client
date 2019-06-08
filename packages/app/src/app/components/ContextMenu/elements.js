@@ -19,11 +19,18 @@ export const Container = styled(animated.div)`
   font-weight: 600;
 `;
 
-export const Item = styled.div`
+export const Item = styled.button`
   transition: 0.2s ease all;
   display: flex;
   align-items: center;
   padding: 0.6rem 1rem;
+
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-weight: inherit;
 
   border-left: 2px solid transparent;
   cursor: pointer;
@@ -40,6 +47,13 @@ export const Item = styled.div`
   }
 
   &:hover {
+    color: ${props => (props.color ? props.color : theme.secondary())};
+    background-color: ${() => theme.background2.lighten(0.3)()};
+    border-left-color: ${props =>
+      props.color ? props.color : theme.secondary()};
+  }
+
+  &:focus {
     color: ${props => (props.color ? props.color : theme.secondary())};
     background-color: ${() => theme.background2.lighten(0.3)()};
     border-left-color: ${props =>
