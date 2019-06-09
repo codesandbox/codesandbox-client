@@ -74,10 +74,10 @@ export const Git = observer(() => {
 
       <Margin bottom={0}>
         <WorkspaceSubtitle>
-          Changes ({gitChanges ? changeCount : '...'})
+          Changes ({isFetching ? '...' : changeCount})
         </WorkspaceSubtitle>
 
-        {!isFetching && gitChanges ? (
+        {!isFetching ? (
           <Margin top={1}>
             <TotalChanges gitChanges={gitChanges} />
 
