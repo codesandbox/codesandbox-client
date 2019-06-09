@@ -53,7 +53,7 @@ export const createCommit = [
   },
   set(state`git.subject`, ''),
   set(state`git.description`, ''),
-  set(state`git.originalGitChanges`, null),
+  set(state`git.originalGitChanges`, undefined),
 ];
 
 export const createPr = [
@@ -68,6 +68,6 @@ export const createPr = [
   actions.openPr,
   set(state`git.subject`, ''),
   set(state`git.description`, ''),
-  set(state`git.originalGitChanges`, null),
+  set(state`git.originalGitChanges`, undefined),
   actions.redirectToPr,
 ];
