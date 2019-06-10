@@ -13,7 +13,7 @@ export default Module({
     isFetching: false,
     subject: '',
     description: '',
-    originalGitChanges: undefined,
+    originalGitChanges: null,
     commit: null,
     pr: null,
     isCommitting: false,
