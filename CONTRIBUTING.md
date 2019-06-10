@@ -63,7 +63,7 @@ To install the project you need to have `yarn` and `node`
 > branch. Whenever you want to update your version of `master`, do a regular
 > `git pull`.
 
-5. If you want to debug the state of the app, install the [Cerebral Debugger](https://github.com/cerebral/cerebral-debugger/releases) and connect it to the port `8383`. After that, if you refresh the app, you should see be able to see the state, the sequences executed and so on. See [documentation](https://cerebraljs.com/docs/introduction/devtools.html) for reference.
+5. If you want to debug the state of the app, install the [Cerebral Debugger](https://github.com/cerebral/cerebral-debugger/releases) and connect it to the port `8383`. After that, if you refresh the app, you should be able to see the state, the sequences executed and so on. See [documentation](https://cerebraljs.com/docs/introduction/devtools.html) for reference.
 
 ## Submitting a Pull Request
 
