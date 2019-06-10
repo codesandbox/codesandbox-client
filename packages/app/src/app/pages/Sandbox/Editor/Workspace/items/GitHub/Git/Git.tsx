@@ -79,7 +79,7 @@ export const Git = observer(() => {
 
         {!isFetching ? (
           <Margin top={1}>
-            <TotalChanges gitChanges={gitChanges} />
+            <TotalChanges gitChanges={gitChanges || {}} />
 
             {changeCount > 0 ? (
               <Margin top={1}>
