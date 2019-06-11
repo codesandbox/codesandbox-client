@@ -11,7 +11,7 @@ import '../css/global.css';
 const TemplateWrapper = ({ children }) => (
   <ThemeProvider theme={theme}>
     <div>
-      <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 20 }}>
+      <div style={{ position: 'absolute', left: 0, right: 0, zIndex: 10 }}>
         <Navigation />
       </div>
 
