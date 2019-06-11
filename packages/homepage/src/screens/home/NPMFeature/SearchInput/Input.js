@@ -47,6 +47,7 @@ const SearchInput = ({ searchQuery }) => {
         onChange={onChange}
         placeholder="Search for a dependency"
         value={query}
+        aria-label="Search for a dependency"
       />
 
       <Icon />
