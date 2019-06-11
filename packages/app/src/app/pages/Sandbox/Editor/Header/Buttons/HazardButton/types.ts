@@ -5,6 +5,6 @@ export interface HarzardButtonProps {
   title?: string;
   color?: string;
   hover?: string;
-  onClick?: () => {};
+  onClick?: () => void;
   children: React.ReactNode;
 }
