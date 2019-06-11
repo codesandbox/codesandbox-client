@@ -94,10 +94,12 @@ function Navigation({ signals, store, title, searchNoInput }) {
                   style={{ placement: 'relative', fontSize: '1.25rem' }}
                   onClick={open}
                 >
-                  <BellIcon height={35} />
-                  {store.userNotifications.unreadCount > 0 && (
-                    <UnreadIcon count={store.userNotifications.unreadCount} />
-                  )}
+                  <Tooltip placement="bottom" content="Show Notifications">
+                    <BellIcon height={35} />
+                    {store.userNotifications.unreadCount > 0 && (
+                      <UnreadIcon count={store.userNotifications.unreadCount} />
+                    )}
+                  </Tooltip>
                 </Action>
               )}
             </OverlayComponent>
