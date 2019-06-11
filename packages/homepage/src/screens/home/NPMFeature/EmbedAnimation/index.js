@@ -81,24 +81,28 @@ export default class EmbedAnimation extends React.PureComponent {
             this.vue = el;
           }}
           src={vueSvg}
+          alt="VueJS"
         />
         <AbsoluteImage
           ref={el => {
             this.egghead = el;
           }}
           src={eggheadSvg}
+          alt="Egghead.io"
         />
         <AbsoluteImage
           ref={el => {
             this.medium = el;
           }}
           src={mediumSvg}
+          alt="Medium"
         />
         <AbsoluteImage
           ref={el => {
             this.codesandbox = el;
           }}
           src={codesandboxSvg}
+          alt="CodeSandbox Editor"
         />
       </Relative>
     );

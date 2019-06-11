@@ -20,7 +20,12 @@ export default ({ companies }) => (
   <Grid>
     {shuffleArray(companies).map(({ node: company }) => (
       <div>
-        <a href={company.link} target="_blank" rel="noopener noreferrer">
+        <a
+          href={company.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${company.name} is using CodeSandbox`}
+        >
           <img height="150" src={company.logoURL} alt={company.name} />
         </a>
       </div>

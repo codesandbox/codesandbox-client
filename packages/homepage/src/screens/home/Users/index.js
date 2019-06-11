@@ -51,6 +51,7 @@ export default () => (
               logoURL
               link
               pinned
+              name
             }
           }
         }
