@@ -5,7 +5,7 @@ import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import { inject, observer } from 'mobx-react';
 
 import { Query } from 'react-apollo';
-import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
+import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 
 import Item from '../Item';
