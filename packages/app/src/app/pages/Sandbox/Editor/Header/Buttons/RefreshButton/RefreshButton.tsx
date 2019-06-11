@@ -1,6 +1,6 @@
 import React from 'react';
-import UpdateFound from '../UpdateFound';
-import { Action } from './Action';
+import { Action } from '../Action';
+import { UpdateFound } from './UpdateFound';
 
 export const RefreshButton = () => (
   <Action

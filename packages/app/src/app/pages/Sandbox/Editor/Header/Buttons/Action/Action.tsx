@@ -29,9 +29,9 @@ export const Action = ({
 }: ActionProps) => {
   if (!href && (placeholder || tooltip)) {
     return (
-      <Container {...props}>
+      <Container onClick={onClick} {...props}>
         <Tooltip content={placeholder || tooltip} hideOnClick={false}>
-          <IconContainer onClick={onClick} {...iconContainerProps}>
+          <IconContainer {...iconContainerProps}>
             <Icon {...iconProps} />
             {title !== undefined && <Title>{title}</Title>}
             {moreInfo && <MoreInfoIcon />}
@@ -41,10 +41,11 @@ export const Action = ({
       </Container>
     );
   }
+
   if (onClick) {
     return (
-      <Container highlight={highlight} {...props}>
-        <IconContainer onClick={onClick} {...iconContainerProps}>
+      <Container onClick={onClick} highlight={highlight} {...props}>
+        <IconContainer {...iconContainerProps}>
           <Icon {...iconProps} />
           {title !== undefined && <Title>{title}</Title>}
           {moreInfo && <MoreInfoIcon />}

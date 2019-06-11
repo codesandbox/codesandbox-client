@@ -29,15 +29,15 @@ export const Container = styled.div<{ zenMode: boolean }>`
   `}
 `;
 
-export const Right = styled.div`
+export const Left = styled.div`
   display: flex;
-  align-items: center;
   height: 100%;
   z-index: 1;
 `;
 
-export const Left = styled.div`
+export const Right = styled.div`
   display: flex;
+  align-items: center;
   height: 100%;
   z-index: 1;
 `;
@@ -49,6 +49,7 @@ export const Centered = styled.div`
   display: flex;
   justify-content: center;
   z-index: 0; /* So pointer events on left and right continue */
+  margin: 0 3rem;
 `;
 
 export const DashboardLink = styled(Link)`
