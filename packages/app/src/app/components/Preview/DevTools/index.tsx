@@ -9,6 +9,7 @@ import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import console from './Console';
 import Tabs, { ITabPosition } from './Tabs';
 import problems from './Problems';
+import reactDevTools from './React-Devtools';
 import terminal from './Terminal';
 import tests from './Tests';
 import { Container, Header, ContentContainer } from './elements';
@@ -77,6 +78,7 @@ const VIEWS: IViews = {
   [problems.id]: problems,
   [tests.id]: tests,
   [terminal.id]: terminal,
+  [reactDevTools.id]: reactDevTools,
 };
 
 type Props = {
