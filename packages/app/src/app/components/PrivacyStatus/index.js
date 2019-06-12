@@ -3,7 +3,7 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { StyledUnlisted, StyledPrivate, Icon } from './elements';
 
-function PrivacyStatus({ privacy, asIcon }) {
+function PrivacyStatus({ privacy, asIcon = null }) {
   const PRIVACY_MESSAGES = {
     0: {
       title: 'Public',

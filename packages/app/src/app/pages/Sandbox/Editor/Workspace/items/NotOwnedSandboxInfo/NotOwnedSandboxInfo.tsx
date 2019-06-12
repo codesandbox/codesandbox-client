@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 
 import Dependencies from '../../Dependencies';
 import Files from '../../Files';
-import Project from '../../Project';
+// @ts-ignore
+import Project from '../../Project/index.tsx';
 import WorkspaceItem from '../../WorkspaceItem';
 
 export const NotOwnedSandboxInfo = () => {

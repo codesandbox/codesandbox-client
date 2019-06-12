@@ -1,7 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Project from '../../Project';
+// eslint-disable-next-line import/extensions
+import Project from '../../Project/index.tsx';
 import SandboxActions from '../../SandboxActions';
 
 const ProjectInfo = () => (

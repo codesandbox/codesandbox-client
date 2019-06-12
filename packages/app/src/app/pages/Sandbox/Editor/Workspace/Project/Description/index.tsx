@@ -24,7 +24,7 @@ const DescriptionComponent = ({
   return editing ? (
     <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
       <textarea
-        value={workspace.project.description}
+        value={description}
         onChange={event => {
           workspace.valueChanged({
             field: 'description',
