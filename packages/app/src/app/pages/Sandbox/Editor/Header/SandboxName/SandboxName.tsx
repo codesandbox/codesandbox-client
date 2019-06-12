@@ -14,6 +14,7 @@ import {
   Form,
   Name,
   NameInput,
+  TemplateBadge,
 } from './elements';
 
 export const SandboxName = observer(() => {
@@ -132,6 +133,11 @@ export const SandboxName = observer(() => {
               ) : (
                 <Name onClick={handleNameClick}>{sandboxName()}</Name>
               )}
+              {currentSandbox.customTemplate ? (
+                <TemplateBadge color={currentSandbox.customTemplate.color}>
+                  Template
+                </TemplateBadge>
+              ) : null}
             </Container>
           )}
         />

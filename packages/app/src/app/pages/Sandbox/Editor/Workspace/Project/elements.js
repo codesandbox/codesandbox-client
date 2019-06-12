@@ -101,3 +101,19 @@ const iconStyles = css`
 `;
 
 export const Icon = styled(Question)(iconStyles);
+
+export const TemplateTitle = styled.span`
+  margin-top: 0.75rem;
+  color: ${props => props.color};
+  display: block;
+  font-size: 14px;
+`;
+
+export const TemplateDescription = styled.span`
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  display: block;
+  font-size: 14px;
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
+`;

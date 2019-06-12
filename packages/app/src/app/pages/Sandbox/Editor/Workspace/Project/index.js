@@ -36,6 +36,8 @@ import {
   PropertyName,
   Icon,
   FreezeContainer,
+  TemplateDescription,
+  TemplateTitle,
 } from './elements';
 
 class Project extends React.Component {
@@ -333,26 +335,45 @@ class Project extends React.Component {
                 </FreezeContainer>
               </PropertyValue>
             </Item>
-            <Item style={{ marginTop: 5, alignItems: 'center' }} flex>
-              <PropertyValue>
-                <Button
-                  small
-                  secondary
-                  css={`
-                    font-size: 10px;
-                    line-height: 1;
-                  `}
-                  onClick={() => {
-                    signals.modalOpened({ modal: 'starter' });
-                  }}
-                >
-                  {sandbox.customTemplate ? 'Edit ' : 'Make '} Template
-                </Button>
-                <Tooltip content="Set a template as a starter to get started with it more easily">
-                  <Icon />
-                </Tooltip>
-              </PropertyValue>
-            </Item>
+            <div
+              css={`
+                margin: 1rem;
+                margin-top: 5px;
+              `}
+            >
+              <PropertyName
+                css={`
+                  width: 100%;
+                  margin-bottom: 8px;
+                  font-size: 0.875rem;
+                `}
+              >
+                Template
+              </PropertyName>
+              {sandbox.customTemplate ? (
+                <div>
+                  <TemplateTitle color={sandbox.customTemplate.color}>
+                    {sandbox.customTemplate.title}
+                  </TemplateTitle>
+                  <TemplateDescription>
+                    {sandbox.customTemplate.description}
+                  </TemplateDescription>
+                </div>
+              ) : null}
+
+              <Button
+                block
+                css={`
+                  font-size: 14px;
+                  padding: 0.5em 0.7em;
+                `}
+                onClick={() => {
+                  signals.modalOpened({ modal: 'starter' });
+                }}
+              >
+                {sandbox.customTemplate ? 'Edit ' : 'Make '} Template
+              </Button>
+            </div>
           </>
         ) : null}
       </div>

@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import AutosizeInput from 'react-input-autosize';
+import Color from 'color';
 
 export const Container = styled.div`
   display: flex;
@@ -60,4 +61,23 @@ export const Name = styled.span`
     cursor: pointer;
     text-overflow: ellipsis;
   `}
+`;
+
+export const TemplateBadge = styled.div<{ color: String }>`
+  background: ${props => props.color};
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  padding: 0px 8px;
+  border-radius: 4px;
+  margin-left: 1rem;
+  height: 19px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  /* Check for contrast */
+  color: ${props =>
+    Color(props.color).contrast(Color(props.theme.white)) > 4.5
+      ? props.theme.background5
+      : '#fff'};
 `;
