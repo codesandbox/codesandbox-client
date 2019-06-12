@@ -12,7 +12,7 @@ import type {
 } from 'codesandbox-api/dist/types/actions/correction.d.ts';
 import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
-import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
+import { Tab } from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
