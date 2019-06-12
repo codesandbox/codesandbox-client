@@ -16,3 +16,7 @@ export const TotalChanges = ({ gitChanges, hideColor }: Props) => (
     <Deleted changes={gitChanges.deleted} hideColor={hideColor} />
   </>
 );
+
+TotalChanges.defaultProps = {
+  gitChanges: {},
+};
