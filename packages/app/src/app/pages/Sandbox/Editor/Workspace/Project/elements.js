@@ -103,7 +103,7 @@ const iconStyles = css`
 export const Icon = styled(Question)(iconStyles);
 
 export const TemplateTitle = styled.span`
-  margin-top: 0.75rem;
+  margin-top: 0.25rem;
   color: ${props => props.color};
   display: block;
   font-size: 14px;

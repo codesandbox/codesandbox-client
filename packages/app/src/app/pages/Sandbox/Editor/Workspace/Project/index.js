@@ -21,7 +21,7 @@ import Switch from '@codesandbox/common/lib/components/Switch';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { WorkspaceInputContainer } from '../elements';
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 
 import {
   Item,
@@ -305,12 +305,14 @@ class Project extends React.Component {
           <PropertyName>Template</PropertyName>
           <PropertyValue>
             <a
-              href={template.url}
+              href={sandbox.customTemplate ? sandboxUrl(sandbox) : template.url}
               target="_blank"
               rel="noreferrer noopener"
               style={{ color: template.color() }}
             >
-              {sandbox.template}
+              {sandbox.customTemplate
+                ? sandbox.customTemplate.title
+                : sandbox.template}
             </a>
           </PropertyValue>
         </Item>
@@ -341,15 +343,13 @@ class Project extends React.Component {
                 margin-top: 5px;
               `}
             >
-              <PropertyName
+              <WorkspaceSubtitle
                 css={`
-                  width: 100%;
-                  margin-bottom: 8px;
-                  font-size: 0.875rem;
+                  padding-left: 0;
                 `}
               >
-                Template
-              </PropertyName>
+                Template Configuration
+              </WorkspaceSubtitle>
               {sandbox.customTemplate ? (
                 <div>
                   <TemplateTitle color={sandbox.customTemplate.color}>
