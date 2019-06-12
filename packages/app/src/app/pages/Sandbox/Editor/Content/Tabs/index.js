@@ -16,7 +16,7 @@ import {
   Line,
 } from './elements';
 
-import ModuleTab from './ModuleTab';
+import { ModuleTab } from './ModuleTab';
 
 class EditorTabs extends React.Component {
   componentDidUpdate(prevProps) {
