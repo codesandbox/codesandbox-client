@@ -13,16 +13,16 @@ export const PickButton = observer(() => {
     },
   } = useStore();
 
+  const details = {
+    id,
+    title,
+    description,
+  };
+
   return (
     <Button
       onClick={() => {
-        pickSandboxModal({
-          details: {
-            id,
-            title,
-            description,
-          },
-        });
+        pickSandboxModal({ details });
       }}
       secondary={owned}
       small

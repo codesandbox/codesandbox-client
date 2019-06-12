@@ -16,9 +16,7 @@ export const ForkButton = observer(() => {
 
   return (
     <ProgressButton
-      onClick={() => {
-        forkSandboxClicked();
-      }}
+      onClick={forkSandboxClicked}
       secondary={owned}
       loading={isForkingSandbox}
       small
