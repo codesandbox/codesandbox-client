@@ -40,27 +40,6 @@ export const FreezeContainer = styled.span`
   justify-content: flex-end;
 `;
 
-export const Title = styled.div`
-  font-size: 1rem;
-  font-weight: 400;
-  color: ${props => (props.theme.light ? '#636363' : 'white')};
-  margin-bottom: 0.5rem;
-`;
-
-export const Description = styled.div`
-  font-size: 0.875rem;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
-  margin-top: 0.5rem;
-`;
-
-export const Alias = styled.div`
-  font-size: 0.875rem;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
-  margin-top: 0.5rem;
-`;
-
 export const PropertyName = styled.span`
   display: inline-block;
   color: ${props =>

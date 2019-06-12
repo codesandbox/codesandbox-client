@@ -8,11 +8,10 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 
 import TeamIcon from 'react-icons/lib/md/people';
-
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import PrivacyStatus from 'app/components/PrivacyStatus';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import EditableTags from 'app/components/EditableTags';
@@ -21,17 +20,13 @@ import Switch from '@codesandbox/common/lib/components/Switch';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
-import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
+import { WorkspaceSubtitle } from '../elements';
 
 import {
   Item,
   UserLink,
   StatsContainer,
   PrivacyContainer,
-  Title,
-  Alias,
-  Description,
-  EditPen,
   PropertyValue,
   PropertyName,
   Icon,
@@ -39,26 +34,11 @@ import {
   TemplateDescription,
   TemplateTitle,
 } from './elements';
+import TitleComponent from './Title';
+import DescriptionComponent from './Description';
+// import AliasComponent from './Alias';
 
 class Project extends React.Component {
-  state = {
-    editingTitle: false,
-    editingDescription: false,
-    editingAlias: false,
-  };
-
-  setTitleEditing = () => {
-    this.setState({ editingTitle: true });
-  };
-
-  setAliasEditing = () => {
-    this.setState({ editingAlias: true });
-  };
-
-  setDescriptionEditing = () => {
-    this.setState({ editingDescription: true });
-  };
-
   changeTags = (newTags, removedTags) => {
     const { tags } = this.props.store.editor.currentSandbox;
 
@@ -89,11 +69,6 @@ class Project extends React.Component {
 
   updateSandboxInfo = () => {
     this.props.signals.workspace.sandboxInfoUpdated();
-    this.setState({
-      editingTitle: false,
-      editingDescription: false,
-      editingAlias: false,
-    });
   };
 
   renderInput = props => {
@@ -115,114 +90,18 @@ class Project extends React.Component {
     return (
       <div style={{ marginBottom: '1rem' }}>
         <Item style={{ marginTop: '.5rem' }}>
-          {this.state.editingTitle ? (
-            <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
-              <input
-                value={workspace.project.title}
-                onChange={event => {
-                  signals.workspace.valueChanged({
-                    field: 'title',
-                    value: event.target.value,
-                  });
-                }}
-                type="text"
-                onBlur={this.updateSandboxInfo}
-                onKeyUp={event => {
-                  if (event.keyCode === 13) {
-                    this.updateSandboxInfo();
-                  }
-                }}
-                ref={el => {
-                  if (el) {
-                    el.focus();
-                  }
-                }}
-                placeholder="Title"
-              />
-            </WorkspaceInputContainer>
-          ) : (
-            <Title>
-              {workspace.project.title || getSandboxName(sandbox)}
-              {editable && <EditPen onClick={this.setTitleEditing} />}
-            </Title>
-          )}
-          {this.state.editingDescription ? (
-            <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
-              <textarea
-                value={workspace.project.description}
-                onChange={event => {
-                  signals.workspace.valueChanged({
-                    field: 'description',
-                    value: event.target.value,
-                  });
-                }}
-                type="text"
-                onBlur={this.updateSandboxInfo}
-                onKeyDown={event => {
-                  if (event.keyCode === 13) {
-                    if (!event.shiftKey) {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      this.updateSandboxInfo();
-                    }
-                  }
-                }}
-                ref={el => {
-                  if (el) {
-                    el.focus();
-                  }
-                }}
-                rows="2"
-                placeholder="Description"
-              />
-            </WorkspaceInputContainer>
-          ) : (
-            <Description
-              style={{
-                fontStyle: sandbox.description ? 'normal' : 'italic',
-              }}
-            >
-              {sandbox.description ||
-                (editable ? 'No description, create one!' : '')}
-              {editable && <EditPen onClick={this.setDescriptionEditing} />}
-            </Description>
-          )}
+          <TitleComponent
+            updateSandboxInfo={this.updateSandboxInfo}
+            editable={editable}
+            title={workspace.project.title || getSandboxName(sandbox)}
+          />
+          <DescriptionComponent
+            description={sandbox.description}
+            updateSandboxInfo={this.updateSandboxInfo}
+            editable={editable}
+          />
           {/* Disable until we also moved SSE over */}
-          {store.isPatron && false ? (
-            <>
-              {this.state.editingAlias ? (
-                <WorkspaceInputContainer>
-                  <input
-                    value={workspace.project.alias}
-                    onChange={event => {
-                      signals.workspace.valueChanged({
-                        field: 'alias',
-                        value: event.target.value,
-                      });
-                    }}
-                    type="text"
-                    onBlur={this.updateSandboxInfo}
-                    onKeyUp={event => {
-                      if (event.keyCode === 13) {
-                        this.updateSandboxInfo();
-                      }
-                    }}
-                    ref={el => {
-                      if (el) {
-                        el.focus();
-                      }
-                    }}
-                    placeholder="Alias"
-                  />
-                </WorkspaceInputContainer>
-              ) : (
-                <Alias>
-                  {workspace.project.alias || sandbox.alias}
-                  {editable && <EditPen onClick={this.setAliasEditing} />}
-                </Alias>
-              )}
-            </>
-          ) : null}
+          {/* <AliasComponent editable={editable} isPatron={store.isPatron} alias={workspace.project.alias || sandbox.alias} updateSandboxInfo={this.updateSandboxInfo} /> */}
         </Item>
 
         {!sandbox.team && !!sandbox.author && (
