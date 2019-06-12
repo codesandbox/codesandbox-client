@@ -18,3 +18,7 @@ export const Changes = ({ changes, color, hideColor, Icon, title }) => (
     ))}
   </>
 );
+
+Changes.defaultProps = {
+  changes: [],
+};
