@@ -1,8 +1,6 @@
 import React from 'react';
-
 import { DragSource, DropTarget } from 'react-dnd';
-
-import Tab from '../Tab';
+import { Tab } from '../Tab';
 
 class TabContainer extends React.Component {
   render() {
