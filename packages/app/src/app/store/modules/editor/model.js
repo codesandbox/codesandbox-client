@@ -124,6 +124,7 @@ export const Sandbox = types.model({
 
 export default {
   currentId: types.maybeNull(types.string),
+  sessionFrozen: types.boolean,
   currentModuleShortid: types.maybeNull(types.string),
   isForkingSandbox: types.boolean,
   mainModuleShortid: types.maybeNull(types.string),

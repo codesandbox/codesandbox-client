@@ -30,6 +30,7 @@ import PickSandboxModal from './PickSandboxModal';
 import FeedbackModal from './FeedbackModal';
 import StarterModal from './StarterModal';
 import NetlifyLogs from './NetlifyLogs';
+import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import('./MoveSandboxFolderModal')
@@ -58,6 +59,10 @@ const modals = {
   },
   commit: {
     Component: CommitModal,
+    width: 400,
+  },
+  forkFrozenModal: {
+    Component: ForkFrozenSandboxModal,
     width: 400,
   },
   pr: {
@@ -184,7 +189,7 @@ class Modals extends Component {
         <Modal
           isOpen={Boolean(modal)}
           width={modal && modal.width}
-          onClose={(isKeyDown: boolean) => signals.modalClosed({ isKeyDown })}
+          onClose={isKeyDown => signals.modalClosed({ isKeyDown })}
         >
           {modal
             ? React.createElement(modal.Component, {

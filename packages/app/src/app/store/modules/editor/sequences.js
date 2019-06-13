@@ -122,6 +122,11 @@ export const updatePrivacy = [
 
 export const updateFrozen = actions.updateFrozen;
 
+export const sessionFreezeOverride = set(
+  state`editor.sessionFrozen`,
+  props`frozen`
+);
+
 export const toggleLikeSandbox = [
   when(state`editor.sandboxes.${props`id`}.userLiked`),
   {
@@ -136,6 +141,8 @@ export const toggleLikeSandbox = [
   },
   toggle(state`editor.sandboxes.${props`id`}.userLiked`),
 ];
+
+export const forkSandboxOnDemand = [forkSandbox];
 
 export const forceForkSandbox = [
   when(state`editor.currentSandbox.owned`),
