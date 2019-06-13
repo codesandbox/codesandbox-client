@@ -1,4 +1,4 @@
-import { TranspiledModule, Module } from '../typings/codesandbox';
+import { TranspiledModule } from '../typings/codesandbox';
 
 const transformers: Check[] = [];
 

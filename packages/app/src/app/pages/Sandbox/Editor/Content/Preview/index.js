@@ -185,7 +185,7 @@ class Preview extends Component<Props, State> {
   });
 
   render() {
-    const { store, signals } = this.props;
+    const { store, signals, options } = this.props;
 
     const packageJSON = {
       path: '/package.json',
@@ -207,6 +207,7 @@ class Preview extends Component<Props, State> {
         onAction={action => signals.editor.previewActionReceived({ action })}
         alignDirection={this.state.aligned}
         hide={this.props.hidden}
+        options={options}
         noPreview={completelyHidden}
         onOpenNewWindow={() =>
           signals.preferences.viewModeChanged({

@@ -480,8 +480,13 @@ class EditorPreview extends React.Component<Props, State> {
     const browserConfig = {
       id: 'codesandbox.browser',
       title: 'Browser',
-      Content: ({ hidden }) => (
-        <Preview hidden={hidden} width={'100%'} height={'100%'} />
+      Content: ({ hidden, options }) => (
+        <Preview
+          options={options}
+          hidden={hidden}
+          width={'100%'}
+          height={'100%'}
+        />
       ),
       actions: [],
     };

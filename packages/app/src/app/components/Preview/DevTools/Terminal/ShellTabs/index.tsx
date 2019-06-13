@@ -1,14 +1,13 @@
-// @flow
 import React from 'react';
-import type { ShellT } from '../';
 
 import { Container, Tab, CrossIcon } from './elements';
+import { ShellT } from '../types';
 
 type Props = {
-  shells: Array<ShellT>,
-  selectedShell: ?string,
-  selectShell: (id: ?string) => void,
-  closeShell: (id: string) => void,
+  shells: ShellT[];
+  selectedShell?: string;
+  selectShell: (id?: string) => void;
+  closeShell: (id: string) => void;
 };
 
 export default class ShellTabs extends React.PureComponent<Props> {
@@ -16,12 +15,6 @@ export default class ShellTabs extends React.PureComponent<Props> {
     const { selectedShell, shells } = this.props;
     return (
       <Container>
-        <Tab
-          selected={selectedShell === null}
-          onClick={() => this.props.selectShell(null)}
-        >
-          yarn start
-        </Tab>
         {shells.map(shell => (
           <Tab
             selected={selectedShell === shell.id}

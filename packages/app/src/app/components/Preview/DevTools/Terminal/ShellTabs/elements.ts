@@ -28,7 +28,7 @@ export const CrossIcon = styled(CrossIconClean)`
   }
 `;
 
-export const Tab = styled.div`
+export const Tab = styled.div<{ selected: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;

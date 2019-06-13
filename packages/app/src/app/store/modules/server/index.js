@@ -9,7 +9,10 @@ export default Module({
     containerStatus: 'initializing',
   },
   signals: {
+    restartSandbox: sequences.restartSandbox,
+    restartContainer: sequences.restartContainer,
     statusChanged: sequences.setStatus,
     containerStatusChanged: sequences.setContainerStatus,
+    onSSEMessage: sequences.onSSEMessage,
   },
 });

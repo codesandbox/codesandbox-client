@@ -170,6 +170,22 @@ export function restartSandbox() {
   dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
 }
 
+export function setupExecutor({ state, executor }) {
+  const sandbox = state.get('editor.currentSandbox');
+
+  return executor.initializeExecutor(sandbox).then(() => {
+    executor.listen('connect', 'server.onSSEMessage');
+    executor.listen('disconnect', 'server.onSSEMessage');
+    executor.listen('sandbox:status', 'server.onSSEMessage');
+    executor.listen('sandbox:start', 'server.onSSEMessage');
+    executor.listen('sandbox:stop', 'server.onSSEMessage');
+    executor.listen('sandbox:hibernate', 'server.onSSEMessage');
+    executor.listen('sandbox:update', 'server.onSSEMessage');
+
+    return executor.setupExecutor(sandbox);
+  });
+}
+
 export function fetchEnvironmentVariables({ state, api, path }) {
   const id = state.get('editor.currentId');
 

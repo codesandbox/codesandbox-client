@@ -1,11 +1,13 @@
-import { KeyCode, KeyMod } from './keyCodes';
-import bootstrap from './dev-bootstrap';
-import { MenuId } from './menus';
 import {
   notificationState,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
+import { blocker } from 'app/utils/blocker';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
+
+import { KeyCode, KeyMod } from './keyCodes';
+import bootstrap from './dev-bootstrap';
+import { MenuId } from './menus';
 
 interface IServiceCache {
   [serviceName: string]: any;
@@ -21,21 +23,6 @@ interface ICustomEditorApi {
 }
 
 const context: any = window;
-
-/**
- * This is a waiting promise that only resolves when VSCode is done initializing
- */
-function blocker() {
-  let resolve = null;
-  const promise = new Promise<any>(r => {
-    resolve = r;
-  });
-
-  return {
-    promise,
-    resolve,
-  };
-}
 
 /**
  * Handles the VSCode instance for the whole app. The goal is to deprecate/remove this service at one point

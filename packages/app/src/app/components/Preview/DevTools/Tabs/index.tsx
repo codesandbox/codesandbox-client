@@ -6,6 +6,7 @@ import { IViewType, Status } from '..';
 import { Actions, Container, Tabs } from './elements';
 import DraggableTab, { PaneTab, TabProps } from './Tab';
 import TabDropZone, { TabDropZoneProps } from './TabDropZone';
+import { AddTab } from './AddTab';
 
 export interface ITabPosition {
   devToolIndex: number;
@@ -78,6 +79,8 @@ const DevToolTabs = ({
             />
           );
         })}
+
+        <AddTab />
 
         {moveTab && (
           <TypedTabDropZone

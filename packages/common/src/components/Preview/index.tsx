@@ -52,10 +52,10 @@ export type Props = {
   noPreview?: boolean;
   alignDirection?: 'right' | 'bottom';
   delay?: number;
-  setSSEManagerStatus?: (status: SSEManagerStatus) => void;
-  setSSEContainerStatus?: (status: SSEContainerStatus) => void;
-  managerStatus?: SSEManagerStatus;
-  containerStatus?: SSEContainerStatus;
+  // setSSEManagerStatus?: (status: SSEManagerStatus) => void;
+  // setSSEContainerStatus?: (status: SSEContainerStatus) => void;
+  // managerStatus?: SSEManagerStatus;
+  // containerStatus?: SSEContainerStatus;
   syncSandbox?: (updates: any) => void;
   className?: string;
 };
@@ -250,12 +250,12 @@ class BasePreview extends React.Component<Props, State> {
   setupSSESockets = async () => {
     const hasInitialized = Boolean(this.$socket);
 
-    function onTimeout(comp: BasePreview) {
-      comp.connectTimeout = null;
-      if (comp.props.setSSEManagerStatus) {
-        comp.props.setSSEManagerStatus('disconnected');
-      }
-    }
+    // function onTimeout(comp: BasePreview) {
+    //   comp.connectTimeout = null;
+    //   if (comp.props.setSSEManagerStatus) {
+    //     comp.props.setSSEManagerStatus('disconnected');
+    //   }
+    // }
 
     if (hasInitialized) {
       this.setState({
@@ -265,10 +265,10 @@ class BasePreview extends React.Component<Props, State> {
         this.localClose = true;
         this.$socket.close();
         // we need this setTimeout() for socket open() to work immediately after close()
-        setTimeout(() => {
-          this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
-          this.$socket.open();
-        }, 0);
+        // setTimeout(() => {
+        //   this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
+        //   this.$socket.open();
+        // }, 0);
       }
     } else {
       const socket = io(getSSEUrl(), {
@@ -291,30 +291,30 @@ class BasePreview extends React.Component<Props, State> {
           this.props.managerStatus === 'connected' &&
           this.props.containerStatus !== 'hibernated'
         ) {
-          this.props.setSSEManagerStatus('disconnected');
+          // this.props.setSSEManagerStatus('disconnected');
           dispatch({ type: 'codesandbox:sse:disconnect' });
         }
       });
 
-      socket.on('connect', async () => {
-        if (this.connectTimeout) {
-          clearTimeout(this.connectTimeout);
-          this.connectTimeout = null;
-        }
+      // socket.on('connect', async () => {
+      //   if (this.connectTimeout) {
+      //     clearTimeout(this.connectTimeout);
+      //     this.connectTimeout = null;
+      //   }
 
-        if (this.props.setSSEManagerStatus) {
-          this.props.setSSEManagerStatus('connected');
-        }
+      //   if (this.props.setSSEManagerStatus) {
+      //     this.props.setSSEManagerStatus('connected');
+      //   }
 
-        const { id } = this.props.sandbox;
-        const token = await retrieveSSEToken();
+      //   const { id } = this.props.sandbox;
+      //   const token = await retrieveSSEToken();
 
-        socket.emit('sandbox', { id, token });
+      //   socket.emit('sandbox', { id, token });
 
-        sseTerminalMessage(`connected, starting sandbox ${id}...`);
+      //   sseTerminalMessage(`connected, starting sandbox ${id}...`);
 
-        socket.emit('sandbox:start');
-      });
+      //   socket.emit('sandbox:start');
+      // });
 
       socket.on('shell:out', ({ data, id }) => {
         dispatch({
@@ -333,72 +333,62 @@ class BasePreview extends React.Component<Props, State> {
         });
       });
 
-      socket.on('sandbox:update', message => {
-        if (this.props.syncSandbox) {
-          this.props.syncSandbox({ updates: message.updates });
-        }
-      });
+      // socket.on('sandbox:update', message => {
+      //   if (this.props.syncSandbox) {
+      //     this.props.syncSandbox({ updates: message.updates });
+      //   }
+      // });
 
-      socket.on('sandbox:status', message => {
-        if (this.props.setSSEContainerStatus) {
-          if (message.status === 'starting-container') {
-            this.props.setSSEContainerStatus('initializing');
-          } else if (message.status === 'installing-packages') {
-            this.props.setSSEContainerStatus('container-started');
-          }
-        }
-      });
+      // socket.on('sandbox:start', () => {
+      //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} started.`);
 
-      socket.on('sandbox:start', () => {
-        sseTerminalMessage(`sandbox ${this.props.sandbox.id} started.`);
+      //   if (!this.state.frameInitialized && this.props.onInitialized) {
+      //     this.disposeInitializer = this.props.onInitialized(this);
+      //   }
 
-        if (!this.state.frameInitialized && this.props.onInitialized) {
-          this.disposeInitializer = this.props.onInitialized(this);
-        }
+      //   this.setState({
+      //     frameInitialized: true,
+      //     overlayMessage: null,
+      //   });
+      //   if (this.props.setSSEContainerStatus) {
+      //     this.props.setSSEContainerStatus('sandbox-started');
+      //   }
 
-        this.setState({
-          frameInitialized: true,
-          overlayMessage: null,
-        });
-        if (this.props.setSSEContainerStatus) {
-          this.props.setSSEContainerStatus('sandbox-started');
-        }
+      //   setTimeout(() => {
+      //     this.executeCodeImmediately(true);
+      //     this.handleRefresh();
+      //   });
+      // });
 
-        setTimeout(() => {
-          this.executeCodeImmediately(true);
-          this.handleRefresh();
-        });
-      });
+      // socket.on('sandbox:hibernate', () => {
+      //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} hibernated.`);
 
-      socket.on('sandbox:hibernate', () => {
-        sseTerminalMessage(`sandbox ${this.props.sandbox.id} hibernated.`);
+      //   if (this.props.setSSEContainerStatus) {
+      //     this.props.setSSEContainerStatus('hibernated');
+      //   }
 
-        if (this.props.setSSEContainerStatus) {
-          this.props.setSSEContainerStatus('hibernated');
-        }
+      //   this.setState(
+      //     {
+      //       frameInitialized: false,
+      //       overlayMessage:
+      //         'The sandbox was hibernated because of inactivity. Refresh the page to restart it.',
+      //     },
+      //     () => this.$socket.close()
+      //   );
+      // });
 
-        this.setState(
-          {
-            frameInitialized: false,
-            overlayMessage:
-              'The sandbox was hibernated because of inactivity. Refresh the page to restart it.',
-          },
-          () => this.$socket.close()
-        );
-      });
+      // socket.on('sandbox:stop', () => {
+      //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} restarting...`);
 
-      socket.on('sandbox:stop', () => {
-        sseTerminalMessage(`sandbox ${this.props.sandbox.id} restarting...`);
+      //   if (this.props.setSSEContainerStatus) {
+      //     this.props.setSSEContainerStatus('stopped');
+      //   }
 
-        if (this.props.setSSEContainerStatus) {
-          this.props.setSSEContainerStatus('stopped');
-        }
-
-        this.setState({
-          frameInitialized: false,
-          overlayMessage: 'Restarting the sandbox...',
-        });
-      });
+      //   this.setState({
+      //     frameInitialized: false,
+      //     overlayMessage: 'Restarting the sandbox...',
+      //   });
+      // });
 
       socket.on('sandbox:log', ({ data }) => {
         dispatch({
@@ -431,7 +421,7 @@ class BasePreview extends React.Component<Props, State> {
         }
       });
 
-      this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
+      // this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
       socket.open();
     }
   };
@@ -830,7 +820,6 @@ class BasePreview extends React.Component<Props, State> {
             }
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
-            isServer={this.serverPreview}
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
@@ -885,9 +874,7 @@ class BasePreview extends React.Component<Props, State> {
                       height: '100%',
                       filter: `blur(2px)`,
                       transform: 'scale(1.025, 1.025)',
-                      backgroundImage: `url("${
-                        this.props.sandbox.screenshotUrl
-                      }")`,
+                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
                       backgroundRepeat: 'no-repeat',
                       backgroundPositionX: 'center',
                     }}

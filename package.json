@@ -43,7 +43,8 @@
       "packages/react-embed",
       "packages/dynamic-pages",
       "packages/notifications",
-      "packages/deps"
+      "packages/deps",
+      "packages/executors"
     ],
     "nohoist": [
       "**/react-codemirror2",

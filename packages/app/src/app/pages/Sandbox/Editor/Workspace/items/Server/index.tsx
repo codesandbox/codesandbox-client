@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { dispatch } from 'codesandbox-api';
 
 import { inject, observer } from 'mobx-react';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
@@ -23,7 +22,7 @@ const SubTitle = styled.div`
   font-size: 0.875rem;
 `;
 
-function Server({ store }: { store: any }) {
+function Server({ store, signals }: { store: any; signals: any }) {
   const disconnected = store.server.status !== 'connected';
 
   return (
@@ -79,7 +78,7 @@ function Server({ store }: { store: any }) {
               disconnected || store.server.containerStatus !== 'sandbox-started'
             }
             onClick={() => {
-              dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
+              signals.server.restartSandbox({});
             }}
           >
             <React.Fragment>
@@ -103,13 +102,7 @@ function Server({ store }: { store: any }) {
               disconnected || store.server.containerStatus === 'initializing'
             }
             onClick={() => {
-              this.props.signals.server.containerStatusChanged({
-                status: 'initializing',
-              });
-              dispatch({
-                type: 'socket:message',
-                channel: 'sandbox:restart-container',
-              });
+              signals.server.restartContainer({});
             }}
           >
             <React.Fragment>
