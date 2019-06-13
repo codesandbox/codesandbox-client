@@ -12,19 +12,11 @@ import { TerminalComponent } from './Shell/Term';
 import ShellTabs from './ShellTabs';
 
 import { ShellT, TerminalWithFit } from './types';
+import { DevToolProps } from '..';
 
 type State = {
   shells: ShellT[];
   selectedShell: string | undefined;
-};
-
-type Props = {
-  hidden: boolean;
-  height: number;
-  updateStatus?: (type: string, count?: number) => void;
-  theme: any;
-  openDevTools: () => void;
-  selectCurrentPane: () => void;
 };
 
 // Incredibly hacky way of letting the StatusBar access the state of the component.
@@ -32,8 +24,11 @@ type Props = {
 // We need to keep all the tabs in the global state and work from there.
 let createShell;
 
-class DevToolTerminal extends React.Component<Props, State> {
-  state = {
+class DevToolTerminal extends React.Component<
+  DevToolProps & { theme: any },
+  State
+> {
+  state: State = {
     shells: [],
     selectedShell: undefined,
   };
@@ -101,7 +96,7 @@ class DevToolTerminal extends React.Component<Props, State> {
       return newShell.id;
     }
 
-    return null;
+    return undefined;
   };
 
   closeShell = (shellId: string) => {
@@ -147,7 +142,7 @@ class DevToolTerminal extends React.Component<Props, State> {
         )}
 
         <TerminalComponent
-          hidden={hidden || selectedShell !== null}
+          hidden={hidden || selectedShell !== undefined}
           height={height}
           theme={theme}
           onTerminalInitialized={this.setTerminal}

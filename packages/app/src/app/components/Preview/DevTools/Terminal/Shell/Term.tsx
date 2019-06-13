@@ -1,9 +1,6 @@
-// @flow
 import React from 'react';
-import { listen, dispatch } from 'codesandbox-api';
 import { withTheme } from 'styled-components';
 import { Terminal } from 'xterm';
-import { debounce } from 'lodash-es';
 import * as fit from 'xterm/lib/addons/fit/fit';
 
 import ResizeObserver from 'resize-observer-polyfill';

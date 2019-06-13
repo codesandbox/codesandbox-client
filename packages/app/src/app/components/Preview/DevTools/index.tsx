@@ -5,6 +5,9 @@ import store from 'store/dist/store.modern';
 import FaAngleUp from 'react-icons/lib/fa/angle-up';
 
 import { TemplateType } from '@codesandbox/common/lib/templates';
+import { IExecutor } from '@codesandbox/executors';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
+import { executorsManager } from 'app/utils/executor-manager';
 
 import console from './Console';
 import tests from './Tests';
@@ -12,7 +15,6 @@ import problems from './Problems';
 import terminal from './Terminal';
 
 import { Container, Header, ContentContainer } from './elements';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import Tabs, { ITabPosition } from './Tabs';
 
 function unFocus(document, window) {
@@ -52,7 +54,7 @@ export interface IViewAction {
 export interface IViewType {
   id: string;
   title: string;
-  Content: React.ComponentClass<any, any>;
+  Content: React.ComponentClass<DevToolProps, any>;
   actions: IViewAction[] | ((info: { owned: boolean }) => IViewAction[]);
 }
 
@@ -65,12 +67,13 @@ export type Status = {
 
 export type DevToolProps = {
   hidden: boolean;
-  updateStatus: (type: StatusType, count?: number) => {};
+  updateStatus: (type: StatusType, count?: number) => void;
   sandboxId: string;
   height: number;
   openDevTools: () => void;
   hideDevTools: () => void;
   selectCurrentPane: () => void;
+  executor: IExecutor;
 };
 
 const VIEWS: IViews = {
@@ -487,13 +490,17 @@ export default class DevTools extends React.PureComponent<Props, State> {
                 hidden={hidden || i !== this.state.currentPaneIndex}
                 updateStatus={this.updateStatus(view.id)}
                 sandboxId={sandboxId}
-                height={this.state.height}
+                height={
+                  typeof this.state.height === 'string'
+                    ? this.height()
+                    : this.state.height
+                }
                 openDevTools={this.openDevTools}
                 hideDevTools={this.hideDevTools}
-                options={view.options}
                 selectCurrentPane={() => {
                   this.setPane(i);
                 }}
+                executor={executorsManager.getExecutor()}
               />
             );
           })}

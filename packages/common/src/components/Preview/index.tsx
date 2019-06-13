@@ -390,12 +390,12 @@ class BasePreview extends React.Component<Props, State> {
       //   });
       // });
 
-      socket.on('sandbox:log', ({ data }) => {
-        dispatch({
-          type: 'terminal:message',
-          data,
-        });
-      });
+      // socket.on('sandbox:log', ({ data }) => {
+      //   dispatch({
+      //     type: 'terminal:message',
+      //     data,
+      //   });
+      // });
 
       socket.on('sandbox:error', ({ message, unrecoverable }) => {
         sseTerminalMessage(

@@ -15,6 +15,12 @@ export default class ShellTabs extends React.PureComponent<Props> {
     const { selectedShell, shells } = this.props;
     return (
       <Container>
+        <Tab
+          selected={selectedShell === undefined}
+          onClick={() => this.props.selectShell(undefined)}
+        >
+          yarn start
+        </Tab>
         {shells.map(shell => (
           <Tab
             selected={selectedShell === shell.id}
