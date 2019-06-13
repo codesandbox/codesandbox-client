@@ -13,7 +13,6 @@ import {
   PreferencesButton,
   NewSandboxButton,
   LikeButton,
-  ToggleFrozenButton,
   PickButton,
   ShareButton,
   ForkButton,
@@ -63,7 +62,6 @@ export const Header = observer(({ zenMode }: HeaderProps) => {
         {!store.isLoggedIn && <PreferencesButton />}
         <NewSandboxButton />
         {store.isLoggedIn && <LikeButton />}
-        {sandbox.owned && <ToggleFrozenButton />}
         {store.user && store.user.curatorAt && <PickButton />}
         <ShareButton />
         <ForkButton />

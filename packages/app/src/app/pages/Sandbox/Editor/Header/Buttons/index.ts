@@ -7,4 +7,3 @@ export { PreferencesButton } from './PreferencesButton';
 export { RefreshButton } from './RefreshButton';
 export { SaveAllButton } from './SaveAllButton';
 export { ShareButton } from './ShareButton';
-export { ToggleFrozenButton } from './ToggleFrozenButton';
