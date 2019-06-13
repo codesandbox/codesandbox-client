@@ -10,7 +10,9 @@ import { useStore } from 'app/store';
 
 export const NotOwnedSandboxInfo = () => {
   const {
-    editor: { currentSandbox: { git: { username } = {} } },
+    editor: {
+      currentSandbox: { git: { username } = {} },
+    },
     user,
   } = useStore();
   const [editActions, setEditActions] = useState(null);
@@ -33,7 +35,6 @@ export const NotOwnedSandboxInfo = () => {
       >
         <Dependencies />
       </WorkspaceItem>
-      {console.log(sandbox)}
       {username === user.username && (
         <TemplateInfo template={sandbox.customTemplate} />
       )}
