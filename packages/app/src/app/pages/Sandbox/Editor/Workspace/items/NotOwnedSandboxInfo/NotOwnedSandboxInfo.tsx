@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 
 import Dependencies from '../../Dependencies';
 import Files from '../../Files';
-// @ts-ignore
-import Project from '../../Project/index.tsx';
+import Project from '../../Project';
 import WorkspaceItem from '../../WorkspaceItem';
+import TemplateInfo from '../../Project/Template';
+
+import { useStore } from 'app/store';
 
 export const NotOwnedSandboxInfo = () => {
+  const {
+    editor: { currentSandbox: sandbox },
+    user,
+  } = useStore();
   const [editActions, setEditActions] = useState(null);
 
   return (
     <div style={{ marginTop: '1rem' }}>
       <Project />
-
       <WorkspaceItem
         actions={editActions}
         defaultOpen
@@ -21,7 +26,6 @@ export const NotOwnedSandboxInfo = () => {
       >
         <Files setEditActions={setEditActions} />
       </WorkspaceItem>
-
       <WorkspaceItem
         defaultOpen
         style={{ marginTop: '.5rem' }}
@@ -29,6 +33,10 @@ export const NotOwnedSandboxInfo = () => {
       >
         <Dependencies />
       </WorkspaceItem>
+      {console.log(sandbox)}
+      {(sandbox.git || {}).username === user.username && (
+        <TemplateInfo template={sandbox.customTemplate} />
+      )}
     </div>
   );
 };

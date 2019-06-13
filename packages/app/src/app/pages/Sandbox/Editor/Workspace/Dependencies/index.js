@@ -13,7 +13,7 @@ import ExternalResource from './ExternalResource';
 
 import { ErrorMessage } from './elements';
 
-function Dependencies({ signals, store }) {
+function Dependencies({ signals = null, store = null }) {
   const sandbox = store.editor.currentSandbox;
 
   if (!store.editor.parsedConfigurations.package) {

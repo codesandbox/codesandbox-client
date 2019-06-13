@@ -34,7 +34,7 @@ import DescriptionComponent from './Description';
 import TemplateComponent from './Template';
 // import AliasComponent from './Alias';
 
-const Project = ({ editable }: { editable: boolean }) => {
+const Project = ({ editable }: { editable?: boolean }) => {
   const { editor, workspace } = useStore();
   const { notificationAdded, workspace: workspaceSignals } = useSignals();
 
