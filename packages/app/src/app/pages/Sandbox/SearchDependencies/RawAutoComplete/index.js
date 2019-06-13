@@ -1,11 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Downshift from 'downshift';
-
 import { Pagination } from 'react-instantsearch/dom';
-
 import { ENTER, ARROW_RIGHT } from '@codesandbox/common/lib/utils/keycodes';
-
-import DependencyHit from '../DependencyHit';
+import { DependencyHit } from '../DependencyHit';
 import { AutoCompleteInput, SuggestionInput } from './elements';
 
 /* eslint-disable no-param-reassign */
@@ -44,124 +41,115 @@ function getHit(value: string, hits) {
   return value && hits.find(hit => hit.name.startsWith(value));
 }
 
-class RawAutoComplete extends React.Component {
-  state = {
-    value: '',
-  };
+export const RawAutoComplete = ({
+  onSelect,
+  onManualSelect,
+  onHitVersionChange,
+  hits,
+  refine,
+  currentRefinement,
+}) => {
+  const [value, setValue] = useState('');
 
-  render() {
-    const {
-      onSelect,
-      onManualSelect,
-      onHitVersionChange,
-      hits,
-      refine,
-      currentRefinement,
-    } = this.props;
+  const hit = getHit(currentRefinement, hits);
+  const version = getVersion(value, hit);
+  const isValid = getIsValid(value, hit, version);
 
-    const hit = getHit(currentRefinement, hits);
-    const version = getVersion(this.state.value, hit);
-    const isValid = getIsValid(this.state.value, hit, version);
+  const autoCompletedQuery = isExplicitVersion(value)
+    ? null
+    : hit && isValid
+    ? hit.name + '@' + hit.version
+    : null;
 
-    const autoCompletedQuery = isExplicitVersion(this.state.value)
-      ? null
-      : hit && isValid
-      ? hit.name + '@' + hit.version
-      : null;
-
-    return (
-      <Downshift itemToString={h => (h ? h.name : h)} onSelect={onSelect}>
-        {({ getInputProps, getItemProps, highlightedIndex }) => (
-          <div>
-            {highlightedIndex == null && (
-              <SuggestionInput as="div">
-                {isExplicitVersion(this.state.value)
-                  ? this.state.value
-                  : hit
-                  ? hit.name
-                  : currentRefinement}
-                <span
-                  css={{
-                    color: 'var(--color-white-3)',
-                  }}
-                >
-                  {isExplicitVersion(this.state.value)
-                    ? null
-                    : hit && isValid
-                    ? '@' + hit.version
-                    : null}
-                </span>
-              </SuggestionInput>
-            )}
-            <AutoCompleteInput
-              autoFocus
-              {...getInputProps({
-                innerRef(ref) {
-                  if (ref) {
-                    if (
-                      document.activeElement &&
-                      document.activeElement.tagName !== 'SELECT'
-                    ) {
-                      ref.focus();
-                    }
+  return (
+    <Downshift itemToString={h => (h ? h.name : h)} onSelect={onSelect}>
+      {({ getInputProps, getItemProps, highlightedIndex, selectItem }) => (
+        <div>
+          {highlightedIndex == null && (
+            <SuggestionInput as="div">
+              {isExplicitVersion(value)
+                ? value
+                : hit
+                ? hit.name
+                : currentRefinement}
+              <span
+                css={{
+                  color: 'var(--color-white-3)',
+                }}
+              >
+                {isExplicitVersion(value)
+                  ? null
+                  : hit && isValid
+                  ? '@' + hit.version
+                  : null}
+              </span>
+            </SuggestionInput>
+          )}
+          <AutoCompleteInput
+            autoFocus
+            {...getInputProps({
+              innerRef(ref) {
+                if (ref) {
+                  if (
+                    document.activeElement &&
+                    document.activeElement.tagName !== 'SELECT'
+                  ) {
+                    ref.focus();
                   }
+                }
+              },
+              value,
+              placeholder: 'Search or enter npm dependency',
+
+              onChange: e => {
+                const name = e.target.value;
+
+                setValue(name);
+                if (name.indexOf('@') === 0) {
+                  const parts = name.split('@');
+
+                  refine(`@${parts[1]}`);
+                  return;
+                }
+
+                const parts = name.split('@');
+
+                requestAnimationFrame(() => {
+                  refine(`${parts[0]}`);
+                });
+              },
+
+              onKeyUp: e => {
+                // If enter with no selection
+                if (e.keyCode === ENTER) {
+                  onManualSelect(autoCompletedQuery || e.target.value);
+                } else if (autoCompletedQuery && e.keyCode === ARROW_RIGHT) {
+                  setValue(autoCompletedQuery);
+                }
+              },
+            })}
+          />
+          <Pagination />
+          {hits.map((h, index) => (
+            <DependencyHit
+              key={h.name}
+              {...getItemProps({
+                item: h,
+                index,
+                highlighted: highlightedIndex === index,
+                hit: h,
+                onClick: (event, isDev = false) => {
+                  event.nativeEvent.preventDownshiftDefault = true;
+                  selectItem({ ...h, isDev });
                 },
-                value: this.state.value,
-                placeholder: 'Search or enter npm dependency',
-
-                onChange: e => {
-                  const name = e.target.value;
-
-                  this.setState({ value: name }, () => {
-                    if (name.indexOf('@') === 0) {
-                      const parts = name.split('@');
-
-                      refine(`@${parts[1]}`);
-                      return;
-                    }
-
-                    const parts = name.split('@');
-
-                    requestAnimationFrame(() => {
-                      refine(`${parts[0]}`);
-                    });
-                  });
-                },
-
-                onKeyUp: e => {
-                  // If enter with no selection
-                  if (e.keyCode === ENTER) {
-                    onManualSelect(autoCompletedQuery || e.target.value);
-                  } else if (autoCompletedQuery && e.keyCode === ARROW_RIGHT) {
-                    this.setState({ value: autoCompletedQuery });
-                  }
+                onVersionChange(v) {
+                  onHitVersionChange(h, v);
                 },
               })}
             />
-            <Pagination />
-
-            <div>
-              {hits.map((h, index) => (
-                <DependencyHit
-                  key={h.name}
-                  {...getItemProps({
-                    item: h,
-                    index,
-                    highlighted: highlightedIndex === index,
-                    hit: h,
-                    // Downshift supplies onClick
-                    onVersionChange(v) {
-                      onHitVersionChange(h, v);
-                    },
-                  })}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </Downshift>
-    );
-  }
-}
-
-export default RawAutoComplete;
+          ))}
+        </div>
+      )}
+    </Downshift>
+  );
+};

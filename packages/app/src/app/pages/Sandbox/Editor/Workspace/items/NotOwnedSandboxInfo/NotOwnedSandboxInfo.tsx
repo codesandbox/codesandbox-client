@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Dependencies from '../../Dependencies';
+import { Dependencies } from '../../Dependencies';
 import Files from '../../Files';
 import Project from '../../Project';
 import WorkspaceItem from '../../WorkspaceItem';

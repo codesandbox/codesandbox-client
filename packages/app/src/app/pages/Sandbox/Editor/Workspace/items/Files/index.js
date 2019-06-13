@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import Files from '../../Files';
-import Dependencies from '../../Dependencies';
+import { Dependencies } from '../../Dependencies';
 import WorkspaceItem from '../../WorkspaceItem';
 import { ItemTitle } from '../../elements';
 
@@ -15,7 +15,7 @@ export default () => {
         {editActions}
       </ItemTitle>
       <Files setEditActions={setEditActions} />
-      <WorkspaceItem defaultOpen title="Dependencies">
+      <WorkspaceItem defaultOpen title="Manage Dependencies">
         <Dependencies />
       </WorkspaceItem>
     </div>

@@ -65,8 +65,10 @@ export function removeNpmDependencyFromPackage({ state, props }) {
     'editor.parsedConfigurations.package'
   );
 
-  delete parsed.dependencies[props.name];
-  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
+  const type = props.isDev ? 'devDependencies' : 'dependencies';
+
+  delete parsed[type][props.name];
+  parsed[type] = sortObjectByKeys(parsed[type]);
 
   return {
     oldCode,

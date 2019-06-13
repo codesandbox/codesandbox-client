@@ -14,3 +14,11 @@ export const Link = styled.a.attrs({
   color: ${props => props.theme.templateColor || props.theme.secondary};
   text-decoration: none;
 `;
+
+export const Container = styled.div`
+  position: relative;
+`;
+
+export const ButtonContainer = styled.div`
+  margin: 0.5rem 1rem;
+`;
