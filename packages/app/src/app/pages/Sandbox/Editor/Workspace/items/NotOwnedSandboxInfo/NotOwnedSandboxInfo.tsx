@@ -10,7 +10,7 @@ import { useStore } from 'app/store';
 
 export const NotOwnedSandboxInfo = () => {
   const {
-    editor: { currentSandbox: sandbox },
+    editor: { currentSandbox: { git: { username } = {} } },
     user,
   } = useStore();
   const [editActions, setEditActions] = useState(null);
