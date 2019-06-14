@@ -177,10 +177,7 @@ class TerminalComponent extends React.Component<Props, State> {
     const { height, hidden } = this.props;
 
     return (
-      <div
-        className={!hidden ? 'terminal' : undefined}
-        ref={this.setupResizeObserver}
-      >
+      <div className={!hidden && 'terminal'} ref={this.setupResizeObserver}>
         {!hidden && this.state.shells.length > 0 && (
           <ShellTabs
             selectedShell={this.state.selectedShell}
@@ -190,7 +187,7 @@ class TerminalComponent extends React.Component<Props, State> {
           />
         )}
 
-        <div style={{ flex: 1, position: 'relative' }}>
+        <div style={{ position: 'relative' }}>
           <div
             style={{
               position: 'absolute',
