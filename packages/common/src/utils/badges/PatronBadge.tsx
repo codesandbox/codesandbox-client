@@ -7,6 +7,10 @@ const DEFAULT_BADGE = {
   visible: true,
 };
 
-export default ({ size, ...props }: { size: number }) => (
-  <Badge {...props} badge={DEFAULT_BADGE} size={size} />
-);
+export default ({
+  size,
+  ...props
+}: {
+  size: number;
+  style?: React.CSSProperties;
+}) => <Badge {...props} badge={DEFAULT_BADGE} size={size} />;

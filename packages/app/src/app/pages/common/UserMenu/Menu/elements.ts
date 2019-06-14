@@ -16,7 +16,7 @@ export const Container = styled.div`
   z-index: 20;
 `;
 
-export const Item = styled.div`
+export const Item = styled.div<{ to?: string; href?: string }>`
   transition: 0.3s ease all;
   display: flex;
   align-items: center;

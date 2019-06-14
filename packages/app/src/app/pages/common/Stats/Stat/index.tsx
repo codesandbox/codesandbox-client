@@ -7,7 +7,7 @@ const Stat = ({ Icon, count }: { Icon: any; count: number }) => {
     <CenteredText>
       {Icon}
       <span
-        css={{
+        style={{
           marginLeft: '0.5em',
           fontWeight: 300,
         }}
