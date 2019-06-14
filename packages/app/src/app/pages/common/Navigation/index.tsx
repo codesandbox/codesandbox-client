@@ -39,7 +39,7 @@ interface Props {
   searchNoInput?: boolean;
 }
 
-function Navigation({ title, searchNoInput }: Props) {
+const Navigation = ({ title, searchNoInput }: Props) => {
   const { isLoggedIn, isPatron, user, userNotifications } = useStore();
   const {
     modalOpened,
