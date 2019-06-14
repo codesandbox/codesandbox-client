@@ -5,7 +5,11 @@ import ZeitLogo from 'app/components/ZeitLogo';
 import Integration from 'app/components/Integration';
 import { useStore, useSignals } from 'app/store';
 
-function ZeitIntegration({ small }: { small: boolean }) {
+interface Props {
+  small: boolean;
+}
+
+const ZeitIntegration = ({ small }: Props) => {
   const { user, isLoadingZeit } = useStore();
   const { signInZeitClicked, signOutZeitClicked } = useSignals();
 
@@ -17,11 +21,11 @@ function ZeitIntegration({ small }: { small: boolean }) {
       description="Deployments"
       Icon={ZeitLogo}
       userInfo={user.integrations.zeit}
-      signIn={() => signInZeitClicked()}
-      signOut={() => signOutZeitClicked()}
+      signIn={signInZeitClicked}
+      signOut={signOutZeitClicked}
       loading={isLoadingZeit}
     />
   );
-}
+};
 
 export default observer(ZeitIntegration);

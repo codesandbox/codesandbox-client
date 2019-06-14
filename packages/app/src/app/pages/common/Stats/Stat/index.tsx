@@ -2,7 +2,12 @@ import React from 'react';
 
 import { CenteredText } from './elements';
 
-const Stat = ({ Icon, count }: { Icon: any; count: number }) => {
+interface Props {
+  Icon: any;
+  count: number;
+}
+
+const Stat = ({ Icon, count }: Props) => {
   return (
     <CenteredText>
       {Icon}

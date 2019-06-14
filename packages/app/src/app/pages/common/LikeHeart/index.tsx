@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-
+import noop from 'lodash/noop';
 // @ts-ignore
 import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 // @ts-ignore
@@ -50,7 +50,7 @@ function LikeHeart({
       className={className}
       highlightHover={highlightHover}
       onClick={
-        isLoggedIn ? () => editor.likeSandboxToggled({ id: sandbox.id }) : null
+        isLoggedIn ? () => editor.likeSandboxToggled({ id: sandbox.id }) : noop
       }
     >
       <MaybeTooltip
