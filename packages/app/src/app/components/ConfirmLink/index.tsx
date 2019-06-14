@@ -1,22 +1,21 @@
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default class ConfirmLink extends React.PureComponent {
-  confirm = e => {
-    const { enabled, message } = this.props;
+interface IConfirmLinkProps {
+  enabled: boolean;
+  message: string;
+}
 
-    if (enabled) {
-      const yes = confirm(message); // eslint-disable-line no-alert
-
-      if (!yes) {
+const ConfirmLink = ({ enabled, message, ...props }: IConfirmLinkProps) => (
+  <Link
+    onClick={(e: React.MouseEvent) => {
+      if (enabled && !confirm(message)) {
         e.preventDefault();
         e.stopPropagation();
       }
-    }
-  };
+    }}
+    {...props}
+  />
+);
 
-  render() {
-    const { enabled, message, ...props } = this.props;
-    return <Link onClick={this.confirm} {...props} />;
-  }
-}
+export default ConfirmLink;
