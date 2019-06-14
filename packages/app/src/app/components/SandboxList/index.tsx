@@ -22,9 +22,9 @@ import {
 } from './elements';
 
 type Props = {
-  sandboxes: Array<SmallSandbox>,
-  isCurrentUser: boolean,
-  onDelete: Function,
+  sandboxes: Array<SmallSandbox>;
+  isCurrentUser: boolean;
+  onDelete: Function;
 };
 
 export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
