@@ -38,7 +38,7 @@ const Column = styled.div`
 `;
 
 export const Left = styled(Column)`
-  ${({ highlighted, theme }) => css`
+  ${({ highlighted, theme }: { highlighted: boolean; theme: any }) => css`
     width: 70%;
     background-color: ${highlighted
       ? Color(theme['sideBar.background'])

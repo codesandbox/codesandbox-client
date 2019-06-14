@@ -8,7 +8,7 @@ import { RawAutoComplete } from './RawAutoComplete';
 
 const ConnectedAutoComplete = connectAutoComplete(RawAutoComplete);
 
-export const SearchDependencies = () => {
+export const SearchDependenciesModal = () => {
   const hitToVersionMap = useRef(new Map());
   const {
     editor: { addNpmDependency },

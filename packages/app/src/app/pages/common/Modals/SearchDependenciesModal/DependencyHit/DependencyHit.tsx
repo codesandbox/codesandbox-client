@@ -24,7 +24,7 @@ import {
   AddButton,
 } from './elements';
 
-const getDefaultSelectedVersion = tags => {
+const getDefaultSelectedVersion = (tags: { latest?: string }) => {
   if (!tags) {
     return '';
   }
@@ -46,15 +46,15 @@ export const DependencyHit = ({
     getDefaultSelectedVersion(hit.tags)
   );
 
-  const makeGitHubRepoUrl = repo =>
+  const makeGitHubRepoUrl = (repo: { user: string; project: string }): string =>
     `https://github.com/${repo.user}/${repo.project}`;
 
-  const makeSearchUrl = hitName =>
+  const makeSearchUrl = (hitName: string): string =>
     `${
       process.env.CODESANDBOX_HOST
     }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${hitName}&page=1`;
 
-  const handleVersionChange = e => {
+  const handleVersionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedVersion(e.target.value);
     onVersionChange(e.target.value);
   };
@@ -75,7 +75,7 @@ export const DependencyHit = ({
     }
   });
 
-  const getTagName = (tags, version) =>
+  const getTagName = (tags: { [key: string]: string }, version: string) =>
     Object.keys(tags).find(key => tags[key] === version);
 
   return (
@@ -144,7 +144,11 @@ export const DependencyHit = ({
           <AddButton onClick={onClick}>Add Dependency</AddButton>
         </Row>
         <Row>
-          <AddButton onClick={event => onClick(event, true)}>
+          <AddButton
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+              onClick(event, true)
+            }
+          >
             Add DevDependency
           </AddButton>
         </Row>

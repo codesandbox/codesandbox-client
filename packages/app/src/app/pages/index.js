@@ -12,7 +12,7 @@ import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
 
-import Modals from './common/Modals';
+import { Modals } from './common/Modals';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
 import Dashboard from './Dashboard';

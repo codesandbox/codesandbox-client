@@ -5,42 +5,6 @@ import { ENTER, ARROW_RIGHT } from '@codesandbox/common/lib/utils/keycodes';
 import { DependencyHit } from '../DependencyHit';
 import { AutoCompleteInput, SuggestionInput } from './elements';
 
-/* eslint-disable no-param-reassign */
-
-function getName(value: string) {
-  const scope = value[0] === '@' ? '@' : '';
-  value = scope ? value.substr(1) : value;
-
-  return scope + value.split('@')[0];
-}
-
-function isExplicitVersion(value: string) {
-  const scope = value[0] === '@' ? '@' : '';
-  value = scope ? value.substr(1) : value;
-
-  return value.includes('@');
-}
-
-function getVersion(value: string, hit) {
-  return value.indexOf('@') > 0
-    ? value.split('@')[1]
-    : hit
-    ? hit.version
-    : null;
-}
-
-function getIsValid(value: string, hit, version: string) {
-  return Boolean(
-    hit &&
-      hit.name.startsWith(getName(value)) &&
-      (version in hit.tags || version in hit.versions)
-  );
-}
-
-function getHit(value: string, hits) {
-  return value && hits.find(hit => hit.name.startsWith(value));
-}
-
 export const RawAutoComplete = ({
   onSelect,
   onManualSelect,
@@ -49,7 +13,35 @@ export const RawAutoComplete = ({
   refine,
   currentRefinement,
 }) => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(``);
+
+  const getName = (str: string) => {
+    const scope = str[0] === '@' ? '@' : '';
+    const val = scope ? str.substr(1) : str;
+    return scope + val.split('@')[0];
+  };
+
+  const isExplicitVersion = (str: string) => {
+    const scope = str[0] === '@' ? '@' : '';
+    const val = scope ? str.substr(1) : str;
+    return val.includes('@');
+  };
+
+  const getHit = (str: string, hits) => {
+    return str && hits.find(hit => hit.name.startsWith(str));
+  };
+
+  const getVersion = (str: string, hit) => {
+    return str.indexOf('@') > 0 ? str.split('@')[1] : hit ? hit.version : null;
+  };
+
+  const getIsValid = (str: string, hit, version: string) => {
+    return Boolean(
+      hit &&
+        hit.name.startsWith(getName(str)) &&
+        (version in hit.tags || version in hit.versions)
+    );
+  };
 
   const hit = getHit(currentRefinement, hits);
   const version = getVersion(value, hit);
@@ -62,7 +54,7 @@ export const RawAutoComplete = ({
     : null;
 
   return (
-    <Downshift itemToString={h => (h ? h.name : h)} onSelect={onSelect}>
+    <Downshift itemToString={hit => (hit ? hit.name : hit)} onSelect={onSelect}>
       {({ getInputProps, getItemProps, highlightedIndex, selectItem }) => (
         <div>
           {highlightedIndex == null && (
@@ -73,7 +65,7 @@ export const RawAutoComplete = ({
                 ? hit.name
                 : currentRefinement}
               <span
-                css={{
+                style={{
                   color: 'var(--color-white-3)',
                 }}
               >
@@ -100,26 +92,18 @@ export const RawAutoComplete = ({
               },
               value,
               placeholder: 'Search or enter npm dependency',
-
-              onChange: e => {
+              onChange: (e: React.FormEvent<HTMLInputElement>) => {
                 const name = e.target.value;
-
                 setValue(name);
                 if (name.indexOf('@') === 0) {
                   const parts = name.split('@');
-
                   refine(`@${parts[1]}`);
                   return;
                 }
-
                 const parts = name.split('@');
-
-                requestAnimationFrame(() => {
-                  refine(`${parts[0]}`);
-                });
+                refine(`${parts[0]}`);
               },
-
-              onKeyUp: e => {
+              onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => {
                 // If enter with no selection
                 if (e.keyCode === ENTER) {
                   onManualSelect(autoCompletedQuery || e.target.value);
@@ -130,20 +114,20 @@ export const RawAutoComplete = ({
             })}
           />
           <Pagination />
-          {hits.map((h, index) => (
+          {hits.map((h, index: number) => (
             <DependencyHit
               key={h.name}
+              highlighted={highlightedIndex === index}
+              hit={h}
+              onVersionChange={v => {
+                onHitVersionChange(h, v);
+              }}
               {...getItemProps({
                 item: h,
                 index,
-                highlighted: highlightedIndex === index,
-                hit: h,
-                onClick: (event, isDev = false) => {
-                  event.nativeEvent.preventDownshiftDefault = true;
+                onClick: (e: React.SyntheticEvent, isDev = false) => {
+                  e.nativeEvent.preventDownshiftDefault = true;
                   selectItem({ ...h, isDev });
-                },
-                onVersionChange(v) {
-                  onHitVersionChange(h, v);
                 },
               })}
             />
