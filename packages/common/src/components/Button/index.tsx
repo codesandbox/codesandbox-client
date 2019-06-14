@@ -7,10 +7,11 @@ export type Props = {
   small?: boolean;
   style?: React.CSSProperties;
   block?: boolean;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent) => void;
   children?: React.ReactElement | string;
   disabled?: boolean;
   type?: 'button' | 'reset' | 'submit';
+  danger?: boolean;
   secondary?: boolean;
 };
 

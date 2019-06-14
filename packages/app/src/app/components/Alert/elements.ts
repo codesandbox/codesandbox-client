@@ -1,20 +1,22 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: ${props => props.theme.background};
-  color: rgba(255, 255, 255, 0.8);
-  padding: 1rem;
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: ${theme.background};
+    color: rgba(255, 255, 255, 0.8);
+  `}
 `;
 
 export const Title = styled.div`
   display: flex;
   justify-content: center;
-  font-weight: 500;
-  font-size: 1.125rem;
   margin-top: 0 !important;
   margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: 500;
   text-transform: uppercase;
 `;
 
@@ -27,6 +29,7 @@ export const Buttons = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 1rem;
+
   button {
     display: flex;
     justify-content: center;
