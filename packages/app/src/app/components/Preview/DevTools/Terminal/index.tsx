@@ -132,7 +132,7 @@ class DevToolTerminal extends React.Component<
 
     return (
       <div className={!hidden && 'terminal'}>
-        {!hidden && this.state.shells.length !== 0 && (
+        {!hidden && this.state.shells.length > 0 && (
           <ShellTabs
             selectedShell={this.state.selectedShell}
             shells={this.state.shells}
