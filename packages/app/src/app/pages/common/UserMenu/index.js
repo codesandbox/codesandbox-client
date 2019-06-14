@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 
 import HoverMenu from 'app/components/HoverMenu';
 import Relative from '@codesandbox/common/lib/components/Relative';
+import { useSignals, useStore } from 'app/store';
 
 import Menu from './Menu';
 import { ClickableContainer, ProfileImage } from './elements';
 
-function UserMenu({ signals, store }) {
-  const { user, userMenuOpen } = store;
+function UserMenu() {
+  const { user, userMenuOpen } = useStore();
+  const signals = useSignals();
 
   return (
     <Relative>
@@ -44,4 +46,4 @@ function UserMenu({ signals, store }) {
   );
 }
 
-export default inject('store', 'signals')(observer(UserMenu));
+export default observer(UserMenu);

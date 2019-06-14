@@ -6,8 +6,16 @@ import { useSignals, useStore } from 'app/store';
 
 import { Container } from './elements';
 import Prompt from './Prompt';
+import { User } from '@codesandbox/common/lib/types';
 
-const CLI = () => {
+interface Props {
+  authToken: string;
+  error: string;
+  isLoadingCLI: boolean;
+  user: User;
+}
+
+const CLI = ({ authToken, error, isLoadingCLI, user }: Props) => {
   const { cliMounted, signInCliClicked } = useSignals();
   const { user, authToken, isLoadingCLI, error } = useStore();
 
