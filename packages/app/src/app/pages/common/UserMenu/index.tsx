@@ -10,11 +10,17 @@ import { ClickableContainer, ProfileImage } from './elements';
 
 function UserMenu() {
   const { user, userMenuOpen } = useStore();
-  const signals = useSignals();
+  const {
+    userMenuClosed,
+    modalOpened,
+    signOutClicked,
+    userMenuOpened,
+    files,
+  } = useSignals();
 
   return (
     <Relative>
-      <ClickableContainer onClick={() => signals.userMenuOpened()}>
+      <ClickableContainer onClick={userMenuOpened}>
         <ProfileImage
           alt={user.username}
           width={30}
@@ -23,22 +29,14 @@ function UserMenu() {
         />
       </ClickableContainer>
       {userMenuOpen && (
-        <HoverMenu onClose={() => signals.userMenuClosed()}>
+        <HoverMenu onClose={() => userMenuClosed()}>
           <Menu
-            openPreferences={() => {
-              signals.modalOpened({ modal: 'preferences' });
-            }}
-            openStorageManagement={() => {
-              signals.files.gotUploadedFiles();
-            }}
-            signOut={() => {
-              signals.signOutClicked();
-            }}
+            openPreferences={() => modalOpened({ modal: 'preferences' })}
+            openStorageManagement={files.gotUploadedFiles()}
+            signOut={signOutClicked()}
             username={user.username}
             curator={user.curatorAt}
-            openFeedback={() => {
-              signals.modalOpened({ modal: 'feedback' });
-            }}
+            openFeedback={() => modalOpened({ modal: 'feedback' })}
           />
         </HoverMenu>
       )}

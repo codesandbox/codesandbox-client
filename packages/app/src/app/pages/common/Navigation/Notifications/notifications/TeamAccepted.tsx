@@ -11,16 +11,15 @@ interface Props {
   userAvatar: string;
 }
 
-const TeamInvite = ({ read, teamName, userName, userAvatar }: Props) => {
-  return (
-    <div>
-      <Container success read={read}>
-        <Image src={userAvatar} />
-        <div>
-          <W>{userName}</W> accepted your invitation to join <W>{teamName}!</W>
-        </div>
-      </Container>
-    </div>
-  );
-};
+const TeamInvite = ({ read, teamName, userName, userAvatar }: Props) => (
+  <div>
+    <Container success read={read}>
+      <Image src={userAvatar} />
+      <div>
+        <W>{userName}</W> accepted your invitation to join <W>{teamName}!</W>
+      </div>
+    </Container>
+  </div>
+);
+
 export default TeamInvite;
