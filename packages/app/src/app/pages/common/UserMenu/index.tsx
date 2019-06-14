@@ -33,7 +33,7 @@ function UserMenu() {
           <Menu
             openPreferences={() => modalOpened({ modal: 'preferences' })}
             openStorageManagement={files.gotUploadedFiles}
-            signOut={signOutClicked()}
+            signOut={signOutClicked}
             username={user.username}
             curator={user.curatorAt}
             openFeedback={() => modalOpened({ modal: 'feedback' })}
