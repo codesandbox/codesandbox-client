@@ -9,7 +9,11 @@ import Stat from './Stat';
 import { Stats } from './elements';
 import { Sandbox } from '@codesandbox/common/lib/types';
 
-function StatsComponent({ sandbox }: { sandbox: Sandbox }) {
+interface Props {
+  sandbox: Sandbox;
+}
+
+const StatsComponent = ({ sandbox }: Props) => {
   return (
     <Stats>
       <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
@@ -20,6 +24,6 @@ function StatsComponent({ sandbox }: { sandbox: Sandbox }) {
       <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
     </Stats>
   );
-}
+};
 
 export default observer(StatsComponent);
