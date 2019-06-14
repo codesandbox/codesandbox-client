@@ -83,7 +83,7 @@ class DevToolTerminal extends React.Component<
     }));
   };
 
-  selectShell = (shellId: string | undefined) => {
+  selectShell = (shellId?: string) => {
     this.setState({ selectedShell: shellId });
   };
 
