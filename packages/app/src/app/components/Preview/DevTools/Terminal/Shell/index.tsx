@@ -21,10 +21,6 @@ type Props = {
   ended: boolean;
   hidden: boolean;
   height: number;
-  /**
-   * Whether you can't close the tab
-   */
-  readOnly?: boolean;
   updateStatus?: (type: string, count?: number) => void;
 };
 

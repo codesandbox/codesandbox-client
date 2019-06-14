@@ -17,10 +17,21 @@ export const setContainerStatus = [
   set(state`server.containerStatus`, props`status`),
 ];
 
+export const onCodeSandboxAPIMessage = [
+  equals(props`data.type`),
+  {
+    'socket:message': [actions.sendShellMessage],
+    otherwise: [],
+  },
+];
+
 export const onSSEMessage = [
   equals(props`event`),
   {
-    connect: [set(state`server.status`, 'connected')],
+    connect: [
+      set(state`server.error`, undefined),
+      set(state`server.status`, 'connected'),
+    ],
     disconnect: [
       when(
         state`server.containerStatus`,
@@ -30,7 +41,10 @@ export const onSSEMessage = [
       ),
 
       {
-        true: [set(state`server.status`, 'disconnected')],
+        true: [
+          set(state`server.status`, 'disconnected'),
+          actions.sendDisconnectedMessage,
+        ],
         false: [],
       },
     ],
@@ -38,7 +52,6 @@ export const onSSEMessage = [
     'sandbox:stop': [set(state`server.containerStatus`, 'stopped')],
     'sandbox:update': [set(props`updates`, props`data.updates`), syncSandbox],
     'sandbox:hibernated': [set(state`server.containerStatus`, 'hibernated')],
-    'sandbox:log': [actions.logSandboxMessage],
     'sandbox:status': [
       equals(props`data.status`),
       {
@@ -51,5 +64,22 @@ export const onSSEMessage = [
         otherwise: [],
       },
     ],
+
+    'sandbox:log': [actions.logSandboxMessage],
+    'sandbox:error': [
+      actions.formatErrorMessage,
+      set(state`server.hasUnrecoverableError`, props`unrecoverable`),
+      set(state`server.error`, props`error`),
+      actions.showContainerError,
+
+      equals(state`server.hasUnrecoverableError`),
+      {
+        true: [actions.closeSocket],
+        false: [],
+      },
+    ],
+    // This will be removed and moved to the actual terminal listener
+    'shell:exit': [actions.sendShellExit],
+    'shell:out': [actions.sendShellOut],
   },
 ];

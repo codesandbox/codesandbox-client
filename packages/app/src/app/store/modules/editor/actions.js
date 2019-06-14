@@ -179,9 +179,13 @@ export function setupExecutor({ state, executor }) {
     executor.listen('sandbox:status', 'server.onSSEMessage');
     executor.listen('sandbox:start', 'server.onSSEMessage');
     executor.listen('sandbox:stop', 'server.onSSEMessage');
+    executor.listen('sandbox:error', 'server.onSSEMessage');
     executor.listen('sandbox:log', 'server.onSSEMessage');
     executor.listen('sandbox:hibernate', 'server.onSSEMessage');
     executor.listen('sandbox:update', 'server.onSSEMessage');
+
+    executor.listen('shell:out', 'server.onSSEMessage');
+    executor.listen('shell:exit', 'server.onSSEMessage');
 
     return executor.setupExecutor(sandbox);
   });

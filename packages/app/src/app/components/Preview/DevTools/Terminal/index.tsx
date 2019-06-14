@@ -22,7 +22,7 @@ type State = {
 // Incredibly hacky way of letting the StatusBar access the state of the component.
 // In the future we need to abstract this away to the global state and dispatch an event.
 // We need to keep all the tabs in the global state and work from there.
-let createShell;
+let createShell: () => void | undefined;
 
 class DevToolTerminal extends React.Component<
   DevToolProps & { theme: any },
@@ -34,9 +34,9 @@ class DevToolTerminal extends React.Component<
   };
 
   term: TerminalWithFit;
+  listener: () => void;
   node?: HTMLElement;
   timeout?: number;
-  listener: () => void;
 
   componentDidMount() {
     createShell = this.createShell;

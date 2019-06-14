@@ -14,4 +14,6 @@ export default {
     'hibernated',
     'error',
   ]),
+  error: types.maybe(types.string),
+  hasUnrecoverableError: types.boolean,
 };

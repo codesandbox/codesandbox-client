@@ -1,10 +1,5 @@
 import * as React from 'react';
-import {
-  Sandbox,
-  Module,
-  SSEManagerStatus,
-  SSEContainerStatus,
-} from '../../types';
+import { Sandbox, Module } from '../../types';
 import {
   listen,
   dispatch,
@@ -118,48 +113,6 @@ const getDiff = (a: IModulesByPath, b: IModulesByPath) => {
   return diff;
 };
 
-const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
-async function retrieveSSEToken() {
-  const jwt = localStorage.getItem('jwt');
-
-  if (jwt) {
-    const parsedJWT = JSON.parse(jwt);
-    const existingKey = localStorage.getItem('sse');
-    const currentTime = new Date().getTime();
-
-    if (existingKey) {
-      const parsedKey = JSON.parse(existingKey);
-      if (parsedKey.key && currentTime - parsedKey.timestamp < MAX_SSE_AGE) {
-        return parsedKey.key;
-      }
-    }
-
-    return fetch('/api/v1/users/current_user/sse', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${parsedJWT}`,
-      },
-    })
-      .then(x => x.json())
-      .then(result => result.jwt)
-      .then(token => {
-        localStorage.setItem(
-          'sse',
-          JSON.stringify({
-            key: token,
-            timestamp: currentTime,
-          })
-        );
-
-        return token;
-      })
-      .catch(() => null);
-  }
-
-  return null;
-}
-
 function sseTerminalMessage(msg) {
   dispatch({
     type: 'terminal:message',
@@ -174,7 +127,7 @@ class BasePreview extends React.Component<Props, State> {
     modules: IModulesByPath;
   };
 
-  $socket: SocketIOClient.Socket;
+  // $socket: SocketIOClient.Socket;
   connectTimeout: number | undefined;
   // indicates if the socket closing is initiated by us
   localClose: boolean;
@@ -248,182 +201,156 @@ class BasePreview extends React.Component<Props, State> {
   }
 
   setupSSESockets = async () => {
-    const hasInitialized = Boolean(this.$socket);
-
+    // const hasInitialized = Boolean(this.$socket);
     // function onTimeout(comp: BasePreview) {
     //   comp.connectTimeout = null;
     //   if (comp.props.setSSEManagerStatus) {
     //     comp.props.setSSEManagerStatus('disconnected');
     //   }
     // }
-
-    if (hasInitialized) {
-      this.setState({
-        frameInitialized: false,
-      });
-      if (this.$socket) {
-        this.localClose = true;
-        this.$socket.close();
-        // we need this setTimeout() for socket open() to work immediately after close()
-        // setTimeout(() => {
-        //   this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
-        //   this.$socket.open();
-        // }, 0);
-      }
-    } else {
-      const socket = io(getSSEUrl(), {
-        autoConnect: false,
-        transports: ['websocket', 'polling'],
-      });
-      this.$socket = socket;
-      if (process.env.NODE_ENV === 'development') {
-        (window as any).$socket = socket;
-      }
-
-      socket.on('disconnect', () => {
-        if (this.localClose) {
-          this.localClose = false;
-          return;
-        }
-
-        if (
-          this.props.setSSEManagerStatus &&
-          this.props.managerStatus === 'connected' &&
-          this.props.containerStatus !== 'hibernated'
-        ) {
-          // this.props.setSSEManagerStatus('disconnected');
-          dispatch({ type: 'codesandbox:sse:disconnect' });
-        }
-      });
-
-      // socket.on('connect', async () => {
-      //   if (this.connectTimeout) {
-      //     clearTimeout(this.connectTimeout);
-      //     this.connectTimeout = null;
-      //   }
-
-      //   if (this.props.setSSEManagerStatus) {
-      //     this.props.setSSEManagerStatus('connected');
-      //   }
-
-      //   const { id } = this.props.sandbox;
-      //   const token = await retrieveSSEToken();
-
-      //   socket.emit('sandbox', { id, token });
-
-      //   sseTerminalMessage(`connected, starting sandbox ${id}...`);
-
-      //   socket.emit('sandbox:start');
-      // });
-
-      socket.on('shell:out', ({ data, id }) => {
-        dispatch({
-          type: 'shell:out',
-          data,
-          id,
-        });
-      });
-
-      socket.on('shell:exit', ({ id, code, signal }) => {
-        dispatch({
-          type: 'shell:exit',
-          code,
-          signal,
-          id,
-        });
-      });
-
-      // socket.on('sandbox:update', message => {
-      //   if (this.props.syncSandbox) {
-      //     this.props.syncSandbox({ updates: message.updates });
-      //   }
-      // });
-
-      // socket.on('sandbox:start', () => {
-      //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} started.`);
-
-      //   if (!this.state.frameInitialized && this.props.onInitialized) {
-      //     this.disposeInitializer = this.props.onInitialized(this);
-      //   }
-
-      //   this.setState({
-      //     frameInitialized: true,
-      //     overlayMessage: null,
-      //   });
-      //   if (this.props.setSSEContainerStatus) {
-      //     this.props.setSSEContainerStatus('sandbox-started');
-      //   }
-
-      //   setTimeout(() => {
-      //     this.executeCodeImmediately(true);
-      //     this.handleRefresh();
-      //   });
-      // });
-
-      // socket.on('sandbox:hibernate', () => {
-      //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} hibernated.`);
-
-      //   if (this.props.setSSEContainerStatus) {
-      //     this.props.setSSEContainerStatus('hibernated');
-      //   }
-
-      //   this.setState(
-      //     {
-      //       frameInitialized: false,
-      //       overlayMessage:
-      //         'The sandbox was hibernated because of inactivity. Refresh the page to restart it.',
-      //     },
-      //     () => this.$socket.close()
-      //   );
-      // });
-
-      // socket.on('sandbox:stop', () => {
-      //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} restarting...`);
-
-      //   if (this.props.setSSEContainerStatus) {
-      //     this.props.setSSEContainerStatus('stopped');
-      //   }
-
-      //   this.setState({
-      //     frameInitialized: false,
-      //     overlayMessage: 'Restarting the sandbox...',
-      //   });
-      // });
-
-      // socket.on('sandbox:log', ({ data }) => {
-      //   dispatch({
-      //     type: 'terminal:message',
-      //     data,
-      //   });
-      // });
-
-      socket.on('sandbox:error', ({ message, unrecoverable }) => {
-        sseTerminalMessage(
-          `sandbox ${this.props.sandbox.id} ${
-            unrecoverable ? 'unrecoverable ' : ''
-          }error "${message}"`
-        );
-        if (unrecoverable) {
-          this.setState(
-            {
-              frameInitialized: false,
-              overlayMessage:
-                'An unrecoverable sandbox error occurred. :-( Try refreshing the page.',
-              sseError: true,
-            },
-            () => this.$socket.close()
-          );
-        } else {
-          notificationState.addNotification({
-            message: `Sandbox Container: ${message}`,
-            status: NotificationStatus.ERROR,
-          });
-        }
-      });
-
-      // this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
-      socket.open();
-    }
+    // if (hasInitialized) {
+    //   this.setState({
+    //     frameInitialized: false,
+    //   });
+    //   if (this.$socket) {
+    //     this.localClose = true;
+    //     this.$socket.close();
+    //     // we need this setTimeout() for socket open() to work immediately after close()
+    //     // setTimeout(() => {
+    //     //   this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
+    //     //   this.$socket.open();
+    //     // }, 0);
+    //   }
+    // } else {
+    // const socket = io(getSSEUrl(), {
+    //   autoConnect: false,
+    //   transports: ['websocket', 'polling'],
+    // });
+    // this.$socket = socket;
+    // if (process.env.NODE_ENV === 'development') {
+    //   (window as any).$socket = socket;
+    // }
+    // socket.on('disconnect', () => {
+    //   if (this.localClose) {
+    //     this.localClose = false;
+    //     return;
+    //   }
+    //   // if (
+    //   //   this.props.setSSEManagerStatus &&
+    //   //   this.props.managerStatus === 'connected' &&
+    //   //   this.props.containerStatus !== 'hibernated'
+    //   // ) {
+    //   //   // this.props.setSSEManagerStatus('disconnected');
+    //   //   // dispatch({ type: 'codesandbox:sse:disconnect' });
+    //   // }
+    // });
+    // socket.on('connect', async () => {
+    //   if (this.connectTimeout) {
+    //     clearTimeout(this.connectTimeout);
+    //     this.connectTimeout = null;
+    //   }
+    //   if (this.props.setSSEManagerStatus) {
+    //     this.props.setSSEManagerStatus('connected');
+    //   }
+    //   const { id } = this.props.sandbox;
+    //   const token = await retrieveSSEToken();
+    //   socket.emit('sandbox', { id, token });
+    //   sseTerminalMessage(`connected, starting sandbox ${id}...`);
+    //   socket.emit('sandbox:start');
+    // });
+    // socket.on('shell:out', ({ data, id }) => {
+    //   dispatch({
+    //     type: 'shell:out',
+    //     data,
+    //     id,
+    //   });
+    // });
+    // socket.on('shell:exit', ({ id, code, signal }) => {
+    //   dispatch({
+    //     type: 'shell:exit',
+    //     code,
+    //     signal,
+    //     id,
+    //   });
+    // });
+    // socket.on('sandbox:update', message => {
+    //   if (this.props.syncSandbox) {
+    //     this.props.syncSandbox({ updates: message.updates });
+    //   }
+    // });
+    // socket.on('sandbox:start', () => {
+    //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} started.`);
+    //   if (!this.state.frameInitialized && this.props.onInitialized) {
+    //     this.disposeInitializer = this.props.onInitialized(this);
+    //   }
+    //   this.setState({
+    //     frameInitialized: true,
+    //     overlayMessage: null,
+    //   });
+    //   if (this.props.setSSEContainerStatus) {
+    //     this.props.setSSEContainerStatus('sandbox-started');
+    //   }
+    //   setTimeout(() => {
+    //     this.executeCodeImmediately(true);
+    //     this.handleRefresh();
+    //   });
+    // });
+    // socket.on('sandbox:hibernate', () => {
+    //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} hibernated.`);
+    //   if (this.props.setSSEContainerStatus) {
+    //     this.props.setSSEContainerStatus('hibernated');
+    //   }
+    //   this.setState(
+    //     {
+    //       frameInitialized: false,
+    //       overlayMessage:
+    //         'The sandbox was hibernated because of inactivity. Refresh the page to restart it.',
+    //     },
+    //     () => this.$socket.close()
+    //   );
+    // });
+    // socket.on('sandbox:stop', () => {
+    //   sseTerminalMessage(`sandbox ${this.props.sandbox.id} restarting...`);
+    //   if (this.props.setSSEContainerStatus) {
+    //     this.props.setSSEContainerStatus('stopped');
+    //   }
+    //   this.setState({
+    //     frameInitialized: false,
+    //     overlayMessage: 'Restarting the sandbox...',
+    //   });
+    // });
+    // socket.on('sandbox:log', ({ data }) => {
+    //   dispatch({
+    //     type: 'terminal:message',
+    //     data,
+    //   });
+    // });
+    // socket.on('sandbox:error', ({ message, unrecoverable }) => {
+    //   sseTerminalMessage(
+    //     `sandbox ${this.props.sandbox.id} ${
+    //       unrecoverable ? 'unrecoverable ' : ''
+    //     }error "${message}"`
+    //   );
+    //   if (unrecoverable) {
+    //     this.setState(
+    //       {
+    //         frameInitialized: false,
+    //         overlayMessage:
+    //           'An unrecoverable sandbox error occurred. :-( Try refreshing the page.',
+    //         sseError: true,
+    //       },
+    //       () => this.$socket.close()
+    //     );
+    //   } else {
+    //     notificationState.addNotification({
+    //       message: `Sandbox Container: ${message}`,
+    //       status: NotificationStatus.ERROR,
+    //     });
+    //   }
+    // });
+    // this.connectTimeout = window.setTimeout(() => onTimeout(this), 3000);
+    // socket.open();
+    // }
   };
 
   static defaultProps = {
@@ -443,10 +370,10 @@ class BasePreview extends React.Component<Props, State> {
       this.disposeInitializer();
     }
 
-    if (this.$socket) {
-      this.localClose = true;
-      this.$socket.close();
-    }
+    // if (this.$socket) {
+    //   this.localClose = true;
+    //   this.$socket.close();
+    // }
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -554,14 +481,14 @@ class BasePreview extends React.Component<Props, State> {
 
             break;
           }
-          case 'socket:message': {
-            if (this.$socket) {
-              const { channel, type: _t, codesandbox: _c, ...message } = data;
-              this.$socket.emit(channel, message);
-            }
+          // case 'socket:message': {
+          //   if (this.$socket) {
+          //     const { channel, type: _t, codesandbox: _c, ...message } = data;
+          //     this.$socket.emit(channel, message);
+          //   }
 
-            break;
-          }
+          //   break;
+          // }
           case 'done': {
             this.setState({ showScreenshot: false });
             break;

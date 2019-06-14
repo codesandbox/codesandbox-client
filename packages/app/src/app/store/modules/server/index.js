@@ -7,6 +7,8 @@ export default Module({
   state: {
     status: 'initializing',
     containerStatus: 'initializing',
+    error: undefined,
+    hasUnrecoverableError: false,
   },
   signals: {
     restartSandbox: sequences.restartSandbox,
@@ -14,5 +16,6 @@ export default Module({
     statusChanged: sequences.setStatus,
     containerStatusChanged: sequences.setContainerStatus,
     onSSEMessage: sequences.onSSEMessage,
+    onCodeSandboxAPIMessage: sequences.onCodeSandboxAPIMessage,
   },
 });

@@ -755,9 +755,7 @@ export default class TranspiledModule {
       if (this.module.path.startsWith('/node_modules')) {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
-            `[WARN] Sandpack: loading an untranspiled module: ${
-              this.module.path
-            }`
+            `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
           );
         }
         // This code is probably required as a dynamic require. Since we can
@@ -1146,7 +1144,6 @@ export default class TranspiledModule {
     data.transpilationInitiators.forEach((depId: string) => {
       this.transpilationInitiators.add(loadModule(depId, true, true));
     });
-
     data.asyncDependencies.forEach((depId: string) => {
       this.asyncDependencies.push(Promise.resolve(loadModule(depId)));
     });

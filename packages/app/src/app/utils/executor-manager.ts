@@ -105,6 +105,11 @@ export class ExecutorsManager {
 
     return this.executor;
   }
+
+  async closeExecutor() {
+    await this.executor.dispose();
+    this.executor = undefined;
+  }
 }
 
 export const executorsManager = new ExecutorsManager();

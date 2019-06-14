@@ -22,4 +22,7 @@ export default Provider({
 
     return executor.emit(message, data);
   },
+  closeExecutor() {
+    return executorsManager.closeExecutor();
+  },
 });
