@@ -32,7 +32,7 @@ function UserMenu() {
         <HoverMenu onClose={() => userMenuClosed()}>
           <Menu
             openPreferences={() => modalOpened({ modal: 'preferences' })}
-            openStorageManagement={files.gotUploadedFiles()}
+            openStorageManagement={files.gotUploadedFiles}
             signOut={signOutClicked()}
             username={user.username}
             curator={user.curatorAt}
