@@ -10,7 +10,7 @@ export function restartContainer({ executor }) {
 }
 
 /**
- * We need to remove this logic later! We need to move it to the terminal component
+ * TODO: We need to remove this logic later! We need to move it to the terminal component
  * and let that component listen to the executor directly.
  */
 export function logSandboxMessage({ props, codeSandboxApi }) {
