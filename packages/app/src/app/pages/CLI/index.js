@@ -2,13 +2,14 @@ import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
 
 import Navigation from 'app/pages/common/Navigation';
-import { useSignals } from 'app/store';
+import { useSignals, useStore } from 'app/store';
 
 import { Container } from './elements';
 import Prompt from './Prompt';
 
-const CLI = ({ authToken, error, isLoadingCLI, user }) => {
+const CLI = () => {
   const { cliMounted, signInCliClicked } = useSignals();
+  const { user, authToken, isLoadingCLI, error } = useStore();
 
   useEffect(() => {
     cliMounted();
