@@ -10,7 +10,7 @@ const SignInButton = (props: any) => {
   const { signInClicked } = useSignals();
 
   return (
-    <Button small onClick={() => signInClicked()} {...props}>
+    <Button small onClick={signInClicked} {...props}>
       <Row>
         <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
       </Row>
