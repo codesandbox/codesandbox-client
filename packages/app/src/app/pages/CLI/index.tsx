@@ -17,7 +17,6 @@ interface Props {
 
 const CLI = ({ authToken, error, isLoadingCLI, user }: Props) => {
   const { cliMounted, signInCliClicked } = useSignals();
-  const { user, authToken, isLoadingCLI, error } = useStore();
 
   useEffect(() => {
     cliMounted();

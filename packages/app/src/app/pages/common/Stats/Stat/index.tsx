@@ -2,12 +2,12 @@ import React from 'react';
 
 import { CenteredText } from './elements';
 
-function Stat({ Icon, count }) {
+const Stat = ({ Icon, count }: { Icon: any; count: number }) => {
   return (
     <CenteredText>
       {Icon}
       <span
-        style={{
+        css={{
           marginLeft: '0.5em',
           fontWeight: 300,
         }}
@@ -16,6 +16,6 @@ function Stat({ Icon, count }) {
       </span>
     </CenteredText>
   );
-}
+};
 
 export default Stat;
