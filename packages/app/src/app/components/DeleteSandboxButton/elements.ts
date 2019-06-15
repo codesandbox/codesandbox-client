@@ -1,24 +1,18 @@
-import React from 'react';
 import styled from 'styled-components';
-import DeleteIcon from 'react-icons/lib/md/delete';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
-export const DeleteSandboxButton = styled(props => (
-  <Tooltip content="Delete Sandbox">
-    <button {...props}>
-      <DeleteIcon />
-    </button>
-  </Tooltip>
-))`
-  font-size: 1.2em;
-  background-color: inherit;
-  border: none;
+export const Container = styled(Tooltip)`
   padding: 5px 6px 9px 6px;
+  border: none;
+  background-color: inherit;
   color: rgba(255, 255, 255, 0.5);
+  font-size: 1.2em;
   cursor: pointer;
+
   &:hover {
     color: rgba(255, 255, 255, 1);
   }
+
   &[disabled] {
     opacity: 0.5;
     cursor: default;
