@@ -1,34 +1,36 @@
 import React from 'react';
-
 import {
   Container,
   DeployAnimationContainer,
-  StyledGitHubLogo,
-  StyledCube,
-  StyledLogo,
+  GitHubLogo,
+  Cube,
+  OpaqueLogo,
   DeployText,
   Result,
 } from './elements';
 
-function Progress({ message, result }) {
-  return (
-    <Container>
-      {result ? (
-        <Result>{result}</Result>
-      ) : (
-        <div>
-          <DeployAnimationContainer deploying>
-            <StyledLogo width={70} height={70} />
-            {[0, 1, 2, 3].map(i => (
-              <StyledCube key={i} i={i} size={20} />
-            ))}
-            <StyledGitHubLogo />
-          </DeployAnimationContainer>
-          <DeployText>{message}</DeployText>
-        </div>
-      )}
-    </Container>
-  );
+interface IGitProgressProps {
+  result: string;
+  message: string;
 }
 
-export default Progress;
+const GitProgress = ({ message, result }: IGitProgressProps) => (
+  <Container>
+    {result ? (
+      <Result>{result}</Result>
+    ) : (
+      <>
+        <DeployAnimationContainer deploying>
+          <OpaqueLogo width={70} height={70} />
+          {[0, 1, 2, 3].map(i => (
+            <Cube key={i} delay={i} size={20} />
+          ))}
+          <GitHubLogo />
+        </DeployAnimationContainer>
+        <DeployText>{message}</DeployText>
+      </>
+    )}
+  </Container>
+);
+
+export default GitProgress;
