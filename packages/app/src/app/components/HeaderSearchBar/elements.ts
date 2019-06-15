@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import SearchIcon from 'react-icons/lib/go/search';
+import styled, { css } from 'styled-components';
+import BaseSearchIcon from 'react-icons/lib/go/search';
 import Relative from '@codesandbox/common/lib/components/Relative';
 
 export const Container = styled(Relative)`
@@ -8,45 +8,53 @@ export const Container = styled(Relative)`
   font-weight: 500;
 `;
 
-export const Input = styled.input`
-  transition: 0.4s ease all;
-  background-color: ${props =>
-    props.theme['input.background'] || 'rgba(255, 255, 255, 0.1)'};
-  border: 1px solid transparent;
-  outline: none;
-  border-radius: 4px;
-  width: 10em;
-  z-index: 20;
-  padding: 0.35em 0.5em;
-  padding-right: 1.75em;
-
-  color: ${props => props.theme['input.foreground'] || 'white'};
-  font-weight: 500;
-
-  &::-webkit-input-placeholder {
+export const Input = styled.input.attrs({
+  type: 'text',
+})`
+  ${({ theme }) => css`
+    z-index: 20;
+    width: 10em;
+    padding: 0.35em 0.5em;
+    padding-right: 1.75em;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: ${theme[`input.background`] ||
+      css`rgba(255, 255, 255, 0.1)`};
+    color: ${theme[`input.foreground`] || css`white`};
     font-weight: 500;
-  }
+    transition: 0.4s ease all;
+    outline: none;
 
-  &:focus {
-    width: 14em;
-  }
+    &::-webkit-input-placeholder {
+      font-weight: 500;
+    }
+
+    &:focus {
+      width: 14em;
+    }
+  `}
 `;
 
-export const StyledSearchIcon = styled(SearchIcon)`
-  font-size: 0.875em;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
-`;
-
-export const StyledSearchButton = styled.button`
+export const SearchButton = styled.button.attrs({
+  type: 'submit',
+})`
   position: absolute;
+  z-index: 20;
   right: 0;
   top: 50%;
   padding: 0.35em 0.5em;
-  transform: translate(0, -50%);
-  z-index: 20;
+  border: none;
   background: transparent;
   outline: none;
-  border: none;
+  transform: translate(0, -50%);
   cursor: pointer;
+`;
+
+export const SearchIcon = styled(BaseSearchIcon)`
+  ${({ theme }) => css`
+    color: ${theme.light
+      ? css`rgba(0, 0, 0, 0.7)`
+      : css`rgba(255, 255, 255, 0.7)`};
+    font-size: 0.875em;
+  `}
 `;

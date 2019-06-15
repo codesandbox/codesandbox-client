@@ -1,31 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import history from 'app/utils/history';
 import { searchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { Container, Input, SearchButton, SearchIcon } from './elements';
 
-import {
-  Container,
-  Input,
-  StyledSearchIcon,
-  StyledSearchButton,
-} from './elements';
+const HeaderSearchBar = () => {
+  const [query, setQuery] = useState(``);
 
-function HeaderSearchBar() {
-  const handleFormSubmit = e => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const searchQuery = e.target.elements.q.value;
-    history.push(searchUrl(searchQuery));
+    history.push(searchUrl(query));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
   };
 
   return (
     <Container>
       <form onSubmit={handleFormSubmit}>
-        <Input name="q" placeholder="Search sandboxes" />
-        <StyledSearchButton>
-          <StyledSearchIcon />
-        </StyledSearchButton>
+        <Input
+          placeholder="Search sandboxes"
+          value={query}
+          onChange={handleChange}
+        />
+        <SearchButton>
+          <SearchIcon />
+        </SearchButton>
       </form>
     </Container>
   );
-}
+};
 
 export default HeaderSearchBar;
