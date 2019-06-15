@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react';
-import { createGlobalStyle } from 'styled-components';
+import React from 'react';
+import { createGlobalStyle, css } from 'styled-components';
 import TagsInput from 'react-tagsinput';
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle`${({ color }: { color: any }) => css`
   .react-tagsinput {
     display: flex;
     flex-wrap: row;
@@ -10,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
     border-radius: 4px;
     color: white;
 
-    margin: 0 -.2rem;
+    margin: 0 -0.2rem;
   }
 
   .react-tagsinput-tag {
@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0.2rem;
     font-size: 13px;
     padding: 0.3em 0.5em;
-    background-color: ${props => props.color};
+    background-color: ${color};
     color: white;
     font-weight: 500;
     border-radius: 4px;
@@ -30,7 +30,7 @@ const GlobalStyle = createGlobalStyle`
 
     background-color: rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.1);
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 13px;
     font-weight: 400;
     margin-bottom: 6px;
@@ -38,11 +38,11 @@ const GlobalStyle = createGlobalStyle`
     outline: none;
     padding: 0.3em;
     border-radius: 4px;
-    margin-left: .2rem;
+    margin-left: 0.2rem;
     width: 80px;
 
     &:focus {
-      border-color: ${props => props.color.clearer(0.3)};
+      border-color: ${color.clearer(0.3)};
     }
   }
 
@@ -53,13 +53,15 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .react-tagsinput-tag a::before {
-    content: " ×";
+    content: ' ×';
   }
-`;
+`}`;
 
-export default props => (
-  <Fragment>
+const EditableTags = (props: any) => (
+  <>
     <GlobalStyle color={props.template.color} />
     <TagsInput {...props} />
-  </Fragment>
+  </>
 );
+
+export default EditableTags;
