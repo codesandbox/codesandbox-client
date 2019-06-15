@@ -27,7 +27,7 @@
     "react-helmet": "^5.2.0",
     "react-spring": "^8.0.19",
     "react-visibility-sensor": "^5.0.2",
-    "styled-components": "^4.2.0"
+    "styled-components": "^5.0.0-beta.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
