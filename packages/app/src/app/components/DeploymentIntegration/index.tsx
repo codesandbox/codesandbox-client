@@ -1,67 +1,59 @@
 import React from 'react';
-import Down from 'react-icons/lib/fa/angle-down';
-import Up from 'react-icons/lib/fa/angle-up';
-import Notice from '@codesandbox/common/lib/components/Notice';
 import DetailInfo from './DetailInfo';
-import { Container, IntegrationBlock, Name } from './elements';
+import {
+  Container,
+  IntegrationBlock,
+  Name,
+  Notice,
+  Up,
+  Down,
+} from './elements';
 
-const Integration = ({
+interface IDeploymentIntegrationProps {
+  light?: boolean;
+  loading: boolean;
+  bgColor: string;
+  Icon: React.ComponentClass<any> | React.StatelessComponent<any>;
+  name: string;
+  beta: boolean;
+  open: boolean;
+  onToggle: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onDeploy: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  children: React.ReactChildren;
+}
+
+const DeploymentIntegration = ({
   light,
+  loading,
+  bgColor,
   Icon,
   name,
-  deploy,
-  children,
-  loading,
   beta,
-  color,
   open = true,
-  toggle,
-}) => (
-  <Container>
-    <IntegrationBlock bgColor={color} onClick={toggle}>
+  onToggle,
+  onDeploy,
+  children,
+}: IDeploymentIntegrationProps) => (
+  <Container light={light} loading={loading}>
+    <IntegrationBlock bgColor={bgColor} onClick={onToggle}>
       <div>
         <Icon />
         <Name light={light}>{name}</Name>
-        {beta && (
-          <Notice
-            css={`
-              margin-left: 0.7rem;
-            `}
-          >
-            Beta
-          </Notice>
-        )}
+        {beta && <Notice>Beta</Notice>}
       </div>
-      {open ? (
-        <Up
-          css={`
-            fill: ${light ? '#000' : '#fff'};
-            cursor: pointer;
-            width: 1.5rem;
-            height: auto;
-          `}
-        />
-      ) : (
-        <Down
-          css={`
-            fill: ${light ? '#000' : '#fff'};
-            cursor: pointer;
-            width: 1.5rem;
-            height: auto;
-          `}
-        />
-      )}
+      {open ? <Up light={light} /> : <Down light={light} />}
     </IntegrationBlock>
     {open ? (
       <DetailInfo
-        loading={loading}
         light={light}
-        deploy={deploy}
-        info={children}
-        bgColor={color}
-      />
+        loading={loading}
+        bgColor={bgColor}
+        onDeploy={onDeploy}
+      >
+        {children}
+      </DetailInfo>
     ) : null}
   </Container>
 );
 
-export default Integration;
+export default DeploymentIntegration;
