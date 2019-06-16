@@ -141,14 +141,13 @@ class DevToolTerminal extends React.Component<
           />
         )}
 
-        <TerminalComponent
-          hidden={hidden || selectedShell !== undefined}
-          height={height}
-          theme={theme}
-          onTerminalInitialized={this.setTerminal}
-        />
-
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+          <TerminalComponent
+            hidden={hidden || selectedShell !== undefined}
+            height={height}
+            theme={theme}
+            onTerminalInitialized={this.setTerminal}
+          />
           {this.state.shells.map(shell => (
             <Shell
               key={shell.id}
