@@ -1,14 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
-export default styled.h1`
-  ${props => props.delay != null && delayEffect(props.delay || 0)};
-  color: white;
-  font-size: 2.5rem;
-  font-weight: 300;
-  background-color: transparent;
-  margin-top: 0;
-  border: none;
-  outline: none;
-  text-align: center;
+const Title = styled.h1`
+  ${({ delay = 0 }: { delay: number | null }) => css`
+    margin-top: 0;
+    border: none;
+    background-color: transparent;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-align: center;
+    outline: none;
+    ${delay !== null && delayEffect(delay)};
+  `}
 `;
+
+export default Title;
