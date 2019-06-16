@@ -71,6 +71,7 @@ export type DevToolProps = {
   openDevTools: () => void;
   hideDevTools: () => void;
   selectCurrentPane: () => void;
+  owned: boolean;
 };
 
 const VIEWS: IViews = {
@@ -484,6 +485,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
             return (
               <Content
                 key={view.id}
+                owned={owned}
                 hidden={hidden || i !== this.state.currentPaneIndex}
                 updateStatus={this.updateStatus(view.id)}
                 sandboxId={sandboxId}

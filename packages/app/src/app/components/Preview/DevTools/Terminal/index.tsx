@@ -127,17 +127,18 @@ class DevToolTerminal extends React.Component<
   };
 
   render() {
-    const { height, hidden, theme } = this.props;
+    const { height, hidden, theme, owned } = this.props;
     const { selectedShell } = this.state;
 
     return (
       <div className={!hidden && 'terminal'}>
-        {!hidden && this.state.shells.length > 0 && (
+        {!hidden && owned && (
           <ShellTabs
             selectedShell={this.state.selectedShell}
             shells={this.state.shells}
             selectShell={this.selectShell}
             closeShell={this.closeShell}
+            createShell={this.createShell}
           />
         )}
 
@@ -172,8 +173,8 @@ export default {
   Content: withTheme(DevToolTerminal),
   actions: ({ owned }) =>
     [
-      {
-        title: owned ? 'Add Terminal' : 'Fork to add a terminal',
+      !owned && {
+        title: 'Fork to add a terminal',
         onClick: () => {
           if (createShell && owned) {
             createShell();

@@ -37,6 +37,7 @@ export const Tab = styled.div<{ selected: boolean }>`
   padding: 0.35rem 0.75rem;
   width: 100%;
   text-align: center;
+  justify-content: center;
   cursor: pointer;
   border-bottom: 1px solid transparent;
   border-right: 1px solid
@@ -64,4 +65,34 @@ export const Tab = styled.div<{ selected: boolean }>`
               : 'rgba(255, 255, 255, 0.9)'};
           }
         `};
+`;
+
+export const PlusContainer = styled.button`
+  transition: 0.3s ease all;
+
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  padding: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* This is specific width to align with the arrow above it in devtools */
+  min-width: 45px;
+  width: 45px;
+  height: 100%;
+
+  cursor: pointer;
+
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.5)'};
+
+  &:hover {
+    background-color: ${props =>
+      `${props.theme['tab.activeBackground'] || props.theme.background2}`};
+    color: ${props =>
+      props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.7)'};
+  }
 `;
