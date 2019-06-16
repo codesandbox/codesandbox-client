@@ -21,7 +21,7 @@ import {
 } from './elements';
 
 interface ISandboxListProps {
-  sandboxes: Array<SmallSandbox>;
+   sandboxes: SmallSandbox[];
   isCurrentUser: boolean;
   onDelete: () => void;
 }
