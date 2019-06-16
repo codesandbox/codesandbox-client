@@ -6,7 +6,7 @@ interface IIntegrationProps {
   small: boolean;
   loading: boolean;
   bgColor: string;
-  Icon: React.ComponentClass<any> | React.StatelessComponent<any>;
+  Icon: React.ComponentType;
   name: string;
   onSignOut?: () => void;
   onSignIn?: () => void;
