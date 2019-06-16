@@ -4,28 +4,18 @@ import GithubIcon from 'react-icons/lib/fa/github';
 import { Icon } from './elements';
 import SpectrumIcon from './SpectrumLogo';
 
-export default ({ ...props }) => (
+const SocialInfo = (props: any) => (
   <div {...props}>
-    <Icon
-      href="https://twitter.com/codesandbox"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <Icon href="https://twitter.com/codesandbox">
       <TwitterIcon />
     </Icon>
-    <Icon
-      href="https://github.com/codesandbox/codesandbox-client"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <Icon href="https://github.com/codesandbox/codesandbox-client">
       <GithubIcon />
     </Icon>
-    <Icon
-      href="https://spectrum.chat/codesandbox"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <Icon href="https://spectrum.chat/codesandbox">
       <SpectrumIcon />
     </Icon>
   </div>
 );
+
+export default SocialInfo;
