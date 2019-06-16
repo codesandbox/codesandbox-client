@@ -465,21 +465,25 @@ export default class TestRunner {
   };
 
   handleCodeSandboxMessage = (message: any) => {
-    if (message) {
-      if (message.type === 'set-test-watching') {
+    // TODO: ?? define messages as sandboxMessage???
+    switch (message.type) {
+      case 'set-test-watching':
         this.watching = message.watching;
         if (message.watching === true) {
           this.ranTests.clear();
           this.runTests(true);
         }
-      } else if (message.type === 'run-all-tests') {
+        break;
+      case 'run-all-tests':
         this.ranTests.clear();
         this.runTests(true);
-      } else if (message.type === 'run-tests') {
+        break;
+      case 'run-tests': {
         const path = message.path;
 
         this.ranTests.delete(path);
         this.runTests();
+        break;
       }
     }
   };
