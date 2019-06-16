@@ -5,16 +5,12 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 const blink = keyframes`
   // @ts-ignore;
   0% {color: ${(props: { theme: { light: boolean } }) =>
-    props.theme.light
-      ? css`rgba(0, 0, 0, 0.7)`
-      : css`rgba(255, 255, 255, 0.7)`}};
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'}};
 
 	50% {color: rgba(255, 255, 255, 1);}
 
 	100% {color: ${(props: { theme: { light: boolean } }) =>
-    props.theme.light
-      ? css`rgba(0, 0, 0, 0.7)`
-      : css`rgba(255, 255, 255, 0.7)`}};
+    props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'}};
 
 `;
 

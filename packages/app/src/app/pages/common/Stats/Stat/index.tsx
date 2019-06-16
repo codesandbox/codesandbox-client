@@ -2,7 +2,12 @@ import React from 'react';
 
 import { CenteredText } from './elements';
 
-function Stat({ Icon, count }) {
+interface Props {
+  Icon: any;
+  count: number;
+}
+
+const Stat = ({ Icon, count }: Props) => {
   return (
     <CenteredText>
       {Icon}
@@ -16,6 +21,6 @@ function Stat({ Icon, count }) {
       </span>
     </CenteredText>
   );
-}
+};
 
 export default Stat;

@@ -1,14 +1,13 @@
 import React from 'react';
 
-import { inject } from 'mobx-react';
-
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { newSandboxWizard } from '@codesandbox/common/lib/utils/url-generator';
+import { useStore } from 'app/store';
 
 import { Container, Title, SubTitle, Buttons } from './elements';
 
-function NotFound({ store }) {
-  const { hasLogIn } = store;
+const NotFound = () => {
+  const { hasLogIn } = useStore();
 
   return (
     <Container>
@@ -28,6 +27,6 @@ function NotFound({ store }) {
       </Buttons>
     </Container>
   );
-}
+};
 
-export default inject('store')(NotFound);
+export default NotFound;

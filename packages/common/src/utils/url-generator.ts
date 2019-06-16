@@ -147,7 +147,8 @@ export const optionsToParameterizedUrl = (options: Object) => {
 export const gitHubToSandboxUrl = (githubUrl: string) =>
   githubUrl.replace(gitHubPrefix, '/s/github').replace(dotGit, '');
 
-export const searchUrl = query => `/search${query ? `?query=${query}` : ''}`;
+export const searchUrl = (query?: string) =>
+  `/search${query ? `?query=${query}` : ''}`;
 export const patronUrl = () => `/patron`;
 export const curatorUrl = () => `/curator`;
 export const tosUrl = () => `/legal/terms`;

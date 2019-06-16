@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import Media from 'react-media';
 import {
@@ -14,7 +14,9 @@ import BellIcon from 'react-icons/lib/md/notifications';
 import FlameIcon from 'react-icons/lib/go/flame';
 import Row from '@codesandbox/common/lib/components/flex/Row';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+// @ts-ignore
+import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg';
+import { useStore, useSignals } from 'app/store';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import OverlayComponent from 'app/components/Overlay';
 import Notifications from './Notifications';
@@ -32,8 +34,17 @@ import {
   Wrapper,
 } from './elements';
 
-function Navigation({ signals, store, title, searchNoInput }) {
-  const { isLoggedIn, isPatron, user } = store;
+interface Props {
+  title: string;
+  searchNoInput?: boolean;
+}
+
+const Navigation = ({ title, searchNoInput }: Props) => {
+  const { isLoggedIn, isPatron, user, userNotifications } = useStore();
+  const {
+    modalOpened,
+    userNotifications: userNotificationsSignals,
+  } = useSignals();
 
   return (
     <Row justifyContent="space-between">
@@ -41,7 +52,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
         <a href="/?from-app=1">
           <LogoWithBorder height={35} width={35} />
         </a>
-        <Border width={1} size={500} />
+        <Border />
         <Title>{title}</Title>
       </TitleWrapper>
       <Wrapper>
@@ -82,22 +93,20 @@ function Navigation({ signals, store, title, searchNoInput }) {
 
           {user && (
             <OverlayComponent
-              isOpen={store.userNotifications.notificationsOpened}
+              isOpen={userNotifications.notificationsOpened}
               Overlay={Notifications}
-              onOpen={signals.userNotifications.notificationsOpened}
-              onClose={signals.userNotifications.notificationsClosed}
+              onOpen={userNotificationsSignals.notificationsOpened}
+              onClose={userNotificationsSignals.notificationsClosed}
               event="Notifications"
               noHeightAnimation
             >
               {open => (
                 <Action
-                  style={{ placement: 'relative', fontSize: '1.25rem' }}
+                  style={{ position: 'relative', fontSize: '1.25rem' }}
                   onClick={open}
                 >
                   <BellIcon height={35} />
-                  {store.userNotifications.unreadCount > 0 && (
-                    <UnreadIcon count={store.userNotifications.unreadCount} />
-                  )}
+                  {userNotifications.unreadCount > 0 && <UnreadIcon />}
                 </Action>
               )}
             </OverlayComponent>
@@ -106,7 +115,7 @@ function Navigation({ signals, store, title, searchNoInput }) {
           <Action
             style={{ fontSize: '1.125rem' }}
             onClick={() =>
-              signals.modalOpened({
+              modalOpened({
                 modal: 'newSandbox',
               })
             }
@@ -122,4 +131,4 @@ function Navigation({ signals, store, title, searchNoInput }) {
     </Row>
   );
 }
-export default inject('store', 'signals')(observer(Navigation));
+export default observer(Navigation);
