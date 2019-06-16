@@ -1,111 +1,104 @@
-import React from 'react';
-import { injectStripe, CardElement } from 'react-stripe-elements';
-import { Button } from '@codesandbox/common/lib/components/Button';
+import React, { useState } from 'react';
+import { injectStripe } from 'react-stripe-elements';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
+import {
+  CardContainer,
+  Card,
+  NameInput,
+  ErrorText,
+  Label,
+  Submit,
+} from './elements';
 
-import { CardContainer, NameInput, ErrorText, Label } from './elements';
+interface ICheckoutFormProps {
+  name?: string;
+  loading: boolean;
+  buttonName: string;
+  loadingText: string;
+  error: Error;
+  stripe: any;
+  subscribe: (id: string) => void;
+}
 
-class CheckoutForm extends React.PureComponent {
-  constructor(props) {
-    super(props);
+interface IErrorsState {
+  name?: string;
+  stripe?: Error;
+}
 
-    this.state = {
-      errors: {},
-      name: props.name || '',
-    };
-  }
+const CheckoutForm = ({
+  name = ``,
+  loading,
+  buttonName,
+  loadingText,
+  error,
+  stripe,
+  subscribe,
+}: ICheckoutFormProps) => {
+  const [cardholderName, setCardholderName] = useState(name);
+  const [isLoading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<IErrorsState>({});
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.name !== this.props.name) {
-      this.setState({ errors: {}, name: nextProps.name });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name) {
+      setErrors({ name: 'Please provide a name ' });
+      return;
     }
-  }
 
-  setName = e => {
-    if (e) {
-      this.setState({ errors: {}, name: e.target.value });
-    }
-  };
-
-  handleSubmit = async ev => {
-    ev.preventDefault();
-    if (!this.state.name) {
-      return this.setState({ errors: { name: 'Please provide a name ' } });
-    }
-
-    this.setState({ loading: true, errors: {} });
+    setLoading(true);
+    setErrors({});
 
     // Within the context of `Elements`, this call to createToken knows which Element to
     // tokenize, since there's only one in this group.
-    const { token, error } = await this.props.stripe.createToken({
-      name: this.state.name,
-    });
-    if (error) {
-      return this.setState({
-        loading: false,
-        errors: {
-          stripe: error.message,
-        },
-      });
+    const { token, error: stripeErr } = await stripe.createToken({ name });
+    if (stripeErr) {
+      setLoading(false);
+      setErrors({ stripe: stripeErr.message });
+      return;
     }
 
     try {
-      await this.props.subscribe(token.id);
-    } catch (e) {
-      logError(e);
-
-      return this.setState({
-        loading: false,
-        errors: {
-          stripe: e.message,
-        },
-      });
+      await subscribe(token.id);
+    } catch (subscribeErr) {
+      logError(subscribeErr);
+      setLoading(false);
+      setErrors({ stripe: subscribeErr.message });
+      return;
     }
 
-    return this.setState({
-      loading: false,
-    });
+    setLoading(false);
   };
 
-  render() {
-    const { buttonName, loadingText, isLoading, error } = this.props;
-    const { errors, loading: stateLoading } = this.state;
+  const loadingState = isLoading || loading;
 
-    const loading = isLoading || stateLoading;
+  const stripeError = errors.stripe || error;
 
-    const stripeError = errors.stripe || error;
+  return (
+    <form onSubmit={handleSubmit}>
+      <Label>Cardholder Name</Label>
+      {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
+      <div>
+        <NameInput
+          value={cardholderName}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setCardholderName(e.target.value)
+          }
+          error={Boolean(errors.name)}
+          placeholder="Please enter your name"
+        />
+      </div>
 
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <Label>Cardholder Name</Label>
-        {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
-        <div>
-          <NameInput
-            value={this.state.name}
-            onChange={this.setName}
-            error={errors.name}
-            placeholder="Please enter your name"
-          />
-        </div>
+      <Label>Card</Label>
+      {stripeError != null && <ErrorText>{stripeError}</ErrorText>}
+      <CardContainer>
+        <Card />
+      </CardContainer>
 
-        <Label>Card</Label>
-        {stripeError != null && <ErrorText>{stripeError}</ErrorText>}
-        <CardContainer>
-          <CardElement
-            style={{ base: { color: 'white', fontWeight: '500' } }}
-          />
-        </CardContainer>
-
-        <Button
-          type="submit"
-          disabled={loading}
-          style={{ marginTop: '1rem', width: 300 }}
-        >
-          {loading ? loadingText : buttonName}
-        </Button>
-      </form>
-    );
-  }
-}
+      <Submit disabled={loadingState}>
+        {loadingState ? loadingText : buttonName}
+      </Submit>
+    </form>
+  );
+};
 
 export default injectStripe(CheckoutForm);

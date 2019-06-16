@@ -247,7 +247,7 @@
     "react-show": "^3.0.4",
     "react-split-pane": "^0.1.85",
     "react-spring": "^8.0.19",
-    "react-stripe-elements": "^1.2.0",
+    "react-stripe-elements": "^3.0.0",
     "react-tagsinput": "^3.19.0",
     "react-virtualized": "^9.19.1",
     "resize-observer-polyfill": "^1.5.1",
