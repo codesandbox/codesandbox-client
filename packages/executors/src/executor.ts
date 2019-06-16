@@ -1,5 +1,10 @@
 export interface IFiles {
-  [path: string]: { code: string | null; isBinary: boolean; path: string };
+  [path: string]: {
+    code: string | null;
+    savedCode: string | null;
+    isBinary: boolean;
+    path: string;
+  };
 }
 
 /**

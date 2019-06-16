@@ -1,6 +1,5 @@
 import { Provider } from 'cerebral';
 import { executorsManager } from 'app/utils/executor-manager';
-import { ServerExecutor } from '@codesandbox/executors';
 
 export default Provider({
   initializeExecutor(sandbox) {
@@ -24,5 +23,11 @@ export default Provider({
   },
   closeExecutor() {
     return executorsManager.closeExecutor();
+  },
+  updateFiles(sandbox) {
+    return executorsManager.updateFiles(sandbox);
+  },
+  isServer() {
+    return executorsManager.isServer();
   },
 });

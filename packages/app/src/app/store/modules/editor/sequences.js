@@ -172,6 +172,8 @@ export const changeCode = [
 
   actions.addChangedModule,
   actions.unsetDirtyTab,
+
+  actions.sendChangesToExecutor,
 ];
 
 export const saveChangedModules = [
@@ -241,6 +243,7 @@ export const saveCode = [
       sendModuleSaved,
 
       actions.updateTemplateIfSSE,
+      actions.sendChangesToExecutor,
     ],
 
     error: [callVSCodeCallbackError],

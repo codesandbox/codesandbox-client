@@ -62,7 +62,7 @@ const CLIENT_VIEWS: ViewConfig[] = [
 
 const SERVER_VIEWS: ViewConfig[] = [
   {
-    views: [{ id: 'codesandbox.browser' }],
+    views: [{ id: 'codesandbox.browser' }, { id: 'codesandbox.browser' }],
   },
   {
     open: true,

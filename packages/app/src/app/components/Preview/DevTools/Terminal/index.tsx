@@ -148,7 +148,7 @@ class DevToolTerminal extends React.Component<
           onTerminalInitialized={this.setTerminal}
         />
 
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           {this.state.shells.map(shell => (
             <Shell
               key={shell.id}

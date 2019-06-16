@@ -42,7 +42,7 @@ export class TerminalComponent extends React.PureComponent<Props> {
   setupResizeObserver = (el: HTMLDivElement) => {
     this.observer = new ResizeObserver(() => {
       clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
+      this.timeout = window.setTimeout(() => {
         this.term.fit();
       }, 300);
     });
@@ -60,7 +60,7 @@ export class TerminalComponent extends React.PureComponent<Props> {
     if (this.term) {
       if (prevProps.height !== this.props.height) {
         clearTimeout(this.timeout);
-        this.timeout = setTimeout(
+        this.timeout = window.setTimeout(
           () => {
             this.term.fit();
           },

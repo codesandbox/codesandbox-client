@@ -24,8 +24,9 @@ function getModulesToSend(sandbox: Sandbox): IFiles {
     const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
     if (path) {
       modulesObject[path] = {
-        path,
         code: m.code,
+        savedCode: m.savedCode,
+        path,
         isBinary: m.isBinary,
       };
     }
@@ -34,6 +35,7 @@ function getModulesToSend(sandbox: Sandbox): IFiles {
   if (!modulesObject['/package.json']) {
     modulesObject['/package.json'] = {
       code: generateFileFromSandbox(sandbox),
+      savedCode: null,
       path: '/package.json',
       isBinary: false,
     };
@@ -85,6 +87,16 @@ export class ExecutorsManager {
       sandboxId: sandbox.id,
       files: getModulesToSend(sandbox),
     });
+  }
+
+  isServer() {
+    return this.executor instanceof ServerExecutor;
+  }
+
+  updateFiles(sandbox: Sandbox) {
+    const modules = getModulesToSend(sandbox);
+
+    this.executor.updateFiles(modules);
   }
 
   /**

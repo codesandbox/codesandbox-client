@@ -1,7 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import PlusIcon from 'react-icons/lib/go/plus';
-import ServerIcon from 'react-icons/lib/go/server';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 // @ts-ignore
 import InfoIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/sandbox.svg';
@@ -18,6 +17,7 @@ import ConfigurationIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/
 import getWorkspaceItems from 'app/store/modules/workspace/items';
 import { useSignals, useStore } from 'app/store';
 import { Container, IconContainer } from './elements';
+import ServerIcon from './ServerIcon';
 
 const IDS_TO_ICONS = {
   project: InfoIcon,

@@ -5,9 +5,7 @@ import store from 'store/dist/store.modern';
 import FaAngleUp from 'react-icons/lib/fa/angle-up';
 
 import { TemplateType } from '@codesandbox/common/lib/templates';
-import { IExecutor } from '@codesandbox/executors';
 import { ViewConfig } from '@codesandbox/common/lib/templates/template';
-import { executorsManager } from 'app/utils/executor-manager';
 
 import console from './Console';
 import tests from './Tests';
@@ -73,7 +71,6 @@ export type DevToolProps = {
   openDevTools: () => void;
   hideDevTools: () => void;
   selectCurrentPane: () => void;
-  executor: IExecutor;
 };
 
 const VIEWS: IViews = {
@@ -500,7 +497,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
                 selectCurrentPane={() => {
                   this.setPane(i);
                 }}
-                executor={executorsManager.getExecutor()}
               />
             );
           })}

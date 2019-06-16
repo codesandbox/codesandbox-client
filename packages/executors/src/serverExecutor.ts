@@ -13,39 +13,48 @@ function sseTerminalMessage(msg: string) {
   });
 }
 
-// const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
-//   const diff: IFiles = {};
+/**
+ * Find the changes from the last run, we only work with saved code here.
+ */
+const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
+  const diff: IFiles = {};
 
-//   Object.keys(newFiles)
-//     .filter(p => {
-//       if (oldFiles[p]) {
-//         if (oldFiles[p].code !== newFiles[p].code) {
-//           return true;
-//         }
-//       } else {
-//         return true;
-//       }
+  Object.keys(newFiles)
+    .filter(p => {
+      const newSavedCode = newFiles[p].savedCode || newFiles[p].code;
+      if (oldFiles[p]) {
+        const oldSavedCode = oldFiles[p].savedCode || oldFiles[p].code;
+        if (oldSavedCode !== newSavedCode) {
+          return true;
+        }
+      } else {
+        return true;
+      }
 
-//       return false;
-//     })
-//     .forEach(p => {
-//       diff[p] = {
-//         code: newFiles[p].code,
-//         isBinary: newFiles[p].isBinary,
-//       };
-//     });
+      return false;
+    })
+    .forEach(p => {
+      diff[p] = {
+        code: newFiles[p].code,
+        path: newFiles[p].path,
+        savedCode: newFiles[p].savedCode,
+        isBinary: newFiles[p].isBinary,
+      };
+    });
 
-//   Object.keys(oldFiles).forEach(p => {
-//     if (!newFiles[p]) {
-//       diff[p] = {
-//         isBinary: oldFiles[p].isBinary,
-//         code: null,
-//       };
-//     }
-//   });
+  Object.keys(oldFiles).forEach(p => {
+    if (!newFiles[p]) {
+      diff[p] = {
+        path: oldFiles[p].path,
+        isBinary: false,
+        code: null,
+        savedCode: null,
+      };
+    }
+  });
 
-//   return diff;
-// };
+  return diff;
+};
 
 const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
 
@@ -94,10 +103,16 @@ export class ServerExecutor implements IExecutor {
     return Promise.resolve();
   }
 
-  public updateFiles() {
-    // const changedFiles = getDiff(this.lastSent, newFiles);
-    // this.lastSent = newFiles;
-    // TODO: send the files to the socket
+  public updateFiles(newFiles: IFiles) {
+    const changedFiles = this.lastSent
+      ? getDiff(this.lastSent, newFiles)
+      : newFiles;
+
+    this.lastSent = newFiles;
+
+    if (Object.keys(changedFiles).length > 0 && this.socket) {
+      this.socket.emit('sandbox:update', changedFiles);
+    }
   }
 
   public emit(event: string, data?: any) {
@@ -116,10 +131,6 @@ export class ServerExecutor implements IExecutor {
             clearTimeout(this.connectTimeout);
             this.connectTimeout = null;
           }
-
-          // if (this.props.setSSEManagerStatus) {
-          //   this.props.setSSEManagerStatus('connected');
-          // }
 
           await this.startSandbox();
 

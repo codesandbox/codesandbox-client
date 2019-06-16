@@ -2,13 +2,9 @@
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
 import { withTheme } from 'styled-components';
-import { Terminal } from 'xterm';
 import { debounce } from 'lodash-es';
-import * as fit from 'xterm/lib/addons/fit/fit';
 
-import ResizeObserver from 'resize-observer-polyfill';
-
-import getTerminalTheme, { VSTheme } from '../terminal-theme';
+import { VSTheme } from '../terminal-theme';
 import { TerminalWithFit } from '../types';
 import { TerminalComponent } from './Term';
 
@@ -24,13 +20,10 @@ type Props = {
   updateStatus?: (type: string, count?: number) => void;
 };
 
-Terminal.applyAddon(fit);
 class Shell extends React.PureComponent<Props> {
   listener: Function;
   term: TerminalWithFit;
   node?: HTMLDivElement;
-  timeout?: number;
-  observer: ResizeObserver;
 
   initializeTerminal = (terminal: TerminalWithFit) => {
     this.term = terminal;
@@ -63,17 +56,6 @@ class Shell extends React.PureComponent<Props> {
     });
 
     this.term.focus();
-  };
-
-  setupResizeObserver = (el: HTMLDivElement) => {
-    this.observer = new ResizeObserver(() => {
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        this.term.fit();
-      }, 300);
-    });
-
-    this.observer.observe(el);
   };
 
   sendResize = (cols: number, rows: number) => {
