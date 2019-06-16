@@ -1,35 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-export default class HoverMenu extends React.PureComponent {
-  componentDidMount() {
-    document.addEventListener('click', this.handleDocumentClick);
-  }
-  handleDocumentClick = () => {
-    this.props.onClose();
-  };
-
-  handleViewClick = event => {
-    event.stopPropagation();
-    this.props.onClose();
-  };
-
-  setOnclickListener = el => {
-    this.element = el;
-    if (el) {
-      el.addEventListener('click', this.handleViewClick);
-    }
-  };
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.handleDocumentClick);
-
-    if (this.element) {
-      this.element.removeEventListener('click', this.handleViewClick);
-    }
-  }
-
-  render() {
-    const { children } = this.props;
-    return <div onClick={this.handleViewClick}>{children}</div>; // eslint-disable-line
-  }
+interface IHoverMenuProps {
+  onClose: () => void;
+  children: React.ReactChildren;
 }
+
+const HoverMenu = ({ onClose, children }: IHoverMenuProps) => {
+  useEffect(() => {
+    const handleDocumentClick = () => {
+      onClose();
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [onClose]);
+
+  const handleViewClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onClose();
+  };
+
+  return <div onClick={handleViewClick}>{children}</div>;
+};
+
+export default HoverMenu;
