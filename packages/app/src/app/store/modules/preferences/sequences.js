@@ -12,11 +12,6 @@ export const changeKeybinding = [
   setKeybindings,
 ];
 
-export const changeViewMode = [
-  set(state`preferences.showEditor`, props`showEditor`),
-  set(state`preferences.showPreview`, props`showPreview`),
-];
-
 export const toggleZenMode = toggle(state`preferences.settings.zenMode`);
 
 export const forceCodeMirror = set(

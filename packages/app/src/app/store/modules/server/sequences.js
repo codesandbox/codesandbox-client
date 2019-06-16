@@ -51,7 +51,7 @@ export const onSSEMessage = [
     'sandbox:start': [set(state`server.containerStatus`, 'sandbox-started')],
     'sandbox:stop': [set(state`server.containerStatus`, 'stopped')],
     'sandbox:update': [set(props`updates`, props`data.updates`), syncSandbox],
-    'sandbox:hibernated': [set(state`server.containerStatus`, 'hibernated')],
+    'sandbox:hibernate': [set(state`server.containerStatus`, 'hibernated')],
     'sandbox:status': [
       equals(props`data.status`),
       {

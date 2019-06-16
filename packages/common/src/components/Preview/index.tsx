@@ -44,12 +44,8 @@ export type Props = {
   noPreview?: boolean;
   alignDirection?: 'right' | 'bottom';
   delay?: number;
-  // setSSEManagerStatus?: (status: SSEManagerStatus) => void;
-  // setSSEContainerStatus?: (status: SSEContainerStatus) => void;
-  // managerStatus?: SSEManagerStatus;
-  // containerStatus?: SSEContainerStatus;
-  syncSandbox?: (updates: any) => void;
   className?: string;
+  overlayMessage?: string;
 };
 
 type State = {
@@ -58,9 +54,6 @@ type State = {
   historyPosition: number;
   urlInAddressBar: string;
   url: string | undefined;
-  overlayMessage: string | undefined;
-  hibernated: boolean;
-  sseError: boolean;
   showScreenshot: boolean;
 };
 
@@ -93,9 +86,6 @@ class BasePreview extends React.Component<Props, State> {
         ? getSSEUrl(props.sandbox, props.initialPath)
         : frameUrl(props.sandbox, props.initialPath || ''),
       url: null,
-      overlayMessage: null,
-      hibernated: false,
-      sseError: false,
       showScreenshot: true,
     };
 
@@ -192,7 +182,6 @@ class BasePreview extends React.Component<Props, State> {
         historyPosition: 0,
         urlInAddressBar: url,
         showScreenshot: true,
-        overlayMessage: null,
       },
       () => this.handleRefresh()
     );
@@ -459,14 +448,10 @@ class BasePreview extends React.Component<Props, State> {
       hide,
       noPreview,
       className,
+      overlayMessage,
     } = this.props;
 
-    const {
-      historyPosition,
-      history,
-      urlInAddressBar,
-      overlayMessage,
-    } = this.state;
+    const { historyPosition, history, urlInAddressBar } = this.state;
 
     const url =
       urlInAddressBar ||

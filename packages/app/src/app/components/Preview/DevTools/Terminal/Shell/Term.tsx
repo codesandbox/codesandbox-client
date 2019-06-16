@@ -107,8 +107,8 @@ export class TerminalComponent extends React.PureComponent<Props> {
           bottom: 0,
           left: 0,
           right: 0,
-          height: height - 72,
           padding: '.5rem',
+          paddingBottom: 0,
           visibility: hidden ? 'hidden' : 'visible',
         }}
         ref={node => {

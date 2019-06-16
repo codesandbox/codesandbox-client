@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
 import { withTheme } from 'styled-components';
