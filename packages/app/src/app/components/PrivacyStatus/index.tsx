@@ -1,26 +1,30 @@
 import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
 import { StyledUnlisted, StyledPrivate, Icon } from './elements';
 
-function PrivacyStatus({ privacy, asIcon }) {
-  const PRIVACY_MESSAGES = {
-    0: {
+interface IPrivacyStatusProps {
+  privacy: number;
+  asIcon: boolean;
+}
+
+const PrivacyStatus = ({ privacy, asIcon }: IPrivacyStatusProps) => {
+  const PRIVACY_MESSAGES = [
+    {
       title: 'Public',
       tooltip: 'Everyone can see the sandbox',
       icon: null,
     },
-    1: {
+    {
       title: 'Unlisted',
       tooltip: 'Only users with the url can see the sandbox',
       icon: <StyledUnlisted />,
     },
-    2: {
+    {
       title: 'Private',
       tooltip: 'Only you can see the sandbox',
       icon: <StyledPrivate />,
     },
-  };
+  ];
 
   if (asIcon) {
     return (
@@ -36,6 +40,6 @@ function PrivacyStatus({ privacy, asIcon }) {
       <Icon />
     </Tooltip>
   );
-}
+};
 
 export default PrivacyStatus;
