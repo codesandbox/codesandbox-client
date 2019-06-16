@@ -4,33 +4,36 @@ import { Link } from 'react-router-dom';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 import { SmallSandbox } from '@codesandbox/common/lib/types';
-
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
-
 import DeleteSandboxButton from '../DeleteSandboxButton';
 import PrivacyStatus from '../PrivacyStatus';
-
 import {
+  HeaderRow,
   HeaderTitle,
   Table,
   StatTitle,
   StatBody,
+  DeleteBody,
   Body,
   SandboxRow,
 } from './elements';
 
-type Props = {
+interface ISandboxListProps {
   sandboxes: Array<SmallSandbox>;
   isCurrentUser: boolean;
-  onDelete: Function;
-};
+  onDelete: () => void;
+}
 
-export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
+const SandboxList = ({
+  sandboxes,
+  isCurrentUser,
+  onDelete,
+}: ISandboxListProps) => (
   <Table>
     <thead>
-      <tr style={{ height: '3rem' }}>
+      <HeaderRow>
         <HeaderTitle>Title</HeaderTitle>
         <HeaderTitle>Created</HeaderTitle>
         <HeaderTitle>Updated</HeaderTitle>
@@ -45,14 +48,20 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
           <ForkIcon />
         </StatTitle>
         {isCurrentUser && <HeaderTitle />}
-      </tr>
+      </HeaderRow>
     </thead>
     <Body>
       {sandboxes.map((s, i) => {
+        // TODO: investigate type mismatch between SmallSandbox and getIcon
+        // @ts-ignore
         const Icon = getIcon(s.template);
+
         return (
-          <SandboxRow index={i} key={s.id}>
+          <SandboxRow delay={i} key={s.id}>
             <td>
+              {/* We should probably use the Sandbox interface instead
+                 * of SmallSandbox
+                // @ts-ignore */}
               <Link to={sandboxUrl(s)}>{s.title || s.id}</Link>
               <PrivacyStatus privacy={s.privacy} asIcon />
             </td>
@@ -65,11 +74,9 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
             <StatBody>{s.viewCount}</StatBody>
             <StatBody>{s.forkCount}</StatBody>
             {isCurrentUser && (
-              <StatBody
-                style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
-              >
+              <DeleteBody>
                 <DeleteSandboxButton id={s.id} onDelete={onDelete} />
-              </StatBody>
+              </DeleteBody>
             )}
           </SandboxRow>
         );
@@ -77,3 +84,5 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
     </Body>
   </Table>
 );
+
+export default SandboxList;
