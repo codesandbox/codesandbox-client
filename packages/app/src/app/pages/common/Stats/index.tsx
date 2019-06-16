@@ -13,17 +13,15 @@ interface Props {
   sandbox: Sandbox;
 }
 
-const StatsComponent = ({ sandbox }: Props) => {
 const StatsComponent = ({ sandbox }: Props) => (
-    <Stats>
-      <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
-      <Stat
-        Icon={<LikeHeart sandbox={sandbox} colorless />}
-        count={sandbox.likeCount}
-      />
-      <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
-    </Stats>
-  );
-};
+  <Stats>
+    <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
+    <Stat
+      Icon={<LikeHeart sandbox={sandbox} colorless />}
+      count={sandbox.likeCount}
+    />
+    <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
+  </Stats>
+);
 
 export default observer(StatsComponent);
