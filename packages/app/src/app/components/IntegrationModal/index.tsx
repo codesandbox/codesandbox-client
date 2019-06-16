@@ -15,7 +15,7 @@ interface IIntegrationModalProps {
   title: string;
   subtitle: string;
   signedIn: boolean;
-  Integration: React.ComponentClass<any> | React.StatelessComponent<any>;
+  Integration: React.ComponentType;
   name: string;
   children: React.ReactChildren;
 }
