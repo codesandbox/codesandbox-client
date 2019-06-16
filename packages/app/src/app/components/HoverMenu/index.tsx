@@ -14,8 +14,6 @@ const HoverMenu = ({ onClose, children }: IHoverMenuProps) => {
     document.addEventListener('click', handleDocumentClick);
 
     return () => document.removeEventListener('click', handleDocumentClick);
-      document.removeEventListener('click', handleDocumentClick);
-    };
   }, [onClose]);
 
   const handleViewClick = (event: React.MouseEvent) => {
