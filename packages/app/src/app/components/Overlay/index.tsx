@@ -9,7 +9,7 @@ interface IOverlayProps {
   onOpen?: () => void;
   onClose?: () => void;
   children: (handleOpen: () => void) => React.ReactNode;
-  content: React.ComponentClass<any> | React.StatelessComponent<any>;
+  content: React.ComponentType;
   noHeightAnimation: boolean;
 }
 
