@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 interface IHoverMenuProps {
   onClose: () => void;
-  children: React.ReactChildren;
+  children: React.ReactNode;
 }
 
 const HoverMenu = ({ onClose, children }: IHoverMenuProps) => {
