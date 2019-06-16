@@ -14,7 +14,7 @@ interface Props {
 }
 
 const StatsComponent = ({ sandbox }: Props) => {
-  return (
+const StatsComponent = ({ sandbox }: Props) => (
     <Stats>
       <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
       <Stat
