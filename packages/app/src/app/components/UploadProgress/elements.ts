@@ -1,38 +1,40 @@
-import styled, { keyframes } from 'styled-components';
-
+import styled, { css, keyframes } from 'styled-components';
 import delayInEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 import LocalLogo from 'react-icons/lib/md/laptop';
 import Cube from './Cube';
 
 export const Container = styled.div`
-  position: relative;
-  background-color: ${props => props.theme.background};
-
-  text-align: center;
-
-  font-size: 1.125rem;
-  padding: 1rem 2rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  ${({ theme }) => css`
+    position: relative;
+    padding: 1rem 2rem;
+    background-color: ${theme.background};
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.125rem;
+    font-weight: 500;
+    text-align: center;
+  `}
 `;
 
 export const DeployAnimationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 3rem;
-
-  ${({ deploying }) => deploying && delayInEffect(0, false)};
+  ${({ deploying }: { deploying: boolean }) => css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    ${deploying && delayInEffect(0, false)};
+  `}
 `;
 
 export const StyledLocalLogo = styled(LocalLogo)`
-  position: absolute;
-  font-size: 4rem;
-  transform: translateY(15px) translateX(-100px);
-  background-color: ${props => props.theme.background};
-  color: white;
-  z-index: 20;
+  ${({ theme }) => css`
+    position: absolute;
+    z-index: 20;
+    background-color: ${theme.background};
+    color: white;
+    font-size: 4rem;
+    transform: translateY(15px) translateX(-100px);
+  `}
 `;
 
 const cubeAnimation = keyframes`
@@ -54,10 +56,12 @@ const cubeAnimation = keyframes`
 `;
 
 export const StyledCube = styled(Cube)`
-  position: absolute;
-  animation: ${cubeAnimation} 2s ease-in infinite;
-  animation-delay: ${({ i }) => i * 0.5}s;
-  transform: translateY(20px) translateX(-100px) scale(0, 0);
+  ${({ delay }: { delay: number }) => css`
+    position: absolute;
+    animation: ${cubeAnimation} 2s ease-in infinite;
+    animation-delay: ${delay * 0.5}s;
+    transform: translateY(20px) translateX(-100px) scale(0, 0);
+  `}
 `;
 
 export const StyledLogo = styled(OpaqueLogo)`
@@ -67,14 +71,14 @@ export const StyledLogo = styled(OpaqueLogo)`
 `;
 
 export const DeployText = styled.div`
-  ${delayInEffect()};
   margin-top: 2rem;
   margin-bottom: 2rem;
   font-size: 1.125rem;
+  ${delayInEffect()};
 `;
 
 export const Result = styled.div`
-  ${delayInEffect(0.25)};
-  font-size: 1.125rem;
   margin-bottom: 1rem;
+  font-size: 1.125rem;
+  ${delayInEffect(0.25)};
 `;
