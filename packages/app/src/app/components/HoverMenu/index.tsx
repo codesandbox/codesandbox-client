@@ -13,7 +13,7 @@ const HoverMenu = ({ onClose, children }: IHoverMenuProps) => {
 
     document.addEventListener('click', handleDocumentClick);
 
-    return () => {
+    return () => document.removeEventListener('click', handleDocumentClick);
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [onClose]);
