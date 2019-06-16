@@ -61,7 +61,7 @@ const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
 export class ServerExecutor implements IExecutor {
   socket: SocketIOClient.Socket;
   connectTimeout: number | null = null;
-  token: Promise<string>;
+  token: Promise<string | undefined>;
   sandboxId?: string;
   lastSent?: IFiles;
 
@@ -194,7 +194,7 @@ export class ServerExecutor implements IExecutor {
         });
     }
 
-    debug('Not signed in, throwing error');
-    throw new Error("You're not signed in");
+    debug('Not signed in, returning undefined');
+    return undefined;
   }
 }
