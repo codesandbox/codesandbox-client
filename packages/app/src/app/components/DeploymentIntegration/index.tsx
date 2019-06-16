@@ -13,7 +13,7 @@ interface IDeploymentIntegrationProps {
   light?: boolean;
   loading: boolean;
   bgColor: string;
-  Icon: React.ComponentClass<any> | React.StatelessComponent<any>;
+  Icon: React.ComponentType;
   name: string;
   beta: boolean;
   open: boolean;
