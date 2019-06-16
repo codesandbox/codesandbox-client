@@ -17,7 +17,7 @@ interface IIntegrationModalProps {
   signedIn: boolean;
   Integration: React.ComponentType;
   name: string;
-  children: React.ReactChildren;
+  children: React.ReactNode;
 }
 
 const IntegrationModal = ({
