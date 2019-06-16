@@ -6,7 +6,7 @@ import Integration from 'app/components/Integration';
 import { useSignals, useStore } from 'app/store';
 
 type Props = {
-  small?: boolean,
+  small?: boolean;
 };
 const GithubIntegration = ({ small = false }: Props) => {
   const { signInGithubClicked, signOutGithubIntegration } = useSignals();

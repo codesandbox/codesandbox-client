@@ -38,7 +38,6 @@ const getNotificationComponent = (type, data, read) => {
         read={read}
         teamId={parsedData.team_id}
         teamName={parsedData.team_name}
-        userId={parsedData.user_id}
         inviterName={parsedData.inviter_name}
         inviterAvatar={parsedData.inviter_avatar}
       />

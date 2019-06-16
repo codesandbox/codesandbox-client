@@ -63,8 +63,6 @@ const LikeButton = ({
     style={style}
     text={likeCount}
     sandbox={store.editor.currentSandbox}
-    store={store}
-    signals={signals}
     disableTooltip
     highlightHover
   />
@@ -284,7 +282,7 @@ const Header = ({ store, signals, zenMode }: Props) => {
                 marginRight: 0,
               }}
             >
-              <UserMenu store={store} signals={signals} />
+              <UserMenu />
             </div>
           ) : (
             <SignInButton style={{ fontSize: '.75rem' }} />

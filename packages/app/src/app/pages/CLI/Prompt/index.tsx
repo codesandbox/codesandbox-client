@@ -6,9 +6,17 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 
 import { Container, Buttons, TokenContainer } from './elements';
 
-const select = ({ target }) => target.select();
+interface Props {
+  error: string;
+  token: string;
+  loading: boolean;
+  username: string;
+  signIn: () => void;
+}
 
-const Prompt = ({ error, token, loading, username, signIn }) => {
+const select = ({ target }: { target: any }) => target.select();
+
+const Prompt = ({ error, token, loading, username, signIn }: Props) => {
   if (error) {
     return (
       <Container>

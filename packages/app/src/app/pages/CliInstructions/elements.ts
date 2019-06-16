@@ -13,7 +13,7 @@ export const Content = styled(Centered)`
   margin-top: 10%;
 `;
 
-export const Code = styled.pre`
+export const Code = styled.pre<{ theme: any }>`
   margin-bottom: 1rem;
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
