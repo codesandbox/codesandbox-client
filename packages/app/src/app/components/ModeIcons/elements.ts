@@ -43,71 +43,81 @@ const hideAnimation = (delay: number = 0, reverse: boolean = true) =>
   `;
 
 export const Tooltips = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const ViewIcon = styled.div`
-  height: 1.75rem;
-  transition: 0.3s ease all;
-  position: relative;
-  margin: 0 0.5rem;
-  border-radius: 4px;
-  overflow: hidden;
-  cursor: pointer;
-
-  &:after {
+  ${({ active }: { active: boolean }) => css`
+    position: relative;
+    height: 1.75rem;
+    margin: 0 0.5rem;
+    border-radius: 4px;
     transition: 0.3s ease all;
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-    opacity: ${props => (props.active ? 0 : 1)};
-    border-radius: 2px;
     overflow: hidden;
-  }
-  &:hover::after {
-    opacity: 0;
-  }
+    cursor: pointer;
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      border-radius: 2px;
+      background-color: rgba(0, 0, 0, 0.3);
+      transition: 0.3s ease all;
+      opacity: ${active ? 0 : 1};
+      overflow: hidden;
+    }
+    &:hover::after {
+      opacity: 0;
+    }
+  `}
 `;
 
 export const Hover = styled.div`
   position: relative;
+  z-index: 200;
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: center;
-  z-index: 200;
+  align-items: center;
 `;
 
 export const SubMode = styled.div`
-  ${props =>
-    props.hovering
-      ? showAnimation(props.i * 0.05, props.i === 1)
-      : hideAnimation(props.i * 0.05, props.i === 1)};
+  ${({ i, hovering }: { i: number; hovering: boolean }) => css`
+    ${hovering
+      ? showAnimation(i * 0.05, i === 1)
+      : hideAnimation(i * 0.05, i === 1)};
+  `}
 `;
 
 const Icon = styled.div`
-  display: inline-block;
-  width: ${({ half }) =>
-    half ? `calc(1.5rem - 1px)` : `3rem`}; /* 1px is for the middle border */
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  height: 100%;
+  ${({ half }: { half?: boolean }) => css`
+    display: inline-block;
+    width: ${half
+      ? css`calc(1.5rem - 1px)` /* 1px is for the middle border */
+      : `3rem`};
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  `}
 `;
 
 export const EditorIcon = styled(Icon)`
-  background-color: ${({ theme }) => theme.templateColor || theme.secondary};
+  ${({ theme }) => css`
+    background-color: ${theme.templateColor || theme.secondary};
+  `}
 `;
 
 export const PreviewIcon = styled(Icon)`
-  background-color: ${({ theme }) => theme.primary};
+  ${({ theme }) => css`
+    background-color: ${theme.primary};
+  `}
 `;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Tooltips,
   ViewIcon,
@@ -8,151 +8,105 @@ import {
   PreviewIcon,
 } from './elements';
 
-function getCurrentMode({
+interface IModeIconsProps {
+  dropdown: boolean;
+  showEditor: boolean;
+  showPreview: boolean;
+  onSetMixedView: () => void;
+  onSetEditorView: () => void;
+  onSetPreviewView: () => void;
+}
+
+const ModeIcons = ({
+  dropdown,
   showEditor,
   showPreview,
-  setMixedView,
-  setEditorView,
-  setPreviewView,
-}) {
-  const both = (
-    <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
+  onSetMixedView,
+  onSetEditorView,
+  onSetPreviewView,
+}: IModeIconsProps) => {
+  const [isHovering, setHovering] = useState(false);
+  const [showSubmodes, setShowSubmode] = useState(false);
+
+  const onMouseEnter = () => {
+    setHovering(true);
+    setShowSubmode(true);
+  };
+
+  const onMouseLeave = () => {
+    setHovering(false);
+  };
+
+  const onAnimationEnd = () => {
+    if (!isHovering) {
+      setShowSubmode(false);
+    }
+  };
+
+  const editorView = (
+    <ViewIcon onClick={onSetEditorView} active={showEditor && !showPreview}>
+      <EditorIcon />
+    </ViewIcon>
+  );
+
+  const mixedView = (
+    <ViewIcon onClick={onSetMixedView} active={showEditor && showPreview}>
       <EditorIcon half />
       <PreviewIcon half />
     </ViewIcon>
   );
 
-  const editor = (
-    <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
-      <EditorIcon />
-    </ViewIcon>
-  );
-
-  const preview = (
-    <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
+  const previewView = (
+    <ViewIcon onClick={onSetPreviewView} active={!showEditor && showPreview}>
       <PreviewIcon />
     </ViewIcon>
   );
 
-  if (showEditor && !showPreview)
-    return { currentMode: editor, otherModes: [both, preview] };
-  if (!showEditor && showPreview)
-    return { currentMode: preview, otherModes: [editor, both] };
-
-  return { currentMode: both, otherModes: [editor, preview] };
-}
-
-export default class ModeIcons extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    const { currentMode, otherModes } = getCurrentMode(this.props);
-
-    this.state = {
-      hovering: false,
-      showSubmodes: false,
-      currentMode,
-      otherModes,
-    };
-  }
-
-  onMouseEnter = () => {
-    this.setState({
-      showSubmodes: true,
-      hovering: true,
-    });
+  const getCurrentMode = () => {
+    if (showEditor && !showPreview) {
+      return { currentMode: editorView, otherModes: [mixedView, previewView] };
+    }
+    if (!showEditor && showPreview) {
+      return { currentMode: previewView, otherModes: [editorView, mixedView] };
+    }
+    return { currentMode: mixedView, otherModes: [editorView, previewView] };
   };
 
-  onMouseLeave = () => {
-    this.setState({
-      hovering: false,
-    });
-  };
+  const { currentMode, otherModes } = getCurrentMode();
 
-  onAnimationEnd = () => {
-    const { currentMode, otherModes } = getCurrentMode(this.props);
+  return dropdown ? (
+    <Tooltips>
+      <Hover onMouseLeave={onMouseLeave}>
+        {showSubmodes && (
+          <SubMode
+            onClick={onMouseLeave}
+            onAnimationEnd={onAnimationEnd}
+            hovering={isHovering}
+            i={0}
+          >
+            {otherModes[0]}
+          </SubMode>
+        )}
+        <div onMouseEnter={onMouseEnter}>{currentMode}</div>
+        {showSubmodes && (
+          <SubMode
+            onClick={onMouseLeave}
+            onAnimationEnd={onAnimationEnd}
+            hovering={isHovering}
+            i={1}
+          >
+            {otherModes[1]}
+          </SubMode>
+        )}
+      </Hover>
+    </Tooltips>
+  ) : (
+    <Tooltips>
+      {editorView}
+      {mixedView}
+      {previewView}
+    </Tooltips>
+  );
+};
 
-    if (!this.state.hovering) {
-      this.setState({
-        showSubmodes: false,
-        currentMode,
-        otherModes,
-      });
-    }
-  };
-
-  componentWillReceiveProps(nextProps) {
-    const { currentMode, otherModes } = getCurrentMode(nextProps);
-
-    if (!this.state.hovering) {
-      this.setState({
-        currentMode,
-        otherModes,
-      });
-    } else {
-      this.setState({
-        currentMode,
-      });
-    }
-  }
-
-  render() {
-    const {
-      showEditor,
-      showPreview,
-      setEditorView,
-      setMixedView,
-      setPreviewView,
-      dropdown,
-    } = this.props;
-
-    const { hovering, showSubmodes, currentMode, otherModes } = this.state;
-
-    if (dropdown) {
-      return (
-        <Tooltips>
-          <Hover onMouseLeave={this.onMouseLeave}>
-            {showSubmodes && (
-              <SubMode
-                onClick={this.onMouseLeave}
-                onAnimationEnd={this.onAnimationEnd}
-                hovering={hovering}
-                i={0}
-              >
-                {otherModes[0]}
-              </SubMode>
-            )}
-            <div onMouseEnter={this.onMouseEnter}>{currentMode}</div>
-            {showSubmodes && (
-              <SubMode
-                onClick={this.onMouseLeave}
-                onAnimationEnd={this.onAnimationEnd}
-                hovering={hovering}
-                i={1}
-              >
-                {otherModes[1]}
-              </SubMode>
-            )}
-          </Hover>
-        </Tooltips>
-      );
-    }
-
-    return (
-      <Tooltips>
-        <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
-          <EditorIcon />
-        </ViewIcon>
-
-        <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
-          <EditorIcon half />
-          <PreviewIcon half />
-        </ViewIcon>
-
-        <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
-          <PreviewIcon />
-        </ViewIcon>
-      </Tooltips>
-    );
-  }
-}
+export default ModeIcons;
