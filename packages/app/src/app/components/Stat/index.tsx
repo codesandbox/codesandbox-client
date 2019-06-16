@@ -1,14 +1,24 @@
 import React from 'react';
-import formatNumber from './format-number';
-import { Property, Number, Stat } from './elements';
+import { Property, Number, Container } from './elements';
 
-function StatComponent({ count, name }) {
-  return (
-    <Stat>
-      <Property>{name}</Property>
-      <Number>{formatNumber(count)}</Number>
-    </Stat>
-  );
+interface IStatProps {
+  name: string;
+  count: number;
 }
 
-export default StatComponent;
+export const formatNumber = (count: number): string => {
+  if (count >= 1000) {
+    return `${(count / 1000).toFixed(1)}k`;
+  }
+
+  return `${count}`;
+};
+
+const Stat = ({ name, count }: IStatProps) => (
+  <Container>
+    <Property>{name}</Property>
+    <Number>{formatNumber(count)}</Number>
+  </Container>
+);
+
+export default Stat;
