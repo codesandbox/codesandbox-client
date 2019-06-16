@@ -1,105 +1,103 @@
-import React from 'react';
-import { observer } from 'mobx-react';
-
+import React, { useState, useEffect } from 'react';
 import { Transition, animated, config } from 'react-spring/renderprops';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Container } from './elements';
 
-class OverlayComponent extends React.Component {
-  state = {
-    isOpen: this.props.isOpen === undefined ? false : this.props.isOpen,
-    controlled: this.props.isOpen !== undefined,
-  };
-
-  componentDidMount() {
-    document.addEventListener('mousedown', this.listenForClick);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.listenForClick);
-    this.unmounted = true;
-  }
-
-  isOpen = () => {
-    const { isOpen: isOpenProps } = this.props;
-    const { isOpen: isOpenState, controlled } = this.state;
-
-    return controlled ? isOpenProps : isOpenState;
-  };
-
-  listenForClick = (e: MouseEvent) => {
-    if (!e.defaultPrevented && this.isOpen()) {
-      if (!this.unmounted) {
-        if (this.props.event) {
-          track(`Closed ${this.props.event}`);
-        }
-        if (this.state.controlled) {
-          if (this.props.onClose) {
-            this.props.onClose();
-          }
-        } else {
-          this.setState({ isOpen: false });
-        }
-      }
-    }
-  };
-
-  open = () => {
-    if (!this.unmounted) {
-      if (this.props.event) {
-        track(`Opened ${this.props.event}`);
-      }
-      if (this.state.controlled) {
-        if (this.props.onOpen) {
-          this.props.onOpen();
-        }
-      } else {
-        this.setState({ isOpen: true });
-      }
-    }
-  };
-
-  render() {
-    const { children, Overlay, noHeightAnimation } = this.props;
-
-    const isOpen = this.isOpen();
-
-    return (
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-      <div
-        style={{ position: 'relative' }}
-        onMouseDown={e => e.preventDefault()}
-      >
-        {children(this.open)}
-        <Transition
-          items={isOpen}
-          from={{
-            height: noHeightAnimation ? undefined : 0,
-            opacity: 0.6,
-            position: 'absolute',
-            top: 'calc(100% + 1rem)',
-            right: 0,
-            zIndex: 10,
-            overflow: 'hidden',
-            boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
-          }}
-          enter={{ height: noHeightAnimation ? undefined : 'auto', opacity: 1 }}
-          leave={{ height: noHeightAnimation ? undefined : 0, opacity: 0 }}
-          native
-          config={config.fast}
-        >
-          {open =>
-            open
-              ? style => (
-                  <animated.div style={style}>
-                    <Overlay />
-                  </animated.div>
-                )
-              : style => <animated.span style={style} />
-          }
-        </Transition>
-      </div>
-    );
-  }
+interface IOverlayProps {
+  event: string;
+  isOpen?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
+  children: (handleOpen: () => void) => React.ReactChildren;
+  content: React.ComponentClass<any> | React.StatelessComponent<any>;
+  noHeightAnimation: boolean;
 }
 
-export default observer(OverlayComponent);
+const Overlay = ({
+  event,
+  isOpen,
+  onOpen,
+  onClose,
+  children,
+  content: Content,
+  noHeightAnimation,
+}: IOverlayProps) => {
+  const [open, setOpen] = useState(isOpen === undefined ? false : isOpen);
+  const isControlled = isOpen !== undefined;
+  const openState = isControlled ? isOpen : open;
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (!e.defaultPrevented && openState) {
+        if (event) {
+          track(`Closed ${event}`);
+        }
+        if (isControlled) {
+          if (onClose) {
+            onClose();
+          }
+        } else {
+          setOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [isOpen, onClose, event, openState, isControlled]);
+
+  const handleOpen = () => {
+    if (event) {
+      track(`Opened ${event}`);
+    }
+    if (isControlled) {
+      if (onOpen) {
+        onOpen();
+      }
+    } else {
+      setOpen(true);
+    }
+  };
+
+  return (
+    <Container onMouseDown={e => e.preventDefault()}>
+      {children(handleOpen)}
+      <Transition
+        // Find a better way of doing this, copied from original implementation
+        // which appears hacky and makes typescript angry
+        // @ts-ignore
+        items={openState}
+        from={{
+          height: noHeightAnimation ? undefined : 0,
+          opacity: 0.6,
+          position: 'absolute',
+          top: 'calc(100% + 1rem)',
+          right: 0,
+          zIndex: 10,
+          overflow: 'hidden',
+          boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
+        }}
+        enter={{ height: noHeightAnimation ? undefined : 'auto', opacity: 1 }}
+        leave={{ height: noHeightAnimation ? undefined : 0, opacity: 0 }}
+        native
+        // @ts-ignore
+        config={config.fast}
+      >
+        {visible =>
+          visible
+            ? style => (
+                <animated.div style={style}>
+                  <Content />
+                </animated.div>
+              )
+            : style => <animated.span style={style} />
+        }
+      </Transition>
+    </Container>
+  );
+};
+
+export default Overlay;
