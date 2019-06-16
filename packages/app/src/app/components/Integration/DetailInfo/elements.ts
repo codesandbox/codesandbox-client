@@ -1,20 +1,26 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Details = styled.div`
-  display: inline-flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 3;
-  padding: 0.75rem 1rem;
-  background-color: ${props =>
-    props.theme.light ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
+  ${({ theme }) => css`
+    display: inline-flex;
+    flex: 3;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: ${theme.light
+      ? css`rgba(255, 255, 255, 0.3)`
+      : css`rgba(0, 0, 0, 0.3)`};
+  `}
 `;
 
 export const Heading = styled.div`
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
-  font-size: 0.75rem;
-  margin-bottom: 0.25rem;
+  ${({ theme }) => css`
+    margin-bottom: 0.25rem;
+    color: ${theme.light
+      ? css`rgba(0, 0, 0, 0.5)`
+      : css`rgba(255, 255, 255, 0.5)`};
+    font-size: 0.75rem;
+  `}
 `;
 
 export const Info = styled.div`
@@ -22,31 +28,24 @@ export const Info = styled.div`
 `;
 
 export const Action = styled.div`
-  display: flex;
-  transition: 0.3s ease all;
-  border: 1px solid
-    ${props => (props.red ? 'rgba(255, 0, 0, 0.4)' : props.theme.secondary)};
-  border-radius: 4px;
+  ${({ red, theme }: { red: boolean; theme: any }) => css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid ${red ? css`rgba(255, 0, 0, 0.4)` : theme.secondary};
+    border-radius: 4px;
+    background-color: ${red ? `transparent` : theme.secondary};
+    color: ${red ? css`rgba(255, 0, 0, 0.6)` : `white`};
+    opacity: 0.8;
+    transition: 0.3s ease all;
+    cursor: pointer;
 
-  justify-content: center;
-  align-items: center;
-
-  color: ${props => (props.red ? 'rgba(255, 0, 0, 0.6)' : 'white')};
-
-  background-color: ${props =>
-    props.red ? 'transparent' : props.theme.secondary};
-
-  opacity: 0.8;
-  cursor: pointer;
-
-  height: 1.5rem;
-  width: 1.5rem;
-
-  &:hover {
-    opacity: 1;
-
-    color: white;
-    background-color: ${props =>
-      props.red ? 'rgba(255, 0, 0, 0.6)' : props.theme.secondary};
-  }
+    &:hover {
+      background-color: ${red ? css`rgba(255, 0, 0, 0.6)` : theme.secondary};
+      color: white;
+      opacity: 1;
+    }
+  `}
 `;
