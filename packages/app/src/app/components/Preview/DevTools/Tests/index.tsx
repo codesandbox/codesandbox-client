@@ -4,7 +4,11 @@ import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
 
 import immer from 'immer';
+<<<<<<< HEAD
 import { debounce } from 'lodash-es';
+=======
+import debounce from 'lodash-es/debounce';
+>>>>>>> Test-performance: Add debounce
 
 import { Container, TestDetails, TestContainer } from './elements';
 
