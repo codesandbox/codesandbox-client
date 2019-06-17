@@ -7,7 +7,7 @@ import * as actions from './actions';
 
 export const restartSandbox = [actions.restartSandbox];
 export const restartContainer = [
-  actions.resetServerState,
+  set(state`server.containerStatus`, 'initializing'),
   actions.restartContainer,
 ];
 
