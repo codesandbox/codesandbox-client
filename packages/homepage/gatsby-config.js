@@ -24,6 +24,7 @@ module.exports = {
     {
       resolve: `gatsby-transformer-remark`,
       options: {
+        pedantic: false,
         plugins: [
           `gatsby-remark-copy-linked-files`,
           {
