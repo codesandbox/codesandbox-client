@@ -9,7 +9,7 @@ import Tag from './Tag';
 type Props = {
   tags: Array<string>;
   align?: 'right' | 'left';
-  style?: any;
+  style?: React.CSSProperties;
 };
 
 function Tags({ tags, align, ...props }: Props) {
