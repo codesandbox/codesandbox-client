@@ -25,8 +25,8 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import LikeHeart from 'app/pages/common/LikeHeart';
 import UserMenu from 'app/pages/common/UserMenu';
 
-import Logo from './Logo';
-import Action from './Action';
+import { Logo } from './Logo';
+import { Action } from './Buttons/Action';
 import CollectionInfo from './CollectionInfo';
 
 import {
@@ -39,7 +39,7 @@ import {
 } from './elements';
 
 import UpdateFound from './UpdateFound';
-import { MenuBarContainer } from './MenuBar';
+import { MenuBar } from './MenuBar';
 
 type ButtonProps = {
   store: any;
@@ -151,7 +151,7 @@ const Header = ({ store, signals, zenMode }: Props) => {
         )}
 
         {vscode ? (
-          <MenuBarContainer />
+          <MenuBar />
         ) : (
           <>
             {

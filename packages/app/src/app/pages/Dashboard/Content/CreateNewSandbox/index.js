@@ -16,6 +16,7 @@ import {
   DarkBG,
 } from './elements';
 
+// eslint-disable-next-line import/no-named-as-default
 import Modal from './Modal';
 
 class CreateNewSandbox extends React.PureComponent {

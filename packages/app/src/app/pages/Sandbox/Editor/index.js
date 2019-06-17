@@ -10,7 +10,7 @@ import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { Container } from './elements';
 import Workspace from './Workspace';
 import Content from './Content';
-import Header from './Header';
+import { Header } from './Header';
 import { Navigation } from './Navigation';
 import getVSCodeTheme from './utils/get-vscode-theme';
 
