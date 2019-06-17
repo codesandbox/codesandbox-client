@@ -23,7 +23,9 @@ export const getPreviewTabs = (sandbox: Sandbox) => {
       views = preview;
     }
   } catch (e) {
-    /* */
+    if (process.env.NODE_ENV === 'development') {
+      console.error(e);
+    }
   }
 
   return views;

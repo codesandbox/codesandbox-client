@@ -46,9 +46,14 @@ const defaultConfigurations = {
   '/netlify.toml': configurations.netlifyConfig,
 };
 
+export interface ViewTab {
+  id: string;
+  options?: any;
+}
+
 export type ViewConfig = {
   open?: boolean;
-  views: Array<{ id: string; options?: any }>;
+  views: ViewTab[];
 };
 
 const CLIENT_VIEWS: ViewConfig[] = [

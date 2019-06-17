@@ -1,5 +1,6 @@
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+import { addDevToolsTab } from 'app/pages/Sandbox/Editor/Content/utils';
 
 export function restartSandbox({ executor }) {
   executor.emit('sandbox:restart');
@@ -76,4 +77,39 @@ export function sendShellOut({ props, codeSandboxApi }) {
 export function sendShellMessage({ props, executor }) {
   const { channel, type: _t, codesandbox: _c, ...message } = props.data;
   executor.emit(channel, message);
+}
+
+export function setPorts({ props, state }) {
+  state.set('server.ports', props.data);
+}
+
+export function showPortNotifications({ props, state, controller }) {
+  const ports = state.get('server.ports');
+
+  ports.forEach(port => {
+    if (!port.main) {
+      notificationState.addNotification({
+        title: 'Port Opened',
+        message: `This nice port opened just for you: ${port.port}`,
+        status: NotificationStatus.NOTICE,
+        actions: {
+          primary: [
+            {
+              label: 'Open Browser Pane',
+              run: () => {
+                controller.getSignal('editor.onDevToolsTabAdded')({
+                  tab: {
+                    id: 'codesandbox.browser',
+                    options: {
+                      url: `https://${port.hostname}`,
+                    },
+                  },
+                });
+              },
+            },
+          ],
+        },
+      });
+    }
+  });
 }

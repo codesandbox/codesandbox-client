@@ -66,7 +66,7 @@ export class ServerExecutor implements IExecutor {
   lastSent?: IFiles;
 
   constructor() {
-    this.socket = io(`https://sse.codesandbox.io`, {
+    this.socket = io(`https://sse.codesandbox.stream`, {
       autoConnect: false,
       transports: ['websocket', 'polling'],
     });
@@ -111,6 +111,10 @@ export class ServerExecutor implements IExecutor {
     this.lastSent = newFiles;
 
     if (Object.keys(changedFiles).length > 0 && this.socket) {
+      debug(
+        Object.keys(changedFiles).length + ' files changed, sending to SSE.'
+      );
+      debug(changedFiles);
       this.socket.emit('sandbox:update', changedFiles);
     }
   }

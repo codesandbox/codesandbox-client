@@ -1,6 +1,9 @@
 import { dirname } from 'path';
+import immer from 'immer';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import getTemplate from '@codesandbox/common/lib/templates';
+import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import {
   getModulePath,
   getDirectoryPath,
@@ -105,4 +108,50 @@ export function currentPackageJSONCode() {
   return this.currentPackageJSON
     ? this.currentPackageJSON.code
     : generateFileFromSandbox(this.currentSandbox);
+}
+
+export function devToolTabs() {
+  const sandbox = this.currentSandbox;
+  const views = getPreviewTabs(sandbox);
+
+  // Do it in an immutable manner, prevents changing the original object
+  return immer(views, draft => {
+    const sandboxConfig = sandbox.modules.find(
+      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+    );
+    let view = 'browser';
+    if (sandboxConfig) {
+      try {
+        view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+      } catch (e) {
+        /* swallow */
+      }
+    }
+
+    const sandboxOptions = getSandboxOptions(location.href);
+    if (
+      sandboxOptions.previewWindow &&
+      (sandboxOptions.previewWindow === 'tests' ||
+        sandboxOptions.previewWindow === 'console')
+    ) {
+      // Backwards compatibility for ?previewwindow=
+
+      view = sandboxOptions.previewWindow;
+    }
+
+    if (view !== 'browser') {
+      // Backwards compatibility for sandbox.config.json
+      if (view === 'console') {
+        draft[0].views = draft[0].views.filter(
+          t => t.id !== 'codesandbox.console'
+        );
+        draft[0].views.unshift({ id: 'codesandbox.console' });
+      } else if (view === 'tests') {
+        draft[0].views = draft[0].views.filter(
+          t => t.id !== 'codesandbox.tests'
+        );
+        draft[0].views.unshift({ id: 'codesandbox.tests' });
+      }
+    }
+  });
 }

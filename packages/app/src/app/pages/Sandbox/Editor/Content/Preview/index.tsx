@@ -12,6 +12,7 @@ type Props = {
   runOnClick?: boolean;
   store: any;
   signals: any;
+  options: { url?: string };
 };
 
 type State = {
@@ -168,7 +169,7 @@ class Preview extends Component<Props, State> {
   };
 
   render() {
-    const { store, signals } = this.props;
+    const { store, signals, options } = this.props;
 
     const completelyHidden = !store.editor.previewWindowVisible;
 
@@ -179,6 +180,7 @@ class Preview extends Component<Props, State> {
         currentModule={store.editor.currentModule}
         settings={store.preferences.settings}
         initialPath={store.editor.initialPath}
+        url={options.url}
         isInProjectView={store.editor.isInProjectView}
         onClearErrors={() => signals.editor.errorsCleared()}
         onAction={action => signals.editor.previewActionReceived({ action })}

@@ -106,12 +106,11 @@ export const PaneTab = ({
         {devToolIndex !== 0 && status && (
           <UnreadDevToolsCount status={status.type} unread={status.unread} />
         )}
-        {false &&
-        active && ( // This will be enabled later on
-            <CloseTab>
-              <CrossIcon />
-            </CloseTab>
-          )}
+        {active && ( // This will be enabled later on
+          <CloseTab>
+            <CrossIcon />
+          </CloseTab>
+        )}
       </Tab>
     </div>
   );

@@ -8,6 +8,7 @@ import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+import { addDevToolsTab } from 'app/pages/Sandbox/Editor/Content/utils';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -170,6 +171,23 @@ export function restartSandbox() {
   dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
 }
 
+export function getDevToolsTabs({ state }) {
+  return {
+    devToolsModule: state.get('editor.modulesByPath')[
+      '/.codesandbox/workspace.json'
+    ],
+  };
+}
+
+export function addDevToolTab({ state, props }) {
+  const devToolTabs = state.get('editor.devToolTabs');
+  const newDevToolTabs = addDevToolsTab(devToolTabs, props.tab);
+
+  return {
+    code: JSON.stringify({ preview: newDevToolTabs }, null, 2),
+  };
+}
+
 const messagesToListenTo = [
   'connect',
   'disconnect',
@@ -180,6 +198,7 @@ const messagesToListenTo = [
   'sandbox:log',
   'sandbox:hibernate',
   'sandbox:update',
+  'sandbox:port',
   'shell:out',
   'shell:exit',
 ];

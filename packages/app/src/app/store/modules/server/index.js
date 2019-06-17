@@ -9,6 +9,7 @@ export default Module({
     containerStatus: 'initializing',
     error: undefined,
     hasUnrecoverableError: false,
+    ports: [],
   },
   signals: {
     restartSandbox: sequences.restartSandbox,

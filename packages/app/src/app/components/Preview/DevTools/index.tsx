@@ -72,6 +72,7 @@ export type DevToolProps = {
   hideDevTools: () => void;
   selectCurrentPane: () => void;
   owned: boolean;
+  options: any;
 };
 
 const VIEWS: IViews = {
@@ -499,6 +500,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
                 selectCurrentPane={() => {
                   this.setPane(i);
                 }}
+                options={view.options || {}}
               />
             );
           })}

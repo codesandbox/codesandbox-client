@@ -1,10 +1,30 @@
 import immer from 'immer';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
+import {
+  ViewConfig,
+  ViewTab,
+} from '@codesandbox/common/lib/templates/template';
 import { ITabPosition } from 'app/components/Preview/DevTools/Tabs';
 
 const isEqual = (prevPos: ITabPosition, nextPos: ITabPosition) =>
   prevPos.devToolIndex === nextPos.devToolIndex &&
   prevPos.tabPosition === nextPos.tabPosition;
+
+export function addDevToolsTab(
+  tabs: ViewConfig[],
+  newTab: ViewTab,
+  position?: ITabPosition
+) {
+  const positionToAdd: ITabPosition = position || {
+    devToolIndex: 0,
+    tabPosition: tabs[0].views.length - 1,
+  };
+
+  return immer(tabs, draft => {
+    const devTools = draft[positionToAdd.devToolIndex];
+
+    devTools.views.push(newTab);
+  });
+}
 
 export function moveDevToolsTab(
   tabs: ViewConfig[],

@@ -13,6 +13,7 @@ import {
   currentTab,
   modulesByPath,
   isAdvancedEditor,
+  devToolTabs,
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -58,6 +59,7 @@ export default Module({
     currentTab,
     modulesByPath,
     isAdvancedEditor,
+    devToolTabs,
   },
   computed: {
     isModuleSynced,
@@ -98,5 +100,7 @@ export default Module({
     deleteEnvironmentVariable: sequences.deleteEnvironmentVariable,
     toggleEditorPreviewLayout: sequences.toggleEditorPreviewLayout,
     onNavigateAway: sequences.onNavigateAway,
+
+    onDevToolsTabAdded: sequences.addDevToolsTab,
   },
 });

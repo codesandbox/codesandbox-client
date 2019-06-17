@@ -66,6 +66,7 @@ export const onSSEMessage = [
     ],
 
     'sandbox:log': [actions.logSandboxMessage],
+    'sandbox:port': [actions.setPorts, actions.showPortNotifications],
     'sandbox:error': [
       actions.formatErrorMessage,
       set(state`server.hasUnrecoverableError`, props`unrecoverable`),

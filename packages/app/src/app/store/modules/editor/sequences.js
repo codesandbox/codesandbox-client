@@ -326,3 +326,21 @@ export const toggleEditorPreviewLayout = [
 ];
 
 export const onNavigateAway = [];
+
+export const updateDevTools = [
+  actions.getDevToolsTabs,
+  when(props`devToolsModule`, x => !!x),
+  {
+    true: [set(props`moduleShortid`, props`devToolsModule.shortid`), saveCode],
+    false: [
+      set(props`files`, {
+        '/.codesandbox/workspace.json': {
+          content: props`code`,
+          isBinary: false,
+        },
+      }),
+    ],
+  },
+];
+
+export const addDevToolsTab = [actions.addDevToolTab, updateDevTools];

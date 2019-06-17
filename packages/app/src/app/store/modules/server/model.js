@@ -16,4 +16,11 @@ export default {
   ]),
   error: types.maybe(types.string),
   hasUnrecoverableError: types.boolean,
+  ports: types.array(
+    types.model({
+      port: types.number,
+      main: types.boolean,
+      hostname: types.string,
+    })
+  ),
 };
