@@ -23,7 +23,12 @@ export const Tabs = styled.div`
   }
 `;
 
-export const Split = styled.div<{ verticalMode?: boolean; show?: boolean }>`
+export const Split = styled.div<{
+  verticalMode?: boolean;
+  show?: boolean;
+  only?: boolean;
+  size?: number;
+}>`
   display: flex;
   flex-direction: column;
   position: relative;
