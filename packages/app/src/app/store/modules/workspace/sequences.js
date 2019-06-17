@@ -52,7 +52,7 @@ export const editTemplate = [
         state`editor.sandboxes.${state`editor.currentId`}.customTemplate`,
         props`template`
       ),
-      addNotification('Template edited', 'success'),
+      addNotification('Template Edited', 'success'),
     ],
     error: [addNotification('Could not edit custom template', 'error')],
   },
