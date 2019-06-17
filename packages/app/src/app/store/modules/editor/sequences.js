@@ -6,7 +6,7 @@ import {
   callVSCodeCallback,
   callVSCodeCallbackError,
 } from '../../actions';
-import { renameModule } from '../files/sequences';
+import { renameModule, createModulesByPath } from '../files/sequences';
 import {
   sendModuleSaved,
   getSelectionsForCurrentModule,
@@ -333,16 +333,44 @@ export const updateDevTools = [
   {
     true: [set(props`moduleShortid`, props`devToolsModule.shortid`), saveCode],
     false: [
-      set(props`files`, {
-        '/.codesandbox/workspace.json': {
-          content: props`code`,
-          isBinary: false,
+      ({ props: actionProps }) => ({
+        files: {
+          '/.codesandbox/workspace.json': {
+            content: actionProps.code,
+            isBinary: false,
+          },
         },
       }),
+
+      createModulesByPath,
     ],
   },
 ];
 
-export const addDevToolsTab = [actions.addDevToolsTab, updateDevTools];
+export const setDevToolPosition = [
+  set(state`editor.currentDevToolsPosition`, props`position`),
+];
 
-export const moveDevToolsTab = [actions.moveDevToolsTab, updateDevTools];
+export const addDevToolsTab = [
+  actions.addDevToolsTab,
+  updateDevTools,
+  actions.setCurrentTabToChangedTab,
+];
+export const moveDevToolsTab = [
+  actions.moveDevToolsTab,
+  updateDevTools,
+  actions.setCurrentTabToChangedTab,
+];
+export const closeDevToolsTab = [actions.closeDevToolsTab, updateDevTools];
+
+/**
+ * Open existing tab if exists, otherwise create new tab
+ */
+export const openDevToolsTab = [
+  actions.getDevToolsTab,
+  when(props`nextPos`, n => !!n),
+  {
+    true: [actions.setCurrentTabToChangedTab],
+    false: [addDevToolsTab],
+  },
+];

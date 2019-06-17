@@ -19,11 +19,13 @@ export interface TabProps {
   pane: IViewType;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
-  moveTab: (currentPosition: ITabPosition, nextPosition: ITabPosition) => void;
+  moveTab?: (currentPosition: ITabPosition, nextPosition: ITabPosition) => void;
+  closeTab?: (pos: ITabPosition) => void;
   index: number;
   devToolIndex: number;
   canDrag: boolean;
   status: Status | undefined;
+  options: object;
 }
 
 interface DragProps {
@@ -89,9 +91,14 @@ export const PaneTab = ({
   isDragging,
   devToolIndex,
   status,
+  closeTab,
+  index,
+  options,
 }: TabProps & DragProps) => {
   useGlobalDim(isDragging);
 
+  const title =
+    typeof pane.title === 'function' ? pane.title(options) : pane.title;
   const component = (
     <div style={{ height: '100%' }}>
       <Tab
@@ -101,13 +108,20 @@ export const PaneTab = ({
         key={pane.id}
         isOver={isOver && !isDragging}
       >
-        {pane.title}
+        <div style={{ flex: 1 }}>{title}</div>
 
         {devToolIndex !== 0 && status && (
           <UnreadDevToolsCount status={status.type} unread={status.unread} />
         )}
-        {active && ( // This will be enabled later on
-          <CloseTab>
+        {closeTab && (
+          <CloseTab
+            onClick={() =>
+              closeTab({
+                tabPosition: index,
+                devToolIndex: devToolIndex,
+              })
+            }
+          >
             <CrossIcon />
           </CloseTab>
         )}
@@ -136,7 +150,7 @@ const entryTarget = {
       tabPosition: sourceItem.index,
       devToolIndex: sourceItem.devToolIndex,
     };
-    const nextPosition = {
+    const nextPosition: ITabPosition = {
       tabPosition: props.index,
       devToolIndex: props.devToolIndex,
     };

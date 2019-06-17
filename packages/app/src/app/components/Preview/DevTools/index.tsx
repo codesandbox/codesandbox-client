@@ -51,7 +51,7 @@ export interface IViewAction {
 
 export interface IViewType {
   id: string;
-  title: string;
+  title: string | ((options: any) => string);
   Content: React.ComponentClass<DevToolProps, any>;
   actions: IViewAction[] | ((info: { owned: boolean }) => IViewAction[]);
 }
@@ -96,8 +96,12 @@ type Props = {
   viewConfig: ViewConfig;
   devToolIndex: number;
   moveTab?: (prevPos: ITabPosition, nextPos: ITabPosition) => void;
+  closeTab?: (pos: ITabPosition) => void;
+  setPane: (pos: ITabPosition) => void;
   addedViews?: IViews;
   hideTabs?: boolean;
+  currentDevToolIndex: number;
+  currentTabPosition: number;
 };
 type State = {
   status: { [title: string]: Status | undefined };
@@ -106,7 +110,7 @@ type State = {
   hidden: boolean;
   startY: number;
   startHeight: number;
-  currentPaneIndex: number;
+  currentTabIndex: number;
 };
 
 export default class DevTools extends React.PureComponent<Props, State> {
@@ -121,7 +125,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
     this.state = {
       status: {},
-      currentPaneIndex: 0,
 
       mouseDown: false,
       startY: 0,
@@ -129,6 +132,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
       height: isOpen ? '40%' : this.height(),
 
       hidden: !props.primary && !isOpen,
+
+      currentTabIndex: 0,
     };
   }
 
@@ -195,14 +200,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   }
 
-  static getDerivedStateFromProps(props: Props, state: State): State {
-    if (state.currentPaneIndex >= props.viewConfig.views.length) {
-      return { ...state, currentPaneIndex: props.viewConfig.views.length - 1 };
-    }
-
-    return state;
-  }
-
   setHidden = (hidden: boolean) => {
     if (!hidden) {
       return this.setState({
@@ -223,7 +220,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
   };
 
   getCurrentPane = () =>
-    this.props.viewConfig.views[this.state.currentPaneIndex];
+    this.props.viewConfig.views[this.state.currentTabIndex];
 
   updateStatus = (id: string) => (
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
@@ -387,8 +384,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
     if (this.state.hidden && !this.props.primary) {
       this.openDevTools();
     }
+    this.props.setPane({
+      devToolIndex: this.props.devToolIndex,
+      tabPosition: index,
+    });
     this.setState({
-      currentPaneIndex: index,
       status: {
         ...this.state.status,
         [this.props.viewConfig.views[index].id]: {
@@ -398,6 +398,26 @@ export default class DevTools extends React.PureComponent<Props, State> {
       },
     });
   };
+
+  /**
+   * Set the current tab based on whether the selection has changed to the current
+   * devtools
+   */
+  static getDerivedStateFromProps(props: Props, state: State) {
+    if (props.devToolIndex === props.currentDevToolIndex) {
+      return {
+        currentTabIndex: Math.min(
+          props.currentTabPosition,
+          props.viewConfig.views.length - 1
+        ),
+      };
+    }
+
+    // Prevent selecting the last tab
+    if (state.currentTabIndex > props.viewConfig.views.length - 1) {
+      return { currentTabIndex: props.viewConfig.views.length - 1 };
+    }
+  }
 
   getViews = (): IViews => this.allViews;
 
@@ -446,8 +466,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
           >
             <Tabs
               owned={owned}
-              panes={panes.map(p => this.getViews()[p.id])}
-              currentPaneIndex={this.state.currentPaneIndex}
+              panes={panes}
+              views={this.getViews()}
+              currentPaneIndex={this.state.currentTabIndex}
               hidden={hidden}
               setPane={this.setPane}
               devToolIndex={devToolIndex}
@@ -455,16 +476,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
               moveTab={
                 this.props.moveTab
                   ? (prevPos, nextPos) => {
-                      if (prevPos.devToolIndex === this.props.devToolIndex) {
-                        this.setState({
-                          currentPaneIndex: nextPos.tabPosition,
-                        });
-                      }
-
                       this.props.moveTab(prevPos, nextPos);
                     }
                   : undefined
               }
+              closeTab={this.props.closeTab}
             />
 
             {!primary && (
@@ -485,9 +501,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
             return (
               <Content
-                key={view.id}
+                key={view.id + JSON.stringify(view.options)}
                 owned={owned}
-                hidden={hidden || i !== this.state.currentPaneIndex}
+                hidden={hidden || i !== this.state.currentTabIndex}
                 updateStatus={this.updateStatus(view.id)}
                 sandboxId={sandboxId}
                 height={

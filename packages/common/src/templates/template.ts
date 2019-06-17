@@ -48,6 +48,7 @@ const defaultConfigurations = {
 
 export interface ViewTab {
   id: string;
+  closeable?: boolean;
   options?: any;
 }
 

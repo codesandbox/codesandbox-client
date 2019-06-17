@@ -408,7 +408,8 @@ export default class Content extends React.PureComponent<Props, State> {
 
     const browserConfig = {
       id: 'codesandbox.browser',
-      title: 'Browser',
+      title: options =>
+        options.port ? `Browser (:${options.port})` : `Browser`,
       Content: ({ hidden }) => (
         <BasePreview
           onInitialized={this.onPreviewInitialized}

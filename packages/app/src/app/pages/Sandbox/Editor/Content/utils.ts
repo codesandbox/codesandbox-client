@@ -16,14 +16,17 @@ export function addDevToolsTab(
 ) {
   const positionToAdd: ITabPosition = position || {
     devToolIndex: 0,
-    tabPosition: tabs[0].views.length - 1,
+    tabPosition: tabs[0].views.length,
   };
 
-  return immer(tabs, draft => {
-    const devTools = draft[positionToAdd.devToolIndex];
+  return {
+    devTools: immer(tabs, draft => {
+      const devTools = draft[positionToAdd.devToolIndex];
 
-    devTools.views.push(newTab);
-  });
+      devTools.views.splice(positionToAdd.tabPosition, 0, newTab);
+    }),
+    position: { ...positionToAdd, tabPosition: positionToAdd.tabPosition },
+  };
 }
 
 export function moveDevToolsTab(
@@ -56,5 +59,14 @@ export function moveDevToolsTab(
 
       return t;
     });
+  });
+}
+
+export function closeDevToolsTab(tabs: ViewConfig[], closePos: ITabPosition) {
+  // We want to do this immutable, to prevent conflicts while the file is changing
+  return immer(tabs, draft => {
+    const devTools = draft[closePos.devToolIndex];
+
+    devTools.views.splice(closePos.tabPosition, 1);
   });
 }

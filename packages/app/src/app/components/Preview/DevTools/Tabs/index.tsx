@@ -1,12 +1,13 @@
 import * as React from 'react';
 
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { ViewTab } from '@codesandbox/common/lib/templates/template';
 
-import { IViewType, Status } from '..';
+import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
 import DraggableTab, { PaneTab, TabProps } from './Tab';
 import TabDropZone, { TabDropZoneProps } from './TabDropZone';
-import { AddTab } from './AddTab';
+// import { AddTab } from './AddTab';
 
 export interface ITabPosition {
   devToolIndex: number;
@@ -16,25 +17,30 @@ export interface ITabPosition {
 export interface Props {
   hidden: boolean;
   currentPaneIndex: number;
-  panes: IViewType[];
   owned: boolean;
   setPane: (i: number) => void;
   devToolIndex: number;
-  moveTab: (prevPos: ITabPosition, newPos: ITabPosition) => void;
+  moveTab?: (prevPos: ITabPosition, newPos: ITabPosition) => void;
+  closeTab?: (pos: ITabPosition) => void;
   status?: { [title: string]: Status | undefined };
+
+  panes: ViewTab[];
+  views: IViews;
 }
 
 const DevToolTabs = ({
   panes,
+  views,
   hidden,
   currentPaneIndex,
   devToolIndex,
   owned,
   setPane,
   moveTab,
+  closeTab,
   status,
 }: Props) => {
-  const currentPane = panes[currentPaneIndex];
+  const currentPane = views[panes[currentPaneIndex].id];
   const actions =
     typeof currentPane.actions === 'function'
       ? currentPane.actions({ owned })
@@ -49,6 +55,7 @@ const DevToolTabs = ({
       <Tabs>
         {panes.map((pane, i) => {
           const active = !hidden && i === currentPaneIndex;
+          const view = views[pane.id];
 
           const TypedTab = (moveTab
             ? DraggableTab
@@ -57,7 +64,8 @@ const DevToolTabs = ({
           return (
             <TypedTab
               canDrag={panes.length !== 1}
-              pane={pane}
+              pane={view}
+              options={pane.options || {}}
               active={active}
               onMouseDown={e => {
                 e.stopPropagation();
@@ -69,6 +77,9 @@ const DevToolTabs = ({
               }}
               devToolIndex={devToolIndex}
               moveTab={moveTab}
+              closeTab={
+                pane.closeable && panes.length !== 1 ? closeTab : undefined
+              }
               index={i}
               key={i}
               status={
@@ -80,7 +91,7 @@ const DevToolTabs = ({
           );
         })}
 
-        <AddTab />
+        {/* <AddTab /> */}
 
         {moveTab && (
           <TypedTabDropZone

@@ -47,6 +47,10 @@ export default Module({
     previewWindowOrientation:
       window.innerHeight / window.innerWidth > 0.9 ? 'horizontal' : 'vertical',
     themes,
+    currentDevToolsPosition: {
+      devToolIndex: 0,
+      tabPosition: 0,
+    },
   },
   getters: {
     isAllModulesSynced,
@@ -103,5 +107,8 @@ export default Module({
 
     onDevToolsTabAdded: sequences.addDevToolsTab,
     onDevToolsTabMoved: sequences.moveDevToolsTab,
+    onDevToolsTabClosed: sequences.closeDevToolsTab,
+    onDevToolsPositionChanged: sequences.setDevToolPosition,
+    openDevToolsTab: sequences.openDevToolsTab,
   },
 });

@@ -11,6 +11,7 @@ import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/cre
 import {
   addDevToolsTab as addDevToolsTabUtil,
   moveDevToolsTab as moveDevToolsTabUtil,
+  closeDevToolsTab as closeDevToolsTabUtil,
 } from 'app/pages/Sandbox/Editor/Content/utils';
 
 function sortObjectByKeys(object) {
@@ -184,10 +185,14 @@ export function getDevToolsTabs({ state }) {
 
 export function addDevToolsTab({ state, props }) {
   const devToolTabs = state.get('editor.devToolTabs');
-  const newDevToolTabs = addDevToolsTabUtil(devToolTabs, props.tab);
+  const { devTools: newDevToolTabs, position } = addDevToolsTabUtil(
+    devToolTabs,
+    props.tab
+  );
 
   return {
     code: JSON.stringify({ preview: newDevToolTabs }, null, 2),
+    nextPos: position,
   };
 }
 
@@ -202,6 +207,58 @@ export function moveDevToolsTab({ state, props }) {
   return {
     code: JSON.stringify({ preview: newDevToolTabs }, null, 2),
   };
+}
+
+export function getDevToolsTab({ state, props }) {
+  const tabToFind = props.tab;
+  const serializedTab = JSON.stringify(tabToFind);
+
+  const devToolTabs = state.get('editor.devToolTabs');
+
+  for (let i = 0; i < devToolTabs.length; i++) {
+    const view = devToolTabs[i];
+
+    for (let j = 0; j < view.views.length; j++) {
+      const tab = view.views[j];
+      if (JSON.stringify(tab) === serializedTab) {
+        return {
+          nextPos: {
+            devToolIndex: i,
+            tabPosition: j,
+          },
+        };
+      }
+    }
+  }
+
+  return {};
+}
+
+export function closeDevToolsTab({ state, props }) {
+  const devToolTabs = state.get('editor.devToolTabs');
+  const closePos = props.pos;
+  const newDevToolTabs = closeDevToolsTabUtil(devToolTabs, closePos);
+
+  return {
+    code: JSON.stringify({ preview: newDevToolTabs }, null, 2),
+  };
+}
+
+export function setCurrentTabToChangedTab({ state, props }) {
+  const nextPos = props.nextPos;
+
+  state.set('editor.currentDevToolsPosition', nextPos);
+}
+
+export function keepDevToolTabsInRange({ state }) {
+  const devToolTabs = state.get('editor.devToolTabs');
+  const currentPosition = state.get('editor.currentDevToolsPosition');
+
+  const maxPosition =
+    devToolTabs[currentPosition.devToolIndex].views.length - 1;
+  if (maxPosition > currentPosition.tabPosition) {
+    state.set('editor.currentDevToolsPosition.tabPosition', maxPosition);
+  }
 }
 
 const messagesToListenTo = [

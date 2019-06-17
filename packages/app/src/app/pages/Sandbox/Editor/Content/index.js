@@ -372,6 +372,12 @@ class EditorPreview extends React.Component<Props, State> {
     signals.editor.onDevToolsTabMoved({ prevPos, nextPos });
   };
 
+  closeDevToolsTab = pos => {
+    const { signals } = this.props;
+
+    signals.editor.onDevToolsTabClosed({ pos });
+  };
+
   render() {
     const { signals, store } = this.props;
     const currentModule = store.editor.currentModule;
@@ -406,10 +412,12 @@ class EditorPreview extends React.Component<Props, State> {
     };
 
     const views = store.editor.devToolTabs;
+    const currentPosition = this.props.store.editor.currentDevToolsPosition;
 
     const browserConfig = {
       id: 'codesandbox.browser',
-      title: 'Browser',
+      title: options =>
+        options.port ? `Browser (:${options.port})` : `Browser`,
       Content: ({ hidden, options }) => (
         <Preview
           options={options}
@@ -577,6 +585,14 @@ class EditorPreview extends React.Component<Props, State> {
                   primary={i === 0}
                   viewConfig={v}
                   moveTab={this.moveDevToolsTab}
+                  closeTab={this.closeDevToolsTab}
+                  currentDevToolIndex={currentPosition.devToolIndex}
+                  currentTabPosition={currentPosition.tabPosition}
+                  setPane={position =>
+                    this.props.signals.editor.onDevToolsPositionChanged({
+                      position,
+                    })
+                  }
                 />
               ))}
             </div>
