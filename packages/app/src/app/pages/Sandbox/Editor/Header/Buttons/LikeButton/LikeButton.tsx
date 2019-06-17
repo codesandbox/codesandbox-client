@@ -4,7 +4,6 @@ import { useSignals, useStore } from 'app/store';
 import { LikeHeart } from './elements';
 
 export const LikeButton = observer(() => {
-  const signals = useSignals();
   const store = useStore();
   const {
     editor: { currentSandbox },
@@ -15,8 +14,6 @@ export const LikeButton = observer(() => {
       colorless
       text={currentSandbox.likeCount}
       sandbox={currentSandbox}
-      store={store}
-      signals={signals}
       disableTooltip
       highlightHover
     />

@@ -68,7 +68,7 @@ export const Header = observer(({ zenMode }: HeaderProps) => {
         <AccountContainer>
           {store.isLoggedIn ? (
             <UserMenuContainer>
-              <UserMenu store={store} signals={signals} />
+              <UserMenu />
             </UserMenuContainer>
           ) : (
             <SignInButton />

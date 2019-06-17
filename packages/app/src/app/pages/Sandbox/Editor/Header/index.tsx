@@ -40,10 +40,9 @@ import {
 
 import UpdateFound from './UpdateFound';
 import { MenuBar } from './MenuBar';
+import { useStore, useSignals } from 'app/store';
 
 type ButtonProps = {
-  store: any;
-  signals: any;
   style: React.CSSProperties;
   secondary?: boolean;
 };
@@ -53,57 +52,56 @@ type ForkButtonProps = ButtonProps & {
 };
 
 const LikeButton = ({
-  store,
-  signals,
   style,
   likeCount,
-}: ButtonProps & { likeCount: string }) => (
-  <LikeHeart
-    colorless
-    style={style}
-    text={likeCount}
-    sandbox={store.editor.currentSandbox}
-    disableTooltip
-    highlightHover
-  />
-);
+}: ButtonProps & { likeCount: string }) => {
+  const { editor } = useStore();
+  return (
+    <LikeHeart
+      colorless
+      style={style}
+      text={likeCount}
+      sandbox={editor.currentSandbox}
+      disableTooltip
+      highlightHover
+    />
+  );
+};
 
-const ForkButton = ({
-  signals,
-  secondary,
-  isForking,
-  style,
-}: ForkButtonProps) => (
-  <ProgressButton
-    onClick={() => {
-      signals.editor.forkSandboxClicked();
-    }}
-    style={style}
-    secondary={secondary}
-    loading={isForking}
-    small
-  >
-    <>
-      <Fork style={{ marginRight: '.5rem' }} />
-      {isForking ? 'Forking...' : 'Fork'}
-    </>
-  </ProgressButton>
-);
+const ForkButton = ({ secondary, isForking, style }: ForkButtonProps) => {
+  const { editor } = useSignals();
+  return (
+    <ProgressButton
+      onClick={() => editor.forkSandboxClicked()}
+      style={style}
+      secondary={secondary}
+      loading={isForking}
+      small
+    >
+      <>
+        <Fork style={{ marginRight: '.5rem' }} />
+        {isForking ? 'Forking...' : 'Fork'}
+      </>
+    </ProgressButton>
+  );
+};
 
-const PickButton = ({ store, signals, secondary, style }: ButtonProps) => {
-  const { id, title, description } = store.editor.currentSandbox;
+const PickButton = ({ secondary, style }: ButtonProps) => {
+  const { editor } = useStore();
+  const { id, title, description } = editor.currentSandbox;
+  const { explore } = useSignals();
 
   return (
     <Button
-      onClick={() => {
-        signals.explore.pickSandboxModal({
+      onClick={() =>
+        explore.pickSandboxModal({
           details: {
             id,
             title,
             description,
           },
-        });
-      }}
+        })
+      }
       style={style}
       secondary={secondary}
       small
@@ -113,21 +111,22 @@ const PickButton = ({ store, signals, secondary, style }: ButtonProps) => {
   );
 };
 
-const ShareButton = ({ signals, secondary, style }: ButtonProps) => (
-  <Button
-    onClick={() => {
-      signals.modalOpened({ modal: 'share' });
-    }}
-    secondary={secondary}
-    style={style}
-    small
-  >
-    <>
-      <ShareIcon style={{ marginRight: '.5rem' }} />
-      Share
-    </>
-  </Button>
-);
+const ShareButton = ({ secondary, style }: ButtonProps) => {
+  const { modalOpened } = useSignals();
+  return (
+    <Button
+      onClick={() => modalOpened({ modal: 'share' })}
+      secondary={secondary}
+      style={style}
+      small
+    >
+      <>
+        <ShareIcon style={{ marginRight: '.5rem' }} />
+        Share
+      </>
+    </Button>
+  );
+};
 
 interface Props {
   store: any;
@@ -233,9 +232,7 @@ const Header = ({ store, signals, zenMode }: Props) => {
         {store.isLoggedIn && (
           <LikeButton
             style={{ fontSize: '.75rem', margin: '0 0.5rem' }}
-            signals={signals}
             secondary={!sandbox.owned}
-            store={store}
             likeCount={store.editor.currentSandbox.likeCount}
           />
         )}
@@ -244,24 +241,18 @@ const Header = ({ store, signals, zenMode }: Props) => {
           <PickButton
             style={{ fontSize: '.75rem', marginLeft: '0.5rem' }}
             secondary={sandbox.owned}
-            signals={signals}
-            store={store}
           />
         )}
 
         <ShareButton
           style={{ fontSize: '.75rem', margin: '0 1rem' }}
-          signals={signals}
           secondary={!sandbox.owned}
-          store={store}
         />
 
         <ForkButton
           secondary={sandbox.owned}
           isForking={store.editor.isForkingSandbox}
           style={{ fontSize: '.75rem' }}
-          signals={signals}
-          store={store}
         />
 
         <Margin

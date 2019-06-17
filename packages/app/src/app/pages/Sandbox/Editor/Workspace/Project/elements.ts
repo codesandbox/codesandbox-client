@@ -74,9 +74,7 @@ export const EditPen = styled(EditPenIcon)`
   }
 `;
 
-const iconStyles = css`
+export const Icon = styled(Question)`
   opacity: 0.5;
   margin-left: 0.5em;
 `;
-
-export const Icon = styled(Question)(iconStyles);
