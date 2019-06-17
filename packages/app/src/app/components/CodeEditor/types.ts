@@ -21,6 +21,8 @@ export type Settings = {
   experimentVSCode: boolean;
   prettierConfig: Object;
   zenMode: boolean;
+  livePreviewEnabled: boolean;
+  instantPreviewEnabled: boolean;
 };
 
 type ModuleTab = {
@@ -68,10 +70,10 @@ export interface Editor {
 
 export type Props = {
   currentModule: Module;
-  currentTab: Tab | undefined;
+  currentTab?: Tab;
   sandbox: Sandbox;
   isModuleSynced: (shortid: string) => boolean;
-  customEditorAPI: {
+  customEditorAPI?: {
     getCustomEditor: (
       path: string
     ) => (container: HTMLElement, extraProps: object) => void;
@@ -89,11 +91,11 @@ export type Props = {
   highlightedLines?: Array<number>;
   tsconfig?: Object;
   readOnly?: boolean;
-  isLive: boolean;
+  isLive?: boolean;
   sendTransforms?: (transform: any) => void;
   receivingCode?: boolean;
   onCodeReceived?: () => void;
-  onSelectionChanged: (d: { selection: any; moduleShortid: string }) => void;
+  onSelectionChanged?: (d: { selection: any; moduleShortid: string }) => void;
   onModuleStateMismatch?: () => void;
-  theme: any;
+  theme?: any;
 };
