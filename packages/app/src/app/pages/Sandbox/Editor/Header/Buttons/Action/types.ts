@@ -20,6 +20,6 @@ export interface ActionProps {
   href?: string;
   a?: boolean;
   onClick?: () => void;
-  children?: React.ReactChildren;
+  children?: React.ReactNode;
   Icon: React.ComponentType;
 }
