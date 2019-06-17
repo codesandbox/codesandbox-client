@@ -14,7 +14,9 @@ const PathedTemplates = props => {
   const path = `/${props.match.params.path || ''}`;
   const { loading, error, data } = useQuery(LIST_TEMPLATES);
 
-  document.title = `Templates - CodeSandbox`;
+  useEffect(() => {
+    document.title = `Templates - CodeSandbox`;
+  }, []);
 
   if (error) {
     console.error(error);
