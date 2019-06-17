@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 import { dispatch } from 'codesandbox-api';
 import _debug from 'debug';
 
-import { IExecutor, IFiles } from './executor';
+import { IExecutor, IFiles, ISetupParams } from './executor';
 
 const debug = _debug('executors:server');
 
@@ -57,6 +57,7 @@ const getDiff = (oldFiles: IFiles, newFiles: IFiles) => {
 };
 
 const MAX_SSE_AGE = 24 * 60 * 60 * 1000; // 1 day
+const tick = () => new Promise(r => setTimeout(() => r(), 0));
 
 export class ServerExecutor implements IExecutor {
   socket: SocketIOClient.Socket;
@@ -66,35 +67,35 @@ export class ServerExecutor implements IExecutor {
   lastSent?: IFiles;
 
   constructor() {
-    this.socket = io(`https://sse.codesandbox.stream`, {
-      autoConnect: false,
-      transports: ['websocket', 'polling'],
-    });
-
+    this.socket = this.initializeSocket();
     this.token = this.retrieveSSEToken();
   }
 
-  public setup({ sandboxId, files }: { sandboxId: string; files: IFiles }) {
-    if (this.sandboxId) {
-      // New sandbox
-      this.socket.removeAllListeners();
-    }
-    if (this.sandboxId === sandboxId) {
+  private initializeSocket() {
+    return io(`https://sse.codesandbox.stream`, {
+      autoConnect: false,
+      transports: ['websocket', 'polling'],
+    });
+  }
+
+  async initialize({ sandboxId, files }: ISetupParams) {
+    if (this.sandboxId === sandboxId && this.socket.connected) {
       return Promise.resolve();
     }
 
     this.sandboxId = sandboxId;
     this.lastSent = files;
 
+    await this.dispose();
+    await tick();
+
+    this.socket = this.initializeSocket();
+  }
+
+  public async setup() {
     debug('Setting up server executor...');
 
-    if (this.socket.connected) {
-      // Already connected to manager
-      debug('Already connected, starting sandbox directly...');
-      return this.startSandbox();
-    } else {
-      return this.openSocket();
-    }
+    return this.openSocket();
   }
 
   public dispose() {
@@ -128,6 +129,10 @@ export class ServerExecutor implements IExecutor {
   }
 
   private openSocket() {
+    if (this.socket.connected) {
+      return Promise.resolve();
+    }
+
     return new Promise<void>((resolve, reject) => {
       this.socket.on('connect', async () => {
         try {

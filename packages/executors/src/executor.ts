@@ -7,6 +7,11 @@ export interface IFiles {
   };
 }
 
+export interface ISetupParams {
+  files: IFiles;
+  sandboxId: string;
+}
+
 /**
  * An executor is responsible for the communication with the service that executes
  * the code. Examples of these services are:
@@ -18,7 +23,11 @@ export interface IFiles {
  * serves as the interface to communicate with the service.
  */
 export interface IExecutor {
-  setup(params: { files: IFiles; sandboxId: string }): Promise<void>;
+  sandboxId?: string;
+
+  initialize(params: ISetupParams): Promise<void>;
+
+  setup(): Promise<void>;
   dispose(): Promise<void>;
   updateFiles(newFiles: IFiles): void;
 

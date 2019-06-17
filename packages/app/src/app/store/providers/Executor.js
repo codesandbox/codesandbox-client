@@ -5,8 +5,8 @@ export default Provider({
   initializeExecutor(sandbox) {
     return executorsManager.initializeExecutor(sandbox);
   },
-  setupExecutor(sandbox) {
-    return executorsManager.setupExecutor(sandbox);
+  setupExecutor() {
+    return executorsManager.setupExecutor();
   },
   listen(event, signalPath) {
     const signal = this.context.controller.getSignal(signalPath);

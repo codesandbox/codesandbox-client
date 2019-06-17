@@ -4,6 +4,12 @@ import { NotificationStatus } from '@codesandbox/notifications';
 
 import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 
+import { INITIAL_SERVER_STATE } from './state';
+
+export function resetServerState({ state }) {
+  state.set('server', INITIAL_SERVER_STATE);
+}
+
 export function restartSandbox({ executor }) {
   executor.emit('sandbox:restart');
 }

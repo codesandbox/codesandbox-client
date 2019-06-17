@@ -24,6 +24,7 @@ import {
   setupExecutor,
 } from './modules/editor/actions';
 import { initializeLive } from './modules/live/common-sequences';
+import { resetServerState } from './modules/server/actions';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
 
@@ -40,8 +41,6 @@ const whenPackageJSONExists = when(props`sandbox.modules`, modules =>
 function stopFrozenSandboxFromEdit() {
   throw new CancelError("You can't save a frozen sandbox", {});
 }
-
-const setCurrentSandbox = [set(state`editor.currentId`, props`sandbox.id`)];
 
 export const ensurePackageJSON = [
   when(props`sandbox.owned`),
@@ -135,14 +134,26 @@ export const setSandbox = [
       },
     ],
   },
-  set(state`editor.currentId`, props`sandbox.id`),
-  actions.setCurrentModuleShortid,
-  actions.setMainModuleShortid,
-  actions.setInitialTab,
-  actions.setUrlOptions,
-  actions.setWorkspace,
-  setupExecutor,
-  syncFilesToFS,
+  when(
+    state`editor.currentId`,
+    props`sandbox.id`,
+    (currentId, newId) => currentId === newId
+  ),
+  {
+    true: [],
+    false: [
+      set(state`editor.currentId`, props`sandbox.id`),
+      actions.setCurrentModuleShortid,
+      actions.setMainModuleShortid,
+      actions.setInitialTab,
+      actions.setUrlOptions,
+      actions.setWorkspace,
+
+      resetServerState,
+      setupExecutor,
+      syncFilesToFS,
+    ],
+  },
 ];
 
 export const getAuthToken = actions.getAuthToken;

@@ -284,7 +284,7 @@ export function setupExecutor({ state, executor }) {
       executor.listen(message, 'server.onSSEMessage');
     });
 
-    return executor.setupExecutor(sandbox);
+    return executor.setupExecutor();
   });
 }
 

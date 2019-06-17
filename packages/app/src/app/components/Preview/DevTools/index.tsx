@@ -417,6 +417,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
     if (state.currentTabIndex > props.viewConfig.views.length - 1) {
       return { currentTabIndex: props.viewConfig.views.length - 1 };
     }
+
+    return null;
   }
 
   getViews = (): IViews => this.allViews;

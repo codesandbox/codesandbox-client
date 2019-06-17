@@ -521,6 +521,7 @@ export default class Content extends React.PureComponent<Props, State> {
         )}
 
         {showPreview && (
+          // @ts-ignore
           <Split
             show={showPreview}
             only={showPreview && !showEditor}

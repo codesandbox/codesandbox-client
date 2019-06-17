@@ -44,8 +44,6 @@ function getModulesToSend(sandbox: Sandbox): IFiles {
   return modulesObject;
 }
 
-const tick = () => new Promise(r => setTimeout(() => r(), 0));
-
 /**
  * In CodeSandbox we use an interface to send files to the bundler. A service that talks to a "bundler"
  * is called an "executor". We currently have two executors:
@@ -71,22 +69,22 @@ export class ExecutorsManager {
       await this.executor.dispose();
 
       this.executor = undefined;
-      // Tick for the sockets to close
-      await tick();
     }
 
     if (!this.executor) {
       this.executor = new ExecutorType();
     }
 
-    return this.executor;
-  }
-
-  async setupExecutor(sandbox: Sandbox) {
-    return this.getExecutor().setup({
+    await this.executor.initialize({
       sandboxId: sandbox.id,
       files: getModulesToSend(sandbox),
     });
+
+    return this.executor;
+  }
+
+  async setupExecutor() {
+    return this.getExecutor().setup();
   }
 
   isServer() {

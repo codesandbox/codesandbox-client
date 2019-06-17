@@ -1,16 +1,11 @@
 import { Module } from 'cerebral';
 import model from './model';
 import * as sequences from './sequences';
+import { INITIAL_SERVER_STATE } from './state';
 
 export default Module({
   model,
-  state: {
-    status: 'initializing',
-    containerStatus: 'initializing',
-    error: undefined,
-    hasUnrecoverableError: false,
-    ports: [],
-  },
+  state: INITIAL_SERVER_STATE,
   signals: {
     restartSandbox: sequences.restartSandbox,
     restartContainer: sequences.restartContainer,

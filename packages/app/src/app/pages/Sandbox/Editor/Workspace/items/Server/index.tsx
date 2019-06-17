@@ -18,8 +18,6 @@ import {
 import Status from './Status';
 import Tasks from './Tasks';
 import EnvironmentVariables from './EnvVars';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
 
 const SubTitle = styled.div`
   text-transform: uppercase;
@@ -114,10 +112,10 @@ function Server({ store, signals }: { store: any; signals: any }) {
               </EntryContainer>
             ))
           ) : (
-            <div>
-              No ports are opened, make sure to start a server inside your
-              container.
-            </div>
+            <Description>
+              No ports are opened. Maybe the server is still starting or it
+              doesn't open any ports.
+            </Description>
           )}
         </Margin>
       </Margin>

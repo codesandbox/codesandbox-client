@@ -169,7 +169,7 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleSandboxChange = (sandbox: Sandbox) => {
-    this.serverPreview = getTemplate(this.props.sandbox.template).isServer;
+    this.serverPreview = getTemplate(sandbox.template).isServer;
 
     resetState();
 
@@ -182,15 +182,12 @@ class BasePreview extends React.Component<Props, State> {
       }, 800);
     }
 
-    this.setState(
-      {
-        history: [url],
-        historyPosition: 0,
-        urlInAddressBar: url,
-        showScreenshot: true,
-      },
-      () => this.handleRefresh()
-    );
+    this.setState({
+      history: [url],
+      historyPosition: 0,
+      urlInAddressBar: url,
+      showScreenshot: true,
+    });
   };
 
   handleDependenciesChange = () => {
