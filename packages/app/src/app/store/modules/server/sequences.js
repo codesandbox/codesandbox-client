@@ -25,6 +25,8 @@ export const onCodeSandboxAPIMessage = [
   },
 ];
 
+export const openBrowserFromPort = [actions.openBrowserFromPort];
+
 export const onSSEMessage = [
   equals(props`event`),
   {
@@ -66,7 +68,12 @@ export const onSSEMessage = [
     ],
 
     'sandbox:log': [actions.logSandboxMessage],
-    'sandbox:port': [actions.setPorts, actions.showPortNotifications],
+    'sandbox:port': [
+      set(props`ports`, props`data`),
+      actions.showPortClosedNotifications,
+      actions.showPortOpenedNotifications,
+      actions.setPorts,
+    ],
     'sandbox:error': [
       actions.formatErrorMessage,
       set(state`server.hasUnrecoverableError`, props`unrecoverable`),

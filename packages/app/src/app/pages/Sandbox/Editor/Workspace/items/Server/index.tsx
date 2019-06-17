@@ -4,19 +4,28 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
+import BrowserIcon from 'react-icons/lib/go/browser';
+
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 
-import { Description, WorkspaceInputContainer } from '../../elements';
+import {
+  Description,
+  WorkspaceInputContainer,
+  EntryContainer,
+} from '../../elements';
 
 import Status from './Status';
 import Tasks from './Tasks';
 import EnvironmentVariables from './EnvVars';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 const SubTitle = styled.div`
   text-transform: uppercase;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'};
 
   padding-left: 1rem;
   font-size: 0.875rem;
@@ -24,6 +33,14 @@ const SubTitle = styled.div`
 
 function Server({ store, signals }: { store: any; signals: any }) {
   const disconnected = store.server.status !== 'connected';
+
+  const openPort = (port: {
+    main: boolean;
+    port: number;
+    hostname: string;
+  }) => {
+    signals.server.onBrowserFromPortOpened({ port });
+  };
 
   return (
     <div>
@@ -60,6 +77,48 @@ function Server({ store, signals }: { store: any; signals: any }) {
               }
             />
           </WorkspaceInputContainer>
+        </Margin>
+      </Margin>
+
+      <Margin top={1} bottom={0.5}>
+        <SubTitle>Open Ports</SubTitle>
+        <Margin top={0.5}>
+          {store.server.ports.length ? (
+            store.server.ports.map(port => (
+              <EntryContainer
+                style={{ position: 'relative' }}
+                onClick={() => openPort(port)}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginLeft: '0.5rem',
+                  }}
+                >
+                  <BrowserIcon />
+                  <div style={{ marginLeft: '0.75rem' }}>{port.port}</div>
+                </div>
+                {port.main && (
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      position: 'absolute',
+                      right: '2rem',
+                    }}
+                  >
+                    main
+                  </div>
+                )}
+              </EntryContainer>
+            ))
+          ) : (
+            <div>
+              No ports are opened, make sure to start a server inside your
+              container.
+            </div>
+          )}
         </Margin>
       </Margin>
 

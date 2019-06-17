@@ -18,5 +18,6 @@ export default Module({
     containerStatusChanged: sequences.setContainerStatus,
     onSSEMessage: sequences.onSSEMessage,
     onCodeSandboxAPIMessage: sequences.onCodeSandboxAPIMessage,
+    onBrowserFromPortOpened: sequences.openBrowserFromPort,
   },
 });

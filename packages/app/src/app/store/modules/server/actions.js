@@ -1,5 +1,8 @@
+// @ts-check
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
+
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 
 export function restartSandbox({ executor }) {
   executor.emit('sandbox:restart');
@@ -82,30 +85,82 @@ export function setPorts({ props, state }) {
   state.set('server.ports', props.data);
 }
 
-export function showPortNotifications({ state, controller }) {
-  const ports = state.get('server.ports');
+export function openBrowserFromPort({ controller, props }) {
+  controller.getSignal('editor.openDevToolsTab')({
+    tab: props.port.main
+      ? { id: 'codesandbox.browser' }
+      : {
+          id: 'codesandbox.browser',
+          closeable: true,
+          options: {
+            port: props.port.port,
+            url: `https://${props.port.hostname}`,
+          },
+        },
+  });
+}
 
-  ports.forEach(port => {
-    if (!port.main) {
+export function showPortClosedNotifications({ state, props }) {
+  const currentPorts = state.get('server.ports');
+
+  const removedPorts = currentPorts.filter(
+    port => !props.ports.find(p => p.port === port.port)
+  );
+
+  const getClosedMessage = () => {
+    if (removedPorts.length === 1) {
+      return `Port ${removedPorts[0].port} closed`;
+    }
+
+    return `The following ports closed: ${removedPorts
+      .map(p => p.port)
+      .join(', ')}`;
+  };
+
+  if (removedPorts.length > 0) {
+    notificationState.addNotification({
+      title: `Server Ports Closed`,
+      message: getClosedMessage(),
+      status: NotificationStatus.NOTICE,
+    });
+  }
+}
+
+function getOpenedBrowserPorts(views: ViewConfig[]) {
+  const ports = [];
+
+  views.forEach(view => {
+    view.views.forEach(tab => {
+      if (tab.id === 'codesandbox.browser' && tab.options && tab.options.port) {
+        ports.push(tab.options.port);
+      }
+    });
+  });
+
+  return ports;
+}
+
+export function showPortOpenedNotifications({ state, props, controller }) {
+  const currentPorts = state.get('server.ports');
+  const newPorts = props.ports;
+
+  const addedPorts = newPorts.filter(
+    port => !currentPorts.find(p => p.port === port.port)
+  );
+  const openedPorts = getOpenedBrowserPorts(state.get('editor.devToolTabs'));
+
+  addedPorts.forEach(port => {
+    if (!port.main && openedPorts.indexOf(port.port) === -1) {
       notificationState.addNotification({
         title: `Port ${port.port} Opened`,
-        message: `The server started listening on port ${port.port}, do you want to open it?`,
+        message: `The server is listening on port ${port.port}, do you want to open it?`,
         status: NotificationStatus.NOTICE,
         actions: {
           primary: [
             {
               label: 'Open Browser Pane',
               run: () => {
-                controller.getSignal('editor.openDevToolsTab')({
-                  tab: {
-                    id: 'codesandbox.browser',
-                    closeable: true,
-                    options: {
-                      port: port.port,
-                      url: `https://${port.hostname}`,
-                    },
-                  },
-                });
+                openBrowserFromPort({ props: { port }, controller });
               },
             },
           ],
