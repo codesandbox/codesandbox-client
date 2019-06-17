@@ -42,7 +42,7 @@ const TemplateComponent = ({ template }: Props) => {
       <TemplateButton
         block
         onClick={() => {
-          modalOpened({ modal: 'starter' });
+          modalOpened({ modal: 'template' });
         }}
       >
         {template ? 'Edit Template' : 'Make Template'}

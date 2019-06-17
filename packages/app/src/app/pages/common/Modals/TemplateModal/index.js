@@ -2,45 +2,46 @@ import React, { useState } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 
 import { SketchPicker } from 'react-color';
-import { inject } from 'mobx-react';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
 import { Checkbox } from '@codesandbox/common/lib/components/Checkbox';
 import * as templates from '@codesandbox/common/lib/templates';
-
 import uniq from 'lodash-es/uniq';
+import { useStore, useSignals } from 'app/store';
 
 import { Heading, Container, Explanation } from '../elements';
 import {
   Fieldset,
   Label,
   DefaultColor,
-  GlobalStylesStarterModal,
+  GlobalStylesTemplateModal,
 } from './elements';
 
-const StarterModal = ({ store, signals }) => {
+const TemplateModal = () => {
+  const { editor, workspace } = useStore();
+  const { workspace: workspaceSignals } = useSignals();
+
   const templateColors = Object.keys(templates)
     .filter(x => x !== 'default')
     .map(t => templates[t])
     .map(a => ({ color: a.color(), title: a.niceName }));
-  const sandbox = store.editor.currentSandbox;
+  const sandbox = editor.currentSandbox;
   const template = templates.default(sandbox.template);
 
-  const { title, description } =
-    sandbox.customTemplate || store.workspace.project;
+  const { title, description } = sandbox.customTemplate || workspace.project;
   const [selected, setSelected] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState(
     (sandbox.customTemplate && sandbox.customTemplate.color) || template.color()
   );
-  const [starterTitle, setStaterTitle] = useState(title);
-  const [starterDescription, setStaterDescription] = useState(description);
+  const [templateTitle, setStaterTitle] = useState(title);
+  const [templateDescription, setStaterDescription] = useState(description);
 
   const newTemplate = {
     template: {
       color: selectedColor,
-      title: starterTitle,
-      description: starterDescription,
+      title: templateTitle,
+      description: templateDescription,
       icon_url: sandbox.template,
       published: selected,
     },
@@ -48,21 +49,21 @@ const StarterModal = ({ store, signals }) => {
 
   const makeTemplate = e => {
     e.preventDefault();
-    signals.workspace.addedTemplate({
+    workspaceSignals.addedTemplate({
       ...newTemplate,
     });
   };
 
   const editTemplate = e => {
     e.preventDefault();
-    signals.workspace.editTemplate({
+    workspaceSignals.editTemplate({
       ...newTemplate,
     });
   };
 
   return (
     <Container>
-      <GlobalStylesStarterModal />
+      <GlobalStylesTemplateModal />
       <Heading>Make Template</Heading>
       <Explanation>
         By making your sandbox a template you will be able to see it in your
@@ -78,7 +79,7 @@ const StarterModal = ({ store, signals }) => {
           name="title"
           required
           id="title"
-          value={starterTitle}
+          value={templateTitle}
           onChange={e => setStaterTitle(e.target.value)}
         />
       </Fieldset>
@@ -89,7 +90,7 @@ const StarterModal = ({ store, signals }) => {
           required
           name="description"
           id="description"
-          value={starterDescription}
+          value={templateDescription}
           onChange={e => setStaterDescription(e.target.value)}
         />
       </Fieldset>
@@ -138,7 +139,7 @@ const StarterModal = ({ store, signals }) => {
           <Button
             red
             small
-            onClick={() => signals.workspace.deleteTemplate()}
+            onClick={() => workspaceSignals.deleteTemplate()}
             type="button"
           >
             Delete template
@@ -159,4 +160,4 @@ const StarterModal = ({ store, signals }) => {
   );
 };
 
-export default inject('store', 'signals')(StarterModal);
+export default TemplateModal;

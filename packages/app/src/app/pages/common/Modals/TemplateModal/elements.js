@@ -21,7 +21,7 @@ export const DefaultColor = styled.button`
   border: none;
 `;
 
-export const GlobalStylesStarterModal = createGlobalStyle`
+export const GlobalStylesTemplateModal = createGlobalStyle`
 .ReactModal__Content.ReactModal__Content--after-open {
   overflow: visible !important;
 }

@@ -28,7 +28,7 @@ import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
 import FeedbackModal from './FeedbackModal';
-import StarterModal from './StarterModal';
+import TemplateModal from './TemplateModal';
 import NetlifyLogs from './NetlifyLogs';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 
@@ -133,8 +133,8 @@ const modals = {
     Component: FeedbackModal,
     width: 450,
   },
-  starter: {
-    Component: StarterModal,
+  template: {
+    Component: TemplateModal,
     width: 450,
   },
 };
