@@ -55,7 +55,7 @@
   "devDependencies": {
     "@types/react": "^16.8.12",
     "all-contributors-cli": "^5.4.0",
-    "babel-eslint": "codesandbox/babel-eslint#v10.0.2",
+    "babel-eslint": "^10.0.2",
     "concurrently": "^4.1.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "^15.0.1",
