@@ -2,22 +2,23 @@
 # yarn lockfile v1
 
 
-"@apollo/react-common@^0.1.0-beta.5":
-  version "0.1.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@apollo/react-common/-/react-common-0.1.0-beta.5.tgz#afa00e4e906ab910de42a6c54178f5d1e4a78fab"
-  integrity sha512-lrWNm0bedg8Jui8yvgPUOt16yXlkIGK0AFOqsRrMzaAbvLWI7kEPU+nMzXDCTABX/aC4dcDuPlARUImIBuPZmg==
+"@apollo/react-common@^0.1.0-beta.7":
+  version "0.1.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@apollo/react-common/-/react-common-0.1.0-beta.7.tgz#0c4714d59ef4c1784bfdb9ee212d9072c438a65d"
+  integrity sha512-giUNZdJvSWHVj9e3jg3VIVINjQqquLTRiREc3Th6+FC1mrVO5L4SmoHyUdhqTVsvzoY4xnOQK3px5YOxCbgu3Q==
   dependencies:
-    ts-invariant "^0.4.2"
-    tslib "^1.9.3"
+    ts-invariant "^0.4.4"
+    tslib "^1.10.0"
 
 "@apollo/react-hooks@^0.1.0-beta.2":
-  version "0.1.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@apollo/react-hooks/-/react-hooks-0.1.0-beta.7.tgz#431e43054f196363ecfb354e03defe39994598fa"
-  integrity sha512-AeFavSE/zoWcdf/Ml4NOtG7v8waK8DirhScGaOCVvQ6u4GaYJOUGVI9Zo3DLqq5RmPwIoe1XMpdfI6uCmuyfFw==
+  version "0.1.0-beta.9"
+  resolved "https://registry.yarnpkg.com/@apollo/react-hooks/-/react-hooks-0.1.0-beta.9.tgz#098965e8b675dc57af07d2f2d901a1029b6e1481"
+  integrity sha512-uwx2NfHTK2fcZyx3JOprS9Ra0CMG95RH8xGgBJ9asTvGu+pofgqKX60KvxG6HtHXg/YIVVnrB8Nq6B+YOl6EYg==
   dependencies:
-    "@apollo/react-common" "^0.1.0-beta.5"
-    ts-invariant "^0.4.2"
-    tslib "^1.9.3"
+    "@apollo/react-common" "^0.1.0-beta.7"
+    apollo-utilities "^1.3.2"
+    ts-invariant "^0.4.4"
+    tslib "^1.10.0"
 
 "@babel/cli@^7.1.0", "@babel/cli@^7.2.3":
   version "7.4.4"
@@ -25501,7 +25502,7 @@ ts-invariant@^0.2.1:
   dependencies:
     tslib "^1.9.3"
 
-ts-invariant@^0.4.0, ts-invariant@^0.4.2:
+ts-invariant@^0.4.0, ts-invariant@^0.4.2, ts-invariant@^0.4.4:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.4.4.tgz#97a523518688f93aafad01b0e80eb803eb2abd86"
   integrity sha512-uEtWkFM/sdZvRNNDL3Ehu4WVpwaulhwQszV8mrtcdeE8nN00BV9mAmQ88RkrBhFgl9gMgvjJLAQcZbnPXI9mlA==
@@ -25612,7 +25613,7 @@ tslib@1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
   integrity sha512-f/qGG2tUkrISBlQZEjEqoZ3B2+npJjIf04H1wuAv9iA8i04Icp+61KRXxFdha22670NJopsZCIjhC3SnjPRKrQ==
 
-tslib@^1.0.0, tslib@^1.6.0, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@^1.0.0, tslib@^1.10.0, tslib@^1.6.0, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
