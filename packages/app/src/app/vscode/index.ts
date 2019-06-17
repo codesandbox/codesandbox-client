@@ -34,11 +34,11 @@ class VSCodeManager {
   private serviceCache: IServiceCache;
   private controller: any;
 
-  private statusbarPart = blocker();
-  private menubarPart = blocker();
-  private commandService = blocker();
-  private extensionService = blocker();
-  private extensionEnablementService = blocker();
+  private statusbarPart = blocker<any>();
+  private menubarPart = blocker<any>();
+  private commandService = blocker<any>();
+  private extensionService = blocker<any>();
+  private extensionEnablementService = blocker<any>();
 
   public acquireController(controller: any) {
     this.controller = controller;
