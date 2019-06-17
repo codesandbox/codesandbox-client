@@ -72,7 +72,7 @@ const ForkButton = ({ secondary, isForking, style }: ForkButtonProps) => {
   const { editor } = useSignals();
   return (
     <ProgressButton
-      onClick={() => editor.forkSandboxClicked()}
+      onClick={editor.forkSandboxClicked}
       style={style}
       secondary={secondary}
       loading={isForking}
