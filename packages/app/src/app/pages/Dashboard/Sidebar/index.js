@@ -5,9 +5,11 @@ import { Route, withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import TimeIcon from 'react-icons/lib/md/access-time';
 import PeopleIcon from 'react-icons/lib/md/people';
-import SaveIcon from 'react-icons/lib/md/save';
+// @ts-ignore
+import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
+// @ts-ignore
+import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 
@@ -60,9 +62,9 @@ class Sidebar extends React.Component {
               <React.Fragment>
                 <Items style={{ marginBottom: '1rem' }}>
                   <Item
-                    Icon={TimeIcon}
+                    Icon={DashboardIcon}
                     path="/dashboard/recent"
-                    name="Recent"
+                    name="Overview"
                   />
 
                   <SandboxesItem
@@ -72,7 +74,7 @@ class Sidebar extends React.Component {
                   />
 
                   <Item
-                    Icon={SaveIcon}
+                    Icon={TemplateIcon}
                     path="/dashboard/templates"
                     name="Templates"
                   />
