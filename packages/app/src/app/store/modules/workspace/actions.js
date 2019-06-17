@@ -82,12 +82,7 @@ export function updateSandbox({ api, state }) {
     .put(`/sandboxes/${sandboxId}`, body)
     .then(data => {
       window.history.pushState({}, null, sandboxUrl(data));
-      return {
-        data: {
-          ...data.template,
-          iconURL: data.template.icon_url,
-        },
-      };
+      return { data };
     })
     .catch(error => ({ error }));
 }
@@ -102,10 +97,7 @@ export function addTag({ api, path, state }) {
     .post(`/sandboxes/${sandboxId}/tags`, body)
     .then(data =>
       path.success({
-        data: {
-          ...data.template,
-          iconURL: data.template.icon_url,
-        },
+        data,
       })
     )
     .catch(e => path.error({ error: e }));

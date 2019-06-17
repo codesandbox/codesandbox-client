@@ -61,7 +61,7 @@ function createTheme<T>(colors: T): { [P in keyof T]: NestedColor } {
 const theme = {
   ...createTheme({
     background: '#24282A',
-    background2: '#111518',
+    background2: '#1C2022',
     background3: '#374140',
     background4: '#141618',
     background5: '#111518', // Less brown version
