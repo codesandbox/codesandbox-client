@@ -1,9 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
-  margin: 0;
-  background-color: ${props => props.theme.background};
-  color: rgba(255, 255, 255, 0.8);
+  ${({ theme }) => css`
+    margin: 0;
+    background-color: ${theme.background};
+    color: rgba(255, 255, 255, 0.8);
+  `}
 `;
 
 export const Title = styled.h1`

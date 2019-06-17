@@ -19,7 +19,7 @@ interface IDeploymentIntegrationProps {
   open: boolean;
   onToggle: (event: React.MouseEvent<HTMLDivElement>) => void;
   onDeploy: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  children: React.ReactNode;
+  children: React.ReactChildren;
 }
 
 const DeploymentIntegration = ({

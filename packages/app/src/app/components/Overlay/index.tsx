@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Transition, animated, config } from 'react-spring/renderprops';
+import { useTransition, animated, config } from 'react-spring';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Container } from './elements';
 
@@ -16,8 +16,8 @@ interface IOverlayProps {
 const Overlay = ({
   event,
   isOpen,
-  onOpen,
-  onClose,
+  onOpen = () => {},
+  onClose = () => {},
   children,
   content: Content,
   noHeightAnimation,
@@ -62,40 +62,34 @@ const Overlay = ({
     }
   };
 
+  const transitions = useTransition(openState, null, {
+    config: config.default,
+    from: {
+      ...(noHeightAnimation ? {} : { height: 0 }),
+      opacity: 0.6,
+      position: 'absolute',
+      top: 'calc(100% + 1rem)',
+      right: 0,
+      zIndex: 10,
+      overflow: 'hidden',
+      boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
+    },
+    enter: { ...(noHeightAnimation ? {} : { height: 'auto' }), opacity: 1 },
+    leave: { ...(noHeightAnimation ? {} : { height: 0 }), opacity: 0 },
+  });
+
   return (
     <Container onMouseDown={e => e.preventDefault()}>
       {children(handleOpen)}
-      <Transition
-        // Find a better way of doing this, copied from original implementation
-        // which appears hacky and makes typescript angry
-        // @ts-ignore
-        items={openState}
-        from={{
-          height: noHeightAnimation ? undefined : 0,
-          opacity: 0.6,
-          position: 'absolute',
-          top: 'calc(100% + 1rem)',
-          right: 0,
-          zIndex: 10,
-          overflow: 'hidden',
-          boxShadow: '0 3px 3px rgba(0, 0, 0, 0.3)',
-        }}
-        enter={{ height: noHeightAnimation ? undefined : 'auto', opacity: 1 }}
-        leave={{ height: noHeightAnimation ? undefined : 0, opacity: 0 }}
-        native
-        // @ts-ignore
-        config={config.fast}
-      >
-        {visible =>
-          visible
-            ? style => (
-                <animated.div style={style}>
-                  <Content />
-                </animated.div>
-              )
-            : style => <animated.span style={style} />
-        }
-      </Transition>
+      {transitions.map(({ item, props }) =>
+        item ? (
+          <animated.div style={props}>
+            <Content />
+          </animated.div>
+        ) : (
+          <animated.span style={props} />
+        )
+      )}
     </Container>
   );
 };

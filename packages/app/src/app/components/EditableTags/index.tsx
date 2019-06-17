@@ -6,40 +6,38 @@ const GlobalStyle = createGlobalStyle`${({ color }: { color: any }) => css`
   .react-tagsinput {
     display: flex;
     flex-wrap: row;
-    overflow: hidden;
+    margin: 0 -0.2rem;
     border-radius: 4px;
     color: white;
-
-    margin: 0 -0.2rem;
+    overflow: hidden;
   }
 
   .react-tagsinput-tag {
     display: inline-block;
-    margin: 0.2rem;
-    font-size: 13px;
     padding: 0.3em 0.5em;
+    margin: 0.2rem;
+    margin-bottom: 6px;
+    border-radius: 4px;
     background-color: ${color};
     color: white;
+    font-size: 13px;
     font-weight: 500;
-    border-radius: 4px;
-    margin-bottom: 6px;
   }
 
   .react-tagsinput-input {
-    transition: 0.3s ease border-color;
-
-    background-color: rgba(0, 0, 0, 0.1);
+    width: 80px;
+    padding: 0.3em;
+    margin-top: 1px;
+    margin-left: 0.2rem;
+    margin-bottom: 6px;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
     color: rgba(255, 255, 255, 0.9);
     font-size: 13px;
     font-weight: 400;
-    margin-bottom: 6px;
-    margin-top: 1px;
     outline: none;
-    padding: 0.3em;
-    border-radius: 4px;
-    margin-left: 0.2rem;
-    width: 80px;
+    transition: 0.3s ease border-color;
 
     &:focus {
       border-color: ${color.clearer(0.3)};
@@ -47,9 +45,9 @@ const GlobalStyle = createGlobalStyle`${({ color }: { color: any }) => css`
   }
 
   .react-tagsinput-remove {
-    cursor: pointer;
-    font-weight: bold;
     color: rgba(255, 255, 255, 0.6);
+    font-weight: bold;
+    cursor: pointer;
   }
 
   .react-tagsinput-tag a::before {
@@ -57,6 +55,8 @@ const GlobalStyle = createGlobalStyle`${({ color }: { color: any }) => css`
   }
 `}`;
 
+// To destructure this we need to import an interface
+// for template
 const EditableTags = (props: any) => (
   <>
     <GlobalStyle color={props.template.color} />

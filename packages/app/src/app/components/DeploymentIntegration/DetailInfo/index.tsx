@@ -6,7 +6,7 @@ import { Details, Info } from './elements';
 interface IDetailInfoProps {
   bgColor: string;
   light?: boolean;
-  info: string;
+  children: React.ReactNode;
   loading?: boolean;
   onDeploy: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
@@ -14,13 +14,13 @@ interface IDetailInfoProps {
 const DetailInfo = ({
   bgColor,
   light = false,
-  info,
+  children,
   loading = false,
   onDeploy,
 }: IDetailInfoProps) => (
   <Details bgColor={bgColor}>
     <Margin right={2}>
-      <Info light={light}>{info}</Info>
+      <Info light={light}>{children}</Info>
     </Margin>
     <Button small disabled={loading} onClick={onDeploy}>
       Deploy

@@ -5,12 +5,10 @@ import SubTitle from 'app/components/SubTitle';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 
 interface ISkeletonProps {
-  titles: [
-    {
-      delay: number;
-      content: React.ReactNode;
-    }
-  ];
+  titles: {
+    delay: number;
+    content: React.ReactNode;
+  }[];
 }
 
 const Skeleton = ({ titles }: ISkeletonProps) => (

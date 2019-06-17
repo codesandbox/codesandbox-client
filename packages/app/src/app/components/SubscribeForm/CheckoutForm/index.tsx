@@ -40,7 +40,7 @@ const CheckoutForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name) {
+    if (!cardholderName) {
       setErrors({ name: 'Please provide a name ' });
       return;
     }

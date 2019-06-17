@@ -30,9 +30,9 @@ export const Sides = styled.div`
     transform: rotateX(-37.5deg) rotateY(45deg);
 
     * {
-      box-sizing: border-box;
-      background-color: rgba(242, 119, 119, 0.5);
       border: ${size / 10}px solid white;
+      background-color: rgba(242, 119, 119, 0.5);
+      box-sizing: border-box;
     }
   `}
 `;
