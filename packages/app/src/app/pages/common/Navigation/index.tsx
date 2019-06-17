@@ -105,7 +105,14 @@ const Navigation = ({ title, searchNoInput }: Props) => {
                   style={{ position: 'relative', fontSize: '1.25rem' }}
                   onClick={open}
                 >
-                  <Tooltip placement="bottom" content={store.userNotifications.unreadCount > 0 ? 'Show Notifications' : 'No Notifications'}>
+                  <Tooltip
+                    placement="bottom"
+                    content={
+                      userNotifications.unreadCount > 0
+                        ? 'Show Notifications'
+                        : 'No Notifications'
+                    }
+                  >
                     <BellIcon height={35} />
                     {userNotifications.unreadCount > 0 && <UnreadIcon />}
                   </Tooltip>
