@@ -68,7 +68,7 @@ export const addTemplate = [
         props`template`
       ),
       closeModal,
-      addNotification('template Added', 'success'),
+      addNotification('Template Added', 'success'),
     ],
     error: [addNotification('Could not add custom template', 'error')],
   },
