@@ -5,12 +5,9 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
-import immer from 'immer';
 
-import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { ModuleError } from '@codesandbox/common/lib/types';
-import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/CodeEditor';
@@ -20,7 +17,6 @@ import DevTools from 'app/components/Preview/DevTools';
 import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
-import { moveDevToolsTab } from './utils';
 
 const settings = store =>
   ({
@@ -371,29 +367,9 @@ class EditorPreview extends React.Component<Props, State> {
   };
 
   moveDevToolsTab = (prevPos, nextPos) => {
-    const { store, signals } = this.props;
-    const tabs = store.editor.devToolTabs;
+    const { signals } = this.props;
 
-    const newTabs = moveDevToolsTab(tabs, prevPos, nextPos);
-
-    const code = JSON.stringify({ preview: newTabs }, null, 2);
-    const previousFile =
-      store.editor.modulesByPath['/.codesandbox/workspace.json'];
-    if (previousFile) {
-      signals.editor.codeSaved({
-        code,
-        moduleShortid: previousFile.shortid,
-      });
-    } else {
-      signals.files.createModulesByPath({
-        files: {
-          '/.codesandbox/workspace.json': {
-            content: code,
-            isBinary: false,
-          },
-        },
-      });
-    }
+    signals.editor.onDevToolsTabMoved({ prevPos, nextPos });
   };
 
   render() {

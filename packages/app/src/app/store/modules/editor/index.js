@@ -102,5 +102,6 @@ export default Module({
     onNavigateAway: sequences.onNavigateAway,
 
     onDevToolsTabAdded: sequences.addDevToolsTab,
+    onDevToolsTabMoved: sequences.moveDevToolsTab,
   },
 });

@@ -8,7 +8,10 @@ import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
-import { addDevToolsTab } from 'app/pages/Sandbox/Editor/Content/utils';
+import {
+  addDevToolsTab as addDevToolsTabUtil,
+  moveDevToolsTab as moveDevToolsTabUtil,
+} from 'app/pages/Sandbox/Editor/Content/utils';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -179,9 +182,22 @@ export function getDevToolsTabs({ state }) {
   };
 }
 
-export function addDevToolTab({ state, props }) {
+export function addDevToolsTab({ state, props }) {
   const devToolTabs = state.get('editor.devToolTabs');
-  const newDevToolTabs = addDevToolsTab(devToolTabs, props.tab);
+  const newDevToolTabs = addDevToolsTabUtil(devToolTabs, props.tab);
+
+  return {
+    code: JSON.stringify({ preview: newDevToolTabs }, null, 2),
+  };
+}
+
+export function moveDevToolsTab({ state, props }) {
+  const devToolTabs = state.get('editor.devToolTabs');
+
+  const prevPos = props.prevPos;
+  const nextPos = props.nextPos;
+
+  const newDevToolTabs = moveDevToolsTabUtil(devToolTabs, prevPos, nextPos);
 
   return {
     code: JSON.stringify({ preview: newDevToolTabs }, null, 2),

@@ -343,4 +343,6 @@ export const updateDevTools = [
   },
 ];
 
-export const addDevToolsTab = [actions.addDevToolTab, updateDevTools];
+export const addDevToolsTab = [actions.addDevToolsTab, updateDevTools];
+
+export const moveDevToolsTab = [actions.moveDevToolsTab, updateDevTools];
