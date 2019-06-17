@@ -15,7 +15,9 @@ const Folders = ({ loading, me, history, match: { params }, teamId }) => {
     (me.collection || {}).path
   );
 
-  if (children.size === 0) return null;
+  if (children.size === 0) {
+    return null;
+  }
 
   return (
     <FoldersWrapper>
