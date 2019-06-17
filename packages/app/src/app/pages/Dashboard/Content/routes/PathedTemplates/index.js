@@ -11,7 +11,7 @@ import { LIST_TEMPLATES } from '../../../queries';
 
 const PathedTemplates = props => {
   const { dashboard } = useStore();
-  const path = '/' + (props.match.params.path || '');
+  const path = `/${props.match.params.path || ''}`;
   const { loading, error, data } = useQuery(LIST_TEMPLATES);
 
   document.title = `Templates - CodeSandbox`;
