@@ -75,8 +75,7 @@ export type Template = {
   showCube: boolean;
   isServer: boolean;
   mainFile: undefined | string[];
-
-}
+};
 
 export type Badge = {
   id: string;
@@ -92,11 +91,11 @@ export type CurrentUser = {
   avatarUrl: string | undefined;
   jwt: string | undefined;
   subscription:
-  | {
-    since: string;
-    amount: string;
-  }
-  | undefined;
+    | {
+        since: string;
+        amount: string;
+      }
+    | undefined;
   curatorAt: string;
   badges: Array<Badge>;
   integrations: {
@@ -166,12 +165,12 @@ export type Sandbox = {
   npmDependencies: {
     [dep: string]: string;
   };
-  externalResources: Array<string>;
+  externalResources: string[];
   privacy: 0 | 1 | 2;
   author: User | undefined;
   forkedFromSandbox: { title: string; id: string } | undefined;
   git: GitInfo | undefined;
-  tags: Array<string>;
+  tags: string[];
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
@@ -183,13 +182,13 @@ export type Sandbox = {
   originalGit: GitInfo | undefined;
   originalGitCommitSha: string | undefined;
   originalGitChanges:
-  | {
-    added: Array<string>;
-    modified: Array<string>;
-    deleted: Array<string>;
-    rights: 'none' | 'read' | 'write' | 'admin';
-  }
-  | undefined;
+    | {
+        added: string[];
+        modified: string[];
+        deleted: string[];
+        rights: 'none' | 'read' | 'write' | 'admin';
+      }
+    | undefined;
   version: number;
   screenshotUrl: string | undefined;
 };
@@ -245,7 +244,7 @@ export type Modal = {
 export type PackageJSON = {
   name: string;
   description: string;
-  keywords: Array<string>;
+  keywords: string[];
   main: string;
   dependencies: {
     [dep: string]: string;
