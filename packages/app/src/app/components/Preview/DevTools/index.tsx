@@ -52,7 +52,7 @@ export interface IViewAction {
 export interface IViewType {
   id: string;
   title: string | ((options: any) => string);
-  Content: React.ComponentClass<DevToolProps, any> | React.SFC<DevToolProps>;
+  Content: React.ComponentType<DevToolProps>;
   actions: IViewAction[] | ((info: { owned: boolean }) => IViewAction[]);
 }
 
