@@ -1,21 +1,28 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-import { observer } from 'mobx-react';
 import {
   entryTarget,
   collectTarget,
 } from '../../../../Sidebar/SandboxesItem/folder-drop-target';
 import { NavigationLink } from './elements';
 
+interface ILinkProps {
+  teamId?: string;
+  name: string;
+  path: string;
+  i: number;
+  splitPath: string;
+  connectDropTarget: Function;
+}
+
 const Link = ({
   teamId,
   name,
   path,
-  isOver,
-  splittedPath,
+  splitPath,
   i,
   connectDropTarget,
-}) =>
+}: ILinkProps) =>
   connectDropTarget(
     <div>
       <NavigationLink
@@ -24,9 +31,8 @@ const Link = ({
             ? `/dashboard/teams/${teamId}/sandboxes${path}`
             : `/dashboard/sandboxes${path}`
         }
-        last={i === splittedPath.length - 1 ? 'true' : undefined}
+        last={i === splitPath.length - 1 ? 'true' : undefined}
         first={i === 0 ? 'true' : undefined}
-        style={isOver ? { color: 'white' } : {}}
         path={path}
         teamId={teamId}
       >
@@ -35,6 +41,4 @@ const Link = ({
     </div>
   );
 
-export default DropTarget('SANDBOX', entryTarget, collectTarget)(
-  observer(Link)
-);
+export default DropTarget('SANDBOX', entryTarget, collectTarget)(Link);

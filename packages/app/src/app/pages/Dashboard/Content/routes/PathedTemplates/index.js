@@ -6,7 +6,7 @@ import Loading from 'app/components/Loading';
 import { useStore } from 'app/store';
 
 import Sandboxes from '../../Sandboxes';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 import { LIST_TEMPLATES } from '../../../queries';
 
 const PathedTemplates = props => {

@@ -1,14 +1,17 @@
-// @ts-check
 import React from 'react';
 import { join } from 'path';
-
 import { Container } from './elements';
 import NavigationLink from './NavigationLink';
 
-export default ({ path, teamId }) => {
-  const splittedPath = path === '/' ? [''] : path.split('/');
+interface INavigationProps {
+  path: string;
+  teamId?: string;
+}
 
-  const paths = splittedPath.reduce((bases, next) => {
+export const Navigation = ({ path, teamId }: INavigationProps) => {
+  const splitPath = path === '/' ? [''] : path.split('/');
+
+  const paths = splitPath.reduce((bases, next) => {
     if (next === '') {
       return [{ url: '/', name: teamId ? 'Our templates' : 'My templates' }];
     }
@@ -19,12 +22,12 @@ export default ({ path, teamId }) => {
 
   return (
     <Container>
-      {paths.map(({ name, url }, i) => (
+      {paths.map(({ name, url }, i: number) => (
         <NavigationLink
           teamId={teamId}
           name={name}
           path={url}
-          splittedPath={splittedPath}
+          splittedPath={splitPath}
           i={i}
           key={url}
         />

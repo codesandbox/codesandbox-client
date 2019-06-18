@@ -2,27 +2,27 @@ import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  position: relative;
 `;
 
-export const NavigationLink = styled(Link)`
-  transition: 0.3s ease color;
-  margin-right: 0.5rem;
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.6);
+export const NavigationLink = styled(Link)<{ first: boolean; last: boolean }>`
+  ${({ first, last }) => css`
+    margin-right: 0.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: 0.3s ease color;
 
-  &:hover {
-    color: white;
-  }
+    &:hover {
+      color: white;
+    }
 
-  &:last-child {
-    margin-right: 0;
-  }
+    &:last-child {
+      margin-right: 0;
+    }
 
-  ${props =>
-    props.first
+    ${first
       ? css`
           margin-left: 0;
         `
@@ -30,8 +30,7 @@ export const NavigationLink = styled(Link)`
           margin-left: 0.5rem;
         `};
 
-  ${props =>
-    props.last
+    ${last
       ? css`
           color: white;
         `
@@ -41,4 +40,5 @@ export const NavigationLink = styled(Link)`
             margin-left: 0.5rem;
           }
         `};
+  `}
 `;
