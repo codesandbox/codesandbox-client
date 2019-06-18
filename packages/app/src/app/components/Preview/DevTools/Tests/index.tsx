@@ -4,7 +4,7 @@ import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
 
 import immer from 'immer';
-import debounce from 'lodash-es/debounce';
+import { debounce } from 'lodash-es';
 
 import { Container, TestDetails, TestContainer } from './elements';
 
@@ -69,6 +69,7 @@ type State = {
 
 type SandboxMessage = { type: 'test' | 'done' } & (
   | InitializedTestsMessage
+  | CompilationDoneMessage
   | TestCountMessage
   | TotalTestStartMessage
   | TotalTestEndMessage
@@ -83,6 +84,10 @@ type SandboxMessage = { type: 'test' | 'done' } & (
 
 interface InitializedTestsMessage {
   event: messages.INITIALIZE;
+}
+
+interface CompilationDoneMessage {
+  compilatonError: boolean;
 }
 
 interface TestCountMessage {
@@ -202,18 +207,18 @@ class Tests extends React.Component<DevToolProps, State> {
 
   handleMessage = (data: SandboxMessage) => {
     if (data.type === 'done' && this.state.watching && !this.props.hidden) {
-      let delay = 500;
-      if (!data.compilatonError) {
-        delay = 1000;
+      let delay = 1000;
+
+      if (data.compilatonError) {
+        delay = 2 * delay;
       }
 
       debounce(
         () => {
-          console.log('one moment before');
           this.runAllTests();
         },
         delay,
-        { maxWait: 2000 }
+        { maxWait: 4 * delay }
       )();
     } else if (data.type === 'test') {
       switch (data.event) {
