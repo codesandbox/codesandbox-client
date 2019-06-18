@@ -151,7 +151,11 @@ class Preview extends Component<Props, State> {
    * a better design if we want to use it for more though.
    */
   getOverlayMessage = () => {
-    const { containerStatus, error } = this.props.store.server;
+    const {
+      containerStatus,
+      error,
+      hasUnrecoverableError,
+    } = this.props.store.server;
 
     if (containerStatus === 'hibernated') {
       return 'The container has been hibernated because of inactivity, you can start it by refreshing the browser.';
@@ -161,7 +165,7 @@ class Preview extends Component<Props, State> {
       return 'Restarting the sandbox...';
     }
 
-    if (error) {
+    if (error && hasUnrecoverableError) {
       return 'A sandbox error occurred, you can refresh the page to restart the container.';
     }
 
