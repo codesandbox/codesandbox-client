@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { uniq } from 'lodash-es';
 import { observer } from 'mobx-react-lite';
