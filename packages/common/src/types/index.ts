@@ -41,6 +41,7 @@ export type Module = {
   id: string;
   title: string;
   code: string | undefined;
+  savedCode: string | undefined;
   shortid: string;
   directoryShortid: string | undefined;
   isNotSynced: boolean;
