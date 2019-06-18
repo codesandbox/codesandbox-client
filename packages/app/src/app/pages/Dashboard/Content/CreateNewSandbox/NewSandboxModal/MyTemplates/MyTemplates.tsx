@@ -7,29 +7,32 @@ import {
 } from '@codesandbox/common/lib/components/SandboxCard/elements';
 import history from 'app/utils/history';
 import { useQuery } from '@apollo/react-hooks';
+import { LIST_TEMPLATES } from '../../../../queries';
+import { Title } from '../elements';
 import {
   Border,
   TemplateTitle,
   TemplateSubTitle,
-  MyTemplates,
+  MyTemplatesList,
   MyTemplate,
-  Title,
-} from '../elements';
-import { LIST_TEMPLATES } from '../../../../queries';
+} from './elements';
 
-export default () => {
+export const MyTemplates = () => {
   const { data } = useQuery(LIST_TEMPLATES);
 
-  if (data.me && !data.me.templates.length) return null;
+  if (data.me && !data.me.templates.length) {
+    return null;
+  }
 
   return (
     <>
       <Title>My Templates</Title>
-      <MyTemplates>
+      <MyTemplatesList>
         {data.me
-          ? data.me.templates.map(template => {
+          ? data.me.templates.map((template, i) => {
               return (
                 <MyTemplate
+                  key={i}
                   onClick={() => history.push(sandboxUrl(template.sandbox))}
                 >
                   <img
@@ -56,8 +59,8 @@ export default () => {
                 </MyTemplate>
               );
             })
-          : new Array(3).fill({}).map(() => (
-              <MyTemplate>
+          : new Array(3).fill({}).map((_, i) => (
+              <MyTemplate key={i}>
                 <img
                   height="109px"
                   alt="loading"
@@ -69,7 +72,7 @@ export default () => {
                 </div>
               </MyTemplate>
             ))}
-      </MyTemplates>
+      </MyTemplatesList>
     </>
   );
 };

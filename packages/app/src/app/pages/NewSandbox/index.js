@@ -1,14 +1,12 @@
+import React, { useEffect } from 'react';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import React, { useEffect } from 'react';
-
 import Navigation from 'app/pages/common/Navigation';
 import { useSignals } from 'app/store';
 import history from 'app/utils/history';
-
-import NewSandboxModal from '../Dashboard/Content/CreateNewSandbox/Modal';
+import { NewSandboxModal } from '../Dashboard/Content/CreateNewSandbox/NewSandboxModal';
 
 const createSandbox = template => {
   history.push(sandboxUrl({ id: template.shortid }));

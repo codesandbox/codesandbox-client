@@ -19,13 +19,17 @@ interface UserTemplate extends Template {
   };
 }
 
-type Props = {
+interface IUserTemplateProps {
   template: UserTemplate;
   selectTemplate: (t: Template) => void;
   small: boolean;
-};
+}
 
-export default ({ template, selectTemplate, small }: Props) => {
+export const UserTemplate = ({
+  template,
+  selectTemplate,
+  small,
+}: IUserTemplateProps) => {
   const Icon = template.iconUrl
     ? getIcon(template.sandbox.source.template)
     : null;

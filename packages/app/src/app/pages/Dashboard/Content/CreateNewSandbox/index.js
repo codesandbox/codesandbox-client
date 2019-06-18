@@ -17,7 +17,7 @@ import {
 } from './elements';
 
 // eslint-disable-next-line import/no-named-as-default
-import Modal from './Modal';
+import { NewSandboxModal } from './NewSandboxModal';
 
 class CreateNewSandbox extends React.PureComponent {
   state = {
@@ -166,7 +166,7 @@ class CreateNewSandbox extends React.PureComponent {
                           : newStyle
                       }
                     >
-                      <Modal
+                      <NewSandboxModal
                         width={toRects.width}
                         forking={this.state.forking}
                         closing={this.state.closingCreating}

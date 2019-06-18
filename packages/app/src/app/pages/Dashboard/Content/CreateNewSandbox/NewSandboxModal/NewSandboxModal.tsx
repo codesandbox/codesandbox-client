@@ -3,9 +3,9 @@ import { observer } from 'mobx-react-lite';
 import track from '@codesandbox/common/lib/utils/analytics';
 import Template from '@codesandbox/common/lib/components/Template';
 import { useStore } from 'app/store';
-import ImportTab from './Components/ImportTab';
-import MyTemplates from './Components/MyTemplates';
-import MyTemplatesTab from './Components/MyTemplatesTab';
+import { ImportTab } from './ImportTab';
+import { MyTemplates } from './MyTemplates';
+import { MyTemplatesTab } from './MyTemplatesTab';
 import {
   Container,
   InnerContainer,
@@ -15,10 +15,17 @@ import {
   TabContainer,
   Title,
 } from './elements';
-
 import { popular, client, container, presets } from './availableTemplates';
 
-export const Modal = ({ forking = false, closing = false, createSandbox }) => {
+interface INewSandboxModalProps {
+  forking: boolean;
+  closing: boolean;
+  createSandbox: Function;
+}
+
+export const NewSandboxModal: React.FunctionComponent<
+  INewSandboxModalProps
+> = observer(({ forking = false, closing = false, createSandbox }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const { user } = useStore();
 
@@ -34,26 +41,27 @@ export const Modal = ({ forking = false, closing = false, createSandbox }) => {
       onMouseDown={e => e.preventDefault()}
     >
       <TabContainer forking={forking} closing={closing}>
-        <Button selected={selectedTab === 0} onClick={() => setSelectedTab(0)}>
-          Overview
-        </Button>
-        {user && (
-          <Button
-            selected={selectedTab === 1}
-            onClick={() => setSelectedTab(1)}
-          >
-            My Templates
-          </Button>
-        )}
-        <Button selected={selectedTab === 2} onClick={() => setSelectedTab(2)}>
-          Client Templates
-        </Button>
-        <Button selected={selectedTab === 3} onClick={() => setSelectedTab(3)}>
-          Container Templates
-        </Button>
-        <Button selected={selectedTab === 4} onClick={() => setSelectedTab(4)}>
-          Import
-        </Button>
+        {[
+          'Overview',
+          user && 'My Templates',
+          'Client Templates',
+          'Container Templates',
+          'Import',
+        ]
+          .map((buttonName, index) => ({
+            name: buttonName,
+            tabIndex: index,
+          }))
+          .filter(({ name }) => Boolean(name))
+          .map(({ name, tabIndex }) => (
+            <Button
+              key={name}
+              onClick={() => setSelectedTab(tabIndex)}
+              selected={selectedTab === tabIndex}
+            >
+              {name}
+            </Button>
+          ))}
       </TabContainer>
 
       <InnerContainer forking={forking} closing={closing}>
@@ -67,6 +75,7 @@ export const Modal = ({ forking = false, closing = false, createSandbox }) => {
                   key={template.name}
                   template={template}
                   selectTemplate={selectTemplate}
+                  small={false}
                 />
               ))
             )}
@@ -85,9 +94,12 @@ export const Modal = ({ forking = false, closing = false, createSandbox }) => {
                 key={template.name}
                 template={template}
                 selectTemplate={selectTemplate}
+                small={false}
               />
             ))}
           </Templates>
+          {/* TODO: Find a fix for css props
+            // @ts-ignore */}
           <Title
             css={`
               margin-top: 1rem;
@@ -99,8 +111,10 @@ export const Modal = ({ forking = false, closing = false, createSandbox }) => {
             {presets.map(template => (
               <Template
                 key={template.name}
+                // @ts-ignore
                 template={template}
                 selectTemplate={selectTemplate}
+                small={false}
               />
             ))}
           </Templates>
@@ -113,6 +127,7 @@ export const Modal = ({ forking = false, closing = false, createSandbox }) => {
                 key={template.name}
                 template={template}
                 selectTemplate={selectTemplate}
+                small={false}
               />
             ))}
           </Templates>
@@ -123,6 +138,4 @@ export const Modal = ({ forking = false, closing = false, createSandbox }) => {
       </InnerContainer>
     </Container>
   );
-};
-
-export default observer(Modal);
+});

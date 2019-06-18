@@ -4,13 +4,17 @@ import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';
 import { Button, IconContainer, Title } from './elements';
 
-type Props = {
+interface IOfficialTemplateProps {
   template: Template;
   selectTemplate: (t: Template) => void;
   small: boolean;
-};
+}
 
-export default ({ template, selectTemplate, small }: Props) => {
+export const OfficialTemplate = ({
+  template,
+  selectTemplate,
+  small,
+}: IOfficialTemplateProps) => {
   const Icon = getIcon(template.name);
 
   const select = useCallback(() => {
