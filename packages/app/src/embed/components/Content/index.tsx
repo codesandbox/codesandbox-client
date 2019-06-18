@@ -48,7 +48,7 @@ type Props = {
   setProjectView: (
     sandboxId: string | undefined,
     isOpen: boolean,
-    cb: Function
+    cb: () => void
   ) => void;
   sandbox: Sandbox;
   currentModule: Module;
@@ -60,12 +60,12 @@ type Props = {
   useCodeMirror: boolean;
   enableEslint: boolean;
   editorSize: number;
-  highlightedLines: Array<number>;
+  highlightedLines: number[];
   forceRefresh: boolean;
   expandDevTools: boolean;
   runOnClick: boolean;
   verticalMode: boolean;
-  tabs?: Array<string>;
+  tabs?: string[];
   isNotSynced: boolean;
   tabCount: number;
 };
