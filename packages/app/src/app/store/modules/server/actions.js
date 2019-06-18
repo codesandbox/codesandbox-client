@@ -54,11 +54,19 @@ export function formatErrorMessage({ props }) {
 }
 
 export function showContainerError({ props }) {
-  notificationState.addNotification({
-    title: `Container Error`,
-    message: props.error,
-    status: NotificationStatus.ERROR,
-  });
+  if (props.unrecoverable) {
+    notificationState.addNotification({
+      title: `Container Error`,
+      message: props.error,
+      status: NotificationStatus.ERROR,
+    });
+  } else {
+    notificationState.addNotification({
+      title: `Container Warning`,
+      message: props.error,
+      status: NotificationStatus.WARNING,
+    });
+  }
 }
 
 export function sendShellExit({ props, codeSandboxApi }) {
