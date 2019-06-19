@@ -119,9 +119,10 @@ function build(previousSizeMap) {
     } build...`
   );
   let compiler = webpack(config);
+  const start = Date.now();
   compiler.run((err, stats) => {
     if (err) {
-      console.error('Failed to create a production build. Reason:');
+      console.error('Error creating a production build:');
       console.error(err.message || err);
       console.error(err.stack);
       process.exit(1);
@@ -130,17 +131,28 @@ function build(previousSizeMap) {
     const info = stats.toJson();
 
     if (stats.hasErrors()) {
-      console.error('Failed to create a production build. Reason:');
+      console.error('Error creating a production build:');
       console.error(info.errors);
+      ls - a;
       process.exit(1);
     }
 
     if (stats.hasWarnings()) {
-      console.warn('Warnings in Webpack build:');
-      console.warn(info.warnings);
+      console.warn(chalk.yellow('Build warnings:'));
+      // console.warn(info.warnings);
+      stats.compilation.warnings.forEach(({ name, message }) => {
+        console.warn(chalk.yellow(`${name}: ${message}\n`));
+      });
     }
 
-    console.log(chalk.green('Compiled successfully.'));
+    const took = Date.now() - start;
+
+    console.log(
+      chalk.green(
+        `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${took /
+          1000}s.`
+      )
+    );
     console.log();
 
     // console.log('File sizes after gzip:');
@@ -240,7 +252,7 @@ function build(previousSizeMap) {
         );
         console.log();
       }
-      console.log(`The ${chalk.cyan('build')} folder is ready to be deployed.`);
+      console.log(`The ${chalk.cyan('www')} folder is ready to be deployed.`);
       console.log('You may also serve it locally with a static server:');
       console.log();
       console.log(`  ${chalk.cyan('npm')} install -g pushstate-server`);

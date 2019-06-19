@@ -207,10 +207,6 @@ function addMiddleware(devServer, index) {
       to: 'public/14/vs',
     },
     {
-      from: '../sse-hooks/dist',
-      to: 'public/sse-hooks',
-    },
-    {
       from: 'static',
       to: 'static',
     },
