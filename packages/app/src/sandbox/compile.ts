@@ -724,7 +724,7 @@ async function compile({
   firstLoad = false;
 
   dispatch({ type: 'status', status: 'idle' });
-  dispatch({ type: 'done' });
+  dispatch({ type: 'done', compilatonError: hadError });
 
   if (typeof (window as any).__puppeteer__ === 'function') {
     (window as any).__puppeteer__('done');
