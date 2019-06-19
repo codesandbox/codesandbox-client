@@ -4,8 +4,7 @@ const fs = require('fs');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HappyPack = require('happypack');
+const threadLoader = require('thread-loader');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('@codesandbox/common/lib/config/env');
 const getHost = require('@codesandbox/common/lib/utils/host');
@@ -21,18 +20,6 @@ const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore
 const babelConfig = __DEV__ && !SANDBOX_ONLY ? babelDev : babelProd;
 
 const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
-
-let threads = 1;
-
-try {
-  if (process.env.CIRCLECI) {
-    threads = 2;
-  } else {
-    threads = Math.max(1, require('os').cpus().length - 1);
-  }
-} catch (e) {
-  threads = 3;
-}
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -62,6 +49,12 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
 }`;
 
 const sepRe = `\\${path.sep}`; // path separator regex
+
+const threadConfig = {
+  workers: 2,
+};
+
+threadLoader.warmup(threadConfig, ['babel-loader']);
 
 module.exports = {
   entry: SANDBOX_ONLY
@@ -101,6 +94,7 @@ module.exports = {
     publicPath,
     globalObject: 'this',
     jsonpFunction: 'csbJsonP', // So we don't conflict with webpack generated libraries in the sandbox
+    pathinfo: false,
   },
 
   module: {
@@ -172,13 +166,16 @@ module.exports = {
           /typescriptServices\.js$/,
           /\.no-webpack\./,
         ],
-        loader: 'happypack/loader',
-      },
-
-      {
-        test: /\.tsx?$/,
-        exclude: [/node_modules/],
-        loader: 'happypack/loader',
+        use: [
+          {
+            loader: 'thread-loader',
+            options: threadConfig,
+          },
+          {
+            loader: 'babel-loader',
+            options: babelConfig,
+          },
+        ],
       },
 
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
@@ -333,15 +330,6 @@ module.exports = {
   },
 
   plugins: [
-    new HappyPack({
-      loaders: [
-        {
-          path: 'babel-loader',
-          query: babelConfig,
-        },
-      ],
-      threads,
-    }),
     ...(SANDBOX_ONLY
       ? [
           new HtmlWebpackPlugin({
@@ -462,51 +450,5 @@ module.exports = {
     // makes the discovery automatic so you don't have to restart.
     // See https://github.com/facebookincubator/create-react-app/issues/186
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-    // Make the monaco editor work
-    new CopyWebpackPlugin(
-      [
-        {
-          from: '../../standalone-packages/vscode-editor/release/min/vs',
-          to: 'public/vscode22/vs',
-          force: true,
-        },
-        {
-          from: '../../standalone-packages/vscode-extensions/out',
-          to: 'public/vscode-extensions/v8',
-          force: true,
-        },
-        {
-          from: '../../node_modules/onigasm/lib/onigasm.wasm',
-          to: 'public/onigasm/2.2.1/onigasm.wasm',
-        },
-        {
-          from:
-            '../../standalone-packages/vscode-textmate/node_modules/onigasm/lib/onigasm.wasm',
-          to: 'public/onigasm/2.1.0/onigasm.wasm',
-        },
-        {
-          from: '../../node_modules/monaco-vue/release/min',
-          to: 'public/14/vs/language/vue',
-        },
-        {
-          from: '../../standalone-packages/monaco-editor/release/min/vs',
-          to: 'public/14/vs',
-        },
-        {
-          from: '../sse-hooks/dist',
-          to: 'public/sse-hooks',
-        },
-        {
-          from: 'static',
-          to: 'static',
-        },
-        {
-          from: __DEV__
-            ? '../../standalone-packages/codesandbox-browserfs/build'
-            : '../../standalone-packages/codesandbox-browserfs/dist',
-          to: 'static/browserfs3',
-        },
-      ].filter(x => x)
-    ),
   ].filter(Boolean),
 };

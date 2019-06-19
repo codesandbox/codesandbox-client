@@ -11,14 +11,17 @@ var execSync = require('child_process').execSync;
 var opn = require('opn');
 var http = require('http');
 var proxy = require('http-proxy-middleware');
+var path = require('path');
 var httpProxy = require('http-proxy');
 var config = require('../config/webpack.dev');
 var paths = require('../config/paths');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
+const __DEV__ = process.env.NODE_ENV === 'development';
 var compiler;
 var handleCompile;
+var compileStart;
 
 // Some custom utilities to prettify Webpack output.
 // This is a little hacky.
@@ -51,7 +54,7 @@ function formatMessage(message) {
 function clearConsole() {
   // This seems to work best on Windows and other systems.
   // The intention is to clear the output so you can focus on most recent build.
-  process.stdout.write('\x1bc');
+  // process.stdout.write('\x1bc');
 }
 
 function setupCompiler(port, protocol) {
@@ -60,10 +63,8 @@ function setupCompiler(port, protocol) {
   try {
     compiler = webpack(config, handleCompile);
   } catch (err) {
-    console.log(chalk.red('Failed to compile.'));
-    console.log();
-    console.log(err.message || err);
-    console.log();
+    console.log(chalk.red('Failed to compile.\n'));
+    console.log(`${err.message || err}\n`);
     process.exit(1);
   }
 
@@ -73,6 +74,7 @@ function setupCompiler(port, protocol) {
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
   compiler.hooks.invalid.tap('invalid', function() {
     clearConsole();
+    compileStart = Date.now();
     console.log('Compiling...');
   });
 
@@ -82,20 +84,6 @@ function setupCompiler(port, protocol) {
     clearConsole();
     const hasErrors = stats.hasErrors();
     const hasWarnings = stats.hasWarnings();
-    if (!hasErrors && !hasWarnings) {
-      console.log(chalk.green('Compiled successfully!'));
-      console.log();
-      console.log('The app is running at:');
-      console.log();
-      console.log('  ' + chalk.cyan(protocol + '://localhost:' + port + '/'));
-      console.log();
-      console.log('Note that the development build is not optimized.');
-      console.log(
-        'To create a production build, use ' + chalk.cyan('npm run build') + '.'
-      );
-      console.log();
-      return;
-    }
 
     // We have switched off the default Webpack output in WebpackDevServer
     // options so we are going to "massage" the warnings and errors and present
@@ -110,8 +98,7 @@ function setupCompiler(port, protocol) {
       message => 'Warning in ' + formatMessage(message)
     );
     if (hasErrors) {
-      console.log(chalk.red('Failed to compile.'));
-      console.log();
+      console.log(chalk.red('Failed to compile.\n'));
       if (formattedErrors.some(isLikelyASyntaxError)) {
         // If there are any syntax errors, show just them.
         // This prevents a confusing ESLint parsing error
@@ -119,18 +106,24 @@ function setupCompiler(port, protocol) {
         formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
       }
       formattedErrors.forEach(message => {
-        console.log(message);
-        console.log();
+        console.log(`${message}\n`);
       });
       // If errors exist, ignore warnings.
       return;
     }
     if (hasWarnings) {
-      console.log(chalk.yellow('Compiled with warnings.'));
-      console.log();
+      var took = new Date() - compileStart;
+      console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
       formattedWarnings.forEach(message => {
-        console.log(message);
-        console.log();
+        console.log(`${message}\n`);
+      });
+      const warnings = [].concat(
+        ...stats.compilation.children.map(child => child.warnings)
+      );
+      warnings.forEach(({ error, module }) => {
+        console.log(
+          `${error.name}: ${error.message}\n  in ${module.resource}\n`
+        );
       });
       // Teach some ESLint tricks.
       console.log('You may use special comments to disable some warnings.');
@@ -142,9 +135,19 @@ function setupCompiler(port, protocol) {
       console.log(
         'Use ' +
           chalk.yellow('/* eslint-disable */') +
-          ' to ignore all warnings in a file.'
+          ' to ignore all warnings in a file.\n'
       );
     }
+
+    if (!hasWarnings) {
+      console.log(chalk.green(`Compiled successfully in ${took / 1000}s!\n`));
+    }
+    console.log('The app is running at:\n');
+    console.log(`  ${chalk.cyan(`${protocol}://localhost:${port}/`)}\n`);
+    console.log('Note that the development build is not optimized.');
+    console.log(
+      `To create a production build, use ${chalk.cyan('npm run build')}.\n`
+    );
   });
 }
 
@@ -177,6 +180,51 @@ function addMiddleware(devServer, index) {
     next();
   });
   devServer.use('/homepage', express.static(paths.homepageSrc));
+  [
+    {
+      from: '../../standalone-packages/vscode-editor/release/min/vs',
+      to: 'public/vscode22/vs',
+    },
+    {
+      from: '../../standalone-packages/vscode-extensions/out',
+      to: 'public/vscode-extensions/v8',
+    },
+    {
+      from: '../../node_modules/onigasm/lib/onigasm.wasm',
+      to: 'public/onigasm/2.2.1/onigasm.wasm',
+    },
+    {
+      from:
+        '../../standalone-packages/vscode-textmate/node_modules/onigasm/lib/onigasm.wasm',
+      to: 'public/onigasm/2.1.0/onigasm.wasm',
+    },
+    {
+      from: '../../node_modules/monaco-vue/release/min',
+      to: 'public/14/vs/language/vue',
+    },
+    {
+      from: '../../standalone-packages/monaco-editor/release/min/vs',
+      to: 'public/14/vs',
+    },
+    {
+      from: '../sse-hooks/dist',
+      to: 'public/sse-hooks',
+    },
+    {
+      from: 'static',
+      to: 'static',
+    },
+    {
+      from: __DEV__
+        ? '../../standalone-packages/codesandbox-browserfs/build'
+        : '../../standalone-packages/codesandbox-browserfs/dist',
+      to: 'static/browserfs3',
+    },
+  ].forEach(({ from, to }) => {
+    const fromPath = path.resolve(__dirname, `../${from}`);
+    console.log(`/${to} -> ${fromPath}`);
+    devServer.use(`/${to}`, express.static(fromPath));
+  });
   devServer.use(
     historyApiFallback({
       // Allow paths with dots in them to be loaded, reference issue #387
@@ -234,7 +282,7 @@ function runDevServer(port, protocol, index) {
     // updated. The WebpackDevServer client is included as an entry point
     // in the Webpack development configuration. Note that only changes
     // to CSS are currently hot reloaded. JS changes will refresh the browser.
-    hot: true,
+    // hot: true,
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
     publicPath: config.output.publicPath,
@@ -254,19 +302,6 @@ function runDevServer(port, protocol, index) {
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
-    proxy: {
-      '/public/vscode-extensions/**': {
-        target: `${protocol}://${
-          process.env.LOCAL_SERVER ? 'localhost:3000' : 'codesandbox.test'
-        }`,
-        bypass: req => {
-          if (req.method === 'HEAD') {
-            // A hack to support HEAD calls for BrowserFS
-            req.method = 'GET';
-          }
-        },
-      },
-    },
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
@@ -287,6 +322,7 @@ function runDevServer(port, protocol, index) {
 function run(port) {
   var protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
   setupCompiler(port, protocol);
+  compileStart = Date.now();
   runDevServer(port, protocol, '/app.html');
 
   if (process.env.LOCAL_SERVER) {
