@@ -15,6 +15,7 @@ var path = require('path');
 var httpProxy = require('http-proxy');
 var config = require('../config/webpack.dev');
 var paths = require('../config/paths');
+const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
@@ -82,8 +83,20 @@ function setupCompiler(port, protocol) {
   // Whether or not you have warnings or errors, you will get this event.
   compiler.hooks.done.tap('done', stats => {
     clearConsole();
+    const took = new Date() - compileStart;
     const hasErrors = stats.hasErrors();
-    const hasWarnings = stats.hasWarnings();
+    // filter known warnings:
+    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+    //   in ./node_modules/typescript/lib/typescript.js
+    // CriticalDependencyWarning: Critical dependency: require function is used in a way in which dependencies cannot be statically extracted
+    //   in ./codesandbox-client/packages/app/node_modules/babel-plugin-macros/dist/index.js
+    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+    //   in ./codesandbox-client/packages/app/node_modules/cosmiconfig/dist/loaders.js
+    const childWarnings = []
+      .concat(...stats.compilation.children.map(child => child.warnings))
+      .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
+    const hasWarnings =
+      stats.compilation.warnings.length > 0 || childWarnings.length > 0;
 
     // We have switched off the default Webpack output in WebpackDevServer
     // options so we are going to "massage" the warnings and errors and present
@@ -112,15 +125,11 @@ function setupCompiler(port, protocol) {
       return;
     }
     if (hasWarnings) {
-      var took = new Date() - compileStart;
       console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
       formattedWarnings.forEach(message => {
         console.log(`${message}\n`);
       });
-      const warnings = [].concat(
-        ...stats.compilation.children.map(child => child.warnings)
-      );
-      warnings.forEach(({ error, module }) => {
+      childWarnings.forEach(({ error, module }) => {
         console.log(
           `${error.name}: ${error.message}\n  in ${module.resource}\n`
         );
@@ -180,47 +189,14 @@ function addMiddleware(devServer, index) {
     next();
   });
   devServer.use('/homepage', express.static(paths.homepageSrc));
-  [
-    {
-      from: '../../standalone-packages/vscode-editor/release/min/vs',
-      to: 'public/vscode22/vs',
-    },
-    {
-      from: '../../standalone-packages/vscode-extensions/out',
-      to: 'public/vscode-extensions/v8',
-    },
-    {
-      from: '../../node_modules/onigasm/lib/onigasm.wasm',
-      to: 'public/onigasm/2.2.1/onigasm.wasm',
-    },
-    {
-      from:
-        '../../standalone-packages/vscode-textmate/node_modules/onigasm/lib/onigasm.wasm',
-      to: 'public/onigasm/2.1.0/onigasm.wasm',
-    },
-    {
-      from: '../../node_modules/monaco-vue/release/min',
-      to: 'public/14/vs/language/vue',
-    },
-    {
-      from: '../../standalone-packages/monaco-editor/release/min/vs',
-      to: 'public/14/vs',
-    },
-    {
-      from: 'static',
-      to: 'static',
-    },
-    {
-      from: __DEV__
-        ? '../../standalone-packages/codesandbox-browserfs/build'
-        : '../../standalone-packages/codesandbox-browserfs/dist',
-      to: 'static/browserfs3',
-    },
-  ].forEach(({ from, to }) => {
-    const fromPath = path.resolve(__dirname, `../${from}`);
+
+  const rootPath = path.resolve(__dirname, '../../..');
+  staticAssets.forEach(({ from, to }) => {
+    const fromPath = path.resolve(rootPath, from);
     console.log(`/${to} -> ${fromPath}`);
     devServer.use(`/${to}`, express.static(fromPath));
   });
+
   devServer.use(
     historyApiFallback({
       // Allow paths with dots in them to be loaded, reference issue #387
