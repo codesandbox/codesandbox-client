@@ -465,7 +465,6 @@ export default class TestRunner {
   };
 
   handleCodeSandboxMessage = (message: any) => {
-    // TODO: ?? define messages as sandboxMessage???
     switch (message.type) {
       case 'set-test-watching':
         this.watching = message.watching;
