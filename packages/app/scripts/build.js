@@ -139,7 +139,6 @@ function build(previousSizeMap) {
 
     if (stats.hasWarnings()) {
       console.warn(chalk.yellow('Build warnings:'));
-      // console.warn(info.warnings);
       stats.compilation.warnings.forEach(({ name, message }) => {
         console.warn(chalk.yellow(`${name}: ${message}\n`));
       });

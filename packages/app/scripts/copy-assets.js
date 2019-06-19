@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const fs = require('fs-extra');
 const path = require('path');
 const { staticAssets } = require('../config/build');
@@ -32,6 +33,8 @@ const assets = [
 
 const rootPath = path.resolve(__dirname, '../../..');
 const buildPath = path.resolve(rootPath, 'www');
+
+console.log('Copying assets...');
 
 assets.forEach(({ from, to }) => {
   const srcPath = path.resolve(rootPath, from);

@@ -19,7 +19,6 @@ const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
-const __DEV__ = process.env.NODE_ENV === 'development';
 var compiler;
 var handleCompile;
 var compileStart;
@@ -193,7 +192,6 @@ function addMiddleware(devServer, index) {
   const rootPath = path.resolve(__dirname, '../../..');
   staticAssets.forEach(({ from, to }) => {
     const fromPath = path.resolve(rootPath, from);
-    console.log(`/${to} -> ${fromPath}`);
     devServer.use(`/${to}`, express.static(fromPath));
   });
 
@@ -249,12 +247,6 @@ function addMiddleware(devServer, index) {
 
 function runDevServer(port, protocol, index) {
   var devServer = new WebpackDevServer(compiler, {
-    // Enable hot reloading server. It will provide /sockjs-node/ endpoint
-    // for the WebpackDevServer client so it can learn when the files were
-    // updated. The WebpackDevServer client is included as an entry point
-    // in the Webpack development configuration. Note that only changes
-    // to CSS are currently hot reloaded. JS changes will refresh the browser.
-    // hot: true,
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
     publicPath: config.output.publicPath,
@@ -280,7 +272,7 @@ function runDevServer(port, protocol, index) {
   addMiddleware(devServer, index);
 
   // Launch WebpackDevServer.
-  devServer.listen(port, (err, result) => {
+  devServer.listen(port, err => {
     if (err) {
       return console.log(err);
     }
