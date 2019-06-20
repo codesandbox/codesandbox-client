@@ -46,7 +46,9 @@
     ],
     "nohoist": [
       "**/react-codemirror2",
-      "**/react-codemirror2/**"
+      "**/react-codemirror2/**",
+      "app/webpack",
+      "app/acorn-dynamic-import"
     ]
   },
   "resolutions": {
