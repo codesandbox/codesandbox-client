@@ -50,11 +50,11 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
 
 const sepRe = `\\${path.sep}`; // path separator regex
 
-const threadConfig = {
+const threadPoolConfig = {
   workers: 2,
 };
 
-threadLoader.warmup(threadConfig, ['babel-loader']);
+threadLoader.warmup(threadPoolConfig, ['babel-loader']);
 
 module.exports = {
   entry: SANDBOX_ONLY
@@ -169,7 +169,7 @@ module.exports = {
         use: [
           {
             loader: 'thread-loader',
-            options: threadConfig,
+            options: threadPoolConfig,
           },
           {
             loader: 'babel-loader',
