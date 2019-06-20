@@ -3,7 +3,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import RecentSandboxes from './routes/RecentSandboxes';
 import PathedSandboxes from './routes/PathedSandboxes';
-import PathedTemplates from './routes/PathedTemplates';
+import { PathedTemplates } from './routes/PathedTemplates';
 import DeletedSandboxes from './routes/DeletedSandboxes';
 import SearchSandboxes from './routes/SearchSandboxes';
 import CreateTeam from './routes/CreateTeam';
