@@ -225,66 +225,66 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       }
     };
 
-    if (settings.autoCompleteEnabled) {
-      const tern = await import(
-        /* webpackChunkName: 'codemirror-tern' */ 'tern'
-      ).then(x => x.default);
-      const defs = await import(
-        /* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json'
-      );
-      window.tern = tern;
-      this.server =
-        this.server ||
-        new CodeMirror.TernServer({
-          defs: [defs],
-        });
-      this.codemirror.on('cursorActivity', updateArgHints);
-      this.codemirror.on('inputRead', showAutoComplete);
-      this.codemirror.setOption('extraKeys', {
-        'Ctrl-Space': cm => {
-          if (this.server) this.server.complete(cm);
-        },
-        'Ctrl-I': cm => {
-          if (this.server) this.server.showType(cm);
-        },
-        'Ctrl-O': cm => {
-          if (this.server) this.server.showDocs(cm);
-        },
-        'Alt-.': cm => {
-          if (this.server) this.server.jumpToDef(cm);
-        },
-        'Alt-,': cm => {
-          if (this.server) this.server.jumpBack(cm);
-        },
-        'Ctrl-Q': cm => {
-          if (this.server) this.server.rename(cm);
-        },
-        'Ctrl-.': cm => {
-          if (this.server) this.server.selectName(cm);
-        },
-        Tab: cm => {
-          // Indent, or place 2 spaces
-          if (cm.somethingSelected()) {
-            cm.indentSelection('add');
-          } else {
-            const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-            cm.replaceSelection(spaces, 'end', '+input');
+    // if (settings.autoCompleteEnabled) {
+    //   const tern = await import(
+    //     /* webpackChunkName: 'codemirror-tern' */ 'tern'
+    //   ).then(x => x.default);
+    //   const defs = await import(
+    //     /* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json'
+    //   );
+    //   window.tern = tern;
+    //   this.server =
+    //     this.server ||
+    //     new CodeMirror.TernServer({
+    //       defs: [defs],
+    //     });
+    //   this.codemirror.on('cursorActivity', updateArgHints);
+    //   this.codemirror.on('inputRead', showAutoComplete);
+    //   this.codemirror.setOption('extraKeys', {
+    //     'Ctrl-Space': cm => {
+    //       if (this.server) this.server.complete(cm);
+    //     },
+    //     'Ctrl-I': cm => {
+    //       if (this.server) this.server.showType(cm);
+    //     },
+    //     'Ctrl-O': cm => {
+    //       if (this.server) this.server.showDocs(cm);
+    //     },
+    //     'Alt-.': cm => {
+    //       if (this.server) this.server.jumpToDef(cm);
+    //     },
+    //     'Alt-,': cm => {
+    //       if (this.server) this.server.jumpBack(cm);
+    //     },
+    //     'Ctrl-Q': cm => {
+    //       if (this.server) this.server.rename(cm);
+    //     },
+    //     'Ctrl-.': cm => {
+    //       if (this.server) this.server.selectName(cm);
+    //     },
+    //     Tab: cm => {
+    //       // Indent, or place 2 spaces
+    //       if (cm.somethingSelected()) {
+    //         cm.indentSelection('add');
+    //       } else {
+    //         const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+    //         cm.replaceSelection(spaces, 'end', '+input');
 
-            try {
-              cm.execCommand('emmetExpandAbbreviation');
-            } catch (e) {
-              console.error(e);
-            }
-          }
-        },
-        Enter: 'emmetInsertLineBreak',
-        ...defaultKeys,
-      });
-    } else {
-      this.server = null;
-      this.codemirror.off('cursorActivity', updateArgHints);
-      this.codemirror.off('inputRead', showAutoComplete);
-    }
+    //         try {
+    //           cm.execCommand('emmetExpandAbbreviation');
+    //         } catch (e) {
+    //           console.error(e);
+    //         }
+    //       }
+    //     },
+    //     Enter: 'emmetInsertLineBreak',
+    //     ...defaultKeys,
+    //   });
+    // } else {
+    this.server = null;
+    this.codemirror.off('cursorActivity', updateArgHints);
+    this.codemirror.off('inputRead', showAutoComplete);
+    // }
 
     if (settings.vimMode) {
       await import(
