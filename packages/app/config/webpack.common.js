@@ -18,8 +18,8 @@ const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ && !SANDBOX_ONLY ? babelDev : babelProd;
-
 const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
+const isLint = 'LINT' in process.env;
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -54,7 +54,9 @@ const threadPoolConfig = {
   workers: 2,
 };
 
-threadLoader.warmup(threadPoolConfig, ['babel-loader']);
+if (!isLint) {
+  threadLoader.warmup(threadPoolConfig, ['babel-loader']);
+}
 
 module.exports = {
   entry: SANDBOX_ONLY
@@ -167,15 +169,17 @@ module.exports = {
           /\.no-webpack\./,
         ],
         use: [
-          {
-            loader: 'thread-loader',
-            options: threadPoolConfig,
-          },
+          !isLint
+            ? {
+                loader: 'thread-loader',
+                options: threadPoolConfig,
+              }
+            : false,
           {
             loader: 'babel-loader',
             options: babelConfig,
           },
-        ],
+        ].filter(Boolean),
       },
 
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.

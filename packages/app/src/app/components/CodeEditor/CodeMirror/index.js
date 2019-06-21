@@ -176,16 +176,16 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   };
 
   changeSettings = async (settings: $PropertyType<Props, 'settings'>) => {
-    const defaultKeys = {
-      'Cmd-/': cm => {
-        cm.listSelections().forEach(() => {
-          cm.toggleComment({ lineComment: '//' });
-        });
-      },
-      'Cmd-P': () => {
-        this.setState({ fuzzySearchEnabled: true }, () => this.forceUpdate());
-      },
-    };
+    // const defaultKeys = {
+    //   'Cmd-/': cm => {
+    //     cm.listSelections().forEach(() => {
+    //       cm.toggleComment({ lineComment: '//' });
+    //     });
+    //   },
+    //   'Cmd-P': () => {
+    //     this.setState({ fuzzySearchEnabled: true }, () => this.forceUpdate());
+    //   },
+    // };
 
     const updateArgHints = cm => {
       if (this.server) {

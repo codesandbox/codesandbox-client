@@ -17,8 +17,8 @@
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
     "lint": "npm run lint:app && npm run lint:embed",
-    "lint:app": "eslint src/app",
-    "lint:embed": "eslint src/embed",
+    "lint:app": "cross-env LINT=1 eslint src/app",
+    "lint:embed": "cross-env LINT=1 eslint src/embed",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "typecheck": "tsc --noEmit -p tsconfig.check.json"
   },
