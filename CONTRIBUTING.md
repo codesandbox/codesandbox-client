@@ -40,8 +40,9 @@ To install the project you need to have `yarn` and `node`
     cd codesandbox-client
     ```
 
-2.  `yarn` to install dependencies
-3.  `yarn start` to start the app
+2.  Your environment needs to be running Node v. 10
+3.  from the root of the project: `yarn` to install all dependencies
+4.  from the root of the project: `yarn start`
     - this builds the dependencies (`codesandbox-api` and `codesandbox-browserfs`) and runs the `app` development environment, available on [http://localhost:3000/s/new](http://localhost:3000/s/new)
     - on subsequent runs you can also bypass dependencies building and use `yarn start:fast`
     - if you want to work on the homepage, start it with `yarn start:home`, it will be available on [http://localhost:8000/](http://localhost:8000/)
@@ -61,6 +62,8 @@ To install the project you need to have `yarn` and `node`
 > Then you can make all of your pull request branches based on this `master`
 > branch. Whenever you want to update your version of `master`, do a regular
 > `git pull`.
+
+5. If you want to debug the state of the app, install the [Cerebral Debugger](https://github.com/cerebral/cerebral-debugger/releases) and connect it to the port `8383`. After that, if you refresh the app, you should be able to see the state, the sequences executed and so on. See [documentation](https://cerebraljs.com/docs/introduction/devtools.html) for reference.
 
 ## Submitting a Pull Request
 

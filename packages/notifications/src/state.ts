@@ -23,7 +23,7 @@ export interface NotificationMessage {
      * Primary actions show up as buttons as part of the message and will close
      * the notification once clicked.
      */
-    primary: NotificationAction[];
+    primary?: NotificationAction[];
     /**
      * Secondary actions are meant to provide additional configuration or context
      * for the notification and will show up less prominent. A notification does not

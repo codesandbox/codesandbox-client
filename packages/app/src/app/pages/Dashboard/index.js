@@ -52,7 +52,11 @@ class Dashboard extends React.Component {
     } = this.props;
     const { showSidebar } = this.state;
 
-    history.listen(() => {
+    history.listen(({ state }) => {
+      if (!!state && state.from === 'sandboxSearchFocused') {
+        return;
+      }
+
       this.onRouteChange();
     });
 

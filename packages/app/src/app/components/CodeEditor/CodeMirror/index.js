@@ -319,7 +319,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     const currentModule = this.currentModule;
 
     if (!documentCache[currentModule.id]) {
-      const mode = await this.getMode(currentModule.title);
+      const mode = (await this.getMode(currentModule.title)) || 'typescript';
 
       documentCache[currentModule.id] = new CodeMirror.Doc(
         currentModule.code || '',
@@ -421,7 +421,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       CodeMirror.commands.save = this.handleSaveCode;
     }
 
-    const mode = await this.getMode(title);
+    const mode = (await this.getMode(title)) || 'typescript';
 
     documentCache[id] = new CodeMirror.Doc(code || '', mode);
 
@@ -452,7 +452,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
   configureEmmet = async () => {
     const { title } = this.currentModule;
-    const mode = await this.getMode(title);
+    const mode = (await this.getMode(title)) || 'typescript';
 
     const newMode = mode === 'htmlmixed' ? 'html' : mode;
     const addon = newMode === 'jsx' ? { jsx: true } : null;

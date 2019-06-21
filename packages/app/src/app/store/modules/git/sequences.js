@@ -1,5 +1,6 @@
 import { set, when, wait } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
+import { fetchGitChanges } from '../../sequences';
 import * as actions from './actions';
 
 export const changeRepoTitle = [
@@ -53,7 +54,7 @@ export const createCommit = [
   },
   set(state`git.subject`, ''),
   set(state`git.description`, ''),
-  set(state`git.originalGitChanges`, null),
+  fetchGitChanges,
 ];
 
 export const createPr = [

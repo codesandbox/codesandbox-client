@@ -51,7 +51,7 @@ class ZeitDeployment extends Component {
               target="_blank"
               rel="noreferrer noopener"
             >
-              ZEIT Now
+              <span>ZEIT Now</span>
             </a>
           </DeploymentIntegration>
         </WorkspaceInputContainer>

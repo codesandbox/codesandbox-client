@@ -1,0 +1,81 @@
+{
+
+    // Custom globals
+    "predef"        : [
+        "define"
+    ],
+
+
+    // Environemnts
+    "browser"       : true,      // defines globals exposed by modern browsers:
+    "couch"         : false,     // defines globals exposed by CouchDB
+    "node"          : true,      // defines globals available when your code is running inside of Node.js
+    "rhino"         : false,     // defines globals available when your code is running inside of Rhino
+    "worker"        : false,     // defines globals available when your code is running inside of a Web Worker
+    "wsh"           : false,     // defines globals available when your code is running as a script for the Windows Script Host.
+
+    "devel"         : false,     // defines globals that are usually used for logging poor-man's debugging: console, alert
+    "es5"           : false,     // use ECMAScript 5 specific features such as getters and setters
+    "esnext"        : false,     // use ES.next specific features such as const
+    "nonstandard"   : false,     // defines non-standard but widely adopted globals such as escape and unescape
+
+
+    // Whitespace
+    "indent"        : 4,         // enforces specific tab width
+    "smarttabs"     : true,      // suppresses warnings about mixed tabs and spaces when the latter are used for alignmnent only
+    "trailing"      : true,      // error to leave a trailing whitespace in your code
+
+
+    // Code Complexity
+    "maxparams"     : 5,         // max number of formal parameters allowed per function
+    "maxdepth"      : 3,         // control how nested do you want your blocks to be
+    "maxstatements" : 40,        // max number of statements allowed per function
+    "maxcomplexity" : 8,         // control cyclomatic complexity throughout your code
+    "maxlen"        : 0,         // maximum length of a line
+
+
+    // Enforcing Options
+    "bitwise"       : true,      // prohibits the use of bitwise operators
+    "camelcase"     : true,      // force all variable names to use either camelCase style or UPPER_CASE with underscores
+    "curly"         : true,      // always put curly braces around blocks in loops and conditionals
+    "eqeqeq"        : true,      // prohibits the use of == and != in favor of === and !==
+    "forin"         : true,      // requires all for in loops to filter object's items
+    "immed"         : true,      // prohibits the use of immediate function invocations without wrapping them in parentheses
+    "latedef"       : true,      // prohibits the use of a variable before it was defined
+    "newcap"        : true,      // requires you to capitalize names of constructor functions
+    "noarg"         : true,      // prohibits the use of arguments.caller and arguments.callee
+    "noempty"       : true,      // warns when you have an empty block in your code
+    "nonew"         : true,      // prohibits the use of constructor functions for side-effects
+    "plusplus"      : true,      // prohibits the use of unary increment and decrement operators
+    "quotmark"      : "single",  // enforces the consistency of quotation marks used throughout your code
+    "regexp"        : true,      // prohibits the use of unsafe . in regular expressions
+    "undef"         : true,      // prohibits the use of explicitly undeclared variables
+    "unused"        : true,      // warns when you define and never use your variables
+    "strict"        : false,     // requires all functions to run in EcmaScript 5's strict mode
+
+
+    // Relaxing Options
+    "asi"           : false,     // suppresses warnings about missing semicolons
+    "boss"          : false,     // suppresses warnings about the use of assignments in cases where comparisons are expected
+    "debug"         : false,     // suppresses warnings about the debugger statements
+    "eqnull"        : false,     // suppresses warnings about == null comparisons
+    "evil"          : false,     // suppresses warnings about the use of eval
+    "expr"          : false,     // suppresses warnings about the use of expressions where normally you would expect to see assignments or function calls
+    "funcscope"     : false,     // suppresses warnings about declaring variables inside of control structures while accessing them later from the outside
+    "globalstrict"  : false,     // suppresses warnings about the use of global strict mode
+    "iterator"      : false,     // suppresses warnings about the __iterator__ property
+    "lastsemic"     : false,     // suppresses warnings about missing semicolon
+    "laxbreak"      : false,     // suppresses most of the warnings about possibly unsafe line breaking
+    "laxcomma"      : false,     // suppresses warnings about comma-first coding style
+    "loopfunc"      : false,     // suppresses warnings about functions inside of loops
+    "multistr"      : false,     // suppresses warnings about multi-line strings
+    "onecase"       : false,     // suppresses warnings about switches with just one case
+    "proto"         : false,     // suppresses warnings about the __proto__ property
+    "regexdash"     : false,     // suppresses warnings about unescaped - in the end of regular expressions
+    "scripturl"     : false,     // suppresses warnings about the use of script-targeted URLs—such as javascript:...
+    "shadow"        : false,     // suppresses warnings about variable shadowing
+    "sub"           : false,     // suppresses warnings about using [] notation when it can be expressed in dot notation: person['name'] vs. person.name
+    "supernew"      : false,     // suppresses warnings about "weird" constructions like new function () { ... } and new Object;
+    "validthis"     : false      // suppresses warnings about possible strict violations when the code is running in strict mode and you use this in a non-constructor function
+
+}

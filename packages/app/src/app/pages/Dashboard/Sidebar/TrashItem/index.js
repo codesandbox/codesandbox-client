@@ -7,11 +7,12 @@ import { inject, observer } from 'mobx-react';
 
 import Item from '../Item';
 
-const TrashItem = ({ isOver, canDrop, connectDropTarget }) =>
+const TrashItem = ({ currentPath, isOver, canDrop, connectDropTarget }) =>
   connectDropTarget(
     <div>
       <Item
-        path={'/dashboard/trash'}
+        active={currentPath === '/dashboard/trash'}
+        path="/dashboard/trash"
         Icon={TrashIcon}
         name="Trash"
         style={

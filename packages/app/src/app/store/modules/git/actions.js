@@ -67,9 +67,10 @@ export function saveGithubData({ api, state, props }) {
   return api
     .post(`/sandboxes/${id}/git/repo/${name}`, props.githubData)
     .then(git => ({
-      git: Object.assign({}, git, {
+      git: {
+        ...git,
         commitSha: null,
-      }),
+      },
     }));
 }
 

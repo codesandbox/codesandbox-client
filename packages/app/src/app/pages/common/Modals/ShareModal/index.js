@@ -207,6 +207,7 @@ class ShareView extends React.Component {
                   setValue={this.setEnableEslint}
                 />
                 <div>
+                  {/* eslint-disable-next-line */}
                   <h4>Default module to show</h4>
 
                   <FilesContainer>
@@ -316,8 +317,12 @@ class ShareView extends React.Component {
                     small
                     target="_blank"
                     href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                      sandbox.title || sandbox.id
-                    )}.+${getEditorUrl(sandbox, mainModule, this.state)}`}
+                      `${sandbox.title || sandbox.id}. ${getEditorUrl(
+                        sandbox,
+                        mainModule,
+                        this.state
+                      )}`
+                    )}`}
                   >
                     Share on Twitter
                   </Button>

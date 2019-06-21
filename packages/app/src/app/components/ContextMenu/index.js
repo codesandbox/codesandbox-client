@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Spring } from 'react-spring/renderprops';
 import Portal from '@codesandbox/common/lib/components/Portal';
 
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+
 import { Container, Item, ItemContainer } from './elements';
 
 class ContextMenu extends React.PureComponent {
@@ -120,8 +122,16 @@ class ContextMenu extends React.PureComponent {
         return <ItemContainer key={i}>{item.map(mapFunction)}</ItemContainer>;
       }
 
+      const handlePress = e => {
+        if (item.action()) {
+          e.preventDefault();
+          this.close();
+        }
+      };
+
       return (
         <Item
+          tabIndex={0}
           key={item.title}
           color={item.color}
           onMouseDown={e => {
@@ -129,9 +139,11 @@ class ContextMenu extends React.PureComponent {
             e.stopPropagation();
           }}
           onMouseUp={e => {
-            if (item.action()) {
-              e.preventDefault();
-              this.close();
+            handlePress(e);
+          }}
+          onKeyUp={e => {
+            if (e.keyCode === ENTER) {
+              handlePress(e);
             }
           }}
         >
@@ -151,8 +163,13 @@ class ContextMenu extends React.PureComponent {
           <Portal>
             <div
               ref={el => {
+                if (el && this.el !== el) {
+                  // First time mounting
+                  el.focus();
+                }
                 this.el = el;
               }}
+              tabIndex="-1"
             >
               <Spring
                 from={{ opacity: 0.6, height: 0, width: 'auto' }}

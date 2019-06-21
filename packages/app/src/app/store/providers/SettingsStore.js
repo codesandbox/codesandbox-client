@@ -30,9 +30,10 @@ export default Provider({
       const value = this.get(allowedKeys[prop]);
 
       if (value !== undefined) {
-        return Object.assign(result, {
+        return {
+          ...result,
           [prop]: value,
-        });
+        };
       }
 
       return result;

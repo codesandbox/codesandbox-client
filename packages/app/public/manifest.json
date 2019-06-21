@@ -31,6 +31,21 @@
       "src": "codesandbox-1024.png",
       "type": "image/png",
       "sizes": "1024x1024"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "57x57"
+    },
+    {
+      "src": "apple-touch-icon-152x152.png",
+      "type": "image/png",
+      "sizes": "152x152"
+    },
+    {
+      "src": "apple-touch-icon-180x180.png",
+      "type": "image/png",
+      "sizes": "180x180"
     }
   ],
   "description": "An online editor tailored for web applications",
