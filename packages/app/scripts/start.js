@@ -72,10 +72,10 @@ function setupCompiler(port, protocol) {
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.invalid.tap('invalid', function() {
+  compiler.hooks.invalid.tap('invalid', function(module) {
     clearConsole();
     compileStart = Date.now();
-    console.log('Compiling...');
+    console.log(`Module ${chalk.yellow(module)} updated, re-compiling...`);
   });
 
   // "done" event fires when Webpack has finished recompiling the bundle.
