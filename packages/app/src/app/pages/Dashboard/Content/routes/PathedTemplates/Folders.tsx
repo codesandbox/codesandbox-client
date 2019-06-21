@@ -7,7 +7,7 @@ import { IFoldersProps } from './types';
 
 export const Folders = withRouter(
   ({ loading, me, history, match: { params }, teamId }: IFoldersProps) => {
-    const getPath = (name: string) =>
+    const getPath = (name: any) =>
       params.path ? `${params.path}/${name}` : '/' + name;
 
     if (loading) {

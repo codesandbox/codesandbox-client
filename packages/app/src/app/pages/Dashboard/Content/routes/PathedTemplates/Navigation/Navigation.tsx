@@ -23,6 +23,7 @@ export const Navigation = ({ path, teamId }: INavigationProps) => {
   return (
     <Container>
       {paths.map(({ name, url }, i: number) => (
+        // @ts-ignore
         <NavigationLink
           teamId={teamId}
           name={name}

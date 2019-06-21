@@ -7,7 +7,11 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-export const NavigationLink = styled(Link)<{ first: boolean; last: boolean }>`
+export const NavigationLink = styled(Link)<{
+  first: boolean;
+  last: boolean;
+  teamId?: string;
+}>`
   ${({ first, last }) => css`
     margin-right: 0.5rem;
     color: rgba(255, 255, 255, 0.6);
