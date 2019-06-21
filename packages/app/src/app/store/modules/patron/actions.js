@@ -6,6 +6,7 @@ export function subscribe({ props, api, state }) {
       subscription: {
         amount: state.get('patron.price'),
         token: props.token,
+        coupon: props.coupon,
       },
     })
     .then(data => ({ user: data }))
@@ -14,11 +15,12 @@ export function subscribe({ props, api, state }) {
     });
 }
 
-export function updateSubscription({ api, state }) {
+export function updateSubscription({ api, state, props }) {
   return api
     .patch('/users/current_user/subscription', {
       subscription: {
         amount: state.get('patron.price'),
+        coupon: props.coupon,
       },
     })
     .then(data => ({ user: data }))

@@ -60,8 +60,8 @@ function PricingChoice({ store, signals, badge }) {
         {store.isLoggedIn ? ( // eslint-disable-line no-nested-ternary
           store.isPatron ? (
             <ChangeSubscription
-              updateSubscription={() =>
-                signals.patron.updateSubscriptionClicked()
+              updateSubscription={props =>
+                signals.patron.updateSubscriptionClicked(props)
               }
               cancelSubscription={() =>
                 signals.patron.cancelSubscriptionClicked()
@@ -72,8 +72,8 @@ function PricingChoice({ store, signals, badge }) {
           ) : (
             <Centered style={{ marginTop: '2rem' }} horizontal>
               <SubscribeForm
-                subscribe={token =>
-                  signals.patron.createSubscriptionClicked({ token })
+                subscribe={({ token, coupon }) =>
+                  signals.patron.createSubscriptionClicked({ token, coupon })
                 }
                 isLoading={store.patron.isUpdatingSubscription}
                 name={store.user.name}

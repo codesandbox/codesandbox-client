@@ -1,12 +1,22 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
+import React, { useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import moment from 'moment';
+import { useStore, useSignals } from 'app/store';
 
-import { SmallText, Buttons, StyledButton } from './elements';
+import { SmallText, Buttons, StyledButton, StripeInput } from './elements';
 
-function ChangeSubscription({ date, store, signals, markedAsCancelled }) {
+function ChangeSubscription({
+  date,
+  markedAsCancelled,
+  cancelSubscription,
+  updateSubscription,
+}) {
+  const store = useStore();
+  const signals = useSignals();
   const isLoading = store.patron.isUpdatingSubscription;
   const error = store.patron.error;
+
+  const [coupon, setCoupon] = useState('');
 
   if (error) {
     return (
@@ -23,23 +33,25 @@ function ChangeSubscription({ date, store, signals, markedAsCancelled }) {
   }
 
   let buttons = (
-    <Buttons>
-      <StyledButton onClick={() => this.props.cancelSubscription()} red>
-        Cancel
-      </StyledButton>
-      <StyledButton onClick={() => this.props.updateSubscription()}>
-        Update
-      </StyledButton>
-    </Buttons>
-  );
+    <>
+      <div style={{ margin: '1rem 5rem', marginTop: '2rem' }}>
+        <StripeInput
+          onChange={e => setCoupon(e.target.value)}
+          value={coupon}
+          placeholder="Apply Coupon Code"
+        />
+      </div>
 
-  if (isLoading) {
-    buttons = (
       <Buttons>
-        <StyledButton disabled>Processing...</StyledButton>
+        <StyledButton onClick={() => cancelSubscription()} red>
+          Cancel
+        </StyledButton>
+        <StyledButton onClick={() => updateSubscription({ coupon })}>
+          Update
+        </StyledButton>
       </Buttons>
-    );
-  }
+    </>
+  );
 
   if (markedAsCancelled) {
     buttons = (
@@ -47,6 +59,14 @@ function ChangeSubscription({ date, store, signals, markedAsCancelled }) {
         <StyledButton onClick={() => this.props.updateSubscription()}>
           Reactivate Subscription
         </StyledButton>
+      </Buttons>
+    );
+  }
+
+  if (isLoading) {
+    buttons = (
+      <Buttons>
+        <StyledButton disabled>Processing...</StyledButton>
       </Buttons>
     );
   }
@@ -62,4 +82,4 @@ function ChangeSubscription({ date, store, signals, markedAsCancelled }) {
   );
 }
 
-export default inject('store', 'signals')(observer(ChangeSubscription));
+export default observer(ChangeSubscription);

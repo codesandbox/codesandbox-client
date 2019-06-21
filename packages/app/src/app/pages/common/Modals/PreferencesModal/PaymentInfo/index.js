@@ -12,7 +12,7 @@ class PaymentInfo extends React.Component {
     this.props.signals.preferences.paymentDetailsRequested();
   }
 
-  updatePaymentDetails = token => {
+  updatePaymentDetails = ({ token }) => {
     this.props.signals.preferences.paymentDetailsUpdated({ token });
   };
 
@@ -35,6 +35,7 @@ class PaymentInfo extends React.Component {
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
+          noCoupon
           name={paymentDetails.name}
           subscribe={this.updatePaymentDetails}
         />

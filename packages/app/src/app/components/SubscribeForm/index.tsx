@@ -5,6 +5,16 @@ import CheckoutForm from './CheckoutForm';
 
 import { Container } from './elements';
 
+interface Props {
+  name: string;
+  subscribe: (params: { token: string; coupon: string }) => void;
+  loadingText?: string;
+  buttonName?: string;
+  isLoading?: boolean;
+  error?: string;
+  noCoupon?: boolean;
+}
+
 function SubscribeForm({
   name,
   subscribe,
@@ -12,7 +22,8 @@ function SubscribeForm({
   buttonName = 'Subscribe',
   isLoading = false,
   error,
-}) {
+  noCoupon,
+}: Props) {
   return (
     <Container>
       <StripeProvider apiKey={STRIPE_API_KEY}>
@@ -24,6 +35,7 @@ function SubscribeForm({
             name={name}
             isLoading={isLoading}
             error={error}
+            noCoupon={noCoupon}
           />
         </Elements>
       </StripeProvider>

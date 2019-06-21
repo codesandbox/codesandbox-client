@@ -3,19 +3,47 @@ import { injectStripe, CardElement } from 'react-stripe-elements';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
 
-import { CardContainer, NameInput, ErrorText, Label } from './elements';
+import { CardContainer, StripeInput, ErrorText, Label } from './elements';
 
-class CheckoutForm extends React.PureComponent {
-  constructor(props) {
-    super(props);
+interface IStripe {
+  createToken: (params: {
+    name: string;
+  }) => Promise<{
+    token: { id: string };
+    error?: Error;
+  }>;
+}
 
-    this.state = {
-      errors: {},
-      name: props.name || '',
-    };
-  }
+interface Props {
+  name: string;
+  stripe: IStripe;
+  buttonName: string;
+  loadingText: string;
+  isLoading: boolean;
+  error?: Error;
+  subscribe: (params: { token: string; coupon: string }) => void;
+  noCoupon?: boolean;
+}
 
-  componentWillReceiveProps(nextProps) {
+interface State {
+  errors: {
+    name?: string;
+    stripe?: string;
+  };
+  name: string;
+  coupon: string;
+  loading: boolean;
+}
+
+class CheckoutForm extends React.PureComponent<Props, State> {
+  state: State = {
+    errors: {},
+    name: this.props.name || '',
+    coupon: '',
+    loading: false,
+  };
+
+  componentWillReceiveProps(nextProps: Props) {
     if (nextProps.name !== this.props.name) {
       this.setState({ errors: {}, name: nextProps.name });
     }
@@ -24,6 +52,12 @@ class CheckoutForm extends React.PureComponent {
   setName = e => {
     if (e) {
       this.setState({ errors: {}, name: e.target.value });
+    }
+  };
+
+  setCoupon = e => {
+    if (e) {
+      this.setState({ errors: {}, coupon: e.target.value });
     }
   };
 
@@ -50,7 +84,10 @@ class CheckoutForm extends React.PureComponent {
     }
 
     try {
-      await this.props.subscribe(token.id);
+      await this.props.subscribe({
+        token: token.id,
+        coupon: this.state.coupon,
+      });
     } catch (e) {
       logError(e);
 
@@ -68,7 +105,7 @@ class CheckoutForm extends React.PureComponent {
   };
 
   render() {
-    const { buttonName, loadingText, isLoading, error } = this.props;
+    const { buttonName, loadingText, isLoading, error, noCoupon } = this.props;
     const { errors, loading: stateLoading } = this.state;
 
     const loading = isLoading || stateLoading;
@@ -80,10 +117,10 @@ class CheckoutForm extends React.PureComponent {
         <Label>Cardholder Name</Label>
         {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
         <div>
-          <NameInput
+          <StripeInput
             value={this.state.name}
             onChange={this.setName}
-            error={errors.name}
+            error={!!errors.name}
             placeholder="Please enter your name"
           />
         </div>
@@ -95,6 +132,19 @@ class CheckoutForm extends React.PureComponent {
             style={{ base: { color: 'white', fontWeight: '500' } }}
           />
         </CardContainer>
+
+        {!noCoupon && (
+          <>
+            <Label>Coupon</Label>
+            <div>
+              <StripeInput
+                value={this.state.coupon}
+                onChange={this.setCoupon}
+                placeholder="Coupon or Discount Code"
+              />
+            </div>
+          </>
+        )}
 
         <Button
           type="submit"

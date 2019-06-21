@@ -5,10 +5,11 @@ export const CardContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
   padding: 0.5rem;
   margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
   border-radius: 4px;
 `;
 
-export const NameInput = styled(Input)`
+export const StripeInput = styled(Input)`
   width: 100%;
   font-size: 0.875rem;
   padding: 0.5rem;
