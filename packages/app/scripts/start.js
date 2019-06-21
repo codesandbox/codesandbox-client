@@ -266,6 +266,7 @@ function runDevServer(port, protocol, index) {
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,
+    inline: false,
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
