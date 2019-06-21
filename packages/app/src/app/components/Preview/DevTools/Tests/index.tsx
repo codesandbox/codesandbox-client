@@ -213,6 +213,8 @@ class Tests extends React.Component<DevToolProps, State> {
         delay = 2 * delay;
       }
 
+      // avoid to often test run in file watching mode,
+      // very frequent test runs cause screen freezing
       debounce(
         () => {
           this.runAllTests();
