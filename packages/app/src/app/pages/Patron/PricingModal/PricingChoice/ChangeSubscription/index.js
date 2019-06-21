@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import { useStore, useSignals } from 'app/store';
+import { LinkButton } from 'app/components/LinkButton';
 
 import { SmallText, Buttons, StyledButton, StripeInput } from './elements';
 
@@ -56,7 +57,7 @@ function ChangeSubscription({
   if (markedAsCancelled) {
     buttons = (
       <Buttons>
-        <StyledButton onClick={() => this.props.updateSubscription()}>
+        <StyledButton onClick={() => updateSubscription({ coupon: '' })}>
           Reactivate Subscription
         </StyledButton>
       </Buttons>
@@ -76,7 +77,17 @@ function ChangeSubscription({
       {buttons}
       <SmallText>
         You will be billed every <strong>{moment(date).format('Do')}</strong> of
-        the month, you can change or cancel your subscription at any time.
+        the month, you can change or cancel your subscription at any time. You
+        can change your payment method in{' '}
+        <LinkButton
+          onClick={e => {
+            e.preventDefault();
+            signals.modalOpened({ modal: 'preferences' });
+          }}
+        >
+          user preferences
+        </LinkButton>
+        .
       </SmallText>
     </div>
   );
