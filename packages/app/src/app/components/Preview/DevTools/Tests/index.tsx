@@ -67,26 +67,29 @@ type State = {
   watching: boolean;
 };
 
-type SandboxMessage = { type: 'test' | 'done' } & (
-  | InitializedTestsMessage
+type SandboxMessage =
   | CompilationDoneMessage
-  | TestCountMessage
-  | TotalTestStartMessage
-  | TotalTestEndMessage
-  | AddFileMessage
-  | RemoveFileMessage
-  | FileErrorMessage
-  | DescribeStartMessage
-  | DescribeEndMessage
-  | AddTestMessage
-  | TestStartMessage
-  | TestEndMessage);
+  | ({ type: 'test' } & (
+      | InitializedTestsMessage
+      | TestCountMessage
+      | TotalTestStartMessage
+      | TotalTestEndMessage
+      | AddFileMessage
+      | RemoveFileMessage
+      | FileErrorMessage
+      | DescribeStartMessage
+      | DescribeEndMessage
+      | AddTestMessage
+      | TestStartMessage
+      | TestEndMessage
+    ));
 
 interface InitializedTestsMessage {
   event: messages.INITIALIZE;
 }
 
 interface CompilationDoneMessage {
+  type: 'done';
   compilatonError: boolean;
 }
 
@@ -292,7 +295,7 @@ class Tests extends React.Component<DevToolProps, State> {
           );
           break;
         }
-        case messages.REMOVE_FILE: {
+        case 'remove_file': {
           this.setState(
             immer(this.state, state => {
               if (state.files[data.path]) {

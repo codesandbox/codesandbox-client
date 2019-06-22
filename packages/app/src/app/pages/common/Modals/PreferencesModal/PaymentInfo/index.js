@@ -9,39 +9,33 @@ import { Container } from './elements';
 
 class PaymentInfo extends React.Component {
   componentDidMount() {
-    // eslint-disable-next-line
     this.props.signals.preferences.paymentDetailsRequested();
   }
 
   updatePaymentDetails = ({ token }) => {
-    // eslint-disable-next-line
     this.props.signals.preferences.paymentDetailsUpdated({ token });
   };
 
   paymentDetails = () => {
-    const {
-      store: {
-        preferences: { paymentDetails, paymentDetailError },
-      },
-    } = this.props;
+    const { preferences } = this.props.store;
 
-    if (paymentDetailError)
-      return <div>An error occurred: {paymentDetailError}</div>;
+    if (preferences.paymentDetailError)
+      return <div>An error occurred: {preferences.paymentDetailError}</div>;
 
     return (
       <div>
         <Subheading>Current card</Subheading>
         <Card
-          last4={paymentDetails.last4}
-          name={paymentDetails.name}
-          brand={paymentDetails.brand}
+          last4={preferences.paymentDetails.last4}
+          name={preferences.paymentDetails.name}
+          brand={preferences.paymentDetails.brand}
         />
 
         <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
-          name={paymentDetails.name}
+          name={preferences.paymentDetails.name}
           subscribe={this.updatePaymentDetails}
         />
       </div>
@@ -49,15 +43,11 @@ class PaymentInfo extends React.Component {
   };
 
   render() {
-    const {
-      store: {
-        preferences: { isLoadingPaymentDetails },
-      },
-    } = this.props;
+    const { preferences } = this.props.store;
     return (
       <Container>
         <Title>Payment Info</Title>
-        {isLoadingPaymentDetails ? (
+        {preferences.isLoadingPaymentDetails ? (
           <div>Loading payment details...</div>
         ) : (
           this.paymentDetails()

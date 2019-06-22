@@ -29,12 +29,7 @@ const PricingChoice = ({ badge }) => {
       cancelSubscriptionClicked,
     },
   } = useSignals();
-  const {
-    isLoggedIn,
-    isPatron,
-    user: { name, subscription },
-    patron: { price, isUpdatingSubscription, error },
-  } = useStore();
+  const { isLoggedIn, isPatron, user, patron } = useStore();
 
   return (
     <Container>
@@ -42,16 +37,16 @@ const PricingChoice = ({ badge }) => {
         <Title>Pay what you want</Title>
         {isPatron && (
           <ThankYou
-            price={subscription.amount}
+            price={user.subscription.amount}
             color={badges[badge].colors[0]}
-            markedAsCancelled={subscription.cancelAtPeriodEnd}
+            markedAsCancelled={user.subscription.cancelAtPeriodEnd}
           />
         )}
         <Relative>
           <Currency>$</Currency>
           <PriceInput
             onChange={e => priceChanged({ price: Number(e.target.value) })}
-            value={price}
+            value={patron.price}
             min={5}
             type="number"
           />
@@ -63,7 +58,7 @@ const PricingChoice = ({ badge }) => {
             min={5}
             max={50}
             step={1}
-            value={price}
+            value={patron.price}
             color={badges[badge].colors[0]}
           />
         </RangeContainer>
@@ -72,8 +67,8 @@ const PricingChoice = ({ badge }) => {
             <ChangeSubscription
               updateSubscription={props => updateSubscriptionClicked(props)}
               cancelSubscription={() => cancelSubscriptionClicked()}
-              date={subscription.since}
-              markedAsCancelled={subscription.cancelAtPeriodEnd}
+              date={user.subscription.since}
+              markedAsCancelled={user.subscription.cancelAtPeriodEnd}
             />
           ) : (
             <Centered style={{ marginTop: '2rem' }} horizontal>
@@ -81,10 +76,10 @@ const PricingChoice = ({ badge }) => {
                 subscribe={({ token, coupon }) =>
                   createSubscriptionClicked({ token, coupon })
                 }
-                isLoading={isUpdatingSubscription}
+                isLoading={patron.isUpdatingSubscription}
                 hasCoupon
-                name={name}
-                error={error}
+                name={user.name}
+                error={patron.error}
               />
               <Notice>
                 You will be billed now and on the{' '}

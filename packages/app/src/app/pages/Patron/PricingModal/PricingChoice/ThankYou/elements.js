@@ -8,7 +8,7 @@ export const Title = styled.div`
     text-align: center;
     color: ${color};
     transition: 0.3s ease all;
-    ${delay(0)}
+    ${delay(0)};
   `}
 `;
 
@@ -19,5 +19,5 @@ export const SubTitle = styled.div`
   font-weight: 300;
   line-height: 1.6;
   text-align: center;
-  ${delay(0.1)}
+  ${delay(0.1)};
 `;
