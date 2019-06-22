@@ -1,0 +1,16 @@
+{
+  "name": "codesandbox-deps",
+  "version": "0.1.1",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "parcel build src/index.js src/tern.js"
+  },
+  "dependencies": {
+    "tern": "^0.21.0"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.3"
+  }
+}

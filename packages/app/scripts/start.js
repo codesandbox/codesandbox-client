@@ -83,34 +83,18 @@ function setupCompiler(port, protocol) {
   compiler.hooks.done.tap('done', stats => {
     clearConsole();
     const took = new Date() - compileStart;
-    const hasErrors = stats.hasErrors();
-    // filter known warnings:
-    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
-    //   in ./node_modules/typescript/lib/typescript.js
-    // CriticalDependencyWarning: Critical dependency: require function is used in a way in which dependencies cannot be statically extracted
-    //   in ./codesandbox-client/packages/app/node_modules/babel-plugin-macros/dist/index.js
-    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
-    //   in ./codesandbox-client/packages/app/node_modules/cosmiconfig/dist/loaders.js
-    const childWarnings = []
-      .concat(...stats.compilation.children.map(child => child.warnings))
-      .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
-    const hasWarnings =
-      stats.compilation.warnings.length > 0 || childWarnings.length > 0;
 
     // We have switched off the default Webpack output in WebpackDevServer
     // options so we are going to "massage" the warnings and errors and present
     // them in a readable focused way.
     // We use stats.toJson({}, true) to make output more compact and readable:
     // https://github.com/facebookincubator/create-react-app/issues/401#issuecomment-238291901
-    var json = stats.toJson({}, true);
-    var formattedErrors = json.errors.map(
-      message => 'Error in ' + formatMessage(message)
-    );
-    var formattedWarnings = json.warnings.map(
-      message => 'Warning in ' + formatMessage(message)
-    );
-    if (hasErrors) {
-      console.log(chalk.red('Failed to compile.\n'));
+    if (stats.hasErrors()) {
+      console.log(chalk.red(`Failed to compile after ${took / 1000}s.\n`));
+      var json = stats.toJson({}, true);
+      var formattedErrors = json.errors.map(
+        message => 'Error in ' + formatMessage(message)
+      );
       if (formattedErrors.some(isLikelyASyntaxError)) {
         // If there are any syntax errors, show just them.
         // This prevents a confusing ESLint parsing error
@@ -123,12 +107,23 @@ function setupCompiler(port, protocol) {
       // If errors exist, ignore warnings.
       return;
     }
+
+    // filter known warnings:
+    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+    //   in ./node_modules/typescript/lib/typescript.js
+    // CriticalDependencyWarning: Critical dependency: require function is used in a way in which dependencies cannot be statically extracted
+    //   in ./packages/app/node_modules/babel-plugin-macros/dist/index.js
+    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+    //   in ./packages/app/node_modules/cosmiconfig/dist/loaders.js
+    // CriticalDependencyWarning: Critical dependency: the request of a dependency is an expression
+    //   in ./packages/app/src/app/components/CodeEditor/CodeMirror/index.js
+    const warnings = stats.compilation.warnings
+      .concat(...stats.compilation.children.map(child => child.warnings))
+      .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
+    const hasWarnings = warnings.length > 0;
     if (hasWarnings) {
       console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
-      formattedWarnings.forEach(message => {
-        console.log(`${message}\n`);
-      });
-      childWarnings.forEach(({ error, module }) => {
+      warnings.forEach(({ error, module }) => {
         console.log(
           `${error.name}: ${error.message}\n  in ${module.resource}\n`
         );
@@ -150,11 +145,12 @@ function setupCompiler(port, protocol) {
     if (!hasWarnings) {
       console.log(chalk.green(`Compiled successfully in ${took / 1000}s!\n`));
     }
+
     console.log('The app is running at:\n');
     console.log(`  ${chalk.cyan(`${protocol}://localhost:${port}/`)}\n`);
     console.log('Note that the development build is not optimized.');
     console.log(
-      `To create a production build, use ${chalk.cyan('npm run build')}.\n`
+      `To create a production build, use ${chalk.cyan('yarn build')}.\n`
     );
   });
 }
