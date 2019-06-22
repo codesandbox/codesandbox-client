@@ -18,6 +18,11 @@ const debug = _debug('cs:sandbox');
 export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
 
+const sandboxHost = {
+  'https://codesandbox.io': 'https://csb.dev',
+  'https://codesandbox.stream': 'https://codesandbox.dev',
+};
+
 debug('Booting sandbox');
 
 function getId() {
@@ -32,9 +37,21 @@ function getId() {
     return document.location.host.match(re)[1];
   }
 
-  const hostRegex = host.replace(/https?:\/\//, '').replace(/\./g, '\\.');
-  const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
-  return document.location.host.match(sandboxRegex)[1];
+  let result;
+  [host, sandboxHost[host]].filter(Boolean).forEach(tryHost => {
+    const hostRegex = tryHost.replace(/https?:\/\//, '').replace(/\./g, '\\.');
+    const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
+    const matches = document.location.host.match(sandboxRegex);
+    if (matches) {
+      result = matches[1];
+    }
+  });
+
+  if (!result) {
+    throw new Error(`Can't detect sandbox ID from the current URL`);
+  }
+
+  return result;
 }
 
 requirePolyfills().then(() => {
