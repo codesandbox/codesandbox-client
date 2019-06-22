@@ -9,15 +9,21 @@ import { Container } from './elements';
 
 class PaymentInfo extends React.Component {
   componentDidMount() {
+    // eslint-disable-next-line
     this.props.signals.preferences.paymentDetailsRequested();
   }
 
   updatePaymentDetails = ({ token }) => {
+    // eslint-disable-next-line
     this.props.signals.preferences.paymentDetailsUpdated({ token });
   };
 
   paymentDetails = () => {
-    const { paymentDetails, paymentDetailError } = this.props.store.preferences;
+    const {
+      store: {
+        preferences: { paymentDetails, paymentDetailError },
+      },
+    } = this.props;
 
     if (paymentDetailError)
       return <div>An error occurred: {paymentDetailError}</div>;
@@ -35,7 +41,6 @@ class PaymentInfo extends React.Component {
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
-          noCoupon
           name={paymentDetails.name}
           subscribe={this.updatePaymentDetails}
         />
@@ -44,7 +49,11 @@ class PaymentInfo extends React.Component {
   };
 
   render() {
-    const { isLoadingPaymentDetails } = this.props.store.preferences;
+    const {
+      store: {
+        preferences: { isLoadingPaymentDetails },
+      },
+    } = this.props;
     return (
       <Container>
         <Title>Payment Info</Title>

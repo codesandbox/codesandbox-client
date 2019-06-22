@@ -7,22 +7,22 @@ export const Container = styled.div`
 `;
 
 export const PriceInput = styled(Input)`
-  font-size: 1.5rem;
+  width: 7rem;
   padding-left: 2rem;
   padding-right: 1rem;
-  width: 7rem;
   margin-bottom: 1rem;
+  font-size: 1.5rem;
   text-align: center;
 `;
 
 export const Month = styled.span`
   position: absolute;
-  margin-left: 0.5rem;
-  font-size: 1.125rem;
-  color: rgba(255, 255, 255, 1);
   left: 100%;
-  font-weight: 300;
   bottom: 1.75rem;
+  margin-left: 0.5rem;
+  color: rgba(255, 255, 255, 1);
+  font-size: 1.125rem;
+  font-weight: 300;
 `;
 
 export const Currency = styled.span`
@@ -30,19 +30,19 @@ export const Currency = styled.span`
   left: 0.75rem;
   top: 0;
   bottom: 0;
+  padding-top: 8px;
   margin: auto;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 1.5rem;
   font-weight: 300;
-  padding-top: 8px;
-  color: rgba(255, 255, 255, 0.5);
 `;
 
 export const Notice = styled.p`
-  font-size: 0.875rem;
-  text-align: center;
   margin: 2rem;
-  font-weight: 400;
   color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-align: center;
 `;
 
 export const RangeContainer = styled.div`
@@ -51,6 +51,6 @@ export const RangeContainer = styled.div`
 
 export const StyledSignInButton = styled(SignInButton)`
   display: block;
-  margin-top: 2rem;
   width: 300px;
+  margin-top: 2rem;
 `;

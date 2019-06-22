@@ -1,15 +1,14 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import moment from 'moment';
-
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Relative from '@codesandbox/common/lib/components/Relative';
-import SubscribeForm from 'app/components/SubscribeForm';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
-
+import SubscribeForm from 'app/components/SubscribeForm';
+import { useSignals, useStore } from 'app/store';
 import Range from './Range';
 import ChangeSubscription from './ChangeSubscription';
-import ThankYou from './ThankYou';
+import { ThankYou } from './ThankYou';
 import { Title } from '../elements';
 import {
   Container,
@@ -21,25 +20,38 @@ import {
   StyledSignInButton,
 } from './elements';
 
-function PricingChoice({ store, signals, badge }) {
+const PricingChoice = ({ badge }) => {
+  const {
+    patron: {
+      priceChanged,
+      createSubscriptionClicked,
+      updateSubscriptionClicked,
+      cancelSubscriptionClicked,
+    },
+  } = useSignals();
+  const {
+    isLoggedIn,
+    isPatron,
+    user: { name, subscription },
+    patron: { price, isUpdatingSubscription, error },
+  } = useStore();
+
   return (
     <Container>
       <Centered horizontal vertical={false}>
         <Title>Pay what you want</Title>
-        {store.isPatron && (
+        {isPatron && (
           <ThankYou
-            price={store.user.subscription.amount}
+            price={subscription.amount}
             color={badges[badge].colors[0]}
-            markedAsCancelled={store.user.subscription.cancelAtPeriodEnd}
+            markedAsCancelled={subscription.cancelAtPeriodEnd}
           />
         )}
         <Relative>
           <Currency>$</Currency>
           <PriceInput
-            onChange={event =>
-              signals.patron.priceChanged({ price: Number(event.target.value) })
-            }
-            value={store.patron.price}
+            onChange={e => priceChanged({ price: Number(e.target.value) })}
+            value={price}
             min={5}
             type="number"
           />
@@ -47,37 +59,32 @@ function PricingChoice({ store, signals, badge }) {
         </Relative>
         <RangeContainer>
           <Range
-            onChange={value =>
-              signals.patron.priceChanged({ price: Number(value) })
-            }
+            onChange={value => priceChanged({ price: Number(value) })}
             min={5}
             max={50}
             step={1}
-            value={store.patron.price}
+            value={price}
             color={badges[badge].colors[0]}
           />
         </RangeContainer>
-        {store.isLoggedIn ? ( // eslint-disable-line no-nested-ternary
-          store.isPatron ? (
+        {isLoggedIn ? ( // eslint-disable-line no-nested-ternary
+          isPatron ? (
             <ChangeSubscription
-              updateSubscription={props =>
-                signals.patron.updateSubscriptionClicked(props)
-              }
-              cancelSubscription={() =>
-                signals.patron.cancelSubscriptionClicked()
-              }
-              date={store.user.subscription.since}
-              markedAsCancelled={store.user.subscription.cancelAtPeriodEnd}
+              updateSubscription={props => updateSubscriptionClicked(props)}
+              cancelSubscription={() => cancelSubscriptionClicked()}
+              date={subscription.since}
+              markedAsCancelled={subscription.cancelAtPeriodEnd}
             />
           ) : (
             <Centered style={{ marginTop: '2rem' }} horizontal>
               <SubscribeForm
                 subscribe={({ token, coupon }) =>
-                  signals.patron.createSubscriptionClicked({ token, coupon })
+                  createSubscriptionClicked({ token, coupon })
                 }
-                isLoading={store.patron.isUpdatingSubscription}
-                name={store.user.name}
-                error={store.patron.error}
+                isLoading={isUpdatingSubscription}
+                hasCoupon
+                name={name}
+                error={error}
               />
               <Notice>
                 You will be billed now and on the{' '}
@@ -95,6 +102,6 @@ function PricingChoice({ store, signals, badge }) {
       </Centered>
     </Container>
   );
-}
+};
 
-export default inject('store', 'signals')(observer(PricingChoice));
+export default observer(PricingChoice);

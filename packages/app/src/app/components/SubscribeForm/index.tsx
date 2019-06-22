@@ -12,35 +12,33 @@ interface Props {
   buttonName?: string;
   isLoading?: boolean;
   error?: string;
-  noCoupon?: boolean;
+  hasCoupon?: boolean;
 }
 
-function SubscribeForm({
+const SubscribeForm = ({
   name,
   subscribe,
   loadingText = 'Creating Subscription...',
   buttonName = 'Subscribe',
   isLoading = false,
   error,
-  noCoupon,
-}: Props) {
-  return (
-    <Container>
-      <StripeProvider apiKey={STRIPE_API_KEY}>
-        <Elements>
-          <CheckoutForm
-            buttonName={buttonName}
-            loadingText={loadingText}
-            subscribe={subscribe}
-            name={name}
-            isLoading={isLoading}
-            error={error}
-            noCoupon={noCoupon}
-          />
-        </Elements>
-      </StripeProvider>
-    </Container>
-  );
-}
+  hasCoupon,
+}: Props) => (
+  <Container>
+    <StripeProvider apiKey={STRIPE_API_KEY}>
+      <Elements>
+        <CheckoutForm
+          buttonName={buttonName}
+          loadingText={loadingText}
+          subscribe={subscribe}
+          name={name}
+          isLoading={isLoading}
+          error={error}
+          hasCoupon={hasCoupon}
+        />
+      </Elements>
+    </StripeProvider>
+  </Container>
+);
 
 export default SubscribeForm;

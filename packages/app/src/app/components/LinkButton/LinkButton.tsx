@@ -1,19 +1,20 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const LinkButton = styled.button`
-  transition: 0.3s ease color;
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  background-color: transparent;
-  border: none;
-  outline: none;
+  ${({ theme }) => css`
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent;
+    color: ${theme.secondary};
+    outline: none;
+    text-decoration: underline;
+    transition: 0.3s ease color;
+    cursor: pointer;
 
-  color: ${props => props.theme.secondary};
-  text-decoration: underline;
-  cursor: pointer;
-
-  &:hover {
-    color: ${props => props.theme.secondary.lighten(0.1)};
-  }
+    &:hover {
+      color: ${theme.secondary.lighten(0.1)};
+    }
+  `}
 `;

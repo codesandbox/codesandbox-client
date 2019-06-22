@@ -22,7 +22,7 @@ interface Props {
   isLoading: boolean;
   error?: Error;
   subscribe: (params: { token: string; coupon: string }) => void;
-  noCoupon?: boolean;
+  hasCoupon?: boolean;
 }
 
 interface State {
@@ -49,20 +49,20 @@ class CheckoutForm extends React.PureComponent<Props, State> {
     }
   }
 
-  setName = e => {
+  setName = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e) {
       this.setState({ errors: {}, name: e.target.value });
     }
   };
 
-  setCoupon = e => {
+  setCoupon = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e) {
       this.setState({ errors: {}, coupon: e.target.value });
     }
   };
 
-  handleSubmit = async ev => {
-    ev.preventDefault();
+  handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!this.state.name) {
       return this.setState({ errors: { name: 'Please provide a name ' } });
     }
@@ -105,7 +105,13 @@ class CheckoutForm extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const { buttonName, loadingText, isLoading, error, noCoupon } = this.props;
+    const {
+      buttonName,
+      loadingText,
+      isLoading,
+      error,
+      hasCoupon = false,
+    } = this.props;
     const { errors, loading: stateLoading } = this.state;
 
     const loading = isLoading || stateLoading;
@@ -133,7 +139,7 @@ class CheckoutForm extends React.PureComponent<Props, State> {
           />
         </CardContainer>
 
-        {!noCoupon && (
+        {hasCoupon && (
           <>
             <Label>Coupon</Label>
             <div>
