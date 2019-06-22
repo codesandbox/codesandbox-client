@@ -12,6 +12,7 @@ export type Props = {
   disabled?: boolean;
   type?: 'button' | 'reset' | 'submit';
   secondary?: boolean;
+  red?: boolean;
 };
 
 function ButtonComponent({ style = {}, ...props }: Props) {
