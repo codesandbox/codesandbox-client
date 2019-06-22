@@ -7,35 +7,40 @@ import Card from './Card';
 import { Title, Subheading } from '../elements';
 import { Container } from './elements';
 
-class PaymentInfo extends React.Component {
+interface Props {
+  store: any;
+  signals: any;
+}
+
+class PaymentInfo extends React.Component<Props> {
   componentDidMount() {
     this.props.signals.preferences.paymentDetailsRequested();
   }
 
-  updatePaymentDetails = token => {
+  updatePaymentDetails = ({ token }) => {
     this.props.signals.preferences.paymentDetailsUpdated({ token });
   };
 
   paymentDetails = () => {
-    const { paymentDetails, paymentDetailError } = this.props.store.preferences;
+    const { preferences } = this.props.store;
 
-    if (paymentDetailError)
-      return <div>An error occurred: {paymentDetailError}</div>;
+    if (preferences.paymentDetailError)
+      return <div>An error occurred: {preferences.paymentDetailError}</div>;
 
     return (
       <div>
         <Subheading>Current card</Subheading>
         <Card
-          last4={paymentDetails.last4}
-          name={paymentDetails.name}
-          brand={paymentDetails.brand}
+          last4={preferences.paymentDetails.last4}
+          name={preferences.paymentDetails.name}
+          brand={preferences.paymentDetails.brand}
         />
 
         <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
-          name={paymentDetails.name}
+          name={preferences.paymentDetails.name}
           subscribe={this.updatePaymentDetails}
         />
       </div>
@@ -43,11 +48,11 @@ class PaymentInfo extends React.Component {
   };
 
   render() {
-    const { isLoadingPaymentDetails } = this.props.store.preferences;
+    const { preferences } = this.props.store;
     return (
       <Container>
         <Title>Payment Info</Title>
-        {isLoadingPaymentDetails ? (
+        {preferences.isLoadingPaymentDetails ? (
           <div>Loading payment details...</div>
         ) : (
           this.paymentDetails()

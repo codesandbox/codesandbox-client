@@ -2,7 +2,13 @@ import React from 'react';
 
 import { Highlight, Container } from './elements';
 
-function Card({ brand, last4, name }) {
+interface Props {
+  brand: string;
+  last4: string;
+  name: string;
+}
+
+function Card({ brand, last4, name }: Props) {
   return (
     <Container>
       <div>

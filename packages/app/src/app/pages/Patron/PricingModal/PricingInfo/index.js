@@ -18,14 +18,10 @@ function PricingInfo() {
           </tr>
         </thead>
         <tbody>
-          <Feature
-            feature="Teams"
-            free="Enabled"
-            supporter="Enabled, lifted limits"
-          />
+          <Feature feature="Teams" free="Enabled" supporter="Patron Features" />
           <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
           <Feature feature="Sandbox Limit" free="50" supporter="Unlimited" />
-          <Feature feature="Server Sandbox Limit" free="15" supporter="30" />
+          <Feature feature="Server Sandbox Limit" free="15" supporter="50" />
           <Feature
             feature="Static File Hosting"
             free="20Mb"

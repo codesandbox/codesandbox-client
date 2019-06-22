@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   padding: 1rem 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
 `;
 
 export const CenteredHeader = styled.th`
