@@ -99,7 +99,15 @@ export const frameUrl = (sandbox: Sandbox, append: string = '') => {
     return stagingFrameUrl(sandbox.id, path);
   }
 
-  return `${location.protocol}//${sandbox.id}.${host()}/${path}`;
+  const sandboxHost = {
+    'codesandbox.stream': 'codesandbox.dev',
+  };
+
+  let sHost = host();
+  if (sHost in sandboxHost) {
+    sHost = sandboxHost[sHost];
+  }
+  return `${location.protocol}//${sandbox.id}.${sHost}/${path}`;
 };
 
 export const forkSandboxUrl = (sandbox: Sandbox) =>
