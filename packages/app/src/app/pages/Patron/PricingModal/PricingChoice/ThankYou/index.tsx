@@ -4,7 +4,13 @@ import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 
 import { Title, SubTitle } from './elements';
 
-export const ThankYou = ({ color, price, markedAsCancelled }) => (
+interface Props {
+  color: string;
+  price: number;
+  markedAsCancelled: boolean;
+}
+
+export const ThankYou = ({ color, price, markedAsCancelled }: Props) => (
   <Margin bottom={2}>
     {!markedAsCancelled && <Title color={color}>Awesome!</Title>}
     <SubTitle>

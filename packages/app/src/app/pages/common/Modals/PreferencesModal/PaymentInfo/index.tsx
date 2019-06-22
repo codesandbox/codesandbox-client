@@ -7,7 +7,12 @@ import Card from './Card';
 import { Title, Subheading } from '../elements';
 import { Container } from './elements';
 
-class PaymentInfo extends React.Component {
+interface Props {
+  store: any;
+  signals: any;
+}
+
+class PaymentInfo extends React.Component<Props> {
   componentDidMount() {
     this.props.signals.preferences.paymentDetailsRequested();
   }

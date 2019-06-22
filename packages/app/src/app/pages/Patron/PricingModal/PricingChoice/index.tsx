@@ -20,7 +20,11 @@ import {
   StyledSignInButton,
 } from './elements';
 
-const PricingChoice = ({ badge }) => {
+interface Props {
+  badge: 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4';
+}
+
+const PricingChoice = ({ badge }: Props) => {
   const {
     patron: {
       priceChanged,

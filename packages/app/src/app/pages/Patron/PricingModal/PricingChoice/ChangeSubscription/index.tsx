@@ -6,12 +6,19 @@ import { LinkButton } from 'app/components/LinkButton';
 
 import { SmallText, Buttons, StyledButton, StripeInput } from './elements';
 
+interface Props {
+  date: string;
+  markedAsCancelled: boolean;
+  cancelSubscription: () => void;
+  updateSubscription: (params: { coupon: string }) => void;
+}
+
 function ChangeSubscription({
   date,
   markedAsCancelled,
   cancelSubscription,
   updateSubscription,
-}) {
+}: Props) {
   const store = useStore();
   const signals = useSignals();
   const isLoading = store.patron.isUpdatingSubscription;
