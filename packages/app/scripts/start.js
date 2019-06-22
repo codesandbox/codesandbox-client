@@ -13,6 +13,7 @@ var http = require('http');
 var proxy = require('http-proxy-middleware');
 var path = require('path');
 var httpProxy = require('http-proxy');
+const { platform } = require('os');
 var config = require('../config/webpack.dev');
 var paths = require('../config/paths');
 const { staticAssets } = require('../config/build');
@@ -22,6 +23,10 @@ var DEFAULT_PORT = process.env.PORT || 3000;
 var compiler;
 var handleCompile;
 var compileStart;
+var shouldClearConsole =
+  'CLEAR' in process.env
+    ? ['1', 'true'].includes(process.env.CLEAR)
+    : platform() !== 'win32';
 
 // Some custom utilities to prettify Webpack output.
 // This is a little hacky.
@@ -54,7 +59,9 @@ function formatMessage(message) {
 function clearConsole() {
   // This seems to work best on Windows and other systems.
   // The intention is to clear the output so you can focus on most recent build.
-  // process.stdout.write('\x1bc');
+  if (shouldClearConsole) {
+    process.stdout.write('\x1bc');
+  }
 }
 
 function setupCompiler(port, protocol) {
