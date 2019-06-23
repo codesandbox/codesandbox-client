@@ -38,16 +38,16 @@ const styles = ({
       `};
     display: flex !important;
     transition: 0.3s ease all;
-    flex- direction: row;
-    align- items: center;
-    vertical- align: middle;
-    font- size: 0.875rem;
-    line- height: 1;
+    flex-direction: row;
+    align-items: center;
+    vertical-align: middle;
+    font-size: 0.875rem;
+    line-height: 1;
     height: 100 %;
     color: ${theme.light ? css`#636363` : css`rgba(255, 255, 255, 0.7)`};
     cursor: pointer;
-    box- sizing: inherit;
-    border- bottom: 2px solid transparent;
+    box-sizing: inherit;
+    border-bottom: 2px solid transparent;
     z- index: 1;
     ${highlight
       ? css`
