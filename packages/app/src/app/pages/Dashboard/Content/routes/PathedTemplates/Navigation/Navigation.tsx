@@ -13,7 +13,7 @@ export const Navigation = ({ path, teamId }: INavigationProps) => {
 
   const paths = splitPath.reduce((bases, next) => {
     if (next === '') {
-      return [{ url: '/', name: teamId ? 'Our templates' : 'My templates' }];
+      return [{ url: '/', name: teamId ? 'Our Templates' : 'My Templates' }];
     }
 
     const baseUrl = bases[bases.length - 1].url;
