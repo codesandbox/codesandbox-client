@@ -11,7 +11,7 @@ interface ILinkProps {
   name: string;
   path: string;
   i: number;
-  splitPath: string;
+  splittedPath: string;
   connectDropTarget: Function;
 }
 
@@ -19,7 +19,7 @@ const Link = ({
   teamId,
   name,
   path,
-  splitPath,
+  splittedPath,
   i,
   connectDropTarget,
 }: ILinkProps) =>
@@ -31,7 +31,7 @@ const Link = ({
             ? `/dashboard/teams/${teamId}/sandboxes${path}`
             : `/dashboard/sandboxes${path}`
         }
-        last={i === splitPath.length - 1 ? 'true' : undefined}
+        last={i === splittedPath.length - 1 ? 'true' : undefined}
         first={i === 0 ? 'true' : undefined}
         path={path}
         teamId={teamId}
