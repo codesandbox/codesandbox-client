@@ -11,7 +11,7 @@ interface ILinkProps {
   name: string;
   path: string;
   i: number;
-  splittedPath: string;
+  splittedPath: string[];
   connectDropTarget: Function;
 }
 
