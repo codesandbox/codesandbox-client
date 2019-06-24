@@ -39,7 +39,7 @@ export const Container = styled(NavLink)`
         content: '';
         background-color: ${props.theme.secondary};
         border-radius: 0px 4px 4px 0px;
-        width: 8px;
+        width: 5px;
         position: absolute;
         height: 100%;
       }

@@ -6,7 +6,7 @@ import { ImportChoice, ImportChoices } from './elements';
 
 export const ImportTab = () => (
   <>
-    <GithubPage noConverted />
+    <GithubPage />
     <ImportChoices>
       <ImportChoice href="/docs/importing#export-with-cli">
         <TerminalIcon /> CLI Documentation
