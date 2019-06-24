@@ -33,7 +33,7 @@ export const NotOwnedSandboxInfo = () => {
       >
         <Dependencies />
       </WorkspaceItem>
-      {(currentSandbox.git || {}).username === user.username && (
+      {user && (currentSandbox.git || {}).username === user.username && (
         <TemplateInfo template={currentSandbox.customTemplate} />
       )}
     </div>
