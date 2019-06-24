@@ -7,6 +7,7 @@ import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import setupConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 
@@ -18,41 +19,7 @@ const debug = _debug('cs:sandbox');
 export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src;
 
-const sandboxHost = {
-  'https://codesandbox.io': 'https://csb.dev',
-  'https://codesandbox.stream': 'https://codesandbox.dev',
-};
-
 debug('Booting sandbox');
-
-function getId() {
-  if (process.env.LOCAL_SERVER) {
-    return document.location.hash.replace('#', '');
-  }
-
-  if (process.env.STAGING) {
-    const segments = host.split('//')[1].split('.');
-    const first = segments.shift();
-    const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
-    return document.location.host.match(re)[1];
-  }
-
-  let result;
-  [host, sandboxHost[host]].filter(Boolean).forEach(tryHost => {
-    const hostRegex = tryHost.replace(/https?:\/\//, '').replace(/\./g, '\\.');
-    const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
-    const matches = document.location.host.match(sandboxRegex);
-    if (matches) {
-      result = matches[1];
-    }
-  });
-
-  if (!result) {
-    throw new Error(`Can't detect sandbox ID from the current URL`);
-  }
-
-  return result;
-}
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});
@@ -103,7 +70,7 @@ requirePolyfills().then(() => {
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
-    const id = getId();
+    const id = getSandboxId();
     window
       .fetch(host + `/api/v1/sandboxes/${id}`, {
         credentials: 'include',

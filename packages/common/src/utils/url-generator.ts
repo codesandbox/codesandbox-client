@@ -4,6 +4,11 @@ export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
 const dotGit = /(\.git)$/;
 
+const sandboxHost = {
+  'https://codesandbox.io': 'https://csb.dev',
+  'https://codesandbox.stream': 'https://codesandbox.dev',
+};
+
 const buildEncodedUri = (
   strings: TemplateStringsArray,
   ...values: Array<string>
@@ -99,10 +104,6 @@ export const frameUrl = (sandbox: Sandbox, append: string = '') => {
     return stagingFrameUrl(sandbox.id, path);
   }
 
-  const sandboxHost = {
-    'codesandbox.stream': 'codesandbox.dev',
-  };
-
   let sHost = host();
   if (sHost in sandboxHost) {
     sHost = sandboxHost[sHost];
@@ -161,3 +162,34 @@ export const patronUrl = () => `/patron`;
 export const curatorUrl = () => `/curator`;
 export const tosUrl = () => `/legal/terms`;
 export const privacyUrl = () => `/legal/privacy`;
+
+export function getSandboxId() {
+  const host = process.env.CODESANDBOX_HOST;
+
+  if (process.env.LOCAL_SERVER) {
+    return document.location.hash.replace('#', '');
+  }
+
+  if (process.env.STAGING) {
+    const segments = host.split('//')[1].split('.');
+    const first = segments.shift();
+    const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
+    return document.location.host.match(re)[1];
+  }
+
+  let result: string;
+  [host, sandboxHost[host]].filter(Boolean).forEach(tryHost => {
+    const hostRegex = tryHost.replace(/https?:\/\//, '').replace(/\./g, '\\.');
+    const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
+    const matches = document.location.host.match(sandboxRegex);
+    if (matches) {
+      result = matches[1];
+    }
+  });
+
+  if (!result) {
+    throw new Error(`Can't detect sandbox ID from the current URL`);
+  }
+
+  return result;
+}
