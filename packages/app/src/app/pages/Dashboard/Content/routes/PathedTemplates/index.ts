@@ -1,1 +1,0 @@
-export { PathedTemplates } from './PathedTemplates';

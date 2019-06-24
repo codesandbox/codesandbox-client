@@ -8,11 +8,10 @@ import { LIST_TEMPLATES } from '../../../queries';
 import { Navigation } from './Navigation';
 import { IMatch } from './types';
 
-export const PathedTemplates = observer(
+export const Templates = observer(
   // TODO: Replace with RouteComponentProps from react-router-dom
   ({ match }: { match: IMatch }) => {
     const { dashboard } = useStore();
-    const path = `/${match.params.path || ''}`;
     const { loading, error, data } = useQuery(LIST_TEMPLATES);
 
     useEffect(() => {
@@ -55,7 +54,7 @@ export const PathedTemplates = observer(
       <Sandboxes
         isLoading={loading}
         possibleTemplates={possibleTemplates}
-        Header={<Navigation path={path} />}
+        Header={<Navigation teamId={match.params.teamId} />}
         sandboxes={dashboard.getFilteredSandboxes(sandboxes)}
       />
     );
