@@ -76,7 +76,7 @@ class Sidebar extends React.Component {
                   <Item
                     Icon={TemplateIcon}
                     path="/dashboard/templates"
-                    name="Templates"
+                    name="My Templates"
                   />
 
                   <TrashItem currentPath={path} />
@@ -103,10 +103,17 @@ class Sidebar extends React.Component {
                             path={teamOverviewUrl(team.id)}
                             name="Team Overview"
                           />
+
                           <SandboxesItem
                             currentPath={path}
                             currentTeamId={currentTeamId}
                             teamId={team.id}
+                          />
+
+                          <Item
+                            Icon={TemplateIcon}
+                            path={`/dashboard/teams/${team.id}/templates`}
+                            name="Our Templates"
                           />
                         </Items>
                       </div>
