@@ -35,19 +35,7 @@ export const Container = styled(NavLink)`
   ${props =>
     props.active &&
     css`
-      &:before {
-        content: '';
-        background-color: ${props.theme.secondary};
-        border-radius: 0px 4px 4px 0px;
-        width: 5px;
-        position: absolute;
-        height: 100%;
-      }
-
-      ${AnimatedChevron} {
-        margin-left: 0.5rem;
-      }
-
+      background-color: ${props.theme.secondary};
       color: white;
     `};
 `;
