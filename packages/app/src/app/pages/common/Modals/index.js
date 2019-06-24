@@ -63,7 +63,7 @@ const modals = {
   },
   forkFrozenModal: {
     Component: ForkFrozenSandboxModal,
-    width: 400,
+    width: 550,
   },
   pr: {
     Component: PRModal,
