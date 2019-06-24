@@ -47,8 +47,10 @@ export const ForkFrozenSandboxModal = observer(() => {
             modalClosed();
           }}
         >
-          Unlock
-          <Unlock />
+          <>
+            Unlock
+            <Unlock />
+          </>
         </Button>
       </Actions>
     </Container>
