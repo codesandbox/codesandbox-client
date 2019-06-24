@@ -70,7 +70,7 @@ export const addTemplate = [
       closeModal,
       addNotification('Template Created', 'success'),
     ],
-    error: [addNotification('Could not add custom template', 'error')],
+    error: [addNotification('Could not create template, please try again later', 'error')],
   },
 ];
 
