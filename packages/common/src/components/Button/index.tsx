@@ -8,7 +8,7 @@ export type Props = {
   style?: React.CSSProperties;
   block?: boolean;
   onClick?: () => void;
-  children?: React.ReactElement | string;
+  children?: React.ReactNode;
   disabled?: boolean;
   type?: 'button' | 'reset' | 'submit';
   secondary?: boolean;
