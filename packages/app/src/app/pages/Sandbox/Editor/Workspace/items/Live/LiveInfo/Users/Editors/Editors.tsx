@@ -1,71 +1,26 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import React from 'react';
-import FollowIcon from 'react-icons/lib/io/eye';
-import UnFollowIcon from 'react-icons/lib/io/eye-disabled';
-import RemoveIcon from 'react-icons/lib/md/remove';
-
-import { useSignals, useStore } from 'app/store';
 
 import { SubTitle } from '../../elements';
 
-import { IconContainer, Users } from '../elements';
+import { Users } from '../elements';
 import { User } from '../User';
 
-export const Editors = ({ editors }) => {
-  const {
-    live: { onFollow, onRemoveEditorClicked },
-  } = useSignals();
-  const {
-    live: {
-      followingUserId,
-      isOwner,
-      liveUserId,
-      roomInfo: { mode },
-    },
-  } = useStore();
-  const getSideView = userId => (
-    <>
-      {userId !== liveUserId && (
-        <IconContainer>
-          {followingUserId === userId ? (
-            <Tooltip content="Stop following">
-              <UnFollowIcon onClick={() => onFollow({ liveUserId: null })} />
-            </Tooltip>
-          ) : (
-            <Tooltip content="Follow along">
-              <FollowIcon onClick={() => onFollow({ liveUserId: userId })} />
-            </Tooltip>
-          )}
-        </IconContainer>
-      )}
+import { SideView } from './SideView';
 
-      {isOwner && mode === 'classroom' && (
-        <IconContainer style={{ marginLeft: '0.25rem' }}>
-          <Tooltip content={'Make spectator'}>
-            <RemoveIcon
-              onClick={() => onRemoveEditorClicked({ liveUserId: userId })}
-            />
-          </Tooltip>
-        </IconContainer>
-      )}
-    </>
-  );
+export const Editors = ({ editors }) => (
+  <Margin top={1}>
+    <SubTitle>Editors</SubTitle>
 
-  return (
-    <Margin top={1}>
-      <SubTitle>Editors</SubTitle>
-
-      <Users>
-        {editors.map(user => (
-          <User
-            key={user.id}
-            sideView={getSideView(user.id)}
-            type="Editor"
-            user={user}
-          />
-        ))}
-      </Users>
-    </Margin>
-  );
-};
+    <Users>
+      {editors.map(user => (
+        <User
+          key={user.id}
+          sideView={<SideView userId={user.id} />}
+          type="Editor"
+          user={user}
+        />
+      ))}
+    </Users>
+  </Margin>
+);
