@@ -9,8 +9,8 @@ function addSlash(path: string) {
 export default function getDirectChildren(
   currentPath: string,
   children: Array<{ path: string }>
-) {
-  const usedChildren = new Set();
+): Set<string> {
+  const usedChildren = new Set<string>();
 
   children.forEach(c => {
     const { path } = c;
