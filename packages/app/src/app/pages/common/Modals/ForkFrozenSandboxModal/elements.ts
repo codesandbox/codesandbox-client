@@ -38,7 +38,7 @@ export const Actions = styled.div`
   margin-top: 24px;
 `;
 
-export const ForkButton = styled(Button).attrs({
+export const UnlockButton = styled(Button).attrs({
   small: true,
   secondary: true,
 })`
@@ -46,7 +46,7 @@ export const ForkButton = styled(Button).attrs({
   margin-right: 24px;
 `;
 
-export const Unlock = styled(ReturnIcon)`
+export const Enter = styled(ReturnIcon)`
   margin-left: 8px;
   color: white;
 `;

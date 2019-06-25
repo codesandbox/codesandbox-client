@@ -253,6 +253,7 @@
     "react-spring": "^8.0.19",
     "react-stripe-elements": "^1.2.0",
     "react-tagsinput": "^3.19.0",
+    "react-use": "^9.7.1",
     "react-virtualized": "^9.19.1",
     "resize-observer-polyfill": "^1.5.1",
     "sha1": "^1.1.1",

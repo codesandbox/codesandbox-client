@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import useKeyPressEvent from 'react-use/lib/useKeyPressEvent';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { useStore, useSignals } from 'app/store';
 import {
@@ -7,8 +8,8 @@ import {
   Title,
   Close,
   Actions,
-  ForkButton,
-  Unlock,
+  UnlockButton,
+  Enter,
 } from './elements';
 
 export const ForkFrozenSandboxModal = observer(() => {
@@ -20,35 +21,34 @@ export const ForkFrozenSandboxModal = observer(() => {
   const { modalClosed, editor } = useSignals();
   const type = customTemplate ? 'template ' : 'sandbox ';
 
+  const unlock = () => {
+    editor.sessionFreezeOverride({
+      frozen: false,
+    });
+    modalClosed();
+  };
+
+  const fork = () => {
+    editor.forkSandboxOnDemand();
+    modalClosed();
+  };
+
+  useKeyPressEvent('Enter', fork);
+
   return (
     <Container>
       <Close onClick={() => modalClosed()} />
       <Title>Frozen Sandbox</Title>
       <p>
-        This {type} is frozen, which means you can{"'"}t make edits without
+        This {type} is frozen, which means you can’t make edits without
         unlocking it.
       </p>
-      <p>Do you want to unlock the {type} for this session?</p>
+      <p>Do you want to unlock the sandbox for this session or make a fork?</p>
       <Actions>
-        <ForkButton
-          onClick={() => {
-            editor.forkSandboxOnDemand();
-            modalClosed();
-          }}
-        >
+        <UnlockButton onClick={unlock}>Unlock</UnlockButton>
+        <Button small onClick={fork}>
           Fork
-        </ForkButton>
-        <Button
-          small
-          onClick={() => {
-            editor.sessionFreezeOverride({
-              frozen: false,
-            });
-            modalClosed();
-          }}
-        >
-          Unlock
-          <Unlock />
+          <Enter />
         </Button>
       </Actions>
     </Container>
