@@ -429,9 +429,9 @@ export const SET_TEAM_DESCRIPTION = gql`
 `;
 
 export const LIST_TEMPLATES = gql`
-  query listTemplates {
+  query ListTemplates($teamId: ID) {
     me {
-      templates {
+      templates(teamId: $teamId) {
         title
         description
         color

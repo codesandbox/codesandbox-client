@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import vscode from 'app/vscode';
-import { TitleBar, Container } from './elements';
 import './titlebar.css';
 
 export const MenuBar = () => {
@@ -21,8 +20,24 @@ export const MenuBar = () => {
   }, []);
 
   return (
-    <TitleBar className="part titlebar">
-      <Container className="menubar" ref={menuBarEl} />
-    </TitleBar>
+    // Explicitly use inline styles here to override the vscode styles
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        marginLeft: ' 0.5rem',
+      }}
+      className="part titlebar"
+    >
+      <div
+        style={{
+          alignItems: 'center',
+          height: 38,
+          fontSize: '0.875rem',
+        }}
+        className="menubar"
+        ref={menuBarEl}
+      />
+    </div>
   );
 };

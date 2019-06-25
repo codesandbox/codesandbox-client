@@ -8,11 +8,15 @@ import { LIST_TEMPLATES } from '../../../queries';
 import { Container, Grid } from './elements';
 import { Navigation } from './Navigation';
 
-export const Templates = () => {
-  const { loading, error, data } = useQuery(LIST_TEMPLATES);
+export const Templates = props => {
+  const teamId = props.match.params.teamId;
+
+  const { loading, error, data } = useQuery(LIST_TEMPLATES, {
+    variables: { teamId },
+  });
 
   useEffect(() => {
-    document.title = `Templates - CodeSandbox`;
+    document.title = `${teamId ? 'Our' : 'My'} Templates - CodeSandbox`;
   }, []);
 
   if (error) {
@@ -38,7 +42,7 @@ export const Templates = () => {
 
   return (
     <Container>
-      <Navigation number={data.me.templates.length} />
+      <Navigation teamId={teamId} number={data.me.templates.length} />
       <Grid>
         {data.me.templates.map((template, i) => (
           <CustomTemplate
