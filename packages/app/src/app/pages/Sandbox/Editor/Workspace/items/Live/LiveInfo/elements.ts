@@ -1,12 +1,8 @@
-import styled, { css } from 'styled-components';
 import Input from '@codesandbox/common/lib/components/Input';
 import delay from '@codesandbox/common/lib/utils/animation/delay-effect';
+import styled, { css } from 'styled-components';
 
-interface Theme {
-  theme: {
-    light: boolean;
-  };
-}
+import { Theme } from './types';
 
 export const Container = styled.div`
   ${({ theme }: Theme) => css`
@@ -123,24 +119,6 @@ export const ModeSelector = styled.div`
     z-index: -1;
 
     transform: translateY(${i * 55}px);
-  `}
-`;
-
-export const PreferencesContainer = styled.div`
-  margin: 1rem;
-  display: flex;
-`;
-
-export const Preference = styled.div`
-  ${({ theme }: Theme) => css`
-    flex: 1;
-    font-weight: 400;
-    color: ${theme.light
-      ? css`rgba(0, 0, 0, 0.8)`
-      : css`rgba(255, 255, 255, 0.8)`};
-    align-items: center;
-    justify-content: center;
-    font-size: 0.875rem;
   `}
 `;
 
