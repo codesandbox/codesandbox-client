@@ -207,8 +207,6 @@ class FolderEntry extends React.Component<Props, State> {
       });
     }
 
-    console.log(url, new Error().stack);
-
     return connectDropTarget(
       connectDragSource(
         <div>
