@@ -223,6 +223,12 @@ class BasePreview extends React.Component<Props, State> {
     }
 
     (window as any).openNewWindow = this.openNewWindow;
+
+    setTimeout(() => {
+      if (this.state.showScreenshot) {
+        this.setState({ showScreenshot: false });
+      }
+    }, 800);
   }
 
   initializeLastSent = () => {
