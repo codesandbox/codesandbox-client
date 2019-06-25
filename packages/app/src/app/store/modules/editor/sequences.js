@@ -145,7 +145,12 @@ export const toggleLikeSandbox = [
 export const forkSandboxOnDemand = [forkSandbox];
 
 export const forceForkSandbox = [
-  when(state`editor.currentSandbox.owned`),
+  when(
+    state`editor.currentSandbox.owned`,
+    state`editor.currentSandbox.customTemplate`,
+    // Only show modal if you own the sandbox and it isn't a custom template
+    (owned, customTemplate) => owned && !customTemplate
+  ),
   {
     true: [
       actions.confirmForkingOwnSandbox,
