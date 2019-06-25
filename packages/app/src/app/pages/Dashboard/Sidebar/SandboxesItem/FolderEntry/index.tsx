@@ -46,19 +46,21 @@ type Props = {
   folders: { path: string }[];
   foldersByPath: { [path: string]: string };
   depth: number;
-  isOver: boolean;
   toToggle?: boolean;
   allowCreate?: boolean;
-  canDrop?: boolean;
-  connectDropTarget: any;
-  connectDragSource: any;
   open?: boolean;
-  isDragging: boolean;
   basePath: string;
   teamId: string;
   onSelect: (params: { teamId: string; path: string }) => void;
   currentPath: string;
   currentTeamId: string;
+
+  // dnd handlers
+  canDrop?: boolean;
+  isOver?: boolean;
+  isDragging?: boolean;
+  connectDropTarget?: any;
+  connectDragSource?: any;
 };
 
 type State = {
@@ -68,7 +70,7 @@ type State = {
 };
 
 // eslint-disable-next-line import/no-mutable-exports
-let DropFolderEntry = null;
+let DropFolderEntry: React.ComponentClass<Props, State> = null;
 class FolderEntry extends React.Component<Props, State> {
   state = {
     open: this.props.open,
@@ -205,6 +207,8 @@ class FolderEntry extends React.Component<Props, State> {
       });
     }
 
+    console.log(url, new Error().stack);
+
     return connectDropTarget(
       connectDragSource(
         <div>
@@ -337,10 +341,12 @@ class FolderEntry extends React.Component<Props, State> {
               .sort()
               .map(childName => {
                 const childPath = join(path, childName);
+                const childUrl = join(url, encodeURIComponent(childName));
 
                 return (
                   <DropFolderEntry
                     path={childPath}
+                    url={childUrl}
                     basePath={basePath}
                     teamId={teamId}
                     folders={folders}
@@ -390,6 +396,6 @@ DropFolderEntry = inject('store', 'signals')(
   DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
     DragSource('FOLDER', entrySource, collectSource)(observer(FolderEntry))
   )
-);
+) as any;
 
 export default DropFolderEntry;

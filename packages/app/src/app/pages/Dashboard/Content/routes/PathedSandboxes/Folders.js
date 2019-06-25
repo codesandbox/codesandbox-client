@@ -7,6 +7,10 @@ import { Folder, FoldersWrapper } from './elements';
 
 const Folders = ({ loading, me, history, match: { params }, teamId }) => {
   const getPath = name => (params.path ? `${params.path}/${name}` : '/' + name);
+  const getURL = name =>
+    params.path
+      ? `${params.path}/${encodeURIComponent(name)}`
+      : '/' + encodeURIComponent(name);
 
   if (loading) return null;
 
@@ -30,6 +34,7 @@ const Folders = ({ loading, me, history, match: { params }, teamId }) => {
               basePath={window.location.pathname}
               teamId={teamId}
               path={getPath(name)}
+              url={getURL(name)}
               folders={folders}
               foldersByPath={foldersByPath}
               name={name}
