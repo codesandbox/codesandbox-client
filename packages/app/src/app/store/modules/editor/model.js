@@ -63,7 +63,7 @@ const Template = types.model({
   id: types.maybeNull(types.string),
   url: types.maybeNull(types.string),
   iconUrl: types.maybeNull(types.string),
-  description: types.string,
+  description: types.maybeNull(types.string),
   color: types.string,
   title: types.string,
 });
