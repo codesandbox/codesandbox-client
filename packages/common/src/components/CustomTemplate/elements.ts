@@ -25,8 +25,8 @@ export const TemplateSubTitle = styled.span`
   ${({ theme }) => css`
     display: block;
     width: 100%;
-    height: 20px;
-    margin: 0 12px;
+    height: 16px;
+    padding: 0 12px;
     margin-bottom: 6px;
     color: ${theme.placeholder};
     font-size: 12px;
@@ -34,6 +34,7 @@ export const TemplateSubTitle = styled.span`
     line-height: 16px;
     overflow: hidden;
     text-overflow: ellipsis;
+    box-sizing: border-box;
   `}
 `;
 
