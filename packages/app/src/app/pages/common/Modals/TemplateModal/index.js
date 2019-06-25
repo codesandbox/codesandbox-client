@@ -4,7 +4,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import { SketchPicker } from 'react-color';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
-import { Checkbox } from '@codesandbox/common/lib/components/Checkbox';
+// import { Checkbox } from '@codesandbox/common/lib/components/Checkbox';
 import * as templates from '@codesandbox/common/lib/templates';
 import uniq from 'lodash-es/uniq';
 import { useStore, useSignals } from 'app/store';
