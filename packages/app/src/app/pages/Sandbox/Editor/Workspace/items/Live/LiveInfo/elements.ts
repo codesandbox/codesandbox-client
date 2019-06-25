@@ -48,34 +48,3 @@ export const SubTitle = styled.div`
   padding-left: 1rem;
   font-size: 0.875rem;
 `;
-
-export const Users = styled.div`
-  ${({ theme }: Theme) => css`
-    padding: 0.25rem 1rem;
-    padding-top: 0;
-    color: ${theme.light
-      ? css`rgba(0, 0, 0, 0.8)`
-      : css`rgba(255, 255, 255, 0.8)`};
-  `}
-`;
-
-export const IconContainer = styled.div`
-  ${({ theme }: Theme) => css`
-    transition: 0.3s ease color;
-    color: ${theme.light
-      ? css`rgba(0, 0, 0, 0.8)`
-      : css`rgba(255, 255, 255, 0.8)`};
-    cursor: pointer;
-
-    &:hover {
-      color: white;
-    }
-  `}
-`;
-
-export const NoUsers = styled.div`
-  margin-top: 0.25rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.875rem;
-  font-weight: 600;
-`;

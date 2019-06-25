@@ -1,11 +1,20 @@
 import React from 'react';
+
+import { useStore } from 'app/store';
+
 import { UserContainer, ProfileImage, UserName, Status } from './elements';
 
-export const User = ({ currentUserId, sideView, type, user, users }) => {
-  const metaData = users.find(u => u.id === user.id);
-  const [r, g, b] = metaData ? metaData.color : [0, 0, 0];
+export const User = ({ sideView = null, type, user }) => {
+  const {
+    live: {
+      liveUserId,
+      roomInfo: { users },
+    },
+  } = useStore();
 
-  const isCurrentUser = user.id === currentUserId;
+  const metaData = users.find(({ id }) => id === user.id);
+  const [r, g, b] = metaData ? metaData.color : [0, 0, 0];
+  const isCurrentUser = user.id === liveUserId;
 
   return (
     <UserContainer isCurrentUser={isCurrentUser}>
