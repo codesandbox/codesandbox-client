@@ -173,7 +173,7 @@ class FolderEntry extends React.Component<Props, State> {
                 variables.teamId = teamId;
               }
 
-              const cacheData = cache.readQuery<{ me: any }>({
+              const cacheData = cache.readQuery({
                 query: PATHED_SANDBOXES_FOLDER_QUERY,
                 variables,
               });
@@ -337,7 +337,7 @@ class FolderEntry extends React.Component<Props, State> {
           >
             {Array.from(children)
               .sort()
-              .map(childName => {
+              .map((childName: string) => {
                 const childPath = join(path, childName);
                 const childUrl = join(url, encodeURIComponent(childName));
 
