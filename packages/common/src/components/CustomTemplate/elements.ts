@@ -25,7 +25,7 @@ export const TemplateSubTitle = styled.span`
   ${({ theme }) => css`
     display: block;
     width: 100%;
-    max-height: 20px;
+    height: 20px;
     margin: 0 12px;
     margin-bottom: 6px;
     color: ${theme.placeholder};
@@ -37,8 +37,8 @@ export const TemplateSubTitle = styled.span`
   `}
 `;
 
-export const MyTemplate = styled.button`
-  ${({ theme }) => css`
+export const MyTemplate = styled.button<{ overlayHeight?: number }>`
+  ${({ theme, overlayHeight }) => css`
     position: relative;
     width: 212px;
     min-width: 212px;
@@ -53,6 +53,10 @@ export const MyTemplate = styled.button`
     img {
       display: block;
       max-width: 100%;
+    }
+
+    ${Overlay} {
+      height: ${overlayHeight}px;
     }
 
     &:hover {

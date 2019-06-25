@@ -35,7 +35,7 @@ const CustomTemplate = ({ template, onClick, i }: Props) => {
     );
   }
   return (
-    <MyTemplate key={i} onClick={onClick}>
+    <MyTemplate key={i} onClick={onClick} overlayHeight={109}>
       <img
         height="109px"
         src={template.sandbox.screenshotUrl || BANNER}
