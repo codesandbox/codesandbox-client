@@ -1,3 +1,4 @@
+import noop from 'lodash/noop';
 import React, { useState } from 'react';
 
 import { useInterval } from 'app/hooks';
@@ -5,11 +6,11 @@ import { useInterval } from 'app/hooks';
 import { AnimatedRecordIcon, Button, LoadingDiv } from './elements';
 
 export const LiveButton = ({
-  disable,
+  disable = false,
   icon = true,
-  isLoading,
+  isLoading = false,
   message = 'Go Live',
-  onClick,
+  onClick = noop,
 }) => {
   const [hovering, setHovering] = useState(false);
   const [showIcon, setShowIcon] = useState(icon);
@@ -27,9 +28,6 @@ export const LiveButton = ({
     setShowIcon(true);
   }
 
-  const startHovering = () => setHovering(true);
-  const stopHovering = () => setHovering(false);
-
   if (isLoading) {
     return <LoadingDiv>Creating Session</LoadingDiv>;
   }
@@ -37,8 +35,8 @@ export const LiveButton = ({
   return (
     <Button
       disable={disable}
-      onMouseEnter={startHovering}
-      onMouseLeave={stopHovering}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
       onClick={onClick}
     >
       {/*

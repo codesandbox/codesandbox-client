@@ -20,8 +20,7 @@ export const Title = styled.div`
   display: flex;
   align-items: center;
   vertical-align: middle;
-  padding: 0.5rem 1rem;
-  padding-top: 0;
+  padding: 0 1rem 0.5rem;
 
   svg {
     margin-right: 0.25rem;

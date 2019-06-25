@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { useInterval } from 'app/hooks';
 
@@ -25,5 +25,7 @@ export const SessionTimer = ({ startTime }) => {
     setElapsed(`${Number(hours) > 0 ? `${hours}:` : ``}${minutes}:${seconds}`);
   }, 1000);
 
-  return elapsed;
+  // TODO: just return 'elapsed' after this one's fixed
+  //  https://github.com/DefinitelyTyped/DefinitelyTyped/issues/20544
+  return <>{elapsed}</>;
 };

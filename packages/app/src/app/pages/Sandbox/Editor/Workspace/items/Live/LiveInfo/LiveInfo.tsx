@@ -52,7 +52,9 @@ export const LiveInfo = observer(() => {
           )}
         </ConnectionStatus>
 
-        <div>{startTime != null && <SessionTimer startTime={startTime} />}</div>
+        <div>
+          {startTime !== null && <SessionTimer startTime={startTime} />}
+        </div>
       </Title>
 
       <Description>
@@ -67,9 +69,9 @@ export const LiveInfo = observer(() => {
       {isOwner && !isTeam && (
         <WorkspaceInputContainer>
           <LiveButton
+            icon={false}
             message="Stop Session"
             onClick={onSessionCloseClicked}
-            tcon={false}
           />
         </WorkspaceInputContainer>
       )}
