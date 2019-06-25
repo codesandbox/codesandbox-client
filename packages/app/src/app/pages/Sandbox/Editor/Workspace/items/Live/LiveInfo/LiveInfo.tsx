@@ -19,16 +19,13 @@ import {
   ConnectionStatus,
   Container,
   IconContainer,
-  Mode,
-  ModeDetails,
-  ModeSelect,
-  ModeSelector,
   NoUsers,
   StyledInput,
   SubTitle,
   Title,
   Users,
 } from './elements';
+import { LiveMode } from './LiveMode';
 import { Preferences } from './Preferences';
 import { SessionTimer } from './SessionTimer';
 import { User } from './User';
@@ -38,7 +35,6 @@ export const LiveInfo = observer(() => {
     live: {
       onAddEditorClicked,
       onFollow,
-      onModeChanged,
       onRemoveEditorClicked,
       onSessionCloseClicked,
     },
@@ -118,35 +114,7 @@ export const LiveInfo = observer(() => {
 
       <Preferences />
 
-      <Margin top={1}>
-        <SubTitle>Live Mode</SubTitle>
-
-        <ModeSelect>
-          <ModeSelector i={mode === 'open' ? 0 : 1} />
-
-          <Mode
-            onClick={
-              isOwner ? () => onModeChanged({ mode: 'open' }) : undefined
-            }
-            selected={mode === 'open'}
-          >
-            <div>Open</div>
-
-            <ModeDetails>Everyone can edit</ModeDetails>
-          </Mode>
-
-          <Mode
-            onClick={
-              isOwner ? () => onModeChanged({ mode: 'classroom' }) : undefined
-            }
-            selected={mode === 'classroom'}
-          >
-            <div>Classroom</div>
-
-            <ModeDetails>Take control over who can edit</ModeDetails>
-          </Mode>
-        </ModeSelect>
-      </Margin>
+      <LiveMode />
 
       {owners && (
         <Margin top={1}>
