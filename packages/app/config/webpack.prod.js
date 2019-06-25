@@ -7,6 +7,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
   .normalizeName;
 const ManifestPlugin = require('webpack-manifest-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
 
@@ -301,5 +302,11 @@ module.exports = merge(commonConfig, {
       fileName: 'file-manifest.json',
       publicPath: commonConfig.output.publicPath,
     }),
+    new CopyWebpackPlugin([
+      {
+        from: '../sse-hooks/dist',
+        to: 'public/sse-hooks',
+      },
+    ]),
   ].filter(Boolean),
 });
