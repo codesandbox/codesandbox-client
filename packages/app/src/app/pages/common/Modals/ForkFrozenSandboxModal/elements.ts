@@ -5,7 +5,7 @@ import ReturnIcon from 'react-icons/lib/md/keyboard-return';
 
 export const Container = styled.div`
   ${({ theme }) => css`
-    padding: 1rem;
+    padding: 1.5rem 2rem;
     margin: 0;
     background-color: ${theme.background};
     color: rgba(255, 255, 255, 0.8);

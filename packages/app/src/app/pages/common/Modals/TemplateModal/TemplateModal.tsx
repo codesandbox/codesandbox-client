@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
-
 import { SketchPicker } from 'react-color';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import Input, { TextArea } from '@codesandbox/common/lib/components/Input';
 // import { Checkbox } from '@codesandbox/common/lib/components/Checkbox';
 import * as templates from '@codesandbox/common/lib/templates';
-import uniq from 'lodash-es/uniq';
 import { useStore, useSignals } from 'app/store';
-
-import { Heading, Container, Explanation } from '../elements';
 import {
-  Fieldset,
+  GlobalStylesTemplateModal,
+  Container,
+  Title,
+  Close,
+  Description,
+  TemplateName,
+  TemplateDescription,
+  InputRow,
   Label,
   DefaultColor,
-  GlobalStylesTemplateModal,
+  Actions,
 } from './elements';
 
-const TemplateModal = () => {
+export const TemplateModal = () => {
   const { editor, workspace } = useStore();
-  const { workspace: workspaceSignals } = useSignals();
+  const { modalClosed, workspace: workspaceSignals } = useSignals();
 
   const templateColors = Object.keys(templates)
     .filter(x => x !== 'default')
@@ -64,36 +66,30 @@ const TemplateModal = () => {
   return (
     <Container>
       <GlobalStylesTemplateModal />
-      <Heading>Make Template</Heading>
-      <Explanation>
+      <Close onClick={() => modalClosed()} />
+      <Title>{sandbox.customTemplate ? `Edit ` : `Make `}Template</Title>
+      <Description>
         By making your sandbox a template you will be able to see it in your
         create sandbox modal and start with this sandbox quickly.
-        {/* <br />
-        If you decide to make it public it can be used by anyone in the
-        CodeSandbox community. */}
-      </Explanation>
-      <Fieldset>
-        <Label htmlFor="title">Title</Label>
-        <Input
-          block
-          name="title"
-          required
-          id="title"
-          value={templateTitle}
-          onChange={e => setStaterTitle(e.target.value)}
-        />
-      </Fieldset>
-      <Fieldset>
-        <Label htmlFor="description">Description</Label>
-        <TextArea
-          block
-          required
-          name="description"
-          id="description"
-          value={templateDescription}
-          onChange={e => setStaterDescription(e.target.value)}
-        />
-      </Fieldset>
+      </Description>
+      <TemplateName
+        block
+        name="title"
+        required
+        id="title"
+        placeholder="Template Title"
+        value={templateTitle}
+        onChange={e => setStaterTitle(e.target.value)}
+      />
+      <TemplateDescription
+        block
+        required
+        name="description"
+        id="description"
+        placeholder="No description, create one!"
+        value={templateDescription}
+        onChange={e => setStaterDescription(e.target.value)}
+      />
       {/* <Fieldset>
         <Label htmlFor="public">Make Public?</Label>
         <Checkbox
@@ -102,8 +98,8 @@ const TemplateModal = () => {
           onChange={() => setSelected(!selected)}
         />
       </Fieldset> */}
-      <Fieldset>
-        <Label htmlFor="color">Template Color?</Label>
+      <InputRow>
+        <Label htmlFor="color">Template Color:</Label>
         <DefaultColor
           type="button"
           onClick={() => setShowPicker(!showPicker)}
@@ -120,44 +116,32 @@ const TemplateModal = () => {
               id="color"
               onChangeComplete={color => setSelectedColor(color.hex)}
               color={selectedColor}
-              presetColors={uniq(templateColors)}
+              presetColors={[...new Set(templateColors)]}
             />
           </OutsideClickHandler>
         ) : null}
-      </Fieldset>
-      {sandbox.customTemplate ? (
-        <div
-          css={`
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-          `}
-        >
-          <Button small onClick={editTemplate} type="button">
-            Edit template
+      </InputRow>
+      <Actions single={!sandbox.customTemplate}>
+        {sandbox.customTemplate ? (
+          <>
+            <Button
+              small
+              danger
+              onClick={() => workspaceSignals.deleteTemplate()}
+              type="button"
+            >
+              Delete Template
+            </Button>
+            <Button small onClick={editTemplate} type="button">
+              Save Changes
+            </Button>
+          </>
+        ) : (
+          <Button small onClick={makeTemplate}>
+            Make Template
           </Button>
-          <Button
-            red
-            small
-            onClick={() => workspaceSignals.deleteTemplate()}
-            type="button"
-          >
-            Delete template
-          </Button>
-        </div>
-      ) : (
-        <Button
-          onClick={makeTemplate}
-          css={`
-            margin-top: 1rem;
-          `}
-          small
-        >
-          Make Template
-        </Button>
-      )}
+        )}
+      </Actions>
     </Container>
   );
 };
-
-export default TemplateModal;
