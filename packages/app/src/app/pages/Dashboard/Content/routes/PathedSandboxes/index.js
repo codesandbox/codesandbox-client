@@ -12,7 +12,7 @@ import getMostUsedTemplate from '../../../utils/get-most-used-template';
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 const PathedSandboxes = props => {
-  const path = '/' + (props.match.params.path || '');
+  const path = '/' + decodeURIComponent(props.match.params.path || '');
   const teamId = props.match.params.teamId;
 
   document.title = `${basename(path) || 'Dashboard'} - CodeSandbox`;

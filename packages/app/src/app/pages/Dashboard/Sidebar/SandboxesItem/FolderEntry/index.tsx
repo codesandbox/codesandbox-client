@@ -39,9 +39,37 @@ import {
   RENAME_FOLDER_MUTATION,
 } from '../../../queries';
 
+type Props = {
+  name: string;
+  path: string;
+  url: string;
+  folders: { path: string }[];
+  foldersByPath: { [path: string]: string };
+  depth: number;
+  isOver: boolean;
+  toToggle?: boolean;
+  allowCreate?: boolean;
+  canDrop?: boolean;
+  connectDropTarget: any;
+  connectDragSource: any;
+  open?: boolean;
+  isDragging: boolean;
+  basePath: string;
+  teamId: string;
+  onSelect: (params: { teamId: string; path: string }) => void;
+  currentPath: string;
+  currentTeamId: string;
+};
+
+type State = {
+  open: boolean;
+  creatingDirectory: boolean;
+  renamingDirectory: boolean;
+};
+
 // eslint-disable-next-line import/no-mutable-exports
 let DropFolderEntry = null;
-class FolderEntry extends React.Component {
+class FolderEntry extends React.Component<Props, State> {
   state = {
     open: this.props.open,
     creatingDirectory: false,
@@ -92,6 +120,7 @@ class FolderEntry extends React.Component {
     const {
       name,
       path,
+      url,
       folders,
       foldersByPath,
       depth,
@@ -109,7 +138,6 @@ class FolderEntry extends React.Component {
       currentTeamId,
     } = this.props;
 
-    const url = `${basePath}${path}`;
     const children = getDirectChildren(path, folders);
 
     const menuItems = [
@@ -138,12 +166,12 @@ class FolderEntry extends React.Component {
               },
             ],
             update: (cache, { data: { deleteCollection } }) => {
-              const variables = {};
+              const variables: { teamId?: string } = {};
               if (teamId) {
                 variables.teamId = teamId;
               }
 
-              const cacheData = cache.readQuery({
+              const cacheData = cache.readQuery<{ me: any }>({
                 query: PATHED_SANDBOXES_FOLDER_QUERY,
                 variables,
               });
@@ -189,7 +217,8 @@ class FolderEntry extends React.Component {
                 backgroundColor:
                   isOver && canDrop ? 'rgba(0, 0, 0, 0.3)' : undefined,
 
-                ...(currentPath === path && currentTeamId === teamId
+                ...(decodeURIComponent(currentPath) === path &&
+                currentTeamId === teamId
                   ? {
                       borderColor: theme.secondary(),
                       color: 'white',
@@ -230,12 +259,12 @@ class FolderEntry extends React.Component {
                           newTeamId: teamId,
                         },
                         update: (cache, { data: { renameCollection } }) => {
-                          const variables = {};
+                          const variables: { teamId?: string } = {};
                           if (teamId) {
                             variables.teamId = teamId;
                           }
 
-                          const cacheData = cache.readQuery({
+                          const cacheData = cache.readQuery<{ me: any }>({
                             query: PATHED_SANDBOXES_FOLDER_QUERY,
                             variables,
                           });
