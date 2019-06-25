@@ -29,7 +29,7 @@ const TemplateModal = () => {
   const template = templates.default(sandbox.template);
 
   const { title, description } = sandbox.customTemplate || workspace.project;
-  const [selected, setSelected] = useState(false);
+  // const [selected, setSelected] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState(
     (sandbox.customTemplate && sandbox.customTemplate.color) || template.color()
@@ -43,7 +43,7 @@ const TemplateModal = () => {
       title: templateTitle,
       description: templateDescription,
       icon_url: sandbox.template,
-      published: selected,
+      // published: selected,
     },
   };
 
@@ -68,9 +68,9 @@ const TemplateModal = () => {
       <Explanation>
         By making your sandbox a template you will be able to see it in your
         create sandbox modal and start with this sandbox quickly.
-        <br />
+        {/* <br />
         If you decide to make it public it can be used by anyone in the
-        CodeSandbox community.
+        CodeSandbox community. */}
       </Explanation>
       <Fieldset>
         <Label htmlFor="title">Title</Label>
@@ -94,14 +94,14 @@ const TemplateModal = () => {
           onChange={e => setStaterDescription(e.target.value)}
         />
       </Fieldset>
-      <Fieldset>
+      {/* <Fieldset>
         <Label htmlFor="public">Make Public?</Label>
         <Checkbox
           checked={selected}
           id="public"
           onChange={() => setSelected(!selected)}
         />
-      </Fieldset>
+      </Fieldset> */}
       <Fieldset>
         <Label htmlFor="color">Template Color?</Label>
         <DefaultColor

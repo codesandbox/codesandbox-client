@@ -40,7 +40,7 @@ export const Templates = () => {
     <Container>
       <Navigation number={data.me.templates.length} />
       <Grid>
-        {data.me.templates[0].map((template, i) => (
+        {data.me.templates.map((template, i) => (
           <CustomTemplate
             i={i}
             template={template}
