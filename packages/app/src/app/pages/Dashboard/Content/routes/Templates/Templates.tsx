@@ -1,62 +1,53 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { observer } from 'mobx-react-lite';
-import Loading from 'app/components/Loading';
-import { useStore } from 'app/store';
-import Sandboxes from '../../Sandboxes';
+import DelayedAnimation from 'app/components/DelayedAnimation';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import history from 'app/utils/history';
+import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { LIST_TEMPLATES } from '../../../queries';
+import { Container, Grid } from './elements';
 import { Navigation } from './Navigation';
-import { IMatch } from './types';
 
-export const Templates = observer(
-  // TODO: Replace with RouteComponentProps from react-router-dom
-  ({ match }: { match: IMatch }) => {
-    const { dashboard } = useStore();
-    const { loading, error, data } = useQuery(LIST_TEMPLATES);
+export const Templates = () => {
+  const { loading, error, data } = useQuery(LIST_TEMPLATES);
 
-    useEffect(() => {
-      document.title = `Templates - CodeSandbox`;
-    }, []);
+  useEffect(() => {
+    document.title = `Templates - CodeSandbox`;
+  }, []);
 
-    if (error) {
-      console.error(error);
-      return <div>Error!</div>;
-    }
+  if (error) {
+    console.error(error);
+    return <div>Error!</div>;
+  }
 
-    if (loading) {
-      return <Loading />;
-    }
-
-    const possibleTemplates = data.me.templates.length
-      ? [
-          ...new Set(
-            data.me.templates.map(
-              ({
-                sandbox: {
-                  source: { template },
-                },
-              }) => template
-            )
-          ),
-        ]
-      : [];
-
-    const sandboxes = data.me.templates.map(
-      ({ sandbox, title, description, color }) => ({
-        ...sandbox,
-        title,
-        description,
-        color,
-      })
-    );
-
+  if (loading) {
     return (
-      <Sandboxes
-        isLoading={loading}
-        possibleTemplates={possibleTemplates}
-        Header={<Navigation teamId={match.params.teamId} />}
-        sandboxes={dashboard.getFilteredSandboxes(sandboxes)}
-      />
+      <DelayedAnimation
+        delay={0.6}
+        style={{
+          textAlign: 'center',
+          marginTop: '2rem',
+          fontWeight: 600,
+          color: 'rgba(255, 255, 255, 0.5)',
+        }}
+      >
+        Fetching Sandboxes...
+      </DelayedAnimation>
     );
   }
-);
+
+  return (
+    <Container>
+      <Navigation number={data.me.templates.length} />
+      <Grid>
+        {data.me.templates[0].map((template, i) => (
+          <CustomTemplate
+            i={i}
+            template={template}
+            onClick={() => history.push(sandboxUrl(template.sandbox))}
+          />
+        ))}
+      </Grid>
+    </Container>
+  );
+};

@@ -1,12 +1,12 @@
 import React from 'react';
-import { Container } from './elements';
-import { NavigationLink } from './elements';
+import { Container, NavigationLink, Number } from './elements';
 
 interface INavigationProps {
   teamId?: string;
+  number?: number;
 }
 
-export const Navigation = ({ teamId }: INavigationProps) => (
+export const Navigation = ({ teamId, number }: INavigationProps) => (
   <Container>
     <NavigationLink
       to={
@@ -15,5 +15,6 @@ export const Navigation = ({ teamId }: INavigationProps) => (
     >
       {teamId ? 'Our Templates' : 'My Templates'}
     </NavigationLink>
+    {number && <Number>{number}</Number>}
   </Container>
 );
