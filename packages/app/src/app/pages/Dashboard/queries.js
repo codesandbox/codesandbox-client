@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import { client } from 'app/graphql/client';
+import immer from 'immer';
 
 const SIDEBAR_COLLECTION_FRAGMENT = gql`
   fragment SidebarCollection on Collection {
@@ -149,6 +150,15 @@ export const DELETE_SANDBOXES_MUTATION = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export const MAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
+  mutation MakeSandboxesTemplate($sandboxIds: [ID]!) {
+    makeSandboxesTemplates(sandboxIds: $sandboxIds) {
+      id
+    }
+  }
+  ${SANDBOX_FRAGMENT}
+`;
+
 export const SET_SANDBOXES_PRIVACY_MUTATION = gql`
   mutation SetSandboxesPrivacy($sandboxIds: [ID]!, $privacy: Int!) {
     setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
@@ -185,7 +195,7 @@ export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
       collection(path: $path, teamId: $teamId) {
         id
         path
-        sandboxes {
+        sandboxes(hideTemplates: true) {
           ...Sandbox
         }
       }
@@ -201,6 +211,7 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
       sandboxes(
         limit: 20
         orderBy: { field: $orderField, direction: $orderDirection }
+        hideTemplates: true
       ) {
         ...Sandbox
       }
@@ -212,7 +223,10 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
 export const SEARCH_SANDBOXES_QUERY = gql`
   query SearchSandboxes {
     me {
-      sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
+      sandboxes(
+        orderBy: { field: "updated_at", direction: DESC }
+        hideTemplates: true
+      ) {
         ...Sandbox
       }
     }
@@ -224,6 +238,7 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   query DeletedSandboxes {
     me {
       sandboxes(
+        hideTemplates: true
         showDeleted: true
         orderBy: { field: "updated_at", direction: DESC }
       ) {
@@ -254,6 +269,54 @@ export function addSandboxesToFolder(selectedSandboxes, path, teamId) {
     },
 
     refetchQueries: ['PathedSandboxes'],
+  });
+}
+
+export function makeTemplates(selectedSandboxes, collections) {
+  client.mutate({
+    mutation: MAKE_SANDBOXES_TEMPLATE_MUTATION,
+    variables: {
+      sandboxIds: selectedSandboxes.toJS(),
+    },
+    refetchQueries: [
+      'DeletedSandboxes',
+      'PathedSandboxes',
+      'RecentSandboxes',
+      'SearchSandboxes',
+      'ListTemplates',
+    ],
+    update: cache => {
+      if (collections) {
+        collections.forEach(({ path, teamId }) => {
+          try {
+            const variables = { path };
+
+            if (teamId) {
+              variables.teamId = teamId;
+            }
+
+            const oldFolderCacheData = cache.readQuery({
+              query: PATHED_SANDBOXES_CONTENT_QUERY,
+              variables,
+            });
+
+            const data = immer(oldFolderCacheData, draft => {
+              draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
+                x => selectedSandboxes.indexOf(x.id) === -1
+              );
+            });
+
+            cache.writeQuery({
+              query: PATHED_SANDBOXES_CONTENT_QUERY,
+              variables,
+              data,
+            });
+          } catch (e) {
+            // cache doesn't exist, no biggie!
+          }
+        });
+      }
+    },
   });
 }
 
@@ -327,19 +390,27 @@ export function deleteSandboxes(selectedSandboxes, collections = []) {
       if (collections) {
         collections.forEach(({ path, teamId }) => {
           try {
+            const variables = { path };
+
+            if (teamId) {
+              variables.teamId = teamId;
+            }
+
             const oldFolderCacheData = cache.readQuery({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
-              variables: { path, teamId },
+              variables,
             });
 
-            oldFolderCacheData.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-              x => selectedSandboxes.indexOf(x.id) === -1
-            );
+            const data = immer(oldFolderCacheData, draft => {
+              draft.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
+                x => selectedSandboxes.indexOf(x.id) === -1
+              );
+            });
 
             cache.writeQuery({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
-              variables: { path, teamId },
-              data: oldFolderCacheData,
+              variables,
+              data,
             });
           } catch (e) {
             // cache doesn't exist, no biggie!
@@ -431,7 +502,7 @@ export const SET_TEAM_DESCRIPTION = gql`
 export const LIST_TEMPLATES = gql`
   query ListTemplates($teamId: ID) {
     me {
-      templates(teamId: $teamId, showTemplates: true) {
+      templates(teamId: $teamId) {
         color
         iconUrl
         id

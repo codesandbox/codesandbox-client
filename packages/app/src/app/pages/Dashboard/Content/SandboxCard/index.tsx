@@ -45,21 +45,23 @@ type Props = {
     options?: { additive?: boolean; range?: boolean }
   ) => void;
   selectedCount: number;
-  deleteSandboxes: () => void;
-  exportSandboxes: () => void;
-  permanentlyDeleteSandboxes: () => void;
   collectionPath: string; // eslint-disable-line react/no-unused-prop-types
   collectionTeamId: string | undefined;
   sandbox: Object;
   page: string | undefined;
   privacy: number;
   isPatron: boolean;
-  setSandboxesPrivacy: (privacy: 0 | 1 | 2) => void;
   isScrolling: () => boolean;
-  undeleteSandboxes: () => void;
   removedAt?: number;
   style?: React.CSSProperties;
   alias: string | undefined;
+
+  setSandboxesPrivacy: (privacy: 0 | 1 | 2) => void;
+  deleteSandboxes: () => void;
+  exportSandboxes: () => void;
+  permanentlyDeleteSandboxes: () => void;
+  undeleteSandboxes: () => void;
+  makeTemplates: () => void;
 
   // React-DnD, lazy typings
   connectDragSource: any;
@@ -71,6 +73,9 @@ type State = {
   renamingSandbox: boolean;
   screenshotUrl: string | undefined;
 };
+
+export const DELETE_SANDBOX_DROP_KEY = 'delete';
+export const MAKE_TEMPLATE_DROP_KEY = 'makeTemplate';
 
 class SandboxItem extends React.PureComponent<Props, State> {
   el: HTMLDivElement;
@@ -594,8 +599,12 @@ const cardSource = {
 
     const result = monitor.getDropResult();
 
-    if (result && result.delete) {
+    if (result && result[DELETE_SANDBOX_DROP_KEY]) {
       props.deleteSandboxes();
+    }
+
+    if (result && result[MAKE_TEMPLATE_DROP_KEY]) {
+      props.makeTemplates();
     }
   },
 };

@@ -6,8 +6,7 @@ import { Query } from 'react-apollo';
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import PeopleIcon from 'react-icons/lib/md/people';
-// @ts-ignore
-import TemplateIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/template.svg';
+
 // @ts-ignore
 import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
@@ -18,6 +17,7 @@ import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
 import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
 import { TEAMS_QUERY } from '../queries';
+import { TemplateItem } from './TemplateItem';
 
 class Sidebar extends React.Component {
   handleSearchFocus = () => {
@@ -73,11 +73,7 @@ class Sidebar extends React.Component {
                     openByDefault
                   />
 
-                  <Item
-                    Icon={TemplateIcon}
-                    path="/dashboard/templates"
-                    name="My Templates"
-                  />
+                  <TemplateItem currentPath={path} />
 
                   <TrashItem currentPath={path} />
                 </Items>
@@ -110,11 +106,7 @@ class Sidebar extends React.Component {
                             teamId={team.id}
                           />
 
-                          <Item
-                            Icon={TemplateIcon}
-                            path={`/dashboard/teams/${team.id}/templates`}
-                            name="Our Templates"
-                          />
+                          <TemplateItem currentPath={path} teamId={team.id} />
                         </Items>
                       </div>
                     ));

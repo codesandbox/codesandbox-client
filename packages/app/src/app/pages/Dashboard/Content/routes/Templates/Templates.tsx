@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
+import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import history from 'app/utils/history';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { LIST_TEMPLATES } from '../../../queries';
 import { Container, Grid } from './elements';
 import { Navigation } from './Navigation';
@@ -14,8 +16,6 @@ export const Templates = props => {
   const { loading, error, data } = useQuery(LIST_TEMPLATES, {
     variables: { teamId },
   });
-
-  console.log(data);
 
   useEffect(() => {
     document.title = `${teamId ? 'Our' : 'My'} Templates - CodeSandbox`;
@@ -42,11 +42,15 @@ export const Templates = props => {
     );
   }
 
+  const sortedTemplates = sortBy(data.me.templates, template =>
+    getSandboxName(template.sandbox).toLowerCase()
+  );
+
   return (
     <Container>
-      <Navigation teamId={teamId} number={data.me.templates.length} />
+      <Navigation teamId={teamId} number={sortedTemplates.length} />
       <Grid>
-        {data.me.templates.map((template, i) => (
+        {sortedTemplates.map((template, i) => (
           <CustomTemplate
             i={i}
             template={template}

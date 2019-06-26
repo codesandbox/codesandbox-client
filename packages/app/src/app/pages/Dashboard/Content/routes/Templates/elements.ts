@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -12,4 +15,7 @@ export const Grid = styled.section`
   display: grid;
   grid-gap: 32px;
   grid-template-columns: repeat(auto-fill, 212px);
+
+  height: 100%;
+  overflow-y: auto;
 `;

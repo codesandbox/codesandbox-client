@@ -27,6 +27,7 @@ import {
   permanentlyDeleteSandboxes,
   setSandboxesPrivacy,
   undeleteSandboxes,
+  makeTemplates,
 } from '../../queries';
 
 type State = {
@@ -99,6 +100,16 @@ class SandboxGrid extends React.Component<*, State> {
     signals.dashboard.sandboxesSelected({
       sandboxIds,
     });
+  };
+
+  makeTemplates = () => {
+    const collections = uniq(
+      this.props.sandboxes
+        .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
+        .map(s => s.collection)
+    );
+
+    makeTemplates(this.props.store.dashboard.selectedSandboxes, collections);
   };
 
   deleteSandboxes = () => {
@@ -305,6 +316,7 @@ class SandboxGrid extends React.Component<*, State> {
         permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
         exportSandboxes={this.exportSandboxes}
         setSandboxesPrivacy={this.setSandboxesPrivacy}
+        makeTemplates={this.makeTemplates}
         page={this.props.page}
         privacy={item.privacy}
         isPatron={this.props.store.isPatron}
