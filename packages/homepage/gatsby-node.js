@@ -1,10 +1,52 @@
 const env = require('@codesandbox/common/lib/config/env');
+const slugify = require('@sindresorhus/slugify');
+const { createFilePath } = require('gatsby-source-filesystem');
 const { resolve } = require('path');
 
 // Parse date information out of post filename.
 const DOCUMENTATION_FILENAME_REGEX = /[0-9]+-(.*)\.md$/;
 
+const getNodeInfo = node => {
+  const {
+    fileAbsolutePath,
+    frontmatter: { slug, title },
+  } = node;
+  const relativeFilePath = fileAbsolutePath.replace(__dirname, '');
+
+  return {
+    editLink: `https://github.com/codesandbox/codesandbox-client/edit/master/packages/homepage${relativeFilePath}`,
+    slug: slug || slugify(title),
+    title,
+  };
+};
+
+const createNodeFields = ({
+  createNodeField,
+  getFilePathForNode,
+  nodeInfo: { editLink, slug, title },
+}) => {
+  createNodeField({ name: 'editLink', value: editLink });
+
+  createNodeField({ name: 'title', value: title });
+
+  createNodeField({ name: 'slug', value: slug || getFilePathForNode() });
+};
+
 exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
+  if (node.internal.type === 'MarkdownRemark') {
+    const createNodeFieldForNode = ({ name, value }) =>
+      createNodeField({ name, node, value });
+    const getFilePathForNode = () =>
+      createFilePath({ getNode, node, trailingSlash: false });
+    const nodeInfo = getNodeInfo(node);
+
+    createNodeFields({
+      createNodeField: createNodeFieldForNode,
+      getFilePathForNode,
+      nodeInfo,
+    });
+  }
+
   if (node.internal.type === `MarkdownRemark`) {
     const { url } = node.frontmatter;
     const { relativePath } = getNode(node.parent);
