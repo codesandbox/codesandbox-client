@@ -308,6 +308,13 @@ class SandboxItem extends React.PureComponent<Props, State> {
           },
         },
         {
+          title: `Make Sandbox a Template`,
+          action: () => {
+            this.props.makeTemplates();
+            return true;
+          },
+        },
+        {
           title: `Move to Trash`,
           action: () => {
             this.props.deleteSandboxes();
