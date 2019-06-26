@@ -58,12 +58,12 @@ export const MyTemplate = styled.button<{ overlayHeight?: number }>`
 
     ${Overlay} {
       height: ${overlayHeight}px;
+      text-align: left;
     }
 
     &:hover {
       ${Overlay} {
         opacity: 1;
-        text-align: left;
       }
     }
   `}
