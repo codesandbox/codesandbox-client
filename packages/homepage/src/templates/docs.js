@@ -211,10 +211,14 @@ const Description = styled.p`
 // eslint-disable-next-line
 export default class Docs extends React.Component {
   render() {
-    const { data } = this.props;
-
-    const { edges: docs } = data.allMarkdownRemark;
-    const { html, frontmatter, fields } = data.markdownRemark;
+    const {
+      allMarkdownRemark: { edges: docs },
+      markdownRemark: {
+        fields: { editLink },
+        frontmatter,
+        html,
+      },
+    } = this.props.data;
 
     return (
       <Layout>
@@ -238,11 +242,9 @@ export default class Docs extends React.Component {
                 <Heading>
                   <Title>{frontmatter.title}</Title>
                   <Edit
-                    href={`https://github.com/codesandbox/codesandbox-client/tree/master/packages/homepage/content/${
-                      fields.path
-                    }`}
-                    target="_blank"
+                    href={editLink}
                     rel="noreferrer noopener"
+                    target="_blank"
                   >
                     <EditIcon /> Edit this page
                   </Edit>
@@ -288,7 +290,7 @@ export const pageQuery = graphql`
         description
       }
       fields {
-        path
+        editLink
       }
     }
   }

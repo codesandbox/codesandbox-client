@@ -52,12 +52,6 @@ exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
     const { relativePath } = getNode(node.parent);
 
     if (relativePath.includes('docs')) {
-      createNodeField({
-        node,
-        name: 'path',
-        value: relativePath,
-      });
-
       const match = DOCUMENTATION_FILENAME_REGEX.exec(relativePath);
       createNodeField({
         node,
