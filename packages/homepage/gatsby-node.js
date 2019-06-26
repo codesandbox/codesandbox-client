@@ -4,14 +4,27 @@ const { createFilePath } = require('gatsby-source-filesystem');
 const noop = require('lodash/noop');
 const { resolve } = require('path');
 
-// Parse date information out of post filename.
-const DOCUMENTATION_FILENAME_REGEX = /[0-9]+-(.*)\.md$/;
-
 const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
 
 const getNodeType = ({ fileAbsolutePath }) =>
   getRelativePath(fileAbsolutePath).split('/')[2];
 
+const getDocsSlug = ({ node: { fileAbsolutePath } }) => {
+  const fileName = getRelativePath(fileAbsolutePath)
+    .split('/')
+    .reverse()[0];
+
+  return fileName.split('.md')[0].split('-')[1];
+};
+const getDocsNodeInfo = ({
+  node: {
+    frontmatter: { description, slug },
+    ...node
+  },
+}) => ({
+  description,
+  slug: slug || `/${getDocsSlug({ node })}`,
+});
 const getJobsNodeInfo = ({
   node: {
     frontmatter: { applySlug },
@@ -21,6 +34,7 @@ const getJobsNodeInfo = ({
 });
 const getSpecificNodeInfo = ({ node, nodeType }) => {
   const nodeInfoMap = {
+    docs: getDocsNodeInfo,
     jobs: getJobsNodeInfo,
   };
 
@@ -44,11 +58,18 @@ const getNodeInfo = ({ node, nodeType }) => ({
   ...getSpecificNodeInfo({ node, nodeType }),
 });
 
+const createDocsNodeFields = ({
+  createNodeField,
+  nodeInfo: { description },
+}) => {
+  createNodeField({ name: 'description', value: description });
+};
 const createJobsNodeFields = ({ createNodeField, nodeInfo: { applyLink } }) => {
   createNodeField({ name: 'applyLink', value: applyLink || '' });
 };
 const createSpecificNodeFields = ({ createNodeField, nodeInfo, nodeType }) => {
   const createNodeFieldsMap = {
+    docs: createDocsNodeFields,
     jobs: createJobsNodeFields,
   };
 
@@ -91,27 +112,6 @@ exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
       nodeInfo,
       nodeType,
     });
-  }
-
-  if (node.internal.type === `MarkdownRemark`) {
-    const { url } = node.frontmatter;
-    const { relativePath } = getNode(node.parent);
-
-    if (relativePath.includes('docs')) {
-      const match = DOCUMENTATION_FILENAME_REGEX.exec(relativePath);
-      createNodeField({
-        node,
-        name: `slug`,
-        value: `/docs/${match[1]}`,
-      });
-
-      // Used by createPages() above to register redirects.
-      createNodeField({
-        node,
-        name: 'url',
-        value: url ? '/docs' + url : node.fields.slug,
-      });
-    }
   }
 };
 
@@ -163,7 +163,6 @@ exports.createPages = async ({ graphql, actions }) => {
           node {
             fields {
               slug
-              url
             }
           }
         }
@@ -175,29 +174,21 @@ exports.createPages = async ({ graphql, actions }) => {
 
     throw Error(allDocs.errors);
   }
-  allDocs.data.allMarkdownRemark.edges.forEach(edge => {
-    const { slug } = edge.node.fields;
-    const { url } = edge.node.fields;
-
-    if (slug.includes('docs/')) {
-      let template;
-      if (slug.includes('docs/')) {
-        template = docsTemplate;
-      }
-
-      const createArticlePage = path =>
-        createPage({
-          path,
-          component: template,
-          context: {
-            slug,
-          },
-        });
-
-      // Register primary URL.
-      createArticlePage(url || slug);
+  allDocs.data.allMarkdownRemark.edges.forEach(
+    ({
+      node: {
+        fields: { slug },
+      },
+    }) => {
+      createPage({
+        path: `docs${slug}`,
+        component: docsTemplate,
+        context: {
+          slug,
+        },
+      });
     }
-  });
+  );
 
   // JOBS
 

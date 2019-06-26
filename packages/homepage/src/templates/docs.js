@@ -212,10 +212,9 @@ const Description = styled.p`
 export default class Docs extends React.Component {
   render() {
     const {
-      allMarkdownRemark: { edges: docs },
-      markdownRemark: {
-        fields: { editLink },
-        frontmatter,
+      allDocs: { edges: docs },
+      doc: {
+        fields: { description, editLink, title },
         html,
       },
     } = this.props.data;
@@ -224,8 +223,8 @@ export default class Docs extends React.Component {
       <Layout>
         <Container style={{ overflowX: 'auto' }}>
           <TitleAndMetaTags
-            title={`${frontmatter.title} - CodeSandbox Documentation`}
-            description={frontmatter.description}
+            description={description}
+            title={`${title} - CodeSandbox Documentation`}
           />
           <PageContainer>
             <DocsContainer>
@@ -240,7 +239,7 @@ export default class Docs extends React.Component {
               </div>
               <Article>
                 <Heading>
-                  <Title>{frontmatter.title}</Title>
+                  <Title>{title}</Title>
                   <Edit
                     href={editLink}
                     rel="noreferrer noopener"
@@ -248,7 +247,7 @@ export default class Docs extends React.Component {
                   >
                     <EditIcon /> Edit this page
                   </Edit>
-                  <Description>{frontmatter.description}</Description>
+                  <Description>{description}</Description>
                 </Heading>
 
                 <DocumentationContent
@@ -265,33 +264,32 @@ export default class Docs extends React.Component {
 
 export const pageQuery = graphql`
   query Docs($slug: String!) {
-    allMarkdownRemark(
-      filter: { fields: { slug: { regex: "/docs/" } } }
-      sort: { fields: [fileAbsolutePath], order: ASC }
+    allDocs: allMarkdownRemark(
+      filter: { fileAbsolutePath: { regex: "/docs/" } }
+      sort: { fields: [fileAbsolutePath], order: [ASC] }
     ) {
       edges {
         node {
-          headings(depth: h2) {
-            value
-          }
-          frontmatter {
+          fields {
+            slug
             title
           }
-          fields {
-            url
+          headings(depth: h2) {
+            value
           }
         }
       }
     }
-    markdownRemark(fields: { slug: { eq: $slug } }) {
-      html
-      frontmatter {
-        title
-        description
-      }
+    doc: markdownRemark(
+      fileAbsolutePath: { regex: "/docs/" }
+      fields: { slug: { eq: $slug } }
+    ) {
       fields {
+        description
         editLink
+        title
       }
+      html
     }
   }
 `;

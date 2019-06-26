@@ -1,7 +1,7 @@
 ---
-title: 'Deploying your Sandbox'
+title: Deploying your Sandbox
 authors: ['arthurdenner', 'CompuIves']
-description: "It's possible to deploy your app directly from CodeSandbox"
+description: It's possible to deploy your app directly from CodeSandbox
 ---
 
 ## What Sandboxes Can be Deployed?
