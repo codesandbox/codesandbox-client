@@ -33,22 +33,22 @@ const styles = css`
   margin-bottom: 36px;
 `;
 
-export default ({ data: { markdownRemark: job } }) => (
+export default ({
+  data: {
+    job: {
+      fields: { applyLink, title },
+      html,
+    },
+  },
+}) => (
   <Layout>
-    <TitleAndMetaTags
-      title={`${job.frontmatter.title} - CodeSandbox Careers`}
-    />
+    <TitleAndMetaTags title={`${title} - CodeSandbox Careers`} />
     <PageContainer width={800}>
       <Button small as={Link} to="/jobs">
         See all jobs
       </Button>
-      <Title>{job.frontmatter.title}</Title>
-      <div
-        css={styles}
-        dangerouslySetInnerHTML={{
-          __html: job.html,
-        }}
-      />
+      <Title>{title}</Title>
+      <div css={styles} dangerouslySetInnerHTML={{ __html: html }} />
       <div css={styles}>
         <h2>Applying</h2>
         <p>
@@ -57,12 +57,12 @@ export default ({ data: { markdownRemark: job } }) => (
       </div>
       <Button
         css={`
+          display: inline-block;
           font-size: 14px;
           line-height: 1;
           margin-bottom: 50px;
-          display: inline-block;
         `}
-        href={job.frontmatter.link}
+        href={applyLink}
         small
         target="_blank"
       >
@@ -74,12 +74,12 @@ export default ({ data: { markdownRemark: job } }) => (
 
 export const pageQuery = graphql`
   query Job($id: String) {
-    markdownRemark(id: { eq: $id }) {
-      html
-      frontmatter {
+    job: markdownRemark(id: { eq: $id }) {
+      fields {
+        applyLink
         title
-        link
       }
+      html
     }
   }
 `;
