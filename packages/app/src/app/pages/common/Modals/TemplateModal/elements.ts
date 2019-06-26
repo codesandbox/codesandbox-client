@@ -90,7 +90,7 @@ export const DefaultColor = styled.button<{ color: string }>`
   `}
 `;
 
-export const Actions = styled.div`
+export const Actions = styled.div<{ single?: boolean }>`
   ${({ single = false }) => css`
     display: flex;
     justify-content: ${single ? css`flex-end` : css`space-between`};
