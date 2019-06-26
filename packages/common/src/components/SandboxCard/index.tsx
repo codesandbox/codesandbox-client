@@ -111,7 +111,7 @@ export default class SandboxCard extends React.PureComponent<Props> {
           <SandboxImage
             alt={sandbox.title}
             src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
-            color={template.color()}
+            color={sandbox.template ? sandbox.template.color : template.color()}
             style={{ height: defaultHeight }}
             ref={img => {
               if (img && img.complete) {

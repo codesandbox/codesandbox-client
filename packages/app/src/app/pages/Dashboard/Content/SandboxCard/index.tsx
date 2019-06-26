@@ -39,6 +39,7 @@ type Props = {
   selected: boolean;
   color?: string;
   template: TemplateType;
+  customTemplate: { color: string } | null;
   screenshotUrl: string | undefined;
   setSandboxesSelected: (
     ids: string[],

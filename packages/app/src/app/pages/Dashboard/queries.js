@@ -24,6 +24,10 @@ const SANDBOX_FRAGMENT = gql`
       template
     }
 
+    forkedTemplate {
+      color
+    }
+
     collection {
       path
       teamId
