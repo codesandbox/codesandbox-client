@@ -35,6 +35,7 @@ export const Item = styled.button`
   border-left: 2px solid transparent;
   cursor: pointer;
 
+  width: 100%;
   min-width: 10rem;
 
   svg {
