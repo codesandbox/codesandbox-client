@@ -13,6 +13,11 @@ export const Container = styled.div`
 
 export const Folder = styled.div`
   overflow: hidden;
+  display: none;
+
+  @media screen and (min-width: 950px) {
+    display: block;
+  }
 `;
 
 export const FolderName = styled.button`
@@ -80,4 +85,12 @@ export const TemplateBadge = styled.div<{ color: string }>`
     Color(props.color).contrast(Color(props.theme.white)) > 4.5
       ? props.theme.background5
       : '#fff'};
+`;
+
+export const Main = styled.div`
+  display: none;
+
+  @media screen and (min-width: 826px) {
+    display: block;
+  }
 `;

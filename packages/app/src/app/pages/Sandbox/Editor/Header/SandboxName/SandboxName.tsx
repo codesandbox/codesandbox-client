@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { basename } from 'path';
-import Media from 'react-media';
-import { Spring } from 'react-spring/renderprops';
+import { useSpring, animated } from 'react-spring';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
@@ -15,6 +14,7 @@ import {
   Name,
   NameInput,
   TemplateBadge,
+  Main,
 } from './elements';
 
 export const SandboxName = observer(() => {
@@ -29,7 +29,7 @@ export const SandboxName = observer(() => {
     editor: { currentSandbox },
   } = useStore();
 
-  const sandboxName = () => getSandboxName(currentSandbox) || 'Untitled';
+  const sandboxName = getSandboxName(currentSandbox) || 'Untitled';
 
   const updateSandboxInfo = () => {
     sandboxInfoUpdated();
@@ -44,7 +44,7 @@ export const SandboxName = observer(() => {
 
   const handleNameClick = () => {
     setUpdatingName(true);
-    setName(sandboxName());
+    setName(sandboxName);
   };
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -73,77 +73,56 @@ export const SandboxName = observer(() => {
       (currentSandbox.team ? currentSandbox.team.name : 'My Sandboxes')
     : 'My Sandboxes';
 
+  const template = currentSandbox.customTemplate && !updatingName;
+  const spring = useSpring({
+    opacity: updatingName ? 0 : 1,
+    pointerEvents: updatingName ? 'none' : 'initial',
+  });
+
   return (
-    <Spring
-      from={{
-        opacity: 1,
-      }}
-      to={
-        updatingName
-          ? {
-              opacity: 0,
-              // pointerEvents is an enum so we have to use 'as'
-              // here to skip the string type inference
-              pointerEvents: 'none' as 'none',
-            }
-          : {
-              opacity: 1,
-              pointerEvents: 'initial' as 'initial',
-            }
-      }
-    >
-      {style => (
-        <Media
-          query="(min-width: 826px)"
-          render={() => (
-            <Container>
-              {!currentSandbox.customTemplate && (
-                <Media
-                  query="(min-width: 950px)"
-                  render={() => (
-                    <Folder style={style}>
-                      {isLoggedIn ? (
-                        <FolderName
-                          onClick={() => modalOpened({ modal: 'moveSandbox' })}
-                        >
-                          {folderName}
-                        </FolderName>
-                      ) : (
-                        'Anonymous '
-                      )}
-                      /{' '}
-                    </Folder>
-                  )}
-                />
-              )}
-              {updatingName ? (
-                <Form onSubmit={submitNameChange}>
-                  <NameInput
-                    autoFocus
-                    innerRef={(el: HTMLInputElement) => {
-                      if (el) {
-                        el.focus();
-                      }
-                    }}
-                    onKeyUp={handleKeyUp}
-                    onBlur={handleBlur}
-                    onChange={handleInputUpdate}
-                    placeholder={name}
-                    value={value}
-                  />
-                </Form>
+    <Main>
+      <Container>
+        {!currentSandbox.customTemplate && (
+          <animated.div style={spring}>
+            <Folder>
+              {isLoggedIn ? (
+                <FolderName
+                  onClick={() => modalOpened({ modal: 'moveSandbox' })}
+                >
+                  {folderName}
+                </FolderName>
               ) : (
-                <Name onClick={handleNameClick}>{sandboxName()}</Name>
+                'Anonymous '
               )}
-              {currentSandbox.customTemplate && !updatingName ? (
-                <TemplateBadge color={currentSandbox.customTemplate.color}>
-                  Template
-                </TemplateBadge>
-              ) : null}
-            </Container>
-          )}
-        />
-      )}
-    </Spring>
+              /{' '}
+            </Folder>
+          </animated.div>
+        )}
+        {updatingName ? (
+          <Form onSubmit={submitNameChange}>
+            <NameInput
+              autoFocus
+              innerRef={(el: HTMLInputElement) => {
+                if (el) {
+                  el.focus();
+                }
+              }}
+              onKeyUp={handleKeyUp}
+              onBlur={handleBlur}
+              onChange={handleInputUpdate}
+              placeholder={name}
+              value={value}
+            />
+          </Form>
+        ) : (
+          <Name onClick={handleNameClick}>{sandboxName}</Name>
+        )}
+        {template ? (
+          <TemplateBadge color={currentSandbox.customTemplate.color}>
+            Template
+          </TemplateBadge>
+        ) : null}
+      </Container>
+    </Main>
   );
 });
