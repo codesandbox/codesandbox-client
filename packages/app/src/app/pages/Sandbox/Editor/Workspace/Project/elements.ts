@@ -4,12 +4,31 @@ import EditPenIcon from 'react-icons/lib/md/create';
 
 import { Link } from 'react-router-dom';
 
-export const Item = styled.div<{ flex?: boolean }>`
+export const Item = styled.div<{ flex?: boolean; css?: any }>`
   margin: 1rem;
   margin-top: 0;
   font-size: 0.875rem;
 
   ${props => props.flex && 'display: flex'};
+`;
+
+export const PrivacySelect = styled.select`
+  background-color: ${props =>
+    props.theme['dropdown.background'] || 'rgba(0, 0, 0, 0.3)'};
+  color: ${props =>
+    props.theme['dropdown.foreground'] ||
+    (props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)')};
+  border-radius: 4px;
+  height: 2rem;
+  width: 100%;
+  border: none;
+  box-sizing: border-box;
+`;
+
+export const PatronMessage = styled.div`
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : props.theme.placeholder};
+  font-size: 0.875rem;
 `;
 
 export const UserLink = styled(Link)`
@@ -40,7 +59,7 @@ export const FreezeContainer = styled.span`
   justify-content: flex-end;
 `;
 
-export const PropertyName = styled.span`
+export const PropertyName = styled.span<{ css?: any }>`
   display: inline-block;
   color: ${props =>
     props.theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.4)'};

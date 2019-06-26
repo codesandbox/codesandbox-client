@@ -2,7 +2,7 @@ import getTemplate from '@codesandbox/common/lib/templates';
 
 const PROJECT = {
   id: 'project',
-  name: 'Project Info',
+  name: 'Sandbox info',
 };
 
 const PROJECT_SUMMARY = {

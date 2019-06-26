@@ -6,17 +6,16 @@ import {
   githubRepoUrl,
   profileUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import TeamIcon from 'react-icons/lib/md/people';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
-import PrivacyStatus from 'app/components/PrivacyStatus';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import EditableTags from 'app/components/EditableTags';
 import Tags from '@codesandbox/common/lib/components/Tags';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
+import getTemplate from '@codesandbox/common/lib/templates';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 
 import { useSignals, useStore } from 'app/store';
@@ -27,16 +26,20 @@ import {
   PrivacyContainer,
   PropertyValue,
   PropertyName,
+  PrivacySelect,
+  Icon,
 } from './elements';
 import TitleComponent from './Title';
 import FrozenComponent from './Frozen';
 import DescriptionComponent from './Description';
 import TemplateComponent from './Template';
+
 // import AliasComponent from './Alias';
 
 const Project = ({ editable }: { editable?: boolean }) => {
-  const { editor, workspace } = useStore();
+  const { editor, workspace, isPatron } = useStore();
   const { notificationAdded, workspace: workspaceSignals } = useSignals();
+  const isServer = getTemplate(editor.currentSandbox.template).isServer;
 
   const changeTags = (newTags: string[], removedTags: string[]) => {
     const { tags } = editor.currentSandbox;
@@ -155,16 +158,47 @@ const Project = ({ editable }: { editable?: boolean }) => {
           </PropertyValue>
         </Item>
       )}
-      <Item flex>
-        <PropertyName>Privacy</PropertyName>
+      <Item
+        flex
+        css={`
+          align-items: center;
+        `}
+      >
+        <PropertyName>
+          Privacy{' '}
+          {!isPatron && (
+            <Tooltip
+              placement="right"
+              content={
+                'Having private and unlisted Sandboxes is available as Patron.'
+              }
+            >
+              <Icon />
+            </Tooltip>
+          )}
+        </PropertyName>
         <PropertyValue>
           <PrivacyContainer>
-            <PrivacyStatus privacy={sandbox.privacy} />
+            <PrivacySelect
+              value={sandbox.privacy}
+              disabled={!isPatron}
+              onChange={event =>
+                workspaceSignals.sandboxPrivacyChanged({
+                  privacy: Number(event.target.value),
+                })
+              }
+            >
+              s<option value={0}>Public</option>
+              {isPatron && (
+                <option value={1}>Unlisted (only available by url)</option>
+              )}
+              {!isServer && isPatron && <option value={2}>Private</option>}
+            </PrivacySelect>
           </PrivacyContainer>
         </PropertyValue>
       </Item>
       <Item flex>
-        <PropertyName>Template</PropertyName>
+        <PropertyName>Bundler</PropertyName>
         <PropertyValue>
           <a
             href={sandbox.customTemplate ? sandboxUrl(sandbox) : template.url}
