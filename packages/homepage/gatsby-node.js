@@ -1,17 +1,28 @@
 const env = require('@codesandbox/common/lib/config/env');
 const slugify = require('@sindresorhus/slugify');
 const { createFilePath } = require('gatsby-source-filesystem');
+const noop = require('lodash/noop');
 const { resolve } = require('path');
 
 // Parse date information out of post filename.
 const DOCUMENTATION_FILENAME_REGEX = /[0-9]+-(.*)\.md$/;
 
-const getNodeInfo = node => {
+const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
+
+const getNodeType = ({ fileAbsolutePath }) =>
+  getRelativePath(fileAbsolutePath).split('/')[2];
+
+const getSpecificNodeInfo = ({ node, nodeType }) => {
+  const nodeInfoMap = {};
+
+  return (nodeInfoMap[nodeType] || noop)({ node });
+};
+const getGenericNodeInfo = ({ node }) => {
   const {
     fileAbsolutePath,
     frontmatter: { slug, title },
   } = node;
-  const relativeFilePath = fileAbsolutePath.replace(__dirname, '');
+  const relativeFilePath = getRelativePath(fileAbsolutePath);
 
   return {
     editLink: `https://github.com/codesandbox/codesandbox-client/edit/master/packages/homepage${relativeFilePath}`,
@@ -19,8 +30,17 @@ const getNodeInfo = node => {
     title,
   };
 };
+const getNodeInfo = ({ node, nodeType }) => ({
+  ...getGenericNodeInfo({ node }),
+  ...getSpecificNodeInfo({ node, nodeType }),
+});
 
-const createNodeFields = ({
+const createSpecificNodeFields = ({ createNodeField, nodeInfo, nodeType }) => {
+  const createNodeFieldsMap = {};
+
+  (createNodeFieldsMap[nodeType] || noop)({ createNodeField, nodeInfo });
+};
+const createGenericNodeFields = ({
   createNodeField,
   getFilePathForNode,
   nodeInfo: { editLink, slug, title },
@@ -31,6 +51,16 @@ const createNodeFields = ({
 
   createNodeField({ name: 'slug', value: slug || getFilePathForNode() });
 };
+const createNodeFields = ({
+  createNodeField,
+  getFilePathForNode,
+  nodeInfo,
+  nodeType,
+}) => {
+  createGenericNodeFields({ createNodeField, getFilePathForNode, nodeInfo });
+
+  createSpecificNodeFields({ createNodeField, nodeInfo, nodeType });
+};
 
 exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
   if (node.internal.type === 'MarkdownRemark') {
@@ -38,12 +68,14 @@ exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
       createNodeField({ name, node, value });
     const getFilePathForNode = () =>
       createFilePath({ getNode, node, trailingSlash: false });
-    const nodeInfo = getNodeInfo(node);
+    const nodeType = getNodeType(node);
+    const nodeInfo = getNodeInfo({ node, nodeType });
 
     createNodeFields({
       createNodeField: createNodeFieldForNode,
       getFilePathForNode,
       nodeInfo,
+      nodeType,
     });
   }
 
