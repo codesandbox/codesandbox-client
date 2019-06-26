@@ -1,39 +1,35 @@
-const { resolve } = require('path');
 const env = require('@codesandbox/common/lib/config/env');
+const { resolve } = require('path');
 
 // Parse date information out of post filename.
-
 const DOCUMENTATION_FILENAME_REGEX = /[0-9]+-(.*)\.md$/;
 
-exports.onCreateNode = ({ node, actions, getNode }) => {
-  const { createNodeField } = actions;
-
+exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
   if (node.internal.type === `MarkdownRemark`) {
     const { url } = node.frontmatter;
     const { relativePath } = getNode(node.parent);
 
-    createNodeField({
-      node,
-      name: 'path',
-      value: relativePath,
-    });
-
     if (relativePath.includes('docs')) {
-      const match = DOCUMENTATION_FILENAME_REGEX.exec(relativePath);
+      createNodeField({
+        node,
+        name: 'path',
+        value: relativePath,
+      });
 
+      const match = DOCUMENTATION_FILENAME_REGEX.exec(relativePath);
       createNodeField({
         node,
         name: `slug`,
         value: `/docs/${match[1]}`,
       });
-    }
 
-    // Used by createPages() above to register redirects.
-    createNodeField({
-      node,
-      name: 'url',
-      value: url ? '/docs' + url : node.fields.slug,
-    });
+      // Used by createPages() above to register redirects.
+      createNodeField({
+        node,
+        name: 'url',
+        value: url ? '/docs' + url : node.fields.slug,
+      });
+    }
   }
 };
 
@@ -51,25 +47,20 @@ exports.createPages = async ({ graphql, actions }) => {
     toPath: '/',
   });
 
-  const allMarkdownArticles = await graphql(
-    `
-      {
-        allMarkdownRemark(
-          filter: { fileAbsolutePath: { regex: "/articles/" } }
-          limit: 1000
-        ) {
-          edges {
-            node {
-              id
-              frontmatter {
-                slug
-              }
+  const allMarkdownArticles = await graphql(`
+    {
+      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/articles/" } }) {
+        edges {
+          node {
+            id
+            frontmatter {
+              slug
             }
           }
         }
       }
-    `
-  );
+    }
+  `);
   allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
     const { slug } = edge.node.frontmatter;
     const { id } = edge.node;
@@ -83,25 +74,20 @@ exports.createPages = async ({ graphql, actions }) => {
     });
   });
 
-  const allDocs = await graphql(
-    `
-      {
-        allMarkdownRemark(
-          filter: { fileAbsolutePath: { regex: "/docs/" } }
-          limit: 1000
-        ) {
-          edges {
-            node {
-              fields {
-                slug
-                url
-              }
+  const allDocs = await graphql(`
+    {
+      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/docs/" } }) {
+        edges {
+          node {
+            fields {
+              slug
+              url
             }
           }
         }
       }
-    `
-  );
+    }
+  `);
   if (allDocs.errors) {
     console.error(allDocs.errors);
 
@@ -133,25 +119,20 @@ exports.createPages = async ({ graphql, actions }) => {
 
   // JOBS
 
-  const allJobs = await graphql(
-    `
-      {
-        allMarkdownRemark(
-          filter: { fileAbsolutePath: { regex: "/jobs/" } }
-          limit: 1000
-        ) {
-          edges {
-            node {
-              id
-              frontmatter {
-                slug
-              }
+  const allJobs = await graphql(`
+    {
+      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/jobs/" } }) {
+        edges {
+          node {
+            id
+            frontmatter {
+              slug
             }
           }
         }
       }
-    `
-  );
+    }
+  `);
   if (allJobs.data) {
     allJobs.data.allMarkdownRemark.edges.forEach(edge => {
       createPage({
