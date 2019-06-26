@@ -12,8 +12,17 @@ const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
 const getNodeType = ({ fileAbsolutePath }) =>
   getRelativePath(fileAbsolutePath).split('/')[2];
 
+const getJobsNodeInfo = ({
+  node: {
+    frontmatter: { applySlug },
+  },
+}) => ({
+  applyLink: `https://codesandbox.recruitee.com/o/${applySlug}`,
+});
 const getSpecificNodeInfo = ({ node, nodeType }) => {
-  const nodeInfoMap = {};
+  const nodeInfoMap = {
+    jobs: getJobsNodeInfo,
+  };
 
   return (nodeInfoMap[nodeType] || noop)({ node });
 };
@@ -35,8 +44,13 @@ const getNodeInfo = ({ node, nodeType }) => ({
   ...getSpecificNodeInfo({ node, nodeType }),
 });
 
+const createJobsNodeFields = ({ createNodeField, nodeInfo: { applyLink } }) => {
+  createNodeField({ name: 'applyLink', value: applyLink || '' });
+};
 const createSpecificNodeFields = ({ createNodeField, nodeInfo, nodeType }) => {
-  const createNodeFieldsMap = {};
+  const createNodeFieldsMap = {
+    jobs: createJobsNodeFields,
+  };
 
   (createNodeFieldsMap[nodeType] || noop)({ createNodeField, nodeInfo });
 };
