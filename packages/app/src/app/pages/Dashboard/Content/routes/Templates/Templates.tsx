@@ -15,6 +15,8 @@ export const Templates = props => {
     variables: { teamId },
   });
 
+  console.log(data);
+
   useEffect(() => {
     document.title = `${teamId ? 'Our' : 'My'} Templates - CodeSandbox`;
   }, []);

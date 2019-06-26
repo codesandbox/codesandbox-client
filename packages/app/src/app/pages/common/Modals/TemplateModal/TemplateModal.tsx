@@ -72,24 +72,7 @@ export const TemplateModal = () => {
         By making your sandbox a template you will be able to see it in your
         create sandbox modal and start with this sandbox quickly.
       </Description>
-      <TemplateName
-        block
-        name="title"
-        required
-        id="title"
-        placeholder="Template Title"
-        value={templateTitle}
-        onChange={e => setStaterTitle(e.target.value)}
-      />
-      <TemplateDescription
-        block
-        required
-        name="description"
-        id="description"
-        placeholder="No description, create one!"
-        value={templateDescription}
-        onChange={e => setStaterDescription(e.target.value)}
-      />
+
       {/* <Fieldset>
         <Label htmlFor="public">Make Public?</Label>
         <Checkbox

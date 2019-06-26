@@ -431,9 +431,7 @@ export const SET_TEAM_DESCRIPTION = gql`
 export const LIST_TEMPLATES = gql`
   query ListTemplates($teamId: ID) {
     me {
-      templates(teamId: $teamId) {
-        title
-        description
+      templates(teamId: $teamId, showTemplates: true) {
         color
         iconUrl
         id

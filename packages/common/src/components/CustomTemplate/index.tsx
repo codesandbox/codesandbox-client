@@ -12,10 +12,7 @@ import { Sandbox } from '../../types';
 interface Props {
   template?: {
     id: string;
-    name: string;
     color: string;
-    title: string;
-    description: string;
     sandbox: Sandbox;
   };
   i: number;
@@ -34,21 +31,21 @@ const CustomTemplate = ({ template, onClick, i }: Props) => {
       </MyTemplate>
     );
   }
+
+  const sandbox = template.sandbox;
+  const title = sandbox.title || sandbox.alias || sandbox.id;
+
   return (
     <MyTemplate key={i} onClick={onClick} overlayHeight={109}>
-      <img
-        height="109px"
-        src={template.sandbox.screenshotUrl || BANNER}
-        alt={template.title}
-      />
+      <img height="109px" src={sandbox.screenshotUrl || BANNER} alt={title} />
       <Overlay>
-        <SandboxDescription>{template.description}</SandboxDescription>
-        {template.sandbox.tags && <Tags tags={template.sandbox.tags} />}
+        <SandboxDescription>{sandbox.description}</SandboxDescription>
+        {sandbox.tags && <Tags tags={sandbox.tags} />}
       </Overlay>
       <Border color={template.color} />
       <div>
-        <TemplateTitle>{template.title}</TemplateTitle>
-        <TemplateSubTitle>{template.description}</TemplateSubTitle>
+        <TemplateTitle>{title}</TemplateTitle>
+        <TemplateSubTitle>{sandbox.description}</TemplateSubTitle>
       </div>
     </MyTemplate>
   );

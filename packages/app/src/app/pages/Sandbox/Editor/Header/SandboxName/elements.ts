@@ -34,7 +34,7 @@ export const FolderName = styled.button`
 
 export const Form = styled.form`
   position: absolute;
-  left: 0,
+  left: 0;
   right: 0;
   display: flex;
   align-items: center;
@@ -63,7 +63,7 @@ export const Name = styled.span`
   `}
 `;
 
-export const TemplateBadge = styled.div<{ color: String }>`
+export const TemplateBadge = styled.div<{ color: string }>`
   background: ${props => props.color};
   font-family: 'Poppins', sans-serif;
   font-weight: 500;

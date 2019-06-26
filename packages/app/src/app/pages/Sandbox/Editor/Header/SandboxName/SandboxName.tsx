@@ -97,23 +97,25 @@ export const SandboxName = observer(() => {
           query="(min-width: 826px)"
           render={() => (
             <Container>
-              <Media
-                query="(min-width: 950px)"
-                render={() => (
-                  <Folder style={style}>
-                    {isLoggedIn ? (
-                      <FolderName
-                        onClick={() => modalOpened({ modal: 'moveSandbox' })}
-                      >
-                        {folderName}
-                      </FolderName>
-                    ) : (
-                      'Anonymous '
-                    )}
-                    /{' '}
-                  </Folder>
-                )}
-              />
+              {!currentSandbox.customTemplate && (
+                <Media
+                  query="(min-width: 950px)"
+                  render={() => (
+                    <Folder style={style}>
+                      {isLoggedIn ? (
+                        <FolderName
+                          onClick={() => modalOpened({ modal: 'moveSandbox' })}
+                        >
+                          {folderName}
+                        </FolderName>
+                      ) : (
+                        'Anonymous '
+                      )}
+                      /{' '}
+                    </Folder>
+                  )}
+                />
+              )}
               {updatingName ? (
                 <Form onSubmit={submitNameChange}>
                   <NameInput
@@ -133,7 +135,7 @@ export const SandboxName = observer(() => {
               ) : (
                 <Name onClick={handleNameClick}>{sandboxName()}</Name>
               )}
-              {currentSandbox.customTemplate ? (
+              {currentSandbox.customTemplate && !updatingName ? (
                 <TemplateBadge color={currentSandbox.customTemplate.color}>
                   Template
                 </TemplateBadge>
