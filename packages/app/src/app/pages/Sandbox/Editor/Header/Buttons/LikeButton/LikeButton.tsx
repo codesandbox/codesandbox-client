@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { useSignals, useStore } from 'app/store';
+import { useStore } from 'app/store';
 import { LikeHeart } from './elements';
 
 export const LikeButton = observer(() => {
