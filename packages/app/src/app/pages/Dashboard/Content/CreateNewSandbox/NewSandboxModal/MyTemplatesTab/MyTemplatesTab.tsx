@@ -7,7 +7,8 @@ import { Empty, Title } from './elements';
 
 export const MyTemplatesTab = ({ selectTemplate }) => {
   const { data } = useQuery(LIST_TEMPLATES);
-  return data.me && data.me.templates.length ? (
+
+  return data && data.me && data.me.templates.length ? (
     <Templates>
       {data.me.templates.map(template => (
         <Template

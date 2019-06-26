@@ -81,7 +81,6 @@ const Project = ({ editable }: { editable?: boolean }) => {
           title={workspace.project.title || getSandboxName(sandbox)}
         />
         <DescriptionComponent
-          description={sandbox.description}
           updateSandboxInfo={updateSandboxInfo}
           editable={editable}
         />

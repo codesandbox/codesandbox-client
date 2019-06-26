@@ -2,24 +2,35 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { WorkspaceInputContainer } from '../../elements';
 
-import { useSignals } from 'app/store';
+import { useSignals, useStore } from 'app/store';
 
 import { EditPen } from '../elements';
 import { Description } from './elements';
 
 type Props = {
-  description: string;
   editable: boolean;
   updateSandboxInfo: () => void;
 };
 
-const DescriptionComponent = ({
-  description,
-  editable,
-  updateSandboxInfo,
-}: Props) => {
+const DescriptionComponent = ({ editable, updateSandboxInfo }: Props) => {
   const [editing, setEditing] = useState(false);
   const { workspace } = useSignals();
+  const {
+    workspace: {
+      project: { description },
+    },
+  } = useStore();
+
+  const onKeyDown = event => {
+    if (event.keyCode === 13) {
+      if (!event.shiftKey) {
+        event.preventDefault();
+        event.stopPropagation();
+        updateSandboxInfo();
+        setEditing(false);
+      }
+    }
+  };
 
   return editing ? (
     <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
@@ -35,16 +46,7 @@ const DescriptionComponent = ({
           updateSandboxInfo();
           setEditing(false);
         }}
-        onKeyDown={event => {
-          if (event.keyCode === 13) {
-            if (!event.shiftKey) {
-              event.preventDefault();
-              event.stopPropagation();
-              updateSandboxInfo();
-              setEditing(false);
-            }
-          }
-        }}
+        onKeyDown={onKeyDown}
         ref={el => {
           if (el) {
             el.focus();

@@ -8,7 +8,7 @@ import { Title } from '../elements';
 import { MyTemplatesList } from './elements';
 
 export const MyTemplates = () => {
-  const { data } = useQuery(LIST_TEMPLATES);
+  const { data = {} } = useQuery(LIST_TEMPLATES);
 
   if (data.me && !data.me.templates.length) {
     return null;
