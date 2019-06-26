@@ -7,8 +7,14 @@ import { LIST_TEMPLATES } from '../../../../queries';
 import { Title } from '../elements';
 import { MyTemplatesList } from './elements';
 
+// Would be good to actually have this interface filled out
+// Would be better if we could generate types from our GraphQL server
+interface ListTemplatesResponse {
+  me?: any;
+}
+
 export const MyTemplates = () => {
-  const { data = {} } = useQuery(LIST_TEMPLATES);
+  const { data = {} } = useQuery<ListTemplatesResponse>(LIST_TEMPLATES);
 
   if (data.me && !data.me.templates.length) {
     return null;
