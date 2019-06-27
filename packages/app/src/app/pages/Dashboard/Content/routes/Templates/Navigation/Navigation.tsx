@@ -15,6 +15,6 @@ export const Navigation = ({ teamId, number }: INavigationProps) => (
     >
       {teamId ? 'Our Templates' : 'My Templates'}
     </NavigationLink>
-    {number && <Number>{number}</Number>}
+    {number != undefined && <Number>{number}</Number>}
   </Container>
 );
