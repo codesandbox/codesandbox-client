@@ -24,6 +24,10 @@ const SANDBOX_FRAGMENT = gql`
       template
     }
 
+    customTemplate {
+      id
+    }
+
     forkedTemplate {
       color
     }
@@ -199,7 +203,7 @@ export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
       collection(path: $path, teamId: $teamId) {
         id
         path
-        sandboxes(hideTemplates: true) {
+        sandboxes {
           ...Sandbox
         }
       }
@@ -215,7 +219,6 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
       sandboxes(
         limit: 20
         orderBy: { field: $orderField, direction: $orderDirection }
-        hideTemplates: true
       ) {
         ...Sandbox
       }
@@ -227,10 +230,7 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
 export const SEARCH_SANDBOXES_QUERY = gql`
   query SearchSandboxes {
     me {
-      sandboxes(
-        orderBy: { field: "updated_at", direction: DESC }
-        hideTemplates: true
-      ) {
+      sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
         ...Sandbox
       }
     }
@@ -340,7 +340,7 @@ export function undeleteSandboxes(selectedSandboxes) {
       },
     },
 
-    refetchQueries: ['DeletedSandboxes', 'PathedSandboxes'],
+    refetchQueries: ['DeletedSandboxes'],
   });
 }
 
