@@ -242,7 +242,6 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   query DeletedSandboxes {
     me {
       sandboxes(
-        hideTemplates: true
         showDeleted: true
         orderBy: { field: "updated_at", direction: DESC }
       ) {
