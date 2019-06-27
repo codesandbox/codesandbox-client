@@ -14,6 +14,7 @@ interface UserTemplate extends Template {
   sandbox?: {
     alias: string;
     id: string;
+    title: string;
     source: {
       template: TemplateType;
     };
