@@ -20,7 +20,7 @@ import { popular, client, container, presets } from './availableTemplates';
 interface INewSandboxModalProps {
   forking: boolean;
   closing: boolean;
-  createSandbox: Function;
+  createSandbox: (params: { shortid: string }) => void;
 }
 
 export const NewSandboxModal: React.FunctionComponent<
@@ -66,7 +66,7 @@ export const NewSandboxModal: React.FunctionComponent<
 
       <InnerContainer forking={forking} closing={closing}>
         <Tab visible={selectedTab === 0}>
-          {user && <MyTemplates />}
+          {user && <MyTemplates selectTemplate={selectTemplate} />}
           <Title>Popular Templates</Title>
           <Templates>
             {popular.map(type =>

@@ -41,8 +41,8 @@ export const TemplateSubTitle = styled.span`
 export const MyTemplate = styled.button<{ overlayHeight?: number }>`
   ${({ theme, overlayHeight }) => css`
     position: relative;
-    width: 212px;
-    min-width: 212px;
+    width: 203.5px;
+    min-width: 203.5px;
     padding: 0;
     border: 2px solid ${theme.background5};
     border-radius: 4px;
