@@ -503,7 +503,7 @@ export const SET_TEAM_DESCRIPTION = gql`
 `;
 
 export const LIST_TEMPLATES = gql`
-  query ListTemplates($teamId: ID, $showAll: boolean) {
+  query ListTemplates($teamId: ID, $showAll: Boolean) {
     me {
       templates(teamId: $teamId, showAll: $showAll) {
         color
