@@ -162,7 +162,7 @@ class Shell extends React.PureComponent<Props> {
   }
 
   render() {
-    const { height, hidden } = this.props;
+    const { hidden } = this.props;
 
     return (
       <div
@@ -172,7 +172,6 @@ class Shell extends React.PureComponent<Props> {
           bottom: 0,
           left: 0,
           right: 0,
-          height: height - 72,
           padding: '.5rem',
           visibility: hidden ? 'hidden' : 'visible',
         }}

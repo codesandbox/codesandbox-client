@@ -41,9 +41,9 @@ export const ContentContainer = styled.div`
     props.theme['panel.background'] ||
     props.theme['editor.background'] ||
     props.theme.background4};
-  position: relative;
   overflow: auto;
 
-  width: 100%;
-  height: 100%;
+  border: 1px solid orangered;
+  flex: auto;
+  display: flex;
 `;
