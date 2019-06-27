@@ -19,3 +19,19 @@ export const Grid = styled.section`
   height: auto;
   overflow-y: auto;
 `;
+
+export const EmptyTitle = styled.h2`
+  font-size: 18px;
+  line-height: 25px;
+  margin: 18px 0;
+
+  color: ${props => props.theme.lightText};
+`;
+
+export const Buttons = styled.div`
+  display: flex;
+
+  > a:first-of-type {
+    margin-right: 48px;
+  }
+`;

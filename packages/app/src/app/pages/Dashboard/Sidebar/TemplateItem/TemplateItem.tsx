@@ -35,7 +35,7 @@ const TemplateItemComponent = ({
         active={currentPath === url}
         path={url}
         Icon={TemplateIcon}
-        name={teamId ? 'Our Templates' : 'My Templates'}
+        name={teamId ? 'Team Templates' : 'My Templates'}
         style={
           isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
         }

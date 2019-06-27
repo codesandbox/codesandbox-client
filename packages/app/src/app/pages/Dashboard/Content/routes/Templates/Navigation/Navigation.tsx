@@ -13,7 +13,7 @@ export const Navigation = ({ teamId, number }: INavigationProps) => (
         teamId ? `/dashboard/teams/${teamId}/templates` : `/dashboard/templates`
       }
     >
-      {teamId ? 'Our Templates' : 'My Templates'}
+      {teamId ? 'Team Templates' : 'My Templates'}
     </NavigationLink>
     {number != undefined && <Number>{number}</Number>}
   </Container>

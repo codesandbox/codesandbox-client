@@ -58,7 +58,7 @@ class SandboxesItem extends React.Component {
           openByDefault={openByDefault}
           path={basePath}
           Icon={InfoIcon}
-          name={teamId ? `${teamName || 'Our'} Sandboxes` : 'My Sandboxes'}
+          name={teamId ? `${teamName || 'Team'} Sandboxes` : 'My Sandboxes'}
           style={
             isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
           }
