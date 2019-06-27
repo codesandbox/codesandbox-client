@@ -8,6 +8,7 @@ import {
   MyTemplate,
 } from './elements';
 import { Sandbox } from '../../types';
+import { getSandboxName } from '../../utils/get-sandbox-name';
 
 interface Props {
   template?: {
@@ -33,7 +34,7 @@ const CustomTemplate = ({ template, onClick, i }: Props) => {
   }
 
   const sandbox = template.sandbox;
-  const title = sandbox.title || sandbox.alias || sandbox.id;
+  const title = getSandboxName(sandbox);
 
   return (
     <MyTemplate key={i} onClick={onClick} overlayHeight={109}>
