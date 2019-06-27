@@ -1,6 +1,7 @@
 // next.config.js
 const withCSS = require('@zeit/next-css');
 const withTM = require('next-transpile-modules');
+const withImages = require('next-images');
 const env = require('@codesandbox/common/lib/config/env');
 
 const dotEnvResult = require('dotenv').config();
@@ -20,34 +21,34 @@ module.exports = withCSS(
   {
     // withTM({
     //   transpileModules: ['common'],
-    webpack(config) {
-      // Further custom configuration here
-      config.module.rules.unshift({
-        test: /\.(svg|png|jpg)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              publicPath: '/static/',
-            },
-          },
-        ],
-      });
+    // webpack(config) {
+    //   // Further custom configuration here
+    //   config.module.rules.unshift({
+    //     test: /\.(svg|png|jpg)$/,
+    //     use: [
+    //       {
+    //         loader: 'file-loader',
+    //         options: {
+    //           publicPath: '/static/',
+    //         },
+    //       },
+    //     ],
+    //   });
 
-      // config.module.rules.unshift({
-      //   test: /common\/.*\.(js)$/,
-      //   use: [
-      //     {
-      //       loader: 'babel-loader',
-      //       options: {
-      //         plugins: ['@babel/transform-modules-commonjs'],
-      //       },
-      //     },
-      //   ],
-      // });
+    // config.module.rules.unshift({
+    //   test: /common\/.*\.(js)$/,
+    //   use: [
+    //     {
+    //       loader: 'babel-loader',
+    //       options: {
+    //         plugins: ['@babel/transform-modules-commonjs'],
+    //       },
+    //     },
+    //   ],
+    // });
 
-      return config;
-    },
+    //   return config;
+    // },
 
     env: {
       ...dotEnvVariables,

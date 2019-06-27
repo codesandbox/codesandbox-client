@@ -14,12 +14,11 @@ app
       '/api',
       proxy({ target: 'https://codesandbox.io', changeOrigin: true })
     );
-    server.use('/static', express.static('.next'));
-    server.get('/profile/:username', (req, res) => {
+    server.get('/u/:username', (req, res) => {
       app.render(req, res, '/profile', { username: req.params.username });
     });
 
-    server.get('/profile/:username/:page', (req, res) => {
+    server.get('/u/:username/:page', (req, res) => {
       app.render(req, res, '/user-sandboxes', {
         username: req.params.username,
         page: req.params.page,
