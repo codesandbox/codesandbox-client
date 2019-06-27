@@ -14,7 +14,9 @@ interface ListTemplatesResponse {
 }
 
 export const MyTemplates = () => {
-  const { data = {} } = useQuery<ListTemplatesResponse>(LIST_TEMPLATES);
+  const { data = {} } = useQuery<ListTemplatesResponse>(LIST_TEMPLATES, {
+    variables: { showAll: true },
+  });
 
   if (data.me && !data.me.templates.length) {
     return null;
