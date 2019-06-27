@@ -341,7 +341,7 @@ export function undeleteSandboxes(selectedSandboxes) {
       },
     },
 
-    refetchQueries: ['DeletedSandboxes'],
+    refetchQueries: ['DeletedSandboxes', 'PathedSandboxes'],
   });
 }
 
