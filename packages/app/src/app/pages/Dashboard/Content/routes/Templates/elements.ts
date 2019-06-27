@@ -16,6 +16,6 @@ export const Grid = styled.section`
   grid-gap: 32px;
   grid-template-columns: repeat(auto-fill, 212px);
 
-  height: 100%;
+  height: auto;
   overflow-y: auto;
 `;
