@@ -1,8 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Alias = styled.div`
-  font-size: 0.875rem;
-  color: ${props =>
-    props.theme.light ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'};
-  margin-top: 0.5rem;
+export const SandboxAlias = styled.div`
+  ${({ theme }) => css`
+    margin-top: 0.5rem;
+    color: ${theme.light
+      ? css`rgba(0, 0, 0, 0.8)`
+      : css`rgba(255, 255, 255, 0.8)`};
+    font-size: 0.875rem;
+  `}
 `;

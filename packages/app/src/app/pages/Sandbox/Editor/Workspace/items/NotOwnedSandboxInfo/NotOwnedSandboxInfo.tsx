@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
-
 import Dependencies from '../../Dependencies';
 import Files from '../../Files';
-import Project from '../../Project';
+import { Project } from '../../Project';
 import WorkspaceItem from '../../WorkspaceItem';
-import TemplateInfo from '../../Project/Template';
-
-import { useStore } from 'app/store';
 
 export const NotOwnedSandboxInfo = () => {
-  const {
-    editor: { currentSandbox },
-    user,
-  } = useStore();
   const [editActions, setEditActions] = useState(null);
 
   return (
@@ -33,9 +25,6 @@ export const NotOwnedSandboxInfo = () => {
       >
         <Dependencies />
       </WorkspaceItem>
-      {user && (currentSandbox.git || {}).username === user.username && (
-        <TemplateInfo template={currentSandbox.customTemplate} />
-      )}
     </div>
   );
 };

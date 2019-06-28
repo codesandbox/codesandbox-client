@@ -1,57 +1,60 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { useSignals, useStore } from 'app/store';
 import { WorkspaceInputContainer } from '../../elements';
-
-import { useSignals } from 'app/store';
-
 import { EditPen } from '../elements';
-import { Title } from './elements';
+import { SandboxTitle } from './elements';
 
-type Props = {
-  title: string;
+type ITitleProps = {
   editable: boolean;
-  updateSandboxInfo: () => void;
 };
 
-const TitleComponent = ({ title, editable, updateSandboxInfo }: Props) => {
+export const Title = observer(({ editable }: ITitleProps) => {
   const [editing, setEditing] = useState(false);
-  const { workspace } = useSignals();
+  const {
+    editor: { currentSandbox },
+    workspace: {
+      project: { title },
+    },
+  } = useStore();
+  const {
+    workspace: { valueChanged, sandboxInfoUpdated },
+  } = useSignals();
 
   return editing ? (
     <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
       <input
-        value={title}
-        onChange={event => {
-          workspace.valueChanged({
-            field: 'title',
-            value: event.target.value,
-          });
-        }}
         type="text"
-        onBlur={() => {
-          updateSandboxInfo();
-          setEditing(false);
-        }}
-        onKeyUp={event => {
-          if (event.keyCode === 13) {
-            updateSandboxInfo();
-            setEditing(false);
-          }
-        }}
+        placeholder="Title"
         ref={el => {
           if (el) {
             el.focus();
           }
         }}
-        placeholder="Title"
+        value={title || getSandboxName(currentSandbox)}
+        onChange={event => {
+          valueChanged({
+            field: 'title',
+            value: event.target.value,
+          });
+        }}
+        onBlur={() => {
+          sandboxInfoUpdated();
+          setEditing(false);
+        }}
+        onKeyUp={event => {
+          if (event.keyCode === 13) {
+            sandboxInfoUpdated();
+            setEditing(false);
+          }
+        }}
       />
     </WorkspaceInputContainer>
   ) : (
-    <Title>
+    <SandboxTitle>
       {title}
       {editable && <EditPen onClick={() => setEditing(true)} />}
-    </Title>
+    </SandboxTitle>
   );
-};
-
-export default observer(TitleComponent);
+});

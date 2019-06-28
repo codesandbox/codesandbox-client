@@ -1,48 +1,47 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { WorkspaceInputContainer } from '../../elements';
-
-import { useSignals } from 'app/store';
-
+import { useSignals, useStore } from 'app/store';
 import { EditPen } from '../elements';
-import { Alias } from './elements';
+import { SandboxAlias } from './elements';
 
-type Props = {
-  alias: string;
+type IAliasProps = {
   editable: boolean;
-  updateSandboxInfo: () => void;
-  isPatron: boolean;
 };
 
-const AliasComponent = ({
-  alias,
-  editable,
-  updateSandboxInfo,
-  isPatron,
-}: Props) => {
+export const Alias = observer(({ editable }: IAliasProps) => {
   const [editing, setEditing] = useState(false);
-  const { workspace } = useSignals();
+  const {
+    workspace: { sandboxInfoUpdated, valueChanged },
+  } = useSignals();
+  const {
+    isPatron,
+    editor: { currentSandbox },
+    workspace: { project },
+  } = useStore();
+
+  const alias = project.alias || currentSandbox.alias;
 
   return isPatron ? (
     <>
       {editing ? (
         <WorkspaceInputContainer>
           <input
-            value={workspace.project.alias}
+            value={alias}
             onChange={event => {
-              workspace.valueChanged({
+              valueChanged({
                 field: 'alias',
                 value: event.target.value,
               });
             }}
             type="text"
             onBlur={() => {
-              updateSandboxInfo();
+              sandboxInfoUpdated();
               setEditing(false);
             }}
             onKeyUp={event => {
               if (event.keyCode === 13) {
-                updateSandboxInfo();
+                sandboxInfoUpdated();
                 setEditing(false);
               }
             }}
@@ -55,13 +54,11 @@ const AliasComponent = ({
           />
         </WorkspaceInputContainer>
       ) : (
-        <Alias>
+        <SandboxAlias>
           {alias}
-          {editable && <EditPen onClick={this.setAliasEditing} />}
-        </Alias>
+          {editable && <EditPen onClick={() => setEditing(true)} />}
+        </SandboxAlias>
       )}
     </>
   ) : null;
-};
-
-export default observer(AliasComponent);
+});

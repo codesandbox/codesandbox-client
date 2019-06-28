@@ -1,8 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Title = styled.div`
-  font-size: 1rem;
-  font-weight: 400;
-  color: ${props => (props.theme.light ? '#636363' : 'white')};
-  margin-bottom: 0.5rem;
+export const SandboxTitle = styled.div`
+  ${({ theme }) => css`
+    margin-bottom: 0.5rem;
+    color: ${theme.light ? css`#636363` : css`white`};
+    font-size: 1rem;
+    font-weight: 400;
+  `}
 `;
