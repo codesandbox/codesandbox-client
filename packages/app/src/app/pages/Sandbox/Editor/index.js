@@ -69,15 +69,15 @@ class ContentSplit extends React.Component {
       store.preferences.settings.zenMode && store.workspace.workspaceHidden;
 
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
-    const templateColor = () => {
+    const templateColor = (() => {
+      if (sandbox && sandbox.customTemplate) {
+        return decorateSelector(() => sandbox.customTemplate.color);
+      }
       if (templateDef) {
-        if (sandbox.customTemplate) {
-          return decorateSelector(() => sandbox.customTemplate.color);
-        }
         return templateDef.color;
       }
       return undefined;
-    };
+    })();
 
     const topOffset = store.preferences.settings.zenMode ? 0 : 3 * 16;
     const bottomOffset = vscode ? STATUS_BAR_SIZE : 0;
@@ -85,7 +85,7 @@ class ContentSplit extends React.Component {
     return (
       <ThemeProvider
         theme={{
-          templateColor: templateColor(),
+          templateColor,
           templateBackgroundColor: templateDef && templateDef.backgroundColor,
           ...this.state.theme,
         }}

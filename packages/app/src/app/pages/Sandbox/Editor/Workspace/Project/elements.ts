@@ -129,17 +129,17 @@ export const Icon = styled(Question)`
   cursor: pointer;
 `;
 
-export const TemplateStyledLink = styled(Link)<{ color: string }>`
-  ${({ color }) => css`
-    color: ${color} !important;
+export const TemplateStyledLink = styled(Link)`
+  ${({ theme }) => css`
+    color: ${theme.templateColor} !important;
   `}
 `;
 
-export const BundlerLink = styled.a.attrs<{ color: string }>({
+export const BundlerLink = styled.a.attrs({
   target: '_blank',
   rel: 'noreferrer noopener',
 })`
-  ${({ color }) => css`
-    color: ${color} !important;
+  ${({ theme }) => css`
+    color: ${theme.templateColor} !important;
   `}
 `;

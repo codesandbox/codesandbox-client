@@ -183,21 +183,22 @@ class Modals extends Component {
     const { signals, store } = this.props;
     const sandbox = store.editor.currentSandbox;
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
-    const templateColor = () => {
+    const templateColor = (() => {
+      if (sandbox && sandbox.customTemplate) {
+        return decorateSelector(() => sandbox.customTemplate.color);
+      }
+
       if (templateDef) {
-        if (sandbox.customTemplate) {
-          return decorateSelector(() => sandbox.customTemplate.color);
-        }
         return templateDef.color;
       }
       return undefined;
-    };
+    })();
     const modal = store.currentModal && modals[store.currentModal];
 
     return (
       <ThemeProvider
         theme={{
-          templateColor: templateColor(),
+          templateColor,
           templateBackgroundColor: templateDef && templateDef.backgroundColor,
           ...this.state.theme,
         }}

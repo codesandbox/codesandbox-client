@@ -117,10 +117,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
           <Item>
             <PropertyName>Forked From</PropertyName>
             <PropertyValue>
-              <TemplateStyledLink
-                color={template.color()}
-                to={sandboxUrl(sandbox.forkedFromSandbox)}
-              >
+              <TemplateStyledLink to={sandboxUrl(sandbox.forkedFromSandbox)}>
                 {sandbox.forkedFromSandbox.title ||
                   sandbox.forkedFromSandbox.id}
               </TemplateStyledLink>
@@ -132,9 +129,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
           <Item>
             <PropertyName>Bundler</PropertyName>
             <PropertyValue>
-              <BundlerLink href={template.url} color={template.color()}>
-                {sandbox.template}
-              </BundlerLink>
+              <BundlerLink href={template.url}>{sandbox.template}</BundlerLink>
             </PropertyValue>
           </Item>
         )}
