@@ -59,7 +59,10 @@ export const onSSEMessage = [
       },
     ],
     'sandbox:update': [set(props`updates`, props`data.updates`), syncSandbox],
-    'sandbox:hibernate': [set(state`server.containerStatus`, 'hibernated')],
+    'sandbox:hibernate': [
+      set(state`server.containerStatus`, 'hibernated'),
+      actions.closeSocket,
+    ],
     'sandbox:status': [
       equals(props`data.status`),
       {
