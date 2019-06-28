@@ -139,11 +139,11 @@ function boot() {
             <Provider {...{ signals, store }}>
               <ApolloProvider client={client}>
                 <HooksProvider client={client}>
-                <ThemeProvider theme={theme}>
-                  <Router history={history}>
-                    <App />
-                  </Router>
-                </ThemeProvider>
+                  <ThemeProvider theme={theme}>
+                    <Router history={history}>
+                      <App />
+                    </Router>
+                  </ThemeProvider>
                 </HooksProvider>
               </ApolloProvider>
             </Provider>

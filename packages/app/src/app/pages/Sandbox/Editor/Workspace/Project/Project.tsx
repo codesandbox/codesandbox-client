@@ -30,6 +30,7 @@ import {
   PropertyName,
   PrivacySelect,
   Icon,
+  TemplateStyledLink,
   BundlerLink,
 } from './elements';
 
@@ -111,15 +112,18 @@ export const Project = observer(({ editable }: IProjectProps) => {
             </PrivacyContainer>
           </PropertyValue>
         </Item>
-        {sandbox.owned && <Frozen isFrozen={sandbox.isFrozen} />}
+        {editable && <Frozen isFrozen={sandbox.isFrozen} />}
         {sandbox.forkedFromSandbox && (
           <Item>
             <PropertyName>Forked From</PropertyName>
             <PropertyValue>
-              <Link to={sandboxUrl(sandbox.forkedFromSandbox)}>
+              <TemplateStyledLink
+                color={template.color()}
+                to={sandboxUrl(sandbox.forkedFromSandbox)}
+              >
                 {sandbox.forkedFromSandbox.title ||
                   sandbox.forkedFromSandbox.id}
-              </Link>
+              </TemplateStyledLink>
             </PropertyValue>
           </Item>
         )}
@@ -135,7 +139,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
           </Item>
         )}
       </Group>
-      {sandbox.owned && <SandboxConfig />}
+      {editable && <SandboxConfig />}
     </Container>
   );
 });

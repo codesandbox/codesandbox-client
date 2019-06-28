@@ -53,7 +53,7 @@ export const Title = observer(({ editable }: ITitleProps) => {
     </WorkspaceInputContainer>
   ) : (
     <SandboxTitle>
-      {title}
+      {getSandboxName(currentSandbox)}
       {editable && <EditPen onClick={() => setEditing(true)} />}
     </SandboxTitle>
   );

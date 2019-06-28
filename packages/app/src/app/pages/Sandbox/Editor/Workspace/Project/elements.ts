@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
+import { Link } from 'react-router-dom';
 import Question from 'react-icons/lib/go/question';
 import EditPenIcon from 'react-icons/lib/md/create';
-import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
   position: relative;
@@ -50,7 +50,7 @@ export const PropertyValue = styled.span`
 export const PrivacySelect = styled.select`
   ${({ theme }) => css`
     width: 100%;
-    height: 2rem;
+    height: 1.5rem;
     border: none;
     border-radius: 4px;
     background-color: ${theme[`dropdown.background`] ||
@@ -129,11 +129,17 @@ export const Icon = styled(Question)`
   cursor: pointer;
 `;
 
+export const TemplateStyledLink = styled(Link)<{ color: string }>`
+  ${({ color }) => css`
+    color: ${color} !important;
+  `}
+`;
+
 export const BundlerLink = styled.a.attrs<{ color: string }>({
   target: '_blank',
   rel: 'noreferrer noopener',
 })`
   ${({ color }) => css`
-    color: ${color};
+    color: ${color} !important;
   `}
 `;

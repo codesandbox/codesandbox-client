@@ -53,7 +53,7 @@ export const TemplateConfig = observer(() => {
       </Item>
       <Item>
         <PropertyName>Color</PropertyName>
-        <PropertyValue>
+        <PropertyValue style={{ position: 'relative' }}>
           <PickColor
             onClick={() => setShowPicker(true)}
             color={selectedColor}

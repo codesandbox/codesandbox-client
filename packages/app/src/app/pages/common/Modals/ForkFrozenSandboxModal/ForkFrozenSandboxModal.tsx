@@ -28,9 +28,11 @@ export const ForkFrozenSandboxModal = observer(() => {
     modalClosed();
   };
 
-  const fork = () => {
-    editor.forkSandboxOnDemand();
-    modalClosed();
+  const fork = (event?: { defaultPrevented: boolean }) => {
+    if (event && !event.defaultPrevented) {
+      editor.forkSandboxOnDemand();
+      modalClosed();
+    }
   };
 
   useKeyPressEvent('Enter', fork);
