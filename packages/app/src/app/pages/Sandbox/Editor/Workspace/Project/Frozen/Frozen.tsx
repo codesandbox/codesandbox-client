@@ -37,7 +37,7 @@ export const Frozen = observer(({ isFrozen }: IFrozenProps) => {
 
   return (
     <>
-      <Item style={{ marginTop: 5 }} flex>
+      <Item>
         <PropertyName>
           Frozen
           <Tooltip content="When true this sandbox will fork on edit">
@@ -56,9 +56,9 @@ export const Frozen = observer(({ isFrozen }: IFrozenProps) => {
           </FreezeContainer>
         </PropertyValue>
       </Item>
-      {customTemplate && !sessionFrozen ? (
+      {customTemplate && !sessionFrozen && (
         <FrozenWarning>Edits are enabled for this session</FrozenWarning>
-      ) : null}
+      )}
     </>
   );
 });

@@ -20,7 +20,10 @@ import { Keywords } from './Keywords';
 import { Frozen } from './Frozen';
 import { SandboxConfig } from './SandboxConfig';
 import {
+  Container,
+  BasicInfo,
   Item,
+  Group,
   StatsContainer,
   PrivacyContainer,
   PropertyValue,
@@ -44,13 +47,13 @@ export const Project = observer(({ editable }: IProjectProps) => {
   const template = getTemplateDefinition(sandbox.template);
 
   return (
-    <div style={{ marginBottom: '1rem' }}>
-      <Item style={{ marginTop: '.5rem' }}>
+    <Container>
+      <BasicInfo>
         <Title editable={editable} />
         <Description editable={editable} />
         {/* Disable until we also moved SSE over */}
         {/* <Alias editable={editable} /> */}
-      </Item>
+      </BasicInfo>
       {!sandbox.team && sandbox.author && <Author author={sandbox.author} />}
       {sandbox.team && (
         <Tooltip content="This sandbox is owned by this team">
@@ -74,62 +77,65 @@ export const Project = observer(({ editable }: IProjectProps) => {
         <Stats sandbox={sandbox} />
       </StatsContainer>
       <Keywords editable={editable} />
-      <Item flex>
-        <PropertyName>
-          Privacy{' '}
-          {!isPatron && (
-            <Tooltip
-              content={
-                'Having private and unlisted Sandboxes is available as Patron.'
-              }
-            >
-              <Icon />
-            </Tooltip>
-          )}
-        </PropertyName>
-        <PropertyValue>
-          <PrivacyContainer>
-            <PrivacySelect
-              value={sandbox.privacy}
-              disabled={!isPatron}
-              onChange={event =>
-                sandboxPrivacyChanged({
-                  privacy: Number(event.target.value),
-                })
-              }
-            >
-              <option value={0}>Public</option>
-              {isPatron && (
-                <option value={1}>Unlisted (only available by url)</option>
-              )}
-              {!isServer && isPatron && <option value={2}>Private</option>}
-            </PrivacySelect>
-          </PrivacyContainer>
-        </PropertyValue>
-      </Item>
-      {sandbox.owned && <Frozen isFrozen={sandbox.isFrozen} />}
-      {sandbox.forkedFromSandbox && (
-        <Item flex>
-          <PropertyName>Forked From</PropertyName>
+      <Group>
+        <Item>
+          <PropertyName>
+            Privacy{' '}
+            {!isPatron && (
+              <Tooltip
+                content={
+                  'Having private and unlisted Sandboxes is available as Patron.'
+                }
+              >
+                <Icon />
+              </Tooltip>
+            )}
+          </PropertyName>
           <PropertyValue>
-            <Link to={sandboxUrl(sandbox.forkedFromSandbox)}>
-              {sandbox.forkedFromSandbox.title || sandbox.forkedFromSandbox.id}
-            </Link>
+            <PrivacyContainer>
+              <PrivacySelect
+                value={sandbox.privacy}
+                disabled={!isPatron}
+                onChange={event =>
+                  sandboxPrivacyChanged({
+                    privacy: Number(event.target.value),
+                  })
+                }
+              >
+                <option value={0}>Public</option>
+                {isPatron && (
+                  <option value={1}>Unlisted (only available by url)</option>
+                )}
+                {!isServer && isPatron && <option value={2}>Private</option>}
+              </PrivacySelect>
+            </PrivacyContainer>
           </PropertyValue>
         </Item>
-      )}
-      {/* NOTE: We should only show Bundler for Client Sandboxes, since Containers use node */}
-      {!isServer && (
-        <Item flex>
-          <PropertyName>Bundler</PropertyName>
-          <PropertyValue>
-            <BundlerLink href={template.url} color={template.color()}>
-              {sandbox.template}
-            </BundlerLink>
-          </PropertyValue>
-        </Item>
-      )}
+        {sandbox.owned && <Frozen isFrozen={sandbox.isFrozen} />}
+        {sandbox.forkedFromSandbox && (
+          <Item>
+            <PropertyName>Forked From</PropertyName>
+            <PropertyValue>
+              <Link to={sandboxUrl(sandbox.forkedFromSandbox)}>
+                {sandbox.forkedFromSandbox.title ||
+                  sandbox.forkedFromSandbox.id}
+              </Link>
+            </PropertyValue>
+          </Item>
+        )}
+        {/* NOTE: We should only show Bundler for Client Sandboxes, since Containers use node */}
+        {!isServer && (
+          <Item>
+            <PropertyName>Bundler</PropertyName>
+            <PropertyValue>
+              <BundlerLink href={template.url} color={template.color()}>
+                {sandbox.template}
+              </BundlerLink>
+            </PropertyValue>
+          </Item>
+        )}
+      </Group>
       {sandbox.owned && <SandboxConfig />}
-    </div>
+    </Container>
   );
 });

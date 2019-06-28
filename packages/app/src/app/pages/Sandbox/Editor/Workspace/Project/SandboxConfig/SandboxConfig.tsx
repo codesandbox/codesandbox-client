@@ -4,6 +4,7 @@ import TrashIcon from 'react-icons/lib/fa/trash';
 import * as templates from '@codesandbox/common/lib/templates';
 import { useSignals, useStore } from 'app/store';
 import { TemplateConfig } from './TemplateConfig';
+import { Group } from '../elements';
 import { Container, CenteredText, Action } from './elements';
 
 export const SandboxConfig = observer(() => {
@@ -44,21 +45,25 @@ export const SandboxConfig = observer(() => {
   };
 
   return (
-    <Container>
-      {customTemplate ? <TemplateConfig /> : null}
-      <div>
-        <Action onClick={onCreateTemplate}>
-          <CenteredText>
-            <span>Create Template</span>
-          </CenteredText>
-        </Action>
-        <Action danger onClick={onDelete}>
-          <CenteredText>
-            <TrashIcon />
-            <span>{`Delete ${customTemplate ? `Template` : `Sandbox`}`}</span>
-          </CenteredText>
-        </Action>
-      </div>
-    </Container>
+    <>
+      {customTemplate && <TemplateConfig />}
+      <Group>
+        <Container>
+          {!customTemplate && (
+            <Action onClick={onCreateTemplate}>
+              <CenteredText>
+                <span>Create Template</span>
+              </CenteredText>
+            </Action>
+          )}
+          <Action danger onClick={onDelete}>
+            <CenteredText>
+              <TrashIcon />
+              <span>{`Delete ${customTemplate ? `Template` : `Sandbox`}`}</span>
+            </CenteredText>
+          </Action>
+        </Container>
+      </Group>
+    </>
   );
 });

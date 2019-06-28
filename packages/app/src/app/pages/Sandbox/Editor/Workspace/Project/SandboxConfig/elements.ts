@@ -43,3 +43,8 @@ export const PickColor = styled.button.attrs<{ color: string }>({
     cursor: pointer;
   `}
 `;
+
+export const PickerContainer = styled.div`
+  position: absolute;
+  right: 16px;
+`;

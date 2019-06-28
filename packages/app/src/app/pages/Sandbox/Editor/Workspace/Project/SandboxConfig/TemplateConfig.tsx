@@ -5,8 +5,8 @@ import { SketchPicker } from 'react-color';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import * as templates from '@codesandbox/common/lib/templates';
 import { useSignals, useStore } from 'app/store';
-import { Item, PropertyName, PropertyValue, Icon } from '../elements';
-import { PickColor } from './elements';
+import { Group, Item, PropertyName, PropertyValue, Icon } from '../elements';
+import { PickColor, PickerContainer } from './elements';
 
 export const TemplateConfig = observer(() => {
   const picker = useRef(null);
@@ -38,10 +38,10 @@ export const TemplateConfig = observer(() => {
   });
 
   return (
-    <>
-      <Item flex>
+    <Group>
+      <Item>
         <PropertyName>
-          Template{' '}
+          Template
           <Tooltip
             content={
               'By making your sandbox a template you will be able to see it in your create sandbox modal and start with this sandbox quickly.'
@@ -51,26 +51,27 @@ export const TemplateConfig = observer(() => {
           </Tooltip>
         </PropertyName>
       </Item>
-      <Item flex>
-        <PropertyName>Template Color</PropertyName>
+      <Item>
+        <PropertyName>Color</PropertyName>
         <PropertyValue>
           <PickColor
             onClick={() => setShowPicker(true)}
             color={selectedColor}
           />
-          {showPicker ? (
-            <SketchPicker
-              id="color"
-              ref={picker}
-              onChangeComplete={(color: { hex: string }) =>
-                setSelectedColor(color.hex)
-              }
-              color={selectedColor}
-              presetColors={[...new Set(colors)]}
-            />
-          ) : null}
+          {showPicker && (
+            <PickerContainer ref={picker}>
+              <SketchPicker
+                id="color"
+                onChangeComplete={(color: { hex: string }) =>
+                  setSelectedColor(color.hex)
+                }
+                color={selectedColor}
+                presetColors={[...new Set(colors)]}
+              />
+            </PickerContainer>
+          )}
         </PropertyValue>
       </Item>
-    </>
+    </Group>
   );
 });

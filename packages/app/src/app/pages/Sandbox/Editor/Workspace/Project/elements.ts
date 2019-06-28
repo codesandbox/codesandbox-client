@@ -1,15 +1,29 @@
-import styled, { css, CSSProp } from 'styled-components';
+import styled, { css } from 'styled-components';
 import Question from 'react-icons/lib/go/question';
 import EditPenIcon from 'react-icons/lib/md/create';
 import { Link } from 'react-router-dom';
 
-export const Item = styled.div<{ flex?: boolean }>`
-  ${({ flex }) => css`
-    ${flex && 'display: flex'};
-    margin: 1rem;
-    margin-top: 0;
-    font-size: 0.875rem;
-  `}
+export const Container = styled.div`
+  position: relative;
+  margin-bottom: 1rem;
+`;
+
+export const BasicInfo = styled.div`
+  margin: 1rem;
+  margin-top: 0;
+  font-size: 0.875rem;
+`;
+
+export const Item = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 1rem;
+  margin-top: 0;
+  font-size: 0.875rem;
+`;
+
+export const Group = styled.div`
+  margin-top: 2rem;
 `;
 
 export const PropertyName = styled.span`
@@ -54,7 +68,7 @@ export const PatronMessage = styled.div`
   `}
 `;
 
-export const UserLink = styled.span`
+export const UserLink = styled(Link)`
   ${({ theme }) => css`
     display: block;
     color: ${theme[`editor.foreground`] || css`rgba(255, 255, 255, 0.8)`};
@@ -112,6 +126,7 @@ export const EditPen = styled(EditPenIcon)`
 export const Icon = styled(Question)`
   opacity: 0.5;
   margin-left: 0.5em;
+  cursor: pointer;
 `;
 
 export const BundlerLink = styled.a.attrs<{ color: string }>({
