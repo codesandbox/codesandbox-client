@@ -5,6 +5,7 @@ import { ENTER } from '../../utils/keycodes';
 import color from 'color';
 import { Button, IconContainer, Title } from './elements';
 import { TemplateType } from '../../templates';
+import { getSandboxName } from '../../utils/get-sandbox-name';
 
 interface UserTemplate extends Template {
   iconUrl?: string;
@@ -13,6 +14,7 @@ interface UserTemplate extends Template {
   sandbox?: {
     alias: string;
     id: string;
+    title: string;
     source: {
       template: TemplateType;
     };
@@ -60,7 +62,7 @@ export const UserTemplate = ({
           <img src={template.iconUrl} />
         )}
       </IconContainer>
-      <Title>{template.title}</Title>
+      <Title>{getSandboxName(template.sandbox)}</Title>
     </Button>
   );
 };

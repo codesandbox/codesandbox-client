@@ -13,8 +13,14 @@ interface ListTemplatesResponse {
   me?: any;
 }
 
-export const MyTemplates = () => {
-  const { data = {} } = useQuery<ListTemplatesResponse>(LIST_TEMPLATES);
+interface Props {
+  selectTemplate?: (params: { shortid: string }) => void;
+}
+
+export const MyTemplates = ({ selectTemplate }: Props) => {
+  const { data = {} } = useQuery<ListTemplatesResponse>(LIST_TEMPLATES, {
+    variables: { showAll: true },
+  });
 
   if (data.me && !data.me.templates.length) {
     return null;
@@ -30,7 +36,13 @@ export const MyTemplates = () => {
                 <CustomTemplate
                   template={template}
                   i={i}
-                  onClick={() => history.push(sandboxUrl(template.sandbox))}
+                  onClick={() => {
+                    if (selectTemplate) {
+                      selectTemplate({ shortid: template.sandbox.id });
+                    } else {
+                      history.push(sandboxUrl(template.sandbox));
+                    }
+                  }}
                 />
               );
             })

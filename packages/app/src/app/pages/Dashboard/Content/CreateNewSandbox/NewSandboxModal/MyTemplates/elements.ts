@@ -6,6 +6,6 @@ export const MyTemplatesList = styled.div`
   overflow: auto;
 
   button:not(:last-child) {
-    margin-right: 18px;
+    margin-right: 1rem;
   }
 `;

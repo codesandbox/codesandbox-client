@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import history from 'app/utils/history';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { LIST_TEMPLATES } from '../../../queries';
-import { Container, Grid } from './elements';
+import { Container, Grid, EmptyTitle, Buttons } from './elements';
 import { Navigation } from './Navigation';
 
 export const Templates = props => {
@@ -19,7 +20,7 @@ export const Templates = props => {
 
   useEffect(() => {
     document.title = `${teamId ? 'Our' : 'My'} Templates - CodeSandbox`;
-  }, []);
+  }, [teamId]);
 
   if (error) {
     console.error(error);
@@ -49,6 +50,23 @@ export const Templates = props => {
   return (
     <Container>
       <Navigation teamId={teamId} number={sortedTemplates.length} />
+      {!sortedTemplates.length && (
+        <div>
+          <EmptyTitle>
+            You have not made any templates yet.
+            <br />
+            Learn more about Templates in de documentation.
+          </EmptyTitle>
+          <Buttons>
+            <Button small secondary to={'/s'}>
+              Create Sandbox
+            </Button>
+            <Button small to={'/docs/templates'}>
+              Learn More
+            </Button>
+          </Buttons>
+        </div>
+      )}
       <Grid>
         {sortedTemplates.map((template, i) => (
           <CustomTemplate

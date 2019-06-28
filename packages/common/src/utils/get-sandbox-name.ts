@@ -1,4 +1,5 @@
-
-import { Sandbox } from '../types';
-
-export const getSandboxName = (sandbox: Sandbox) => sandbox.title || sandbox.alias || sandbox.id;
+export const getSandboxName = (sandbox: {
+  title: string;
+  alias: string;
+  id: string;
+}) => sandbox.title || sandbox.alias || sandbox.id;

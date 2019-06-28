@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import Modal from 'app/components/Modal';
 import Loadable from 'app/utils/Loadable';
 import { ThemeProvider } from 'styled-components';
+import { decorateSelector } from '@codesandbox/common/lib/theme';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
@@ -176,12 +177,20 @@ class Modals extends Component {
     const { signals, store } = this.props;
     const sandbox = store.editor.currentSandbox;
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+    const templateColor = () => {
+      if (templateDef) {
+        if (sandbox.customTemplate)
+          return decorateSelector(() => sandbox.customTemplate.color);
+
+        return templateDef.color;
+      }
+    };
     const modal = store.currentModal && modals[store.currentModal];
 
     return (
       <ThemeProvider
         theme={{
-          templateColor: templateDef && templateDef.color,
+          templateColor: templateColor(),
           templateBackgroundColor: templateDef && templateDef.backgroundColor,
           ...this.state.theme,
         }}

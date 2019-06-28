@@ -35,8 +35,13 @@ const PathedSandboxes = props => {
               sandboxes.map(x => x.source.template)
             );
 
+            // We want to hide all templates
+            // TODO: make this a query variable for graphql and move the logic to the server
+            const noTemplateSandboxes = sandboxes.filter(
+              s => !s.customTemplate
+            );
             const orderedSandboxes = props.store.dashboard.getFilteredSandboxes(
-              sandboxes
+              noTemplateSandboxes
             );
 
             let mostUsedTemplate = null;
