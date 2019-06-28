@@ -227,6 +227,13 @@ class SandboxItem extends React.PureComponent<Props, State> {
           },
         ],
         [
+          selectedCount < 50 && {
+            title: `Make ${selectedCount} Sandboxes a Template`,
+            action: () => {
+              this.props.makeTemplates();
+              return true;
+            },
+          },
           {
             title: `Move ${selectedCount} Sandboxes To Trash`,
             action: () => {
@@ -236,7 +243,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
             color: theme.red.darken(0.2)(),
           },
         ],
-      ];
+      ].filter(Boolean);
     }
 
     return [
