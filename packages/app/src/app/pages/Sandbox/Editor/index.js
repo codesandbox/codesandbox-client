@@ -71,11 +71,12 @@ class ContentSplit extends React.Component {
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
     const templateColor = () => {
       if (templateDef) {
-        if (sandbox.customTemplate)
+        if (sandbox.customTemplate) {
           return decorateSelector(() => sandbox.customTemplate.color);
-
+        }
         return templateDef.color;
       }
+      return undefined;
     };
 
     const topOffset = store.preferences.settings.zenMode ? 0 : 3 * 16;

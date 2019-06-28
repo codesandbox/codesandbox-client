@@ -179,11 +179,12 @@ class Modals extends Component {
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
     const templateColor = () => {
       if (templateDef) {
-        if (sandbox.customTemplate)
+        if (sandbox.customTemplate) {
           return decorateSelector(() => sandbox.customTemplate.color);
-
+        }
         return templateDef.color;
       }
+      return undefined;
     };
     const modal = store.currentModal && modals[store.currentModal];
 
