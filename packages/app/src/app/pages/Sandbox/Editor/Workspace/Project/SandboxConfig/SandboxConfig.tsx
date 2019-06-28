@@ -9,6 +9,7 @@ import { Container, CenteredText, Action } from './elements';
 
 export const SandboxConfig = observer(() => {
   const {
+    user,
     editor: {
       currentSandbox: { template, customTemplate },
     },
@@ -23,6 +24,11 @@ export const SandboxConfig = observer(() => {
 
   const onCreateTemplate = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (!user) {
+      modalOpened({ modal: 'signInForTemplates' });
+    }
+
     addedTemplate({
       template: {
         color:
