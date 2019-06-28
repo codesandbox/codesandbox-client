@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { basename } from 'path';
+import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
@@ -16,6 +17,7 @@ import {
   TemplateBadge,
   Main,
 } from './elements';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 export const SandboxName = observer(() => {
   const [updatingName, setUpdatingName] = useState(false);
@@ -118,9 +120,24 @@ export const SandboxName = observer(() => {
           <Name onClick={handleNameClick}>{sandboxName}</Name>
         )}
         {template ? (
-          <TemplateBadge color={currentSandbox.customTemplate.color}>
-            Template
-          </TemplateBadge>
+          <Tooltip
+            interactive
+            placement="bottom"
+            content={
+              <>
+                This sandbox is a template you can find out what that means in
+                the{' '}
+                <Link target="_blank" to={`docs/templates`}>
+                  docs
+                </Link>
+                .
+              </>
+            }
+          >
+            <TemplateBadge color={currentSandbox.customTemplate.color}>
+              Template
+            </TemplateBadge>
+          </Tooltip>
         ) : null}
       </Container>
     </Main>
