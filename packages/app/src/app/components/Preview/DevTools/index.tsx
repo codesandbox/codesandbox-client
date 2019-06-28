@@ -422,17 +422,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
           this.normalizeHeight(el);
         }}
         style={{
-          height: primary ? '100%' : height,
-          position: 'relative',
-          display: 'flex',
-          maxHeight: '100%',
-          /**
-           * Necessary to ensure it drags naturally. Otherwise there's an issue
-           * where flex tries to allocate equal space to the preview and the terminal,
-           * resulting in a very jaggy experience. We set flex-shrink to 0 only
-           * for the console, and not for the preview
-           */
-          flexShrink: devToolIndex === 1 ? 0 : 1,
+          flex: primary
+            ? '1 1 0'
+            : `0 0 ${height}${typeof height === 'number' ? 'px' : ''}`,
+          minHeight: primary ? 0 : 'auto',
         }}
       >
         {!hideTabs && (

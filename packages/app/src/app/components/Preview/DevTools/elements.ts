@@ -4,9 +4,6 @@ export const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
-
-  max-height: 100%;
   z-index: 7;
 `;
 
@@ -41,9 +38,6 @@ export const ContentContainer = styled.div`
     props.theme['panel.background'] ||
     props.theme['editor.background'] ||
     props.theme.background4};
-  position: relative;
-  overflow: auto;
-
-  width: 100%;
-  height: 100%;
+  flex: auto;
+  display: flex;
 `;
