@@ -98,10 +98,9 @@ export class ServerExecutor implements IExecutor {
     return this.openSocket();
   }
 
-  public dispose() {
+  public async dispose() {
     this.socket.removeAllListeners();
     this.socket.close();
-    return Promise.resolve();
   }
 
   public updateFiles(newFiles: IFiles) {
@@ -163,7 +162,7 @@ export class ServerExecutor implements IExecutor {
     this.socket.emit('sandbox', { id: this.sandboxId, token });
 
     debug('Connected to sse manager, sending start signal...');
-    sseTerminalMessage(`Connected, starting sandbox ${this.sandboxId}...`);
+    sseTerminalMessage(`Starting sandbox ${this.sandboxId}...`);
     this.socket.emit('sandbox:start');
   }
 
