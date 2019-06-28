@@ -150,6 +150,10 @@ export class ServerExecutor implements IExecutor {
         }
       });
 
+      this.socket.on('sandbox:start', () => {
+        sseTerminalMessage(`Sandbox ${this.sandboxId} started`);
+      });
+
       this.socket.open();
     });
   }
