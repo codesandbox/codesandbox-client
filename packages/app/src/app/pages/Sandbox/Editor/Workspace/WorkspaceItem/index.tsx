@@ -27,9 +27,9 @@ const WorkspaceItem = React.memo(
     disabled,
     actions,
     style,
-    defaultOpen,
+    defaultOpen = false,
   }: Props) => {
-    const [open, setOpen] = useState(Boolean(defaultOpen));
+    const [open, setOpen] = useState(defaultOpen);
 
     return (
       <>

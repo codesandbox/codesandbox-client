@@ -19,10 +19,8 @@ export const ShareButton = observer(() => {
       secondary={!owned}
       small
     >
-      <>
-        <ShareIcon />
-        Share
-      </>
+      <ShareIcon />
+      Share
     </Button>
   );
 });

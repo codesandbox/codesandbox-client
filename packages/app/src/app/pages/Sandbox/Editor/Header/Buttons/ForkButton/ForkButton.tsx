@@ -21,10 +21,8 @@ export const ForkButton = observer(() => {
       loading={isForkingSandbox}
       small
     >
-      <>
-        <ForkIcon />
-        {isForkingSandbox ? 'Forking...' : 'Fork'}
-      </>
+      <ForkIcon />
+      {isForkingSandbox ? 'Forking...' : 'Fork'}
     </ProgressButton>
   );
 });
