@@ -5,6 +5,7 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import history from 'app/utils/history';
+import ContextMenu from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { LIST_TEMPLATES } from '../../../queries';
@@ -69,11 +70,24 @@ export const Templates = props => {
       )}
       <Grid>
         {sortedTemplates.map((template, i) => (
-          <CustomTemplate
-            i={i}
-            template={template}
-            onClick={() => history.push(sandboxUrl(template.sandbox))}
-          />
+          <ContextMenu
+            items={[
+              {
+                title: 'Rename Folder',
+                action: () => {
+                  alert('test');
+                  return true;
+                },
+              },
+            ]}
+            key={template.id}
+          >
+            <CustomTemplate
+              i={i}
+              template={template}
+              onClick={() => history.push(sandboxUrl(template.sandbox))}
+            />
+          </ContextMenu>
         ))}
       </Grid>
     </Container>
