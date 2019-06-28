@@ -422,10 +422,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
           this.normalizeHeight(el);
         }}
         style={{
-          display: 'flex',
           flex: primary
-            ? 'auto'
-            : `0 ${height}${typeof height === 'number' ? 'px' : ''}`,
+            ? '1 1 0'
+            : `0 0 ${height}${typeof height === 'number' ? 'px' : ''}`,
+          minHeight: primary ? 0 : 'auto',
         }}
       >
         {!hideTabs && (
