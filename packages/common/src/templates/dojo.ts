@@ -24,7 +24,7 @@ export default new DojoTemplate(
   {
     showOnHomePage: true,
     showCube: false,
-    netlify: false,
+    distDir: 'output/dist',
     isTypescript: true,
     extraConfigurations: {
       '/tsconfig.json': configurations.tsconfig,

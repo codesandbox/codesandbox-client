@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 
+const SECOND = 1000;
 const SANDBOXES = [
   'new',
   // 'preact',
@@ -49,6 +50,52 @@ function pageLoaded(page) {
   });
 }
 
+function loadSandbox(page, sandboxId, timeout) {
+  return new Promise(async (resolve, reject) => {
+    const timer = setTimeout(async () => {
+      reject(
+        Error(
+          `Timeout: loading sandbox '${sandboxId}' took more than ${timeout /
+            SECOND}s`
+        )
+      );
+    }, timeout);
+    page.goto(`http://localhost:3002/#${sandboxId}`, {
+      timeout: 0, // we manage the timeout ourselves
+    });
+    await pageLoaded(page);
+    clearTimeout(timer);
+    await page.waitFor(2 * SECOND);
+    resolve();
+  });
+}
+
+// eslint-disable-next-line consistent-return
+async function loadSandboxRetry(browser, sandboxId, timeout, retries) {
+  let page;
+  for (let i = 1; i <= retries; i++) {
+    try {
+      const start = new Date();
+      /* eslint-disable no-await-in-loop */
+      page = await browser.newPage();
+      await loadSandbox(page, sandboxId, timeout);
+      process.stdout.write(
+        `Sandbox '${sandboxId}' loaded in ${(new Date() - start) / SECOND}s\n`
+      );
+      return page;
+    } catch (err) {
+      await page.waitFor(SECOND);
+      await page.close();
+      /* eslint-enable no-await-in-loop */
+      if (i === retries) {
+        throw new Error(`${err.message}, retried ${retries} times.`);
+      } else {
+        process.stdout.write(`Loading sandbox '${sandboxId}', retry ${i}...\n`);
+      }
+    }
+  }
+}
+
 describe('sandboxes', () => {
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -62,16 +109,11 @@ describe('sandboxes', () => {
     const threshold = sandbox.threshold || 0.01;
 
     it(
-      `loads the sandbox with id '${id}'`,
+      `loads the sandbox '${id}'`,
       async () => {
         browser = await browser;
-        const page = await browser.newPage();
-        const waitFunction = pageLoaded(page);
-        page.goto('http://localhost:3002/#' + id, {
-          timeout: 80000,
-        });
-        await waitFunction;
-        await page.waitFor(sandbox.waitFor || 2000);
+
+        const page = await loadSandboxRetry(browser, id, 30 * SECOND, 2);
 
         const screenshot = await page.screenshot();
 
@@ -84,7 +126,7 @@ describe('sandboxes', () => {
 
         await page.close();
       },
-      1000 * 120 * 1
+      65 * SECOND
     );
   });
 });
