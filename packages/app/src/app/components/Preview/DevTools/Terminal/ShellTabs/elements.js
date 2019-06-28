@@ -6,12 +6,12 @@ export const Container = styled.div`
   background-color: ${props =>
     props.theme['editorGroupHeader.tabsBackground'] || props.theme.background4};
 
+  width: 100%;
   align-items: center;
   font-size: 0.875rem;
 
   color: ${props =>
     props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.7)'};
-  flex: none;
 `;
 
 export const CrossIcon = styled(CrossIconClean)`
