@@ -205,7 +205,6 @@ class CreateNewSandbox extends React.PureComponent {
               style={{
                 opacity: 0,
                 zIndex: 0,
-                pointerEvents: 'none',
                 position: 'fixed',
                 top: '25vh',
                 bottom: 0,
