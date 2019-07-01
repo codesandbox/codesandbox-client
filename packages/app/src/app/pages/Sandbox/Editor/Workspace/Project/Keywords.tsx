@@ -42,6 +42,10 @@ export const Keywords = observer(({ editable }: IKeywordsProps) => {
     }
   };
 
+  if (tags.length === 0) {
+    return null;
+  }
+
   return (
     <Item>
       {editable ? (

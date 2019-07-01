@@ -58,6 +58,10 @@ export const PrivacySelect = styled.select`
     box-sizing: border-box;
     color: ${theme[`dropdown.foreground`] ||
       (theme.light ? css`rgba(0, 0, 0, 0.8)` : css`rgba(255, 255, 255, 0.8)`)};
+
+    &:disabled {
+      opacity: 0.5;
+    }
   `}
 `;
 
@@ -141,5 +145,18 @@ export const BundlerLink = styled.a.attrs({
 })`
   ${({ theme }) => css`
     color: ${theme.templateColor} !important;
+  `}
+`;
+
+export const Explanation = styled.span`
+  ${({ theme }) => css`
+    display: block;
+    padding-top: 5px;
+    margin: 1rem;
+    margin-top: -20px;
+    color: ${theme.light
+      ? css`rgba(0, 0, 0, 0.4)`
+      : css`rgba(255, 255, 255, 0.4)`};
+    font-size: 12px;
   `}
 `;

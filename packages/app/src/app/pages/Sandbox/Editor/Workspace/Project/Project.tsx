@@ -13,6 +13,7 @@ import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import getTemplate from '@codesandbox/common/lib/templates';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import Stats from 'app/pages/common/Stats';
+import PrivacyStatus from 'app/components/PrivacyStatus';
 import { useSignals, useStore } from 'app/store';
 import { Title } from './Title';
 import { Description } from './Description';
@@ -34,6 +35,7 @@ import {
   Icon,
   TemplateStyledLink,
   BundlerLink,
+  Explanation,
 } from './elements';
 
 interface IProjectProps {
@@ -96,21 +98,39 @@ export const Project = observer(({ editable }: IProjectProps) => {
           </PropertyName>
           <PropertyValue>
             <PrivacyContainer>
-              <PrivacySelect
-                value={sandbox.privacy}
-                disabled={!isPatron}
-                onChange={event =>
-                  sandboxPrivacyChanged({
-                    privacy: Number(event.target.value),
-                  })
-                }
-              >
-                <option value={0}>Public</option>
-                {isPatron && (
-                  <option value={1}>Unlisted (only available by url)</option>
-                )}
-                {!isServer && isPatron && <option value={2}>Private</option>}
-              </PrivacySelect>
+              {editable ? (
+                <>
+                  <PrivacySelect
+                    value={sandbox.privacy}
+                    disabled={!isPatron}
+                    onChange={event =>
+                      sandboxPrivacyChanged({
+                        privacy: Number(event.target.value),
+                      })
+                    }
+                  >
+                    <option value={0}>Public</option>
+                    {isPatron && (
+                      <option value={1}>
+                        Unlisted (only available by url)
+                      </option>
+                    )}
+                    {!isServer && isPatron && (
+                      <option value={2}>Private</option>
+                    )}
+                  </PrivacySelect>
+                  {!isPatron && (
+                    <Explanation>
+                      You can change privacy of a sandbox as a{' '}
+                      <a href="/patron" target="_blank">
+                        patron
+                      </a>
+                    </Explanation>
+                  )}
+                </>
+              ) : (
+                <PrivacyStatus privacy={sandbox.privacy} />
+              )}
             </PrivacyContainer>
           </PropertyValue>
         </Item>

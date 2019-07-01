@@ -20,6 +20,7 @@ interface Props {
 export const MyTemplates = ({ selectTemplate }: Props) => {
   const { data = {} } = useQuery<ListTemplatesResponse>(LIST_TEMPLATES, {
     variables: { showAll: true },
+    fetchPolicy: 'cache-and-network',
   });
 
   if (data.me && !data.me.templates.length) {
