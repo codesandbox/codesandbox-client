@@ -50,7 +50,8 @@ export const PropertyValue = styled.span`
 export const PrivacySelect = styled.select`
   ${({ theme }) => css`
     width: 100%;
-    height: 1.5rem;
+    /* Same size as other items */
+    height: 20px;
     border: none;
     border-radius: 4px;
     background-color: ${theme[`dropdown.background`] ||
