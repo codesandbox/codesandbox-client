@@ -61,6 +61,7 @@ const Git = types.model({
 
 const Template = types.model({
   id: types.maybeNull(types.string),
+  title: types.maybeNull(types.string),
   url: types.maybeNull(types.string),
   iconUrl: types.maybeNull(types.string),
   color: types.string,
@@ -85,6 +86,7 @@ export const Sandbox = types.model({
       likeCount: types.number,
       insertedAt: types.string,
       id: types.string,
+      alias: types.maybeNull(types.string),
       git: types.maybeNull(Git),
       forkCount: types.number,
     })

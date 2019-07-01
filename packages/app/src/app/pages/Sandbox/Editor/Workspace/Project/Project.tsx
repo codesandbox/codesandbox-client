@@ -6,6 +6,8 @@ import {
   sandboxUrl,
   githubRepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+import getDefinition from '@codesandbox/common/lib/templates';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 import getTemplate from '@codesandbox/common/lib/templates';
@@ -118,8 +120,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
             <PropertyName>Forked From</PropertyName>
             <PropertyValue>
               <TemplateStyledLink to={sandboxUrl(sandbox.forkedFromSandbox)}>
-                {sandbox.forkedFromSandbox.title ||
-                  sandbox.forkedFromSandbox.id}
+                {getSandboxName(sandbox.forkedFromSandbox)}
               </TemplateStyledLink>
             </PropertyValue>
           </Item>
@@ -127,9 +128,22 @@ export const Project = observer(({ editable }: IProjectProps) => {
         {/* NOTE: We should only show Bundler for Client Sandboxes, since Containers use node */}
         {!isServer && (
           <Item>
-            <PropertyName>Bundler</PropertyName>
+            <PropertyName>Environment</PropertyName>
             <PropertyValue>
               <BundlerLink href={template.url}>{sandbox.template}</BundlerLink>
+            </PropertyValue>
+          </Item>
+        )}
+
+        {!sandbox.customTemplate && (
+          <Item>
+            <PropertyName>Template</PropertyName>
+            <PropertyValue>
+              <BundlerLink href={template.url}>
+                {sandbox.forkedTemplate
+                  ? sandbox.forkedTemplate.title
+                  : getDefinition(sandbox.template).niceName}
+              </BundlerLink>
             </PropertyValue>
           </Item>
         )}
