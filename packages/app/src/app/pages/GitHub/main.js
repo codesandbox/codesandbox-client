@@ -60,7 +60,7 @@ class GitHub extends React.PureComponent {
           <Title>Import from GitHub</Title>
           <SubTitle
             css={`
-              font-size: 24px;
+              font-size: 1.25rem;
             `}
           >
             Enter the URL to your GitHub repository to generate a URL to your
@@ -81,7 +81,7 @@ class GitHub extends React.PureComponent {
         </Label>
         <StyledInput
           name="githuburl"
-          value={url}
+          value={url || ''}
           onChange={this.updateUrl}
           placeholder="Insert GitHub URL..."
         />

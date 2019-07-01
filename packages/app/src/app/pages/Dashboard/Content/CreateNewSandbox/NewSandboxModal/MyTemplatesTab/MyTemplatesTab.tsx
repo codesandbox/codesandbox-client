@@ -14,6 +14,7 @@ interface ListTemplatesResponse {
 export const MyTemplatesTab = ({ selectTemplate }) => {
   const { data = {} } = useQuery<ListTemplatesResponse>(LIST_TEMPLATES, {
     variables: { showAll: true },
+    fetchPolicy: 'cache-and-network',
   });
 
   return data && data.me && data.me.templates.length ? (

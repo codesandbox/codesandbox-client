@@ -62,7 +62,7 @@ type Props = {
   exportSandboxes: () => void;
   permanentlyDeleteSandboxes: () => void;
   undeleteSandboxes: () => void;
-  makeTemplates: () => void;
+  makeTemplates: (teamId?: string) => void;
 
   // React-DnD, lazy typings
   connectDragSource: any;
@@ -619,7 +619,7 @@ const cardSource = {
     }
 
     if (result && result[MAKE_TEMPLATE_DROP_KEY]) {
-      props.makeTemplates();
+      props.makeTemplates(result.teamId);
     }
   },
 };

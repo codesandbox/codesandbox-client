@@ -415,6 +415,7 @@ export const signIn = [
           actions.setSignedInCookie,
           actions.setStoredSettings,
           actions.connectWebsocket,
+          actions.loadTemplatesForStartModal,
           setupNotifications,
           refetchSandboxInfo,
         ],

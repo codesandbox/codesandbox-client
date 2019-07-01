@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.div<{ hideFilters: boolean }>`
   transition: 0.3s ease opacity;
   position: relative;
   color: rgba(255, 255, 255, 0.6);
@@ -34,7 +34,7 @@ export const OverlayContainer = styled.div`
   right: 0;
   text-align: left;
   line-height: 1.6;
-  width: 200px;
+  width: 300px;
   padding: 1rem;
   z-index: 10;
   color: rgba(255, 255, 255, 0.8);
@@ -51,7 +51,7 @@ export const OptionName = styled.span`
   cursor: pointer;
 `;
 
-export const Option = styled.div`
+export const Option = styled.div<{ selected: boolean }>`
   transition: 0.3s ease color;
   cursor: pointer;
   color: ${props =>
@@ -82,7 +82,7 @@ export const Option = styled.div`
     `};
 `;
 
-export const CheckBox = styled.span`
+export const CheckBox = styled.span<{ selected: boolean; color: string }>`
   ${props =>
     props.selected
       ? css`

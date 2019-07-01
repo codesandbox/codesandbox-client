@@ -52,7 +52,7 @@ export const entryTarget = {
     if (!monitor.isOver({ shallow: true })) return {};
 
     // Used in SandboxCard
-    return { [MAKE_TEMPLATE_DROP_KEY]: true };
+    return { [MAKE_TEMPLATE_DROP_KEY]: true, teamId: props.teamId };
   },
 
   canDrop: (props, monitor) => {

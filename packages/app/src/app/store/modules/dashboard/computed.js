@@ -17,11 +17,16 @@ export function getFilteredSandboxes(sandboxes) {
     }
 
     if (orderField === 'title') {
-      return s.title || s.id;
+      return s.title || s.alias || s.id;
     }
 
     return s[orderField];
-  }).filter(x => blacklistedTemplates.indexOf(x.source.template) === -1);
+  }).filter(
+    x =>
+      blacklistedTemplates.indexOf(
+        x.forkedTemplate ? x.forkedTemplate.id : x.source.template
+      ) === -1
+  );
 
   if (orderOrder === 'desc') {
     orderedSandboxes = orderedSandboxes.reverse();

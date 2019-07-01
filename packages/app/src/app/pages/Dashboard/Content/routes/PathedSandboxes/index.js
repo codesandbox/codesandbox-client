@@ -1,7 +1,9 @@
 import React from 'react';
-import { uniq } from 'lodash-es';
+import { uniqBy } from 'lodash-es';
 import { inject, observer, Observer } from 'mobx-react';
 import { Query } from 'react-apollo';
+import getDefinition from '@codesandbox/common/lib/templates';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { basename } from 'path';
 import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
@@ -31,8 +33,28 @@ const PathedSandboxes = props => {
                 ? []
                 : data.me.collection.sandboxes;
 
-            const possibleTemplates = uniq(
-              sandboxes.map(x => x.source.template)
+            const possibleTemplates = uniqBy(
+              sandboxes.map(x => {
+                if (x.forkedTemplate) {
+                  const sandboxName = getSandboxName(x.forkedTemplate.sandbox);
+                  return {
+                    id: x.forkedTemplate.id,
+                    color: x.forkedTemplate.color,
+                    name: sandboxName,
+                    niceName: sandboxName,
+                  };
+                }
+
+                const template = getDefinition(x.source.template);
+
+                return {
+                  id: x.source.template,
+                  color: template.color,
+                  name: template.name,
+                  niceName: template.niceName,
+                };
+              }),
+              template => template.id
             );
 
             // We want to hide all templates

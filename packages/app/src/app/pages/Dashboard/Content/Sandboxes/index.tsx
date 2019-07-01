@@ -6,9 +6,24 @@ import Filters from './Filters';
 
 import { Container, HeaderContainer, HeaderTitle } from '../elements';
 import { DashboardActions } from './Actions';
+import { ITemplate } from './types';
+
+interface Props {
+  sandboxes: any[];
+  Header: React.ComponentType;
+  SubHeader: React.ComponentType;
+  ExtraElement: React.ComponentType;
+
+  possibleTemplates: ITemplate[];
+  isLoading?: boolean;
+  hideOrder?: boolean;
+  hideFilters?: boolean;
+  page?: number;
+  actions?: any[];
+}
 
 // eslint-disable-next-line react/prefer-stateless-function
-class Content extends React.Component {
+class Content extends React.Component<Props> {
   render() {
     const {
       sandboxes,

@@ -102,14 +102,18 @@ class SandboxGrid extends React.Component<*, State> {
     });
   };
 
-  makeTemplates = () => {
+  makeTemplates = (teamId?: string) => {
     const collections = uniq(
       this.props.sandboxes
         .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
         .map(s => s.collection)
     );
 
-    makeTemplates(this.props.store.dashboard.selectedSandboxes, collections);
+    makeTemplates(
+      this.props.store.dashboard.selectedSandboxes,
+      teamId,
+      collections
+    );
   };
 
   deleteSandboxes = () => {
