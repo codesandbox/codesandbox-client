@@ -70,7 +70,12 @@ export const addTemplate = [
       closeModal,
       addNotification('Template Created', 'success'),
     ],
-    error: [addNotification('Could not create template, please try again later', 'error')],
+    error: [
+      addNotification(
+        'Could not create template, please try again later',
+        'error'
+      ),
+    ],
   },
 ];
 
@@ -79,7 +84,11 @@ export const deleteSandbox = [
   actions.deleteSandbox,
   set(state`workspace.showDeleteSandboxModal`, false),
   addNotification('Sandbox deleted!', 'success'),
-  actions.redirectToSandboxWizard,
+  when(state`user`),
+  {
+    true: [actions.redirectToDashboard],
+    false: [actions.redirectToSandboxWizard],
+  },
 ];
 
 export const openIntegrations = [

@@ -19,7 +19,7 @@ export const ForkFrozenSandboxModal = observer(() => {
     },
   } = useStore();
   const { modalClosed, editor } = useSignals();
-  const type = customTemplate ? 'template ' : 'sandbox ';
+  const type = customTemplate ? 'template' : 'sandbox';
 
   const unlock = () => {
     editor.sessionFreezeOverride({
@@ -40,14 +40,14 @@ export const ForkFrozenSandboxModal = observer(() => {
   return (
     <Container>
       <Close onClick={() => modalClosed()} />
-      <Title>Frozen Sandbox</Title>
+      <Title>Frozen {customTemplate ? 'Template' : 'Sandbox'}</Title>
       <p>
         This {type} is frozen, which means you can’t make edits without
-        unlocking it.
+        unfreezing it.
       </p>
-      <p>Do you want to unlock the sandbox for this session or make a fork?</p>
+      <p>Do you want to unfreeze the {type} for this session or make a fork?</p>
       <Actions>
-        <UnlockButton onClick={unlock}>Unlock</UnlockButton>
+        <UnlockButton onClick={unlock}>Unfreeze</UnlockButton>
         <Button small onClick={fork}>
           Fork
           <Enter />

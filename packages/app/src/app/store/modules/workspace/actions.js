@@ -33,6 +33,10 @@ export function redirectToSandboxWizard({ router }) {
   router.redirectToSandboxWizard();
 }
 
+export function redirectToDashboard({ router }) {
+  router.redirectToDashboard();
+}
+
 export function addTemplate({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
   const body = {
