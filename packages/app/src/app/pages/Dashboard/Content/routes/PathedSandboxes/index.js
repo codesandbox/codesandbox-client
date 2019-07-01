@@ -75,8 +75,6 @@ const PathedSandboxes = props => {
               }
             }
 
-            console.log(possibleTemplates);
-
             return (
               <Sandboxes
                 ExtraElement={({ style }) => (
