@@ -9,6 +9,7 @@ import {
 } from './elements';
 import { Sandbox } from '../../types';
 import { getSandboxName } from '../../utils/get-sandbox-name';
+import host from '../../utils/host';
 
 interface Props {
   template?: {
@@ -20,6 +21,8 @@ interface Props {
   onClick?: () => void;
 }
 const BANNER = 'https://codesandbox.io/static/img/banner.png';
+const SCREENSHOT_API_URL = (id: string) =>
+  `${host()}/api/v1/sandboxes/${id}/screenshot.png`;
 const CustomTemplate = ({ template, onClick, i }: Props) => {
   if (!template) {
     return (
@@ -38,7 +41,15 @@ const CustomTemplate = ({ template, onClick, i }: Props) => {
 
   return (
     <MyTemplate key={i} onClick={onClick} overlayHeight={109}>
-      <img height="109px" src={sandbox.screenshotUrl || BANNER} alt={title} />
+      <img
+        height="109px"
+        src={
+          process.env.NODE_ENV === 'development'
+            ? BANNER
+            : SCREENSHOT_API_URL(sandbox.id) || BANNER
+        }
+        alt={title}
+      />
       <Overlay>
         <SandboxDescription>{sandbox.description}</SandboxDescription>
         {sandbox.tags && <Tags tags={sandbox.tags} />}

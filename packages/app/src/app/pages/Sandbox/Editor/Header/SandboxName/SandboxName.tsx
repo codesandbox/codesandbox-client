@@ -125,8 +125,7 @@ export const SandboxName = observer(() => {
             placement="bottom"
             content={
               <>
-                This sandbox is a template you can find out what that means in
-                the{' '}
+                This sandbox is a template, you can learn about templates in the{' '}
                 <Link target="_blank" to={`docs/templates`}>
                   docs
                 </Link>

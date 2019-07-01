@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
+import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 import { SketchPicker } from 'react-color';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
@@ -43,8 +44,15 @@ export const TemplateConfig = observer(() => {
         <PropertyName>
           Template
           <Tooltip
+            placement="right"
+            interactive
             content={
-              'By making your sandbox a template you will be able to see it in your create sandbox modal and start with this sandbox quickly.'
+              <>
+                Templates can be used as starting points.{' '}
+                <Link target="_blank" to={`docs/templates`}>
+                  More info.
+                </Link>
+              </>
             }
           >
             <Icon />

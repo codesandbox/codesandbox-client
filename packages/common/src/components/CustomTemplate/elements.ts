@@ -51,6 +51,11 @@ export const MyTemplate = styled.button<{ overlayHeight?: number }>`
     cursor: pointer;
     box-sizing: border-box;
 
+    &:focus {
+      border: 2px solid ${theme.secondary};
+      outline: none;
+    }
+
     img {
       display: block;
       max-width: 100%;

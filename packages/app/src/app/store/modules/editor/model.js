@@ -74,6 +74,7 @@ export const Sandbox = types.model({
   externalResources: types.array(types.string),
   forkCount: types.number,
   customTemplate: types.maybeNull(Template),
+  forkedTemplate: types.maybeNull(Template),
   forkedFromSandbox: types.maybeNull(
     types.model({
       viewCount: types.number,
