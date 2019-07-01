@@ -1,9 +1,6 @@
 import React from 'react';
-import { uniqBy } from 'lodash-es';
 import { inject, observer, Observer } from 'mobx-react';
 import { Query } from 'react-apollo';
-import getDefinition from '@codesandbox/common/lib/templates';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { basename } from 'path';
 import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
@@ -12,6 +9,7 @@ import CreateNewSandbox from '../../CreateNewSandbox';
 import getMostUsedTemplate from '../../../utils/get-most-used-template';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
+import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 const PathedSandboxes = props => {
   const path = '/' + (props.match.params.path || '');
@@ -33,29 +31,7 @@ const PathedSandboxes = props => {
                 ? []
                 : data.me.collection.sandboxes;
 
-            const possibleTemplates = uniqBy(
-              sandboxes.map(x => {
-                if (x.forkedTemplate) {
-                  const sandboxName = getSandboxName(x.forkedTemplate.sandbox);
-                  return {
-                    id: x.forkedTemplate.id,
-                    color: x.forkedTemplate.color,
-                    name: sandboxName,
-                    niceName: sandboxName,
-                  };
-                }
-
-                const template = getDefinition(x.source.template);
-
-                return {
-                  id: x.source.template,
-                  color: template.color,
-                  name: template.name,
-                  niceName: template.niceName,
-                };
-              }),
-              template => template.id
-            );
+            const possibleTemplates = getPossibleTemplates(sandboxes);
 
             // We want to hide all templates
             // TODO: make this a query variable for graphql and move the logic to the server

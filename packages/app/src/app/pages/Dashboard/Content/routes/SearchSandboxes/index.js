@@ -1,12 +1,12 @@
 import React from 'react';
 import { inject, Observer } from 'mobx-react';
-import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
 import Fuse from 'fuse.js';
 
 import Sandboxes from '../../Sandboxes';
 
 import { SEARCH_SANDBOXES_QUERY } from '../../../queries';
+import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 let lastSandboxes = null;
 let searchIndex = null;
@@ -58,7 +58,7 @@ const SearchSandboxes = ({ store }) => (
 
           let possibleTemplates = [];
           if (sandboxes) {
-            possibleTemplates = uniq(sandboxes.map(x => x.source.template));
+            possibleTemplates = getPossibleTemplates(sandboxes);
 
             sandboxes = store.dashboard.getFilteredSandboxes(sandboxes);
           }

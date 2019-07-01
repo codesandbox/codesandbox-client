@@ -28,7 +28,7 @@ export const MyTemplates = ({ selectTemplate }: Props) => {
 
   return (
     <>
-      <Title>My Templates</Title>
+      <Title>Templates</Title>
       <MyTemplatesList>
         {data.me
           ? data.me.templates.map((template, i) => {

@@ -21,17 +21,10 @@ export const Grid = styled.section`
 `;
 
 export const EmptyTitle = styled.h2`
-  font-size: 18px;
-  line-height: 25px;
+  font-size: 16px;
+  line-height: 1.6;
   margin: 18px 0;
+  width: 500px;
 
-  color: ${props => props.theme.lightText};
-`;
-
-export const Buttons = styled.div`
-  display: flex;
-
-  > a:first-of-type {
-    margin-right: 48px;
-  }
+  color: rgba(255, 255, 255, 0.7);
 `;

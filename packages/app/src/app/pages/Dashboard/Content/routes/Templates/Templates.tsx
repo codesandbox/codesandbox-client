@@ -9,7 +9,7 @@ import ContextMenu from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { LIST_TEMPLATES, unmakeTemplates } from '../../../queries';
-import { Container, Grid, EmptyTitle, Buttons } from './elements';
+import { Container, Grid, EmptyTitle } from './elements';
 import { Navigation } from './Navigation';
 
 export const Templates = props => {
@@ -20,7 +20,7 @@ export const Templates = props => {
   });
 
   useEffect(() => {
-    document.title = `${teamId ? 'Our' : 'My'} Templates - CodeSandbox`;
+    document.title = `${teamId ? 'Team' : 'My'} Templates - CodeSandbox`;
   }, [teamId]);
 
   if (error) {
@@ -54,18 +54,17 @@ export const Templates = props => {
       {!sortedTemplates.length && (
         <div>
           <EmptyTitle>
-            You have not made any templates yet.
-            <br />
-            Learn more about Templates in de documentation.
+            <p style={{ marginBottom: '0.5rem' }}>
+              You have not created any templates yet. You can create a template
+              by dragging a sandbox from "My Sandboxes" to here or by clicking
+              "Create Template" from the editor.
+            </p>
+            You can learn more about templates{' '}
+            <a href="/docs/templates" target="_blank">
+              here
+            </a>
+            .
           </EmptyTitle>
-          <Buttons>
-            <Button small secondary to={'/s'}>
-              Create Sandbox
-            </Button>
-            <Button small to={'/docs/templates'}>
-              Learn More
-            </Button>
-          </Buttons>
         </div>
       )}
       <Grid>
