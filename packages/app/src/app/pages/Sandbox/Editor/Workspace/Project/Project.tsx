@@ -154,19 +154,6 @@ export const Project = observer(({ editable }: IProjectProps) => {
             </PropertyValue>
           </Item>
         )}
-
-        {!sandbox.customTemplate && (
-          <Item>
-            <PropertyName>Template</PropertyName>
-            <PropertyValue>
-              <BundlerLink href={template.url}>
-                {sandbox.forkedTemplate
-                  ? sandbox.forkedTemplate.title
-                  : getDefinition(sandbox.template).niceName}
-              </BundlerLink>
-            </PropertyValue>
-          </Item>
-        )}
       </Group>
       {editable && <SandboxConfig />}
     </Container>
