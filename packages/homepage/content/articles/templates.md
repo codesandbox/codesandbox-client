@@ -52,16 +52,12 @@ You'll also find all of your custom templates within the Dashboard under the My 
 
 ## Templates Roadmap
 
-We've got big plans to make Templates even better and we'd love to hear your thoughts as you try them out! Here's a few things we want to work on next:
-
-### Following templates**!**
-
-Templates are in their essence sharable between everyone so one of our next tackles will be to allow for users to follow other user's templates.
-
-The main benefit here is that when the owner of the template makes any update to the template you will also get these changes.
-
-### **Sharing!**
+We've got big plans to make Templates even better and we'd love to hear your thoughts as you try them out! So what can you expect to see from Templates in the future?
 
 Templates are designed to save you time and effort making new Sandboxes. But wouldn't it be great if you could share a boilerplate app featuring your newly developed React library pre-configured and good to go? Have you ever visited the Search page and tried to find the perfect Sandbox to start a new project with? Well we want to make that process a whole lot easier using Templates!
 
-In the future you'll be able to make your templates public, which will list them on a new Community Templates page where you'll be able to quickly search and filter by keywords and dependencies. From there you'll be able to quickly view the details of a template, including a live preview and a README, as well as links to a template's GitHub repository and Issues page.
+In the future you'll be able to make your templates public, which will list them on a new Community Templates page where you'll be able to quickly search and filter by keywords and dependencies. From there you'll be able to quickly view the details of a template, including a live preview and a README, as well as links to a template's GitHub repository and Issues page. You'll be able to watch other user's public templates, which will add them to your Create New Sandbox modal, allowing you to take advantage of what the community creates.
+
+As we make the Sandbox execution environment more configurable, we hope that it'll be easy for framework maintainers to easily add and manage their own official templates. By making templates completely open-source, we hope to make it easier to issue updates and bug fixes.
+
+There's a lot in the pipeline that we're eager to share with you! Thanks for using CodeSandbox and we look forward to seeing all the awesome new things you'll create!
