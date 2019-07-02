@@ -2,7 +2,7 @@ import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import { inject, observer } from 'mobx-react';
 import styled, { ThemeProvider } from 'styled-components';
-import { decorateSelector } from '@codesandbox/common/lib/theme';
+import { templateColor } from 'app/utils/template-color';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
@@ -69,21 +69,6 @@ class ContentSplit extends React.Component {
       store.preferences.settings.zenMode && store.workspace.workspaceHidden;
 
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
-    const templateColor = (() => {
-      if (sandbox && sandbox.customTemplate) {
-        return decorateSelector(() => sandbox.customTemplate.color);
-      }
-
-      if (sandbox && sandbox.forkedTemplate) {
-        return decorateSelector(() => sandbox.forkedTemplate.color);
-      }
-
-      if (templateDef) {
-        return templateDef.color;
-      }
-
-      return undefined;
-    })();
 
     const topOffset = store.preferences.settings.zenMode ? 0 : 3 * 16;
     const bottomOffset = vscode ? STATUS_BAR_SIZE : 0;
@@ -91,7 +76,7 @@ class ContentSplit extends React.Component {
     return (
       <ThemeProvider
         theme={{
-          templateColor,
+          templateColor: templateColor(sandbox, templateDef),
           templateBackgroundColor: templateDef && templateDef.backgroundColor,
           ...this.state.theme,
         }}

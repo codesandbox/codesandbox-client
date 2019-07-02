@@ -165,10 +165,15 @@ export type Sandbox = {
   npmDependencies: {
     [dep: string]: string;
   };
+  customTemplate?: {
+    color?: string;
+    title: string;
+    description: string;
+  };
   externalResources: string[];
   privacy: 0 | 1 | 2;
   author: User | undefined;
-  forkedFromSandbox: { title: string; id: string } | undefined;
+  forkedFromSandbox: { title: string; id: string; color: string } | undefined;
   git: GitInfo | undefined;
   tags: string[];
   /**
