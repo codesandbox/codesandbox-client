@@ -4,58 +4,46 @@ authors: ['Saeris']
 description: 'CodeSandbox allows you to create your  custom templates from sandboxes'
 ---
 
-## **What are Templates?**
+## What are Templates?
 
-We've found that most of our users, after having used one of our built-in templates such as React, Vue, or Gatsby for the first time to prototype an application, they often want to create new projects with a specific set of dependencies, folder structure, and configuration set up just the way they like it.
+Templates are a combination of an execution [Environment]() and a set of starter files, similar to what you would find in the output of a framework CLI such as Create React App or Gatsby CLI. CodeSandbox has a number of official Templates, such as React, Vue, Gatsby and others with which you can quickly bootstrap a new project.
 
-This is so common that we decided why not make it easy for users to create their own custom templates which they can quickly bootstrap new projects with! Today we're launching the a first look at our new Templates system, which we're planning to improve with a bunch of useful new features over time.
+Users can also create their own custom Templates, whereby they can modify an existing template with their own dependencies, files and folder structure, and configuration. Once a custom Template has been created, the user can then start new projects from the Create New Sandbox modal using one of their Templates.
 
-In this early beta release, you can quickly turn any existing Sandbox into a Template with just one click. Let's take a look at how simple it is to get started with Templates!
+## How to make a custom Template
 
-## **How to make your first Template**
+There are a few ways to make a Template, but the primary way to do so is from within the Project Info panel inside the Editor. When viewing one of your Sandboxes, you'll see a button at the bottom of the Project Info panel that says `Make Template`. Clicking on this will convert the Sandbox to a Template, which will freeze it and make it available inside of the Create New Sandbox modal.
 
-Creating a template from an existing Sandbox is really easy! From the Editor, open up the Project Info workspace in the upper left corner. If you've just opened one of our official templates, first fork it and make some changes.
+> Add gif of navigating to the Project Info panel and clicking `Make Sandbox`
 
-![](/images/templates/1.png)
+Optionally, from the Dashboard, you can either drag and drop a Sandbox from the Overview folder, or one of your folders under My Sandboxes to the new My Templates folder. There is also an option within the Sandbox options menu to `Make Sandbox a Template`.
 
-You'll notice there's a new "Make Template" button. Click that you'll see that your newly created template has been Frozen. This is to help prevent making accidental changes to the template whenever you open it from the Dashboard or Create New Sandbox modal. You can toggle this on and off in the Project Info workspace of the template to make edits to the template itself.
-
-![](/images/templates/2.png)
-
-You can also click on the color you see you on the right to change the color you assign to your template. This is to help distinguish it on your Dashboard and on the create new sandbox modal.
-
-![](/images/templates/3.png)
-
-You'll also notice that whenever you attempt to save changes to a frozen sandbox, a new modal will pop up asking you whether you would like to unfreeze it for editing or to fork it to create a new sandbox.
-
-![](/images/templates/4.png)
+> Add two gifs, one for drag and drop, the other for the context menu option
 
 ## Using Templates
 
-So now that you've created your first Template, how can you use it? Just like the official templates, you can create a new Sandbox from one of your templates via the Create New Sandbox modal.
+After you've made your first Template, there's a few places from which you can access and use them. First, inside of the Create New Sandbox modal, you will see a horizontal list of your Templates inside of the `Overview` tab, and all of your Templates will appear under the `My Templates` tab. Clicking on one of these will open the Template inside the Editor, where you will be prompted to fork the Sandbox as soon as you attempt to save changes.
 
-![](/images/templates/5.png)
+> Add gif accessing the Create New Sandbox modal from the Dashoard, showing both the Overview tab and the My Templates tab.
 
-In the Overview tab, you'll see your most recently used templates up at the top. Switching over to the My Templates tab, you can browse through all of your custom templates.
+You can also find all of your Templates under the `My Templates` folder within the Dashboard. Just as with the Create New Sandbox modal, clicking on any of the Templates shown inside this folder will open a new Sandbox.
 
-![](/images/templates/6.png)
+> Add gif of the Dashboard, navigating from Overview to My Templates, and clicking on a template
 
-You'll also find all of your custom templates within the Dashboard under the My Templates tab.
+## Editing Templates
 
-![](/images/templates/7.png)
+Templates are frozen upon creation, preventing users from accidentally making changes to the template when they mean to use a Template to create a new Sandbox instead. In order to make changes to a Template, simply unfreeze if from the Project Info panel. Any time you try to make a change to a frozen Template, a modal will prompt you whether or not you would like to fork the Template or unfreeze it for the current session.
 
-## Templates Roadmap
+> Add gif of showing how to unfreeze a Sandbox, and a gif of the Fork Frozen Sandbox modal
 
-We've got big plans to make Templates even better and we'd love to hear your thoughts as you try them out! Here's a few things we want to work on next:
+Any changes you make to an unfrozen Template are saved immediately. There is no need to explicitly freeze an unfrozen Template, as it will automatically be frozen again upon navigating away from the Editor or the current Sandbox session ends.
 
-### Following templates**!**
+## Deleting Templates
 
-Templates are in their essence sharable between everyone so one of our next tackles will be to allow for users to follow other user's templates.
+There are a few ways in which you can "delete" a Template. From the Project Info panel inside the Editor, there is a `Delete Template` button at the bottom when viewing an existing Template. Clicking this will convert the Template back to a regular Sandbox, removing it from the Create New Sandbox modal and moving back to the Overview and My Sandboxes folders inside the Dashboard.
 
-The main benefit here is that when the owner of the template makes any update to the template you will also get these changes.
+> Add gif showing the Delete Template button, clicking on it to show that a Template gets converted back to a regular Sandbox
 
-### **Sharing!**
+Alternatively, you can use a Template's options menu inside the My Templates folder to select `Convert to Sandbox`.
 
-Templates are designed to save you time and effort making new Sandboxes. But wouldn't it be great if you could share a boilerplate app featuring your newly developed React library pre-configured and good to go? Have you ever visited the Search page and tried to find the perfect Sandbox to start a new project with? Well we want to make that process a whole lot easier using Templates!
-
-In the future you'll be able to make your templates public, which will list them on a new Community Templates page where you'll be able to quickly search and filter by keywords and dependencies. From there you'll be able to quickly view the details of a template, including a live preview and a README, as well as links to a template's GitHub repository and Issues page.
+> Add gif showing the context menu inside the Dashboard
