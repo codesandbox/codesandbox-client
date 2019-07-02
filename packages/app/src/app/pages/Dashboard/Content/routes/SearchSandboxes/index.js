@@ -60,7 +60,9 @@ const SearchSandboxes = ({ store }) => (
           if (sandboxes) {
             possibleTemplates = getPossibleTemplates(sandboxes);
 
-            sandboxes = store.dashboard.getFilteredSandboxes(sandboxes);
+            sandboxes = store.dashboard
+              .getFilteredSandboxes(sandboxes)
+              .filter(x => !x.customTemplate);
           }
 
           return (
