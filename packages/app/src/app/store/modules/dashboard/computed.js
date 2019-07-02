@@ -21,12 +21,7 @@ export function getFilteredSandboxes(sandboxes) {
     }
 
     return s[orderField];
-  }).filter(
-    x =>
-      blacklistedTemplates.indexOf(
-        x.forkedTemplate ? x.forkedTemplate.id : x.source.template
-      ) === -1
-  );
+  }).filter(x => blacklistedTemplates.indexOf(x.source.template) === -1);
 
   if (orderOrder === 'desc') {
     orderedSandboxes = orderedSandboxes.reverse();

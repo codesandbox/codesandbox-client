@@ -30,8 +30,8 @@ const FilterOptions = ({
           template: name,
         });
 
-  const allSelected = possibleTemplates.every(
-    store.dashboard.isTemplateSelected
+  const allSelected = possibleTemplates.every(t =>
+    store.dashboard.isTemplateSelected(t.id)
   );
 
   const Overlay = () => (
@@ -59,7 +59,7 @@ const FilterOptions = ({
                 signals.dashboard.blacklistedTemplatesCleared();
               } else {
                 signals.dashboard.blacklistedTemplatesChanged({
-                  templates: possibleTemplates || [],
+                  templates: possibleTemplates.map(t => t.id) || [],
                 });
               }
             }}
@@ -71,7 +71,7 @@ const FilterOptions = ({
           />
         </React.Fragment>
       ) : (
-        'No templates found'
+        'No environments found'
       )}
     </OverlayContainer>
   );
@@ -80,9 +80,9 @@ const FilterOptions = ({
   const templateCount = possibleTemplates.length - blacklistedTemplates.length;
   const templateMessage =
     templateCount === possibleTemplates.length && templateCount > 0
-      ? 'all templates'
+      ? 'all environments'
       : `${Math.max(0, templateCount)} ${
-          templateCount === 1 ? 'template' : 'templates'
+          templateCount === 1 ? 'environment' : 'environments'
         }`;
 
   return (
