@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
-export const Container = styled(NavLink)`
+export const Container = styled(NavLink)<{ depth?: number }>`
   transition: 0.25s ease all;
   display: flex;
   align-items: center;
@@ -38,7 +38,7 @@ export const IconContainer = styled.div`
   font-size: 1.125rem;
 `;
 
-export const AnimatedChevron = styled(ChevronRight)`
+export const AnimatedChevron = styled(ChevronRight)<{ open?: boolean }>`
   transition: 0.25s ease transform;
   transform: rotate(${props => (props.open ? 90 : 0)}deg);
   margin-right: 0.25rem;

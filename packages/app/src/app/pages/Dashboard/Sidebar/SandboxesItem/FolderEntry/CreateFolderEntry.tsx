@@ -17,7 +17,15 @@ import {
   CREATE_FOLDER_MUTATION,
 } from '../../../queries';
 
-export default ({ basePath, teamId, noFocus, close, depth }) => {
+interface Props {
+  basePath: string;
+  teamId: string | undefined;
+  close: () => void;
+  depth: number;
+  noFocus?: boolean;
+}
+
+export default ({ basePath, teamId, noFocus, close, depth }: Props) => {
   let input;
   return (
     <Mutation mutation={CREATE_FOLDER_MUTATION}>
@@ -42,12 +50,12 @@ export default ({ basePath, teamId, noFocus, close, depth }) => {
                 },
               },
               update: (proxy, { data: { createCollection } }) => {
-                const variables = {};
+                const variables: { teamId?: string } = {};
                 if (teamId) {
                   variables.teamId = teamId;
                 }
                 // Read the data from our cache for this query.
-                const d = proxy.readQuery({
+                const d = proxy.readQuery<{ me: any }>({
                   query: PATHED_SANDBOXES_FOLDER_QUERY,
                   variables,
                 });
@@ -74,7 +82,6 @@ export default ({ basePath, teamId, noFocus, close, depth }) => {
               <AddFolderIcon />
             </IconContainer>{' '}
             <Input
-              small
               placeholder="Folder Name"
               style={{ marginRight: '1rem' }}
               onBlur={close}

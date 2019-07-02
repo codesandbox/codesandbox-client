@@ -103,12 +103,14 @@ class SandboxesItem extends React.Component {
                     .sort()
                     .map(name => {
                       const path = '/' + name;
+                      const url = basePath + '/' + encodeURIComponent(name);
                       return (
                         <FolderEntry
                           key={path}
                           basePath={basePath}
                           teamId={teamId}
                           path={path}
+                          url={url}
                           folders={folders}
                           foldersByPath={foldersByPath}
                           name={name}
