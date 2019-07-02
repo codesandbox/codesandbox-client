@@ -54,14 +54,14 @@ export const UserTemplate = ({
       }}
       tabIndex={0}
     >
-      <IconContainer>
+      {/* <IconContainer>
         {template.iconUrl ? (
           // @ts-ignore
           <Icon width={small ? 24 : 32} height={small ? 24 : 32} />
         ) : (
           <img src={template.iconUrl} />
         )}
-      </IconContainer>
+      </IconContainer> */}
       <Title>{getSandboxName(template.sandbox)}</Title>
     </Button>
   );

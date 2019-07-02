@@ -33,11 +33,6 @@ const SANDBOX_FRAGMENT = gql`
     forkedTemplate {
       id
       color
-      sandbox {
-        title
-        id
-        alias
-      }
     }
 
     collection {

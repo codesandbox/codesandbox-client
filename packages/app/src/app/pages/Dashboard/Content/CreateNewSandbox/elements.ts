@@ -50,6 +50,7 @@ export const Container = styled.div<{ hide: boolean }>`
     overflow: hidden;
     outline: none;
     cursor: pointer;
+    user-select: none;
     transition: 0.3s ease background-color;
     ${hide && 'opacity: 0'};
 
@@ -92,6 +93,7 @@ export const FullsizeContainer = styled.div`
   width: 950px;
   height: auto;
   margin: 0 auto 15vh;
+  pointer-events: none;
 `;
 
 export const MeasureContainer = styled.div`
