@@ -35,11 +35,7 @@ export const NewSandboxModal: React.FunctionComponent<
   };
 
   return (
-    <Container
-      closing={closing}
-      forking={forking}
-      onMouseDown={e => e.preventDefault()}
-    >
+    <Container closing={closing} forking={forking}>
       <TabContainer forking={forking} closing={closing}>
         {[
           'Overview',
