@@ -85,7 +85,7 @@ export function updateSandbox({ api, state }) {
   return api
     .put(`/sandboxes/${sandboxId}`, body)
     .then(data => {
-      window.history.pushState({}, null, sandboxUrl(data));
+      window.history.replaceState({}, null, sandboxUrl(data));
       return { data };
     })
     .catch(error => ({ error }));
