@@ -181,7 +181,7 @@ export type Sandbox = {
   externalResources: string[];
   privacy: 0 | 1 | 2;
   author: User | undefined;
-  forkedFromSandbox: { title: string; id: string; color: string } | undefined;
+  forkedFromSandbox: SmallSandbox | undefined;
   git: GitInfo | undefined;
   tags: string[];
   /**
