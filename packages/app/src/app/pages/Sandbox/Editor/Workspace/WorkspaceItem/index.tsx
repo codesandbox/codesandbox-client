@@ -41,11 +41,12 @@ const WorkspaceItem = React.memo(
         </ItemHeader>
         <ReactShow
           style={{
+            overflow: 'visible',
             height: 'auto',
-            overflow: 'hidden',
           }}
           transitionOnMount
           start={{
+            overflow: 'hidden',
             height: 0, // The starting style for the component.
             // If the 'leave' prop isn't defined, 'start' is reused!
           }}
