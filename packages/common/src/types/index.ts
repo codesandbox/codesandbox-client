@@ -8,6 +8,7 @@ export type SSEContainerStatus =
   | 'stopped'
   | 'hibernated'
   | 'error';
+
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
 export type ModuleError = {
@@ -38,15 +39,19 @@ export type ModuleCorrection = {
 };
 
 export type Module = {
-  id: string;
+  id?: string;
   title: string;
   code: string | undefined;
+  savedCode: string | undefined;
   shortid: string;
   directoryShortid: string | undefined;
   isNotSynced: boolean;
   sourceId: string;
   isBinary: boolean;
+  insertedAt: number;
+  updatedAt: number;
   path?: string;
+  now?: any;
 };
 
 export type Directory = {
@@ -200,12 +205,16 @@ export type Sandbox = {
   forkedFromSandbox: SmallSandbox | undefined;
   git: GitInfo | undefined;
   tags: string[];
+  isFrozen: boolean;
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
    * @type {string}
    */
   sourceId: string;
+  source?: {
+    template: string;
+  };
   template: TemplateType;
   entry: string;
   originalGit: GitInfo | undefined;
@@ -290,3 +299,47 @@ export type UploadFile = {
   name: string;
   path: string;
 };
+
+export type Selection = {
+  selection: number[];
+  cursorPosition: number;
+};
+
+export type UserSelection = {
+  primary: Selection;
+  secondary: Selection[];
+};
+
+export type EditorSelection = {
+  userId: string;
+  name: string;
+  selection: UserSelection;
+  color: number[];
+};
+
+export type EditorError = {
+  column: number;
+  line: number;
+  columnEnd: number;
+  lineEnd: number;
+  message: string;
+  source: string;
+  title: string;
+  path: string;
+};
+
+export type EditorCorrection = {
+  column: number;
+  line: number;
+  columnEnd: number;
+  lineEnd: number;
+  message: string;
+  source: string;
+  path: string;
+  severity: string;
+};
+
+export enum WindowOrientation {
+  VERTICAL = 'VERTICAL',
+  HORIZONTAL = 'HORIZONTAL',
+}

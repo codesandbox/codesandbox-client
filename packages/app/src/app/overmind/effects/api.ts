@@ -110,7 +110,7 @@ export default (() => {
         .then(response => handleResponse(response, options))
         .catch(e => handleError(e));
     },
-    post(path, body, options?) {
+    post<T>(path, body, options?): Promise<T> {
       return axios
         .post(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(_options.provideJwtToken()),
@@ -126,7 +126,7 @@ export default (() => {
         .then(response => handleResponse(response, options))
         .catch(e => handleError(e));
     },
-    put(path, body, options) {
+    put<T>(path, body, options?): Promise<T> {
       return axios
         .put(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(_options.provideJwtToken()),

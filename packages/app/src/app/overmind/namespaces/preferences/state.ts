@@ -1,10 +1,12 @@
 import { Preferences } from '@codesandbox/common/lib/types';
 
 type State = {
+  itemId: string;
   settings: Preferences;
 };
 
 export const state: State = {
+  itemId: null,
   settings: {
     autoCompleteEnabled: false,
     vimMode: false,

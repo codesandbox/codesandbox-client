@@ -17,6 +17,10 @@ import * as patron from './namespaces/patron';
 import * as editor from './namespaces/editor';
 import * as live from './namespaces/live';
 import * as workspace from './namespaces/workspace';
+import * as dashboard from './namespaces/dashboard';
+import * as deployment from './namespaces/deployment';
+import * as files from './namespaces/files';
+import * as git from './namespaces/git';
 
 export const config = merge(
   {
@@ -32,6 +36,10 @@ export const config = merge(
     editor,
     live,
     workspace,
+    dashboard,
+    deployment,
+    files,
+    git,
   })
 );
 

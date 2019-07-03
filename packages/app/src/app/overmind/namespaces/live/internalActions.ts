@@ -1,12 +1,49 @@
-import { Action } from 'app/overmind';
+import { Action, AsyncAction, Config } from 'app/overmind';
 import { RoomInfo } from '@codesandbox/common/lib/types';
+import { IContext } from 'overmind';
+
+function sendModuleInfo(
+  { state, effects }: IContext<Config>,
+  event: string,
+  type: 'module' | 'directory',
+  moduleShortid,
+  { sendModule = true } = {}
+) {
+  if (state.live.isCurrentEditor) {
+    const message = {
+      type,
+    };
+    if (sendModule) {
+      const modules =
+        type === 'module'
+          ? state.get(`editor.currentSandbox.modules`)
+          : state.get(`editor.currentSandbox.directories`);
+
+      message.module = modules.find(m => m.shortid === moduleShortid);
+    }
+
+    if (type === 'module') {
+      message.moduleShortid = moduleShortid;
+    } else {
+      message.directoryShortid = moduleShortid;
+    }
+
+    if (module) {
+      effects.live.send(event, message);
+    }
+  }
+}
 
 export const disconnect: Action = ({ effects }) => {
   effects.ot.reset();
   effects.live.disconnect();
 };
 
-export const initialize: Action = async ({ state, effects, actions }) => {
+export const sendModuleSaved: Action<string> = (context, moduleShortid) => {
+  sendModuleInfo(context, 'module:saved', 'module', moduleShortid);
+};
+
+export const initialize: AsyncAction = async ({ state, effects, actions }) => {
   state.live.isLoading = true;
 
   try {

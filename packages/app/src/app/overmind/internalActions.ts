@@ -1,17 +1,15 @@
 import { json } from 'overmind';
 import { Action, AsyncAction } from '.';
-import track, {
-  identify,
-  setUserId,
-} from '@codesandbox/common/lib/utils/analytics';
+import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
 import {
   Sandbox,
-  User,
   CurrentUser,
   NotificationButton,
   Contributor,
+  Module,
 } from '@codesandbox/common/lib/types';
-import { AxiosError } from 'axios';
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 
 export const setKeybindings: Action = ({ state, effects }) => {
   effects.keybindingManager.set(
@@ -70,7 +68,7 @@ export const setStoredSettings: Action = ({ state, effects }) => {
 };
 
 export const startKeybindings: Action = ({ effects }) => {
-  effects.keybindingManager.start(event => {
+  effects.keybindingManager.start(() => {
     // Copy code from keybindingmanager
   });
 };
@@ -199,312 +197,144 @@ export const getZeitUserDetails: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-/*import axios from 'axios';
-
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-
-
-import { parseConfigurations } from './utils/parse-configurations';
-import { mainModule, defaultOpenedModule } from './utils/main-module';
-import getItems from './modules/workspace/items';
-*/
-
-/*
-export function callVSCodeCallback({ props }) {
-  const { cbID } = props;
-  if (cbID) {
-    if (window.cbs && window.cbs[cbID]) {
-      window.cbs[cbID](undefined, undefined);
-      delete window.cbs[cbID];
-    }
+export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
+  if (
+    state.currentModal === 'preferences' &&
+    state.preferences.itemId === 'keybindings' &&
+    isKeyDown
+  ) {
+    return;
   }
-}
 
-export function callVSCodeCallbackError({ props }) {
-  const { cbID } = props;
-  if (cbID) {
-    if (window.cbs && window.cbs[cbID]) {
-      const errorMessage =
-        props.message || 'Something went wrong while saving the file.';
-      window.cbs[cbID](new Error(errorMessage), undefined);
-      delete window.cbs[cbID];
-    }
+  state.currentModal = null;
+  actions.internal.startKeybindings();
+};
+
+export const ensureOwnedEditable: AsyncAction = async ({ state, actions }) => {
+  if (!state.editor.currentSandbox.owned) {
+    return actions.internal.forkSandbox({
+      id: state.editor.currentId,
+    });
   }
-}
 
-export function setWorkspace({ controller, state, props }) {
-  state.set('workspace.project.title', props.sandbox.title || '');
-  state.set('workspace.project.description', props.sandbox.description || '');
+  if (
+    state.editor.currentSandbox.owned &&
+    state.editor.currentSandbox.isFrozen
+  ) {
+    return actions.internal.forkFrozenSandbox();
+  }
+};
 
-  const items = getItems(controller.getState());
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-  state.set(`workspace.openedWorkspaceItem`, defaultItem.id);
-}
+export const forkFrozenSandbox: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  if (
+    effects.browser.confirm(
+      'This sandbox is frozen, and will be forked. Do you want to continue?'
+    )
+  ) {
+    return actions.internal.forkSandbox({
+      id: state.editor.currentId,
+    });
+  } else {
+    // Where is the callback ID?
+    // effects.vscode.callCallbackError(?, "Can't save a frozen sandbox")
+  }
+};
 
-export function setUrlOptions({ state, router, utils }) {
-  const options = router.getSandboxOptions();
+export const forkSandbox: AsyncAction<{
+  id: string;
+  body?: Partial<Sandbox>;
+}> = async ({ state, effects, actions }, { id, body }) => {
+  effects.analytics.track('Fork Sandbox');
+  state.editor.isForkingSandbox = true;
 
-  if (options.currentModule) {
-    const sandbox = state.get('editor.currentSandbox');
+  const url = id.includes('/')
+    ? `/sandboxes/fork/${id}`
+    : `/sandboxes/${id}/fork`;
 
-    try {
-      const module = utils.resolveModule(
-        options.currentModule,
-        sandbox.modules,
-        sandbox.directories,
-        options.currentModule.directoryShortid
-      );
+  try {
+    const forkedSandbox = await effects.api.post<Sandbox>(url, body || {});
 
-      if (module) {
-        state.push('editor.tabs', {
-          type: 'MODULE',
-          moduleShortid: module.shortid,
-          dirty: false,
-        });
-        state.set('editor.currentModuleShortid', module.shortid);
-      }
-    } catch (err) {
-      const now = Date.now();
-      const title = `Could not find the module ${options.currentModule}`;
-
-      state.push('notifications', {
-        title,
-        id: now,
-        notificationType: 'warning',
-        endTime: now + 2000,
-        buttons: [],
+    if (state.editor.currentSandbox) {
+      Object.assign(forkedSandbox, {
+        modules: forkedSandbox.modules.map(module => ({
+          ...module,
+          code: state.editor.currentSandbox.modules.find(
+            currentSandboxModule =>
+              currentSandboxModule.shortid === module.shortid
+          ).code,
+        })),
       });
     }
+
+    actions.internal.setSandboxData({
+      sandbox: forkedSandbox,
+      overwriteFiles: true,
+    });
+
+    state.editor.currentId = forkedSandbox.id;
+
+    effects.notificationToast.add({
+      message: 'Forked sandbox!',
+      status: NotificationStatus.SUCCESS,
+    });
+
+    effects.router.updateSandboxUrl(forkedSandbox);
+  } catch (error) {}
+
+  state.editor.isForkingSandbox = false;
+};
+
+export const setSandboxData: Action<{
+  sandbox: Sandbox;
+  overwriteFiles: boolean;
+}> = ({ state }, { sandbox, overwriteFiles }) => {
+  if (overwriteFiles) {
+    state.editor.sandboxes[sandbox.id] = sandbox;
+  } else {
+    state.editor.sandboxes[sandbox.id].collection = sandbox.collection;
+    state.editor.sandboxes[sandbox.id].owned = sandbox.owned;
+    state.editor.sandboxes[sandbox.id].userLiked = sandbox.userLiked;
+    state.editor.sandboxes[sandbox.id].title = sandbox.title;
   }
+};
 
-  state.set(
-    'preferences.showPreview',
-    options.isPreviewScreen || options.isSplitScreen
+export const ensurePackageJSON: AsyncAction<{
+  sandbox: Sandbox;
+  newCode: string;
+}> = async ({ state, actions }, { sandbox, newCode }) => {
+  const existingPackageJson = sandbox.modules.find(
+    m => m.directoryShortid == null && m.title === 'package.json'
   );
-  state.set(
-    'preferences.showEditor',
-    options.isEditorScreen || options.isSplitScreen
-  );
 
-  if (options.initialPath) state.set('editor.initialPath', options.initialPath);
-  if (options.fontSize)
-    state.set('preferences.settings.fontSize', options.fontSize);
-  if (options.highlightedLines)
-    state.set('editor.highlightedLines', options.highlightedLines);
-  if (options.hideNavigation)
-    state.set('preferences.hideNavigation', options.hideNavigation);
-  if (options.isInProjectView)
-    state.set('editor.isInProjectView', options.isInProjectView);
-  if (options.autoResize)
-    state.set('preferences.settings.autoResize', options.autoResize);
-  if (options.useCodeMirror)
-    state.set('preferences.settings.useCodeMirror', options.useCodeMirror);
-  if (options.enableEslint)
-    state.set('preferences.settings.enableEslint', options.enableEslint);
-  if (options.forceRefresh)
-    state.set('preferences.settings.forceRefresh', options.forceRefresh);
-  if (options.expandDevTools)
-    state.set('preferences.showDevtools', options.expandDevTools);
-  if (options.runOnClick)
-    state.set(`preferences.runOnClick`, options.runOnClick);
-}
-
-export function setCurrentModuleShortid({ props, state }) {
-  const currentModuleShortid = state.get('editor.currentModuleShortid');
-  const sandbox = props.sandbox;
-
-  // Only change the module shortid if it doesn't exist in the new sandbox
-  if (
-    sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
-  ) {
-    const parsedConfigs = parseConfigurations(sandbox);
-    const module = defaultOpenedModule(sandbox, parsedConfigs);
-
-    state.set('editor.currentModuleShortid', module.shortid);
-  }
-}
-
-export function setMainModuleShortid({ props, state }) {
-  const sandbox = props.sandbox;
-  const parsedConfigs = parseConfigurations(sandbox);
-  const module = mainModule(sandbox, parsedConfigs);
-
-  state.set('editor.mainModuleShortid', module.shortid);
-}
-
-export function setInitialTab({ state }) {
-  const currentModule = state.get('editor.currentModule');
-  const newTab = {
-    type: 'MODULE',
-    moduleShortid: currentModule.shortid,
-    dirty: true,
-  };
-
-  state.set('editor.tabs', [newTab]);
-}
-
-export function getGitChanges({ api, state }) {
-  const id = state.get('editor.currentId');
-
-  return api
-    .get(`/sandboxes/${id}/git/diff`)
-    .then(gitChanges => ({ gitChanges }));
-}
-
-export function forkSandbox({ state, props, api }) {
-  const sandboxId = props.sandboxId || state.get('editor.currentId');
-  const url = sandboxId.includes('/')
-    ? `/sandboxes/fork/${sandboxId}`
-    : `/sandboxes/${sandboxId}/fork`;
-
-  return api
-    .post(url, props.body || {})
-    .then(data => ({ forkedSandbox: data }));
-}
-
-export function moveModuleContent({ props, state }) {
-  const currentSandbox = state.get('editor.currentSandbox');
-
-  if (currentSandbox) {
-    return {
-      sandbox: Object.assign({}, props.forkedSandbox, {
-        modules: props.forkedSandbox.modules.map(module =>
-          Object.assign(module, {
-            code: currentSandbox.modules.find(
-              currentSandboxModule =>
-                currentSandboxModule.shortid === module.shortid
-            ).code,
-          })
-        ),
-      }),
+  if (sandbox.owned && !existingPackageJson) {
+    const packageJson = {
+      title: 'package.json',
+      newCode: generateFileFromSandbox(sandbox),
     };
-  }
+    const optimisticModule = actions.files.internal.createOptimisticModule(
+      packageJson
+    );
 
-  return { sandbox: props.forkedSandbox };
-}
+    state.editor.sandboxes[state.editor.currentId].modules.push(
+      optimisticModule
+    );
 
-export function closeTabByIndex({ state, props }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const currentModule = state.get('editor.currentModule');
-  const tabs = state.get('editor.tabs');
-  const tabModuleId = tabs[props.tabIndex].moduleId;
-  const isActiveTab = currentModule.id === tabModuleId;
+    try {
+      const updatedModule = await actions.files.internal.saveNewModule({
+        module: optimisticModule,
+        newCode,
+      });
 
-  if (isActiveTab) {
-    const newTab =
-      props.tabIndex > 0 ? tabs[props.tabIndex - 1] : tabs[props.tabIndex + 1];
-
-    if (newTab) {
-      const newModule = sandbox.modules.find(
-        module => module.id === newTab.moduleId
-      );
-
-      state.set('editor.currentModuleShortid', newModule.shortid);
+      actions.files.internal.updateOptimisticModule({
+        optimisticModule,
+        updatedModule,
+      });
+    } catch (error) {
+      actions.files.internal.removeModule(optimisticModule.shortid);
     }
   }
-
-  state.splice('editor.tabs', props.tabIndex, 1);
-}
-
-
-
-export function signOut({ api }) {
-  api.delete(`/users/signout`);
-}
-
-export function getAuthToken({ api, path }) {
-  return api
-    .get('/auth/auth-token')
-    .then(({ token }) => path.success({ token }))
-    .catch(error => path.error({ error }));
-}
-
-export function setModal({ state, props }) {
-  track('Open Modal', { modal: props.modal });
-  state.set('currentModalMessage', props.message);
-  state.set('currentModal', props.modal);
-}
-
-export function removeNotification({ state, props }) {
-  const notifications = state.get('notifications');
-  const notificationToRemoveIndex = notifications.findIndex(
-    notification => notification.id === props.id
-  );
-
-  state.splice('notifications', notificationToRemoveIndex, 1);
-}
-
-export function setJwtFromProps({ jwt, state, props }) {
-  jwt.set(props.jwt);
-  state.set('jwt', props.jwt);
-}
-
-
-
-
-
-
-export function stopListeningToConnectionChange({ connection }) {
-  connection.removeListener('connectionChanged');
-}
-
-
-
-export function signInZeit({ browser, path }) {
-  const popup = browser.openPopup('/auth/zeit', 'sign in');
-  return browser.waitForMessage('signin').then(data => {
-    popup.close();
-
-    if (data && data.code) {
-      return path.success({ code: data.code });
-    }
-
-    return path.error();
-  });
-}
-
-export function updateUserZeitDetails({ api, path, props }) {
-  const { code } = props;
-
-  return api
-    .post(`/users/current_user/integrations/zeit`, {
-      code,
-    })
-    .then(data => path.success({ user: data }))
-    .catch(error => path.error({ error }));
-}
-
-export function getZeitIntegrationDetails({ state, path }) {
-  const token = state.get(`user.integrations.zeit.token`);
-
-  return axios
-    .get('https://api.zeit.co/www/user', {
-      headers: {
-        Authorization: `bearer ${token}`,
-      },
-    })
-    .then(response => path.success({ response: response.data }))
-    .catch(error => path.error({ error }));
-}
-
-export function signOutZeit({ api }) {
-  return api.delete(`/users/current_user/integrations/zeit`).then(() => {});
-}
-
-export function signOutGithubIntegration({ api }) {
-  return api.delete(`/users/current_user/integrations/github`).then(() => {});
-}
-
-export function createPackageJSON({ props }) {
-  const { sandbox } = props;
-
-  const code = generateFileFromSandbox(sandbox);
-
-  return {
-    title: 'package.json',
-    newCode: code,
-  };
-}
-
-
-*/
+};
