@@ -38,7 +38,7 @@ You'll also notice that whenever you attempt to save changes to a frozen sandbox
 
 ## Using Templates
 
-So now that you've created your first Template, how can you use it? Just like the official templates, you can create a new Sandbox from one of your templates via the Create New Sandbox modal.
+So now that you've created your first template, how can you use it? Just like the official templates, you can create a new sandbox from one of your templates via the Create New Sandbox modal.
 
 ![](/images/templates/5.png)
 
