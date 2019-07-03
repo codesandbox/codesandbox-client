@@ -28,7 +28,7 @@ You'll notice there's a new "Make Template" button. Click that you'll see that y
 
 ![](/images/templates/2.png)
 
-You can also click on the color you see you on the right to change the color you assign to your template. This is to help distinguish it on your Dashboard and on the create new sandbox modal.
+You can also click on the color in the sidebar to change the color you assign to your template. This is to help distinguish it in your Dashboard and in the Create New Sandbox modal.
 
 ![](/images/templates/3.png)
 
