@@ -602,3 +602,63 @@ export const removeChangedModules: Action<Module[]> = (
     shortid => !changedModules.find(m => m.shortid === shortid)
   );
 };
+
+export const getIdFromModulePath: Action<string, string> = (
+  { state, effects },
+  modulePath
+) => {
+  if (!modulePath) {
+    return null;
+  }
+
+  const sandbox = state.editor.currentSandbox;
+
+  try {
+    const module = effects.utils.resolveModule(
+      modulePath.replace(/^\//, ''),
+      sandbox.modules,
+      sandbox.directories
+    );
+
+    return module.id;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const setCurrentModule: Action<string> = ({ state }, id) => {
+  state.editor.currentTabId = null;
+
+  const modules = state.editor.currentSandbox.modules;
+  const m = modules.find(module => module.id === id);
+
+  if (m) {
+    const { shortid } = m;
+
+    const newTab = {
+      type: 'MODULE',
+      moduleShortid: shortid,
+      dirty: true,
+    };
+    const tabs = state.editor.tabs;
+
+    if (tabs.length === 0) {
+      state.editor.tabs.push(newTab);
+    } else if (!tabs.some(tab => tab.moduleShortid === shortid)) {
+      const dirtyTabIndex = tabs.findIndex(tab => tab.dirty);
+
+      if (dirtyTabIndex >= 0) {
+        state.editor.tabs.splice(dirtyTabIndex, 1, newTab);
+      } else {
+        state.editor.tabs.splice(0, 0, newTab);
+      }
+    }
+  }
+
+  const sandbox = state.editor.currentSandbox;
+  const module = sandbox.modules.find(moduleEntry => moduleEntry.id === id);
+
+  if (module && state.editor.currentModuleShortid !== module.shortid) {
+    state.editor.currentModuleShortid = module.shortid;
+  }
+};

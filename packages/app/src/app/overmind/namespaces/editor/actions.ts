@@ -178,3 +178,83 @@ export const saveClicked: AsyncAction = async ({ state, actions }) => {
     actions.git.internal.fetchGitChanges();
   }
 };
+
+export const createZipClicked: Action = ({ state, effects }) => {
+  const sandbox = state.editor.currentSandbox;
+
+  effects.utils.zipSandbox(sandbox);
+};
+
+export const forkSandboxClicked: AsyncAction<string> = async (
+  { state, effects, actions },
+  id
+) => {
+  if (
+    state.editor.currentSandbox.owned &&
+    !effects.browser.confirm('Do you want to fork your own sandbox?')
+  ) {
+    return;
+  }
+
+  await actions.internal.forkSandbox({
+    id,
+  });
+};
+
+export const likeSandboxToggled: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
+  if (state.editor.sandboxes[id].userLiked) {
+    await effects.api.request({
+      method: 'DELETE',
+      url: `/sandboxes/${id}/likes`,
+      body: {
+        id: id,
+      },
+    });
+    state.editor.sandboxes[id].likeCount--;
+  } else {
+    await effects.api.post(`/sandboxes/${id}/likes`, {
+      id: id,
+    });
+    state.editor.sandboxes[id].likeCount++;
+  }
+
+  state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
+};
+
+export const moduleSelected: Action<string> = (
+  { state, effects, actions },
+  modulePath
+) => {
+  effects.analytics.track('Open File');
+  state.live.receivingCode = true;
+  const id = actions.editor.internal.getIdFromModulePath(modulePath);
+
+  if (id) {
+    actions.editor.internal.setCurrentModule(id);
+    if (state.live.isLive) {
+      const selectionsForCurrentModule = actions.live.internal.getSelectionsForCurrentModule();
+      state.editor.pendingUserSelections = selectionsForCurrentModule;
+      actions.live.internal.sendChangeCurrentModule(id);
+    }
+  } else {
+    state.editor.currentModuleShortid = null;
+  }
+};
+
+export const clearModuleSelected: Action = ({ state }) => {
+  state.editor.currentModuleShortid = null;
+};
+
+export const moduleDoubleClicked: Action = ({ actions }) => {
+  actions.editor.internal.unsetDirtyTab();
+};
+
+export const tabClosed: Action<number> = ({ state, actions }, tabIndex) => {
+  if (state.editor.tabs.length > 1) {
+    actions.internal.closeTabByIndex(tabIndex);
+    actions.internal.setCurrentModuleByTab(tabIndex);
+  }
+};

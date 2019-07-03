@@ -176,3 +176,66 @@ export const sendTransform: Action<{
     effects.live.send('live:module_state', {});
   }
 };
+
+export const getSelectionsForCurrentModule: Action<void, any> = ({ state }) => {
+  const selections = [];
+  const moduleShortid = state.editor.currentModuleShortid;
+
+  state.live.roomInfo.users.forEach(user => {
+    const userId = user.id;
+    if (
+      userId === state.live.liveUserId ||
+      user.currentModuleShortid !== moduleShortid ||
+      !state.live.isEditor(userId)
+    ) {
+      return;
+    }
+
+    if (user.selection) {
+      selections.push({
+        userId,
+        color: user.color.toJS(),
+        name: user.username,
+        selection: user.selection.toJSON(),
+      });
+    }
+  });
+
+  return selections;
+};
+
+export const sendChangeCurrentModule: Action<string> = (
+  { state, effects },
+  id
+) => {
+  const module = state.editor.currentSandbox.modules.find(m => m.id === id);
+
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === state.live.liveUserId
+  );
+
+  if (userIndex > -1) {
+    state.live.roomInfo.users[userIndex].currentModuleShortid = module.shortid;
+
+    const followingUserId = state.live.followingUserId;
+
+    if (followingUserId) {
+      const followingUserIndex = state.live.roomInfo.users.findIndex(
+        u => u.id === followingUserId
+      );
+
+      if (followingUserIndex > -1) {
+        const user = state.live.roomInfo.users[followingUserIndex];
+
+        if (user && user.currentModuleShortid !== module.shortid) {
+          // Reset following as this is a user change module action
+          state.live.followingUserId = null;
+        }
+      }
+    }
+
+    effects.live.send('user:current-module', {
+      moduleShortid: module.shortid,
+    });
+  }
+};

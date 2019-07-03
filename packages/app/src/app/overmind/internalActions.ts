@@ -390,3 +390,46 @@ export const ensurePackageJSON: AsyncAction<{
     }
   }
 };
+
+export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
+  const sandbox = state.editor.currentSandbox;
+  const currentModule = state.editor.currentModule;
+  const tabs = state.editor.tabs;
+  const tabModuleId = tabs[tabIndex].moduleId;
+  const isActiveTab = currentModule.id === tabModuleId;
+
+  if (isActiveTab) {
+    const newTab = tabIndex > 0 ? tabs[tabIndex - 1] : tabs[tabIndex + 1];
+
+    if (newTab) {
+      const newModule = sandbox.modules.find(
+        module => module.id === newTab.moduleId
+      );
+
+      state.editor.currentModuleShortid = newModule.shortid;
+    }
+  }
+
+  state.editor.tabs.splice(tabIndex, 1);
+};
+
+export const setCurrentModuleByTab: Action<number> = ({ state }, tabIndex) => {
+  const tabs = state.editor.tabs;
+  const currentModuleShortid = state.editor.currentModuleShortid;
+  const closedCurrentTab = !tabs.find(
+    t => t.moduleShortid === currentModuleShortid
+  );
+
+  if (closedCurrentTab) {
+    const index =
+      state.editor.tabs.length - 1 >= tabIndex ? tabIndex : tabIndex - 1;
+
+    const currentTab = state.editor.tabs[index];
+
+    if (currentTab.moduleShortid) {
+      const moduleShortid = currentTab.moduleShortid;
+
+      state.editor.currentModuleShortid = moduleShortid;
+    }
+  }
+};
