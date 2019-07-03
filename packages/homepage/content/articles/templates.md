@@ -1,5 +1,5 @@
 ---
-featuredImage: './images/templates/title.png'
+featuredImage: './images/templates/image.png'
 slug: 'Templates'
 authors: ['Drake Costa']
 photo: 'https://avatars0.githubusercontent.com/u/3144549?s=460&v=4'
