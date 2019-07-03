@@ -210,21 +210,6 @@ export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
   actions.internal.startKeybindings();
 };
 
-export const ensureOwnedEditable: AsyncAction = async ({ state, actions }) => {
-  if (!state.editor.currentSandbox.owned) {
-    return actions.internal.forkSandbox({
-      id: state.editor.currentId,
-    });
-  }
-
-  if (
-    state.editor.currentSandbox.owned &&
-    state.editor.currentSandbox.isFrozen
-  ) {
-    return actions.internal.forkFrozenSandbox();
-  }
-};
-
 export const forkFrozenSandbox: AsyncAction = async ({
   state,
   actions,
@@ -286,6 +271,73 @@ export const forkSandbox: AsyncAction<{
   } catch (error) {}
 
   state.editor.isForkingSandbox = false;
+};
+
+export const setSandbox: Action<Sandbox> = (
+  { state, actions, effects },
+  sandbox
+) => {
+  if (state.live.isLive && !state.live.isLoading) {
+    actions.live.internal.reset();
+  }
+
+  state.editor.currentId = sandbox.id;
+  actions.editor.internal.setCurrentModuleShortid(sandbox);
+  actions.editor.internal.setMainModuleShortid(sandbox);
+  actions.editor.internal.setInitialTab();
+  actions.editor.internal.setUrlOptions();
+  actions.workspace.internal.setWorkspace(sandbox);
+
+  effects.fsSync.syncCurrentSandbox(sandbox.id);
+};
+
+export const refetchSandboxInfo: AsyncAction = async ({ state, actions }) => {
+  if (state.editor.currentId) {
+    const sandbox = await actions.internal.getSandbox(state.editor.currentId);
+    actions.internal.setSandboxData({ sandbox, overwriteFiles: false });
+
+    if (state.live.isLive) {
+      actions.live.internal.disconnect();
+    }
+
+    if (
+      sandbox.team &&
+      state.editor.currentSandbox.team &&
+      sandbox.team.id !== state.editor.currentSandbox.team.id
+    ) {
+      state.editor.currentSandbox.team = sandbox.team;
+    }
+
+    await actions.internal.joinLiveSessionIfAvailable(sandbox);
+  }
+};
+
+export const joinLiveSessionIfAvailable: AsyncAction<Sandbox> = async (
+  { state, actions },
+  sandbox
+) => {
+  if (sandbox.owned && sandbox.roomId) {
+    if (sandbox.team) {
+      state.live.isTeam = true;
+    }
+    actions.internal.setSandboxData({
+      sandbox,
+      overwriteFiles: true,
+    });
+    state.live.isLoading = true;
+    actions.internal.setSandbox(sandbox);
+    await actions.live.internal.initialize();
+    state.live.isLoading = false;
+  } else {
+    actions.internal.setSandboxData({
+      sandbox,
+      overwriteFiles: true,
+    });
+    actions.internal.setSandbox(sandbox);
+    if (sandbox.owned) {
+      actions.files.internal.recoverFiles();
+    }
+  }
 };
 
 export const setSandboxData: Action<{

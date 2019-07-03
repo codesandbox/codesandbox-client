@@ -1,13 +1,127 @@
-import { fromPairs, toPairs, sortBy, mapValues } from 'lodash-es';
+import { mapValues } from 'lodash-es';
 import { Action, AsyncAction } from 'app/overmind';
 import { Sandbox, Module } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+import { sortObjectByKeys } from 'app/overmind/utils/common';
+import {
+  sandboxUrl,
+  editorUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import { parseConfigurations } from '../../utils/parse-configurations';
+import { mainModule, defaultOpenedModule } from '../../utils/main-module';
 
-function sortObjectByKeys(object) {
-  return fromPairs(sortBy(toPairs(object)));
-}
+export const setIdFromAlias: Action<string, string> = ({ state }, id) => {
+  if (state.editor.sandboxes[id]) {
+    return id;
+  }
+
+  const sandboxes = state.editor.sandboxes;
+  const matchingSandbox = Object.keys(sandboxes).find(
+    id => sandboxUrl(sandboxes[id]) === `${editorUrl()}${id}`
+  );
+
+  return matchingSandbox || id;
+};
+
+export const setCurrentModuleShortid: Action<Sandbox> = (
+  { state },
+  sandbox
+) => {
+  const currentModuleShortid = state.editor.currentModuleShortid;
+
+  // Only change the module shortid if it doesn't exist in the new sandbox
+  if (
+    sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
+  ) {
+    const parsedConfigs = parseConfigurations(sandbox);
+    const module = defaultOpenedModule(sandbox, parsedConfigs);
+
+    state.editor.currentModuleShortid = module.shortid;
+  }
+};
+
+export const setMainModuleShortid: Action<Sandbox> = ({ state }, sandbox) => {
+  const parsedConfigs = parseConfigurations(sandbox);
+  const module = mainModule(sandbox, parsedConfigs);
+
+  state.editor.mainModuleShortid = module.shortid;
+};
+
+export const setInitialTab: Action = ({ state }) => {
+  const currentModule = state.editor.currentModule;
+  const newTab = {
+    type: 'MODULE',
+    moduleShortid: currentModule.shortid,
+    dirty: true,
+  };
+
+  state.editor.tabs = [newTab];
+};
+
+export const setUrlOptions: Action = ({ state, effects }) => {
+  const options = effects.router.getSandboxOptions();
+
+  if (options.currentModule) {
+    const sandbox = state.editor.currentSandbox;
+
+    try {
+      const module = effects.utils.resolveModule(
+        options.currentModule,
+        sandbox.modules,
+        sandbox.directories,
+        options.currentModule.directoryShortid
+      );
+
+      if (module) {
+        state.editor.tabs.push({
+          type: 'MODULE',
+          moduleShortid: module.shortid,
+          dirty: false,
+        });
+        state.editor.currentModuleShortid = module.shortid;
+      }
+    } catch (err) {
+      const now = Date.now();
+      const title = `Could not find the module ${options.currentModule}`;
+
+      state.notifications.push({
+        title,
+        id: now,
+        notificationType: 'warning',
+        endTime: now + 2000,
+        buttons: [],
+      });
+    }
+  }
+
+  state.preferences.showPreview =
+    options.isPreviewScreen || options.isSplitScreen;
+
+  state.preferences.showEditor =
+    options.isEditorScreen || options.isSplitScreen;
+
+  if (options.initialPath) state.editor.initialPath = options.initialPath;
+  if (options.fontSize) state.preferences.settings.fontSize = options.fontSize;
+  if (options.highlightedLines)
+    state.editor.highlightedLines = options.highlightedLines;
+  if (options.hideNavigation)
+    state.preferences.hideNavigation = options.hideNavigation;
+  if (options.isInProjectView)
+    state.editor.isInProjectView = options.isInProjectView;
+  if (options.autoResize)
+    state.preferences.settings.autoResize = options.autoResize;
+  if (options.useCodeMirror)
+    state.preferences.settings.useCodeMirror = options.useCodeMirror;
+  if (options.enableEslint)
+    state.preferences.settings.enableEslint = options.enableEslint;
+  if (options.forceRefresh)
+    state.preferences.settings.forceRefresh = options.forceRefresh;
+  if (options.expandDevTools)
+    state.preferences.showDevtools = options.expandDevTools;
+  if (options.runOnClick) state.preferences.runOnClick = options.runOnClick;
+};
 
 export const prettifyCode: AsyncAction<
   {
@@ -55,7 +169,7 @@ export const saveCode: AsyncAction<{
   moduleShortid: string;
 }> = async ({ state, effects, actions }, { code, moduleShortid }) => {
   effects.analytics.track('Save Code');
-  await actions.internal.ensureOwnedEditable();
+  await actions.editor.internal.ensureOwnedEditable();
 
   if (state.preferences.settings.prettifyOnSaveEnabled) {
     code = await actions.editor.internal.prettifyCode({
@@ -347,5 +461,20 @@ export const recoverFiles: Action = ({ state, effects, actions }) => {
       } unsaved files from a previous session`,
       status: NotificationStatus.NOTICE,
     });
+  }
+};
+
+export const ensureOwnedEditable: AsyncAction = async ({ state, actions }) => {
+  if (!state.editor.currentSandbox.owned) {
+    return actions.internal.forkSandbox({
+      id: state.editor.currentId,
+    });
+  }
+
+  if (
+    state.editor.currentSandbox.owned &&
+    state.editor.currentSandbox.isFrozen
+  ) {
+    return actions.internal.forkFrozenSandbox();
   }
 };

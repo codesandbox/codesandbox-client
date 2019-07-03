@@ -1,6 +1,59 @@
 import { AsyncAction, Action } from 'app/overmind';
 import { Module } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+
+export const recoverFiles: Action = ({ effects, actions, state }) => {
+  const sandbox = state.editor.currentSandbox;
+
+  const recoverList = effects.moduleRecover.getRecoverList(
+    sandbox.id,
+    sandbox.modules
+  );
+  effects.moduleRecover.clearSandbox(sandbox.id);
+
+  const recoveredList = recoverList
+    .map(({ recoverData, module }) => {
+      if (module.code === recoverData.savedCode) {
+        const titleA = `saved '${module.title}'`;
+        const titleB = `recovered '${module.title}'`;
+        state.editor.tabs.push({
+          type: 'DIFF',
+          codeA: module.code || '',
+          codeB: recoverData.code || '',
+          titleA,
+          titleB,
+          fileTitle: module.title,
+          id: `${titleA} - ${titleB}`,
+        });
+
+        actions.editor.codeChanged({
+          code: recoverData.code,
+          moduleShortid: module.shortid,
+        });
+
+        return true;
+      }
+
+      return false;
+    })
+    .filter(Boolean);
+
+  if (recoveredList.length > 0) {
+    effects.analytics.track('Files Recovered', {
+      fileCount: recoveredList.length,
+    });
+
+    effects.notificationToast.add({
+      message: `We recovered ${
+        recoveredList.length
+      } unsaved files from a previous session`,
+      status: NotificationStatus.NOTICE,
+    });
+  }
+
+  return {};
+};
 
 export const saveNewModule: AsyncAction<
   {
