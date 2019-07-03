@@ -263,7 +263,6 @@ export const tabClosed: Action<number> = ({ state, actions }, tabIndex) => {
     actions.internal.setCurrentModuleByTab(tabIndex);
   }
 };
-
 export const tabMoved: Action<{
   prevIndex: number;
   nextIndex: number;
