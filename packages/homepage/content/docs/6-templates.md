@@ -1,7 +1,7 @@
 ---
 title: 'Templates'
 authors: ['Saeris']
-description: 'CodeSandbox allows you to create your  custom templates from sandboxes'
+description: 'CodeSandbox allows you to create custom templates from sandboxes'
 ---
 
 ## What are Templates?
