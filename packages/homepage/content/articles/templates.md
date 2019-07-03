@@ -24,7 +24,7 @@ Creating a template from an existing sandbox is really easy! From an existing sa
 
 ![](/images/templates/1.png)
 
-You'll notice there's a new "Make Template" button. Click that you'll see that your newly created template has been Frozen. This is to help prevent making accidental changes to the template whenever you open it from the Dashboard or Create New Sandbox modal. You can toggle this on and off in the Project Info workspace of the template to make edits to the template itself.
+You'll notice there's a new "Make Template" button. Click that and you'll see that your newly created template has been frozen. This is to help prevent making accidental changes to the template whenever you open it from the Dashboard or Create New Sandbox modal. You can toggle this on and off in the Project Info workspace of the template to make edits to the template itself.
 
 ![](/images/templates/2.png)
 
