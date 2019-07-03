@@ -100,7 +100,7 @@ export const PaneTab = ({
   const title =
     typeof pane.title === 'function' ? pane.title(options) : pane.title;
   const component = (
-    <div style={{ height: '100%' }}>
+    <div>
       <Tab
         active={active}
         onClick={onClick}

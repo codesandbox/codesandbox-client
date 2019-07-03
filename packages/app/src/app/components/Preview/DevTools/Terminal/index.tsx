@@ -142,7 +142,7 @@ class DevToolTerminal extends React.Component<
           />
         )}
 
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <div style={{ position: 'relative', flex: 'auto' }}>
           <TerminalComponent
             hidden={hidden || selectedShell !== undefined}
             height={height}

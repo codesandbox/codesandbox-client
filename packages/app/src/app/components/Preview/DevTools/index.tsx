@@ -129,7 +129,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
       mouseDown: false,
       startY: 0,
       startHeight: 0,
-      height: isOpen ? '40%' : this.height(),
+      height: isOpen ? '40%' : this.closedHeight(),
 
       hidden: !props.primary && !isOpen,
 
@@ -158,7 +158,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   }
 
-  height = () => (this.props.primary ? 35 : 28);
+  closedHeight = () => (this.props.primary ? 35 : 28);
 
   /**
    * This stops the propagation of the mousewheel event so the editor itself cannot
@@ -330,7 +330,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
         this.state.startHeight - (event.clientY - this.state.startY);
 
       this.setState({
-        height: Math.max(this.height() - 2, newHeight),
+        height: Math.max(this.closedHeight() - 2, newHeight),
       });
       this.setHidden(newHeight < 64);
     }
@@ -372,7 +372,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
       this.props.setDevToolsOpen(false);
     }
     TweenMax.to(heightObject, 0.3, {
-      height: this.height(),
+      height: this.closedHeight(),
       onUpdate: () => {
         this.setState(heightObject);
       },
@@ -446,17 +446,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
           this.normalizeHeight(el);
         }}
         style={{
-          height: primary ? '100%' : height,
-          position: 'relative',
-          display: 'flex',
-          maxHeight: '100%',
-          /**
-           * Necessary to ensure it drags naturally. Otherwise there's an issue
-           * where flex tries to allocate equal space to the preview and the terminal,
-           * resulting in a very jaggy experience. We set flex-shrink to 0 only
-           * for the console, and not for the preview
-           */
-          flexShrink: devToolIndex === 1 ? 0 : 1,
+          flex: primary
+            ? '1 1 0'
+            : `0 0 ${height}${typeof height === 'number' ? 'px' : ''}`,
+          minHeight: 0,
         }}
       >
         {!hideTabs && (
@@ -489,7 +482,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
               <FaAngleUp
                 onMouseDown={hidden ? undefined : this.handleMinimizeClick}
                 style={{
-                  marginTop: hidden ? 0 : 4,
+                  alignSelf: 'center',
                   transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
                   cursor: 'pointer',
                 }}
@@ -510,7 +503,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
                 sandboxId={sandboxId}
                 height={
                   typeof this.state.height === 'string'
-                    ? this.height()
+                    ? this.closedHeight()
                     : this.state.height
                 }
                 openDevTools={this.openDevTools}
