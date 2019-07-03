@@ -12,52 +12,23 @@ Client environments run entirely inside of your browser and will continue to bun
 
 While Client Sandboxes have faster previews and offline availability, they lack in configurability. Container Sandboxes take longer to start up, but effectively behave much like a local development environment, allowing you to customize your build tools, set up servers to listen to incoming requests, etc.
 
-Below is a list of each of our environments.
-
 ## Client Environments
 
 Client Sandboxes each have their own bundler attached to them which are configured to support a specific framework and emulate their official CLI tools. They are not one-to-one implementations and thus don't support advanced configuration like custom webpack configurations or ejecting, however they are designed to mirror the default behavior of the framework. If your project requires advanced configuration, try using a Container Sandbox instead.
 
-Currently it is not possible to convert a Client Sandbox to a Container Sandbox. This is on the near roadmap, you can follow progress [here](https://github.com/codesandbox/codesandbox-client/issues/2111).
-
-### Angular Bundler
-
-> Based on Angular CLI
-
-### CXJS Bundler
-
-> Based on CXJS
-
-### Dojo Bundler
-
-> Based on @dojo/cli-create-app
-
-### Preact Bundler
-
-> Based on Preact CLI
-
-### React Bundler
-
-> Based on Create React App
-
-### Reason Bundler
-
->
-
-### Static
-
-The Static environment actually has no file processing to it at all! It merely serves the included `index.html` and any linked assets.
-
-### Svelte Bundler
-
-### Vanilla Bundler
-
-The Vanilla environment uses Parcel to compile and serve a JavaScript application bundle.
-
-### Vue Bundler
-
-> Based on Vue CLI
+Currently it is not possible to convert a Client Sandbox to a Container Sandbox. Support for this is on the roadmap, you can follow progress [here](https://github.com/codesandbox/codesandbox-client/issues/2111).
 
 ## Container Environment
 
-### Node
+Container Sandboxes run by connecting to a Docker instance running on our servers. We use the [official Node docker image](https://hub.docker.com/_/node) in our container instances, meaning most Node packages should be supported out of the box. With Containers you can run your own bundlers such as Webpack and retain full control over it's configuration.
+
+Containers also support running NPM scripts defined in your `package.json`. We run a few of these scripts automatically to start up your server. See the list below for which scripts we run automatically and what their priority is:
+
+- `dev`
+- `develop`
+- `serve`
+- `start`
+
+While you can also lint your code using ESLint via the command line in containers, we don't currently support custom ESLint configs in the Editor itself.
+
+Unlike Client Sandboxes, Containers also expose access to the Terminal, which allows you to run most commands you'd normally expect to be able to run in the command line. However, keep in mind that running certain commands which alter the filesystem of the container instance will cause the files shown in the Editor to become out of sync, such as manually running `yarn add` or running `git` commands.
