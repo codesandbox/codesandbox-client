@@ -52,7 +52,7 @@ export default class RollingText extends React.Component {
         style={{ display: 'inline-block', position: 'relative', ...style }}
       >
         <div
-          style={{ position: 'absolute', left: 0 }}
+          style={{ position: 'absolute', left: 0, width: 'inherit' }}
           ref={el => {
             this.fadeout = el;
           }}
