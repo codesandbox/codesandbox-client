@@ -164,3 +164,17 @@ export const codeChanged: Action<{
   actions.editor.internal.addChangedModule(moduleShortid);
   actions.editor.internal.unsetDirtyTab();
 };
+
+export const saveClicked: AsyncAction = async ({ state, actions }) => {
+  await actions.editor.internal.ensureOwnedEditable();
+  const changedModules = actions.editor.internal.outputChangedModules();
+  await actions.editor.internal.saveChangedModules(changedModules);
+  actions.editor.internal.removeChangedModules(changedModules);
+
+  if (
+    state.editor.currentSandbox.originalGit &&
+    state.workspace.openedWorkspaceItem === 'github'
+  ) {
+    actions.git.internal.fetchGitChanges();
+  }
+};

@@ -553,3 +553,52 @@ export const unsetDirtyTab: Action = ({ state, effects }) => {
     state.editor.tabs[tabIndex].dirty = false;
   }
 };
+
+export const outputChangedModules: Action<void, Module[]> = ({ state }) => {
+  const changedModuleShortids = state.editor.changedModuleShortids;
+  const sandbox = state.editor.currentSandbox;
+
+  return sandbox.modules.filter(
+    module => changedModuleShortids.indexOf(module.shortid) >= 0
+  );
+};
+
+export const saveChangedModules: AsyncAction<Module[]> = async (
+  { state, effects },
+  changedModules
+) => {
+  const sandboxId = state.editor.currentId;
+
+  await effects.api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
+    modules: changedModules,
+  });
+
+  effects.moduleRecover.clearSandbox(sandboxId);
+};
+
+export const removeChangedModules: Action<Module[]> = (
+  { state },
+  changedModules
+) => {
+  changedModules.forEach(module => {
+    const sandbox = state.editor.currentSandbox;
+    const index = sandbox.modules.findIndex(m => m.id === module.id);
+
+    if (index !== -1) {
+      const currentCode =
+        state.editor.sandboxes[sandbox.id].modules[index].code;
+      // If the code hasn't change between the save call and this action we can just reset
+      // the saved code. Otherwise we must set the savedCode to the value of the last save.
+      if (currentCode === module.code) {
+        state.editor.sandboxes[sandbox.id].modules[index].savedCode = null;
+      } else {
+        state.editor.sandboxes[sandbox.id].modules[index].savedCode =
+          module.code;
+      }
+    }
+  });
+
+  state.editor.changedModuleShortids = state.editor.changedModuleShortids.filter(
+    shortid => !changedModules.find(m => m.shortid === shortid)
+  );
+};
