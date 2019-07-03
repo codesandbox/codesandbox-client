@@ -27,12 +27,10 @@ class CreateNewSandbox extends React.PureComponent {
   };
 
   componentDidMount() {
-    document.addEventListener('mousedown', this.mouseListener);
     document.addEventListener('keydown', this.keydownListener);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mousedown', this.mouseListener);
     document.removeEventListener('keydown', this.keydownListener);
   }
 
@@ -61,12 +59,6 @@ class CreateNewSandbox extends React.PureComponent {
     });
   };
 
-  mouseListener = e => {
-    if (!e.defaultPrevented && this.state.creating) {
-      this.close();
-    }
-  };
-
   keydownListener = e => {
     if (e.keyCode === ESC) {
       this.close();
@@ -90,7 +82,7 @@ class CreateNewSandbox extends React.PureComponent {
         left: toRects.x,
         height: toRects.height,
         width: toRects.width,
-        overflow: 'auto',
+        overflow: 'hidden',
       },
       {
         position: 'fixed',
@@ -141,7 +133,10 @@ class CreateNewSandbox extends React.PureComponent {
         {this.state.creating && (
           <React.Fragment>
             <Portal>
-              <DarkBG closing={this.state.closingCreating} />
+              <DarkBG
+                onClick={this.close}
+                closing={this.state.closingCreating}
+              />
             </Portal>
             <Portal>
               <ThemeProvider theme={theme}>

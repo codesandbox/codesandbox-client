@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { sortBy } from 'lodash-es';
 import { useQuery } from '@apollo/react-hooks';
-import { Button } from '@codesandbox/common/lib/components/Button';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import history from 'app/utils/history';

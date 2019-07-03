@@ -7,7 +7,10 @@ export const Container = styled.main<{
   forking: boolean;
 }>`
   ${({ closing, forking, theme }) => css`
+    display: flex;
+    flex-direction: column;
     position: relative;
+    height: 100%;
     width: 100%;
     border-radius: 0 0 4px 4px;
     background-color: ${theme.background};
@@ -65,7 +68,7 @@ export const InnerContainer = styled.div<{
 }>`
   ${({ closing, forking }) => css`
     padding: 2rem;
-    overflow: hidden;
+    overflow-y: auto;
 
     ${(closing || forking) &&
       css`
