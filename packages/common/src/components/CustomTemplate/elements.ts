@@ -50,6 +50,7 @@ export const MyTemplate = styled.button<{ overlayHeight?: number }>`
     color: ${theme.lightText};
     cursor: pointer;
     box-sizing: border-box;
+    overflow: hidden;
 
     &:focus {
       border: 2px solid ${theme.secondary};
