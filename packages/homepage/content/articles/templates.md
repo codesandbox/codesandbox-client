@@ -1,5 +1,5 @@
 ---
-featuredImage: './images/templates/image.png'
+featuredImage: './images/templates/title.png'
 slug: 'Templates'
 authors: ['Drake Costa']
 photo: 'https://avatars0.githubusercontent.com/u/3144549?s=460&v=4'
@@ -22,33 +22,29 @@ In this early beta release, you can quickly turn any existing sandbox into a tem
 
 Creating a template from an existing sandbox is really easy! From an existing sandbox, pull up the editor and open up the "Project Info" workspace in the upper left corner. If you've just opened one of our official templates, first fork it and make some changes.
 
-![](/images/templates/1.png)
+![Make Template from Sandbox](/images/templates/1.gif)
 
 You'll notice there's a new "Make Template" button. Click that and you'll see that your newly created template has been frozen. This is to help prevent making accidental changes to the template whenever you open it from the Dashboard or Create New Sandbox modal. You can toggle this on and off in the Project Info workspace of the template to make edits to the template itself.
 
-![](/images/templates/2.png)
+![Unfreeze](/images/templates/2.gif)
 
 You can also click on the color in the sidebar to change the color you assign to your template. This is to help distinguish it in your Dashboard and in the Create New Sandbox modal.
 
-![](/images/templates/3.png)
+![Change Template Color](/images/templates/3.gif)
 
 You'll also notice that whenever you attempt to save changes to a frozen sandbox, a new modal will pop up asking you whether you would like to unfreeze it for editing or to fork it to create a new sandbox.
 
-![](/images/templates/4.png)
+![Fork Sandbox Modal](/images/templates/4.gif)
 
 ## Using Templates
 
 So now that you've created your first template, how can you use it? Just like the official templates, you can create a new sandbox from one of your templates via the Create New Sandbox modal.
 
-![](/images/templates/5.png)
+![Use Template](/images/templates/5.gif)
 
-In the Overview tab, you'll see your most recently used templates up at the top. Switching over to the My Templates tab, you can browse through all of your custom templates.
+In the Overview tab, you'll see your most recently used templates up at the top. Switching over to the My Templates tab, you can browse through all of your custom templates. You'll also find all of your custom templates within the Dashboard under the My Templates tab.
 
-![](/images/templates/6.png)
-
-You'll also find all of your custom templates within the Dashboard under the My Templates tab.
-
-![](/images/templates/7.png)
+![My Templates](/images/templates/6.gif)
 
 ## Teams
 
