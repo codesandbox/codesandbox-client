@@ -29,7 +29,6 @@ import ForkServerModal from './ForkServerModal';
 import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
 import FeedbackModal from './FeedbackModal';
-import { TemplateModal } from './TemplateModal';
 import NetlifyLogs from './NetlifyLogs';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 // eslint-disable-next-line
@@ -138,10 +137,6 @@ const modals = {
   },
   feedback: {
     Component: FeedbackModal,
-    width: 450,
-  },
-  template: {
-    Component: TemplateModal,
     width: 450,
   },
 };
