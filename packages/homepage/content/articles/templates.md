@@ -8,7 +8,7 @@ description: "Today we're excited to launch a new feature that we believe will s
 date: 07/02/2019
 ---
 
-Today we're excited to launch a new feature that we believe will speed up your prototyping workflow here in CodeSandbox! Say hello to Templates!
+Today we're excited to launch a new feature that we believe will speed up your prototyping workflow here in CodeSandbox! Say hello to templates!
 
 ## **What are Templates?**
 
