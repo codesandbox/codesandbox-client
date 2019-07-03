@@ -1,7 +1,7 @@
 ---
 title: 'Environment'
 authors: ['Saeris']
-description: 'CodeSandbox uses different execution environments based on what type of Template you use.'
+description: 'CodeSandbox uses different execution environments based on the contents of a sandbox.'
 ---
 
 ## What is an Environment?
