@@ -3,11 +3,11 @@ import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 import { SketchPicker } from 'react-color';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import * as templates from '@codesandbox/common/lib/templates';
 import { useSignals, useStore } from 'app/store';
-import { Group, Item, PropertyName, PropertyValue, Icon } from '../elements';
+import { Item, PropertyName, PropertyValue, Explanation } from '../elements';
 import { PickColor, PickerContainer } from './elements';
+import WorkspaceItem from '../../WorkspaceItem';
 
 export const TemplateConfig = observer(() => {
   const picker = useRef(null);
@@ -39,27 +39,16 @@ export const TemplateConfig = observer(() => {
   });
 
   return (
-    <Group>
-      <Item>
-        <PropertyName>
-          Template
-          <Tooltip
-            placement="right"
-            interactive
-            content={
-              <>
-                Templates can be used as starting points.{' '}
-                <Link target="_blank" to={`docs/templates`}>
-                  More info.
-                </Link>
-              </>
-            }
-          >
-            <Icon />
-          </Tooltip>
-        </PropertyName>
-      </Item>
-      <Item>
+    <WorkspaceItem defaultOpen title="Template">
+      <Explanation style={{ marginTop: 0, marginBottom: '.5rem' }}>
+        This is a template, you can find more info about templates
+        <Link target="_blank" to={`/docs/templates`}>
+          {' '}
+          here
+        </Link>
+        .
+      </Explanation>
+      <Item style={{ marginTop: '0.5rem' }}>
         <PropertyName>Color</PropertyName>
         <PropertyValue style={{ position: 'relative' }}>
           <PickColor
@@ -80,6 +69,6 @@ export const TemplateConfig = observer(() => {
           )}
         </PropertyValue>
       </Item>
-    </Group>
+    </WorkspaceItem>
   );
 });

@@ -28,7 +28,8 @@ export const Group = styled.div`
 
 export const PropertyName = styled.span`
   ${({ theme }) => css`
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     flex: 0 0 110px;
     width: 110px;
     margin-right: 0.5rem;
@@ -129,6 +130,8 @@ export const EditPen = styled(EditPenIcon)`
 `;
 
 export const Icon = styled(Question)`
+  display: flex;
+  font-size: 0.75rem;
   opacity: 0.5;
   margin-left: 0.5em;
   cursor: pointer;

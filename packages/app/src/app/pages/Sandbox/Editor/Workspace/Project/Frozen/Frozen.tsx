@@ -40,7 +40,10 @@ export const Frozen = observer(({ isFrozen }: IFrozenProps) => {
       <Item>
         <PropertyName>
           Frozen
-          <Tooltip content="When true this sandbox will fork on edit">
+          <Tooltip
+            boundary="viewport"
+            content="Whether we should fork the sandbox on edits"
+          >
             <Icon />
           </Tooltip>
         </PropertyName>

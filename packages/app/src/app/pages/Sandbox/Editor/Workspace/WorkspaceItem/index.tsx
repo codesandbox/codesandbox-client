@@ -11,7 +11,7 @@ import {
 
 type Props = {
   children: React.ReactNode;
-  title: string;
+  title: string | React.ReactElement<any>;
   keepState?: boolean;
   disabled?: boolean;
   defaultOpen?: boolean;

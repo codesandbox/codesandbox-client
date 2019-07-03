@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Link } from 'react-router-dom';
 import TeamIcon from 'react-icons/lib/md/people';
 import {
   sandboxUrl,
   githubRepoUrl,
+  patronUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import getDefinition from '@codesandbox/common/lib/templates';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
@@ -61,7 +60,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
       </BasicInfo>
       {!sandbox.team && sandbox.author && <Author author={sandbox.author} />}
       {sandbox.team && (
-        <Tooltip content="This sandbox is owned by this team">
+        <Tooltip appendTo="parent" content="This sandbox is owned by this team">
           <Item style={{ color: 'white', display: 'flex' }}>
             <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
             <div>{sandbox.team.name}</div>
@@ -84,18 +83,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
       <Keywords editable={editable} />
       <Group>
         <Item>
-          <PropertyName>
-            Privacy{' '}
-            {!isPatron && (
-              <Tooltip
-                content={
-                  'Having private and unlisted Sandboxes is available as Patron.'
-                }
-              >
-                <Icon />
-              </Tooltip>
-            )}
-          </PropertyName>
+          <PropertyName>Privacy</PropertyName>
           <PropertyValue>
             <PrivacyContainer>
               {editable ? (
@@ -119,14 +107,6 @@ export const Project = observer(({ editable }: IProjectProps) => {
                       <option value={2}>Private</option>
                     )}
                   </PrivacySelect>
-                  {!isPatron && (
-                    <Explanation>
-                      You can change privacy of a sandbox as a{' '}
-                      <a href="/patron" target="_blank">
-                        patron
-                      </a>
-                    </Explanation>
-                  )}
                 </>
               ) : (
                 <PrivacyStatus privacy={sandbox.privacy} />
@@ -134,6 +114,15 @@ export const Project = observer(({ editable }: IProjectProps) => {
             </PrivacyContainer>
           </PropertyValue>
         </Item>
+        {!isPatron && (
+          <Explanation style={{ marginTop: '-1rem' }}>
+            You can change privacy of a sandbox as a{' '}
+            <a href={patronUrl()} target="_blank">
+              patron
+            </a>
+            .
+          </Explanation>
+        )}
         {editable && <Frozen isFrozen={sandbox.isFrozen} />}
         {sandbox.forkedFromSandbox && (
           <Item>
@@ -145,15 +134,30 @@ export const Project = observer(({ editable }: IProjectProps) => {
             </PropertyValue>
           </Item>
         )}
-        {/* NOTE: We should only show Bundler for Client Sandboxes, since Containers use node */}
-        {!isServer && (
-          <Item>
-            <PropertyName>Environment</PropertyName>
-            <PropertyValue>
-              <BundlerLink href={template.url}>{sandbox.template}</BundlerLink>
-            </PropertyValue>
-          </Item>
-        )}
+        <Item>
+          <PropertyName>
+            Environment{' '}
+            <Tooltip
+              boundary="viewport"
+              interactive
+              content={
+                <>
+                  The environment determines how a sandbox is executed, you can
+                  find more info{' '}
+                  <a target="_blank" href="/docs/environment">
+                    here
+                  </a>
+                  .
+                </>
+              }
+            >
+              <Icon />
+            </Tooltip>
+          </PropertyName>
+          <PropertyValue>
+            <BundlerLink href={template.url}>{sandbox.template}</BundlerLink>
+          </PropertyValue>
+        </Item>
       </Group>
       {editable && <SandboxConfig />}
     </Container>
