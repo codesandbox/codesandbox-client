@@ -4,6 +4,7 @@ import { Derive } from 'app/overmind';
 import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 
 type State = {
+  itemId: string;
   settings: Preferences;
   isLoadingPaymentDetails: boolean;
   itemId: string;
@@ -18,6 +19,7 @@ type State = {
 };
 
 export const state: State = {
+  itemId: null,
   settings: {
     prettifyOnSaveEnabled: true,
     zenMode: false,
