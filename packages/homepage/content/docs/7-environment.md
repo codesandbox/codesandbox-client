@@ -18,7 +18,7 @@ Below is a list of each of our environments.
 
 Client Sandboxes each have their own bundler attached to them which are configured to support a specific framework and emulate their official CLI tools. They are not one-to-one implementations and thus cannot be configured within CodeSandbox, however they are designed to mirror the default behavior of the framework. If your project requires advanced configuration, try using a Container Sandbox instead.
 
-Currently it is not possible to convert a Client Sandbox to a Container Sandbox.
+Currently it is not possible to convert a Client Sandbox to a Container Sandbox. This is on the near roadmap, you can follow progress [here](https://github.com/codesandbox/codesandbox-client/issues/2111).
 
 ### Angular Bundler
 
