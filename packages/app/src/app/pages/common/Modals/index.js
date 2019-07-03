@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { ThemeProvider } from 'styled-components';
 import Modal from 'app/components/Modal';
 import Loadable from 'app/utils/Loadable';
-import { ThemeProvider } from 'styled-components';
+import { templateColor } from 'app/utils/template-color';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
@@ -29,6 +30,9 @@ import PrivacyServerWarning from './PrivacyServerWarning';
 import PickSandboxModal from './PickSandboxModal';
 import FeedbackModal from './FeedbackModal';
 import NetlifyLogs from './NetlifyLogs';
+import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
+// eslint-disable-next-line
+import SignInForTemplates from './SignInForTemplates/index.ts';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import('./MoveSandboxFolderModal')
@@ -58,6 +62,14 @@ const modals = {
   commit: {
     Component: CommitModal,
     width: 400,
+  },
+  signInForTemplates: {
+    Component: SignInForTemplates,
+    width: 400,
+  },
+  forkFrozenModal: {
+    Component: ForkFrozenSandboxModal,
+    width: 450,
   },
   pr: {
     Component: PRModal,
@@ -166,12 +178,13 @@ class Modals extends Component {
     const { signals, store } = this.props;
     const sandbox = store.editor.currentSandbox;
     const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+
     const modal = store.currentModal && modals[store.currentModal];
 
     return (
       <ThemeProvider
         theme={{
-          templateColor: templateDef && templateDef.color,
+          templateColor: templateColor(sandbox, templateDef),
           templateBackgroundColor: templateDef && templateDef.backgroundColor,
           ...this.state.theme,
         }}
@@ -179,7 +192,7 @@ class Modals extends Component {
         <Modal
           isOpen={Boolean(modal)}
           width={modal && modal.width}
-          onClose={(isKeyDown: boolean) => signals.modalClosed({ isKeyDown })}
+          onClose={isKeyDown => signals.modalClosed({ isKeyDown })}
         >
           {modal
             ? React.createElement(modal.Component, {

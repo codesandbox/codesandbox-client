@@ -20,6 +20,7 @@ import { loadSandbox } from '../../sequences';
 export default Module({
   model,
   state: {
+    sessionFrozen: true,
     sandboxes: {},
     currentId: null,
     isForkingSandbox: false,
@@ -68,6 +69,7 @@ export default Module({
     npmDependencyRemoved: sequences.removeNpmDependency,
     sandboxChanged: loadSandbox,
     contentMounted: sequences.onUnload,
+    sessionFreezeOverride: sequences.sessionFreezeOverride,
     resizingStarted: sequences.startResizing,
     resizingStopped: sequences.stopResizing,
     codeSaved: sequences.saveCode,
@@ -75,6 +77,7 @@ export default Module({
     saveClicked: sequences.saveChangedModules,
     createZipClicked: sequences.createZip,
     forkSandboxClicked: sequences.forceForkSandbox,
+    forkSandboxOnDemand: sequences.forkSandboxOnDemand,
     likeSandboxToggled: sequences.toggleLikeSandbox,
     moduleSelected: sequences.changeCurrentModule,
     clearModuleSelected: sequences.clearCurrentModule,

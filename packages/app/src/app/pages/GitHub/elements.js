@@ -11,6 +11,9 @@ export const Container = styled.div`
 export const Content = styled(Centered)`
   max-width: 50em;
   margin: auto;
+`;
+
+export const Wrapper = styled.div`
   margin-top: 10%;
 `;
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { uniq } from 'lodash-es';
 import { inject, observer, Observer } from 'mobx-react';
 import { Query } from 'react-apollo';
 import { basename } from 'path';
@@ -10,6 +9,7 @@ import CreateNewSandbox from '../../CreateNewSandbox';
 import getMostUsedTemplate from '../../../utils/get-most-used-template';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
+import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 const PathedSandboxes = props => {
   const path = '/' + decodeURIComponent(props.match.params.path || '');
@@ -31,12 +31,15 @@ const PathedSandboxes = props => {
                 ? []
                 : data.me.collection.sandboxes;
 
-            const possibleTemplates = uniq(
-              sandboxes.map(x => x.source.template)
-            );
+            const possibleTemplates = getPossibleTemplates(sandboxes);
 
+            // We want to hide all templates
+            // TODO: make this a query variable for graphql and move the logic to the server
+            const noTemplateSandboxes = sandboxes.filter(
+              s => !s.customTemplate
+            );
             const orderedSandboxes = props.store.dashboard.getFilteredSandboxes(
-              sandboxes
+              noTemplateSandboxes
             );
 
             let mostUsedTemplate = null;

@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/react": "^16.8.12",
     "rimraf": "^2.6.2",
-    "typescript": "3.3.4000"
+    "typescript": "3.5.2"
   },
   "scripts": {
     "watch": "tsc --watch",

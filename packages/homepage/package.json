@@ -41,7 +41,7 @@
     "react-media": "^1.6.1",
     "react-router-dom": "^4.2.2",
     "react-slick": "^0.23.2",
-    "react-spring": "^8.0.19",
+    "react-spring": "^8.0.25",
     "react-text-loop": "^2.0.1",
     "react-transition-group": "^2.2.1",
     "react-typography": "^0.16.13",
@@ -67,6 +67,7 @@
   "devDependencies": {
     "dotenv": "^6.2.0",
     "gatsby-plugin-remove-trailing-slashes": "^2.0.6",
+    "gatsby-remark-copy-images": "^0.2.1",
     "gatsby-source-medium": "^2.0.2",
     "rimraf": "^2.6.2",
     "terser": "^3.17.0"

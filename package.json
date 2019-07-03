@@ -77,7 +77,7 @@
     "lerna": "^2.5.1",
     "prettier": "1.17.0",
     "pretty-quick": "^1.10.0",
-    "typescript": "3.4.5"
+    "typescript": "3.5.2"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^1.9.0",

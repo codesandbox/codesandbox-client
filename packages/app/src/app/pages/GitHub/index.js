@@ -58,7 +58,13 @@ const GitHub = () => {
         <Container>
           <Navigation title="GitHub Import" />
 
-          <Content vertical horizontal>
+          <Content
+            vertical
+            horizontal
+            css={`
+              margin-top: 5rem;
+            `}
+          >
             <Description>
               <Title>Import from GitHub</Title>
 

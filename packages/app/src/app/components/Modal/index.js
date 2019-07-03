@@ -73,7 +73,7 @@ class ModalComponent extends React.Component {
       right: 0,
       margin: `0 auto ${top}vh`,
       border: 'none',
-      borderRadius: '4px',
+      borderRadius: '8px',
     },
   });
 

@@ -27,6 +27,7 @@ import {
   permanentlyDeleteSandboxes,
   setSandboxesPrivacy,
   undeleteSandboxes,
+  makeTemplates,
 } from '../../queries';
 
 type State = {
@@ -99,6 +100,20 @@ class SandboxGrid extends React.Component<*, State> {
     signals.dashboard.sandboxesSelected({
       sandboxIds,
     });
+  };
+
+  makeTemplates = (teamId?: string) => {
+    const collections = uniq(
+      this.props.sandboxes
+        .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
+        .map(s => s.collection)
+    );
+
+    makeTemplates(
+      this.props.store.dashboard.selectedSandboxes,
+      teamId,
+      collections
+    );
   };
 
   deleteSandboxes = () => {
@@ -271,7 +286,7 @@ class SandboxGrid extends React.Component<*, State> {
     if (this.props.page === 'search' || this.props.page === 'recent') {
       const dir =
         basename(item.collection.path) ||
-        (item.collection.teamId ? 'Our Sandboxes' : 'My Sandboxes');
+        (item.collection.teamId ? 'Team Sandboxes' : 'My Sandboxes');
 
       if (dir) {
         editedSince += ` in ${dir}`;
@@ -284,6 +299,7 @@ class SandboxGrid extends React.Component<*, State> {
         id={item.id}
         title={getSandboxName(item)}
         alias={item.alias}
+        color={item.forkedTemplate ? item.forkedTemplate.color : undefined}
         details={editedSince}
         style={style}
         key={key}
@@ -304,6 +320,7 @@ class SandboxGrid extends React.Component<*, State> {
         permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
         exportSandboxes={this.exportSandboxes}
         setSandboxesPrivacy={this.setSandboxesPrivacy}
+        makeTemplates={this.makeTemplates}
         page={this.props.page}
         privacy={item.privacy}
         isPatron={this.props.store.isPatron}

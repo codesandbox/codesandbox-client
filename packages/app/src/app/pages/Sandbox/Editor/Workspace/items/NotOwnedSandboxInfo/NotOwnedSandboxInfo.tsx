@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-
 import Dependencies from '../../Dependencies';
 import Files from '../../Files';
-import Project from '../../Project';
+import { Project } from '../../Project';
 import WorkspaceItem from '../../WorkspaceItem';
 
 export const NotOwnedSandboxInfo = () => {
@@ -11,7 +10,6 @@ export const NotOwnedSandboxInfo = () => {
   return (
     <div style={{ marginTop: '1rem' }}>
       <Project />
-
       <WorkspaceItem
         actions={editActions}
         defaultOpen
@@ -20,7 +18,6 @@ export const NotOwnedSandboxInfo = () => {
       >
         <Files setEditActions={setEditActions} />
       </WorkspaceItem>
-
       <WorkspaceItem
         defaultOpen
         style={{ marginTop: '.5rem' }}
