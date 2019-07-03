@@ -6,7 +6,7 @@ description: 'CodeSandbox allows you to create custom templates from sandboxes'
 
 ## What are Templates?
 
-Templates are a combination of an execution [Environment]() and a set of starter files, similar to what you would find in the output of a framework CLI such as Create React App or Gatsby CLI. CodeSandbox has a number of official Templates, such as React, Vue, Gatsby and others with which you can quickly bootstrap a new project.
+Templates are a combination of an execution [Environment](./environment) and a set of starter files, similar to what you would find in the output of a framework CLI such as Create React App or Gatsby CLI. CodeSandbox has a number of official Templates, such as React, Vue, Gatsby and others with which you can quickly bootstrap a new project.
 
 Users can also create their own custom templates, whereby they can modify an existing template with their own dependencies, files and folder structure, and configuration. Once a custom template has been created, the user can then start new projects from the "Create New Sandbox" modal using one of their templates.
 
