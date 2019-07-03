@@ -127,7 +127,7 @@ class DevToolTerminal extends React.Component<
   };
 
   render() {
-    const { height, hidden, theme, owned } = this.props;
+    const { hidden, theme, owned } = this.props;
     const { selectedShell } = this.state;
 
     return (
@@ -145,7 +145,6 @@ class DevToolTerminal extends React.Component<
         <div style={{ position: 'relative', flex: 'auto' }}>
           <TerminalComponent
             hidden={hidden || selectedShell !== undefined}
-            height={height}
             theme={theme}
             onTerminalInitialized={this.setTerminal}
           />
@@ -155,7 +154,6 @@ class DevToolTerminal extends React.Component<
               id={shell.id}
               script={shell.script}
               ended={shell.ended}
-              height={height}
               hidden={hidden || shell.id !== this.state.selectedShell}
               closeShell={() => this.closeShell(shell.id)}
               endShell={() => this.endShell(shell.id)}

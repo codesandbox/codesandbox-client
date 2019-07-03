@@ -11,7 +11,6 @@ import { TerminalWithFit } from '../types';
 type Props = {
   theme: VSTheme;
   hidden: boolean;
-  height: number;
   onTerminalInitialized: (term: TerminalWithFit) => void;
 };
 
@@ -58,16 +57,6 @@ export class TerminalComponent extends React.PureComponent<Props> {
 
   componentDidUpdate(prevProps: Props) {
     if (this.term) {
-      if (prevProps.height !== this.props.height) {
-        clearTimeout(this.timeout);
-        this.timeout = window.setTimeout(
-          () => {
-            this.term.fit();
-          },
-          this.props.hidden ? 1500 : 300
-        );
-      }
-
       if (prevProps.hidden !== this.props.hidden && !this.props.hidden) {
         this.term.focus();
       }
@@ -97,7 +86,7 @@ export class TerminalComponent extends React.PureComponent<Props> {
   }
 
   render() {
-    const { height, hidden } = this.props;
+    const { hidden } = this.props;
 
     return (
       <div

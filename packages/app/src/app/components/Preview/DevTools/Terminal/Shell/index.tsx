@@ -15,7 +15,6 @@ type Props = {
   endShell: () => void;
   ended: boolean;
   hidden: boolean;
-  height: number;
   updateStatus?: (type: string, count?: number) => void;
 };
 
@@ -108,10 +107,9 @@ class Shell extends React.PureComponent<Props> {
   }
 
   render() {
-    const { height, hidden, theme } = this.props;
+    const { hidden, theme } = this.props;
     return (
       <TerminalComponent
-        height={height}
         hidden={hidden}
         theme={theme}
         onTerminalInitialized={this.initializeTerminal}

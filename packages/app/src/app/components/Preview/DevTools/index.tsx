@@ -67,7 +67,6 @@ export type DevToolProps = {
   hidden: boolean;
   updateStatus: (type: StatusType, count?: number) => void;
   sandboxId: string;
-  height: number;
   openDevTools: () => void;
   hideDevTools: () => void;
   selectCurrentPane: () => void;
@@ -501,11 +500,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
                 hidden={hidden || i !== this.state.currentTabIndex}
                 updateStatus={this.updateStatus(view.id)}
                 sandboxId={sandboxId}
-                height={
-                  typeof this.state.height === 'string'
-                    ? this.closedHeight()
-                    : this.state.height
-                }
                 openDevTools={this.openDevTools}
                 hideDevTools={this.hideDevTools}
                 selectCurrentPane={() => {
