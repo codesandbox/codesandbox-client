@@ -64,6 +64,7 @@ export const TemplateConfig = observer(() => {
           {showPicker && (
             <PickerContainer ref={picker}>
               <SketchPicker
+                disableAlpha
                 id="color"
                 onChangeComplete={(color: { hex: string }) =>
                   setSelectedColor(color.hex)
