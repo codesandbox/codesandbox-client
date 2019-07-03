@@ -9,7 +9,6 @@ import {
 } from './elements';
 import { Sandbox } from '../../types';
 import { getSandboxName } from '../../utils/get-sandbox-name';
-import host from '../../utils/host';
 
 interface Props {
   template?: {
