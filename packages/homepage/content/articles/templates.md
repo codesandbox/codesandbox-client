@@ -20,7 +20,7 @@ In this early beta release, you can quickly turn any existing Sandbox into a Tem
 
 ## **How to make your first Template**
 
-Creating a template from an existing Sandbox is really easy! From an existing Sandbox, pull up the Editor and open up the Project Info workspace in the upper left corner. If you've just opened one of our official templates, first fork it and make some changes.
+Creating a template from an existing sandbox is really easy! From an existing sandbox, pull up the editor and open up the "Project Info" workspace in the upper left corner. If you've just opened one of our official templates, first fork it and make some changes.
 
 ![](/images/templates/1.png)
 
