@@ -67,7 +67,7 @@
   "devDependencies": {
     "dotenv": "^6.2.0",
     "gatsby-plugin-remove-trailing-slashes": "^2.0.6",
-    "gatsby-remark-static-images": "^1.1.0",
+    "gatsby-remark-copy-images": "^0.2.1",
     "gatsby-source-medium": "^2.0.2",
     "rimraf": "^2.6.2",
     "terser": "^3.17.0"

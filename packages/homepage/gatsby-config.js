@@ -38,7 +38,7 @@ module.exports = {
           },
           'gatsby-remark-autolink-headers',
           `gatsby-remark-prismjs`,
-          'gatsby-remark-static-images',
+          'gatsby-remark-copy-images',
           {
             resolve: 'gatsby-remark-embed-youtube',
             options: {
