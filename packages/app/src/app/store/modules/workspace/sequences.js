@@ -8,6 +8,12 @@ import { updateSandboxPackage } from './../editor/sequences';
 import { addNotification } from '../../factories';
 
 export const changeSandboxPrivacy = [
+  ({ props: givenProps }) => {
+    track('Sandbox - Update Privacy', {
+      source: 'editor',
+      privacy: givenProps.privacy,
+    });
+  },
   when(
     state`editor.currentSandbox.template`,
     props`privacy`,
@@ -31,6 +37,9 @@ export const changeSandboxPrivacy = [
 ];
 
 export const deleteTemplate = [
+  () => {
+    track('Template - Removed', { source: 'editor' });
+  },
   actions.deleteTemplate,
   {
     success: [
@@ -44,6 +53,9 @@ export const deleteTemplate = [
 ];
 
 export const editTemplate = [
+  () => {
+    track('Template - Edited', { source: 'editor' });
+  },
   actions.editTemplate,
   {
     success: [
@@ -59,6 +71,9 @@ export const editTemplate = [
 ];
 
 export const addTemplate = [
+  () => {
+    track('Template - Created', { source: 'editor' });
+  },
   actions.addTemplate,
   {
     success: [

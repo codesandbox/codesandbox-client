@@ -5,9 +5,11 @@ import { Button } from '@codesandbox/common/lib/components/Button';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import history from 'app/utils/history';
+import track from '@codesandbox/common/lib/utils/analytics';
 import ContextMenu from 'app/components/ContextMenu';
 import CustomTemplate from '@codesandbox/common/lib/components/CustomTemplate';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+
 import { LIST_TEMPLATES, unmakeTemplates } from '../../../queries';
 import { Container, Grid, EmptyTitle } from './elements';
 import { Navigation } from './Navigation';
@@ -74,6 +76,7 @@ export const Templates = props => {
               {
                 title: 'Convert to Sandbox',
                 action: () => {
+                  track('Template - Removed', { source: 'Context Menu' });
                   unmakeTemplates([template.sandbox.id], teamId);
                   return true;
                 },

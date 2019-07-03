@@ -230,6 +230,10 @@ class SandboxItem extends React.PureComponent<Props, State> {
           selectedCount < 50 && {
             title: `Make ${selectedCount} Sandboxes a Template`,
             action: () => {
+              track('Template - Created', {
+                source: 'Context Menu',
+                count: selectedCount,
+              });
               this.props.makeTemplates();
               return true;
             },
@@ -318,6 +322,10 @@ class SandboxItem extends React.PureComponent<Props, State> {
         {
           title: `Make Sandbox a Template`,
           action: () => {
+            track('Template - Created', {
+              source: 'Context Menu',
+              count: 1,
+            });
             this.props.makeTemplates();
             return true;
           },
@@ -619,6 +627,10 @@ const cardSource = {
     }
 
     if (result && result[MAKE_TEMPLATE_DROP_KEY]) {
+      track('Template - Created', {
+        source: 'Dragging',
+        team: !!result.teamId,
+      });
       props.makeTemplates(result.teamId);
     }
   },

@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { client } from 'app/graphql/client';
 import immer from 'immer';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { NotificationStatus } from '@codesandbox/notifications';
 
 const SIDEBAR_COLLECTION_FRAGMENT = gql`
@@ -408,6 +409,9 @@ export function makeTemplates(selectedSandboxes, teamId, collections) {
               {
                 label: 'Undo',
                 run: () => {
+                  track('Template - Removed', {
+                    source: 'Undo',
+                  });
                   unmakeTemplates(selectedSandboxes.toJS());
                 },
               },

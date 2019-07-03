@@ -12,11 +12,11 @@ Today we're excited to launch a new feature that we believe will speed up your p
 
 ## **What are Templates?**
 
-We've found that for many of our users, after having used one of our built-in Sandbox starters such as React, Vue, or Gatsby for the first time to prototype an application, they often want to create new projects using the same framework with a specific set of dependencies, folder structure, and configuration set up just the way they like it.
+We've found that for many of our users, after having used one of our built-in sandbox starters such as React, Vue, or Gatsby for the first time to prototype an application, they often want to create new projects using the same framework with a specific set of dependencies, folder structure, and configuration set up just the way they like it.
 
-This is so common that we decided why not make it easy for users to create their own custom templates which they can quickly bootstrap new projects with! Today's release is a beta of our new Templates system, which we're planning to improve with a bunch of useful new features over time.
+This is so common that we decided why not make it easy for users to create their own custom templates which they can quickly bootstrap new projects with! Today's release is a beta of our new templates system, which we're planning to improve with a bunch of useful new features over time.
 
-In this early beta release, you can quickly turn any existing Sandbox into a Template with just one click. Let's take a look at how simple it is to get started with Templates!
+In this early beta release, you can quickly turn any existing sandbox into a template with just one click. Let's take a look at how simple it is to get started with templates!
 
 ## **How to make your first Template**
 
@@ -50,14 +50,18 @@ You'll also find all of your custom templates within the Dashboard under the My 
 
 ![](/images/templates/7.png)
 
+## Teams
+
+As a team you can have your own templates as well! When you convert a sandbox owned by your team to a template you will be able to see them under "Team Templates". Team templates are very useful for teams that want to have a common starting point for their team.
+
 ## Templates Roadmap
 
-We've got big plans to make Templates even better and we'd love to hear your thoughts as you try them out! So what can you expect to see from Templates in the future?
+We've got big plans to make templates even better and we'd love to hear your thoughts as you try them out! So what can you expect to see from templates in the future?
 
-Templates are designed to save you time and effort making new Sandboxes. But wouldn't it be great if you could share a boilerplate app featuring your newly developed React library pre-configured and good to go? Have you ever visited the Search page and tried to find the perfect Sandbox to start a new project with? Well we want to make that process a whole lot easier using Templates!
+Templates are designed to save you time and effort making new sandboxes. But wouldn't it be great if you could share a boilerplate app featuring your newly developed React library pre-configured and good to go? Have you ever visited the Search page and tried to find the perfect sandbox to start a new project with? Well we want to make that process a whole lot easier using templates!
 
 In the future you'll be able to make your templates public, which will list them on a new Community Templates page where you'll be able to quickly search and filter by keywords and dependencies. From there you'll be able to quickly view the details of a template, including a live preview and a README, as well as links to a template's GitHub repository and Issues page. You'll be able to watch other user's public templates, which will add them to your Create New Sandbox modal, allowing you to take advantage of what the community creates.
 
-As we make the Sandbox execution environment more configurable, we hope that it'll be easy for framework maintainers to easily add and manage their own official templates. By making templates completely open-source, we hope to make it easier to issue updates and bug fixes.
+As we make the sandbox execution environment more configurable, we hope that it'll be easy for framework maintainers to easily add and manage their own official templates. By making templates completely open-source, we hope to make it easier to issue updates and bug fixes.
 
 There's a lot in the pipeline that we're eager to share with you! Thanks for using CodeSandbox and we look forward to seeing all the awesome new things you'll create!
