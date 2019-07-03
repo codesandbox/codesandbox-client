@@ -150,11 +150,16 @@ export const Button = styled.button<{
     text-transform: uppercase;
     transition: 0.15s ease all;
     cursor: pointer;
+
     ${selected &&
       css`
         ${activeStyles};
       `};
 
+    &:focus {
+      outline: none;
+      color: white;
+    }
     &:hover {
       color: white;
     }
