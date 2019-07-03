@@ -22,7 +22,7 @@ interface Props {
 }
 const BANNER = 'https://codesandbox.io/static/img/banner.png';
 const SCREENSHOT_API_URL = (id: string) =>
-  `${host()}/api/v1/sandboxes/${id}/screenshot.png`;
+  `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
 const CustomTemplate = ({ template, onClick, i }: Props) => {
   if (!template) {
     return (
