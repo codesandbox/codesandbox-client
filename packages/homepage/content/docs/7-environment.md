@@ -20,7 +20,7 @@ Currently it is not possible to convert a Client Sandbox to a Container Sandbox.
 
 ## Container Environment
 
-Container Sandboxes run by connecting to a Docker instance running on our servers. We use the [official Node docker image](https://hub.docker.com/_/node) in our container instances, meaning most Node packages should be supported out of the box. With Containers you can run your own bundlers such as Webpack and retain full control over it's configuration.
+Container Sandboxes run by connecting to a Docker instance running on our servers. We use the [official Node docker image](https://hub.docker.com/_/node) in our container instances, meaning most Node packages should be supported out of the box. With Containers you can run your own bundlers such as Webpack and retain full control over its configuration.
 
 Containers also support running NPM scripts defined in your `package.json`. We run a few of these scripts automatically to start up your server. See the list below for which scripts we run automatically and what their priority is:
 
@@ -29,6 +29,6 @@ Containers also support running NPM scripts defined in your `package.json`. We r
 - `serve`
 - `start`
 
-While you can also lint your code using ESLint via the command line in containers, we don't currently support custom ESLint configs in the Editor itself.
+While you can also lint your code using ESLint via the command line in containers, we don't currently support custom ESLint configs in the editor itself.
 
 Unlike Client Sandboxes, Containers also expose access to the Terminal, which allows you to run most commands you'd normally expect to be able to run in the command line. However, keep in mind that running certain commands which alter the filesystem of the container instance will cause the files shown in the Editor to become out of sync, such as manually running `yarn add` or running `git` commands.
