@@ -478,3 +478,78 @@ export const ensureOwnedEditable: AsyncAction = async ({ state, actions }) => {
     return actions.internal.forkFrozenSandbox();
   }
 };
+
+export const setCode: Action<{
+  moduleShortid: string;
+  code: string;
+}> = ({ state, effects }, { moduleShortid, code }) => {
+  const currentId = state.editor.currentId;
+  const currentSandbox = state.editor.currentSandbox;
+  const moduleIndex = state.editor.currentSandbox.modules.findIndex(
+    module => module.shortid === moduleShortid
+  );
+  const module = currentSandbox.modules[moduleIndex];
+
+  if (module) {
+    if (!module.savedCode) {
+      state.editor.sandboxes[currentId].modules[moduleIndex].savedCode =
+        module.code;
+    }
+
+    if (currentSandbox.owned) {
+      const savedCode =
+        state.editor.sandboxes[currentId].modules[moduleIndex].savedCode;
+
+      // Save the code to localStorage so we can recover in case of a crash
+      effects.moduleRecover.save(
+        currentId,
+        currentSandbox.version,
+        module,
+        code,
+        savedCode
+      );
+    }
+
+    state.editor.sandboxes[currentId].modules[moduleIndex].code = code;
+  }
+};
+
+export const addChangedModule: Action<string> = ({ state }, moduleShortid) => {
+  moduleShortid = moduleShortid || state.editor.currentModuleShortid;
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (module) {
+    const moduleIndex = state.editor.changedModuleShortids.indexOf(
+      moduleShortid
+    );
+
+    if (moduleIndex === -1) {
+      if (module.savedCode !== module.code) {
+        state.editor.changedModuleShortids.push(moduleShortid);
+      }
+    } else if (module.savedCode === module.code) {
+      state.editor.changedModuleShortids = state.editor.changedModuleShortids.filter(
+        x => x !== moduleShortid
+      );
+    }
+  }
+};
+
+export const unsetDirtyTab: Action = ({ state, effects }) => {
+  if (state.preferences.settings.experimentVSCode) {
+    effects.vscode.runCommand('workbench.action.keepEditor');
+  }
+
+  const currentModule = state.editor.currentModule;
+  const tabs = state.editor.tabs;
+  const tabIndex = tabs.findIndex(
+    tab => tab.moduleShortid === currentModule.shortid
+  );
+
+  if (tabIndex !== -1) {
+    state.editor.tabs[tabIndex].dirty = false;
+  }
+};

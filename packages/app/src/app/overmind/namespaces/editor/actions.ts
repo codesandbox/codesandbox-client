@@ -65,6 +65,39 @@ export const sandboxChanged: AsyncAction<string> = withLoadApp(
   }
 );
 
+export const contentMounted: Action = ({ state, effects }) => {
+  effects.browser.onUnload(event => {
+    if (!state.editor.isAllModulesSynced) {
+      const returnMessage =
+        'You have not saved all your modules, are you sure you want to close this tab?';
+
+      event.returnValue = returnMessage; // eslint-disable-line
+
+      return returnMessage;
+    }
+
+    return null;
+  });
+};
+
+export const resizingStarted: Action = ({ state }) => {
+  state.editor.isResizing = true;
+};
+
+export const resizingStopped: Action = ({ state }) => {
+  state.editor.isResizing = false;
+};
+
+export const codeSaved: AsyncAction<{
+  code: string;
+  moduleShortid: string;
+}> = async ({ actions }, { code, moduleShortid }) => {
+  actions.editor.internal.saveCode({
+    code,
+    moduleShortid,
+  });
+};
+
 export const npmDependencyRemoved: AsyncAction<string> = async (
   { state, effects, actions },
   name
@@ -96,7 +129,38 @@ export const forkSandbox: AsyncAction<string> = async (
   }
 };
 
-export const codeChanged: Action<{ code: string; moduleShortid: string }> = (
-  { state },
-  { code, moduleShortid }
-) => {};
+export const codeChanged: Action<{
+  code: string;
+  moduleShortid: string;
+  ignoreLive?: boolean;
+}> = ({ effects, state, actions }, { code, moduleShortid, ignoreLive }) => {
+  effects.analytics.track('Change Code', null, { trackOnce: true });
+
+  if (state.live.isLive && !ignoreLive) {
+    state.live.receivingCode = true;
+    const operation = actions.live.internal.getCodeOperation({
+      moduleShortid,
+      code,
+    });
+
+    actions.live.internal.sendTransform({
+      operation,
+      moduleShortid,
+    });
+
+    actions.editor.internal.setCode({
+      moduleShortid,
+      code,
+    });
+
+    state.live.receivingCode = false;
+  } else {
+    actions.editor.internal.setCode({
+      moduleShortid,
+      code,
+    });
+  }
+
+  actions.editor.internal.addChangedModule(moduleShortid);
+  actions.editor.internal.unsetDirtyTab();
+};

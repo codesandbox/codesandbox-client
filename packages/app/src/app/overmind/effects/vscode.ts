@@ -19,4 +19,8 @@ export default {
       delete window.cbs[id];
     }
   },
+  runCommand(command: string) {
+    // @ts-ignore
+    window.vscode.runCommand(command);
+  },
 };

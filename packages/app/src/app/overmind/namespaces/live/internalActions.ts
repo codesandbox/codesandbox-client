@@ -1,6 +1,7 @@
 import { Action, AsyncAction, Config } from 'app/overmind';
 import { RoomInfo } from '@codesandbox/common/lib/types';
 import { IContext } from 'overmind';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 
 function sendModuleInfo(
   { state, effects }: IContext<Config>,
@@ -129,4 +130,49 @@ export const initializeModuleState: Action = ({ state, effects }) => {
       }
     }
   });
+};
+
+export const getCodeOperation: Action<
+  {
+    moduleShortid: string;
+    code: string;
+  },
+  any
+> = ({ state }, { moduleShortid, code }) => {
+  if (!state.live.isLive) {
+    return null;
+  }
+
+  const module = state.editor.currentSandbox.modules.find(
+    m => m.shortid === moduleShortid
+  );
+
+  if (!module || module.code === code) {
+    return {};
+  }
+
+  const oldCode = module.code;
+
+  return getTextOperation(oldCode, code);
+};
+
+export const sendTransform: Action<{
+  operation: any;
+  moduleShortid: string;
+}> = ({ effects }, { operation, moduleShortid }) => {
+  if (!operation) {
+    return;
+  }
+
+  try {
+    effects.ot.applyClient(moduleShortid, operation);
+  } catch (e) {
+    // Something went wrong, probably a sync mismatch. Request new version
+    console.error(
+      'Something went wrong with applying OT operation',
+      moduleShortid,
+      operation
+    );
+    effects.live.send('live:module_state', {});
+  }
 };
