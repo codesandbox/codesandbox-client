@@ -21,6 +21,10 @@ export const cliMounted: AsyncAction = withLoadApp(
   }
 );
 
+export const forceRender: Action = ({ state }) => {
+  state.editor.forceRender++;
+};
+
 export const cliInstructionsMounted: AsyncAction = withLoadApp();
 
 export const githubPageMounted: AsyncAction = withLoadApp();

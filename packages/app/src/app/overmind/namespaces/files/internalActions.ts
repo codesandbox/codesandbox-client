@@ -143,3 +143,49 @@ export const removeModule: Action<string, Module> = (
 
   return moduleCopy;
 };
+
+export const renameModule: Action<
+  {
+    title: string;
+    moduleShortid: string;
+  },
+  string
+> = ({ state }, { title, moduleShortid }) => {
+  const sandbox = state.editor.currentSandbox;
+  const moduleIndex = sandbox.modules.findIndex(
+    moduleEntry => moduleEntry.shortid === moduleShortid
+  );
+  const oldTitle =
+    state.editor.sandboxes[sandbox.id].modules[moduleIndex].title;
+
+  state.editor.sandboxes[sandbox.id].modules[moduleIndex].title = title;
+
+  return oldTitle;
+};
+
+export const saveNewModuleName: AsyncAction<{
+  title: string;
+  moduleShortid: string;
+}> = async ({ effects, state }, { title, moduleShortid }) => {
+  const sandboxId = state.editor.currentId;
+  const sandbox = state.editor.currentSandbox;
+  const module = sandbox.modules.find(
+    moduleEntry => moduleEntry.shortid === moduleShortid
+  );
+
+  return effects.api.put(`/sandboxes/${sandboxId}/modules/${module.shortid}`, {
+    module: { title: title },
+  });
+};
+
+export const revertModuleName: Action<{
+  title: string;
+  moduleShortid: string;
+}> = ({ state }, { title, moduleShortid }) => {
+  const sandbox = state.editor.currentSandbox;
+  const moduleIndex = sandbox.modules.findIndex(
+    moduleEntry => moduleEntry.shortid === moduleShortid
+  );
+
+  state.editor.sandboxes[sandbox.id].modules[moduleIndex].title = title;
+};

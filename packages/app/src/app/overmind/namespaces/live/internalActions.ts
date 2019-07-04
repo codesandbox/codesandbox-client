@@ -3,13 +3,15 @@ import { RoomInfo } from '@codesandbox/common/lib/types';
 import { IContext } from 'overmind';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 
-function sendModuleInfo(
-  { state, effects }: IContext<Config>,
-  event: string,
-  type: 'module' | 'directory',
-  moduleShortid,
-  { sendModule = true } = {}
-) {
+export const sendModuleInfo: AsyncAction<{
+  event: string;
+  type: 'module' | 'directory';
+  moduleShortid: string;
+  options?: { sendModule: boolean };
+}> = async (
+  { state, effects },
+  { event, type, moduleShortid, options: { sendModule = true } }
+) => {
   if (state.live.isCurrentEditor) {
     const message = {
       type,
@@ -33,7 +35,7 @@ function sendModuleInfo(
       effects.live.send(event, message);
     }
   }
-}
+};
 
 export const clearUserSelections: Action<any> = ({ state }, data) => {
   const clearSelections = userId => {
@@ -72,8 +74,12 @@ export const disconnect: Action = ({ effects }) => {
   effects.live.disconnect();
 };
 
-export const sendModuleSaved: Action<string> = (context, moduleShortid) => {
-  sendModuleInfo(context, 'module:saved', 'module', moduleShortid);
+export const sendModuleSaved: Action<string> = ({ actions }, moduleShortid) => {
+  actions.live.internal.sendModuleInfo({
+    event: 'module:saved',
+    type: 'module',
+    moduleShortid,
+  });
 };
 
 export const initialize: AsyncAction = async ({ state, effects, actions }) => {

@@ -3,6 +3,11 @@ import { Action, AsyncAction } from 'app/overmind';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { withLoadApp } from 'app/overmind/factories';
+import { json } from 'overmind';
+import { clearCorrectionsFromAction } from 'app/utils/corrections';
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { dispatch } from 'codesandbox-api';
+import { WindowOrientation } from '@codesandbox/common/lib/types';
 
 export const internal = internalActions;
 
@@ -256,5 +261,299 @@ export const tabClosed: Action<number> = ({ state, actions }, tabIndex) => {
   if (state.editor.tabs.length > 1) {
     actions.internal.closeTabByIndex(tabIndex);
     actions.internal.setCurrentModuleByTab(tabIndex);
+  }
+};
+
+export const tabMoved: Action<{
+  prevIndex: number;
+  nextIndex: number;
+}> = ({ state }, { prevIndex, nextIndex }) => {
+  const tabs = state.editor.tabs;
+  const tab = json(tabs[prevIndex]);
+
+  state.editor.tabs.splice(prevIndex, 1);
+  state.editor.tabs.splice(nextIndex, 0, tab);
+};
+
+export const prettifyClicked: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  effects.analytics.track('Prettify Code');
+  const code = state.editor.currentModule.code;
+  const moduleShortid = state.editor.currentModule.shortid;
+  const newCode = await actions.editor.internal.prettifyCode({
+    code,
+    moduleShortid,
+  });
+  actions.editor.codeChanged({
+    code: newCode,
+    moduleShortid,
+  });
+};
+
+export const errorsCleared: Action = ({ state }) => {
+  state.editor.errors = [];
+};
+
+export const projectViewToggled: Action = ({ state }) => {
+  state.editor.isInProjectView = !state.editor.isInProjectView;
+};
+
+export const privacyUpdated: AsyncAction<number | string> = async (
+  { state, effects },
+  privacy
+) => {
+  privacy = Number(privacy);
+
+  if (Number.isNaN(privacy)) {
+    return;
+  }
+
+  state.editor.isUpdatingPrivacy = true;
+  const id = state.editor.currentId;
+
+  await effects.api.patch(`/sandboxes/${id}/privacy`, {
+    sandbox: {
+      privacy: privacy,
+    },
+  });
+
+  state.editor.isUpdatingPrivacy = false;
+};
+
+export const frozenUpdated: AsyncAction<boolean> = async (
+  { state, effects },
+  isFrozen
+) => {
+  const id = state.editor.currentId;
+
+  await effects.api.put(`/sandboxes/${id}`, {
+    sandbox: {
+      is_frozen: isFrozen,
+    },
+  });
+
+  state.editor.currentSandbox.isFrozen = isFrozen;
+};
+
+export const quickActionsOpened: Action = ({ state }) => {
+  state.editor.quickActionsOpen = true;
+};
+
+export const quickActionsClosed: Action = ({ state }) => {
+  state.editor.quickActionsOpen = false;
+};
+
+export const setPreviewContent: Action = () => {};
+
+export const togglePreviewContent: Action = ({ state }) => {
+  state.editor.previewWindowVisible = !state.editor.previewWindowVisible;
+};
+
+export const currentTabChanged: Action<string> = ({ state }, tabId) => {
+  state.editor.currentTabId = tabId;
+};
+
+export const discardModuleChanges: Action<string> = (
+  { state, effects, actions },
+  moduleShortid
+) => {
+  effects.analytics.track('Code Discarded');
+  const sandbox = state.editor.currentSandbox;
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    const module = state.editor.currentSandbox.modules[moduleIndex];
+
+    actions.editor.codeChanged({
+      code: module.savedCode || module.code,
+      moduleShortid,
+    });
+
+    state.editor.currentSandbox.modules[
+      moduleIndex
+    ].updatedAt = new Date().toString();
+  }
+};
+
+export const fetchEnvironmentVariables: AsyncAction = async ({
+  state,
+  effects,
+}) => {
+  const id = state.editor.currentId;
+
+  state.editor.currentSandbox.environmentVariables = await effects.api.get(
+    `/sandboxes/${id}/env`,
+    {},
+    { shouldCamelize: false }
+  );
+};
+
+export const updateEnvironmentVariables: AsyncAction<{
+  name: string;
+  value: any;
+}> = async ({ state, effects }, { name, value }) => {
+  const id = state.editor.currentId;
+
+  state.editor.currentSandbox.environmentVariables = await effects.api.post(
+    `/sandboxes/${id}/env`,
+    {
+      environment_variable: {
+        name: name,
+        value: value,
+      },
+    },
+    {
+      shouldCamelize: false,
+    }
+  );
+  dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
+};
+
+export const deleteEnvironmentVariable: AsyncAction<string> = async (
+  { state, effects },
+  name
+) => {
+  const id = state.editor.currentId;
+
+  state.editor.currentSandbox.environmentVariables = await effects.api.delete(
+    `/sandboxes/${id}/env/${name}`,
+    {},
+    { shouldCamelize: false }
+  );
+  dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
+};
+
+export const toggleEditorPreviewLayout: Action = ({ state }) => {
+  const currentOrientation = state.editor.previewWindowOrientation;
+
+  state.editor.previewWindowOrientation =
+    currentOrientation === WindowOrientation.VERTICAL
+      ? WindowOrientation.HORIZONTAL
+      : WindowOrientation.VERTICAL;
+};
+
+export const onNavigateAway: Action = () => {};
+
+export const previewActionReceived: Action<any> = (
+  { state, effects, actions },
+  action
+) => {
+  switch (action.action) {
+    case 'notification':
+      effects.notificationToast.add({
+        message: action.title,
+        status: action.notificationType,
+        timeAlive: action.timeAlive,
+      });
+      break;
+    case 'show-error':
+      const error = {
+        moduleId: module ? module.id : undefined,
+        column: action.column,
+        line: action.line,
+        columnEnd: action.columnEnd,
+        lineEnd: action.lineEnd,
+        message: action.message,
+        title: action.title,
+        path: action.path,
+        source: action.source,
+      };
+
+      state.editor.errors.push(error);
+      break;
+    case 'show-correction':
+      const correction = {
+        path: action.path,
+        column: action.column,
+        line: action.line,
+        columnEnd: action.columnEnd,
+        lineEnd: action.lineEnd,
+        message: action.message,
+        source: action.source,
+        severity: action.severity,
+      };
+
+      state.editor.corrections.push(correction);
+      break;
+    case 'clear-errors':
+      const currentErrors = state.editor.errors;
+
+      const newErrors = clearCorrectionsFromAction(currentErrors, props.action);
+
+      if (newErrors.length !== currentErrors.length) {
+        state.editor.errors = newErrors;
+      }
+      break;
+    case 'clear-corrections':
+      const currentCorrections = state.editor.corrections;
+
+      const newCorrections = clearCorrectionsFromAction(
+        currentCorrections,
+        action
+      );
+
+      if (newCorrections.length !== currentCorrections.length) {
+        state.editor.corrections = newCorrections;
+      }
+      break;
+    case 'source.module.rename':
+      const sandbox = state.editor.currentSandbox;
+      const module = effects.utils.resolveModule(
+        action.path.replace(/^\//, ''),
+        sandbox.modules,
+        sandbox.directories
+      );
+
+      if (module) {
+        actions.editor.renameModule({
+          moduleShortid: module.shortid,
+          title: action.title,
+        });
+      }
+      break;
+    case 'source.dependencies.add':
+      const name = action.dependency;
+      actions.editor.addNpmDependency({
+        name,
+      });
+      actions.forceRender();
+      break;
+  }
+};
+
+export const renameModule: AsyncAction<{
+  title: string;
+  moduleShortid: string;
+}> = async ({ effects, actions }, { title, moduleShortid }) => {
+  await actions.editor.internal.ensureOwnedEditable();
+  const oldTitle = actions.files.internal.renameModule({
+    title,
+    moduleShortid,
+  });
+
+  try {
+    await actions.files.internal.saveNewModuleName({
+      title,
+      moduleShortid,
+    });
+    actions.live.internal.sendModuleInfo({
+      event: 'module:updated',
+      type: 'module',
+      moduleShortid,
+    });
+  } catch (error) {
+    actions.files.internal.renameModule({
+      title: oldTitle,
+      moduleShortid,
+    });
+    effects.notificationToast.add({
+      message: 'Could not rename file',
+      status: NotificationStatus.ERROR,
+    });
   }
 };

@@ -48,8 +48,8 @@ export type Module = {
   isNotSynced: boolean;
   sourceId: string;
   isBinary: boolean;
-  insertedAt: number;
-  updatedAt: number;
+  insertedAt: string;
+  updatedAt: string;
   path?: string;
   now?: any;
 };

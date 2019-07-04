@@ -118,7 +118,7 @@ export default (() => {
         .then(response => handleResponse(response, options))
         .catch(e => handleError(e));
     },
-    patch(path, body, options) {
+    patch(path, body, options?) {
       return axios
         .patch(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(_options.provideJwtToken()),
