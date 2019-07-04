@@ -49,7 +49,8 @@
     "styled-components": "^4.2.0",
     "three": "^0.87.1",
     "typography": "^0.16.17",
-    "typography-breakpoint-constants": "^0.15.10"
+    "typography-breakpoint-constants": "^0.15.10",
+    "snyk": "^1.189.0"
   },
   "keywords": [
     "gatsby"
@@ -62,7 +63,9 @@
     "start:dev": "LOCAL_SERVER=1 LOCAL_DEV=1 gatsby develop",
     "start": "gatsby develop",
     "lint": "eslint .",
-    "test": "echo \"Todo: no test specified\" && exit 0"
+    "test": "echo \"Todo: no test specified\" && exit 0",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "dotenv": "^6.2.0",
@@ -76,5 +79,6 @@
     "> 1%",
     "IE >= 11",
     "last 2 versions"
-  ]
+  ],
+  "snyk": true
 }
