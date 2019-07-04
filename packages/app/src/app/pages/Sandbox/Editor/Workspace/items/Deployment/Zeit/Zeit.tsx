@@ -15,6 +15,7 @@ import {
   Action,
   ButtonContainer,
   Deploy,
+  DeployButtonContainer,
   Deploys,
   DeploysWrapper,
   Link,
@@ -38,7 +39,7 @@ export const Zeit = observer(() => {
 
   return user.integrations.zeit ? (
     <Wrapper loading={deployment.deploying}>
-      <WorkspaceInputContainer style={{ marginTop: '1rem', marginBottom: 0 }}>
+      <DeployButtonContainer>
         <DeploymentIntegration
           color="#000000"
           deploy={deploySandboxClicked}
@@ -56,7 +57,7 @@ export const Zeit = observer(() => {
             <span>ZEIT Now</span>
           </a>
         </DeploymentIntegration>
-      </WorkspaceInputContainer>
+      </DeployButtonContainer>
 
       {deployment.sandboxDeploys.length && isVisible ? (
         <DeploysWrapper>

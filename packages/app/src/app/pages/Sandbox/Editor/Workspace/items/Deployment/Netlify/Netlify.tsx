@@ -7,8 +7,6 @@ import LinkIcon from 'react-icons/lib/fa/external-link';
 import Cogs from 'react-icons/lib/fa/cogs';
 import LightningIcon from 'react-icons/lib/md/flash-on';
 
-import DeploymentIntegration from 'app/components/DeploymentIntegration';
-import NetlifyLogo from 'app/components/NetlifyLogo';
 import { useSignals, useStore } from 'app/store';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 
@@ -24,6 +22,8 @@ import {
   ButtonContainer,
 } from '../elements';
 
+import { DeployButton } from './DeployButton';
+
 const getFunctionDir = sandbox => {
   try {
     return resolveDirectory(
@@ -38,12 +38,12 @@ const getFunctionDir = sandbox => {
 
 export const Netlify = observer(() => {
   const {
-    deployment: { getNetlifyDeploys, deployWithNetlify },
+    deployment: { getNetlifyDeploys },
     modalOpened,
   } = useSignals();
   const { deployment, editor } = useStore();
 
-  const [isVisible, setVisibility] = useState(false);
+  const [isVisible, setVisible] = useState(false);
 
   useEffect(() => {
     getNetlifyDeploys();
@@ -59,28 +59,10 @@ export const Netlify = observer(() => {
   return (
     template.netlify !== false && (
       <Wrapper loading={deployment.deploying}>
-        <WorkspaceInputContainer style={{ marginTop: '1rem', marginBottom: 0 }}>
-          <DeploymentIntegration
-            beta
-            color="#FFFFFF"
-            deploy={deployWithNetlify}
-            Icon={NetlifyLogo}
-            light
-            loading={deployment.deploying || deployment.building}
-            name="netlify"
-            open={isVisible}
-            toggle={() => setVisibility(!isVisible)}
-          >
-            Deploy your sandbox site on{' '}
-            <a
-              href="https://netlify.com"
-              rel="noreferrer noopener"
-              target="_blank"
-            >
-              <span>Netlify</span>
-            </a>
-          </DeploymentIntegration>
-        </WorkspaceInputContainer>
+        <DeployButton
+          isOpen={isVisible}
+          toggle={() => setVisible(show => !show)}
+        />
 
         {deployment.netlifySite && isVisible ? (
           <DeploysWrapper

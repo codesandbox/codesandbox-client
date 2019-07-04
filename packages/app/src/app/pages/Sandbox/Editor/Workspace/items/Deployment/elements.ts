@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 
+import { WorkspaceInputContainer } from '../../elements';
+
 const mapColorToState = (state: string, theme: any) => {
   const STARTING = ['DEPLOYING', 'BUILDING', 'INITIALIZING'];
   const ERROR = ['DEPLOYMENT_ERROR', 'BUILD_ERROR', 'ERROR'];
@@ -135,4 +137,9 @@ export const Wrapper = styled.div<{ loading: boolean }>`
         pointer-events: none;
       `};
   `};
+`;
+
+export const DeployButtonContainer = styled(WorkspaceInputContainer)`
+  margin-bottom: 0;
+  margin-top: 1rem;
 `;
