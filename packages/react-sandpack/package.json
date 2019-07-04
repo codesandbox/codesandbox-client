@@ -36,8 +36,9 @@
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "prepublish": "yarn build",
-    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src"
+    "prepublish": "npm run snyk-protect; yarn build",
+    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src",
+    "snyk-protect": "snyk protect"
   },
   "config": {
     "commitizen": {
@@ -84,7 +85,8 @@
     "react-broadcast": "^0.6.2",
     "react-codemirror2": "^4.0.1",
     "rollup-plugin-scss": "^0.4.0",
-    "smooshpack": "^0.0.54"
+    "smooshpack": "^0.0.54",
+    "snyk": "^1.189.0"
   },
   "peerDependencies": {
     "react": "^16.5.2"
@@ -135,5 +137,6 @@
     "typedoc": "^0.10.0",
     "typescript": "3.5.2",
     "validate-commit-msg": "^2.12.2"
-  }
+  },
+  "snyk": true
 }
