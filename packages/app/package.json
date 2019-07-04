@@ -20,7 +20,9 @@
     "lint:app": "cross-env LINT=1 eslint src/app",
     "lint:embed": "cross-env LINT=1 eslint src/embed",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
-    "typecheck": "tsc --noEmit -p tsconfig.check.json"
+    "typecheck": "tsc --noEmit -p tsconfig.check.json",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -273,7 +275,8 @@
     "vue-hot-reload-api": "^2.3.3",
     "vue-template-compiler": "^2.6.10",
     "vue-template-es2015-compiler": "^1.9.1",
-    "xterm": "3.7.0"
+    "xterm": "3.7.0",
+    "snyk": "^1.189.0"
   },
   "jest": {
     "roots": [
@@ -306,5 +309,6 @@
     "transform": {
       "^.+\\.(t|j)s$": "babel-jest"
     }
-  }
+  },
+  "snyk": true
 }
