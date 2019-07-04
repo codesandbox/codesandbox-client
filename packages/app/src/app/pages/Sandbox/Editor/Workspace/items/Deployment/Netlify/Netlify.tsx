@@ -12,7 +12,7 @@ import NetlifyLogo from 'app/components/NetlifyLogo';
 import { useSignals, useStore } from 'app/store';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 
-import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../elements';
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../../elements';
 
 import {
   Deploys,
@@ -22,7 +22,7 @@ import {
   DeploysWrapper,
   Wrapper,
   ButtonContainer,
-} from './elements';
+} from '../elements';
 
 const getFunctionDir = sandbox => {
   try {
@@ -31,7 +31,7 @@ const getFunctionDir = sandbox => {
       sandbox.modules,
       sandbox.directories
     );
-  } catch (e) {
+  } catch {
     return null;
   }
 };
@@ -85,8 +85,7 @@ export const Netlify = observer(() => {
         {deployment.netlifySite && isVisible ? (
           <DeploysWrapper
             css={`
-              background: #fff;
-              margin-top: -4px;
+              background: #ffffff;
             `}
           >
             <WorkspaceSubtitle>Sandbox Site</WorkspaceSubtitle>

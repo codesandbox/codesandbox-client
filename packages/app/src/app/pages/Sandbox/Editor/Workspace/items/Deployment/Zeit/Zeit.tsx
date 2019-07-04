@@ -9,7 +9,7 @@ import DeploymentIntegration from 'app/components/DeploymentIntegration';
 import NowLogo from 'app/components/NowLogo';
 import { useSignals, useStore } from 'app/store';
 
-import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../elements';
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../../elements';
 
 import {
   Action,
@@ -21,7 +21,7 @@ import {
   Name,
   State,
   Wrapper,
-} from './elements';
+} from '../elements';
 
 export const Zeit = observer(() => {
   const {
@@ -59,11 +59,7 @@ export const Zeit = observer(() => {
       </WorkspaceInputContainer>
 
       {deployment.sandboxDeploys.length && isVisible ? (
-        <DeploysWrapper
-          css={`
-            margin-top: -4px;
-          `}
-        >
+        <DeploysWrapper>
           <WorkspaceSubtitle>Sandbox Deploys</WorkspaceSubtitle>
 
           <WorkspaceInputContainer>

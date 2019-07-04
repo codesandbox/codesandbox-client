@@ -121,13 +121,14 @@ export const DeploysWrapper = styled.div`
   border-radius: 0 0 4px 4px;
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.875rem;
-  margin: 0 0.75rem 0.5rem;
+  margin: -4px 0.75rem 0.5rem;
   padding: 0.75rem 0;
 `;
 
 export const Wrapper = styled.div<{ loading: boolean }>`
   ${({ loading }) => css`
     opacity: 1;
+
     ${loading &&
       css`
         opacity: 0.5;
