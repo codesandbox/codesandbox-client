@@ -104,7 +104,16 @@ export default function initialize() {
             [
               {
                 transpiler: babelTranspiler,
-                options: babelOptions,
+                options: {
+                  ...babelOptions,
+                  config: {
+                    ...babelOptions.config,
+                    plugins: [
+                      ['proposal-decorators', { legacy: true }],
+                      ...babelOptions.config.plugins,
+                    ],
+                  },
+                },
               },
             ],
             true
