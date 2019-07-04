@@ -111,12 +111,16 @@
     "test": "npm-run-all test:prepare test:karma",
     "watch-test": "npm-run-all test:prepare --parallel watch:scripts test:watch test:karma",
     "docs": "typedoc --mode modules --out doc --excludePrivate --readme src/DOCS.md --name BrowserFS --module umd --ignoreCompilerErrors src",
-    "install-dependencies": "yarn"
+    "install-dependencies": "yarn",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "async": "~2.6.1",
     "events": "^3.0.0",
     "gitignore-parser": "^0.0.2",
-    "pako": "~1.0.6"
-  }
+    "pako": "~1.0.6",
+    "snyk": "^1.189.0"
+  },
+  "snyk": true
 }
