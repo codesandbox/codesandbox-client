@@ -1280,6 +1280,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "RafaelKr",
+      "name": "Rafael",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/14234815?v=4",
+      "profile": "https://github.com/RafaelKr",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "repoType": "github",
