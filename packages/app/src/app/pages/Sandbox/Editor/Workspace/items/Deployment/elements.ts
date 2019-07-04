@@ -76,7 +76,7 @@ export const Name = styled.span<{ light?: boolean }>`
   `};
 `;
 
-export const Link = styled.a<{ disabled?: boolean }>`
+const BaseLink = styled.a<{ disabled?: boolean }>`
   ${({ disabled, theme }) => css`
     padding: 0.25rem 0.4rem;
     background-color: ${theme.secondary};
@@ -108,7 +108,14 @@ export const Link = styled.a<{ disabled?: boolean }>`
   `};
 `;
 
-export const Action = Link.withComponent('button');
+export const Link = styled(BaseLink).attrs({
+  rel: 'noreferrer noopener',
+  target: '_blank',
+})`
+  margin-top: 0;
+`;
+
+export const Action = BaseLink.withComponent('button');
 
 export const ButtonContainer = styled.section`
   display: flex;

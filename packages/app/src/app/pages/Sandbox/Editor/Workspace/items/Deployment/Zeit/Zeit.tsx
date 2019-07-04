@@ -95,11 +95,7 @@ export const Zeit = observer(() => {
                   ) : null}
 
                   <ButtonContainer>
-                    <Link
-                      href={`https://${deploy.url}`}
-                      rel="noreferrer noopener"
-                      target="_blank"
-                    >
+                    <Link href={`https://${deploy.url}`}>
                       <LinkIcon /> <span>Visit</span>
                     </Link>
 
