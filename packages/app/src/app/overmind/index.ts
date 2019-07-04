@@ -21,6 +21,7 @@ import * as dashboard from './namespaces/dashboard';
 import * as deployment from './namespaces/deployment';
 import * as files from './namespaces/files';
 import * as git from './namespaces/git';
+import * as explore from './namespaces/explore';
 
 export const config = merge(
   {
@@ -40,6 +41,7 @@ export const config = merge(
     deployment,
     files,
     git,
+    explore,
   })
 );
 

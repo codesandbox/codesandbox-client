@@ -177,6 +177,41 @@ export type RoomInfo = {
   };
 };
 
+export type Pick = {
+  title: string;
+  description: string;
+  id: string;
+  insertedAt: string;
+};
+
+export type MiniSandbox = {
+  viewCount: number;
+  title: string;
+  template: string;
+  id: string;
+  picks: Pick[];
+  description: string;
+  git: GitInfo;
+  author: User;
+};
+
+export type PopularSandboxes = {
+  startDate: string;
+  sandboxes: MiniSandbox[];
+  endDate: string;
+};
+
+export type PickedSandboxes = {
+  sandboxes: MiniSandbox[];
+  page: number;
+};
+
+export type PickedSandboxDetails = {
+  title: string;
+  id: string;
+  description: string;
+};
+
 export type Sandbox = {
   id: string;
   alias: string | undefined;
