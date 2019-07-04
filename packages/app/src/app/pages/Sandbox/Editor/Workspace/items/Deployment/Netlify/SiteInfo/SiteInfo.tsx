@@ -1,6 +1,5 @@
 import { resolveDirectory } from '@codesandbox/common/lib/sandbox/modules';
 import React from 'react';
-import LightningIcon from 'react-icons/lib/md/flash-on';
 
 import { useStore } from 'app/store';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
@@ -10,10 +9,11 @@ import {
   WorkspaceSubtitle,
 } from '../../../../elements';
 
-import { Deploys, Deploy, Name, Link } from '../../elements';
+import { Deploys, Deploy, Name } from '../../elements';
 
 import { Actions } from './Actions';
-import { SiteInfoWrapper, SubTitle } from './elements';
+import { SiteInfoWrapper } from './elements';
+import { Functions } from './Functions';
 import { ViewLogsButton } from './ViewLogsButton';
 
 const getFunctionDir = sandbox => {
@@ -50,34 +50,7 @@ export const SiteInfo = () => {
 
             {!building && <div>Building</div>}
 
-            {functions.length ? (
-              <>
-                <SubTitle>Functions</SubTitle>
-
-                <section
-                  css={`
-                    display: flex;
-                    margin-bottom: 0.5rem;
-                  `}
-                >
-                  {functions.map(file => (
-                    <Link
-                      css={`
-                        margin-right: 0.5rem;
-                      `}
-                      disabled={building}
-                      href={`${netlifySite.url}/.netlify/functions/${
-                        file.title.split('.js')[0]
-                      }`}
-                    >
-                      <LightningIcon />
-
-                      <span>{file.title.split('.js')[0]}</span>
-                    </Link>
-                  ))}
-                </section>
-              </>
-            ) : null}
+            {functions.length ? <Functions functions={functions} /> : null}
 
             <Actions />
 
