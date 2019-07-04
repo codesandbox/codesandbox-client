@@ -57,7 +57,7 @@ class Shell extends React.PureComponent<Props> {
   };
 
   sendResize = (cols: number, rows: number) => {
-    if (this.props.ended) {
+    if (!this.props.ended) {
       dispatch({
         type: 'socket:message',
         channel: 'shell:resize',

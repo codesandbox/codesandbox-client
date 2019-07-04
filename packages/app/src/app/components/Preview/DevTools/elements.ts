@@ -31,6 +31,7 @@ export const Header = styled.div<{ primary: boolean; open: boolean }>`
 `;
 
 export const ContentContainer = styled.div`
+  position: relative;
   background-color: ${props =>
     props.theme['panel.background'] ||
     props.theme['editor.background'] ||

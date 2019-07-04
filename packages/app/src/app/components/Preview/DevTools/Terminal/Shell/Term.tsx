@@ -32,7 +32,7 @@ export class TerminalComponent extends React.PureComponent<Props> {
       fontSize: 14,
     });
     this.term.open(this.node);
-    this.term.fit();
+    this.resizeTerminal();
     window.addEventListener('resize', this.listenForResize);
 
     this.props.onTerminalInitialized(this.term);
@@ -42,7 +42,7 @@ export class TerminalComponent extends React.PureComponent<Props> {
     this.observer = new ResizeObserver(() => {
       clearTimeout(this.timeout);
       this.timeout = window.setTimeout(() => {
-        this.term.fit();
+        this.resizeTerminal();
       }, 300);
     });
 
@@ -70,6 +70,10 @@ export class TerminalComponent extends React.PureComponent<Props> {
   }
 
   listenForResize = () => {
+    this.resizeTerminal();
+  };
+
+  resizeTerminal = () => {
     this.term.fit();
   };
 
@@ -92,11 +96,10 @@ export class TerminalComponent extends React.PureComponent<Props> {
       <div
         style={{
           position: 'absolute',
-          top: 0,
+          top: 8,
           bottom: 0,
-          left: 0,
-          right: 0,
-          padding: '.5rem',
+          left: 8,
+          right: 8,
           paddingBottom: 0,
           visibility: hidden ? 'hidden' : 'visible',
         }}

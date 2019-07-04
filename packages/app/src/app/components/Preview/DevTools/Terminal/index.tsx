@@ -131,7 +131,7 @@ class DevToolTerminal extends React.Component<
     const { selectedShell } = this.state;
 
     return (
-      <div className={hidden ? undefined : 'terminal'}>
+      <div className={'terminal'}>
         {!hidden && owned && (
           <ShellTabs
             selectedShell={this.state.selectedShell}
