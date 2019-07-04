@@ -4,6 +4,12 @@
   "private": true,
   "dependencies": {
     "codesandbox-api": "^0.0.22",
-    "console-feed": "^2.8.5"
-  }
+    "console-feed": "^2.8.5",
+    "snyk": "^1.189.0"
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
