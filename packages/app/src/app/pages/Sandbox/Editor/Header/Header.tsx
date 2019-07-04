@@ -32,7 +32,6 @@ import { HeaderProps } from './types';
 
 export const Header = observer(({ zenMode }: HeaderProps) => {
   const store = useStore();
-  const sandbox = store.editor.currentSandbox;
   const vscode = store.preferences.settings.experimentVSCode;
 
   return (
@@ -49,11 +48,9 @@ export const Header = observer(({ zenMode }: HeaderProps) => {
         {vscode ? <MenuBar /> : <SaveAllButton />}
       </Left>
 
-      {sandbox.owned && (
-        <Centered>
-          <SandboxName />
-        </Centered>
-      )}
+      <Centered>
+        <SandboxName />
+      </Centered>
 
       <Right>
         {store.updateStatus === 'available' && <RefreshButton />}

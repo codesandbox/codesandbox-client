@@ -59,11 +59,11 @@ export const NameInput = styled(AutosizeInput)`
   }
 `;
 
-export const Name = styled.span`
-  ${({ theme }) => css`
+export const Name = styled.span<{ owned?: boolean }>`
+  ${({ theme, owned }) => css`
     color: ${theme.light ? 'black' : 'white'};
     margin-left: 0.25rem;
-    cursor: pointer;
+    cursor: ${owned ? 'pointer' : 'initial'};
     text-overflow: ellipsis;
   `}
 `;

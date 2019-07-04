@@ -80,11 +80,12 @@ export const SandboxName = observer(() => {
     opacity: updatingName ? 0 : 1,
     pointerEvents: updatingName ? 'none' : 'initial',
   });
+  const { customTemplate, owned } = currentSandbox;
 
   return (
     <Main>
       <Container>
-        {!currentSandbox.customTemplate && (
+        {!customTemplate && owned && (
           <animated.div style={spring}>
             <Folder>
               {isLoggedIn ? (
@@ -117,7 +118,9 @@ export const SandboxName = observer(() => {
             />
           </Form>
         ) : (
-          <Name onClick={handleNameClick}>{sandboxName}</Name>
+          <Name owned={owned} onClick={owned ? handleNameClick : null}>
+            {sandboxName}
+          </Name>
         )}
         {template ? (
           <Tooltip
@@ -134,9 +137,7 @@ export const SandboxName = observer(() => {
               </>
             }
           >
-            <TemplateBadge color={currentSandbox.customTemplate.color}>
-              Template
-            </TemplateBadge>
+            <TemplateBadge color={customTemplate.color}>Template</TemplateBadge>
           </Tooltip>
         ) : null}
       </Container>
