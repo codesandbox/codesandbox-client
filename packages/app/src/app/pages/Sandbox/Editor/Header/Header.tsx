@@ -49,11 +49,9 @@ export const Header = observer(({ zenMode }: HeaderProps) => {
         {vscode ? <MenuBar /> : <SaveAllButton />}
       </Left>
 
-      {sandbox.owned && (
-        <Centered>
-          <SandboxName />
-        </Centered>
-      )}
+      <Centered>
+        <SandboxName />
+      </Centered>
 
       <Right>
         {store.updateStatus === 'available' && <RefreshButton />}
