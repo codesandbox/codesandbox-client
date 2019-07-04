@@ -118,12 +118,7 @@ export const SandboxName = observer(() => {
             />
           </Form>
         ) : (
-          <Name
-            css={`
-              cursor: ${owned ? 'pointer' : 'initial'};
-            `}
-            onClick={owned ? handleNameClick : null}
-          >
+          <Name owned={owned} onClick={owned ? handleNameClick : null}>
             {sandboxName}
           </Name>
         )}
