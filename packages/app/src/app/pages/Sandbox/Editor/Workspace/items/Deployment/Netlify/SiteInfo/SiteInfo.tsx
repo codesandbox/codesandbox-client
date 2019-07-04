@@ -1,11 +1,10 @@
-import { Button } from '@codesandbox/common/lib/components/Button';
 import { resolveDirectory } from '@codesandbox/common/lib/sandbox/modules';
 import React from 'react';
 import LinkIcon from 'react-icons/lib/fa/external-link';
 import Cogs from 'react-icons/lib/fa/cogs';
 import LightningIcon from 'react-icons/lib/md/flash-on';
 
-import { useSignals, useStore } from 'app/store';
+import { useStore } from 'app/store';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 
 import {
@@ -16,6 +15,7 @@ import {
 import { Deploys, Deploy, Name, Link, ButtonContainer } from '../../elements';
 
 import { SiteInfoWrapper, SubTitle } from './elements';
+import { ViewLogsButton } from './ViewLogsButton';
 
 const getFunctionDir = sandbox => {
   try {
@@ -30,7 +30,6 @@ const getFunctionDir = sandbox => {
 };
 
 export const SiteInfo = () => {
-  const { modalOpened } = useSignals();
   const {
     deployment: { building, netlifyClaimUrl, netlifyLogs, netlifySite },
     editor,
@@ -105,17 +104,7 @@ export const SiteInfo = () => {
               </ButtonContainer>
             </>
 
-            {netlifyLogs ? (
-              <Button
-                css={`
-                  margin-top: 20px;
-                `}
-                onClick={() => modalOpened({ modal: 'netlifyLogs' })}
-                small
-              >
-                View Logs
-              </Button>
-            ) : null}
+            {netlifyLogs ? <ViewLogsButton /> : null}
           </Deploy>
         </Deploys>
       </WorkspaceInputContainer>
