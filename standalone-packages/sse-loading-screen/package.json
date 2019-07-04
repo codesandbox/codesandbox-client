@@ -12,7 +12,8 @@
     "preact-emotion": "^9.2.10",
     "socket.io-client": "^2.1.1",
     "xterm": "^3.5.1",
-    "xterm-webfont": "^1.1.1"
+    "xterm-webfont": "^1.1.1",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -26,6 +27,9 @@
   "scripts": {
     "start": "parcel src/index.html",
     "build": "rimraf dist && parcel build src/index.html --no-source-maps",
-    "install-dependencies": "yarn install"
-  }
+    "install-dependencies": "yarn install",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
