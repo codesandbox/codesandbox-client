@@ -1,7 +1,5 @@
 import { resolveDirectory } from '@codesandbox/common/lib/sandbox/modules';
 import React from 'react';
-import LinkIcon from 'react-icons/lib/fa/external-link';
-import Cogs from 'react-icons/lib/fa/cogs';
 import LightningIcon from 'react-icons/lib/md/flash-on';
 
 import { useStore } from 'app/store';
@@ -12,8 +10,9 @@ import {
   WorkspaceSubtitle,
 } from '../../../../elements';
 
-import { Deploys, Deploy, Name, Link, ButtonContainer } from '../../elements';
+import { Deploys, Deploy, Name, Link } from '../../elements';
 
+import { Actions } from './Actions';
 import { SiteInfoWrapper, SubTitle } from './elements';
 import { ViewLogsButton } from './ViewLogsButton';
 
@@ -31,7 +30,7 @@ const getFunctionDir = sandbox => {
 
 export const SiteInfo = () => {
   const {
-    deployment: { building, netlifyClaimUrl, netlifyLogs, netlifySite },
+    deployment: { building, netlifyLogs, netlifySite },
     editor,
   } = useStore();
 
@@ -80,29 +79,7 @@ export const SiteInfo = () => {
               </>
             ) : null}
 
-            <>
-              <SubTitle>Actions</SubTitle>
-
-              <ButtonContainer>
-                <Link disabled={building} href={netlifySite.url}>
-                  {building ? (
-                    <>
-                      <Cogs /> Building...
-                    </>
-                  ) : (
-                    <>
-                      <LinkIcon /> Visit
-                    </>
-                  )}
-                </Link>
-
-                {netlifyClaimUrl ? (
-                  <Link disabled={building} href={netlifyClaimUrl}>
-                    Claim Site
-                  </Link>
-                ) : null}
-              </ButtonContainer>
-            </>
+            <Actions />
 
             {netlifyLogs ? <ViewLogsButton /> : null}
           </Deploy>
