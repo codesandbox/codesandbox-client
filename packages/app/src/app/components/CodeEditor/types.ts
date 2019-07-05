@@ -30,6 +30,7 @@ type ModuleTab = {
 };
 
 type DiffTab = {
+  id: string;
   type: 'DIFF';
   codeA: string;
   codeB: string;

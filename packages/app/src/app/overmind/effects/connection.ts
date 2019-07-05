@@ -8,7 +8,9 @@ export default {
     listeners.set(listener, disposer);
   },
   removeListener(listener: (connected: boolean) => void) {
-    listeners.get(listener)();
-    listeners.delete(listener);
+    if (listeners.has(listener)) {
+      listeners.get(listener)();
+      listeners.delete(listener);
+    }
   },
 };

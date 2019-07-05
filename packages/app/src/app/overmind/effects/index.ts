@@ -16,3 +16,6 @@ export { default as settingsStore } from './settingsStore';
 export { default as socket } from './socket';
 export { default as sse } from './sse';
 export { default as http } from './http';
+export { default as analytics } from './analytics';
+export { default as notificationToast } from './notificationToast';
+export { default as vscode } from './vscode';

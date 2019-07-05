@@ -5775,10 +5775,10 @@ before-after-hook@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-1.1.0.tgz#83165e15a59460d13702cb8febd6a1807896db5a"
 
-betsy@1.0.2-1557824735814:
-  version "1.0.2-1557824735814"
-  resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2-1557824735814.tgz#5916cab624e5ccb57de59b2a3085d5e1ae109296"
-  integrity sha512-rrMp2fKqg3+IzrFazxtAFvmp38YYA8QvNpsp4XyZ1iX4AR4UvB0bMJasHG7ze6/HTLjMxgKay+rprKHd0pOLYg==
+betsy@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2.tgz#e53abc4750d6a6a112a7835f723db0ca01a3b197"
+  integrity sha512-yt/OUTbSeCRj4uwbDnjTbnWgrLsgBl1nzJLdZH2eOtrf3SDH7svdoTMWOvTFhUdIM86pY6k21o/4SCIT6RYjig==
   dependencies:
     "@types/node" "^10.5.1"
     tslib "^1.9.3"
@@ -18435,10 +18435,10 @@ output-file-sync@^2.0.0:
     is-plain-obj "^1.1.0"
     mkdirp "^0.5.1"
 
-overmind-devtools@^19.0.0-1557824735814:
-  version "19.0.0-1557824735814"
-  resolved "https://registry.yarnpkg.com/overmind-devtools/-/overmind-devtools-19.0.0-1557824735814.tgz#d563a922758f2559cfc79ed793e6fc0c1c2dfbd7"
-  integrity sha512-py2KLII0BbJfRVnN7cUxHosYrlXETUZTJviJ6D+McWAKBlWf256Beh+2CBczGgkplvq4hvsE4SM18vA6lTCHaA==
+overmind-devtools@^19.0.0:
+  version "19.0.1"
+  resolved "https://registry.yarnpkg.com/overmind-devtools/-/overmind-devtools-19.0.1.tgz#a56150371bf52de971582681c94f8233fa1140d7"
+  integrity sha512-g+NRHr4+/DM/aD54VHLk4gGXYrwNkWhw9FVd6M77PJC6UW+eu1M22tDMZJo9WZDz1nih7Bt5Sw0srcrdHdc2Iw==
   dependencies:
     "@types/node" "^10.5.1"
     color "^3.0.0"
@@ -18446,40 +18446,47 @@ overmind-devtools@^19.0.0-1557824735814:
     electron "^2.0.8"
     electron-json-storage "^4.1.0"
     emotion "^9.2.12"
-    overmind-react "19.0.0-1557824735814"
-    overmind-themes "1.0.2-1557824735814"
+    overmind-react "19.0.1"
+    overmind-themes next
     react "16.8.1"
     react-dom "16.8.1"
     ws "^5.2.1"
 
-overmind-react@19.0.0-1557824735814, overmind-react@^19.0.0-1557824735814:
-  version "19.0.0-1557824735814"
-  resolved "https://registry.yarnpkg.com/overmind-react/-/overmind-react-19.0.0-1557824735814.tgz#0daf69c2d77ae2393c9cb941ab35c4d342a39216"
-  integrity sha512-93QIkcMTIXHEnxJ4EFEsOFRTjjiFahJNE0kBnF2VsYoRwpu2JuH5fjz8FZSTbFzwsXSQgC3PdsLuxTtzU3+tNA==
+overmind-react@19.0.1, overmind-react@^19.0.0:
+  version "19.0.1"
+  resolved "https://registry.yarnpkg.com/overmind-react/-/overmind-react-19.0.1.tgz#eb48d9e0afe82bea34dda3d4a3a8e9bf0a7a1f23"
+  integrity sha512-Ze/RlMelu2Ow0+h9f4ZMU8DdIVsx/Kg8rwOQHIsNpZnOrpRW3CvxtEZ3664oQX7sQpJpmAInBnUe9Zo9K76ztQ==
   dependencies:
     "@types/node" "^10.5.1"
-    overmind "18.0.0-1557824735814"
+    overmind "18.0.1"
     tslib "^1.9.3"
 
-overmind-themes@1.0.2-1557824735814:
-  version "1.0.2-1557824735814"
-  resolved "https://registry.yarnpkg.com/overmind-themes/-/overmind-themes-1.0.2-1557824735814.tgz#e376d6a3c9f908294409dbd92841a130597f4db6"
-  integrity sha512-4N3nKuskDmlE0xxvbuw7Iwi7Qc308vRRnZ3i4tMN739yzpqgdKQqE5z3ThPH8Y7cVs0pi6GIgZTEZVHgbnAPRQ==
+overmind-themes@next:
+  version "1.0.2-1562145138120"
+  resolved "https://registry.yarnpkg.com/overmind-themes/-/overmind-themes-1.0.2-1562145138120.tgz#0a34f46091d9bfb0a995220958fe54605c472c2b"
+  integrity sha512-sv3VHYAuSSJuxLkXXabwQ08R+FMf1pEf4z/a/DWASwwBTlv8/oxlfoZWDqrC3JjlSHuh6o8ggQH8JkhFjV3B7w==
   dependencies:
-    "@types/node" "^10.5.1"
     color "^3.0.0"
-    tslib "^1.9.3"
 
-overmind@18.0.0-1557824735814, overmind@^18.0.0-1557824735814:
-  version "18.0.0-1557824735814"
-  resolved "https://registry.yarnpkg.com/overmind/-/overmind-18.0.0-1557824735814.tgz#ae224bc00cb22673308884b707dd44ba813ad03f"
-  integrity sha512-v9RJIefCALDQuHF6w4hIJSfwgXuSE7IxuTtptdGcX6uMxrnbu3mvNV9tnt/MUG/LK+Eus8jmss+YG9tfbTP4xw==
+overmind@18.0.1:
+  version "18.0.1"
+  resolved "https://registry.yarnpkg.com/overmind/-/overmind-18.0.1.tgz#f34512c0451ce432f15788a3acadd429406a833c"
+  integrity sha512-nG0JlNXdIiRv5Bc23x6/tBORijAdZGqBsSFH5Ifh0Ghsw/qenCu0+eu9d8zXhTYBtdR+/bxwsEH2RJG47icacg==
   dependencies:
     "@types/node" "^10.5.1"
-    betsy "1.0.2-1557824735814"
+    betsy "1.0.2"
     is-plain-obj "^1.1.0"
-    proxy-state-tree "4.4.0-1557824735814"
+    proxy-state-tree "4.4.0"
     tslib "^1.9.3"
+
+overmind@^19.0.1:
+  version "19.0.1"
+  resolved "https://registry.yarnpkg.com/overmind/-/overmind-19.0.1.tgz#9e9c12c4433e0892222b32335cd4d05117d4f57a"
+  integrity sha512-CcNDDQpsxq/h5F+BJC+c97x0m7DELYiHKdHJfencX6YmxSX8/TRwhdRJFs5tsn+UkXva1j9eeR4gxF0hnP3mGA==
+  dependencies:
+    betsy "1.0.2"
+    is-plain-obj "^1.1.0"
+    proxy-state-tree "4.4.1"
 
 p-cancelable@^0.3.0:
   version "0.3.0"
@@ -20072,10 +20079,17 @@ proxy-addr@~2.0.5:
     forwarded "~0.1.2"
     ipaddr.js "1.9.0"
 
-proxy-state-tree@4.4.0-1557824735814:
-  version "4.4.0-1557824735814"
-  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-4.4.0-1557824735814.tgz#b04b9def82eb706b197edfeed7ac3cfca026f808"
-  integrity sha512-EUVIR5jEd0S1VkDxOxVLO2qGBbWYekdrFfy+0S1/k4bwrnpSmABSVRyGDUUVmiomhJ2HeWYdbCHlLUl1cyGVMg==
+proxy-state-tree@4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-4.4.0.tgz#c8642a3b4b2083fec0aa6e9565b70db7d1eaff98"
+  integrity sha512-/eiDWlILQBQJNKUBxeSo+DNn7C06K5JI7Z9lRjRVDA4V2hyhgYSiWFT/cFLtMVM/N6yOBRgBDrEKDEBNY/+pNA==
+  dependencies:
+    is-plain-obj "^1.1.0"
+
+proxy-state-tree@4.4.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-4.4.1.tgz#92fefb199425acd192e3d05bfd0ec4b5c1a46e8d"
+  integrity sha512-ZsdMGhrUcFMziOboUIknjmnLHefthk7GxuxWKC6aGrpa8KXR6ODa2EPk+cwyvt7Iss2tYDbkMlNc+nYmHgcIgA==
   dependencies:
     is-plain-obj "^1.1.0"
 

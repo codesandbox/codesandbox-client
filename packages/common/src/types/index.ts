@@ -8,6 +8,7 @@ export type SSEContainerStatus =
   | 'stopped'
   | 'hibernated'
   | 'error';
+
 export type SSEManagerStatus = 'connected' | 'disconnected' | 'initializing';
 
 export type ModuleError = {
@@ -38,15 +39,19 @@ export type ModuleCorrection = {
 };
 
 export type Module = {
-  id: string;
+  id?: string;
   title: string;
   code: string | undefined;
+  savedCode: string | undefined;
   shortid: string;
   directoryShortid: string | undefined;
   isNotSynced: boolean;
   sourceId: string;
   isBinary: boolean;
+  insertedAt: string;
+  updatedAt: string;
   path?: string;
+  now?: any;
 };
 
 export type Directory = {
@@ -101,7 +106,7 @@ export type CurrentUser = {
   integrations: {
     zeit?: {
       token: string;
-      email: string | undefined;
+      email?: string;
     };
     github?: {
       email: string;
@@ -130,6 +135,7 @@ export type SmallSandbox = {
   title: string | null;
   alias: string | null;
   customTemplate: CustomTemplate | null;
+  title?: string;
   insertedAt: string;
   updatedAt: string;
   likeCount: number;
@@ -161,6 +167,88 @@ export type User = {
   subscriptionSince: string;
 };
 
+export type RoomInfo = {
+  startTime: number;
+  ownerIds: string[];
+  roomId: string;
+  mode: string;
+  chatEnabled: boolean;
+  sandboxId: string;
+  editorIds: string[];
+  users: User[];
+  chat: {
+    messages: Array<{
+      userId: string;
+      date: number;
+      message: string;
+    }>;
+    // We keep a separate map of user_id -> username for the case when
+    // a user disconnects. We still need to keep track of the name.
+    users: {
+      [id: string]: string;
+    };
+  };
+};
+
+export type PaymentDetails = {
+  brand: string;
+  expMonth: number;
+  expYear: number;
+  last4: string;
+  name: string;
+};
+
+export type SandboxPick = {
+  title: string;
+  description: string;
+  id: string;
+  insertedAt: string;
+};
+
+export type MiniSandbox = {
+  viewCount: number;
+  title: string;
+  template: string;
+  id: string;
+  picks: SandboxPick[];
+  description: string;
+  git: GitInfo;
+  author: User;
+};
+
+export type GitCommit = {
+  git: GitInfo;
+  merge: boolean;
+  newBranch: string;
+  sha: string;
+  url: string;
+};
+
+export type GitPr = {
+  git: GitInfo;
+  newBranch: string;
+  sha: string;
+  url: string;
+  prURL: string;
+};
+
+export type PopularSandboxes = {
+  startDate: string;
+  sandboxes: MiniSandbox[];
+  endDate: string;
+};
+
+export type PickedSandboxes = {
+  sandboxes: MiniSandbox[];
+  page: number;
+};
+
+export type PickedSandboxDetails = {
+  title: string;
+  id: string;
+  description: string;
+};
+
 export type Sandbox = {
   id: string;
   alias: string | undefined;
@@ -172,6 +260,7 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Array<Module>;
   directories: Array<Directory>;
+  collection: boolean;
   owned: boolean;
   npmDependencies: {
     [dep: string]: string;
@@ -179,17 +268,25 @@ export type Sandbox = {
   customTemplate: CustomTemplate | null;
   forkedTemplate: CustomTemplate | null;
   externalResources: string[];
+  team: {
+    id: string;
+  };
+  roomId: string;
   privacy: 0 | 1 | 2;
   author: User | undefined;
   forkedFromSandbox: SmallSandbox | undefined;
   git: GitInfo | undefined;
   tags: string[];
+  isFrozen: boolean;
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
    * @type {string}
    */
   sourceId: string;
+  source?: {
+    template: string;
+  };
   template: TemplateType;
   entry: string;
   originalGit: GitInfo | undefined;
@@ -274,3 +371,84 @@ export type UploadFile = {
   name: string;
   path: string;
 };
+
+export type Selection = {
+  selection: number[];
+  cursorPosition: number;
+};
+
+export type UserSelection = {
+  primary: Selection;
+  secondary: Selection[];
+};
+
+export type EditorSelection = {
+  userId: string;
+  name: string;
+  selection: UserSelection;
+  color: number[];
+};
+
+export type EditorError = {
+  column: number;
+  line: number;
+  columnEnd: number;
+  lineEnd: number;
+  message: string;
+  source: string;
+  title: string;
+  path: string;
+};
+
+export type EditorCorrection = {
+  column: number;
+  line: number;
+  columnEnd: number;
+  lineEnd: number;
+  message: string;
+  source: string;
+  path: string;
+  severity: string;
+};
+
+export enum WindowOrientation {
+  VERTICAL = 'VERTICAL',
+  HORIZONTAL = 'HORIZONTAL',
+}
+
+export type Profile = {
+  viewCount: number;
+  username: string;
+  subscriptionSince: string;
+  showcasedSandboxShortid: string;
+  sandboxCount: number;
+  receivedLikeCount: number;
+  name: string;
+  id: string;
+  givenLikeCount: number;
+  forkedCount: number;
+  badges: Badge[];
+  avatarUrl: string;
+};
+
+export type UserSandbox = {
+  id: string;
+  title: string;
+  insertedAt: string;
+  updatedAt: string;
+};
+
+export enum ServerStatus {
+  INITIALIZING = 'initializing',
+  CONNECTED = 'connected',
+  DISCONNECTED = 'disconnected',
+}
+
+export enum ServerContainerStatus {
+  INITIALIZING = 'initializing',
+  CONTAINER_STARTED = 'container-started',
+  SANDBOX_STARTED = 'sandbox-started',
+  STOPPED = 'stopped',
+  HIBERNATED = 'hibernated',
+  ERROR = 'error',
+}
