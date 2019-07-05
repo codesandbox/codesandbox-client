@@ -7,20 +7,20 @@ const SANDBOXES = [
   'vue',
   'svelte',
   'react-ts',
-  { id: 'github/reduxjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
+  { id: 'reduxjs-redux-examples-todomvc', threshold: 0.04 },
   'vVoQVk78',
-  'github/faceyspacey/redux-first-router-codesandbox/tree/master',
+  'faceyspacey-redux-first-router-codesandbox',
   'mZRjw05yp',
   'o29j95wx9',
   'k3q1zjjml5',
-  'github/reduxjs/redux/tree/master/examples/real-world',
-  'github/CompuIves/codesandbox-presentation',
+  'reduxjs-redux-examples-real-world',
+  'CompuIves-codesandbox-presentation',
   'lp5rjr0z4z',
   'nOymMxyY',
   'y26rj99yov', // react transition
   '6w66jzw3mn', // material-design & preact
   '4j7m47vlm4', // material-ui
-  'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
+  'cssinjs-egghead-templates-and-variables', // postcss egghead
   'xp5qy8r93q', // babel example
   'angular', // angular template
   // Sass importing
@@ -28,7 +28,7 @@ const SANDBOXES = [
   'rl2m3xklyo', // node_modules import
   'vanilla',
   'n5wy74w8vl', // material-ui generated demo
-  'github/algolia/doc-onboarding/tree/master/demos/angular/media', // algolia angular demo
+  'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
   { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
   { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
   'pm79km5lmj', // babel macros with styled components
@@ -39,6 +39,7 @@ const SANDBOXES = [
   'zx22owojr3', // vue v-slot test
   '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741
 ];
+const SANDBOXES_REPO = 'codesandbox/integration-sandboxes';
 
 function pageLoaded(page) {
   return new Promise(async resolve => {
@@ -48,6 +49,10 @@ function pageLoaded(page) {
       }
     });
   });
+}
+
+function sandboxUrl(sandboxId) {
+  return `http://localhost:3002/#github/${SANDBOXES_REPO}/tree/master/${sandboxId}`;
 }
 
 function loadSandbox(page, sandboxId, timeout) {
@@ -60,7 +65,7 @@ function loadSandbox(page, sandboxId, timeout) {
         )
       );
     }, timeout);
-    page.goto(`http://localhost:3002/#${sandboxId}`, {
+    page.goto(sandboxUrl(sandboxId), {
       timeout: 0, // we manage the timeout ourselves
     });
     await pageLoaded(page);
