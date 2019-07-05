@@ -39,7 +39,7 @@ export const PropertyName = styled.span`
   `}
 `;
 
-export const PropertyValue = styled.span`
+export const PropertyValue = styled.span<{ css?: any }>`
   ${({ theme }) => css`
     display: inline-block;
     flex: 1;

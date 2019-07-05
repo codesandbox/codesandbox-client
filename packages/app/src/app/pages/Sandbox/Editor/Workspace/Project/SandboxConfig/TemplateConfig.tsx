@@ -8,6 +8,7 @@ import { useSignals, useStore } from 'app/store';
 import { Item, PropertyName, PropertyValue, Explanation } from '../elements';
 import { PickColor, PickerContainer } from './elements';
 import WorkspaceItem from '../../WorkspaceItem';
+import Switch from '@codesandbox/common/lib/components/Switch';
 
 export const TemplateConfig = observer(() => {
   const picker = useRef(null);
@@ -20,6 +21,7 @@ export const TemplateConfig = observer(() => {
     },
   } = useStore();
   const [showPicker, setShowPicker] = useState(false);
+  const [publicTemplate, setPublic] = useState(false);
   const [selectedColor, setSelectedColor] = useState(
     (customTemplate && customTemplate.color) ||
       templates.default(template).color()
@@ -68,6 +70,24 @@ export const TemplateConfig = observer(() => {
               />
             </PickerContainer>
           )}
+        </PropertyValue>
+      </Item>
+      <Item>
+        <PropertyName>Public</PropertyName>
+        <PropertyValue
+          css={`
+            position: relative;
+            justify-content: flex-end;
+            display: flex;
+          `}
+        >
+          <Switch
+            small
+            onClick={() => setPublic(!publicTemplate)}
+            right={publicTemplate}
+            offMode
+            secondary
+          />
         </PropertyValue>
       </Item>
     </WorkspaceItem>
