@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { usePopoverState, PopoverArrow } from 'reakit/Popover';
 import * as templates from '@codesandbox/common/lib/templates';
 import { useStore, useSignals } from 'app/store';
