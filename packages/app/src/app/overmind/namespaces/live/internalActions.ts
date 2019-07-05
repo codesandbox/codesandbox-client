@@ -1,7 +1,44 @@
 import { Action, AsyncAction, Config } from 'app/overmind';
-import { RoomInfo } from '@codesandbox/common/lib/types';
+import { RoomInfo, User } from '@codesandbox/common/lib/types';
 import { IContext } from 'overmind';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { withLoadApp } from 'app/overmind/factories';
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { camelizeKeys } from 'humps';
+
+export const updateSelection: Action<any> = ({ state }, data) => {
+  const liveUserId = data.liveUserId;
+  const moduleShortid = data.moduleShortid;
+  const selection = data.selection;
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === liveUserId
+  );
+
+  if (userIndex > -1) {
+    state.live.roomInfo.users[userIndex].currentModuleShortid = moduleShortid;
+    state.live.roomInfo.users[userIndex].selection = selection;
+  }
+};
+
+export const sendSelectionToEditor: Action<any> = ({ state }, data) => {
+  const userId = data.liveUserId;
+  const moduleShortid = data.moduleShortid;
+  const selection = data.selection;
+
+  if (
+    moduleShortid === state.editor.currentModuleShortid &&
+    state.live.isEditor(userId)
+  ) {
+    const user = state.live.roomInfo.users.find(u => u.id === userId);
+
+    state.editor.pendingUserSelections.push({
+      userId,
+      name: user.username,
+      selection,
+      color: user.color.toJS(),
+    });
+  }
+};
 
 export const sendModuleInfo: AsyncAction<{
   event: string;
@@ -82,16 +119,17 @@ export const sendModuleSaved: Action<string> = ({ actions }, moduleShortid) => {
   });
 };
 
-export const initialize: AsyncAction = async ({ state, effects, actions }) => {
-  state.live.isLoading = true;
+export const initialize: AsyncAction = withLoadApp(
+  async ({ state, effects, actions }) => {
+    state.live.isLoading = true;
 
-  try {
-    state.live.roomInfo = await effects.live.joinChannel<RoomInfo>(
-      state.editor.currentSandbox.roomId
-    );
-    effects.analytics.track('Live Session Joined', {});
-    effects.live.listen(actions.live.internal.liveMessageReceived);
-    /* 
+    try {
+      state.live.roomInfo = await effects.live.joinChannel<RoomInfo>(
+        state.editor.currentSandbox.roomId
+      );
+      effects.analytics.track('Live Session Joined', {});
+      effects.live.listen(actions.live.internal.liveMessageReceived);
+      /* 
       set(state`live.liveUserId`, props`liveUserId`),
       set(state`editor.currentId`, props`sandbox.id`),
       when(state`editor.currentSandbox`),
@@ -102,22 +140,22 @@ export const initialize: AsyncAction = async ({ state, effects, actions }) => {
         ],
       },
     */
-    state.live.receivingCode = true; // Not necessary as next step is synchronous
-    actions.live.internal.initializeModuleState();
-    state.live.receivingCode = false;
-    state.live.isLive = true;
-    state.live.error = null;
-    effects.live.send('live:module_state', {});
-  } catch (error) {
-    state.live.error = error.reason;
+      state.live.receivingCode = true; // Not necessary as next step is synchronous
+      actions.live.internal.initializeModuleState();
+      state.live.receivingCode = false;
+      state.live.isLive = true;
+      state.live.error = null;
+      effects.live.send('live:module_state', {});
+    } catch (error) {
+      state.live.error = error.reason;
+    }
   }
-};
+);
 
-export const liveMessageReceived: Action = () => {};
-
-export const initializeModuleState: Action = ({ state, effects }) => {
-  const moduleState = state.live.roomInfo.moduleState || {};
-
+export const initializeModuleState: Action<any> = (
+  { state, effects },
+  moduleState
+) => {
   Object.keys(moduleState).forEach(moduleShortid => {
     const moduleInfo = moduleState[moduleShortid];
     effects.ot.initializeModule(moduleShortid, moduleInfo.revision);
@@ -244,4 +282,39 @@ export const sendChangeCurrentModule: Action<string> = (
       moduleShortid: module.shortid,
     });
   }
+};
+
+export const sendSelection: Action<{
+  moduleShortid: string;
+  selection: any;
+}> = ({ state, effects }, { moduleShortid, selection }) => {
+  const liveUserId = state.live.liveUserId;
+  const userIndex = state.live.roomInfo.users.findIndex(
+    u => u.id === liveUserId
+  );
+
+  if (userIndex > -1) {
+    if (state.live.roomInfo.users[userIndex]) {
+      state.live.roomInfo.users[userIndex].currentModuleShortid = moduleShortid;
+
+      state.live.roomInfo.users[userIndex].selection = selection;
+
+      effects.live.send('user:selection', {
+        liveUserId,
+        moduleShortid,
+        selection,
+      });
+    }
+  }
+};
+
+export const getModuleIdFromShortid: Action<string, string> = (
+  { state },
+  moduleShortid
+) => {
+  const modules = state.editor.currentSandbox.modules;
+
+  const module = modules.find(m => m.shortid === moduleShortid);
+
+  return module && module.id;
 };

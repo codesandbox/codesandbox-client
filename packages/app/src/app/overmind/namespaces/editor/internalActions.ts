@@ -164,6 +164,23 @@ export const prettifyCode: AsyncAction<
   );
 };
 
+export const setModuleSavedCode: Action<{
+  moduleShortid: string;
+  savedCode: string;
+}> = ({ state }, { moduleShortid, savedCode }) => {
+  const sandbox = state.editor.currentSandbox;
+
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    state.editor.sandboxes[sandbox.id].modules[
+      moduleIndex
+    ].savedCode = savedCode;
+  }
+};
+
 export const saveCode: AsyncAction<{
   code: string;
   moduleShortid: string;

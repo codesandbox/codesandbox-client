@@ -1,4 +1,4 @@
-import { AsyncAction } from 'app/overmind';
+import { AsyncAction, Action } from 'app/overmind';
 
 export const fetchGitChanges: AsyncAction = async ({ state, effects }) => {
   const id = state.editor.currentId;
@@ -8,4 +8,11 @@ export const fetchGitChanges: AsyncAction = async ({ state, effects }) => {
     `/sandboxes/${id}/git/diff`
   );
   state.git.isFetching = false;
+};
+
+export const createCommitMessage: Action<void, string> = ({ state }) => {
+  const subject = state.git.subject;
+  const description = state.git.description;
+
+  return `${subject}${description.length ? `\n\n${description}` : ``}`;
 };

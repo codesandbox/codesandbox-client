@@ -1,4 +1,4 @@
-import { GitInfo } from '@codesandbox/common/lib/types';
+import { GitCommit, GitPr } from '@codesandbox/common/lib/types';
 
 type State = {
   repoTitle: string;
@@ -14,20 +14,8 @@ type State = {
     modified: string[];
     rights: string;
   };
-  commit: {
-    git: GitInfo;
-    merge: boolean;
-    newBranch: string;
-    sha: string;
-    url: string;
-  };
-  pr: {
-    git: GitInfo;
-    newBranch: string;
-    sha: string;
-    url: string;
-    prURL: string;
-  };
+  commit: GitCommit;
+  pr: GitPr;
   isCommitting: boolean;
   isCreatingPr: boolean;
 };

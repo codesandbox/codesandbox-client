@@ -168,11 +168,24 @@ export type User = {
 };
 
 export type RoomInfo = {
-  moduleState: {
-    [shortId: string]: {
-      code: string;
-      revision: string;
-      synced: boolean;
+  startTime: number;
+  ownerIds: string[];
+  roomId: string;
+  mode: string;
+  chatEnabled: boolean;
+  sandboxId: string;
+  editorIds: string[];
+  users: User[];
+  chat: {
+    messages: Array<{
+      userId: string;
+      date: number;
+      message: string;
+    }>;
+    // We keep a separate map of user_id -> username for the case when
+    // a user disconnects. We still need to keep track of the name.
+    users: {
+      [id: string]: string;
     };
   };
 };
@@ -193,6 +206,22 @@ export type MiniSandbox = {
   description: string;
   git: GitInfo;
   author: User;
+};
+
+export type GitCommit = {
+  git: GitInfo;
+  merge: boolean;
+  newBranch: string;
+  sha: string;
+  url: string;
+};
+
+export type GitPr = {
+  git: GitInfo;
+  newBranch: string;
+  sha: string;
+  url: string;
+  prURL: string;
 };
 
 export type PopularSandboxes = {
