@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { usePopoverState, PopoverArrow } from 'reakit/Popover';
+import { usePopoverState } from 'reakit/Popover';
 import * as templates from '@codesandbox/common/lib/templates';
 import { useStore, useSignals } from 'app/store';
 import * as Icons from '@codesandbox/template-icons';
 import getIcon from '@codesandbox/common/lib/templates/icons';
 
 import { Item, PropertyName } from '../../elements';
-import { Button, IconWrapper, List, Value, IconButton } from './elements';
+import {
+  Button,
+  IconWrapper,
+  List,
+  Value,
+  IconButton,
+  Arrow,
+} from './elements';
 
 export const Icon = () => {
   const popover = usePopoverState();
@@ -53,7 +60,7 @@ export const Icon = () => {
           {...popover}
           aria-label="Choose an Icon"
         >
-          <PopoverArrow {...popover} />
+          <Arrow {...popover} />
           <List>
             {Object.keys(Icons).map((i: string) => (
               <li onClick={() => setIcon(i)}>

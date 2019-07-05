@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { PropertyValue } from '../../elements';
-import { Popover, PopoverDisclosure } from 'reakit/Popover';
+import { Popover, PopoverDisclosure, PopoverArrow } from 'reakit/Popover';
 
 export const Button = styled(PopoverDisclosure)<{ color: string }>`
   padding: 0;
@@ -11,8 +11,29 @@ export const Button = styled(PopoverDisclosure)<{ color: string }>`
 
 export const IconWrapper = styled(Popover)`
   padding: 10px;
-  background: white;
+  background: ${props => props.theme['sideBar.background']};
+  border: 1px solid
+    ${({ theme }) =>
+      theme['sideBar.foreground'] ||
+      (theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)')}};
+  box-shadow: 0 0 14px
+    ${({ theme }) =>
+      theme.light ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
+
+  svg {
+    .stroke {
+      fill: ${({ theme }) =>
+        theme['sideBar.foreground'] ||
+        (theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)')}};
+    }
+
+    .fill {
+      fill: ${props => props.theme['sideBar.background']};
+    }
+  }
 `;
+
+export const Arrow = styled(PopoverArrow)``;
 
 export const List = styled.ul`
   list-style: none;
