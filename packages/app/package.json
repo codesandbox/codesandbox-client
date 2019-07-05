@@ -217,7 +217,7 @@
     "normalizr": "^3.2.3",
     "onigasm": "^2.2.1",
     "ot": "^0.0.15",
-    "overmind": "^18.0.0",
+    "overmind": "^19.0.1",
     "overmind-devtools": "^19.0.0",
     "overmind-react": "^19.0.0",
     "phoenix": "^1.3.0",
