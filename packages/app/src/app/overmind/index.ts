@@ -23,6 +23,7 @@ import * as files from './namespaces/files';
 import * as git from './namespaces/git';
 import * as explore from './namespaces/explore';
 import * as profile from './namespaces/profile';
+import * as server from './namespaces/server';
 
 export const config = merge(
   {
@@ -44,6 +45,7 @@ export const config = merge(
     git,
     explore,
     profile,
+    server,
   })
 );
 

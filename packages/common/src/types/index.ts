@@ -437,3 +437,18 @@ export type UserSandbox = {
   insertedAt: string;
   updatedAt: string;
 };
+
+export enum ServerStatus {
+  INITIALIZING = 'initializing',
+  CONNECTED = 'connected',
+  DISCONNECTED = 'disconnected',
+}
+
+export enum ServerContainerStatus {
+  INITIALIZING = 'initializing',
+  CONTAINER_STARTED = 'container-started',
+  SANDBOX_STARTED = 'sandbox-started',
+  STOPPED = 'stopped',
+  HIBERNATED = 'hibernated',
+  ERROR = 'error',
+}
