@@ -39,9 +39,10 @@ export const PropertyName = styled.span`
   `}
 `;
 
-export const PropertyValue = styled.span<{ css?: any }>`
-  ${({ theme }) => css`
+export const PropertyValue = styled.span<{ relative?: boolean }>`
+  ${({ theme, relative }) => css`
     display: inline-block;
+    position: ${relative ? 'relative' : 'initial'};
     flex: 1;
     color: ${theme.templateColor};
     text-align: right;

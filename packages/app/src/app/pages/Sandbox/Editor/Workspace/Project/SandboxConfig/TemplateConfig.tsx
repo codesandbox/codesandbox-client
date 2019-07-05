@@ -7,7 +7,7 @@ import { SketchPicker } from 'react-color';
 import * as templates from '@codesandbox/common/lib/templates';
 import { useSignals, useStore } from 'app/store';
 import { Item, PropertyName, PropertyValue, Explanation } from '../elements';
-import { PickColor, PickerContainer } from './elements';
+import { PickColor, PickerContainer, PublicValue } from './elements';
 import WorkspaceItem from '../../WorkspaceItem';
 import { Icon } from './Icon';
 import Switch from '@codesandbox/common/lib/components/Switch';
@@ -64,7 +64,7 @@ export const TemplateConfig = observer(() => {
       </Explanation>
       <Item style={{ marginTop: '0.5rem' }}>
         <PropertyName>Color</PropertyName>
-        <PropertyValue style={{ position: 'relative' }}>
+        <PropertyValue relative>
           <PickColor
             onClick={() => setShowPicker(true)}
             color={selectedColor}
@@ -86,13 +86,7 @@ export const TemplateConfig = observer(() => {
       </Item>
       <Item>
         <PropertyName>Public</PropertyName>
-        <PropertyValue
-          css={`
-            position: relative;
-            justify-content: flex-end;
-            display: flex;
-          `}
-        >
+        <PublicValue>
           <Switch
             small
             onClick={togglePublic}
@@ -100,7 +94,7 @@ export const TemplateConfig = observer(() => {
             offMode
             secondary
           />
-        </PropertyValue>
+        </PublicValue>
       </Item>
       <Icon />
     </WorkspaceItem>
