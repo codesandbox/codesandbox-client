@@ -190,6 +190,14 @@ export type RoomInfo = {
   };
 };
 
+export type PaymentDetails = {
+  brand: string;
+  expMonth: number;
+  expYear: number;
+  last4: string;
+  name: string;
+};
+
 export type Pick = {
   title: string;
   description: string;
@@ -407,3 +415,25 @@ export enum WindowOrientation {
   VERTICAL = 'VERTICAL',
   HORIZONTAL = 'HORIZONTAL',
 }
+
+export type Profile = {
+  viewCount: number;
+  username: string;
+  subscriptionSince: string;
+  showcasedSandboxShortid: string;
+  sandboxCount: number;
+  receivedLikeCount: number;
+  name: string;
+  id: string;
+  givenLikeCount: number;
+  forkedCount: number;
+  badges: Badge[];
+  avatarUrl: string;
+};
+
+export type UserSandbox = {
+  id: string;
+  title: string;
+  insertedAt: string;
+  updatedAt: string;
+};

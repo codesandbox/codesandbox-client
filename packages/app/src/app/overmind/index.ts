@@ -22,6 +22,7 @@ import * as deployment from './namespaces/deployment';
 import * as files from './namespaces/files';
 import * as git from './namespaces/git';
 import * as explore from './namespaces/explore';
+import * as profile from './namespaces/profile';
 
 export const config = merge(
   {
@@ -42,6 +43,7 @@ export const config = merge(
     files,
     git,
     explore,
+    profile,
   })
 );
 
