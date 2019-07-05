@@ -31,9 +31,6 @@ export const SandboxConfig = observer(() => {
 
     addedTemplate({
       template: {
-        color:
-          (customTemplate && customTemplate.color) ||
-          templates.default(template).color(),
         title,
         description,
         icon_url: template,

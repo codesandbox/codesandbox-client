@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Icons from '@codesandbox/template-icons';
 import { Template } from '../../types/index';
 import getIcon from '../../templates/icons';
 import { ENTER } from '../../utils/keycodes';
@@ -32,9 +33,10 @@ export const UserTemplate = ({
   selectTemplate,
   small,
 }: IUserTemplateProps) => {
-  const Icon = template.iconUrl
-    ? getIcon(template.sandbox.source.template)
-    : null;
+  const Icon =
+    template.iconUrl && Icons[template.iconUrl]
+      ? Icons[template.iconUrl]
+      : getIcon(template.sandbox.source.template);
 
   const select = () =>
     selectTemplate({
@@ -54,14 +56,9 @@ export const UserTemplate = ({
       }}
       tabIndex={0}
     >
-      {/* <IconContainer>
-        {template.iconUrl ? (
-          // @ts-ignore
-          <Icon width={small ? 24 : 32} height={small ? 24 : 32} />
-        ) : (
-          <img src={template.iconUrl} />
-        )}
-      </IconContainer> */}
+      <IconContainer>
+        <Icon width={small ? 24 : 32} height={small ? 24 : 32} />
+      </IconContainer>
       <Title>{getSandboxName(template.sandbox)}</Title>
     </Button>
   );

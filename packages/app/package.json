@@ -262,6 +262,7 @@
     "react-tagsinput": "^3.19.0",
     "react-use": "^9.7.2",
     "react-virtualized": "^9.19.1",
+    "reakit": "^1.0.0-beta.4",
     "rebound": "^0.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "sha1": "^1.1.1",

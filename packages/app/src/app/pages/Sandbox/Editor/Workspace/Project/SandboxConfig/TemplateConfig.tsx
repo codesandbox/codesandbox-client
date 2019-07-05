@@ -3,11 +3,13 @@ import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 import { SketchPicker } from 'react-color';
+
 import * as templates from '@codesandbox/common/lib/templates';
 import { useSignals, useStore } from 'app/store';
 import { Item, PropertyName, PropertyValue, Explanation } from '../elements';
 import { PickColor, PickerContainer } from './elements';
 import WorkspaceItem from '../../WorkspaceItem';
+import { Icon } from './Icon';
 import Switch from '@codesandbox/common/lib/components/Switch';
 
 export const TemplateConfig = observer(() => {
@@ -20,12 +22,12 @@ export const TemplateConfig = observer(() => {
       currentSandbox: { template, customTemplate },
     },
   } = useStore();
-  const [showPicker, setShowPicker] = useState(false);
-  const [publicTemplate, setPublic] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(
+  const defaultColor =
     (customTemplate && customTemplate.color) ||
-      templates.default(template).color()
-  );
+    templates.default(template).color();
+  const [showPicker, setShowPicker] = useState(false);
+  const [publicTemplate, setPublic] = useState(customTemplate.published);
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
   const colors = Object.keys(templates)
     .filter(x => x !== 'default')
     .map(t => templates[t])
@@ -39,6 +41,16 @@ export const TemplateConfig = observer(() => {
       },
     });
   });
+
+  const togglePublic = () => {
+    editTemplate({
+      template: {
+        ...customTemplate,
+        published: !publicTemplate,
+      },
+    });
+    setPublic(!publicTemplate);
+  };
 
   return (
     <WorkspaceItem defaultOpen title="Template">
@@ -83,13 +95,14 @@ export const TemplateConfig = observer(() => {
         >
           <Switch
             small
-            onClick={() => setPublic(!publicTemplate)}
+            onClick={togglePublic}
             right={publicTemplate}
             offMode
             secondary
           />
         </PropertyValue>
       </Item>
+      <Icon />
     </WorkspaceItem>
   );
 });
