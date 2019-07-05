@@ -10,7 +10,7 @@ export default ({ path, teamId }) => {
 
   const paths = splittedPath.reduce((bases, next) => {
     if (next === '') {
-      return [{ url: '/', name: teamId ? 'Our Sandboxes' : 'My Sandboxes' }];
+      return [{ url: '/', name: teamId ? 'Team Sandboxes' : 'My Sandboxes' }];
     }
 
     const baseUrl = bases[bases.length - 1].url;

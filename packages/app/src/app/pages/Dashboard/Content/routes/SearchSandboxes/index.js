@@ -1,12 +1,12 @@
 import React from 'react';
 import { inject, Observer } from 'mobx-react';
-import { uniq } from 'lodash-es';
 import { Query } from 'react-apollo';
 import Fuse from 'fuse.js';
 
 import Sandboxes from '../../Sandboxes';
 
 import { SEARCH_SANDBOXES_QUERY } from '../../../queries';
+import { getPossibleTemplates } from '../../Sandboxes/utils';
 
 let lastSandboxes = null;
 let searchIndex = null;
@@ -32,6 +32,7 @@ const SearchSandboxes = ({ store }) => (
               keys: [
                 { name: 'title', weight: 0.5 },
                 { name: 'description', weight: 0.3 },
+                { name: 'alias', weight: 0.2 },
                 { name: 'source.template', weight: 0.1 },
                 { name: 'id', weight: 0.1 },
               ],
@@ -57,9 +58,11 @@ const SearchSandboxes = ({ store }) => (
 
           let possibleTemplates = [];
           if (sandboxes) {
-            possibleTemplates = uniq(sandboxes.map(x => x.source.template));
+            possibleTemplates = getPossibleTemplates(sandboxes);
 
-            sandboxes = store.dashboard.getFilteredSandboxes(sandboxes);
+            sandboxes = store.dashboard
+              .getFilteredSandboxes(sandboxes)
+              .filter(x => !x.customTemplate);
           }
 
           return (

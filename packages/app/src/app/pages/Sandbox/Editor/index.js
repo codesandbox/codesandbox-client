@@ -2,7 +2,7 @@ import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import { inject, observer } from 'mobx-react';
 import styled, { ThemeProvider } from 'styled-components';
-
+import { templateColor } from 'app/utils/template-color';
 import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
@@ -10,7 +10,7 @@ import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import { Container } from './elements';
 import Workspace from './Workspace';
 import Content from './Content';
-import Header from './Header';
+import { Header } from './Header';
 import { Navigation } from './Navigation';
 import getVSCodeTheme from './utils/get-vscode-theme';
 
@@ -76,7 +76,7 @@ class ContentSplit extends React.Component {
     return (
       <ThemeProvider
         theme={{
-          templateColor: templateDef && templateDef.color,
+          templateColor: templateColor(sandbox, templateDef),
           templateBackgroundColor: templateDef && templateDef.backgroundColor,
           ...this.state.theme,
         }}

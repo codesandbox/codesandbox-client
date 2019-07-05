@@ -5,8 +5,10 @@ import { Route, withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import Input from '@codesandbox/common/lib/components/Input';
 import { Button } from '@codesandbox/common/lib/components/Button';
-import TimeIcon from 'react-icons/lib/md/access-time';
 import PeopleIcon from 'react-icons/lib/md/people';
+
+// @ts-ignore
+import DashboardIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
 
@@ -15,6 +17,7 @@ import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
 import { Items, CategoryHeader, SidebarStyled, InputWrapper } from './elements';
 import { TEAMS_QUERY } from '../queries';
+import { TemplateItem } from './TemplateItem';
 
 class Sidebar extends React.Component {
   handleSearchFocus = () => {
@@ -59,9 +62,9 @@ class Sidebar extends React.Component {
               <React.Fragment>
                 <Items style={{ marginBottom: '1rem' }}>
                   <Item
-                    Icon={TimeIcon}
+                    Icon={DashboardIcon}
                     path="/dashboard/recent"
-                    name="Recent"
+                    name="Overview"
                   />
 
                   <SandboxesItem
@@ -69,6 +72,9 @@ class Sidebar extends React.Component {
                     currentTeamId={currentTeamId}
                     openByDefault
                   />
+
+                  <TemplateItem currentPath={path} />
+
                   <TrashItem currentPath={path} />
                 </Items>
 
@@ -93,11 +99,14 @@ class Sidebar extends React.Component {
                             path={teamOverviewUrl(team.id)}
                             name="Team Overview"
                           />
+
                           <SandboxesItem
                             currentPath={path}
                             currentTeamId={currentTeamId}
                             teamId={team.id}
                           />
+
+                          <TemplateItem currentPath={path} teamId={team.id} />
                         </Items>
                       </div>
                     ));

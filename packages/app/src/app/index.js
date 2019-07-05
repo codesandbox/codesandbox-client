@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as HooksProvider } from '@apollo/react-hooks';
 import { Provider } from 'mobx-react';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import {
@@ -137,11 +138,13 @@ function boot() {
           <Store.Provider value={store}>
             <Provider {...{ signals, store }}>
               <ApolloProvider client={client}>
-                <ThemeProvider theme={theme}>
-                  <Router history={history}>
-                    <App />
-                  </Router>
-                </ThemeProvider>
+                <HooksProvider client={client}>
+                  <ThemeProvider theme={theme}>
+                    <Router history={history}>
+                      <App />
+                    </Router>
+                  </ThemeProvider>
+                </HooksProvider>
               </ApolloProvider>
             </Provider>
           </Store.Provider>

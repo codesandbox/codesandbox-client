@@ -56,7 +56,7 @@ $ codesandbox ./
 
 ## Define API
 
-We offer an API that allows you to programmatically create a sandbox. This is most often useful in documentation: code examples can generate a sandbox on the fly. You can call the endpoint `https://codesandbox.io/api/v1/sandboxes/define` both with a a `GET` and with a `POST` request.
+We offer an API that allows you to programmatically create a sandbox. This is most often useful in documentation: code examples can generate a sandbox on the fly. You can call the endpoint `https://codesandbox.io/api/v1/sandboxes/define` both with a `GET` and with a `POST` request.
 
 ### Supported Parameters
 

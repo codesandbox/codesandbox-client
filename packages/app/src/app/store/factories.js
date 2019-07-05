@@ -123,6 +123,7 @@ export function withLoadApp(continueSequence) {
                     actions.setSignedInCookie,
                     actions.connectWebsocket,
                     initializeNotifications,
+                    actions.loadTemplatesForStartModal,
                   ],
                   error: [
                     addNotification(

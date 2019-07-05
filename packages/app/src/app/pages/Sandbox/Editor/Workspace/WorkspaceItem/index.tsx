@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Animate as ReactShow } from 'react-show';
 
 import {
@@ -11,7 +11,7 @@ import {
 
 type Props = {
   children: React.ReactNode;
-  title: string;
+  title: string | React.ReactElement<any>;
   keepState?: boolean;
   disabled?: boolean;
   defaultOpen?: boolean;
@@ -19,35 +19,21 @@ type Props = {
   style?: React.CSSProperties;
 };
 
-type State = {
-  open: boolean;
-};
-
-export default class WorkspaceItem extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      open: Boolean(props.defaultOpen),
-    };
-  }
-
-  shouldComponentUpdate(nextProps: Props, nextState: State) {
-    return (
-      nextState.open !== this.state.open ||
-      nextProps.disabled !== this.props.disabled ||
-      this.props.children !== nextProps.children
-    );
-  }
-
-  toggleOpen = () => this.setState({ open: !this.state.open });
-
-  render() {
-    const { children, title, keepState, disabled, actions, style } = this.props;
-    const { open } = this.state;
+const WorkspaceItem = React.memo(
+  ({
+    children,
+    title,
+    keepState,
+    disabled,
+    actions,
+    style,
+    defaultOpen = false,
+  }: Props) => {
+    const [open, setOpen] = useState(defaultOpen);
 
     return (
       <>
-        <ItemHeader style={style} onClick={this.toggleOpen}>
+        <ItemHeader style={style} onClick={() => setOpen(!open)}>
           <ExpandIconContainer open={open} />
           <Title>{title}</Title>
 
@@ -55,11 +41,12 @@ export default class WorkspaceItem extends React.Component<Props, State> {
         </ItemHeader>
         <ReactShow
           style={{
+            overflow: 'visible',
             height: 'auto',
-            overflow: 'hidden',
           }}
           transitionOnMount
           start={{
+            overflow: 'hidden',
             height: 0, // The starting style for the component.
             // If the 'leave' prop isn't defined, 'start' is reused!
           }}
@@ -72,4 +59,6 @@ export default class WorkspaceItem extends React.Component<Props, State> {
       </>
     );
   }
-}
+);
+
+export default WorkspaceItem;

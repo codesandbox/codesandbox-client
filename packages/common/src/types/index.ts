@@ -58,6 +58,26 @@ export type Directory = {
   sourceId: string;
 };
 
+export type Template = {
+  name: TemplateType;
+  niceName: string;
+  shortid: string;
+  url: string;
+  main: boolean;
+  color: string;
+  backgroundColor: () => string | undefined;
+
+  popular: boolean;
+  showOnHomePage: boolean;
+  distDir: string;
+  netlify: boolean;
+  isTypescript: boolean;
+  externalResourcesEnabled: boolean;
+  showCube: boolean;
+  isServer: boolean;
+  mainFile: undefined | string[];
+};
+
 export type Badge = {
   id: string;
   name: string;
@@ -90,9 +110,27 @@ export type CurrentUser = {
   };
 };
 
+export type CustomTemplate = {
+  color?: string;
+  title: string;
+  id: string;
+  iconUrl?: string;
+  url: string | null;
+};
+
+export type GitInfo = {
+  repo: string;
+  username: string;
+  path: string;
+  branch: string;
+  commitSha: string;
+};
+
 export type SmallSandbox = {
   id: string;
-  title: string | undefined;
+  title: string | null;
+  alias: string | null;
+  customTemplate: CustomTemplate | null;
   insertedAt: string;
   updatedAt: string;
   likeCount: number;
@@ -100,6 +138,7 @@ export type SmallSandbox = {
   forkCount: number;
   template: string;
   privacy: 0 | 1 | 2;
+  git: GitInfo | null;
 };
 
 export type PaginatedSandboxes = {
@@ -123,14 +162,6 @@ export type User = {
   subscriptionSince: string;
 };
 
-export type GitInfo = {
-  repo: string;
-  username: string;
-  path: string;
-  branch: string;
-  commitSha: string;
-};
-
 export type Sandbox = {
   id: string;
   alias: string | undefined;
@@ -146,12 +177,14 @@ export type Sandbox = {
   npmDependencies: {
     [dep: string]: string;
   };
-  externalResources: Array<string>;
+  customTemplate: CustomTemplate | null;
+  forkedTemplate: CustomTemplate | null;
+  externalResources: string[];
   privacy: 0 | 1 | 2;
   author: User | undefined;
-  forkedFromSandbox: { title: string; id: string } | undefined;
+  forkedFromSandbox: SmallSandbox | undefined;
   git: GitInfo | undefined;
-  tags: Array<string>;
+  tags: string[];
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
@@ -164,9 +197,9 @@ export type Sandbox = {
   originalGitCommitSha: string | undefined;
   originalGitChanges:
     | {
-        added: Array<string>;
-        modified: Array<string>;
-        deleted: Array<string>;
+        added: string[];
+        modified: string[];
+        deleted: string[];
         rights: 'none' | 'read' | 'write' | 'admin';
       }
     | undefined;
@@ -225,7 +258,7 @@ export type Modal = {
 export type PackageJSON = {
   name: string;
   description: string;
-  keywords: Array<string>;
+  keywords: string[];
   main: string;
   dependencies: {
     [dep: string]: string;

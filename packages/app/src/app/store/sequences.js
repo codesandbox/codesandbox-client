@@ -19,10 +19,7 @@ import {
 } from './modules/files/actions';
 
 import { disconnect, clearUserSelections } from './modules/live/actions';
-import {
-  alertForkingFrozenSandbox,
-  setupExecutor,
-} from './modules/editor/actions';
+import { setupExecutor } from './modules/editor/actions';
 import { initializeLive } from './modules/live/common-sequences';
 import { resetServerState } from './modules/server/actions';
 
@@ -37,10 +34,6 @@ export const openModal = [actions.setModal];
 const whenPackageJSONExists = when(props`sandbox.modules`, modules =>
   modules.find(m => m.directoryShortid == null && m.title === 'package.json')
 );
-
-function stopFrozenSandboxFromEdit() {
-  throw new CancelError("You can't save a frozen sandbox", {});
-}
 
 export const ensurePackageJSON = [
   when(props`sandbox.owned`),
@@ -237,19 +230,19 @@ export const forkSandbox = sequence('forkSandbox', [
   },
 ]);
 
+function stopFrozenSandboxFromEdit() {
+  throw new CancelError("You can't save a frozen sandbox", {});
+}
+
 export const forkFrozenSandbox = sequence('forkFrozenSandbox', [
-  when(state`editor.currentSandbox.isFrozen`),
+  when(state`editor.currentSandbox.isFrozen`) &&
+    when(state`editor.sessionFrozen`),
   {
     true: [
-      alertForkingFrozenSandbox,
-      {
-        confirmed: forkSandbox,
-        cancelled: [
-          set(props`message`, "Can't save a frozen sandbox"),
-          actions.callVSCodeCallbackError,
-          stopFrozenSandboxFromEdit,
-        ],
-      },
+      set(state`currentModal`, 'forkFrozenModal'),
+      set(props`message`, "Can't save a frozen sandbox"),
+      actions.callVSCodeCallbackError,
+      stopFrozenSandboxFromEdit,
     ],
     false: [],
   },
@@ -437,6 +430,7 @@ export const signIn = [
           actions.setSignedInCookie,
           actions.setStoredSettings,
           actions.connectWebsocket,
+          actions.loadTemplatesForStartModal,
           setupNotifications,
           refetchSandboxInfo,
         ],

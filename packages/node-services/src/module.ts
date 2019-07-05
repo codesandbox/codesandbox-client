@@ -221,7 +221,7 @@ export default class Module {
     }
 
     if (request === 'util') {
-      // Direct import to get the right version
+      // Direct import to get the right version for VIM extensions
       return require('../node_modules/util');
     }
 

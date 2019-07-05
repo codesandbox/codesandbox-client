@@ -2,7 +2,12 @@ import getTemplate from '@codesandbox/common/lib/templates';
 
 const PROJECT = {
   id: 'project',
-  name: 'Project Info',
+  name: 'Sandbox Info',
+};
+
+const PROJECT_TEMPLATE = {
+  ...PROJECT,
+  name: 'Template Info',
 };
 
 const PROJECT_SUMMARY = {
@@ -62,24 +67,23 @@ export default function getItems(store) {
     return [FILES, LIVE];
   }
 
-  if (!store.editor.currentSandbox.owned) {
+  const { currentSandbox } = store.editor;
+
+  if (!currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION, MORE];
   }
 
-  const items = [PROJECT, FILES];
+  const isCustomTemplate = !!currentSandbox.customTemplate;
+  const items = [isCustomTemplate ? PROJECT_TEMPLATE : PROJECT, FILES];
 
-  if (store.isLoggedIn && store.editor.currentSandbox) {
-    const templateDef = getTemplate(store.editor.currentSandbox.template);
+  if (store.isLoggedIn && currentSandbox) {
+    const templateDef = getTemplate(currentSandbox.template);
     if (templateDef.isServer) {
       items.push(SERVER);
     }
   }
 
-  if (
-    store.isLoggedIn &&
-    store.editor.currentSandbox &&
-    !store.editor.currentSandbox.git
-  ) {
+  if (store.isLoggedIn && currentSandbox && !currentSandbox.git) {
     items.push(GITHUB);
   }
 

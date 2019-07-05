@@ -1,9 +1,10 @@
 // @flow
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import getDefinition from '@codesandbox/common/lib/templates';
+import { useStore, useSignals } from 'app/store';
 import { WorkspaceSubtitle } from '../elements';
 
 import AddVersion from './AddVersion';
@@ -13,14 +14,16 @@ import ExternalResource from './ExternalResource';
 
 import { ErrorMessage } from './elements';
 
-function Dependencies({ signals, store }) {
-  const sandbox = store.editor.currentSandbox;
+const Dependencies = () => {
+  const { editor } = useStore();
+  const { workspace, editor: editorSignals } = useSignals();
+  const sandbox = editor.currentSandbox;
 
-  if (!store.editor.parsedConfigurations.package) {
+  if (!editor.parsedConfigurations.package) {
     return <ErrorMessage>Unable to find package.json</ErrorMessage>;
   }
 
-  const { parsed, error } = store.editor.parsedConfigurations.package;
+  const { parsed, error } = editor.parsedConfigurations.package;
 
   if (error) {
     return (
@@ -46,9 +49,9 @@ function Dependencies({ signals, store }) {
               key={dep}
               dependencies={dependencies}
               dependency={dep}
-              onRemove={name => signals.editor.npmDependencyRemoved({ name })}
+              onRemove={name => editorSignals.npmDependencyRemoved({ name })}
               onRefresh={(name, version) =>
-                signals.editor.addNpmDependency({
+                editorSignals.addNpmDependency({
                   name,
                   version,
                 })
@@ -84,7 +87,7 @@ function Dependencies({ signals, store }) {
               key={resource}
               resource={resource}
               removeResource={() =>
-                this.props.signals.workspace.externalResourceRemoved({
+                workspace.externalResourceRemoved({
                   resource,
                 })
               }
@@ -92,7 +95,7 @@ function Dependencies({ signals, store }) {
           ))}
           <AddResource
             addResource={resource =>
-              signals.workspace.externalResourceAdded({
+              workspace.externalResourceAdded({
                 resource,
               })
             }
@@ -101,6 +104,6 @@ function Dependencies({ signals, store }) {
       )}
     </div>
   );
-}
+};
 
-export default inject('signals', 'store')(observer(Dependencies));
+export default observer(Dependencies);
