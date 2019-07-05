@@ -1,9 +1,10 @@
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import history from '../../utils/history';
+import { Sandbox } from '@codesandbox/common/lib/types';
 
 export default {
-  updateSandboxUrl(sandbox) {
+  updateSandboxUrl(sandbox: Sandbox) {
     history.push(sandboxUrl(sandbox));
   },
   redirectToNewSandbox() {

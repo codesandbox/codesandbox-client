@@ -5,6 +5,7 @@ import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
   sandboxUrl,
   editorUrl,
@@ -678,4 +679,24 @@ export const setCurrentModule: Action<string> = ({ state }, id) => {
   if (module && state.editor.currentModuleShortid !== module.shortid) {
     state.editor.currentModuleShortid = module.shortid;
   }
+};
+
+export const updateSandboxPackageJson: AsyncAction = async ({
+  state,
+  actions,
+}) => {
+  const sandbox = state.editor.currentSandbox;
+  const { parsed } = state.editor.parsedConfigurations.package;
+
+  parsed.keywords = sandbox.tags;
+  parsed.name = slugify(sandbox.title || sandbox.id);
+  parsed.description = sandbox.description;
+
+  const code = JSON.stringify(parsed, null, 2);
+  const moduleShortid = state.editor.currentPackageJSON.shortid;
+
+  await actions.editor.internal.saveCode({
+    code,
+    moduleShortid,
+  });
 };

@@ -8,6 +8,7 @@ type State = {
   isLoadingPaymentDetails: boolean;
   itemId: string;
   showEditor: boolean;
+  showModal: boolean;
   showPreview: boolean;
   showDevtools: boolean;
   paymentDetailError: string;
@@ -60,6 +61,7 @@ export const state: State = {
     manualCustomVSCodeTheme: undefined,
     experimentVSCode: !isIOS,
   },
+  showModal: false,
   isLoadingPaymentDetails: true,
   paymentDetailError: null,
   paymentDetails: null,

@@ -198,7 +198,7 @@ export type PaymentDetails = {
   name: string;
 };
 
-export type Pick = {
+export type SandboxPick = {
   title: string;
   description: string;
   id: string;
@@ -210,7 +210,7 @@ export type MiniSandbox = {
   title: string;
   template: string;
   id: string;
-  picks: Pick[];
+  picks: SandboxPick[];
   description: string;
   git: GitInfo;
   author: User;
