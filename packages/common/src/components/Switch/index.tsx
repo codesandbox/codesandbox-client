@@ -3,8 +3,8 @@ import * as React from 'react';
 import { Container, Dot } from './elements';
 
 export type Props = {
-  right?: boolean;
-  onClick: (e?) => void;
+  right: boolean;
+  onClick: () => void;
   secondary?: boolean;
   offMode?: boolean;
   small?: boolean;
