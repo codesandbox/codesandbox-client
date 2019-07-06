@@ -67,4 +67,16 @@ export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
       return config;
     },
   });
+
+  effects.zeit.initialize({
+    getToken() {
+      return state.user.integrations.zeit && state.user.integrations.zeit.token;
+    },
+  });
+
+  effects.netlify.initialize({
+    getUserId() {
+      return state.user.id;
+    },
+  });
 };

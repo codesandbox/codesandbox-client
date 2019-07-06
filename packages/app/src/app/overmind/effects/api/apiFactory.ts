@@ -38,13 +38,11 @@ export default (config: {
   provideJwtToken: () => string;
   onError: (error: string) => void;
 }) => {
-  const createHeaders = (jwt: string) => {
-    return jwt
+  const createHeaders = (jwt: string) => jwt
       ? {
           Authorization: `Bearer ${jwt}`,
         }
       : {};
-  };
 
   const showError = error => {
     const errorMessage = getMessage(error);
