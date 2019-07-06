@@ -172,31 +172,6 @@ export const setJwt: Action<string> = ({ state, effects }, jwt) => {
   state.jwt = jwt;
 };
 
-export const getZeitUserDetails: AsyncAction = async ({ state, effects }) => {
-  if (
-    state.user.integrations.zeit &&
-    state.user.integrations.zeit.token &&
-    !state.user.integrations.zeit.email
-  ) {
-    const token = state.user.integrations.zeit.token;
-
-    try {
-      const response = await effects.http.get('https://api.zeit.co/www/user', {
-        headers: {
-          Authorization: `bearer ${token}`,
-        },
-      });
-
-      state.user.integrations.zeit.email = response.data.user.email;
-    } catch (error) {
-      effects.notificationToast.add({
-        message: 'Could not authorize with ZEIT',
-        status: effects.notificationToast.convertTypeToStatus('error'),
-      });
-    }
-  }
-};
-
 export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
   if (
     state.currentModal === 'preferences' &&

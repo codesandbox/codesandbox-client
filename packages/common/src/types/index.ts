@@ -132,9 +132,9 @@ export type GitInfo = {
 
 export type SmallSandbox = {
   id: string;
-  title: string | null;
   alias: string | null;
   customTemplate: CustomTemplate | null;
+  title: string;
   insertedAt: string;
   updatedAt: string;
   likeCount: number;
@@ -451,3 +451,88 @@ export enum ServerContainerStatus {
   HIBERNATED = 'hibernated',
   ERROR = 'error',
 }
+
+export type ZeitUser = {
+  uid: string;
+  email: string;
+  name: string;
+  username: string;
+  avatar: string;
+  platformVersion: number;
+  billing: {
+    plan: string;
+    period: string;
+    trial: string;
+    cancelation: string;
+    addons: string;
+  };
+  bio: string;
+  website: string;
+  profiles: Array<{
+    service: string;
+    link: string;
+  }>;
+};
+
+export type ZeitCreator = {
+  uid: string;
+};
+
+export type ZeitScale = {
+  current: number;
+  min: number;
+  max: number;
+};
+
+export type ZeitAlias = {
+  alias: string;
+  created: string;
+  uid: string;
+};
+
+export enum ZeitDeploymentState {
+  'DEPLOYING',
+  'INITIALIZING',
+  'DEPLOYMENT_ERROR',
+  'BOOTED',
+  'BUILDING',
+  'READY',
+  'BUILD_ERROR',
+  'FROZEN',
+  'ERROR',
+}
+
+export enum ZeitDeploymentType {
+  'NPM',
+  'DOCKER',
+  'STATIC',
+  'LAMBDAS',
+}
+
+export type ZeitDeployment = {
+  uid: string;
+  name: string;
+  url: string;
+  created: number;
+  state: ZeitDeploymentState;
+  instanceCount: number;
+  alias: ZeitAlias[];
+  scale: ZeitScale;
+  createor: ZeitCreator;
+  type: ZeitDeploymentType;
+};
+
+export type ZeitConfig = {
+  name?: string;
+  alias?: string;
+};
+
+export type NetlifySite = {
+  id: string;
+  site_id: string;
+  name: string;
+  url: string;
+  state: string;
+  screenshot_url: string;
+  sandboxId: string;
+};
