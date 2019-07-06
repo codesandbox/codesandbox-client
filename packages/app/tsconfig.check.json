@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["codesandbox-browserfs/*"],
+  "exclude": ["codesandbox-browserfs/*", "overmind/*"],
   "compilerOptions": {
     "allowJs": false
   }
