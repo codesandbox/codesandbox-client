@@ -135,7 +135,6 @@ export type SmallSandbox = {
   title: string | null;
   alias: string | null;
   customTemplate: CustomTemplate | null;
-  title?: string;
   insertedAt: string;
   updatedAt: string;
   likeCount: number;
