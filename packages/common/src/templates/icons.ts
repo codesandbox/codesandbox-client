@@ -53,6 +53,7 @@ import {
   vuepress,
   mdxDeck,
   quasar,
+  unibit,
 } from './';
 
 import { TemplateType } from './';
@@ -117,6 +118,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
     case mdxDeck.name:
       return MDXDeckIcon;
     case quasar.name:
+      return QuasarIcon;
+    case unibit.name:
       return QuasarIcon;
     default:
       return ReactIcon;
