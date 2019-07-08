@@ -1,24 +1,19 @@
-// @flow
-import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-import Loadable from 'app/utils/Loadable';
+import React, { useEffect } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-
-import _debug from '@codesandbox/common/lib/utils/debug';
 import { DragDropContext } from 'react-dnd';
-
+import _debug from '@codesandbox/common/lib/utils/debug';
 import { Toasts } from '@codesandbox/notifications';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-
 import send, { DNT } from '@codesandbox/common/lib/utils/analytics';
-
+import Loadable from 'app/utils/Loadable';
+import { useSignals } from 'app/store';
+import { ErrorBoundary } from './common/ErrorBoundary';
+import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
 import Dashboard from './Dashboard';
 import { Container, Content } from './elements';
-
-import HTML5Backend from './common/HTML5BackendWithFolderSupport';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -54,18 +49,16 @@ const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator')
 );
 
-type Props = {
-  signals: any,
-};
+const CodeSadbox = () => this[`💥`].kaboom();
 
-class Routes extends React.Component<Props> {
-  componentWillUnmount() {
-    this.props.signals.appUnmounted();
-  }
+const Routes = () => {
+  const { appUnmounted } = useSignals();
 
-  render() {
-    return (
-      <Container>
+  useEffect(() => () => appUnmounted(), [appUnmounted]);
+
+  return (
+    <Container>
+      <ErrorBoundary>
         <Route
           path="/"
           render={({ location }) => {
@@ -73,8 +66,12 @@ class Routes extends React.Component<Props> {
               routeDebugger(
                 `Sending '${location.pathname + location.search}' to ga.`
               );
-              if (typeof window.ga === 'function' && !DNT) {
-                window.ga('set', 'page', location.pathname + location.search);
+              if (typeof (window as any).ga === 'function' && !DNT) {
+                (window as any).ga(
+                  'set',
+                  'page',
+                  location.pathname + location.search
+                );
 
                 send('pageview', { path: location.pathname + location.search });
               }
@@ -100,15 +97,14 @@ class Routes extends React.Component<Props> {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
+            <Route path="/codesadbox" component={CodeSadbox} />
             <Route component={NotFound} />
           </Switch>
         </Content>
         <Modals />
-      </Container>
-    );
-  }
-}
+      </ErrorBoundary>
+    </Container>
+  );
+};
 
-export default inject('signals', 'store')(
-  DragDropContext(HTML5Backend)(withRouter(observer(Routes)))
-);
+export default DragDropContext(HTML5Backend)(withRouter(Routes));
