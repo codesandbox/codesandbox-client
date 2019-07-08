@@ -256,10 +256,7 @@ export const saveCode = [
     ],
 
     error: [callVSCodeCallbackError],
-    codeOutdated: [
-      addNotification(props`message`, 'warning'),
-      callVSCodeCallbackError,
-    ],
+    codeOutdated: [callVSCodeCallback],
   },
 ];
 
