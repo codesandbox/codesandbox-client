@@ -1,4 +1,3 @@
-import * as internalActions from './internalActions';
 import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { withLoadApp } from 'app/overmind/factories';
@@ -9,6 +8,12 @@ import {
   TabType,
   EnvironmentVariable,
 } from '@codesandbox/common/lib/types';
+import {
+  addDevToolsTab as addDevToolsTabUtil,
+  moveDevToolsTab as moveDevToolsTabUtil,
+  closeDevToolsTab as closeDevToolsTabUtil,
+} from 'app/pages/Sandbox/Editor/Content/utils';
+import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
@@ -236,17 +241,16 @@ export const likeSandboxToggled: AsyncAction<string> = async (
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
-export const moduleSelected: Action<string> = (
-  { state, effects, actions },
-  modulePath
-) => {
+export const moduleSelected: Action<{
+  path: string;
+}> = ({ state, effects, actions }, { path }) => {
   effects.analytics.track('Open File');
 
   const sandbox = state.editor.currentSandbox;
 
   try {
     const module = effects.utils.resolveModule(
-      modulePath.replace(/^\//, ''),
+      path.replace(/^\//, ''),
       sandbox.modules,
       sandbox.directories
     );
@@ -300,6 +304,7 @@ export const tabClosed: Action<number> = ({ state, actions }, tabIndex) => {
     actions.internal.closeTabByIndex(tabIndex);
   }
 };
+
 export const tabMoved: Action<{
   prevIndex: number;
   nextIndex: number;
@@ -449,7 +454,7 @@ export const previewActionReceived: Action<any> = (
         timeAlive: action.timeAlive,
       });
       break;
-    case 'show-error':
+    case 'show-error': {
       const error = {
         moduleId: action.module ? action.module.id : undefined,
         column: action.column,
@@ -464,7 +469,8 @@ export const previewActionReceived: Action<any> = (
 
       state.editor.errors.push(error);
       break;
-    case 'show-correction':
+    }
+    case 'show-correction': {
       const correction = {
         path: action.path,
         column: action.column,
@@ -478,7 +484,8 @@ export const previewActionReceived: Action<any> = (
 
       state.editor.corrections.push(correction);
       break;
-    case 'clear-errors':
+    }
+    case 'clear-errors': {
       const currentErrors = state.editor.errors;
 
       const newErrors = clearCorrectionsFromAction(currentErrors, action);
@@ -487,7 +494,8 @@ export const previewActionReceived: Action<any> = (
         state.editor.errors = newErrors;
       }
       break;
-    case 'clear-corrections':
+    }
+    case 'clear-corrections': {
       const currentCorrections = state.editor.corrections;
 
       const newCorrections = clearCorrectionsFromAction(
@@ -499,7 +507,8 @@ export const previewActionReceived: Action<any> = (
         state.editor.corrections = newCorrections;
       }
       break;
-    case 'source.module.rename':
+    }
+    case 'source.module.rename': {
       const sandbox = state.editor.currentSandbox;
       const module = effects.utils.resolveModule(
         action.path.replace(/^\//, ''),
@@ -515,13 +524,15 @@ export const previewActionReceived: Action<any> = (
         sandboxModule.title = action.title;
       }
       break;
-    case 'source.dependencies.add':
+    }
+    case 'source.dependencies.add': {
       const name = action.dependency;
       actions.editor.addNpmDependency({
         name,
       });
       actions.forceRender();
       break;
+    }
   }
 };
 
@@ -552,5 +563,88 @@ export const renameModule: AsyncAction<{
   } catch (error) {
     module.title = oldTitle;
     effects.notificationToast.error('Could not rename file');
+  }
+};
+
+export const onDevToolsTabAdded: Action<{
+  tab: any;
+}> = ({ state, actions }, { tab }) => {
+  const devToolTabs = state.editor.devToolTabs;
+  const { devTools: newDevToolTabs, position } = addDevToolsTabUtil(
+    devToolTabs,
+    tab
+  );
+
+  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
+  const nextPos = position;
+
+  actions.editor.internal.updateDevtools({
+    code,
+  });
+
+  state.editor.currentDevToolsPosition = nextPos;
+};
+
+export const onDevToolsTabMoved: Action<{
+  prevPos: any;
+  nextPos: any;
+}> = ({ state, actions }, { prevPos, nextPos }) => {
+  const devToolTabs = state.editor.devToolTabs;
+  const newDevToolTabs = moveDevToolsTabUtil(devToolTabs, prevPos, nextPos);
+  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
+
+  actions.editor.internal.updateDevtools({
+    code,
+  });
+
+  state.editor.currentDevToolsPosition = nextPos;
+};
+
+export const onDevToolsTabClosed: Action<{
+  pos: any;
+}> = ({ state, actions }, { pos }) => {
+  const devToolTabs = state.editor.devToolTabs;
+  const closePos = pos;
+  const newDevToolTabs = closeDevToolsTabUtil(devToolTabs, closePos);
+  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
+
+  actions.editor.internal.updateDevtools({
+    code,
+  });
+};
+
+export const onDevToolsPositionChanged: Action<{
+  position: any;
+}> = ({ state }, { position }) => {
+  state.editor.currentDevToolsPosition = position;
+};
+
+export const openDevtoolsTab: Action<{
+  tab: any;
+}> = ({ state, actions }, { tab: tabToFind }) => {
+  const serializedTab = JSON.stringify(tabToFind);
+  const devToolTabs = state.editor.devToolTabs;
+  let nextPos;
+
+  for (let i = 0; i < devToolTabs.length; i++) {
+    const view = devToolTabs[i];
+
+    for (let j = 0; j < view.views.length; j++) {
+      const tab = view.views[j];
+      if (JSON.stringify(tab) === serializedTab) {
+        nextPos = {
+          devToolIndex: i,
+          tabPosition: j,
+        };
+      }
+    }
+  }
+
+  if (nextPos) {
+    state.editor.currentDevToolsPosition = nextPos;
+  } else {
+    actions.editor.onDevToolsTabAdded({
+      tab: tabToFind,
+    });
   }
 };

@@ -310,3 +310,28 @@ export const updateSandboxPackageJson: AsyncAction = async ({
     moduleShortid,
   });
 };
+
+export const updateDevtools: AsyncAction<{
+  code: string;
+}> = async ({ state, actions }, { code }) => {
+  if (state.editor.currentSandbox.owned) {
+    const devtoolsModule =
+      state.editor.modulesByPath['/.codesandbox/workspace.json'];
+
+    if (devtoolsModule) {
+      await actions.editor.internal.saveCode({
+        code: devtoolsModule.code,
+        moduleShortid: devtoolsModule.shortid,
+      });
+    } else {
+      actions.files.createModulesByPath({
+        '/.codesandbox/workspace.json': {
+          content: code,
+          isBinary: false,
+        },
+      });
+    }
+  } else {
+    state.editor.workspaceConfigCode = code;
+  }
+};

@@ -3,6 +3,15 @@ import { OnInitialize } from '.';
 export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
   const provideJwtToken = () => state.jwt || effects.jwt.get();
 
+  effects.fsSync.initialize({
+    getCurrentSandboxId() {
+      return state.editor.currentId;
+    },
+    getModulesByPath() {
+      return state.editor.modulesByPath;
+    },
+  });
+
   effects.live.initialize({
     provideJwtToken,
     onApplyOperation: actions.live.onOperationApplied,
@@ -65,18 +74,6 @@ export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
       }
 
       return config;
-    },
-  });
-
-  effects.zeit.initialize({
-    getToken() {
-      return state.user.integrations.zeit && state.user.integrations.zeit.token;
-    },
-  });
-
-  effects.netlify.initialize({
-    getUserId() {
-      return state.user.id;
     },
   });
 };

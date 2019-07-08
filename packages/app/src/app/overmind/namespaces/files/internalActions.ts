@@ -93,8 +93,6 @@ export const uploadFiles: AsyncAction<
             /\.haml$/.test(filePath) ||
             /\.pug$/.test(filePath) ||
             /\.svg$/.test(filePath) ||
-            /\.md$/.test(filePath) ||
-            /\.svelte$/.test(filePath) ||
             file.type.startsWith('text/') ||
             file.type === 'application/json') &&
           dataURI.length < MAX_FILE_SIZE
@@ -131,7 +129,7 @@ export const uploadFiles: AsyncAction<
     if (dir.directoryShortid == null) {
       return {
         ...dir,
-        directoryShortid: directoryShortid,
+        directoryShortid,
       };
     }
 
@@ -142,7 +140,7 @@ export const uploadFiles: AsyncAction<
     if (m.directoryShortid == null) {
       return {
         ...m,
-        directoryShortid: directoryShortid,
+        directoryShortid,
       };
     }
 

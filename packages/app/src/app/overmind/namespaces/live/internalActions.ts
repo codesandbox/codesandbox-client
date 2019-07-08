@@ -41,38 +41,6 @@ export const reset: Action = ({ state, actions, effects }) => {
   effects.live.resetClients();
 };
 
-export const clearUserSelections: Action<any> = ({ state }, data) => {
-  const clearSelections = userId => {
-    const userIndex = state.live.roomInfo.users.findIndex(u => u.id === userId);
-
-    if (userIndex > -1) {
-      if (state.live.roomInfo.users[userIndex]) {
-        state.live.roomInfo.users[userIndex].selection = null;
-        state.editor.pendingUserSelections.push({
-          userId,
-          selection: null,
-        });
-      }
-    }
-  };
-
-  if (!data) {
-    // All users
-    state.live.roomInfo.users.forEach(u => clearSelections(u.id));
-  } else {
-    clearSelections(data.live_user_id);
-  }
-};
-
-export const reset: Action = ({ state, actions, effects }) => {
-  actions.live.internal.clearUserSelections(null);
-  state.live.isLive = false;
-  state.live.error = null;
-  state.live.isLoading = false;
-  state.live.roomInfo = null;
-  effects.ot.reset();
-};
-
 export const disconnect: Action = ({ effects }) => {
   effects.live.resetClients();
   effects.live.disconnect();
