@@ -1,19 +1,20 @@
+import Notice from '@codesandbox/common/lib/components/Notice';
 import React from 'react';
 import Down from 'react-icons/lib/fa/angle-down';
 import Up from 'react-icons/lib/fa/angle-up';
-import Notice from '@codesandbox/common/lib/components/Notice';
+
 import DetailInfo from './DetailInfo';
 import { Container, IntegrationBlock, Name } from './elements';
 
 const Integration = ({
-  light,
-  Icon,
-  name,
-  deploy,
+  beta = false,
   children,
-  loading,
-  beta,
   color,
+  deploy,
+  Icon,
+  light = false,
+  loading = false,
+  name,
   open = true,
   toggle,
 }) => (

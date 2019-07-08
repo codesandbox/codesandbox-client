@@ -5,8 +5,6 @@ import LinkIcon from 'react-icons/lib/fa/external-link';
 import TrashIcon from 'react-icons/lib/fa/trash';
 
 import ZeitIntegration from 'app/pages/common/ZeitIntegration';
-import DeploymentIntegration from 'app/components/DeploymentIntegration';
-import NowLogo from 'app/components/NowLogo';
 import { useSignals, useStore } from 'app/store';
 
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../../../elements';
@@ -15,7 +13,6 @@ import {
   Action,
   ButtonContainer,
   Deploy,
-  DeployButtonContainer,
   Deploys,
   DeploysWrapper,
   Link,
@@ -24,40 +21,23 @@ import {
   Wrapper,
 } from '../elements';
 
+import { DeployButton } from './DeployButton';
+
 export const Zeit = observer(() => {
   const {
-    deployment: {
-      aliasDeployment,
-      deploySandboxClicked,
-      setDeploymentToDelete,
-    },
+    deployment: { aliasDeployment, setDeploymentToDelete },
     modalOpened,
   } = useSignals();
   const { deployment, user } = useStore();
 
-  const [isVisible, setVisibility] = useState(false);
+  const [isVisible, setVisible] = useState(false);
 
   return user.integrations.zeit ? (
     <Wrapper loading={deployment.deploying}>
-      <DeployButtonContainer>
-        <DeploymentIntegration
-          color="#000000"
-          deploy={deploySandboxClicked}
-          Icon={NowLogo}
-          name="Now"
-          open={isVisible}
-          toggle={() => setVisibility(!isVisible)}
-        >
-          Deploy your sandbox on{' '}
-          <a
-            href="https://zeit.co/now"
-            rel="noreferrer noopener"
-            target="_blank"
-          >
-            <span>ZEIT Now</span>
-          </a>
-        </DeploymentIntegration>
-      </DeployButtonContainer>
+      <DeployButton
+        isOpen={isVisible}
+        toggle={() => setVisible(show => !show)}
+      />
 
       {deployment.sandboxDeploys.length && isVisible ? (
         <DeploysWrapper>
