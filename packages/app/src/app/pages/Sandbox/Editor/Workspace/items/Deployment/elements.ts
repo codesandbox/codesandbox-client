@@ -125,7 +125,7 @@ export const ButtonContainer = styled.section`
   }
 `;
 
-export const DeploysWrapper = styled.div`
+export const DeploysContainer = styled.div`
   background-color: #000000;
   border-radius: 0 0 4px 4px;
   color: rgba(255, 255, 255, 0.8);
