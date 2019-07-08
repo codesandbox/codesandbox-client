@@ -112,7 +112,8 @@ export function currentPackageJSONCode() {
 
 export function devToolTabs() {
   const sandbox = this.currentSandbox;
-  const views = getPreviewTabs(sandbox);
+  const intermediatePreviewCode = this.workspaceConfigCode;
+  const views = getPreviewTabs(sandbox, intermediatePreviewCode);
 
   // Do it in an immutable manner, prevents changing the original object
   return immer(views, draft => {

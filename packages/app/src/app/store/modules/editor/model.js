@@ -212,4 +212,5 @@ export default {
     devToolIndex: types.number,
     tabPosition: types.number,
   }),
+  workspaceConfigCode: types.string,
 };
