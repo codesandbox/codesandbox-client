@@ -123,14 +123,11 @@ class BasePreview extends React.Component<Props, State> {
     }
   }
 
-  currentUrl = () => {
-    return (
-      this.props.url ||
-      (this.serverPreview
-        ? getSSEUrl(this.props.sandbox, this.props.initialPath)
-        : frameUrl(this.props.sandbox, this.props.initialPath || ''))
-    );
-  };
+  currentUrl = () =>
+    this.props.url ||
+    (this.serverPreview
+      ? getSSEUrl(this.props.sandbox, this.props.initialPath)
+      : frameUrl(this.props.sandbox, this.props.initialPath || ''));
 
   static defaultProps = {
     showNavigation: true,
