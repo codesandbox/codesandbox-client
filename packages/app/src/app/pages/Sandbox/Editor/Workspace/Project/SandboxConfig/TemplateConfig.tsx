@@ -3,10 +3,17 @@ import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 import { SketchPicker } from 'react-color';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import * as templates from '@codesandbox/common/lib/templates';
 import { useSignals, useStore } from 'app/store';
-import { Item, PropertyName, PropertyValue, Explanation } from '../elements';
+import {
+  Item,
+  PropertyName,
+  PropertyValue,
+  Explanation,
+  Icon as QuestionIcon,
+} from '../elements';
 import { PickColor, PickerContainer, PublicValue } from './elements';
 import WorkspaceItem from '../../WorkspaceItem';
 import { Icon } from './Icon';
@@ -85,7 +92,15 @@ export const TemplateConfig = observer(() => {
         </PropertyValue>
       </Item>
       <Item>
-        <PropertyName>Public</PropertyName>
+        <PropertyName>
+          Public
+          <Tooltip
+            boundary="viewport"
+            content="Whether this template will show in our upcoming templates page"
+          >
+            <QuestionIcon />
+          </Tooltip>
+        </PropertyName>
         <PublicValue>
           <Switch
             small

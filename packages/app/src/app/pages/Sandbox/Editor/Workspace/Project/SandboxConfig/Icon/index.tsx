@@ -46,7 +46,7 @@ export const Icon = () => {
 
   return (
     <Item>
-      <PropertyName>Icon</PropertyName>
+      <PropertyName>Icon </PropertyName>
       <Value>
         <Button {...popover} color={defaultColor}>
           {SelectedIcon && Icons[SelectedIcon] ? (
