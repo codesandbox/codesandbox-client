@@ -170,18 +170,6 @@ export const setUpdateStatus: Action<string> = ({ state }, status) => {
   state.updateStatus = status;
 };
 
-export const refetchSandboxInfo: AsyncAction = async ({ state, actions }) => {
-  if (state.editor.currentId) {
-    const id = state.editor.currentId;
-    const sandbox = await actions.internal.getSandbox(id);
-
-    state.editor.sandboxes[id].collection = sandbox.collection;
-    state.editor.sandboxes[id].owned = sandbox.owned;
-    state.editor.sandboxes[id].userLiked = sandbox.userLiked;
-    state.editor.sandboxes[id].title = sandbox.title;
-  }
-};
-
 export const track: Action<{ name: string; data: any }> = (
   { effects },
   { name, data }

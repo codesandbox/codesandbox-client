@@ -158,12 +158,15 @@ export type User = {
   sandboxCount: number;
   givenLikeCount: number;
   receivedLikeCount: number;
+  currentModuleShortid: string;
   viewCount: number;
   forkedCount: number;
   sandboxes: PaginatedSandboxes;
   likedSandboxes: PaginatedSandboxes;
   badges: Array<Badge>;
   subscriptionSince: string;
+  selection: Selection;
+  color: any;
 };
 
 export type RoomInfo = {
@@ -277,6 +280,7 @@ export type Sandbox = {
   git: GitInfo | undefined;
   tags: string[];
   isFrozen: boolean;
+  environmentVariables: EnvironmentVariable[];
   /**
    * This is the source it's assigned to, a source contains all dependencies, modules and directories
    *
@@ -314,7 +318,7 @@ export type PrettierConfig = {
   jsxBracketSameLine: boolean;
 };
 
-export type Preferences = {
+export type Settings = {
   autoCompleteEnabled: boolean | undefined;
   vimMode: boolean | undefined;
   livePreviewEnabled: boolean | undefined;
@@ -535,4 +539,44 @@ export type NetlifySite = {
   state: string;
   screenshot_url: string;
   sandboxId: string;
+};
+
+export type Dependency = {
+  name: string;
+  version: string;
+};
+
+export enum TabType {
+  MODULE = 'MODULE',
+  DIFF = 'DIFF',
+}
+
+export type ModuleTab = {
+  type: TabType.MODULE;
+  moduleShortid: string;
+  dirty: boolean;
+};
+
+export type DiffTab = {
+  id: string;
+  type: TabType.DIFF;
+  codeA: string;
+  codeB: string;
+  titleA: string;
+  titleB: string;
+  fileTitle?: string;
+};
+
+export type Tabs = Array<ModuleTab | DiffTab>;
+
+export type GitChanges = {
+  added: string[];
+  deleted: string[];
+  modified: string[];
+  rights: string;
+};
+
+export type EnvironmentVariable = {
+  name: string;
+  value: any;
 };

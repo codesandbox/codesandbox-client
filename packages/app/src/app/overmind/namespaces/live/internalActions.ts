@@ -1,7 +1,12 @@
 import { Action, AsyncAction, Config } from 'app/overmind';
-import { RoomInfo, User } from '@codesandbox/common/lib/types';
+import {
+  RoomInfo,
+  User,
+  Module,
+  EditorSelection,
+} from '@codesandbox/common/lib/types';
 import { IContext } from 'overmind';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+
 import { withLoadApp } from 'app/overmind/factories';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { camelizeKeys } from 'humps';
@@ -208,54 +213,12 @@ export const initializeModuleState: Action<any> = (
   });
 };
 
-export const getCodeOperation: Action<
-  {
-    moduleShortid: string;
-    code: string;
-  },
-  any
-> = ({ state }, { moduleShortid, code }) => {
-  if (!state.live.isLive) {
-    return null;
-  }
-
-  const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
-  );
-
-  if (!module || module.code === code) {
-    return {};
-  }
-
-  const oldCode = module.code;
-
-  return getTextOperation(oldCode, code);
-};
-
-export const sendTransform: Action<{
-  operation: any;
-  moduleShortid: string;
-}> = ({ effects }, { operation, moduleShortid }) => {
-  if (!operation) {
-    return;
-  }
-
-  try {
-    effects.ot.applyClient(moduleShortid, operation);
-  } catch (e) {
-    // Something went wrong, probably a sync mismatch. Request new version
-    console.error(
-      'Something went wrong with applying OT operation',
-      moduleShortid,
-      operation
-    );
-    effects.live.send('live:module_state', {});
-  }
-};
-
-export const getSelectionsForCurrentModule: Action<void, any> = ({ state }) => {
+export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
+  { state },
+  module
+) => {
   const selections = [];
-  const moduleShortid = state.editor.currentModuleShortid;
+  const moduleShortid = module.shortid;
 
   state.live.roomInfo.users.forEach(user => {
     const userId = user.id;
@@ -278,42 +241,6 @@ export const getSelectionsForCurrentModule: Action<void, any> = ({ state }) => {
   });
 
   return selections;
-};
-
-export const sendChangeCurrentModule: Action<string> = (
-  { state, effects },
-  id
-) => {
-  const module = state.editor.currentSandbox.modules.find(m => m.id === id);
-
-  const userIndex = state.live.roomInfo.users.findIndex(
-    u => u.id === state.live.liveUserId
-  );
-
-  if (userIndex > -1) {
-    state.live.roomInfo.users[userIndex].currentModuleShortid = module.shortid;
-
-    const followingUserId = state.live.followingUserId;
-
-    if (followingUserId) {
-      const followingUserIndex = state.live.roomInfo.users.findIndex(
-        u => u.id === followingUserId
-      );
-
-      if (followingUserIndex > -1) {
-        const user = state.live.roomInfo.users[followingUserIndex];
-
-        if (user && user.currentModuleShortid !== module.shortid) {
-          // Reset following as this is a user change module action
-          state.live.followingUserId = null;
-        }
-      }
-    }
-
-    effects.live.send('user:current-module', {
-      moduleShortid: module.shortid,
-    });
-  }
 };
 
 export const sendSelection: Action<{

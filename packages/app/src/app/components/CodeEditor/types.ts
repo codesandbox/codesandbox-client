@@ -3,45 +3,9 @@ import {
   Sandbox,
   ModuleError,
   ModuleCorrection,
+  Settings,
+  Tab,
 } from '@codesandbox/common/lib/types';
-
-export type Settings = {
-  autoCompleteEnabled: boolean;
-  autoDownloadTypes: boolean;
-  codeMirror: boolean;
-  clearConsoleEnabled: boolean;
-  fontFamily?: string;
-  fontSize: number;
-  lineHeight: number;
-  lintEnabled: boolean;
-  vimMode: boolean;
-  tabWidth: number;
-  enableLigatures: boolean;
-  forceRefresh: boolean;
-  experimentVSCode: boolean;
-  prettierConfig: Object;
-  zenMode: boolean;
-  livePreviewEnabled: boolean;
-  instantPreviewEnabled: boolean;
-};
-
-type ModuleTab = {
-  type: 'MODULE';
-  moduleShortid: string;
-  dirty: boolean;
-};
-
-type DiffTab = {
-  id: string;
-  type: 'DIFF';
-  codeA: string;
-  codeB: string;
-  titleA: string;
-  titleB: string;
-  fileTitle?: string;
-};
-
-export type Tab = ModuleTab | DiffTab;
 
 export interface Editor {
   changeSandbox?: (

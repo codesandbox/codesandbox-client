@@ -2,6 +2,9 @@ import { Action, AsyncAction } from 'app/overmind';
 import { setVimExtensionEnabled } from 'app/vscode/initializers';
 import { PaymentDetails } from '@codesandbox/common/lib/types';
 import { json } from 'overmind';
+import * as internalActions from './internalActions';
+
+export const internal = internalActions;
 
 export const viewModeChanged: Action<{
   showEditor: boolean;

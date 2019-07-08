@@ -1,18 +1,8 @@
 import { TextOperation } from 'ot';
-import CodeSandboxClient from './client';
 
-const modules = new Map();
-
-function getClient(moduleShortid, context, revision = 0, force = false) {
-  let client = modules.get(moduleShortid);
-
-  if (!client || force) {
-    client = new CodeSandboxClient(revision, moduleShortid, context);
-    modules.set(moduleShortid, client);
-  }
-
-  return client;
-}
+/*
+  DEPRECATED, NOT IN USE, JUST REFERENCE
+*/
 
 export default {
   applyClient(moduleShortid: string, operation) {

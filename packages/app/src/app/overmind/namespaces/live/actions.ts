@@ -228,7 +228,6 @@ export const liveMessageReceived: AsyncAction<{
       ) {
         const moduleShortid = data.moduleShortid;
         const modules = state.editor.currentSandbox.modules;
-
         const module = modules.find(m => m.shortid === moduleShortid);
 
         if (!module) {
@@ -246,7 +245,7 @@ export const liveMessageReceived: AsyncAction<{
       }
       actions.live.internal.clearUserSelections(data);
       state.editor.pendingUserSelections = state.editor.pendingUserSelections.concat(
-        actions.live.internal.getSelectionsForCurrentModule()
+        actions.live.internal.getSelectionsForModule(state.editor.currentModule)
       );
       break;
     }

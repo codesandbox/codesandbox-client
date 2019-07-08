@@ -1,4 +1,4 @@
-import { RoomInfo } from '@codesandbox/common/lib/types';
+import { RoomInfo, User } from '@codesandbox/common/lib/types';
 import { Derive } from 'app/overmind';
 
 type State = {
@@ -12,6 +12,7 @@ type State = {
   followingUserId: string;
   liveUserId: string;
   roomInfo: RoomInfo;
+  liveUser: Derive<State, User>;
   isEditor: Derive<State, (liveUserId: string) => boolean>;
   isCurrentEditor: Derive<State, boolean>;
   isOwner: Derive<State, boolean>;
@@ -34,6 +35,12 @@ export const state: State = {
   error: null,
   liveUserId: null,
   roomInfo: null,
+  liveUser: state => {
+    return (
+      state.roomInfo &&
+      state.roomInfo.users.find(u => u.id === state.liveUserId)
+    );
+  },
   isEditor: state => liveUserId => {
     return (
       state.isLive &&

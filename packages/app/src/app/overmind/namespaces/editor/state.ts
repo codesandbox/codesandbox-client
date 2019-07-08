@@ -5,12 +5,14 @@ import {
   EditorCorrection,
   WindowOrientation,
   Module,
+  Tabs,
+  DiffTab,
+  ModuleTab,
 } from '@codesandbox/common/lib/types';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import themes from '@codesandbox/common/lib/themes';
 import { dirname } from 'path';
 import { parseConfigurations } from '../../utils/parse-configurations';
-import { Tab } from 'app/components/CodeEditor/types';
 import {
   getModulePath,
   getDirectoryPath,
@@ -37,7 +39,7 @@ type State = {
   };
   pendingUserSelections: EditorSelection[];
   currentTabId: string;
-  tabs: Tab[];
+  tabs: Tabs;
   errors: EditorError[];
   corrections: EditorCorrection[];
   isInProjectView: boolean;
@@ -56,7 +58,7 @@ type State = {
   currentPackageJSON: Module;
   currentPackageJSONCode: string;
   parsedConfigurations: any;
-  currentTab: Tab;
+  currentTab: ModuleTab | DiffTab;
   modulesByPath: {
     [path: string]: Module;
   };

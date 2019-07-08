@@ -2,6 +2,7 @@ import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
 import { logError } from '@codesandbox/common/lib/utils/analytics';
 import { values } from 'lodash-es';
 import { camelizeKeys, decamelizeKeys } from 'humps';
+import { Module } from '@codesandbox/common/lib/types';
 
 export const API_ROOT = '/api/v1';
 
@@ -23,17 +24,24 @@ export type Api = {
     body: RecursivePartial<T>,
     options?: Options
   ): Promise<T>;
-  put<T>(path: string, body: T, options?: Options): Promise<T>;
+  put<T>(path: string, body: any, options?: Options): Promise<T>;
   delete<T>(path: string, params?: Params, options?: Options): Promise<T>;
   request<T>(requestConfig: AxiosRequestConfig, options?: Options): Promise<T>;
 };
 
 export type ApiConfig = {
   provideJwtToken: () => string;
+  getModulesByPath: () => {
+    [path: string]: Module;
+  };
+  getParsedConfigurations: () => any;
   onError: (error: string) => void;
 };
 
-export default (config: ApiConfig) => {
+export default (config: {
+  provideJwtToken: () => string;
+  onError: (error: string) => void;
+}) => {
   const createHeaders = (jwt: string) => {
     return jwt
       ? {

@@ -1,10 +1,10 @@
-import { Preferences, PaymentDetails } from '@codesandbox/common/lib/types';
+import { Settings, PaymentDetails } from '@codesandbox/common/lib/types';
 import { isIOS } from '@codesandbox/common/lib/utils/platform';
 import { Derive } from 'app/overmind';
 import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 
 type State = {
-  settings: Preferences;
+  settings: Settings;
   isLoadingPaymentDetails: boolean;
   itemId: string;
   showEditor: boolean;

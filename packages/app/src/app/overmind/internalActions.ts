@@ -7,9 +7,13 @@ import {
   NotificationButton,
   Contributor,
   Module,
+  TabType,
+  ModuleTab,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { parseConfigurations } from './utils/parse-configurations';
+import { defaultOpenedModule, mainModule } from './utils/main-module';
 
 export const setKeybindings: Action = ({ state, effects }) => {
   effects.keybindingManager.set(
@@ -185,226 +189,123 @@ export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
   actions.internal.startKeybindings();
 };
 
-export const forkFrozenSandbox: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
-  if (
-    effects.browser.confirm(
-      'This sandbox is frozen, and will be forked. Do you want to continue?'
-    )
-  ) {
-    return actions.internal.forkSandbox({
-      id: state.editor.currentId,
-    });
-  } else {
-    // Where is the callback ID?
-    // effects.vscode.callCallbackError(?, "Can't save a frozen sandbox")
-  }
-};
-
-export const forkSandbox: AsyncAction<{
-  id: string;
-  body?: Partial<Sandbox>;
-}> = async ({ state, effects, actions }, { id, body }) => {
-  effects.analytics.track('Fork Sandbox');
-  state.editor.isForkingSandbox = true;
-
-  const url = id.includes('/')
-    ? `/sandboxes/fork/${id}`
-    : `/sandboxes/${id}/fork`;
-
-  try {
-    const forkedSandbox = await effects.api.post<Sandbox>(url, body || {});
-
-    if (state.editor.currentSandbox) {
-      Object.assign(forkedSandbox, {
-        modules: forkedSandbox.modules.map(module => ({
-          ...module,
-          code: state.editor.currentSandbox.modules.find(
-            currentSandboxModule =>
-              currentSandboxModule.shortid === module.shortid
-          ).code,
-        })),
-      });
-    }
-
-    actions.internal.setSandboxData({
-      sandbox: forkedSandbox,
-      overwriteFiles: true,
-    });
-
-    state.editor.currentId = forkedSandbox.id;
-
-    effects.notificationToast.add({
-      message: 'Forked sandbox!',
-      status: NotificationStatus.SUCCESS,
-    });
-
-    effects.router.updateSandboxUrl(forkedSandbox);
-  } catch (error) {}
-
-  state.editor.isForkingSandbox = false;
-};
-
-export const setSandbox: Action<Sandbox> = (
+export const setCurrentSandbox: Action<Sandbox> = (
   { state, actions, effects },
   sandbox
 ) => {
-  if (state.live.isLive && !state.live.isLoading) {
-    actions.live.internal.reset();
-  }
-
+  state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
-  actions.editor.internal.setCurrentModuleShortid(sandbox);
-  actions.editor.internal.setMainModuleShortid(sandbox);
-  actions.editor.internal.setInitialTab();
-  actions.editor.internal.setUrlOptions();
-  actions.workspace.internal.setWorkspace(sandbox);
 
-  effects.fsSync.syncCurrentSandbox(sandbox.id);
-};
+  let currentModuleShortid = state.editor.currentModuleShortid;
+  const parsedConfigs = parseConfigurations(sandbox);
+  const main = mainModule(sandbox, parsedConfigs);
 
-export const refetchSandboxInfo: AsyncAction = async ({ state, actions }) => {
-  if (state.editor.currentId) {
-    const sandbox = await actions.internal.getSandbox(state.editor.currentId);
-    actions.internal.setSandboxData({ sandbox, overwriteFiles: false });
+  state.editor.mainModuleShortid = main.shortid;
 
-    if (state.live.isLive) {
-      actions.live.internal.disconnect();
-    }
+  // Only change the module shortid if it doesn't exist in the new sandbox
+  // What is the scenario here?
+  if (sandbox.modules.find(module => module.shortid === currentModuleShortid)) {
+    const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
 
-    if (
-      sandbox.team &&
-      state.editor.currentSandbox.team &&
-      sandbox.team.id !== state.editor.currentSandbox.team.id
-    ) {
-      state.editor.currentSandbox.team = sandbox.team;
-    }
-
-    await actions.internal.joinLiveSessionIfAvailable(sandbox);
+    currentModuleShortid = defaultModule.shortid;
   }
+
+  const sandboxOptions = effects.router.getSandboxOptions();
+
+  if (sandboxOptions.currentModule) {
+    const sandbox = state.editor.currentSandbox;
+
+    try {
+      const resolvedModule = effects.utils.resolveModule(
+        sandboxOptions.currentModule,
+        sandbox.modules,
+        sandbox.directories,
+        // currentModule is a string... something wrong here?
+        sandboxOptions.currentModule.directoryShortid
+      );
+      currentModuleShortid = resolvedModule
+        ? resolvedModule.shortid
+        : currentModuleShortid;
+    } catch (err) {
+      effects.notificationToast.warning(
+        `Could not find the module ${sandboxOptions.currentModule}`
+      );
+    }
+  }
+
+  state.editor.currentModuleShortid = currentModuleShortid;
+
+  const newTab: ModuleTab = {
+    type: TabType.MODULE,
+    moduleShortid: currentModuleShortid,
+    dirty: true,
+  };
+
+  state.editor.tabs = [newTab];
+
+  actions.preferences.internal.updatePreferencesFromSandboxOptions(
+    sandboxOptions
+  );
+  actions.workspace.internal.configureWorkspace(sandbox);
+  effects.fsSync.syncCurrentSandbox();
+  effects.router.updateSandboxUrl(sandbox);
 };
 
-export const joinLiveSessionIfAvailable: AsyncAction<Sandbox> = async (
-  { state, actions },
+export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
+  { state },
   sandbox
 ) => {
-  if (sandbox.owned && sandbox.roomId) {
-    if (sandbox.team) {
-      state.live.isTeam = true;
-    }
-    actions.internal.setSandboxData({
-      sandbox,
-      overwriteFiles: true,
-    });
-    state.live.isLoading = true;
-    actions.internal.setSandbox(sandbox);
-    await actions.live.internal.initialize();
-    state.live.isLoading = false;
-  } else {
-    actions.internal.setSandboxData({
-      sandbox,
-      overwriteFiles: true,
-    });
-    actions.internal.setSandbox(sandbox);
-    if (sandbox.owned) {
-      actions.files.internal.recoverFiles();
-    }
-  }
+  state.editor.currentSandbox.team = sandbox.team || null;
+  state.editor.currentSandbox.collection = sandbox.collection;
+  state.editor.currentSandbox.owned = sandbox.owned;
+  state.editor.currentSandbox.userLiked = sandbox.userLiked;
+  state.editor.currentSandbox.title = sandbox.title;
 };
 
-export const setSandboxData: Action<{
-  sandbox: Sandbox;
-  overwriteFiles: boolean;
-}> = ({ state }, { sandbox, overwriteFiles }) => {
-  if (overwriteFiles) {
-    state.editor.sandboxes[sandbox.id] = sandbox;
-  } else {
-    state.editor.sandboxes[sandbox.id].collection = sandbox.collection;
-    state.editor.sandboxes[sandbox.id].owned = sandbox.owned;
-    state.editor.sandboxes[sandbox.id].userLiked = sandbox.userLiked;
-    state.editor.sandboxes[sandbox.id].title = sandbox.title;
-  }
-};
-
-export const ensurePackageJSON: AsyncAction<{
-  sandbox: Sandbox;
-  newCode: string;
-}> = async ({ state, actions }, { sandbox, newCode }) => {
+export const ensurePackageJSON: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const sandbox = state.editor.currentSandbox;
   const existingPackageJson = sandbox.modules.find(
-    m => m.directoryShortid == null && m.title === 'package.json'
+    module => module.directoryShortid == null && module.title === 'package.json'
   );
 
   if (sandbox.owned && !existingPackageJson) {
-    const packageJson = {
+    const optimisticModule = actions.files.internal.createOptimisticModule({
       title: 'package.json',
-      newCode: generateFileFromSandbox(sandbox),
-    };
-    const optimisticModule = actions.files.internal.createOptimisticModule(
-      packageJson
-    );
+      code: generatePackageJsonFromSandbox(sandbox),
+    });
 
-    state.editor.sandboxes[state.editor.currentId].modules.push(
-      optimisticModule
-    );
+    state.editor.currentSandbox.modules.push(optimisticModule);
 
     try {
-      const updatedModule = await actions.files.internal.saveNewModule({
-        module: optimisticModule,
-        newCode,
-      });
+      const updatedModule = await effects.api.createModule(
+        sandbox.id,
+        optimisticModule
+      );
 
-      actions.files.internal.updateOptimisticModule({
-        optimisticModule,
-        updatedModule,
-      });
+      optimisticModule.id = updatedModule.id;
+      optimisticModule.shortid = updatedModule.shortid;
     } catch (error) {
-      actions.files.internal.removeModule(optimisticModule.shortid);
+      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
     }
   }
 };
 
 export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
-  const sandbox = state.editor.currentSandbox;
   const currentModule = state.editor.currentModule;
-  const tabs = state.editor.tabs;
-  const tabModuleId = tabs[tabIndex].moduleId;
-  const isActiveTab = currentModule.id === tabModuleId;
+  const tabs = state.editor.tabs as ModuleTab[];
+  const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid;
 
   if (isActiveTab) {
     const newTab = tabIndex > 0 ? tabs[tabIndex - 1] : tabs[tabIndex + 1];
 
     if (newTab) {
-      const newModule = sandbox.modules.find(
-        module => module.id === newTab.moduleId
-      );
-
-      state.editor.currentModuleShortid = newModule.shortid;
+      state.editor.currentModuleShortid = newTab.moduleShortid;
     }
   }
 
   state.editor.tabs.splice(tabIndex, 1);
-};
-
-export const setCurrentModuleByTab: Action<number> = ({ state }, tabIndex) => {
-  const tabs = state.editor.tabs;
-  const currentModuleShortid = state.editor.currentModuleShortid;
-  const closedCurrentTab = !tabs.find(
-    t => t.moduleShortid === currentModuleShortid
-  );
-
-  if (closedCurrentTab) {
-    const index =
-      state.editor.tabs.length - 1 >= tabIndex ? tabIndex : tabIndex - 1;
-
-    const currentTab = state.editor.tabs[index];
-
-    if (currentTab.moduleShortid) {
-      const moduleShortid = currentTab.moduleShortid;
-
-      state.editor.currentModuleShortid = moduleShortid;
-    }
-  }
 };

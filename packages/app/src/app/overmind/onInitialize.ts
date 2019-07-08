@@ -5,8 +5,9 @@ export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
     return state.jwt || effects.jwt.get();
   };
 
-  effects.socket.initialize({
+  effects.live.initialize({
     provideJwtToken,
+    onApplyOperation: actions.live.onOperationApplied,
   });
 
   effects.api.initialize({
@@ -37,6 +38,25 @@ export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
   effects.netlify.initialize({
     getUserId() {
       return state.user.id;
+    },
+  });
+
+  effects.prettyfier.initialize({
+    getCurrentModule() {
+      return state.editor.currentModule;
+    },
+    getPrettierConfig() {
+      let config = state.preferences.settings.prettierConfig;
+      const configFromSandbox = state.editor.currentSandbox.modules.find(
+        module =>
+          module.directoryShortid == null && module.title === '.prettierrc'
+      );
+
+      if (configFromSandbox) {
+        config = JSON.parse(configFromSandbox.code);
+      }
+
+      return config;
     },
   });
 };
