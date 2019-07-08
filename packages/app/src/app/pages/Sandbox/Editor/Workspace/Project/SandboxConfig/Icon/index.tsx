@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePopoverState } from 'reakit/Popover';
 import * as templates from '@codesandbox/common/lib/templates';
+import theme from '@codesandbox/common/lib/theme';
 import { useStore, useSignals } from 'app/store';
 import * as Icons from '@codesandbox/template-icons';
 import getIcon from '@codesandbox/common/lib/templates/icons';
@@ -26,7 +27,7 @@ export const Icon = () => {
       currentSandbox: { template, customTemplate },
     },
   } = useStore();
-  const [SelectedIcon, setSelectedIcon] = useState(customTemplate.iconUrl);
+  const [selectedIcon, setSelectedIcon] = useState(customTemplate.iconUrl);
 
   const DefaultIcon = getIcon(template);
   const defaultColor =
@@ -43,14 +44,15 @@ export const Icon = () => {
       },
     });
   };
+  const TemplateIcon = Icons[selectedIcon];
 
   return (
     <Item>
       <PropertyName>Icon </PropertyName>
       <Value>
         <Button {...popover} color={defaultColor}>
-          {SelectedIcon && Icons[SelectedIcon] ? (
-            Icons[SelectedIcon]({ width: 24 })
+          {selectedIcon && TemplateIcon ? (
+            <TemplateIcon width={24} />
           ) : (
             <DefaultIcon width={24} />
           )}
@@ -63,11 +65,16 @@ export const Icon = () => {
         >
           <Arrow {...popover} />
           <List>
-            {Object.keys(Icons).map((i: string) => (
-              <li onClick={() => setIcon(i)}>
-                <IconButton>{Icons[i]({ width: 24 })}</IconButton>
-              </li>
-            ))}
+            {Object.keys(Icons).map((i: string) => {
+              const Icon = Icons[i];
+              return (
+                <li onClick={() => setIcon(i)}>
+                  <IconButton>
+                    <Icon width={24} light={theme.light} />
+                  </IconButton>
+                </li>
+              );
+            })}
           </List>
         </IconWrapper>
       </Value>
