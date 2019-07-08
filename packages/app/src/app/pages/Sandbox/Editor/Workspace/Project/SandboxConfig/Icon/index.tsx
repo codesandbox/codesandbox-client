@@ -35,6 +35,7 @@ export const Icon = () => {
 
   const setIcon = (key: string) => {
     setSelectedIcon(key);
+    popover.hide();
     editTemplate({
       template: {
         ...customTemplate,
