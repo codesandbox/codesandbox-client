@@ -15,7 +15,7 @@ export const IconWrapper = styled(Popover)`
   border: 1px solid
     ${({ theme }) =>
       theme['sideBar.foreground'] ||
-      (theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)')}};
+      (theme.light ? '#6c6c6c' : 'rgba(255, 255, 255, 0.5)')};
   box-shadow: 0 0 14px
     ${({ theme }) =>
       theme.light ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
