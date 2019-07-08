@@ -5,7 +5,7 @@ export default new Template(
   'unibit',
   'Unibit',
   'https://www.stackbit.com',
-  'github/smnh/universal/tree/master/',
+  'github/stackbithq/stackbit-theme-universal/tree/master/',
   decorateSelector(() => '#3EB0FD'),
   {
     distDir: 'public',
