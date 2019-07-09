@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DeploymentIntegration from 'app/components/DeploymentIntegration';
+import { DeploymentIntegration } from 'app/components/DeploymentIntegration';
 import NetlifyLogo from 'app/components/NetlifyLogo';
 import { useSignals, useStore } from 'app/store';
 
