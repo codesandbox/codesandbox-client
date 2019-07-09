@@ -24,6 +24,7 @@ import {
   SapperIcon,
   ParcelIcon,
   VuePressIcon,
+  UnibitIcon,
 } from '@codesandbox/template-icons';
 
 import {
@@ -53,6 +54,7 @@ import {
   vuepress,
   mdxDeck,
   quasar,
+  unibit,
 } from './';
 
 import { TemplateType } from './';
@@ -118,6 +120,8 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
       return MDXDeckIcon;
     case quasar.name:
       return QuasarIcon;
+    case unibit.name:
+      return UnibitIcon;
     default:
       return ReactIcon;
   }
