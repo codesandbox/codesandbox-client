@@ -8,6 +8,7 @@ import { Wrapper } from '../elements';
 
 import { DeployButton } from './DeployButton';
 import { Deploys } from './Deploys';
+import { NoIntegrationWrapper } from './elements';
 
 export const Zeit = observer(() => {
   const {
@@ -27,8 +28,8 @@ export const Zeit = observer(() => {
       {sandboxDeploys.length && isVisible ? <Deploys /> : null}
     </Wrapper>
   ) : (
-    <div style={{ margin: '1rem' }}>
+    <NoIntegrationWrapper>
       <ZeitIntegration small />
-    </div>
+    </NoIntegrationWrapper>
   );
 });
