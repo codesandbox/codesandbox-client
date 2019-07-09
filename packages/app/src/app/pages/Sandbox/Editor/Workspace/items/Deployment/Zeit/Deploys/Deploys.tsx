@@ -17,6 +17,7 @@ import {
 } from '../../elements';
 
 import { Actions } from './Actions';
+import { Alias } from './Alias';
 
 export const Deploys = () => {
   const {
@@ -39,20 +40,7 @@ export const Deploys = () => {
 
               <State state={deploy.state}>{deploy.state.toLowerCase()}</State>
 
-              {deploy.alias.length ? (
-                <span>
-                  Aliased to{' '}
-                  {deploy.alias.map(a => (
-                    <a
-                      href={`https://${a.alias}`}
-                      rel="noreferrer noopener"
-                      target="_blank"
-                    >
-                      {a.alias}
-                    </a>
-                  ))}
-                </span>
-              ) : null}
+              {deploy.alias.length > 0 ? <Alias alias={deploy.alias} /> : null}
 
               <Actions deploy={deploy} />
             </Deploy>
