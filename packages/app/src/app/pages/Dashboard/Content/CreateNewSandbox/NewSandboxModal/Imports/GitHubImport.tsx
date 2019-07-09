@@ -13,6 +13,7 @@ import {
   GitHubLink,
   Buttons,
   PlaceHolderLink,
+  DocsLink,
 } from './elements';
 import { Button } from '@codesandbox/common/lib/components/Button';
 
@@ -54,11 +55,20 @@ export const GitHubImport = () => {
 
   return (
     <Section style={{ flex: 6 }}>
-      <ImportHeader>Import from GitHub</ImportHeader>
+      <ImportHeader>
+        Import from GitHub{' '}
+        <DocsLink target="_blank" href="/docs/importing#import-from-github">
+          docs
+        </DocsLink>
+      </ImportHeader>
       <ImportDescription>
         Enter the URL to your GitHub repository to generate a URL to your
-        sandbox. The sandbox will stay in sync with your repository. Tip: you
-        can also link to specific directories, commits and branches here.
+        sandbox. The sandbox will stay in sync with your repository.
+      </ImportDescription>
+
+      <ImportDescription>
+        Tip: you can also link to specific directories, commits and branches
+        here.
       </ImportDescription>
 
       <GitHubInput

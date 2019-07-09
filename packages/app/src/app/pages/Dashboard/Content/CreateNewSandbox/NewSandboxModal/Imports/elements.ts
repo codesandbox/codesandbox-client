@@ -90,3 +90,16 @@ export const Buttons = styled.div`
     margin-right: 0;
   }
 `;
+
+export const DocsLink = styled.a`
+  transition: 0.2s ease color;
+
+  text-decoration: none;
+  margin-left: 1rem;
+
+  font-size: 1rem;
+
+  &:hover {
+    color: ${props => props.theme.secondary.darken(0.2)};
+  }
+`;
