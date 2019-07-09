@@ -27,7 +27,7 @@ function receiveMessage(event) {
 function openStackbit(username: string) {
   // @ts-ignore
   window.stackbitWindow = window.open(
-    `https://app.stackbit.com/create?githubUser=${username}&ref=codesandbox`,
+    `https://app.stackbit.com/create?githubUser=${username}&ref=codesandbox&ssgExclusive=gatsby`,
     '_blank',
     'width=1210,height=800'
   );
