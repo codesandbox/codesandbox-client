@@ -93,13 +93,7 @@ export default () => (
           <Title>About</Title>
           <List>
             <li>
-              <a
-                href="https://medium.com/@compuives"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Blog
-              </a>
+               <Link to="/blog">Blog</Link>
             </li>
             <li>
               <a
