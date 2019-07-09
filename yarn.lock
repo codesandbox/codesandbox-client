@@ -1540,10 +1540,10 @@
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@cerebral/mobx-state-tree/-/mobx-state-tree-3.2.2.tgz#d11e74a5a3e99ae4e29e13d555e3b22221a801dc"
 
-"@codesandbox/template-icons@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.4.0.tgz#3dbe26f0ba0f57e113e999248f8cab86658ca4b3"
-  integrity sha512-ADXkEAZkrFkm4zrjbpXrJ34hAdMxYKvEX2fa5c54CpNTg+q8QdXLIBw9wLRbu08+FsKiD2Cpfd/jyHR+Ysnd0A==
+"@codesandbox/template-icons@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.5.0.tgz#b34a6b75b63c387d5fd56e3ae6698752956d141b"
+  integrity sha512-Qn4T691o2sSkVB0G2NlNrsmlK7rZo7st7om9uRDJXdmU1MTt+FHGwT++sk/n/j9+VmkXJD7bTsES/SQIwnGXWA==
 
 "@emmetio/abbreviation@^0.6.0", "@emmetio/abbreviation@^0.6.1":
   version "0.6.5"
