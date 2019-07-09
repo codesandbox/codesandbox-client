@@ -24,7 +24,7 @@ import {
   SapperIcon,
   ParcelIcon,
   VuePressIcon,
-  StackbitIcon,
+  UnibitIcon,
 } from '@codesandbox/template-icons';
 
 import {
@@ -121,7 +121,7 @@ export default function getIcon(theme: TemplateType): ReturnedIcon {
     case quasar.name:
       return QuasarIcon;
     case unibit.name:
-      return StackbitIcon;
+      return UnibitIcon;
     default:
       return ReactIcon;
   }
