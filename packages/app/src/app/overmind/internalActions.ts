@@ -1,17 +1,15 @@
 import { json } from 'overmind';
-import { Action } from '.';
-import track, {
-  identify,
-  setUserId,
-} from '@codesandbox/common/lib/utils/analytics';
+import { Action, AsyncAction } from '.';
+import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
 import {
   Sandbox,
-  User,
   CurrentUser,
   NotificationButton,
   Contributor,
+  Module,
 } from '@codesandbox/common/lib/types';
-import { AxiosError } from 'axios';
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 
 export const setKeybindings: Action = ({ state, effects }) => {
   effects.keybindingManager.set(
@@ -23,12 +21,32 @@ export const setJwtFromStorage: Action = ({ effects, state }) => {
   state.jwt = effects.jwt.get() || null;
 };
 
-export const listenToConnectionChange: Action = ({ effects, actions }) => {
-  effects.connection.addListener(actions.internal.onConnectionChange);
+export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
+  { state, effects, actions },
+  options
+) => {
+  state.isAuthenticating = true;
+  effects.analytics.track('Sign In', {});
+  try {
+    const jwt = await actions.internal.signInGithub(options);
+    actions.internal.setJwt(jwt);
+    state.user = await actions.internal.getUser();
+    actions.internal.setPatronPrice();
+    actions.internal.setSignedInCookie();
+    actions.internal.setStoredSettings();
+    actions.internal.connectWebsocket();
+    actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
+    actions.editor.internal.refetchSandboxInfo();
+  } catch (error) {
+    actions.internal.addNotification({
+      title: 'Github Authentication Error',
+      type: 'error',
+    });
+  }
 };
 
-export const onConnectionChange: Action<boolean> = ({ state }, connected) => {
-  state.connected = connected;
+export const listenToConnectionChange: Action = ({ effects, actions }) => {
+  effects.connection.addListener(actions.connectionChanged);
 };
 
 export const setStoredSettings: Action = ({ state, effects }) => {
@@ -50,7 +68,7 @@ export const setStoredSettings: Action = ({ state, effects }) => {
 };
 
 export const startKeybindings: Action = ({ effects }) => {
-  effects.keybindingManager.start(event => {
+  effects.keybindingManager.start(() => {
     // Copy code from keybindingmanager
   });
 };
@@ -104,342 +122,314 @@ export const removeJwtFromStorage: Action = ({ effects }) => {
   effects.jwt.reset();
 };
 
-export const getContributors: Action = async ({ state, effects }) => {
+export const getContributors: AsyncAction = async ({ state, effects }) => {
   try {
     const response = await effects.http.get<{ contributors: Contributor[] }>(
       'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
     );
 
-    state.contributors = response.contributors.map(
+    state.contributors = response.data.contributors.map(
       contributor => contributor.login
     );
   } catch (error) {}
 };
 
-/*import axios from 'axios';
-
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-
-
-import { parseConfigurations } from './utils/parse-configurations';
-import { mainModule, defaultOpenedModule } from './utils/main-module';
-import getItems from './modules/workspace/items';
-*/
-
-/*
-export function callVSCodeCallback({ props }) {
-  const { cbID } = props;
-  if (cbID) {
-    if (window.cbs && window.cbs[cbID]) {
-      window.cbs[cbID](undefined, undefined);
-      delete window.cbs[cbID];
-    }
+export const authorize: AsyncAction = async ({ state, effects }) => {
+  try {
+    const data = await effects.api.get<{ token: string }>('/auth/auth-token');
+    state.authToken = data.token;
+  } catch (error) {
+    state.editor.error = error.message;
   }
-}
+};
 
-export function callVSCodeCallbackError({ props }) {
-  const { cbID } = props;
-  if (cbID) {
-    if (window.cbs && window.cbs[cbID]) {
-      const errorMessage =
-        props.message || 'Something went wrong while saving the file.';
-      window.cbs[cbID](new Error(errorMessage), undefined);
-      delete window.cbs[cbID];
-    }
-  }
-}
+export const signInGithub: Action<
+  { useExtraScopes: boolean },
+  Promise<string>
+> = ({ effects }, options) => {
+  const popup = effects.browser.openPopup(
+    `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`,
+    'sign in'
+  );
 
-export function setWorkspace({ controller, state, props }) {
-  state.set('workspace.project.title', props.sandbox.title || '');
-  state.set('workspace.project.description', props.sandbox.description || '');
+  return effects.browser
+    .waitForMessage<{ jwt: string }>('signin')
+    .then(data => {
+      const jwt = data.jwt;
 
-  const items = getItems(controller.getState());
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-  state.set(`workspace.openedWorkspaceItem`, defaultItem.id);
-}
+      popup.close();
 
-export function setUrlOptions({ state, router, utils }) {
-  const options = router.getSandboxOptions();
+      if (jwt) {
+        return jwt;
+      }
 
-  if (options.currentModule) {
-    const sandbox = state.get('editor.currentSandbox');
+      throw new Error('Could not get sign in token');
+    });
+};
+
+export const setJwt: Action<string> = ({ state, effects }, jwt) => {
+  effects.jwt.set(jwt);
+  state.jwt = jwt;
+};
+
+export const getZeitUserDetails: AsyncAction = async ({ state, effects }) => {
+  if (
+    state.user.integrations.zeit &&
+    state.user.integrations.zeit.token &&
+    !state.user.integrations.zeit.email
+  ) {
+    const token = state.user.integrations.zeit.token;
 
     try {
-      const module = utils.resolveModule(
-        options.currentModule,
-        sandbox.modules,
-        sandbox.directories,
-        options.currentModule.directoryShortid
-      );
+      const response = await effects.http.get('https://api.zeit.co/www/user', {
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      });
 
-      if (module) {
-        state.push('editor.tabs', {
-          type: 'MODULE',
-          moduleShortid: module.shortid,
-          dirty: false,
-        });
-        state.set('editor.currentModuleShortid', module.shortid);
-      }
-    } catch (err) {
-      const now = Date.now();
-      const title = `Could not find the module ${options.currentModule}`;
-
-      state.push('notifications', {
-        title,
-        id: now,
-        notificationType: 'warning',
-        endTime: now + 2000,
-        buttons: [],
+      state.user.integrations.zeit.email = response.data.user.email;
+    } catch (error) {
+      effects.notificationToast.add({
+        message: 'Could not authorize with ZEIT',
+        status: effects.notificationToast.convertTypeToStatus('error'),
       });
     }
   }
+};
 
-  state.set(
-    'preferences.showPreview',
-    options.isPreviewScreen || options.isSplitScreen
-  );
-  state.set(
-    'preferences.showEditor',
-    options.isEditorScreen || options.isSplitScreen
-  );
-
-  if (options.initialPath) state.set('editor.initialPath', options.initialPath);
-  if (options.fontSize)
-    state.set('preferences.settings.fontSize', options.fontSize);
-  if (options.highlightedLines)
-    state.set('editor.highlightedLines', options.highlightedLines);
-  if (options.hideNavigation)
-    state.set('preferences.hideNavigation', options.hideNavigation);
-  if (options.isInProjectView)
-    state.set('editor.isInProjectView', options.isInProjectView);
-  if (options.autoResize)
-    state.set('preferences.settings.autoResize', options.autoResize);
-  if (options.useCodeMirror)
-    state.set('preferences.settings.useCodeMirror', options.useCodeMirror);
-  if (options.enableEslint)
-    state.set('preferences.settings.enableEslint', options.enableEslint);
-  if (options.forceRefresh)
-    state.set('preferences.settings.forceRefresh', options.forceRefresh);
-  if (options.expandDevTools)
-    state.set('preferences.showDevtools', options.expandDevTools);
-  if (options.runOnClick)
-    state.set(`preferences.runOnClick`, options.runOnClick);
-}
-
-export function setCurrentModuleShortid({ props, state }) {
-  const currentModuleShortid = state.get('editor.currentModuleShortid');
-  const sandbox = props.sandbox;
-
-  // Only change the module shortid if it doesn't exist in the new sandbox
+export const closeModals: Action<boolean> = ({ state, actions }, isKeyDown) => {
   if (
-    sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
+    state.currentModal === 'preferences' &&
+    state.preferences.itemId === 'keybindings' &&
+    isKeyDown
   ) {
-    const parsedConfigs = parseConfigurations(sandbox);
-    const module = defaultOpenedModule(sandbox, parsedConfigs);
-
-    state.set('editor.currentModuleShortid', module.shortid);
+    return;
   }
-}
 
-export function setMainModuleShortid({ props, state }) {
-  const sandbox = props.sandbox;
-  const parsedConfigs = parseConfigurations(sandbox);
-  const module = mainModule(sandbox, parsedConfigs);
+  state.currentModal = null;
+  actions.internal.startKeybindings();
+};
 
-  state.set('editor.mainModuleShortid', module.shortid);
-}
+export const forkFrozenSandbox: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  if (
+    effects.browser.confirm(
+      'This sandbox is frozen, and will be forked. Do you want to continue?'
+    )
+  ) {
+    return actions.internal.forkSandbox({
+      id: state.editor.currentId,
+    });
+  } else {
+    // Where is the callback ID?
+    // effects.vscode.callCallbackError(?, "Can't save a frozen sandbox")
+  }
+};
 
-export function setInitialTab({ state }) {
-  const currentModule = state.get('editor.currentModule');
-  const newTab = {
-    type: 'MODULE',
-    moduleShortid: currentModule.shortid,
-    dirty: true,
-  };
+export const forkSandbox: AsyncAction<{
+  id: string;
+  body?: Partial<Sandbox>;
+}> = async ({ state, effects, actions }, { id, body }) => {
+  effects.analytics.track('Fork Sandbox');
+  state.editor.isForkingSandbox = true;
 
-  state.set('editor.tabs', [newTab]);
-}
+  const url = id.includes('/')
+    ? `/sandboxes/fork/${id}`
+    : `/sandboxes/${id}/fork`;
 
-export function getGitChanges({ api, state }) {
-  const id = state.get('editor.currentId');
+  try {
+    const forkedSandbox = await effects.api.post<Sandbox>(url, body || {});
 
-  return api
-    .get(`/sandboxes/${id}/git/diff`)
-    .then(gitChanges => ({ gitChanges }));
-}
+    if (state.editor.currentSandbox) {
+      Object.assign(forkedSandbox, {
+        modules: forkedSandbox.modules.map(module => ({
+          ...module,
+          code: state.editor.currentSandbox.modules.find(
+            currentSandboxModule =>
+              currentSandboxModule.shortid === module.shortid
+          ).code,
+        })),
+      });
+    }
 
-export function forkSandbox({ state, props, api }) {
-  const sandboxId = props.sandboxId || state.get('editor.currentId');
-  const url = sandboxId.includes('/')
-    ? `/sandboxes/fork/${sandboxId}`
-    : `/sandboxes/${sandboxId}/fork`;
+    actions.internal.setSandboxData({
+      sandbox: forkedSandbox,
+      overwriteFiles: true,
+    });
 
-  return api
-    .post(url, props.body || {})
-    .then(data => ({ forkedSandbox: data }));
-}
+    state.editor.currentId = forkedSandbox.id;
 
-export function moveModuleContent({ props, state }) {
-  const currentSandbox = state.get('editor.currentSandbox');
+    effects.notificationToast.add({
+      message: 'Forked sandbox!',
+      status: NotificationStatus.SUCCESS,
+    });
 
-  if (currentSandbox) {
-    return {
-      sandbox: Object.assign({}, props.forkedSandbox, {
-        modules: props.forkedSandbox.modules.map(module =>
-          Object.assign(module, {
-            code: currentSandbox.modules.find(
-              currentSandboxModule =>
-                currentSandboxModule.shortid === module.shortid
-            ).code,
-          })
-        ),
-      }),
+    effects.router.updateSandboxUrl(forkedSandbox);
+  } catch (error) {}
+
+  state.editor.isForkingSandbox = false;
+};
+
+export const setSandbox: Action<Sandbox> = (
+  { state, actions, effects },
+  sandbox
+) => {
+  if (state.live.isLive && !state.live.isLoading) {
+    actions.live.internal.reset();
+  }
+
+  state.editor.currentId = sandbox.id;
+  actions.editor.internal.setCurrentModuleShortid(sandbox);
+  actions.editor.internal.setMainModuleShortid(sandbox);
+  actions.editor.internal.setInitialTab();
+  actions.editor.internal.setUrlOptions();
+  actions.workspace.internal.setWorkspace(sandbox);
+
+  effects.fsSync.syncCurrentSandbox(sandbox.id);
+};
+
+export const refetchSandboxInfo: AsyncAction = async ({ state, actions }) => {
+  if (state.editor.currentId) {
+    const sandbox = await actions.internal.getSandbox(state.editor.currentId);
+    actions.internal.setSandboxData({ sandbox, overwriteFiles: false });
+
+    if (state.live.isLive) {
+      actions.live.internal.disconnect();
+    }
+
+    if (
+      sandbox.team &&
+      state.editor.currentSandbox.team &&
+      sandbox.team.id !== state.editor.currentSandbox.team.id
+    ) {
+      state.editor.currentSandbox.team = sandbox.team;
+    }
+
+    await actions.internal.joinLiveSessionIfAvailable(sandbox);
+  }
+};
+
+export const joinLiveSessionIfAvailable: AsyncAction<Sandbox> = async (
+  { state, actions },
+  sandbox
+) => {
+  if (sandbox.owned && sandbox.roomId) {
+    if (sandbox.team) {
+      state.live.isTeam = true;
+    }
+    actions.internal.setSandboxData({
+      sandbox,
+      overwriteFiles: true,
+    });
+    state.live.isLoading = true;
+    actions.internal.setSandbox(sandbox);
+    await actions.live.internal.initialize();
+    state.live.isLoading = false;
+  } else {
+    actions.internal.setSandboxData({
+      sandbox,
+      overwriteFiles: true,
+    });
+    actions.internal.setSandbox(sandbox);
+    if (sandbox.owned) {
+      actions.files.internal.recoverFiles();
+    }
+  }
+};
+
+export const setSandboxData: Action<{
+  sandbox: Sandbox;
+  overwriteFiles: boolean;
+}> = ({ state }, { sandbox, overwriteFiles }) => {
+  if (overwriteFiles) {
+    state.editor.sandboxes[sandbox.id] = sandbox;
+  } else {
+    state.editor.sandboxes[sandbox.id].collection = sandbox.collection;
+    state.editor.sandboxes[sandbox.id].owned = sandbox.owned;
+    state.editor.sandboxes[sandbox.id].userLiked = sandbox.userLiked;
+    state.editor.sandboxes[sandbox.id].title = sandbox.title;
+  }
+};
+
+export const ensurePackageJSON: AsyncAction<{
+  sandbox: Sandbox;
+  newCode: string;
+}> = async ({ state, actions }, { sandbox, newCode }) => {
+  const existingPackageJson = sandbox.modules.find(
+    m => m.directoryShortid == null && m.title === 'package.json'
+  );
+
+  if (sandbox.owned && !existingPackageJson) {
+    const packageJson = {
+      title: 'package.json',
+      newCode: generateFileFromSandbox(sandbox),
     };
+    const optimisticModule = actions.files.internal.createOptimisticModule(
+      packageJson
+    );
+
+    state.editor.sandboxes[state.editor.currentId].modules.push(
+      optimisticModule
+    );
+
+    try {
+      const updatedModule = await actions.files.internal.saveNewModule({
+        module: optimisticModule,
+        newCode,
+      });
+
+      actions.files.internal.updateOptimisticModule({
+        optimisticModule,
+        updatedModule,
+      });
+    } catch (error) {
+      actions.files.internal.removeModule(optimisticModule.shortid);
+    }
   }
+};
 
-  return { sandbox: props.forkedSandbox };
-}
-
-export function closeTabByIndex({ state, props }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const currentModule = state.get('editor.currentModule');
-  const tabs = state.get('editor.tabs');
-  const tabModuleId = tabs[props.tabIndex].moduleId;
+export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
+  const sandbox = state.editor.currentSandbox;
+  const currentModule = state.editor.currentModule;
+  const tabs = state.editor.tabs;
+  const tabModuleId = tabs[tabIndex].moduleId;
   const isActiveTab = currentModule.id === tabModuleId;
 
   if (isActiveTab) {
-    const newTab =
-      props.tabIndex > 0 ? tabs[props.tabIndex - 1] : tabs[props.tabIndex + 1];
+    const newTab = tabIndex > 0 ? tabs[tabIndex - 1] : tabs[tabIndex + 1];
 
     if (newTab) {
       const newModule = sandbox.modules.find(
         module => module.id === newTab.moduleId
       );
 
-      state.set('editor.currentModuleShortid', newModule.shortid);
+      state.editor.currentModuleShortid = newModule.shortid;
     }
   }
 
-  state.splice('editor.tabs', props.tabIndex, 1);
-}
+  state.editor.tabs.splice(tabIndex, 1);
+};
 
-export function signInGithub({ browser, path, props }) {
-  const { useExtraScopes } = props;
-  const popup = browser.openPopup(
-    `/auth/github${useExtraScopes ? '?scope=user:email,repo' : ''}`,
-    'sign in'
+export const setCurrentModuleByTab: Action<number> = ({ state }, tabIndex) => {
+  const tabs = state.editor.tabs;
+  const currentModuleShortid = state.editor.currentModuleShortid;
+  const closedCurrentTab = !tabs.find(
+    t => t.moduleShortid === currentModuleShortid
   );
 
-  return browser.waitForMessage('signin').then(data => {
-    const jwt = data.jwt;
+  if (closedCurrentTab) {
+    const index =
+      state.editor.tabs.length - 1 >= tabIndex ? tabIndex : tabIndex - 1;
 
-    popup.close();
+    const currentTab = state.editor.tabs[index];
 
-    if (jwt) {
-      return path.success({ jwt });
+    if (currentTab.moduleShortid) {
+      const moduleShortid = currentTab.moduleShortid;
+
+      state.editor.currentModuleShortid = moduleShortid;
     }
-
-    return path.error();
-  });
-}
-
-export function signOut({ api }) {
-  api.delete(`/users/signout`);
-}
-
-export function getAuthToken({ api, path }) {
-  return api
-    .get('/auth/auth-token')
-    .then(({ token }) => path.success({ token }))
-    .catch(error => path.error({ error }));
-}
-
-export function setModal({ state, props }) {
-  track('Open Modal', { modal: props.modal });
-  state.set('currentModalMessage', props.message);
-  state.set('currentModal', props.modal);
-}
-
-export function removeNotification({ state, props }) {
-  const notifications = state.get('notifications');
-  const notificationToRemoveIndex = notifications.findIndex(
-    notification => notification.id === props.id
-  );
-
-  state.splice('notifications', notificationToRemoveIndex, 1);
-}
-
-export function setJwtFromProps({ jwt, state, props }) {
-  jwt.set(props.jwt);
-  state.set('jwt', props.jwt);
-}
-
-
-
-
-
-
-export function stopListeningToConnectionChange({ connection }) {
-  connection.removeListener('connectionChanged');
-}
-
-
-
-export function signInZeit({ browser, path }) {
-  const popup = browser.openPopup('/auth/zeit', 'sign in');
-  return browser.waitForMessage('signin').then(data => {
-    popup.close();
-
-    if (data && data.code) {
-      return path.success({ code: data.code });
-    }
-
-    return path.error();
-  });
-}
-
-export function updateUserZeitDetails({ api, path, props }) {
-  const { code } = props;
-
-  return api
-    .post(`/users/current_user/integrations/zeit`, {
-      code,
-    })
-    .then(data => path.success({ user: data }))
-    .catch(error => path.error({ error }));
-}
-
-export function getZeitIntegrationDetails({ state, path }) {
-  const token = state.get(`user.integrations.zeit.token`);
-
-  return axios
-    .get('https://api.zeit.co/www/user', {
-      headers: {
-        Authorization: `bearer ${token}`,
-      },
-    })
-    .then(response => path.success({ response: response.data }))
-    .catch(error => path.error({ error }));
-}
-
-export function signOutZeit({ api }) {
-  return api.delete(`/users/current_user/integrations/zeit`).then(() => {});
-}
-
-export function signOutGithubIntegration({ api }) {
-  return api.delete(`/users/current_user/integrations/github`).then(() => {});
-}
-
-export function createPackageJSON({ props }) {
-  const { sandbox } = props;
-
-  const code = generateFileFromSandbox(sandbox);
-
-  return {
-    title: 'package.json',
-    newCode: code,
-  };
-}
-
-
-*/
+  }
+};

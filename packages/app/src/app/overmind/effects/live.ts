@@ -1,4 +1,5 @@
 import uuid from 'uuid';
+import { camelizeKeys } from 'humps';
 
 const identifier = uuid.v4();
 let messageIndex = 0;
@@ -21,7 +22,7 @@ export default {
         .receive('error', resp => reject(resp));
     });
   },
-  joinChannel(roomId: string) {
+  joinChannel<T>(roomId: string): Promise<T> {
     const { socket } = this.context;
 
     channel = socket.getSocket().channel(`live:${roomId}`, {});
@@ -29,8 +30,8 @@ export default {
     return new Promise((resolve, reject) => {
       channel
         .join()
-        .receive('ok', resp => resolve(resp))
-        .receive('error', resp => reject(resp));
+        .receive('ok', resp => resolve(camelizeKeys(resp) as T))
+        .receive('error', resp => reject(camelizeKeys(resp)));
     });
   },
   // TODO: Need to take an action here
@@ -53,7 +54,7 @@ export default {
       return data;
     };
   },
-  send(event: string, payload: { _messageId: string }) {
+  send(event: string, payload: { _messageId?: string }) {
     const _messageId = identifier + messageIndex++;
     // eslint-disable-next-line
     payload._messageId = _messageId;

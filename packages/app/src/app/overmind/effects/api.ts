@@ -97,7 +97,11 @@ export default (() => {
     initialize(options: Options) {
       _options = options;
     },
-    get(path: string, params?: { [key: string]: string }, options?: {}) {
+    get<T>(
+      path: string,
+      params?: { [key: string]: string },
+      options?: {}
+    ): Promise<T> {
       return axios
         .get(API_ROOT + path, {
           params,
@@ -106,7 +110,7 @@ export default (() => {
         .then(response => handleResponse(response, options))
         .catch(e => handleError(e));
     },
-    post(path, body, options) {
+    post<T>(path, body, options?): Promise<T> {
       return axios
         .post(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(_options.provideJwtToken()),
@@ -114,7 +118,7 @@ export default (() => {
         .then(response => handleResponse(response, options))
         .catch(e => handleError(e));
     },
-    patch(path, body, options) {
+    patch<T>(path, body, options?): Promise<T> {
       return axios
         .patch(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(_options.provideJwtToken()),
@@ -122,7 +126,7 @@ export default (() => {
         .then(response => handleResponse(response, options))
         .catch(e => handleError(e));
     },
-    put(path, body, options) {
+    put<T>(path, body, options?): Promise<T> {
       return axios
         .put(API_ROOT + path, decamelizeKeys(body), {
           headers: createHeaders(_options.provideJwtToken()),
@@ -130,7 +134,7 @@ export default (() => {
         .then(response => handleResponse(response, options))
         .catch(e => handleError(e));
     },
-    delete(path, params, options) {
+    delete<T>(path, params?, options?): Promise<T> {
       return axios
         .delete(API_ROOT + path, {
           params,
