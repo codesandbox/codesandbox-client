@@ -8,6 +8,11 @@ import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+import {
+  addDevToolsTab as addDevToolsTabUtil,
+  moveDevToolsTab as moveDevToolsTabUtil,
+  closeDevToolsTab as closeDevToolsTabUtil,
+} from 'app/pages/Sandbox/Editor/Content/utils';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -168,6 +173,132 @@ export function updateFrozen({ api, props, state }) {
 
 export function restartSandbox() {
   dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
+}
+
+export function getDevToolsTabs({ state }) {
+  return {
+    devToolsModule: state.get('editor.modulesByPath')[
+      '/.codesandbox/workspace.json'
+    ],
+  };
+}
+
+export function addDevToolsTab({ state, props }) {
+  const devToolTabs = state.get('editor.devToolTabs');
+  const { devTools: newDevToolTabs, position } = addDevToolsTabUtil(
+    devToolTabs,
+    props.tab
+  );
+
+  return {
+    code: JSON.stringify({ preview: newDevToolTabs }, null, 2),
+    nextPos: position,
+  };
+}
+
+export function moveDevToolsTab({ state, props }) {
+  const devToolTabs = state.get('editor.devToolTabs');
+
+  const prevPos = props.prevPos;
+  const nextPos = props.nextPos;
+
+  const newDevToolTabs = moveDevToolsTabUtil(devToolTabs, prevPos, nextPos);
+
+  return {
+    code: JSON.stringify({ preview: newDevToolTabs }, null, 2),
+  };
+}
+
+export function getDevToolsTab({ state, props }) {
+  const tabToFind = props.tab;
+  const serializedTab = JSON.stringify(tabToFind);
+
+  const devToolTabs = state.get('editor.devToolTabs');
+
+  for (let i = 0; i < devToolTabs.length; i++) {
+    const view = devToolTabs[i];
+
+    for (let j = 0; j < view.views.length; j++) {
+      const tab = view.views[j];
+      if (JSON.stringify(tab) === serializedTab) {
+        return {
+          nextPos: {
+            devToolIndex: i,
+            tabPosition: j,
+          },
+        };
+      }
+    }
+  }
+
+  return {};
+}
+
+export function closeDevToolsTab({ state, props }) {
+  const devToolTabs = state.get('editor.devToolTabs');
+  const closePos = props.pos;
+  const newDevToolTabs = closeDevToolsTabUtil(devToolTabs, closePos);
+
+  return {
+    code: JSON.stringify({ preview: newDevToolTabs }, null, 2),
+  };
+}
+
+export function setCurrentTabToChangedTab({ state, props }) {
+  const nextPos = props.nextPos;
+
+  state.set('editor.currentDevToolsPosition', nextPos);
+}
+
+export function keepDevToolTabsInRange({ state }) {
+  const devToolTabs = state.get('editor.devToolTabs');
+  const currentPosition = state.get('editor.currentDevToolsPosition');
+
+  const maxPosition =
+    devToolTabs[currentPosition.devToolIndex].views.length - 1;
+  if (maxPosition > currentPosition.tabPosition) {
+    state.set('editor.currentDevToolsPosition.tabPosition', maxPosition);
+  }
+}
+
+const messagesToListenTo = [
+  'connect',
+  'disconnect',
+  'sandbox:status',
+  'sandbox:start',
+  'sandbox:stop',
+  'sandbox:error',
+  'sandbox:log',
+  'sandbox:hibernate',
+  'sandbox:update',
+  'sandbox:port',
+  'shell:out',
+  'shell:exit',
+];
+
+export function setupExecutor({ state, executor }) {
+  const sandbox = state.get('editor.currentSandbox');
+
+  return executor.initializeExecutor(sandbox).then(() => {
+    messagesToListenTo.forEach(message => {
+      executor.listen(message, 'server.onSSEMessage');
+    });
+
+    return executor.setupExecutor();
+  });
+}
+
+export function sendChangesToExecutor({ executor, state }) {
+  // If the executor is a server we only should send updates if the sandbox has been
+  // started already
+  if (
+    !executor.isServer() ||
+    state.get('server.containerStatus') === 'sandbox-started'
+  ) {
+    const sandbox = state.get('editor.currentSandbox');
+
+    executor.updateFiles(sandbox);
+  }
 }
 
 export function fetchEnvironmentVariables({ state, api, path }) {

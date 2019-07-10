@@ -64,7 +64,6 @@ export default Module({
     keybindings,
   },
   signals: {
-    viewModeChanged: sequences.changeViewMode,
     devtoolsToggled: sequences.toggleDevtools,
     setDevtoolsOpen: sequences.setDevtoolsOpen,
     itemIdChanged: sequences.changeItemId,

@@ -8,19 +8,19 @@ import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import getTemplate from '@codesandbox/common/lib/templates';
 
 type Props = {
-  width?: number | string,
-  height?: number | string,
-  hidden?: boolean,
-  runOnClick?: boolean,
+  hidden?: boolean;
+  runOnClick?: boolean;
+  store: any;
+  signals: any;
+  options: { url?: string };
 };
 
 type State = {
-  aligned: ?'right' | 'bottom',
+  running: boolean;
 };
 
 class Preview extends Component<Props, State> {
-  state = {
-    aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
+  state: State = {
     running: !this.props.runOnClick,
   };
 
@@ -145,52 +145,35 @@ class Preview extends Component<Props, State> {
     });
   };
 
-  resetAlignment = (
-    xChanged,
-    yChanged,
-    widthChanged,
-    heightChanged,
-    newSizes
-  ) => {
-    const { aligned } = this.state;
+  /**
+   * Responsible for showing a message when something is happening with SSE. Only used
+   * for server sandboxes right now, but we can extend it in the future. It would require
+   * a better design if we want to use it for more though.
+   */
+  getOverlayMessage = () => {
+    const {
+      containerStatus,
+      error,
+      hasUnrecoverableError,
+    } = this.props.store.server;
 
-    if (
-      ((widthChanged || !yChanged) && aligned === 'bottom') ||
-      ((heightChanged || xChanged) && aligned === 'right')
-    ) {
-      this.setState({ aligned: null });
-    } else if (aligned === 'right' && newSizes.width) {
-      this.props.signals.editor.editorSizeUpdated({
-        editorSize: (1 - newSizes.width / this.props.width) * 100,
-      });
-    } else if (aligned === 'bottom' && newSizes.height) {
-      this.props.signals.editor.editorSizeUpdated({
-        editorSize: (1 - newSizes.height / this.props.height) * 100,
-      });
+    if (containerStatus === 'hibernated') {
+      return 'The container has been hibernated because of inactivity, you can start it by refreshing the browser.';
     }
+
+    if (containerStatus === 'stopped') {
+      return 'Restarting the sandbox...';
+    }
+
+    if (error && hasUnrecoverableError) {
+      return 'A sandbox error occurred, you can refresh the page to restart the container.';
+    }
+
+    return undefined;
   };
 
-  getBottomCoordinates = (props = this.props, previewSizeScalar = 0.5) => ({
-    x: 0,
-    y: (props.height || 0) * (1 - previewSizeScalar) - 16,
-    width: (props.width || 0) - 16,
-    height: (props.height || 0) * previewSizeScalar,
-  });
-
-  getRightCoordinates = (props = this.props, previewSizeScalar = 0.5) => ({
-    x: 0,
-    y: 0,
-    width: (props.width || 0) * previewSizeScalar,
-    height: (props.height || 0) - 16,
-  });
-
   render() {
-    const { store, signals } = this.props;
-
-    const packageJSON = {
-      path: '/package.json',
-      code: store.editor.currentPackageJSONCode,
-    };
+    const { store, signals, options } = this.props;
 
     const completelyHidden = !store.editor.previewWindowVisible;
 
@@ -198,34 +181,18 @@ class Preview extends Component<Props, State> {
       <BasePreview
         onInitialized={this.onPreviewInitialized}
         sandbox={store.editor.currentSandbox}
-        extraModules={{ '/package.json': packageJSON }}
         currentModule={store.editor.currentModule}
         settings={store.preferences.settings}
         initialPath={store.editor.initialPath}
+        url={options.url}
         isInProjectView={store.editor.isInProjectView}
         onClearErrors={() => signals.editor.errorsCleared()}
         onAction={action => signals.editor.previewActionReceived({ action })}
-        alignDirection={this.state.aligned}
         hide={this.props.hidden}
         noPreview={completelyHidden}
-        onOpenNewWindow={() =>
-          signals.preferences.viewModeChanged({
-            showEditor: true,
-            showPreview: false,
-          })
-        }
         onToggleProjectView={() => signals.editor.projectViewToggled()}
-        showDevtools={store.preferences.showDevtools}
         isResizing={store.editor.isResizing}
-        setSSEManagerStatus={(status: string) => {
-          signals.server.statusChanged({ status });
-        }}
-        setSSEContainerStatus={(status: string) => {
-          signals.server.containerStatusChanged({ status });
-        }}
-        managerStatus={store.server.status}
-        containerStatus={store.server.containerStatus}
-        syncSandbox={signals.files.syncSandbox}
+        overlayMessage={this.getOverlayMessage()}
       />
     ) : (
       <RunOnClick

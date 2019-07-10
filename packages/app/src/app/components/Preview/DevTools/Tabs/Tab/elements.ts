@@ -17,6 +17,7 @@ export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
   display: flex;
   align-items: center;
   padding: 0 1.25rem;
+  width: max-content;
 
   padding-right: 1.75rem;
   height: 100%;

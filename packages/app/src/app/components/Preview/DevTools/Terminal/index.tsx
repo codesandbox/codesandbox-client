@@ -1,95 +1,52 @@
-// @flow
 import React from 'react';
-import { listen } from 'codesandbox-api';
 import { withTheme } from 'styled-components';
-import { Terminal } from 'xterm';
-import * as fit from 'xterm/lib/addons/fit/fit';
-import ResizeObserver from 'resize-observer-polyfill';
+import { listen } from 'codesandbox-api';
 
 import uuid from 'uuid';
 import PlusIcon from 'react-icons/lib/md/add';
 
-import getTerminalTheme from './terminal-theme';
-
 import './styles.css';
 
 import Shell from './Shell';
+import { TerminalComponent } from './Shell/Term';
 import ShellTabs from './ShellTabs';
 
-export type ShellT = {
-  id: string,
-  title: string,
-  script: ?string,
-  ended: boolean,
-};
+import { ShellT, TerminalWithFit } from './types';
+import { DevToolProps } from '..';
 
 type State = {
-  shells: Array<ShellT>,
-  selectedShell: ?string,
-};
-
-type Props = {
-  hidden: boolean,
-  height: number,
-  updateStatus?: (type: string, count?: number) => void,
-  theme: any,
-  openDevTools: () => void,
-  selectCurrentPane: () => void,
+  shells: ShellT[];
+  selectedShell: string | undefined;
 };
 
 // Incredibly hacky way of letting the StatusBar access the state of the component.
 // In the future we need to abstract this away to the global state and dispatch an event.
-let createShell;
+// We need to keep all the tabs in the global state and work from there.
+let createShell: (() => void) | undefined;
 
-Terminal.applyAddon(fit);
-class TerminalComponent extends React.Component<Props, State> {
-  state = {
+class DevToolTerminal extends React.Component<
+  DevToolProps & { theme: any },
+  State
+> {
+  state: State = {
     shells: [],
-    selectedShell: null,
+    selectedShell: undefined,
   };
-  term: Terminal;
-  node: ?HTMLElement;
-  timeout: TimeoutID;
+
+  term: TerminalWithFit;
   listener: () => void;
+  node?: HTMLElement;
+  timeout?: number;
 
   componentDidMount() {
     createShell = this.createShell;
 
-    this.term = new Terminal({
-      rendererType: 'dom',
-      theme: getTerminalTheme(this.props.theme),
-      fontFamily: 'Source Code Pro',
-      fontWeight: 'normal',
-      fontWeightBold: 'bold',
-      lineHeight: 1.3,
-      fontSize: 14,
-    });
-    this.term.open(this.node);
-    this.term.fit();
-
     this.listener = listen(this.handleMessage);
   }
 
-  observer: ResizeObserver;
-
-  setupResizeObserver = el => {
-    if (el) {
-      this.observer = new ResizeObserver(() => {
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          this.term.fit();
-        }, 300);
-      });
-
-      this.observer.observe(el);
-    }
+  setTerminal = (terminal: TerminalWithFit) => {
+    this.term = terminal;
   };
-
-  componentWillUpdate(nextProps: Props) {
-    if (JSON.stringify(nextProps.theme) !== JSON.stringify(this.props.theme)) {
-      this.term.setOption('theme', getTerminalTheme(nextProps.theme));
-    }
-  }
 
   handleMessage = (data: any) => {
     if (data.type === 'terminal:message') {
@@ -108,12 +65,8 @@ class TerminalComponent extends React.Component<Props, State> {
 
   componentWillUnmount() {
     createShell = undefined;
-    this.listener();
-    this.observer.disconnect();
 
-    if (this.term) {
-      this.term.dispose();
-    }
+    this.listener();
   }
 
   createShell = (script?: string) => {
@@ -130,7 +83,7 @@ class TerminalComponent extends React.Component<Props, State> {
     }));
   };
 
-  selectShell = (shellId: ?string) => {
+  selectShell = (shellId?: string) => {
     this.setState({ selectedShell: shellId });
   };
 
@@ -143,7 +96,7 @@ class TerminalComponent extends React.Component<Props, State> {
       return newShell.id;
     }
 
-    return null;
+    return undefined;
   };
 
   closeShell = (shellId: string) => {
@@ -174,37 +127,26 @@ class TerminalComponent extends React.Component<Props, State> {
   };
 
   render() {
-    const { height, hidden } = this.props;
+    const { hidden, theme, owned } = this.props;
+    const { selectedShell } = this.state;
 
     return (
-      <div className={!hidden && 'terminal'} ref={this.setupResizeObserver}>
-        {!hidden && this.state.shells.length > 0 && (
+      <div className={'terminal'}>
+        {!hidden && owned && (
           <ShellTabs
             selectedShell={this.state.selectedShell}
             shells={this.state.shells}
             selectShell={this.selectShell}
             closeShell={this.closeShell}
+            createShell={this.createShell}
           />
         )}
 
-        <div style={{ position: 'relative' }}>
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: height - 72,
-              padding: '1rem',
-              visibility:
-                hidden || this.state.selectedShell !== null
-                  ? 'hidden'
-                  : 'visible',
-            }}
-            ref={node => {
-              this.node = node;
-            }}
+        <div style={{ position: 'relative', flex: 'auto' }}>
+          <TerminalComponent
+            hidden={hidden || selectedShell !== undefined}
+            theme={theme}
+            onTerminalInitialized={this.setTerminal}
           />
           {this.state.shells.map(shell => (
             <Shell
@@ -212,7 +154,6 @@ class TerminalComponent extends React.Component<Props, State> {
               id={shell.id}
               script={shell.script}
               ended={shell.ended}
-              height={height}
               hidden={hidden || shell.id !== this.state.selectedShell}
               closeShell={() => this.closeShell(shell.id)}
               endShell={() => this.endShell(shell.id)}
@@ -227,11 +168,11 @@ class TerminalComponent extends React.Component<Props, State> {
 export default {
   id: 'codesandbox.terminal',
   title: 'Terminal',
-  Content: withTheme(TerminalComponent),
+  Content: withTheme(DevToolTerminal),
   actions: ({ owned }) =>
     [
-      {
-        title: owned ? 'Add Terminal' : 'Fork to add a terminal',
+      !owned && {
+        title: 'Fork to add a terminal',
         onClick: () => {
           if (createShell && owned) {
             createShell();

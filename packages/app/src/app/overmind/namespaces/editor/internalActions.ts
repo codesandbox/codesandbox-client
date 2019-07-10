@@ -474,9 +474,7 @@ export const recoverFiles: Action = ({ state, effects, actions }) => {
     });
 
     effects.notificationToast.add({
-      message: `We recovered ${
-        recoveredList.length
-      } unsaved files from a previous session`,
+      message: `We recovered ${recoveredList.length} unsaved files from a previous session`,
       status: NotificationStatus.NOTICE,
     });
   }

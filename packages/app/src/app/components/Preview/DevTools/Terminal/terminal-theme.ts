@@ -1,56 +1,34 @@
-// @flow
+import { ITheme } from 'xterm';
 
-type VSTheme = {
-  background2: () => void,
+export type VSTheme = {
+  background2: () => void;
   vscodeTheme: {
     colors: {
-      'terminal.ansiBlack': string,
-      'terminal.ansiBlue': string,
-      'terminal.ansiBrightBlack': string,
-      'terminal.ansiBrightBlue': string,
-      'terminal.ansiBrightCyan': string,
-      'terminal.ansiBrightGreen': string,
-      'terminal.ansiBrightMagenta': string,
-      'terminal.ansiBrightRed': string,
-      'terminal.ansiBrightWhite': string,
-      'terminal.ansiBrightYellow': string,
-      'terminal.ansiCyan': string,
-      'terminal.ansiGreen': string,
-      'terminal.ansiMagenta': string,
-      'terminal.ansiRed': string,
-      'terminal.ansiWhite': string,
-      'terminal.ansiYellow': string,
-      'panel.background': string,
-      'panel.foreground': string,
-      'terminal.foreground': string,
-      'terminal.selectionBackground': string,
-    },
-  },
+      'terminal.ansiBlack': string;
+      'terminal.ansiBlue': string;
+      'terminal.ansiBrightBlack': string;
+      'terminal.ansiBrightBlue': string;
+      'terminal.ansiBrightCyan': string;
+      'terminal.ansiBrightGreen': string;
+      'terminal.ansiBrightMagenta': string;
+      'terminal.ansiBrightRed': string;
+      'terminal.ansiBrightWhite': string;
+      'terminal.ansiBrightYellow': string;
+      'terminal.ansiCyan': string;
+      'terminal.ansiGreen': string;
+      'terminal.ansiMagenta': string;
+      'terminal.ansiRed': string;
+      'terminal.ansiWhite': string;
+      'terminal.ansiYellow': string;
+      'panel.background': string;
+      'panel.foreground': string;
+      'terminal.foreground': string;
+      'terminal.selectionBackground': string;
+    };
+  };
 };
 
-type XTermTheme = {
-  background: string,
-  black: string,
-  blue: string,
-  brightBlack: string,
-  brightBlue: string,
-  brightCyan: string,
-  brightGreen: string,
-  brightMagenta: string,
-  brightRed: string,
-  brightWhite: string,
-  brightYellow: string,
-  cyan: string,
-  foreground: string,
-  green: string,
-  magenta: string,
-  red: string,
-  selection: string,
-  white: string,
-  yellow: string,
-};
-
-export default function getTerminalTheme(theme: VSTheme): XTermTheme {
+export default function getTerminalTheme(theme: VSTheme): ITheme {
   return {
     background:
       theme.vscodeTheme.colors['terminal.background'] || theme.background2(),
