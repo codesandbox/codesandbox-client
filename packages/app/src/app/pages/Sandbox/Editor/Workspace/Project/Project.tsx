@@ -1,41 +1,42 @@
-import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-import TeamIcon from 'react-icons/lib/md/people';
+import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
   sandboxUrl,
   githubRepoUrl,
   patronUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
-import getTemplate from '@codesandbox/common/lib/templates';
-import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { observer } from 'mobx-react-lite';
+import React from 'react';
+import TeamIcon from 'react-icons/lib/md/people';
+
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
 import { useSignals, useStore } from 'app/store';
-import { Title } from './Title';
-import { Description } from './Description';
+
 // import AliasComponent from './Alias';
 import { Author } from './Author';
-import { Keywords } from './Keywords';
-import { Frozen } from './Frozen';
-import { SandboxConfig } from './SandboxConfig';
+import { Description } from './Description';
 import {
-  Container,
   BasicInfo,
-  Item,
-  Group,
-  StatsContainer,
-  PrivacyContainer,
-  PropertyValue,
-  PropertyName,
-  PrivacySelect,
-  Icon,
-  TemplateStyledLink,
   BundlerLink,
+  Container,
   Explanation,
+  Group,
+  Icon,
+  Item,
+  PrivacyContainer,
+  PrivacySelect,
+  PropertyName,
+  PropertyValue,
+  StatsContainer,
+  TemplateStyledLink,
 } from './elements';
+import { Frozen } from './Frozen';
+import { Keywords } from './Keywords';
+import { SandboxConfig } from './SandboxConfig';
+import { Title } from './Title';
 
 interface IProjectProps {
   editable?: boolean;
@@ -46,9 +47,9 @@ export const Project = observer(({ editable }: IProjectProps) => {
   const {
     workspace: { sandboxPrivacyChanged },
   } = useSignals();
-  const isServer = getTemplate(editor.currentSandbox.template).isServer;
   const sandbox = editor.currentSandbox;
   const template = getTemplateDefinition(sandbox.template);
+  const isServer = template.isServer;
 
   return (
     <Container>
@@ -58,7 +59,9 @@ export const Project = observer(({ editable }: IProjectProps) => {
         {/* Disable until we also moved SSE over */}
         {/* <Alias editable={editable} /> */}
       </BasicInfo>
+
       {!sandbox.team && sandbox.author && <Author author={sandbox.author} />}
+
       {sandbox.team && (
         <Tooltip appendTo="parent" content="This sandbox is owned by this team">
           <Item style={{ color: 'white', display: 'flex' }}>
@@ -67,6 +70,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
           </Item>
         </Tooltip>
       )}
+
       {sandbox.git && (
         <Item>
           <GithubBadge
@@ -77,10 +81,13 @@ export const Project = observer(({ editable }: IProjectProps) => {
           />
         </Item>
       )}
+
       <StatsContainer>
         <Stats sandbox={sandbox} />
       </StatsContainer>
+
       <Keywords editable={editable} />
+
       <Group>
         <Item>
           <PropertyName>Privacy</PropertyName>
@@ -114,6 +121,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
             </PrivacyContainer>
           </PropertyValue>
         </Item>
+
         {!isPatron && editable && (
           <Explanation style={{ marginTop: '-1rem' }}>
             You can change privacy of a sandbox as a{' '}
@@ -123,7 +131,9 @@ export const Project = observer(({ editable }: IProjectProps) => {
             .
           </Explanation>
         )}
+
         {editable && <Frozen isFrozen={sandbox.isFrozen} />}
+
         {sandbox.forkedFromSandbox && (
           <Item>
             <PropertyName>Forked From</PropertyName>
@@ -134,6 +144,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
             </PropertyValue>
           </Item>
         )}
+
         <Item>
           <PropertyName>
             Environment{' '}
@@ -159,6 +170,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
           </PropertyValue>
         </Item>
       </Group>
+
       {editable && <SandboxConfig />}
     </Container>
   );

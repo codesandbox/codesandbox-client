@@ -1,14 +1,13 @@
-import * as React from 'react';
-import { Animate } from 'react-show';
-import { sortBy } from 'lodash';
-
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { dispatch, actions } from 'codesandbox-api';
+import { sortBy } from 'lodash';
+import React from 'react';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
+import { Animate } from 'react-show';
 
+import { MessageType } from './';
 import { File, Path, FileName, Actions, AnimatedChevron } from './elements';
 import { ProblemMessage } from './Message';
-import { MessageType } from '.';
-import { dispatch, actions } from 'codesandbox-api';
 
 export interface Props {
   file: string;

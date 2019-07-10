@@ -1,19 +1,17 @@
-/* eslint-disable no-param-reassign */
-import * as React from 'react';
+import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 import { actions, dispatch, listen } from 'codesandbox-api';
-import SplitPane from 'react-split-pane';
-
 import immer from 'immer';
 import { debounce } from 'lodash-es';
+import React from 'react';
+import SplitPane from 'react-split-pane';
+
+import { DevToolProps } from '../';
 
 import { Container, TestDetails, TestContainer } from './elements';
-
 import TestElement from './TestElement';
 import TestDetailsContent from './TestDetails';
 import TestSummary from './TestSummary';
 import TestOverview from './TestOverview';
-import { DevToolProps } from '..';
-import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -25,24 +23,26 @@ export type Status = 'idle' | 'running' | 'pass' | 'fail';
 
 export type TestError = Error & {
   matcherResult?: boolean;
-  mappedErrors?: Array<{
+  mappedErrors?: {
     fileName: string;
     _originalFunctionName: string;
     _originalColumnNumber: number;
     _originalLineNumber: number;
-    _originalScriptCode: Array<{
-      lineNumber: number;
-      content: string;
-      highlight: boolean;
-    }> | null;
-  }>;
+    _originalScriptCode:
+      | {
+          lineNumber: number;
+          content: string;
+          highlight: boolean;
+        }[]
+      | null;
+  }[];
 };
 
 export type Test = {
-  testName: Array<string>;
-  duration: number | undefined;
+  testName: string[];
+  duration?: number;
   status: Status;
-  errors: Array<TestError>;
+  errors: TestError[];
   running: boolean;
   path: string;
 };
@@ -56,7 +56,7 @@ export type File = {
 };
 
 type State = {
-  selectedFilePath: string | undefined;
+  selectedFilePath?: string;
   fileExpansionState: {
     [path: string]: Boolean;
   };
@@ -164,8 +164,8 @@ const INITIAL_STATE = {
 class Tests extends React.Component<DevToolProps, State> {
   state = INITIAL_STATE;
 
-  listener: Function;
-  currentDescribeBlocks: Array<string> = [];
+  listener: () => void;
+  currentDescribeBlocks: string[] = [];
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
@@ -213,7 +213,7 @@ class Tests extends React.Component<DevToolProps, State> {
       let delay = 1000;
 
       if (data.compilatonError) {
-        delay = 2 * delay;
+        delay *= 2;
       }
 
       // avoid to often test run in file watching mode,

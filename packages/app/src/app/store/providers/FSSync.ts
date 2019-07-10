@@ -92,7 +92,6 @@ async function syncDependencyTypings(
           if (process.env.NODE_ENV === 'development') {
             console.warn('Trouble fetching types for ' + depName);
           }
-          return {};
         }
       })
     );
@@ -141,14 +140,14 @@ export default Provider({
                 return;
               }
 
-              fs.stat('/sandbox/tsconfig.json', (err, result) => {
+              fs.stat('/sandbox/tsconfig.json', (error, result) => {
                 // If tsconfig exists we want to sync the types
-                syncDependencyTypings(rv.toString(), Boolean(err) || !result);
+                syncDependencyTypings(rv.toString(), Boolean(error) || !result);
               });
             });
           }
         });
-      } catch (e) {}
+      } catch {}
     }, 1000);
 
     self.addEventListener('message', evt => {

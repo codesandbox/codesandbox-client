@@ -1,7 +1,6 @@
-// @flow
 import React from 'react';
 
-import type { Editor, Settings } from '../types';
+import { Editor, Settings } from '../types';
 import MonacoReactComponent from '../Monaco/MonacoReactComponent';
 import defineTheme from '../Monaco/define-theme';
 

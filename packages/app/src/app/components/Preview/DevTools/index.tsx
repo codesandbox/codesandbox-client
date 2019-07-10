@@ -1,19 +1,16 @@
-import * as React from 'react';
-
-import { TweenMax, Elastic } from 'gsap';
-import store from 'store/dist/store.modern';
-import FaAngleUp from 'react-icons/lib/fa/angle-up';
-
 import { TemplateType } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
+import { TweenMax, Elastic } from 'gsap';
+import React from 'react';
+import FaAngleUp from 'react-icons/lib/fa/angle-up';
+import store from 'store/dist/store.modern';
 
 import console from './Console';
-import tests from './Tests';
-import problems from './Problems';
-import terminal from './Terminal';
-
 import { Container, Header, ContentContainer } from './elements';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
+import problems from './Problems';
 import Tabs, { ITabPosition } from './Tabs';
+import terminal from './Terminal';
+import tests from './Tests';
 
 function unFocus(document, window) {
   if (document.selection) {
@@ -23,7 +20,7 @@ function unFocus(document, window) {
     try {
       window.getSelection().removeAllRanges();
       // eslint-disable-next-line no-empty
-    } catch (e) {}
+    } catch {}
   }
 }
 

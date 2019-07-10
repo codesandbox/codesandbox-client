@@ -1,8 +1,8 @@
-import * as React from 'react';
-
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import React from 'react';
 
-import { IViewType, Status } from '..';
+import { IViewType, Status } from '../';
+
 import { Actions, Container, Tabs } from './elements';
 import DraggableTab, { PaneTab, TabProps } from './Tab';
 import TabDropZone, { TabDropZoneProps } from './TabDropZone';

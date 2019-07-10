@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { TextOperation } from 'ot';
@@ -29,8 +29,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import eventToTransform from '../Monaco/event-to-transform';
-import MonacoEditorComponent from './MonacoReactComponent';
-import { EditorAPI } from './MonacoReactComponent';
+import MonacoEditorComponent, { EditorAPI } from './MonacoReactComponent';
 import { Container, GlobalStyles } from './elements';
 import getSettings from '../Monaco/settings';
 
@@ -76,24 +75,24 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   sandbox: Props['sandbox'];
   currentModule: Props['currentModule'];
   currentTitle: string;
-  currentDirectoryShortid: string | undefined;
+  currentDirectoryShortid?: string;
   settings: Props['settings'];
-  dependencies: Props['dependencies'] | undefined;
-  tsconfig: Props['tsconfig'] | undefined;
-  disposeInitializer: Function | undefined;
-  lintWorker: Worker | undefined;
+  dependencies?: Props['dependencies'];
+  tsconfig?: Props['tsconfig'];
+  disposeInitializer?: Function;
+  lintWorker?: Worker;
   editor: any;
   monaco: any;
   receivingCode: boolean = false;
-  codeSandboxAPIListener: Function | undefined;
+  codeSandboxAPIListener?: () => void;
   sizeProbeInterval: number | null;
 
   modelSelectionListener: {
-    dispose: Function;
+    dispose: () => void;
   };
 
   resizeEditor: (() => void) | EventListener;
-  commitLibChanges: Function;
+  commitLibChanges: () => void;
 
   constructor(props: Props) {
     super(props);
@@ -571,7 +570,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           userId: string;
           name: string;
           selection: any;
-          color: Array<number>;
+          color: number[];
         }
     >
   ) => {
@@ -1144,7 +1143,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           theme="CodeSandbox"
           options={options}
           editorDidMount={this.configureEditor}
-          editorWillMount={monaco => {}}
+          editorWillMount={() => {}}
           getEditorOptions={this.getEditorOptions}
           customEditorAPI={{ getCustomEditor: this.getCustomEditor }}
         />

@@ -21,12 +21,12 @@ function updateChildren(
 export default class Module {
   id: string;
   exports: any;
-  parent: Module | undefined;
+  parent?: Module;
   children: Module[];
   filename: string | null;
   loaded: boolean;
   static _extensions: {
-    [ext: string]: Function;
+    [ext: string]: (module: Module, filename: string) => void;
   } = {
     ['.js']: function(module: Module, filename: string) {
       const fs = BrowserFS.BFSRequire('fs');
@@ -84,7 +84,7 @@ export default class Module {
   }
 
   _compile(content: string, filename: string) {
-    var _self = this;
+    const _self = this;
     // remove shebang
     content = content.replace(/^\#\!.*/, '');
 
@@ -99,7 +99,7 @@ export default class Module {
     };
 
     const global: any = {
-      require: require,
+      require,
       exports: _self.exports,
       __filename: filename,
       __dirname: path.dirname(filename),
