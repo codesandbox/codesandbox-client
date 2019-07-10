@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["src/app/overmind/**/*"],
+  "exclude": ["src/app/overmind/*"],
   "compilerOptions": {
     "allowJs": false
   }

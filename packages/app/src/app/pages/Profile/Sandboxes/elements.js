@@ -28,7 +28,7 @@ const ErrorTitle = styled.div`
 `;
 const prefix = {
   currentSandboxes: ["You don't have", "This user doesn't have"],
-  currentLikedSandboxes: ["You didn't like", "This user didn't like"],
+  currentLikedSandboxes: ["You haven't liked", "This user didn't like"],
 };
 export const NoSandboxes = ({ source, isCurrentUser }) => (
   <Centered vertical horizontal>
