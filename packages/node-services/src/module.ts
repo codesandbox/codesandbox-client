@@ -21,7 +21,7 @@ function updateChildren(
 export default class Module {
   id: string;
   exports: any;
-  parent?: Module;
+  parent: Module | undefined;
   children: Module[];
   filename: string | null;
   loaded: boolean;
@@ -84,7 +84,7 @@ export default class Module {
   }
 
   _compile(content: string, filename: string) {
-    const _self = this;
+    var _self = this;
     // remove shebang
     content = content.replace(/^\#\!.*/, '');
 

@@ -73,6 +73,7 @@ async function syncDependencyTypings(
     );
 
     return Promise.all(
+      // eslint-disable-next-line consistent-return
       Object.keys(absoluteDependencies).map(async depName => {
         const depVersion = absoluteDependencies[depName];
 
@@ -93,10 +94,12 @@ async function syncDependencyTypings(
             // eslint-disable-next-line no-console
             console.warn('Trouble fetching types for ' + depName);
           }
+
+          return {};
         }
       })
     );
-  } catch (e) {
+  } catch {
     /* ignore */
     return Promise.resolve({});
   }

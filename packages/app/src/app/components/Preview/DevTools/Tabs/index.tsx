@@ -69,7 +69,7 @@ const DevToolTabs = ({
               devToolIndex={devToolIndex}
               moveTab={moveTab}
               index={i}
-              key={pane.id}
+              key={i} // eslint-disable-line react/no-array-index-key
               status={
                 status
                   ? status[pane.id] || { unread: 0, type: 'info' }

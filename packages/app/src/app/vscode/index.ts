@@ -75,9 +75,9 @@ class VSCodeManager {
         this.controller.getSignal('editor.toggleEditorPreviewLayout')();
       },
       keybindings: {
-        primary: KeyMod.Shift || KeyMod.Alt || KeyCode.KEY_9,
+        primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_9,
         mac: {
-          primary: KeyMod.CtrlCmd || KeyMod.Alt || KeyCode.KEY_9,
+          primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_9,
         },
       },
     });

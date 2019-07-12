@@ -106,8 +106,9 @@ export function setVimExtensionEnabled(vimEnabled: boolean) {
   } else {
     // Auto disable vim extension
     if (
-      localStorage.getItem('vs-global://extensionsIdentifiers/disabled') ===
-      undefined
+      [null, undefined].includes(
+        localStorage.getItem('vs-global://extensionsIdentifiers/disabled')
+      )
     ) {
       localStorage.setItem(
         'vs-global://extensionsIdentifiers/disabled',

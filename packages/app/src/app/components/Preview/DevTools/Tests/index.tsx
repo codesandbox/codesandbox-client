@@ -23,24 +23,22 @@ export type Status = 'idle' | 'running' | 'pass' | 'fail';
 
 export type TestError = Error & {
   matcherResult?: boolean;
-  mappedErrors?: {
+  mappedErrors?: Array<{
     fileName: string;
     _originalFunctionName: string;
     _originalColumnNumber: number;
     _originalLineNumber: number;
-    _originalScriptCode:
-      | {
-          lineNumber: number;
-          content: string;
-          highlight: boolean;
-        }[]
-      | null;
-  }[];
+    _originalScriptCode: Array<{
+      lineNumber: number;
+      content: string;
+      highlight: boolean;
+    }> | null;
+  }>;
 };
 
 export type Test = {
   testName: string[];
-  duration?: number;
+  duration: number | undefined;
   status: Status;
   errors: TestError[];
   running: boolean;
