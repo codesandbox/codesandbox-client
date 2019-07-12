@@ -204,9 +204,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         this.sandbox.directories
       );
 
-      const parsedCode = JSON.parse(module.code || '');
-
-      return parsedCode;
+      return JSON.parse(module.code || '');
     } catch (e) {
       return this.settings.prettierConfig || DEFAULT_PRETTIER_CONFIG;
     }
@@ -230,7 +228,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     // @ts-ignore
     return listen(({ action, type, code, path, lineNumber, column }) => {
       if (type === 'add-extra-lib') {
-        // TODO; bring this func back
+        // TODO: bring this func back
         // const dtsPath = `${path}.d.ts`;
         // this.monaco.languages.typescript.typescriptDefaults._extraLibs[
         //   `file:///${dtsPath}`
@@ -267,6 +265,35 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   modelAddedListener: { dispose: () => void };
   activeEditorListener: { dispose: () => void };
 
+  getListener = model =>
+    model.onDidChangeContent(e => {
+      const path = model.uri.path;
+      try {
+        const module = resolveModule(
+          path.replace(/^\/sandbox/, ''),
+          this.sandbox.modules,
+          this.sandbox.directories
+        );
+
+        const { isLive, sendTransforms } = this.props;
+
+        if (
+          path === this.getCurrentModuleVSCodePath() &&
+          isLive &&
+          sendTransforms &&
+          !this.receivingCode
+        ) {
+          this.sendChangeOperations(e);
+        }
+
+        this.handleChange(module.shortid, module.title, model.getValue(1));
+      } catch (err) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('caught', err);
+        }
+      }
+    });
+
   listenForFileChanges = () => {
     this.modelAddedListener = this.editor.textFileService.modelService.onModelAdded(
       model => {
@@ -282,37 +309,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
             return;
           }
 
-          const listener = model.onDidChangeContent(e => {
-            const path = model.uri.path;
-            try {
-              const module = resolveModule(
-                path.replace(/^\/sandbox/, ''),
-                this.sandbox.modules,
-                this.sandbox.directories
-              );
-
-              const { isLive, sendTransforms } = this.props;
-
-              if (
-                path === this.getCurrentModuleVSCodePath() &&
-                isLive &&
-                sendTransforms &&
-                !this.receivingCode
-              ) {
-                this.sendChangeOperations(e);
-              }
-
-              this.handleChange(
-                module.shortid,
-                module.title,
-                model.getValue(1)
-              );
-            } catch (err) {
-              if (process.env.NODE_ENV === 'development') {
-                console.error('caught', err);
-              }
-            }
-          });
+          const listener = this.getListener(model);
           this.modelListeners[model.uri.path] = {
             moduleShortid: module.shortid,
             model,

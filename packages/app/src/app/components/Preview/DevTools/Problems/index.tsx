@@ -1,3 +1,5 @@
+/* eslint import/extensions: "warn", import/no-unresolved: "warn" */
+
 import { listen } from 'codesandbox-api';
 import {
   CorrectionAction,
