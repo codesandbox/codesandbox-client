@@ -25,6 +25,7 @@ export const loadBrowserFS = () => {
 
 export const initializeGlobals = () => {
   // We need to initialize some node environment stubs
+  ctx.BrowserFS = ctx.BrowserFS;
   ctx.process = ctx.BrowserFS.BFSRequire('process');
   ctx.process.platform = 'linux';
   ctx.process.stdin = new EventEmitter();
