@@ -90,6 +90,7 @@ async function syncDependencyTypings(
           sendTypes();
         } catch (e) {
           if (process.env.NODE_ENV === 'development') {
+            // eslint-disable-next-line no-console
             console.warn('Trouble fetching types for ' + depName);
           }
         }
@@ -147,7 +148,9 @@ export default Provider({
             });
           }
         });
-      } catch {}
+      } catch {
+        // we just ignore the error
+      }
     }, 1000);
 
     self.addEventListener('message', evt => {

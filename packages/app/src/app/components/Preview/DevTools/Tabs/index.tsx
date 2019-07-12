@@ -69,7 +69,7 @@ const DevToolTabs = ({
               devToolIndex={devToolIndex}
               moveTab={moveTab}
               index={i}
-              key={i}
+              key={pane.id}
               status={
                 status
                   ? status[pane.id] || { unread: 0, type: 'info' }
