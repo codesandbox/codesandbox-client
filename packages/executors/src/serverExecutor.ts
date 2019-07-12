@@ -72,7 +72,7 @@ export class ServerExecutor implements IExecutor {
   }
 
   private initializeSocket() {
-    return io(`https://sse.codesandbox.stream`, {
+    return io(`https://sse.codesandbox.io`, {
       autoConnect: false,
       transports: ['websocket', 'polling'],
     });
