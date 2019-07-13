@@ -208,4 +208,9 @@ export default {
       type: types.maybeNull(types.string),
     })
   ),
+  currentDevToolsPosition: types.model({
+    devToolIndex: types.number,
+    tabPosition: types.number,
+  }),
+  workspaceConfigCode: types.string,
 };

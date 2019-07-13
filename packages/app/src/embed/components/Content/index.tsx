@@ -1,17 +1,15 @@
 // @flow
 import * as React from 'react';
-import type {
+import {
   Sandbox,
   Module,
   ModuleError,
+  ModuleCorrection,
 } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
-import type {
-  CorrectionAction,
-  CorrectionClearAction,
-} from 'codesandbox-api/dist/types/actions/correction.d.ts';
+import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
 import CodeEditor from 'app/components/CodeEditor';
-import type { Editor, Settings } from 'app/components/CodeEditor/types';
+import { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
@@ -26,7 +24,11 @@ import {
   StyledCloseIcon,
 } from 'app/pages/Sandbox/Editor/Content/Tabs/Tab/elements';
 
-import DevTools from 'app/components/Preview/DevTools';
+import DevTools, {
+  IViewType,
+  DevToolProps,
+} from 'app/components/Preview/DevTools';
+import { ITabPosition } from 'app/components/Preview/DevTools/Tabs';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
 import {
@@ -38,47 +40,47 @@ import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 
 import { Container, Tabs, Split } from './elements';
 
-type EmbedError = {
-  column: number,
-  line: number,
-  message: string,
-  title: string,
-  payload?: Object,
-  severity: 'error' | 'warning',
-};
-
 type Props = {
-  showEditor: boolean,
-  showPreview: boolean,
-  previewWindow: string,
-  isInProjectView: boolean,
-  setProjectView: (sandboxId?: ?string, isOpen: boolean, cb: Function) => void,
-  sandbox: Sandbox,
-  currentModule: Module,
-  hideNavigation: boolean,
-  autoResize: boolean,
-  fontSize?: number,
-  initialPath: string,
-  setCurrentModule: (moduleId: string) => void,
-  useCodeMirror: boolean,
-  enableEslint: boolean,
-  editorSize: number,
-  highlightedLines: Array<number>,
-  forceRefresh: boolean,
-  expandDevTools: boolean,
-  runOnClick: boolean,
-  verticalMode: boolean,
-  tabs?: Array<string>,
+  showEditor: boolean;
+  showPreview: boolean;
+  previewWindow: string;
+  isInProjectView: boolean;
+  setProjectView: (
+    sandboxId: string | undefined,
+    isOpen: boolean,
+    cb: () => void
+  ) => void;
+  sandbox: Sandbox;
+  currentModule: Module;
+  hideNavigation: boolean;
+  autoResize: boolean;
+  fontSize?: number;
+  initialPath: string;
+  setCurrentModule: (moduleId: string) => void;
+  useCodeMirror: boolean;
+  enableEslint: boolean;
+  editorSize: number;
+  highlightedLines: number[];
+  forceRefresh: boolean;
+  expandDevTools: boolean;
+  runOnClick: boolean;
+  verticalMode: boolean;
+  tabs?: string[];
+  isNotSynced: boolean;
+  tabCount: number;
 };
 
 type State = {
-  tabs: Array<Module>,
-  isInProjectView: boolean,
-  dragging: boolean,
-  running: boolean,
+  tabs: Array<Module>;
+  isInProjectView: boolean;
+  dragging: boolean;
+  running: boolean;
+  currentDevToolPosition: ITabPosition;
 };
 
 export default class Content extends React.PureComponent<Props, State> {
+  state: State;
+
   constructor(props: Props) {
     super(props);
 
@@ -89,11 +91,19 @@ export default class Content extends React.PureComponent<Props, State> {
       tabs,
       dragging: false,
       isInProjectView: props.isInProjectView,
+      currentDevToolPosition: {
+        devToolIndex: 0,
+        tabPosition: 0,
+      },
     };
 
     this.errors = [];
     this.corrections = [];
   }
+
+  setPane = (pos: ITabPosition) => {
+    this.setState({ currentDevToolPosition: pos });
+  };
 
   getInitTabs = (props: Props) => {
     let tabs: Array<Module> = [];
@@ -148,9 +158,10 @@ export default class Content extends React.PureComponent<Props, State> {
     return <StyledNotSyncedIcon show={undefined} />;
   };
 
-  errors: Array<ModuleError>;
-  editor: ?Editor;
-  preview: ?BasePreview;
+  errors: ModuleError[];
+  corrections: ModuleCorrection[];
+  editor?: Editor;
+  preview?: BasePreview;
 
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.currentModule !== nextProps.currentModule) {
@@ -180,11 +191,7 @@ export default class Content extends React.PureComponent<Props, State> {
     setTimeout(this.handleResize);
   }
 
-  onCodeEditorUnMount = () => {
-    this.editor = null;
-  };
-
-  setProjectView = (id?: string, view: boolean) => {
+  setProjectView = (id: string | undefined, view: boolean) => {
     this.setState({ isInProjectView: view });
   };
 
@@ -239,7 +246,7 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
-  handleAction = (action: Object) => {
+  handleAction = (action: any) => {
     switch (action.action) {
       case 'show-error':
         return this.addError(action);
@@ -268,7 +275,7 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
-  addError = (error: EmbedError & { path: string }) => {
+  addError = (error: ModuleError) => {
     if (module) {
       this.errors.push(error);
 
@@ -278,7 +285,7 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
-  addCorrection = (correction: CorrectionAction) => {
+  addCorrection = (correction: ModuleCorrection) => {
     this.corrections.push(correction);
 
     if (this.editor && this.editor.setCorrections) {
@@ -318,6 +325,10 @@ export default class Content extends React.PureComponent<Props, State> {
     vimMode: false,
     tabWidth: 2,
     enableLigatures: false,
+    clearConsoleEnabled: false,
+    experimentVSCode: false,
+    prettierConfig: false,
+    zenMode: false,
   });
 
   setCurrentModule = (moduleId: string) => {
@@ -406,14 +417,16 @@ export default class Content extends React.PureComponent<Props, State> {
       views[1].open = true;
     }
 
-    const browserConfig = {
+    const browserConfig: IViewType = {
       id: 'codesandbox.browser',
-      title: 'Browser',
-      Content: ({ hidden }) => (
+      title: options =>
+        options.port ? `Browser (:${options.port})` : `Browser`,
+      Content: ({ hidden, options }: DevToolProps) => (
         <BasePreview
           onInitialized={this.onPreviewInitialized}
           sandbox={sandbox}
           hide={hidden}
+          url={options.url ? options.url : undefined}
           currentModule={mainModule}
           settings={this.getPreferences()}
           initialPath={this.props.initialPath}
@@ -422,7 +435,6 @@ export default class Content extends React.PureComponent<Props, State> {
           onAction={this.handleAction}
           showNavigation={!hideNavigation}
           onToggleProjectView={this.onToggleProjectView}
-          showDevtools={expandDevTools}
           onResize={this.handleResize}
           dragging={this.state.dragging}
         />
@@ -433,6 +445,7 @@ export default class Content extends React.PureComponent<Props, State> {
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         {showEditor && (
+          // @ts-ignore
           <Split
             show={showEditor}
             only={showEditor && !showPreview}
@@ -498,11 +511,9 @@ export default class Content extends React.PureComponent<Props, State> {
                 isModuleSynced={() => true}
                 sandbox={sandbox}
                 settings={this.getPreferences()}
-                canSave={false}
                 readOnly={templateDefinition.isServer}
                 onChange={this.setCode}
                 onModuleChange={this.setCurrentModule}
-                onUnMount={this.onCodeEditorUnMount}
                 highlightedLines={this.props.highlightedLines}
               />
             </div>
@@ -510,6 +521,7 @@ export default class Content extends React.PureComponent<Props, State> {
         )}
 
         {showPreview && (
+          // @ts-ignore
           <Split
             show={showPreview}
             only={showPreview && !showEditor}
@@ -540,6 +552,13 @@ export default class Content extends React.PureComponent<Props, State> {
                     primary={i === 0}
                     hideTabs={i === 0}
                     viewConfig={devView}
+                    setPane={this.setPane}
+                    currentDevToolIndex={
+                      this.state.currentDevToolPosition.devToolIndex
+                    }
+                    currentTabPosition={
+                      this.state.currentDevToolPosition.tabPosition
+                    }
                   />
                 ))}
               </div>

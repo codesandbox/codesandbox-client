@@ -2,17 +2,12 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  align-items: center;
-  height: 100%;
-  width: 100%;
+  flex: auto;
   margin-right: 1rem;
-  overflow: hidden;
 `;
 
 export const Tabs = styled.div`
-  flex: 1;
-  width: 100%;
-  height: 100%;
+  flex: auto;
   display: flex;
 `;
 

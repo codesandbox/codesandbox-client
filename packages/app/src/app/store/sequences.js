@@ -19,7 +19,9 @@ import {
 } from './modules/files/actions';
 
 import { disconnect, clearUserSelections } from './modules/live/actions';
+import { setupExecutor } from './modules/editor/actions';
 import { initializeLive } from './modules/live/common-sequences';
+import { resetServerState } from './modules/server/actions';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
 
@@ -101,6 +103,53 @@ export const signOutGithubIntegration = [
   set(state`user.integrations.github`, null),
 ];
 
+export const resetLive = [
+  clearUserSelections,
+  set(state`live.isLive`, false),
+  set(state`live.error`, null),
+  set(state`live.isLoading`, false),
+  set(state`live.roomInfo`, undefined),
+
+  ({ ot }) => {
+    ot.reset();
+  },
+];
+
+export const setSandbox = [
+  when(state`live.isLoading`),
+  {
+    true: [],
+    false: [
+      when(state`live.isLive`),
+      {
+        true: resetLive,
+        false: [],
+      },
+    ],
+  },
+  when(
+    state`editor.currentId`,
+    props`sandbox.id`,
+    (currentId, newId) => currentId === newId
+  ),
+  {
+    true: [],
+    false: [
+      set(state`editor.currentId`, props`sandbox.id`),
+      actions.setCurrentModuleShortid,
+      actions.setMainModuleShortid,
+      actions.setInitialTab,
+      actions.setUrlOptions,
+      actions.setWorkspace,
+      set(state`editor.workspaceConfigCode`, ''),
+
+      resetServerState,
+      setupExecutor,
+      syncFilesToFS,
+    ],
+  },
+];
+
 export const getAuthToken = actions.getAuthToken;
 
 export const openUserMenu = set(state`userMenuOpen`, true);
@@ -165,7 +214,7 @@ export const forkSandbox = sequence('forkSandbox', [
         success: [
           actions.moveModuleContent,
           setSandboxData,
-          set(state`editor.currentId`, props`sandbox.id`),
+          setSandbox,
           factories.addNotification('Forked sandbox!', 'success'),
           factories.updateSandboxUrl(props`sandbox`),
           ensurePackageJSON,
@@ -289,39 +338,6 @@ export const loadCLIInstructions = factories.withLoadApp([]);
 export const loadSandboxPage = factories.withLoadApp([]);
 
 export const loadGitHubPage = factories.withLoadApp([]);
-
-export const resetLive = [
-  clearUserSelections,
-  set(state`live.isLive`, false),
-  set(state`live.error`, null),
-  set(state`live.isLoading`, false),
-  set(state`live.roomInfo`, undefined),
-
-  ({ ot }) => {
-    ot.reset();
-  },
-];
-
-export const setSandbox = [
-  when(state`live.isLoading`),
-  {
-    true: [],
-    false: [
-      when(state`live.isLive`),
-      {
-        true: resetLive,
-        false: [],
-      },
-    ],
-  },
-  set(state`editor.currentId`, props`sandbox.id`),
-  actions.setCurrentModuleShortid,
-  actions.setMainModuleShortid,
-  actions.setInitialTab,
-  actions.setUrlOptions,
-  actions.setWorkspace,
-  syncFilesToFS,
-];
 
 export const joinLiveSessionIfAvailable = [
   when(

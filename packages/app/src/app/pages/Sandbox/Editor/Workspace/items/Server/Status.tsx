@@ -28,12 +28,20 @@ const Container = styled.div`
     props.theme['editor.foreground'] || 'rgba(255, 255, 255, 0.8)'};
 `;
 
+// const STATUS_MESSAGES = {
+//   disconnected: 'Reconnecting to sandbox...',
+//   connected: 'Connected to sandbox',
+//   initializing: 'Initializing connection to sandbox...',
+//   hibernated: 'Sandbox hibernated',
+//   error: 'Unrecoverable sandbox error',
+// };
+
 const STATUS_MESSAGES = {
-  disconnected: 'Reconnecting to sandbox...',
-  connected: 'Connected to sandbox',
-  initializing: 'Initializing connection to sandbox...',
+  initializing: 'Container is starting...',
+  starting: 'Sandbox is starting...',
+  started: 'Connected to sandbox',
+  error: 'A sandbox error occurred',
   hibernated: 'Sandbox hibernated',
-  error: 'Unrecoverable sandbox error',
 };
 
 const STATUS_COLOR = {
@@ -49,28 +57,16 @@ function getContainerStatusMessageAndColor(
 ) {
   switch (containerStatus) {
     case 'initializing':
-      return {
-        color: STATUS_COLOR.initializing,
-        message: 'Container is starting...',
-      };
+      return { color: '#FFD399', message: STATUS_MESSAGES.initializing };
     case 'container-started':
     case 'stopped':
-      return {
-        color: STATUS_COLOR.initializing,
-        message: 'Sandbox is starting...',
-      };
+      return { color: '#FFD399', message: STATUS_MESSAGES.starting };
     case 'sandbox-started':
-      return {
-        color: STATUS_COLOR.connected,
-        message: STATUS_MESSAGES.connected,
-      };
+      return { color: '#4CFF00', message: STATUS_MESSAGES.started };
     case 'error':
-      return { color: STATUS_COLOR.error, message: 'A sandbox error occurred' };
+      return { color: '#FD2439', message: STATUS_MESSAGES.error };
     case 'hibernated':
-      return {
-        color: STATUS_COLOR.hibernated,
-        message: STATUS_MESSAGES.hibernated,
-      };
+      return { color: '#FF662E', message: STATUS_MESSAGES.hibernated };
     default:
       return undefined;
   }

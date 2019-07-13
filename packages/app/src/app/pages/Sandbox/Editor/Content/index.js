@@ -5,12 +5,9 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
-import immer from 'immer';
 
-import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import type { ModuleError } from '@codesandbox/common/lib/types';
-import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/CodeEditor';
@@ -20,7 +17,6 @@ import DevTools from 'app/components/Preview/DevTools';
 import Preview from './Preview';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import Tabs from './Tabs';
-import { moveDevToolsTab } from './utils';
 
 const settings = store =>
   ({
@@ -370,76 +366,16 @@ class EditorPreview extends React.Component<Props, State> {
     });
   };
 
-  getViews = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-    const views = getPreviewTabs(sandbox);
+  moveDevToolsTab = (prevPos, nextPos) => {
+    const { signals } = this.props;
 
-    // Do it in an immutable manner, prevents changing the original object
-    return immer(views, draft => {
-      const sandboxConfig = sandbox.modules.find(
-        x => x.directoryShortid == null && x.title === 'sandbox.config.json'
-      );
-      let view = 'browser';
-      if (sandboxConfig) {
-        try {
-          view = JSON.parse(sandboxConfig.code || '').view || 'browser';
-        } catch (e) {
-          /* swallow */
-        }
-      }
-
-      const sandboxOptions = getSandboxOptions(location.href);
-      if (
-        sandboxOptions.previewWindow &&
-        (sandboxOptions.previewWindow === 'tests' ||
-          sandboxOptions.previewWindow === 'console')
-      ) {
-        // Backwards compatibility for ?previewwindow=
-
-        view = sandboxOptions.previewWindow;
-      }
-
-      if (view !== 'browser') {
-        // Backwards compatibility for sandbox.config.json
-        if (view === 'console') {
-          draft[0].views = draft[0].views.filter(
-            t => t.id !== 'codesandbox.console'
-          );
-          draft[0].views.unshift({ id: 'codesandbox.console' });
-        } else if (view === 'tests') {
-          draft[0].views = draft[0].views.filter(
-            t => t.id !== 'codesandbox.tests'
-          );
-          draft[0].views.unshift({ id: 'codesandbox.tests' });
-        }
-      }
-    });
+    signals.editor.onDevToolsTabMoved({ prevPos, nextPos });
   };
 
-  moveDevToolsTab = (prevPos, nextPos) => {
-    const { store, signals } = this.props;
-    const tabs = this.getViews();
+  closeDevToolsTab = pos => {
+    const { signals } = this.props;
 
-    const newTabs = moveDevToolsTab(tabs, prevPos, nextPos);
-
-    const code = JSON.stringify({ preview: newTabs }, null, 2);
-    const previousFile =
-      store.editor.modulesByPath['/.codesandbox/workspace.json'];
-    if (previousFile) {
-      signals.editor.codeSaved({
-        code,
-        moduleShortid: previousFile.shortid,
-      });
-    } else {
-      signals.files.createModulesByPath({
-        files: {
-          '/.codesandbox/workspace.json': {
-            content: code,
-            isBinary: false,
-          },
-        },
-      });
-    }
+    signals.editor.onDevToolsTabClosed({ pos });
   };
 
   render() {
@@ -475,13 +411,20 @@ class EditorPreview extends React.Component<Props, State> {
       return false;
     };
 
-    const views = this.getViews();
+    const views = store.editor.devToolTabs;
+    const currentPosition = this.props.store.editor.currentDevToolsPosition;
 
     const browserConfig = {
       id: 'codesandbox.browser',
-      title: 'Browser',
-      Content: ({ hidden }) => (
-        <Preview hidden={hidden} width={'100%'} height={'100%'} />
+      title: options =>
+        options.port ? `Browser (:${options.port})` : `Browser`,
+      Content: ({ hidden, options }) => (
+        <Preview
+          options={options}
+          hidden={hidden}
+          width={'100%'}
+          height={'100%'}
+        />
       ),
       actions: [],
     };
@@ -642,6 +585,14 @@ class EditorPreview extends React.Component<Props, State> {
                   primary={i === 0}
                   viewConfig={v}
                   moveTab={this.moveDevToolsTab}
+                  closeTab={this.closeDevToolsTab}
+                  currentDevToolIndex={currentPosition.devToolIndex}
+                  currentTabPosition={currentPosition.tabPosition}
+                  setPane={position =>
+                    this.props.signals.editor.onDevToolsPositionChanged({
+                      position,
+                    })
+                  }
                 />
               ))}
             </div>

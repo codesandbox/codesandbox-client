@@ -65,7 +65,7 @@ type State = {
 export default class CodeEditor extends React.PureComponent<
   Props & {
     editor?: 'vscode' | 'monaco' | 'codemirror';
-    style: React.CSSProperties;
+    style?: React.CSSProperties;
   },
   State
 > {

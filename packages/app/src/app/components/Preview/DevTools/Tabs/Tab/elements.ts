@@ -12,42 +12,46 @@ export const Tabs = styled.div`
 `;
 
 export const Tab = styled.div<{ active: boolean; isOver: boolean }>`
-  ${({ active, isOver, theme }) => css`
-    position: relative;
-    transition: 0.2s ease color;
-    display: flex;
-    align-items: center;
-    padding: 0 1.75rem 0 1.25rem;
-    height: 100%;
-    font-weight: 500;
+  position: relative;
+  transition: 0.2s ease color;
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  width: max-content;
 
-    cursor: pointer;
+  padding-right: 1.75rem;
+  height: 100%;
+  font-weight: 500;
 
-    color: ${theme['tab.inactiveForeground'] ||
-      theme['panelTitle.inactiveForeground'] ||
-      (theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)')};
+  cursor: pointer;
 
-    ${active
+  color: ${({ theme }) =>
+    theme['tab.inactiveForeground'] ||
+    theme['panelTitle.inactiveForeground'] ||
+    (theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)')};
+
+  ${props =>
+    props.active
       ? css`
-          background-color: ${theme['tab.activeBackground'] ||
-            theme['editor.background'] ||
+          background-color: ${props.theme['tab.activeBackground'] ||
+            props.theme['editor.background'] ||
             'transparent'};
-          color: ${theme['tab.activeForeground'] ||
-            (theme.light ? '#000000' : '#FFFFFF')};
+          color: ${props.theme['tab.activeForeground'] ||
+            (props.theme.light ? '#000000' : '#FFFFFF')};
         `
       : css`
           &:hover {
-            color: ${theme['tab.activeForeground'] ||
-              (theme.light ? '#000000' : '#FFFFFF')};
+            color: ${props.theme['tab.activeForeground'] ||
+              (props.theme.light ? '#000000' : '#FFFFFF')};
           }
         `};
 
-    ${isOver &&
-      css`
-        background-color: ${theme['editorGroup.dropBackground'] ||
-          'rgba(0, 0, 0, 0.3)'};
-      `};
-  `};
+  ${props =>
+    props.isOver &&
+    css`
+      background-color: ${props.theme['editorGroup.dropBackground'] ||
+        'rgba(0, 0, 0, 0.3)'};
+    `};
 `;
 
 export const CloseTab = styled.button`

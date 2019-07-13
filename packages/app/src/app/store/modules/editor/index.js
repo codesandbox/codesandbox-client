@@ -13,6 +13,7 @@ import {
   currentTab,
   modulesByPath,
   isAdvancedEditor,
+  devToolTabs,
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -47,6 +48,18 @@ export default Module({
     previewWindowOrientation:
       window.innerHeight / window.innerWidth > 0.9 ? 'horizontal' : 'vertical',
     themes,
+    currentDevToolsPosition: {
+      devToolIndex: 0,
+      tabPosition: 0,
+    },
+
+    /**
+     * Normally we save this code in a file (.codesandbox/workspace.json), however, when someone
+     * doesn't own a sandbox and changes the UI we don't want to fork the sandbox (yet). That's
+     * why we introduce this field until we have datasources. When we have datasources we can store
+     * the actual content in the localStorage.
+     */
+    workspaceConfigCode: '',
   },
   getters: {
     isAllModulesSynced,
@@ -59,6 +72,7 @@ export default Module({
     currentTab,
     modulesByPath,
     isAdvancedEditor,
+    devToolTabs,
   },
   computed: {
     isModuleSynced,
@@ -101,5 +115,10 @@ export default Module({
     deleteEnvironmentVariable: sequences.deleteEnvironmentVariable,
     toggleEditorPreviewLayout: sequences.toggleEditorPreviewLayout,
     onNavigateAway: sequences.onNavigateAway,
+    onDevToolsTabAdded: sequences.addDevToolsTab,
+    onDevToolsTabMoved: sequences.moveDevToolsTab,
+    onDevToolsTabClosed: sequences.closeDevToolsTab,
+    onDevToolsPositionChanged: sequences.setDevToolPosition,
+    openDevToolsTab: sequences.openDevToolsTab,
   },
 });

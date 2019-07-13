@@ -83,5 +83,5 @@ export const ResizingNotice = styled.div`
   padding: 0.5rem 1rem;
 
   border-radius: 2px;
-  ${fadeIn()};
+  ${fadeIn(0)};
 `;
