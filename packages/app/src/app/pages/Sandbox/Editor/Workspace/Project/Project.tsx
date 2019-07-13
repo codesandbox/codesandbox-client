@@ -114,7 +114,7 @@ export const Project = observer(({ editable }: IProjectProps) => {
             </PrivacyContainer>
           </PropertyValue>
         </Item>
-        {!isPatron && editable && (
+        {!isPatron && (
           <Explanation style={{ marginTop: '-1rem' }}>
             You can change privacy of a sandbox as a{' '}
             <a href={patronUrl()} target="_blank">
