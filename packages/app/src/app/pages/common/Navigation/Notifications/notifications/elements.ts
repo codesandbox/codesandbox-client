@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { NotificationContainer, NotificationImage as Image } from '../elements';
+import { NotificationContainer } from '../elements';
 
 export const Container = styled(NotificationContainer)`
   display: flex;

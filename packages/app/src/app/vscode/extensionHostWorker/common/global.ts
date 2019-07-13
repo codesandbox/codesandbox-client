@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 
 const ctx: any = self as any;
-declare var __DEV__: boolean;
+declare const __DEV__: boolean;
 
 if (typeof Worker === 'undefined') {
   ctx.importScripts('https://unpkg.com/subworkers@1.0.1/subworkers.js');

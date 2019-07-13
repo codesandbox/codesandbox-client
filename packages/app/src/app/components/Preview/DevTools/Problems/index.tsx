@@ -1,5 +1,6 @@
-import * as React from 'react';
-import { listen, dispatch, actions } from 'codesandbox-api';
+/* eslint import/extensions: "warn", import/no-unresolved: "warn" */
+
+import { listen } from 'codesandbox-api';
 import {
   CorrectionAction,
   CorrectionClearAction,
@@ -9,6 +10,7 @@ import {
   ErrorClearAction,
 } from 'codesandbox-api/dist/types/actions/error';
 import immer from 'immer';
+import React from 'react';
 
 import { DevToolProps } from '..';
 import { Container } from './elements';
@@ -27,7 +29,7 @@ class Problems extends React.PureComponent<DevToolProps, State> {
   state: State = {
     corrections: {},
   };
-  listener: Function;
+  listener: () => void;
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);

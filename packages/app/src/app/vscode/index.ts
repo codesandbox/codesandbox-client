@@ -1,11 +1,12 @@
-import { KeyCode, KeyMod } from './keyCodes';
-import bootstrap from './dev-bootstrap';
-import { MenuId } from './menus';
 import {
-  notificationState,
   convertTypeToStatus,
+  notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
+
+import bootstrap from './dev-bootstrap';
+import { KeyCode, KeyMod } from './keyCodes';
+import { MenuId } from './menus';
 
 interface IServiceCache {
   [serviceName: string]: any;
@@ -387,7 +388,7 @@ class VSCodeManager {
             customEditorAPI,
           ]),
       },
-      ({ serviceCollection, dispose }) => {
+      ({ serviceCollection }) => {
         const instantiationService = serviceCollection.get(
           IInstantiationService
         );

@@ -1,14 +1,16 @@
-import React from 'react';
-import { TextOperation } from 'ot';
-import { Module } from '@codesandbox/common/lib/types';
+import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import getType from 'app/utils/get-type.ts';
-import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import theme from '@codesandbox/common/lib/theme';
+import { Module } from '@codesandbox/common/lib/types';
+import { TextOperation } from 'ot';
+import React from 'react';
+
+import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import getType from 'app/utils/get-type';
 
 import { Props as EditorProps, Editor } from '../../types';
+
 import { Container, Title, Description } from './elements';
-import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
 
 type Disposable = {
   dispose: () => void;

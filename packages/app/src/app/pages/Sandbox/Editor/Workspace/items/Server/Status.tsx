@@ -49,16 +49,28 @@ function getContainerStatusMessageAndColor(
 ) {
   switch (containerStatus) {
     case 'initializing':
-      return { color: '#FFD399', message: 'Container is starting...' };
+      return {
+        color: STATUS_COLOR.initializing,
+        message: 'Container is starting...',
+      };
     case 'container-started':
     case 'stopped':
-      return { color: '#FFD399', message: 'Sandbox is starting...' };
+      return {
+        color: STATUS_COLOR.initializing,
+        message: 'Sandbox is starting...',
+      };
     case 'sandbox-started':
-      return { color: '#4CFF00', message: 'Connected to sandbox' };
+      return {
+        color: STATUS_COLOR.connected,
+        message: STATUS_MESSAGES.connected,
+      };
     case 'error':
-      return { color: '#FD2439', message: 'A sandbox error occurred' };
+      return { color: STATUS_COLOR.error, message: 'A sandbox error occurred' };
     case 'hibernated':
-      return { color: '#FF662E', message: 'Sandbox hibernated' };
+      return {
+        color: STATUS_COLOR.hibernated,
+        message: STATUS_MESSAGES.hibernated,
+      };
     default:
       return undefined;
   }
@@ -71,8 +83,8 @@ function getManagerStatusMessageAndColor(managerStatus: SSEManagerStatus) {
       return undefined;
     case 'initializing':
       return {
-        message: 'Initializing connection to sandbox...',
-        color: '#FFD399',
+        message: STATUS_MESSAGES.initializing,
+        color: STATUS_COLOR.initializing,
       };
     default:
       return undefined;

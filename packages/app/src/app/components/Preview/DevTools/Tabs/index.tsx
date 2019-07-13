@@ -1,8 +1,8 @@
-import * as React from 'react';
-
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import React from 'react';
 
-import { IViewType, Status } from '..';
+import { IViewType, Status } from '../';
+
 import { Actions, Container, Tabs } from './elements';
 import DraggableTab, { PaneTab, TabProps } from './Tab';
 import TabDropZone, { TabDropZoneProps } from './TabDropZone';
@@ -69,7 +69,7 @@ const DevToolTabs = ({
               devToolIndex={devToolIndex}
               moveTab={moveTab}
               index={i}
-              key={i}
+              key={i} // eslint-disable-line react/no-array-index-key
               status={
                 status
                   ? status[pane.id] || { unread: 0, type: 'info' }
