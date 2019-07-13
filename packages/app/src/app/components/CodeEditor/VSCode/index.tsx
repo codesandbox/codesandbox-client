@@ -265,7 +265,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   modelAddedListener: { dispose: () => void };
   activeEditorListener: { dispose: () => void };
 
-  getListener = model =>
+  getModelContentChangeListener = model =>
     model.onDidChangeContent(e => {
       const path = model.uri.path;
       try {
@@ -309,7 +309,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
             return;
           }
 
-          const listener = this.getListener(model);
+          const listener = this.getModelContentChangeListener(model);
           this.modelListeners[model.uri.path] = {
             moduleShortid: module.shortid,
             model,
