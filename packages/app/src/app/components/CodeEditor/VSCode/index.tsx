@@ -75,16 +75,16 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   sandbox: Props['sandbox'];
   currentModule: Props['currentModule'];
   currentTitle: string;
-  currentDirectoryShortid?: string;
+  currentDirectoryShortid: string | undefined;
   settings: Props['settings'];
-  dependencies?: Props['dependencies'];
-  tsconfig?: Props['tsconfig'];
+  dependencies: Props['dependencies'] | undefined;
+  tsconfig: Props['tsconfig'] | undefined;
   disposeInitializer?: Function;
-  lintWorker?: Worker;
+  lintWorker: Worker | undefined;
   editor: any;
   monaco: any;
   receivingCode: boolean = false;
-  codeSandboxAPIListener?: () => void;
+  codeSandboxAPIListener: () => void;
   sizeProbeInterval: number | null;
 
   modelSelectionListener: {
