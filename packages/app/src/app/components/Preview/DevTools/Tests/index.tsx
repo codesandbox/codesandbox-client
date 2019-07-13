@@ -54,7 +54,7 @@ export type File = {
 };
 
 type State = {
-  selectedFilePath?: string;
+  selectedFilePath: string | undefined;
   fileExpansionState: {
     [path: string]: Boolean;
   };
