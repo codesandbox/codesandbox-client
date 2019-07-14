@@ -1,6 +1,6 @@
 import {
-  notificationState,
   convertTypeToStatus,
+  notificationState,
 } from '@codesandbox/common/lib/utils/notifications';
 import { blocker } from 'app/utils/blocker';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
@@ -374,7 +374,7 @@ class VSCodeManager {
             customEditorAPI,
           ]),
       },
-      ({ serviceCollection, dispose }) => {
+      ({ serviceCollection }) => {
         const instantiationService = serviceCollection.get(
           IInstantiationService
         );

@@ -1,11 +1,10 @@
-import * as React from 'react';
-import { observer } from 'mobx-react-lite';
-import { useSignals, useStore } from 'app/store';
-import UserMenu from 'app/pages/common/UserMenu';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { Logo } from './Logo';
-import { SandboxName } from './SandboxName';
-import { MenuBar } from './MenuBar';
+import { observer } from 'mobx-react-lite';
+import React from 'react';
+
+import UserMenu from 'app/pages/common/UserMenu';
+import { useStore } from 'app/store';
+
 import {
   SaveAllButton,
   RefreshButton,
@@ -28,6 +27,9 @@ import {
   UserMenuContainer,
   SignInButton,
 } from './elements';
+import { Logo } from './Logo';
+import { MenuBar } from './MenuBar';
+import { SandboxName } from './SandboxName';
 import { HeaderProps } from './types';
 
 export const Header = observer(({ zenMode }: HeaderProps) => {

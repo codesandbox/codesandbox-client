@@ -1,5 +1,4 @@
 import React from 'react';
-import { inject } from 'mobx-react';
 
 import { NotificationImage as Image } from '../elements';
 import { Container, W } from './elements';

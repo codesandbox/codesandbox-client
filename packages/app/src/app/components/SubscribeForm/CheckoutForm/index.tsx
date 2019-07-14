@@ -88,13 +88,13 @@ class CheckoutForm extends React.PureComponent<Props, State> {
         token: token.id,
         coupon: this.state.coupon,
       });
-    } catch (e) {
-      logError(e);
+    } catch (err) {
+      logError(err);
 
       return this.setState({
         loading: false,
         errors: {
-          stripe: e.message,
+          stripe: err.message,
         },
       });
     }

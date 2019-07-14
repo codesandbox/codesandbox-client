@@ -118,7 +118,7 @@ export const PaneTab = ({
             onClick={() =>
               closeTab({
                 tabPosition: index,
-                devToolIndex: devToolIndex,
+                devToolIndex,
               })
             }
           >

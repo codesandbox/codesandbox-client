@@ -1,20 +1,22 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
-import noop from 'lodash/noop';
-// @ts-ignore
-import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 // @ts-ignore
 import FullHeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+// @ts-ignore
+import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import { Sandbox } from '@codesandbox/common/lib/types';
+import noop from 'lodash/noop';
+import { observer } from 'mobx-react-lite';
+import React from 'react';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { useStore, useSignals } from 'app/store';
 
 import { Container } from './elements';
-import { Sandbox } from '@codesandbox/common/lib/types';
-import { useStore, useSignals } from 'app/store';
 
 const MaybeTooltip = ({ loggedIn, disableTooltip, title, children }) =>
   loggedIn && !disableTooltip ? (
-    <Tooltip content={title} children={children} style={{ display: 'flex' }} />
+    <Tooltip content={title} style={{ display: 'flex' }}>
+      {children}
+    </Tooltip>
   ) : (
     children
   );

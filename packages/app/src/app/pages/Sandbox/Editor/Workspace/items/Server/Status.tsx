@@ -79,8 +79,8 @@ function getManagerStatusMessageAndColor(managerStatus: SSEManagerStatus) {
       return undefined;
     case 'initializing':
       return {
-        message: 'Initializing connection to sandbox...',
-        color: '#FFD399',
+        message: STATUS_MESSAGES.initializing,
+        color: STATUS_COLOR.initializing,
       };
     default:
       return undefined;

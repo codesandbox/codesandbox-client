@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { TextOperation } from 'ot';
@@ -29,8 +29,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import eventToTransform from '../Monaco/event-to-transform';
-import MonacoEditorComponent from './MonacoReactComponent';
-import { EditorAPI } from './MonacoReactComponent';
+import MonacoEditorComponent, { EditorAPI } from './MonacoReactComponent';
 import { Container, GlobalStyles } from './elements';
 import getSettings from '../Monaco/settings';
 
@@ -80,20 +79,20 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   settings: Props['settings'];
   dependencies: Props['dependencies'] | undefined;
   tsconfig: Props['tsconfig'] | undefined;
-  disposeInitializer: Function | undefined;
+  disposeInitializer?: Function;
   lintWorker: Worker | undefined;
   editor: any;
   monaco: any;
   receivingCode: boolean = false;
-  codeSandboxAPIListener: Function | undefined;
+  codeSandboxAPIListener: () => void;
   sizeProbeInterval: number | null;
 
   modelSelectionListener: {
-    dispose: Function;
+    dispose: () => void;
   };
 
   resizeEditor: (() => void) | EventListener;
-  commitLibChanges: Function;
+  commitLibChanges: () => void;
 
   constructor(props: Props) {
     super(props);
@@ -205,9 +204,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         this.sandbox.directories
       );
 
-      const parsedCode = JSON.parse(module.code || '');
-
-      return parsedCode;
+      return JSON.parse(module.code || '');
     } catch (e) {
       return this.settings.prettierConfig || DEFAULT_PRETTIER_CONFIG;
     }
@@ -231,7 +228,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     // @ts-ignore
     return listen(({ action, type, code, path, lineNumber, column }) => {
       if (type === 'add-extra-lib') {
-        // TODO; bring this func back
+        // TODO: bring this func back
         // const dtsPath = `${path}.d.ts`;
         // this.monaco.languages.typescript.typescriptDefaults._extraLibs[
         //   `file:///${dtsPath}`
@@ -268,6 +265,35 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   modelAddedListener: { dispose: () => void };
   activeEditorListener: { dispose: () => void };
 
+  getModelContentChangeListener = model =>
+    model.onDidChangeContent(e => {
+      const path = model.uri.path;
+      try {
+        const module = resolveModule(
+          path.replace(/^\/sandbox/, ''),
+          this.sandbox.modules,
+          this.sandbox.directories
+        );
+
+        const { isLive, sendTransforms } = this.props;
+
+        if (
+          path === this.getCurrentModuleVSCodePath() &&
+          isLive &&
+          sendTransforms &&
+          !this.receivingCode
+        ) {
+          this.sendChangeOperations(e);
+        }
+
+        this.handleChange(module.shortid, module.title, model.getValue(1));
+      } catch (err) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('caught', err);
+        }
+      }
+    });
+
   listenForFileChanges = () => {
     this.modelAddedListener = this.editor.textFileService.modelService.onModelAdded(
       model => {
@@ -283,37 +309,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
             return;
           }
 
-          const listener = model.onDidChangeContent(e => {
-            const path = model.uri.path;
-            try {
-              const module = resolveModule(
-                path.replace(/^\/sandbox/, ''),
-                this.sandbox.modules,
-                this.sandbox.directories
-              );
-
-              const { isLive, sendTransforms } = this.props;
-
-              if (
-                path === this.getCurrentModuleVSCodePath() &&
-                isLive &&
-                sendTransforms &&
-                !this.receivingCode
-              ) {
-                this.sendChangeOperations(e);
-              }
-
-              this.handleChange(
-                module.shortid,
-                module.title,
-                model.getValue(1)
-              );
-            } catch (err) {
-              if (process.env.NODE_ENV === 'development') {
-                console.error('caught', err);
-              }
-            }
-          });
+          const listener = this.getModelContentChangeListener(model);
           this.modelListeners[model.uri.path] = {
             moduleShortid: module.shortid,
             model,
@@ -571,7 +567,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           userId: string;
           name: string;
           selection: any;
-          color: Array<number>;
+          color: number[];
         }
     >
   ) => {
@@ -1144,7 +1140,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           theme="CodeSandbox"
           options={options}
           editorDidMount={this.configureEditor}
-          editorWillMount={monaco => {}}
+          editorWillMount={() => {}}
           getEditorOptions={this.getEditorOptions}
           customEditorAPI={{ getCustomEditor: this.getCustomEditor }}
         />

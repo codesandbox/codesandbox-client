@@ -49,7 +49,8 @@
       "warn",
       { "aspects": ["noHref", "invalidHref"] }
     ],
-    "jsx-a11y/label-has-for": "off"
+    "jsx-a11y/label-has-for": "off",
+    "no-bitwise": "off"
   },
   "overrides": [
     {
