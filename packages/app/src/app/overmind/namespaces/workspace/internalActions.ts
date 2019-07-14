@@ -1,6 +1,6 @@
 import { Action } from 'app/overmind';
-import getItems from './items';
 import { Sandbox } from '@codesandbox/common/lib/types';
+import getItems from './items';
 
 export const setWorkspace: Action<Sandbox> = ({ state }, sandbox) => {
   state.workspace.project.title = sandbox.title || '';

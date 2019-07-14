@@ -9,10 +9,12 @@ import { useSignals, useStore } from 'app/store';
 
 import { Description } from '../../elements';
 
-const NOT_OWNED_MESSAGE = `Fork this sandbox to make deployments, commit to GitHub, create live sessions with others and more!`;
-const NOT_SIGNED_IN_MESSAGE = `Sign in to be able to organize your sandboxes with a dashboard, make deployments, collaborate live with others, make commits to GitHub and more!`;
+interface Props {
+  id: string;
+  message: string | JSX.Element;
+}
 
-export const More = observer(() => {
+export const More = observer(({ id, message }: Props) => {
   const {
     editor: { forkSandboxClicked },
   } = useSignals();
@@ -23,9 +25,7 @@ export const More = observer(() => {
     },
   } = useStore();
 
-  useEffect(() => track('Workspace - More Opened'), []);
-
-  const message = !owned ? NOT_OWNED_MESSAGE : NOT_SIGNED_IN_MESSAGE;
+  useEffect(() => track('Workspace - More Opened', { id }), [id]);
 
   return (
     <div>

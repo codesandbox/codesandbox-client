@@ -1,59 +1,79 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 
-const PROJECT = {
+export interface INavigationItem {
+  id: string;
+  name: string;
+  hasCustomHeader?: boolean;
+  defaultOpen?: boolean;
+  /**
+   * If the item is not applicable in the current situation we sometimes still
+   * want to show it because of visibility. This boolean decides that.
+   */
+  showAsDisabledIfHidden?: boolean;
+}
+
+const PROJECT: INavigationItem = {
   id: 'project',
   name: 'Sandbox Info',
 };
 
-const PROJECT_TEMPLATE = {
+const PROJECT_TEMPLATE: INavigationItem = {
   ...PROJECT,
   name: 'Template Info',
 };
 
-const PROJECT_SUMMARY = {
+const PROJECT_SUMMARY: INavigationItem = {
   id: 'project-summary',
   name: 'Sandbox Info',
   hasCustomHeader: true,
 };
 
-const FILES = {
+const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
   defaultOpen: true,
 };
 
-const GITHUB = {
+const GITHUB: INavigationItem = {
   id: 'github',
   name: 'GitHub',
+  showAsDisabledIfHidden: true,
 };
 
-const DEPLOYMENT = {
+const DEPLOYMENT: INavigationItem = {
   id: 'deploy',
   name: 'Deployment',
+  showAsDisabledIfHidden: true,
 };
 
-const CONFIGURATION = {
+const CONFIGURATION: INavigationItem = {
   id: 'config',
   name: 'Configuration Files',
 };
 
-const LIVE = {
+const LIVE: INavigationItem = {
   id: 'live',
   name: 'Live',
+  showAsDisabledIfHidden: true,
 };
 
-const MORE = {
-  id: 'more',
-  name: 'More',
-};
-
-const SERVER = {
+const SERVER: INavigationItem = {
   id: 'server',
   name: 'Server Control Panel',
 };
 
-export default function getItems(store) {
+export function getDisabledItems(store: any): INavigationItem[] {
+  const { currentSandbox } = store.editor;
+
+  if (!currentSandbox.owned || !store.isLoggedIn) {
+    return [GITHUB, DEPLOYMENT, LIVE];
+  }
+
+  return [];
+}
+
+export default function getItems(store: any): INavigationItem[] {
   if (
     store.live.isLive &&
     !(
@@ -70,11 +90,15 @@ export default function getItems(store) {
   const { currentSandbox } = store.editor;
 
   if (!currentSandbox.owned) {
-    return [PROJECT_SUMMARY, CONFIGURATION, MORE];
+    return [PROJECT_SUMMARY, CONFIGURATION];
   }
 
   const isCustomTemplate = !!currentSandbox.customTemplate;
-  const items = [isCustomTemplate ? PROJECT_TEMPLATE : PROJECT, FILES];
+  const items = [
+    isCustomTemplate ? PROJECT_TEMPLATE : PROJECT,
+    FILES,
+    CONFIGURATION,
+  ];
 
   if (store.isLoggedIn && currentSandbox) {
     const templateDef = getTemplate(currentSandbox.template);
@@ -91,14 +115,8 @@ export default function getItems(store) {
     items.push(DEPLOYMENT);
   }
 
-  items.push(CONFIGURATION);
-
   if (store.isLoggedIn) {
     items.push(LIVE);
-  }
-
-  if (!store.isLoggedIn) {
-    items.push(MORE);
   }
 
   return items;

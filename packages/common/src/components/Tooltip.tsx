@@ -25,6 +25,7 @@ const Tooltip = ({ children, style = {}, content, ...props }) => (
     <Tippy delay={[500, 0]} content={content} {...props}>
       <span
         style={{
+          outlineColor: 'transparent',
           ...style,
         }}
       >
