@@ -1,5 +1,3 @@
-/* eslint import/extensions: "warn", import/no-unresolved: "warn" */
-
 import { ModuleCorrection, ModuleError } from '@codesandbox/common/lib/types';
 import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
 import { ErrorClearAction } from 'codesandbox-api/dist/types/actions/error';
