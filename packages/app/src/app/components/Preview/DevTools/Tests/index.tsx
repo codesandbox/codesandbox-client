@@ -177,7 +177,7 @@ class Tests extends React.Component<DevToolProps, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: DevToolProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: DevToolProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
         files: {},
