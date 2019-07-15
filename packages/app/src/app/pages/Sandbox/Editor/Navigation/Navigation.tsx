@@ -36,7 +36,6 @@ const IDS_TO_ICONS = {
 
 interface IconProps {
   item: INavigationItem;
-  store: any;
   isDisabled?: boolean;
 }
 
@@ -87,13 +86,13 @@ export const Navigation = observer(
     return (
       <Container topOffset={topOffset} bottomOffset={bottomOffset}>
         {shownItems.map(item => (
-          <IconComponent key={item.id} item={item} store={store} />
+          <IconComponent key={item.id} item={item} />
         ))}
 
         <Separator />
 
         {disabledItems.map(item => (
-          <IconComponent key={item.id} item={item} store={store} isDisabled />
+          <IconComponent key={item.id} item={item} isDisabled />
         ))}
       </Container>
     );
