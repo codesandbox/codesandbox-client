@@ -3,6 +3,11 @@
   "version": "0.0.14",
   "license": "MIT",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/react-embed"
+  },
   "sideEffects": false,
   "main": "dist/index",
   "module": "dist-es/index",

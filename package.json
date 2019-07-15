@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "license": "GPL-3.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client"
+  },
   "scripts": {
     "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" yarn build:deps && yarn build:prod",
     "build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
