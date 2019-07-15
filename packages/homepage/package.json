@@ -1,9 +1,14 @@
 {
-  "name": "homepage",
+  "name": "codesandbox-homepage",
   "description": "CodeSandbox Homepage",
   "private": true,
   "version": "1.0.0",
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/homepage"
+  },
   "dependencies": {
     "@babel/preset-flow": "^7.0.0",
     "@codesandbox/common": "^1.0.5",

@@ -3,6 +3,11 @@
   "version": "0.1.1",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/app"
+  },
   "scripts": {
     "start": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 NODE_OPTIONS=\"--max-old-space-size=4096\" node scripts/start.js",
     "start:sandbox": "cross-env SANDBOX_ONLY=true node scripts/start.js",
