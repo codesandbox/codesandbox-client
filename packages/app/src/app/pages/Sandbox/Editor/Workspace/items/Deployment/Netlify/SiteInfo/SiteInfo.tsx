@@ -24,20 +24,22 @@ const getFunctionDir = sandbox => {
       sandbox.directories
     );
   } catch {
-    return null;
+    return undefined;
   }
 };
 
 export const SiteInfo = () => {
   const {
     deployment: { building, netlifyLogs, netlifySite },
-    editor,
+    editor: { currentSandbox },
   } = useStore();
 
-  const functionDirectory = getFunctionDir(editor.currentSandbox);
-  const functions = editor.currentSandbox.modules.filter(
-    m => m.directoryShortid === functionDirectory.shortid
-  );
+  const functionDirectory = getFunctionDir(currentSandbox);
+  const functions = functionDirectory
+    ? currentSandbox.modules.filter(
+        ({ directoryShortid }) => directoryShortid === functionDirectory.shortid
+      )
+    : [];
 
   return (
     <SiteInfoWrapper>
