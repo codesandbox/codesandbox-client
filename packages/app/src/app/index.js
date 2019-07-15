@@ -27,7 +27,7 @@ import theme from '@codesandbox/common/lib/theme';
 import { isSafari } from '@codesandbox/common/lib/utils/platform';
 
 // eslint-disable-next-line
-import * as child_process from 'node-services/lib/child_process';
+import * as childProcess from 'node-services/lib/child_process';
 
 import controller from './controller';
 import App from './pages/index';
@@ -238,13 +238,13 @@ window.BrowserFS.configure(
           import(
             'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
           ).then(ExtHostWorkerLoader => {
-            child_process.addDefaultForkHandler(ExtHostWorkerLoader.default);
-            // child_process.preloadWorker('/vs/bootstrap-fork');
+            childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default);
+            // childProcess.preloadWorker('/vs/bootstrap-fork');
           });
 
           // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
           //   SearchServiceWorker => {
-          //     child_process.addForkHandler(
+          //     childProcess.addForkHandler(
           //       'csb:search-service',
           //       SearchServiceWorker.default
           //     );

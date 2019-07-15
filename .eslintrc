@@ -44,7 +44,8 @@
     "camelcase": [
       "error",
       {
-        "allow": ["UNSAFE_componentDidMount", "_id$", "^UNSAFE_"]
+        "allow": ["UNSAFE_componentDidMount", "_id$", "^UNSAFE_"],
+        "properties": "never"
       }
     ],
     "react-hooks/rules-of-hooks": "error",
