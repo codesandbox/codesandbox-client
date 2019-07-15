@@ -81,7 +81,7 @@ export default class ModeIcons extends React.PureComponent {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { currentMode, otherModes } = getCurrentMode(nextProps);
 
     if (!this.state.hovering) {

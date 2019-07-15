@@ -163,7 +163,7 @@ class Console extends React.Component<StyledProps> {
 
   list;
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.clearConsole(true);
     }

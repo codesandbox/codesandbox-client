@@ -82,7 +82,7 @@ class FolderEntry extends React.Component<Props, State> {
     depth: 0,
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       (this.state.open == null || this.state.open === false) &&
       nextProps.open === true
