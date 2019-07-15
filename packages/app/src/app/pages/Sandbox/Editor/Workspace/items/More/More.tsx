@@ -19,10 +19,8 @@ export const More = observer(({ id, message }: Props) => {
     editor: { forkSandboxClicked },
   } = useSignals();
   const {
-    editor: {
-      currentSandbox: { owned },
-      isForkingSandbox,
-    },
+    isLoggedIn,
+    editor: { isForkingSandbox },
   } = useStore();
 
   useEffect(() => track('Workspace - More Opened', { id }), [id]);
@@ -32,7 +30,9 @@ export const More = observer(({ id, message }: Props) => {
       <Description>{message}</Description>
 
       <Margin margin={1}>
-        {!owned ? (
+        {!isLoggedIn ? (
+          <SignInButton block />
+        ) : (
           <ProgressButton
             block
             loading={isForkingSandbox}
@@ -41,8 +41,6 @@ export const More = observer(({ id, message }: Props) => {
           >
             {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
           </ProgressButton>
-        ) : (
-          <SignInButton block />
         )}
       </Margin>
     </div>
