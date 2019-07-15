@@ -30,7 +30,7 @@ export const NavigationLink = styled(Link)`
     content: '';
     margin-top: 8px;
     display: block;
-    background: #40a9f3;
+    background: ${props => props.theme.link};
     height: 2px;
     box-sizing: border-box;
     width: 0%;

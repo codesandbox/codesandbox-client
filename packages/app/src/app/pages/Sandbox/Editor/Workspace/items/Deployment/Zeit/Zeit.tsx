@@ -17,7 +17,6 @@ export const Zeit = observer(() => {
   } = useStore();
 
   const [isVisible, setVisible] = useState(false);
-
   return integrations.zeit ? (
     <Wrapper loading={deploying}>
       <DeployButton
