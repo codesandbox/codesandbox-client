@@ -39,4 +39,5 @@ export const ContentContainer = styled.div`
   flex: auto;
   display: flex;
   min-height: 0;
+  height: 100%;
 `;
