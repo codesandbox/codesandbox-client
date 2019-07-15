@@ -38,39 +38,38 @@ interface IconProps {
   item: INavigationItem;
   store: any;
   isDisabled?: boolean;
-  setWorkspaceHidden: (params: { hidden: boolean }) => void;
-  setWorkspaceItem: (params: { item: string }) => void;
 }
 
-const IconComponent = observer(
-  ({ item, isDisabled, setWorkspaceHidden, setWorkspaceItem }: IconProps) => {
-    const { id, name } = item;
-    const store = useStore();
+const IconComponent = observer(({ item, isDisabled }: IconProps) => {
+  const { id, name } = item;
+  const store = useStore();
+  const {
+    workspace: { setWorkspaceHidden, setWorkspaceItem },
+  } = useSignals();
 
-    const Icon = IDS_TO_ICONS[id];
-    const selected =
-      !store.workspace.workspaceHidden &&
-      id === store.workspace.openedWorkspaceItem;
-    return (
-      <Tooltip key={id} placement="right" content={name}>
-        <IconContainer
-          isDisabled={isDisabled}
-          selected={selected}
-          onClick={() => {
-            if (selected) {
-              setWorkspaceHidden({ hidden: true });
-            } else {
-              setWorkspaceHidden({ hidden: false });
-              setWorkspaceItem({ item: id });
-            }
-          }}
-        >
-          <Icon />
-        </IconContainer>
-      </Tooltip>
-    );
-  }
-);
+  const Icon = IDS_TO_ICONS[id];
+  const selected =
+    !store.workspace.workspaceHidden &&
+    id === store.workspace.openedWorkspaceItem;
+  return (
+    <Tooltip key={id} placement="right" content={name}>
+      <IconContainer
+        isDisabled={isDisabled}
+        selected={selected}
+        onClick={() => {
+          if (selected) {
+            setWorkspaceHidden({ hidden: true });
+          } else {
+            setWorkspaceHidden({ hidden: false });
+            setWorkspaceItem({ item: id });
+          }
+        }}
+      >
+        <Icon />
+      </IconContainer>
+    </Tooltip>
+  );
+});
 
 export const Navigation = observer(
   ({
@@ -80,9 +79,6 @@ export const Navigation = observer(
     topOffset: number;
     bottomOffset: number;
   }) => {
-    const {
-      workspace: { setWorkspaceHidden, setWorkspaceItem },
-    } = useSignals();
     const store = useStore();
 
     const shownItems = getWorkspaceItems(store);
@@ -91,26 +87,13 @@ export const Navigation = observer(
     return (
       <Container topOffset={topOffset} bottomOffset={bottomOffset}>
         {shownItems.map(item => (
-          <IconComponent
-            key={item.id}
-            item={item}
-            store={store}
-            setWorkspaceHidden={setWorkspaceHidden}
-            setWorkspaceItem={setWorkspaceItem}
-          />
+          <IconComponent key={item.id} item={item} store={store} />
         ))}
 
         <Separator />
 
         {disabledItems.map(item => (
-          <IconComponent
-            key={item.id}
-            item={item}
-            store={store}
-            isDisabled
-            setWorkspaceHidden={setWorkspaceHidden}
-            setWorkspaceItem={setWorkspaceItem}
-          />
+          <IconComponent key={item.id} item={item} store={store} isDisabled />
         ))}
       </Container>
     );
