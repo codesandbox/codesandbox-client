@@ -1,54 +1,66 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 
-const PROJECT = {
+interface INavigationItem {
+  id: string;
+  name: string;
+  hasCustomHeader?: boolean;
+  defaultOpen?: boolean;
+}
+
+const PROJECT: INavigationItem = {
   id: 'project',
-  name: 'Project Info',
+  name: 'Sandbox Info',
 };
 
-const PROJECT_SUMMARY = {
+const PROJECT_TEMPLATE: INavigationItem = {
+  ...PROJECT,
+  name: 'Template Info',
+};
+
+const PROJECT_SUMMARY: INavigationItem = {
   id: 'project-summary',
   name: 'Sandbox Info',
   hasCustomHeader: true,
 };
 
-const FILES = {
+const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
   defaultOpen: true,
 };
 
-const GITHUB = {
+const GITHUB: INavigationItem = {
   id: 'github',
   name: 'GitHub',
 };
 
-const DEPLOYMENT = {
+const DEPLOYMENT: INavigationItem = {
   id: 'deploy',
   name: 'Deployment',
 };
 
-const CONFIGURATION = {
+const CONFIGURATION: INavigationItem = {
   id: 'config',
   name: 'Configuration Files',
 };
 
-const LIVE = {
+const LIVE: INavigationItem = {
   id: 'live',
   name: 'Live',
 };
 
-const MORE = {
+const MORE: INavigationItem = {
   id: 'more',
   name: 'More',
 };
 
-const SERVER = {
+const SERVER: INavigationItem = {
   id: 'server',
   name: 'Server Control Panel',
 };
 
-export default function getItems(store) {
+export default function getItems(store): INavigationItem[] {
   if (
     store.live.isLive &&
     !(
@@ -66,7 +78,8 @@ export default function getItems(store) {
     return [PROJECT_SUMMARY, CONFIGURATION, MORE];
   }
 
-  const items = [PROJECT, FILES];
+  const isCustomTemplate = !!store.editor.currentSandbox.customTemplate;
+  const items = [isCustomTemplate ? PROJECT_TEMPLATE : PROJECT, FILES];
 
   if (store.isLoggedIn && store.editor.currentSandbox) {
     const templateDef = getTemplate(store.editor.currentSandbox.template);

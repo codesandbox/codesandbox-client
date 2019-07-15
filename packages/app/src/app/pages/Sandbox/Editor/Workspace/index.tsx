@@ -3,7 +3,9 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import SocialInfo from 'app/components/SocialInfo';
 import { useStore } from 'app/store';
-import getWorkspaceItems from 'app/store/modules/workspace/items';
+import getWorkspaceItems, {
+  getDisabledItems,
+} from 'app/store/modules/workspace/items';
 import Files from './items/Files';
 import { GitHub } from './items/GitHub';
 import Server from './items/Server';
@@ -56,7 +58,9 @@ const Workspace = () => {
   }
 
   const Component = workspaceTabs[activeTab];
-  const item = getWorkspaceItems(store).find(({ id }) => id === activeTab);
+  const item =
+    getWorkspaceItems(store).find(({ id }) => id === activeTab) ||
+    getDisabledItems(store).find(({ id }) => id === activeTab);
 
   return (
     <Container>
