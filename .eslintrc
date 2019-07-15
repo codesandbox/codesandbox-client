@@ -41,7 +41,12 @@
       }
     ],
     "no-param-reassign": ["error", { "props": false }],
-    "camelcase": "error",
+    "camelcase": [
+      "error",
+      {
+        "allow": ["UNSAFE_componentDidMount", "_id$", "^UNSAFE_"]
+      }
+    ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/href-no-hash": "off",
