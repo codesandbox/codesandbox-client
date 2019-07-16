@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 import { SketchPicker } from 'react-color';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
+import Switch from '@codesandbox/common/lib/components/Switch';
 import * as templates from '@codesandbox/common/lib/templates';
 import { useSignals, useStore } from 'app/store';
 import {
@@ -17,7 +17,6 @@ import {
 import { PickColor, PickerContainer, PublicValue } from './elements';
 import WorkspaceItem from '../../WorkspaceItem';
 import { Icon } from './Icon';
-import Switch from '@codesandbox/common/lib/components/Switch';
 
 export const TemplateConfig = observer(() => {
   const picker = useRef(null);

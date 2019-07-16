@@ -65,11 +65,12 @@ export const Icon = () => {
           <Arrow {...popover} />
           <List>
             {Object.keys(Icons).map((i: string) => {
-              const Icon = Icons[i];
+              const TemplateIconMap = Icons[i];
               return (
-                <li onClick={() => setIcon(i)}>
+                // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                <li role="button" tabIndex={0} onClick={() => setIcon(i)}>
                   <IconButton>
-                    <Icon width={24} />
+                    <TemplateIconMap width={24} />
                   </IconButton>
                 </li>
               );
