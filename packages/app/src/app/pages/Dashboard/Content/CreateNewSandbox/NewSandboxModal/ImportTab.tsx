@@ -1,7 +1,6 @@
 import React from 'react';
 import TerminalIcon from 'react-icons/lib/go/terminal';
 import UploadIcon from 'react-icons/lib/go/cloud-upload';
-import GithubPage from 'app/pages/GitHub/main';
 import { ImportChoice, ImportChoices, ImportWizardContainer } from './elements';
 
 import { GitHubImport, StackbitImport } from './Imports';
@@ -10,11 +9,13 @@ interface Props {
   username: string;
 }
 
-export const ImportTab = ({ username }) => (
+const STACKBIT_DISABLED = true;
+
+export const ImportTab = ({ username }: Props) => (
   <>
     <ImportWizardContainer>
       <GitHubImport />
-      {username && <StackbitImport username={username} />}
+      {username && !STACKBIT_DISABLED && <StackbitImport username={username} />}
     </ImportWizardContainer>
     <ImportChoices>
       <ImportChoice href="/docs/importing#export-with-cli">
