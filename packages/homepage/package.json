@@ -29,7 +29,7 @@
     "gatsby-react-router-scroll": "^2.0.2",
     "gatsby-remark-autolink-headers": "^1.4.10",
     "gatsby-remark-embed-youtube": "^0.0.7",
-    "gatsby-remark-images": "^1.5.34",
+    "gatsby-remark-images": "^2.0.1",
     "gatsby-remark-prismjs": "^1.2.11",
     "gatsby-source-airtable": "^2.0.8",
     "gatsby-source-filesystem": "^2.0.10",
@@ -54,7 +54,8 @@
     "styled-components": "^4.2.0",
     "three": "^0.87.1",
     "typography": "^0.16.17",
-    "typography-breakpoint-constants": "^0.15.10"
+    "typography-breakpoint-constants": "^0.15.10",
+    "snyk": "^1.193.2"
   },
   "keywords": [
     "gatsby"
@@ -67,7 +68,9 @@
     "start:dev": "LOCAL_SERVER=1 LOCAL_DEV=1 gatsby develop",
     "start": "gatsby develop",
     "lint": "eslint .",
-    "test": "echo \"Todo: no test specified\" && exit 0"
+    "test": "echo \"Todo: no test specified\" && exit 0",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "dotenv": "^6.2.0",
@@ -81,5 +84,6 @@
     "> 1%",
     "IE >= 11",
     "last 2 versions"
-  ]
+  ],
+  "snyk": true
 }
