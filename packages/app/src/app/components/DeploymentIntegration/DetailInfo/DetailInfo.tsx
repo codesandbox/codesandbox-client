@@ -10,7 +10,7 @@ export const DetailInfo = ({ info, deploy, bgColor, light, loading }) => (
       <Info light={light}>{info}</Info>
     </Margin>
 
-    <Button small disabled={loading} onClick={deploy}>
+    <Button small disabled={loading} onClick={() => deploy()}>
       Deploy
     </Button>
   </Details>
