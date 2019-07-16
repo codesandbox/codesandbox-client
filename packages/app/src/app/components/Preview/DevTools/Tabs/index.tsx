@@ -102,27 +102,25 @@ const DevToolTabs = ({
       </Tabs>
 
       <Actions>
-        {actions.map(({ title, onClick, Icon, disabled }) => {
-          return (
-            <Tooltip
+        {actions.map(({ title, onClick, Icon, disabled }) => (
+          <Tooltip
+            style={{
+              pointerEvents: hidden ? 'none' : 'initial',
+            }}
+            content={title}
+            key={title}
+            delay={disabled ? [0, 0] : [500, 0]}
+          >
+            <Icon
               style={{
-                pointerEvents: hidden ? 'none' : 'initial',
+                opacity: hidden ? 0 : disabled ? 0.5 : 1,
+                pointerEvents: disabled ? 'none' : 'initial',
               }}
-              content={title}
+              onClick={onClick}
               key={title}
-              delay={disabled ? [0, 0] : [500, 0]}
-            >
-              <Icon
-                style={{
-                  opacity: hidden ? 0 : disabled ? 0.5 : 1,
-                  pointerEvents: disabled ? 'none' : 'initial',
-                }}
-                onClick={onClick}
-                key={title}
-              />
-            </Tooltip>
-          );
-        })}
+            />
+          </Tooltip>
+        ))}
       </Actions>
     </Container>
   );

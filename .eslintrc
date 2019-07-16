@@ -56,7 +56,8 @@
       { "aspects": ["noHref", "invalidHref"] }
     ],
     "jsx-a11y/label-has-for": "off",
-    "no-bitwise": "off"
+    "no-bitwise": "off",
+    "arrow-body-style": ["error", "as-needed"]
   },
   "overrides": [
     {

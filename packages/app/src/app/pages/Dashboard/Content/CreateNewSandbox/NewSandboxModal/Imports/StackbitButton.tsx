@@ -8,7 +8,6 @@ window.addEventListener('message', receiveMessage, false);
 function receiveMessage(event) {
   if (event.origin === 'https://app.stackbit.com' && event.data) {
     const data = JSON.parse(event.data);
-    console.log(data);
 
     if (
       data.type === 'project-update' &&
@@ -38,10 +37,8 @@ interface Props {
   style?: React.CSSProperties;
 }
 
-export const StackbitButton = ({ username, style }: Props) => {
-  return (
-    <Button style={style} small onClick={() => openStackbit(username)}>
-      Generate Sandbox
-    </Button>
-  );
-};
+export const StackbitButton = ({ username, style }: Props) => (
+  <Button style={style} small onClick={() => openStackbit(username)}>
+    Generate Sandbox
+  </Button>
+);

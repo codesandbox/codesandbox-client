@@ -32,21 +32,19 @@ export const MyTemplates = ({ selectTemplate }: Props) => {
       <Title>Templates</Title>
       <MyTemplatesList>
         {data.me
-          ? data.me.templates.map((template, i) => {
-              return (
-                <CustomTemplate
-                  template={template}
-                  i={i}
-                  onClick={() => {
-                    if (selectTemplate) {
-                      selectTemplate({ shortid: template.sandbox.id });
-                    } else {
-                      history.push(sandboxUrl(template.sandbox));
-                    }
-                  }}
-                />
-              );
-            })
+          ? data.me.templates.map((template, i) => (
+              <CustomTemplate
+                template={template}
+                i={i}
+                onClick={() => {
+                  if (selectTemplate) {
+                    selectTemplate({ shortid: template.sandbox.id });
+                  } else {
+                    history.push(sandboxUrl(template.sandbox));
+                  }
+                }}
+              />
+            ))
           : new Array(3).fill({}).map((_, i) => <CustomTemplate i={i} />)}
       </MyTemplatesList>
     </>

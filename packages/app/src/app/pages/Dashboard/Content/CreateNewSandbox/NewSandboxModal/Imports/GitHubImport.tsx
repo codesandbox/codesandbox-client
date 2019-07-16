@@ -4,6 +4,7 @@ import {
   protocolAndHost,
   gitHubRepoPattern,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { Button } from '@codesandbox/common/lib/components/Button';
 
 import {
   ImportHeader,
@@ -15,7 +16,6 @@ import {
   PlaceHolderLink,
   DocsLink,
 } from './elements';
-import { Button } from '@codesandbox/common/lib/components/Button';
 
 const getFullGitHubUrl = url =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
@@ -87,7 +87,7 @@ export const GitHubImport = () => {
         </GitHubLink>
       ) : (
         <PlaceHolderLink error={error}>
-          {error ? error : 'Enter a URL to see the generated URL'}
+          {error || 'Enter a URL to see the generated URL'}
         </PlaceHolderLink>
       )}
 
