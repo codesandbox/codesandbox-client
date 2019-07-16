@@ -7,6 +7,8 @@ export const Button = styled(PopoverDisclosure)<{ color: string }>`
   border: 0;
   background: transparent;
   color: ${props => props.color};
+
+  cursor: pointer;
 `;
 
 export const IconWrapper = styled(Popover)`
@@ -58,4 +60,6 @@ export const IconButton = styled.button`
   padding: 0;
   border: 0;
   background: transparent;
+
+  cursor: pointer;
 `;
