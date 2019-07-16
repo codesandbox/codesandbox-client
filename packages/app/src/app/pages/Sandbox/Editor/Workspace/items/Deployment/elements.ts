@@ -77,43 +77,42 @@ export const Name = styled.span<{ light?: boolean }>`
 `;
 
 const BaseLink = styled.a<{ disabled?: boolean }>`
-  ${({ disabled, theme }) => css`
-    padding: 0.25rem 0.4rem;
-    background-color: ${theme.secondary};
-    text-decoration: none;
-    border: none;
-    font-size: 0.75rem;
-    color: white;
-    border-radius: 2px;
-    font-weight: 600;
-    margin-top: 0.75rem;
-    display: flex;
-    align-items: center;
-    flex-grow: 0;
-    max-width: 50%;
+  padding: 0.25rem 0.4rem;
+  background-color: ${props => props.theme.secondary};
+  text-decoration: none;
+  border: none;
+  font-size: 0.75rem;
+  color: white;
+  border-radius: 2px;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  flex-grow: 0;
+  max-width: 50%;
 
-    svg {
-      margin-right: 10px;
-    }
+  margin-top: 0;
 
-    ${disabled &&
-      css`
-        background: ${theme.gray};
-        pointer-events: none;
-      `};
+  svg {
+    margin-right: 10px;
+  }
 
-    &:disabled {
-      background: ${theme.gray};
-    }
-  `};
+  ${props =>
+    props.disabled &&
+    css`
+      background: ${props.theme.gray};
+      pointer-events: none;
+    `};
+
+  &:disabled {
+    background: ${props => props.theme.gray};
+  }
 `;
 
 export const Link = styled(BaseLink).attrs({
   rel: 'noreferrer noopener',
   target: '_blank',
-})`
-  margin-top: 0;
-`;
+})``;
 
 export const Action = BaseLink.withComponent('button');
 

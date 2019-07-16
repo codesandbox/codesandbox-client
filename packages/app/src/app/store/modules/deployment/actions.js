@@ -313,8 +313,12 @@ export async function getDeploys({ http, path, state, props }) {
 
     const assignAlias = async d => {
       const alias = await deploysByID(d.uid, token, http);
-      // eslint-disable-next-line
-      d.alias = alias.aliases;
+      if (alias) {
+        // eslint-disable-next-line
+        d.alias = alias.aliases;
+      } else {
+        d.alias = [];
+      }
       return d;
     };
 
