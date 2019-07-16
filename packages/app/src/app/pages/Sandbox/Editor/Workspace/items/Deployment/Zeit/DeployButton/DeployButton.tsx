@@ -39,7 +39,15 @@ export const DeployButton = ({ isOpen, toggle }) => {
       >
         {!nowFile.length && (
           <Overlay>
-            It seems you don{"'"}t have now.json file. Please create{' '}
+            It seems you don{"'"}t have{' '}
+            <a
+              href="https://zeit.co/docs/v2/deployments/configuration"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              now.json
+            </a>{' '}
+            file. Please create{' '}
             <CreateFile onClick={createFile}>one</CreateFile> to be able to
             deploy to{' '}
             <a
