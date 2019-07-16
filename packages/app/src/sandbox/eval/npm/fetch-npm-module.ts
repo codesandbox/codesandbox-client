@@ -31,6 +31,31 @@ export let combinedMetas: Meta = {};
 const normalizedMetas: { [key: string]: Meta } = {};
 const packages: Packages = {};
 
+async function fetchWithRetries(url: string, retries = 3): Promise<string> {
+  const doFetch = () =>
+    window.fetch(url).then(x => {
+      if (x.ok) {
+        return x.text();
+      }
+
+      throw new Error(`Could not fetch ${url}`);
+    });
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      // eslint-disable-next-line
+      return await doFetch();
+    } catch (e) {
+      console.error(e);
+      if (i === retries - 1) {
+        throw e;
+      }
+    }
+  }
+
+  throw new Error('Could not fetch');
+}
+
 export function setCombinedMetas(givenCombinedMetas: Meta) {
   combinedMetas = givenCombinedMetas;
 }
@@ -77,8 +102,8 @@ function getUnpkgUrl(name: string, version: string, forceJsDelivr?: boolean) {
   const nameWithoutAlias = name.replace(ALIAS_REGEX, '');
 
   return TEMP_USE_JSDELIVR || forceJsDelivr
-    ? `https://unpkg.com/${nameWithoutAlias}@${version}`
-    : `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`;
+    ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
+    : `https://unpkg.com/${nameWithoutAlias}@${version}`;
 }
 
 function getMeta(name: string, packageJSONPath: string, version: string) {
@@ -122,27 +147,13 @@ function downloadDependency(
     ? `https://cdn.jsdelivr.net/gh/${depVersion}${relativePath}`
     : `${getUnpkgUrl(depName, depVersion)}${relativePath}`;
 
-  packages[path] = window
-    .fetch(url)
-    .then(x => {
-      if (x.ok) {
-        return x.text();
-      }
-
-      throw new Error(`Could not find module ${path}`);
-    })
+  packages[path] = fetchWithRetries(url)
     .catch(err => {
       if (!isGitHub) {
         // Fallback to jsdelivr
-        return fetch(
+        return fetchWithRetries(
           `${getUnpkgUrl(depName, depVersion, true)}${relativePath}`
-        ).then(x2 => {
-          if (x2.ok) {
-            return x2.text();
-          }
-
-          throw new Error(`Could not find module ${path}`);
-        });
+        );
       }
 
       throw err;
