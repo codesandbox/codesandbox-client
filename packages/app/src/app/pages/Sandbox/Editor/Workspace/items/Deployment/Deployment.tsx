@@ -1,27 +1,33 @@
-import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
+import React, { useEffect } from 'react';
 
 import { useStore, useSignals } from 'app/store';
+
 import { Description } from '../../elements';
-import ZeitDeployments from './Zeit';
-import NetlifyDeployments from './Netlify';
+
 import { More } from '../More';
 
-const Deployment = observer(() => {
-  const store = useStore();
-  const signals = useSignals();
+import { Netlify } from './Netlify';
+import { Zeit } from './Zeit';
 
-  const showPlaceholder =
-    !store.editor.currentSandbox.owned || !store.isLoggedIn;
+export const Deployment = observer(() => {
+  const {
+    editor: { currentSandbox },
+    isLoggedIn,
+  } = useStore();
+  const {
+    deployment: { getDeploys },
+  } = useSignals();
+  const showPlaceholder = !(currentSandbox.owned && isLoggedIn);
 
   useEffect(() => {
     if (!showPlaceholder) {
-      signals.deployment.getDeploys();
+      getDeploys();
     }
-  }, [showPlaceholder, signals]);
+  }, [getDeploys, showPlaceholder]);
 
   if (showPlaceholder) {
-    const message = store.isLoggedIn ? (
+    const message = isLoggedIn ? (
       <>
         You need to own this sandbox to deploy this sandbox to Netlify or ZEIT.{' '}
         <p>Fork this sandbox to make a deploy!</p>
@@ -39,10 +45,10 @@ const Deployment = observer(() => {
         You can deploy a production version of your sandbox using one our
         supported providers.
       </Description>
-      <ZeitDeployments />
-      <NetlifyDeployments />
+
+      <Zeit />
+
+      <Netlify />
     </div>
   );
 });
-
-export default Deployment;
