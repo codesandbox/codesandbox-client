@@ -1919,10 +1919,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/template-icons@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.5.0.tgz#b34a6b75b63c387d5fd56e3ae6698752956d141b"
-  integrity sha512-Qn4T691o2sSkVB0G2NlNrsmlK7rZo7st7om9uRDJXdmU1MTt+FHGwT++sk/n/j9+VmkXJD7bTsES/SQIwnGXWA==
+"@codesandbox/template-icons@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.6.0.tgz#23690dc16fdca8cd62831bef355043c063901a60"
+  integrity sha512-0oAPa8pPtNGrT771wW0Xd3fMpLeV7496Uw7LkDsK0V04gXifI0EzG9/Espot21H06taLAmnroLEFNpiJ4I8Aaw==
 
 "@emmetio/abbreviation@^0.6.0", "@emmetio/abbreviation@^0.6.1":
   version "0.6.5"
