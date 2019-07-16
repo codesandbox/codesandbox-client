@@ -16,6 +16,7 @@ import { WarningStructure } from './transpilers/utils/worker-warning-handler';
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
+import evaluateScript from './loaders/eval-script';
 
 import Manager, { HMRStatus } from './manager';
 import HMR from './hmr';
@@ -971,7 +972,9 @@ export default class TranspiledModule {
       globals.__dirname = pathUtils.dirname(this.module.path);
       globals.__filename = this.module.path;
 
-      const exports = evaluate(
+      const exports = (this.module.path.indexOf('/node_modules/react/') === 0
+        ? evaluateScript
+        : evaluate)(
         this.source.compiledCode,
         require,
         this.compilation,
