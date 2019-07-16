@@ -17,6 +17,7 @@ Object {
   "gray": [Function],
   "green": [Function],
   "lightText": [Function],
+  "link": [Function],
   "new": Object {
     "bg": [Function],
     "description": [Function],
