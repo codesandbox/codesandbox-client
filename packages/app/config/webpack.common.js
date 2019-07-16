@@ -132,7 +132,9 @@ module.exports = {
           new RegExp(
             `${sepRe}node_modules${sepRe}babel-plugin-transform-vue-jsx`
           ),
-          new RegExp(`${sepRe}node_modules${sepRe}(yallist|debug)`),
+          new RegExp(
+            `${sepRe}node_modules${sepRe}(yallist|debug|json-parse-better-errors|parse-json|cosmiconfig)`
+          ),
           new RegExp(
             `${sepRe}node_modules${sepRe}@babel${sepRe}(code-frame|highlight)`
           ),

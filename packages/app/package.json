@@ -26,7 +26,7 @@
     "lint:embed": "cross-env LINT=1 eslint --ext .js,.ts,.tsx src/embed",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "typecheck": "tsc --noEmit -p tsconfig.check.json",
-    "es-check": "es-check es5 www/static/js/sandbox-startup.*.js www/static/js/common-sandbox.*.chunk.js www/static/js/vendors~app~sandbox.*.chunk.js www/static/js/vendors~sandbox.*.chunk.js www/static/js/default~app~embed~sandbox.*.chunk.js www/static/js/sandbox.*.js"
+    "es-check": "es-check es5 www/static/js/sandbox-startup.*.js www/static/js/common-sandbox.*.chunk.js www/static/js/vendors~app~sandbox.*.chunk.js www/static/js/vendors~sandbox.*.chunk.js www/static/js/default~app~embed~sandbox.*.chunk.js www/static/js/sandbox.*.js www/babel-transpiler.*.worker.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
