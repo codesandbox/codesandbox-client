@@ -1,8 +1,10 @@
-import { resolveDirectory } from '@codesandbox/common/lib/sandbox/modules';
 import React from 'react';
+import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'app/store';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
+
+import { resolveDirectory } from '@codesandbox/common/lib/sandbox/modules';
 
 import {
   WorkspaceInputContainer,
@@ -28,7 +30,7 @@ const getFunctionDir = sandbox => {
   }
 };
 
-export const SiteInfo = () => {
+export const SiteInfo = observer(() => {
   const {
     deployment: { building, netlifyLogs, netlifySite },
     editor: { currentSandbox },
@@ -62,4 +64,4 @@ export const SiteInfo = () => {
       </WorkspaceInputContainer>
     </SiteInfoWrapper>
   );
-};
+});
