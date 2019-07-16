@@ -9,6 +9,7 @@
     "declaration": true,
     "allowJs": false,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "target": "es5"
   }
 }

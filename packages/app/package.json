@@ -13,7 +13,7 @@
     "start:sandbox": "cross-env SANDBOX_ONLY=true node scripts/start.js",
     "start:dev_api": "node scripts/start.js",
     "start:test": "cross-env LOCAL_SERVER=1 SANDBOX_ONLY=true node scripts/start.js",
-    "build": "cross-env NODE_ENV=production node scripts/build.js",
+    "build": "cross-env NODE_ENV=production node scripts/build.js && yarn es-check",
     "build:embed": "cross-env NODE_ENV=production webpack --config config/webpack.embed.js",
     "build:sandbox": "cross-env NODE_ENV=production SANDBOX_ONLY=true node scripts/build.js",
     "build:clean": "rimraf www",
@@ -21,11 +21,12 @@
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
-    "lint": "npm run lint:app && npm run lint:embed",
+    "lint": "yarn lint:app && yarn lint:embed",
     "lint:app": "cross-env LINT=1 eslint --ext .js,.ts,.tsx src/app",
     "lint:embed": "cross-env LINT=1 eslint --ext .js,.ts,.tsx src/embed",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
-    "typecheck": "tsc --noEmit -p tsconfig.check.json"
+    "typecheck": "tsc --noEmit -p tsconfig.check.json",
+    "es-check": "es-check es5 www/static/js/sandbox-startup.*.js www/static/js/common-sandbox.*.chunk.js www/static/js/vendors~app~sandbox.*.chunk.js www/static/js/vendors~sandbox.*.chunk.js www/static/js/default~app~embed~sandbox.*.chunk.js www/static/js/sandbox.*.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -82,6 +83,7 @@
     "cross-spawn": "^5.0.1",
     "css-loader": "^0.28.11",
     "detect-port": "^1.1.1",
+    "es-check": "^5.0.0",
     "express": "^4.15.3",
     "file-loader": "^1.1.11",
     "filesize": "^3.5.6",

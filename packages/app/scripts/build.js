@@ -133,7 +133,6 @@ function build(previousSizeMap) {
     if (stats.hasErrors()) {
       console.error('Error creating a production build:');
       console.error(info.errors);
-      ls - a;
       process.exit(1);
     }
 
