@@ -36,7 +36,6 @@ export const SandboxConfig = observer(() => {
           templates.default(template).color(),
         title,
         description,
-        icon_url: template,
       },
     });
   };
