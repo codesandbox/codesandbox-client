@@ -58,6 +58,25 @@ if (!isLint) {
   threadLoader.warmup(threadPoolConfig, ['babel-loader']);
 }
 
+const transpilePackages = [
+  '@babel', // everything under @babel scope
+  'babel-plugin-transform-cx-jsx',
+  'babel-plugin-transform-vue-jsx',
+  'core-js-compat',
+  'cosmiconfig',
+  'debug',
+  'jsesc',
+  'json-parse-better-errors',
+  'parse-json',
+  'regexp-tree',
+  'regexpu-core',
+  'to-fast-properties',
+  'unicode-match-property-ecmascript',
+  'unicode-match-property-value-ecmascript',
+  'vue-template-es2015-compiler',
+  'yallist',
+];
+
 module.exports = {
   entry: SANDBOX_ONLY
     ? {
@@ -127,16 +146,9 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*babel-plugin-macros`),
           new RegExp(`sandbox-hooks`),
           new RegExp(
-            `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
-          ),
-          new RegExp(
-            `${sepRe}node_modules${sepRe}babel-plugin-transform-vue-jsx`
-          ),
-          new RegExp(
-            `${sepRe}node_modules${sepRe}(yallist|debug|json-parse-better-errors|parse-json|cosmiconfig)`
-          ),
-          new RegExp(
-            `${sepRe}node_modules${sepRe}@babel${sepRe}(code-frame|highlight)`
+            `${sepRe}node_modules${sepRe}(${transpilePackages.join(
+              '|'
+            )})${sepRe}.+\\.js$`
           ),
         ],
         loader: 'babel-loader',
