@@ -112,7 +112,7 @@ export default class SandboxModal extends React.PureComponent {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
         sandbox: undefined,

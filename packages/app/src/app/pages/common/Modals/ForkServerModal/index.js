@@ -6,7 +6,7 @@ import SignInButton from 'app/pages/common/SignInButton';
 import { Container, Heading, Explanation } from '../elements';
 
 class ForkServerModal extends React.Component {
-  componentWillUpdate() {
+  UNSAFE_componentWillUpdate() {
     // Which means that the user signed in in the meantime with the intention to
     // fork
     if (this.props.store.loggedIn) {

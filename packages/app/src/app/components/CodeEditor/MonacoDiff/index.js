@@ -1,7 +1,6 @@
-// @flow
 import React from 'react';
 
-import type { Editor, Settings } from '../types';
+import { Editor, Settings } from '../types';
 import MonacoReactComponent from '../Monaco/MonacoReactComponent';
 import defineTheme from '../Monaco/define-theme';
 
@@ -30,7 +29,7 @@ export default class MonacoDiff extends React.Component<Props>
     this.settings = props.settings;
   }
 
-  componentWillUpdate(nextProps: Props) {
+  UNSAFE_componentWillUpdate(nextProps: Props) {
     if (
       this.props.originalCode !== nextProps.originalCode ||
       this.props.modifiedCode !== nextProps.modifiedCode

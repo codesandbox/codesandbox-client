@@ -73,6 +73,7 @@ async function syncDependencyTypings(
     );
 
     return Promise.all(
+      // eslint-disable-next-line consistent-return
       Object.keys(absoluteDependencies).map(async depName => {
         const depVersion = absoluteDependencies[depName];
 
@@ -90,13 +91,15 @@ async function syncDependencyTypings(
           sendTypes();
         } catch (e) {
           if (process.env.NODE_ENV === 'development') {
+            // eslint-disable-next-line no-console
             console.warn('Trouble fetching types for ' + depName);
           }
+
           return {};
         }
       })
     );
-  } catch (e) {
+  } catch {
     /* ignore */
     return Promise.resolve({});
   }
@@ -141,14 +144,16 @@ export default Provider({
                 return;
               }
 
-              fs.stat('/sandbox/tsconfig.json', (err, result) => {
+              fs.stat('/sandbox/tsconfig.json', (error, result) => {
                 // If tsconfig exists we want to sync the types
-                syncDependencyTypings(rv.toString(), Boolean(err) || !result);
+                syncDependencyTypings(rv.toString(), Boolean(error) || !result);
               });
             });
           }
         });
-      } catch (e) {}
+      } catch {
+        // we just ignore the error
+      }
     }, 1000);
 
     self.addEventListener('message', evt => {

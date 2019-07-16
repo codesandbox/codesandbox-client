@@ -43,7 +43,7 @@ class CheckoutForm extends React.PureComponent<Props, State> {
     loading: false,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (nextProps.name !== this.props.name) {
       this.setState({ errors: {}, name: nextProps.name });
     }
@@ -88,13 +88,13 @@ class CheckoutForm extends React.PureComponent<Props, State> {
         token: token.id,
         coupon: this.state.coupon,
       });
-    } catch (e) {
-      logError(e);
+    } catch (err) {
+      logError(err);
 
       return this.setState({
         loading: false,
         errors: {
-          stripe: e.message,
+          stripe: err.message,
         },
       });
     }

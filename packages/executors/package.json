@@ -1,0 +1,49 @@
+{
+  "name": "@codesandbox/executors",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/executors"
+  },
+  "main": "dist/index.js",
+  "umd:main": "dist/codesandboxexecutors.umd.production.js",
+  "module": "dist/codesandboxexecutors.es.production.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "build:dev": "yarn build"
+  },
+  "peerDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "@types/socket.io-client": "^1.4.32",
+    "husky": "^2.4.0",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.0",
+    "tsdx": "^0.6.1",
+    "tslib": "^1.9.3",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "@codesandbox/common": "^1.0.5",
+    "codesandbox-api": "^0.0.22",
+    "debug": "^4.1.1",
+    "socket.io-client": "^2.2.0"
+  }
+}

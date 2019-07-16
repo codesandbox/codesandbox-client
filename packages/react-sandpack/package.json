@@ -16,7 +16,8 @@
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/react-sandpack"
   },
   "engines": {
     "node": ">=6.0.0"

@@ -20,6 +20,8 @@ import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
 import SSEProvider from './providers/SSE';
 import FSSyncProvider from './providers/FSSync';
+import CodeSandboxAPIProvider from './providers/CodeSandboxAPI';
+import ExecutorProvider from './providers/Executor';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -148,5 +150,7 @@ export default Module({
     ot: OTProvider,
     sse: SSEProvider,
     fsSync: FSSyncProvider,
+    executor: ExecutorProvider,
+    codeSandboxApi: CodeSandboxAPIProvider,
   },
 });

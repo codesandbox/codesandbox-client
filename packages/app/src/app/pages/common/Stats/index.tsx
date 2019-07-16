@@ -1,13 +1,13 @@
-import React from 'react';
+import { Sandbox } from '@codesandbox/common/lib/types';
 import { observer } from 'mobx-react-lite';
-
+import React from 'react';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
+
 import LikeHeart from 'app/pages/common/LikeHeart';
-import Stat from './Stat';
 
 import { Stats } from './elements';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import Stat from './Stat';
 
 interface Props {
   sandbox: Sandbox;
@@ -20,6 +20,7 @@ const StatsComponent = ({ sandbox }: Props) => (
       Icon={<LikeHeart sandbox={sandbox} colorless />}
       count={sandbox.likeCount}
     />
+
     <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
   </Stats>
 );

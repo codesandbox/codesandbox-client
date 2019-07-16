@@ -44,8 +44,7 @@ const TabDropZone = ({
   connectDropTarget(
     <div
       style={{
-        height: '100%',
-        width: '100%',
+        flex: 'auto',
       }}
     >
       <DropZone isOver={isOver} />

@@ -120,7 +120,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
       this.setState({ screenshotUrl: nextProps.screenshotUrl }, () => {
         this.checkScreenshot();
@@ -257,9 +257,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
           action: () => {
             if (this.props.collectionTeamId) {
               history.push(
-                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${
-                  this.props.collectionPath
-                }`
+                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${this.props.collectionPath}`
               );
             } else {
               history.push(`/dashboard/sandboxes${this.props.collectionPath}`);

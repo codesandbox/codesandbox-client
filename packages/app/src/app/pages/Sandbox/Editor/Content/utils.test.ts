@@ -1,4 +1,4 @@
-import { moveDevToolsTab } from './utils';
+import { moveDevToolsTab, addDevToolsTab } from './utils';
 
 const BROWSER_FIXTURE = { id: 'codesandbox.browser' };
 const TESTS_FIXTURE = { id: 'codesandbox.tests' };
@@ -78,5 +78,21 @@ describe('moveDevToolsTab', () => {
     const newTabs = moveDevToolsTab(tabs, from, to);
 
     expect(newTabs).not.toBe(tabs);
+  });
+});
+
+describe('addDevToolsTab', () => {
+  it('can add a tab', () => {
+    const tabs = [{ views: [{ ...BROWSER_FIXTURE }, { ...TESTS_FIXTURE }] }];
+
+    expect(addDevToolsTab(tabs, BROWSER_FIXTURE)).toMatchSnapshot();
+  });
+
+  it('can add a tab on specific position', () => {
+    const tabs = [{ views: [{ ...BROWSER_FIXTURE }, { ...TESTS_FIXTURE }] }];
+
+    expect(
+      addDevToolsTab(tabs, TESTS_FIXTURE, { devToolIndex: 0, tabPosition: 0 })
+    ).toMatchSnapshot();
   });
 });

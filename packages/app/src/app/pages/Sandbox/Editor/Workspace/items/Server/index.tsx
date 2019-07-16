@@ -1,14 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { dispatch } from 'codesandbox-api';
 
 import { inject, observer } from 'mobx-react';
 import PowerIcon from 'react-icons/lib/md/power-settings-new';
 
+import BrowserIcon from 'react-icons/lib/go/browser';
+
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { Button } from '@codesandbox/common/lib/components/Button';
 
-import { Description, WorkspaceInputContainer } from '../../elements';
+import {
+  Description,
+  WorkspaceInputContainer,
+  EntryContainer,
+} from '../../elements';
 
 import Status from './Status';
 import Tasks from './Tasks';
@@ -17,14 +22,23 @@ import EnvironmentVariables from './EnvVars';
 const SubTitle = styled.div`
   text-transform: uppercase;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${props =>
+    props.theme.light ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'};
 
   padding-left: 1rem;
   font-size: 0.875rem;
 `;
 
-function Server({ store }: { store: any }) {
+function Server({ store, signals }: { store: any; signals: any }) {
   const disconnected = store.server.status !== 'connected';
+
+  const openPort = (port: {
+    main: boolean;
+    port: number;
+    hostname: string;
+  }) => {
+    signals.server.onBrowserFromPortOpened({ port });
+  };
 
   return (
     <div>
@@ -65,6 +79,48 @@ function Server({ store }: { store: any }) {
       </Margin>
 
       <Margin top={1} bottom={0.5}>
+        <SubTitle>Open Ports</SubTitle>
+        <Margin top={0.5}>
+          {store.server.ports.length ? (
+            store.server.ports.map(port => (
+              <EntryContainer
+                style={{ position: 'relative' }}
+                onClick={() => openPort(port)}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginLeft: '0.5rem',
+                  }}
+                >
+                  <BrowserIcon />
+                  <div style={{ marginLeft: '0.75rem' }}>{port.port}</div>
+                </div>
+                {port.main && (
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      position: 'absolute',
+                      right: '2rem',
+                    }}
+                  >
+                    main
+                  </div>
+                )}
+              </EntryContainer>
+            ))
+          ) : (
+            <Description>
+              No ports are opened. Maybe the server is still starting or it
+              doesn't open any ports.
+            </Description>
+          )}
+        </Margin>
+      </Margin>
+
+      <Margin top={1} bottom={0.5}>
         <SubTitle style={{ marginBottom: '.5rem' }}>Control Container</SubTitle>
         <WorkspaceInputContainer>
           <Button
@@ -79,7 +135,7 @@ function Server({ store }: { store: any }) {
               disconnected || store.server.containerStatus !== 'sandbox-started'
             }
             onClick={() => {
-              dispatch({ type: 'socket:message', channel: 'sandbox:restart' });
+              signals.server.restartSandbox({});
             }}
           >
             <React.Fragment>
@@ -103,13 +159,7 @@ function Server({ store }: { store: any }) {
               disconnected || store.server.containerStatus === 'initializing'
             }
             onClick={() => {
-              this.props.signals.server.containerStatusChanged({
-                status: 'initializing',
-              });
-              dispatch({
-                type: 'socket:message',
-                channel: 'sandbox:restart-container',
-              });
+              signals.server.restartContainer({});
             }}
           >
             <React.Fragment>

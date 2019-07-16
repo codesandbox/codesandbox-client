@@ -1,6 +1,11 @@
 {
   "name": "@codesandbox/common",
   "version": "1.0.5",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/common"
+  },
   "source": true,
   "files": [
     "lib"
@@ -36,7 +41,6 @@
     "react-textarea-autosize": "^6.1.0",
     "semver": "^5.6.0",
     "sha1": "^1.1.1",
-    "socket.io-client": "^2.1.1",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {
@@ -48,7 +52,6 @@
     "@types/lodash": "^4.14.123",
     "@types/react": "^16.8.12",
     "@types/react-icons": "^2.2.7",
-    "@types/socket.io-client": "^1.4.32",
     "@types/styled-components": "^4.1.13",
     "babel-jest": "^23.6.0",
     "cpx": "^1.5.0",

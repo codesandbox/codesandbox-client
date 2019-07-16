@@ -16,6 +16,8 @@ import getTemplate from '@codesandbox/common/lib/templates';
 
 import Cube from './Cube';
 
+const SECOND = 1000; // ms
+
 // without this line, CSSPlugin and AttrPlugin may get dropped by your bundler...
 // eslint-disable-next-line
 const plugins = [CSSPlugin, AttrPlugin];
@@ -30,14 +32,17 @@ if (process.env.NODE_ENV === 'development') {
 }
 const rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
 const domain = `sse.${rootDomain}`;
-const sandbox = hostParts[0];
+// parses sandboxid[-port]
+const sandbox = hostParts[0].replace(/-\d+/, '');
+const port = hostParts[0].replace(/^\w+-?/, '');
 const lastLoadedAt = parseInt(localStorage.getItem('last_loaded_at'), 10);
 const now = Date.now();
 let isLoop = false;
+let reloadTimeout = null;
 
 if (lastLoadedAt) {
   const timeDiff = now - lastLoadedAt;
-  if (timeDiff <= 5000) {
+  if (timeDiff <= 5 * SECOND) {
     isLoop = true;
   }
 }
@@ -214,6 +219,12 @@ async function start() {
 
   socket.on('sandbox:log', ({ data }) => {
     term.write(data);
+    if (reloadTimeout) {
+      clearTimeout(reloadTimeout);
+    }
+    reloadTimeout = setTimeout(() => {
+      window.location.reload(true);
+    }, 10 * SECOND);
   });
 
   socket.on('sandbox:error', ({ message, unrecoverable }) => {
@@ -261,12 +272,18 @@ async function start() {
     updateStatus(data.progress.current, data.progress.total, data.status);
   });
 
+  socket.on('sandbox:port', portList => {
+    portList.forEach(({ hostname, port: newPort }) => {
+      if (hostname === window.location.hostname || newPort.toString() === port) {
+        setTimeout(() => {
+          window.location.reload(true);
+        }, SECOND);
+      }
+    })
+  });
+
   socket.on('sandbox:start', () => {
     updateStatus(4, 3, 'started');
-
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 100);
   });
 
   window.addEventListener('resize', () => term.fit());

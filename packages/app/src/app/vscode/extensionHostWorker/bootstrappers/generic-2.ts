@@ -1,8 +1,8 @@
-import * as child_process from 'node-services/lib/child_process';
+import * as childProcess from 'node-services/lib/child_process';
 
 import { initializeAll } from '../common/global';
 
-child_process.addDefaultForkHandler(false);
+childProcess.addDefaultForkHandler(false);
 
 initializeAll().then(() => {
   // Use require so that it only starts executing the chunk with all globals specified.

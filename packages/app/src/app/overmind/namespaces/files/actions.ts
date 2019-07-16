@@ -157,9 +157,7 @@ export const directoryDeleted: AsyncAction<string> = async (
 
   try {
     await effects.api.delete(
-      `/sandboxes/${state.editor.currentId}/directories/${
-        removedDirectory.shortid
-      }`
+      `/sandboxes/${state.editor.currentId}/directories/${removedDirectory.shortid}`
     );
     actions.live.internal.sendModuleInfo(
       {

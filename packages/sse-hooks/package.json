@@ -2,6 +2,11 @@
   "name": "sse-hooks",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/sse-hooks"
+  },
   "main": "dist/index.js",
   "source": "index.js",
   "scripts": {

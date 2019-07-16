@@ -181,7 +181,7 @@ export default class App extends React.PureComponent<
     }
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (window.__SANDBOX_DATA__) {
       this.setState({ sandbox: camelizeKeys(window.__SANDBOX_DATA__) });
     } else {

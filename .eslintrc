@@ -41,7 +41,13 @@
       }
     ],
     "no-param-reassign": ["error", { "props": false }],
-    "camelcase": "error",
+    "camelcase": [
+      "error",
+      {
+        "allow": ["UNSAFE_componentDidMount", "_id$", "^UNSAFE_"],
+        "properties": "never"
+      }
+    ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/href-no-hash": "off",
@@ -49,7 +55,8 @@
       "warn",
       { "aspects": ["noHref", "invalidHref"] }
     ],
-    "jsx-a11y/label-has-for": "off"
+    "jsx-a11y/label-has-for": "off",
+    "no-bitwise": "off"
   },
   "overrides": [
     {

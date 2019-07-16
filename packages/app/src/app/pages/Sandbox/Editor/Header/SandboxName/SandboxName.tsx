@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { observer } from 'mobx-react-lite';
 import { basename } from 'path';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+
 import { useSignals, useStore } from 'app/store';
+
 import {
   Container,
   Folder,
@@ -17,11 +20,8 @@ import {
   TemplateBadge,
   Main,
 } from './elements';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 export const SandboxName = observer(() => {
-  const [updatingName, setUpdatingName] = useState(false);
-  const [name, setName] = useState('');
   const {
     modalOpened,
     workspace: { sandboxInfoUpdated, valueChanged },
@@ -30,6 +30,9 @@ export const SandboxName = observer(() => {
     isLoggedIn,
     editor: { currentSandbox },
   } = useStore();
+
+  const [updatingName, setUpdatingName] = useState(false);
+  const [name, setName] = useState('');
 
   const sandboxName = getSandboxName(currentSandbox) || 'Untitled';
 
