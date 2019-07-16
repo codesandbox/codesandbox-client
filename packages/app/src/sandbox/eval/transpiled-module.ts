@@ -972,7 +972,8 @@ export default class TranspiledModule {
       globals.__dirname = pathUtils.dirname(this.module.path);
       globals.__filename = this.module.path;
 
-      const exports = (this.module.path.indexOf('/node_modules/react/') === 0
+      const exports = (this.module.path.indexOf('/node_modules/react/') === 0 ||
+        this.module.path.indexOf('/node_modules/react-dom/') === 0
         ? evaluateScript
         : evaluate)(
         this.source.compiledCode,
