@@ -89,7 +89,7 @@ export const Navigation = observer(
           <IconComponent key={item.id} item={item} />
         ))}
 
-        <Separator />
+        {disabledItems.length > 0 && <Separator />}
 
         {disabledItems.map(item => (
           <IconComponent key={item.id} item={item} isDisabled />
