@@ -15,10 +15,11 @@ const requestFrame = (() => {
   };
 })();
 
-function loadScriptSync(code) {
+function loadScriptSync(code, identifier) {
   var s = document.createElement('script');
   s.innerHTML = code;
   s.type = 'text/javascript';
+  s.src = identifier;
   s.async = false; // <-- this is important
   s.setAttribute('crossorigin', true);
   document.getElementsByTagName('head')[0].appendChild(s);
@@ -75,7 +76,7 @@ export default function(
       `\n})`;
 
     // eslint-disable-next-line no-eval
-    loadScriptSync(newCode);
+    loadScriptSync(newCode, globalIdentifier);
 
     window[globalIdentifier].apply(this, globalsValues);
 
