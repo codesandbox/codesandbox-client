@@ -93,7 +93,7 @@ export default () => (
           <Title>About</Title>
           <List>
             <li>
-               <Link to="/blog">Blog</Link>
+              <Link to="/blog">Blog</Link>
             </li>
             <li>
               <a

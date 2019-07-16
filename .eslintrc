@@ -56,7 +56,8 @@
       { "aspects": ["noHref", "invalidHref"] }
     ],
     "jsx-a11y/label-has-for": "off",
-    "no-bitwise": "off"
+    "no-bitwise": "off",
+    "arrow-body-style": ["error", "as-needed"]
   },
   "overrides": [
     {
@@ -88,7 +89,7 @@
         ],
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [
-          "warn",
+          "error",
           { "args": "none", "ignoreRestSiblings": true }
         ],
         "no-useless-constructor": "off",

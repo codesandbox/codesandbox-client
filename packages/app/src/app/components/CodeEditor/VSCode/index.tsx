@@ -925,9 +925,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
       ),
       options: {
         inlineClassName: classification.type
-          ? `${classification.kind} ${classification.type}-of-${
-              classification.parentKind
-            }`
+          ? `${classification.kind} ${classification.type}-of-${classification.parentKind}`
           : classification.kind,
       },
     }));
