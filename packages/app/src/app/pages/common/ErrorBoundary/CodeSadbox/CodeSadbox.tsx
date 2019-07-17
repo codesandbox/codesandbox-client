@@ -25,7 +25,6 @@ import {
 export const CodeSadbox: React.FC<IFallbackComponentProps> = observer(
   ({ error, trace }) => {
     const store = useStore();
-    const isLoggedIn = store.isLoggedIn;
 
     return (
       <Container>
@@ -39,7 +38,7 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = observer(
           <Sadbox scale={3} />
           <Subtitle>CodeSadbox</Subtitle>
           <Actions>
-            {!isLoggedIn ? (
+            {store.isLoggedIn ? (
               <Button small secondary href={dashboardUrl()}>
                 <ButtonIcon>
                   <Dashboard />
