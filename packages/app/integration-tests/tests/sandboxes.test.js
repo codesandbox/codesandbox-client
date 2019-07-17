@@ -118,7 +118,7 @@ describe('sandboxes', () => {
       async () => {
         browser = await browser;
 
-        const page = await loadSandboxRetry(browser, id, 30 * SECOND, 2);
+        const page = await loadSandboxRetry(browser, id, 45 * SECOND, 2);
 
         const screenshot = await page.screenshot();
 
