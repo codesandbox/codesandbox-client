@@ -1,16 +1,19 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+
 import { useSignals, useStore } from 'app/store';
-import { LiveInfo } from './LiveInfo';
-import { LiveButton } from './LiveButton';
+
 import {
-  Description,
   ErrorDescription,
   WorkspaceInputContainer,
   WorkspaceSubtitle,
 } from '../../elements';
 
 import { More } from '../More';
+
+import { Description } from './elements';
+import { LiveButton } from './LiveButton';
+import { LiveInfo } from './LiveInfo';
 
 export const Live = observer(() => {
   const {
@@ -44,10 +47,8 @@ export const Live = observer(() => {
         <LiveInfo />
       ) : (
         <>
-          <Description style={{ marginBottom: '1rem' }}>
-            Invite others to live edit this sandbox with you. We
-            {"'"}
-            re doing it live!
+          <Description>
+            {`Invite others to live edit this sandbox with you. We're doing it live!`}
           </Description>
 
           <WorkspaceSubtitle>Create live room</WorkspaceSubtitle>
@@ -66,7 +67,9 @@ export const Live = observer(() => {
             <LiveButton
               disable={hasUnsyncedModules}
               isLoading={isLoading}
-              onClick={() => {createLiveClicked({ sandboxId: currentId }) }}
+              onClick={() => {
+                createLiveClicked({ sandboxId: currentId });
+              }}
             />
           </WorkspaceInputContainer>
         </>

@@ -6,8 +6,8 @@ export const Status = styled.div`
   color: rgba(255, 255, 255, 0.6);
 `;
 
-export const UserContainer = styled.div`
-  ${({ isCurrentUser, theme }: { isCurrentUser: boolean; theme: any }) => css`
+export const UserContainer = styled.div<{ isCurrentUser: boolean }>`
+  ${({ isCurrentUser, theme }) => css`
     ${delay()};
     display: flex;
     align-items: center;
@@ -26,8 +26,8 @@ export const UserContainer = styled.div`
   `}
 `;
 
-export const ProfileImage = styled.img`
-  ${({ borderColor }: { borderColor: string }) => css`
+export const ProfileImage = styled.img<{ borderColor: string }>`
+  ${({ borderColor }) => css`
     width: 26px;
     height: 26px;
     border-radius: 2px;

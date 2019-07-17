@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { HTMLAttributes } from 'react';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 
 const styles = css`
@@ -15,7 +16,7 @@ const styles = css`
   border: 2px solid #fd2439b8;
 `;
 
-interface ButtonProps extends HTMLButtonElement {
+interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   disable?: boolean;
 }
 export const Button = styled.button<ButtonProps>`
