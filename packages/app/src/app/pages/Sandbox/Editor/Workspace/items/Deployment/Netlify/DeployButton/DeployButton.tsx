@@ -7,7 +7,11 @@ import { useSignals, useStore } from 'app/store';
 
 import { DeployButtonContainer } from '../../elements';
 
-export const DeployButton = observer(({ isOpen, toggle }) => {
+type Props = {
+  isOpen: boolean;
+  toggle: () => void;
+};
+export const DeployButton = observer<Props>(({ isOpen, toggle }) => {
   const {
     deployment: { deployWithNetlify },
   } = useSignals();

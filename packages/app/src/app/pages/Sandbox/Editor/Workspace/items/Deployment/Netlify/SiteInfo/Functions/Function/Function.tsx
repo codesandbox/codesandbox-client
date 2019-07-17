@@ -6,7 +6,12 @@ import { useStore } from 'app/store';
 
 import { Link } from '../../../../elements';
 
-export const Function = observer(({ function: { title } }) => {
+type Props = {
+  function: {
+    title: string;
+  };
+};
+export const Function = observer<Props>(({ function: { title } }) => {
   const {
     deployment: {
       building,

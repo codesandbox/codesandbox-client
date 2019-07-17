@@ -9,7 +9,11 @@ import { DeployButtonContainer } from '../../elements';
 
 import { Overlay, CreateFile } from './elements';
 
-export const DeployButton = observer(({ isOpen, toggle }) => {
+type Props = {
+  isOpen: boolean;
+  toggle: () => void;
+};
+export const DeployButton = observer<Props>(({ isOpen, toggle }) => {
   const {
     files,
     deployment: { deploySandboxClicked },

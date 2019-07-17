@@ -4,14 +4,24 @@ import { useSignals } from 'app/store';
 
 import { Action } from '../../../../elements';
 
-export const AliasDeploymentButton = ({ deploy: { alias, uid: id } }) => {
+import { Deploy } from '../types';
+
+type Props = {
+  deploy: Deploy;
+};
+export const AliasDeploymentButton = ({
+  deploy: { alias: aliases, uid: id },
+}: Props) => {
   const {
     deployment: { aliasDeployment },
   } = useSignals();
 
   return (
-    <Action disabled={alias.length > 0} onClick={() => aliasDeployment({ id })}>
-      {alias.length > 0 ? 'Aliased' : 'Alias'}
+    <Action
+      disabled={aliases.length > 0}
+      onClick={() => aliasDeployment({ id })}
+    >
+      {aliases.length > 0 ? 'Aliased' : 'Alias'}
     </Action>
   );
 };

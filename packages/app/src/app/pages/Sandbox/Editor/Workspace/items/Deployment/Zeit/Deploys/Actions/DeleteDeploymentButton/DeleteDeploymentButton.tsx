@@ -6,7 +6,10 @@ import { useSignals, useStore } from 'app/store';
 
 import { Action } from '../../../../elements';
 
-export const DeleteDeploymentButton = observer(({ id }) => {
+type Props = {
+  id: string;
+};
+export const DeleteDeploymentButton = observer<Props>(({ id }) => {
   const {
     deployment: { setDeploymentToDelete },
     modalOpened,
