@@ -58,28 +58,28 @@ const Routes = () => {
 
   return (
     <Container>
-      <Boundary>
-        <Route
-          path="/"
-          render={({ location }) => {
-            if (process.env.NODE_ENV === 'production') {
-              routeDebugger(
-                `Sending '${location.pathname + location.search}' to ga.`
+      <Route
+        path="/"
+        render={({ location }) => {
+          if (process.env.NODE_ENV === 'production') {
+            routeDebugger(
+              `Sending '${location.pathname + location.search}' to ga.`
+            );
+            if (typeof (window as any).ga === 'function' && !DNT) {
+              (window as any).ga(
+                'set',
+                'page',
+                location.pathname + location.search
               );
-              if (typeof (window as any).ga === 'function' && !DNT) {
-                (window as any).ga(
-                  'set',
-                  'page',
-                  location.pathname + location.search
-                );
 
-                send('pageview', { path: location.pathname + location.search });
-              }
+              send('pageview', { path: location.pathname + location.search });
             }
-            return null;
-          }}
-        />
-        <Toasts state={notificationState} />
+          }
+          return null;
+        }}
+      />
+      <Toasts state={notificationState} />
+      <Boundary>
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s" />} />
@@ -101,8 +101,8 @@ const Routes = () => {
             <Route component={NotFound} />
           </Switch>
         </Content>
-        <Modals />
       </Boundary>
+      <Modals />
     </Container>
   );
 };
