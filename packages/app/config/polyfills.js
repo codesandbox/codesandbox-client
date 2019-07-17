@@ -31,6 +31,7 @@ g.jsdom = {
 // IE11
 require('core-js/fn/array/find');
 require('core-js/fn/array/from');
+require('core-js/fn/map');
 require('core-js/fn/object/assign');
 require('core-js/fn/string/includes');
 require('core-js/fn/symbol');
