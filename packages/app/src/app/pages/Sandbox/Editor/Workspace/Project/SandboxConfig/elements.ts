@@ -1,9 +1,16 @@
 import styled, { css } from 'styled-components';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import { PropertyValue } from '../elements';
 
 export const Container = styled.div`
   margin: 1rem;
   margin-top: 5px;
+`;
+
+export const PublicValue = styled(PropertyValue)`
+  position: relative;
+  justify-content: flex-end;
+  display: flex;
 `;
 
 export const CenteredText = styled.div`

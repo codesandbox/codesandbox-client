@@ -3,11 +3,20 @@ import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 import { SketchPicker } from 'react-color';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Switch from '@codesandbox/common/lib/components/Switch';
 import * as templates from '@codesandbox/common/lib/templates';
 import { useSignals, useStore } from 'app/store';
-import { Item, PropertyName, PropertyValue, Explanation } from '../elements';
-import { PickColor, PickerContainer } from './elements';
+import {
+  Item,
+  PropertyName,
+  PropertyValue,
+  Explanation,
+  Icon as QuestionIcon,
+} from '../elements';
+import { PickColor, PickerContainer, PublicValue } from './elements';
 import WorkspaceItem from '../../WorkspaceItem';
+import { Icon } from './Icon';
 
 export const TemplateConfig = observer(() => {
   const picker = useRef(null);
@@ -19,11 +28,12 @@ export const TemplateConfig = observer(() => {
       currentSandbox: { template, customTemplate },
     },
   } = useStore();
-  const [showPicker, setShowPicker] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(
+  const defaultColor =
     (customTemplate && customTemplate.color) ||
-      templates.default(template).color()
-  );
+    templates.default(template).color();
+  const [showPicker, setShowPicker] = useState(false);
+  const [publicTemplate, setPublic] = useState(customTemplate.published);
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
   const colors = Object.keys(templates)
     .filter(x => x !== 'default')
     .map(t => templates[t])
@@ -38,6 +48,16 @@ export const TemplateConfig = observer(() => {
     });
   });
 
+  const togglePublic = () => {
+    editTemplate({
+      template: {
+        ...customTemplate,
+        published: !publicTemplate,
+      },
+    });
+    setPublic(!publicTemplate);
+  };
+
   return (
     <WorkspaceItem defaultOpen title="Template">
       <Explanation style={{ marginTop: 0, marginBottom: '.5rem' }}>
@@ -50,7 +70,7 @@ export const TemplateConfig = observer(() => {
       </Explanation>
       <Item style={{ marginTop: '0.5rem' }}>
         <PropertyName>Color</PropertyName>
-        <PropertyValue style={{ position: 'relative' }}>
+        <PropertyValue relative>
           <PickColor
             onClick={() => setShowPicker(true)}
             color={selectedColor}
@@ -70,6 +90,27 @@ export const TemplateConfig = observer(() => {
           )}
         </PropertyValue>
       </Item>
+      <Item>
+        <PropertyName>
+          Public
+          <Tooltip
+            boundary="viewport"
+            content="Whether this template will show in our upcoming templates page"
+          >
+            <QuestionIcon />
+          </Tooltip>
+        </PropertyName>
+        <PublicValue>
+          <Switch
+            small
+            onClick={togglePublic}
+            right={publicTemplate}
+            offMode
+            secondary
+          />
+        </PublicValue>
+      </Item>
+      <Icon />
     </WorkspaceItem>
   );
 });
