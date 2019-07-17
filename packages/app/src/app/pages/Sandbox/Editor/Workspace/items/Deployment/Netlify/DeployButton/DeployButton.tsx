@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { DeploymentIntegration } from 'app/components/DeploymentIntegration';
@@ -6,7 +7,11 @@ import { useSignals, useStore } from 'app/store';
 
 import { DeployButtonContainer } from '../../elements';
 
-export const DeployButton = ({ isOpen, toggle }) => {
+type Props = {
+  isOpen: boolean;
+  toggle: () => void;
+};
+export const DeployButton = observer<Props>(({ isOpen, toggle }) => {
   const {
     deployment: { deployWithNetlify },
   } = useSignals();
@@ -34,4 +39,4 @@ export const DeployButton = ({ isOpen, toggle }) => {
       </DeploymentIntegration>
     </DeployButtonContainer>
   );
-};
+});

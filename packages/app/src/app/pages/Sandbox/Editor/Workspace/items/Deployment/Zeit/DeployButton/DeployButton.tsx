@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { DeploymentIntegration } from 'app/components/DeploymentIntegration';
@@ -8,7 +9,11 @@ import { DeployButtonContainer } from '../../elements';
 
 import { Overlay, CreateFile } from './elements';
 
-export const DeployButton = ({ isOpen, toggle }) => {
+type Props = {
+  isOpen: boolean;
+  toggle: () => void;
+};
+export const DeployButton = observer<Props>(({ isOpen, toggle }) => {
   const {
     files,
     deployment: { deploySandboxClicked },
@@ -67,4 +72,4 @@ export const DeployButton = ({ isOpen, toggle }) => {
       </DeploymentIntegration>
     </DeployButtonContainer>
   );
-};
+});

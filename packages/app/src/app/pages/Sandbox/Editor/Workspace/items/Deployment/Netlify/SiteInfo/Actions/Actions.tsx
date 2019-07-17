@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { useStore } from 'app/store';
@@ -9,7 +10,7 @@ import { SubTitle } from '../elements';
 import { ClaimSiteButton } from './ClaimSiteButton';
 import { VisitSiteButton } from './VisitSiteButton';
 
-export const Actions = () => {
+export const Actions = observer(() => {
   const {
     deployment: { netlifyClaimUrl },
   } = useStore();
@@ -25,4 +26,4 @@ export const Actions = () => {
       </ButtonContainer>
     </>
   );
-};
+});

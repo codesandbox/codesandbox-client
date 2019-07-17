@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import TrashIcon from 'react-icons/lib/fa/trash';
 
@@ -5,7 +6,10 @@ import { useSignals, useStore } from 'app/store';
 
 import { Action } from '../../../../elements';
 
-export const DeleteDeploymentButton = ({ id }) => {
+type Props = {
+  id: string;
+};
+export const DeleteDeploymentButton = observer<Props>(({ id }) => {
   const {
     deployment: { setDeploymentToDelete },
     modalOpened,
@@ -29,4 +33,4 @@ export const DeleteDeploymentButton = ({ id }) => {
       )}
     </Action>
   );
-};
+});
