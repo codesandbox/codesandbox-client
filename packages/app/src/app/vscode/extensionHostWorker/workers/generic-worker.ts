@@ -40,13 +40,6 @@ export function start({
       process.stdin.emit('data', $data.$data);
     } else if ($type === 'input-write') {
       process.stdin.emit('data', $data);
-    } else {
-      if (
-        data.browserfsMessage ||
-        (data.$data && data.$data.browserfsMessage)
-      ) {
-        return;
-      }
     }
   }
 
@@ -128,8 +121,8 @@ export function start({
             );
 
             pendingMessages.forEach(processMessage);
-          } catch (e) {
-            console.error(e);
+          } catch (error) {
+            console.error(error);
           }
         }
       }

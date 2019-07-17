@@ -1,6 +1,11 @@
 {
   "name": "@codesandbox/common",
   "version": "1.0.5",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/common"
+  },
   "source": true,
   "files": [
     "lib"

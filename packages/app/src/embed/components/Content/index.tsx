@@ -163,7 +163,7 @@ export default class Content extends React.PureComponent<Props, State> {
   editor?: Editor;
   preview?: BasePreview;
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (this.props.currentModule !== nextProps.currentModule) {
       if (!this.state.tabs.some(x => x.id === nextProps.currentModule.id)) {
         const module = nextProps.sandbox.modules.find(

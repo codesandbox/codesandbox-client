@@ -1,46 +1,40 @@
-import * as React from 'react';
-import { toJS } from 'mobx';
-import { inject, observer } from 'mobx-react';
-
-import Fork from 'react-icons/lib/go/repo-forked';
-import PlusIcon from 'react-icons/lib/go/plus';
-import SettingsIcon from 'react-icons/lib/md/settings';
-import ShareIcon from 'react-icons/lib/md/share';
-import SaveIcon from 'react-icons/lib/md/save';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import ProgressButton from '@codesandbox/common/lib/components/ProgressButton';
-import SignInButton from 'app/pages/common/SignInButton';
-
-import { saveAllModules } from 'app/store/modules/editor/utils';
-
-import {
-  patronUrl,
-  dashboardUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
-
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 // @ts-ignore
 import PatronBadge from '-!svg-react-loader!@codesandbox/common/lib/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import {
+  dashboardUrl,
+  patronUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import { toJS } from 'mobx';
+import { inject, observer } from 'mobx-react';
+import * as React from 'react';
+import PlusIcon from 'react-icons/lib/go/plus';
+import Fork from 'react-icons/lib/go/repo-forked';
+import SaveIcon from 'react-icons/lib/md/save';
+import SettingsIcon from 'react-icons/lib/md/settings';
+import ShareIcon from 'react-icons/lib/md/share';
 
 import LikeHeart from 'app/pages/common/LikeHeart';
+import SignInButton from 'app/pages/common/SignInButton';
 import UserMenu from 'app/pages/common/UserMenu';
+import { useStore, useSignals } from 'app/store';
+import { saveAllModules } from 'app/store/modules/editor/utils';
 
-import { Logo } from './Logo';
 import { Action } from './Buttons/Action';
 import CollectionInfo from './CollectionInfo';
-
 import {
-  Container,
-  Right,
-  Left,
   Centered,
+  Container,
   DashboardIcon,
   DashboardLink,
+  Left,
+  Right,
 } from './elements';
-
-import UpdateFound from './UpdateFound';
+import { Logo } from './Logo';
 import { MenuBar } from './MenuBar';
-import { useStore, useSignals } from 'app/store';
+import UpdateFound from './UpdateFound';
 
 type ButtonProps = {
   style: React.CSSProperties;
@@ -56,6 +50,7 @@ const LikeButton = ({
   likeCount,
 }: ButtonProps & { likeCount: string }) => {
   const { editor } = useStore();
+
   return (
     <LikeHeart
       colorless
@@ -70,6 +65,7 @@ const LikeButton = ({
 
 const ForkButton = ({ secondary, isForking, style }: ForkButtonProps) => {
   const { editor } = useSignals();
+
   return (
     <ProgressButton
       onClick={editor.forkSandboxClicked}
@@ -113,6 +109,7 @@ const PickButton = ({ secondary, style }: ButtonProps) => {
 
 const ShareButton = ({ secondary, style }: ButtonProps) => {
   const { modalOpened } = useSignals();
+
   return (
     <Button
       onClick={() => modalOpened({ modal: 'share' })}

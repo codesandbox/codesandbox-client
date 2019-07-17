@@ -135,7 +135,7 @@ export default class Cubes extends React.Component {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const nextTemplate = nextProps.template;
     const { templates } = this.state;
     const currentTemplate =

@@ -1,19 +1,17 @@
-import React from 'react';
-import { listen, dispatch } from 'codesandbox-api';
-import { withTheme } from 'styled-components';
-import { debounce } from 'lodash-es';
-import update from 'immutability-helper';
-import styled from 'styled-components';
-
-import ClearIcon from 'react-icons/lib/md/block';
-import { Decode, Console as ConsoleFeed } from 'console-feed';
-
 import Select from '@codesandbox/common/lib/components/Select';
-import Input from './Input';
+import theme from '@codesandbox/common/lib/theme';
+import { listen, dispatch } from 'codesandbox-api';
+import { Decode, Console as ConsoleFeed } from 'console-feed';
+import update from 'immutability-helper';
+import { debounce } from 'lodash-es';
+import React from 'react';
+import ClearIcon from 'react-icons/lib/md/block';
+import styled, { withTheme } from 'styled-components';
+
+import { DevToolProps } from '../';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
-import { DevToolProps } from '..';
-import theme from '@codesandbox/common/lib/theme';
+import Input from './Input';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -165,7 +163,7 @@ class Console extends React.Component<StyledProps> {
 
   list;
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.clearConsole(true);
     }

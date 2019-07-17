@@ -42,7 +42,7 @@ export const Keywords = observer(({ editable }: IKeywordsProps) => {
     }
   };
 
-  if (tags.length === 0) {
+  if (tags.length === 0 && !editable) {
     return null;
   }
 

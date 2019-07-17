@@ -1,6 +1,11 @@
 {
   "name": "node-services",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/node-services"
+  },
   "dependencies": {
     "constants-browserify": "^1.0.0",
     "events": "^3.0.0",

@@ -9,30 +9,30 @@ import { useSignals, useStore } from 'app/store';
 
 import { Description } from '../../elements';
 
-const NOT_OWNED_MESSAGE = `Fork this sandbox to make deployments, commit to GitHub, create live sessions with others and more!`;
-const NOT_SIGNED_IN_MESSAGE = `Sign in to be able to organize your sandboxes with a dashboard, make deployments, collaborate live with others, make commits to GitHub and more!`;
+interface Props {
+  id: string;
+  message: string | JSX.Element;
+}
 
-export const More = observer(() => {
+export const More = observer(({ id, message }: Props) => {
   const {
     editor: { forkSandboxClicked },
   } = useSignals();
   const {
-    editor: {
-      currentSandbox: { owned },
-      isForkingSandbox,
-    },
+    isLoggedIn,
+    editor: { isForkingSandbox },
   } = useStore();
 
-  useEffect(() => track('Workspace - More Opened'), []);
-
-  const message = !owned ? NOT_OWNED_MESSAGE : NOT_SIGNED_IN_MESSAGE;
+  useEffect(() => track('Workspace - More Opened', { id }), [id]);
 
   return (
     <div>
       <Description>{message}</Description>
 
       <Margin margin={1}>
-        {!owned ? (
+        {!isLoggedIn ? (
+          <SignInButton block />
+        ) : (
           <ProgressButton
             block
             loading={isForkingSandbox}
@@ -41,8 +41,6 @@ export const More = observer(() => {
           >
             {isForkingSandbox ? 'Forking Sandbox...' : 'Fork Sandbox'}
           </ProgressButton>
-        ) : (
-          <SignInButton block />
         )}
       </Margin>
     </div>

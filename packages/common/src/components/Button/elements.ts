@@ -70,7 +70,8 @@ const getColor = ({
   return 'white';
 };
 
-const getHoverColor = ({ secondary }: OptionProps) => {
+const getHoverColor = ({ secondary, disabled }: OptionProps) => {
+  if (disabled) return '';
   if (secondary) return 'color: white';
 
   return '';

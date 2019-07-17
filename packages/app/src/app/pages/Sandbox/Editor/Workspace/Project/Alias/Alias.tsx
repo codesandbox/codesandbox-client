@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { WorkspaceInputContainer } from '../../elements';
+import React, { useState } from 'react';
+
 import { useSignals, useStore } from 'app/store';
+
+import { WorkspaceInputContainer } from '../../elements';
+
 import { EditPen } from '../elements';
+
 import { SandboxAlias } from './elements';
 
 type IAliasProps = {

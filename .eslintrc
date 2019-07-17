@@ -41,7 +41,13 @@
       }
     ],
     "no-param-reassign": ["error", { "props": false }],
-    "camelcase": "error",
+    "camelcase": [
+      "error",
+      {
+        "allow": ["UNSAFE_componentDidMount", "_id$", "^UNSAFE_"],
+        "properties": "never"
+      }
+    ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/href-no-hash": "off",
@@ -49,7 +55,9 @@
       "warn",
       { "aspects": ["noHref", "invalidHref"] }
     ],
-    "jsx-a11y/label-has-for": "off"
+    "jsx-a11y/label-has-for": "off",
+    "no-bitwise": "off",
+    "arrow-body-style": ["error", "as-needed"]
   },
   "overrides": [
     {
@@ -81,7 +89,7 @@
         ],
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [
-          "warn",
+          "error",
           { "args": "none", "ignoreRestSiblings": true }
         ],
         "no-useless-constructor": "off",

@@ -178,3 +178,20 @@ export const Title = styled.h2`
     margin-top: 0;
   }
 `;
+
+export const ImportWizardContainer = styled.div`
+  display: flex;
+
+  section {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+
+  section:first-child {
+    margin-left: 0;
+  }
+
+  section:last-child {
+    margin-right: 0;
+  }
+`;

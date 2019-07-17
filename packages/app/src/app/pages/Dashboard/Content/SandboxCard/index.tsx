@@ -120,7 +120,7 @@ class SandboxItem extends React.PureComponent<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
       this.setState({ screenshotUrl: nextProps.screenshotUrl }, () => {
         this.checkScreenshot();

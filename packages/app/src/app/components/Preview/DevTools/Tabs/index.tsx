@@ -1,5 +1,4 @@
-import * as React from 'react';
-
+import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { ViewTab } from '@codesandbox/common/lib/templates/template';
 
@@ -81,7 +80,7 @@ const DevToolTabs = ({
                 pane.closeable && panes.length !== 1 ? closeTab : undefined
               }
               index={i}
-              key={i}
+              key={i} // eslint-disable-line react/no-array-index-key
               status={
                 status
                   ? status[pane.id] || { unread: 0, type: 'info' }
@@ -103,27 +102,25 @@ const DevToolTabs = ({
       </Tabs>
 
       <Actions>
-        {actions.map(({ title, onClick, Icon, disabled }) => {
-          return (
-            <Tooltip
+        {actions.map(({ title, onClick, Icon, disabled }) => (
+          <Tooltip
+            style={{
+              pointerEvents: hidden ? 'none' : 'initial',
+            }}
+            content={title}
+            key={title}
+            delay={disabled ? [0, 0] : [500, 0]}
+          >
+            <Icon
               style={{
-                pointerEvents: hidden ? 'none' : 'initial',
+                opacity: hidden ? 0 : disabled ? 0.5 : 1,
+                pointerEvents: disabled ? 'none' : 'initial',
               }}
-              content={title}
+              onClick={onClick}
               key={title}
-              delay={disabled ? [0, 0] : [500, 0]}
-            >
-              <Icon
-                style={{
-                  opacity: hidden ? 0 : disabled ? 0.5 : 1,
-                  pointerEvents: disabled ? 'none' : 'initial',
-                }}
-                onClick={onClick}
-                key={title}
-              />
-            </Tooltip>
-          );
-        })}
+            />
+          </Tooltip>
+        ))}
       </Actions>
     </Container>
   );

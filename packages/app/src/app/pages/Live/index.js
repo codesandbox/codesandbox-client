@@ -20,7 +20,7 @@ import BlinkingDot from './BlinkingDot';
 class LivePage extends React.Component {
   loggedIn = this.props.store.hasLogIn;
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.initializeLive();
   }
 

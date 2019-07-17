@@ -65,6 +65,7 @@ const Template = types.model({
   url: types.maybeNull(types.string),
   iconUrl: types.maybeNull(types.string),
   color: types.string,
+  published: types.maybeNull(types.boolean),
 });
 
 export const Sandbox = types.model({

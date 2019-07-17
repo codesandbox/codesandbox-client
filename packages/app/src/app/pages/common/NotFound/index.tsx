@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react-lite';
 
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { newSandboxWizard } from '@codesandbox/common/lib/utils/url-generator';
@@ -29,4 +30,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default observer(NotFound);

@@ -129,7 +129,7 @@ export const NewSandboxModal: React.FunctionComponent<
           </Templates>
         </Tab>
         <Tab visible={selectedTab === 4}>
-          <ImportTab />
+          <ImportTab username={user ? user.username : undefined} />
         </Tab>
       </InnerContainer>
     </Container>

@@ -1,12 +1,22 @@
 import React from 'react';
 import TerminalIcon from 'react-icons/lib/go/terminal';
 import UploadIcon from 'react-icons/lib/go/cloud-upload';
-import GithubPage from 'app/pages/GitHub/main';
-import { ImportChoice, ImportChoices } from './elements';
+import { ImportChoice, ImportChoices, ImportWizardContainer } from './elements';
 
-export const ImportTab = () => (
+import { GitHubImport, StackbitImport } from './Imports';
+
+interface Props {
+  username: string;
+}
+
+const STACKBIT_DISABLED = true;
+
+export const ImportTab = ({ username }: Props) => (
   <>
-    <GithubPage />
+    <ImportWizardContainer>
+      <GitHubImport />
+      {username && !STACKBIT_DISABLED && <StackbitImport username={username} />}
+    </ImportWizardContainer>
     <ImportChoices>
       <ImportChoice href="/docs/importing#export-with-cli">
         <TerminalIcon /> CLI Documentation

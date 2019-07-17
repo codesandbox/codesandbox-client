@@ -21,7 +21,9 @@ export function resolveDirectory(
   directories: Array<Directory>,
   _startdirectoryShortid: string | undefined = undefined
 ) {
-  if (!_path) return throwError('');
+  if (!_path) {
+    return throwError('');
+  }
 
   let path = _path;
   let startdirectoryShortid = _startdirectoryShortid;
@@ -40,7 +42,9 @@ export function resolveDirectory(
   const foundDirectoryShortid = splitPath.reduce(
     (dirId: string | undefined, pathPart: string, i: number) => {
       // Meaning this is the last argument, so the directory
-      if (i === splitPath.length) return dirId;
+      if (i === splitPath.length) {
+        return dirId;
+      }
 
       if (pathPart === '..') {
         // Find the parent

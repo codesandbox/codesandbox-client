@@ -61,7 +61,7 @@ type State = {
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
   `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
     process.env.NODE_ENV === 'development' || process.env.STAGING
-      ? 'codesandbox.stream'
+      ? 'codesandbox.io'
       : host()
   }${initialPath}`;
 
@@ -114,7 +114,7 @@ class BasePreview extends React.Component<Props, State> {
     }, 800);
   }
 
-  componentWillUpdate(nextProps: Props, nextState: State) {
+  UNSAFE_componentWillUpdate(nextProps: Props, nextState: State) {
     if (
       nextState.frameInitialized !== this.state.frameInitialized &&
       nextState.frameInitialized

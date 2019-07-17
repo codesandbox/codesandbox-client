@@ -3,6 +3,11 @@
   "version": "0.1.1",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/app"
+  },
   "scripts": {
     "start": "cross-env LOCAL_SERVER=1 LOCAL_DEV=1 NODE_OPTIONS=\"--max-old-space-size=4096\" node scripts/start.js",
     "start:sandbox": "cross-env SANDBOX_ONLY=true node scripts/start.js",
@@ -17,8 +22,8 @@
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
     "lint": "npm run lint:app && npm run lint:embed",
-    "lint:app": "cross-env LINT=1 eslint src/app",
-    "lint:embed": "cross-env LINT=1 eslint src/embed",
+    "lint:app": "cross-env LINT=1 eslint --ext .js,.ts,.tsx src/app",
+    "lint:embed": "cross-env LINT=1 eslint --ext .js,.ts,.tsx src/embed",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "typecheck": "tsc --noEmit -p tsconfig.check.json"
   },
@@ -131,7 +136,7 @@
     "@cerebral/http": "^4.0.0",
     "@cerebral/mobx-state-tree": "^3.0.0",
     "@codesandbox/executors": "^0.1.0",
-    "@codesandbox/template-icons": "^0.5.0",
+    "@codesandbox/template-icons": "^0.6.0",
     "@emmetio/codemirror-plugin": "^0.3.5",
     "@svgr/core": "^2.4.1",
     "@vue/babel-preset-app": "^3.2.0",
@@ -258,6 +263,7 @@
     "react-tagsinput": "^3.19.0",
     "react-use": "^9.7.2",
     "react-virtualized": "^9.19.1",
+    "reakit": "^1.0.0-beta.4",
     "rebound": "^0.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "sha1": "^1.1.1",

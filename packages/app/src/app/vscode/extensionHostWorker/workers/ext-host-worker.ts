@@ -10,7 +10,7 @@ const debug = _debug('cs:cp-worker');
 
 debug('Starting Extension Host Worker');
 
-declare var __DEV__: boolean;
+declare const __DEV__: boolean;
 
 const ctx: any = self;
 

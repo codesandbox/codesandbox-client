@@ -1919,10 +1919,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/template-icons@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.5.0.tgz#b34a6b75b63c387d5fd56e3ae6698752956d141b"
-  integrity sha512-Qn4T691o2sSkVB0G2NlNrsmlK7rZo7st7om9uRDJXdmU1MTt+FHGwT++sk/n/j9+VmkXJD7bTsES/SQIwnGXWA==
+"@codesandbox/template-icons@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.6.0.tgz#23690dc16fdca8cd62831bef355043c063901a60"
+  integrity sha512-0oAPa8pPtNGrT771wW0Xd3fMpLeV7496Uw7LkDsK0V04gXifI0EzG9/Espot21H06taLAmnroLEFNpiJ4I8Aaw==
 
 "@emmetio/abbreviation@^0.6.0", "@emmetio/abbreviation@^0.6.1":
   version "0.6.5"
@@ -6550,6 +6550,11 @@ body-parser@1.19.0:
     raw-body "2.4.0"
     type-is "~1.6.17"
 
+body-scroll-lock@^2.6.1:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-2.6.3.tgz#2b9311ef3120696d8ad5c30503f684803ade1606"
+  integrity sha512-yQ2VWJasZSWMawwi4bLJ9akbMRTpnS2tZWDEFuOiihwCdl+qNovuUwisnBKIdMk+99wG9FlqW6uZ9+GjKn8ARA==
+
 bonjour@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bonjour/-/bonjour-3.5.0.tgz#8e890a183d8ee9a2393b3844c691a42bcf7bc9f5"
@@ -8087,9 +8092,9 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
 console-feed@^2.8.5:
-  version "2.8.6"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.6.tgz#f9a3506c10ba236022bc5a3fb440eac354e8faa1"
-  integrity sha512-dRuCCXhLGlZb6aQsRZPOodHTs1/dMPk0JMGdvu36GldtB4IwqQaqipd2YypQ3kMnaq5l6Y4NXBavicm4tkazCg==
+  version "2.8.8"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.8.tgz#c02054e8b1ae4c4562d4d7539aee83a426c9b1bb"
+  integrity sha512-tqONbPYrolH9Gn8yMc+7sBZG9F9FkNJM68ziG5dInznBOHbHNua+Mq0S70EgvkhEpE9AifvV9d7EX2Jm5yDw2w==
   dependencies:
     emotion "^9.1.1"
     emotion-theming "^9.0.0"
@@ -20203,6 +20208,11 @@ popper.js@^1.14.7:
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.7.tgz#e31ec06cfac6a97a53280c3e55e4e0c860e7738e"
   integrity sha512-4q1hNvoUre/8srWsH7hnoSJ5xVmIL4qgz+s4qf2TnJIMyZFUFMGH+9vE7mXynAlHSZ/NdTmmow86muD0myUkVQ==
 
+popper.js@^1.15.0:
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.15.0.tgz#5560b99bbad7647e9faa475c6b8056621f5a4ff2"
+  integrity sha512-w010cY1oCUmI+9KwwlWki+r5jxKfTFDVoadl7MSrIujHU5MJ5OR6HTDj6Xo8aoR/QsA56x8jKjA59qGH4ELtrA==
+
 portfinder@^1.0.20:
   version "1.0.20"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.20.tgz#bea68632e54b2e13ab7b0c4775e9b41bf270e44a"
@@ -22421,6 +22431,26 @@ readdirp@^2.2.1:
     graceful-fs "^4.1.11"
     micromatch "^3.1.10"
     readable-stream "^2.0.2"
+
+reakit-system@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/reakit-system/-/reakit-system-0.6.2.tgz#beff67eb645c07d7196579eae9db3cfc49f6eae8"
+  integrity sha512-qlWb/n+SmQwIR+SdmbTt94xnNA5kE2utTXuaaGDDVojL1LYKcKzcnl5Jxo2qJyXmyfgxglxuBF7ofDj/QoZGZg==
+
+reakit-utils@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/reakit-utils/-/reakit-utils-0.6.2.tgz#ac8143a349ce53e1eb6e0d408d6cd97d22b0ef2c"
+  integrity sha512-sEVOBN6ykA/FcDtc0hXxB4UiqP4Vns4n7tbcmPd9Qu1Ih61BeJV8DbRZyeOqqZzjL/lPOdiBr2jtakPtfSJDDw==
+
+reakit@^1.0.0-beta.4:
+  version "1.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/reakit/-/reakit-1.0.0-beta.4.tgz#08c65c4d97ed5244d2f521c73808578280c0fe16"
+  integrity sha512-IfnL6/DGlg8L1DAOqlySW9xsqKEM8Fr4Xvoti8O4NwEG72519PAhvJiSAWfbFEAOJzNXEDoA4UIC3buAcyRpJw==
+  dependencies:
+    body-scroll-lock "^2.6.1"
+    popper.js "^1.15.0"
+    reakit-system "^0.6.2"
+    reakit-utils "^0.6.2"
 
 realpath-native@^1.0.0:
   version "1.0.0"

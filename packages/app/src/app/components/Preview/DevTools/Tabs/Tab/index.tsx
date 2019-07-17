@@ -118,7 +118,7 @@ export const PaneTab = ({
             onClick={() =>
               closeTab({
                 tabPosition: index,
-                devToolIndex: devToolIndex,
+                devToolIndex,
               })
             }
           >
@@ -172,17 +172,15 @@ const entryTarget = {
 const collectTarget = (
   connectMonitor: DropTargetConnector,
   monitor: DropTargetMonitor
-) => {
-  return {
-    // Call this function inside render()
-    // to let React DnD handle the drag events:
-    connectDropTarget: connectMonitor.dropTarget(),
-    // You can ask the monitor about the current drag state:
-    isOver: monitor.isOver({ shallow: true }),
-    canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType(),
-  };
-};
+) => ({
+  // Call this function inside render()
+  // to let React DnD handle the drag events:
+  connectDropTarget: connectMonitor.dropTarget(),
+  // You can ask the monitor about the current drag state:
+  isOver: monitor.isOver({ shallow: true }),
+  canDrop: monitor.canDrop(),
+  itemType: monitor.getItemType(),
+});
 
 const entrySource = {
   canDrag: (props: TabProps) => props.canDrag,

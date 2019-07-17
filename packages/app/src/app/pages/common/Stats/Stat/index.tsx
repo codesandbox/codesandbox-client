@@ -7,20 +7,18 @@ interface Props {
   count: number;
 }
 
-const Stat = ({ Icon, count }: Props) => {
-  return (
-    <CenteredText>
-      {Icon}
-      <span
-        style={{
-          marginLeft: '0.5em',
-          fontWeight: 300,
-        }}
-      >
-        {count.toLocaleString()}
-      </span>
-    </CenteredText>
-  );
-};
+const Stat = ({ Icon, count }: Props) => (
+  <CenteredText>
+    {Icon}
+    <span
+      style={{
+        marginLeft: '0.5em',
+        fontWeight: 300,
+      }}
+    >
+      {count.toLocaleString()}
+    </span>
+  </CenteredText>
+);
 
 export default Stat;

@@ -70,7 +70,7 @@ export default class VersionEntry extends React.PureComponent {
       });
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { dependencies, dependency } = this.props;
     const client = algoliasearch(
       'OFCNCOG2CU',

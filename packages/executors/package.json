@@ -1,6 +1,11 @@
 {
   "name": "@codesandbox/executors",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codesandbox/codesandbox-client",
+    "directory": "packages/executors"
+  },
   "main": "dist/index.js",
   "umd:main": "dist/codesandboxexecutors.umd.production.js",
   "module": "dist/codesandboxexecutors.es.production.js",
