@@ -334,15 +334,11 @@ export function moveDirectoryToDirectory({ state, props }) {
     directory => directory.shortid === props.shortid
   );
   const currentDirectoryShortid = state.get(
-    `editor.sandboxes.${
-      sandbox.id
-    }.directories.${directoryIndex}.directoryShortid`
+    `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.directoryShortid`
   );
 
   state.set(
-    `editor.sandboxes.${
-      sandbox.id
-    }.directories.${directoryIndex}.directoryShortid`,
+    `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.directoryShortid`,
     props.directoryShortid
   );
 
@@ -356,9 +352,7 @@ export function revertMoveDirectoryToDirectory({ state, props }) {
   );
 
   state.set(
-    `editor.sandboxes.${
-      sandbox.id
-    }.directories.${directoryIndex}.directoryShortid`,
+    `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.directoryShortid`,
     props.currentDirectoryShortid
   );
 }
@@ -550,7 +544,10 @@ export function setModuleType({ state, props }) {
   const module = sandbox.modules[moduleIndex];
   const { title, code } = module;
   const type = getType(title, code);
-  state.set(`editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.type`, type);
+  state.set(
+    `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}._type`,
+    type
+  );
 }
 
 export function revertModuleName({ state, props }) {
@@ -671,9 +668,7 @@ export function recoverFiles({ recover, controller, state }) {
     track('Files Recovered', { fileCount: recoveredList.length });
 
     notificationState.addNotification({
-      message: `We recovered ${
-        recoveredList.length
-      } unsaved files from a previous session`,
+      message: `We recovered ${recoveredList.length} unsaved files from a previous session`,
       status: NotificationStatus.NOTICE,
     });
   }

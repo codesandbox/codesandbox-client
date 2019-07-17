@@ -45,7 +45,7 @@ class ModuleEntry extends React.Component {
         rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}
         depth={depth + 1}
         active={isActive}
-        type={module.type || 'function'}
+        type={module._type || 'function'}
         rename={renameModule}
         deleteEntry={deleteEntry}
         isNotSynced={isNotSynced}

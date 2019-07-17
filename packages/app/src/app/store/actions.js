@@ -101,7 +101,7 @@ export function setModuleTypes({ state }) {
   sandbox.modules.forEach((module, idx) => {
     const { title, code } = module;
     const type = getType(title, code);
-    state.set(`editor.sandboxes.${sandbox.id}.modules.${idx}.type`, type);
+    state.set(`editor.sandboxes.${sandbox.id}.modules.${idx}._type`, type);
   });
 }
 

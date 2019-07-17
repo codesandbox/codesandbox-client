@@ -386,7 +386,10 @@ export function setModuleType({ state, props }) {
   const module = sandbox.modules[moduleIndex];
   const { title, code } = module;
   const type = getType(title, code);
-  state.set(`editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.type`, type);
+  state.set(
+    `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}._type`,
+    type
+  );
 }
 
 export function addErrorFromPreview({ state, props }) {

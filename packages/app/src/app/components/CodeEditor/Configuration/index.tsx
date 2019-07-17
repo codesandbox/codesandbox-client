@@ -92,7 +92,7 @@ export default class Configuration extends React.PureComponent<Props>
     return (
       <Container style={{ width, height }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <EntryIcons width={32} height={32} type={currentModule.type} />
+          <EntryIcons width={32} height={32} type={currentModule._type} />
           <Title>{config.title}</Title>
 
           <Tooltip content="Show Code">

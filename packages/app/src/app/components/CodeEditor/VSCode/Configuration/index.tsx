@@ -6,7 +6,6 @@ import { TextOperation } from 'ot';
 import React from 'react';
 
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/utils/get-type';
 
 import { Props as EditorProps, Editor } from '../../types';
 
@@ -114,11 +113,7 @@ export default class Configuration extends React.PureComponent<Props>
     return (
       <Container style={{ width, height }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <EntryIcons
-            width={32}
-            height={32}
-            type={getType(currentModule.title)}
-          />
+          <EntryIcons width={32} height={32} type={currentModule._type} />
           <Title>{config.title}</Title>
         </div>
         <button
