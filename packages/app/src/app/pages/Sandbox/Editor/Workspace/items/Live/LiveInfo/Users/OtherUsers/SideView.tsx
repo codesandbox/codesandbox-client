@@ -8,8 +8,12 @@ import AddIcon from 'react-icons/lib/md/add';
 import { useSignals, useStore } from 'app/store';
 
 import { IconContainer } from '../elements';
+import { User } from '../types';
 
-export const SideView = observer(({ userId }) => {
+type Props = {
+  userId: User['id'];
+};
+export const SideView = observer<Props>(({ userId }) => {
   const {
     live: { onAddEditorClicked, onFollow },
   } = useSignals();

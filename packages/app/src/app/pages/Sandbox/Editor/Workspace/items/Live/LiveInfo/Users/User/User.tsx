@@ -1,11 +1,18 @@
 import { observer } from 'mobx-react-lite';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import { useStore } from 'app/store';
 
+import { User as UserType } from '../types';
+
 import { UserContainer, ProfileImage, UserName, Status } from './elements';
 
-export const User = observer(({ sideView = null, type, user }) => {
+type Props = {
+  sideView?: ReactNode;
+  type: string;
+  user: UserType;
+};
+export const User = observer<Props>(({ sideView = null, type, user }) => {
   const {
     live: {
       liveUserId,
