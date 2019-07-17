@@ -59,7 +59,6 @@ if (!isLint) {
 }
 
 const transpilePackages = [
-  '@babel', // everything under @babel scope
   'babel-plugin-transform-cx-jsx',
   'babel-plugin-transform-vue-jsx',
   'core-js-compat',
@@ -75,6 +74,19 @@ const transpilePackages = [
   'unicode-match-property-value-ecmascript',
   'vue-template-es2015-compiler',
   'yallist',
+];
+
+const transpileBabelPackages = [
+  'code-frame',
+  'core',
+  'highlight',
+  'helper',
+  'generator',
+  'plugin',
+  'preset',
+  'template',
+  'traverse',
+  'types',
 ];
 
 module.exports = {
@@ -149,6 +161,11 @@ module.exports = {
             `${sepRe}node_modules${sepRe}(${transpilePackages.join(
               '|'
             )})${sepRe}.+\\.js$`
+          ),
+          new RegExp(
+            `${sepRe}node_modules${sepRe}@babel${sepRe}(${transpileBabelPackages.join(
+              '|'
+            )}).+\\.js$`
           ),
         ],
         loader: 'babel-loader',
