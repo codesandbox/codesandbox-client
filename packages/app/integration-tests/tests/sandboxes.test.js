@@ -101,31 +101,29 @@ async function loadSandboxRetry(browser, sandboxId, timeout, retries) {
   }
 }
 
-describe('sandboxes', async () => {
-  const browser = await puppeteer.launch({
+describe('sandboxes', () => {
+  let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   afterAll(() => {
     browser.close();
   });
 
-  // warm-up
-  let warmupPage;
-  try {
-    warmupPage = await loadSandboxRetry(browser, SANDBOXES[0], 60);
-  } catch (err) {
-    // ignore error
-  }
-  await warmupPage.close();
-
-  SANDBOXES.forEach(sandbox => {
+  SANDBOXES.forEach((sandbox, i) => {
     const id = sandbox.id || sandbox;
     const threshold = sandbox.threshold || 0.01;
 
     it(
       `loads the sandbox '${id}'`,
       async () => {
-        const page = await loadSandboxRetry(browser, id, 30 * SECOND, 2);
+        browser = await browser;
+
+        const page = await loadSandboxRetry(
+          browser,
+          id,
+          i === 0 ? 90 : 45 * SECOND,
+          2
+        );
 
         const screenshot = await page.screenshot();
 
