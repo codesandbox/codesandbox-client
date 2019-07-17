@@ -27,5 +27,5 @@ export const SessionTimer = ({ startTime }) => {
 
   // TODO: just return 'elapsed' after this one's fixed
   //  https://github.com/DefinitelyTyped/DefinitelyTyped/issues/20544
-  return <>{elapsed}</>;
+  return <React.Fragment>{elapsed}</React.Fragment>;
 };
