@@ -1,11 +1,12 @@
 import Switch from '@codesandbox/common/lib/components/Switch';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { useSignals, useStore } from 'app/store';
 
 import { Preference, PreferencesContainer } from './elements';
 
-export const ChatEnabled = () => {
+export const ChatEnabled = observer(() => {
   const {
     live: { onChatEnabledChange },
   } = useSignals();
@@ -31,4 +32,4 @@ export const ChatEnabled = () => {
       />
     </PreferencesContainer>
   );
-};
+});

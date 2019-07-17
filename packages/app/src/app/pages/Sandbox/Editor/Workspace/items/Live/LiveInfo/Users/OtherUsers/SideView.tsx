@@ -1,4 +1,5 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import FollowIcon from 'react-icons/lib/io/eye';
 import UnFollowIcon from 'react-icons/lib/io/eye-disabled';
@@ -8,7 +9,7 @@ import { useSignals, useStore } from 'app/store';
 
 import { IconContainer } from '../elements';
 
-export const SideView = ({ userId }) => {
+export const SideView = observer(({ userId }) => {
   const {
     live: { onAddEditorClicked, onFollow },
   } = useSignals();
@@ -48,4 +49,4 @@ export const SideView = ({ userId }) => {
       )}
     </>
   );
-};
+});

@@ -1,4 +1,5 @@
 import { sortBy } from 'lodash-es';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { useStore } from 'app/store';
@@ -7,7 +8,7 @@ import { Editors } from './Editors';
 import { OtherUsers } from './OtherUsers';
 import { Owners } from './Owners';
 
-export const Users = () => {
+export const Users = observer(() => {
   const {
     live: {
       roomInfo: { editorIds, mode, ownerIds, users },
@@ -35,4 +36,4 @@ export const Users = () => {
       <OtherUsers otherUsers={otherUsers} />
     </>
   );
-};
+});

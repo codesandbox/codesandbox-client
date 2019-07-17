@@ -1,5 +1,6 @@
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import noop from 'lodash/noop';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { useSignals, useStore } from 'app/store';
@@ -8,7 +9,7 @@ import { SubTitle } from '../elements';
 
 import { Mode, ModeDetails, ModeSelect, ModeSelector } from './elements';
 
-export const LiveMode = () => {
+export const LiveMode = observer(() => {
   const {
     live: { onModeChanged },
   } = useSignals();
@@ -46,4 +47,4 @@ export const LiveMode = () => {
       </ModeSelect>
     </Margin>
   );
-};
+});

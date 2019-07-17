@@ -1,10 +1,11 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { useStore } from 'app/store';
 
 import { UserContainer, ProfileImage, UserName, Status } from './elements';
 
-export const User = ({ sideView = null, type, user }) => {
+export const User = observer(({ sideView = null, type, user }) => {
   const {
     live: {
       liveUserId,
@@ -39,4 +40,4 @@ export const User = ({ sideView = null, type, user }) => {
       {sideView}
     </UserContainer>
   );
-};
+});
