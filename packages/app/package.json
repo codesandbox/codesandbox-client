@@ -13,7 +13,7 @@
     "start:sandbox": "cross-env SANDBOX_ONLY=true node scripts/start.js",
     "start:dev_api": "node scripts/start.js",
     "start:test": "cross-env LOCAL_SERVER=1 SANDBOX_ONLY=true node scripts/start.js",
-    "build": "cross-env NODE_ENV=production node scripts/build.js && yarn es-check",
+    "build": "cross-env NODE_ENV=production node scripts/build.js && yarn es-check:sandbox && yarn es-check:embed",
     "build:embed": "cross-env NODE_ENV=production webpack --config config/webpack.embed.js",
     "build:sandbox": "cross-env NODE_ENV=production SANDBOX_ONLY=true node scripts/build.js",
     "build:clean": "rimraf www",
@@ -26,7 +26,8 @@
     "lint:embed": "cross-env LINT=1 eslint --ext .js,.ts,.tsx src/embed",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "typecheck": "tsc --noEmit -p tsconfig.check.json",
-    "es-check": "es-check es5 www/static/js/sandbox-startup.*.js www/static/js/common-sandbox.*.chunk.js www/static/js/vendors~app~sandbox.*.chunk.js www/static/js/vendors~sandbox.*.chunk.js www/static/js/default~app~embed~sandbox.*.chunk.js www/static/js/sandbox.*.js www/babel-transpiler.*.worker.js www/*.babel-transpiler.*.worker.js"
+    "es-check:sandbox": "es-check es5 www/static/js/sandbox-startup.*.js www/static/js/common-sandbox.*.chunk.js www/static/js/vendors~app~sandbox.*.chunk.js www/static/js/vendors~sandbox.*.chunk.js www/static/js/default~app~embed~sandbox.*.chunk.js www/static/js/sandbox.*.js www/babel-transpiler.*.worker.js www/*.babel-transpiler.*.worker.js",
+    "es-check:embed": "es-check es5 www/static/js/common*.chunk.js www/static/js/default~app~embed.*.chunk.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",

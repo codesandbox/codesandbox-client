@@ -59,6 +59,7 @@ if (!isLint) {
 }
 
 const transpilePackages = [
+  // sandbox
   'babel-plugin-transform-cx-jsx',
   'babel-plugin-transform-vue-jsx',
   'core-js-compat',
@@ -74,6 +75,8 @@ const transpilePackages = [
   'unicode-match-property-value-ecmascript',
   'vue-template-es2015-compiler',
   'yallist',
+  // embed
+  'react-spring',
 ];
 
 const transpileBabelPackages = [
