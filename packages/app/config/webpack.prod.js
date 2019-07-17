@@ -35,7 +35,8 @@ module.exports = merge(commonConfig, {
   stats: 'verbose',
 
   optimization: {
-    minimizer: [new TerserJSPlugin({ parallel: true })],
+    minimize: false,
+    // minimizer: [new TerserJSPlugin({ parallel: true })],
     concatenateModules: true, // ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
