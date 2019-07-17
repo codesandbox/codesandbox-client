@@ -2,13 +2,32 @@ import React, { useState } from 'react';
 import ContextMenu from 'app/components/ContextMenu';
 import { Container, TabTitle, StyledCloseIcon } from './elements';
 
-export const Tab = ({
+export interface IRenderTabsProps {
+  isHovering: boolean;
+  closeTab: (event: React.MouseEvent<any>) => void;
+}
+
+interface ITabProps {
+  title: string;
+  items: any[];
+  active: boolean;
+  dirty: boolean;
+  isOver: boolean;
+  position: number;
+  tabCount: number;
+  onClose: (position?: number) => void;
+  onClick: () => void;
+  onDoubleClick: () => void;
+  children: (props: IRenderTabsProps) => React.ReactNode;
+}
+
+export const Tab: React.FC<ITabProps> = ({
   active,
   dirty,
   isOver,
   position,
   tabCount,
-  closeTab,
+  onClose = () => {},
   onClick,
   onDoubleClick,
   children,
@@ -17,32 +36,17 @@ export const Tab = ({
 }) => {
   const [isHovering, setHovering] = useState(false);
 
-  const handleMouseEnter = () => setHovering(true);
-
-  const handleMouseLeave = () => setHovering(false);
-
-  const handleCloseTab = e => {
+  const handleCloseTab = (e: React.MouseEvent<any>) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (closeTab) {
-      closeTab(position);
-    }
+    onClose(position);
   };
 
-  const onMouseDown = e => {
+  const onMouseDown = (e: React.MouseEvent) => {
     if (e.button === 1) {
       // Middle mouse button
       handleCloseTab(e);
     }
-  };
-
-  const renderTabStatus = () => {
-    if (isHovering && tabCount > 1) {
-      return <StyledCloseIcon onClick={handleCloseTab} show={'true'} />;
-    }
-
-    return <StyledCloseIcon onClick={handleCloseTab} show={undefined} />;
   };
 
   return (
@@ -54,13 +58,16 @@ export const Tab = ({
         onClick={onClick}
         onDoubleClick={onDoubleClick}
         onMouseDown={onMouseDown}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
       >
         {title ? (
           <>
             <TabTitle>{title}</TabTitle>
-            {renderTabStatus()}
+            <StyledCloseIcon
+              onClick={handleCloseTab}
+              show={isHovering && tabCount > 1}
+            />
           </>
         ) : (
           children({ isHovering, closeTab: handleCloseTab })
