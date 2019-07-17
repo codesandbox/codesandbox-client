@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { useStore } from 'app/store';
@@ -8,7 +9,7 @@ import { AliasDeploymentButton } from './AliasDeploymentButton';
 import { DeleteDeploymentButton } from './DeleteDeploymentButton';
 import { VisitDeploymentButton } from './VisitDeploymentButton';
 
-export const Actions = ({ deploy }) => {
+export const Actions = observer(({ deploy }) => {
   const {
     deployment: { hasAlias },
   } = useStore();
@@ -24,4 +25,4 @@ export const Actions = ({ deploy }) => {
       ) : null}
     </ButtonContainer>
   );
-};
+});

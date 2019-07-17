@@ -1,4 +1,5 @@
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { useStore } from 'app/store';
@@ -19,7 +20,7 @@ import {
 import { Actions } from './Actions';
 import { Alias } from './Alias';
 
-export const Deploys = () => {
+export const Deploys = observer(() => {
   const {
     deployment: { sandboxDeploys },
   } = useStore();
@@ -49,4 +50,4 @@ export const Deploys = () => {
       </WorkspaceInputContainer>
     </DeploysContainer>
   );
-};
+});

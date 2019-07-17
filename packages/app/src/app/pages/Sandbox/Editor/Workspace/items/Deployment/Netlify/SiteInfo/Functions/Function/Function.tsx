@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import LightningIcon from 'react-icons/lib/md/flash-on';
 
@@ -5,7 +6,7 @@ import { useStore } from 'app/store';
 
 import { Link } from '../../../../elements';
 
-export const Function = ({ function: { title } }) => {
+export const Function = observer(({ function: { title } }) => {
   const {
     deployment: {
       building,
@@ -25,4 +26,4 @@ export const Function = ({ function: { title } }) => {
       {functionName}
     </Link>
   );
-};
+});
