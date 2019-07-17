@@ -39,11 +39,6 @@ ${trace}
 ${'```'}
 
 </details>
-
-<details>
-<summary>Recent Actions</summary>
-
-</details>
 `;
 
   return `https://github.com/codesandbox/codesandbox-client/issues/new?title=${encodeURI(
