@@ -10,9 +10,29 @@ export class ErrorBoundary extends Component<
     FallbackComponent: CodeSadbox,
   };
 
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  static getDerivedStateFromProps(
+    props: IErrorBoundaryProps,
+    state: IErrorBoundaryState
+  ) {
+    if (props.location !== state.previousLocation) {
+      return {
+        error: null,
+        info: null,
+        previousLocation: props.location,
+      };
+    }
+
+    return null;
+  }
+
   state = {
     error: null,
     info: null,
+    previousLocation: null,
   };
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
@@ -21,25 +41,23 @@ export class ErrorBoundary extends Component<
     if (typeof onError === 'function') {
       try {
         onError.call(this, error, info ? info.componentStack : '');
-      } catch {}
+      } catch {} // eslint-disable-line
     }
 
-    this.setState({ error, info });
+    this.setState({ info });
   }
 
   render() {
     const { children, FallbackComponent } = this.props;
     const { error, info } = this.state;
 
-    if (error !== null) {
-      return (
-        <FallbackComponent
-          error={error}
-          trace={info ? info.componentStack : ''}
-        />
-      );
-    }
-
-    return children || null;
+    return error !== null ? (
+      <FallbackComponent
+        error={error}
+        trace={info ? info.componentStack : ''}
+      />
+    ) : (
+      children || null
+    );
   }
 }
