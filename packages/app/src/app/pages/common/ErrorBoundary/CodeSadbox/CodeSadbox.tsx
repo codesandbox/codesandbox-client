@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from 'app/store';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { DashboardIcon } from 'app/pages/Sandbox/Editor/Header/elements';
+import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 import Navigation from '../../Navigation';
 import { Sadbox } from './Sadbox';
 import { IFallbackComponentProps } from '../types';
@@ -39,10 +39,10 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = observer(
           <Sadbox scale={3} />
           <Subtitle>CodeSadbox</Subtitle>
           <Actions>
-            {isLoggedIn ? (
+            {!isLoggedIn ? (
               <Button small secondary href={dashboardUrl()}>
                 <ButtonIcon>
-                  <DashboardIcon />
+                  <Dashboard />
                 </ButtonIcon>
                 Go to Dashboard
               </Button>
