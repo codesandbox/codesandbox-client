@@ -1,10 +1,12 @@
 import React from 'react';
 import GoHome from 'react-icons/lib/go/home';
+
 import GoIssueOpened from 'react-icons/lib/go/issue-opened';
 import { observer } from 'mobx-react-lite';
-import { getSnapshot } from 'mobx-state-tree';
 import { useStore } from 'app/store';
 import { Button } from '@codesandbox/common/lib/components/Button';
+import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { DashboardIcon } from 'app/pages/Sandbox/Editor/Header/elements';
 import Navigation from '../../Navigation';
 import { Sadbox } from './Sadbox';
 import { IFallbackComponentProps } from '../types';
@@ -23,7 +25,8 @@ import {
 export const CodeSadbox: React.FC<IFallbackComponentProps> = observer(
   ({ error, trace }) => {
     const store = useStore();
-    console.log(getSnapshot(store)); // eslint-disable-line
+    const isLoggedIn = store.isLoggedIn;
+
     return (
       <Container>
         <Header>
@@ -36,12 +39,21 @@ export const CodeSadbox: React.FC<IFallbackComponentProps> = observer(
           <Sadbox scale={3} />
           <Subtitle>CodeSadbox</Subtitle>
           <Actions>
-            <Button small secondary href="/">
-              <ButtonIcon>
-                <GoHome />
-              </ButtonIcon>
-              Back to Home
-            </Button>
+            {isLoggedIn ? (
+              <Button small secondary href={dashboardUrl()}>
+                <ButtonIcon>
+                  <DashboardIcon />
+                </ButtonIcon>
+                Go to Dashboard
+              </Button>
+            ) : (
+              <Button small secondary href="/">
+                <ButtonIcon>
+                  <GoHome />
+                </ButtonIcon>
+                Back to Home
+              </Button>
+            )}
             {/*
           // @ts-ignore */}
             <Button
