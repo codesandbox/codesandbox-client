@@ -3,12 +3,23 @@ import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
 import { StyledNotSyncedIcon } from './elements';
-import { TabTitle, TabDir, StyledCloseIcon } from '../Tab/elements';
+import { IRenderTabsProps, TabTitle, TabDir, StyledCloseIcon } from '../Tab';
 import TabContainer from '../TabContainer';
 
-export const ModuleTab = ({
+interface IModuleTabProps {
+  dirName?: string;
+  hasError?: boolean;
+  isNotSynced?: boolean;
+  tabCount: number;
+  module: any;
+  markNotDirty: Function;
+  setCurrentModule: Function;
+  discardModuleChanges: Function;
+}
+
+export const ModuleTab: React.FC<IModuleTabProps> = ({
   dirName,
-  hasError,
+  hasError = false,
   isNotSynced,
   tabCount,
   module,
@@ -17,33 +28,34 @@ export const ModuleTab = ({
   discardModuleChanges,
   ...props
 }) => {
-  const renderTabStatus = (hovering, closeTab) => {
-    if (hovering && isNotSynced && tabCount === 1) {
-      return <StyledNotSyncedIcon show={'true'} />;
+  const renderTabStatus: React.FC<IRenderTabsProps> = ({
+    isHovering,
+    closeTab,
+  }) => {
+    if (isHovering && isNotSynced && tabCount === 1) {
+      return <StyledNotSyncedIcon show />;
     }
-    if (hovering && isNotSynced && tabCount > 1) {
-      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+    if (isHovering && isNotSynced && tabCount > 1) {
+      return <StyledCloseIcon onClick={closeTab} show />;
     }
-    if (hovering && tabCount === 1) {
-      return <StyledCloseIcon onClick={closeTab} show={undefined} />;
+    if (isHovering && tabCount === 1) {
+      return <StyledCloseIcon onClick={closeTab} />;
     }
-    if (hovering && tabCount > 1) {
-      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+    if (isHovering && tabCount > 1) {
+      return <StyledCloseIcon onClick={closeTab} show />;
     }
-    if (!hovering && isNotSynced) {
-      return <StyledNotSyncedIcon show={'true'} />;
+    if (!isHovering && isNotSynced) {
+      return <StyledNotSyncedIcon show />;
     }
-    if (!hovering && !isNotSynced) {
-      return <StyledNotSyncedIcon show={undefined} />;
+    if (!isHovering && !isNotSynced) {
+      return <StyledNotSyncedIcon />;
     }
-    return <StyledNotSyncedIcon show={undefined} />;
+    return <StyledNotSyncedIcon />;
   };
 
   return (
     <TabContainer
-      onClick={() => {
-        setCurrentModule(module.id);
-      }}
+      onClick={() => setCurrentModule(module.id)}
       onDoubleClick={markNotDirty}
       items={
         isNotSynced
@@ -60,16 +72,12 @@ export const ModuleTab = ({
       }
       {...props}
     >
-      {({ hovering, closeTab }) => (
+      {({ isHovering, closeTab }) => (
         <>
-          <EntryIcons
-            isNotSynced={isNotSynced}
-            type={getType(module.title)}
-            error={hasError}
-          />
+          <EntryIcons type={getType(module.title)} error={hasError} />
           <TabTitle>{module.title}</TabTitle>
           {dirName && <TabDir>../{dirName}</TabDir>}
-          {renderTabStatus(hovering, closeTab)}
+          {renderTabStatus({ isHovering, closeTab })}
         </>
       )}
     </TabContainer>
