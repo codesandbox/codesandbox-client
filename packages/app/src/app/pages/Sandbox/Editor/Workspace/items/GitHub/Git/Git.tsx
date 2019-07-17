@@ -38,7 +38,7 @@ export const Git = observer(() => {
 
   useEffect(() => {
     gitMounted();
-  }, []); // eslint-disable-line
+  }, [gitMounted]);
 
   const createCommit = () => createCommitClicked();
   const createPR = () => createPrClicked();

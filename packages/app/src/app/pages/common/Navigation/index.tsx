@@ -39,7 +39,7 @@ interface Props {
   searchNoInput?: boolean;
 }
 
-const Navigation = ({ title, searchNoInput }: Props) => {
+const Navigation = observer<Props>(({ title, searchNoInput }) => {
   const { isLoggedIn, isPatron, user, userNotifications } = useStore();
   const {
     modalOpened,
@@ -139,5 +139,6 @@ const Navigation = ({ title, searchNoInput }: Props) => {
       </Wrapper>
     </Row>
   );
-};
-export default observer(Navigation);
+});
+
+export default Navigation;

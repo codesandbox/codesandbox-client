@@ -24,7 +24,7 @@ interface Props {
   badge: 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4';
 }
 
-const PricingChoice = ({ badge }: Props) => {
+const PricingChoice = observer<Props>(({ badge }) => {
   const {
     patron: {
       priceChanged,
@@ -101,6 +101,6 @@ const PricingChoice = ({ badge }: Props) => {
       </Centered>
     </Container>
   );
-};
+});
 
-export default observer(PricingChoice);
+export default PricingChoice;

@@ -7,7 +7,7 @@ import { useSignals, useStore } from 'app/store';
 import { Container } from './elements';
 import Prompt from './Prompt';
 
-const CLI = () => {
+const CLI = observer(() => {
   const { cliMounted, signInCliClicked } = useSignals();
   const { user, authToken, isLoadingCLI, error } = useStore();
 
@@ -28,6 +28,6 @@ const CLI = () => {
       />
     </Container>
   );
-};
+});
 
-export default observer(CLI);
+export default CLI;

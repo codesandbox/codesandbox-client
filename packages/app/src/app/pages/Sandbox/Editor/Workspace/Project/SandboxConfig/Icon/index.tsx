@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
 import { usePopoverState } from 'reakit/Popover';
 import * as templates from '@codesandbox/common/lib/templates';
@@ -15,7 +16,7 @@ import {
   Arrow,
 } from './elements';
 
-export const Icon = () => {
+export const Icon = observer(() => {
   const popover = usePopoverState();
 
   const {
@@ -80,4 +81,4 @@ export const Icon = () => {
       </Value>
     </Item>
   );
-};
+});

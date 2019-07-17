@@ -10,7 +10,7 @@ interface IKeywordsProps {
   editable?: boolean;
 }
 
-export const Keywords = observer(({ editable }: IKeywordsProps) => {
+export const Keywords = observer<IKeywordsProps>(({ editable }) => {
   const {
     editor: {
       currentSandbox: { template, tags },

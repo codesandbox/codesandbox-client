@@ -9,7 +9,7 @@ interface IDescriptionProps {
   editable: boolean;
 }
 
-export const Description = observer(({ editable }: IDescriptionProps) => {
+export const Description = observer<IDescriptionProps>(({ editable }) => {
   const [editing, setEditing] = useState(false);
   const {
     workspace: { sandboxInfoUpdated, valueChanged },

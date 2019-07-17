@@ -14,7 +14,7 @@ import ExternalResource from './ExternalResource';
 
 import { ErrorMessage } from './elements';
 
-const Dependencies = () => {
+const Dependencies = observer(() => {
   const { editor } = useStore();
   const { workspace, editor: editorSignals } = useSignals();
   const sandbox = editor.currentSandbox;
@@ -104,6 +104,6 @@ const Dependencies = () => {
       )}
     </div>
   );
-};
+});
 
-export default observer(Dependencies);
+export default Dependencies;

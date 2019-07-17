@@ -19,7 +19,7 @@ import { useSignals, useStore } from 'app/store';
 import { Container, Buttons, Heading, PickerWrapper } from './elements';
 import SandboxCard from './SandboxCard';
 
-const Curator = () => {
+const Curator = observer(() => {
   const {
     explore: { pickSandboxModal, popularSandboxesMounted },
   } = useSignals();
@@ -133,6 +133,6 @@ const Curator = () => {
       </Margin>
     </MaxWidth>
   );
-};
+});
 
-export default observer(Curator);
+export default Curator;

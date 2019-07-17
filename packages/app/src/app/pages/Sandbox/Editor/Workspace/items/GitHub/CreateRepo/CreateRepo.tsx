@@ -15,7 +15,7 @@ import { Error } from './elements';
 type Props = {
   style?: React.CSSProperties;
 };
-export const CreateRepo = observer(({ style }: Props) => {
+export const CreateRepo = observer<Props>(({ style }) => {
   const {
     git: { repoTitleChanged, createRepoClicked },
   } = useSignals();

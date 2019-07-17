@@ -8,7 +8,7 @@ import { useSignals, useStore } from 'app/store';
 import Menu from './Menu';
 import { ClickableContainer, ProfileImage } from './elements';
 
-function UserMenu() {
+const UserMenu = observer(() => {
   const { user, userMenuOpen } = useStore();
   const {
     userMenuClosed,
@@ -42,6 +42,6 @@ function UserMenu() {
       )}
     </Relative>
   );
-}
+});
 
-export default observer(UserMenu);
+export default UserMenu;

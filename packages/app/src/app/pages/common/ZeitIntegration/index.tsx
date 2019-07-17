@@ -9,9 +9,9 @@ interface Props {
   small: boolean;
 }
 
-const ZeitIntegration = ({ small }: Props) => {
-  const { user, isLoadingZeit } = useStore();
+const ZeitIntegration = observer<Props>(({ small }) => {
   const { signInZeitClicked, signOutZeitClicked } = useSignals();
+  const { user, isLoadingZeit } = useStore();
 
   return (
     <Integration
@@ -26,6 +26,6 @@ const ZeitIntegration = ({ small }: Props) => {
       loading={isLoadingZeit}
     />
   );
-};
+});
 
-export default observer(ZeitIntegration);
+export default ZeitIntegration;
