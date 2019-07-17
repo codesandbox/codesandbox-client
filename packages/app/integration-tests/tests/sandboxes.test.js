@@ -121,7 +121,7 @@ describe('sandboxes', () => {
         const page = await loadSandboxRetry(
           browser,
           id,
-          i === 0 ? 90 : 45 * SECOND,
+          (i === 0 ? 90 : 45) * SECOND,
           2
         );
 
