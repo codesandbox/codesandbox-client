@@ -54,7 +54,9 @@ const Boundary = withRouter(ErrorBoundary);
 const Routes = () => {
   const { appUnmounted } = useSignals();
 
-  useEffect(() => () => appUnmounted(), [appUnmounted]);
+  useEffect(() => {
+    appUnmounted();
+  }, [appUnmounted]);
 
   return (
     <Container>
