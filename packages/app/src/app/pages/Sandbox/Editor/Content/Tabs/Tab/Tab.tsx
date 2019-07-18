@@ -9,7 +9,7 @@ export const Tab: React.FC<ITabProps> = ({
   isOver = false,
   position,
   tabCount,
-  onClose = () => {},
+  onClose = () => void,
   onClick,
   onDoubleClick = () => {},
   children,
