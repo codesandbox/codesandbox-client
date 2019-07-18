@@ -1,17 +1,17 @@
 import React from 'react';
 
-interface ISadboxProps {
+interface ISadboxProps extends React.HTMLAttributes<SVGElement> {
   scale?: number;
   width?: number;
   height?: number;
 }
 
-export const Sadbox = ({
+export const Sadbox: React.FC<ISadboxProps> = ({
   scale = 1,
   width = 64,
   height = 64,
   ...props
-}: ISadboxProps) => (
+}) => (
   <svg
     width={width * scale}
     height={height * scale}

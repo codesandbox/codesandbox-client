@@ -1,11 +1,11 @@
 import React from 'react';
 import GoHome from 'react-icons/lib/go/home';
-
 import GoIssueOpened from 'react-icons/lib/go/issue-opened';
 import { observer } from 'mobx-react-lite';
 import { useStore } from 'app/store';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
+// @ts-ignore
 import Dashboard from '-!svg-react-loader!@codesandbox/common/lib/icons/dashboard.svg';
 import Navigation from '../../Navigation';
 import { Sadbox } from './Sadbox';
