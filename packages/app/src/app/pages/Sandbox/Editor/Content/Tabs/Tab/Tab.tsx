@@ -1,35 +1,17 @@
 import React, { useState } from 'react';
 import ContextMenu from 'app/components/ContextMenu';
 import { Container, TabTitle, StyledCloseIcon } from './elements';
-
-export interface IRenderTabsProps {
-  isHovering: boolean;
-  closeTab: (event: React.MouseEvent<any>) => void;
-}
-
-interface ITabProps {
-  title: string;
-  items: any[];
-  active: boolean;
-  dirty: boolean;
-  isOver: boolean;
-  position: number;
-  tabCount: number;
-  onClose: (position?: number) => void;
-  onClick: () => void;
-  onDoubleClick: () => void;
-  children: (props: IRenderTabsProps) => React.ReactNode;
-}
+import { ITabProps } from './types';
 
 export const Tab: React.FC<ITabProps> = ({
-  active,
-  dirty,
-  isOver,
+  active = false,
+  dirty = false,
+  isOver = false,
   position,
   tabCount,
   onClose = () => {},
   onClick,
-  onDoubleClick,
+  onDoubleClick = () => {},
   children,
   title,
   items,
