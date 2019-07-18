@@ -9,7 +9,7 @@ interface Props {
   username: string;
 }
 
-const STACKBIT_DISABLED = true;
+const STACKBIT_DISABLED = false;
 
 export const ImportTab = ({ username }: Props) => (
   <>
