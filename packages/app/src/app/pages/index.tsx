@@ -97,7 +97,6 @@ const Routes = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/auth/zeit" component={ZeitSignIn} />
-            <Route path="/codesadbox" component={() => this[`💥`].kaboom()} />
             <Route component={NotFound} />
           </Switch>
         </Content>
