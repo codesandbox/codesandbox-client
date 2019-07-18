@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Animate as ReactShow } from 'react-show';
 
 import {
@@ -11,7 +11,7 @@ import {
 
 type Props = {
   children: React.ReactNode;
-  title: string | React.ReactElement<any>;
+  title: string;
   keepState?: boolean;
   disabled?: boolean;
   defaultOpen?: boolean;
@@ -19,21 +19,35 @@ type Props = {
   style?: React.CSSProperties;
 };
 
-const WorkspaceItem = React.memo(
-  ({
-    children,
-    title,
-    keepState,
-    disabled,
-    actions,
-    style,
-    defaultOpen = false,
-  }: Props) => {
-    const [open, setOpen] = useState(defaultOpen);
+type State = {
+  open: boolean;
+};
+
+export default class WorkspaceItem extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      open: Boolean(props.defaultOpen),
+    };
+  }
+
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    return (
+      nextState.open !== this.state.open ||
+      nextProps.disabled !== this.props.disabled ||
+      this.props.children !== nextProps.children
+    );
+  }
+
+  toggleOpen = () => this.setState({ open: !this.state.open });
+
+  render() {
+    const { children, title, keepState, disabled, actions, style } = this.props;
+    const { open } = this.state;
 
     return (
       <>
-        <ItemHeader style={style} onClick={() => setOpen(!open)}>
+        <ItemHeader style={style} onClick={this.toggleOpen}>
           <ExpandIconContainer open={open} />
           <Title>{title}</Title>
 
@@ -41,12 +55,11 @@ const WorkspaceItem = React.memo(
         </ItemHeader>
         <ReactShow
           style={{
-            overflow: 'visible',
             height: 'auto',
+            overflow: 'hidden',
           }}
           transitionOnMount
           start={{
-            overflow: 'hidden',
             height: 0, // The starting style for the component.
             // If the 'leave' prop isn't defined, 'start' is reused!
           }}
@@ -59,6 +72,4 @@ const WorkspaceItem = React.memo(
       </>
     );
   }
-);
-
-export default WorkspaceItem;
+}
