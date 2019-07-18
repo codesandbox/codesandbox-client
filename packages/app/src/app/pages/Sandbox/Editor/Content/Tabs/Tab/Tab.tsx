@@ -11,7 +11,7 @@ export const Tab: React.FC<ITabProps> = ({
   tabCount,
   onClose = () => void,
   onClick,
-  onDoubleClick = () => {},
+  onDoubleClick = () => void,
   children,
   title,
   items,
