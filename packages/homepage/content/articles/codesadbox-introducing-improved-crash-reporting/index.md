@@ -49,7 +49,7 @@ inside of the Project Info panel:
 ![Template Icons](./images/03_Template_Icons.gif)
 
 Not only that, we've shipped a much requested feature for Containers: multiple
-port support! Now when your container beings listening on an additional port,
+port support! Now when your container begins listening on an additional port,
 you'll see a toast notification in the bottom-right corner letting you know and
 providing you the option to open a new browser preview tab as well:
 
