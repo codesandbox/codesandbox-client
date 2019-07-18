@@ -3,11 +3,11 @@ featuredImage: ./images/banner.png
 slug: CodeSadbox
 authors: ['Drake Costa']
 photo: 'https://avatars0.githubusercontent.com/u/3144549?s=460&v=4'
-title: CodeSadbox - Introducing Improved Crash Reporting!
+title: 'CodeSadbox - Introducing Improved Crash Reporting!'
 description:
   In this week's release we've got the best new feature we hope you never have
-	to use! But that's not all, we've got some other goodies to share too!
-date: 2019-07-17
+  to use! But that's not all, we've got some other goodies to share too!
+date: 2019-07-18
 ---
 
 Have you every been using CodeSandbox only to encounter a suddenly blank screen?
