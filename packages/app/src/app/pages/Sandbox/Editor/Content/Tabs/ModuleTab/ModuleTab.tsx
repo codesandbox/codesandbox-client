@@ -2,19 +2,25 @@ import React from 'react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
+import {
+  ITabProps,
+  IRenderTabsProps,
+  TabTitle,
+  TabDir,
+  StyledCloseIcon,
+} from '../Tab';
+import { TabContainer } from '../TabContainer';
 import { StyledNotSyncedIcon } from './elements';
-import { IRenderTabsProps, TabTitle, TabDir, StyledCloseIcon } from '../Tab';
-import TabContainer from '../TabContainer';
 
-interface IModuleTabProps {
+interface IModuleTabProps extends ITabProps {
   dirName?: string;
   hasError?: boolean;
   isNotSynced?: boolean;
   tabCount: number;
   module: any;
-  markNotDirty: Function;
-  setCurrentModule: Function;
-  discardModuleChanges: Function;
+  markNotDirty?: Function;
+  setCurrentModule?: Function;
+  discardModuleChanges?: Function;
 }
 
 export const ModuleTab: React.FC<IModuleTabProps> = ({

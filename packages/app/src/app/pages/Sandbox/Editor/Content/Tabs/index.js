@@ -1,12 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-
 import { canPrettify } from 'app/utils/prettify';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-
-import TabContainer from './TabContainer';
-import PreviewIcon from './PreviewIcon';
-
+import { TabContainer } from './TabContainer';
+import { ModuleTab } from './ModuleTab';
+import { PreviewIcon } from './PreviewIcon';
 import {
   Container,
   TabsContainer,
@@ -15,8 +13,6 @@ import {
   IconWrapper,
   Line,
 } from './elements';
-
-import { ModuleTab } from './ModuleTab';
 
 class EditorTabs extends React.Component {
   componentDidUpdate(prevProps) {

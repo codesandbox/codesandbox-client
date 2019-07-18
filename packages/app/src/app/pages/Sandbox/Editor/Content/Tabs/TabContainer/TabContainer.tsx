@@ -1,55 +1,33 @@
 import React from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
-import { Tab } from '../Tab';
+import {
+  ConnectDragSource,
+  ConnectDropTarget,
+  DragSource,
+  DropTarget,
+} from 'react-dnd';
+import { Tab, ITabProps } from '../Tab';
 
-class TabContainer extends React.Component {
-  render() {
-    const {
-      connectDragSource,
-      connectDropTarget,
-      isOver,
-      active,
-      tabCount,
-      isDragging,
-      dirty,
-      dirName,
-      position,
-      closeTab,
-      innerRef,
-      hasError,
-      onClick,
-      onDoubleClick,
-      children,
-      isNotSynced,
-      title,
-      items,
-    } = this.props;
-
-    return connectDropTarget(
-      connectDragSource(
-        <span ref={innerRef} style={{ opacity: isDragging ? 0.8 : 1 }}>
-          <Tab
-            items={items}
-            active={active}
-            dirty={dirty}
-            isOver={isOver}
-            isNotSynced={isNotSynced}
-            dirName={dirName}
-            hasError={hasError}
-            tabCount={tabCount}
-            position={position}
-            closeTab={closeTab}
-            onClick={onClick}
-            onDoubleClick={onDoubleClick}
-            title={title}
-          >
-            {children}
-          </Tab>
-        </span>
-      )
-    );
-  }
+interface ITabContainerProps extends ITabProps {
+  connectDragSource: ConnectDragSource;
+  connectDropTarget: ConnectDropTarget;
+  isDragging?: boolean;
+  innerRef: React.Ref<any>;
 }
+
+const TabContainer: React.FC<ITabContainerProps> = ({
+  connectDragSource,
+  connectDropTarget,
+  isDragging = false,
+  innerRef,
+  ...props
+}) =>
+  connectDropTarget(
+    connectDragSource(
+      <span ref={innerRef} style={{ opacity: isDragging ? 0.8 : 1 }}>
+        <Tab {...props} />
+      </span>
+    )
+  );
 
 const entryTarget = {
   drop: (props, monitor) => {
