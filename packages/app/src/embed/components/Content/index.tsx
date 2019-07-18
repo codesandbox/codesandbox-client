@@ -10,7 +10,7 @@ import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
 import CodeEditor from 'app/components/CodeEditor';
 import { Editor, Settings } from 'app/components/CodeEditor/types';
-import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
+import { ModuleTab } from 'app/pages/Sandbox/Editor/Content/Tabs/ModuleTab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 // eslint-disable-next-line import/extensions
 import getType from 'app/utils/get-type.ts';
@@ -138,24 +138,24 @@ export default class Content extends React.PureComponent<Props, State> {
     const { isNotSynced, tabCount } = this.props;
 
     if (hovering && isNotSynced && tabCount === 1) {
-      return <StyledNotSyncedIcon show={'true'} />;
+      return <StyledNotSyncedIcon show />;
     }
     if (hovering && isNotSynced && tabCount > 1) {
-      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+      return <StyledCloseIcon onClick={closeTab} show />;
     }
     if (hovering && tabCount === 1) {
-      return <StyledCloseIcon onClick={closeTab} show={undefined} />;
+      return <StyledCloseIcon onClick={closeTab} />;
     }
     if (hovering && tabCount > 1) {
-      return <StyledCloseIcon onClick={closeTab} show={'true'} />;
+      return <StyledCloseIcon onClick={closeTab} show />;
     }
     if (!hovering && isNotSynced) {
-      return <StyledNotSyncedIcon show={'true'} />;
+      return <StyledNotSyncedIcon show />;
     }
     if (!hovering && !isNotSynced) {
-      return <StyledNotSyncedIcon show={undefined} />;
+      return <StyledNotSyncedIcon />;
     }
-    return <StyledNotSyncedIcon show={undefined} />;
+    return <StyledNotSyncedIcon />;
   };
 
   errors: ModuleError[];
@@ -469,17 +469,17 @@ export default class Content extends React.PureComponent<Props, State> {
                 }
 
                 return (
-                  <Tab
+                  <ModuleTab
                     key={module.id}
                     active={module.id === currentModule.id}
                     module={module}
                     onClick={() => this.setCurrentModule(module.id)}
                     tabCount={this.state.tabs.length}
                     position={i}
-                    closeTab={this.closeTab}
+                    onClose={this.closeTab}
                     dirName={dirName}
                   >
-                    {({ hovering, closeTab }) => (
+                    {({ isHovering, closeTab }) => (
                       // TODO deduplicate this
                       <React.Fragment>
                         <EntryIcons type={getType(module.title)} />
@@ -491,10 +491,10 @@ export default class Content extends React.PureComponent<Props, State> {
                           </TabDir>
                         )}
 
-                        {this.renderTabStatus(hovering, closeTab)}
+                        {this.renderTabStatus(isHovering, closeTab)}
                       </React.Fragment>
                     )}
-                  </Tab>
+                  </ModuleTab>
                 );
               })}
             </Tabs>
