@@ -11,8 +11,10 @@ export default Provider({
     listeners[signalPath] = addListener(listener);
   },
   removeListener(signalPath) {
-    listeners[signalPath]();
+    if (listeners[signalPath]) {
+      listeners[signalPath]();
 
-    delete listeners[signalPath];
+      delete listeners[signalPath];
+    }
   },
 });
