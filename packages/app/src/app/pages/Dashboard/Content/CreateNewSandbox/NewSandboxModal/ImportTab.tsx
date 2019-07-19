@@ -9,13 +9,11 @@ interface Props {
   username: string;
 }
 
-const STACKBIT_DISABLED = true;
-
 export const ImportTab = ({ username }: Props) => (
   <>
     <ImportWizardContainer>
       <GitHubImport />
-      {username && !STACKBIT_DISABLED && <StackbitImport username={username} />}
+      {username && <StackbitImport username={username} />}
     </ImportWizardContainer>
     <ImportChoices>
       <ImportChoice href="/docs/importing#export-with-cli">
