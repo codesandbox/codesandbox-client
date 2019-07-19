@@ -59,7 +59,7 @@ export const TemplateConfig = observer(() => {
   };
 
   return (
-    <WorkspaceItem defaultOpen title="Template">
+    <WorkspaceItem showOverflow defaultOpen title="Template">
       <Explanation style={{ marginTop: 0, marginBottom: '.5rem' }}>
         This is a template, you can find more info about templates
         <Link target="_blank" to={`/docs/templates`}>
