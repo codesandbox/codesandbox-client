@@ -10,7 +10,7 @@ description:
 date: 2019-07-18
 ---
 
-Have you every been using CodeSandbox only to encounter a suddenly blank screen?
+Have you ever been using CodeSandbox only to encounter a suddenly blank screen?
 We certainly have in development! Often, this occurs when one of our components
 encounters an error during render. For our part, we try our best to weed out all
 of these cases before shipping new updates to you, but occasionally these sorts
@@ -35,7 +35,7 @@ about your environment, the error message you encountered, and a component stack
 trace. We plan to improve this over time to make it even easier to track down
 those nasty bugs and get a fix issued asap!
 
-So if you're feeling up for challenge, see if you can find your way to this
+So if you're feeling up for a challenge, see if you can find your way to this
 elusive little box! We're excited to see what sort of bugs you can find!
 
 ## But wait, there's more!
