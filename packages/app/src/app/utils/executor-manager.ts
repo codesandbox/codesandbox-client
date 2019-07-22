@@ -106,13 +106,7 @@ export class ExecutorsManager {
    *   to either the sandbox or the server executor. Changing the executor would probably also result in components unmounting/
    *   remounting and registering new listeners.
    */
-  getExecutor(): IExecutor {
-    if (!this.executor) {
-      throw new Error(
-        'Executor is not defined yet, this is an impossible state'
-      );
-    }
-
+  getExecutor(): IExecutor | undefined {
     return this.executor;
   }
 

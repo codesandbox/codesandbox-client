@@ -12,6 +12,12 @@ export default Provider({
     const signal = this.context.controller.getSignal(signalPath);
     const executor = executorsManager.getExecutor();
 
+    if (!executor) {
+      throw new Error(
+        'Executor is not defined yet, this is an impossible state'
+      );
+    }
+
     return executor.on(event, data => {
       signal({ event, data: data || {} });
     });
@@ -19,7 +25,9 @@ export default Provider({
   emit(message, data) {
     const executor = executorsManager.getExecutor();
 
-    return executor.emit(message, data);
+    if (executor) {
+      executor.emit(message, data);
+    }
   },
   closeExecutor() {
     return executorsManager.closeExecutor();
