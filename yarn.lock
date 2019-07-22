@@ -8108,9 +8108,9 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
-console-feed@CompuIves/console-feed#build:
-  version "2.8.8"
-  resolved "https://codeload.github.com/CompuIves/console-feed/tar.gz/446c2d238b6b761fef616dcdb7c5f9e5ebf3a80a"
+console-feed@CompuIves/console-feed#build2:
+  version "2.8.9"
+  resolved "https://codeload.github.com/CompuIves/console-feed/tar.gz/42f10eb3063f0f26ee9745c4c9e4542cb5591f46"
   dependencies:
     emotion "^9.1.1"
     emotion-theming "^9.0.0"
@@ -8120,8 +8120,7 @@ console-feed@CompuIves/console-feed#build:
 
 console-feed@^2.8.5:
   version "2.8.8"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.8.8.tgz#c02054e8b1ae4c4562d4d7539aee83a426c9b1bb"
-  integrity sha512-tqONbPYrolH9Gn8yMc+7sBZG9F9FkNJM68ziG5dInznBOHbHNua+Mq0S70EgvkhEpE9AifvV9d7EX2Jm5yDw2w==
+  resolved "https://codeload.github.com/CompuIves/console-feed/tar.gz/446c2d238b6b761fef616dcdb7c5f9e5ebf3a80a"
   dependencies:
     emotion "^9.1.1"
     emotion-theming "^9.0.0"
