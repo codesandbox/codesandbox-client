@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import theme from '@codesandbox/common/lib/theme';
 import ansiHTML from 'ansi-html';
 
+import { escapeHtml } from 'app/utils/escape';
+
 import { TestError } from '../../';
 
 const Container = styled.div`
@@ -21,15 +23,6 @@ const Container = styled.div`
     border-bottom: none;
   }
 `;
-
-function escapeHtml(unsafe) {
-  return unsafe
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
 
 const formatDiffMessage = (error: TestError, path: string) => {
   let finalMessage: string = '';
@@ -92,7 +85,7 @@ const formatDiffMessage = (error: TestError, path: string) => {
             ? `<span style="color:${theme.red()};">></span> `
             : '') +
           newMargin.join('') +
-          code.lineNumber +
+          escapeHtml('' + code.lineNumber) +
           ' | ' +
           escapeHtml(code.content) +
           '</div>';
