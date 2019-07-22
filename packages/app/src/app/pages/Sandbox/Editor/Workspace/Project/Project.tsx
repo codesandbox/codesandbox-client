@@ -42,7 +42,7 @@ interface IProjectProps {
   editable?: boolean;
 }
 
-export const Project = observer(({ editable }: IProjectProps) => {
+export const Project = observer<IProjectProps>(({ editable }) => {
   const { editor, isPatron } = useStore();
   const {
     workspace: { sandboxPrivacyChanged },

@@ -8,7 +8,7 @@ import { useSignals, useStore } from 'app/store';
 type Props = {
   small?: boolean;
 };
-const GithubIntegration = ({ small = false }: Props) => {
+const GithubIntegration = observer<Props>(({ small = false }) => {
   const { signInGithubClicked, signOutGithubIntegration } = useSignals();
   const {
     isLoadingGithub,
@@ -30,6 +30,6 @@ const GithubIntegration = ({ small = false }: Props) => {
       userInfo={github}
     />
   );
-};
+});
 
-export default observer(GithubIntegration);
+export default GithubIntegration;

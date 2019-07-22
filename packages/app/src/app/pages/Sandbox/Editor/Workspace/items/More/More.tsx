@@ -14,7 +14,7 @@ interface Props {
   message: string | JSX.Element;
 }
 
-export const More = observer(({ id, message }: Props) => {
+export const More = observer<Props>(({ id, message }) => {
   const {
     editor: { forkSandboxClicked },
   } = useSignals();

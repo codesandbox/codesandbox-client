@@ -45,23 +45,22 @@ type ForkButtonProps = ButtonProps & {
   isForking: boolean;
 };
 
-const LikeButton = ({
-  style,
-  likeCount,
-}: ButtonProps & { likeCount: string }) => {
-  const { editor } = useStore();
+const LikeButton = observer(
+  ({ style, likeCount }: ButtonProps & { likeCount: string }) => {
+    const { editor } = useStore();
 
-  return (
-    <LikeHeart
-      colorless
-      style={style}
-      text={likeCount}
-      sandbox={editor.currentSandbox}
-      disableTooltip
-      highlightHover
-    />
-  );
-};
+    return (
+      <LikeHeart
+        colorless
+        style={style}
+        text={likeCount}
+        sandbox={editor.currentSandbox}
+        disableTooltip
+        highlightHover
+      />
+    );
+  }
+);
 
 const ForkButton = ({ secondary, isForking, style }: ForkButtonProps) => {
   const { editor } = useSignals();
@@ -82,7 +81,7 @@ const ForkButton = ({ secondary, isForking, style }: ForkButtonProps) => {
   );
 };
 
-const PickButton = ({ secondary, style }: ButtonProps) => {
+const PickButton = observer(({ secondary, style }: ButtonProps) => {
   const { editor } = useStore();
   const { id, title, description } = editor.currentSandbox;
   const { explore } = useSignals();
@@ -105,7 +104,7 @@ const PickButton = ({ secondary, style }: ButtonProps) => {
       Pick
     </Button>
   );
-};
+});
 
 const ShareButton = ({ secondary, style }: ButtonProps) => {
   const { modalOpened } = useSignals();

@@ -10,7 +10,7 @@ type ITitleProps = {
   editable: boolean;
 };
 
-export const Title = observer(({ editable }: ITitleProps) => {
+export const Title = observer<ITitleProps>(({ editable }) => {
   const [editing, setEditing] = useState(false);
   const {
     editor: { currentSandbox },

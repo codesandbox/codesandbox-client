@@ -13,7 +13,7 @@ type IAliasProps = {
   editable: boolean;
 };
 
-export const Alias = observer(({ editable }: IAliasProps) => {
+export const Alias = observer<IAliasProps>(({ editable }) => {
   const [editing, setEditing] = useState(false);
   const {
     workspace: { sandboxInfoUpdated, valueChanged },

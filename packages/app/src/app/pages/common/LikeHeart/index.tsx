@@ -31,45 +31,49 @@ interface Props {
   highlightHover?: boolean;
 }
 
-function LikeHeart({
-  sandbox,
-  className,
-  colorless,
-  text,
-  style,
-  disableTooltip,
-  highlightHover,
-}: Props) {
-  const { isLoggedIn } = useStore();
-  const { editor } = useSignals();
+const LikeHeart = observer<Props>(
+  ({
+    sandbox,
+    className,
+    colorless,
+    text,
+    style,
+    disableTooltip,
+    highlightHover,
+  }) => {
+    const { isLoggedIn } = useStore();
+    const { editor } = useSignals();
 
-  return (
-    <Container
-      style={style}
-      hasText={text !== undefined}
-      loggedIn={isLoggedIn}
-      liked={sandbox.userLiked}
-      className={className}
-      highlightHover={highlightHover}
-      onClick={
-        isLoggedIn ? () => editor.likeSandboxToggled({ id: sandbox.id }) : noop
-      }
-    >
-      <MaybeTooltip
+    return (
+      <Container
+        style={style}
+        hasText={text !== undefined}
         loggedIn={isLoggedIn}
-        disableTooltip={disableTooltip}
-        title={sandbox.userLiked ? 'Undo like' : 'Like'}
+        liked={sandbox.userLiked}
+        className={className}
+        highlightHover={highlightHover}
+        onClick={
+          isLoggedIn
+            ? () => editor.likeSandboxToggled({ id: sandbox.id })
+            : noop
+        }
       >
-        {sandbox.userLiked ? (
-          <FullHeartIcon style={colorless ? null : { color: '#E01F4E' }} />
-        ) : (
-          <HeartIcon />
-        )}
+        <MaybeTooltip
+          loggedIn={isLoggedIn}
+          disableTooltip={disableTooltip}
+          title={sandbox.userLiked ? 'Undo like' : 'Like'}
+        >
+          {sandbox.userLiked ? (
+            <FullHeartIcon style={colorless ? null : { color: '#E01F4E' }} />
+          ) : (
+            <HeartIcon />
+          )}
 
-        {text && <span>{text}</span>}
-      </MaybeTooltip>
-    </Container>
-  );
-}
+          {text && <span>{text}</span>}
+        </MaybeTooltip>
+      </Container>
+    );
+  }
+);
 
-export default observer(LikeHeart);
+export default LikeHeart;

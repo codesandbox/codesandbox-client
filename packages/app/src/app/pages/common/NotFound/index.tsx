@@ -7,7 +7,7 @@ import { useStore } from 'app/store';
 
 import { Container, Title, SubTitle, Buttons } from './elements';
 
-const NotFound = () => {
+const NotFound = observer(() => {
   const { hasLogIn } = useStore();
 
   return (
@@ -28,6 +28,6 @@ const NotFound = () => {
       </Buttons>
     </Container>
   );
-};
+});
 
-export default observer(NotFound);
+export default NotFound;

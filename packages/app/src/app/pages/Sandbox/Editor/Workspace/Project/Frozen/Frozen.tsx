@@ -10,7 +10,7 @@ interface IFrozenProps {
   isFrozen: boolean;
 }
 
-export const Frozen = observer(({ isFrozen }: IFrozenProps) => {
+export const Frozen = observer<IFrozenProps>(({ isFrozen }) => {
   const {
     editor: { frozenUpdated, sessionFreezeOverride },
   } = useSignals();

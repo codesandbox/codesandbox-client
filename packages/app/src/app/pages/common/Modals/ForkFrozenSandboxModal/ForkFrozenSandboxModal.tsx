@@ -1,5 +1,5 @@
-import React from 'react';
 import { observer } from 'mobx-react-lite';
+import React from 'react';
 import useKeyPressEvent from 'react-use/lib/useKeyPressEvent';
 import { Button } from '@codesandbox/common/lib/components/Button';
 import { useStore, useSignals } from 'app/store';
