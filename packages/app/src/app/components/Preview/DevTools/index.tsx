@@ -439,8 +439,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
     return (
       <Container
         ref={el => {
-          this.node = el;
-          this.normalizeHeight(el);
+          this.node = el || this.node;
+
+          if (this.node) {
+            this.normalizeHeight(el);
+          }
         }}
         style={{
           flex: primary
