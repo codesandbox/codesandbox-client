@@ -442,7 +442,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
           this.node = el || this.node;
 
           if (this.node) {
-            this.normalizeHeight(el);
+            this.normalizeHeight(this.node);
           }
         }}
         style={{
