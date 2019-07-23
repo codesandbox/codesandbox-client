@@ -420,7 +420,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
   getViews = (): IViews => this.allViews;
 
-  node: HTMLElement;
+  node: HTMLDivElement;
   allViews: IViews;
 
   render() {
