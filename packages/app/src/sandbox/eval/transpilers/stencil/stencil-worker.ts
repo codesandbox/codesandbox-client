@@ -1,13 +1,23 @@
 const ctx = self as any;
 
+let loadedStencilVersion: string;
+const loadStencilVersion = (version: string) => {
+  if (version !== loadedStencilVersion) {
+    loadedStencilVersion = version;
+
+    ctx.importScripts(
+      `https://unpkg.com/@stencil/core@${version}/compiler/stencil.js`
+    );
+  }
+};
+
 ctx.importScripts('https://unpkg.com/typescript@3.5.3/lib/typescript.js');
-ctx.importScripts(
-  'https://unpkg.com/@stencil/core@1.2.0-0/compiler/stencil.js'
-);
 ctx.postMessage('ready');
 
 ctx.addEventListener('message', event => {
-  const { code, path } = event.data;
+  const { code, path, stencilVersion } = event.data;
+
+  loadStencilVersion(stencilVersion);
 
   const opts = {
     file: path,
