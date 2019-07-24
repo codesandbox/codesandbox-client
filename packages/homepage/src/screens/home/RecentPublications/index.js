@@ -5,7 +5,6 @@ import { StaticQuery, graphql } from 'gatsby';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 
 import media from '../../../utils/media';
-import { makeFeed, makePost } from '../../../utils/makePosts';
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.background2};
