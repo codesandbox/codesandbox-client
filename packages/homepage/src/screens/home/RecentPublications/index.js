@@ -5,6 +5,7 @@ import { StaticQuery, graphql } from 'gatsby';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 
 import media from '../../../utils/media';
+import { makeFeed, makePost } from '../../../utils/makePosts';
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.background2};
@@ -90,54 +91,69 @@ export default () => (
   <StaticQuery
     query={graphql`
       query {
-        allMediumPost(limit: 3, sort: { fields: [createdAt], order: DESC }) {
+        allMarkdownRemark(
+          filter: { fileAbsolutePath: { regex: "/articles/" } }
+          limit: 3
+        ) {
           edges {
             node {
               id
-              title
-              uniqueSlug
-              virtuals {
-                subtitle
-                previewImage {
-                  imageId
+              html
+              frontmatter {
+                featuredImage {
+                  publicURL
                 }
+                slug
+                authors
+                photo
+                title
+                description
+                date
               }
             }
           }
         }
       }
     `}
-    render={({ allMediumPost: { edges } }) => (
-      <Container>
-        <MaxWidth width={1280}>
-          <Title>Recent Publications</Title>
-          <SubTitle>
-            You can follow{' '}
-            <a
-              href="https://medium.com/@compuives/"
-              target="_blank"
-              rel="noreferrer noopener"
-              style={{ textDecoration: 'none' }}
-            >
-              our blog
-            </a>{' '}
-            to stay up to date with new publications.
-          </SubTitle>
-          <Items style={{ marginBottom: '2rem' }}>
-            {edges.map(post => (
-              <PublicationItem
-                key={post.node.id}
-                title={post.node.title}
-                description={post.node.virtuals.subtitle}
-                url={`https://medium.com/@compuives/${post.node.uniqueSlug}`}
-                image={`https://cdn-images-1.medium.com/max/2000/${
-                  post.node.virtuals.previewImage.imageId
-                }`}
-              />
-            ))}
-          </Items>
-        </MaxWidth>
-      </Container>
-    )}
+    render={({ allMarkdownRemark }) => {
+      const { edges } = allMarkdownRemark;
+      const posts = edges
+        .map(({ node }) => ({
+          id: node.id,
+          ...node.frontmatter,
+        }))
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      return (
+        <Container>
+          <MaxWidth width={1280}>
+            <Title>Recent Publications</Title>
+            <SubTitle>
+              You can follow{' '}
+              <a
+                href="/blog"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{ textDecoration: 'none' }}
+              >
+                our blog
+              </a>{' '}
+              to stay up to date with new publications.
+            </SubTitle>
+            <Items style={{ marginBottom: '2rem' }}>
+              {posts.map(post => (
+                <PublicationItem
+                  key={post.id}
+                  title={post.title}
+                  description={post.description}
+                  url={`/post/${post.slug}`}
+                  image={post.featuredImage.publicURL}
+                />
+              ))}
+            </Items>
+          </MaxWidth>
+        </Container>
+      );
+    }}
   />
 );
