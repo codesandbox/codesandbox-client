@@ -52,6 +52,7 @@ const PricingChoice = observer<Props>(({ badge }) => {
             onChange={e => priceChanged({ price: Number(e.target.value) })}
             value={patron.price}
             min={5}
+            max={50}
             type="number"
           />
           <Month>/month</Month>
