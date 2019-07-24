@@ -105,10 +105,9 @@ export const frameUrl = (sandbox: Sandbox, append: string = '') => {
   }
 
   let sHost = host();
-  // disable sandbox host for now because of .dev issues
-  // if (`https://${sHost}` in sandboxHost) {
-  //   sHost = sandboxHost[`https://${sHost}`].split('//')[1];
-  // }
+  if (`https://${sHost}` in sandboxHost) {
+    sHost = sandboxHost[`https://${sHost}`].split('//')[1];
+  }
   return `${location.protocol}//${sandbox.id}.${sHost}/${path}`;
 };
 
