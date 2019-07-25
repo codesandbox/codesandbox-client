@@ -13,6 +13,7 @@ import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Skeleton from 'app/components/Skeleton';
 import Padding from '@codesandbox/common/lib/components/spacing/Padding';
 import SignInButton from 'app/pages/common/SignInButton';
+import { hasAuthToken } from 'app/utils/user';
 
 import Editor from '../Sandbox/Editor';
 import BlinkingDot from './BlinkingDot';
@@ -36,7 +37,7 @@ class LivePage extends React.Component {
   }
 
   initializeLive = () => {
-    if (this.props.store.hasLogIn) {
+    if (hasAuthToken()) {
       this.loggedIn = true;
       this.props.signals.live.roomJoined({
         roomId: this.props.match.params.id,
@@ -47,7 +48,7 @@ class LivePage extends React.Component {
   componentDidUpdate(prevProps) {
     if (
       prevProps.match.params.id !== this.props.match.params.id ||
-      (this.props.store.hasLogIn && !this.loggedIn)
+      (hasAuthToken() && !this.loggedIn)
     ) {
       this.disconnectLive();
       this.initializeLive();
@@ -57,7 +58,7 @@ class LivePage extends React.Component {
   getContent = () => {
     const { store } = this.props;
 
-    if (!store.hasLogIn) {
+    if (!hasAuthToken()) {
       return (
         <React.Fragment>
           <div

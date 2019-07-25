@@ -23,7 +23,9 @@ export const More = observer<Props>(({ id, message }) => {
     editor: { isForkingSandbox },
   } = useStore();
 
-  useEffect(() => track('Workspace - More Opened', { id }), [id]);
+  useEffect(() => {
+    track('Workspace - More Opened', { id })
+  }, [id]);
 
   return (
     <div>

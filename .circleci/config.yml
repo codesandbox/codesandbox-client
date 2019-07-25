@@ -6,21 +6,21 @@ version: 2.1
 
 aliases:
   - &restore_repo_cache
-    key: v21-repo-{{ .Environment.CIRCLE_SHA1 }}
+    key: v22-repo-{{ .Environment.CIRCLE_SHA1 }}
 
   - &save_repo_cache
-    key: v21-repo-{{ .Environment.CIRCLE_SHA1 }}
+    key: v22-repo-{{ .Environment.CIRCLE_SHA1 }}
     paths:
       - ~/codesandbox-client
 
   - &restore_deps_cache
     keys:
-      - v21-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v21-dependency-cache-{{ .Branch }}
-      - v21-dependency-cache
+      - v22-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v22-dependency-cache-{{ .Branch }}
+      - v22-dependency-cache
 
   - &save_deps_cache
-    key: v21-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v22-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -39,29 +39,38 @@ aliases:
 
   - &restore_standalone_deps_cache
     keys:
-      - v21-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v21-standalone-dependency-cache-{{ .Branch }}
-      - v21-standalone-dependency-cache
+      - v22-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+        "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+      - v22-standalone-dependency-cache-{{ .Branch }}
+      - v22-standalone-dependency-cache
 
   - &save_standalone_deps_cache
-    key: v21-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+    key:
+      v22-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_build_cache
-    key: v21-prod-app-build-cache-master
+    key: v22-prod-app-build-cache-master
 
   - &restore_prod_cache
-    key: v21-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key:
+      v22-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      .Environment.CIRCLE_SHA1 }}
 
   - &save_prod_app_cache
-    key: v21-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key:
+      v22-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/app/www
       - ./packages/homepage/.cache
 
   - &save_prod_cache
-    key: v21-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+    key:
+      v22-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
 
@@ -119,7 +128,8 @@ commands:
       - save_cache: *save_prod_app_cache
       - save_cache: *save_prod_cache
   test_integrations:
-    description: "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
+    description:
+      "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
       - restore_cache: *restore_repo_cache
       - run:
@@ -128,7 +138,10 @@ commands:
           background: true
       - run:
           name: Setup BrowserStack local environment
-          command: '[ -n "$BROWSER_STACK_KEY" ] && ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY || true'
+          command:
+            '[ -n "$BROWSER_STACK_KEY" ] &&
+            ./packages/app/integration-tests/BrowserStackLocal --key
+            $BROWSER_STACK_KEY || true'
           background: true
       - run:
           name: Test Integrations
@@ -175,13 +188,19 @@ commands:
       - restore_cache: *restore_prod_cache
       - run:
           name: Docker Sign In
-          command: '[ -n "<< parameters.user >>" ] && echo << parameters.password >> | docker login -u << parameters.user >> --password-stdin || true'
+          command:
+            '[ -n "<< parameters.user >>" ] && echo << parameters.password >> |
+            docker login -u << parameters.user >> --password-stdin || true'
       - run:
           name: Create Image
-          command: '[ -n "<< parameters.user >>" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
+          command:
+            '[ -n "<< parameters.user >>" ] && docker build -t
+            codesandbox/client:${CIRCLE_SHA1:0:7} . || true'
       - run:
           name: Push Image
-          command: '[ -n "<< parameters.user >>" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true'
+          command:
+            '[ -n "<< parameters.user >>" ] && docker push
+            codesandbox/client:${CIRCLE_SHA1:0:7} || true'
 
 ################################
 # Jobs
