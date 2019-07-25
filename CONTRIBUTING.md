@@ -65,11 +65,10 @@ To install the project you need to have `yarn` and `node`
     - this builds the dependencies (`codesandbox-api` and
       `codesandbox-browserfs`) and runs the `app` development environment,
       available on [http://localhost:3000/s/new](http://localhost:3000/s/new)
+    - on subsequent runs you can also bypass dependencies building and use
+      `yarn start:fast`
     - if you want to work on the homepage, start it with `yarn start:home`, it
       will be available on [http://localhost:8000/](http://localhost:8000/)
-    - on subsequent runs you can also bypass dependencies building and
-      `yarn start:fast` for app development and `yarn start:home:fast` for
-      homepage
 
 > Tip: Keep your `master` branch pointing at the original repository and make
 > pull requests from branches on your fork. To do this, run:
