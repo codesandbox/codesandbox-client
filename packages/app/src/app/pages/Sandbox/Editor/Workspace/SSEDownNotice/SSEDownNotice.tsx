@@ -7,14 +7,18 @@ import { useStore } from 'app/store';
 import { Container } from './elements';
 
 export const SSEDownNotice = observer(() => {
-  const store = useStore();
+  const {
+    editor: {
+      currentSandbox: { template },
+    },
+    server: { status },
+  } = useStore();
 
-  const templateDef = getTemplate(store.editor.currentSandbox.template);
-  if (!templateDef.isServer) {
+  if (!getTemplate(template).isServer) {
     return null;
   }
 
-  if (store.server.status !== 'disconnected') {
+  if (status !== 'disconnected') {
     return null;
   }
 

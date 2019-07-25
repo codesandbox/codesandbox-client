@@ -130,7 +130,10 @@ export const setSandbox = [
   when(
     state`editor.currentId`,
     props`sandbox.id`,
-    (currentId, newId) => currentId === newId
+    state`live.isLoading`,
+    // If we don't add the live check we will never initialize this state, since the roomJoined sequence also initializes
+    // editor.currentId to sandbox.id, which causes this check to always resolve to true
+    (currentId, newId, isLoadingLive) => currentId === newId && !isLoadingLive
   ),
   {
     true: [],

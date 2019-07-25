@@ -66,6 +66,18 @@ function getSelection(lines, selection) {
   };
 }
 
+type UserSelection =
+  | {
+      userId: string;
+      selection: null;
+    }
+  | {
+      userId: string;
+      name: string;
+      selection: any;
+      color: number[];
+    };
+
 class MonacoEditor extends React.Component<Props> implements Editor {
   static defaultProps = {
     width: '100%',
@@ -406,6 +418,12 @@ class MonacoEditor extends React.Component<Props> implements Editor {
             this.currentModule.code !== undefined &&
             activeEditor.getValue(1) !== this.currentModule.code
           ) {
+            // Don't send these changes over live, since these changes can also be made by someone else and
+            // we don't want to keep singing these changes
+            // TODO: a better long term solution would be to store the changes of someone else in a model, even if the
+            // model is not opened in an editor.
+
+            this.receivingCode = true;
             // This means that the file in Cerebral is dirty and has changed,
             // VSCode only gets saved contents. In this case we manually set the value correctly.
             const model = activeEditor.getModel();
@@ -415,6 +433,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
                 range: model.getFullModelRange(),
               },
             ]);
+            this.receivingCode = false;
           }
 
           this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
@@ -557,20 +576,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
 
   userClassesGenerated = {};
   userSelectionDecorations = {};
-  updateUserSelections = (
-    userSelections: Array<
-      | {
-          userId: string;
-          selection: null;
-        }
-      | {
-          userId: string;
-          name: string;
-          selection: any;
-          color: number[];
-        }
-    >
-  ) => {
+  updateUserSelections = (userSelections: UserSelection[]) => {
     if (this.editor.getActiveCodeEditor()) {
       updateUserSelections(
         this.monaco,
@@ -730,23 +736,24 @@ class MonacoEditor extends React.Component<Props> implements Editor {
           // Something went wrong while applying
           this.props.onModuleStateMismatch();
         }
-        return;
+      } else {
+        this.liveOperationCode = '';
+
+        modelEditor.textModelReference.then(model => {
+          this.applyOperationToModel(
+            operation,
+            false,
+            model.object.textEditorModel
+          );
+
+          if (this.props.onChange) {
+            this.props.onChange(
+              model.object.textEditorModel.getValue(1),
+              module.shortid
+            );
+          }
+        });
       }
-
-      this.liveOperationCode = '';
-
-      modelEditor.textModelReference.then(model => {
-        this.applyOperationToModel(
-          operation,
-          false,
-          model.object.textEditorModel
-        );
-
-        this.props.onChange(
-          model.object.textEditorModel.getValue(1),
-          module.shortid
-        );
-      });
     });
   };
 
