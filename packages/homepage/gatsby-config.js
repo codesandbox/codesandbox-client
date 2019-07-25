@@ -60,13 +60,6 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-source-medium`,
-      options: {
-        username: `@CompuIves`,
-        limit: 200,
-      },
-    },
-    {
       resolve: `gatsby-source-rss-feed`,
       options: {
         url: `https://medium.com/feed/@CompuIves`,
