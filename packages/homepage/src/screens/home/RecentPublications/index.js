@@ -93,6 +93,7 @@ export default () => (
         allMarkdownRemark(
           filter: { fileAbsolutePath: { regex: "/articles/" } }
           limit: 3
+          sort: { order: DESC, fields: [frontmatter___date] }
         ) {
           edges {
             node {
