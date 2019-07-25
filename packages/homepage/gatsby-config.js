@@ -60,13 +60,6 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-source-rss-feed`,
-      options: {
-        url: `https://medium.com/feed/@CompuIves`,
-        name: `MediumBlog`,
-      },
-    },
-    {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
         fonts: [
