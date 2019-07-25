@@ -51,38 +51,6 @@ exports.createPages = async ({ graphql, actions }) => {
     toPath: '/',
   });
 
-  const blogsFromMedium = await graphql(`
-    {
-      allFeedMediumBlog {
-        edges {
-          node {
-            id
-            title
-            categories
-          }
-        }
-      }
-    }
-  `);
-
-  blogsFromMedium.data.allFeedMediumBlog.edges.forEach(edge => {
-    const slug = edge.node.title
-      .toLowerCase()
-      .replace(/[^\w ]+/g, '')
-      .replace(/ +/g, '-');
-    const id = edge.node.id;
-
-    // If there are no categories it's a comment
-    if (edge.node.categories) {
-      createPage({
-        path: 'post/' + slug,
-        component: blogTemplate,
-        context: {
-          id,
-        },
-      });
-    }
-  });
   const allMarkdownArticles = await graphql(
     `
       {
@@ -102,21 +70,18 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     `
   );
+  allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
+    const slug = edge.node.frontmatter.slug;
+    const id = edge.node.id;
 
-  if (allMarkdownArticles.data) {
-    allMarkdownArticles.data.allMarkdownRemark.edges.forEach(edge => {
-      const slug = edge.node.frontmatter.slug;
-      const id = edge.node.id;
-
-      createPage({
-        path: 'post/' + slug,
-        component: blogTemplate,
-        context: {
-          id,
-        },
-      });
+    createPage({
+      path: 'post/' + slug,
+      component: blogTemplate,
+      context: {
+        id,
+      },
     });
-  }
+  });
 
   const allDocs = await graphql(
     `
@@ -137,13 +102,11 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     `
   );
-
   if (allDocs.errors) {
     console.error(allDocs.errors);
 
     throw Error(allDocs.errors);
   }
-
   allDocs.data.allMarkdownRemark.edges.forEach(edge => {
     const slug = edge.node.fields.slug;
     const url = edge.node.fields.url;
@@ -189,7 +152,6 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     `
   );
-
   if (allJobs.data) {
     allJobs.data.allMarkdownRemark.edges.forEach(edge => {
       createPage({
