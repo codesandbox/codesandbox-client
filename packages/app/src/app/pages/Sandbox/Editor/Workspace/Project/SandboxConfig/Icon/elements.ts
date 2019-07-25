@@ -54,6 +54,7 @@ export const Value = styled(PropertyValue)`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  position: relative;
 `;
 
 export const IconButton = styled.button`

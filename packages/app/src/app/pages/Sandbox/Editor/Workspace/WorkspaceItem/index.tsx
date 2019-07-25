@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Animate as ReactShow } from 'react-show';
+import { useHiddenState, Hidden } from 'reakit/Hidden';
 
 import {
   ChildContainer,
@@ -7,6 +8,7 @@ import {
   Title,
   ExpandIconContainer,
   Actions,
+  HideButton,
 } from './elements';
 
 type Props = {
@@ -17,68 +19,48 @@ type Props = {
   defaultOpen?: boolean;
   actions?: React.Component<any, any>;
   style?: React.CSSProperties;
-  showOverflow?: boolean;
 };
 
-type State = {
-  open: boolean;
-};
+const WorkspaceItem = ({
+  children,
+  defaultOpen,
+  title,
+  keepState,
+  disabled,
+  actions,
+  style,
+}: Props) => {
+  const [open, setOpen] = useState(Boolean(defaultOpen));
+  const hidden = useHiddenState({ visible: Boolean(defaultOpen) });
 
-export default class WorkspaceItem extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      open: Boolean(props.defaultOpen),
-    };
-  }
-
-  shouldComponentUpdate(nextProps: Props, nextState: State) {
-    return (
-      nextState.open !== this.state.open ||
-      nextProps.disabled !== this.props.disabled ||
-      this.props.children !== nextProps.children
-    );
-  }
-
-  toggleOpen = () => this.setState({ open: !this.state.open });
-
-  render() {
-    const {
-      children,
-      title,
-      keepState,
-      disabled,
-      actions,
-      style,
-      showOverflow,
-    } = this.props;
-    const { open } = this.state;
-
-    return (
-      <>
-        <ItemHeader style={style} onClick={this.toggleOpen}>
+  return (
+    <>
+      <HideButton {...hidden}>
+        <ItemHeader style={style} onClick={() => setOpen(!open)}>
           <ExpandIconContainer open={open} />
           <Title>{title}</Title>
 
           {open && <Actions>{actions}</Actions>}
         </ItemHeader>
-        <ReactShow
-          style={{
-            height: 'auto',
-            overflow: showOverflow ? 'initial' : 'hidden',
-          }}
-          transitionOnMount
-          start={{
-            height: 0, // The starting style for the component.
-            // If the 'leave' prop isn't defined, 'start' is reused!
-          }}
-          show={open}
-          duration={250}
-          stayMounted={keepState}
-        >
+      </HideButton>
+      <ReactShow
+        style={{
+          height: 'auto',
+        }}
+        transitionOnMount
+        start={{
+          height: 0,
+        }}
+        show={open}
+        duration={250}
+        stayMounted={keepState}
+      >
+        <Hidden {...hidden}>
           <ChildContainer disabled={disabled}>{children}</ChildContainer>
-        </ReactShow>
-      </>
-    );
-  }
-}
+        </Hidden>
+      </ReactShow>
+    </>
+  );
+};
+
+export default WorkspaceItem;

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import ExpandIcon from 'react-icons/lib/md/keyboard-arrow-down';
+import { HiddenDisclosure } from 'reakit/Hidden';
 
 export const ChildContainer = styled.div<{ disabled?: boolean }>`
   position: relative;
@@ -70,4 +71,11 @@ export const Actions = styled.div`
 
   display: flex;
   align-items: center;
+`;
+
+export const HideButton = styled(HiddenDisclosure)`
+  background: transparent;
+  border: none;
+  padding: 0;
+  appearance: none;
 `;
