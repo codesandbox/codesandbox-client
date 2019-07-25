@@ -138,18 +138,6 @@ class BasePreview extends React.Component<Props, State> {
    */
   testFallbackDomainIfNeeded = () => {
     const TRACKING_NAME = 'Preview - Fallback URL';
-    const setFallbackDomain = () => {
-      track(TRACKING_NAME, { needed: true });
-      this.setState(
-        {
-          useFallbackDomain: true,
-        },
-        () => {
-          this.forceUpdate();
-        }
-      );
-    };
-
     const normalUrl = frameUrl(
       this.props.sandbox,
       this.props.initialPath || ''
@@ -159,6 +147,18 @@ class BasePreview extends React.Component<Props, State> {
       this.props.initialPath || '',
       true
     );
+
+    const setFallbackDomain = () => {
+      track(TRACKING_NAME, { needed: true });
+      this.setState({
+        useFallbackDomain: true,
+        urlInAddressBar: frameUrl(
+          this.props.sandbox,
+          this.props.initialPath || '',
+          true
+        ),
+      });
+    };
 
     if (!this.props.url && normalUrl !== fallbackUrl) {
       fetch(frameUrl(this.props.sandbox, this.props.initialPath || ''), {
