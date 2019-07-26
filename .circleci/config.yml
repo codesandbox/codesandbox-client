@@ -5,8 +5,22 @@ version: 2.1
 ################################
 
 aliases:
-  - &restore_repo_cache
-    key: v24-repo-{{ .Environment.CIRCLE_SHA1 }}
+  - &attach_deps_workspace
+    at: ./
+
+  - &build_deps_paths
+    root: ./
+    paths:
+      - packages/codesandbox-api/dist
+      - packages/common/lib
+      - packages/deps/dist
+      - packages/executors/dist
+      - packages/node-services/lib
+      - packages/notifications/lib
+      - packages/sse-hooks/dist
+      - standalone-packages/codesandbox-browserfs/dist
+      - standalone-packages/codesandbox-browserfs/build
+      - standalone-packages/vscode-textmate/out
 
   - &save_repo_cache
     key: v24-repo-{{ .Environment.CIRCLE_SHA1 }}
@@ -115,11 +129,12 @@ commands:
       - run:
           name: Build
           command: yarn build:deps
-      - save_cache: *save_repo_cache
+      - persist_to_workspace: *build_deps_paths
   build_prod:
     description: 'Build the Application with `yarn build:prod`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - attach_workspace: *attach_deps_workspace
       - restore_cache: *restore_prod_build_cache
       - run:
           name: Build Application
@@ -130,7 +145,8 @@ commands:
     description:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -154,7 +170,8 @@ commands:
   test_jest:
     description: 'Test with `yarn test`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
@@ -163,14 +180,16 @@ commands:
   yarn_lint:
     description: 'Lint with `yarn lint`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Lint
           command: yarn lint
   yarn_typecheck:
     description: 'Lint with `yarn typecheck`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Lint
           command: yarn typecheck
