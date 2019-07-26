@@ -5,13 +5,23 @@ version: 2.1
 ################################
 
 aliases:
-  - &restore_repo_cache
-    key: v24-repo-{{ .Environment.CIRCLE_SHA1 }}
+  - &attach_deps_workspace
+    at: ~/codesandbox-client
 
-  - &save_repo_cache
-    key: v24-repo-{{ .Environment.CIRCLE_SHA1 }}
+  - &build_deps_paths
+    root: ~/codesandbox-client
     paths:
-      - ~/codesandbox-client
+      - packages/codesandbox-api/dist
+      - packages/common/lib
+      - packages/deps/dist
+      - packages/executors/dist
+      - packages/node-services/lib
+      - packages/notifications/lib
+      - packages/sse-hooks/dist
+      - standalone-packages/codesandbox-browserfs/dist
+      - standalone-packages/codesandbox-browserfs/build
+      - standalone-packages/vscode-textmate/out
+      - standalone-packages/vscode-textmate/node_modules
 
   - &restore_deps_cache
     keys:
@@ -51,17 +61,18 @@ aliases:
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
-  - &restore_prod_build_cache
-    key: v24-prod-app-build-cache-master
+  - &restore_prod_homepage_cache
+    key: v24-prod-homepage-build-cache-master
 
   - &restore_prod_cache
     key:
       v24-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
 
-  - &save_prod_app_cache
+  # To persist the images built by sharp
+  - &save_prod_homepage_cache
     key:
-      v24-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v24-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/homepage/public
@@ -115,22 +126,32 @@ commands:
       - run:
           name: Build
           command: yarn build:deps
-      - save_cache: *save_repo_cache
+      - persist_to_workspace: *build_deps_paths
   build_prod:
     description: 'Build the Application with `yarn build:prod`'
     steps:
-      - restore_cache: *restore_repo_cache
-      # - restore_cache: *restore_prod_build_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
+      - restore_cache: *restore_prod_homepage_cache
       - run:
           name: Build Application
           command: yarn build:prod
-      - save_cache: *save_prod_app_cache
       - save_cache: *save_prod_cache
+      - run:
+          name: Remove non-images from public
+          command: |
+            find packages/homepage/public -name "*.js" -type f -delete
+            find packages/homepage/public -name "*.json" -type f -delete
+            find packages/homepage/public -name "*.js.map" -type f -delete
+      - save_cache: *save_prod_homepage_cache
   test_integrations:
     description:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -154,7 +175,9 @@ commands:
   test_jest:
     description: 'Test with `yarn test`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
@@ -163,16 +186,20 @@ commands:
   yarn_lint:
     description: 'Lint with `yarn lint`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
       - run:
           name: Lint
           command: yarn lint
   yarn_typecheck:
     description: 'Lint with `yarn typecheck`'
     steps:
-      - restore_cache: *restore_repo_cache
+      - checkout
+      - restore_cache: *restore_deps_cache
+      - attach_workspace: *attach_deps_workspace
       - run:
-          name: Lint
+          name: Typecheck
           command: yarn typecheck
   docker_cache:
     description: 'Cache, Sign In, Create, and Push Docker Image'
