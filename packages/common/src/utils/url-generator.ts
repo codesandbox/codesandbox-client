@@ -109,7 +109,6 @@ export const frameUrl = (
   }
 
   let sHost = host();
-  console.log(sHost);
   if (`https://${sHost}` in sandboxHost && !useFallbackDomain) {
     sHost = sandboxHost[`https://${sHost}`].split('//')[1];
   }

@@ -149,8 +149,6 @@ class BasePreview extends React.Component<Props, State> {
     );
 
     const setFallbackDomain = () => {
-      track(TRACKING_NAME, { needed: true });
-
       this.setState(
         {
           useFallbackDomain: true,
@@ -170,20 +168,16 @@ class BasePreview extends React.Component<Props, State> {
 
     if (!this.props.url && normalUrl !== fallbackUrl) {
       fetch(normalUrl, { mode: 'no-cors' })
-        .then(result => {
-          if (!result.ok) {
-            return false;
-          }
-
+        .then(() => {
+          // Succeeded
           track(TRACKING_NAME, { needed: false });
-          return true;
         })
-        .then(domainWorks => {
-          if (!domainWorks) {
-            setFallbackDomain();
-          }
-        })
-        .catch(setFallbackDomain);
+        .catch(() => {
+          // Failed, use fallback
+          track(TRACKING_NAME, { needed: true });
+
+          setFallbackDomain();
+        });
     }
   };
 
