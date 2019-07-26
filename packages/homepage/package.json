@@ -52,6 +52,7 @@
     "react-text-loop": "^2.0.1",
     "react-transition-group": "^2.2.1",
     "react-typography": "^0.16.13",
+    "slick-carousel": "^1.8.1",
     "styled-components": "^4.2.0",
     "three": "^0.87.1",
     "typography": "^0.16.17",
@@ -71,7 +72,6 @@
     "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "devDependencies": {
-    "babel-plugin-styled-components": "^1.10.6",
     "dotenv": "^6.2.0",
     "rimraf": "^2.6.2",
     "terser": "^3.17.0"
