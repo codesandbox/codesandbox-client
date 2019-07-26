@@ -50,7 +50,7 @@ const WorkspaceItem = ({
         start={{
           height: 0,
         }}
-        show={open}
+        show={hidden.visible}
         duration={250}
         stayMounted={keepState}
       >
