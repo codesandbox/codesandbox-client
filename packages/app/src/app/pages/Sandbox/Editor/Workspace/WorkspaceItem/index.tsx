@@ -35,7 +35,7 @@ const WorkspaceItem = ({
   return (
     <>
       <HideButton {...hidden}>
-        <ItemHeader style={style} onClick={() => setOpen(!open)}>
+        <ItemHeader style={style} onClick={hidden.toggle}>
           <ExpandIconContainer open={open} />
           <Title>{title}</Title>
 
