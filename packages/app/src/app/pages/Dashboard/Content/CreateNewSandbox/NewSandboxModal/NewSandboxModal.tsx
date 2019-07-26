@@ -6,6 +6,7 @@ import { useStore } from 'app/store';
 import { ImportTab } from './ImportTab';
 import { MyTemplates } from './MyTemplates';
 import { MyTemplatesTab } from './MyTemplatesTab';
+import { MyFavoriteTemplatesTab } from './MyFavoriteTemplatesTab';
 import {
   Container,
   InnerContainer,
@@ -39,8 +40,9 @@ export const NewSandboxModal = observer<INewSandboxModalProps>(
           {[
             'Overview',
             user && 'My Templates',
-            'Client Templates',
-            'Container Templates',
+            user && 'Favorites',
+            'Client',
+            'Container',
             'Import',
           ]
             .map((buttonName, index) => ({
@@ -81,7 +83,13 @@ export const NewSandboxModal = observer<INewSandboxModalProps>(
               <MyTemplatesTab selectTemplate={selectTemplate} />
             </Tab>
           )}
-          <Tab visible={selectedTab === 2}>
+
+          {user && (
+            <Tab visible={selectedTab === 2}>
+              <MyFavoriteTemplatesTab selectTemplate={selectTemplate} />
+            </Tab>
+          )}
+          <Tab visible={selectedTab === 3}>
             <Title>Client Templates</Title>
             <Templates>
               {client.map(template => (
@@ -114,7 +122,7 @@ export const NewSandboxModal = observer<INewSandboxModalProps>(
               ))}
             </Templates>
           </Tab>
-          <Tab visible={selectedTab === 3}>
+          <Tab visible={selectedTab === 4}>
             <Title>Container Templates</Title>
             <Templates>
               {container.map(template => (
@@ -127,7 +135,7 @@ export const NewSandboxModal = observer<INewSandboxModalProps>(
               ))}
             </Templates>
           </Tab>
-          <Tab visible={selectedTab === 4}>
+          <Tab visible={selectedTab === 5}>
             <ImportTab username={user ? user.username : undefined} />
           </Tab>
         </InnerContainer>

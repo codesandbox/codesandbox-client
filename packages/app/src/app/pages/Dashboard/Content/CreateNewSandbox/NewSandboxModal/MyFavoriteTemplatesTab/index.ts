@@ -1,0 +1,1 @@
+export { MyFavoriteTemplatesTab } from './MyFavoriteTemplatesTab';

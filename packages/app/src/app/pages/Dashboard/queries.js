@@ -153,6 +153,24 @@ export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export const LIST_FOLLOWED_TEMPLATES = gql`
+  query ListFollowedTemplates($teamId: ID, $showAll: Boolean) {
+    me {
+      followedTemplates(teamId: $teamId, showAll: $showAll) {
+        color
+        iconUrl
+        id
+        published
+        sandbox {
+          ...Sandbox
+        }
+      }
+    }
+  }
+
+  ${SANDBOX_FRAGMENT}
+`;
+
 export const LIST_TEMPLATES = gql`
   query ListTemplates($teamId: ID, $showAll: Boolean) {
     me {
