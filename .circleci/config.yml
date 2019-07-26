@@ -61,7 +61,7 @@ aliases:
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
-  - &restore_prod_build_cache
+  - &restore_prod_homepage_cache
     key: v24-prod-homepage-build-cache-master
 
   - &restore_prod_cache
@@ -75,7 +75,7 @@ aliases:
       v24-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
-      - ./packages/homepage/publlic
+      - ./packages/homepage/public
 
   - &save_prod_cache
     key:
@@ -133,7 +133,7 @@ commands:
       - checkout
       - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
-      - restore_cache: *restore_prod_build_cache
+      - restore_cache: *restore_prod_homepage_cache
       - run:
           name: Build Application
           command: yarn build:prod
