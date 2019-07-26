@@ -64,7 +64,7 @@ aliases:
       v24-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
-      - ./packages/homepage/.cache
+      - ./packages/homepage/public
 
   - &save_prod_cache
     key:
@@ -120,7 +120,7 @@ commands:
     description: 'Build the Application with `yarn build:prod`'
     steps:
       - restore_cache: *restore_repo_cache
-      - restore_cache: *restore_prod_build_cache
+      # - restore_cache: *restore_prod_build_cache
       - run:
           name: Build Application
           command: yarn build:prod
