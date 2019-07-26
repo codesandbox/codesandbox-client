@@ -6,10 +6,10 @@ version: 2.1
 
 aliases:
   - &attach_deps_workspace
-    at: ./
+    at: ~/codesandbox-client
 
   - &build_deps_paths
-    root: ./
+    root: ~/codesandbox-client
     paths:
       - packages/codesandbox-api/dist
       - packages/common/lib
@@ -21,11 +21,6 @@ aliases:
       - standalone-packages/codesandbox-browserfs/dist
       - standalone-packages/codesandbox-browserfs/build
       - standalone-packages/vscode-textmate/out
-
-  - &save_repo_cache
-    key: v24-repo-{{ .Environment.CIRCLE_SHA1 }}
-    paths:
-      - ~/codesandbox-client
 
   - &restore_deps_cache
     keys:
@@ -134,6 +129,7 @@ commands:
     description: 'Build the Application with `yarn build:prod`'
     steps:
       - checkout
+      - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - restore_cache: *restore_prod_build_cache
       - run:
@@ -146,6 +142,7 @@ commands:
       "Test Integrations with `yarn start:test` & 'yarn test:integrations'"
     steps:
       - checkout
+      - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
           name: Start Test Server
@@ -171,6 +168,7 @@ commands:
     description: 'Test with `yarn test`'
     steps:
       - checkout
+      - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
           name: Test
@@ -181,6 +179,7 @@ commands:
     description: 'Lint with `yarn lint`'
     steps:
       - checkout
+      - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
           name: Lint
@@ -189,6 +188,7 @@ commands:
     description: 'Lint with `yarn typecheck`'
     steps:
       - checkout
+      - restore_cache: *restore_deps_cache
       - attach_workspace: *attach_deps_workspace
       - run:
           name: Lint
