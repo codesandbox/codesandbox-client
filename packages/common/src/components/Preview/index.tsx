@@ -161,17 +161,15 @@ class BasePreview extends React.Component<Props, State> {
           ),
         },
         () => {
-          if (this.element) {
-            this.element.src = this.state.urlInAddressBar;
-          }
+          requestAnimationFrame(() => {
+            this.sendUrl();
+          });
         }
       );
     };
 
     if (!this.props.url && normalUrl !== fallbackUrl) {
-      fetch(frameUrl(this.props.sandbox, this.props.initialPath || ''), {
-        mode: 'no-cors',
-      })
+      fetch(normalUrl, { mode: 'no-cors' })
         .then(result => {
           if (!result.ok) {
             return false;
