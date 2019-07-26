@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Animate as ReactShow } from 'react-show';
 import { useHiddenState, Hidden } from 'reakit/Hidden';
 
