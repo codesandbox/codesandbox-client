@@ -30,7 +30,6 @@ const WorkspaceItem = ({
   actions,
   style,
 }: Props) => {
-  const [open, setOpen] = useState(Boolean(defaultOpen));
   const hidden = useHiddenState({ visible: Boolean(defaultOpen) });
 
   return (
