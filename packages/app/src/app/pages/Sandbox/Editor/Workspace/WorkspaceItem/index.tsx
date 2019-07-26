@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Animate as ReactShow } from 'react-show';
 import { useHiddenState, Hidden } from 'reakit/Hidden';
 
@@ -23,19 +23,20 @@ type Props = {
 
 const WorkspaceItem = ({
   children,
-  defaultOpen,
+  defaultOpen = false,
   title,
   keepState,
   disabled,
   actions,
   style,
 }: Props) => {
-  const hidden = useHiddenState({ visible: Boolean(defaultOpen) });
+  const [open, setOpen] = useState(defaultOpen);
+  const hidden = useHiddenState({ visible: defaultOpen });
 
   return (
     <>
       <HideButton {...hidden}>
-        <ItemHeader style={style} onClick={hidden.toggle}>
+        <ItemHeader style={style} onClick={() => setOpen(!open)}>
           <ExpandIconContainer open={open} />
           <Title>{title}</Title>
 
@@ -50,7 +51,7 @@ const WorkspaceItem = ({
         start={{
           height: 0,
         }}
-        show={hidden.visible}
+        show={open}
         duration={250}
         stayMounted={keepState}
       >
