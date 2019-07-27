@@ -1,99 +1,22 @@
 import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
-import { MultiAction } from '@codesandbox/common/lib/components/MultiAction';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import Checked from 'react-icons/lib/md/check-box';
-import Unchecked from 'react-icons/lib/md/check-box-outline-blank';
-import { SignInButton } from 'app/pages/common/SignInButton';
-import { Dependencies } from '../../Dependencies';
+import { Dependencies} from '../../Dependencies';
 import Files from '../../Files';
 import { Project } from '../../Project';
+import { FollowTemplateButton } from '../../Project/FollowTemplateButton';
 import { WorkspaceItem } from '../../WorkspaceItem';
-import { ButtonContainer, ButtonIcon } from './elements';
-// @ts-ignore
-import { followTemplate } from './mutations.gql';
-// @ts-ignore
-import { getSandboxInfo } from './queries.gql';
 
 export const NotOwnedSandboxInfo = () => {
-  const [editActions, setEditActions] = useState(null); // eslint-disable-line
-
+  const [editActions, setEditActions] = useState(null);
   const {
-    state: {
-      isLoggedIn,
-      editor: {
-        currentId: sandboxId,
-        currentSandbox: { customTemplate, template },
-      },
-    },
+    state: { editor },
   } = useOvermind();
-  const staticTemplate = template === 'static';
-  const [toggleFollow, { error, data: result }] = useMutation<any, any>( // eslint-disable-line
-    followTemplate,
-    {
-      variables: { template: customTemplate.id },
-    }
-  );
-  const { loading, data } = useQuery(getSandboxInfo, {
-    variables: { id: sandboxId || `` },
-  });
-  const entities =
-    (data &&
-      data.sandbox &&
-      data.sandbox.customTemplate &&
-      data.sandbox.customTemplate.following) ||
-    [];
-  const isFollowing = (i: number) =>
-    (entities[i] && entities[i].isFollowing) || false;
-  const isOwner = (i: number) =>
-    (entities[i] && entities[i].isFollowing) || false;
+  const staticTemplate = editor.currentSandbox.template === 'static';
 
-  const handleToggleFollow = (team?: string) => {
-    if (team) {
-      toggleFollow({ variables: { team } });
-    } else {
-      toggleFollow();
-    }
-  };
   return (
     <div style={{ marginTop: '1rem' }}>
       <Project />
-      {customTemplate && (
-        <ButtonContainer>
-          {!isLoggedIn ? (
-            <>
-              You need to be signed in to follow templates.
-              <SignInButton block />
-            </>
-          ) : (
-            <MultiAction
-              block
-              small
-              disabled={loading}
-              onPrimaryClick={() => handleToggleFollow()}
-              primaryActionLabel={
-                isFollowing(0) ? `Unfollow Template` : `Follow Template`
-              }
-            >
-              {entities.map(({ entity: { id, name } }, i: number) => (
-                <button
-                type="button"
-                  key={name}
-                  disabled={loading}
-                  onClick={() => handleToggleFollow(id)}
-                >
-                  <ButtonIcon>
-                    {isFollowing(i) ? <Checked /> : <Unchecked />}
-                  </ButtonIcon>
-                  {`${
-                    isFollowing(i) ? `Remove from` : `Add to`
-                  } ${name} followed templates.`}
-                </button>
-              ))}
-            </MultiAction>
-          )}
-        </ButtonContainer>
-      )}
+      <FollowTemplateButton />
       <WorkspaceItem
         actions={editActions}
         defaultOpen

@@ -325,7 +325,6 @@
     "vue-template-compiler": "^2.6.10",
     "vue-template-es2015-compiler": "^1.9.1",
     "xterm": "3.7.0"
-<<<<<<< HEAD
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -442,7 +441,5 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
     "flow-bin": "^0.57.3"
-=======
->>>>>>> ⚡️ Add Mutation, Add --staging Build Flag,
   }
 }

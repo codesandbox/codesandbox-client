@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Button, IButtonProps } from '../Button';
 import { Wrapper, Loader } from './elements';
 
