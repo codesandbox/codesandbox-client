@@ -36,7 +36,7 @@
     "ot": "^0.0.15",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
-    "react-router-dom": "^4.3.1",
+    "react-router-dom": "^5.0.1",
     "react-spring": "^8.0.25",
     "react-textarea-autosize": "^6.1.0",
     "semver": "^5.6.0",

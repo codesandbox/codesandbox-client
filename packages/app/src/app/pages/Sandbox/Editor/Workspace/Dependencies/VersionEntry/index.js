@@ -142,15 +142,14 @@ export default class VersionEntry extends React.PureComponent {
           </Link>
           <VersionSelect
             hovering={hovering}
+            defaultValue={versions.find(v => v === dependencies[dependency])}
             onChange={e => {
               this.props.onRefresh(dependency, e.target.value);
               this.setState({ hovering: false });
             }}
           >
             {versions.map(a => (
-              <option key={a} selected={a === dependencies[dependency]}>
-                {a}
-              </option>
+              <option key={a}>{a}</option>
             ))}
           </VersionSelect>
           <Version withSize={!!size.size} hovering={hovering}>
