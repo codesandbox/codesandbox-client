@@ -26,7 +26,7 @@ export default class EntryTitleInput extends React.PureComponent {
 
   handleKeyUp = (e: KeyboardEvent) => {
     if (e.keyCode === ENTER) {
-      this.props.onCommit(this.state.currentValue);
+      this.props.onCommit(this.state.currentValue.trim());
     } else if (e.keyCode === ESC) {
       this.props.onCancel();
     }
