@@ -1,6 +1,6 @@
 ---
 featuredImage: ./images/banner.png
-slug: codesadbox-introducing-improved-crash-reporting
+slug: CodeSadbox
 authors: ['Drake Costa']
 photo: https://avatars0.githubusercontent.com/u/3144549?s=460&v=4
 title: CodeSadbox - Introducing improved Crash Reporting!
@@ -44,10 +44,10 @@ elusive little box! We're excited to see what sort of bugs you can find!
 #### Custom Template icons
 
 We've actually got a few other goodies to share this week! In our recent release
-of [Templates](/post/announcing-codesandbox-custom-templates), you may have
-noticed that there was something missing: the ability to add an icon to your new
-custom template. Well now we've got a sweet new icon picker that you can access
-in your Template configuration inside of the _Project Info_ panel:
+of [Templates](/post/Templates), you may have noticed that there was something
+missing: the ability to add an icon to your new custom template. Well now we've
+got a sweet new icon picker that you can access in your Template configuration
+inside of the _Project Info_ panel:
 
 ![Custom Template icons](./images/03_Template_Icons.gif)
 
