@@ -55,10 +55,14 @@ export async function deployToNetlify({ http, props, state }) {
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
   const template = getTemplate(sandbox.template);
   const buildCommand = name => {
-    if (name === 'styleguidist') return 'styleguide:build';
-    if (name === 'nuxt') return 'generate';
-
-    return 'build';
+    switch (name) {
+      case 'styleguidist':
+        return 'styleguide:build';
+      case 'nuxt':
+        return 'generate';
+      default:
+        return 'build';
+    }
   };
 
   const buildConfig = getNetlifyConfig(sandbox);
