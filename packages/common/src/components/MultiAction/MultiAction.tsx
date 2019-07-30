@@ -40,6 +40,8 @@ export const MultiAction: React.FC<IMultiActionProps> = ({
   const buttonProps = { small, block, disabled, secondary, red, danger };
   return (
     <Container>
+      {/*
+        // @ts-ignore */}
       <PrimaryAction onClick={onPrimaryClick} {...buttonProps}>
         {Icon && (
           <ButtonIcon>

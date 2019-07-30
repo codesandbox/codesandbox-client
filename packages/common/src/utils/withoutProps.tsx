@@ -1,5 +1,5 @@
 // Based on https://github.com/styled-components/styled-components/pull/2093#issuecomment-461510706
-import { createElement } from 'react';
+import React from 'react';
 
 export const withoutProps = (...omitProps: string[]) => {
   const omitSingle = (object = {}, key: string) => {
@@ -21,14 +21,17 @@ export const withoutProps = (...omitProps: string[]) => {
     return omitSingle(object, keys);
   };
 
-  return (Component: React.ComponentClass | React.FC) => {
-    const ComponentWithoutProps = ({ children, ...props }) =>
-      createElement(Component, omit(props, omitProps), children);
+  return (Component: React.RefForwardingComponent<any, any>) => {
+    const componentWithoutProps = React.forwardRef((props, ref) => (
+      <Component ref={ref} {...omit(props, omitProps)} />
+    ));
+
     if (Component.displayName) {
-      ComponentWithoutProps.displayName = `${
+      componentWithoutProps.displayName = `${
         Component.displayName
       }WithoutProps`;
     }
-    return ComponentWithoutProps;
+
+    return componentWithoutProps;
   };
 };
