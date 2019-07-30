@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
+import { useQuery } from '@apollo/react-hooks';
 import { MultiAction } from '@codesandbox/common/lib/components/MultiAction';
 import { Dependencies } from '../../Dependencies';
 import Files from '../../Files';
 import { Project } from '../../Project';
 import { WorkspaceItem } from '../../WorkspaceItem';
 import { ButtonContainer } from './elements';
+import { getSandboxInfo } from './query.gql';
 
 export const NotOwnedSandboxInfo = () => {
-  const [editActions, setEditActions] = useState(null);
+  const [editActions, setEditActions] = useState(null); // eslint-disable-line
+
   const {
     state: { editor },
   } = useOvermind();
   const staticTemplate = editor.currentSandbox.template === 'static';
+  const id = (editor && editor.currentId) || ``;
+  const { data } = useQuery(getSandboxInfo, { variables: { id } });
 
   return (
     <div style={{ marginTop: '1rem' }}>
