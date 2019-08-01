@@ -28,6 +28,10 @@ const addModifier = (fn: Function, method: string, ...modifierArgs: any[]) => (
   Color(fn(...args))
     [method](...modifierArgs)
     .rgbString();
+/* new syntax in color@latest, replace with:
+ * .rgb()
+ * .string()
+ */
 /**
  * Add useful methods directly to selector function, as well as put an rgbString() call at the end
  * @param selector

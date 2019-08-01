@@ -38,6 +38,8 @@ export const MultiAction: React.FC<IMultiActionProps> = ({
 }) => {
   const menu = useMenuState();
   const buttonProps = { small, block, disabled, secondary, red, danger };
+  const toggleProps = { small, block, secondary, red, danger };
+
   return (
     <Container>
       {/*
@@ -50,22 +52,22 @@ export const MultiAction: React.FC<IMultiActionProps> = ({
         )}
         {primaryActionLabel}
       </PrimaryAction>
-      <ToggleActionsList {...menu} {...buttonProps}>
+      <ToggleActionsList {...menu} {...toggleProps}>
         {menu.visible ? <GoChevronUp /> : <GoChevronDown />}
       </ToggleActionsList>
       <ActionsList {...menu} aria-label="Additional Options">
-        {children && children.length ? (
-          /* eslint-disable react/no-array-index-key */
-          children.map((child, i) => (
-            <SecondaryAction key={i} {...menu}>
-              {itemProps => cloneElement(Children.only(child), itemProps)}
-            </SecondaryAction>
-          ))
-        ) : (
-          <SecondaryAction {...menu}>
-            {itemProps => cloneElement(Children.only(children), itemProps)}
-          </SecondaryAction>
-        )}
+        {children && children.length
+          ? /* eslint-disable react/no-array-index-key */
+            children.map((child, i) => (
+              <SecondaryAction key={i} {...menu}>
+                {itemProps => cloneElement(Children.only(child), itemProps)}
+              </SecondaryAction>
+            ))
+          : !Array.isArray(children) && (
+              <SecondaryAction {...menu}>
+                {itemProps => cloneElement(Children.only(children), itemProps)}
+              </SecondaryAction>
+            )}
       </ActionsList>
     </Container>
   );
