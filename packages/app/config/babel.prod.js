@@ -33,6 +33,7 @@ module.exports = {
     require.resolve('babel-plugin-styled-components'),
     require.resolve('babel-plugin-macros'),
     require.resolve('babel-plugin-graphql-tag'),
+    require.resolve('@babel/plugin-transform-react-display-name'),
     // Optimization: hoist JSX that never changes out of render()
     // Disabled because of issues:
     // * https://github.com/facebookincubator/create-react-app/issues/525

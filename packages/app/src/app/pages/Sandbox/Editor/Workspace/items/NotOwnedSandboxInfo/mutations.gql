@@ -1,0 +1,19 @@
+mutation followTemplate($template: ID!, $team: ID) {
+  followTemplate(templateId: $template, teamId: $team) {
+    id
+    following {
+      isFollowing
+      entity {
+        __typename
+        ... on User {
+          id
+          name: username
+        }
+        ... on Team {
+          id
+          name
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,10 @@
 query getSandboxInfo($id: ID!) {
   sandbox(sandboxId: $id) {
     id
+    author {
+      id
+      name: username
+    }
     customTemplate {
       id
       following {
@@ -9,6 +13,7 @@ query getSandboxInfo($id: ID!) {
           __typename
           ... on User {
             id
+            name: username
           }
 
           ... on Team {
