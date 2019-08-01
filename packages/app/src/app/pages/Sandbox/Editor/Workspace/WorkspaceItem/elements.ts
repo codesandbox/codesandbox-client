@@ -78,4 +78,5 @@ export const HideButton = styled(HiddenDisclosure)`
   border: none;
   padding: 0;
   appearance: none;
+  width: 100%;
 `;
