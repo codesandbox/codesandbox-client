@@ -11,6 +11,9 @@ import {
   PickedSandboxes,
   UploadedFilesInfo,
   Directory,
+  GitInfo,
+  GitCommit,
+  GitPr,
 } from '@codesandbox/common/lib/types';
 import { TemplateType } from '@codesandbox/common/lib/templates';
 
@@ -229,6 +232,25 @@ export default {
       directoryShortid,
       modules,
       directories,
+    });
+  },
+  createGit(
+    sandboxId: string,
+    repoTitle: string,
+    data: object
+  ): Promise<GitInfo> {
+    return api.post(`/sandboxes/${sandboxId}/git/repo/${repoTitle}`, data);
+  },
+  createGitCommit(sandboxId: string, message: string): Promise<GitCommit> {
+    return api.post(`/sandboxes/${sandboxId}/git/commit`, {
+      id: sandboxId,
+      message,
+    });
+  },
+  createGitPr(sandboxId: string, message: string): Promise<GitPr> {
+    return api.post(`/sandboxes/${sandboxId}/git/pr`, {
+      id: sandboxId,
+      message,
     });
   },
 };

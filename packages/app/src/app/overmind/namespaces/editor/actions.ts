@@ -187,7 +187,7 @@ export const saveClicked: AsyncAction = async ({ state, effects, actions }) => {
       state.editor.currentSandbox.originalGit &&
       state.workspace.openedWorkspaceItem === 'github'
     ) {
-      actions.git.internal.fetchGitChanges();
+      actions.git.fetchGitChanges();
     }
   } catch (error) {
     // Put back any unsaved modules taking into account that you

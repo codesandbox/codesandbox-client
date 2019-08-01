@@ -586,3 +586,9 @@ export type UploadedFilesInfo = {
   maxSize: number;
   currentSize: number;
 };
+
+export type SandboxUrlSourceData = {
+  id?: string;
+  alias?: string;
+  git?: GitInfo;
+};
