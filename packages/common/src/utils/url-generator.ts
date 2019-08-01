@@ -100,9 +100,9 @@ export const frameUrl = (
 ) => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
-  // if (process.env.LOCAL_SERVER) {
-  //   return `http://localhost:3002/${path}`;
-  // }
+  if (process.env.LOCAL_SERVER) {
+    return `http://localhost:3002/${path}`;
+  }
 
   if (process.env.STAGING) {
     return stagingFrameUrl(sandbox.id, path);
