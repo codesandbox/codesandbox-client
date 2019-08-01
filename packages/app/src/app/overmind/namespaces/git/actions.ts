@@ -37,7 +37,7 @@ export const createRepoClicked: AsyncAction = async ({ state, effects }) => {
   git.commitSha = null;
   state.git.isExported = true;
   state.currentModal = null;
-  effects.router.updateSandboxUrl({ git });
+  effects.router.updateSandboxUrlByGit(git);
 };
 
 // gitMounted
@@ -115,5 +115,5 @@ export const createPrClicked: AsyncAction = async ({ state, effects }) => {
   state.git.description = '';
   state.git.originalGitChanges = null;
 
-  effects.router.updateSandboxUrl({ git: pr.git });
+  effects.router.updateSandboxUrlByGit(pr.git);
 };
