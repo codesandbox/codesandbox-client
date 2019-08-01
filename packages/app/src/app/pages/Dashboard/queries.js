@@ -154,9 +154,21 @@ export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
 `;
 
 export const LIST_FOLLOWED_TEMPLATES = gql`
-  query ListFollowedTemplates($teamId: ID, $showAll: Boolean) {
+  query ListFollowedTemplates {
     me {
-      followedTemplates(teamId: $teamId, showAll: $showAll) {
+      teams {
+        name
+        followedTemplates {
+          color
+          iconUrl
+          id
+          published
+          sandbox {
+            ...Sandbox
+          }
+        }
+      }
+      followedTemplates {
         color
         iconUrl
         id
