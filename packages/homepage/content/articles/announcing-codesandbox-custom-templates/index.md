@@ -1,6 +1,6 @@
 ---
 featuredImage: ./images/banner.png
-slug: announcing-codesandbox-custom-templates
+slug: Templates
 authors: ['Drake Costa']
 photo: https://avatars0.githubusercontent.com/u/3144549?s=460&v=4
 title: Announcing CodeSandbox Custom Templates
