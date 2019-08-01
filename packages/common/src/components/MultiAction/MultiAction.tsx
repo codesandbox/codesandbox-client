@@ -1,28 +1,28 @@
-import React, { memo, cloneElement, Children } from 'react'
-import GoChevronDown from 'react-icons/lib/go/chevron-down'
-import GoChevronUp from 'react-icons/lib/go/chevron-up'
-import { useMenuState } from 'reakit/Menu'
-import { ButtonIcon } from '../Button'
+import React, { memo, cloneElement, Children } from 'react';
+import GoChevronDown from 'react-icons/lib/go/chevron-down';
+import GoChevronUp from 'react-icons/lib/go/chevron-up';
+import { useMenuState } from 'reakit/Menu';
+import { ButtonIcon } from '../Button';
 import {
   Container,
   PrimaryAction,
   ToggleActionsList,
   ActionsList,
   SecondaryAction,
-} from './elements'
+} from './elements';
 
 interface IMultiActionProps {
-  Icon?: any
-  primaryActionLabel: string
-  onPrimaryClick?: (event: React.MouseEvent) => void
-  disablePrimary?: boolean
-  small?: boolean
-  block?: boolean
-  disabled?: boolean
-  secondary?: boolean
-  red?: boolean
-  danger?: boolean
-  children: React.ReactElement
+  Icon?: any;
+  primaryActionLabel: string;
+  onPrimaryClick?: (event: React.MouseEvent) => void;
+  disablePrimary?: boolean;
+  small?: boolean;
+  block?: boolean;
+  disabled?: boolean;
+  secondary?: boolean;
+  red?: boolean;
+  danger?: boolean;
+  children: React.ReactElement;
 }
 
 export const MultiAction: React.FC<IMultiActionProps> = memo(
@@ -39,8 +39,8 @@ export const MultiAction: React.FC<IMultiActionProps> = memo(
     danger = false,
     children,
   }) => {
-    const menu = useMenuState()
-    const buttonProps = { small, block, disabled, secondary, red, danger }
+    const menu = useMenuState();
+    const buttonProps = { small, block, disabled, secondary, red, danger };
 
     return (
       <Container>
@@ -81,6 +81,6 @@ export const MultiAction: React.FC<IMultiActionProps> = memo(
               )}
         </ActionsList>
       </Container>
-    )
+    );
   }
-)
+);
