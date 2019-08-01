@@ -15,6 +15,7 @@ interface IMultiActionProps {
   Icon?: any;
   primaryActionLabel: string;
   onPrimaryClick?: (event: React.MouseEvent) => void;
+  disablePrimary?: boolean;
   small?: boolean;
   block?: boolean;
   disabled?: boolean;
@@ -25,26 +26,30 @@ interface IMultiActionProps {
 }
 
 export const MultiAction: React.FC<IMultiActionProps> = ({
-  onPrimaryClick,
   Icon,
   primaryActionLabel,
-  small,
-  block,
-  disabled,
-  secondary,
-  red,
-  danger,
+  onPrimaryClick,
+  disablePrimary = false,
+  small = false,
+  block = false,
+  disabled = false,
+  secondary = false,
+  red = false,
+  danger = false,
   children,
 }) => {
   const menu = useMenuState();
   const buttonProps = { small, block, disabled, secondary, red, danger };
-  const toggleProps = { small, block, secondary, red, danger };
 
   return (
     <Container>
       {/*
         // @ts-ignore */}
-      <PrimaryAction onClick={onPrimaryClick} {...buttonProps}>
+      <PrimaryAction
+        onClick={onPrimaryClick}
+        {...buttonProps}
+        disabled={disablePrimary || disabled}
+      >
         {Icon && (
           <ButtonIcon>
             <Icon />
@@ -52,7 +57,7 @@ export const MultiAction: React.FC<IMultiActionProps> = ({
         )}
         {primaryActionLabel}
       </PrimaryAction>
-      <ToggleActionsList {...menu} {...toggleProps}>
+      <ToggleActionsList {...menu} {...buttonProps}>
         {menu.visible ? <GoChevronUp /> : <GoChevronDown />}
       </ToggleActionsList>
       <ActionsList {...menu} aria-label="Additional Options">
