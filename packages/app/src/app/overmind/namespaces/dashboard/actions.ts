@@ -52,6 +52,4 @@ export const searchChanged: Action<string> = ({ state }, search) => {
 };
 
 export const createSandboxClicked: AsyncAction<string> = ({ actions }, id) =>
-  actions.internal.forkSandbox({
-    id,
-  });
+  actions.editor.internal.forkSandbox(id);

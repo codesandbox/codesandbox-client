@@ -580,3 +580,9 @@ export type EnvironmentVariable = {
   name: string;
   value: any;
 };
+
+export type UploadedFilesInfo = {
+  uploads: UploadFile[];
+  maxSize: number;
+  currentSize: number;
+};

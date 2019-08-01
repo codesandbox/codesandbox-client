@@ -1,20 +1,17 @@
 import { AsyncAction, Action } from 'app/overmind';
-import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { Pick, PickedSandboxes } from '@codesandbox/common/lib/types';
 
 export const mountPopularSandboxes: AsyncAction<string> = async (
   { state, effects },
   date
 ) => {
   try {
-    state.explore.popularSandboxes = await effects.api.get(
-      `/sandboxes/popular?start_date=${date}`
+    state.explore.popularSandboxes = await effects.api.getPopularSandboxes(
+      date
     );
   } catch (error) {
-    effects.notificationToast.add({
-      message: 'There has been a problem getting the sandboxes',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'There has been a problem getting the sandboxes'
+    );
   }
 };
 
@@ -24,31 +21,25 @@ export const pickSandbox: AsyncAction<{
   description: string;
 }> = async ({ state, effects }, { id, title, description }) => {
   try {
-    const data = await effects.api.post<Pick>(`/sandboxes/${id}/pick`, {
-      title,
-      description,
-    });
-    const index = state.explore.popularSandboxes.sandboxes.findIndex(
+    const data = await effects.api.saveSandboxPick(id, title, description);
+    const popularSandbox = state.explore.popularSandboxes.sandboxes.find(
       module => module.id === id
     );
 
-    state.explore.popularSandboxes.sandboxes[index].picks = [
+    popularSandbox.picks = [
       {
         ...data,
+        // Why are we doing this?
         id: Math.random().toString(),
       },
     ];
 
-    effects.notificationToast.add({
-      message: 'Sandbox picked',
-      status: NotificationStatus.SUCCESS,
-    });
+    effects.notificationToast.success('Sandbox picked');
     state.currentModal = null;
   } catch (error) {
-    effects.notificationToast.add({
-      message: 'There has been a problem picking the sandbox',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'There has been a problem picking the sandbox'
+    );
   }
 };
 
@@ -62,12 +53,11 @@ export const getSandbox: AsyncAction<string> = async (
   id
 ) => {
   try {
-    state.explore.selectedSandbox = await effects.api.get(`/sandboxes/${id}`);
+    state.explore.selectedSandbox = await effects.api.getSandbox(id);
   } catch (error) {
-    effects.notificationToast.add({
-      message: 'There has been a problem getting the sandbox',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'There has been a problem getting the sandbox'
+    );
   }
 };
 
@@ -78,20 +68,16 @@ export const pickedSandboxesMounted: AsyncAction = async ({
   state.explore.pickedSandboxesLoading = true;
 
   try {
-    const pickedSandboxes = await effects.api.get<PickedSandboxes>(
-      `/sandboxes/picked`
+    const pickedSandboxes = await effects.api.getPickedSandboxes();
+
+    state.explore.pickedSandboxesIndexes = pickedSandboxes.sandboxes.map(
+      a => a.id
     );
-
-    const indexes = pickedSandboxes.sandboxes.map(a => a.id);
-
-    state.explore.pickedSandboxesIndexes = indexes;
-
     state.explore.pickedSandboxes = pickedSandboxes;
   } catch (error) {
-    effects.notificationToast.add({
-      message: 'There has been a problem getting the sandboxes',
-      status: NotificationStatus.ERROR,
-    });
+    effects.notificationToast.error(
+      'There has been a problem getting the sandboxes'
+    );
   }
-  state.explore.pickedSandboxesLoading = true;
+  state.explore.pickedSandboxesLoading = false;
 };

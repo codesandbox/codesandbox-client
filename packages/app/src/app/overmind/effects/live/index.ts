@@ -3,7 +3,7 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import uuid from 'uuid';
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
-import { Module } from '@codesandbox/common/lib/types';
+import { Module, Directory } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
 
@@ -161,6 +161,41 @@ export default {
   sendUserCurrentModule(moduleShortid: string) {
     this.send('user:current-module', {
       moduleShortid,
+    });
+  },
+  sendDirectoryCreated(directoryShortid: string) {
+    this.send('directory:created', {
+      type: 'directory',
+      directoryShortid,
+    });
+  },
+  sendDirectoryDeleted(directoryShortid: string) {
+    this.send(
+      'directory:deleted',
+      {
+        type: 'directory',
+        directoryShortid,
+      }
+      // When should we send module? Should we pass it when we should send it? Probably yeah
+      // { sendModule: false }
+    );
+  },
+  sendModuleCreated(moduleShortid: string) {
+    this.send('module:created', {
+      type: 'module',
+      moduleShortid,
+    });
+  },
+  sendModuleDeleted(moduleShortid: string) {
+    this.send('module:deleted', {
+      type: 'module',
+      moduleShortid,
+    });
+  },
+  sendMassCreatedModules(modules: Module[], directories: Directory[]) {
+    this.send('module:mass-created', {
+      directories,
+      modules,
     });
   },
 };

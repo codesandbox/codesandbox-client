@@ -509,10 +509,11 @@ export const previewActionReceived: Action<any> = (
       );
 
       if (module) {
-        actions.editor.renameModule({
-          moduleShortid: module.shortid,
-          title: action.title,
-        });
+        const sandboxModule = sandbox.modules.find(
+          moduleEntry => moduleEntry.shortid === module.shortid
+        );
+
+        sandboxModule.title = action.title;
       }
       break;
     case 'source.dependencies.add':
@@ -531,10 +532,13 @@ export const renameModule: AsyncAction<{
 }> = async ({ state, effects, actions }, { title, moduleShortid }) => {
   await actions.editor.internal.ensureSandboxIsOwned();
 
-  const oldTitle = actions.files.internal.renameModule({
-    title,
-    moduleShortid,
-  });
+  const sandbox = state.editor.currentSandbox;
+  const module = sandbox.modules.find(
+    module => module.shortid === moduleShortid
+  );
+  const oldTitle = module.title;
+
+  module.title = title;
 
   try {
     await effects.api.saveModuleTitle(
@@ -543,12 +547,11 @@ export const renameModule: AsyncAction<{
       title
     );
 
-    effects.live.sendModuleUpdate(moduleShortid);
+    if (state.live.isCurrentEditor) {
+      effects.live.sendModuleUpdate(moduleShortid);
+    }
   } catch (error) {
-    actions.files.internal.renameModule({
-      title: oldTitle,
-      moduleShortid,
-    });
+    module.title = oldTitle;
     effects.notificationToast.error('Could not rename file');
   }
 };

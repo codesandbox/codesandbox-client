@@ -6,6 +6,11 @@ import {
   Module,
   GitChanges,
   EnvironmentVariable,
+  PopularSandboxes,
+  SandboxPick,
+  PickedSandboxes,
+  UploadedFilesInfo,
+  Directory,
 } from '@codesandbox/common/lib/types';
 import { TemplateType } from '@codesandbox/common/lib/templates';
 
@@ -46,8 +51,8 @@ export default {
 
     return api.post(url, {});
   },
-  createModule(id: string, module: Module): Promise<Module> {
-    return api.post(`/sandboxes/${id}/modules`, {
+  createModule(sandboxId: string, module: Module): Promise<Module> {
+    return api.post(`/sandboxes/${sandboxId}/modules`, {
       module: {
         title: module.title,
         directoryShortid: module.directoryShortid,
@@ -56,61 +61,68 @@ export default {
       },
     });
   },
-  saveModuleCode(id: string, module: Module): Promise<Module> {
-    return api.put(`/sandboxes/${id}/modules/${module.shortid}`, {
+  deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
+    return api.delete(`/sandboxes/${sandboxId}/modules/${moduleShortid}`);
+  },
+  saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
+    return api.put(`/sandboxes/${sandboxId}/modules/${module.shortid}`, {
       module: { code: module.code },
     });
   },
-  saveModules(id: string, modules: Module[]) {
-    return api.put(`/sandboxes/${id}/modules/mupdate`, {
+  saveModules(sandboxId: string, modules: Module[]) {
+    return api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
       modules,
     });
   },
-  getGitChanges(id: string): Promise<GitChanges> {
-    return api.get(`/sandboxes/${id}/git/diff`);
+  getGitChanges(sandboxId: string): Promise<GitChanges> {
+    return api.get(`/sandboxes/${sandboxId}/git/diff`);
   },
-  saveTemplate(id: string, template: TemplateType): Promise<void> {
-    return api.put(`/sandboxes/${id}/`, {
+  saveTemplate(sandboxId: string, template: TemplateType): Promise<void> {
+    return api.put(`/sandboxes/${sandboxId}/`, {
       sandbox: { template },
     });
   },
-  unlikeSandbox(id: string) {
+  unlikeSandbox(sandboxId: string) {
     return api.request({
       method: 'DELETE',
-      url: `/sandboxes/${id}/likes`,
+      url: `/sandboxes/${sandboxId}/likes`,
       data: {
-        id: id,
+        id: sandboxId,
       },
     });
   },
-  likeSandbox(id: string) {
-    return api.post(`/sandboxes/${id}/likes`, {
-      id,
+  likeSandbox(sandboxId: string) {
+    return api.post(`/sandboxes/${sandboxId}/likes`, {
+      id: sandboxId,
     });
   },
-  savePrivacy(id: string, privacy: 0 | 1 | 2) {
-    return api.patch(`/sandboxes/${id}/privacy`, {
+  savePrivacy(sandboxId: string, privacy: 0 | 1 | 2) {
+    return api.patch(`/sandboxes/${sandboxId}/privacy`, {
       sandbox: {
         privacy: privacy,
       },
     });
   },
-  saveFrozen(id: string, isFrozen: boolean) {
-    return api.put(`/sandboxes/${id}`, {
+  saveFrozen(sandboxId: string, isFrozen: boolean) {
+    return api.put(`/sandboxes/${sandboxId}`, {
       sandbox: {
         is_frozen: isFrozen,
       },
     });
   },
-  getEnvironmentVariables(id: string): Promise<EnvironmentVariable[]> {
-    return api.get(`/sandboxes/${id}/env`, {}, { shouldCamelize: false });
+  getEnvironmentVariables(sandboxId: string): Promise<EnvironmentVariable[]> {
+    return api.get(
+      `/sandboxes/${sandboxId}/env`,
+      {},
+      { shouldCamelize: false }
+    );
   },
   saveEnvironmentVariable(
-    id: string,
+    sandboxId: string,
     environmentVariable: EnvironmentVariable
   ): Promise<EnvironmentVariable[]> {
     return api.post(
-      `/sandboxes/${id}/env`,
+      `/sandboxes/${sandboxId}/env`,
       {
         environment_variable: environmentVariable,
       },
@@ -120,18 +132,103 @@ export default {
     );
   },
   deleteEnvironmentVariable(
-    id: string,
+    sandboxId: string,
     name: string
   ): Promise<EnvironmentVariable[]> {
     return api.delete(
-      `/sandboxes/${id}/env/${name}`,
+      `/sandboxes/${sandboxId}/env/${name}`,
       {},
       { shouldCamelize: false }
     );
   },
-  saveModuleTitle(id: string, moduleShortid: string, title: string) {
-    return api.put(`/sandboxes/${id}/modules/${moduleShortid}`, {
+  saveModuleTitle(sandboxId: string, moduleShortid: string, title: string) {
+    return api.put(`/sandboxes/${sandboxId}/modules/${moduleShortid}`, {
       module: { title },
+    });
+  },
+  getPopularSandboxes(date: string): Promise<PopularSandboxes> {
+    return api.get(`/sandboxes/popular?start_date=${date}`);
+  },
+  saveSandboxPick(
+    sandboxId: string,
+    title: string,
+    description: string
+  ): Promise<SandboxPick> {
+    return api.post(`/sandboxes/${sandboxId}/pick`, {
+      title,
+      description,
+    });
+  },
+  getPickedSandboxes(): Promise<PickedSandboxes> {
+    return api.get(`/sandboxes/picked`);
+  },
+  createDirectory(sandboxId: string, title: string): Promise<Directory> {
+    return api.post(`/sandboxes/${sandboxId}/directories`, {
+      directory: {
+        title: title,
+      },
+    });
+  },
+  saveModuleDirectory(
+    sandboxId: string,
+    moduleShortid: string,
+    directoryShortid: string
+  ) {
+    return api.put(`/sandboxes/${sandboxId}/modules/${moduleShortid}`, {
+      module: { directoryShortid },
+    });
+  },
+  saveDirectoryDirectory(
+    sandboxId: string,
+    sourceDirectoryShortid: string,
+    targetDirectoryShortId: string
+  ) {
+    return api.put(
+      `/sandboxes/${sandboxId}/directories/${sourceDirectoryShortid}`,
+      {
+        directory: { directoryShortid: targetDirectoryShortId },
+      }
+    );
+  },
+  deleteDirectory(sandboxId: string, directoryShortid: string) {
+    return api.delete(
+      `/sandboxes/${sandboxId}/directories/${directoryShortid}`
+    );
+  },
+  saveDirectoryTitle(
+    sandboxId: string,
+    directoryShortid: string,
+    title: string
+  ) {
+    return api.put(`/sandboxes/${sandboxId}/directories/${directoryShortid}`, {
+      directory: { title },
+    });
+  },
+  getUploads(): Promise<UploadedFilesInfo> {
+    return api.get('/users/current_user/uploads');
+  },
+  deleteUploadedFile(uploadId: string): Promise<void> {
+    return api.delete(`/users/current_user/uploads/${uploadId}`);
+  },
+  createUpload(name: string, content: string): Promise<{ url: string }> {
+    return api.post('/users/current_user/uploads', {
+      content,
+      name,
+    });
+  },
+  massCreateModules(
+    sandboxId: string,
+    directoryShortid: string,
+    modules: Module[],
+    directories: Directory[]
+  ): Promise<{
+    modules: Module[];
+    directories: Directory[];
+  }> {
+    return api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
+      directoryShortid,
+      modules,
+      directories,
     });
   },
 };
