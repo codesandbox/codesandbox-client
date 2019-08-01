@@ -24,7 +24,7 @@ const debug = _debug('cs:socket');
 
 let channel = null;
 let messageIndex = 0;
-let clients;
+let clients: ReturnType<typeof clientsFactory>;
 let _socket: Socket = null;
 let provideJwtToken = null;
 
@@ -197,5 +197,59 @@ export default {
       directories,
       modules,
     });
+  },
+  sendLiveMode(mode: string) {
+    this.send('live:mode', {
+      mode,
+    });
+  },
+  sendEditorAdded(liveUserId: string) {
+    this.send('live:add-editor', {
+      editor_user_id: liveUserId,
+    });
+  },
+  sendEditorRemoved(liveUserId: string) {
+    this.send('live:remove-editor', {
+      editor_user_id: liveUserId,
+    });
+  },
+  sendClosed() {
+    this.send('live:close', {});
+  },
+  sendChat(message: string) {
+    this.send('chat', {
+      message,
+    });
+  },
+  sendModuleSaved(moduleShortid: string) {
+    this.send('module:saved', {
+      type: 'module',
+      moduleShortid,
+    });
+  },
+  sendChatEnabled(enabled: boolean) {
+    this.send('live:chat_enabled', { enabled });
+  },
+  sendModuleUpdateRequest() {
+    this.send('live:module_state', {});
+  },
+  sendUserSelection(moduleShortid: string, liveUserId: string, selection: any) {
+    this.send('user:selection', {
+      liveUserId,
+      moduleShortid,
+      selection,
+    });
+  },
+  getAllClients() {
+    return clients.getAll();
+  },
+  getClient(moduleShortid: string) {
+    return clients.get(moduleShortid);
+  },
+  createClient(moduleShortid: string, revision: number) {
+    return clients.create(moduleShortid, revision);
+  },
+  resetClients() {
+    clients.clear();
   },
 };

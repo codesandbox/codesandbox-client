@@ -14,6 +14,7 @@ import {
   GitInfo,
   GitCommit,
   GitPr,
+  RoomInfo,
 } from '@codesandbox/common/lib/types';
 import { TemplateType } from '@codesandbox/common/lib/templates';
 
@@ -251,6 +252,11 @@ export default {
     return api.post(`/sandboxes/${sandboxId}/git/pr`, {
       id: sandboxId,
       message,
+    });
+  },
+  createLiveRoom(sandboxId: string): Promise<RoomInfo> {
+    return api.post(`/sandboxes/${sandboxId}/live`, {
+      id: sandboxId,
     });
   },
 };
