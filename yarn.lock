@@ -3143,6 +3143,27 @@
     prop-types "^15.6.2"
     tippy.js "^4.3.4"
 
+"@typeform/embed@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@typeform/embed/-/embed-0.12.0.tgz#65b6260cc3aa84102f1ad04ce9981c24ee55d22a"
+  integrity sha512-Eng8w8yqirpzLQ0j37vR0COf0XAoE6hU71iD1SdsSqFF392IEC5hC7YqsTn+acnqbVORBzwkIemdYqShcbdgEQ==
+  dependencies:
+    classnames "^2.2.5"
+    core-js "^3.0.1"
+    create-emotion "^9.0.2"
+    create-emotion-styled "^9.0.1"
+    custom-event "^1.0.1"
+    fetch-jsonp "^1.0.6"
+    is-url "^1.2.2"
+    preact "^8.2.7"
+    preact-compat "^3.15.0"
+    prop-types "^15.5.10"
+    scrollbar-width "^3.1.1"
+    spin.js "^2.3.2"
+    tinycolor2 "^1.4.1"
+    url-parse "^1.1.7"
+    webfontloader "^1.6.27"
+
 "@types/babel__core@^7.1.0":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.2.tgz#608c74f55928033fce18b99b213c16be4b3d114f"
@@ -8799,7 +8820,7 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
 console-feed@CompuIves/console-feed#build2:
-  version "2.8.9"
+  version "2.8.8"
   resolved "https://codeload.github.com/CompuIves/console-feed/tar.gz/42f10eb3063f0f26ee9745c4c9e4542cb5591f46"
   dependencies:
     emotion "^9.1.1"
@@ -9322,14 +9343,14 @@ create-ecdh@^4.0.0:
     bn.js "^4.1.0"
     elliptic "^6.0.0"
 
-create-emotion-styled@^9.2.8:
+create-emotion-styled@^9.0.1, create-emotion-styled@^9.2.8:
   version "9.2.8"
   resolved "https://registry.yarnpkg.com/create-emotion-styled/-/create-emotion-styled-9.2.8.tgz#c0050e768ba439609bec108600467adf2de67cc3"
   integrity sha512-2LrNM5MREWzI5hZK+LyiBHglwE18WE3AEbBQgpHQ1+zmyLSm/dJsUZBeFAwuIMb+TjNZP0KsMZlV776ufOtFdg==
   dependencies:
     "@emotion/is-prop-valid" "^0.6.1"
 
-create-emotion@^9.2.12:
+create-emotion@^9.0.2, create-emotion@^9.2.12:
   version "9.2.12"
   resolved "https://registry.yarnpkg.com/create-emotion/-/create-emotion-9.2.12.tgz#0fc8e7f92c4f8bb924b0fef6781f66b1d07cb26f"
   integrity sha512-P57uOF9NL2y98Xrbl2OuiDQUZ30GVmASsv5fbsjF4Hlraip2kyAvMm+2PoYUvFFw03Fhgtxk3RqZSm2/qHL9hA==
@@ -9852,6 +9873,11 @@ currently-unhandled@^0.4.1:
   integrity sha1-mI3zP+qxke95mmE2nddsF635V+o=
   dependencies:
     array-find-index "^1.0.1"
+
+custom-event@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/custom-event/-/custom-event-1.0.1.tgz#5d02a46850adf1b4a317946a3928fccb5bfd0425"
+  integrity sha1-XQKkaFCt8bSjF5RqOSj8y1v9BCU=
 
 cwebp-bin@^5.0.0:
   version "5.1.0"
@@ -12106,6 +12132,11 @@ fd-slicer@~1.1.0:
   integrity sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=
   dependencies:
     pend "~1.2.0"
+
+fetch-jsonp@^1.0.6:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/fetch-jsonp/-/fetch-jsonp-1.1.3.tgz#9eb9e585ba08aaf700563538d17bbebbcd5a3db2"
+  integrity sha1-nrnlhboIqvcAVjU40Xu+u81aPbI=
 
 figgy-pudding@^3.5.1:
   version "3.5.1"
@@ -15094,7 +15125,7 @@ immer@^0.8.5:
   dependencies:
     cpx "^1.5.0"
 
-immutability-helper@^2.6.6:
+immutability-helper@^2.6.6, immutability-helper@^2.7.1:
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-2.9.1.tgz#71c423ba387e67b6c6ceba0650572f2a2a6727df"
   integrity sha512-r/RmRG8xO06s/k+PIaif2r5rGc3j4Yhc01jSBfwPCXDLYZwp/yxralI37Df1mwmuzcCsen/E/ITKcTEvc1PQmQ==
@@ -22344,6 +22375,40 @@ potrace@^2.1.1:
   dependencies:
     jimp "^0.6.4"
 
+preact-compat@^3.15.0:
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/preact-compat/-/preact-compat-3.19.0.tgz#a71457b6a3bf051690a4411603bc2085aa061c2f"
+  integrity sha512-f83A4hIhH8Uzhb9GbIcGk8SM19ffWlwP9mDaYwQdRnMdekZwcCA7eIAbeV4EMQaV9C0Yuy8iKgBAtyTKPZQt/Q==
+  dependencies:
+    immutability-helper "^2.7.1"
+    preact-context "^1.1.3"
+    preact-render-to-string "^3.8.2"
+    preact-transition-group "^1.1.1"
+    prop-types "^15.6.2"
+    standalone-react-addons-pure-render-mixin "^0.1.1"
+
+preact-context@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/preact-context/-/preact-context-1.1.3.tgz#26d06db0f39d8d9c890df5ada9a99a943586ec68"
+  integrity sha512-2LcpjZG6JUhBgqziVH+nJtmu9PS5KzWoFx6wX2svXw0oBHhU6e8tQZhEkKLMOAxdmj7gVzApfS/B6V+fjJ/llA==
+
+preact-render-to-string@^3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/preact-render-to-string/-/preact-render-to-string-3.8.2.tgz#bd72964d705a57da3a9e72098acaa073dd3ceff9"
+  integrity sha512-przuZPajiurStGgxMoJP0EJeC4xj5CgHv+M7GfF3YxAdhGgEWAkhOSE0xympAFN20uMayntBZpttIZqqLl77fw==
+  dependencies:
+    pretty-format "^3.5.1"
+
+preact-transition-group@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/preact-transition-group/-/preact-transition-group-1.1.1.tgz#f0a49327ea515ece34ea2be864c4a7d29e5d6e10"
+  integrity sha1-8KSTJ+pRXs406ivoZMSn0p5dbhA=
+
+preact@^8.2.7:
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-8.4.2.tgz#1263b974a17d1ea80b66590e41ef786ced5d6a23"
+  integrity sha512-TsINETWiisfB6RTk0wh3/mvxbGRvx+ljeBccZ4Z6MPFKgu/KFGyf2Bmw3Z/jlXhL5JlNKY6QAbA9PVyzIy9//A==
+
 prebuild-install@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-5.3.0.tgz#58b4d8344e03590990931ee088dd5401b03004c8"
@@ -22466,6 +22531,11 @@ pretty-format@^24.8.0:
     ansi-regex "^4.0.0"
     ansi-styles "^3.2.0"
     react-is "^16.8.4"
+
+pretty-format@^3.5.1:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-3.8.0.tgz#bfbed56d5e9a776645f4b1ff7aa1a3ac4fa3c385"
+  integrity sha1-v77VbV6ad2ZF9LH/eqGjrE+jw4U=
 
 pretty-hrtime@^1.0.0, pretty-hrtime@^1.0.3:
   version "1.0.3"
@@ -25339,6 +25409,11 @@ scroll-behavior@^0.9.9:
     dom-helpers "^3.2.1"
     invariant "^2.2.2"
 
+scrollbar-width@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/scrollbar-width/-/scrollbar-width-3.1.1.tgz#c62e63efa5934dac37b43da34f7550caca8444a2"
+  integrity sha1-xi5j76WTTaw3tD2jT3VQysqERKI=
+
 scss-tokenizer@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/scss-tokenizer/-/scss-tokenizer-0.2.3.tgz#8eb06db9a9723333824d3f5530641149847ce5d1"
@@ -26191,6 +26266,11 @@ speedometer@~0.1.2:
   resolved "https://registry.yarnpkg.com/speedometer/-/speedometer-0.1.4.tgz#9876dbd2a169d3115402d48e6ea6329c8816a50d"
   integrity sha1-mHbb0qFp0xFUAtSObqYynIgWpQ0=
 
+spin.js@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/spin.js/-/spin.js-2.3.2.tgz#6caa56d520673450fd5cfbc6971e6d0772c37a1a"
+  integrity sha1-bKpW1SBnNFD9XPvGlx5tB3LDeho=
+
 split-on-first@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/split-on-first/-/split-on-first-1.1.0.tgz#f610afeee3b12bce1d0c30425e76398b78249a5f"
@@ -26330,6 +26410,11 @@ stacktrace-js@^2.0.0:
     error-stack-parser "^2.0.1"
     stack-generator "^2.0.1"
     stacktrace-gps "^3.0.1"
+
+standalone-react-addons-pure-render-mixin@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/standalone-react-addons-pure-render-mixin/-/standalone-react-addons-pure-render-mixin-0.1.1.tgz#3c7409f4c79c40de9ac72c616cf679a994f37551"
+  integrity sha1-PHQJ9MecQN6axyxhbPZ5qZTzdVE=
 
 state-toggle@^1.0.0:
   version "1.0.2"
@@ -28551,7 +28636,7 @@ url-parse-lax@^3.0.0:
   dependencies:
     prepend-http "^2.0.0"
 
-url-parse@^1.1.8, url-parse@^1.4.3:
+url-parse@^1.1.7, url-parse@^1.1.8, url-parse@^1.4.3:
   version "1.4.7"
   resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.7.tgz#a8a83535e8c00a316e403a5db4ac1b9b853ae278"
   integrity sha512-d3uaVyzDB9tQoSXFvuSUNFibTd9zxd2bkVrDRvF5TmvWWQwqE4lgYJ5m+x1DbecWkw+LK4RNl2CU1hHuOKPVlg==
@@ -28987,6 +29072,11 @@ web-namespaces@^1.0.0, web-namespaces@^1.1.2:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-1.1.3.tgz#9bbf5c99ff0908d2da031f1d732492a96571a83f"
   integrity sha512-r8sAtNmgR0WKOKOxzuSgk09JsHlpKlB+uHi937qypOu3PZ17UxPrierFKDye/uNHjNTTEshu5PId8rojIPj/tA==
+
+webfontloader@^1.6.27:
+  version "1.6.28"
+  resolved "https://registry.yarnpkg.com/webfontloader/-/webfontloader-1.6.28.tgz#db786129253cb6e8eae54c2fb05f870af6675bae"
+  integrity sha1-23hhKSU8tujq5UwvsF+HCvZnW64=
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
