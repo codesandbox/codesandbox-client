@@ -33,10 +33,7 @@ export function AddTab() {
         {
           title: 'Browser Pane',
           icon: PlusIcon,
-          action: () => {
-            alert('test');
-            return true;
-          },
+          action: () => true,
         },
       ]}
     >
