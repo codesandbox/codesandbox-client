@@ -214,6 +214,15 @@ class Console extends React.Component<StyledProps> {
     }
 
     const { messages, filter, searchKeywords } = this.state;
+
+    let searchKeywordsHasError = false;
+
+    try {
+      new RegExp(searchKeywords); // eslint-disable-line
+    } catch (e) {
+      searchKeywordsHasError = true;
+    }
+
     return (
       <Container>
         <Messages
@@ -226,7 +235,7 @@ class Console extends React.Component<StyledProps> {
             variant={this.props.theme.light ? 'light' : 'dark'}
             styles={inspectorTheme(this.props.theme)}
             filter={filter}
-            searchKeywords={searchKeywords}
+            searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
           />
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />
