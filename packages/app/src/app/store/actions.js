@@ -179,8 +179,11 @@ export function setCurrentModuleShortid({ props, state }) {
   }
 }
 
-export function showUserSurveyIfNeeded({ state, controller }) {
+export function showUserSurveyIfNeeded({ state, controller, api }) {
   if (state.get('user.sendSurvey')) {
+    // Let the server know that we've seen the survey
+    api.post('/users/survey-seen', {});
+
     notificationState.addNotification({
       title: 'Help improve CodeSandbox',
       message:

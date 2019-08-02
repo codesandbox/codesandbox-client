@@ -32,6 +32,7 @@ export interface NotificationMessage {
     secondary?: NotificationAction[];
   };
   timeAlive?: number;
+  onHide?: () => void;
   status: NotificationStatus;
 }
 
