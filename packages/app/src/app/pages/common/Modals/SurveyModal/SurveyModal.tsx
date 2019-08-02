@@ -3,7 +3,7 @@ import * as typeformEmbed from '@typeform/embed';
 import { useStore, useSignals } from 'app/store';
 import hash from '@codesandbox/common/lib/utils/hash';
 
-import { Container } from '../elements';
+import { Container } from './elements';
 
 export const SurveyModal = () => {
   const store = useStore();
@@ -32,7 +32,7 @@ export const SurveyModal = () => {
   };
 
   return (
-    <Container style={{ borderRadius: 4, paddingTop: '1rem' }}>
+    <Container>
       <div style={{ width: '100%', height: 500 }} ref={initializeTypeform} />
     </Container>
   );
