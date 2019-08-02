@@ -55,7 +55,7 @@ export default ({ basePath, teamId, noFocus, close, depth }: Props) => {
                   variables.teamId = teamId;
                 }
                 // Read the data from our cache for this query.
-                const d = proxy.readQuery<{ me: any }>({
+                const d: { me: any } = proxy.readQuery({
                   query: PATHED_SANDBOXES_FOLDER_QUERY,
                   variables,
                 });

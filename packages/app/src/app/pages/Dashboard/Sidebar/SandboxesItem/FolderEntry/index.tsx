@@ -266,7 +266,7 @@ class FolderEntry extends React.Component<Props, State> {
                             variables.teamId = teamId;
                           }
 
-                          const cacheData = cache.readQuery<{ me: any }>({
+                          const cacheData: { me: any } = cache.readQuery({
                             query: PATHED_SANDBOXES_FOLDER_QUERY,
                             variables,
                           });
