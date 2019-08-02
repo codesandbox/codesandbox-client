@@ -80,7 +80,7 @@ const DevToolTabs = ({
                 pane.closeable && panes.length !== 1 ? closeTab : undefined
               }
               index={i}
-              key={i} // eslint-disable-line react/no-array-index-key pane.id is not unique!
+              key={i} // eslint-disable-line react/no-array-index-key
               status={
                 status
                   ? status[pane.id] || { unread: 0, type: 'info' }
