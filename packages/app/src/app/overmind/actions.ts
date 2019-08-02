@@ -103,21 +103,13 @@ export const signInZeitClicked: AsyncAction = async ({
 
   if (data && data.code) {
     try {
-      state.user = await api.post(`/users/current_user/integrations/zeit`, {
-        code: data.code,
-      });
-      await actions.internal.getZeitUserDetails();
+      state.user = await api.createZeitIntegration(data.code);
+      await actions.deployment.internal.getZeitUserDetails();
     } catch (error) {
-      notificationToast.add({
-        message: 'Could not authorize with ZEIT',
-        status: notificationToast.convertTypeToStatus('error'),
-      });
+      notificationToast.error('Could not authorize with ZEIT');
     }
   } else {
-    notificationToast.add({
-      message: 'Could not authorize with ZEIT',
-      status: notificationToast.convertTypeToStatus('error'),
-    });
+    notificationToast.error('Could not authorize with ZEIT');
   }
 
   state.isLoadingZeit = false;
@@ -152,7 +144,7 @@ export const signOutClicked: AsyncAction = async ({
   if (state.live.isLive) {
     actions.live.internal.disconnect();
   }
-  await effects.api.delete(`/users/signout`);
+  await effects.api.signout();
   actions.internal.removeJwtFromStorage();
   state.user = null;
   await actions.refetchSandboxInfo();
@@ -162,7 +154,7 @@ export const signOutGithubIntegration: AsyncAction = async ({
   state,
   effects,
 }) => {
-  await effects.api.delete(`/users/current_user/integrations/github`);
+  await effects.api.signoutGithubIntegration();
   state.user.integrations.github = null;
 };
 
@@ -175,4 +167,34 @@ export const track: Action<{ name: string; data: any }> = (
   { name, data }
 ) => {
   effects.analytics.track(name, data);
+};
+
+export const refetchSandboxInfo: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  if (state.editor.currentId) {
+    const id = state.editor.currentId;
+    const sandbox = state.editor.currentSandbox;
+    const updatedSandbox = await effects.api.getSandbox(id);
+
+    sandbox.collection = updatedSandbox.collection;
+    sandbox.owned = updatedSandbox.owned;
+    sandbox.userLiked = updatedSandbox.userLiked;
+    sandbox.title = updatedSandbox.title;
+    sandbox.team = updatedSandbox.team;
+
+    if (state.live.isLive) {
+      await actions.live.internal.disconnect();
+    }
+
+    if (sandbox.owned && sandbox.roomId) {
+      state.live.isTeam = Boolean(sandbox.team);
+    }
+
+    await actions.live.internal.initialize();
+  } else {
+    actions.files.internal.recoverFiles();
+  }
 };

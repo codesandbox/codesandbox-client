@@ -10,6 +10,7 @@ import {
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 import { INormalizedModules } from 'codesandbox-import-util-types';
 import { ModuleTab } from '@codesandbox/common/lib/types';
+import { createOptimisticModule } from 'app/overmind/utils/common';
 
 export const internal = internalActions;
 
@@ -309,19 +310,13 @@ export const moduleCreated: AsyncAction<{
   await actions.editor.internal.ensureSandboxIsOwned();
 
   const sandbox = state.editor.currentSandbox;
-  const optimisticModule = {
+  const optimisticModule = createOptimisticModule({
     id: effects.utils.createOptimisticId(),
     title,
-    directoryShortid: null,
-    code: '',
-    savedCode: null,
     shortid: effects.utils.createOptimisticId(),
-    isBinary: false,
     sourceId: sandbox.sourceId,
-    insertedAt: new Date().toString(),
-    updatedAt: new Date().toString(),
     isNotSynced: true,
-  };
+  });
   const path = getModulePath(
     sandbox.modules,
     sandbox.directories,

@@ -27,8 +27,8 @@ type State = {
   current: Derive<State, Profile>;
   isProfileCurrentUser: Derive<State, boolean>;
   showcasedSandbox: Derive<State, Sandbox>;
-  currentSandboxes: Derive<State, Sandbox[]>;
-  currentLikedSandboxes: Derive<State, Sandbox[]>;
+  currentSandboxes: Derive<State, { [page: string]: Sandbox[] }>;
+  currentLikedSandboxes: Derive<State, { [page: string]: Sandbox[] }>;
 };
 
 export const state: State = {

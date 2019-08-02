@@ -19,11 +19,7 @@ export type Options = {
 export type Api = {
   get<T>(path: string, params?: Params, options?: Options): Promise<T>;
   post<T>(path: string, body: any, options?: Options): Promise<T>;
-  patch<T>(
-    path: string,
-    body: RecursivePartial<T>,
-    options?: Options
-  ): Promise<T>;
+  patch<T>(path: string, body: any, options?: Options): Promise<T>;
   put<T>(path: string, body: any, options?: Options): Promise<T>;
   delete<T>(path: string, params?: Params, options?: Options): Promise<T>;
   request<T>(requestConfig: AxiosRequestConfig, options?: Options): Promise<T>;

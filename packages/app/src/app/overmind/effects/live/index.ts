@@ -49,6 +49,9 @@ export default {
     );
     provideJwtToken = options.provideJwtToken;
   },
+  getSocket() {
+    return _socket;
+  },
   connect() {
     if (!_socket) {
       _socket = new Socket(`wss://${location.host}/socket`, {

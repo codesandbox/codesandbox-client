@@ -1,4 +1,7 @@
 import { Action, AsyncAction } from 'app/overmind';
+import * as internalActions from './internalActions';
+
+export const internal = internalActions;
 
 export const deployWithNetlify: AsyncAction = async ({ effects, state }) => {
   state.deployment.deploying = true;

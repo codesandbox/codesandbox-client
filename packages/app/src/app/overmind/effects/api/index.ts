@@ -15,6 +15,9 @@ import {
   GitCommit,
   GitPr,
   RoomInfo,
+  PaymentDetails,
+  Profile,
+  UserSandbox,
 } from '@codesandbox/common/lib/types';
 import { TemplateType } from '@codesandbox/common/lib/templates';
 
@@ -23,6 +26,11 @@ let api: Api;
 export default {
   initialize(config: ApiConfig) {
     api = apiFactory(config);
+  },
+  async getAuthToken(): Promise<string> {
+    const response = await api.get<{ token: string }>('/auth/auth-token');
+
+    return response.token;
   },
   createPatronSubscription(token: string, amount: string) {
     return api.post<CurrentUser>('/users/current_user/subscription', {
@@ -41,6 +49,9 @@ export default {
   },
   cancelPatronSubscription() {
     return api.delete<CurrentUser>('/users/current_user/subscription');
+  },
+  getCurrentUser(): Promise<CurrentUser> {
+    return api.get('/users/current');
   },
   getDependency(name: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@latest`);
@@ -258,5 +269,105 @@ export default {
     return api.post(`/sandboxes/${sandboxId}/live`, {
       id: sandboxId,
     });
+  },
+  updateBadge(badgeId: string, visible: boolean): Promise<void> {
+    return api.patch(`/users/current_user/badges/${badgeId}`, {
+      badge: {
+        visible,
+      },
+    });
+  },
+  getPaymentDetails(): Promise<PaymentDetails> {
+    return api.get(`/users/current_user/payment_details`);
+  },
+  updatePaymentDetails(token: string): Promise<PaymentDetails> {
+    return api.patch('/users/current_user/payment_details', {
+      paymentDetails: {
+        token,
+      },
+    });
+  },
+  getProfile(username: string): Promise<Profile> {
+    return api.get(`/users/${username}`);
+  },
+  getUserSandboxes(
+    username: string,
+    page: number
+  ): Promise<{ [page: string]: Sandbox[] }> {
+    return api.get(`/users/${username}/sandboxes`, {
+      page: String(page),
+    });
+  },
+  getUserLikedSandboxes(
+    username: string,
+    page: number
+  ): Promise<{ [page: string]: Sandbox[] }> {
+    return api.get(`/users/${username}/sandboxes/liked`, {
+      page: String(page),
+    });
+  },
+  getSandboxes(): Promise<UserSandbox[]> {
+    return api.get('/sandboxes');
+  },
+  updateShowcasedSandbox(username: string, sandboxId: string) {
+    return api.patch(`/users/${username}`, {
+      user: {
+        showcasedSandboxShortid: sandboxId,
+      },
+    });
+  },
+  deleteSandbox(sandboxId: string): Promise<void> {
+    return api.request({
+      method: 'DELETE',
+      url: `/sandboxes/${sandboxId}`,
+      data: {
+        id: sandboxId,
+      },
+    });
+  },
+  createTag(sandboxId: string, tagName: string): Promise<string[]> {
+    return api.post(`/sandboxes/${sandboxId}/tags`, {
+      tag: tagName,
+    });
+  },
+  deleteTag(sandboxId: string, tagName: string): Promise<string[]> {
+    return api.delete(`/sandboxes/${sandboxId}/tags/${tagName}`);
+  },
+  updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
+    return api.put(`/sandboxes/${sandboxId}`, {
+      sandbox: data,
+    });
+  },
+  createResource(sandboxId: string, resource: string): Promise<void> {
+    return api.post(`/sandboxes/${sandboxId}/resources`, {
+      externalResource: resource,
+    });
+  },
+  deleteResource(sandboxId: string, resource: string): Promise<void> {
+    return api.request({
+      method: 'DELETE',
+      url: `/sandboxes/${sandboxId}/resources/`,
+      data: {
+        id: resource,
+      },
+    });
+  },
+  updatePrivacy(sandboxId: string, privacy: 0 | 1 | 2): Promise<void> {
+    return api.patch(`/sandboxes/${sandboxId}/privacy`, {
+      sandbox: {
+        privacy: privacy,
+      },
+    });
+  },
+  createZeitIntegration(code: string): Promise<CurrentUser> {
+    return api.post(`/users/current_user/integrations/zeit`, {
+      code,
+    });
+  },
+  signout(): Promise<void> {
+    return api.delete(`/users/signout`);
+  },
+  signoutGithubIntegration(): Promise<void> {
+    return api.delete(`/users/current_user/integrations/github`);
   },
 };

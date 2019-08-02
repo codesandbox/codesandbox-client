@@ -14,6 +14,8 @@ import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { parseConfigurations } from './utils/parse-configurations';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
+import getItems from './utils/items';
+import { createOptimisticModule } from './utils/common';
 
 export const setKeybindings: Action = ({ state, effects }) => {
   effects.keybindingManager.set(
@@ -40,7 +42,7 @@ export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
     actions.internal.setStoredSettings();
     actions.internal.connectWebsocket();
     actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
-    actions.editor.internal.refetchSandboxInfo();
+    actions.refetchSandboxInfo();
   } catch (error) {
     actions.internal.addNotification({
       title: 'Github Authentication Error',
@@ -72,20 +74,11 @@ export const setStoredSettings: Action = ({ state, effects }) => {
 };
 
 export const startKeybindings: Action = ({ effects }) => {
-  effects.keybindingManager.start(() => {
-    // Copy code from keybindingmanager
-  });
+  effects.keybindingManager.start();
 };
 
 export const getUser: Action<void, Promise<CurrentUser>> = ({ effects }) => {
-  return effects.api.get('/users/current');
-};
-
-export const getSandbox: Action<string, Promise<Sandbox>> = (
-  { effects },
-  id
-) => {
-  return effects.api.get(`/sandboxes/${id}`);
+  return effects.api.getCurrentUser();
 };
 
 export const setPatronPrice: Action = ({ state }) => {
@@ -101,7 +94,7 @@ export const setSignedInCookie: Action = ({ state }) => {
 };
 
 export const connectWebsocket: Action = ({ effects }) => {
-  effects.socket.connect();
+  effects.live.connect();
 };
 
 export const addNotification: Action<{
@@ -140,8 +133,7 @@ export const getContributors: AsyncAction = async ({ state, effects }) => {
 
 export const authorize: AsyncAction = async ({ state, effects }) => {
   try {
-    const data = await effects.api.get<{ token: string }>('/auth/auth-token');
-    state.authToken = data.token;
+    state.authToken = await effects.api.getAuthToken();
   } catch (error) {
     state.editor.error = error.message;
   }
@@ -243,10 +235,42 @@ export const setCurrentSandbox: Action<Sandbox> = (
 
   state.editor.tabs = [newTab];
 
-  actions.preferences.internal.updatePreferencesFromSandboxOptions(
-    sandboxOptions
-  );
-  actions.workspace.internal.configureWorkspace(sandbox);
+  state.preferences.showPreview =
+    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen;
+
+  state.preferences.showEditor =
+    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen;
+
+  if (sandboxOptions.initialPath)
+    state.editor.initialPath = sandboxOptions.initialPath;
+  if (sandboxOptions.fontSize)
+    state.preferences.settings.fontSize = sandboxOptions.fontSize;
+  if (sandboxOptions.highlightedLines)
+    state.editor.highlightedLines = sandboxOptions.highlightedLines;
+  if (sandboxOptions.hideNavigation)
+    state.preferences.hideNavigation = sandboxOptions.hideNavigation;
+  if (sandboxOptions.isInProjectView)
+    state.editor.isInProjectView = sandboxOptions.isInProjectView;
+  if (sandboxOptions.autoResize)
+    state.preferences.settings.autoResize = sandboxOptions.autoResize;
+  if (sandboxOptions.enableEslint)
+    state.preferences.settings.enableEslint = sandboxOptions.enableEslint;
+  if (sandboxOptions.forceRefresh)
+    state.preferences.settings.forceRefresh = sandboxOptions.forceRefresh;
+  if (sandboxOptions.expandDevTools)
+    state.preferences.showDevtools = sandboxOptions.expandDevTools;
+  if (sandboxOptions.runOnClick)
+    state.preferences.runOnClick = sandboxOptions.runOnClick;
+
+  state.workspace.project.title = sandbox.title || '';
+  state.workspace.project.description = sandbox.description || '';
+  state.workspace.project.alias = sandbox.alias || '';
+
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+  state.workspace.openedWorkspaceItem = defaultItem.id;
+
   effects.fsSync.syncCurrentSandbox();
   effects.router.updateSandboxUrl(sandbox);
 };
@@ -273,7 +297,7 @@ export const ensurePackageJSON: AsyncAction = async ({
   );
 
   if (sandbox.owned && !existingPackageJson) {
-    const optimisticModule = actions.files.internal.createOptimisticModule({
+    const optimisticModule = createOptimisticModule({
       title: 'package.json',
       code: generatePackageJsonFromSandbox(sandbox),
     });

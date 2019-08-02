@@ -272,6 +272,10 @@ let onKeyDown = null;
 let isStarted = false;
 
 export default {
+  initialize(onKeyDownListener: (event: KeyboardEvent) => void) {
+    onKeyDown = handleKeyDown.bind(null, onKeyDownListener);
+    onKeyUp = handleKeyUp.bind(null);
+  },
   set(userKeybindings = []) {
     const keybindings = [...userKeybindings];
 
@@ -290,13 +294,11 @@ export default {
       binding => binding.bindings && binding.bindings.filter(Boolean).length
     );
   },
-  start(onKeyDownListener: (event: KeyboardEvent) => void) {
+  start() {
     if (isStarted) {
       return;
     }
 
-    onKeyDown = handleKeyDown.bind(null, onKeyDownListener);
-    onKeyUp = handleKeyUp.bind(null);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     isStarted = true;

@@ -8,23 +8,19 @@ import {
 } from '@codesandbox/common/lib/types';
 
 export default {
-  updateSandboxUrlById(sandboxId: string) {
+  updateSandboxUrl({
+    id,
+    alias,
+    git,
+  }: {
+    id?: string;
+    alias?: string;
+    git?: GitInfo;
+  }) {
     history.push(
       sandboxUrl({
-        id: sandboxId,
-      })
-    );
-  },
-  updateSandboxUrlByAlias(alias: string) {
-    history.push(
-      sandboxUrl({
+        id,
         alias,
-      })
-    );
-  },
-  updateSandboxUrlByGit(git: GitInfo) {
-    history.push(
-      sandboxUrl({
         git,
       })
     );

@@ -10,6 +10,10 @@ export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
     onApplyOperation: actions.live.onOperationApplied,
   });
 
+  effects.keybindingManager.initialize(() => {
+    // Copy code from keybindingmanager
+  });
+
   effects.api.initialize({
     provideJwtToken,
     onError(error) {
@@ -21,11 +25,17 @@ export const onInitialize: OnInitialize = ({ state, effects, actions }) => {
     );
     */
     },
+    getParsedConfigurations() {
+      return state.editor.parsedConfigurations;
+    },
+    getModulesByPath() {
+      // hm, need something here :)
+    },
   });
 
   effects.notifications.initialize({
     provideSocket() {
-      return effects.socket.getSocket();
+      return effects.live.getSocket();
     },
   });
 
