@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "codesandbox-api": "^0.0.22",
-    "console-feed": "^2.8.5"
+    "console-feed": "^2.8.5",
+    "react-dev-utils": "3.1.1"
   }
 }
