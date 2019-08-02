@@ -33,6 +33,7 @@ import NetlifyLogs from './NetlifyLogs';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 // eslint-disable-next-line
 import SignInForTemplates from './SignInForTemplates/index.ts';
+import { SurveyModal } from './SurveyModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import('./MoveSandboxFolderModal')
@@ -138,6 +139,10 @@ const modals = {
   feedback: {
     Component: FeedbackModal,
     width: 450,
+  },
+  userSurvey: {
+    Component: SurveyModal,
+    width: 850,
   },
 };
 

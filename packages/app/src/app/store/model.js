@@ -43,6 +43,7 @@ export default {
         })
       ),
       username: types.maybeNull(types.string),
+      sendSurvey: types.maybeNull(types.boolean),
     })
   ),
   connected: types.boolean,
