@@ -183,7 +183,8 @@ export function showUserSurveyIfNeeded({ state, controller }) {
   if (state.get('user.sendSurvey')) {
     notificationState.addNotification({
       title: 'Help improve CodeSandbox',
-      message: 'Help us improve CodeSandbox by answering a small survey!',
+      message:
+        "We'd love to hear your thoughts, it's 7 questions and will only take 2 minutes.",
       status: NotificationStatus.NOTICE,
       sticky: true,
       actions: {

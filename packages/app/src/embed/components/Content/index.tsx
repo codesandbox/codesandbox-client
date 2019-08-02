@@ -539,8 +539,9 @@ export default class Content extends React.PureComponent<Props, State> {
                 }}
               >
                 {views.map((devView, i) => (
+                  /* eslint-disable react/no-array-index-key */
                   <DevTools
-                    key={i} // eslint-disable-line react/no-array-index-key
+                    key={i}
                     devToolIndex={i}
                     addedViews={{
                       'codesandbox.browser': browserConfig,

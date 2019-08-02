@@ -60,6 +60,7 @@ const DevToolTabs = ({
             ? DraggableTab
             : (PaneTab as unknown)) as React.SFC<TabProps>;
 
+          /* eslint-disable react/no-array-index-key */
           return (
             <TypedTab
               canDrag={panes.length !== 1}
@@ -80,7 +81,7 @@ const DevToolTabs = ({
                 pane.closeable && panes.length !== 1 ? closeTab : undefined
               }
               index={i}
-              key={i} // eslint-disable-line
+              key={i}
               status={
                 status
                   ? status[pane.id] || { unread: 0, type: 'info' }
