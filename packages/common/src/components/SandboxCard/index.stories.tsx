@@ -57,24 +57,34 @@ const stories = storiesOf('components/SandboxCard', module)
   .addDecorator(ThemeDecorator)
   .addDecorator(withKnobs);
 
-const knobbedSandbox = (defaults: Sandbox): Sandbox => ({
-  id: text('id', defaults.id, 'sandbox'),
-  title: text('title', defaults.title, 'sandbox'),
-  author: defaults.author && {
-    username: text('author.username', defaults.author.username, 'sandbox'),
-    avatar_url: text(
-      'author.avatar_url',
-      defaults.author.avatar_url,
-      'sandbox'
-    ),
+const knobbedSandbox = (
+  {
+    id,
+    title,
+    author,
+    screenshot_url,
+    description,
+    view_count,
+    fork_count,
+    like_count,
+    tags,
+    template,
+  }: Sandbox,
+  group: string = 'sandbox'
+): Sandbox => ({
+  id: text('id', id, group),
+  title: text('title', title, group),
+  author: author && {
+    username: text('author.username', author.username, group),
+    avatar_url: text('author.avatar_url', author.avatar_url, group),
   },
-  description: text('description', defaults.description, 'sandbox'),
-  screenshot_url: text('screenshot_url', defaults.screenshot_url, 'sandbox'),
-  view_count: number('view_count', defaults.view_count, {}, 'sandbox'),
-  fork_count: number('fork_count', defaults.fork_count, {}, 'sandbox'),
-  like_count: number('like_count', defaults.like_count, {}, 'sandbox'),
-  template: select('template', templateOptions, defaults.template, 'sandbox'),
-  tags: array('tags', defaults.tags, ',', 'sandbox'),
+  description: text('description', description, group),
+  screenshot_url: text('screenshot_url', screenshot_url, group),
+  view_count: number('view_count', view_count, {}, group),
+  fork_count: number('fork_count', fork_count, {}, group),
+  like_count: number('like_count', like_count, {}, group),
+  template: select('template', templateOptions, template, group),
+  tags: array('tags', tags, ',', group),
 });
 
 const createSandboxStory = ({
