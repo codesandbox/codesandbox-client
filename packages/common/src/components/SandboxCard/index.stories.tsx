@@ -81,7 +81,7 @@ const knobbedSandbox = (group: string, sandbox: Sandbox): Sandbox => ({
   view_count: number('view_count', sandbox.view_count, {}, group),
   fork_count: number('fork_count', sandbox.fork_count, {}, group),
   like_count: number('like_count', sandbox.like_count, {}, group),
-  template: select('template', templateOptions, template, group),
+  template: select('template', templateOptions, sandbox.template, group),
   tags: array('tags', sandbox.tags, ',', group),
 });
 
