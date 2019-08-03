@@ -13,7 +13,6 @@ import SandboxCard, { Props, Sandbox } from './';
 import * as fake from './fixtures';
 import { ThemeDecorator } from '../../stories/decorators';
 import { TemplateType } from '../../templates';
-import { template } from 'handlebars';
 
 type TemplateOptions = { [K in TemplateType]: K };
 
