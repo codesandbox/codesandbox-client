@@ -57,34 +57,20 @@ const stories = storiesOf('components/SandboxCard', module)
   .addDecorator(ThemeDecorator)
   .addDecorator(withKnobs);
 
-const knobbedSandbox = (
-  {
-    id,
-    title,
-    author,
-    screenshot_url,
-    description,
-    view_count,
-    fork_count,
-    like_count,
-    tags,
-    template,
-  }: Sandbox,
-  group: string = 'sandbox'
-): Sandbox => ({
-  id: text('id', id, group),
-  title: text('title', title, group),
-  author: author && {
-    username: text('author.username', author.username, group),
-    avatar_url: text('author.avatar_url', author.avatar_url, group),
+const knobbedSandbox = (group: string, sandbox: Sandbox): Sandbox => ({
+  id: text('id', sandbox.id, group),
+  title: text('title', sandbox.title, group),
+  author: sandbox.author && {
+    username: text('author.username', sandbox.author.username, group),
+    avatar_url: text('author.avatar_url', sandbox.author.avatar_url, group),
   },
-  description: text('description', description, group),
-  screenshot_url: text('screenshot_url', screenshot_url, group),
-  view_count: number('view_count', view_count, {}, group),
-  fork_count: number('fork_count', fork_count, {}, group),
-  like_count: number('like_count', like_count, {}, group),
+  description: text('description', sandbox.description, group),
+  screenshot_url: text('screenshot_url', sandbox.screenshot_url, group),
+  view_count: number('view_count', sandbox.view_count, {}, group),
+  fork_count: number('fork_count', sandbox.fork_count, {}, group),
+  like_count: number('like_count', sandbox.like_count, {}, group),
   template: select('template', templateOptions, template, group),
-  tags: array('tags', tags, ',', group),
+  tags: array('tags', sandbox.tags, ',', group),
 });
 
 const createSandboxStory = ({
@@ -96,7 +82,7 @@ const createSandboxStory = ({
   noMargin,
 }: Partial<Props>) => () => (
   <SandboxCard
-    sandbox={knobbedSandbox(sandbox)}
+    sandbox={knobbedSandbox('sandbox', sandbox)}
     selectSandbox={selectSandbox}
     small={boolean('small', small)}
     noHeight={boolean('noHeight', noHeight)}
