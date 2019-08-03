@@ -57,13 +57,26 @@ const stories = storiesOf('components/SandboxCard', module)
   .addDecorator(ThemeDecorator)
   .addDecorator(withKnobs);
 
+const knobbedAuthor = (
+  group: string,
+  author: Sandbox['author']
+): Sandbox['author'] => {
+  const knobs = {
+    username: text('author.username', author && author.username, group),
+    avatar_url: text('author.avatar_url', author && author.avatar_url, group),
+  };
+
+  if (knobs.username || knobs.avatar_url) {
+    return knobs;
+  } else {
+    return author;
+  }
+};
+
 const knobbedSandbox = (group: string, sandbox: Sandbox): Sandbox => ({
   id: text('id', sandbox.id, group),
   title: text('title', sandbox.title, group),
-  author: sandbox.author && {
-    username: text('author.username', sandbox.author.username, group),
-    avatar_url: text('author.avatar_url', sandbox.author.avatar_url, group),
-  },
+  author: knobbedAuthor(group, sandbox.author),
   description: text('description', sandbox.description, group),
   screenshot_url: text('screenshot_url', sandbox.screenshot_url, group),
   view_count: number('view_count', sandbox.view_count, {}, group),
