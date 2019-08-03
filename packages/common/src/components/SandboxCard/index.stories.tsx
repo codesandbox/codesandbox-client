@@ -10,47 +10,8 @@ import {
   boolean,
 } from '@storybook/addon-knobs';
 import SandboxCard, { Props, Sandbox } from './';
-import * as fake from './fixtures';
+import * as fixtures from './fixtures';
 import { ThemeDecorator } from '../../stories/decorators';
-import { TemplateType } from '../../templates';
-
-type TemplateOptions = { [K in TemplateType]: K };
-
-const templates: TemplateType[] = [
-  'adonis',
-  'create-react-app',
-  'vue-cli',
-  'preact-cli',
-  'svelte',
-  'create-react-app-typescript',
-  'angular-cli',
-  'parcel',
-  'cxjs',
-  '@dojo/cli-create-app',
-  'gatsby',
-  'marko',
-  'nuxt',
-  'next',
-  'reason',
-  'apollo',
-  'sapper',
-  'nest',
-  'static',
-  'styleguidist',
-  'gridsome',
-  'vuepress',
-  'mdx-deck',
-  'quasar',
-  'unibit',
-];
-
-const templateOptions = templates.reduce<TemplateOptions>(
-  (acc, key) => ({
-    ...acc,
-    [key]: key,
-  }),
-  {} as TemplateOptions
-);
 
 const stories = storiesOf('components/SandboxCard', module)
   .addDecorator(ThemeDecorator)
@@ -81,12 +42,17 @@ const knobbedSandbox = (group: string, sandbox: Sandbox): Sandbox => ({
   view_count: number('view_count', sandbox.view_count, {}, group),
   fork_count: number('fork_count', sandbox.fork_count, {}, group),
   like_count: number('like_count', sandbox.like_count, {}, group),
-  template: select('template', templateOptions, sandbox.template, group),
+  template: select(
+    'template',
+    fixtures.templateOptions,
+    sandbox.template,
+    group
+  ),
   tags: array('tags', sandbox.tags, ',', group),
 });
 
 const createSandboxStory = ({
-  sandbox = fake.sandbox(),
+  sandbox = fixtures.sandbox(),
   selectSandbox = action('selectSandbox'),
   small,
   noHeight,
@@ -113,49 +79,52 @@ stories.add('default height', createSandboxStory({ defaultHeight: 500 }));
 
 stories.add('no margin', createSandboxStory({ noMargin: true }));
 
-stories.add('popular', createSandboxStory({ sandbox: fake.popularSandbox() }));
+stories.add(
+  'popular',
+  createSandboxStory({ sandbox: fixtures.popularSandbox() })
+);
 
 stories.add(
   'many tags',
-  createSandboxStory({ sandbox: fake.sandboxWithManyTags() })
+  createSandboxStory({ sandbox: fixtures.sandboxWithManyTags() })
 );
 
 stories.add(
   'long title',
-  createSandboxStory({ sandbox: fake.sandboxWithLongTitle() })
+  createSandboxStory({ sandbox: fixtures.sandboxWithLongTitle() })
 );
 
 stories.add(
   'long description',
   createSandboxStory({
-    sandbox: fake.sandboxWithLongDescription(),
+    sandbox: fixtures.sandboxWithLongDescription(),
   })
 );
 
 stories.add(
   'null author',
   createSandboxStory({
-    sandbox: fake.sandboxWithNullAuthor(),
+    sandbox: fixtures.sandboxWithNullAuthor(),
   })
 );
 
 stories.add(
   'undefined author',
   createSandboxStory({
-    sandbox: fake.sandboxWithUndefinedAuthor(),
+    sandbox: fixtures.sandboxWithUndefinedAuthor(),
   })
 );
 
 stories.add(
   'null screenshot url',
   createSandboxStory({
-    sandbox: fake.sandboxWithNullScreenshotUrl(),
+    sandbox: fixtures.sandboxWithNullScreenshotUrl(),
   })
 );
 
 stories.add(
   'undefined screenshot url',
   createSandboxStory({
-    sandbox: fake.sandboxWithUndefinedScreenshotUrl(),
+    sandbox: fixtures.sandboxWithUndefinedScreenshotUrl(),
   })
 );
