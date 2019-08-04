@@ -19,14 +19,14 @@ const stories = storiesOf('components/SandboxCard', module)
 
 const knobbedAuthor = (
   group: string,
-  author: Sandbox['author']
+  author: Sandbox['author'] = null
 ): Sandbox['author'] => {
   const knobs = {
     username: text('author.username', author && author.username, group),
     avatar_url: text('author.avatar_url', author && author.avatar_url, group),
   };
 
-  if (knobs.username || knobs.avatar_url) {
+  if (knobs.username !== null || knobs.avatar_url !== null) {
     return knobs;
   } else {
     return author;
