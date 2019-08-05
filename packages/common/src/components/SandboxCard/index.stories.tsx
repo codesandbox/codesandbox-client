@@ -17,7 +17,7 @@ const stories = storiesOf('components/SandboxCard', module)
   .addDecorator(ThemeDecorator)
   .addDecorator(withKnobs);
 
-const knobbedAuthor = (
+const authorWithKnobs = (
   group: string,
   author: Sandbox['author'] = null
 ): Sandbox['author'] => {
@@ -60,7 +60,7 @@ const createSandboxStory = ({
   noMargin,
 }: Partial<Props>) => () => (
   <SandboxCard
-    sandbox={knobbedSandbox('sandbox', sandbox)}
+    sandbox={sandboxWithKnobs('sandbox', sandbox)}
     selectSandbox={selectSandbox}
     small={boolean('small', small)}
     noHeight={boolean('noHeight', noHeight)}
