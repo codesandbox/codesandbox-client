@@ -1,20 +1,16 @@
-import React, { useEffect, useRef, Component, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { initialize } from 'react-devtools-inline/frontend';
 
 import { Container } from './elements';
 
-interface Props {
-  hidden: boolean;
-}
-
-const DevTools = ({ hidden }: Props) => {
-  const ReactDevTools = useRef<Component<any, any> | null>(null);
+const DevTools = () => {
+  const ReactDevTools = useRef(null);
   const [devToolsReady, setDtReady] = useState(false);
 
   useEffect(() => {
-    const iframe = (document.getElementById(
+    const iframe = document.getElementById(
       'sandbox-preview'
-    ) as any) as HTMLIFrameElement;
+    ) as HTMLIFrameElement;
     const contentWindow = iframe.contentWindow;
     ReactDevTools.current = initialize(contentWindow);
     iframe.onload = () => {
