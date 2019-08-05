@@ -65,7 +65,7 @@ const CLIENT_VIEWS: ViewConfig[] = [
     views: [
       { id: 'codesandbox.console' },
       { id: 'codesandbox.problems' },
-      { id: 'codesandbox.devtools' },
+      { id: 'codesandbox.react-devtools' },
     ],
   },
 ];
