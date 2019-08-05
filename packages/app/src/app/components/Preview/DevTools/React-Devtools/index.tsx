@@ -38,7 +38,7 @@ const DevTools = (props: DevToolProps) => {
 
 export default {
   id: 'codesandbox.react-devtools',
-  title: 'React DevTools',
+  title: '⚛️ Components',
   Content: DevTools,
   actions: [],
 };
