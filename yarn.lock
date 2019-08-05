@@ -2378,10 +2378,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codesandbox/template-icons@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.6.1.tgz#07683c509122fa8040d4ceaab713ca1b8ce522fb"
-  integrity sha512-yPKnQc7Ii4OPyzdGNacFWFEqY7NDszS2G0CkgXncwfTRj1QCAf3kqB7VHfZ+zViJ7iWen29UPmQKSZqpPvt3tw==
+"@codesandbox/template-icons@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.7.0.tgz#816a4dd5573e39f51c6d3fd6dc2f709e01e03459"
+  integrity sha512-4u6iNNLwcBhflxltag1tHcXcymT1O4Mc9HZBxpqNqd8Eghz1pTBjAyaBunKIYkl8tBNpI3LFdFrO14u1b+xFHg==
 
 "@emmetio/abbreviation@^0.6.0", "@emmetio/abbreviation@^0.6.1":
   version "0.6.5"
