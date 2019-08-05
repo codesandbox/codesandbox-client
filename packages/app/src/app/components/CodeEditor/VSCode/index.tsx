@@ -511,8 +511,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
     errors?: ModuleError[],
     corrections?: ModuleCorrection[]
   ) => {
-    const oldModule = this.currentModule;
-    this.swapDocuments(oldModule, newModule);
+    this.swapDocuments(newModule);
 
     this.currentModule = newModule;
     this.currentTitle = newModule.title;
@@ -594,8 +593,8 @@ class MonacoEditor extends React.Component<Props> implements Editor {
   ): Promise<null> =>
     new Promise(resolve => {
       this.sandbox = newSandbox;
-      this.currentModule = newCurrentModule;
       this.dependencies = dependencies;
+      this.changeModule(newCurrentModule, [], []);
 
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
@@ -983,13 +982,13 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         module.id
       );
 
-      if (this.getCurrentModelPath() !== path) {
+      if (path && this.getCurrentModelPath() !== path) {
         this.editor.openFile(path);
       }
     }
   };
 
-  swapDocuments = (currentModule: Module, nextModule: Module) => {
+  swapDocuments = (nextModule: Module) => {
     this.openModule(nextModule);
   };
 

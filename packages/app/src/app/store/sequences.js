@@ -138,6 +138,7 @@ export const setSandbox = [
   {
     true: [],
     false: [
+      set(props`oldId`, state`editor.currentId`),
       set(state`editor.currentId`, props`sandbox.id`),
       actions.setCurrentModuleShortid,
       actions.setMainModuleShortid,
@@ -149,6 +150,11 @@ export const setSandbox = [
       resetServerState,
       setupExecutor,
       syncFilesToFS,
+
+      // Remove the old sandbox because it's stale with the changes the user did on it (for example,
+      // the user might have changed code of a file and then forked. We didn't revert the code back
+      // to its old state so if the user opens this sandbox again it shows wrong code)
+      unset(state`editor.sandboxes.${props`oldId`}`),
     ],
   },
 ];
