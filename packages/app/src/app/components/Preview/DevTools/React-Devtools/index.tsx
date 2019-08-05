@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { initialize } from 'react-devtools-inline/frontend';
 
 import { Container } from './elements';
+import { DevToolProps } from '..';
 
-const DevTools = () => {
+const DevTools = (props: DevToolProps) => {
   const ReactDevTools = useRef(null);
   const [devToolsReady, setDtReady] = useState(false);
 
@@ -23,6 +24,10 @@ const DevTools = () => {
     };
     setDtReady(true);
   }, []);
+
+  if (props.hidden) {
+    return null;
+  }
 
   return (
     <Container>
