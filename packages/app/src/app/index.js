@@ -149,8 +149,7 @@ function boot() {
               </ApolloProvider>
             </Provider>
           </Store.Provider>
-        </Signals.Provider>,
-        rootEl
+        </Signals.Provider>
       );
     } catch (e) {
       logError(e);
