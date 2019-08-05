@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDevTools from '../../../../../../../../standalone-packages/react-devtools-experimental/shells/dev/dist/devtools';
+import React, { useEffect, useRef, Component, useState } from 'react';
+import { initialize } from 'react-devtools-inline/frontend';
 
 import { Container } from './elements';
 
@@ -7,19 +7,25 @@ interface Props {
   hidden: boolean;
 }
 
-class DevTools extends React.PureComponent<Props> {
-  render() {
-    // if (this.props.hidden) {
-    //   return null;
-    // }
+const DevTools = ({ hidden }: Props) => {
+  const ReactDevTools = useRef<Component<any, any> | null>(null);
+  const [devToolsReady, setDtReady] = useState(false);
 
-    return (
-      <Container>
-        <ReactDevTools />
-      </Container>
-    );
-  }
-}
+  useEffect(() => {
+    const iframe = (document.getElementById(
+      'sandbox-preview'
+    ) as any) as HTMLIFrameElement;
+    const contentWindow = iframe.contentWindow;
+    ReactDevTools.current = initialize(contentWindow);
+    setDtReady(true);
+  }, []);
+
+  return (
+    <Container>
+      {devToolsReady && ReactDevTools.current && <ReactDevTools.current />}
+    </Container>
+  );
+};
 
 export default {
   id: 'codesandbox.devtools',
