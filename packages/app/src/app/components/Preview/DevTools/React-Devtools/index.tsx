@@ -5,15 +5,16 @@ import { Container } from './elements';
 import { DevToolProps } from '..';
 
 const DevTools = (props: DevToolProps) => {
-  const ReactDevTools = useRef(null);
   const [devToolsReady, setDtReady] = useState(false);
+  const [ReactDevTools, setDevTools] = useState(null);
 
   useEffect(() => {
     const iframe = document.getElementById(
       'sandbox-preview'
     ) as HTMLIFrameElement;
     const contentWindow = iframe.contentWindow;
-    ReactDevTools.current = initialize(contentWindow);
+    // in the effect
+    setDevTools(initialize(contentWindow));
     iframe.onload = () => {
       contentWindow.postMessage(
         {
@@ -30,9 +31,7 @@ const DevTools = (props: DevToolProps) => {
   }
 
   return (
-    <Container>
-      {devToolsReady && ReactDevTools.current && <ReactDevTools.current />}
-    </Container>
+    <Container>{devToolsReady && ReactDevTools && <ReactDevTools />}</Container>
   );
 };
 
