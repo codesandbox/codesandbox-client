@@ -33,10 +33,10 @@ const knobbedAuthor = (
   }
 };
 
-const knobbedSandbox = (group: string, sandbox: Sandbox): Sandbox => ({
+const sandboxWithKnobs = (group: string, sandbox: Sandbox): Sandbox => ({
   id: text('id', sandbox.id, group),
   title: text('title', sandbox.title, group),
-  author: knobbedAuthor(group, sandbox.author),
+  author: authorWithKnobs(group, sandbox.author),
   description: text('description', sandbox.description, group),
   screenshot_url: text('screenshot_url', sandbox.screenshot_url, group),
   view_count: number('view_count', sandbox.view_count, {}, group),
