@@ -982,7 +982,7 @@ class MonacoEditor extends React.Component<Props> implements Editor {
         module.id
       );
 
-      if (this.getCurrentModelPath() !== path) {
+      if (path && this.getCurrentModelPath() !== path) {
         this.editor.openFile(path);
       }
     }
