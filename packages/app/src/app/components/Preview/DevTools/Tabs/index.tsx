@@ -56,8 +56,6 @@ const DevToolTabs = ({
           const active = !hidden && i === currentPaneIndex;
           const view = views[pane.id];
 
-          console.log(panes);
-
           const TypedTab = (moveTab
             ? DraggableTab
             : (PaneTab as unknown)) as React.SFC<TabProps>;
